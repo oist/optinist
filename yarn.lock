@@ -5112,6 +5112,11 @@ flatten@^1.0.2:
   resolved "https://registry.yarnpkg.com/flatten/-/flatten-1.0.3.tgz#c1283ac9f27b368abc1e36d1ff7b04501a30356b"
   integrity sha512-dVsPA/UwQ8+2uoFe5GHtiBMu48dWLTdsuEd7CKGlZlD78r1TTWBvDuFaFGKCo/ZfEr95Uk56vZoX86OsHkUeIg==
 
+flexlayout-react@^0.5.12:
+  version "0.5.12"
+  resolved "https://registry.yarnpkg.com/flexlayout-react/-/flexlayout-react-0.5.12.tgz#649774d427e8e7fc4a0e4e6fbc82e5ff2e21a336"
+  integrity sha512-HcW80fYrhvv+qB7qA2dln5djpqE3b2na2ad7FnQc7KsnzXfEuxeWh26DWj8zxuOEw6+qHs3sYplQdZpAig4ZPA==
+
 flush-write-stream@^1.0.0:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/flush-write-stream/-/flush-write-stream-1.1.1.tgz#8dd7d873a1babc207d94ead0c2e0e44276ebf2e8"
