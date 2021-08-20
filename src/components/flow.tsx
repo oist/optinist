@@ -1,72 +1,87 @@
-import { FlowChartWithState, IChart } from '@mrblenny/react-flow-chart'
+import { useState, DragEvent } from 'react'
+import Siderbar from './Siderbar'
+import './dnd.css'
 
-export const chart: IChart = {
-  offset: {
-    x: 0,
-    y: 0,
+import ReactFlow, {
+  ReactFlowProvider,
+  removeElements,
+  addEdge,
+  Controls,
+  OnLoadParams,
+  ElementId,
+  Elements,
+  Connection,
+  Edge,
+  Node,
+} from 'react-flow-renderer'
+
+const initialElements = [
+  {
+    id: '1',
+    type: 'input',
+    data: { label: 'input node' },
+    position: { x: 250, y: 5 },
   },
-  scale: 1,
-  nodes: {
-    node1: {
-      id: 'node1',
-      type: 'output-only',
-      position: {
-        x: 300,
-        y: 100,
-      },
-      ports: {
-        port1: {
-          id: 'port1',
-          type: 'output',
-          properties: {
-            value: 'yes',
-          },
-        },
-        port2: {
-          id: 'port2',
-          type: 'output',
-          properties: {
-            value: 'no',
-          },
-        },
-      },
-    },
-    node2: {
-      id: 'node2',
-      type: 'input-output',
-      position: {
-        x: 300,
-        y: 300,
-      },
-      ports: {
-        port1: {
-          id: 'port1',
-          type: 'input',
-        },
-        port2: {
-          id: 'port2',
-          type: 'output',
-        },
-      },
-    },
-  },
-  links: {
-    link1: {
-      id: 'link1',
-      from: {
-        nodeId: 'node1',
-        portId: 'port2',
-      },
-      to: {
-        nodeId: 'node2',
-        portId: 'port1',
-      },
-    },
-  },
-  selected: {},
-  hovered: {},
+]
+
+const onDragOver = (event: DragEvent) => {
+  event.preventDefault()
+  event.dataTransfer.dropEffect = 'move'
 }
 
-export default function BasicFlow() {
-  return <FlowChartWithState initialValue={chart} />
+let id = 0
+const getId = (): ElementId => `dndnode_${id++}`
+
+const BasicFlow = () => {
+  const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>()
+  const [elements, setElements] = useState<Elements>(initialElements)
+
+  const onConnect = (params: Connection | Edge) =>
+    setElements((els) => addEdge(params, els))
+  const onElementsRemove = (elementsToRemove: Elements) =>
+    setElements((els) => removeElements(elementsToRemove, els))
+  const onLoad = (_reactFlowInstance: OnLoadParams) =>
+    setReactFlowInstance(_reactFlowInstance)
+
+  const onDrop = (event: DragEvent) => {
+    event.preventDefault()
+
+    if (reactFlowInstance) {
+      const type = event.dataTransfer.getData('application/reactflow')
+      const position = reactFlowInstance.project({
+        x: event.clientX,
+        y: event.clientY - 40,
+      })
+      const newNode: Node = {
+        id: getId(),
+        type,
+        position,
+        data: { label: `${type} node` },
+      }
+
+      setElements((es) => es.concat(newNode))
+    }
+  }
+
+  return (
+    <div className="dndflow">
+      <Siderbar />
+      <ReactFlowProvider>
+        <div className="reactflow-wrapper">
+          <ReactFlow
+            elements={elements}
+            onElementsRemove={onElementsRemove}
+            onConnect={onConnect}
+            onLoad={onLoad}
+            onDrop={onDrop}
+            onDragOver={onDragOver}
+          >
+            <Controls />
+          </ReactFlow>
+        </div>
+      </ReactFlowProvider>
+    </div>
+  )
 }
+
+export default BasicFlow
