@@ -17,6 +17,7 @@ const ParamItem = (props: any) => {
   const [value, setValue] = useState<number | string>(default_value)
 
   const handleSliderChange = (event: any, newValue: number | number[]) => {
+    console.log(event)
     setValue(newValue as number)
   }
 

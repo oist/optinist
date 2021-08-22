@@ -5,6 +5,7 @@ import { flexjson } from 'const/flexlayout'
 import SideBar from 'components/SideBar'
 import FlowChart from 'components/FlowChart'
 import ParamForm from 'components/ParamForm'
+import PlotOutput from 'components/PlotOutput'
 
 const model = Model.fromJson(flexjson)
 
@@ -13,12 +14,14 @@ function App() {
     var component = node.getComponent()
     if (component === 'button') {
       return <button>{node.getName()}</button>
-    } else if (component == 'flow') {
+    } else if (component == 'flowchart') {
       return <FlowChart />
     } else if (component == 'sidebar') {
       return <SideBar />
     } else if (component == 'paramForm') {
       return <ParamForm />
+    } else if (component == 'output') {
+      return <PlotOutput />
     } else {
       return null
     }

@@ -13,8 +13,10 @@
     "@types/node": "^12.0.0",
     "@types/react": "^17.0.19",
     "@types/react-dom": "^17.0.0",
+    "chart.js": "^3.5.1",
     "flexlayout-react": "^0.5.12",
     "react": "^17.0.2",
+    "react-chartjs-2": "^3.0.4",
     "react-dom": "^17.0.2",
     "react-flow-renderer": "^9.6.6",
     "react-scripts": "4.0.3",
@@ -49,6 +51,7 @@
     ]
   },
   "devDependencies": {
+    "@types/plotly.js": "^1.54.14",
     "husky": "^7.0.1",
     "lint-staged": "^11.1.2",
     "prettier": "^2.3.2"

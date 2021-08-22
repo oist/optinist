@@ -8,41 +8,47 @@ var flexjson: IJsonModel = {
     children: [
       {
         type: 'row',
-        weight: 10,
         children: [
           {
             type: 'tabset',
+            height: 500,
             selected: 0,
             children: [
               {
                 type: 'tab',
-                name: 'sidebar',
-                component: 'sidebar',
+                name: 'flowchart',
+                component: 'flowchart',
               },
             ],
           },
           {
-            type: 'tabset',
-            selected: 0,
+            type: 'row',
             children: [
               {
-                type: 'tab',
-                name: 'parameter',
-                component: 'paramForm',
+                type: 'tabset',
+                selected: 0,
+                enableMaximize: false,
+                children: [
+                  {
+                    type: 'tab',
+                    name: 'parameter',
+                    component: 'paramForm',
+                  },
+                ],
+              },
+              {
+                type: 'tabset',
+                selected: 0,
+                enableDeleteWhenEmpty: false,
+                children: [
+                  {
+                    type: 'tab',
+                    name: 'output',
+                    component: 'output',
+                  },
+                ],
               },
             ],
-          },
-        ],
-      },
-      {
-        type: 'tabset',
-        weight: 50,
-        selected: 0,
-        children: [
-          {
-            type: 'tab',
-            name: 'flow',
-            component: 'flow',
           },
         ],
       },
@@ -51,21 +57,17 @@ var flexjson: IJsonModel = {
   borders: [
     {
       type: 'border',
-      location: 'bottom',
-      size: 100,
+      location: 'left',
+      size: 200,
+      selected: 0,
       children: [
         {
           type: 'tab',
-          name: 'four',
-          component: 'grid',
+          name: 'sidebar',
+          component: 'sidebar',
+          enableClose: false,
         },
       ],
-    },
-    {
-      type: 'border',
-      location: 'left',
-      size: 100,
-      children: [],
     },
   ],
 }
