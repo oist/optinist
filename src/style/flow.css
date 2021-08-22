@@ -1,32 +1,32 @@
-.dndflow {
+.flow {
   flex-direction: column;
   display: flex;
   height: 100%;
 }
 
-.dndflow aside {
+.flow aside {
   border-right: 1px solid #eee;
   padding: 15px 10px;
   font-size: 12px;
   background: #fcfcfc;
 }
 
-.dndflow aside > * {
+.flow aside > * {
   margin-bottom: 10px;
   cursor: grab;
 }
 
-.dndflow .reactflow-wrapper {
+.flow .reactflow-wrapper {
   flex-grow: 1;
   height: 100%;
 }
 
 @media screen and (min-width: 768px) {
-  .dndflow {
+  .flow {
     flex-direction: row;
   }
 
-  .dndflow aside {
+  .flow aside {
     width: 20%;
     max-width: 180px;
   }

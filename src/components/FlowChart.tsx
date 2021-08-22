@@ -1,6 +1,5 @@
 import { useState, DragEvent } from 'react'
-import Siderbar from './Siderbar'
-import './dnd.css'
+import 'style/flow.css'
 
 import ReactFlow, {
   ReactFlowProvider,
@@ -14,15 +13,7 @@ import ReactFlow, {
   Edge,
   Node,
 } from 'react-flow-renderer'
-
-const initialElements = [
-  {
-    id: '1',
-    type: 'input',
-    data: { label: 'input node' },
-    position: { x: 250, y: 5 },
-  },
-]
+import { initialElements } from 'const/flowchart'
 
 const onDragOver = (event: DragEvent) => {
   event.preventDefault()
@@ -32,14 +23,18 @@ const onDragOver = (event: DragEvent) => {
 let id = 0
 const getId = (): ElementId => `dndnode_${id++}`
 
-const BasicFlow = () => {
+const FlowChart = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>()
   const [elements, setElements] = useState<Elements>(initialElements)
 
   const onConnect = (params: Connection | Edge) =>
-    setElements((els) => addEdge(params, els))
+    setElements((els) =>
+      addEdge({ ...params, type: 'smoothstep', animated: false }, els),
+    )
+
   const onElementsRemove = (elementsToRemove: Elements) =>
     setElements((els) => removeElements(elementsToRemove, els))
+
   const onLoad = (_reactFlowInstance: OnLoadParams) =>
     setReactFlowInstance(_reactFlowInstance)
 
@@ -47,16 +42,24 @@ const BasicFlow = () => {
     event.preventDefault()
 
     if (reactFlowInstance) {
-      const type = event.dataTransfer.getData('application/reactflow')
+      const name = event.dataTransfer.getData('application/reactflow')
       const position = reactFlowInstance.project({
-        x: event.clientX,
-        y: event.clientY - 40,
+        x: event.clientX - 50 - 250,
+        y: event.clientY - 50,
       })
+
+      var type = 'default'
+      if (name.includes('data')) {
+        type = 'input'
+      } else if (name.includes('output')) {
+        type = 'output'
+      }
+
       const newNode: Node = {
         id: getId(),
-        type,
+        type: type,
         position,
-        data: { label: `${type} node` },
+        data: { label: `${name}` },
       }
 
       setElements((es) => es.concat(newNode))
@@ -64,8 +67,7 @@ const BasicFlow = () => {
   }
 
   return (
-    <div className="dndflow">
-      <Siderbar />
+    <div className="flow">
       <ReactFlowProvider>
         <div className="reactflow-wrapper">
           <ReactFlow
@@ -84,4 +86,4 @@ const BasicFlow = () => {
   )
 }
 
-export default BasicFlow
+export default FlowChart
