@@ -1,20 +1,26 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
+name: 追加機能
+about: 追加機能について
 title: ''
-labels: ''
+labels: 'enhancement'
 assignees: ''
 
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+**追加機能についての概要**
+追加機能について数行程度で説明する。
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+**重要度**
+この機能の重要度を[低、中、高]に分ける。
+低: この機能は開発要件の最低条件に含まれていない。
+中: この機能は開発要件に含まれているが、早急に対応する必要はない。
+高: この機能を早急に対応しなければ、他の開発に影響を与える。
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+**期限**
+この機能の完成期限。　
 
-**Additional context**
-Add any other context or screenshots about the feature request here.
+**ライブラリ**
+使用する・使用できそうなライブラリなど。
+
+**その他**
+その他コメントなど。
