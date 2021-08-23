@@ -6,6 +6,7 @@ import SideBar from 'components/SideBar'
 import FlowChart from 'components/FlowChart'
 import ParamForm from 'components/ParamForm'
 import PlotOutput from 'components/PlotOutput'
+import ImageViewer from 'components/ImageViewer'
 
 const model = Model.fromJson(flexjson)
 
@@ -22,6 +23,8 @@ function App() {
       return <ParamForm />
     } else if (component == 'output') {
       return <PlotOutput />
+    } else if (component == 'image') {
+      return <ImageViewer />
     } else {
       return null
     }

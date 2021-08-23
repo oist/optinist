@@ -43,6 +43,11 @@ var flexjson: IJsonModel = {
                 children: [
                   {
                     type: 'tab',
+                    name: 'image',
+                    component: 'image',
+                  },
+                  {
+                    type: 'tab',
                     name: 'output',
                     component: 'output',
                   },
