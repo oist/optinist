@@ -5,6 +5,12 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Preparation
+
+If [yarn](https://classic.yarnpkg.com/en/docs/install/#mac-stable) is not installed in your PC, please install it.
+
+Before start developping, you need to run `yarn install` to install dependent libraries.
+
 ## Available Scripts
 
 In the project directory, you can run:
