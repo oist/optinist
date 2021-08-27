@@ -7,6 +7,7 @@ import FlowChart from 'components/FlowChart'
 import ParamForm from 'components/ParamForm'
 import PlotOutput from 'components/PlotOutput'
 import ImageViewer from 'components/ImageViewer'
+import ToolBar from 'components/ToolBar'
 
 const model = Model.fromJson(flexjson)
 
@@ -30,7 +31,18 @@ function App() {
     }
   }
 
-  return <Layout model={model} factory={factory} />
+  return (
+    <div id="container">
+      <div className="app">
+        <div className="toolbar">
+          <ToolBar />
+        </div>
+        <div className="contents">
+          <Layout model={model} factory={factory} />
+        </div>
+      </div>
+    </div>
+  )
 }
 
 export default App
