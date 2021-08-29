@@ -16,10 +16,13 @@ app.add_middleware(
 async def root():
     return {"message": "Hello World"}
 
-@app.get("/params")
-async def params():
-    import params
-    return params.get_params()
+@app.get("/params/{name}")
+async def params(name: str):
+    if name == 'test':
+        import params
+        return params.get_params()
+    elif name == 'caiman':
+        from optinist.algo.Caiman
 
 @app.get("/run")
 async def run():
