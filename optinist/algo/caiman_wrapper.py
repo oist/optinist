@@ -1,7 +1,7 @@
 import os
 import caiman as cm
 
-from base import Base
+from base import BaseAlgo
 
 class Caiman(Base):
 	def __init__(self):
@@ -14,20 +14,17 @@ class Caiman(Base):
 	def set_data(self, file_path):
 		self.fnames = [file_path]
 
-	# @classmethod
 	def set_params(self, opts_dict=None):
-		
+
 		if opts_dict is None:
 			import yaml
 			import os
 
 			with open(os.path.join('./algo', 'config', 'caiman.yaml')) as f:
 					opts_dict = yaml.load(f, Loader=yaml.FullLoader)
-					# print(opts_dict)
 					assert opts_dict
 
 		self.opts.change_params(params_dict=opts_dict)
-		# import pdb; pdb.set_trace()
 
 	def get_params(self):
 		return vars(self.opts)
