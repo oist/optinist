@@ -1,0 +1,9 @@
+Cython
+future
+scikit-image
+sklearn
+pynwb
+ipyparallel
+holoviews
+psutil
+nbstripout
