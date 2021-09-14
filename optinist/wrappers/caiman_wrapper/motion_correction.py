@@ -1,40 +1,47 @@
-from wrappers.core import Wrapper
-
+import numpy as np
 from caiman.source_extraction.cnmf.params import CNMFParams
 from caiman.motion_correction import MotionCorrect
-from caiman import load
-from .set_cluster import set_cluster
+from caiman import load, save_memmap, load_memmap
 
 
-class MotionCorrection(Wrapper):
-	def __init__(self, env, opts=None):
-		Wrapper.__init__(self, env)
+def caiman_mc(file_path, opts=None):
+	info = {}
 
-		self.opts = CNMFParams()
+	if opts is None:
+		opts = CNMFParams()
+	else:
+		opts.change_params(params_dict=opts)
 
-		if opts is not None:
-			self.opts.change_params(params_dict=opts)
+	mc = MotionCorrect(
+		file_path, dview=None, **opts.get_group('motion'))
 
-	def get_params(self):
-		return vars(self.opts)
+	mc.motion_correct(save_movie=True)
+	border_to_0 = 0 if mc.border_nan == 'copy' else mc.border_to_0
 
-	def run(self, info):
-		info = self.env.run(info)
-		mc = MotionCorrect(
-			info['file_path'], dview=None, **self.opts.get_group('motion'))
+	# memory mapping
+	fname_new = save_memmap(
+		mc.mmap_file, base_name='memmap_', order='C',border_to_0=border_to_0)
 
-		mc.motion_correct(save_movie=True)
-		border_to_0 = 0 if mc.border_nan == 'copy' else mc.border_to_0
+	# now load the file
+	Yr, dims, T = load_memmap(fname_new)
+	images = np.reshape(Yr.T, [T] + list(dims), order='F') 
 
-		info['mc'] = mc
-		info['border_to_0'] = border_to_0
+	info['mc'] = mc
+	info['border_to_0'] = border_to_0
+	info['images'] = images
 
-		return info
+	info['total_template_rig'] = mc.total_template_rig
+	info['shifts_rig'] = mc.shifts_rig
+	info['mmap_file'] = mc.mmap_file
+
+	return info
+
 
 if __name__ == '__main__':
 	import os
-	env = MotionCorrection(None)
+	info = {}
 	file_path = os.path.join(
 		'/Users', 'shogoakiyama', 'caiman_data', 
 		'example_movies', 'Sue_2x_3000_40_-46.tif')
-	env.run(file_path)
+	info['caiman_mc'] = caiman_mc(file_path)
+	print(info)

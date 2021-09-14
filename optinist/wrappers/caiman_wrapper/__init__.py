@@ -1,3 +1,3 @@
-from .motion_correction import MotionCorrection
-from .memory_mapping import MemoryMapping
-from .cnmf import CNMF
+from .motion_correction import caiman_mc
+from .cnmf import caiman_cnmf
+from .plot_contours import plot_contours_nb
