@@ -8,6 +8,7 @@ import FlowChart from 'components/FlowChart'
 import ParamForm from 'components/ParamForm'
 import PlotOutput from 'components/PlotOutput'
 import ImageViewer from 'components/ImageViewer'
+import ToolBar from 'components/ToolBar'
 
 import AppStateContext from 'contexts/AppStateContext'
 
@@ -105,7 +106,16 @@ function App() {
 
   return (
     <AppStateContext.Provider value={{ state, dispatch }}>
-      <Layout model={model} factory={factory} />
+      <div id="container">
+        <div className="app">
+          <div className="toolbar">
+            <ToolBar />
+          </div>
+          <div className="contents">
+            <Layout model={model} factory={factory} />
+          </div>
+        </div>
+      </div>
     </AppStateContext.Provider>
   )
 }

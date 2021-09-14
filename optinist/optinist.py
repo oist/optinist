@@ -1,30 +1,30 @@
+import os
+import wrappers.caiman_wrapper as cm
+import wrappers.suite2p_wrapper as s2p
 
 
-class Optinist:
-	def __init__(self):
-		print('init optinist')
-		self._opts = None
-	
-	def set_data(self):
-		print('load data')
+class Optinist(object):
+	def __init__(self, opt=None):
+		self.opt = opt
 
-	def set_params(self):
-		print('set params')
-		from algo import Caiman
-		opts_dict = Caiman.set_params()
-		print(opts_dict)
-		return opts_dict
+	def run(self, info):
+		return info
 
-	def get_params(self):
-		print('get params')
 
-	def set_cluster(self):
-		print('set cluster')
-
-	def run_motion_correct(self):
-		print('run motion correct')
+def create_env():
+	env = Optinist()
+	env = cm.MotionCorrection(env)
+	env = cm.MemoryMapping(env)
+	env = cm.CNMF(env)
+	return env
 
 
 if __name__ == '__main__':
-	optinist = Optinist()
-	optinist.set_params()
+
+	file_path = os.path.join(
+		'/Users', 'shogoakiyama', 'caiman_data', 
+		'example_movies', 'Sue_2x_3000_40_-46.tif')
+
+	env = create_env()
+	info = {'file_path': file_path}
+	env.run(info)

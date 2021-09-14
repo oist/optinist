@@ -1,0 +1,32 @@
+#container {
+  top: 10px;
+  right: 10px;
+  bottom: 10px;
+  left: 10px;
+  position: absolute;
+  display: flex;
+  overflow: hidden;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.toolbar {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 3px;
+}
+
+.contents {
+  position: relative;
+  flex-grow: 1;
+}
+
+
+.flexlayout__layout {
+  position: absolute;
+}
