@@ -1,5 +1,7 @@
-import { useState } from 'react'
+import { useState, useContext, useEffect } from 'react'
 import { makeStyles, Typography, Grid, Slider, Input } from '@material-ui/core'
+
+import AppStateContext from 'contexts/AppStateContext'
 
 const useStyles = makeStyles({
   root: {
@@ -11,18 +13,42 @@ const useStyles = makeStyles({
 })
 
 const ParamItem = (props: any) => {
-  console.log(props)
   const default_value = 30
   const classes = useStyles()
   const [value, setValue] = useState<number | string>(default_value)
+  const { state, dispatch } = useContext(AppStateContext)
+
+  useEffect(() => {
+    const currentAlgoParameters = state.algorithms.filter(function (algo) {
+      return algo.name === state.currentSelectedAlgo
+    })[0].parameters
+    const currentParamValue = currentAlgoParameters.filter(function (param) {
+      return param.name === props.name
+    })[0].value
+
+    setValue(currentParamValue)
+  }, [state.currentSelectedAlgo])
 
   const handleSliderChange = (event: any, newValue: number | number[]) => {
-    console.log(event)
-    setValue(newValue as number)
+    if (event.isTrusted) {
+      setValue(newValue as number)
+      dispatch({
+        type: 'ParamUpdate',
+        value: newValue as number,
+        param: props.name,
+      })
+    } else {
+      console.log(event)
+    }
   }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value === '' ? '' : Number(event.target.value))
+    dispatch({
+      type: 'ParamUpdate',
+      value: event.target.value === '' ? '' : Number(event.target.value),
+      param: props.name,
+    })
   }
 
   const handleBlur = () => {

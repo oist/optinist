@@ -1,4 +1,4 @@
-import { useState, DragEvent } from 'react'
+import React, { useState, useContext, DragEvent } from 'react'
 import 'style/flow.css'
 
 import ReactFlow, {
@@ -14,6 +14,7 @@ import ReactFlow, {
   Node,
 } from 'react-flow-renderer'
 import { initialElements } from 'const/flowchart'
+import AppStateContext from 'contexts/AppStateContext'
 
 const onDragOver = (event: DragEvent) => {
   event.preventDefault()
@@ -26,11 +27,21 @@ const getId = (): ElementId => `dndnode_${id++}`
 const FlowChart = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>()
   const [elements, setElements] = useState<Elements>(initialElements)
+  const { dispatch } = useContext(AppStateContext)
 
   const onConnect = (params: Connection | Edge) =>
     setElements((els) =>
       addEdge({ ...params, type: 'smoothstep', animated: false }, els),
     )
+
+  const onElementClick = (
+    event: React.MouseEvent<Element, MouseEvent>,
+    element: any,
+  ) => {
+    if (event.isTrusted) {
+      dispatch({ type: 'AlgoSelect', value: element.data.label })
+    }
+  }
 
   const onElementsRemove = (elementsToRemove: Elements) =>
     setElements((els) => removeElements(elementsToRemove, els))
@@ -72,6 +83,7 @@ const FlowChart = () => {
         <div className="reactflow-wrapper">
           <ReactFlow
             elements={elements}
+            onElementClick={onElementClick}
             onElementsRemove={onElementsRemove}
             onConnect={onConnect}
             onLoad={onLoad}

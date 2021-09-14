@@ -54,14 +54,14 @@ const SideBar = () => {
       <TreeItem nodeId="Algorithm" label="Algorithm">
         <TreeItem
           nodeId="algo1"
-          label="algo1"
-          onDragStart={(event: DragEvent) => onDragStart(event, 'algo1')}
+          label="CaImAn"
+          onDragStart={(event: DragEvent) => onDragStart(event, 'CaImAn')}
           draggable
         />
         <TreeItem
           nodeId="algo2"
-          label="algo2"
-          onDragStart={(event: DragEvent) => onDragStart(event, 'algo2')}
+          label="Suite2P"
+          onDragStart={(event: DragEvent) => onDragStart(event, 'Suite2P')}
           draggable
         />
         <TreeItem
