@@ -8,7 +8,7 @@ const initialElements = [
   {
     id: '2',
     type: 'default',
-    data: { label: 'algo1' },
+    data: { label: 'CaImAn' },
     position: { x: 200, y: 100 },
   },
   {
