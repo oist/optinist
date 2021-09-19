@@ -15,19 +15,19 @@ import ReactFlow, {
 } from 'react-flow-renderer'
 import { initialElements } from 'const/flowchart'
 import AppStateContext from 'contexts/AppStateContext'
-
-const onDragOver = (event: DragEvent) => {
-  event.preventDefault()
-  event.dataTransfer.dropEffect = 'move'
-}
-
-let id = 0
-const getId = (): ElementId => `dndnode_${id++}`
+import ColorSelectorNode from './ColorSelectorNode'
 
 const FlowChart = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>()
   const [elements, setElements] = useState<Elements>(initialElements)
   const { dispatch } = useContext(AppStateContext)
+
+  const nodeTypes = {
+    selectorNode: ColorSelectorNode,
+  }
+
+  let id = 0
+  const getId = (): ElementId => `dndnode_${id++}`
 
   const onConnect = (params: Connection | Edge) =>
     setElements((els) =>
@@ -48,6 +48,11 @@ const FlowChart = () => {
 
   const onLoad = (_reactFlowInstance: OnLoadParams) =>
     setReactFlowInstance(_reactFlowInstance)
+
+  const onDragOver = (event: DragEvent) => {
+    event.preventDefault()
+    event.dataTransfer.dropEffect = 'move'
+  }
 
   const onDrop = (event: DragEvent) => {
     event.preventDefault()
@@ -89,6 +94,7 @@ const FlowChart = () => {
             onLoad={onLoad}
             onDrop={onDrop}
             onDragOver={onDragOver}
+            nodeTypes={nodeTypes}
           >
             <Controls />
           </ReactFlow>
