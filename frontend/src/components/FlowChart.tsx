@@ -1,4 +1,4 @@
-import React, { useState, useContext, DragEvent } from 'react'
+import React, { useState, DragEvent } from 'react'
 import 'style/flow.css'
 
 import ReactFlow, {
@@ -13,26 +13,37 @@ import ReactFlow, {
   Edge,
   Node,
 } from 'react-flow-renderer'
-import { initialElements } from 'const/flowchart'
-import AppStateContext from 'contexts/AppStateContext'
-import ColorSelectorNode from './ColorSelectorNode'
+// import { initialElements } from 'const/flowchart'
+// import AppStateContext from 'contexts/AppStateContext'
+import ColorSelectorNode from './FileSelectorNode'
+import { flowElementsSelector } from 'redux/slice/Element/ElementSelector'
+import { useSelector, useDispatch } from 'react-redux'
+import { setFlowElements } from 'redux/slice/Element/Element'
+
+let id = 0
+const getId = (): ElementId => `dndnode_${id++}`
 
 const FlowChart = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>()
-  const [elements, setElements] = useState<Elements>(initialElements)
-  const { dispatch } = useContext(AppStateContext)
+  // const [elements, setElements] = useState<Elements>(initialElements)
+  const flowElements = useSelector(flowElementsSelector)
+  const dispatch = useDispatch()
+  // const { dispatch } = useContext(AppStateContext)
 
   const nodeTypes = {
     selectorNode: ColorSelectorNode,
   }
 
-  let id = 0
-  const getId = (): ElementId => `dndnode_${id++}`
-
-  const onConnect = (params: Connection | Edge) =>
-    setElements((els) =>
-      addEdge({ ...params, type: 'smoothstep', animated: false }, els),
+  const onConnect = (params: Connection | Edge) => {
+    dispatch(
+      setFlowElements(
+        addEdge(
+          { ...params, type: 'smoothstep', animated: false },
+          flowElements,
+        ),
+      ),
     )
+  }
 
   const onElementClick = (
     event: React.MouseEvent<Element, MouseEvent>,
@@ -43,8 +54,9 @@ const FlowChart = () => {
     }
   }
 
-  const onElementsRemove = (elementsToRemove: Elements) =>
-    setElements((els) => removeElements(elementsToRemove, els))
+  const onElementsRemove = (elementsToRemove: Elements) => {
+    dispatch(setFlowElements(removeElements(elementsToRemove, flowElements)))
+  }
 
   const onLoad = (_reactFlowInstance: OnLoadParams) =>
     setReactFlowInstance(_reactFlowInstance)
@@ -78,7 +90,7 @@ const FlowChart = () => {
         data: { label: `${name}` },
       }
 
-      setElements((es) => es.concat(newNode))
+      dispatch(setFlowElements(flowElements.concat(newNode)))
     }
   }
 
@@ -87,7 +99,7 @@ const FlowChart = () => {
       <ReactFlowProvider>
         <div className="reactflow-wrapper">
           <ReactFlow
-            elements={elements}
+            elements={flowElements}
             onElementClick={onElementClick}
             onElementsRemove={onElementsRemove}
             onConnect={onConnect}

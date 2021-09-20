@@ -1,27 +1,28 @@
-import React, { memo, FC, CSSProperties } from 'react'
-
+import { memo, FC, CSSProperties } from 'react'
+import { useDispatch } from 'react-redux'
+import { setElementPath } from 'redux/slice/Element/Element'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
 
-const ColorSelectorNode: FC<NodeProps> = () => {
+const FileSelectorNode: FC<NodeProps> = (element) => {
   const targetHandleStyle: CSSProperties = { background: '#555' }
   const sourceHandleStyle: CSSProperties = { ...targetHandleStyle }
+  const dispatch = useDispatch()
 
-  // const inputRef = useRef<HTMLInputElement>(null);
+  // const dispatch = useDispatch()
 
-  const [selectedFileName, setSelectedFileName] = React.useState<string | null>(
-    null,
-  )
   const onFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files != null && event.target.files[0] != null) {
-      console.log(event.target.files[0].name)
-      setSelectedFileName(event.target.files[0].name)
+      // console.log(event.target.files[0].name)
+      // dispatch(setSelectedFileName(event.target.files[0].name));
+      dispatch(
+        setElementPath({ id: element.id, path: event.target.files[0].name }),
+      )
     }
   }
 
   return (
     <>
       <input type="file" onChange={onFileInputChange} />
-      {!!selectedFileName && selectedFileName}
       <Handle
         type="source"
         position={Position.Bottom}
@@ -32,4 +33,4 @@ const ColorSelectorNode: FC<NodeProps> = () => {
   )
 }
 
-export default memo(ColorSelectorNode)
+export default memo(FileSelectorNode)
