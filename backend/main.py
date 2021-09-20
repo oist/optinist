@@ -1,6 +1,11 @@
 from fastapi import Depends, FastAPI
 import uvicorn
 from starlette.middleware.cors import CORSMiddleware
+from typing import List, Optional
+from pydantic import BaseModel
+import sys
+sys.path.append('../optinist')
+from wrappers import wrapper_dict
 
 app = FastAPI()
 
@@ -22,11 +27,18 @@ async def params(name: str):
         import params
         return params.get_params()
 
-@app.get("/run")
-async def run():
+class FlowItem(BaseModel):
+    label: str
+    path: Optional[str] = None
+    type: str
+
+@app.post("/run/")
+async def run(flowList: List[FlowItem]):
+    print('run_code')
+    print(wrapper_dict)
     import run
-    return run.run_code()
+    return run.run_code(wrapper_dict, flowList)
 
 
 if __name__ == '__main__':
-	uvicorn.run(app, host="0.0.0.0", port=8000)
+	uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=True)
