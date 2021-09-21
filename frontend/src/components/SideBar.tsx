@@ -51,6 +51,7 @@ const SideBar = () => {
       <TreeItem nodeId="Algorithm" label="Algorithm">
         {algoList.map((name) => (
           <TreeItem
+            key={name}
             nodeId={name}
             label={name}
             onDragStart={(event: DragEvent) => onDragStart(event, name)}

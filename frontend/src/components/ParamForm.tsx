@@ -14,7 +14,7 @@ const ParamForm = () => {
       <h2>{currentElement}</h2>
       <ul>
         {Object.keys(algoParams[currentElement]).map((name) => (
-          <ParamItem name={name} />
+          <ParamItem key={name} name={name} />
         ))}
       </ul>
     </div>
