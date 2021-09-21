@@ -13,22 +13,23 @@ import ReactFlow, {
   Edge,
   Node,
 } from 'react-flow-renderer'
-// import { initialElements } from 'const/flowchart'
-// import AppStateContext from 'contexts/AppStateContext'
+
 import ColorSelectorNode from './FileSelectorNode'
-import { flowElementsSelector } from 'redux/slice/Element/ElementSelector'
+import {
+  flowElementsSelector,
+  algoParamsSelector,
+} from 'redux/slice/Element/ElementSelector'
 import { useSelector, useDispatch } from 'react-redux'
-import { setFlowElements } from 'redux/slice/Element/Element'
+import { setFlowElements, setCurrentElement } from 'redux/slice/Element/Element'
 
 let id = 0
 const getId = (): ElementId => `dndnode_${id++}`
 
 const FlowChart = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>()
-  // const [elements, setElements] = useState<Elements>(initialElements)
   const flowElements = useSelector(flowElementsSelector)
+  const algoParams = useSelector(algoParamsSelector)
   const dispatch = useDispatch()
-  // const { dispatch } = useContext(AppStateContext)
 
   const nodeTypes = {
     selectorNode: ColorSelectorNode,
@@ -50,7 +51,10 @@ const FlowChart = () => {
     element: any,
   ) => {
     if (event.isTrusted) {
-      dispatch({ type: 'AlgoSelect', value: element.data.label })
+      console.log(Object.keys(algoParams).includes(element.data.label))
+      if (Object.keys(algoParams).includes(element.data.label)) {
+        dispatch(setCurrentElement(element.data.label))
+      }
     }
   }
 
