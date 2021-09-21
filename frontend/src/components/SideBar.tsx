@@ -1,9 +1,11 @@
-import { DragEvent } from 'react'
+import { useState, useEffect, DragEvent } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import TreeView from '@material-ui/lab/TreeView'
 import TreeItem from '@material-ui/lab/TreeItem'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+
+import axios from 'axios'
 
 const useStyles = makeStyles({
   root: {
@@ -16,6 +18,13 @@ const useStyles = makeStyles({
 
 const SideBar = () => {
   const classes = useStyles()
+  const [algoList, setAlgoList] = useState([])
+
+  useEffect(() => {
+    axios.get('http://localhost:8000/algolist').then((res) => {
+      setAlgoList(res.data)
+    })
+  }, [])
 
   const onDragStart = (event: DragEvent, nodeName: string) => {
     if (event.dataTransfer != null) {
@@ -32,63 +41,29 @@ const SideBar = () => {
     >
       <TreeItem nodeId="Data" label="Data">
         <TreeItem
-          nodeId="data1"
-          label="data1"
-          onDragStart={(event: DragEvent) => onDragStart(event, 'data1')}
-          draggable
-        />
-        <TreeItem
-          nodeId="data2"
-          label="data2"
-          onDragStart={(event: DragEvent) => onDragStart(event, 'data2')}
-          draggable
-        />
-        <TreeItem
-          nodeId="data3"
-          label="data3"
-          onDragStart={(event: DragEvent) => onDragStart(event, 'data3')}
+          nodeId="data"
+          label="data"
+          onDragStart={(event: DragEvent) => onDragStart(event, 'data')}
           draggable
         />
       </TreeItem>
 
       <TreeItem nodeId="Algorithm" label="Algorithm">
-        <TreeItem
-          nodeId="algo1"
-          label="CaImAn"
-          onDragStart={(event: DragEvent) => onDragStart(event, 'CaImAn')}
-          draggable
-        />
-        <TreeItem
-          nodeId="algo2"
-          label="Suite2P"
-          onDragStart={(event: DragEvent) => onDragStart(event, 'Suite2P')}
-          draggable
-        />
-        <TreeItem
-          nodeId="algo3"
-          label="algo3"
-          onDragStart={(event: DragEvent) => onDragStart(event, 'algo3')}
-          draggable
-        />
+        {algoList.map((name) => (
+          <TreeItem
+            nodeId={name}
+            label={name}
+            onDragStart={(event: DragEvent) => onDragStart(event, name)}
+            draggable
+          />
+        ))}
       </TreeItem>
 
-      <TreeItem nodeId="output" label="Output">
+      <TreeItem nodeId="Output" label="Output">
         <TreeItem
-          nodeId="output1"
-          label="output1"
-          onDragStart={(event: DragEvent) => onDragStart(event, 'output1')}
-          draggable
-        />
-        <TreeItem
-          nodeId="output2"
-          label="output2"
-          onDragStart={(event: DragEvent) => onDragStart(event, 'output3')}
-          draggable
-        />
-        <TreeItem
-          nodeId="output3"
-          label="output3"
-          onDragStart={(event: DragEvent) => onDragStart(event, 'output3')}
+          nodeId="output"
+          label="output"
+          onDragStart={(event: DragEvent) => onDragStart(event, 'output')}
           draggable
         />
       </TreeItem>

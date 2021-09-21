@@ -17,6 +17,11 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
+class FlowItem(BaseModel):
+    label: str
+    path: Optional[str] = None
+    type: str
+
 @app.get("/")
 async def root():
     return {"message": "Hello World"}
@@ -27,12 +32,12 @@ async def params(name: str):
         import params
         return params.get_params()
 
-class FlowItem(BaseModel):
-    label: str
-    path: Optional[str] = None
-    type: str
+@app.get("/algolist")
+async def run() -> List:
+    print(wrapper_dict.keys())
+    return list(wrapper_dict.keys())
 
-@app.post("/run/")
+@app.post("/run")
 async def run(flowList: List[FlowItem]):
     print('run_code')
     print(wrapper_dict)
