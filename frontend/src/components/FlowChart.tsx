@@ -1,4 +1,4 @@
-import React, { useState, DragEvent } from 'react'
+import { useState, DragEvent } from 'react'
 import 'style/flow.css'
 
 import ReactFlow, {
@@ -13,62 +13,30 @@ import ReactFlow, {
   Edge,
   Node,
 } from 'react-flow-renderer'
+import { initialElements } from 'const/flowchart'
 
-import ColorSelectorNode from './FileSelectorNode'
-import {
-  flowElementsSelector,
-  algoParamsSelector,
-} from 'redux/slice/Element/ElementSelector'
-import { useSelector, useDispatch } from 'react-redux'
-import { setFlowElements, setCurrentElement } from 'redux/slice/Element/Element'
+const onDragOver = (event: DragEvent) => {
+  event.preventDefault()
+  event.dataTransfer.dropEffect = 'move'
+}
 
 let id = 0
 const getId = (): ElementId => `dndnode_${id++}`
 
 const FlowChart = () => {
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>()
-  const flowElements = useSelector(flowElementsSelector)
-  const algoParams = useSelector(algoParamsSelector)
-  const dispatch = useDispatch()
+  const [elements, setElements] = useState<Elements>(initialElements)
 
-  const nodeTypes = {
-    selectorNode: ColorSelectorNode,
-  }
-
-  const onConnect = (params: Connection | Edge) => {
-    dispatch(
-      setFlowElements(
-        addEdge(
-          { ...params, type: 'smoothstep', animated: false },
-          flowElements,
-        ),
-      ),
+  const onConnect = (params: Connection | Edge) =>
+    setElements((els) =>
+      addEdge({ ...params, type: 'smoothstep', animated: false }, els),
     )
-  }
 
-  const onElementClick = (
-    event: React.MouseEvent<Element, MouseEvent>,
-    element: any,
-  ) => {
-    if (event.isTrusted) {
-      console.log(Object.keys(algoParams).includes(element.data.label))
-      if (Object.keys(algoParams).includes(element.data.label)) {
-        dispatch(setCurrentElement(element.data.label))
-      }
-    }
-  }
-
-  const onElementsRemove = (elementsToRemove: Elements) => {
-    dispatch(setFlowElements(removeElements(elementsToRemove, flowElements)))
-  }
+  const onElementsRemove = (elementsToRemove: Elements) =>
+    setElements((els) => removeElements(elementsToRemove, els))
 
   const onLoad = (_reactFlowInstance: OnLoadParams) =>
     setReactFlowInstance(_reactFlowInstance)
-
-  const onDragOver = (event: DragEvent) => {
-    event.preventDefault()
-    event.dataTransfer.dropEffect = 'move'
-  }
 
   const onDrop = (event: DragEvent) => {
     event.preventDefault()
@@ -94,7 +62,7 @@ const FlowChart = () => {
         data: { label: `${name}` },
       }
 
-      dispatch(setFlowElements(flowElements.concat(newNode)))
+      setElements((es) => es.concat(newNode))
     }
   }
 
@@ -103,14 +71,12 @@ const FlowChart = () => {
       <ReactFlowProvider>
         <div className="reactflow-wrapper">
           <ReactFlow
-            elements={flowElements}
-            onElementClick={onElementClick}
+            elements={elements}
             onElementsRemove={onElementsRemove}
             onConnect={onConnect}
             onLoad={onLoad}
             onDrop={onDrop}
             onDragOver={onDragOver}
-            nodeTypes={nodeTypes}
           >
             <Controls />
           </ReactFlow>

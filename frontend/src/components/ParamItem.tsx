@@ -1,9 +1,4 @@
-import { useDispatch, useSelector } from 'react-redux'
-import { updateParam } from 'redux/slice/Element/Element'
-import {
-  currentElementSelector,
-  paramValueSelector,
-} from 'redux/slice/Element/ElementSelector'
+import { useState } from 'react'
 import { makeStyles, Typography, Grid, Slider, Input } from '@material-ui/core'
 
 const useStyles = makeStyles({
@@ -15,42 +10,26 @@ const useStyles = makeStyles({
   },
 })
 
-const ParamItem = (props: { name: string }) => {
-  // const default_value = 30
+const ParamItem = (props: any) => {
+  console.log(props)
+  const default_value = 30
   const classes = useStyles()
-  // const [value, setValue] = useState<number | string>(default_value)
-  const currentElement = useSelector(currentElementSelector)
-  const dispatch = useDispatch()
-  const value = useSelector(paramValueSelector(currentElement, props.name))
+  const [value, setValue] = useState<number | string>(default_value)
 
   const handleSliderChange = (event: any, newValue: number | number[]) => {
-    if (event.isTrusted) {
-      if (typeof newValue === 'number') {
-        dispatch(updateParam({ name: props.name, newValue }))
-      }
-    } else {
-      console.log(event)
-    }
+    console.log(event)
+    setValue(newValue as number)
   }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value === '' ? '' : Number(event.target.value)
-    // setValue(newValue)
-    if (typeof newValue === 'number') {
-      dispatch(updateParam({ name: props.name, newValue }))
-    }
-    // dispatch({
-    //   type: 'ParamUpdate',
-    //   value: event.target.value === '' ? '' : Number(event.target.value),
-    //   param: props.name,
-    // })
+    setValue(event.target.value === '' ? '' : Number(event.target.value))
   }
 
   const handleBlur = () => {
     if (value < 0) {
-      dispatch(updateParam({ name: props.name, newValue: 0 }))
+      setValue(0)
     } else if (value > 100) {
-      dispatch(updateParam({ name: props.name, newValue: 100 }))
+      setValue(100)
     }
   }
 
