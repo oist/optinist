@@ -21,6 +21,8 @@ async def params(name: str):
     if name == 'test':
         import params
         return params.get_params()
+    elif name == 'caiman':
+        from optinist.algo.Caiman
 
 @app.get("/run")
 async def run():
