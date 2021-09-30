@@ -4,6 +4,7 @@ from starlette.middleware.cors import CORSMiddleware
 from typing import List, Optional
 from pydantic import BaseModel
 import sys
+import yaml
 sys.path.append('../optinist')
 from wrappers import wrapper_dict
 
@@ -28,9 +29,10 @@ async def root():
 
 @app.get("/params/{name}")
 async def params(name: str):
-    if name == 'test':
-        import params
-        return params.get_params()
+    with open(f'../optinist/config/{name}.yaml') as f:
+        config = yaml.safe_load(f)
+    print(config)
+    return config
 
 @app.get("/algolist")
 async def run() -> List:
