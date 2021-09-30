@@ -51,10 +51,7 @@ const FlowChart = () => {
     element: any,
   ) => {
     if (event.isTrusted) {
-      console.log(Object.keys(algoParams).includes(element.data.label))
-      if (Object.keys(algoParams).includes(element.data.label)) {
-        dispatch(setCurrentElement(element.data.label))
-      }
+      dispatch(setCurrentElement(element.data.label))
     }
   }
 
