@@ -28,8 +28,6 @@ const ParamItem = (props: { name: string }) => {
       if (typeof newValue === 'number') {
         dispatch(updateParam({ name: props.name, newValue }))
       }
-    } else {
-      console.log(event)
     }
   }
 
@@ -39,11 +37,6 @@ const ParamItem = (props: { name: string }) => {
     if (typeof newValue === 'number') {
       dispatch(updateParam({ name: props.name, newValue }))
     }
-    // dispatch({
-    //   type: 'ParamUpdate',
-    //   value: event.target.value === '' ? '' : Number(event.target.value),
-    //   param: props.name,
-    // })
   }
 
   const handleBlur = () => {

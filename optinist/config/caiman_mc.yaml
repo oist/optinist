@@ -1,0 +1,19 @@
+border_nan: 'copy'
+gSig_filt: null
+is3D: False
+max_deviation_rigid: 3
+max_shifts: [6, 6]
+min_mov: null
+niter_rig: 1
+nonneg_movie: True
+num_frames_split: 80
+num_splits_to_process_els: null
+num_splits_to_process_rig: null
+overlaps: [32, 32]
+pw_rigid: False
+shifts_opencv: True
+splits_els: 14
+splits_rig: 14
+strides: [96, 96]
+upsample_factor_grid: 4
+use_cuda: False

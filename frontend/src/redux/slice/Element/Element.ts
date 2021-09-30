@@ -1,44 +1,13 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction, current } from '@reduxjs/toolkit'
 import { Elements } from 'react-flow-renderer'
 import { initialElements } from 'const/flowchart'
-
-export interface Param {
-  name: string
-  value: number
-}
-export interface Algorithm {
-  name: string
-  params: Array<Param>
-}
-
-export type Param_ = {
-  [name: string]: number
-}
-
-export type Algorithm_ = {
-  [name: string]: Param_
-}
-export interface Element {
-  flowElements: Elements
-  currentElement: string
-  algoParams: Algorithm_
-}
-
-const initialAlgoParams_sample = {
-  caiman_mc: {
-    alpha_caiman: 30,
-    beta_caiman: 30,
-  },
-  caiman_cnmf: {
-    alpha_suite2p: 30,
-    beta_suite2p: 30,
-  },
-}
+import { getAlgoParams } from './ElementAction'
+import { Element } from './ElementType'
 
 const initialState: Element = {
   flowElements: initialElements,
   currentElement: 'caiman_mc',
-  algoParams: initialAlgoParams_sample,
+  algoParams: {},
 }
 
 export const elementSlice = createSlice({
@@ -58,6 +27,7 @@ export const elementSlice = createSlice({
     },
     setCurrentElement: (state, action: PayloadAction<string>) => {
       state.currentElement = action.payload
+      console.log(current(state))
     },
     updateParam: (
       state,
@@ -67,6 +37,14 @@ export const elementSlice = createSlice({
       state.algoParams[state.currentElement][name] = newValue
       console.log(state.algoParams[state.currentElement][name])
     },
+  },
+  extraReducers: (builder) => {
+    // Add reducers for additional action types here, and handle loading state as needed
+    builder.addCase(getAlgoParams.fulfilled, (state, action) => {
+      // Add user to the state array
+      state.algoParams[state.currentElement] = action.payload
+      console.log(current(state))
+    })
   },
 })
 
