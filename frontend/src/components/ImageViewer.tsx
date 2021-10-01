@@ -1,7 +1,6 @@
+import React from 'react'
 // import logo from './logo.svg';
 
-const ImageViewer = () => {
+export const ImageViewer = React.memo(() => {
   return <img src={`${process.env.PUBLIC_URL}/sample_image.png`} />
-}
-
-export default ImageViewer
+})

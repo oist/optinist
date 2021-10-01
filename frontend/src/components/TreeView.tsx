@@ -1,4 +1,4 @@
-import { useState, useEffect, DragEvent } from 'react'
+import React, { useState, useEffect, DragEvent } from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import TreeView from '@material-ui/lab/TreeView'
 import TreeItem from '@material-ui/lab/TreeItem'
@@ -16,7 +16,7 @@ const useStyles = makeStyles({
   },
 })
 
-const SideBar = () => {
+export const SideBar = React.memo(() => {
   const classes = useStyles()
   const [algoList, setAlgoList] = useState([])
 
@@ -70,6 +70,4 @@ const SideBar = () => {
       </TreeItem>
     </TreeView>
   )
-}
-
-export default SideBar
+})

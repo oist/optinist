@@ -1,6 +1,6 @@
 import { IJsonModel } from 'flexlayout-react'
 
-var flexjson: IJsonModel = {
+const flexjson: IJsonModel = {
   global: {},
   layout: {
     type: 'row',

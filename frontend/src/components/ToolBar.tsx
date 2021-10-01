@@ -1,4 +1,4 @@
-import react from 'react'
+import React from 'react'
 import Button from '@material-ui/core/Button'
 import PlayArrowIcon from '@material-ui/icons/PlayArrow'
 import StopIcon from '@material-ui/icons/Stop'
@@ -7,14 +7,14 @@ import { useSelector } from 'react-redux'
 import { flowElementsSelector } from 'redux/slice/Element/ElementSelector'
 import { FlowElement } from 'react-flow-renderer'
 
-const ToolBar: react.FC = () => {
+export const ToolBar = React.memo(() => {
   const flowElements = useSelector(flowElementsSelector)
 
   const onRunBtnClick = () => {
     var flowList: any[] = []
     flowElements.forEach((edge: FlowElement) => {
       if ('source' in edge) {
-        var node: FlowElement = flowElements.find((e) => e.id == edge.source)!
+        var node: FlowElement = flowElements.find((e) => e.id === edge.source)!
         flowList.push(node.data)
       }
     })
@@ -50,6 +50,4 @@ const ToolBar: react.FC = () => {
       </Button>
     </>
   )
-}
-
-export default ToolBar
+})
