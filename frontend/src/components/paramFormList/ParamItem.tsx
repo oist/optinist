@@ -16,9 +16,7 @@ const useStyles = makeStyles({
 })
 
 const ParamItem = (props: { name: string }) => {
-  // const default_value = 30
   const classes = useStyles()
-  // const [value, setValue] = useState<number | string>(default_value)
   const currentElement = useSelector(currentElementSelector)
   const dispatch = useDispatch()
   const value = useSelector(paramValueSelector(currentElement, props.name))
@@ -33,7 +31,6 @@ const ParamItem = (props: { name: string }) => {
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value === '' ? '' : Number(event.target.value)
-    // setValue(newValue)
     if (typeof newValue === 'number') {
       dispatch(updateParam({ name: props.name, newValue }))
     }

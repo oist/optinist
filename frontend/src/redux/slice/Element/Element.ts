@@ -22,7 +22,7 @@ export const elementSlice = createSlice({
       state,
       action: PayloadAction<{ id: string; path: string }>,
     ) => {
-      var idx = state.flowElements.findIndex((e) => e.id == action.payload.id)
+      var idx = state.flowElements.findIndex((e) => e.id === action.payload.id)
       state.flowElements[idx].data.path = action.payload.path
     },
     setCurrentElement: (state, action: PayloadAction<string>) => {

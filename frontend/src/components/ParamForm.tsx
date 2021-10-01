@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
   currentElementSelector,
@@ -7,7 +7,7 @@ import {
 import ParamItem from './paramFormList/ParamItem'
 import { getAlgoParams } from 'redux/slice/Element/ElementAction'
 
-const ParamForm = () => {
+export const ParamForm = React.memo(() => {
   const currentElement = useSelector(currentElementSelector)
   const algoParams = useSelector(algoParamsSelector)
   const dispatch = useDispatch()
@@ -33,6 +33,4 @@ const ParamForm = () => {
       </ul>
     </div>
   )
-}
-
-export default ParamForm
+})

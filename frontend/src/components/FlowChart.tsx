@@ -25,7 +25,7 @@ import { setFlowElements, setCurrentElement } from 'redux/slice/Element/Element'
 let id = 0
 const getId = (): ElementId => `dndnode_${id++}`
 
-const FlowChart = () => {
+export const FlowChart = React.memo(() => {
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>()
   const flowElements = useSelector(flowElementsSelector)
   const algoParams = useSelector(algoParamsSelector)
@@ -115,6 +115,4 @@ const FlowChart = () => {
       </ReactFlowProvider>
     </div>
   )
-}
-
-export default FlowChart
+})

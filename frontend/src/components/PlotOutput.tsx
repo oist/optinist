@@ -1,6 +1,7 @@
+import React from 'react'
 import { Bar } from 'react-chartjs-2'
 
-const PlotOutput = () => {
+export const PlotOutput = React.memo(function () {
   const data = {
     labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
     datasets: [
@@ -41,6 +42,4 @@ const PlotOutput = () => {
   }
 
   return <Bar data={data} width={100} height={40} options={options} />
-}
-
-export default PlotOutput
+})
