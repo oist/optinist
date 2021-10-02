@@ -1,10 +1,8 @@
-import numpy as np
-from caiman.source_extraction.cnmf.params import CNMFParams
-from caiman.motion_correction import MotionCorrect
-from caiman import load, save_memmap, load_memmap
-
-
 def caiman_mc(file_path, opts=None):
+	import numpy as np
+	from caiman.source_extraction.cnmf.params import CNMFParams
+	from caiman.motion_correction import MotionCorrect
+	from caiman import load, save_memmap, load_memmap
 	info = {}
 
 	if opts is None:

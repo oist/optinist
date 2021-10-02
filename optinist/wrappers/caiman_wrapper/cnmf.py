@@ -1,7 +1,8 @@
-from caiman.source_extraction.cnmf import cnmf
+
 
 
 def caiman_cnmf(images):
+	from caiman.source_extraction.cnmf import cnmf
 	info = {}
 
 	cnm = cnmf.CNMF(n_processes=0)

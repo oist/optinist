@@ -1,8 +1,6 @@
-import numpy as np
-import caiman
-
-
 def plot_contours_nb(images, cnm):
+	import numpy as np
+	import caiman
 	Cn = caiman.local_correlations(images.transpose(1, 2, 0))
 	Cn[np.isnan(Cn)] = 0
 	cnm.estimates.plot_contours_nb(img=Cn)
