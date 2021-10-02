@@ -8,12 +8,8 @@ const FileSelectorNode: FC<NodeProps> = (element) => {
   const sourceHandleStyle: CSSProperties = { ...targetHandleStyle }
   const dispatch = useDispatch()
 
-  // const dispatch = useDispatch()
-
   const onFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files != null && event.target.files[0] != null) {
-      // console.log(event.target.files[0].name)
-      // dispatch(setSelectedFileName(event.target.files[0].name));
       dispatch(
         setElementPath({ id: element.id, path: event.target.files[0].name }),
       )
