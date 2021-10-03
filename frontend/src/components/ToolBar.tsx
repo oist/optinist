@@ -1,11 +1,11 @@
 import React from 'react'
+import { useSelector } from 'react-redux'
 import Button from '@material-ui/core/Button'
 import PlayArrowIcon from '@material-ui/icons/PlayArrow'
 import StopIcon from '@material-ui/icons/Stop'
 import axios from 'axios'
-import { useSelector } from 'react-redux'
-import { flowElementsSelector } from 'redux/slice/Element/ElementSelector'
 import { FlowElement } from 'react-flow-renderer'
+import { flowElementsSelector } from 'redux/slice/Element/ElementSelector'
 
 export const ToolBar = React.memo(() => {
   const flowElements = useSelector(flowElementsSelector)
@@ -18,10 +18,10 @@ export const ToolBar = React.memo(() => {
         flowList.push(node.data)
       }
     })
-    console.log(flowList)
+    // console.log(flowList)
     axios.post('http://localhost:8000/run', flowList).then((res) => {
       var message = res.data
-      console.log(message)
+      // console.log(message)
     })
     // axios.get('http://localhost:8000/run').then((res) => {
     //   var message = res.data
