@@ -4,8 +4,8 @@ import { RootState } from '../../store'
 export const flowElementsSelector = (state: RootState) =>
   state.element.flowElements
 
-export const currentElementIdSelector = (state: RootState) =>
-  state.element.currentElementId
+export const currentAlgoIdSelector = (state: RootState) =>
+  state.element.currentAlgoId
 
 export const elementByIdSelector =
   (elementId: ElementId) => (state: RootState) => {

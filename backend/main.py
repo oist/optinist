@@ -1,4 +1,9 @@
-from fastapi import Depends, FastAPI
+import os
+
+import imageio
+from PIL import Image
+from fastapi import Depends, FastAPI, File, Response, UploadFile
+from fastapi.staticfiles import StaticFiles
 import uvicorn
 from starlette.middleware.cors import CORSMiddleware
 from typing import List, Optional
@@ -38,6 +43,41 @@ async def params(name: str):
 async def run() -> List:
     print(wrapper_dict.keys())
     return list(wrapper_dict.keys())
+
+@app.get("/cookie-test")
+def create_cookie(response: Response):
+    response.set_cookie(key="fakesession", value="fake-cookie-session-value")
+    return {"message": "cookie is set."}
+
+app.mount("/files", StaticFiles(directory="files"), name="files")
+
+@app.post("/upload/")
+async def create_file(response: Response, file: UploadFile = File(...)):
+    dummy_hash = "9999998"
+    max_index = 30
+
+    contents = await file.read()
+    file.filename = "tmp.tiff"
+    with open(os.path.join("_tmp", file.filename), "wb") as f:
+        f.write(contents)
+
+    os.makedirs(os.path.join("files", dummy_hash), exist_ok=True)
+    tiffs = imageio.volread(os.path.join("_tmp", file.filename))
+    counter = 0
+    for i, tiff_data in enumerate(tiffs):
+        if counter == max_index:
+            break
+        img = Image.fromarray(tiff_data)
+        img = img.convert("L")
+        img.save(os.path.join("files", dummy_hash, f"{i}.png"))
+        counter += 1
+
+    os.remove(os.path.join("_tmp", file.filename))
+
+    response.set_cookie(key="directory", value=dummy_hash)
+
+    return {"hash": dummy_hash, "maxIndex": max_index}
+
 
 @app.post("/run")
 async def run(flowList: List[FlowItem]):

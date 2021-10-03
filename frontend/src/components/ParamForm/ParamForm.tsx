@@ -1,31 +1,27 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
-  currentElementIdSelector,
+  currentAlgoIdSelector,
   elementByIdSelector,
   algoParamByIdSelector,
 } from 'redux/slice/Element/ElementSelector'
 import { getAlgoParams } from 'redux/slice/Element/ElementAction'
 import { ParamItemContainer } from './ParamItem'
 import Typography from '@material-ui/core/Typography'
+import { isAlgoNodeData } from 'redux/slice/Element/ElementUtils'
 
 export const ParamForm = React.memo(() => {
-  const currentElementId = useSelector(currentElementIdSelector)
-  const currentElement = useSelector(elementByIdSelector(currentElementId))
-  const algoParam = useSelector(algoParamByIdSelector(currentElementId))
+  const currentAlgoId = useSelector(currentAlgoIdSelector)
+  const currentNode = useSelector(elementByIdSelector(currentAlgoId))
+  const algoParam = useSelector(algoParamByIdSelector(currentAlgoId))
   const dispatch = useDispatch()
 
   useEffect(() => {
-    if (
-      currentElement &&
-      currentElement.data &&
-      currentElement?.type === 'default' && // algoはElementのtypeが'default'、それ以外のelementはparamを持たないのでdispatchしない
-      !algoParam
-    ) {
-      const algoName = currentElement.data.label
-      dispatch(getAlgoParams({ id: currentElementId, algoName }))
+    if (isAlgoNodeData(currentNode) && currentNode.data && !algoParam) {
+      const algoName = currentNode.data.label
+      dispatch(getAlgoParams({ id: currentAlgoId, algoName }))
     }
-  }, [currentElementId])
+  }, [currentAlgoId])
 
   if (algoParam === undefined) {
     return null
@@ -34,7 +30,7 @@ export const ParamForm = React.memo(() => {
   return (
     <div style={{ padding: 8 }}>
       <Typography variant="h5">
-        {algoParam.name}({currentElementId})
+        {algoParam.name}({currentAlgoId})
       </Typography>
       <div style={{ paddingLeft: 8 }}>
         {Object.keys(algoParam.param).map((paramName) => (

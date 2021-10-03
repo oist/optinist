@@ -1,10 +1,17 @@
-import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
-import element from './slice/Element/Element'
+import {
+  configureStore,
+  ThunkAction,
+  Action,
+  combineReducers,
+} from '@reduxjs/toolkit'
+import elementReducer from './slice/Element/Element'
+import imageIndexReducer from './slice/ImageIndex/ImageIndex'
 
 export const store = configureStore({
-  reducer: {
-    element: element,
-  },
+  reducer: combineReducers({
+    element: elementReducer,
+    imageIndex: imageIndexReducer,
+  }),
 })
 
 export type AppDispatch = typeof store.dispatch

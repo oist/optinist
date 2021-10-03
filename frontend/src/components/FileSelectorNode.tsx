@@ -1,24 +1,56 @@
-import { memo, FC, CSSProperties } from 'react'
+import React, { CSSProperties } from 'react'
 import { useDispatch } from 'react-redux'
-import { setElementPath } from 'redux/slice/Element/Element'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
-
-const FileSelectorNode: FC<NodeProps> = (element) => {
+import { uploadImageFile } from 'redux/slice/ImageIndex/ImageIndexAction'
+export const FileSelectorNode = React.memo<NodeProps>((element) => {
   const targetHandleStyle: CSSProperties = { background: '#555' }
   const sourceHandleStyle: CSSProperties = { ...targetHandleStyle }
   const dispatch = useDispatch()
 
   const onFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files != null && event.target.files[0] != null) {
-      dispatch(
-        setElementPath({ id: element.id, path: event.target.files[0].name }),
-      )
+    event.preventDefault()
+    if (
+      // formRef.current &&
+      event.target.files != null &&
+      event.target.files[0] != null
+    ) {
+      const file = event.target.files[0]
+      const formData = new FormData()
+      formData.append('file', file)
+      fetch('http://localhost:8000/upload/', {
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then(
+          (result) => {
+            const elementId = element.id
+            const fileName = file.name
+            dispatch(
+              uploadImageFile({
+                elementId,
+                fileName,
+                folder: result.hash,
+                maxIndex: result.maxIndex,
+              }),
+            )
+          },
+          (error) => {
+            console.log(error)
+          },
+        )
     }
   }
 
+  const formRef = React.useRef<HTMLFormElement>(null)
+
   return (
     <>
+      {/* <form ref={formRef}> */}
       <input type="file" onChange={onFileInputChange} />
+      {/* </form> */}
       <Handle
         type="source"
         position={Position.Bottom}
@@ -27,6 +59,4 @@ const FileSelectorNode: FC<NodeProps> = (element) => {
       />
     </>
   )
-}
-
-export default memo(FileSelectorNode)
+})
