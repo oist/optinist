@@ -1,49 +1,53 @@
-import { createSlice, PayloadAction, current } from '@reduxjs/toolkit'
-import { Elements } from 'react-flow-renderer'
-import { initialElements } from 'const/flowchart'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { Elements, Node } from 'react-flow-renderer'
+import { initialElements, INITIAL_ALGO_ELEMENT_ID } from 'const/flowchart'
 import { getAlgoParams } from './ElementAction'
-import { Element } from './ElementType'
+import { Element, NodeData } from './ElementType'
 
 const initialState: Element = {
   flowElements: initialElements,
-  currentElement: 'caiman_mc',
+  currentElementId: INITIAL_ALGO_ELEMENT_ID,
   algoParams: {},
 }
 
 export const elementSlice = createSlice({
   name: 'element',
   initialState,
-  // The `reducers` field lets us define reducers and generate associated actions
   reducers: {
     setFlowElements: (state, action: PayloadAction<Elements>) => {
       state.flowElements = action.payload
+    },
+    addFlowElement: (state, action: PayloadAction<Node<NodeData>>) => {
+      state.flowElements.push(action.payload)
     },
     setElementPath: (
       state,
       action: PayloadAction<{ id: string; path: string }>,
     ) => {
-      var idx = state.flowElements.findIndex((e) => e.id == action.payload.id)
-      state.flowElements[idx].data.path = action.payload.path
+      var idx = state.flowElements.findIndex((e) => e.id === action.payload.id)
+      const node = state.flowElements[idx]
+      if (node && node.data) {
+        node.data.path = action.payload.path
+      }
     },
     setCurrentElement: (state, action: PayloadAction<string>) => {
-      state.currentElement = action.payload
-      console.log(current(state))
+      state.currentElementId = action.payload
     },
     updateParam: (
       state,
-      action: PayloadAction<{ name: string; newValue: number }>,
+      action: PayloadAction<{ paramKey: string; newValue: unknown }>,
     ) => {
-      const { name, newValue } = action.payload
-      state.algoParams[state.currentElement][name] = newValue
-      console.log(state.algoParams[state.currentElement][name])
+      const { paramKey, newValue } = action.payload
+      state.algoParams[state.currentElementId].param[paramKey] = newValue
     },
   },
   extraReducers: (builder) => {
-    // Add reducers for additional action types here, and handle loading state as needed
     builder.addCase(getAlgoParams.fulfilled, (state, action) => {
-      // Add user to the state array
-      state.algoParams[state.currentElement] = action.payload
-      console.log(current(state))
+      const { id, algoName } = action.meta.arg
+      state.algoParams[id] = {
+        name: algoName,
+        param: action.payload,
+      }
     })
   },
 })
@@ -53,6 +57,7 @@ export const {
   setElementPath,
   setCurrentElement,
   updateParam,
+  addFlowElement,
 } = elementSlice.actions
 
 export default elementSlice.reducer

@@ -1,4 +1,8 @@
-const initialElements = [
+import { Elements } from 'react-flow-renderer'
+
+export const INITIAL_ALGO_ELEMENT_ID = '2'
+
+export const initialElements: Elements = [
   // {
   //   id: '1',
   //   type: 'input',
@@ -17,7 +21,7 @@ const initialElements = [
     position: { x: 200, y: 5 },
   },
   {
-    id: '2',
+    id: INITIAL_ALGO_ELEMENT_ID,
     type: 'default',
     data: { type: 'algo', label: 'caiman_mc' },
     position: { x: 200, y: 100 },
@@ -39,12 +43,12 @@ const initialElements = [
   {
     id: 'e1',
     source: '1',
-    target: '2',
+    target: INITIAL_ALGO_ELEMENT_ID,
     type: 'smoothstep',
   },
   {
     id: 'e2',
-    source: '2',
+    source: INITIAL_ALGO_ELEMENT_ID,
     target: '3',
     type: 'smoothstep',
   },
@@ -55,5 +59,3 @@ const initialElements = [
   //   type: 'smoothstep',
   // },
 ]
-
-export { initialElements }

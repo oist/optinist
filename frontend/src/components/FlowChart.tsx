@@ -1,6 +1,5 @@
 import React, { useState, DragEvent } from 'react'
-import 'style/flow.css'
-
+import { useSelector, useDispatch } from 'react-redux'
 import ReactFlow, {
   ReactFlowProvider,
   removeElements,
@@ -13,22 +12,23 @@ import ReactFlow, {
   Edge,
   Node,
 } from 'react-flow-renderer'
-
-import ColorSelectorNode from './FileSelectorNode'
 import {
-  flowElementsSelector,
-  algoParamsSelector,
-} from 'redux/slice/Element/ElementSelector'
-import { useSelector, useDispatch } from 'react-redux'
-import { setFlowElements, setCurrentElement } from 'redux/slice/Element/Element'
+  setFlowElements,
+  setCurrentElement,
+  addFlowElement,
+} from 'redux/slice/Element/Element'
+import { flowElementsSelector } from 'redux/slice/Element/ElementSelector'
+import { NodeData } from 'redux/slice/Element/ElementType'
+import 'style/flow.css'
+import ColorSelectorNode from './FileSelectorNode'
 
 let id = 0
 const getId = (): ElementId => `dndnode_${id++}`
 
-const FlowChart = () => {
+export const FlowChart = React.memo(() => {
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>()
   const flowElements = useSelector(flowElementsSelector)
-  const algoParams = useSelector(algoParamsSelector)
+  // const algoParams = useSelector(algoParamsSelector)
   const dispatch = useDispatch()
 
   const nodeTypes = {
@@ -48,10 +48,10 @@ const FlowChart = () => {
 
   const onElementClick = (
     event: React.MouseEvent<Element, MouseEvent>,
-    element: any,
+    element: Node<any> | Edge<any>,
   ) => {
     if (event.isTrusted) {
-      dispatch(setCurrentElement(element.data.label))
+      dispatch(setCurrentElement(element.id))
     }
   }
 
@@ -77,21 +77,21 @@ const FlowChart = () => {
         y: event.clientY - 50,
       })
 
-      var type = 'default'
+      let type = 'default'
       if (name.includes('data')) {
         type = 'input'
       } else if (name.includes('output')) {
         type = 'output'
       }
 
-      const newNode: Node = {
+      const newNode: Node<NodeData> = {
         id: getId(),
         type: type,
         position,
-        data: { label: `${name}` },
+        data: { label: name },
       }
 
-      dispatch(setFlowElements(flowElements.concat(newNode)))
+      dispatch(addFlowElement(newNode))
     }
   }
 
@@ -115,6 +115,4 @@ const FlowChart = () => {
       </ReactFlowProvider>
     </div>
   )
-}
-
-export default FlowChart
+})
