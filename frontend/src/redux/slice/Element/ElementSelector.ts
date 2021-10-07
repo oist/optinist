@@ -12,6 +12,11 @@ export const elementByIdSelector =
     return state.element.flowElements.find((node) => node.id === elementId)
   }
 
+export const maxElementIdSelector = (state: RootState) =>
+  Object.keys(state.element.flowElements)
+    .map((id) => Number(id))
+    .reduce((a, b) => Math.max(a, b))
+
 export const algoParamsSelector = (state: RootState) => state.element.algoParams
 
 export const algoParamByIdSelector = (id: string) => (state: RootState) => {

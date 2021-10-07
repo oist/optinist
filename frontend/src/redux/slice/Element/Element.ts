@@ -23,9 +23,6 @@ export const elementSlice = createSlice({
     addFlowElement: (state, action: PayloadAction<Node<NodeDataType>>) => {
       state.flowElements.push(action.payload)
     },
-    setCurrentNodeId: (state, action: PayloadAction<string>) => {
-      state.clickedNodeId = action.payload
-    },
     updateParam: (
       state,
       action: PayloadAction<{ paramKey: string; newValue: unknown }>,
@@ -64,11 +61,7 @@ export const elementSlice = createSlice({
   },
 })
 
-export const {
-  setFlowElements,
-  setCurrentNodeId,
-  updateParam,
-  addFlowElement,
-} = elementSlice.actions
+export const { setFlowElements, updateParam, addFlowElement } =
+  elementSlice.actions
 
 export default elementSlice.reducer

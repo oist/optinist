@@ -1,29 +1,45 @@
 import React from 'react'
 import { Bar } from 'react-chartjs-2'
+import { useSelector, useDispatch } from 'react-redux'
+import { getOutputData } from 'redux/slice/Output/OutputAction'
+import {
+  currentOutputDataSelector,
+  currentOutputIdSelector,
+} from 'redux/slice/Output/OutputSelector'
+import { RootState } from 'redux/store'
 
-export const PlotOutput = React.memo(function () {
+export const PlotOutput = React.memo(function PlotOutput() {
+  const dispatch = useDispatch()
+  const currentOutputDataIsLoaded = useSelector(
+    (state: RootState) => currentOutputDataSelector(state) != null,
+  )
+  const currentOutputId = useSelector(currentOutputIdSelector)
+  React.useEffect(() => {
+    if (!currentOutputDataIsLoaded) {
+      dispatch(getOutputData({ id: currentOutputId }))
+    }
+  }, [currentOutputId, currentOutputDataIsLoaded, dispatch])
+  if (currentOutputDataIsLoaded) {
+    return <Chart />
+  } else {
+    return null
+  }
+})
+
+const Chart = React.memo(() => {
+  const currentOutputId = useSelector(currentOutputIdSelector)
+  const currentOutputData = useSelector(currentOutputDataSelector)
+  if (currentOutputData == null) {
+    return null
+  }
   const data = {
-    labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+    labels: currentOutputData.map((data) => data.x),
     datasets: [
       {
-        label: 'Dataset',
-        data: [12, 19, 3, 5, 2, 3],
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.2)',
-          'rgba(54, 162, 235, 0.2)',
-          'rgba(255, 206, 86, 0.2)',
-          'rgba(75, 192, 192, 0.2)',
-          'rgba(153, 102, 255, 0.2)',
-          'rgba(255, 159, 64, 0.2)',
-        ],
-        borderColor: [
-          'rgba(255, 99, 132, 1)',
-          'rgba(54, 162, 235, 1)',
-          'rgba(255, 206, 86, 1)',
-          'rgba(75, 192, 192, 1)',
-          'rgba(153, 102, 255, 1)',
-          'rgba(255, 159, 64, 1)',
-        ],
+        label: 'Dataset(' + currentOutputId + ')',
+        data: currentOutputData?.map((data) => data.y),
+        backgroundColor: 'rgb(255, 99, 132, 0.5)',
+        borderColor: 'rgb(255, 99, 132)',
         borderWidth: 1,
       },
     ],
@@ -40,6 +56,5 @@ export const PlotOutput = React.memo(function () {
       ],
     },
   }
-
   return <Bar data={data} width={100} height={40} options={options} />
 })

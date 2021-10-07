@@ -1,8 +1,9 @@
 import { Elements } from 'react-flow-renderer'
 import { NodeDataType } from 'redux/slice/Element/ElementType'
 
-export const INITIAL_IMAGE_ELEMENT_ID = '1'
-export const INITIAL_ALGO_ELEMENT_ID = '2'
+export const INITIAL_IMAGE_ELEMENT_ID = '0'
+export const INITIAL_ALGO_ELEMENT_ID = '1'
+export const INITIAL_OUTPUT_ELEMENT_ID = '2'
 
 export const initialElements: Elements<NodeDataType> = [
   // {
@@ -35,7 +36,7 @@ export const initialElements: Elements<NodeDataType> = [
   //   position: { x: 200, y: 200 },
   // },
   {
-    id: '3',
+    id: INITIAL_OUTPUT_ELEMENT_ID,
     type: 'output',
     data: { type: 'output', label: 'output' },
     position: { x: 200, y: 300 },
@@ -43,15 +44,15 @@ export const initialElements: Elements<NodeDataType> = [
 
   // edge
   {
-    id: 'e1',
+    id: '3',
     source: INITIAL_IMAGE_ELEMENT_ID,
     target: INITIAL_ALGO_ELEMENT_ID,
     type: 'smoothstep',
   },
   {
-    id: 'e2',
+    id: '4',
     source: INITIAL_ALGO_ELEMENT_ID,
-    target: '3',
+    target: INITIAL_OUTPUT_ELEMENT_ID,
     type: 'smoothstep',
   },
   // {

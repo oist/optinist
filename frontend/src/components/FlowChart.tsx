@@ -13,15 +13,15 @@ import ReactFlow, {
   Node,
 } from 'react-flow-renderer'
 import { setFlowElements, addFlowElement } from 'redux/slice/Element/Element'
-import { flowElementsSelector } from 'redux/slice/Element/ElementSelector'
+import {
+  flowElementsSelector,
+  maxElementIdSelector,
+} from 'redux/slice/Element/ElementSelector'
 import { NodeDataType, NodeType } from 'redux/slice/Element/ElementType'
 import 'style/flow.css'
 import { FileSelectorNode } from './FileSelectorNode'
 import { clickNode } from 'redux/slice/Element/ElementAction'
 import { isNodeData } from 'redux/slice/Element/ElementUtils'
-
-let id = 0
-const getId = (): ElementId => `dndnode_${id++}`
 
 export const FlowChart = React.memo(() => {
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>()
@@ -64,6 +64,7 @@ export const FlowChart = React.memo(() => {
     event.dataTransfer.dropEffect = 'move'
   }
 
+  const maxElementId = useSelector(maxElementIdSelector)
   const onDrop = (event: DragEvent) => {
     event.preventDefault()
 
@@ -82,7 +83,7 @@ export const FlowChart = React.memo(() => {
       }
 
       const newNode: Node<NodeDataType> = {
-        id: getId(),
+        id: String(maxElementId + 1),
         type: type,
         position,
         data: { label: name, type },

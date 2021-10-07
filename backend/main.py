@@ -87,6 +87,12 @@ async def run(flowList: List[FlowItem]):
     import run
     return run.run_code(wrapper_dict, flowList)
 
+@app.get("/output")
+def read_output():
+    # サンプル用のダミーデータ
+    import random
+    dummy_data = [{ "x": i, "y": random.uniform(100,0) } for i in range(0,20)]
+    return { "data": dummy_data }
 
 if __name__ == '__main__':
 	uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=True)

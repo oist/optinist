@@ -6,11 +6,13 @@ import {
 } from '@reduxjs/toolkit'
 import elementReducer from './slice/Element/Element'
 import imageIndexReducer from './slice/ImageIndex/ImageIndex'
+import outputReducer from './slice/Output/Output'
 
 export const store = configureStore({
   reducer: combineReducers({
     element: elementReducer,
     imageIndex: imageIndexReducer,
+    output: outputReducer,
   }),
 })
 
