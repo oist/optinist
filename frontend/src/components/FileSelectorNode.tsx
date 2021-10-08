@@ -2,6 +2,7 @@ import React, { CSSProperties } from 'react'
 import { useDispatch } from 'react-redux'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
 import { uploadImageFile } from 'redux/slice/ImageIndex/ImageIndexAction'
+
 export const FileSelectorNode = React.memo<NodeProps>((element) => {
   const targetHandleStyle: CSSProperties = { background: '#555' }
   const sourceHandleStyle: CSSProperties = { ...targetHandleStyle }
@@ -9,15 +10,12 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
 
   const onFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
-    if (
-      // formRef.current &&
-      event.target.files != null &&
-      event.target.files[0] != null
-    ) {
+    if (event.target.files != null && event.target.files[0] != null) {
       const file = event.target.files[0]
       const formData = new FormData()
       formData.append('file', file)
-      fetch('http://localhost:8000/upload/', {
+      const uploadFolderName = `${file.name}(${element.id})`
+      fetch(`http://localhost:8000/upload/${uploadFolderName}`, {
         method: 'POST',
         mode: 'cors',
         credentials: 'include',
@@ -32,7 +30,7 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
               uploadImageFile({
                 elementId,
                 fileName,
-                folder: result.hash,
+                folder: result.folderName,
                 maxIndex: result.maxIndex,
               }),
             )
@@ -44,13 +42,9 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
     }
   }
 
-  const formRef = React.useRef<HTMLFormElement>(null)
-
   return (
     <>
-      {/* <form ref={formRef}> */}
       <input type="file" onChange={onFileInputChange} />
-      {/* </form> */}
       <Handle
         type="source"
         position={Position.Bottom}

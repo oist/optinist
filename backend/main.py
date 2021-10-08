@@ -51,17 +51,16 @@ def create_cookie(response: Response):
 
 app.mount("/files", StaticFiles(directory="files"), name="files")
 
-@app.post("/upload/")
-async def create_file(response: Response, file: UploadFile = File(...)):
-    dummy_hash = "9999998"
+@app.post("/upload/{path}")
+async def create_file(response: Response, path: str, file: UploadFile = File(...)):
     max_index = 30
-
+    folder_name = path
     contents = await file.read()
     file.filename = "tmp.tiff"
     with open(os.path.join("_tmp", file.filename), "wb") as f:
         f.write(contents)
 
-    os.makedirs(os.path.join("files", dummy_hash), exist_ok=True)
+    os.makedirs(os.path.join("files", folder_name), exist_ok=True)
     tiffs = imageio.volread(os.path.join("_tmp", file.filename))
     counter = 0
     for i, tiff_data in enumerate(tiffs):
@@ -69,14 +68,14 @@ async def create_file(response: Response, file: UploadFile = File(...)):
             break
         img = Image.fromarray(tiff_data)
         img = img.convert("L")
-        img.save(os.path.join("files", dummy_hash, f"{i}.png"))
+        img.save(os.path.join("files", path, f"{i}.png"))
         counter += 1
 
     os.remove(os.path.join("_tmp", file.filename))
 
-    response.set_cookie(key="directory", value=dummy_hash)
+    response.set_cookie(key="directory", value=folder_name)
 
-    return {"hash": dummy_hash, "maxIndex": max_index}
+    return {"folderName": folder_name, "maxIndex": max_index}
 
 
 @app.post("/run")
