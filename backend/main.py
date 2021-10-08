@@ -68,7 +68,7 @@ async def create_file(response: Response, path: str, file: UploadFile = File(...
             break
         img = Image.fromarray(tiff_data)
         img = img.convert("L")
-        img.save(os.path.join("files", path, f"{i}.png"))
+        img.save(os.path.join("files", folder_name, f"{i}.png"))
         counter += 1
 
     os.remove(os.path.join("_tmp", file.filename))

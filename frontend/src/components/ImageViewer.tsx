@@ -22,10 +22,10 @@ import { Typography, useTheme } from '@material-ui/core'
 // import logo from './logo.svg';
 
 export const ImageViewer = React.memo(() => {
-  const currentImage = useSelector((state: RootState) =>
-    currentImageIndexSelector(state),
+  const currentImageIsLoaded = useSelector(
+    (state: RootState) => currentImageIndexSelector(state) != null,
   )
-  if (currentImage !== undefined) {
+  if (currentImageIsLoaded) {
     return <Viewer />
   } else {
     return null
