@@ -43,14 +43,11 @@ const Viewer = React.memo(() => {
   const handleBack = () => disptach(decrementPageIndex({ id }))
   const theme = useTheme()
   return (
-    <div style={{ padding: 8 }}>
-      <Typography>
-        {fileName}({id})
-      </Typography>
-      <img
-        height={'100%'}
-        src={`http://localhost:8000/files/${folder}/${pageIndex}.png`}
-      />
+    <div
+      style={{
+        height: '100%',
+      }}
+    >
       <MobileStepper
         steps={maxIndex ?? 0}
         position="static"
@@ -81,6 +78,24 @@ const Viewer = React.memo(() => {
           </Button>
         }
       />
+      <Typography style={{ textAlign: 'center' }}>
+        {fileName}({id})
+      </Typography>
+      <div
+        style={{
+          textAlign: 'center',
+          height: '80%',
+        }}
+      >
+        <img
+          style={{
+            textAlign: 'center',
+            height: '100%',
+            maxWidth: '100%',
+          }}
+          src={`http://localhost:8000/files/${folder}/${pageIndex}.png`}
+        />
+      </div>
     </div>
   )
 })

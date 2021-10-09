@@ -2,12 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Elements, Node } from 'react-flow-renderer'
 import { initialElements, INITIAL_ALGO_ELEMENT_ID } from 'const/flowchart'
 import { clickNode, getAlgoParams } from './ElementAction'
-import {
-  Element,
-  ELEMENT_SLICE_NAME,
-  NodeDataType,
-  InputNodeData,
-} from './ElementType'
+import { Element, ELEMENT_SLICE_NAME, NodeDataType } from './ElementType'
 import { uploadImageFile } from '../ImageIndex/ImageIndexAction'
 import { isNodeData } from './ElementUtils'
 
