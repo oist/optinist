@@ -46,8 +46,8 @@ export const elementSlice = createSlice({
           param: action.payload,
         }
       })
-      .addCase(uploadImageFile, (state, action) => {
-        const { fileName: path, elementId } = action.payload
+      .addCase(uploadImageFile.fulfilled, (state, action) => {
+        const { elementId, fileName: path } = action.meta.arg
         var idx = state.flowElements.findIndex((e) => e.id === elementId)
         const node = state.flowElements[idx]
         if (isNodeData(node) && node.data) {

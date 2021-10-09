@@ -14,31 +14,9 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
       const file = event.target.files[0]
       const formData = new FormData()
       formData.append('file', file)
-      const uploadFolderName = `${file.name}(${element.id})`
-      fetch(`http://localhost:8000/upload/${uploadFolderName}`, {
-        method: 'POST',
-        mode: 'cors',
-        credentials: 'include',
-        body: formData,
-      })
-        .then((response) => response.json())
-        .then(
-          (result) => {
-            const elementId = element.id
-            const fileName = file.name
-            dispatch(
-              uploadImageFile({
-                elementId,
-                fileName,
-                folder: result.folderName,
-                maxIndex: result.maxIndex,
-              }),
-            )
-          },
-          (error) => {
-            console.log(error)
-          },
-        )
+      const elementId = element.id
+      const fileName = file.name
+      dispatch(uploadImageFile({ elementId, fileName, formData }))
     }
   }
 

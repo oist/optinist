@@ -11,6 +11,7 @@ import {
   currentImageFileNameSelector,
   currentImageIndexSelector,
   currentImageIdSelector,
+  currentImageIsFulfilledSelector,
 } from 'redux/slice/ImageIndex/ImageIndexSelector'
 
 import { RootState } from 'redux/store'
@@ -18,14 +19,14 @@ import {
   decrementPageIndex,
   incrementPageIndex,
 } from 'redux/slice/ImageIndex/ImageIndex'
-import { Typography, useTheme } from '@material-ui/core'
+import { LinearProgress, Typography, useTheme } from '@material-ui/core'
 // import logo from './logo.svg';
 
 export const ImageViewer = React.memo(() => {
-  const currentImageIsLoaded = useSelector(
+  const currentImageIsSeleted = useSelector(
     (state: RootState) => currentImageIndexSelector(state) != null,
   )
-  if (currentImageIsLoaded) {
+  if (currentImageIsSeleted) {
     return <Viewer />
   } else {
     return null
@@ -41,7 +42,11 @@ const Viewer = React.memo(() => {
   const fileName = useSelector(currentImageFileNameSelector)
   const handleNext = () => disptach(incrementPageIndex({ id }))
   const handleBack = () => disptach(decrementPageIndex({ id }))
+  const isLoaded = useSelector(currentImageIsFulfilledSelector)
   const theme = useTheme()
+  if (!isLoaded) {
+    return <LinearProgress />
+  }
   return (
     <div
       style={{

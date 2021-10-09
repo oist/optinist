@@ -37,14 +37,27 @@ export const imageIndexSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(uploadImageFile, (state, action) => {
-        const { elementId, maxIndex, fileName, folder } = action.payload
+      .addCase(uploadImageFile.pending, (state, action) => {
+        const { elementId, fileName } = action.meta.arg
+        state.currentImageId = elementId
+        state.index[elementId] = {
+          fileName,
+          maxIndex: 0,
+          folder: '',
+          pageIndex: 0,
+          isFulfilled: false,
+        }
+      })
+      .addCase(uploadImageFile.fulfilled, (state, action) => {
+        const { elementId, fileName } = action.meta.arg
+        const { folderName: folder, maxIndex } = action.payload
         state.currentImageId = elementId
         state.index[elementId] = {
           fileName,
           maxIndex,
           folder,
           pageIndex: 0,
+          isFulfilled: true,
         }
       })
       .addCase(clickNode, (state, action) => {
