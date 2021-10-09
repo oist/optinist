@@ -12,15 +12,13 @@ import ReactFlow, {
   Edge,
   Node,
 } from 'react-flow-renderer'
-import {
-  setFlowElements,
-  setCurrentElement,
-  addFlowElement,
-} from 'redux/slice/Element/Element'
+import { setFlowElements, addFlowElement } from 'redux/slice/Element/Element'
 import { flowElementsSelector } from 'redux/slice/Element/ElementSelector'
-import { NodeData } from 'redux/slice/Element/ElementType'
+import { NodeDataType, NodeType } from 'redux/slice/Element/ElementType'
 import 'style/flow.css'
-import ColorSelectorNode from './FileSelectorNode'
+import { FileSelectorNode } from './FileSelectorNode'
+import { clickNode } from 'redux/slice/Element/ElementAction'
+import { isNodeData } from 'redux/slice/Element/ElementUtils'
 
 let id = 0
 const getId = (): ElementId => `dndnode_${id++}`
@@ -28,11 +26,10 @@ const getId = (): ElementId => `dndnode_${id++}`
 export const FlowChart = React.memo(() => {
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>()
   const flowElements = useSelector(flowElementsSelector)
-  // const algoParams = useSelector(algoParamsSelector)
   const dispatch = useDispatch()
 
   const nodeTypes = {
-    selectorNode: ColorSelectorNode,
+    selectorNode: FileSelectorNode,
   }
 
   const onConnect = (params: Connection | Edge) => {
@@ -48,10 +45,10 @@ export const FlowChart = React.memo(() => {
 
   const onElementClick = (
     event: React.MouseEvent<Element, MouseEvent>,
-    element: Node<any> | Edge<any>,
+    element: Node<NodeDataType> | Edge<any>,
   ) => {
-    if (event.isTrusted) {
-      dispatch(setCurrentElement(element.id))
+    if (event.isTrusted && isNodeData(element) && element.data) {
+      dispatch(clickNode({ id: element.id, type: element.data.type }))
     }
   }
 
@@ -77,18 +74,18 @@ export const FlowChart = React.memo(() => {
         y: event.clientY - 50,
       })
 
-      let type = 'default'
+      let type: NodeType = 'algo'
       if (name.includes('data')) {
         type = 'input'
       } else if (name.includes('output')) {
         type = 'output'
       }
 
-      const newNode: Node<NodeData> = {
+      const newNode: Node<NodeDataType> = {
         id: getId(),
         type: type,
         position,
-        data: { label: name },
+        data: { label: name, type },
       }
 
       dispatch(addFlowElement(newNode))

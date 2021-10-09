@@ -1,8 +1,10 @@
 import { Elements } from 'react-flow-renderer'
+import { NodeDataType } from 'redux/slice/Element/ElementType'
 
+export const INITIAL_IMAGE_ELEMENT_ID = '1'
 export const INITIAL_ALGO_ELEMENT_ID = '2'
 
-export const initialElements: Elements = [
+export const initialElements: Elements<NodeDataType> = [
   // {
   //   id: '1',
   //   type: 'input',
@@ -10,10 +12,10 @@ export const initialElements: Elements = [
   //   position: { x: 200, y: 5 },
   // },
   {
-    id: '1',
+    id: INITIAL_IMAGE_ELEMENT_ID,
     type: 'selectorNode',
     data: {
-      type: 'data',
+      type: 'input',
       label: 'data',
       path: '/Users/shogoakiyama/caiman_data/example_movies/Sue_2x_3000_40_-46.tif',
     },
@@ -42,7 +44,7 @@ export const initialElements: Elements = [
   // edge
   {
     id: 'e1',
-    source: '1',
+    source: INITIAL_IMAGE_ELEMENT_ID,
     target: INITIAL_ALGO_ELEMENT_ID,
     type: 'smoothstep',
   },

@@ -6,7 +6,7 @@ import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
 import { updateParam } from 'redux/slice/Element/Element'
 import {
-  currentElementIdSelector,
+  currentAlgoIdSelector,
   paramValueSelector,
 } from 'redux/slice/Element/ElementSelector'
 
@@ -105,6 +105,6 @@ const ParamItemForBoolean = React.memo<ParamItemProps>(({ paramKey }) => {
 })
 
 function useParamValue(paramKey: string) {
-  const currentElementId = useSelector(currentElementIdSelector)
-  return useSelector(paramValueSelector(currentElementId, paramKey))
+  const currentAlgoId = useSelector(currentAlgoIdSelector)
+  return useSelector(paramValueSelector(currentAlgoId, paramKey))
 }

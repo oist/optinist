@@ -1,18 +1,44 @@
-import { memo, FC, CSSProperties } from 'react'
+import React, { CSSProperties } from 'react'
 import { useDispatch } from 'react-redux'
-import { setElementPath } from 'redux/slice/Element/Element'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
+import { uploadImageFile } from 'redux/slice/ImageIndex/ImageIndexAction'
 
-const FileSelectorNode: FC<NodeProps> = (element) => {
+export const FileSelectorNode = React.memo<NodeProps>((element) => {
   const targetHandleStyle: CSSProperties = { background: '#555' }
   const sourceHandleStyle: CSSProperties = { ...targetHandleStyle }
   const dispatch = useDispatch()
 
   const onFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    event.preventDefault()
     if (event.target.files != null && event.target.files[0] != null) {
-      dispatch(
-        setElementPath({ id: element.id, path: event.target.files[0].name }),
-      )
+      const file = event.target.files[0]
+      const formData = new FormData()
+      formData.append('file', file)
+      const uploadFolderName = `${file.name}(${element.id})`
+      fetch(`http://localhost:8000/upload/${uploadFolderName}`, {
+        method: 'POST',
+        mode: 'cors',
+        credentials: 'include',
+        body: formData,
+      })
+        .then((response) => response.json())
+        .then(
+          (result) => {
+            const elementId = element.id
+            const fileName = file.name
+            dispatch(
+              uploadImageFile({
+                elementId,
+                fileName,
+                folder: result.folderName,
+                maxIndex: result.maxIndex,
+              }),
+            )
+          },
+          (error) => {
+            console.log(error)
+          },
+        )
     }
   }
 
@@ -27,6 +53,4 @@ const FileSelectorNode: FC<NodeProps> = (element) => {
       />
     </>
   )
-}
-
-export default memo(FileSelectorNode)
+})
