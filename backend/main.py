@@ -57,9 +57,10 @@ async def create_file(response: Response, path: str, file: UploadFile = File(...
     folder_name = path
     contents = await file.read()
     file.filename = "tmp.tiff"
+    os.makedirs("_tmp", exist_ok=True)
     with open(os.path.join("_tmp", file.filename), "wb") as f:
         f.write(contents)
-
+        
     os.makedirs(os.path.join("files", folder_name), exist_ok=True)
     tiffs = imageio.volread(os.path.join("_tmp", file.filename))
     counter = 0
@@ -72,6 +73,7 @@ async def create_file(response: Response, path: str, file: UploadFile = File(...
         counter += 1
 
     os.remove(os.path.join("_tmp", file.filename))
+    os.rmdir("_tmp")
 
     response.set_cookie(key="directory", value=folder_name)
 
