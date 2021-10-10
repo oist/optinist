@@ -75,18 +75,21 @@ export const FlowChart = React.memo(() => {
         y: event.clientY - 50,
       })
 
-      let type: NODE_DATA_TYPE = 'algo'
+      let nodeType = 'default'
+      let dataType: NODE_DATA_TYPE = 'algo'
       if (name.includes('data')) {
-        type = NODE_DATA_TYPE_SET.DATA
+        dataType = NODE_DATA_TYPE_SET.DATA
+        nodeType = 'input'
       } else if (name.includes('output')) {
-        type = NODE_DATA_TYPE_SET.OUTPUT
+        dataType = NODE_DATA_TYPE_SET.OUTPUT
+        nodeType = 'output'
       }
 
       const newNode: Node<NodeData> = {
         id: String(maxElementId + 1),
-        type: type,
+        type: nodeType,
         position,
-        data: { label: name, type },
+        data: { label: name, type: dataType },
       }
 
       dispatch(addFlowElement(newNode))
