@@ -51,7 +51,7 @@ export const imageIndexSlice = createSlice({
       })
       .addCase(uploadImageFile.fulfilled, (state, action) => {
         const { elementId, fileName } = action.meta.arg
-        const { folderName: folder, maxIndex } = action.payload
+        const { pngFolder: folder, maxIndex } = action.payload
         state.currentImageId = elementId
         state.index[elementId] = {
           fileName,

@@ -21,13 +21,13 @@ export const initialElements: Elements<NodeData> = [
       path: '/Users/shogoakiyama/caiman_data/example_movies/Sue_2x_3000_40_-46.tif',
     },
     style: { border: '1px solid #777', padding: 10 },
-    position: { x: 200, y: 5 },
+    position: { x: 149, y: 5 },
   },
   {
     id: INITIAL_ALGO_ELEMENT_ID,
     type: 'default',
     data: { type: NODE_DATA_TYPE_SET.ALGO, label: 'caiman_mc' },
-    position: { x: 200, y: 100 },
+    position: { x: 200, y: 150 },
   },
   // {
   //   id: '3',

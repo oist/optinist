@@ -24,3 +24,8 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >
+export type ThunkApiConfig<T = unknown> = {
+  state: RootState
+  dispatch: AppDispatch
+  rejectValue: T
+}

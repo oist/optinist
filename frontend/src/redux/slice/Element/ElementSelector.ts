@@ -31,3 +31,7 @@ export const algoParamByIdSelector = (id: string) => (state: RootState) => {
 export const paramValueSelector =
   (elementId: string, paramName: string) => (state: RootState) =>
     algoParamsSelector(state)[elementId].param[paramName]
+
+export const runStatusSelector = (state: RootState) => state.element.runStatus
+
+export const runMassageSelector = (state: RootState) => state.element.runMessage

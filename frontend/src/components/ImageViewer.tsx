@@ -98,7 +98,7 @@ const Viewer = React.memo(() => {
             height: '100%',
             maxWidth: '100%',
           }}
-          src={`http://localhost:8000/files/${folder}/${pageIndex}.png`}
+          src={`http://localhost:8000/${folder}/${pageIndex}.png`}
         />
       </div>
     </div>
