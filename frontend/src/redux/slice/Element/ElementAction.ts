@@ -5,6 +5,7 @@ import { NODE_DATA_TYPE } from 'const/NodeData'
 import { ThunkApiConfig } from 'redux/store'
 import { flowElementsSelector } from './ElementSelector'
 import { isInputNodeData, isAlgoNodeData } from 'utils/ElementUtils'
+import { OutputData } from '../Output/OutputType'
 
 export const clickNode = createAction<{ id: string; type: NODE_DATA_TYPE }>(
   `${ELEMENT_SLICE_NAME}/clickNode`,
@@ -24,7 +25,7 @@ export const getAlgoParams = createAsyncThunk<
 })
 
 export const runPipeline = createAsyncThunk<
-  { message: string },
+  { message: string; data: OutputData[] },
   void,
   ThunkApiConfig
 >(`${ELEMENT_SLICE_NAME}/runPipeline`, async (_, thunkAPI) => {

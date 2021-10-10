@@ -47,6 +47,7 @@ const flexjson: IJsonModel = {
                     component: 'image',
                   },
                   {
+                    id: 'output0',
                     type: 'tab',
                     name: 'output',
                     component: 'output',

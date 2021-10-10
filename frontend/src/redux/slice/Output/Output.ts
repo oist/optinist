@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { INITIAL_OUTPUT_ELEMENT_ID } from 'const/flowchart'
-import { clickNode } from '../Element/ElementAction'
+import { clickNode, runPipeline } from '../Element/ElementAction'
 import { getOutputData } from './OutputAction'
 import { OUTPUT_SLICE_NAME, Output } from './OutputType'
 
@@ -21,6 +21,11 @@ export const outputSlice = createSlice({
       .addCase(clickNode, (state, action) => {
         if (action.payload.type === 'output') {
           state.currentOutputId = action.payload.id
+        }
+      })
+      .addCase(runPipeline.fulfilled, (state, action) => {
+        if (action.payload.message === 'success') {
+          state.outputData[state.currentOutputId] = action.payload.data
         }
       })
   },

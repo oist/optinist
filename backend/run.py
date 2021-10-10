@@ -27,8 +27,9 @@ def run_code(wrapper_dict, flowList):
     # from wrappers.caiman_wrapper import caiman_mc, caiman_cnmf, plot_contours_nb
     # info['caiman_mc'] = caiman_mc(file_path)
     # info['caiman_cnmf'] = caiman_cnmf(info['caiman_mc']['images'])
-
-    return {'message': 'success'}
+    import random
+    dummy_data = [{ "x": i, "y": random.uniform(100,0) } for i in range(0,20)]
+    return {'message': 'success', "data": dummy_data }
 
 if __name__ == '__main__':
     run_code()
