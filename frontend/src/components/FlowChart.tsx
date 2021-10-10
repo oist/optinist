@@ -17,11 +17,11 @@ import {
   flowElementsSelector,
   maxElementIdSelector,
 } from 'redux/slice/Element/ElementSelector'
-import { NodeDataType, NodeType } from 'redux/slice/Element/ElementType'
+import { NodeData, NODE_DATA_TYPE, NODE_DATA_TYPE_SET } from 'const/NodeData'
 import 'style/flow.css'
 import { FileSelectorNode } from './FileSelectorNode'
 import { clickNode } from 'redux/slice/Element/ElementAction'
-import { isNodeData } from 'redux/slice/Element/ElementUtils'
+import { isNodeData } from 'utils/ElementUtils'
 
 export const FlowChart = React.memo(() => {
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>()
@@ -45,7 +45,7 @@ export const FlowChart = React.memo(() => {
 
   const onElementClick = (
     event: React.MouseEvent<Element, MouseEvent>,
-    element: Node<NodeDataType> | Edge<any>,
+    element: Node<NodeData> | Edge<any>,
   ) => {
     if (event.isTrusted && isNodeData(element) && element.data) {
       dispatch(clickNode({ id: element.id, type: element.data.type }))
@@ -75,14 +75,14 @@ export const FlowChart = React.memo(() => {
         y: event.clientY - 50,
       })
 
-      let type: NodeType = 'algo'
+      let type: NODE_DATA_TYPE = 'algo'
       if (name.includes('data')) {
-        type = 'input'
+        type = NODE_DATA_TYPE_SET.DATA
       } else if (name.includes('output')) {
-        type = 'output'
+        type = NODE_DATA_TYPE_SET.OUTPUT
       }
 
-      const newNode: Node<NodeDataType> = {
+      const newNode: Node<NodeData> = {
         id: String(maxElementId + 1),
         type: type,
         position,

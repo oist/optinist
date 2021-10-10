@@ -2,9 +2,10 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Elements, Node } from 'react-flow-renderer'
 import { initialElements, INITIAL_ALGO_ELEMENT_ID } from 'const/flowchart'
 import { clickNode, getAlgoParams } from './ElementAction'
-import { Element, ELEMENT_SLICE_NAME, NodeDataType } from './ElementType'
+import { Element, ELEMENT_SLICE_NAME } from './ElementType'
+import { NodeData } from 'const/NodeData'
 import { uploadImageFile } from '../ImageIndex/ImageIndexAction'
-import { isNodeData } from './ElementUtils'
+import { isNodeData } from '../../../utils/ElementUtils'
 
 const initialState: Element = {
   flowElements: initialElements,
@@ -20,7 +21,7 @@ export const elementSlice = createSlice({
     setFlowElements: (state, action: PayloadAction<Elements>) => {
       state.flowElements = action.payload
     },
-    addFlowElement: (state, action: PayloadAction<Node<NodeDataType>>) => {
+    addFlowElement: (state, action: PayloadAction<Node<NodeData>>) => {
       state.flowElements.push(action.payload)
     },
     updateParam: (
@@ -53,7 +54,7 @@ export const elementSlice = createSlice({
         if (isNodeData(node) && node.data) {
           node.data = {
             ...node.data,
-            type: 'input',
+            type: 'data',
             path: path,
           }
         }

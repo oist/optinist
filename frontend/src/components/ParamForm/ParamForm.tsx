@@ -8,7 +8,7 @@ import {
 import { getAlgoParams } from 'redux/slice/Element/ElementAction'
 import { ParamItemContainer } from './ParamItem'
 import Typography from '@material-ui/core/Typography'
-import { isAlgoNodeData } from 'redux/slice/Element/ElementUtils'
+import { isAlgoNodeData } from 'utils/ElementUtils'
 
 export const ParamForm = React.memo(() => {
   const currentAlgoId = useSelector(currentAlgoIdSelector)

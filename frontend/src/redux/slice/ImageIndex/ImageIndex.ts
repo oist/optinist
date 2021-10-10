@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+import { NODE_DATA_TYPE_SET } from 'const/NodeData'
+import { INITIAL_IMAGE_ELEMENT_ID } from 'const/flowchart'
 import { uploadImageFile } from './ImageIndexAction'
 import { ImageIndex, IMAGE_INDEX_SLICE_NAME } from './ImageIndexType'
-import { INITIAL_IMAGE_ELEMENT_ID } from 'const/flowchart'
 import { clickNode } from '../Element/ElementAction'
 
 const initialState: ImageIndex = {
@@ -61,7 +62,7 @@ export const imageIndexSlice = createSlice({
         }
       })
       .addCase(clickNode, (state, action) => {
-        if (action.payload.type === 'input') {
+        if (action.payload.type === NODE_DATA_TYPE_SET.DATA) {
           state.currentImageId = action.payload.id
         }
       })

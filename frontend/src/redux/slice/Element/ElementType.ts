@@ -1,4 +1,5 @@
 import { Elements } from 'react-flow-renderer'
+import { NodeData } from 'const/NodeData'
 
 export const ELEMENT_SLICE_NAME = 'element'
 
@@ -14,30 +15,8 @@ export type Algorithm = {
 }
 
 export interface Element {
-  flowElements: Elements<NodeDataType>
+  flowElements: Elements<NodeData>
   clickedNodeId: string | null
   currentAlgoId: string
   algoParams: Algorithm
-}
-
-interface NodeData {
-  label: string
-  type: NodeType
-}
-
-export type NodeDataType = InputNodeData | OutPutNodeData | AlgoNodeData
-
-export type NodeType = 'input' | 'output' | 'algo'
-
-export interface InputNodeData extends NodeData {
-  path?: string
-  type: 'input'
-}
-
-export interface OutPutNodeData extends NodeData {
-  type: 'output'
-}
-
-export interface AlgoNodeData extends NodeData {
-  type: 'algo'
 }

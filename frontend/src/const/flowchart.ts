@@ -1,11 +1,11 @@
 import { Elements } from 'react-flow-renderer'
-import { NodeDataType } from 'redux/slice/Element/ElementType'
+import { NodeData, NODE_DATA_TYPE_SET } from 'const/NodeData'
 
 export const INITIAL_IMAGE_ELEMENT_ID = '0'
 export const INITIAL_ALGO_ELEMENT_ID = '1'
 export const INITIAL_OUTPUT_ELEMENT_ID = '2'
 
-export const initialElements: Elements<NodeDataType> = [
+export const initialElements: Elements<NodeData> = [
   // {
   //   id: '1',
   //   type: 'input',
@@ -16,7 +16,7 @@ export const initialElements: Elements<NodeDataType> = [
     id: INITIAL_IMAGE_ELEMENT_ID,
     type: 'selectorNode',
     data: {
-      type: 'input',
+      type: NODE_DATA_TYPE_SET.DATA,
       label: 'data',
       path: '/Users/shogoakiyama/caiman_data/example_movies/Sue_2x_3000_40_-46.tif',
     },
@@ -26,7 +26,7 @@ export const initialElements: Elements<NodeDataType> = [
   {
     id: INITIAL_ALGO_ELEMENT_ID,
     type: 'default',
-    data: { type: 'algo', label: 'caiman_mc' },
+    data: { type: NODE_DATA_TYPE_SET.ALGO, label: 'caiman_mc' },
     position: { x: 200, y: 100 },
   },
   // {
@@ -38,7 +38,7 @@ export const initialElements: Elements<NodeDataType> = [
   {
     id: INITIAL_OUTPUT_ELEMENT_ID,
     type: 'output',
-    data: { type: 'output', label: 'output' },
+    data: { type: NODE_DATA_TYPE_SET.OUTPUT, label: 'output' },
     position: { x: 200, y: 300 },
   },
 

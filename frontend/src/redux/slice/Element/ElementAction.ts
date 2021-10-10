@@ -1,8 +1,9 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { ELEMENT_SLICE_NAME, NodeType, Param } from './ElementType'
+import { ELEMENT_SLICE_NAME, Param } from './ElementType'
+import { NODE_DATA_TYPE } from 'const/NodeData'
 
-export const clickNode = createAction<{ id: string; type: NodeType }>(
+export const clickNode = createAction<{ id: string; type: NODE_DATA_TYPE }>(
   `${ELEMENT_SLICE_NAME}/clickNode`,
 )
 
