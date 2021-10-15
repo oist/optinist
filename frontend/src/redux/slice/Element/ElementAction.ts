@@ -1,28 +1,15 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
-import { ELEMENT_SLICE_NAME, Param } from './ElementType'
+import { ELEMENT_SLICE_NAME } from './ElementType'
 import { NODE_DATA_TYPE } from 'const/NodeData'
 import { ThunkApiConfig } from 'redux/store'
 import { flowElementsSelector } from './ElementSelector'
 import { isInputNodeData, isAlgoNodeData } from 'utils/ElementUtils'
-import { OutputData } from '../Output/OutputType'
+import { OutputData } from '../Algorithm/AlgorithmType'
 
 export const clickNode = createAction<{ id: string; type: NODE_DATA_TYPE }>(
   `${ELEMENT_SLICE_NAME}/clickNode`,
 )
-
-export const getAlgoParams = createAsyncThunk<
-  Param,
-  { id: string; algoName: string }
->(`${ELEMENT_SLICE_NAME}/getAlgoParams`, async ({ algoName }, thunkAPI) => {
-  const { rejectWithValue } = thunkAPI
-  try {
-    const response = await axios.get(`http://localhost:8000/params/${algoName}`)
-    return response.data
-  } catch (e) {
-    return rejectWithValue(e)
-  }
-})
 
 export const runPipeline = createAsyncThunk<
   { message: string; data: OutputData[] },

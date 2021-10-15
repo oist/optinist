@@ -1,22 +1,15 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { Elements, Node } from 'react-flow-renderer'
-import { initialElements, INITIAL_ALGO_ELEMENT_ID } from 'const/flowchart'
+import { initialElements } from 'const/flowchart'
 import { NodeData, NODE_DATA_TYPE_SET } from 'const/NodeData'
 import { isNodeData } from 'utils/ElementUtils'
-import {
-  clickNode,
-  runPipeline,
-  stopPipeline,
-  getAlgoParams,
-} from './ElementAction'
+import { clickNode, runPipeline, stopPipeline } from './ElementAction'
 import { Element, ELEMENT_SLICE_NAME, RUN_STATUS } from './ElementType'
 import { uploadImageFile } from '../ImageIndex/ImageIndexAction'
 
 const initialState: Element = {
   flowElements: initialElements,
   clickedNodeId: null,
-  currentAlgoId: INITIAL_ALGO_ELEMENT_ID,
-  algoParams: {},
   runStatus: RUN_STATUS.STOPPED,
 }
 
@@ -30,28 +23,11 @@ export const elementSlice = createSlice({
     addFlowElement: (state, action: PayloadAction<Node<NodeData>>) => {
       state.flowElements.push(action.payload)
     },
-    updateParam: (
-      state,
-      action: PayloadAction<{ paramKey: string; newValue: unknown }>,
-    ) => {
-      const { paramKey, newValue } = action.payload
-      state.algoParams[state.currentAlgoId].param[paramKey] = newValue
-    },
   },
   extraReducers: (builder) => {
     builder
       .addCase(clickNode, (state, action) => {
         state.clickedNodeId = action.payload.id
-        if (action.payload.type === NODE_DATA_TYPE_SET.ALGO) {
-          state.currentAlgoId = action.payload.id
-        }
-      })
-      .addCase(getAlgoParams.fulfilled, (state, action) => {
-        const { id, algoName } = action.meta.arg
-        state.algoParams[id] = {
-          name: algoName,
-          param: action.payload,
-        }
       })
       .addCase(uploadImageFile.fulfilled, (state, action) => {
         const { elementId } = action.meta.arg
@@ -87,7 +63,6 @@ export const elementSlice = createSlice({
   },
 })
 
-export const { setFlowElements, updateParam, addFlowElement } =
-  elementSlice.actions
+export const { setFlowElements, addFlowElement } = elementSlice.actions
 
 export default elementSlice.reducer

@@ -6,7 +6,6 @@ import ReactFlow, {
   addEdge,
   Controls,
   OnLoadParams,
-  ElementId,
   Elements,
   Connection,
   Edge,

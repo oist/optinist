@@ -5,14 +5,14 @@ import {
   combineReducers,
 } from '@reduxjs/toolkit'
 import elementReducer from './slice/Element/Element'
+import algorithmReducer from './slice/Algorithm/Algorithm'
 import imageIndexReducer from './slice/ImageIndex/ImageIndex'
-import outputReducer from './slice/Output/Output'
 
 export const store = configureStore({
   reducer: combineReducers({
     element: elementReducer,
+    algorithm: algorithmReducer,
     imageIndex: imageIndexReducer,
-    output: outputReducer,
   }),
 })
 

@@ -42,6 +42,7 @@ const flexjson: IJsonModel = {
                 enableDeleteWhenEmpty: false,
                 children: [
                   {
+                    id: 'image0',
                     type: 'tab',
                     name: 'image',
                     component: 'image',

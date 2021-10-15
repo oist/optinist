@@ -1,11 +1,11 @@
 import React from 'react'
 import { Bar } from 'react-chartjs-2'
 import { useSelector, useDispatch } from 'react-redux'
-import { getOutputData } from 'redux/slice/Output/OutputAction'
+import { getAlgoOutputData } from 'redux/slice/Algorithm/AlgorithmAction'
 import {
   currentOutputDataSelector,
-  currentOutputIdSelector,
-} from 'redux/slice/Output/OutputSelector'
+  currentAlgoIdSelector,
+} from 'redux/slice/Algorithm/AlgorithmSelector'
 import { RootState } from 'redux/store'
 
 export const PlotOutput = React.memo(function PlotOutput() {
@@ -13,12 +13,12 @@ export const PlotOutput = React.memo(function PlotOutput() {
   const currentOutputDataIsLoaded = useSelector(
     (state: RootState) => currentOutputDataSelector(state) != null,
   )
-  const currentOutputId = useSelector(currentOutputIdSelector)
+  const currentAlgoId = useSelector(currentAlgoIdSelector)
   React.useEffect(() => {
     if (!currentOutputDataIsLoaded) {
-      dispatch(getOutputData({ id: currentOutputId }))
+      dispatch(getAlgoOutputData({ id: currentAlgoId }))
     }
-  }, [currentOutputId, currentOutputDataIsLoaded, dispatch])
+  }, [currentAlgoId, currentOutputDataIsLoaded, dispatch])
   if (currentOutputDataIsLoaded) {
     return <Chart />
   } else {
@@ -27,17 +27,17 @@ export const PlotOutput = React.memo(function PlotOutput() {
 })
 
 const Chart = React.memo(() => {
-  const currentOutputId = useSelector(currentOutputIdSelector)
+  const currentAlgoId = useSelector(currentAlgoIdSelector)
   const currentOutputData = useSelector(currentOutputDataSelector)
   if (currentOutputData == null) {
     return null
   }
   const data = {
-    labels: currentOutputData.map((data) => data.x),
+    labels: currentOutputData.data.map((data) => data.x),
     datasets: [
       {
-        label: 'Dataset(' + currentOutputId + ')',
-        data: currentOutputData?.map((data) => data.y),
+        label: 'Dataset(' + currentAlgoId + ')',
+        data: currentOutputData.data?.map((data) => data.y),
         backgroundColor: 'rgb(255, 99, 132, 0.5)',
         borderColor: 'rgb(255, 99, 132)',
         borderWidth: 1,
