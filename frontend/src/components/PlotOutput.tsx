@@ -29,17 +29,17 @@ export const PlotOutput = React.memo(function () {
     ],
   }
 
-  const options = {
-    scales: {
-      yAxes: [
-        {
-          ticks: {
-            beginAtZero: true,
-          },
-        },
-      ],
-    },
-  }
+  // const options = {
+  //   scales: {
+  //     yAxes: [
+  //       {
+  //         ticks: {
+  //           beginAtZero: true,
+  //         },
+  //       },
+  //     ],
+  //   },
+  // }
 
-  return <Bar data={data} width={100} height={40} options={options} />
+  return <Bar data={data} width={100} height={40} />
 })
