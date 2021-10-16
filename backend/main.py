@@ -2,7 +2,7 @@ import os
 
 import imageio
 from PIL import Image
-from fastapi import Depends, FastAPI, File, Response, UploadFile
+from fastapi import Depends, FastAPI, File, Response, UploadFile, Form
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 from starlette.middleware.cors import CORSMiddleware
@@ -51,33 +51,34 @@ def create_cookie(response: Response):
 
 app.mount("/files", StaticFiles(directory="files"), name="files")
 
-@app.post("/upload/{path}")
-async def create_file(response: Response, path: str, file: UploadFile = File(...)):
+@app.post("/upload/{fileName}")
+async def create_file(response: Response, fileName: str, element_id: str = Form(...), file: UploadFile = File(...)):
     max_index = 30
-    folder_name = path
+    root_folder = os.path.join("files", fileName+"("+element_id+")")
+    png_folder = os.path.join(root_folder, "pngs")
+    tiff_folder = os.path.join(root_folder, "tiff")
+    os.makedirs(root_folder, exist_ok=True)
+    os.makedirs(png_folder, exist_ok=True)
+    os.makedirs(tiff_folder, exist_ok=True)
     contents = await file.read()
-    file.filename = "tmp.tiff"
-    os.makedirs("_tmp", exist_ok=True)
-    with open(os.path.join("_tmp", file.filename), "wb") as f:
+    file.filename = fileName
+    tiff_path = os.path.join(tiff_folder, file.filename)
+    with open(tiff_path, "wb") as f:
         f.write(contents)
-        
-    os.makedirs(os.path.join("files", folder_name), exist_ok=True)
-    tiffs = imageio.volread(os.path.join("_tmp", file.filename))
+
+    tiffs = imageio.volread(tiff_path)
     counter = 0
     for i, tiff_data in enumerate(tiffs):
         if counter == max_index:
             break
         img = Image.fromarray(tiff_data)
         img = img.convert("L")
-        img.save(os.path.join("files", folder_name, f"{i}.png"))
+        img.save(os.path.join(png_folder, f"{i}.png"))
         counter += 1
 
-    os.remove(os.path.join("_tmp", file.filename))
-    os.rmdir("_tmp")
+    response.set_cookie(key="directory", value=png_folder)
 
-    response.set_cookie(key="directory", value=folder_name)
-
-    return {"folderName": folder_name, "maxIndex": max_index}
+    return {"pngFolder": png_folder, "tiffPath": tiff_path, "maxIndex": max_index}
 
 
 @app.post("/run")
@@ -87,6 +88,12 @@ async def run(flowList: List[FlowItem]):
     import run
     return run.run_code(wrapper_dict, flowList)
 
+@app.get("/output")
+def read_output():
+    # サンプル用のダミーデータ
+    import random
+    dummy_data = [{ "x": i, "y": random.uniform(100,0) } for i in range(0,20)]
+    return { "data": dummy_data }
 
 if __name__ == '__main__':
 	uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=True)

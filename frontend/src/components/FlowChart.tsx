@@ -6,22 +6,21 @@ import ReactFlow, {
   addEdge,
   Controls,
   OnLoadParams,
-  ElementId,
   Elements,
   Connection,
   Edge,
   Node,
 } from 'react-flow-renderer'
 import { setFlowElements, addFlowElement } from 'redux/slice/Element/Element'
-import { flowElementsSelector } from 'redux/slice/Element/ElementSelector'
-import { NodeDataType, NodeType } from 'redux/slice/Element/ElementType'
+import {
+  flowElementsSelector,
+  maxElementIdSelector,
+} from 'redux/slice/Element/ElementSelector'
+import { NodeData, NODE_DATA_TYPE, NODE_DATA_TYPE_SET } from 'const/NodeData'
 import 'style/flow.css'
 import { FileSelectorNode } from './FileSelectorNode'
 import { clickNode } from 'redux/slice/Element/ElementAction'
-import { isNodeData } from 'redux/slice/Element/ElementUtils'
-
-let id = 0
-const getId = (): ElementId => `dndnode_${id++}`
+import { isNodeData } from 'utils/ElementUtils'
 
 export const FlowChart = React.memo(() => {
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>()
@@ -45,7 +44,7 @@ export const FlowChart = React.memo(() => {
 
   const onElementClick = (
     event: React.MouseEvent<Element, MouseEvent>,
-    element: Node<NodeDataType> | Edge<any>,
+    element: Node<NodeData> | Edge<any>,
   ) => {
     if (event.isTrusted && isNodeData(element) && element.data) {
       dispatch(clickNode({ id: element.id, type: element.data.type }))
@@ -64,6 +63,7 @@ export const FlowChart = React.memo(() => {
     event.dataTransfer.dropEffect = 'move'
   }
 
+  const maxElementId = useSelector(maxElementIdSelector)
   const onDrop = (event: DragEvent) => {
     event.preventDefault()
 
@@ -74,18 +74,21 @@ export const FlowChart = React.memo(() => {
         y: event.clientY - 50,
       })
 
-      let type: NodeType = 'algo'
+      let nodeType = 'default'
+      let dataType: NODE_DATA_TYPE = 'algo'
       if (name.includes('data')) {
-        type = 'input'
+        dataType = NODE_DATA_TYPE_SET.DATA
+        nodeType = 'input'
       } else if (name.includes('output')) {
-        type = 'output'
+        dataType = NODE_DATA_TYPE_SET.OUTPUT
+        nodeType = 'output'
       }
 
-      const newNode: Node<NodeDataType> = {
-        id: getId(),
-        type: type,
+      const newNode: Node<NodeData> = {
+        id: String(maxElementId + 1),
+        type: nodeType,
         position,
-        data: { label: name, type },
+        data: { label: name, type: dataType },
       }
 
       dispatch(addFlowElement(newNode))

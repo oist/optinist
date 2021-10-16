@@ -34,3 +34,6 @@ export const currentImageFileNameSelector = (state: RootState) =>
 
 export const currentImagePageIndexSelector = (state: RootState) =>
   currentImageIndexSelector(state)?.pageIndex
+
+export const currentImageIsFulfilledSelector = (state: RootState) =>
+  currentImageIndexSelector(state)?.isFulfilled

@@ -12,4 +12,5 @@ export type ImageIndexType = {
   folder: string
   maxIndex: number
   pageIndex: number
+  isFulfilled: boolean
 }

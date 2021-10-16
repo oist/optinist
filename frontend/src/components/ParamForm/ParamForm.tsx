@@ -1,18 +1,21 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  currentAlgoIdSelector,
-  elementByIdSelector,
-  algoParamByIdSelector,
-} from 'redux/slice/Element/ElementSelector'
-import { getAlgoParams } from 'redux/slice/Element/ElementAction'
+import { nodeByIdSelector } from 'redux/slice/Element/ElementSelector'
+
+import { getAlgoParams } from 'redux/slice/Algorithm/AlgorithmAction'
 import { ParamItemContainer } from './ParamItem'
 import Typography from '@material-ui/core/Typography'
-import { isAlgoNodeData } from 'redux/slice/Element/ElementUtils'
+import { isAlgoNodeData } from 'utils/ElementUtils'
+import {
+  algoParamByIdSelector,
+  currentAlgoIdSelector,
+  currentAlgoNameSelector,
+} from 'redux/slice/Algorithm/AlgorithmSelector'
 
 export const ParamForm = React.memo(() => {
   const currentAlgoId = useSelector(currentAlgoIdSelector)
-  const currentNode = useSelector(elementByIdSelector(currentAlgoId))
+  const currentAlgoName = useSelector(currentAlgoNameSelector)
+  const currentNode = useSelector(nodeByIdSelector(currentAlgoId))
   const algoParam = useSelector(algoParamByIdSelector(currentAlgoId))
   const dispatch = useDispatch()
 
@@ -21,7 +24,7 @@ export const ParamForm = React.memo(() => {
       const algoName = currentNode.data.label
       dispatch(getAlgoParams({ id: currentAlgoId, algoName }))
     }
-  }, [currentAlgoId])
+  }, [dispatch, currentAlgoId, algoParam, currentNode])
 
   if (algoParam === undefined) {
     return null
@@ -30,10 +33,10 @@ export const ParamForm = React.memo(() => {
   return (
     <div style={{ padding: 8 }}>
       <Typography variant="h5">
-        {algoParam.name}({currentAlgoId})
+        {currentAlgoName}({currentAlgoId})
       </Typography>
       <div style={{ paddingLeft: 8 }}>
-        {Object.keys(algoParam.param).map((paramName) => (
+        {Object.keys(algoParam).map((paramName) => (
           <ParamItemContainer key={paramName} paramKey={paramName} />
         ))}
       </div>
