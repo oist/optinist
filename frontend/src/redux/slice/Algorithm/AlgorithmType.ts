@@ -1,3 +1,5 @@
+import { AlgoParam } from 'const/NodeData'
+
 export const ALGORITHM_SLICE_NAME = 'algorithm'
 
 export type Algorithm = {
@@ -9,10 +11,6 @@ export type Algorithm = {
       output?: AlgoOutput
     }
   }
-}
-
-export type AlgoParam = {
-  [name: string]: unknown
 }
 
 export type AlgoOutput = {

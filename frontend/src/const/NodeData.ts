@@ -25,4 +25,9 @@ export interface OutPutNodeData extends BaseNodeData {
 
 export interface AlgoNodeData extends BaseNodeData {
   type: 'algo'
+  param?: AlgoParam
+}
+
+export type AlgoParam = {
+  [name: string]: unknown
 }

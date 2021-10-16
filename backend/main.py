@@ -6,7 +6,7 @@ from fastapi import Depends, FastAPI, File, Response, UploadFile, Form
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 from starlette.middleware.cors import CORSMiddleware
-from typing import List, Optional
+from typing import Dict, List, Optional
 from pydantic import BaseModel
 import sys
 import yaml
@@ -27,6 +27,7 @@ class FlowItem(BaseModel):
     label: str
     path: Optional[str] = None
     type: str
+    param: Optional[Dict] = None
 
 @app.get("/")
 async def root():
