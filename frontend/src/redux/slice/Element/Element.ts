@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Elements, Node } from 'react-flow-renderer'
-import { initialElements } from 'const/flowchart'
+import { Elements, Node, Position } from 'react-flow-renderer'
+import { initialElements, INITIAL_ALGO_STYLE } from 'const/flowchart'
 import { NodeData, NODE_DATA_TYPE_SET } from 'const/NodeData'
-import { isNodeData } from 'utils/ElementUtils'
+import { isAlgoNodeData, isNodeData } from 'utils/ElementUtils'
 import { clickNode, runPipeline, stopPipeline } from './ElementAction'
 import { Element, ELEMENT_SLICE_NAME, RUN_STATUS } from './ElementType'
 import { uploadImageFile } from '../ImageIndex/ImageIndexAction'
@@ -21,7 +21,19 @@ export const elementSlice = createSlice({
       state.flowElements = action.payload
     },
     addFlowElement: (state, action: PayloadAction<Node<NodeData>>) => {
-      state.flowElements.push(action.payload)
+      let node = action.payload
+      if (isAlgoNodeData(node)) {
+        node = {
+          ...node,
+          style: {
+            ...node.style,
+            ...INITIAL_ALGO_STYLE,
+          },
+          targetPosition: Position.Left,
+          sourcePosition: Position.Right,
+        }
+      }
+      state.flowElements.push(node)
     },
   },
   extraReducers: (builder) => {

@@ -19,6 +19,7 @@ import {
 import { NodeData, NODE_DATA_TYPE, NODE_DATA_TYPE_SET } from 'const/NodeData'
 import 'style/flow.css'
 import { FileSelectorNode } from './FileSelectorNode'
+import { AlgorithmNode } from './AlgorithmNode'
 import { clickNode } from 'redux/slice/Element/ElementAction'
 import { isNodeData } from 'utils/ElementUtils'
 
@@ -29,13 +30,19 @@ export const FlowChart = React.memo(() => {
 
   const nodeTypes = {
     selectorNode: FileSelectorNode,
+    default: AlgorithmNode,
   }
 
   const onConnect = (params: Connection | Edge) => {
     dispatch(
       setFlowElements(
         addEdge(
-          { ...params, type: 'smoothstep', animated: false },
+          {
+            ...params,
+            type: 'smoothstep',
+            animated: false,
+            style: { width: 5 },
+          },
           flowElements,
         ),
       ),
