@@ -1,10 +1,17 @@
-import { Elements } from 'react-flow-renderer'
+import { Elements, Position } from 'react-flow-renderer'
 import { NodeData, NODE_DATA_TYPE_SET } from 'const/NodeData'
 
 export const INITIAL_IMAGE_ELEMENT_ID = '0'
 export const INITIAL_ALGO_ELEMENT_ID = '1'
 export const INITIAL_EDGE_ID = '2'
 export const INITIAL_OUTPUT_ELEMENT_ID = '3'
+
+export const INITIAL_ALGO_STYLE: React.CSSProperties = {
+  width: 180,
+  height: 100,
+  padding: 0,
+  borderRadius: 0,
+} as const
 
 export const initialElements: Elements<NodeData> = [
   // {
@@ -21,14 +28,20 @@ export const initialElements: Elements<NodeData> = [
       label: 'data',
       path: '/Users/shogoakiyama/caiman_data/example_movies/Sue_2x_3000_40_-46.tif',
     },
-    style: { border: '1px solid #777', padding: 10 },
-    position: { x: 149, y: 50 },
+    style: {
+      border: '1px solid #777',
+      height: 100,
+    },
+    position: { x: 50, y: 60 },
   },
   {
     id: INITIAL_ALGO_ELEMENT_ID,
     type: 'default',
     data: { type: NODE_DATA_TYPE_SET.ALGO, label: 'caiman_mc' },
-    position: { x: 200, y: 200 },
+    style: INITIAL_ALGO_STYLE,
+    position: { x: 400, y: 60 },
+    targetPosition: Position.Left,
+    sourcePosition: Position.Right,
   },
   // {
   //   id: '3',
