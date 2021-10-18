@@ -25,13 +25,14 @@ def run_code(wrapper_dict, flowList):
         prev_label = item.label
 
     # save data to each direcotry
-    result_path = []
+    from collections import OrderedDict
+    results = OrderedDict()
     for item in flowList:
+        results[item.label] = {}
         output = info[item.label]
 
         if 'images' in output.keys():
             save_dir = os.path.join('./files', item.label, 'images')
-            result_path.append(save_dir)
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir, exist_ok=True)
 
@@ -42,9 +43,9 @@ def run_code(wrapper_dict, flowList):
                 img = Image.fromarray(np.uint8(output['images'][i]))
                 img.save(os.path.join(save_dir, f'{str(i)}.png'))
 
-    import random
-    dummy_data = [{ "x": i, "y": random.uniform(100,0) } for i in range(0,20)]
-    return {'message': 'success', "data": dummy_data, 'path': result_path}
+            results[item.label]['image_dir'] = save_dir
+
+    return {'message': 'success', 'data': results}
 
 
 if __name__ == '__main__':

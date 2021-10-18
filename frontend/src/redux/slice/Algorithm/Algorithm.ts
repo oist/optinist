@@ -41,6 +41,7 @@ export const algorithmSlice = createSlice({
         }
       })
       .addCase(getAlgoOutputData.fulfilled, (state, action) => {
+        console.log(action.payload)
         state.algoMap[action.meta.arg.id].output = { data: action.payload }
       })
       .addCase(runPipeline.fulfilled, (state, action) => {
