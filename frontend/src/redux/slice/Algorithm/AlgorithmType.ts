@@ -7,7 +7,7 @@ export type Algorithm = {
   algoMap: {
     [id: string]: {
       name: string
-      param: AlgoParam
+      param?: AlgoParam
       output?: OutputPaths
     }
   }

@@ -2,6 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import { INITIAL_ALGO_ELEMENT_ID } from 'const/flowchart'
 import { NODE_DATA_TYPE_SET } from 'const/NodeData'
+import { isAlgoNodeData } from 'utils/ElementUtils'
+import { addFlowElement } from '../Element/Element'
 import { clickNode, runPipeline } from '../Element/ElementAction'
 import { getAlgoOutputData, getAlgoParams } from './AlgorithmAction'
 
@@ -21,7 +23,10 @@ export const algorithmSlice = createSlice({
       action: PayloadAction<{ paramKey: string; newValue: unknown }>,
     ) => {
       const { paramKey, newValue } = action.payload
-      state.algoMap[state.currentAlgoId].param[paramKey] = newValue
+      const param = state.algoMap[state.currentAlgoId].param
+      if (param !== undefined) {
+        param[paramKey] = newValue
+      }
     },
   },
   extraReducers: (builder) => {
@@ -29,6 +34,14 @@ export const algorithmSlice = createSlice({
       .addCase(clickNode, (state, action) => {
         if (action.payload.type === NODE_DATA_TYPE_SET.ALGO) {
           state.currentAlgoId = action.payload.id
+        }
+      })
+      .addCase(addFlowElement, (state, action) => {
+        if (isAlgoNodeData(action.payload)) {
+          state.algoMap[action.payload.id] = {
+            name: action.payload.data?.label ?? '',
+            // param: {},
+          }
         }
       })
       .addCase(getAlgoParams.fulfilled, (state, action) => {
@@ -46,10 +59,16 @@ export const algorithmSlice = createSlice({
       // })
       .addCase(runPipeline.fulfilled, (state, action) => {
         if (action.payload.message === 'success') {
-          console.log(action.payload.outputPaths)
-          // state.algoMap[state.currentAlgoId].output = {
-          //   imageDir: action.payload.outputPaths,
-          // }
+          Object.entries(action.payload.outputPaths).forEach(([name, dir]) => {
+            Object.entries(state.algoMap).forEach(([id, algo]) => {
+              // todo とりあえず名前一致だが、後でサーバーサイドとフロントで両方idにする
+              if (algo.name === name && state.algoMap[id]) {
+                state.algoMap[id].output = {
+                  imageDir: dir.image_dir,
+                }
+              }
+            })
+          })
         }
       })
   },

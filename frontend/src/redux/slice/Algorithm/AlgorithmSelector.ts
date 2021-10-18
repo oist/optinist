@@ -24,8 +24,14 @@ export const algoParamByIdSelector = (id: string) => (state: RootState) => {
 }
 
 export const paramValueSelector =
-  (id: string, paramName: string) => (state: RootState) =>
-    algorithmSelector(state).algoMap[id].param[paramName]
+  (id: string, paramName: string) => (state: RootState) => {
+    const param = algorithmSelector(state).algoMap[id].param
+    if (param != null) {
+      return param[paramName]
+    } else {
+      return null
+    }
+  }
 
 // export const currentOutputDataSelector = (state: RootState) => {
 //   const id = currentAlgoIdSelector(state)
