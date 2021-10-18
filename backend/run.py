@@ -35,7 +35,7 @@ def run_code(wrapper_dict, flowList):
         print(output.keys())
 
         if 'images' in output.keys():
-            save_dir = os.path.join('./files', item.label, 'images')
+            save_dir = os.path.join('files', item.label, 'images')
             if not os.path.exists(save_dir):
                 os.makedirs(save_dir, exist_ok=True)
 
@@ -45,11 +45,13 @@ def run_code(wrapper_dict, flowList):
             for i in range(len(output['images'])):
                 img = Image.fromarray(np.uint8(output['images'][i]))
                 img.save(os.path.join(save_dir, f'{str(i)}.png'))
-
-            results[item.label]['image_dir'] = save_dir
+            
+            results[item.label]['image_dir'] = {}
+            results[item.label]['image_dir']["path"] = save_dir
+            results[item.label]['image_dir']["max_index"] = len(output['images']) 
 
         if 'fluo' in output.keys():
-            save_file = os.path.join('./files', item.label, 'fluo.json')
+            save_file = os.path.join('files', item.label, 'fluo.json')
 
             pd.DataFrame(output['fluo']).to_json(save_file, indent=4)
 

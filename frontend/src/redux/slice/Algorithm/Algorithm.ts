@@ -6,12 +6,13 @@ import { isAlgoNodeData } from 'utils/ElementUtils'
 import { addFlowElement } from '../Element/Element'
 import { clickNode, runPipeline } from '../Element/ElementAction'
 import { getAlgoOutputData, getAlgoParams } from './AlgorithmAction'
-
+import { convertToOutputData } from './AlgorithmUtils'
 import { ALGORITHM_SLICE_NAME, Algorithm } from './AlgorithmType'
 
 const initialState: Algorithm = {
   currentAlgoId: INITIAL_ALGO_ELEMENT_ID,
   algoMap: {},
+  plotDataMap: {},
 }
 
 export const algorithmSlice = createSlice({
@@ -28,6 +29,26 @@ export const algorithmSlice = createSlice({
         param[paramKey] = newValue
       }
     },
+    setSelectedOutputPath: (
+      state,
+      action: PayloadAction<{
+        id: string
+        path: string
+      }>,
+    ) => {
+      // todo もっといい状態の持ち方と判定方法があるはず...
+      if (action.payload.path.includes('images')) {
+        state.algoMap[action.payload.id].selectedPath = {
+          value: action.payload.path,
+          isImage: true,
+        }
+      } else {
+        state.algoMap[action.payload.id].selectedPath = {
+          value: action.payload.path,
+          isImage: false,
+        }
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -40,7 +61,7 @@ export const algorithmSlice = createSlice({
         if (isAlgoNodeData(action.payload)) {
           state.algoMap[action.payload.id] = {
             name: action.payload.data?.label ?? '',
-            // param: {},
+            selectedPath: null,
           }
         }
       })
@@ -53,19 +74,36 @@ export const algorithmSlice = createSlice({
           param: action.payload,
         }
       })
-      // .addCase(getAlgoOutputData.fulfilled, (state, action) => {
-      //   console.log(action.payload)
-      //   state.algoMap[action.meta.arg.id].output = { data: action.payload }
-      // })
+      .addCase(getAlgoOutputData.fulfilled, (state, action) => {
+        state.plotDataMap[action.meta.arg.id] = convertToOutputData(
+          action.payload,
+        )
+      })
       .addCase(runPipeline.fulfilled, (state, action) => {
         if (action.payload.message === 'success') {
           Object.entries(action.payload.outputPaths).forEach(([name, dir]) => {
             Object.entries(state.algoMap).forEach(([id, algo]) => {
               // todo とりあえず名前一致だが、後でサーバーサイドとフロントで両方idにする
               if (algo.name === name && state.algoMap[id]) {
-                state.algoMap[id].output = {
-                  imageDir: dir.image_dir,
+                state.algoMap[id].output = {}
+                if (dir.image_dir != null) {
+                  state.algoMap[id].output = {
+                    images: {
+                      path: dir.image_dir?.path ?? '',
+                      maxIndex: dir.image_dir?.max_index ?? 0,
+                    },
+                  }
                 }
+                if (dir.fluo_path != null) {
+                  state.algoMap[id].output = {
+                    ...state.algoMap[id].output,
+                    fluo: dir.fluo_path,
+                  }
+                }
+                state.algoMap[id].selectedPath = {
+                  value: dir.image_dir?.path ?? null,
+                  isImage: true,
+                } // 本来は意味のあるkeyを使用する
               }
             })
           })
@@ -74,6 +112,6 @@ export const algorithmSlice = createSlice({
   },
 })
 
-export const { updateParam } = algorithmSlice.actions
+export const { updateParam, setSelectedOutputPath } = algorithmSlice.actions
 
 export default algorithmSlice.reducer

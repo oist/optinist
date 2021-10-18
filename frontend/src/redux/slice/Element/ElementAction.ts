@@ -5,7 +5,6 @@ import { AlgoNodeData, NODE_DATA_TYPE } from 'const/NodeData'
 import { ThunkApiConfig } from 'redux/store'
 import { flowElementsSelector } from './ElementSelector'
 import { isInputNodeData, isAlgoNodeData } from 'utils/ElementUtils'
-import { OutputPaths } from '../Algorithm/AlgorithmType'
 import { algoParamByIdSelector } from '../Algorithm/AlgorithmSelector'
 
 export const clickNode = createAction<{ id: string; type: NODE_DATA_TYPE }>(
@@ -14,7 +13,11 @@ export const clickNode = createAction<{ id: string; type: NODE_DATA_TYPE }>(
 
 type OutputPathsDTO = {
   [key: string]: {
-    image_dir: string
+    image_dir?: {
+      path: string
+      max_index: number
+    }
+    fluo_path?: string
   }
 }
 
