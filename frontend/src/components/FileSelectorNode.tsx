@@ -15,7 +15,7 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
       const formData = new FormData()
       formData.append('file', file)
       const uploadFolderName = `${file.name}(${element.id})`
-      fetch(`http://localhost:8000/upload/${uploadFolderName}`, {
+      fetch(`http://localhost:8000/api/upload/${uploadFolderName}`, {
         method: 'POST',
         mode: 'cors',
         credentials: 'include',

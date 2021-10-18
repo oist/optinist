@@ -19,11 +19,11 @@ export const ToolBar = React.memo(() => {
       }
     })
     // console.log(flowList)
-    axios.post('http://localhost:8000/run', flowList).then((res) => {
+    axios.post('http://localhost:8000/api/run', flowList).then((res) => {
       var message = res.data
       // console.log(message)
     })
-    // axios.get('http://localhost:8000/run').then((res) => {
+    // axios.get('http://localhost:8000/api/run').then((res) => {
     //   var message = res.data
     //   console.log(message)
     // })
