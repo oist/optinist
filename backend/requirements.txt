@@ -5,3 +5,12 @@ pyyaml
 imageio
 aiofiles
 python-multipart
+Cython
+future
+scikit-image
+sklearn
+pynwb
+ipyparallel
+holoviews
+psutil
+nbstripout
