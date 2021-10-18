@@ -2,7 +2,13 @@ import React, { CSSProperties } from 'react'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
 import { NodeData } from 'const/NodeData'
 
-import { alpha, Typography, useTheme } from '@material-ui/core'
+import {
+  alpha,
+  Typography,
+  useTheme,
+  Select,
+  MenuItem,
+} from '@material-ui/core'
 
 export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
   const theme = useTheme()
@@ -21,6 +27,12 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
     borderColor: 'black',
     borderRadius: 0,
   }
+
+  const [age, setAge] = React.useState(1)
+  const handleChange = (event: any) => {
+    setAge(event.target.value)
+  }
+
   return (
     <div
       style={{
@@ -54,6 +66,17 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
         id={element.id + '-right'}
         style={rightHandleStyle}
       />
+      <Select
+        labelId="demo-simple-select-label"
+        id="demo-simple-select"
+        value={age}
+        label="Age"
+        onChange={handleChange}
+      >
+        <MenuItem value={1}>Images</MenuItem>
+        <MenuItem value={2}>Path</MenuItem>
+        <MenuItem value={3}>Result</MenuItem>
+      </Select>
     </div>
   )
 })
