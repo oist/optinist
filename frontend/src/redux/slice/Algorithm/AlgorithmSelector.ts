@@ -27,11 +27,11 @@ export const paramValueSelector =
   (id: string, paramName: string) => (state: RootState) =>
     algorithmSelector(state).algoMap[id].param[paramName]
 
-export const currentOutputDataSelector = (state: RootState) => {
-  const id = currentAlgoIdSelector(state)
-  if (Object.keys(state.algorithm.algoMap).includes(id)) {
-    return state.algorithm.algoMap[id].output
-  } else {
-    return undefined
-  }
-}
+// export const currentOutputDataSelector = (state: RootState) => {
+//   const id = currentAlgoIdSelector(state)
+//   if (Object.keys(state.algorithm.algoMap).includes(id)) {
+//     return state.algorithm.algoMap[id].output?.data
+//   } else {
+//     return undefined
+//   }
+// }

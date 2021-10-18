@@ -55,7 +55,7 @@ def run_code(wrapper_dict, flowList):
 
             results[item.label]['fluo_path'] = save_file
 
-    return {'message': 'success', 'data': results}
+    return {'message': 'success', 'outputPaths': results}
 
 
 if __name__ == '__main__':

@@ -5,15 +5,21 @@ import { AlgoNodeData, NODE_DATA_TYPE } from 'const/NodeData'
 import { ThunkApiConfig } from 'redux/store'
 import { flowElementsSelector } from './ElementSelector'
 import { isInputNodeData, isAlgoNodeData } from 'utils/ElementUtils'
-import { OutputData } from '../Algorithm/AlgorithmType'
+import { OutputPaths } from '../Algorithm/AlgorithmType'
 import { algoParamByIdSelector } from '../Algorithm/AlgorithmSelector'
 
 export const clickNode = createAction<{ id: string; type: NODE_DATA_TYPE }>(
   `${ELEMENT_SLICE_NAME}/clickNode`,
 )
 
+type OutputPathsDTO = {
+  [key: string]: {
+    image_dir: string
+  }
+}
+
 export const runPipeline = createAsyncThunk<
-  { message: string; data: OutputData[] },
+  { message: string; outputPaths: OutputPathsDTO },
   void,
   ThunkApiConfig
 >(`${ELEMENT_SLICE_NAME}/runPipeline`, async (_, thunkAPI) => {
@@ -22,11 +28,11 @@ export const runPipeline = createAsyncThunk<
     .map((element) => {
       if (element.data && element.data.type === 'algo') {
         const param = algoParamByIdSelector(element.id)(thunkAPI.getState())
-        const d: AlgoNodeData = {
+        const data: AlgoNodeData = {
           ...element.data,
           param,
         }
-        return d
+        return data
       } else {
         return element.data
       }

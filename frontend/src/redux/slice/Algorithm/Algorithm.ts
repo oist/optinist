@@ -40,15 +40,16 @@ export const algorithmSlice = createSlice({
           param: action.payload,
         }
       })
-      .addCase(getAlgoOutputData.fulfilled, (state, action) => {
-        console.log(action.payload)
-        state.algoMap[action.meta.arg.id].output = { data: action.payload }
-      })
+      // .addCase(getAlgoOutputData.fulfilled, (state, action) => {
+      //   console.log(action.payload)
+      //   state.algoMap[action.meta.arg.id].output = { data: action.payload }
+      // })
       .addCase(runPipeline.fulfilled, (state, action) => {
         if (action.payload.message === 'success') {
-          state.algoMap[state.currentAlgoId].output = {
-            data: action.payload.data,
-          }
+          console.log(action.payload.outputPaths)
+          // state.algoMap[state.currentAlgoId].output = {
+          //   imageDir: action.payload.outputPaths,
+          // }
         }
       })
   },

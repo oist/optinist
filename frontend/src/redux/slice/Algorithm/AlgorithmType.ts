@@ -8,7 +8,7 @@ export type Algorithm = {
     [id: string]: {
       name: string
       param: AlgoParam
-      output?: AlgoOutput
+      output?: OutputPaths
     }
   }
 }
@@ -20,4 +20,8 @@ export type AlgoOutput = {
 export type OutputData = {
   x: number | string
   y: number
+}
+
+export type OutputPaths = {
+  imageDir: string
 }
