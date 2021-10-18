@@ -68,14 +68,13 @@ async def create_file(response: Response, fileName: str, element_id: str = Form(
         f.write(contents)
 
     tiffs = imageio.volread(tiff_path)
-    counter = 0
+
     for i, tiff_data in enumerate(tiffs):
-        if counter == max_index:
+        if i == max_index:
             break
         img = Image.fromarray(tiff_data)
         img = img.convert("L")
         img.save(os.path.join(png_folder, f"{i}.png"))
-        counter += 1
 
     response.set_cookie(key="directory", value=png_folder)
 
@@ -89,12 +88,13 @@ async def run(flowList: List[FlowItem]):
     import run
     return run.run_code(wrapper_dict, flowList)
 
-@app.get("/output")
-def read_output():
-    # サンプル用のダミーデータ
-    import random
-    dummy_data = [{ "x": i, "y": random.uniform(100,0) } for i in range(0,20)]
-    return { "data": dummy_data }
+# @app.get("/output/{name}")
+# def read_output(name: str):
+#     print(name)
+#     # サンプル用のダミーデータ
+#     import random
+#     dummy_data = [{ "x": i, "y": random.uniform(100,0) } for i in range(0,20)]
+#     return { "data": dummy_data }
 
 if __name__ == '__main__':
 	uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=True)
