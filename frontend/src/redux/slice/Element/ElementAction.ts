@@ -33,7 +33,7 @@ export const runPipeline = createAsyncThunk<
     })
   try {
     const response = await axios.post(
-      'http://localhost:8000/run',
+      'http://localhost:8000/api/run',
       nodeDataListForRun,
     )
     return response.data

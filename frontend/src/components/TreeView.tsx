@@ -21,7 +21,7 @@ export const SideBar = React.memo(() => {
   const [algoList, setAlgoList] = useState([])
 
   useEffect(() => {
-    axios.get('http://localhost:8000/algolist').then((res) => {
+    axios.get('http://localhost:8000/api/algolist').then((res) => {
       setAlgoList(res.data)
     })
   }, [])

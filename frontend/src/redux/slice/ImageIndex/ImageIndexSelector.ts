@@ -16,6 +16,7 @@ export const imageIndexByIdSelector = (id: string) => (state: RootState) => {
 
 export const currentImageIndexSelector = (state: RootState) => {
   try {
+    console.log(state)
     const currentNodeId = currentImageIdSelector(state)
     return imageIndexByIdSelector(currentNodeId)(state)
   } catch (e) {

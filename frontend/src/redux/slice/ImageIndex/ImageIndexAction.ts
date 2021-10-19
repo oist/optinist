@@ -10,12 +10,15 @@ export const uploadImageFile = createAsyncThunk<
   async ({ elementId, fileName, formData }, thunkAPI) => {
     try {
       formData.append('element_id', elementId)
-      const response = await fetch(`http://localhost:8000/upload/${fileName}`, {
-        method: 'POST',
-        mode: 'cors',
-        credentials: 'include',
-        body: formData,
-      })
+      const response = await fetch(
+        `http://localhost:8000/api/upload/${fileName}`,
+        {
+          method: 'POST',
+          mode: 'cors',
+          credentials: 'include',
+          body: formData,
+        },
+      )
       const data = await response.json()
       return data
     } catch (e) {

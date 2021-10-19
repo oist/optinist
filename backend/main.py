@@ -13,7 +13,7 @@ import yaml
 sys.path.append('../optinist')
 from wrappers import wrapper_dict
 
-app = FastAPI()
+app = FastAPI(docs_url="/api/docs", openapi_url="/api")
 
 app.add_middleware(
     CORSMiddleware,
@@ -33,28 +33,28 @@ class FlowItem(BaseModel):
 async def root():
     return {"message": "Hello World"}
 
-@app.get("/params/{name}")
+@app.get("/api/params/{name}")
 async def params(name: str):
     with open(f'../optinist/config/{name}.yaml') as f:
         config = yaml.safe_load(f)
     print(config)
     return config
 
-@app.get("/algolist")
+@app.get("/api/algolist")
 async def run() -> List:
     print(wrapper_dict.keys())
     return list(wrapper_dict.keys())
 
-@app.get("/cookie-test")
+@app.get("/api/cookie-test")
 def create_cookie(response: Response):
     response.set_cookie(key="fakesession", value="fake-cookie-session-value")
     return {"message": "cookie is set."}
 
-app.mount("/files", StaticFiles(directory="files"), name="files")
+app.mount("/api/files", StaticFiles(directory="files"), name="files")
 
-@app.post("/upload/{fileName}")
+@app.post("/api/upload/{fileName}")
 async def create_file(response: Response, fileName: str, element_id: str = Form(...), file: UploadFile = File(...)):
-    max_index = 30
+    # max_index = 30
     root_folder = os.path.join("files", fileName+"("+element_id+")")
     png_folder = os.path.join(root_folder, "pngs")
     tiff_folder = os.path.join(root_folder, "tiff")
@@ -70,18 +70,18 @@ async def create_file(response: Response, fileName: str, element_id: str = Form(
     tiffs = imageio.volread(tiff_path)
 
     for i, tiff_data in enumerate(tiffs):
-        if i == max_index:
-            break
+        # if i == max_index:
+        #     break
         img = Image.fromarray(tiff_data)
         img = img.convert("L")
         img.save(os.path.join(png_folder, f"{i}.png"))
 
     response.set_cookie(key="directory", value=png_folder)
 
-    return {"pngFolder": png_folder, "tiffPath": tiff_path, "maxIndex": max_index}
+    return {"pngFolder": png_folder, "tiffPath": tiff_path, "maxIndex": len(tiffs)}
 
 
-@app.post("/run")
+@app.post("/api/run")
 async def run(flowList: List[FlowItem]):
     print('run_code')
     print(wrapper_dict)
