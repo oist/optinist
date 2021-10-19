@@ -2,14 +2,17 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import { INITIAL_ALGO_ELEMENT_ID } from 'const/flowchart'
 import { NODE_DATA_TYPE_SET } from 'const/NodeData'
+import { isAlgoNodeData } from 'utils/ElementUtils'
+import { addFlowElement } from '../Element/Element'
 import { clickNode, runPipeline } from '../Element/ElementAction'
 import { getAlgoOutputData, getAlgoParams } from './AlgorithmAction'
-
+import { convertToOutputData } from './AlgorithmUtils'
 import { ALGORITHM_SLICE_NAME, Algorithm } from './AlgorithmType'
 
 const initialState: Algorithm = {
   currentAlgoId: INITIAL_ALGO_ELEMENT_ID,
   algoMap: {},
+  plotDataMap: {},
 }
 
 export const algorithmSlice = createSlice({
@@ -21,7 +24,30 @@ export const algorithmSlice = createSlice({
       action: PayloadAction<{ paramKey: string; newValue: unknown }>,
     ) => {
       const { paramKey, newValue } = action.payload
-      state.algoMap[state.currentAlgoId].param[paramKey] = newValue
+      const param = state.algoMap[state.currentAlgoId].param
+      if (param !== undefined) {
+        param[paramKey] = newValue
+      }
+    },
+    setSelectedOutputPath: (
+      state,
+      action: PayloadAction<{
+        id: string
+        path: string
+      }>,
+    ) => {
+      // todo もっといい状態の持ち方と判定方法があるはず...
+      if (action.payload.path.includes('images')) {
+        state.algoMap[action.payload.id].selectedPath = {
+          value: action.payload.path,
+          isImage: true,
+        }
+      } else {
+        state.algoMap[action.payload.id].selectedPath = {
+          value: action.payload.path,
+          isImage: false,
+        }
+      }
     },
   },
   extraReducers: (builder) => {
@@ -29,6 +55,14 @@ export const algorithmSlice = createSlice({
       .addCase(clickNode, (state, action) => {
         if (action.payload.type === NODE_DATA_TYPE_SET.ALGO) {
           state.currentAlgoId = action.payload.id
+        }
+      })
+      .addCase(addFlowElement, (state, action) => {
+        if (isAlgoNodeData(action.payload)) {
+          state.algoMap[action.payload.id] = {
+            name: action.payload.data?.label ?? '',
+            selectedPath: null,
+          }
         }
       })
       .addCase(getAlgoParams.fulfilled, (state, action) => {
@@ -41,18 +75,43 @@ export const algorithmSlice = createSlice({
         }
       })
       .addCase(getAlgoOutputData.fulfilled, (state, action) => {
-        state.algoMap[action.meta.arg.id].output = { data: action.payload }
+        state.plotDataMap[action.meta.arg.id] = convertToOutputData(
+          action.payload,
+        )
       })
       .addCase(runPipeline.fulfilled, (state, action) => {
         if (action.payload.message === 'success') {
-          state.algoMap[state.currentAlgoId].output = {
-            data: action.payload.data,
-          }
+          Object.entries(action.payload.outputPaths).forEach(([name, dir]) => {
+            Object.entries(state.algoMap).forEach(([id, algo]) => {
+              // todo とりあえず名前一致だが、後でサーバーサイドとフロントで両方idにする
+              if (algo.name === name && state.algoMap[id]) {
+                state.algoMap[id].output = {}
+                if (dir.image_dir != null) {
+                  state.algoMap[id].output = {
+                    images: {
+                      path: dir.image_dir?.path ?? '',
+                      maxIndex: dir.image_dir?.max_index ?? 0,
+                    },
+                  }
+                }
+                if (dir.fluo_path != null) {
+                  state.algoMap[id].output = {
+                    ...state.algoMap[id].output,
+                    fluo: dir.fluo_path,
+                  }
+                }
+                state.algoMap[id].selectedPath = {
+                  value: dir.image_dir?.path ?? null,
+                  isImage: true,
+                } // 本来は意味のあるkeyを使用する
+              }
+            })
+          })
         }
       })
   },
 })
 
-export const { updateParam } = algorithmSlice.actions
+export const { updateParam, setSelectedOutputPath } = algorithmSlice.actions
 
 export default algorithmSlice.reducer

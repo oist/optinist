@@ -1,4 +1,5 @@
 import React, { CSSProperties } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
 import { NodeData } from 'const/NodeData'
 
@@ -9,9 +10,17 @@ import {
   Select,
   MenuItem,
 } from '@material-ui/core'
+import {
+  imageDirMaxIndexByIdSelector,
+  outputPathListSelector,
+  selectedOutputPathSelector,
+} from 'redux/slice/Algorithm/AlgorithmSelector'
+import { setSelectedOutputPath } from 'redux/slice/Algorithm/Algorithm'
+import { showAlgoOutputImage } from 'redux/slice/ImageIndex/ImageIndex'
 
 export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
   const theme = useTheme()
+  const dispatch = useDispatch()
   const leftHandleStyle: CSSProperties = {
     width: 8,
     left: 0,
@@ -28,9 +37,33 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
     borderRadius: 0,
   }
 
-  const [age, setAge] = React.useState(1)
-  const handleChange = (event: any) => {
-    setAge(event.target.value)
+  const pathList = useSelector(outputPathListSelector(element.id))
+  const selectedPath = useSelector(selectedOutputPathSelector(element.id))
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    dispatch(
+      setSelectedOutputPath({
+        id: element.id,
+        path: event.target.value as string,
+      }),
+    )
+  }
+
+  const maxIndex = useSelector(imageDirMaxIndexByIdSelector(element.id))
+  const onClick = () => {
+    if (
+      selectedPath != null &&
+      selectedPath.value != null &&
+      selectedPath.isImage
+    ) {
+      dispatch(
+        showAlgoOutputImage({
+          id: element.id,
+          folder: selectedPath.value,
+          algoName: element.data.label,
+          maxIndex: maxIndex ?? 0,
+        }),
+      )
+    }
   }
 
   return (
@@ -42,6 +75,7 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
           ? alpha(theme.palette.primary.light, 0.1)
           : undefined,
       }}
+      onClick={onClick}
     >
       <div
         style={{
@@ -66,17 +100,19 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
         id={element.id + '-right'}
         style={rightHandleStyle}
       />
-      <Select
-        labelId="demo-simple-select-label"
-        id="demo-simple-select"
-        value={age}
-        label="Age"
-        onChange={handleChange}
-      >
-        <MenuItem value={1}>Images</MenuItem>
-        <MenuItem value={2}>Path</MenuItem>
-        <MenuItem value={3}>Result</MenuItem>
-      </Select>
+      {pathList.length !== 0 && selectedPath != null && (
+        <Select
+          value={selectedPath.value}
+          label="output"
+          onChange={handleChange}
+        >
+          {pathList.map(([key, value]) => (
+            <MenuItem value={typeof value === 'string' ? value : value?.path}>
+              {key}
+            </MenuItem>
+          ))}
+        </Select>
+      )}
     </div>
   )
 })

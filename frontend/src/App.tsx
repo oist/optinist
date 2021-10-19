@@ -17,6 +17,11 @@ import {
 } from 'redux/slice/Element/ElementSelector'
 import { RUN_STATUS } from 'redux/slice/Element/ElementType'
 import { isAlgoNodeData, isInputNodeData } from 'utils/ElementUtils'
+import {
+  currentAlgoIdSelector,
+  selectedOutputPathSelector,
+} from 'redux/slice/Algorithm/AlgorithmSelector'
+import { RootState } from 'redux/store'
 
 const model = Model.fromJson(flexjson)
 
@@ -47,13 +52,23 @@ function App() {
   }, [runStatus])
   const currentNodeId = useSelector(clickedNodeIdSelector)
   const currentNode = useSelector(clickedNodeSelector)
+  const currentAlgoNodeId = useSelector(currentAlgoIdSelector)
+  const isImage = useSelector((state: RootState) => {
+    return selectedOutputPathSelector(currentAlgoNodeId)(state)?.isImage
+  })
   React.useEffect(() => {
     if (isInputNodeData(currentNode)) {
       model.doAction(Actions.selectTab('image0'))
     } else if (isAlgoNodeData(currentNode)) {
-      model.doAction(Actions.selectTab('output0'))
+      if (isImage !== undefined) {
+        if (isImage) {
+          model.doAction(Actions.selectTab('image0'))
+        } else {
+          model.doAction(Actions.selectTab('output0'))
+        }
+      }
     }
-  }, [currentNodeId, currentNode])
+  }, [currentNodeId, currentNode, isImage])
   return (
     <div id="container">
       <div className="app">

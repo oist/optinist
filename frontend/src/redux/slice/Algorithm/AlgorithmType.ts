@@ -1,4 +1,5 @@
 import { AlgoParam } from 'const/NodeData'
+import { AlgoOutputDataDTO } from './AlgorithmUtils'
 
 export const ALGORITHM_SLICE_NAME = 'algorithm'
 
@@ -7,17 +8,29 @@ export type Algorithm = {
   algoMap: {
     [id: string]: {
       name: string
-      param: AlgoParam
-      output?: AlgoOutput
+      param?: AlgoParam
+      output?: OutputPaths
+      selectedPath: {
+        value: string | null
+        isImage: boolean
+      } | null
     }
+  }
+  plotDataMap: {
+    [id: string]: AlgoOutputDataDTO // todo 後で型を検討
   }
 }
 
-export type AlgoOutput = {
-  data: OutputData[]
+export type OutputData = {
+  xLabels: string[]
+  yValues: number[]
+  legends: string[]
 }
 
-export type OutputData = {
-  x: number | string
-  y: number
+export type OutputPaths = {
+  images?: {
+    maxIndex: number
+    path: string
+  }
+  fluo?: string
 }

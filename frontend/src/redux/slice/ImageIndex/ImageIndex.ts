@@ -4,7 +4,8 @@ import { NODE_DATA_TYPE_SET } from 'const/NodeData'
 import { INITIAL_IMAGE_ELEMENT_ID } from 'const/flowchart'
 import { uploadImageFile } from './ImageIndexAction'
 import { ImageIndex, IMAGE_INDEX_SLICE_NAME } from './ImageIndexType'
-import { clickNode } from '../Element/ElementAction'
+import { clickNode, runPipeline } from '../Element/ElementAction'
+import { setSelectedOutputPath } from '../Algorithm/Algorithm'
 
 const initialState: ImageIndex = {
   currentImageId: INITIAL_IMAGE_ELEMENT_ID,
@@ -33,6 +34,25 @@ export const imageIndexSlice = createSlice({
       const newIndex = state.index[id].pageIndex - (amount ?? 1)
       if (newIndex >= 0) {
         state.index[id].pageIndex = newIndex
+      }
+    },
+    showAlgoOutputImage: (
+      state,
+      action: PayloadAction<{
+        id: string
+        folder: string
+        maxIndex: number
+        algoName: string
+      }>,
+    ) => {
+      const { id, folder, maxIndex, algoName } = action.payload
+      state.currentImageId = id
+      state.index[id] = {
+        fileName: algoName,
+        maxIndex,
+        folder,
+        pageIndex: 0,
+        isFulfilled: true,
       }
     },
   },
@@ -69,7 +89,7 @@ export const imageIndexSlice = createSlice({
   },
 })
 
-export const { incrementPageIndex, decrementPageIndex } =
+export const { incrementPageIndex, decrementPageIndex, showAlgoOutputImage } =
   imageIndexSlice.actions
 
 export default imageIndexSlice.reducer

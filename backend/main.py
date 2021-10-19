@@ -10,6 +10,7 @@ from typing import Dict, List, Optional
 from pydantic import BaseModel
 import sys
 import yaml
+import json
 sys.path.append('../optinist')
 from wrappers import wrapper_dict
 
@@ -88,13 +89,13 @@ async def run(flowList: List[FlowItem]):
     import run
     return run.run_code(wrapper_dict, flowList)
 
-# @app.get("/output/{name}")
-# def read_output(name: str):
-#     print(name)
-#     # サンプル用のダミーデータ
-#     import random
-#     dummy_data = [{ "x": i, "y": random.uniform(100,0) } for i in range(0,20)]
-#     return { "data": dummy_data }
+@app.get("/output/{name}")
+def read_output(name: str):
+    print(name)
+    json_dict = {}
+    with open(os.path.join(".","files",name,"fluo.json"), 'r') as f:
+        json_dict = json.load(f)
+    return { "data": json_dict }
 
 if __name__ == '__main__':
 	uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=True)

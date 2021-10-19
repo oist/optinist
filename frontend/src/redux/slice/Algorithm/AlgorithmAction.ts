@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import { ALGORITHM_SLICE_NAME, OutputData } from './AlgorithmType'
 import axios from 'axios'
 import { AlgoParam } from 'const/NodeData'
+import { AlgoOutputDataDTO } from './AlgorithmUtils'
 
 export const getAlgoParams = createAsyncThunk<
   AlgoParam,
@@ -18,14 +19,14 @@ export const getAlgoParams = createAsyncThunk<
   }
 })
 
-export const getAlgoOutputData = createAsyncThunk<OutputData[], { id: string }>(
-  `${ALGORITHM_SLICE_NAME}/getAlgoOutputData`,
-  async ({ id }, thunkAPI) => {
-    try {
-      const response = await axios.get(`http://localhost:8000/api/output`)
-      return response.data.data
-    } catch (e) {
-      return thunkAPI.rejectWithValue(e)
-    }
-  },
-)
+export const getAlgoOutputData = createAsyncThunk<
+  AlgoOutputDataDTO,
+  { id: string; name: string }
+>(`${ALGORITHM_SLICE_NAME}/getAlgoOutputData`, async ({ name }, thunkAPI) => {
+  try {
+    const response = await axios.get(`http://localhost:8000/output/${name}`)
+    return response.data
+  } catch (e) {
+    return thunkAPI.rejectWithValue(e)
+  }
+})
