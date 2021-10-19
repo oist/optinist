@@ -1,43 +1,20 @@
 import { Elements } from 'react-flow-renderer'
+import { NodeData } from 'const/NodeData'
 
 export const ELEMENT_SLICE_NAME = 'element'
 
-export type Param = {
-  [name: string]: unknown
-}
-
-export type Algorithm = {
-  [id: string]: {
-    name: string
-    param: Param
-  }
-}
-
 export interface Element {
-  flowElements: Elements<NodeDataType>
+  flowElements: Elements<NodeData>
   clickedNodeId: string | null
-  currentAlgoId: string
-  algoParams: Algorithm
+  runStatus: RUN_STATUS_TYPE
+  runMessage?: string
 }
 
-interface NodeData {
-  label: string
-  type: NodeType
-}
+export const RUN_STATUS = {
+  RUNNING: 'running',
+  SUCCESS: 'success',
+  FAILED: 'failed',
+  STOPPED: 'stopped',
+} as const
 
-export type NodeDataType = InputNodeData | OutPutNodeData | AlgoNodeData
-
-export type NodeType = 'input' | 'output' | 'algo'
-
-export interface InputNodeData extends NodeData {
-  path?: string
-  type: 'input'
-}
-
-export interface OutPutNodeData extends NodeData {
-  type: 'output'
-}
-
-export interface AlgoNodeData extends NodeData {
-  type: 'algo'
-}
+export type RUN_STATUS_TYPE = typeof RUN_STATUS[keyof typeof RUN_STATUS]

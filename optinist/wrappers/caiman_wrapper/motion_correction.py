@@ -1,4 +1,5 @@
-def caiman_mc(file_path, opts=None):
+def caiman_mc(info, opts=None):
+	file_path = info['path']
 	import numpy as np
 	from caiman.source_extraction.cnmf.params import CNMFParams
 	from caiman.motion_correction import MotionCorrect
@@ -22,15 +23,9 @@ def caiman_mc(file_path, opts=None):
 
 	# now load the file
 	Yr, dims, T = load_memmap(fname_new)
-	images = np.reshape(Yr.T, [T] + list(dims), order='F') 
+	images = np.array(np.reshape(Yr.T, [T] + list(dims), order='F'))
 
-	info['mc'] = mc
-	info['border_to_0'] = border_to_0
 	info['images'] = images
-
-	info['total_template_rig'] = mc.total_template_rig
-	info['shifts_rig'] = mc.shifts_rig
-	info['mmap_file'] = mc.mmap_file
 
 	return info
 

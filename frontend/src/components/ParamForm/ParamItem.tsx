@@ -4,11 +4,9 @@ import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
 import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
-import { updateParam } from 'redux/slice/Element/Element'
-import {
-  currentAlgoIdSelector,
-  paramValueSelector,
-} from 'redux/slice/Element/ElementSelector'
+import { updateParam } from 'redux/slice/Algorithm/Algorithm'
+import { currentAlgoIdSelector } from 'redux/slice/Algorithm/AlgorithmSelector'
+import { paramValueSelector } from 'redux/slice/Algorithm/AlgorithmSelector'
 
 type ParamItemProps = {
   paramKey: string

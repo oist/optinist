@@ -1,10 +1,19 @@
-import { Elements } from 'react-flow-renderer'
-import { NodeDataType } from 'redux/slice/Element/ElementType'
+import { Elements, Position } from 'react-flow-renderer'
+import { NodeData, NODE_DATA_TYPE_SET } from 'const/NodeData'
 
-export const INITIAL_IMAGE_ELEMENT_ID = '1'
-export const INITIAL_ALGO_ELEMENT_ID = '2'
+export const INITIAL_IMAGE_ELEMENT_ID = '0'
+export const INITIAL_ALGO_ELEMENT_ID = '1'
+export const INITIAL_EDGE_ID = '2'
+export const INITIAL_OUTPUT_ELEMENT_ID = '3'
 
-export const initialElements: Elements<NodeDataType> = [
+export const INITIAL_ALGO_STYLE: React.CSSProperties = {
+  width: 180,
+  height: 100,
+  padding: 0,
+  borderRadius: 0,
+} as const
+
+export const initialElements: Elements<NodeData> = [
   // {
   //   id: '1',
   //   type: 'input',
@@ -15,18 +24,24 @@ export const initialElements: Elements<NodeDataType> = [
     id: INITIAL_IMAGE_ELEMENT_ID,
     type: 'selectorNode',
     data: {
-      type: 'input',
+      type: NODE_DATA_TYPE_SET.DATA,
       label: 'data',
       path: '/Users/shogoakiyama/caiman_data/example_movies/Sue_2x_3000_40_-46.tif',
     },
-    style: { border: '1px solid #777', padding: 10 },
-    position: { x: 200, y: 5 },
+    style: {
+      border: '1px solid #777',
+      height: 100,
+    },
+    position: { x: 50, y: 60 },
   },
   {
     id: INITIAL_ALGO_ELEMENT_ID,
     type: 'default',
-    data: { type: 'algo', label: 'caiman_mc' },
-    position: { x: 200, y: 100 },
+    data: { type: NODE_DATA_TYPE_SET.ALGO, label: 'caiman_mc' },
+    style: INITIAL_ALGO_STYLE,
+    position: { x: 400, y: 60 },
+    targetPosition: Position.Left,
+    sourcePosition: Position.Right,
   },
   // {
   //   id: '3',
@@ -34,26 +49,26 @@ export const initialElements: Elements<NodeDataType> = [
   //   data: { type: 'algo', label: 'caiman_cnmf' },
   //   position: { x: 200, y: 200 },
   // },
-  {
-    id: '3',
-    type: 'output',
-    data: { type: 'output', label: 'output' },
-    position: { x: 200, y: 300 },
-  },
+  // {
+  //   id: INITIAL_OUTPUT_ELEMENT_ID,
+  //   type: 'output',
+  //   data: { type: NODE_DATA_TYPE_SET.OUTPUT, label: 'output' },
+  //   position: { x: 200, y: 300 },
+  // },
 
   // edge
   {
-    id: 'e1',
+    id: INITIAL_EDGE_ID,
     source: INITIAL_IMAGE_ELEMENT_ID,
     target: INITIAL_ALGO_ELEMENT_ID,
     type: 'smoothstep',
   },
-  {
-    id: 'e2',
-    source: INITIAL_ALGO_ELEMENT_ID,
-    target: '3',
-    type: 'smoothstep',
-  },
+  // {
+  //   id: '4',
+  //   source: INITIAL_ALGO_ELEMENT_ID,
+  //   target: INITIAL_OUTPUT_ELEMENT_ID,
+  //   type: 'smoothstep',
+  // },
   // {
   //   id: 'e3',
   //   source: '3',

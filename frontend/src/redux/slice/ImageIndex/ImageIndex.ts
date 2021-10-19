@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
+import { NODE_DATA_TYPE_SET } from 'const/NodeData'
+import { INITIAL_IMAGE_ELEMENT_ID } from 'const/flowchart'
 import { uploadImageFile } from './ImageIndexAction'
 import { ImageIndex, IMAGE_INDEX_SLICE_NAME } from './ImageIndexType'
-import { INITIAL_IMAGE_ELEMENT_ID } from 'const/flowchart'
 import { clickNode } from '../Element/ElementAction'
 
 const initialState: ImageIndex = {
@@ -37,18 +38,31 @@ export const imageIndexSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(uploadImageFile, (state, action) => {
-        const { elementId, maxIndex, fileName, folder } = action.payload
+      .addCase(uploadImageFile.pending, (state, action) => {
+        const { elementId, fileName } = action.meta.arg
+        state.currentImageId = elementId
+        state.index[elementId] = {
+          fileName,
+          maxIndex: 0,
+          folder: '',
+          pageIndex: 0,
+          isFulfilled: false,
+        }
+      })
+      .addCase(uploadImageFile.fulfilled, (state, action) => {
+        const { elementId, fileName } = action.meta.arg
+        const { pngFolder: folder, maxIndex } = action.payload
         state.currentImageId = elementId
         state.index[elementId] = {
           fileName,
           maxIndex,
           folder,
           pageIndex: 0,
+          isFulfilled: true,
         }
       })
       .addCase(clickNode, (state, action) => {
-        if (action.payload.type === 'input') {
+        if (action.payload.type === NODE_DATA_TYPE_SET.DATA) {
           state.currentImageId = action.payload.id
         }
       })

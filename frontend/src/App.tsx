@@ -1,5 +1,5 @@
 import './App.css'
-import { Layout, Model, TabNode } from 'flexlayout-react'
+import { Layout, Model, TabNode, Actions } from 'flexlayout-react'
 import 'flexlayout-react/style/light.css'
 import { flexjson } from 'const/flexlayout'
 import { SideBar } from 'components/TreeView'
@@ -8,6 +8,15 @@ import { ParamForm } from 'components/ParamForm/ParamForm'
 import { PlotOutput } from 'components/PlotOutput'
 import { ImageViewer } from 'components/ImageViewer'
 import { ToolBar } from 'components/ToolBar'
+import React from 'react'
+import { useSelector } from 'react-redux'
+import {
+  clickedNodeIdSelector,
+  clickedNodeSelector,
+  runStatusSelector,
+} from 'redux/slice/Element/ElementSelector'
+import { RUN_STATUS } from 'redux/slice/Element/ElementType'
+import { isAlgoNodeData, isInputNodeData } from 'utils/ElementUtils'
 
 const model = Model.fromJson(flexjson)
 
@@ -30,7 +39,21 @@ function App() {
       return null
     }
   }
-
+  const runStatus = useSelector(runStatusSelector)
+  React.useEffect(() => {
+    if (runStatus === RUN_STATUS.SUCCESS) {
+      model.doAction(Actions.selectTab('output0'))
+    }
+  }, [runStatus])
+  const currentNodeId = useSelector(clickedNodeIdSelector)
+  const currentNode = useSelector(clickedNodeSelector)
+  React.useEffect(() => {
+    if (isInputNodeData(currentNode)) {
+      model.doAction(Actions.selectTab('image0'))
+    } else if (isAlgoNodeData(currentNode)) {
+      model.doAction(Actions.selectTab('output0'))
+    }
+  }, [currentNodeId, currentNode])
   return (
     <div id="container">
       <div className="app">

@@ -60,14 +60,14 @@ export const SideBar = React.memo(() => {
         ))}
       </TreeItem>
 
-      <TreeItem nodeId="Output" label="Output">
+      {/* <TreeItem nodeId="Output" label="Output">
         <TreeItem
           nodeId="output"
           label="output"
           onDragStart={(event: DragEvent) => onDragStart(event, 'output')}
           draggable
         />
-      </TreeItem>
+      </TreeItem> */}
     </TreeView>
   )
 })

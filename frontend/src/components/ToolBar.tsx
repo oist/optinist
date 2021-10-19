@@ -1,53 +1,92 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Button from '@material-ui/core/Button'
 import PlayArrowIcon from '@material-ui/icons/PlayArrow'
 import StopIcon from '@material-ui/icons/Stop'
-import axios from 'axios'
-import { FlowElement } from 'react-flow-renderer'
-import { flowElementsSelector } from 'redux/slice/Element/ElementSelector'
+import Snackbar from '@material-ui/core/Snackbar'
+import CloseIcon from '@material-ui/icons/Close'
+
+import {
+  runMassageSelector,
+  runStatusSelector,
+} from 'redux/slice/Element/ElementSelector'
+import { Box, IconButton, LinearProgress } from '@material-ui/core'
+import { runPipeline, stopPipeline } from 'redux/slice/Element/ElementAction'
+import { RootState } from 'redux/store'
+import { RUN_STATUS } from 'redux/slice/Element/ElementType'
 
 export const ToolBar = React.memo(() => {
-  const flowElements = useSelector(flowElementsSelector)
-
+  const dispatch = useDispatch()
+  const isRunning = useSelector(
+    (state: RootState) => runStatusSelector(state) === RUN_STATUS.RUNNING,
+  )
   const onRunBtnClick = () => {
-    var flowList: any[] = []
-    flowElements.forEach((edge: FlowElement) => {
-      if ('source' in edge) {
-        var node: FlowElement = flowElements.find((e) => e.id === edge.source)!
-        flowList.push(node.data)
-      }
-    })
-    // console.log(flowList)
-    axios.post('http://localhost:8000/api/run', flowList).then((res) => {
-      var message = res.data
-      // console.log(message)
-    })
-    // axios.get('http://localhost:8000/api/run').then((res) => {
-    //   var message = res.data
-    //   console.log(message)
-    // })
+    dispatch(runPipeline())
   }
-
+  const onStopBtnClick = () => {
+    dispatch(stopPipeline())
+  }
+  const [dialog, setDialog] = React.useState<{
+    open: boolean
+    message: string
+  }>({ open: false, message: '' })
+  const handleClose = () => {
+    setDialog({ open: false, message: '' })
+  }
+  const runStatus = useSelector(runStatusSelector)
+  const runMessage = useSelector(runMassageSelector)
+  React.useEffect(() => {
+    if (runStatus === RUN_STATUS.SUCCESS || runStatus === RUN_STATUS.FAILED) {
+      setDialog({ open: true, message: runMessage ?? '' })
+    }
+  }, [runStatus, runMessage])
   return (
-    <>
-      <Button
-        className="ctrl_btn"
-        variant="contained"
-        color="primary"
-        endIcon={<PlayArrowIcon />}
-        onClick={onRunBtnClick}
+    <div style={{ width: '100%' }}>
+      <Box
+        display="flex"
+        justifyContent="flex-end"
+        style={{ paddingBottom: 4 }}
       >
-        run
-      </Button>
-      <Button
-        className="ctrl_btn"
-        variant="contained"
-        color="secondary"
-        endIcon={<StopIcon />}
-      >
-        stop
-      </Button>
-    </>
+        <Box>
+          <Button
+            className="ctrl_btn"
+            variant="contained"
+            color="primary"
+            endIcon={<PlayArrowIcon />}
+            onClick={onRunBtnClick}
+            disabled={isRunning}
+          >
+            run
+          </Button>
+        </Box>
+        <Box>
+          <Button
+            className="ctrl_btn"
+            variant="contained"
+            color="secondary"
+            endIcon={<StopIcon />}
+            onClick={onStopBtnClick}
+          >
+            stop
+          </Button>
+        </Box>
+      </Box>
+      {isRunning ? <LinearProgress /> : <div style={{ height: 4 }} />}
+      <Snackbar
+        autoHideDuration={5000}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'left',
+        }}
+        open={dialog.open}
+        onClose={handleClose}
+        message={dialog.message}
+        action={
+          <IconButton onClick={handleClose} color="inherit" size="small">
+            <CloseIcon />
+          </IconButton>
+        }
+      />
+    </div>
   )
 })
