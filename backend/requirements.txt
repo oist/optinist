@@ -14,3 +14,4 @@ ipyparallel
 holoviews
 psutil
 nbstripout
+opencv-python
