@@ -14,4 +14,5 @@ ipyparallel
 holoviews
 psutil
 nbstripout
+tensorflow
 opencv-python
