@@ -3,11 +3,12 @@ interface BaseNodeData {
   type: NODE_DATA_TYPE
 }
 
-export type NodeData = InputNodeData | OutPutNodeData | AlgoNodeData
+// export type NodeData = InputNodeData | OutPutNodeData | AlgoNodeData
+export type NodeData = InputNodeData | AlgoNodeData
 
 export const NODE_DATA_TYPE_SET = {
   DATA: 'data',
-  OUTPUT: 'output',
+  // OUTPUT: 'output',
   ALGO: 'algo',
 } as const
 
@@ -19,9 +20,9 @@ export interface InputNodeData extends BaseNodeData {
   type: 'data'
 }
 
-export interface OutPutNodeData extends BaseNodeData {
-  type: 'output'
-}
+// export interface OutPutNodeData extends BaseNodeData {
+//   type: 'output'
+// }
 
 export interface AlgoNodeData extends BaseNodeData {
   type: 'algo'
