@@ -30,7 +30,7 @@ def caiman_cnmf(info, opts=None):
 	iscell = np.zeros(cont_cent.shape[0])
 	iscell[cnm.estimates.idx_components]=1
 
-	info['images'] = Cn
+	info['images'] = np.array(Cn * 255, dtype=np.uint8)
 	info['fluo'] = cnm.estimates.C
 	info['iscell'] = iscell
 	info['roi'] = cont_cent
