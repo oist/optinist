@@ -71,8 +71,6 @@ async def create_file(response: Response, fileName: str, element_id: str = Form(
     tiffs = imageio.volread(tiff_path)
 
     for i, tiff_data in enumerate(tiffs):
-        # if i == max_index:
-        #     break
         img = Image.fromarray(tiff_data)
         img = img.convert("L")
         img.save(os.path.join(png_folder, f"{i}.png"))

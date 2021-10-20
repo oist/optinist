@@ -23,7 +23,8 @@ def caiman_mc(info, opts=None):
 
 	# now load the file
 	Yr, dims, T = load_memmap(fname_new)
-	images = np.array(np.reshape(Yr.T, [T] + list(dims), order='F'))
+	images = np.array(np.reshape(
+		Yr.T, [T] + list(dims), order='F'))
 
 	info['images'] = images
 
