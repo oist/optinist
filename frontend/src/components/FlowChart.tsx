@@ -78,17 +78,15 @@ export const FlowChart = React.memo(() => {
       const name = event.dataTransfer.getData('application/reactflow')
       const position = reactFlowInstance.project({
         x: event.clientX - 50 - 250,
-        y: event.clientY - 50,
+        y: event.clientY - 100,
       })
 
       let nodeType = 'default'
       let dataType: NODE_DATA_TYPE = 'algo'
+
       if (name.includes('data')) {
         dataType = NODE_DATA_TYPE_SET.DATA
-        nodeType = 'input'
-      } else if (name.includes('output')) {
-        dataType = NODE_DATA_TYPE_SET.OUTPUT
-        nodeType = 'output'
+        nodeType = 'selectorNode'
       }
 
       const newNode: Node<NodeData> = {

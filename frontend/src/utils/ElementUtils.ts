@@ -3,7 +3,7 @@ import {
   NodeData,
   InputNodeData,
   AlgoNodeData,
-  OutPutNodeData,
+  // OutPutNodeData,
 } from 'const/NodeData'
 
 export function isNodeData(
@@ -24,8 +24,8 @@ export function isAlgoNodeData(
   return isNodeData(node) && node.data != null && node.data.type === 'algo'
 }
 
-export function isOutPutNodeData(
-  node: FlowElement<NodeData> | undefined,
-): node is Node<OutPutNodeData> {
-  return isNodeData(node) && node.data != null && node.data.type === 'output'
-}
+// export function isOutPutNodeData(
+//   node: FlowElement<NodeData> | undefined,
+// ): node is Node<OutPutNodeData> {
+//   return isNodeData(node) && node.data != null && node.data.type === 'output'
+// }

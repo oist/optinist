@@ -13,6 +13,11 @@ export const INITIAL_ALGO_STYLE: React.CSSProperties = {
   borderRadius: 0,
 } as const
 
+export const INITIAL_DATA_STYLE: React.CSSProperties = {
+  border: '1px solid #777',
+  height: 100,
+} as const
+
 export const initialElements: Elements<NodeData> = [
   // {
   //   id: '1',
@@ -28,10 +33,7 @@ export const initialElements: Elements<NodeData> = [
       label: 'data',
       path: '/Users/shogoakiyama/caiman_data/example_movies/Sue_2x_3000_40_-46.tif',
     },
-    style: {
-      border: '1px solid #777',
-      height: 100,
-    },
+    style: INITIAL_DATA_STYLE,
     position: { x: 50, y: 60 },
   },
   {

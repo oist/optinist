@@ -59,7 +59,7 @@ export const ToolBar = React.memo(() => {
             run
           </Button>
         </Box>
-        <Box>
+        {/* <Box>
           <Button
             className="ctrl_btn"
             variant="contained"
@@ -69,7 +69,7 @@ export const ToolBar = React.memo(() => {
           >
             stop
           </Button>
-        </Box>
+        </Box> */}
       </Box>
       {isRunning ? <LinearProgress /> : <div style={{ height: 4 }} />}
       <Snackbar
