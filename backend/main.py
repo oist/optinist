@@ -51,6 +51,7 @@ def create_cookie(response: Response):
     response.set_cookie(key="fakesession", value="fake-cookie-session-value")
     return {"message": "cookie is set."}
 
+os.makedirs('files', exist_ok=True)
 app.mount("/api/files", StaticFiles(directory="files"), name="files")
 
 @app.post("/api/upload/{fileName}")
