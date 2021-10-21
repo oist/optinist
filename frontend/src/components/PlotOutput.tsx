@@ -61,13 +61,9 @@ const Chart = React.memo(() => {
   const options = {
     radius: 2,
     scales: {
-      yAxes: [
-        {
-          ticks: {
-            beginAtZero: true,
-          },
-        },
-      ],
+      y: {
+        beginAtZero: true,
+      },
     },
   }
   return <Line data={data} width={100} height={60} options={options} />
