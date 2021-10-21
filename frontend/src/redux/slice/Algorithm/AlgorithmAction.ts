@@ -24,7 +24,7 @@ export const getAlgoOutputData = createAsyncThunk<
   { id: string; name: string }
 >(`${ALGORITHM_SLICE_NAME}/getAlgoOutputData`, async ({ name }, thunkAPI) => {
   try {
-    const response = await axios.get(`http://localhost:8000/output/${name}`)
+    const response = await axios.get(`http://localhost:8000/api/output/${name}`)
     return response.data
   } catch (e) {
     return thunkAPI.rejectWithValue(e)

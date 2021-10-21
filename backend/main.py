@@ -88,7 +88,7 @@ async def run(flowList: List[FlowItem]):
     import run
     return run.run_code(wrapper_dict, flowList)
 
-@app.get("/output/{name}")
+@app.get("/api/output/{name}")
 def read_output(name: str):
     print(name)
     json_dict = {}
