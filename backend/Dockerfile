@@ -10,11 +10,11 @@ RUN /usr/local/bin/python -m pip install --upgrade pip
 COPY requirements.txt ./
 RUN /bin/bash -c "pip install --no-cache-dir -r requirements.txt"
 
-ENV HOME /root
+# ENV HOME /root
 
 # caiman install
-RUN git clone https://github.com/flatironinstitute/CaImAn $HOME/CaImAn
-RUN cd $HOME/CaImAn && pip install -e .
+RUN git clone https://github.com/flatironinstitute/CaImAn /CaImAn
+RUN cd /CaImAn && pip install -e .
 
 RUN apt update && \
     apt-get install -y libgl1-mesa-dev
