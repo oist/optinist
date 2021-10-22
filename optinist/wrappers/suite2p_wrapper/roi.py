@@ -1,41 +1,36 @@
-import numpy as np
-from pathlib import Path
-from suite2p import ROI
+def suite2p_roi(ops, opts=None):
+	import numpy as np
+	from suite2p import extraction, classification, detection, ROI
 
+	# ROI detection
+	classfile = classification.user_classfile
+	ops, stat = detection.detect(ops=ops, classfile=classfile)
 
-def roi(save_path, Ly, Lx):
-    info = {}
-    stats_file = Path(save_path).joinpath('stat.npy')
-    iscell = np.load(
-        Path(save_path).joinpath('iscell.npy'), allow_pickle=True
-    )[:, 0].astype(bool)
-    stats = np.load(stats_file, allow_pickle=True)
+	######## ROI EXTRACTION ##############
+	ops, stat, F, Fneu, F_chan2, Fneu_chan2 = extraction.create_masks_and_extract(ops, stat)
 
-    label_id = True
-    arrays = []
-    for i, s in enumerate(stats):
-        array = ROI(
-            ypix=s['ypix'], xpix=s['xpix'], lam=s['lam'], med=s['med'], do_crop=False
-        ).to_array(Ly=Ly, Lx=Lx)
+	######## ROI CLASSIFICATION ##############
+	iscell = classification.classify(stat=stat, classfile=classfile)
+	iscell = iscell[:, 0].astype(bool)
 
-        if label_id:
-            array *= i + 1
-        arrays.append(array)
+	arrays = []
+	for i, s in enumerate(stat):
+		array = ROI(
+			ypix=s['ypix'], xpix=s['xpix'], lam=s['lam'], med=s['med'], do_crop=False
+		).to_array(Ly=ops['Ly'], Lx=ops['Lx'])
+		array *= i + 1
+		arrays.append(array)
 
-    im = np.stack(arrays)
-    im[im == 0] = np.nan
+	im = np.stack(arrays)
+	im[im == 0] = np.nan
 
-    info['im'] = im
-    info['iscell'] = iscell
+	ops['ROI_found'] = np.nanmax(im, axis=0)
+	ops['non_cell_roi'] = np.nanmax(im[~iscell])
+	ops['cell_roi'] = np.nanmax(im[iscell], axis=0)
+	ops['F'] = F
+	ops['Fneu'] = Fneu
 
-    return info
+	ops['max_proj'] = ops['max_proj']
+	ops['images'] = ops['max_proj']
 
-
-if __name__ == '__main__':
-    import os
-    from run_s2p import run_s2p
-    file_path = os.path.join(
-        '/Users', 'shogoakiyama', 'Desktop', 'optinist', 
-        'optinist', 'data', 'Sue_2x_3000_40_-46.tif')
-    info = run_s2p(file_path)
-    roi(info['save_path'], info['Lx'], info['Ly'])
+	return ops
