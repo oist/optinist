@@ -16,3 +16,4 @@ psutil
 nbstripout
 tensorflow
 opencv-python
+suite2p

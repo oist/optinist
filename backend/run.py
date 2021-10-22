@@ -22,7 +22,7 @@ def run_code(wrapper_dict, flowList):
         if item.type == 'data':
             info[item.label] = {'path': item.path}
         elif item.type == 'algo':
-            info[item.label] = wrapper_dict[item.label](info[prev_label])
+            info[item.label] = wrapper_dict[item.label](info[prev_label].copy())
 
         prev_label = item.label
 
