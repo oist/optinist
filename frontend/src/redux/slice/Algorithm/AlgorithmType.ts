@@ -10,10 +10,7 @@ export type Algorithm = {
       name: string
       param?: AlgoParam
       output?: OutputPaths
-      selectedPath: {
-        value: string | null
-        isImage: boolean
-      } | null
+      selectedOutputKey?: string // key of OutputPaths
     }
   }
   plotDataMap: {
@@ -28,9 +25,18 @@ export type OutputData = {
 }
 
 export type OutputPaths = {
-  images?: {
-    maxIndex: number
-    path: string
-  }
-  fluo?: string
+  [key: string]: OutputPathType
 }
+
+export type OutputPathType = OutputPath<'image'> | OutputPath<'plotData'>
+
+export interface OutputPath<T extends OutputType> {
+  type: T
+  path: T extends 'image' ? ImagePathType : PlotDataPathType
+}
+
+type OutputType = 'image' | 'plotData'
+
+type ImagePathType = { value: string; maxIndex: number }
+
+type PlotDataPathType = { value: string }

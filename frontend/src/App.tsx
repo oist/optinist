@@ -1,5 +1,5 @@
 import './App.css'
-import { Layout, Model, TabNode, Actions } from 'flexlayout-react'
+import { Layout, Model, TabNode } from 'flexlayout-react'
 import 'flexlayout-react/style/light.css'
 import { flexjson } from 'const/flexlayout'
 import { SideBar } from 'components/TreeView'
@@ -9,75 +9,55 @@ import { PlotOutput } from 'components/PlotOutput'
 import { ImageViewer } from 'components/ImageViewer'
 import { ToolBar } from 'components/ToolBar'
 import React from 'react'
-import { useSelector } from 'react-redux'
-import {
-  clickedNodeIdSelector,
-  clickedNodeSelector,
-  runStatusSelector,
-} from 'redux/slice/Element/ElementSelector'
-import { RUN_STATUS } from 'redux/slice/Element/ElementType'
-import { isAlgoNodeData, isInputNodeData } from 'utils/ElementUtils'
-import {
-  currentAlgoIdSelector,
-  selectedOutputPathSelector,
-} from 'redux/slice/Algorithm/AlgorithmSelector'
-import { RootState } from 'redux/store'
 
 const model = Model.fromJson(flexjson)
+
+export const FlexLayoutModelContext = React.createContext<Model>(model)
+export const NodeIdContext = React.createContext<string>('')
 
 function App() {
   const factory = (node: TabNode) => {
     var component = node.getComponent()
-    if (component === 'button') {
-      return <button>{node.getName()}</button>
-    } else if (component === 'flowchart') {
-      return <FlowChart />
-    } else if (component === 'sidebar') {
-      return <SideBar />
-    } else if (component === 'paramForm') {
-      return <ParamForm />
-    } else if (component === 'output') {
-      return <PlotOutput />
-    } else if (component === 'image') {
-      return <ImageViewer />
-    } else {
-      return null
+    const nodeId = node.getId().split('-')[0] // todo function化する
+    switch (component) {
+      case 'flowchart':
+        return <FlowChart />
+      case 'sidebar':
+        return <SideBar />
+      case 'paramForm':
+        return (
+          <NodeIdContext.Provider value={nodeId}>
+            <ParamForm />
+          </NodeIdContext.Provider>
+        )
+      case 'output':
+        return (
+          <NodeIdContext.Provider value={nodeId}>
+            <PlotOutput />
+          </NodeIdContext.Provider>
+        )
+      case 'image':
+        return (
+          <NodeIdContext.Provider value={nodeId}>
+            <ImageViewer />
+          </NodeIdContext.Provider>
+        )
+      default:
+        return null
     }
   }
-  const runStatus = useSelector(runStatusSelector)
-  React.useEffect(() => {
-    if (runStatus === RUN_STATUS.SUCCESS) {
-      model.doAction(Actions.selectTab('output0'))
-    }
-  }, [runStatus])
-  const currentNodeId = useSelector(clickedNodeIdSelector)
-  const currentNode = useSelector(clickedNodeSelector)
-  const currentAlgoNodeId = useSelector(currentAlgoIdSelector)
-  const isImage = useSelector((state: RootState) => {
-    return selectedOutputPathSelector(currentAlgoNodeId)(state)?.isImage
-  })
-  React.useEffect(() => {
-    if (isInputNodeData(currentNode)) {
-      model.doAction(Actions.selectTab('image0'))
-    } else if (isAlgoNodeData(currentNode)) {
-      if (isImage !== undefined) {
-        if (isImage) {
-          model.doAction(Actions.selectTab('image0'))
-        } else {
-          model.doAction(Actions.selectTab('output0'))
-        }
-      }
-    }
-  }, [currentNodeId, currentNode, isImage])
+
   return (
     <div id="container">
       <div className="app">
-        <div className="toolbar">
-          <ToolBar />
-        </div>
-        <div className="contents">
-          <Layout model={model} factory={factory} />
-        </div>
+        <FlexLayoutModelContext.Provider value={model}>
+          <div className="toolbar">
+            <ToolBar />
+          </div>
+          <div className="contents">
+            <Layout model={model} factory={factory} />
+          </div>
+        </FlexLayoutModelContext.Provider>
       </div>
     </div>
   )

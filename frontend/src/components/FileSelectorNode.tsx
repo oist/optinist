@@ -1,8 +1,11 @@
 import React, { CSSProperties } from 'react'
 import { useDispatch } from 'react-redux'
+import { alpha, useTheme } from '@material-ui/core'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
 import { uploadImageFile } from 'redux/slice/ImageIndex/ImageIndexAction'
-import { alpha, useTheme } from '@material-ui/core'
+import { FlexLayoutModelContext } from 'App'
+import { useTabAction } from 'FlexLayoutHook'
+import { OUTPUT_TABSET_ID } from 'const/flexlayout'
 
 export const FileSelectorNode = React.memo<NodeProps>((element) => {
   const targetHandleStyle: CSSProperties = {
@@ -26,6 +29,13 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
       dispatch(uploadImageFile({ elementId, fileName, formData }))
     }
   }
+  const model = React.useContext(FlexLayoutModelContext)
+  const actionForImageTab = useTabAction(element.id, 'image', OUTPUT_TABSET_ID)
+  const onClick = () => {
+    if (actionForImageTab != null) {
+      model.doAction(actionForImageTab)
+    }
+  }
   const theme = useTheme()
   return (
     <div
@@ -35,6 +45,7 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
           ? alpha(theme.palette.primary.light, 0.1)
           : undefined,
       }}
+      onClick={onClick}
     >
       <div style={{ padding: 5 }}>
         <input type="file" onChange={onFileInputChange} />

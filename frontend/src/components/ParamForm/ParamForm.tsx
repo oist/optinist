@@ -8,23 +8,23 @@ import Typography from '@material-ui/core/Typography'
 import { isAlgoNodeData } from 'utils/ElementUtils'
 import {
   algoParamByIdSelector,
-  currentAlgoIdSelector,
-  currentAlgoNameSelector,
+  currentAlgoNameByIdSelector,
 } from 'redux/slice/Algorithm/AlgorithmSelector'
+import { NodeIdContext } from 'App'
 
 export const ParamForm = React.memo(() => {
-  const currentAlgoId = useSelector(currentAlgoIdSelector)
-  const currentAlgoName = useSelector(currentAlgoNameSelector)
-  const currentNode = useSelector(nodeByIdSelector(currentAlgoId))
-  const algoParam = useSelector(algoParamByIdSelector(currentAlgoId))
+  const nodeId = React.useContext(NodeIdContext)
+  const currentAlgoName = useSelector(currentAlgoNameByIdSelector(nodeId))
+  const currentNode = useSelector(nodeByIdSelector(nodeId))
+  const algoParam = useSelector(algoParamByIdSelector(nodeId))
   const dispatch = useDispatch()
 
   useEffect(() => {
     if (isAlgoNodeData(currentNode) && currentNode.data && !algoParam) {
       const algoName = currentNode.data.label
-      dispatch(getAlgoParams({ id: currentAlgoId, algoName }))
+      dispatch(getAlgoParams({ id: nodeId, algoName }))
     }
-  }, [dispatch, currentAlgoId, algoParam, currentNode])
+  }, [dispatch, nodeId, algoParam, currentNode])
 
   if (algoParam === undefined) {
     return null
@@ -33,7 +33,7 @@ export const ParamForm = React.memo(() => {
   return (
     <div style={{ padding: 8 }}>
       <Typography variant="h5">
-        {currentAlgoName}({currentAlgoId})
+        {currentAlgoName}({nodeId})
       </Typography>
       <div style={{ paddingLeft: 8 }}>
         {Object.keys(algoParam).map((paramName) => (

@@ -4,8 +4,7 @@ import { NODE_DATA_TYPE_SET } from 'const/NodeData'
 import { INITIAL_IMAGE_ELEMENT_ID } from 'const/flowchart'
 import { uploadImageFile } from './ImageIndexAction'
 import { ImageIndex, IMAGE_INDEX_SLICE_NAME } from './ImageIndexType'
-import { clickNode, runPipeline } from '../Element/ElementAction'
-import { setSelectedOutputPath } from '../Algorithm/Algorithm'
+import { clickNode } from '../Element/ElementAction'
 
 const initialState: ImageIndex = {
   currentImageId: INITIAL_IMAGE_ELEMENT_ID,

@@ -29,25 +29,15 @@ export const algorithmSlice = createSlice({
         param[paramKey] = newValue
       }
     },
-    setSelectedOutputPath: (
+    setSelectedOutputKey: (
       state,
       action: PayloadAction<{
         id: string
-        path: string
+        outputKey: string
       }>,
     ) => {
-      // todo もっといい状態の持ち方と判定方法があるはず...
-      if (action.payload.path.includes('images')) {
-        state.algoMap[action.payload.id].selectedPath = {
-          value: action.payload.path,
-          isImage: true,
-        }
-      } else {
-        state.algoMap[action.payload.id].selectedPath = {
-          value: action.payload.path,
-          isImage: false,
-        }
-      }
+      state.algoMap[action.payload.id].selectedOutputKey =
+        action.payload.outputKey
     },
   },
   extraReducers: (builder) => {
@@ -61,7 +51,6 @@ export const algorithmSlice = createSlice({
         if (isAlgoNodeData(action.payload)) {
           state.algoMap[action.payload.id] = {
             name: action.payload.data?.label ?? '',
-            selectedPath: null,
           }
         }
       })
@@ -86,24 +75,31 @@ export const algorithmSlice = createSlice({
               // todo とりあえず名前一致だが、後でサーバーサイドとフロントで両方idにする
               if (algo.name === name && state.algoMap[id]) {
                 state.algoMap[id].output = {}
+                // todo imagesとfluoで決め打ちで無くなったら改修する
                 if (dir.image_dir != null) {
                   state.algoMap[id].output = {
-                    images: {
-                      path: dir.image_dir?.path ?? '',
-                      maxIndex: dir.image_dir?.max_index ?? 0,
+                    ['images']: {
+                      type: 'image',
+                      path: {
+                        value: dir.image_dir.path,
+                        maxIndex: dir.image_dir.max_index,
+                      },
                     },
                   }
                 }
                 if (dir.fluo_path != null) {
                   state.algoMap[id].output = {
                     ...state.algoMap[id].output,
-                    fluo: dir.fluo_path,
+                    ['fluo']: {
+                      type: 'plotData',
+                      path: {
+                        value: dir.fluo_path,
+                      },
+                    },
                   }
                 }
-                state.algoMap[id].selectedPath = {
-                  value: dir.image_dir?.path ?? null,
-                  isImage: true,
-                } // 本来は意味のあるkeyを使用する
+
+                state.algoMap[id].selectedOutputKey = 'images' // 本来は意味のあるkeyを使用する
               }
             })
           })
@@ -112,6 +108,6 @@ export const algorithmSlice = createSlice({
   },
 })
 
-export const { updateParam, setSelectedOutputPath } = algorithmSlice.actions
+export const { updateParam, setSelectedOutputKey } = algorithmSlice.actions
 
 export default algorithmSlice.reducer

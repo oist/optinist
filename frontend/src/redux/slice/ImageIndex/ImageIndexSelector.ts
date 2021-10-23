@@ -2,8 +2,8 @@ import { RootState } from '../../store'
 
 export const imageIndexSelector = (state: RootState) => state.imageIndex
 
-export const currentImageIdSelector = (state: RootState) =>
-  imageIndexSelector(state).currentImageId
+// export const currentImageIdSelector = (state: RootState) =>
+//   imageIndexSelector(state).currentImageId
 
 export const imageIndexByIdSelector = (id: string) => (state: RootState) => {
   const imageIndex = imageIndexSelector(state)
@@ -14,27 +14,29 @@ export const imageIndexByIdSelector = (id: string) => (state: RootState) => {
   }
 }
 
-export const currentImageIndexSelector = (state: RootState) => {
+export const currentImageIndexSelector = (id: string) => (state: RootState) => {
   try {
-    console.log(state)
-    const currentNodeId = currentImageIdSelector(state)
-    return imageIndexByIdSelector(currentNodeId)(state)
+    return imageIndexByIdSelector(id)(state)
   } catch (e) {
     return undefined
   }
 }
 
-export const currentImageMaxIndexSelector = (state: RootState) =>
-  currentImageIndexSelector(state)?.maxIndex
+export const currentImageMaxIndexSelector =
+  (id: string) => (state: RootState) =>
+    currentImageIndexSelector(id)(state)?.maxIndex
 
-export const currentImageFolderSelector = (state: RootState) =>
-  currentImageIndexSelector(state)?.folder
+export const currentImageFolderSelector = (id: string) => (state: RootState) =>
+  currentImageIndexSelector(id)(state)?.folder
 
-export const currentImageFileNameSelector = (state: RootState) =>
-  currentImageIndexSelector(state)?.fileName
+export const currentImageFileNameSelector =
+  (id: string) => (state: RootState) =>
+    currentImageIndexSelector(id)(state)?.fileName
 
-export const currentImagePageIndexSelector = (state: RootState) =>
-  currentImageIndexSelector(state)?.pageIndex
+export const currentImagePageIndexSelector =
+  (id: string) => (state: RootState) =>
+    currentImageIndexSelector(id)(state)?.pageIndex
 
-export const currentImageIsFulfilledSelector = (state: RootState) =>
-  currentImageIndexSelector(state)?.isFulfilled
+export const currentImageIsFulfilledSelector =
+  (id: string) => (state: RootState) =>
+    currentImageIndexSelector(id)(state)?.isFulfilled
