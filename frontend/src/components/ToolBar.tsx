@@ -2,16 +2,15 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Button from '@material-ui/core/Button'
 import PlayArrowIcon from '@material-ui/icons/PlayArrow'
-import StopIcon from '@material-ui/icons/Stop'
 import Snackbar from '@material-ui/core/Snackbar'
 import CloseIcon from '@material-ui/icons/Close'
-
+import Alert from '@material-ui/lab/Alert'
 import {
   runMassageSelector,
   runStatusSelector,
 } from 'redux/slice/Element/ElementSelector'
 import { Box, IconButton, LinearProgress } from '@material-ui/core'
-import { runPipeline, stopPipeline } from 'redux/slice/Element/ElementAction'
+import { runPipeline } from 'redux/slice/Element/ElementAction'
 import { RootState } from 'redux/store'
 import { RUN_STATUS } from 'redux/slice/Element/ElementType'
 
@@ -23,21 +22,21 @@ export const ToolBar = React.memo(() => {
   const onRunBtnClick = () => {
     dispatch(runPipeline())
   }
-  const onStopBtnClick = () => {
-    dispatch(stopPipeline())
-  }
-  const [dialog, setDialog] = React.useState<{
+  const [snackbar, setDialog] = React.useState<{
     open: boolean
-    message: string
-  }>({ open: false, message: '' })
+    message?: string
+    severity?: 'success' | 'error'
+  }>({ open: false })
   const handleClose = () => {
-    setDialog({ open: false, message: '' })
+    setDialog((prev) => ({ ...prev, open: false }))
   }
   const runStatus = useSelector(runStatusSelector)
   const runMessage = useSelector(runMassageSelector)
   React.useEffect(() => {
-    if (runStatus === RUN_STATUS.SUCCESS || runStatus === RUN_STATUS.FAILED) {
-      setDialog({ open: true, message: runMessage ?? '' })
+    if (runStatus === RUN_STATUS.SUCCESS) {
+      setDialog({ open: true, message: runMessage, severity: 'success' })
+    } else if (runStatus === RUN_STATUS.FAILED) {
+      setDialog({ open: true, message: runMessage, severity: 'error' })
     }
   }, [runStatus, runMessage])
   return (
@@ -59,17 +58,6 @@ export const ToolBar = React.memo(() => {
             run
           </Button>
         </Box>
-        {/* <Box>
-          <Button
-            className="ctrl_btn"
-            variant="contained"
-            color="secondary"
-            endIcon={<StopIcon />}
-            onClick={onStopBtnClick}
-          >
-            stop
-          </Button>
-        </Box> */}
       </Box>
       {isRunning ? <LinearProgress /> : <div style={{ height: 4 }} />}
       <Snackbar
@@ -78,15 +66,18 @@ export const ToolBar = React.memo(() => {
           vertical: 'bottom',
           horizontal: 'left',
         }}
-        open={dialog.open}
+        open={snackbar.open}
         onClose={handleClose}
-        message={dialog.message}
         action={
           <IconButton onClick={handleClose} color="inherit" size="small">
             <CloseIcon />
           </IconButton>
         }
-      />
+      >
+        <Alert onClose={handleClose} severity={snackbar.severity}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
     </div>
   )
 })

@@ -26,6 +26,21 @@ export const runPipeline = createAsyncThunk<
   void,
   ThunkApiConfig
 >(`${ELEMENT_SLICE_NAME}/runPipeline`, async (_, thunkAPI) => {
+  const pathErrorNodeList = flowElementsSelector(thunkAPI.getState()).filter(
+    (element) => {
+      if (isInputNodeData(element)) {
+        if (!element.data?.path) {
+          return true
+        }
+      }
+      return false
+    },
+  )
+  if (pathErrorNodeList.length > 0) {
+    const message = `failed to read file path.`
+    console.log(message, JSON.stringify(pathErrorNodeList))
+    throw new Error(`${message}`)
+  }
   const nodeDataListForRun = flowElementsSelector(thunkAPI.getState())
     .filter((element) => isInputNodeData(element) || isAlgoNodeData(element))
     .map((element) => {
