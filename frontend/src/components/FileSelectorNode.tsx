@@ -1,8 +1,9 @@
 import React, { CSSProperties } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
 import { uploadImageFile } from 'redux/slice/ImageIndex/ImageIndexAction'
 import { alpha, useTheme } from '@material-ui/core'
+import { runStatusSelector } from 'redux/slice/Element/ElementSelector'
 
 export const FileSelectorNode = React.memo<NodeProps>((element) => {
   const targetHandleStyle: CSSProperties = {
@@ -15,6 +16,18 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
   const sourceHandleStyle: CSSProperties = { ...targetHandleStyle }
   const dispatch = useDispatch()
 
+  const runStatus = useSelector(runStatusSelector)
+  const inputRef = React.useRef<HTMLInputElement>(null)
+  const [filePathError, setFilePathError] = React.useState(false)
+
+  React.useEffect(() => {
+    if (inputRef.current != null) {
+      if (runStatus === 'failed' && inputRef.current.files?.length === 0) {
+        setFilePathError(true)
+      }
+    }
+  }, [runStatus, inputRef.current])
+
   const onFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
     if (event.target.files != null && event.target.files[0] != null) {
@@ -24,6 +37,7 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
       const elementId = element.id
       const fileName = file.name
       dispatch(uploadImageFile({ elementId, fileName, formData }))
+      setFilePathError(false)
     }
   }
   const theme = useTheme()
@@ -36,8 +50,13 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
           : undefined,
       }}
     >
-      <div style={{ padding: 5 }}>
-        <input type="file" onChange={onFileInputChange} />
+      <div
+        style={{
+          padding: 5,
+          color: filePathError ? theme.palette.error.main : undefined,
+        }}
+      >
+        <input ref={inputRef} type="file" onChange={onFileInputChange} />
       </div>
       <Handle
         type="source"
