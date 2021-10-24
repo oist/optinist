@@ -2,9 +2,10 @@ import { Elements, Position } from 'react-flow-renderer'
 import { NodeData, NODE_DATA_TYPE_SET } from 'const/NodeData'
 
 export const INITIAL_IMAGE_ELEMENT_ID = '0'
+export const INITIAL_IMAGE_ELEMENT_NAME = 'data'
 export const INITIAL_ALGO_ELEMENT_ID = '1'
+export const INITIAL_ALGO_ELEMENT_NAME = 'caiman_mc'
 export const INITIAL_EDGE_ID = '2'
-export const INITIAL_OUTPUT_ELEMENT_ID = '3'
 
 export const INITIAL_ALGO_STYLE: React.CSSProperties = {
   width: 180,
@@ -19,12 +20,6 @@ export const INITIAL_DATA_STYLE: React.CSSProperties = {
 } as const
 
 export const initialElements: Elements<NodeData> = [
-  // {
-  //   id: '1',
-  //   type: 'input',
-  //   data: { label: 'data1' },
-  //   position: { x: 200, y: 5 },
-  // },
   {
     id: INITIAL_IMAGE_ELEMENT_ID,
     type: 'selectorNode',
@@ -38,25 +33,12 @@ export const initialElements: Elements<NodeData> = [
   {
     id: INITIAL_ALGO_ELEMENT_ID,
     type: 'default',
-    data: { type: NODE_DATA_TYPE_SET.ALGO, label: 'caiman_mc' },
+    data: { type: NODE_DATA_TYPE_SET.ALGO, label: INITIAL_ALGO_ELEMENT_NAME },
     style: INITIAL_ALGO_STYLE,
     position: { x: 400, y: 60 },
     targetPosition: Position.Left,
     sourcePosition: Position.Right,
   },
-  // {
-  //   id: '3',
-  //   type: 'default',
-  //   data: { type: 'algo', label: 'caiman_cnmf' },
-  //   position: { x: 200, y: 200 },
-  // },
-  // {
-  //   id: INITIAL_OUTPUT_ELEMENT_ID,
-  //   type: 'output',
-  //   data: { type: NODE_DATA_TYPE_SET.OUTPUT, label: 'output' },
-  //   position: { x: 200, y: 300 },
-  // },
-
   // edge
   {
     id: INITIAL_EDGE_ID,
@@ -64,16 +46,4 @@ export const initialElements: Elements<NodeData> = [
     target: INITIAL_ALGO_ELEMENT_ID,
     type: 'smoothstep',
   },
-  // {
-  //   id: '4',
-  //   source: INITIAL_ALGO_ELEMENT_ID,
-  //   target: INITIAL_OUTPUT_ELEMENT_ID,
-  //   type: 'smoothstep',
-  // },
-  // {
-  //   id: 'e3',
-  //   source: '3',
-  //   target: '4',
-  //   type: 'smoothstep',
-  // },
 ]

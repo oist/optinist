@@ -1,31 +1,25 @@
 import React from 'react'
 import { Line } from 'react-chartjs-2'
 import { useSelector, useDispatch } from 'react-redux'
-import { RootState } from 'redux/store'
 import { getAlgoOutputData } from 'redux/slice/Algorithm/AlgorithmAction'
 import {
-  currentAlgoIdSelector,
-  currentAlgoNameSelector,
+  currentAlgoNameByIdSelector,
   currentOutputDataSelector,
   outputDataIsLoadedByIdSelector,
-  selectedOutputPathSelector,
 } from 'redux/slice/Algorithm/AlgorithmSelector'
+import { NodeIdContext } from 'App'
 
 export const PlotOutput = React.memo(function PlotOutput() {
+  const nodeId = React.useContext(NodeIdContext)
   const dispatch = useDispatch()
-  const id = useSelector(currentAlgoIdSelector)
-  const name = useSelector(currentAlgoNameSelector)
-  const isPlotData = useSelector((state: RootState) => {
-    const isImage = selectedOutputPathSelector(id)(state)?.isImage
-    return isImage != null ? !isImage : false
-  })
-  const isLoaded = useSelector(outputDataIsLoadedByIdSelector(id))
+  const name = useSelector(currentAlgoNameByIdSelector(nodeId))
+  const isLoaded = useSelector(outputDataIsLoadedByIdSelector(nodeId))
   React.useEffect(() => {
-    if (isPlotData && !isLoaded && name) {
-      dispatch(getAlgoOutputData({ id, name }))
+    if (!isLoaded && name) {
+      dispatch(getAlgoOutputData({ id: nodeId, name }))
     }
-  }, [isPlotData, isLoaded, id])
-  if (isPlotData && isLoaded) {
+  }, [isLoaded, nodeId])
+  if (isLoaded) {
     return (
       <div>
         {name}
@@ -38,8 +32,9 @@ export const PlotOutput = React.memo(function PlotOutput() {
 })
 
 const Chart = React.memo(() => {
-  const name = useSelector(currentAlgoNameSelector)
-  const currentOutputData = useSelector(currentOutputDataSelector)
+  const nodeId = React.useContext(NodeIdContext)
+  const name = useSelector(currentAlgoNameByIdSelector(nodeId))
+  const currentOutputData = useSelector(currentOutputDataSelector(nodeId))
   if (currentOutputData == null) {
     return null
   }

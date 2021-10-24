@@ -5,8 +5,8 @@ import TextField from '@material-ui/core/TextField'
 import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
 import { updateParam } from 'redux/slice/Algorithm/Algorithm'
-import { currentAlgoIdSelector } from 'redux/slice/Algorithm/AlgorithmSelector'
 import { paramValueSelector } from 'redux/slice/Algorithm/AlgorithmSelector'
+import { NodeIdContext } from 'App'
 
 type ParamItemProps = {
   paramKey: string
@@ -103,6 +103,6 @@ const ParamItemForBoolean = React.memo<ParamItemProps>(({ paramKey }) => {
 })
 
 function useParamValue(paramKey: string) {
-  const currentAlgoId = useSelector(currentAlgoIdSelector)
-  return useSelector(paramValueSelector(currentAlgoId, paramKey))
+  const nodeId = React.useContext(NodeIdContext)
+  return useSelector(paramValueSelector(nodeId, paramKey))
 }

@@ -1,8 +1,12 @@
 import React, { CSSProperties } from 'react'
+
 import { useDispatch, useSelector } from 'react-redux'
+import { alpha, useTheme } from '@material-ui/core'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
 import { uploadImageFile } from 'redux/slice/ImageIndex/ImageIndexAction'
-import { alpha, useTheme } from '@material-ui/core'
+import { FlexLayoutModelContext } from 'App'
+import { useTabAction } from 'FlexLayoutHook'
+import { OUTPUT_TABSET_ID } from 'const/flexlayout'
 import { runStatusSelector } from 'redux/slice/Element/ElementSelector'
 
 export const FileSelectorNode = React.memo<NodeProps>((element) => {
@@ -40,6 +44,13 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
       setFilePathError(false)
     }
   }
+  const model = React.useContext(FlexLayoutModelContext)
+  const actionForImageTab = useTabAction(element.id, 'image', OUTPUT_TABSET_ID)
+  const onClick = () => {
+    if (actionForImageTab != null) {
+      model.doAction(actionForImageTab)
+    }
+  }
   const theme = useTheme()
   return (
     <div
@@ -49,6 +60,7 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
           ? alpha(theme.palette.primary.light, 0.1)
           : undefined,
       }}
+      onClick={onClick}
     >
       <div
         style={{

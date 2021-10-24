@@ -22,6 +22,8 @@ import { FileSelectorNode } from './FileSelectorNode'
 import { AlgorithmNode } from './AlgorithmNode'
 import { clickNode } from 'redux/slice/Element/ElementAction'
 import { isNodeData } from 'utils/ElementUtils'
+import { FlexLayoutModelContext } from 'App'
+import { useGetDeleteTabActions } from 'FlexLayoutHook'
 
 export const FlowChart = React.memo(() => {
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>()
@@ -58,8 +60,15 @@ export const FlowChart = React.memo(() => {
     }
   }
 
+  const model = React.useContext(FlexLayoutModelContext)
+  const getDeleteTabActions = useGetDeleteTabActions()
   const onElementsRemove = (elementsToRemove: Elements) => {
     dispatch(setFlowElements(removeElements(elementsToRemove, flowElements)))
+    const ids = elementsToRemove.map((elm) => elm.id)
+    const actions = getDeleteTabActions(...ids)
+    actions.forEach((action) => {
+      model.doAction(action)
+    })
   }
 
   const onLoad = (_reactFlowInstance: OnLoadParams) =>
