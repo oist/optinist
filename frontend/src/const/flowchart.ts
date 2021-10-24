@@ -31,7 +31,6 @@ export const initialElements: Elements<NodeData> = [
     data: {
       type: NODE_DATA_TYPE_SET.DATA,
       label: 'data',
-      path: '/Users/shogoakiyama/caiman_data/example_movies/Sue_2x_3000_40_-46.tif',
     },
     style: INITIAL_DATA_STYLE,
     position: { x: 50, y: 60 },
