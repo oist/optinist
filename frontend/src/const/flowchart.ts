@@ -25,8 +25,7 @@ export const initialElements: Elements<NodeData> = [
     type: 'selectorNode',
     data: {
       type: NODE_DATA_TYPE_SET.DATA,
-      label: INITIAL_IMAGE_ELEMENT_NAME,
-      path: '/Users/shogoakiyama/caiman_data/example_movies/Sue_2x_3000_40_-46.tif',
+      label: 'data',
     },
     style: INITIAL_DATA_STYLE,
     position: { x: 50, y: 60 },
