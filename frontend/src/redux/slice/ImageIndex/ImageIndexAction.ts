@@ -4,14 +4,19 @@ import { IMAGE_INDEX_SLICE_NAME } from './ImageIndexType'
 
 export const uploadImageFile = createAsyncThunk<
   { pngFolder: string; tiffPath: string; maxIndex: number },
-  { elementId: string; fileName: string; formData: FormData }
+  {
+    elementId: string
+    fileName: string
+    formData: FormData
+    inputFileNumber: number
+  }
 >(
   `${IMAGE_INDEX_SLICE_NAME}/uploadImageFile`,
-  async ({ elementId, fileName, formData }, thunkAPI) => {
+  async ({ elementId, fileName, formData, inputFileNumber }, thunkAPI) => {
     try {
       formData.append('element_id', elementId)
       const response = await fetch(
-        `http://localhost:8000/api/upload/${fileName}`,
+        `http://localhost:8000/api/upload/${fileName}/${inputFileNumber}`,
         {
           method: 'POST',
           mode: 'cors',

@@ -1,9 +1,10 @@
-import React, { CSSProperties } from 'react'
+import React, { CSSProperties, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
 import { uploadImageFile } from 'redux/slice/ImageIndex/ImageIndexAction'
 import { alpha, useTheme } from '@material-ui/core'
 import { runStatusSelector } from 'redux/slice/Element/ElementSelector'
+import TextField from '@material-ui/core/TextField'
 
 export const FileSelectorNode = React.memo<NodeProps>((element) => {
   const targetHandleStyle: CSSProperties = {
@@ -19,6 +20,7 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
   const runStatus = useSelector(runStatusSelector)
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [filePathError, setFilePathError] = React.useState(false)
+  const [inputFileNumber, setInputFileNumber] = useState(10)
 
   React.useEffect(() => {
     if (inputRef.current != null) {
@@ -36,11 +38,19 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
       formData.append('file', file)
       const elementId = element.id
       const fileName = file.name
-      dispatch(uploadImageFile({ elementId, fileName, formData }))
+      dispatch(
+        uploadImageFile({ elementId, fileName, formData, inputFileNumber }),
+      )
       setFilePathError(false)
     }
   }
+
   const theme = useTheme()
+
+  const onChangeNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputFileNumber(Math.max(1, Number(event.target.value)))
+  }
+
   return (
     <div
       style={{
@@ -58,6 +68,14 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
       >
         <input ref={inputRef} type="file" onChange={onFileInputChange} />
       </div>
+      <TextField
+        type="number"
+        InputLabelProps={{
+          shrink: true,
+        }}
+        value={inputFileNumber}
+        onChange={onChangeNumber}
+      />
       <Handle
         type="source"
         position={Position.Right}
