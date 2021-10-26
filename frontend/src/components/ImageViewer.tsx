@@ -98,15 +98,15 @@ const Viewer = React.memo<{ nodeId: string }>(({ nodeId }) => {
         justifyContent="space-between"
         alignItems="center"
       >
-        <Grid item xs={2} />
+        <Grid item xs={2}>
+          <OptionMenu />
+        </Grid>
         <Grid item xs={8}>
           <Typography style={{ textAlign: 'center', alignItems: 'center' }}>
             {fileName}({nodeId})
           </Typography>
         </Grid>
-        <Grid item xs={2}>
-          <OptionMenu />
-        </Grid>
+        <Grid item xs={2} />
       </Grid>
       <div
         style={{
