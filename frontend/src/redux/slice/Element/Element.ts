@@ -26,7 +26,6 @@ export const elementSlice = createSlice({
     },
     addFlowElement: (state, action: PayloadAction<Node<NodeData>>) => {
       let node = action.payload
-      console.log(node)
       if (isAlgoNodeData(node)) {
         node = {
           ...node,

@@ -10,7 +10,6 @@ import {
   currentImageFolderSelector,
   currentImageFileNameSelector,
   currentImageIndexSelector,
-  currentImageIdSelector,
   currentImageIsFulfilledSelector,
 } from 'redux/slice/ImageIndex/ImageIndexSelector'
 
@@ -20,29 +19,30 @@ import {
   incrementPageIndex,
 } from 'redux/slice/ImageIndex/ImageIndex'
 import { LinearProgress, Typography, useTheme } from '@material-ui/core'
+import { NodeIdContext } from 'App'
 // import logo from './logo.svg';
 
 export const ImageViewer = React.memo(() => {
+  const nodeId = React.useContext(NodeIdContext)
   const currentImageIsSeleted = useSelector(
-    (state: RootState) => currentImageIndexSelector(state) != null,
+    (state: RootState) => currentImageIndexSelector(nodeId)(state) != null,
   )
   if (currentImageIsSeleted) {
-    return <Viewer />
+    return <Viewer nodeId={nodeId} />
   } else {
     return null
   }
 })
 
-const Viewer = React.memo(() => {
+const Viewer = React.memo<{ nodeId: string }>(({ nodeId }) => {
   const disptach = useDispatch()
-  const id = useSelector(currentImageIdSelector)
-  const maxIndex = useSelector(currentImageMaxIndexSelector)
-  const pageIndex = useSelector(currentImagePageIndexSelector)
-  const folder = useSelector(currentImageFolderSelector)
-  const fileName = useSelector(currentImageFileNameSelector)
-  const handleNext = () => disptach(incrementPageIndex({ id }))
-  const handleBack = () => disptach(decrementPageIndex({ id }))
-  const isLoaded = useSelector(currentImageIsFulfilledSelector)
+  const maxIndex = useSelector(currentImageMaxIndexSelector(nodeId))
+  const pageIndex = useSelector(currentImagePageIndexSelector(nodeId))
+  const folder = useSelector(currentImageFolderSelector(nodeId))
+  const fileName = useSelector(currentImageFileNameSelector(nodeId))
+  const handleNext = () => disptach(incrementPageIndex({ id: nodeId }))
+  const handleBack = () => disptach(decrementPageIndex({ id: nodeId }))
+  const isLoaded = useSelector(currentImageIsFulfilledSelector(nodeId))
   const theme = useTheme()
   if (!isLoaded) {
     return <LinearProgress />
@@ -84,7 +84,7 @@ const Viewer = React.memo(() => {
         }
       />
       <Typography style={{ textAlign: 'center' }}>
-        {fileName}({id})
+        {fileName}({nodeId})
       </Typography>
       <div
         style={{

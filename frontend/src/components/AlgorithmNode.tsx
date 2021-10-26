@@ -2,7 +2,6 @@ import React, { CSSProperties } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
 import { NodeData } from 'const/NodeData'
-
 import {
   alpha,
   Typography,
@@ -11,60 +10,96 @@ import {
   MenuItem,
 } from '@material-ui/core'
 import {
-  imageDirMaxIndexByIdSelector,
-  outputPathListSelector,
-  selectedOutputPathSelector,
+  imagePathMaxIndexByIdSelector,
+  outputKeyListSelector,
+  selectedOutputKeySelector,
+  selectedOutputPathTypeSelector,
+  selectedOutputPathValueSelector,
 } from 'redux/slice/Algorithm/AlgorithmSelector'
-import { setSelectedOutputPath } from 'redux/slice/Algorithm/Algorithm'
+import { setSelectedOutputKey } from 'redux/slice/Algorithm/Algorithm'
 import { showAlgoOutputImage } from 'redux/slice/ImageIndex/ImageIndex'
+import { FlexLayoutModelContext } from 'App'
+
+import { OUTPUT_TABSET_ID, PARAM_FORM_TABSET_ID } from 'const/flexlayout'
+import { useTabAction } from 'FlexLayoutHook'
+
+const leftHandleStyle: CSSProperties = {
+  width: 8,
+  left: 0,
+  height: '100%',
+  border: '1px solid',
+  borderRadius: 0,
+}
+const rightHandleStyle: CSSProperties = {
+  width: 8,
+  right: 0,
+  height: '100%',
+  border: '1px solid',
+  borderColor: 'black',
+  borderRadius: 0,
+}
 
 export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
+  const nodeId = element.id
   const theme = useTheme()
   const dispatch = useDispatch()
-  const leftHandleStyle: CSSProperties = {
-    width: 8,
-    left: 0,
-    height: '100%',
-    border: '1px solid',
-    borderRadius: 0,
-  }
-  const rightHandleStyle: CSSProperties = {
-    width: 8,
-    right: 0,
-    height: '100%',
-    border: '1px solid',
-    borderColor: 'black',
-    borderRadius: 0,
-  }
+  const model = React.useContext(FlexLayoutModelContext)
 
-  const pathList = useSelector(outputPathListSelector(element.id))
-  const selectedPath = useSelector(selectedOutputPathSelector(element.id))
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    dispatch(
-      setSelectedOutputPath({
-        id: element.id,
-        path: event.target.value as string,
-      }),
-    )
-  }
+  const selectedOutputType = useSelector(selectedOutputPathTypeSelector(nodeId))
+  const selectedOutputKey = useSelector(selectedOutputKeySelector(nodeId))
+  // todo imagesとfluoで決め打ちで無くなったら改修する
+  const actionForOutputTab = useTabAction(
+    nodeId,
+    selectedOutputType === 'image' ? 'image' : 'output',
+    OUTPUT_TABSET_ID,
+    selectedOutputKey ?? '',
+  )
 
-  const maxIndex = useSelector(imageDirMaxIndexByIdSelector(element.id))
+  const actionForParamFormTab = useTabAction(
+    nodeId,
+    'paramForm',
+    PARAM_FORM_TABSET_ID,
+  )
+  const selectedPathValue = useSelector(selectedOutputPathValueSelector(nodeId))
+  const maxIndex = useSelector(imagePathMaxIndexByIdSelector(nodeId, 'images'))
   const onClick = () => {
     if (
-      selectedPath != null &&
-      selectedPath.value != null &&
-      selectedPath.isImage
+      selectedOutputKey != null &&
+      selectedPathValue != null &&
+      selectedOutputType === 'image' &&
+      maxIndex != null
     ) {
       dispatch(
         showAlgoOutputImage({
-          id: element.id,
-          folder: selectedPath.value,
+          id: nodeId,
+          folder: selectedPathValue,
           algoName: element.data.label,
-          maxIndex: maxIndex ?? 0,
+          maxIndex,
         }),
       )
     }
+    if (actionForParamFormTab != null) {
+      model.doAction(actionForParamFormTab)
+    }
+    // selectedOutputKeyがnullの場合は実行結果が存在しないためoutput用のタブを選択or作成しない
+    if (
+      selectedOutputKey != null &&
+      selectedOutputType != null &&
+      actionForOutputTab != null
+    ) {
+      model.doAction(actionForOutputTab)
+    }
   }
+
+  React.useEffect(() => {
+    if (
+      selectedOutputKey != null &&
+      selectedOutputType != null &&
+      actionForOutputTab != null
+    ) {
+      model.doAction(actionForOutputTab)
+    }
+  }, [selectedOutputKey])
 
   return (
     <div
@@ -91,28 +126,44 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
       <Handle
         type="target"
         position={Position.Left}
-        id={element.id + '-left'}
+        id={nodeId + '-left'}
         style={leftHandleStyle}
       />
       <Handle
         type="source"
         position={Position.Right}
-        id={element.id + '-right'}
+        id={nodeId + '-right'}
         style={rightHandleStyle}
       />
-      {pathList.length !== 0 && selectedPath != null && (
-        <Select
-          value={selectedPath.value}
-          label="output"
-          onChange={handleChange}
-        >
-          {pathList.map(([key, value]) => (
-            <MenuItem value={typeof value === 'string' ? value : value?.path}>
-              {key}
-            </MenuItem>
-          ))}
-        </Select>
-      )}
+      <OutputKeySelect nodeId={nodeId} />
     </div>
   )
+})
+
+const OutputKeySelect = React.memo<{ nodeId: string }>(({ nodeId }) => {
+  const dispatch = useDispatch()
+  const outputKeyList = useSelector(outputKeyListSelector(nodeId))
+  const selectedOutputKey = useSelector(selectedOutputKeySelector(nodeId))
+  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const outputKey = event.target.value as string
+    dispatch(
+      setSelectedOutputKey({
+        id: nodeId,
+        outputKey,
+      }),
+    )
+  }
+  if (outputKeyList.length !== 0 && selectedOutputKey != null) {
+    return (
+      <Select value={selectedOutputKey} label="output" onChange={handleChange}>
+        {outputKeyList.map((outputKey, i) => (
+          <MenuItem value={outputKey} key={i.toFixed()}>
+            {outputKey}
+          </MenuItem>
+        ))}
+      </Select>
+    )
+  } else {
+    return null
+  }
 })
