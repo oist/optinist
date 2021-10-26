@@ -24,13 +24,7 @@ import {
   setBrightness,
   setContrast,
 } from 'redux/slice/ImageIndex/ImageIndex'
-import {
-  IconButton,
-  LinearProgress,
-  Slider,
-  Typography,
-  useTheme,
-} from '@material-ui/core'
+import { LinearProgress, Slider, Typography, useTheme } from '@material-ui/core'
 import { NodeIdContext } from 'App'
 
 // import logo from './logo.svg';
@@ -104,13 +98,13 @@ const Viewer = React.memo<{ nodeId: string }>(({ nodeId }) => {
         justifyContent="space-between"
         alignItems="center"
       >
-        <Grid item xs={1} />
-        <Grid item xs={10}>
+        <Grid item xs={2} />
+        <Grid item xs={8}>
           <Typography style={{ textAlign: 'center', alignItems: 'center' }}>
             {fileName}({nodeId})
           </Typography>
         </Grid>
-        <Grid item xs={1}>
+        <Grid item xs={2}>
           <OptionMenu />
         </Grid>
       </Grid>
@@ -150,9 +144,14 @@ const OptionMenu = React.memo(() => {
   const contrast = useSelector(currentImageContrastSelector(nodeId))
   return (
     <>
-      <IconButton size="small" ref={menuAnchorEl} onClick={handleClick}>
-        <MoreVertIcon />
-      </IconButton>
+      <Button
+        size="small"
+        variant="outlined"
+        ref={menuAnchorEl}
+        onClick={handleClick}
+      >
+        filter
+      </Button>
       <Popover
         open={open}
         anchorEl={menuAnchorEl.current}
