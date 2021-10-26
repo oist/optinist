@@ -13,4 +13,6 @@ export type ImageIndexType = {
   maxIndex: number
   pageIndex: number
   isFulfilled: boolean
+  brightness: number
+  contrast: number
 }
