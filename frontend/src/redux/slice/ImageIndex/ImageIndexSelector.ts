@@ -40,3 +40,11 @@ export const currentImagePageIndexSelector =
 export const currentImageIsFulfilledSelector =
   (id: string) => (state: RootState) =>
     currentImageIndexSelector(id)(state)?.isFulfilled
+
+export const currentImageBrightnessSelector =
+  (id: string) => (state: RootState) =>
+    currentImageIndexSelector(id)(state)?.brightness
+
+export const currentImageContrastSelector =
+  (id: string) => (state: RootState) =>
+    currentImageIndexSelector(id)(state)?.contrast

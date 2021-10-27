@@ -1,5 +1,4 @@
-import React, { CSSProperties } from 'react'
-
+import React, { CSSProperties, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { alpha, useTheme } from '@material-ui/core'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
@@ -8,6 +7,7 @@ import { FlexLayoutModelContext } from 'App'
 import { useTabAction } from 'FlexLayoutHook'
 import { OUTPUT_TABSET_ID } from 'const/flexlayout'
 import { runStatusSelector } from 'redux/slice/Element/ElementSelector'
+import TextField from '@material-ui/core/TextField'
 
 export const FileSelectorNode = React.memo<NodeProps>((element) => {
   const targetHandleStyle: CSSProperties = {
@@ -23,6 +23,7 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
   const runStatus = useSelector(runStatusSelector)
   const inputRef = React.useRef<HTMLInputElement>(null)
   const [filePathError, setFilePathError] = React.useState(false)
+  const [inputFileNumber, setInputFileNumber] = useState(10)
 
   React.useEffect(() => {
     if (inputRef.current != null) {
@@ -40,10 +41,13 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
       formData.append('file', file)
       const elementId = element.id
       const fileName = file.name
-      dispatch(uploadImageFile({ elementId, fileName, formData }))
+      dispatch(
+        uploadImageFile({ elementId, fileName, formData, inputFileNumber }),
+      )
       setFilePathError(false)
     }
   }
+
   const model = React.useContext(FlexLayoutModelContext)
   const actionForImageTab = useTabAction(element.id, 'image', OUTPUT_TABSET_ID)
   const onClick = () => {
@@ -51,7 +55,13 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
       model.doAction(actionForImageTab)
     }
   }
+
   const theme = useTheme()
+
+  const onChangeNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setInputFileNumber(Math.max(1, Number(event.target.value)))
+  }
+
   return (
     <div
       style={{
@@ -70,6 +80,14 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
       >
         <input ref={inputRef} type="file" onChange={onFileInputChange} />
       </div>
+      <TextField
+        type="number"
+        InputLabelProps={{
+          shrink: true,
+        }}
+        value={inputFileNumber}
+        onChange={onChangeNumber}
+      />
       <Handle
         type="source"
         position={Position.Right}

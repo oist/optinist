@@ -52,7 +52,27 @@ export const imageIndexSlice = createSlice({
         folder,
         pageIndex: 0,
         isFulfilled: true,
+        brightness: 100,
+        contrast: 100,
       }
+    },
+    setBrightness: (
+      state,
+      action: PayloadAction<{
+        id: string
+        brightness: number
+      }>,
+    ) => {
+      state.index[action.payload.id].brightness = action.payload.brightness
+    },
+    setContrast: (
+      state,
+      action: PayloadAction<{
+        id: string
+        contrast: number
+      }>,
+    ) => {
+      state.index[action.payload.id].contrast = action.payload.contrast
     },
   },
   extraReducers: (builder) => {
@@ -66,6 +86,8 @@ export const imageIndexSlice = createSlice({
           folder: '',
           pageIndex: 0,
           isFulfilled: false,
+          brightness: 100,
+          contrast: 100,
         }
       })
       .addCase(uploadImageFile.fulfilled, (state, action) => {
@@ -78,6 +100,8 @@ export const imageIndexSlice = createSlice({
           folder,
           pageIndex: 0,
           isFulfilled: true,
+          brightness: 100,
+          contrast: 100,
         }
       })
       .addCase(clickNode, (state, action) => {
@@ -88,7 +112,12 @@ export const imageIndexSlice = createSlice({
   },
 })
 
-export const { incrementPageIndex, decrementPageIndex, showAlgoOutputImage } =
-  imageIndexSlice.actions
+export const {
+  incrementPageIndex,
+  decrementPageIndex,
+  showAlgoOutputImage,
+  setBrightness,
+  setContrast,
+} = imageIndexSlice.actions
 
 export default imageIndexSlice.reducer

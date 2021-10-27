@@ -54,8 +54,8 @@ def create_cookie(response: Response):
 os.makedirs('files', exist_ok=True)
 app.mount("/api/files", StaticFiles(directory="files"), name="files")
 
-@app.post("/api/upload/{fileName}")
-async def create_file(response: Response, fileName: str, element_id: str = Form(...), file: UploadFile = File(...)):
+@app.post("/api/upload/{fileName}/{inputFileNumer}")
+async def create_file(response: Response, fileName: str, element_id: str = Form(...), file: UploadFile = File(...), inputFileNumer: int=1):
     # max_index = 30
     root_folder = os.path.join("files", fileName+"("+element_id+")")
     png_folder = os.path.join(root_folder, "pngs")
@@ -66,10 +66,10 @@ async def create_file(response: Response, fileName: str, element_id: str = Form(
     contents = await file.read()
     file.filename = fileName
     tiff_path = os.path.join(tiff_folder, file.filename)
-    with open(tiff_path, "wb") as f:
-        f.write(contents)
+    # with open(tiff_path, "wb") as f:
+    #     f.write(contents)
 
-    tiffs = imageio.volread(tiff_path)
+    tiffs = imageio.volread(tiff_path)[:inputFileNumer]
 
     for i, tiff_data in enumerate(tiffs):
         img = Image.fromarray(tiff_data)
