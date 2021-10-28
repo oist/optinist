@@ -1,3 +1,8 @@
+from wrappers.data_wrapper import *
+from wrappers.args_check import args_check
+
+
+@args_check
 def suite2p_spike_deconv(ops):
     from suite2p import extraction
 

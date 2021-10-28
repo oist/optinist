@@ -1,14 +1,19 @@
-def suite2p_file_convert(ops, opts=None):
+from wrappers.data_wrapper import *
+from wrappers.args_check import args_check
+
+
+@args_check
+def suite2p_file_convert(image: ImageData, opts: dict=None):
     import os
     import numpy as np
     from natsort import natsorted
     import suite2p.io as io
     from suite2p import default_ops
 
-    path = ops['path']
-    data_path = '/'.join(path.split('/')[:-1])
-    data_name = path.split('/')[-1]
-    print(path)
+    file_path = image.path
+    data_path = '/'.join(file_path.split('/')[:-1])
+    data_name = file_path.split('/')[-1]
+    print(file_path)
     print(data_path)
     print(data_name)
     ### data pathと保存pathを指定
@@ -19,7 +24,10 @@ def suite2p_file_convert(ops, opts=None):
         'save_folder': 'suite2p'
     }
 
-    ops = {**default_ops(), **ops, **db}
+    if opts is None:
+        ops = {**default_ops(), **db}
+    else:
+        ops = {**ops, **db}
 
     # save folderを指定
     save_folder = os.path.join(ops['save_path0'], ops['save_folder'])
@@ -53,6 +61,8 @@ def suite2p_file_convert(ops, opts=None):
     # ops_path = [os.path.join(f, 'ops.npy') for f in plane_folders][0]
     # ops = np.load(ops_path, allow_pickle=True).item()
 
-    ops['images'] = ops['meanImg'].astype(np.uint8)
+    info = {}
+    info['images'] = ImageData(ops['meanImg'].astype(np.uint8), 'suite2p_convert')
+    info['ops'] = ops
 
-    return ops
+    return info

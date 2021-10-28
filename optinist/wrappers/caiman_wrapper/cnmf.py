@@ -1,6 +1,8 @@
 from wrappers.data_wrapper import *
+from wrappers.args_check import args_check
 
 
+@args_check
 def caiman_cnmf(images: ImageData, opts: dict=None):
     images = images.data
     from caiman import local_correlations
