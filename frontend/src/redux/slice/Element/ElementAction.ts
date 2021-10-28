@@ -12,10 +12,12 @@ export const clickNode = createAction<{ id: string; type: NODE_DATA_TYPE }>(
 )
 
 type OutputPathsDTO = {
-  [key: string]: {
-    path: string
-    type: string
-    max_index?: number
+  [algoName: string]: {
+    [key: string]: {
+      path: string
+      type: string
+      max_index?: number
+    }
   }
 }
 

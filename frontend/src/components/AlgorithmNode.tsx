@@ -61,8 +61,16 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
     PARAM_FORM_TABSET_ID,
   )
   const selectedPathValue = useSelector(selectedOutputPathValueSelector(nodeId))
-  const maxIndex = useSelector(imagePathMaxIndexByIdSelector(nodeId, 'images'))
+  const maxIndex = useSelector(
+    imagePathMaxIndexByIdSelector(nodeId, selectedOutputKey ?? ''),
+  )
   const onClick = () => {
+    console.log(
+      'selectedOutputKey: ' + selectedOutputKey,
+      'selectedPathValue: ' + selectedPathValue,
+      'selectedOutputType: ' + selectedOutputType,
+      'maxIndex: ' + maxIndex,
+    )
     if (
       selectedOutputKey != null &&
       selectedPathValue != null &&
