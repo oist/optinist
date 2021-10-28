@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 
 import { INITIAL_ALGO_ELEMENT_ID } from 'const/flowchart'
 import { NODE_DATA_TYPE_SET } from 'const/NodeData'
@@ -71,29 +71,31 @@ export const algorithmSlice = createSlice({
       .addCase(runPipeline.fulfilled, (state, action) => {
         if (action.payload.message === 'success') {
           Object.entries(action.payload.outputPaths).forEach(([name, dir]) => {
+            // console.log(current(state.algoMap))
             Object.entries(state.algoMap).forEach(([id, algo]) => {
               // todo とりあえず名前一致だが、後でサーバーサイドとフロントで両方idにする
+              // console.log(algo.name, ' ', name, ' ', algo.name === name, ' ', current(state.algoMap[id]))
               if (algo.name === name && state.algoMap[id]) {
                 state.algoMap[id].output = {}
                 // todo imagesとfluoで決め打ちで無くなったら改修する
-                if (dir.image_dir != null) {
+                if (dir.type == 'images') {
                   state.algoMap[id].output = {
-                    ['images']: {
+                    ['image']: {
                       type: 'image',
                       path: {
-                        value: dir.image_dir.path,
-                        maxIndex: dir.image_dir.max_index,
+                        value: dir.path,
+                        maxIndex: 1,
                       },
                     },
                   }
                 }
-                if (dir.fluo_path != null) {
+                if (dir.type == 'timeseries') {
                   state.algoMap[id].output = {
                     ...state.algoMap[id].output,
                     ['fluo']: {
                       type: 'plotData',
                       path: {
-                        value: dir.fluo_path,
+                        value: dir.path,
                       },
                     },
                   }

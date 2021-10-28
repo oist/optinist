@@ -66,8 +66,8 @@ async def create_file(response: Response, fileName: str, element_id: str = Form(
     contents = await file.read()
     file.filename = fileName
     tiff_path = os.path.join(tiff_folder, file.filename)
-    # with open(tiff_path, "wb") as f:
-    #     f.write(contents)
+    with open(tiff_path, "wb") as f:
+        f.write(contents)
 
     tiffs = imageio.volread(tiff_path)[:inputFileNumer]
 
