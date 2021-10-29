@@ -24,7 +24,7 @@ def dummy_image2time(image: ImageData, opts: dict=None):
 		return image
 	"""
 	info = {}
-	info['image2time'] = TimeSeriesData(np.random.rand((100)).reshape(10, 10), sys._getframe().f_code.co_name)
+	info['image2time'] = TimeSeriesData(np.random.rand((10000)).reshape(10, 1000), sys._getframe().f_code.co_name)
 	return info
 
 
@@ -36,7 +36,7 @@ def dummy_time2time(timeseries: TimeSeriesData, opts: dict=None):
 		return image
 	"""
 	info = {}
-	info['time2time'] = TimeSeriesData(np.random.rand((100)).reshape(10, 10), sys._getframe().f_code.co_name)
+	info['time2time'] = TimeSeriesData(np.random.rand((10000)).reshape(10, 1000), sys._getframe().f_code.co_name)
 	return info
 
 
@@ -49,7 +49,7 @@ def dummy_image2image8time(image1: ImageData, opts: dict=None):
 	"""
 	info = {}
 	info['image'] = ImageData(np.random.rand((100)).reshape(10, 10), sys._getframe().f_code.co_name)
-	info['timeseries'] = TimeSeriesData(np.random.rand((100)).reshape(10, 10), sys._getframe().f_code.co_name)
+	info['timeseries'] = TimeSeriesData(np.random.rand((10000)).reshape(10, 1000), sys._getframe().f_code.co_name)
 	return info
 
 
@@ -62,7 +62,7 @@ def dummy_image8image2image8time(image1: ImageData, image2: ImageData, opts: dic
 	"""
 	info = {}
 	info['image'] = ImageData(np.random.rand((100)).reshape(10, 10), sys._getframe().f_code.co_name)
-	info['timeseries'] = TimeSeriesData(np.random.rand((100)).reshape(10, 10), sys._getframe().f_code.co_name)
+	info['timeseries'] = TimeSeriesData(np.random.rand((10000)).reshape(10, 1000), sys._getframe().f_code.co_name)
 	return info
 
 

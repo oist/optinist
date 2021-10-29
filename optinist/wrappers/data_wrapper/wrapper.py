@@ -6,7 +6,7 @@ from PIL import Image
 
 
 class ImageData:
-    def __init__(self, data, func_name):
+    def __init__(self, data, func_name='image'):
         if type(data) == str:
             self.path = data
             self.data = np.array(imageio.volread(self.path))
@@ -28,7 +28,7 @@ class ImageData:
 
 
 class TimeSeriesData:
-    def __init__(self, data, func_name):
+    def __init__(self, data, func_name='timeseries'):
         self.data = data
         _dir = os.path.join('files', func_name)
 
@@ -38,3 +38,8 @@ class TimeSeriesData:
         self.path = os.path.join(_dir, 'timeseries.json')
 
         pd.DataFrame(self.data).to_json(self.path, indent=4)
+
+
+class Suite2pData:
+    def __init__(self, data):
+        self.data = data

@@ -36,13 +36,13 @@ def args_check(func):
                 raise AttributeError(error_msg)
         
         # いらない型の引数を削除する
-        for i, x in enumerate(arg_type_list):
+        for i, x in reversed(list(enumerate(arg_type_list))):
             if x not in request_type_list:
-                args.remove(args[i])
+                args.pop(i)
 
         arg_type_list = [type(x) for x in args]
         request_type_list = [x.annotation for x in sig.parameters.values()]
-
+        
         # 型の順番を揃える
         def check_order(arg_type_list, request_type_list):
             flag = False
@@ -83,6 +83,9 @@ def args_check(func):
                 error_msg = f'args"{arg_key}" (type: {arg_type}) is invalid. （ type: {request_type} is require'
                 raise TypeError(error_msg)
 
+        print(args)
+                
         return func(*args, **kwargs)
 
     return args_type_check_wrapper
+

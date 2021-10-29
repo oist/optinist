@@ -63,6 +63,6 @@ def suite2p_file_convert(image: ImageData, opts: dict=None):
 
     info = {}
     info['images'] = ImageData(ops['meanImg'].astype(np.uint8), 'suite2p_convert')
-    info['ops'] = ops
+    info['ops'] = Suite2pData(ops)
 
     return info
