@@ -39,13 +39,13 @@ Docker コンテナ上で API サーバーを動かします。pip 等で依存�
 ### Docker イメージ作成
 
 ```
-$ docker-compose build
+$ docker-compose build backend
 ```
 
 ### Docker コンテナ起動
 
 ```
-$ docker-compose up
+$ docker-compose up backend
 ```
 
 ## frontend

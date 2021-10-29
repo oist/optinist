@@ -14,3 +14,10 @@ services:
     environment:
       PYTHONPATH: .
       TZ: Asia/Tokyo
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    stdin_open: true
+    ports:
+      - 3000:80
