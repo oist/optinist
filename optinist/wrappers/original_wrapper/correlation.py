@@ -1,6 +1,5 @@
-from data_wrapper import *
-from args_check import args_check
-
+from wrappers.data_wrapper import *
+from wrappers.args_check import args_check
 
 @args_check
 def correlation(timeseries: TimeSeriesData):
