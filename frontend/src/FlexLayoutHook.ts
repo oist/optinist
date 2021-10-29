@@ -10,28 +10,24 @@ import {
 import { Actions, DockLocation } from 'flexlayout-react'
 import { nodeByIdSelector } from 'redux/slice/Element/ElementSelector'
 
-export function useTabAction(
-  nodeId: string,
-  component: ComponentType,
-  toTabSetId: string,
-  ...suffix: string[]
-) {
+export function useTabAction(nodeId: string) {
   const node = useSelector(nodeByIdSelector(nodeId))
   const model = React.useContext(FlexLayoutModelContext)
-  if (node != null) {
-    const layoutId = toLayoutTabIdByNode(node, component, ...suffix)
+  if (node === undefined) {
+    return null
+  }
+  return (component: ComponentType, toTabSetId: string, suffix?: string) => {
+    const layoutId = toLayoutTabIdByNode(node, component, suffix)
     if (model.getNodeById(layoutId) != null) {
-      return Actions.selectTab(toLayoutTabIdByNode(node, component, ...suffix))
+      return Actions.selectTab(toLayoutTabIdByNode(node, component, suffix))
     } else {
       return Actions.addNode(
-        toLayoutTabByNode(node, component, ...suffix),
+        toLayoutTabByNode(node, component, suffix),
         toTabSetId,
         DockLocation.CENTER,
         0,
       )
     }
-  } else {
-    return null
   }
 }
 
