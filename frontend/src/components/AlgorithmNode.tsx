@@ -47,21 +47,13 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
 
   const selectedOutputType = useSelector(selectedOutputPathTypeSelector(nodeId))
   const selectedOutputKey = useSelector(selectedOutputKeySelector(nodeId))
-  // todo imagesとfluoで決め打ちで無くなったら改修する
-  const actionForOutputTab = useTabAction(
-    nodeId,
-    selectedOutputType === 'image' ? 'image' : 'output',
-    OUTPUT_TABSET_ID,
-    selectedOutputKey ?? '',
-  )
+  const actionForOutputTab = useTabAction(nodeId)
 
-  const actionForParamFormTab = useTabAction(
-    nodeId,
-    'paramForm',
-    PARAM_FORM_TABSET_ID,
-  )
+  const actionForParamFormTab = useTabAction(nodeId)
   const selectedPathValue = useSelector(selectedOutputPathValueSelector(nodeId))
-  const maxIndex = useSelector(imagePathMaxIndexByIdSelector(nodeId, 'images'))
+  const maxIndex = useSelector(
+    imagePathMaxIndexByIdSelector(nodeId, selectedOutputKey ?? ''),
+  )
   const onClick = () => {
     if (
       selectedOutputKey != null &&
@@ -79,7 +71,7 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
       )
     }
     if (actionForParamFormTab != null) {
-      model.doAction(actionForParamFormTab)
+      model.doAction(actionForParamFormTab('paramForm', PARAM_FORM_TABSET_ID))
     }
     // selectedOutputKeyがnullの場合は実行結果が存在しないためoutput用のタブを選択or作成しない
     if (
@@ -87,7 +79,13 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
       selectedOutputType != null &&
       actionForOutputTab != null
     ) {
-      model.doAction(actionForOutputTab)
+      model.doAction(
+        actionForOutputTab(
+          selectedOutputType === 'image' ? 'image' : 'output',
+          OUTPUT_TABSET_ID,
+          selectedOutputKey,
+        ),
+      )
     }
   }
 
@@ -97,9 +95,15 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
       selectedOutputType != null &&
       actionForOutputTab != null
     ) {
-      model.doAction(actionForOutputTab)
+      model.doAction(
+        actionForOutputTab(
+          selectedOutputType === 'image' ? 'image' : 'output',
+          OUTPUT_TABSET_ID,
+          selectedOutputKey,
+        ),
+      )
     }
-  }, [selectedOutputKey])
+  }, [selectedOutputKey, actionForOutputTab, model, selectedOutputType])
 
   return (
     <div

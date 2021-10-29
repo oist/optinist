@@ -1,4 +1,11 @@
-def suite2p_roi(ops, opts=None):
+from wrappers.data_wrapper import *
+from wrappers.args_check import args_check
+
+
+@args_check
+def suite2p_roi(ops: Suite2pData):
+    ops = ops.data
+
     import numpy as np
     from suite2p import extraction, classification, detection, ROI
 
@@ -30,7 +37,10 @@ def suite2p_roi(ops, opts=None):
     ops['F'] = F
     ops['Fneu'] = Fneu
 
-    ops['max_proj'] = ops['max_proj']
-    ops['images'] = ops['max_proj']
+    info = {}
+    info['max_proj'] = ImageData(ops['max_proj'], 'suite2p_roi')
+    info['F'] = TimeSeriesData(F, 'suite2p_roi')
 
-    return ops
+    info['ops'] = Suite2pData(ops)
+
+    return info

@@ -31,7 +31,7 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
         setFilePathError(true)
       }
     }
-  }, [runStatus, inputRef.current])
+  }, [runStatus, inputRef])
 
   const onFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
@@ -49,10 +49,10 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
   }
 
   const model = React.useContext(FlexLayoutModelContext)
-  const actionForImageTab = useTabAction(element.id, 'image', OUTPUT_TABSET_ID)
+  const actionForImageTab = useTabAction(element.id)
   const onClick = () => {
     if (actionForImageTab != null) {
-      model.doAction(actionForImageTab)
+      model.doAction(actionForImageTab('image', OUTPUT_TABSET_ID))
     }
   }
 

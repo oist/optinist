@@ -1,4 +1,10 @@
-def suite2p_spike_deconv(ops):
+from wrappers.data_wrapper import *
+from wrappers.args_check import args_check
+
+
+@args_check
+def suite2p_spike_deconv(ops: Suite2pData):
+    ops = ops.data
     from suite2p import extraction
 
     dF = ops['F'].copy() - ops['neucoeff']*ops['Fneu']
@@ -12,7 +18,9 @@ def suite2p_spike_deconv(ops):
     )
     spks = extraction.oasis(F=dF, batch_size=ops['batch_size'], tau=ops['tau'], fs=ops['fs'])
 
-    ops.pop('images')
     ops['spks'] = spks
 
-    return ops
+    info = {}
+    info['ops'] = Suite2pData(ops)
+
+    return info

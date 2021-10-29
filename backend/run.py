@@ -1,11 +1,13 @@
 import os
 import sys
 sys.path.append('../optinist')
-
 import json
 import numpy as np
 import pandas as pd
 from PIL import Image
+from collections import OrderedDict
+
+from wrappers.data_wrapper import *
 
 
 def run_code(wrapper_dict, flowList):
@@ -20,42 +22,60 @@ def run_code(wrapper_dict, flowList):
         print(item)
         print('-'*30)
         if item.type == 'data':
-            info[item.label] = {'path': item.path}
+            info[item.label] = {'path': ImageData(item.path, '')}
         elif item.type == 'algo':
-            info[item.label] = wrapper_dict[item.label](info[prev_label].copy())
+            info[item.label] = wrapper_dict[item.label](*info[prev_label].values())
 
         prev_label = item.label
 
-    # save data to each direcotry
-    from collections import OrderedDict
     results = OrderedDict()
     for item in flowList:
         results[item.label] = {}
-        output = info[item.label]
-        print(output.keys())
+        for k, v in info[item.label].items():
+            if type(v) is ImageData:
+                results[item.label][k] = {}
+                print("ImageData")
+                results[item.label][k]["path"] = v.path
+                results[item.label][k]["type"] = 'images'
+                results[item.label][k]["max_index"] = len(v.data)
+            elif type(v) is TimeSeriesData:
+                results[item.label][k] = {}
+                print("TimeSeriesData")
+                results[item.label][k]["path"] = v.path
+                results[item.label][k]["type"] = 'timeseries'
 
-        if 'images' in output.keys():
-            save_dir = os.path.join('files', item.label, 'images')
-            if not os.path.exists(save_dir):
-                os.makedirs(save_dir, exist_ok=True)
+    print('results', results)
 
-            if len(output['images'].shape) == 2:
-                output['images'] = output['images'][np.newaxis, :, :]
+    # # save data to each direcotry
+    # from collections import OrderedDict
+    # results = OrderedDict()
+    # for item in flowList:
+    #     results[item.label] = {}
+    #     output = info[item.label]
+    #     print(output.keys())
 
-            for i in range(len(output['images'])):
-                img = Image.fromarray(np.uint8(output['images'][i]))
-                img.save(os.path.join(save_dir, f'{str(i)}.png'))
+    #     if 'images' in output.keys():
+    #         save_dir = os.path.join('files', item.label, 'images')
+    #         if not os.path.exists(save_dir):
+    #             os.makedirs(save_dir, exist_ok=True)
+
+    #         if len(output['images'].shape) == 2:
+    #             output['images'] = output['images'][np.newaxis, :, :]
+
+    #         for i in range(len(output['images'])):
+    #             img = Image.fromarray(np.uint8(output['images'][i]))
+    #             img.save(os.path.join(save_dir, f'{str(i)}.png'))
             
-            results[item.label]['image_dir'] = {}
-            results[item.label]['image_dir']["path"] = save_dir
-            results[item.label]['image_dir']["max_index"] = len(output['images']) 
+    #         results[item.label]['image_dir'] = {}
+    #         results[item.label]['image_dir']["path"] = save_dir
+    #         results[item.label]['image_dir']["max_index"] = len(output['images']) 
 
-        if 'fluo' in output.keys():
-            save_file = os.path.join('files', item.label, 'fluo.json')
+    #     if 'fluo' in output.keys():
+    #         save_file = os.path.join('files', item.label, 'fluo.json')
 
-            pd.DataFrame(output['fluo']).to_json(save_file, indent=4)
+    #         pd.DataFrame(output['fluo']).to_json(save_file, indent=4)
 
-            results[item.label]['fluo_path'] = save_file
+    #         results[item.label]['fluo_path'] = save_file
 
     return {'message': 'success', 'outputPaths': results}
 

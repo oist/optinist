@@ -39,13 +39,14 @@ const Chart = React.memo(() => {
     return null
   }
   const data = {
-    labels: Object.keys(currentOutputData.data).filter((_, i) => i % 50 == 0), // chart.jsが重いので間引く
+    labels: Object.keys(currentOutputData.data).filter((_, i) => i % 100 == 0),
+    // .filter((_, i) => i % 50 == 0), // chart.jsが重いので間引く
     datasets: Object.keys(currentOutputData.data['0']).map((_, i) => {
       const color = '#' + Math.floor(Math.random() * 16777215).toString(16)
       return {
         label: `${name}(${i})`,
         data: Object.values(currentOutputData.data)
-          .filter((_, i) => i % 50 == 0)
+          .filter((_, i) => i % 100 == 0)
           .map((value) => value[i]),
         backgroundColor: color,
         borderColor: color,

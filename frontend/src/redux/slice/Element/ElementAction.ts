@@ -12,12 +12,12 @@ export const clickNode = createAction<{ id: string; type: NODE_DATA_TYPE }>(
 )
 
 type OutputPathsDTO = {
-  [key: string]: {
-    image_dir?: {
+  [algoName: string]: {
+    [key: string]: {
       path: string
-      max_index: number
+      type: string
+      max_index?: number
     }
-    fluo_path?: string
   }
 }
 

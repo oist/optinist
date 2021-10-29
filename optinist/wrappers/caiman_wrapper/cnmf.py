@@ -1,12 +1,15 @@
-def caiman_cnmf(info, opts=None):
-    images = info['images']
+from wrappers.data_wrapper import *
+from wrappers.args_check import args_check
+
+
+@args_check
+def caiman_cnmf(images: ImageData, opts: dict=None):
+    images = images.data
     from caiman import local_correlations
     from caiman.source_extraction.cnmf import cnmf
     from caiman.source_extraction.cnmf.params import CNMFParams
     import caiman.utils.visualization as visualization
     import numpy as np
-
-    info = {}
 
     if opts is None:
         opts = CNMFParams()
@@ -30,8 +33,9 @@ def caiman_cnmf(info, opts=None):
     iscell = np.zeros(cont_cent.shape[0])
     iscell[cnm.estimates.idx_components]=1
 
-    info['images'] = np.array(Cn * 255, dtype=np.uint8)
-    info['fluo'] = cnm.estimates.C
+    info = {}
+    info['images'] = ImageData(np.array(Cn * 255, dtype=np.uint8), 'caiman_cnmf')
+    info['fluo'] = TimeSeriesData(cnm.estimates.C, 'timeseries')
     info['iscell'] = iscell
     info['roi'] = cont_cent
 

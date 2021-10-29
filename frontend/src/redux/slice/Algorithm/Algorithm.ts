@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
 
 import { INITIAL_ALGO_ELEMENT_ID } from 'const/flowchart'
 import { NODE_DATA_TYPE_SET } from 'const/NodeData'
@@ -70,39 +70,39 @@ export const algorithmSlice = createSlice({
       })
       .addCase(runPipeline.fulfilled, (state, action) => {
         if (action.payload.message === 'success') {
-          Object.entries(action.payload.outputPaths).forEach(([name, dir]) => {
-            Object.entries(state.algoMap).forEach(([id, algo]) => {
-              // todo とりあえず名前一致だが、後でサーバーサイドとフロントで両方idにする
-              if (algo.name === name && state.algoMap[id]) {
-                state.algoMap[id].output = {}
-                // todo imagesとfluoで決め打ちで無くなったら改修する
-                if (dir.image_dir != null) {
-                  state.algoMap[id].output = {
-                    ['images']: {
-                      type: 'image',
-                      path: {
-                        value: dir.image_dir.path,
-                        maxIndex: dir.image_dir.max_index,
-                      },
-                    },
-                  }
-                }
-                if (dir.fluo_path != null) {
-                  state.algoMap[id].output = {
+          Object.entries(action.payload.outputPaths).forEach(
+            ([algoName, outputPaths]) => {
+              // console.log(current(state.algoMap))
+              Object.entries(state.algoMap).forEach(([id, algo]) => {
+                // todo とりあえず名前一致だが、後でサーバーサイドとフロントで両方idにする
+                if (algo.name === algoName && state.algoMap[id]) {
+                  const outputState = {
                     ...state.algoMap[id].output,
-                    ['fluo']: {
-                      type: 'plotData',
-                      path: {
-                        value: dir.fluo_path,
-                      },
-                    },
                   }
+                  Object.entries(outputPaths).forEach(([key, pathInfo]) => {
+                    if (pathInfo.type === 'images') {
+                      outputState[key] = {
+                        type: 'image',
+                        path: {
+                          value: pathInfo.path,
+                          maxIndex: pathInfo.max_index ?? 0,
+                        },
+                      }
+                    } else if (pathInfo.type === 'timeseries') {
+                      outputState[key] = {
+                        type: 'plotData',
+                        path: {
+                          value: pathInfo.path,
+                        },
+                      }
+                    }
+                    state.algoMap[id].selectedOutputKey = key
+                  })
+                  state.algoMap[id].output = outputState
                 }
-
-                state.algoMap[id].selectedOutputKey = 'images' // 本来は意味のあるkeyを使用する
-              }
-            })
-          })
+              })
+            },
+          )
         }
       })
   },

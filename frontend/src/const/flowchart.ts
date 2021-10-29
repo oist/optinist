@@ -4,7 +4,7 @@ import { NodeData, NODE_DATA_TYPE_SET } from 'const/NodeData'
 export const INITIAL_IMAGE_ELEMENT_ID = '0'
 export const INITIAL_IMAGE_ELEMENT_NAME = 'data'
 export const INITIAL_ALGO_ELEMENT_ID = '1'
-export const INITIAL_ALGO_ELEMENT_NAME = 'caiman_mc'
+export const INITIAL_ALGO_ELEMENT_NAME = 'dummy_image2image'
 export const INITIAL_EDGE_ID = '2'
 
 export const INITIAL_ALGO_STYLE: React.CSSProperties = {

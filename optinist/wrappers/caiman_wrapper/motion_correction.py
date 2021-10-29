@@ -1,5 +1,9 @@
-def caiman_mc(info, opts=None):
-    file_path = info['path']
+from wrappers.data_wrapper import *
+from wrappers.args_check import args_check
+
+@args_check
+def caiman_mc(image: ImageData, opts: dict=None):
+    file_path = image.path
     import numpy as np
     from caiman.source_extraction.cnmf.params import CNMFParams
     from caiman.motion_correction import MotionCorrect
@@ -26,7 +30,7 @@ def caiman_mc(info, opts=None):
     images = np.array(np.reshape(
         Yr.T, [T] + list(dims), order='F'))
 
-    info['images'] = images
+    info['images'] = ImageData(images, 'caiman_mc')
 
     return info
 
