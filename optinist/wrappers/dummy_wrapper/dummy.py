@@ -1,7 +1,7 @@
 import numpy as np
 import sys
 
-from wrappers.data_wrapper import ImageData, TimeSeriesData
+from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 @args_check
@@ -25,6 +25,18 @@ def dummy_image2time(image: ImageData, opts: dict=None):
 	"""
 	info = {}
 	info['image2time'] = TimeSeriesData(np.random.rand((10000)).reshape(10, 1000), sys._getframe().f_code.co_name)
+	return info
+
+
+@args_check
+def dummy_image2heat(image: ImageData, opts: dict=None):
+	
+	"""
+		get image
+		return image
+	"""
+	info = {}
+	info['image2heat'] = CorrelationData(np.random.rand((10000)).reshape(100, 100), sys._getframe().f_code.co_name)
 	return info
 
 
