@@ -21,10 +21,12 @@ export const getAlgoParams = createAsyncThunk<
 
 export const getAlgoOutputData = createAsyncThunk<
   AlgoOutputDataDTO,
-  { id: string; name: string }
->(`${ALGORITHM_SLICE_NAME}/getAlgoOutputData`, async ({ name }, thunkAPI) => {
+  { nodeId: string; outputKey: string; path: string }
+>(`${ALGORITHM_SLICE_NAME}/getAlgoOutputData`, async ({ path }, thunkAPI) => {
   try {
-    const response = await axios.get(`http://localhost:8000/api/output/${name}`)
+    const response = await axios.get(
+      `http://localhost:8000/api/outputs/${path}`,
+    )
     return response.data
   } catch (e) {
     return thunkAPI.rejectWithValue(e)

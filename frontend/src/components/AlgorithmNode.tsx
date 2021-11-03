@@ -22,6 +22,7 @@ import { FlexLayoutModelContext } from 'App'
 
 import { OUTPUT_TABSET_ID, PARAM_FORM_TABSET_ID } from 'const/flexlayout'
 import { useTabAction } from 'FlexLayoutHook'
+import { OUTPUT_TYPE_SET } from 'redux/slice/Algorithm/AlgorithmType'
 
 const leftHandleStyle: CSSProperties = {
   width: 8,
@@ -58,7 +59,7 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
     if (
       selectedOutputKey != null &&
       selectedPathValue != null &&
-      selectedOutputType === 'image' &&
+      selectedOutputType === OUTPUT_TYPE_SET.IMAGE &&
       maxIndex != null
     ) {
       dispatch(
@@ -81,7 +82,7 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
     ) {
       model.doAction(
         actionForOutputTab(
-          selectedOutputType === 'image' ? 'image' : 'output',
+          selectedOutputType === OUTPUT_TYPE_SET.IMAGE ? 'image' : 'output',
           OUTPUT_TABSET_ID,
           selectedOutputKey,
         ),
@@ -97,7 +98,7 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
     ) {
       model.doAction(
         actionForOutputTab(
-          selectedOutputType === 'image' ? 'image' : 'output',
+          selectedOutputType === OUTPUT_TYPE_SET.IMAGE ? 'image' : 'output',
           OUTPUT_TABSET_ID,
           selectedOutputKey,
         ),

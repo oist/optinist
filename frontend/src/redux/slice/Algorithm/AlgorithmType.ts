@@ -14,9 +14,15 @@ export type Algorithm = {
     }
   }
   plotDataMap: {
+    // idの方はOutputDataIdを使いたいけど、テンプレートリテラルはオブジェクトのkeyとして使えない...
     [id: string]: AlgoOutputDataDTO // todo 後で型を検討
   }
 }
+
+/**
+ * ${nodeId}/${outputKey}
+ */
+export type OutputDataId = `${string}/${string}`
 
 export type OutputData = {
   xLabels: string[]
@@ -27,16 +33,34 @@ export type OutputData = {
 export type OutputPaths = {
   [key: string]: OutputPathType
 }
+export const OUTPUT_TYPE_SET = {
+  IMAGE: 'Image',
+  TIME_SERIES: 'TimeSeries',
+  HEAT_MAP: 'HeatMap',
+} as const
 
-export type OutputPathType = OutputPath<'image'> | OutputPath<'plotData'>
+export type OUTPUT_TYPE = typeof OUTPUT_TYPE_SET[keyof typeof OUTPUT_TYPE_SET]
 
-export interface OutputPath<T extends OutputType> {
+export type OutputPathType =
+  | OutputPath<typeof OUTPUT_TYPE_SET.IMAGE>
+  | OutputPath<typeof OUTPUT_TYPE_SET.TIME_SERIES>
+  | OutputPath<typeof OUTPUT_TYPE_SET.HEAT_MAP>
+
+export interface OutputPath<T extends OUTPUT_TYPE> {
   type: T
-  path: T extends 'image' ? ImagePathType : PlotDataPathType
+  path: T extends typeof OUTPUT_TYPE_SET.IMAGE
+    ? ImagePathType
+    : T extends typeof OUTPUT_TYPE_SET.TIME_SERIES
+    ? TimeSeriesPathType
+    : HeatMapPathType
 }
 
-type OutputType = 'image' | 'plotData'
+// type OutputType = 'image' | 'timeseries' | 'heatMap'
 
-type ImagePathType = { value: string; maxIndex: number }
+type Path = { value: string }
 
-type PlotDataPathType = { value: string }
+type ImagePathType = Path & { maxIndex: number }
+
+type TimeSeriesPathType = Path
+
+type HeatMapPathType = Path

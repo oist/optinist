@@ -8,13 +8,13 @@ import Typography from '@material-ui/core/Typography'
 import { isAlgoNodeData } from 'utils/ElementUtils'
 import {
   algoParamByIdSelector,
-  currentAlgoNameByIdSelector,
+  algoNameByIdSelector,
 } from 'redux/slice/Algorithm/AlgorithmSelector'
 import { NodeIdContext } from 'App'
 
 export const ParamForm = React.memo(() => {
   const nodeId = React.useContext(NodeIdContext)
-  const currentAlgoName = useSelector(currentAlgoNameByIdSelector(nodeId))
+  const currentAlgoName = useSelector(algoNameByIdSelector(nodeId))
   const currentNode = useSelector(nodeByIdSelector(nodeId))
   const algoParam = useSelector(algoParamByIdSelector(nodeId))
   const dispatch = useDispatch()

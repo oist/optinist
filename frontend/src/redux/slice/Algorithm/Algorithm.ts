@@ -1,4 +1,4 @@
-import { createSlice, current, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 import { INITIAL_ALGO_ELEMENT_ID } from 'const/flowchart'
 import { NODE_DATA_TYPE_SET } from 'const/NodeData'
@@ -6,8 +6,12 @@ import { isAlgoNodeData } from 'utils/ElementUtils'
 import { addFlowElement } from '../Element/Element'
 import { clickNode, runPipeline } from '../Element/ElementAction'
 import { getAlgoOutputData, getAlgoParams } from './AlgorithmAction'
-import { convertToOutputData } from './AlgorithmUtils'
-import { ALGORITHM_SLICE_NAME, Algorithm } from './AlgorithmType'
+import { convertToOutputData, toOutputDataId } from './AlgorithmUtils'
+import {
+  ALGORITHM_SLICE_NAME,
+  Algorithm,
+  OUTPUT_TYPE_SET,
+} from './AlgorithmType'
 
 const initialState: Algorithm = {
   currentAlgoId: INITIAL_ALGO_ELEMENT_ID,
@@ -64,9 +68,9 @@ export const algorithmSlice = createSlice({
         }
       })
       .addCase(getAlgoOutputData.fulfilled, (state, action) => {
-        state.plotDataMap[action.meta.arg.id] = convertToOutputData(
-          action.payload,
-        )
+        const { nodeId, outputKey } = action.meta.arg
+        const outputDataId = toOutputDataId(nodeId, outputKey)
+        state.plotDataMap[outputDataId] = convertToOutputData(action.payload)
       })
       .addCase(runPipeline.fulfilled, (state, action) => {
         if (action.payload.message === 'success') {
@@ -82,7 +86,7 @@ export const algorithmSlice = createSlice({
                   Object.entries(outputPaths).forEach(([key, pathInfo]) => {
                     if (pathInfo.type === 'images') {
                       outputState[key] = {
-                        type: 'image',
+                        type: OUTPUT_TYPE_SET.IMAGE,
                         path: {
                           value: pathInfo.path,
                           maxIndex: pathInfo.max_index ?? 0,
@@ -90,7 +94,14 @@ export const algorithmSlice = createSlice({
                       }
                     } else if (pathInfo.type === 'timeseries') {
                       outputState[key] = {
-                        type: 'plotData',
+                        type: OUTPUT_TYPE_SET.TIME_SERIES,
+                        path: {
+                          value: pathInfo.path,
+                        },
+                      }
+                    } else if (pathInfo.type === 'heatmap') {
+                      outputState[key] = {
+                        type: OUTPUT_TYPE_SET.HEAT_MAP,
                         path: {
                           value: pathInfo.path,
                         },
