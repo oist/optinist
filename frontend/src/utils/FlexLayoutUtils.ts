@@ -7,8 +7,8 @@ export function toLayoutTabId(
   name: string,
   suffix?: string,
 ): LayoutTabId {
-  return `${nodeId}-${componentType}-${name}${
-    suffix != null ? `-${suffix}` : ''
+  return `${nodeId}${SEPARATOR}${componentType}${SEPARATOR}${name}${
+    suffix != null ? `${SEPARATOR}${suffix}` : ''
   }`
 }
 
@@ -20,7 +20,11 @@ export function toLayoutTabIdByNode(
   return toLayoutTabId(node.id, componentType, node.data?.label ?? '', suffix)
 }
 
-type LayoutTabId = `${string}-${ComponentType}-${string}`
+const SEPARATOR = '--'
+
+type LayoutTabId =
+  | `${string}${typeof SEPARATOR}${ComponentType}${typeof SEPARATOR}${string}`
+  | `${string}${typeof SEPARATOR}${ComponentType}${typeof SEPARATOR}${string}${typeof SEPARATOR}${string}`
 
 export type ComponentType = 'paramForm' | 'output' | 'image'
 //   | 'flowchart'
@@ -46,4 +50,24 @@ export function toLayoutTabByNode(
   suffix?: string,
 ) {
   return toLayoutTab(node.id, componentType, node.data?.label ?? '', suffix)
+}
+
+export function getNodeId(layoutTabId: string): string | null {
+  const result = layoutTabId.split(SEPARATOR)[0]
+  if (result != null) {
+    return result
+  } else {
+    console.log('failed to get nodeId　from layoutTabId. (' + layoutTabId + ')')
+    return null
+  }
+}
+
+export function getSuffix(layoutTabId: string): string | null {
+  const result = layoutTabId.split(SEPARATOR)[3]
+  if (result != null) {
+    return result
+  } else {
+    console.log('failed to get suffix from layoutTabId. (' + layoutTabId + ')')
+    return null
+  }
 }
