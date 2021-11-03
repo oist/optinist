@@ -1,35 +1,53 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 import PlotlyChart from 'react-plotlyjs-ts'
 
 import {
   algoNameByIdSelector,
-  outputDataByIdSelector,
-  outputPathTypeByIdSelector,
+  outputPathValueByIdSelector,
 } from 'redux/slice/Algorithm/AlgorithmSelector'
 import { OutputPlotContext } from 'App'
-import { toOutputDataId } from 'redux/slice/Algorithm/AlgorithmUtils'
+import {
+  timeSeriesDataByKeySelector,
+  timeSeriesDataIsLoadedByKeySelector,
+} from 'redux/slice/PlotData/PlotDataSelector'
+import { getTimeSeriesData } from 'redux/slice/PlotData/PlotDataAction'
+import { toPlotDataKey } from 'redux/slice/PlotData/PlotDataUtils'
 
 export const TimeSeries = React.memo(() => {
-  // const { nodeId, outputKey } = React.useContext(OutputPlotContext)
-  return <TimeSeriesImple />
+  const { nodeId, outputKey } = React.useContext(OutputPlotContext)
+  const dispatch = useDispatch()
+  const path = useSelector(outputPathValueByIdSelector(nodeId, outputKey))
+  const isLoaded = useSelector(
+    timeSeriesDataIsLoadedByKeySelector(toPlotDataKey(nodeId, outputKey)),
+  )
+  React.useEffect(() => {
+    if (!isLoaded && path != null) {
+      dispatch(getTimeSeriesData({ nodeId, outputKey, path }))
+    }
+  }, [dispatch, isLoaded, nodeId, outputKey, path])
+  if (isLoaded) {
+    return <TimeSeriesImple />
+  } else {
+    return null
+  }
 })
 
 const TimeSeriesImple = React.memo(() => {
   const { nodeId, outputKey } = React.useContext(OutputPlotContext)
   const name = useSelector(algoNameByIdSelector(nodeId))
-  const currentOutputData = useSelector(
-    outputDataByIdSelector(toOutputDataId(nodeId, outputKey)),
+  const timeSeriesData = useSelector(
+    timeSeriesDataByKeySelector(toPlotDataKey(nodeId, outputKey)),
   )
-  if (currentOutputData == null) {
+  if (timeSeriesData == null) {
     return null
   }
-  const data = Object.keys(currentOutputData.data['0']).map((_, i) => {
+  const data = Object.keys(timeSeriesData.data['0']).map((_, i) => {
     return {
       name: `${name}(${i})`,
-      x: Object.keys(currentOutputData.data),
-      y: Object.values(currentOutputData.data).map((value) => value[i]),
+      x: Object.keys(timeSeriesData.data),
+      y: Object.values(timeSeriesData.data).map((value) => value[i]),
     }
   })
   const layout = {

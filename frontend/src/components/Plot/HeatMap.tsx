@@ -1,27 +1,49 @@
 import React from 'react'
 
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 
 import PlotlyChart from 'react-plotlyjs-ts'
 
-import { outputDataByIdSelector } from 'redux/slice/Algorithm/AlgorithmSelector'
 import { OutputPlotContext } from 'App'
-import { toOutputDataId } from 'redux/slice/Algorithm/AlgorithmUtils'
+import {
+  heatMapDataByKeySelector,
+  heatMapDataIsLoadedByKeySelector,
+} from 'redux/slice/PlotData/PlotDataSelector'
+import { outputPathValueByIdSelector } from 'redux/slice/Algorithm/AlgorithmSelector'
+import { getHeatMapData } from 'redux/slice/PlotData/PlotDataAction'
+import { toPlotDataKey } from 'redux/slice/PlotData/PlotDataUtils'
 
 export const HeatMap = React.memo(() => {
   const { nodeId, outputKey } = React.useContext(OutputPlotContext)
+  const dispatch = useDispatch()
+  const path = useSelector(outputPathValueByIdSelector(nodeId, outputKey))
+  const isLoaded = useSelector(
+    heatMapDataIsLoadedByKeySelector(toPlotDataKey(nodeId, outputKey)),
+  )
+  React.useEffect(() => {
+    if (!isLoaded && path != null) {
+      dispatch(getHeatMapData({ nodeId, outputKey, path }))
+    }
+  }, [dispatch, isLoaded, nodeId, outputKey, path])
+  if (isLoaded) {
+    return <HeatMapImple />
+  } else {
+    return null
+  }
+})
+const HeatMapImple = React.memo(() => {
+  const { nodeId, outputKey } = React.useContext(OutputPlotContext)
   const currentOutputData = useSelector(
-    outputDataByIdSelector(toOutputDataId(nodeId, outputKey)),
+    heatMapDataByKeySelector(toPlotDataKey(nodeId, outputKey)),
   )
   if (currentOutputData == null) {
     return null
   }
-
   const data = [
     {
       z: currentOutputData.data,
-      x: Object.keys(currentOutputData.data).map((_, i) => i),
-      y: Object.keys(currentOutputData.data[0]).map((_, i) => i),
+      x: currentOutputData.data.map((_, i) => i),
+      y: currentOutputData.data[0].map((_, i) => i),
       type: 'heatmap',
       hoverongaps: false,
     },

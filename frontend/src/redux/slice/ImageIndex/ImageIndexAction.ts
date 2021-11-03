@@ -1,4 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
+import { BASE_URL } from 'const/API'
 
 import { IMAGE_INDEX_SLICE_NAME } from './ImageIndexType'
 
@@ -16,7 +17,7 @@ export const uploadImageFile = createAsyncThunk<
     try {
       formData.append('element_id', elementId)
       const response = await fetch(
-        `http://localhost:8000/api/upload/${fileName}/${inputFileNumber}`,
+        `${BASE_URL}/api/upload/${fileName}/${inputFileNumber}`,
         {
           method: 'POST',
           mode: 'cors',

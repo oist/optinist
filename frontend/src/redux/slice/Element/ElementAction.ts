@@ -6,6 +6,7 @@ import { ThunkApiConfig } from 'redux/store'
 import { flowElementsSelector } from './ElementSelector'
 import { isInputNodeData, isAlgoNodeData } from 'utils/ElementUtils'
 import { algoParamByIdSelector } from '../Algorithm/AlgorithmSelector'
+import { BASE_URL } from 'const/API'
 
 export const clickNode = createAction<{ id: string; type: NODE_DATA_TYPE }>(
   `${ELEMENT_SLICE_NAME}/clickNode`,
@@ -56,10 +57,7 @@ export const runPipeline = createAsyncThunk<
       }
     })
   try {
-    const response = await axios.post(
-      'http://localhost:8000/api/run',
-      nodeDataListForRun,
-    )
+    const response = await axios.post(`${BASE_URL}/api/run`, nodeDataListForRun)
     return response.data
   } catch (e) {
     return thunkAPI.rejectWithValue(e)

@@ -1,5 +1,4 @@
 import { RootState } from '../../store'
-import { OutputDataId } from './AlgorithmType'
 import { isImageOutput } from './AlgorithmUtils'
 
 export const algorithmSelector = (state: RootState) => state.algorithm
@@ -97,15 +96,6 @@ export const imagePathMaxIndexByIdSelector =
     }
   }
 
-export const outputDataByIdSelector =
-  (id: OutputDataId) => (state: RootState) => {
-    if (Object.keys(state.algorithm.plotDataMap).includes(id)) {
-      return state.algorithm.plotDataMap[id]
-    } else {
-      return undefined
-    }
-  }
-
 export const outputPathByIdSelector =
   (nodeId: string, outputKey: string) => (state: RootState) => {
     const output = state.algorithm.algoMap[nodeId]
@@ -135,9 +125,4 @@ export const outputPathValueByIdSelector =
       return outputPath.path.value
     }
     return null
-  }
-
-export const outputDataIsLoadedByIdSelector =
-  (id: OutputDataId) => (state: RootState) => {
-    return Object.keys(state.algorithm.plotDataMap).includes(id)
   }

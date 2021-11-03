@@ -1,5 +1,4 @@
 import { AlgoParam } from 'const/NodeData'
-import { AlgoOutputDataDTO } from './AlgorithmUtils'
 
 export const ALGORITHM_SLICE_NAME = 'algorithm'
 
@@ -13,21 +12,6 @@ export type Algorithm = {
       selectedOutputKey?: string // key of OutputPaths
     }
   }
-  plotDataMap: {
-    // idの方はOutputDataIdを使いたいけど、テンプレートリテラルはオブジェクトのkeyとして使えない...
-    [id: string]: AlgoOutputDataDTO // todo 後で型を検討
-  }
-}
-
-/**
- * ${nodeId}/${outputKey}
- */
-export type OutputDataId = `${string}/${string}`
-
-export type OutputData = {
-  xLabels: string[]
-  yValues: number[]
-  legends: string[]
 }
 
 export type OutputPaths = {
@@ -54,8 +38,6 @@ export interface OutputPath<T extends OUTPUT_TYPE> {
     ? TimeSeriesPathType
     : HeatMapPathType
 }
-
-// type OutputType = 'image' | 'timeseries' | 'heatMap'
 
 type Path = { value: string }
 
