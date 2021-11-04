@@ -32,18 +32,24 @@ def run_code(wrapper_dict, flowList):
     for item in flowList:
         results[item.label] = {}
         for k, v in info[item.label].items():
-            results[item.label][k] = {}
-            results[item.label][k]['path'] = v.path
             if type(v) is ImageData:
-                print("ImageData") 
+                print("ImageData")
+                results[item.label][k] = {}
+                results[item.label][k]['path'] = v.path
                 results[item.label][k]['type'] = 'images'
                 results[item.label][k]['max_index'] = len(v.data)
             elif type(v) is TimeSeriesData:
                 print("TimeSeriesData")
+                results[item.label][k] = {}
+                results[item.label][k]['path'] = v.path
                 results[item.label][k]['type'] = 'timeseries'
             elif type(v) is CorrelationData:
                 print("CorrelationData")
+                results[item.label][k] = {}
+                results[item.label][k]['path'] = v.path
                 results[item.label][k]['type'] = 'heatmap'
+            else:
+                pass
 
     print('results', results)
 
