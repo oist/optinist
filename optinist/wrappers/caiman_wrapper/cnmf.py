@@ -35,8 +35,8 @@ def caiman_cnmf(images: ImageData, opts: dict=None):
 
     info = {}
     info['images'] = ImageData(np.array(Cn * 255, dtype=np.uint8), 'caiman_cnmf')
-    info['fluo'] = TimeSeriesData(cnm.estimates.C, 'timeseries')
-    info['iscell'] = iscell
+    info['fluo'] = TimeSeriesData(cnm.estimates.C, 'caiman_cnmf')
+    info['iscell'] = IscellData(iscell)
     info['roi'] = cont_cent
 
     return info

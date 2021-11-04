@@ -15,7 +15,6 @@ import {
   currentImageContrastSelector,
 } from 'redux/slice/ImageIndex/ImageIndexSelector'
 import Popover from '@material-ui/core/Popover'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
 import Grid from '@material-ui/core/Grid'
 import { RootState } from 'redux/store'
 import {
@@ -26,8 +25,7 @@ import {
 } from 'redux/slice/ImageIndex/ImageIndex'
 import { LinearProgress, Slider, Typography, useTheme } from '@material-ui/core'
 import { NodeIdContext } from 'App'
-
-// import logo from './logo.svg';
+import { BASE_URL } from 'const/API'
 
 export const ImageViewer = React.memo(() => {
   const nodeId = React.useContext(NodeIdContext)
@@ -122,7 +120,7 @@ const Viewer = React.memo<{ nodeId: string }>(({ nodeId }) => {
             filter: `contrast(${contrast}%) brightness(${brightness}%)`,
           }}
           alt=""
-          src={`http://localhost:8000/api/${folder}/${pageIndex}.png`}
+          src={`${BASE_URL}/api/${folder}/${pageIndex}.png`}
         />
       </div>
     </div>

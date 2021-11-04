@@ -5,20 +5,29 @@ import { flexjson } from 'const/flexlayout'
 import { SideBar } from 'components/TreeView'
 import { FlowChart } from 'components/FlowChart'
 import { ParamForm } from 'components/ParamForm/ParamForm'
-import { PlotOutput } from 'components/PlotOutput'
+import { Plot } from 'components/Plot/Plot'
 import { ImageViewer } from 'components/ImageViewer'
 import { ToolBar } from 'components/ToolBar'
 import React from 'react'
+import { getNodeId, getSuffix } from 'utils/FlexLayoutUtils'
 
 const model = Model.fromJson(flexjson)
 
 export const FlexLayoutModelContext = React.createContext<Model>(model)
 export const NodeIdContext = React.createContext<string>('')
+export const OutputPlotContext = React.createContext<{
+  nodeId: string
+  outputKey: string
+}>({ nodeId: '', outputKey: '' })
 
 function App() {
   const factory = (node: TabNode) => {
     var component = node.getComponent()
-    const nodeId = node.getId().split('-')[0] // todo function化する
+    const layoutTabId = node.getId()
+    const nodeId = getNodeId(layoutTabId)
+    if (nodeId == null) {
+      return null
+    }
     switch (component) {
       case 'flowchart':
         return <FlowChart />
@@ -31,11 +40,16 @@ function App() {
           </NodeIdContext.Provider>
         )
       case 'output':
-        return (
-          <NodeIdContext.Provider value={nodeId}>
-            <PlotOutput />
-          </NodeIdContext.Provider>
-        )
+        const outputKey = getSuffix(layoutTabId)
+        if (outputKey != null) {
+          return (
+            <OutputPlotContext.Provider value={{ nodeId, outputKey }}>
+              <Plot />
+            </OutputPlotContext.Provider>
+          )
+        } else {
+          return null
+        }
       case 'image':
         return (
           <NodeIdContext.Provider value={nodeId}>

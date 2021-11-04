@@ -2,9 +2,11 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 @args_check
-def correlation(timeseries: TimeSeriesData):
+def correlation(timeseries: TimeSeriesData, iscell: IscellData):
+	timeseries = timeseries.data
+	iscell = iscell.data
 
-	ind  = np.where(D['iscell'] > 0)[0]
+	ind  = np.where(iscell > 0)[0]
 
 	timeseries = timeseries[ind, :]
 
@@ -18,6 +20,6 @@ def correlation(timeseries: TimeSeriesData):
 				corr[i, j] = np.corrcoef(timeseries[i, :], timeseries[j, :])[0, 1]
 
 	info = {}
-	info['corr'] = corr
+	info['corr'] = CorrelationData(corr)
 
 	return info

@@ -6,14 +6,13 @@ export const algorithmSelector = (state: RootState) => state.algorithm
 export const currentAlgoIdSelector = (state: RootState) =>
   state.algorithm.currentAlgoId
 
-export const currentAlgoNameByIdSelector =
-  (id: string) => (state: RootState) => {
-    if (Object.keys(state.algorithm.algoMap).includes(id)) {
-      return state.algorithm.algoMap[id].name
-    } else {
-      return undefined
-    }
+export const algoNameByIdSelector = (id: string) => (state: RootState) => {
+  if (Object.keys(state.algorithm.algoMap).includes(id)) {
+    return state.algorithm.algoMap[id].name
+  } else {
+    return undefined
   }
+}
 
 export const algoParamByIdSelector = (id: string) => (state: RootState) => {
   const algoMap = algorithmSelector(state).algoMap
@@ -97,15 +96,33 @@ export const imagePathMaxIndexByIdSelector =
     }
   }
 
-export const currentOutputDataSelector = (id: string) => (state: RootState) => {
-  if (Object.keys(state.algorithm.plotDataMap).includes(id)) {
-    return state.algorithm.plotDataMap[id]
-  } else {
-    return undefined
+export const outputPathByIdSelector =
+  (nodeId: string, outputKey: string) => (state: RootState) => {
+    const output = state.algorithm.algoMap[nodeId]
+    if (output != null && output.output != null) {
+      const outputPath = output.output[outputKey]
+      if (outputPath != null) {
+        return outputPath
+      }
+    }
+    return null
   }
-}
 
-export const outputDataIsLoadedByIdSelector =
-  (id: string) => (state: RootState) => {
-    return Object.keys(state.algorithm.plotDataMap).includes(id)
+export const outputPathTypeByIdSelector =
+  (nodeId: string, outputKey: string) => (state: RootState) => {
+    const outputPath = outputPathByIdSelector(nodeId, outputKey)(state)
+    if (outputPath != null) {
+      return outputPath.type
+    } else {
+      return null
+    }
+  }
+
+export const outputPathValueByIdSelector =
+  (nodeId: string, outputKey: string) => (state: RootState) => {
+    const outputPath = outputPathByIdSelector(nodeId, outputKey)(state)
+    if (outputPath != null) {
+      return outputPath.path.value
+    }
+    return null
   }

@@ -20,11 +20,9 @@ class ImageData:
             if len(self.data.shape) == 2:
                 self.data = self.data[np.newaxis, :, :]
 
-            print(self.data.shape)
             for i in range(len(self.data)):
                 img = Image.fromarray(np.uint8(self.data[i]))
                 img.save(os.path.join(self.path, f'{str(i)}.png'))
-
 
 
 class TimeSeriesData:
@@ -40,6 +38,28 @@ class TimeSeriesData:
         pd.DataFrame(self.data).to_json(self.path, indent=4)
 
 
+class CorrelationData:
+    def __init__(self, data, func_name='heatmap'):
+        self.data = data
+
+        _dir = os.path.join('files', func_name)
+
+        if not os.path.exists(_dir):
+            os.makedirs(_dir, exist_ok=True)
+
+        self.path = os.path.join(_dir, 'correlation.json')
+
+        pd.DataFrame(self.data).to_json(self.path, indent=4, orient="values")
+
+
 class Suite2pData:
     def __init__(self, data):
         self.data = data
+
+
+class IscellData:
+    def __init__(self, data):
+        self.data = data
+
+
+        
