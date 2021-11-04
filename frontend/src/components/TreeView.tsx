@@ -6,6 +6,7 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 
 import axios from 'axios'
+import { BASE_URL } from 'const/API'
 
 const useStyles = makeStyles({
   root: {
@@ -21,7 +22,7 @@ export const SideBar = React.memo(() => {
   const [algoList, setAlgoList] = useState([])
 
   useEffect(() => {
-    axios.get('http://localhost:8000/api/algolist').then((res) => {
+    axios.get(`${BASE_URL}/api/algolist`).then((res) => {
       setAlgoList(res.data)
     })
   }, [])

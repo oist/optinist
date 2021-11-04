@@ -1,22 +1,4 @@
-import {
-  OutputDataId,
-  OutputPath,
-  OutputPathType,
-  OUTPUT_TYPE_SET,
-} from './AlgorithmType'
-
-export type AlgoOutputDataDTO = {
-  data: {
-    [key: string]: {
-      [key: number]: number
-    }
-  }
-}
-
-export function convertToOutputData(dto: AlgoOutputDataDTO) {
-  // todo 後で変換処理を書く
-  return dto
-}
+import { OutputPath, OutputPathType, OUTPUT_TYPE_SET } from './AlgorithmType'
 
 export function isImageOutput(
   path: OutputPathType,
@@ -46,11 +28,4 @@ export function isHeatMapOutput(
   } else {
     return false
   }
-}
-
-export function toOutputDataId(
-  nodeId: string,
-  outputKey: string,
-): OutputDataId {
-  return `${nodeId}/${outputKey}`
 }

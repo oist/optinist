@@ -5,8 +5,7 @@ import { NODE_DATA_TYPE_SET } from 'const/NodeData'
 import { isAlgoNodeData } from 'utils/ElementUtils'
 import { addFlowElement } from '../Element/Element'
 import { clickNode, runPipeline } from '../Element/ElementAction'
-import { getAlgoOutputData, getAlgoParams } from './AlgorithmAction'
-import { convertToOutputData, toOutputDataId } from './AlgorithmUtils'
+import { getAlgoParams } from './AlgorithmAction'
 import {
   ALGORITHM_SLICE_NAME,
   Algorithm,
@@ -16,7 +15,6 @@ import {
 const initialState: Algorithm = {
   currentAlgoId: INITIAL_ALGO_ELEMENT_ID,
   algoMap: {},
-  plotDataMap: {},
 }
 
 export const algorithmSlice = createSlice({
@@ -66,11 +64,6 @@ export const algorithmSlice = createSlice({
           name: algoName,
           param: action.payload,
         }
-      })
-      .addCase(getAlgoOutputData.fulfilled, (state, action) => {
-        const { nodeId, outputKey } = action.meta.arg
-        const outputDataId = toOutputDataId(nodeId, outputKey)
-        state.plotDataMap[outputDataId] = convertToOutputData(action.payload)
       })
       .addCase(runPipeline.fulfilled, (state, action) => {
         if (action.payload.message === 'success') {

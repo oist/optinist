@@ -7,12 +7,14 @@ import {
 import elementReducer from './slice/Element/Element'
 import algorithmReducer from './slice/Algorithm/Algorithm'
 import imageIndexReducer from './slice/ImageIndex/ImageIndex'
+import plotDataReducer from './slice/PlotData/PlotData'
 
 export const store = configureStore({
   reducer: combineReducers({
     element: elementReducer,
     algorithm: algorithmReducer,
     imageIndex: imageIndexReducer,
+    plotData: plotDataReducer,
   }),
 })
 
