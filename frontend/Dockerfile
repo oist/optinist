@@ -1,6 +1,7 @@
 FROM node:16 as node
 COPY . ./
-RUN npm install --legacy-peer-deps && npm run build
+ENV GENERATE_SOURCEMAP false 
+RUN yarn install && yarn build
 
 FROM nginx:1.20.1
 COPY --from=node ./build /usr/share/nginx/html
