@@ -5,7 +5,7 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 @args_check
-def dummy_image2image(image: ImageData, opts: dict=None):
+def dummy_image2image(image: ImageData, params: dict=None):
     
     """
         get image
@@ -17,7 +17,7 @@ def dummy_image2image(image: ImageData, opts: dict=None):
 
 
 @args_check
-def dummy_image2time(image: ImageData, opts: dict=None):
+def dummy_image2time(image: ImageData, params: dict=None):
     
     """
         get image
@@ -29,7 +29,7 @@ def dummy_image2time(image: ImageData, opts: dict=None):
 
 
 @args_check
-def dummy_image2heat(image: ImageData, opts: dict=None):
+def dummy_image2heat(image: ImageData, params: dict=None):
     
     """
         get image
@@ -41,7 +41,7 @@ def dummy_image2heat(image: ImageData, opts: dict=None):
 
 
 @args_check
-def dummy_time2time(timeseries: TimeSeriesData, opts: dict=None):
+def dummy_time2time(timeseries: TimeSeriesData, params: dict=None):
     
     """
         get image
@@ -53,7 +53,7 @@ def dummy_time2time(timeseries: TimeSeriesData, opts: dict=None):
 
 
 @args_check
-def dummy_image2image8time(image1: ImageData, opts: dict=None):
+def dummy_image2image8time(image1: ImageData, params: dict=None):
     
     """
         get image
@@ -66,7 +66,7 @@ def dummy_image2image8time(image1: ImageData, opts: dict=None):
 
 
 @args_check
-def dummy_image8image2image8time(image1: ImageData, image2: ImageData, opts: dict=None):
+def dummy_image8image2image8time(image1: ImageData, image2: ImageData, params: dict=None):
     
     """
         get image
@@ -79,7 +79,7 @@ def dummy_image8image2image8time(image1: ImageData, image2: ImageData, opts: dic
 
 
 @args_check
-def dummy_time8image2image8time(timeseries: TimeSeriesData, image: ImageData, opts: dict=None):
+def dummy_time8image2image8time(timeseries: TimeSeriesData, image: ImageData, params: dict=None):
     
     """
         get image

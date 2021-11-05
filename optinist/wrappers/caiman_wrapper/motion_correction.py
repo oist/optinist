@@ -2,7 +2,7 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 @args_check
-def caiman_mc(image: ImageData, opts: dict=None):
+def caiman_mc(image: ImageData, params: dict=None):
     file_path = image.path
     import numpy as np
     from caiman.source_extraction.cnmf.params import CNMFParams
@@ -10,10 +10,11 @@ def caiman_mc(image: ImageData, opts: dict=None):
     from caiman import load, save_memmap, load_memmap
     info = {}
 
-    if opts is None:
+    if params is None:
         opts = CNMFParams()
     else:
-        opts.change_params(params_dict=opts)
+        opts = CNMFParams()
+        opts.change_params(params_dict=params)
 
     mc = MotionCorrect(
         file_path, dview=None, **opts.get_group('motion'))
@@ -27,8 +28,9 @@ def caiman_mc(image: ImageData, opts: dict=None):
 
     # now load the file
     Yr, dims, T = load_memmap(fname_new)
-    images = np.array(np.reshape(
-        Yr.T, [T] + list(dims), order='F'))
+    # images = np.array(np.reshape(
+    #     Yr.T, [T] + list(dims), order='F'))
+    images = Yr.T.reshape((T,) + dims, order='F')
 
     info['images'] = ImageData(images, 'caiman_mc')
 

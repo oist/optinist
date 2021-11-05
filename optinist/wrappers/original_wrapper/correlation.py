@@ -2,7 +2,7 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 @args_check
-def correlation(timeseries: TimeSeriesData, iscell: IscellData):
+def correlation(timeseries: TimeSeriesData, iscell: IscellData, params: dict=None):
     timeseries = timeseries.data
     iscell = iscell.data
 
