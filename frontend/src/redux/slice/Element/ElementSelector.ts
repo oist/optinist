@@ -21,7 +21,8 @@ export const nodeByIdSelector =
   }
 
 export const maxElementIdSelector = (state: RootState) =>
-  Object.keys(state.element.flowElements)
+  state.element.flowElements
+    .map((element) => element.id)
     .map((id) => Number(id))
     .filter((id) => !isNaN(id))
     .reduce((a, b) => Math.max(a, b))
