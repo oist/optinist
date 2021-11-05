@@ -3,7 +3,7 @@ from wrappers.args_check import args_check
 
 
 @args_check
-def suite2p_roi(ops: Suite2pData):
+def suite2p_roi(ops: Suite2pData, params: dict=None):
     ops = ops.data
 
     import numpy as np

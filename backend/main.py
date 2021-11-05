@@ -13,6 +13,8 @@ import yaml
 import json
 sys.path.append('../optinist')
 from wrappers import wrapper_dict
+from collections import OrderedDict
+from wrappers.data_wrapper import *
 
 app = FastAPI(docs_url="/api/docs", openapi_url="/api")
 
@@ -83,13 +85,39 @@ async def create_file(response: Response, fileName: str, element_id: str = Form(
 
     return {"pngFolder": png_folder, "tiffPath": tiff_path, "maxIndex": len(tiffs)}
 
-
 @app.post("/api/run")
 async def run(flowList: List[FlowItem]):
+    import run_pipeline
     print('run_code')
     print(wrapper_dict)
-    import run
-    return run.run_code(wrapper_dict, flowList)
+    info = run_pipeline.run_code(wrapper_dict, flowList)
+
+    results = OrderedDict()
+    for item in flowList:
+        results[item.label] = {}
+        for k, v in info[item.label].items():
+            if type(v) is ImageData:
+                print("ImageData")
+                results[item.label][k] = {}
+                results[item.label][k]['path'] = v.path
+                results[item.label][k]['type'] = 'images'
+                results[item.label][k]['max_index'] = len(v.data)
+            elif type(v) is TimeSeriesData:
+                print("TimeSeriesData")
+                results[item.label][k] = {}
+                results[item.label][k]['path'] = v.path
+                results[item.label][k]['type'] = 'timeseries'
+            elif type(v) is CorrelationData:
+                print("CorrelationData")
+                results[item.label][k] = {}
+                results[item.label][k]['path'] = v.path
+                results[item.label][k]['type'] = 'heatmap'
+            else:
+                pass
+
+    print('results', results)
+
+    return {'message': 'success', 'outputPaths': results}
 
 @app.get("/api/outputs/{file_path:path}")
 async def read_file(file_path: str):

@@ -3,20 +3,21 @@ from wrappers.args_check import args_check
 
 
 @args_check
-def caiman_cnmf(images: ImageData, opts: dict=None):
-    images = images.data
+def caiman_cnmf(images: ImageData, params: dict=None):
     from caiman import local_correlations
     from caiman.source_extraction.cnmf import cnmf
     from caiman.source_extraction.cnmf.params import CNMFParams
     import caiman.utils.visualization as visualization
     import numpy as np
 
-    if opts is None:
-        opts = CNMFParams()
-    else:
-        opts.change_params(params_dict=opts)
+    images = images.data
 
-    cnm = cnmf.CNMF(1, params=opts, dview=None)
+    if params is None:
+        params = CNMFParams()
+    else:
+        params = CNMFParams(params_dict=params)
+
+    cnm = cnmf.CNMF(1, params=params, dview=None)
     cnm = cnm.fit(images)
 
     # contours plot

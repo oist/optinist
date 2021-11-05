@@ -3,7 +3,7 @@ from wrappers.args_check import args_check
 
 
 @args_check
-def suite2p_registration(image: ImageData, ops: Suite2pData=None):
+def suite2p_registration(image: ImageData, ops: Suite2pData=None, params: dict=None):
     refImg = image.data
     ops = ops.data
 
@@ -12,11 +12,12 @@ def suite2p_registration(image: ImageData, ops: Suite2pData=None):
     from suite2p import default_ops
 
     ######### REGISTRATION #########
+    print(refImg.shape)
     if len(refImg.shape) == 3:
         refImg = refImg[0]
 
-    if ops is None:
-        ops = {**default_ops()}
+    # if ops is None:
+    #     ops = {**default_ops()}
 
     ops = registration.register_binary(ops, refImg=refImg) # register binary
 
@@ -25,8 +26,10 @@ def suite2p_registration(image: ImageData, ops: Suite2pData=None):
         ops = registration.get_pc_metrics(ops)
 
     info = {}
+    print(ops['refImg'])
     info['images'] = ImageData(ops['refImg'].astype(np.uint8), 'refImg')
-    info['meanImgE'] = ImageData(ops['meanImgE'], 'meanImgE')
+    print(ops['meanImgE'])
+    info['meanImgE'] = ImageData(ops['meanImgE'].astype(np.uint8), 'meanImgE')
     info['ops'] = Suite2pData(ops)
 
     return info
