@@ -20,6 +20,7 @@ import { setSelectedOutputKey } from 'redux/slice/Algorithm/Algorithm'
 import { showAlgoOutputImage } from 'redux/slice/ImageIndex/ImageIndex'
 import { FlexLayoutModelContext } from 'App'
 
+import { arrayEqualityFn } from 'utils/EqualityUtils'
 import { OUTPUT_TABSET_ID, PARAM_FORM_TABSET_ID } from 'const/flexlayout'
 import { useTabAction } from 'FlexLayoutHook'
 import { OUTPUT_TYPE_SET } from 'redux/slice/Algorithm/AlgorithmType'
@@ -147,7 +148,10 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
 
 const OutputKeySelect = React.memo<{ nodeId: string }>(({ nodeId }) => {
   const dispatch = useDispatch()
-  const outputKeyList = useSelector(outputKeyListSelector(nodeId))
+  const outputKeyList = useSelector(
+    outputKeyListSelector(nodeId),
+    arrayEqualityFn,
+  )
   const selectedOutputKey = useSelector(selectedOutputKeySelector(nodeId))
   const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
     const outputKey = event.target.value as string

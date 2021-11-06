@@ -5,7 +5,7 @@ import { NODE_DATA_TYPE_SET } from 'const/NodeData'
 import { isAlgoNodeData } from 'utils/ElementUtils'
 import { addFlowElement } from '../Element/Element'
 import { clickNode, runPipeline } from '../Element/ElementAction'
-import { getAlgoParams } from './AlgorithmAction'
+import { getAlgoList, getAlgoParams } from './AlgorithmAction'
 import {
   ALGORITHM_SLICE_NAME,
   Algorithm,
@@ -14,7 +14,8 @@ import {
 
 const initialState: Algorithm = {
   currentAlgoId: INITIAL_ALGO_ELEMENT_ID,
-  algoMap: {},
+  algoNodeMap: {},
+  algoList: {},
 }
 
 export const algorithmSlice = createSlice({
@@ -26,7 +27,7 @@ export const algorithmSlice = createSlice({
       action: PayloadAction<{ paramKey: string; newValue: unknown }>,
     ) => {
       const { paramKey, newValue } = action.payload
-      const param = state.algoMap[state.currentAlgoId].param
+      const param = state.algoNodeMap[state.currentAlgoId].param
       if (param !== undefined) {
         param[paramKey] = newValue
       }
@@ -38,7 +39,7 @@ export const algorithmSlice = createSlice({
         outputKey: string
       }>,
     ) => {
-      state.algoMap[action.payload.id].selectedOutputKey =
+      state.algoNodeMap[action.payload.id].selectedOutputKey =
         action.payload.outputKey
     },
   },
@@ -51,15 +52,18 @@ export const algorithmSlice = createSlice({
       })
       .addCase(addFlowElement, (state, action) => {
         if (isAlgoNodeData(action.payload)) {
-          state.algoMap[action.payload.id] = {
+          state.algoNodeMap[action.payload.id] = {
             name: action.payload.data?.label ?? '',
           }
         }
       })
+      .addCase(getAlgoList.fulfilled, (state, action) => {
+        state.algoList = action.payload
+      })
       .addCase(getAlgoParams.fulfilled, (state, action) => {
         const { id, algoName } = action.meta.arg
-        const algo = state.algoMap[id]
-        state.algoMap[id] = {
+        const algo = state.algoNodeMap[id]
+        state.algoNodeMap[id] = {
           ...algo,
           name: algoName,
           param: action.payload,
@@ -70,11 +74,11 @@ export const algorithmSlice = createSlice({
           Object.entries(action.payload.outputPaths).forEach(
             ([algoName, outputPaths]) => {
               // console.log(current(state.algoMap))
-              Object.entries(state.algoMap).forEach(([id, algo]) => {
+              Object.entries(state.algoNodeMap).forEach(([id, algo]) => {
                 // todo とりあえず名前一致だが、後でサーバーサイドとフロントで両方idにする
-                if (algo.name === algoName && state.algoMap[id]) {
+                if (algo.name === algoName && state.algoNodeMap[id]) {
                   const outputState = {
-                    ...state.algoMap[id].output,
+                    ...state.algoNodeMap[id].output,
                   }
                   Object.entries(outputPaths).forEach(([key, pathInfo]) => {
                     if (pathInfo.type === 'images') {
@@ -100,9 +104,9 @@ export const algorithmSlice = createSlice({
                         },
                       }
                     }
-                    state.algoMap[id].selectedOutputKey = key
+                    state.algoNodeMap[id].selectedOutputKey = key
                   })
-                  state.algoMap[id].output = outputState
+                  state.algoNodeMap[id].output = outputState
                 }
               })
             },

@@ -7,15 +7,15 @@ export const currentAlgoIdSelector = (state: RootState) =>
   state.algorithm.currentAlgoId
 
 export const algoNameByIdSelector = (id: string) => (state: RootState) => {
-  if (Object.keys(state.algorithm.algoMap).includes(id)) {
-    return state.algorithm.algoMap[id].name
+  if (Object.keys(state.algorithm.algoNodeMap).includes(id)) {
+    return state.algorithm.algoNodeMap[id].name
   } else {
     return undefined
   }
 }
 
 export const algoParamByIdSelector = (id: string) => (state: RootState) => {
-  const algoMap = algorithmSelector(state).algoMap
+  const algoMap = algorithmSelector(state).algoNodeMap
   if (Object.keys(algoMap).includes(id)) {
     return algoMap[id].param
   } else {
@@ -25,7 +25,7 @@ export const algoParamByIdSelector = (id: string) => (state: RootState) => {
 
 export const paramValueSelector =
   (id: string, paramName: string) => (state: RootState) => {
-    const param = algorithmSelector(state).algoMap[id].param
+    const param = algorithmSelector(state).algoNodeMap[id].param
     if (param != null) {
       return param[paramName]
     } else {
@@ -34,8 +34,8 @@ export const paramValueSelector =
   }
 
 export const outputKeyListSelector = (id: string) => (state: RootState) => {
-  if (Object.keys(state.algorithm.algoMap).includes(id)) {
-    const outputPaths = state.algorithm.algoMap[id].output
+  if (Object.keys(state.algorithm.algoNodeMap).includes(id)) {
+    const outputPaths = state.algorithm.algoNodeMap[id].output
     if (outputPaths != null) {
       return Object.keys(outputPaths)
     } else {
@@ -47,15 +47,15 @@ export const outputKeyListSelector = (id: string) => (state: RootState) => {
 }
 
 export const selectedOutputKeySelector = (id: string) => (state: RootState) => {
-  if (Object.keys(state.algorithm.algoMap).includes(id)) {
-    return state.algorithm.algoMap[id].selectedOutputKey
+  if (Object.keys(state.algorithm.algoNodeMap).includes(id)) {
+    return state.algorithm.algoNodeMap[id].selectedOutputKey
   } else {
     return undefined
   }
 }
 
 const selectedOutputPathSelector = (id: string) => (state: RootState) => {
-  const algoMap = state.algorithm.algoMap
+  const algoMap = state.algorithm.algoNodeMap
   if (algoMap[id] != null) {
     const algo = algoMap[id]
     const output = algo.output
@@ -79,8 +79,8 @@ export const selectedOutputPathValueSelector =
 
 export const imagePathMaxIndexByIdSelector =
   (id: string, outputKey: string) => (state: RootState) => {
-    if (Object.keys(state.algorithm.algoMap).includes(id)) {
-      const outputPaths = state.algorithm.algoMap[id].output
+    if (Object.keys(state.algorithm.algoNodeMap).includes(id)) {
+      const outputPaths = state.algorithm.algoNodeMap[id].output
       if (outputPaths != null && Object.keys(outputPaths).includes(outputKey)) {
         const path = outputPaths[outputKey]
         if (isImageOutput(path)) {
@@ -98,7 +98,7 @@ export const imagePathMaxIndexByIdSelector =
 
 export const outputPathByIdSelector =
   (nodeId: string, outputKey: string) => (state: RootState) => {
-    const output = state.algorithm.algoMap[nodeId]
+    const output = state.algorithm.algoNodeMap[nodeId]
     if (output != null && output.output != null) {
       const outputPath = output.output[outputKey]
       if (outputPath != null) {
@@ -126,3 +126,5 @@ export const outputPathValueByIdSelector =
     }
     return null
   }
+
+export const algoListSelector = (state: RootState) => state.algorithm.algoList

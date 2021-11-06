@@ -1,12 +1,15 @@
-import React, { useState, useEffect, DragEvent } from 'react'
+import React, { useEffect, DragEvent } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import TreeView from '@material-ui/lab/TreeView'
 import TreeItem from '@material-ui/lab/TreeItem'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 
-import axios from 'axios'
-import { BASE_URL } from 'const/API'
+import { algoListSelector } from 'redux/slice/Algorithm/AlgorithmSelector'
+import { AlgoListType } from 'redux/slice/Algorithm/AlgorithmType'
+import { arrayEqualityFn } from 'utils/EqualityUtils'
+import { getAlgoList } from 'redux/slice/Algorithm/AlgorithmAction'
 
 const useStyles = makeStyles({
   root: {
@@ -18,14 +21,15 @@ const useStyles = makeStyles({
 })
 
 export const SideBar = React.memo(() => {
+  const dispatch = useDispatch()
   const classes = useStyles()
-  const [algoList, setAlgoList] = useState([])
+  const algoList = useSelector(algoListSelector, algoListEqualityFn)
 
   useEffect(() => {
-    axios.get(`${BASE_URL}/api/algolist`).then((res) => {
-      setAlgoList(res.data)
-    })
-  }, [])
+    if (Object.keys(algoList).length === 0) {
+      dispatch(getAlgoList())
+    }
+  }, [dispatch, algoList])
 
   const onDragStart = (event: DragEvent, nodeName: string) => {
     if (event.dataTransfer != null) {
@@ -50,7 +54,7 @@ export const SideBar = React.memo(() => {
       </TreeItem>
 
       <TreeItem nodeId="Algorithm" label="Algorithm">
-        {algoList.map((name) => (
+        {Object.keys(algoList).map((name) => (
           <TreeItem
             key={name}
             nodeId={name}
@@ -60,15 +64,19 @@ export const SideBar = React.memo(() => {
           />
         ))}
       </TreeItem>
-
-      {/* <TreeItem nodeId="Output" label="Output">
-        <TreeItem
-          nodeId="output"
-          label="output"
-          onDragStart={(event: DragEvent) => onDragStart(event, 'output')}
-          draggable
-        />
-      </TreeItem> */}
     </TreeView>
   )
 })
+
+function algoListEqualityFn(a: AlgoListType, b: AlgoListType) {
+  const aArray = Object.entries(a)
+  const bArray = Object.entries(b)
+  return (
+    a === b ||
+    (aArray.length === bArray.length &&
+      aArray.every(([aKey, aValue], i) => {
+        const [bKey, bValue] = bArray[i]
+        return bKey === aKey && arrayEqualityFn(bValue.args, aValue.args)
+      }))
+  )
+}
