@@ -40,28 +40,39 @@ const TimeSeriesImple = React.memo(() => {
   const timeSeriesData = useSelector(
     timeSeriesDataByKeySelector(toPlotDataKey(nodeId, outputKey)),
   )
-  if (timeSeriesData == null) {
-    return null
-  }
-  const data = Object.keys(timeSeriesData.data['0']).map((_, i) => {
-    return {
-      name: `${name}(${i})`,
-      x: Object.keys(timeSeriesData.data),
-      y: Object.values(timeSeriesData.data).map((value) => value[i]),
+
+  const data = React.useMemo(() => {
+    if (timeSeriesData == null) {
+      return []
     }
-  })
-  const layout = {
-    title: name,
-    margin: {
-      t: 60, // top
-      l: 50, // left
-      b: 30, // bottom
-    },
-    autosize: true,
-    height: 300,
-  }
-  const config = {
-    displayModeBar: true,
-  }
+    return Object.keys(timeSeriesData.data['0']).map((_, i) => {
+      return {
+        name: `${name}(${i})`,
+        x: Object.keys(timeSeriesData.data),
+        y: Object.values(timeSeriesData.data).map((value) => value[i]),
+      }
+    })
+  }, [])
+
+  const layout = React.useMemo(
+    () => ({
+      title: name,
+      margin: {
+        t: 60, // top
+        l: 50, // left
+        b: 30, // bottom
+      },
+      autosize: true,
+      height: 300,
+    }),
+    [name],
+  )
+
+  const config = React.useMemo(
+    () => ({
+      displayModeBar: true,
+    }),
+    [],
+  )
   return <PlotlyChart data={data} layout={layout} config={config} />
 })
