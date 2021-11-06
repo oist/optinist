@@ -1,4 +1,5 @@
 import os
+import inspect
 
 import imageio
 from PIL import Image
@@ -49,7 +50,26 @@ async def params(name: str):
 @app.get("/api/algolist")
 async def run() -> List:
     print(wrapper_dict.keys())
-    return list(wrapper_dict.keys())
+    {
+        'caiman_mc' : {
+            'args': ['images', 'timeseries']
+        },
+        'caiman_cnmf': {
+            'args': ['images', 'timeseries']
+        }
+    }
+
+    algo_dict = {}
+    for key, value in wrapper_dict.items():
+        algo_dict[key] = {}
+
+        # get args
+        sig = inspect.signature(value)
+        arg_names = [x.name for x in sig.parameters.values()]
+
+        algo_dict[key]['args'] = arg_names
+
+    return algo_dict
 
 @app.get("/api/cookie-test")
 def create_cookie(response: Response):
