@@ -30,7 +30,7 @@ class FlowItem(BaseModel):
     label: str
     path: Optional[str] = None
     type: str
-    param: Optional[Dict] = None
+    param: Optional[Dict] = {}
 
 @app.get("/")
 async def root():
