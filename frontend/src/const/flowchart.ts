@@ -30,20 +30,21 @@ export const initialElements: Elements<NodeData> = [
     style: INITIAL_DATA_STYLE,
     position: { x: 50, y: 60 },
   },
-  {
-    id: INITIAL_ALGO_ELEMENT_ID,
-    type: 'default',
-    data: { type: NODE_DATA_TYPE_SET.ALGO, label: INITIAL_ALGO_ELEMENT_NAME },
-    style: INITIAL_ALGO_STYLE,
-    position: { x: 400, y: 60 },
-    targetPosition: Position.Left,
-    sourcePosition: Position.Right,
-  },
-  // edge
-  {
-    id: INITIAL_EDGE_ID,
-    source: INITIAL_IMAGE_ELEMENT_ID,
-    target: INITIAL_ALGO_ELEMENT_ID,
-    type: 'smoothstep',
-  },
+  // {
+  //   id: INITIAL_ALGO_ELEMENT_ID,
+  //   type: 'default',
+  //   data: { type: NODE_DATA_TYPE_SET.ALGO, label: INITIAL_ALGO_ELEMENT_NAME },
+  //   style: INITIAL_ALGO_STYLE,
+  //   position: { x: 400, y: 60 },
+  //   targetPosition: Position.Left,
+  //   sourcePosition: Position.Right,
+  // },
+  // // edge
+  // {
+  //   id: INITIAL_EDGE_ID,
+  //   source: INITIAL_IMAGE_ELEMENT_ID,
+  //   target: INITIAL_ALGO_ELEMENT_ID,
+  //   targetHandle: `${INITIAL_ALGO_ELEMENT_ID}-image`,
+  //   type: 'smoothstep',
+  // },
 ]

@@ -11,7 +11,6 @@ import {
   Algorithm,
   OUTPUT_TYPE_SET,
 } from './AlgorithmType'
-import { getAlgoChild } from './AlgorithmUtils'
 
 const initialState: Algorithm = {
   currentAlgoId: INITIAL_ALGO_ELEMENT_ID,
