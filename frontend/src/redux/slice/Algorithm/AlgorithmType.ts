@@ -16,8 +16,18 @@ export type Algorithm = {
 }
 
 export type AlgoListType = {
-  [algoName: string]: {
-    args: string[]
+  [algoName: string]: AlgoNodeType
+}
+
+export type AlgoNodeType = AlgoChild | AlgoParent
+export type AlgoChild = {
+  type: 'child'
+  args: string[]
+}
+export type AlgoParent = {
+  type: 'parent'
+  children: {
+    [name: string]: AlgoNodeType
   }
 }
 

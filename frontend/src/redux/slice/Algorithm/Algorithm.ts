@@ -11,6 +11,7 @@ import {
   Algorithm,
   OUTPUT_TYPE_SET,
 } from './AlgorithmType'
+import { getAlgoChild } from './AlgorithmUtils'
 
 const initialState: Algorithm = {
   currentAlgoId: INITIAL_ALGO_ELEMENT_ID,
@@ -52,13 +53,19 @@ export const algorithmSlice = createSlice({
       })
       .addCase(addFlowElement, (state, action) => {
         if (isAlgoNodeData(action.payload)) {
-          state.algoNodeMap[action.payload.id] = {
-            name: action.payload.data?.label ?? '',
+          const algoName = action.payload.data?.label
+          if (algoName != null) {
+            state.algoNodeMap[action.payload.id] = {
+              name: algoName,
+            }
           }
         }
       })
       .addCase(getAlgoList.fulfilled, (state, action) => {
-        state.algoList = action.payload
+        const dto = action.payload
+        Object.entries(dto).forEach(([name, node]) => {
+          state.algoList[name] = { type: 'child', args: node.args }
+        })
       })
       .addCase(getAlgoParams.fulfilled, (state, action) => {
         const { id, algoName } = action.meta.arg

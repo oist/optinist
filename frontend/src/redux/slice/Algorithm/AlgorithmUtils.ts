@@ -1,4 +1,12 @@
-import { OutputPath, OutputPathType, OUTPUT_TYPE_SET } from './AlgorithmType'
+import {
+  AlgoChild,
+  AlgoListType,
+  AlgoNodeType,
+  AlgoParent,
+  OutputPath,
+  OutputPathType,
+  OUTPUT_TYPE_SET,
+} from './AlgorithmType'
 
 export function isImageOutput(
   path: OutputPathType,
@@ -28,4 +36,29 @@ export function isHeatMapOutput(
   } else {
     return false
   }
+}
+
+export function isAlgoChild(algoNode: AlgoNodeType): algoNode is AlgoChild {
+  return algoNode.type === 'child'
+}
+
+export function isAlgoParent(algoNode: AlgoNodeType): algoNode is AlgoParent {
+  return algoNode.type === 'parent'
+}
+
+export function getAlgoChild(
+  algoList: AlgoListType,
+  algoName: string,
+): AlgoChild | null {
+  let result: AlgoChild | null = null
+  Object.entries(algoList).forEach(([name, node]) => {
+    if (isAlgoChild(node)) {
+      if (name === algoName) {
+        result = node
+      }
+    } else {
+      result = getAlgoChild(node.children, name)
+    }
+  })
+  return result
 }

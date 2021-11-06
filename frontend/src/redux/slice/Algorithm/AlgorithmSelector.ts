@@ -1,5 +1,5 @@
 import { RootState } from '../../store'
-import { isImageOutput } from './AlgorithmUtils'
+import { getAlgoChild, isImageOutput } from './AlgorithmUtils'
 
 export const algorithmSelector = (state: RootState) => state.algorithm
 
@@ -128,3 +128,13 @@ export const outputPathValueByIdSelector =
   }
 
 export const algoListSelector = (state: RootState) => state.algorithm.algoList
+
+export const algoArgsSelector = (id: string) => (state: RootState) => {
+  const algoName = algoNameByIdSelector(id)(state)
+  if (algoName != null) {
+    const algoListChild = getAlgoChild(state.algorithm.algoList, algoName)
+    return algoListChild?.args
+  } else {
+    return undefined
+  }
+}

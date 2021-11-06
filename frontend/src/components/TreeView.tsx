@@ -7,9 +7,10 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 
 import { algoListSelector } from 'redux/slice/Algorithm/AlgorithmSelector'
-import { AlgoListType } from 'redux/slice/Algorithm/AlgorithmType'
+import { AlgoListType, AlgoNodeType } from 'redux/slice/Algorithm/AlgorithmType'
 import { arrayEqualityFn } from 'utils/EqualityUtils'
 import { getAlgoList } from 'redux/slice/Algorithm/AlgorithmAction'
+import { isAlgoChild, isAlgoParent } from 'redux/slice/Algorithm/AlgorithmUtils'
 
 const useStyles = makeStyles({
   root: {
@@ -52,20 +53,48 @@ export const SideBar = React.memo(() => {
           draggable
         />
       </TreeItem>
-
       <TreeItem nodeId="Algorithm" label="Algorithm">
-        {Object.keys(algoList).map((name) => (
-          <TreeItem
-            key={name}
-            nodeId={name}
-            label={name}
-            onDragStart={(event: DragEvent) => onDragStart(event, name)}
-            draggable
+        {Object.entries(algoList).map(([name, node], i) => (
+          <AlgoNodeComponent
+            name={name}
+            node={node}
+            onDragStart={onDragStart}
+            key={i.toFixed()}
           />
         ))}
       </TreeItem>
     </TreeView>
   )
+})
+
+const AlgoNodeComponent = React.memo<{
+  name: string
+  node: AlgoNodeType
+  onDragStart: (event: DragEvent, nodeName: string) => void
+}>(({ name, node, onDragStart }) => {
+  if (isAlgoChild(node)) {
+    return (
+      <TreeItem
+        nodeId={name}
+        label={name}
+        onDragStart={(event: DragEvent) => onDragStart(event, name)}
+        draggable
+      />
+    )
+  } else {
+    return (
+      <TreeItem nodeId={name} label={name}>
+        {Object.entries(node.children).map(([name, node], i) => (
+          <AlgoNodeComponent
+            name={name}
+            node={node}
+            onDragStart={onDragStart}
+            key={i.toFixed()}
+          />
+        ))}
+      </TreeItem>
+    )
+  }
 })
 
 function algoListEqualityFn(a: AlgoListType, b: AlgoListType) {
@@ -76,7 +105,29 @@ function algoListEqualityFn(a: AlgoListType, b: AlgoListType) {
     (aArray.length === bArray.length &&
       aArray.every(([aKey, aValue], i) => {
         const [bKey, bValue] = bArray[i]
-        return bKey === aKey && arrayEqualityFn(bValue.args, aValue.args)
+        return bKey === aKey && algoNodeEqualityFn(bValue, aValue)
       }))
   )
+}
+
+function algoNodeEqualityFn(a: AlgoNodeType, b: AlgoNodeType): boolean {
+  if (a === b) {
+    return true
+  }
+  if (isAlgoChild(a) && isAlgoChild(b)) {
+    return arrayEqualityFn(a.args, b.args)
+  } else if (isAlgoParent(a) && isAlgoParent(b)) {
+    const aArray = Object.entries(a.children)
+    const bArray = Object.entries(b.children)
+    return (
+      a.children === b.children ||
+      (aArray.length === bArray.length &&
+        aArray.every(([aKey, aValue], i) => {
+          const [bKey, bValue] = bArray[i]
+          return bKey === aKey && algoNodeEqualityFn(bValue, aValue)
+        }))
+    )
+  } else {
+    return false
+  }
 }
