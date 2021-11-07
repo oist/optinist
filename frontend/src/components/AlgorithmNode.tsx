@@ -165,8 +165,9 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
               })
           : null}
       </div>
-      {algoReturns != null
-        ? algoReturns.map((returnsName, i) => {
+      {algoReturns != null ? (
+        algoReturns.length > 0 ? (
+          algoReturns.map((returnsName, i) => {
             return (
               <Handle
                 key={i.toFixed()}
@@ -181,7 +182,20 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
               />
             )
           })
-        : null}
+        ) : (
+          // algoReturns.lengthが0の場合の応急処置
+          <Handle
+            type="source"
+            position={Position.Right}
+            id={`${nodeId}`}
+            style={{
+              ...rightHandleStyle,
+              height: '100%',
+            }}
+            isConnectable={isConnectable}
+          />
+        )
+      ) : null}
       <OutputKeySelect nodeId={nodeId} />
     </div>
   )
