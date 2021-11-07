@@ -20,6 +20,7 @@ export const getAlgoParams = createAsyncThunk<
 type AlgoListDTO = {
   [name: string]: {
     args: string[]
+    returns: string[]
   } // | { children: AlgoListDTO }
 }
 

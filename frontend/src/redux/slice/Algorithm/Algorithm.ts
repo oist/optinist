@@ -63,7 +63,11 @@ export const algorithmSlice = createSlice({
       .addCase(getAlgoList.fulfilled, (state, action) => {
         const dto = action.payload
         Object.entries(dto).forEach(([name, node]) => {
-          state.algoList[name] = { type: 'child', args: node.args }
+          state.algoList[name] = {
+            type: 'child',
+            args: node.args,
+            returns: node.returns,
+          }
         })
       })
       .addCase(getAlgoParams.fulfilled, (state, action) => {

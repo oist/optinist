@@ -138,3 +138,13 @@ export const algoArgsSelector = (id: string) => (state: RootState) => {
     return undefined
   }
 }
+
+export const algoReturnsSelector = (id: string) => (state: RootState) => {
+  const algoName = algoNameByIdSelector(id)(state)
+  if (algoName != null) {
+    const algoListChild = getAlgoChild(state.algorithm.algoList, algoName)
+    return algoListChild?.returns
+  } else {
+    return undefined
+  }
+}

@@ -11,6 +11,7 @@ import {
 } from '@material-ui/core'
 import {
   algoArgsSelector,
+  algoReturnsSelector,
   imagePathMaxIndexByIdSelector,
   outputKeyListSelector,
   selectedOutputKeySelector,
@@ -34,8 +35,7 @@ const leftHandleStyle: CSSProperties = {
 }
 const rightHandleStyle: CSSProperties = {
   width: 8,
-  right: 0,
-  height: '100%',
+  height: '15%',
   border: '1px solid',
   borderColor: 'black',
   borderRadius: 0,
@@ -115,6 +115,13 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
       return a === undefined && b === undefined
     }
   })
+  const algoReturns = useSelector(algoReturnsSelector(nodeId), (a, b) => {
+    if (a != null && b != null) {
+      return arrayEqualityFn(a, b)
+    } else {
+      return a === undefined && b === undefined
+    }
+  })
   return (
     <div
       style={{
@@ -137,59 +144,44 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
           {/* ({element.id}) */}
         </Typography>
       </div>
-      <div
-        style={{
-          // display: 'flex',
-          // flexDirection: 'column',
-          // flexFlow: 'column',
-          // alignItems: 'center',
-          // justifyContent: 'center',
-          background: 'red',
-          // height: '100%',
-        }}
-      >
-        <>
-          {algoArgs != null
-            ? algoArgs
-                .filter((name) => name !== 'params')
-                .map((argsName, i) => {
-                  return (
-                    <Handle
-                      key={i.toFixed()}
-                      type="target"
-                      position={Position.Left}
-                      id={`${nodeId}-${argsName}`}
-                      style={{
-                        ...leftHandleStyle,
-                        top: i * 35 + 15,
-                      }}
-                      isConnectable={isConnectable}
-                    />
-                  )
-                })
-            : null}
-        </>
+      <div>
+        {algoArgs != null
+          ? algoArgs
+              .filter((name) => name !== 'params')
+              .map((argsName, i) => {
+                return (
+                  <Handle
+                    key={i.toFixed()}
+                    type="target"
+                    position={Position.Left}
+                    id={`${nodeId}-${argsName}`}
+                    style={{
+                      ...leftHandleStyle,
+                      top: i * 35 + 15,
+                    }}
+                    isConnectable={isConnectable}
+                  />
+                )
+              })
+          : null}
       </div>
-      {/* <Handle
-        type="target"
-        position={Position.Left}
-        id="a"
-        style={{ top: 10, background: '#555' }}
-        isConnectable={isConnectable}
-      />
-      <Handle
-        type="target"
-        position={Position.Left}
-        id="b"
-        style={{ bottom: 10, top: 'auto', background: '#555' }}
-        isConnectable={isConnectable}
-      /> */}
-      <Handle
-        type="source"
-        position={Position.Right}
-        id={nodeId + '-right'}
-        style={rightHandleStyle}
-      />
+      {algoReturns != null
+        ? algoReturns.map((returnsName, i) => {
+            return (
+              <Handle
+                key={i.toFixed()}
+                type="source"
+                position={Position.Right}
+                id={`${nodeId}-${returnsName}`}
+                style={{
+                  ...rightHandleStyle,
+                  top: i * 35 + 15,
+                }}
+                isConnectable={isConnectable}
+              />
+            )
+          })
+        : null}
       <OutputKeySelect nodeId={nodeId} />
     </div>
   )

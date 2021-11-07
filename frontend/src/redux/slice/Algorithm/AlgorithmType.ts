@@ -23,6 +23,7 @@ export type AlgoNodeType = AlgoChild | AlgoParent
 export type AlgoChild = {
   type: 'child'
   args: string[]
+  returns: string[]
 }
 export type AlgoParent = {
   type: 'parent'
