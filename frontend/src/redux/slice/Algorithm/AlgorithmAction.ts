@@ -16,3 +16,23 @@ export const getAlgoParams = createAsyncThunk<
     return rejectWithValue(e)
   }
 })
+
+type AlgoListDTO = {
+  [name: string]: {
+    args: string[]
+    returns: string[]
+  } // | { children: AlgoListDTO }
+}
+
+export const getAlgoList = createAsyncThunk<AlgoListDTO, void>(
+  `${ALGORITHM_SLICE_NAME}/getAlgoList`,
+  async (_, thunkAPI) => {
+    const { rejectWithValue } = thunkAPI
+    try {
+      const response = await axios.get(`${BASE_URL}/api/algolist`)
+      return response.data
+    } catch (e) {
+      return rejectWithValue(e)
+    }
+  },
+)

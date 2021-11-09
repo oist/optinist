@@ -14,6 +14,7 @@ import {
 } from 'redux/slice/PlotData/PlotDataSelector'
 import { getTimeSeriesData } from 'redux/slice/PlotData/PlotDataAction'
 import { toPlotDataKey } from 'redux/slice/PlotData/PlotDataUtils'
+import { TimeSeriesData } from 'redux/slice/PlotData/PlotDataType'
 
 export const TimeSeries = React.memo(() => {
   const { nodeId, outputKey } = React.useContext(OutputPlotContext)
@@ -39,8 +40,8 @@ const TimeSeriesImple = React.memo(() => {
   const name = useSelector(algoNameByIdSelector(nodeId))
   const timeSeriesData = useSelector(
     timeSeriesDataByKeySelector(toPlotDataKey(nodeId, outputKey)),
+    timeSeriesDataEqualityFn,
   )
-
   const data = React.useMemo(() => {
     if (timeSeriesData == null) {
       return []
@@ -52,7 +53,7 @@ const TimeSeriesImple = React.memo(() => {
         y: Object.values(timeSeriesData.data).map((value) => value[i]),
       }
     })
-  }, [])
+  }, [timeSeriesData, name])
 
   const layout = React.useMemo(
     () => ({
@@ -76,3 +77,43 @@ const TimeSeriesImple = React.memo(() => {
   )
   return <PlotlyChart data={data} layout={layout} config={config} />
 })
+
+function timeSeriesDataEqualityFn(
+  a: TimeSeriesData | undefined,
+  b: TimeSeriesData | undefined,
+) {
+  if (a != null && b != null) {
+    const aArray = Object.entries(a.data)
+    const bArray = Object.entries(b.data)
+    return (
+      a === b ||
+      (aArray.length === bArray.length &&
+        aArray.every(([aKey, aValue], i) => {
+          const [bKey, bValue] = bArray[i]
+          return bKey === aKey && nestEqualityFun(bValue, aValue)
+        }))
+    )
+  } else {
+    return a === undefined && b === undefined
+  }
+}
+
+function nestEqualityFun(
+  a: {
+    [key: number]: number
+  },
+  b: {
+    [key: number]: number
+  },
+) {
+  const aArray = Object.entries(a)
+  const bArray = Object.entries(b)
+  return (
+    a === b ||
+    (aArray.length === bArray.length &&
+      aArray.every(([aKey, aValue], i) => {
+        const [bKey, bValue] = bArray[i]
+        return bKey === aKey && bValue === aValue
+      }))
+  )
+}

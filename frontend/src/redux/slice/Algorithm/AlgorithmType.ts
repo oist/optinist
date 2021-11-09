@@ -4,13 +4,31 @@ export const ALGORITHM_SLICE_NAME = 'algorithm'
 
 export type Algorithm = {
   currentAlgoId: string
-  algoMap: {
+  algoNodeMap: {
     [id: string]: {
       name: string
       param?: AlgoParam
       output?: OutputPaths
       selectedOutputKey?: string // key of OutputPaths
     }
+  }
+  algoList: AlgoListType
+}
+
+export type AlgoListType = {
+  [algoName: string]: AlgoNodeType
+}
+
+export type AlgoNodeType = AlgoChild | AlgoParent
+export type AlgoChild = {
+  type: 'child'
+  args: string[]
+  returns: string[]
+}
+export type AlgoParent = {
+  type: 'parent'
+  children: {
+    [name: string]: AlgoNodeType
   }
 }
 

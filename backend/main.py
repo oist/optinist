@@ -1,4 +1,5 @@
 import os
+import inspect
 
 import imageio
 from PIL import Image
@@ -49,7 +50,41 @@ async def params(name: str):
 @app.get("/api/algolist")
 async def run() -> List:
     print(wrapper_dict.keys())
-    return list(wrapper_dict.keys())
+    {
+        'caiman_mc' : {
+            'args': ['images', 'timeseries']
+        },
+        'caiman_cnmf': {
+            'args': ['images', 'timeseries']
+        }
+    }
+
+    algo_dict = {}
+    for key, value in wrapper_dict.items():
+        algo_dict[key] = {}
+
+        # get args
+        sig = inspect.signature(value)
+        arg_names = [x.name for x in sig.parameters.values()]
+
+        # get returns
+        return_names = []
+        return_types = []
+        if sig.return_annotation is not inspect._empty:
+            return_names = list(sig.return_annotation.keys())
+            return_types = list(sig.return_annotation.values())
+        #     print(retun_names)
+        #     print(return_types)
+        # else:
+        #     print('empty')
+            
+
+
+        algo_dict[key]['args'] = arg_names
+        algo_dict[key]['returns'] = return_names
+
+
+    return algo_dict
 
 @app.get("/api/cookie-test")
 def create_cookie(response: Response):
