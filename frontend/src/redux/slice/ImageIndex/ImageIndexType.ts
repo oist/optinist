@@ -15,4 +15,5 @@ export type ImageIndexType = {
   isFulfilled: boolean
   brightness: number
   contrast: number
+  showImage: Array<number>
 }

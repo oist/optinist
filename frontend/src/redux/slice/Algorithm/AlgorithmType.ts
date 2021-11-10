@@ -9,6 +9,7 @@ export type Algorithm = {
       name: string
       param?: AlgoParam
       output?: OutputPaths
+      showImage?: Array<number>
       selectedOutputKey?: string // key of OutputPaths
     }
   }

@@ -67,6 +67,20 @@ const selectedOutputPathSelector = (id: string) => (state: RootState) => {
   return undefined
 }
 
+export const selectedOutputShowImageSelector =
+  (id: string) => (state: RootState) => {
+    const algoMap = state.algorithm.algoNodeMap
+    if (algoMap[id] != null) {
+      const algo = algoMap[id]
+      const output = algo.showImage
+      const selectedKey = selectedOutputKeySelector(id)(state)
+      if (output != null && selectedKey != null) {
+        return output
+      }
+    }
+    return undefined
+  }
+
 export const selectedOutputPathTypeSelector =
   (id: string) => (state: RootState) => {
     return selectedOutputPathSelector(id)(state)?.type

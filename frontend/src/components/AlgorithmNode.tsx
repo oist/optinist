@@ -17,6 +17,7 @@ import {
   selectedOutputKeySelector,
   selectedOutputPathTypeSelector,
   selectedOutputPathValueSelector,
+  selectedOutputShowImageSelector,
 } from 'redux/slice/Algorithm/AlgorithmSelector'
 import { setSelectedOutputKey } from 'redux/slice/Algorithm/Algorithm'
 import { showAlgoOutputImage } from 'redux/slice/ImageIndex/ImageIndex'
@@ -57,12 +58,14 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
   const maxIndex = useSelector(
     imagePathMaxIndexByIdSelector(nodeId, selectedOutputKey ?? ''),
   )
+  const showImage = useSelector(selectedOutputShowImageSelector(nodeId))
   const onClick = () => {
     if (
       selectedOutputKey != null &&
       selectedPathValue != null &&
       selectedOutputType === OUTPUT_TYPE_SET.IMAGE &&
-      maxIndex != null
+      maxIndex != null &&
+      showImage != null
     ) {
       dispatch(
         showAlgoOutputImage({
@@ -70,6 +73,7 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
           folder: selectedPathValue,
           algoName: element.data.label,
           maxIndex,
+          showImage,
         }),
       )
     }

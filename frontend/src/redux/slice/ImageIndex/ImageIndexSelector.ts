@@ -48,3 +48,7 @@ export const currentImageBrightnessSelector =
 export const currentImageContrastSelector =
   (id: string) => (state: RootState) =>
     currentImageIndexSelector(id)(state)?.contrast
+
+export const currentImageShowImageSelector =
+  (id: string) => (state: RootState) =>
+    currentImageIndexSelector(id)(state)?.showImage

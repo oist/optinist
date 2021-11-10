@@ -4,7 +4,12 @@ import { BASE_URL } from 'const/API'
 import { IMAGE_INDEX_SLICE_NAME } from './ImageIndexType'
 
 export const uploadImageFile = createAsyncThunk<
-  { pngFolder: string; tiffPath: string; maxIndex: number },
+  {
+    pngFolder: string
+    tiffPath: string
+    maxIndex: number
+    showImage: Array<number>
+  },
   {
     elementId: string
     fileName: string

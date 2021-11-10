@@ -13,6 +13,7 @@ import {
   currentImageIsFulfilledSelector,
   currentImageBrightnessSelector,
   currentImageContrastSelector,
+  currentImageShowImageSelector,
 } from 'redux/slice/ImageIndex/ImageIndexSelector'
 import Popover from '@material-ui/core/Popover'
 import Grid from '@material-ui/core/Grid'
@@ -26,6 +27,7 @@ import {
 import { LinearProgress, Slider, Typography, useTheme } from '@material-ui/core'
 import { NodeIdContext } from 'App'
 import { BASE_URL } from 'const/API'
+import PlotlyChart from 'react-plotlyjs-ts'
 
 export const ImageViewer = React.memo(() => {
   const nodeId = React.useContext(NodeIdContext)
@@ -51,6 +53,42 @@ const Viewer = React.memo<{ nodeId: string }>(({ nodeId }) => {
   const handleBack = () => dispatch(decrementPageIndex({ id: nodeId }))
   const isLoaded = useSelector(currentImageIsFulfilledSelector(nodeId))
   const theme = useTheme()
+
+  // plotly
+  const showImages = useSelector(currentImageShowImageSelector(nodeId))
+  if (showImages != null) {
+    console.log(showImages)
+  }
+  const data = [
+    {
+      z: showImages != null ? showImages[0] : showImages,
+      type: 'heatmap',
+      colorscale: [
+        [0, '#000000'],
+        [1, '#ffffff'],
+      ],
+      hoverongaps: false,
+      showscale: false,
+    },
+  ]
+
+  const layout = {
+    title: 'dummy',
+    margin: {
+      t: 30, // top
+      l: 90, // left
+      b: 30, // bottom
+    },
+    autosize: true,
+    height: 350,
+    yaxis: {
+      autorange: 'reversed',
+    },
+  }
+  const config = {
+    displayModeBar: true,
+  }
+
   if (!isLoaded) {
     return <LinearProgress />
   }
@@ -112,7 +150,7 @@ const Viewer = React.memo<{ nodeId: string }>(({ nodeId }) => {
           height: '80%',
         }}
       >
-        <img
+        {/* <img
           style={{
             textAlign: 'center',
             height: '100%',
@@ -121,7 +159,8 @@ const Viewer = React.memo<{ nodeId: string }>(({ nodeId }) => {
           }}
           alt=""
           src={`${BASE_URL}/api/${folder}/${pageIndex}.png`}
-        />
+        /> */}
+        <PlotlyChart data={data} layout={layout} config={config} />
       </div>
     </div>
   )

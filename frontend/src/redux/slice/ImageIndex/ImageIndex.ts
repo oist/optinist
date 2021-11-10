@@ -42,9 +42,10 @@ export const imageIndexSlice = createSlice({
         folder: string
         maxIndex: number
         algoName: string
+        showImage: Array<number>
       }>,
     ) => {
-      const { id, folder, maxIndex, algoName } = action.payload
+      const { id, folder, maxIndex, algoName, showImage } = action.payload
       state.currentImageId = id
       state.index[id] = {
         fileName: algoName,
@@ -54,6 +55,7 @@ export const imageIndexSlice = createSlice({
         isFulfilled: true,
         brightness: 100,
         contrast: 100,
+        showImage: showImage,
       }
     },
     setBrightness: (
@@ -88,11 +90,12 @@ export const imageIndexSlice = createSlice({
           isFulfilled: false,
           brightness: 100,
           contrast: 100,
+          showImage: [],
         }
       })
       .addCase(uploadImageFile.fulfilled, (state, action) => {
         const { elementId, fileName } = action.meta.arg
-        const { pngFolder: folder, maxIndex } = action.payload
+        const { pngFolder: folder, maxIndex, showImage } = action.payload
         state.currentImageId = elementId
         state.index[elementId] = {
           fileName,
@@ -102,6 +105,7 @@ export const imageIndexSlice = createSlice({
           isFulfilled: true,
           brightness: 100,
           contrast: 100,
+          showImage,
         }
       })
       .addCase(clickNode, (state, action) => {
