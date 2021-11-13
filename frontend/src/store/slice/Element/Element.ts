@@ -7,13 +7,12 @@ import {
 } from 'const/flowchart'
 import { NodeData, NODE_DATA_TYPE_SET } from 'const/NodeData'
 import { isAlgoNodeData, isInputNodeData, isNodeData } from 'utils/ElementUtils'
-import { clickNode, runPipeline, stopPipeline } from './ElementAction'
+import { runPipeline, stopPipeline } from './ElementAction'
 import { Element, ELEMENT_SLICE_NAME, RUN_STATUS } from './ElementType'
-import { uploadImageFile } from '../ImageIndex/ImageIndexAction'
+import { uploadImageFile } from '../UploadImage/UploadImageAction'
 
 const initialState: Element = {
   flowElements: initialElements,
-  clickedNodeId: null,
   runStatus: RUN_STATUS.STOPPED,
 }
 
@@ -52,19 +51,16 @@ export const elementSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(clickNode, (state, action) => {
-        state.clickedNodeId = action.payload.id
-      })
       .addCase(uploadImageFile.fulfilled, (state, action) => {
-        const { elementId } = action.meta.arg
-        const { tiffPath } = action.payload
-        var idx = state.flowElements.findIndex((e) => e.id === elementId)
+        const { nodeId } = action.meta.arg
+        const { tiffFilePath } = action.payload
+        const idx = state.flowElements.findIndex((e) => e.id === nodeId)
         const node = state.flowElements[idx]
         if (isNodeData(node) && node.data) {
           node.data = {
             ...node.data,
             type: NODE_DATA_TYPE_SET.DATA,
-            path: tiffPath,
+            path: tiffFilePath,
           }
         }
       })

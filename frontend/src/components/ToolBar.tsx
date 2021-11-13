@@ -8,11 +8,11 @@ import Alert from '@material-ui/lab/Alert'
 import {
   runMassageSelector,
   runStatusSelector,
-} from 'redux/slice/Element/ElementSelector'
+} from 'store/slice/Element/ElementSelector'
 import { Box, IconButton, LinearProgress } from '@material-ui/core'
-import { runPipeline } from 'redux/slice/Element/ElementAction'
-import { RootState } from 'redux/store'
-import { RUN_STATUS } from 'redux/slice/Element/ElementType'
+import { runPipeline } from 'store/slice/Element/ElementAction'
+import { RootState } from 'store/store'
+import { RUN_STATUS } from 'store/slice/Element/ElementType'
 
 export const ToolBar = React.memo(() => {
   const dispatch = useDispatch()

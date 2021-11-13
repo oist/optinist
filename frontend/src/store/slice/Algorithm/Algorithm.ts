@@ -1,10 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { INITIAL_ALGO_ELEMENT_ID } from 'const/flowchart'
-import { NODE_DATA_TYPE_SET } from 'const/NodeData'
 import { isAlgoNodeData } from 'utils/ElementUtils'
 import { addFlowElement } from '../Element/Element'
-import { clickNode, runPipeline } from '../Element/ElementAction'
+import { runPipeline } from '../Element/ElementAction'
 import { getAlgoList, getAlgoParams } from './AlgorithmAction'
 import {
   ALGORITHM_SLICE_NAME,
@@ -13,7 +11,6 @@ import {
 } from './AlgorithmType'
 
 const initialState: Algorithm = {
-  currentAlgoId: INITIAL_ALGO_ELEMENT_ID,
   algoNodeMap: {},
   algoList: {},
 }
@@ -24,10 +21,14 @@ export const algorithmSlice = createSlice({
   reducers: {
     updateParam: (
       state,
-      action: PayloadAction<{ paramKey: string; newValue: unknown }>,
+      action: PayloadAction<{
+        id: string
+        paramKey: string
+        newValue: unknown
+      }>,
     ) => {
-      const { paramKey, newValue } = action.payload
-      const param = state.algoNodeMap[state.currentAlgoId].param
+      const { id, paramKey, newValue } = action.payload
+      const param = state.algoNodeMap[id].param
       if (param !== undefined) {
         param[paramKey] = newValue
       }
@@ -45,11 +46,6 @@ export const algorithmSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(clickNode, (state, action) => {
-        if (action.payload.type === NODE_DATA_TYPE_SET.ALGO) {
-          state.currentAlgoId = action.payload.id
-        }
-      })
       .addCase(addFlowElement, (state, action) => {
         if (isAlgoNodeData(action.payload)) {
           const algoName = action.payload.data?.label
@@ -83,7 +79,6 @@ export const algorithmSlice = createSlice({
         if (action.payload.message === 'success') {
           Object.entries(action.payload.outputPaths).forEach(
             ([algoName, outputPaths]) => {
-              // console.log(current(state.algoMap))
               Object.entries(state.algoNodeMap).forEach(([id, algo]) => {
                 // todo とりあえず名前一致だが、後でサーバーサイドとフロントで両方idにする
                 if (algo.name === algoName && state.algoNodeMap[id]) {
@@ -96,7 +91,6 @@ export const algorithmSlice = createSlice({
                         type: OUTPUT_TYPE_SET.IMAGE,
                         path: {
                           value: pathInfo.path,
-                          maxIndex: pathInfo.max_index ?? 0,
                         },
                       }
                     } else if (pathInfo.type === 'timeseries') {

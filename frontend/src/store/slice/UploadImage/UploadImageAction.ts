@@ -1,26 +1,24 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { BASE_URL } from 'const/API'
 
-import { IMAGE_INDEX_SLICE_NAME } from './ImageIndexType'
+import { UPLOAD_IMAGE_SLICE_NAME } from './UploadImageType'
 
 export const uploadImageFile = createAsyncThunk<
   {
-    pngFolder: string
-    tiffPath: string
-    maxIndex: number
-    showImage: Array<number>
+    jsonDataPath: string
+    tiffFilePath: string
   },
   {
-    elementId: string
+    nodeId: string
     fileName: string
     formData: FormData
     inputFileNumber: number
   }
 >(
-  `${IMAGE_INDEX_SLICE_NAME}/uploadImageFile`,
-  async ({ elementId, fileName, formData, inputFileNumber }, thunkAPI) => {
+  `${UPLOAD_IMAGE_SLICE_NAME}/uploadImageFile`,
+  async ({ nodeId, fileName, formData, inputFileNumber }, thunkAPI) => {
     try {
-      formData.append('element_id', elementId)
+      formData.append('element_id', nodeId)
       const response = await fetch(
         `${BASE_URL}/api/upload/${fileName}/${inputFileNumber}`,
         {
@@ -31,7 +29,10 @@ export const uploadImageFile = createAsyncThunk<
         },
       )
       const data = await response.json()
-      return data
+      return {
+        jsonDataPath: data.json_data_path,
+        tiffFilePath: data.tiff_file_path,
+      }
     } catch (e) {
       return thunkAPI.rejectWithValue(e)
     }

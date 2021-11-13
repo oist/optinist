@@ -1,15 +1,15 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { nodeByIdSelector } from 'redux/slice/Element/ElementSelector'
+import { nodeByIdSelector } from 'store/slice/Element/ElementSelector'
 
-import { getAlgoParams } from 'redux/slice/Algorithm/AlgorithmAction'
+import { getAlgoParams } from 'store/slice/Algorithm/AlgorithmAction'
 import { ParamItemContainer } from './ParamItem'
 import Typography from '@material-ui/core/Typography'
 import { isAlgoNodeData } from 'utils/ElementUtils'
 import {
   algoParamByIdSelector,
   algoNameByIdSelector,
-} from 'redux/slice/Algorithm/AlgorithmSelector'
+} from 'store/slice/Algorithm/AlgorithmSelector'
 import { NodeIdContext } from 'App'
 
 export const ParamForm = React.memo(() => {

@@ -6,14 +6,14 @@ import {
 } from '@reduxjs/toolkit'
 import elementReducer from './slice/Element/Element'
 import algorithmReducer from './slice/Algorithm/Algorithm'
-import imageIndexReducer from './slice/ImageIndex/ImageIndex'
+import uploadImageReducer from './slice/UploadImage/UploadImage'
 import plotDataReducer from './slice/PlotData/PlotData'
 
 export const store = configureStore({
   reducer: combineReducers({
     element: elementReducer,
     algorithm: algorithmReducer,
-    imageIndex: imageIndexReducer,
+    uploadImage: uploadImageReducer,
     plotData: plotDataReducer,
   }),
 })

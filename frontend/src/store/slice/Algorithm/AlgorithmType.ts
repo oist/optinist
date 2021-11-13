@@ -3,13 +3,11 @@ import { AlgoParam } from 'const/NodeData'
 export const ALGORITHM_SLICE_NAME = 'algorithm'
 
 export type Algorithm = {
-  currentAlgoId: string
   algoNodeMap: {
     [id: string]: {
       name: string
       param?: AlgoParam
       output?: OutputPaths
-      showImage?: Array<number>
       selectedOutputKey?: string // key of OutputPaths
     }
   }
@@ -60,7 +58,7 @@ export interface OutputPath<T extends OUTPUT_TYPE> {
 
 type Path = { value: string }
 
-type ImagePathType = Path & { maxIndex: number }
+type ImagePathType = Path
 
 type TimeSeriesPathType = Path
 

@@ -6,25 +6,23 @@ import PlotlyChart from 'react-plotlyjs-ts'
 
 import { OutputPlotContext } from 'App'
 import {
-  heatMapDataByKeySelector,
-  heatMapDataIsLoadedByKeySelector,
-} from 'redux/slice/PlotData/PlotDataSelector'
-import { outputPathValueByIdSelector } from 'redux/slice/Algorithm/AlgorithmSelector'
-import { getHeatMapData } from 'redux/slice/PlotData/PlotDataAction'
-import { toPlotDataKey } from 'redux/slice/PlotData/PlotDataUtils'
+  heatMapDataSelector,
+  heatMapDataIsLoadedSelector,
+} from 'store/slice/PlotData/PlotDataSelector'
+import { outputPathValueByIdSelector } from 'store/slice/Algorithm/AlgorithmSelector'
+import { getHeatMapData } from 'store/slice/PlotData/PlotDataAction'
+import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 
 export const HeatMap = React.memo(() => {
   const { nodeId, outputKey } = React.useContext(OutputPlotContext)
   const dispatch = useDispatch()
   const path = useSelector(outputPathValueByIdSelector(nodeId, outputKey))
-  const isLoaded = useSelector(
-    heatMapDataIsLoadedByKeySelector(toPlotDataKey(nodeId, outputKey)),
-  )
+  const isLoaded = useSelector(heatMapDataIsLoadedSelector(path ?? ''))
   React.useEffect(() => {
     if (!isLoaded && path != null) {
-      dispatch(getHeatMapData({ nodeId, outputKey, path }))
+      dispatch(getHeatMapData({ path }))
     }
-  }, [dispatch, isLoaded, nodeId, outputKey, path])
+  }, [dispatch, isLoaded, path])
   if (isLoaded) {
     return <HeatMapImple />
   } else {
@@ -33,21 +31,27 @@ export const HeatMap = React.memo(() => {
 })
 const HeatMapImple = React.memo(() => {
   const { nodeId, outputKey } = React.useContext(OutputPlotContext)
-  const currentOutputData = useSelector(
-    heatMapDataByKeySelector(toPlotDataKey(nodeId, outputKey)),
+  const path = useSelector(outputPathValueByIdSelector(nodeId, outputKey))
+  const heatMapData = useSelector(
+    heatMapDataSelector(path ?? ''),
+    heatMapDataEqualtyFn,
   )
-  if (currentOutputData == null) {
-    return null
-  }
-  const data = [
-    {
-      z: currentOutputData.data,
-      x: currentOutputData.data.map((_, i) => i),
-      y: currentOutputData.data[0].map((_, i) => i),
-      type: 'heatmap',
-      hoverongaps: false,
-    },
-  ]
+
+  const data = React.useMemo(
+    () =>
+      heatMapData != null
+        ? [
+            {
+              z: heatMapData,
+              x: heatMapData.map((_, i) => i),
+              y: heatMapData[0].map((_, i) => i),
+              type: 'heatmap',
+              hoverongaps: false,
+            },
+          ]
+        : [],
+    [heatMapData],
+  )
 
   const layout = {
     title: 'dummy',
@@ -64,3 +68,14 @@ const HeatMapImple = React.memo(() => {
   }
   return <PlotlyChart data={data} layout={layout} config={config} />
 })
+
+function heatMapDataEqualtyFn(
+  a: number[][] | undefined,
+  b: number[][] | undefined,
+) {
+  if (a != null && b != null) {
+    return twoDimarrayEqualityFn(a, b)
+  } else {
+    return a === undefined && b === undefined
+  }
+}

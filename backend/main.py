@@ -12,6 +12,7 @@ from pydantic import BaseModel
 import sys
 import yaml
 import json
+import pandas as pd
 sys.path.append('../optinist')
 from wrappers import wrapper_dict
 from collections import OrderedDict
@@ -89,32 +90,24 @@ app.mount("/api/files", StaticFiles(directory="files"), name="files")
 
 @app.post("/api/upload/{fileName}/{inputFileNumer}")
 async def create_file(response: Response, fileName: str, element_id: str = Form(...), file: UploadFile = File(...), inputFileNumer: int=1):
-    # max_index = 30
-    root_folder = os.path.join("files", fileName+"("+element_id+")")
-    png_folder = os.path.join(root_folder, "pngs")
-    tiff_folder = os.path.join(root_folder, "tiff")
-    os.makedirs(root_folder, exist_ok=True)
-    os.makedirs(png_folder, exist_ok=True)
-    os.makedirs(tiff_folder, exist_ok=True)
+    root_dir = os.path.join("files", fileName+"("+element_id+")")
+    os.makedirs(root_dir, exist_ok=True)
+
     contents = await file.read()
-    file.filename = fileName
-    tiff_path = os.path.join(tiff_folder, file.filename)
-    with open(tiff_path, "wb") as f:
+    tiff_file_path = os.path.join(root_dir, fileName)
+    with open(tiff_file_path, "wb") as f:
         f.write(contents)
 
-    tiffs = imageio.volread(tiff_path)[:inputFileNumer]
+    tiffs = imageio.volread(tiff_file_path)[:inputFileNumer]
 
     images = []
-    for i, tiff_data in enumerate(tiffs):
-        img = Image.fromarray(tiff_data)
-        # img = img.convert("L")
-        images.append(np.array(img).tolist())
-        # img.save(os.path.join(png_folder, f"{i}.png"))
+    for i, _img in enumerate(tiffs):
+        images.append(_img.tolist())
 
-    # import pdb; pdb.set_trace()
-    response.set_cookie(key="directory", value=png_folder)
+    json_data_path = os.path.join(root_dir, 'image.json')
+    pd.DataFrame(images).to_json(json_data_path, indent=4, orient="values")
 
-    return {"pngFolder": png_folder, "tiffPath": tiff_path, "maxIndex": len(tiffs), 'showImage': images}
+    return {"json_data_path": json_data_path, "tiff_file_path": tiff_file_path}
 
 @app.post("/api/run")
 async def run(flowList: List[FlowItem]):
@@ -132,7 +125,7 @@ async def run(flowList: List[FlowItem]):
                 results[item.label][k] = {}
                 results[item.label][k]['path'] = v.path
                 results[item.label][k]['type'] = 'images'
-                results[item.label][k]['max_index'] = len(v.data)
+                # results[item.label][k]['max_index'] = len(v.data)
             elif type(v) is TimeSeriesData:
                 print("TimeSeriesData")
                 results[item.label][k] = {}

@@ -5,7 +5,6 @@ export const ELEMENT_SLICE_NAME = 'element'
 
 export interface Element {
   flowElements: Elements<NodeData>
-  clickedNodeId: string | null
   runStatus: RUN_STATUS_TYPE
   runMessage?: string
 }

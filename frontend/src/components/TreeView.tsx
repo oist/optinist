@@ -6,11 +6,11 @@ import TreeItem from '@material-ui/lab/TreeItem'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 
-import { algoListSelector } from 'redux/slice/Algorithm/AlgorithmSelector'
-import { AlgoListType, AlgoNodeType } from 'redux/slice/Algorithm/AlgorithmType'
+import { algoListSelector } from 'store/slice/Algorithm/AlgorithmSelector'
+import { AlgoListType, AlgoNodeType } from 'store/slice/Algorithm/AlgorithmType'
 import { arrayEqualityFn } from 'utils/EqualityUtils'
-import { getAlgoList } from 'redux/slice/Algorithm/AlgorithmAction'
-import { isAlgoChild, isAlgoParent } from 'redux/slice/Algorithm/AlgorithmUtils'
+import { getAlgoList } from 'store/slice/Algorithm/AlgorithmAction'
+import { isAlgoChild, isAlgoParent } from 'store/slice/Algorithm/AlgorithmUtils'
 
 const useStyles = makeStyles({
   root: {

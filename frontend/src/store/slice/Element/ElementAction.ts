@@ -1,16 +1,12 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { ELEMENT_SLICE_NAME } from './ElementType'
-import { AlgoNodeData, NODE_DATA_TYPE } from 'const/NodeData'
-import { ThunkApiConfig } from 'redux/store'
+import { AlgoNodeData } from 'const/NodeData'
+import { ThunkApiConfig } from 'store/store'
 import { flowElementsSelector } from './ElementSelector'
 import { isInputNodeData, isAlgoNodeData } from 'utils/ElementUtils'
 import { algoParamByIdSelector } from '../Algorithm/AlgorithmSelector'
 import { BASE_URL } from 'const/API'
-
-export const clickNode = createAction<{ id: string; type: NODE_DATA_TYPE }>(
-  `${ELEMENT_SLICE_NAME}/clickNode`,
-)
 
 type OutputPathsDTO = {
   [algoName: string]: {

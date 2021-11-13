@@ -11,17 +11,15 @@ import ReactFlow, {
   Edge,
   Node,
 } from 'react-flow-renderer'
-import { setFlowElements, addFlowElement } from 'redux/slice/Element/Element'
+import { setFlowElements, addFlowElement } from 'store/slice/Element/Element'
 import {
   flowElementsSelector,
   maxElementIdSelector,
-} from 'redux/slice/Element/ElementSelector'
+} from 'store/slice/Element/ElementSelector'
 import { NodeData, NODE_DATA_TYPE, NODE_DATA_TYPE_SET } from 'const/NodeData'
 import 'style/flow.css'
 import { FileSelectorNode } from './FileSelectorNode'
 import { AlgorithmNode } from './AlgorithmNode'
-import { clickNode } from 'redux/slice/Element/ElementAction'
-import { isNodeData } from 'utils/ElementUtils'
 import { FlexLayoutModelContext } from 'App'
 import { useGetDeleteTabActions } from 'FlexLayoutHook'
 
@@ -51,14 +49,13 @@ export const FlowChart = React.memo(() => {
     )
   }
 
-  const onElementClick = (
-    event: React.MouseEvent<Element, MouseEvent>,
-    element: Node<NodeData> | Edge<any>,
-  ) => {
-    if (event.isTrusted && isNodeData(element) && element.data) {
-      dispatch(clickNode({ id: element.id, type: element.data.type }))
-    }
-  }
+  // const onElementClick = (
+  //   event: React.MouseEvent<Element, MouseEvent>,
+  //   element: Node<NodeData> | Edge<any>,
+  // ) => {
+  //   if (event.isTrusted && isNodeData(element) && element.data) {
+  //   }
+  // }
 
   const model = React.useContext(FlexLayoutModelContext)
   const getDeleteTabActions = useGetDeleteTabActions()
@@ -115,7 +112,7 @@ export const FlowChart = React.memo(() => {
         <div className="reactflow-wrapper">
           <ReactFlow
             elements={flowElements}
-            onElementClick={onElementClick}
+            // onElementClick={onElementClick}
             onElementsRemove={onElementsRemove}
             onConnect={onConnect}
             onLoad={onLoad}
