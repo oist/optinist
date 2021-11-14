@@ -1,11 +1,12 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+import { AnyAction } from '@reduxjs/toolkit'
 import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
 import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
-import { updateParam } from 'redux/slice/Algorithm/Algorithm'
-import { paramValueSelector } from 'redux/slice/Algorithm/AlgorithmSelector'
+import { updateParam } from 'store/slice/Algorithm/Algorithm'
+import { paramValueSelector } from 'store/slice/Algorithm/AlgorithmSelector'
 import { NodeIdContext } from 'App'
 
 type ParamItemProps = {
@@ -39,7 +40,7 @@ export const ParamItemContainer = React.memo<ParamItemProps>(({ paramKey }) => {
 })
 
 const ParamItemForValueType = React.memo<ParamItemProps>(({ paramKey }) => {
-  const value = useParamValue(paramKey)
+  const [value] = useParamValueUpdate(paramKey)
   if (typeof value === 'number') {
     return <ParamItemForNumber paramKey={paramKey} />
   } else if (typeof value === 'string') {
@@ -53,25 +54,25 @@ const ParamItemForValueType = React.memo<ParamItemProps>(({ paramKey }) => {
 
 const ParamItemForString = React.memo<ParamItemProps>(({ paramKey }) => {
   const dispatch = useDispatch()
-  const value = String(useParamValue(paramKey)) // string値以外も想定されるため
+  const [value, updateParamAction] = useParamValueUpdate(paramKey) // string値以外も想定されるため
   const onChange = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
     const newValue = e.target.value as string
-    dispatch(updateParam({ paramKey, newValue }))
+    dispatch(updateParamAction(newValue))
   }
   return <TextField value={value} onChange={onChange} multiline />
 })
 
 const ParamItemForNumber = React.memo<ParamItemProps>(({ paramKey }) => {
   const dispatch = useDispatch()
-  const value = useParamValue(paramKey)
+  const [value, updateParamAction] = useParamValueUpdate(paramKey)
   if (typeof value === 'number') {
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue =
         event.target.value === '' ? '' : Number(event.target.value)
       if (typeof newValue === 'number') {
-        dispatch(updateParam({ paramKey, newValue }))
+        dispatch(updateParamAction(newValue))
       }
     }
     return (
@@ -91,10 +92,10 @@ const ParamItemForNumber = React.memo<ParamItemProps>(({ paramKey }) => {
 
 const ParamItemForBoolean = React.memo<ParamItemProps>(({ paramKey }) => {
   const dispatch = useDispatch()
-  const value = useParamValue(paramKey)
+  const [value, updateParamAction] = useParamValueUpdate(paramKey)
   if (typeof value === 'boolean') {
     const onChange = () => {
-      dispatch(updateParam({ paramKey, newValue: !value }))
+      dispatch(updateParamAction(!value))
     }
     return <Switch checked={value} onChange={onChange} />
   } else {
@@ -102,7 +103,13 @@ const ParamItemForBoolean = React.memo<ParamItemProps>(({ paramKey }) => {
   }
 })
 
-function useParamValue(paramKey: string) {
+function useParamValueUpdate(
+  paramKey: string,
+): [unknown, (newValue: unknown) => AnyAction] {
   const nodeId = React.useContext(NodeIdContext)
-  return useSelector(paramValueSelector(nodeId, paramKey))
+  const value = useSelector(paramValueSelector(nodeId, paramKey))
+  const updateParamAction = (newValue: unknown) => {
+    return updateParam({ id: nodeId, paramKey, newValue })
+  }
+  return [value, updateParamAction]
 }

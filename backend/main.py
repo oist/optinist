@@ -3,7 +3,7 @@ import inspect
 
 import imageio
 from PIL import Image
-from fastapi import Depends, FastAPI, File, Response, UploadFile, Form
+from fastapi import Depends, FastAPI, File, Response, UploadFile, Form, WebSocket
 from fastapi.staticfiles import StaticFiles
 import uvicorn
 from starlette.middleware.cors import CORSMiddleware
@@ -12,6 +12,7 @@ from pydantic import BaseModel
 import sys
 import yaml
 import json
+import pandas as pd
 sys.path.append('../optinist')
 from wrappers import wrapper_dict
 from collections import OrderedDict
@@ -73,16 +74,9 @@ async def run() -> List:
         if sig.return_annotation is not inspect._empty:
             return_names = list(sig.return_annotation.keys())
             return_types = list(sig.return_annotation.values())
-        #     print(retun_names)
-        #     print(return_types)
-        # else:
-        #     print('empty')
-            
-
 
         algo_dict[key]['args'] = arg_names
         algo_dict[key]['returns'] = return_names
-
 
     return algo_dict
 
@@ -96,39 +90,73 @@ app.mount("/api/files", StaticFiles(directory="files"), name="files")
 
 @app.post("/api/upload/{fileName}/{inputFileNumer}")
 async def create_file(response: Response, fileName: str, element_id: str = Form(...), file: UploadFile = File(...), inputFileNumer: int=1):
-    # max_index = 30
-    root_folder = os.path.join("files", fileName+"("+element_id+")")
-    png_folder = os.path.join(root_folder, "pngs")
-    tiff_folder = os.path.join(root_folder, "tiff")
-    os.makedirs(root_folder, exist_ok=True)
-    os.makedirs(png_folder, exist_ok=True)
-    os.makedirs(tiff_folder, exist_ok=True)
+    root_dir = os.path.join("files", fileName+"("+element_id+")")
+    os.makedirs(root_dir, exist_ok=True)
+
     contents = await file.read()
-    file.filename = fileName
-    tiff_path = os.path.join(tiff_folder, file.filename)
-    with open(tiff_path, "wb") as f:
+    tiff_file_path = os.path.join(root_dir, fileName)
+    with open(tiff_file_path, "wb") as f:
         f.write(contents)
 
-    tiffs = imageio.volread(tiff_path)[:inputFileNumer]
+    tiffs = imageio.volread(tiff_file_path)[:inputFileNumer]
 
-    for i, tiff_data in enumerate(tiffs):
-        img = Image.fromarray(tiff_data)
-        img = img.convert("L")
-        img.save(os.path.join(png_folder, f"{i}.png"))
+    images = []
+    for i, _img in enumerate(tiffs):
+        images.append(_img.tolist())
 
-    response.set_cookie(key="directory", value=png_folder)
+    json_data_path = os.path.join(root_dir, 'image.json')
+    pd.DataFrame(images).to_json(json_data_path, indent=4, orient="values")
 
-    return {"pngFolder": png_folder, "tiffPath": tiff_path, "maxIndex": len(tiffs)}
+    return {"json_data_path": json_data_path, "tiff_file_path": tiff_file_path}
 
 @app.post("/api/run")
 async def run(flowList: List[FlowItem]):
     import run_pipeline
-    print('run_code')
-    print(wrapper_dict)
+    # print('run_code')
+    # print(wrapper_dict)
     info = run_pipeline.run_code(wrapper_dict, flowList)
 
     results = OrderedDict()
     for item in flowList:
+        results[item.label] = {}
+        for k, v in info[item.label].items():
+            if type(v) is ImageData:
+                print("ImageData")
+                results[item.label][k] = {}
+                results[item.label][k]['path'] = v.path
+                results[item.label][k]['type'] = 'images'
+                # results[item.label][k]['max_index'] = len(v.data)
+            elif type(v) is TimeSeriesData:
+                print("TimeSeriesData")
+                results[item.label][k] = {}
+                results[item.label][k]['path'] = v.path
+                results[item.label][k]['type'] = 'timeseries'
+            elif type(v) is CorrelationData:
+                print("CorrelationData")
+                results[item.label][k] = {}
+                results[item.label][k]['path'] = v.path
+                results[item.label][k]['type'] = 'heatmap'
+            else:
+                pass
+
+    # print('results', results)
+
+    return {'message': 'success', 'outputPaths': results}
+
+@app.websocket("/api/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    import json
+    import run_pipeline
+
+    await websocket.accept()
+    # Wait for any message from the client
+    flowList = await websocket.receive_text()
+    flowList = list(map(lambda x: FlowItem(**x), json.loads(flowList)))
+
+    info = run_pipeline.run_code(wrapper_dict, flowList)
+
+    for item in flowList:
+        results = OrderedDict()
         results[item.label] = {}
         for k, v in info[item.label].items():
             if type(v) is ImageData:
@@ -150,9 +178,11 @@ async def run(flowList: List[FlowItem]):
             else:
                 pass
 
-    print('results', results)
+        # Send message to the client
+        await websocket.send_json({'message': 'success', 'outputPaths': results})
 
-    return {'message': 'success', 'outputPaths': results}
+    print('Bye..')
+    await websocket.close()
 
 @app.get("/api/outputs/{file_path:path}")
 async def read_file(file_path: str):

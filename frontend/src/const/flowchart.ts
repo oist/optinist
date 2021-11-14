@@ -1,4 +1,4 @@
-import { Elements, Position } from 'react-flow-renderer'
+import { Elements } from 'react-flow-renderer'
 import { NodeData, NODE_DATA_TYPE_SET } from 'const/NodeData'
 
 export const INITIAL_IMAGE_ELEMENT_ID = '0'

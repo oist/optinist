@@ -8,7 +8,7 @@ import {
   toLayoutTabIdByNode,
 } from 'utils/FlexLayoutUtils'
 import { Actions, DockLocation } from 'flexlayout-react'
-import { nodeByIdSelector } from 'redux/slice/Element/ElementSelector'
+import { nodeByIdSelector } from 'store/slice/Element/ElementSelector'
 
 export function useTabAction(nodeId: string) {
   const node = useSelector(nodeByIdSelector(nodeId))

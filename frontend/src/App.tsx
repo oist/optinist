@@ -6,10 +6,10 @@ import { SideBar } from 'components/TreeView'
 import { FlowChart } from 'components/FlowChart'
 import { ParamForm } from 'components/ParamForm/ParamForm'
 import { Plot } from 'components/Plot/Plot'
-import { ImageViewer } from 'components/ImageViewer'
 import { ToolBar } from 'components/ToolBar'
 import React from 'react'
 import { getNodeId, getSuffix } from 'utils/FlexLayoutUtils'
+import { ImagePlot } from 'components/Plot/ImagePlot'
 
 const model = Model.fromJson(flexjson)
 
@@ -19,6 +19,11 @@ export const OutputPlotContext = React.createContext<{
   nodeId: string
   outputKey: string
 }>({ nodeId: '', outputKey: '' })
+
+export const ImageDataContext = React.createContext<{
+  nodeId: string
+  outputKey: string | null // FileSelectorNodeでアップロードされた場合はoutputKeyがnull
+}>({ nodeId: '', outputKey: null })
 
 function App() {
   const factory = (node: TabNode) => {
@@ -51,10 +56,11 @@ function App() {
           return null
         }
       case 'image':
+        const key = getSuffix(layoutTabId)
         return (
-          <NodeIdContext.Provider value={nodeId}>
-            <ImageViewer />
-          </NodeIdContext.Provider>
+          <ImageDataContext.Provider value={{ nodeId, outputKey: key }}>
+            <ImagePlot />
+          </ImageDataContext.Provider>
         )
       default:
         return null

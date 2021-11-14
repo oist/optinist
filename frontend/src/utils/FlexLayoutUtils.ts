@@ -67,7 +67,6 @@ export function getSuffix(layoutTabId: string): string | null {
   if (result != null) {
     return result
   } else {
-    console.log('failed to get suffix from layoutTabId. (' + layoutTabId + ')')
     return null
   }
 }

@@ -12,20 +12,17 @@ import {
 import {
   algoArgsSelector,
   algoReturnsSelector,
-  imagePathMaxIndexByIdSelector,
   outputKeyListSelector,
   selectedOutputKeySelector,
   selectedOutputPathTypeSelector,
-  selectedOutputPathValueSelector,
-} from 'redux/slice/Algorithm/AlgorithmSelector'
-import { setSelectedOutputKey } from 'redux/slice/Algorithm/Algorithm'
-import { showAlgoOutputImage } from 'redux/slice/ImageIndex/ImageIndex'
+} from 'store/slice/Algorithm/AlgorithmSelector'
+import { setSelectedOutputKey } from 'store/slice/Algorithm/Algorithm'
 import { FlexLayoutModelContext } from 'App'
 
 import { arrayEqualityFn } from 'utils/EqualityUtils'
 import { OUTPUT_TABSET_ID, PARAM_FORM_TABSET_ID } from 'const/flexlayout'
 import { useTabAction } from 'FlexLayoutHook'
-import { OUTPUT_TYPE_SET } from 'redux/slice/Algorithm/AlgorithmType'
+import { OUTPUT_TYPE_SET } from 'store/slice/Algorithm/AlgorithmType'
 
 const leftHandleStyle: CSSProperties = {
   width: 8,
@@ -45,7 +42,6 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
   const nodeId = element.id
   const { isConnectable } = element
   const theme = useTheme()
-  const dispatch = useDispatch()
   const model = React.useContext(FlexLayoutModelContext)
 
   const selectedOutputType = useSelector(selectedOutputPathTypeSelector(nodeId))
@@ -53,26 +49,8 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
   const actionForOutputTab = useTabAction(nodeId)
 
   const actionForParamFormTab = useTabAction(nodeId)
-  const selectedPathValue = useSelector(selectedOutputPathValueSelector(nodeId))
-  const maxIndex = useSelector(
-    imagePathMaxIndexByIdSelector(nodeId, selectedOutputKey ?? ''),
-  )
+
   const onClick = () => {
-    if (
-      selectedOutputKey != null &&
-      selectedPathValue != null &&
-      selectedOutputType === OUTPUT_TYPE_SET.IMAGE &&
-      maxIndex != null
-    ) {
-      dispatch(
-        showAlgoOutputImage({
-          id: nodeId,
-          folder: selectedPathValue,
-          algoName: element.data.label,
-          maxIndex,
-        }),
-      )
-    }
     if (actionForParamFormTab != null) {
       model.doAction(actionForParamFormTab('paramForm', PARAM_FORM_TABSET_ID))
     }

@@ -5,14 +5,6 @@ import { RootState } from '../../store'
 export const flowElementsSelector = (state: RootState) =>
   state.element.flowElements
 
-export const clickedNodeIdSelector = (state: RootState) =>
-  state.element.clickedNodeId
-
-export const clickedNodeSelector = (state: RootState) =>
-  state.element.clickedNodeId
-    ? nodeByIdSelector(state.element.clickedNodeId)(state)
-    : undefined
-
 export const nodeByIdSelector =
   (elementId: ElementId) => (state: RootState) => {
     return flowElementsSelector(state)

@@ -1,10 +1,7 @@
 import { RootState } from '../../store'
-import { getAlgoChild, isImageOutput } from './AlgorithmUtils'
+import { getAlgoChild } from './AlgorithmUtils'
 
 export const algorithmSelector = (state: RootState) => state.algorithm
-
-export const currentAlgoIdSelector = (state: RootState) =>
-  state.algorithm.currentAlgoId
 
 export const algoNameByIdSelector = (id: string) => (state: RootState) => {
   if (Object.keys(state.algorithm.algoNodeMap).includes(id)) {
@@ -67,6 +64,20 @@ const selectedOutputPathSelector = (id: string) => (state: RootState) => {
   return undefined
 }
 
+// export const selectedOutputShowImageSelector =
+//   (id: string) => (state: RootState) => {
+//     const algoMap = state.algorithm.algoNodeMap
+//     if (algoMap[id] != null) {
+//       const algo = algoMap[id]
+//       const output = algo.showImage
+//       const selectedKey = selectedOutputKeySelector(id)(state)
+//       if (output != null && selectedKey != null) {
+//         return output
+//       }
+//     }
+//     return undefined
+//   }
+
 export const selectedOutputPathTypeSelector =
   (id: string) => (state: RootState) => {
     return selectedOutputPathSelector(id)(state)?.type
@@ -77,24 +88,24 @@ export const selectedOutputPathValueSelector =
     return selectedOutputPathSelector(id)(state)?.path.value
   }
 
-export const imagePathMaxIndexByIdSelector =
-  (id: string, outputKey: string) => (state: RootState) => {
-    if (Object.keys(state.algorithm.algoNodeMap).includes(id)) {
-      const outputPaths = state.algorithm.algoNodeMap[id].output
-      if (outputPaths != null && Object.keys(outputPaths).includes(outputKey)) {
-        const path = outputPaths[outputKey]
-        if (isImageOutput(path)) {
-          return path.path.maxIndex
-        } else {
-          return null
-        }
-      } else {
-        return null
-      }
-    } else {
-      return null
-    }
-  }
+// export const imagePathMaxIndexByIdSelector =
+//   (id: string, outputKey: string) => (state: RootState) => {
+//     if (Object.keys(state.algorithm.algoNodeMap).includes(id)) {
+//       const outputPaths = state.algorithm.algoNodeMap[id].output
+//       if (outputPaths != null && Object.keys(outputPaths).includes(outputKey)) {
+//         const path = outputPaths[outputKey]
+//         if (isImageOutput(path)) {
+//           return path.path.maxIndex
+//         } else {
+//           return null
+//         }
+//       } else {
+//         return null
+//       }
+//     } else {
+//       return null
+//     }
+//   }
 
 export const outputPathByIdSelector =
   (nodeId: string, outputKey: string) => (state: RootState) => {

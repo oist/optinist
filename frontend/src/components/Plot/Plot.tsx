@@ -1,11 +1,11 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
 
-import { outputPathTypeByIdSelector } from 'redux/slice/Algorithm/AlgorithmSelector'
+import { outputPathTypeByIdSelector } from 'store/slice/Algorithm/AlgorithmSelector'
 import { OutputPlotContext } from 'App'
 import { TimeSeries } from './TimeSeries'
 import { HeatMap } from './HeatMap'
-import { OUTPUT_TYPE_SET } from 'redux/slice/Algorithm/AlgorithmType'
+import { OUTPUT_TYPE_SET } from 'store/slice/Algorithm/AlgorithmType'
 
 export const Plot = React.memo(function PlotOutput() {
   const { nodeId, outputKey } = React.useContext(OutputPlotContext)

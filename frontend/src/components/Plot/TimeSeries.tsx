@@ -6,28 +6,25 @@ import PlotlyChart from 'react-plotlyjs-ts'
 import {
   algoNameByIdSelector,
   outputPathValueByIdSelector,
-} from 'redux/slice/Algorithm/AlgorithmSelector'
+} from 'store/slice/Algorithm/AlgorithmSelector'
 import { OutputPlotContext } from 'App'
 import {
-  timeSeriesDataByKeySelector,
-  timeSeriesDataIsLoadedByKeySelector,
-} from 'redux/slice/PlotData/PlotDataSelector'
-import { getTimeSeriesData } from 'redux/slice/PlotData/PlotDataAction'
-import { toPlotDataKey } from 'redux/slice/PlotData/PlotDataUtils'
-import { TimeSeriesData } from 'redux/slice/PlotData/PlotDataType'
+  timeSeriesDataSelector,
+  timeSeriesDataIsLoadedSelector,
+} from 'store/slice/PlotData/PlotDataSelector'
+import { getTimeSeriesData } from 'store/slice/PlotData/PlotDataAction'
+import { TimeSeriesData } from 'store/slice/PlotData/PlotDataType'
 
 export const TimeSeries = React.memo(() => {
   const { nodeId, outputKey } = React.useContext(OutputPlotContext)
   const dispatch = useDispatch()
   const path = useSelector(outputPathValueByIdSelector(nodeId, outputKey))
-  const isLoaded = useSelector(
-    timeSeriesDataIsLoadedByKeySelector(toPlotDataKey(nodeId, outputKey)),
-  )
+  const isLoaded = useSelector(timeSeriesDataIsLoadedSelector(path ?? ''))
   React.useEffect(() => {
     if (!isLoaded && path != null) {
-      dispatch(getTimeSeriesData({ nodeId, outputKey, path }))
+      dispatch(getTimeSeriesData({ path }))
     }
-  }, [dispatch, isLoaded, nodeId, outputKey, path])
+  }, [dispatch, isLoaded, path])
   if (isLoaded) {
     return <TimeSeriesImple />
   } else {
@@ -38,19 +35,20 @@ export const TimeSeries = React.memo(() => {
 const TimeSeriesImple = React.memo(() => {
   const { nodeId, outputKey } = React.useContext(OutputPlotContext)
   const name = useSelector(algoNameByIdSelector(nodeId))
+  const path = useSelector(outputPathValueByIdSelector(nodeId, outputKey))
   const timeSeriesData = useSelector(
-    timeSeriesDataByKeySelector(toPlotDataKey(nodeId, outputKey)),
+    timeSeriesDataSelector(path ?? ''),
     timeSeriesDataEqualityFn,
   )
   const data = React.useMemo(() => {
     if (timeSeriesData == null) {
       return []
     }
-    return Object.keys(timeSeriesData.data['0']).map((_, i) => {
+    return Object.keys(timeSeriesData['0']).map((_, i) => {
       return {
         name: `${name}(${i})`,
-        x: Object.keys(timeSeriesData.data),
-        y: Object.values(timeSeriesData.data).map((value) => value[i]),
+        x: Object.keys(timeSeriesData),
+        y: Object.values(timeSeriesData).map((value) => value[i]),
       }
     })
   }, [timeSeriesData, name])
@@ -83,8 +81,8 @@ function timeSeriesDataEqualityFn(
   b: TimeSeriesData | undefined,
 ) {
   if (a != null && b != null) {
-    const aArray = Object.entries(a.data)
-    const bArray = Object.entries(b.data)
+    const aArray = Object.entries(a)
+    const bArray = Object.entries(b)
     return (
       a === b ||
       (aArray.length === bArray.length &&

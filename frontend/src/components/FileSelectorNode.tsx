@@ -2,11 +2,11 @@ import React, { CSSProperties, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { alpha, useTheme } from '@material-ui/core'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
-import { uploadImageFile } from 'redux/slice/ImageIndex/ImageIndexAction'
+import { uploadImageFile } from 'store/slice/UploadImage/UploadImageAction'
 import { FlexLayoutModelContext } from 'App'
 import { useTabAction } from 'FlexLayoutHook'
 import { OUTPUT_TABSET_ID } from 'const/flexlayout'
-import { runStatusSelector } from 'redux/slice/Element/ElementSelector'
+import { runStatusSelector } from 'store/slice/Element/ElementSelector'
 import TextField from '@material-ui/core/TextField'
 
 export const FileSelectorNode = React.memo<NodeProps>((element) => {
@@ -39,12 +39,20 @@ export const FileSelectorNode = React.memo<NodeProps>((element) => {
       const file = event.target.files[0]
       const formData = new FormData()
       formData.append('file', file)
-      const elementId = element.id
+      const nodeId = element.id
       const fileName = file.name
       dispatch(
-        uploadImageFile({ elementId, fileName, formData, inputFileNumber }),
+        uploadImageFile({
+          nodeId,
+          fileName,
+          formData,
+          inputFileNumber,
+        }),
       )
       setFilePathError(false)
+      if (actionForImageTab != null) {
+        model.doAction(actionForImageTab('image', OUTPUT_TABSET_ID))
+      }
     }
   }
 
