@@ -21,8 +21,10 @@ class ImageData:
             if len(self.data.shape) == 2:
                 self.data = self.data[np.newaxis, :, :]
 
+            # self.data = np.uint8(self.data)
+            # import pdb; pdb.set_trace()
             images = []
-            for i, _img in enumerate(self.data):
+            for i, _img in enumerate(self.data[:10]):
                 images.append(_img.tolist())
 
             pd.DataFrame(images).to_json(self.path, indent=4, orient="values")
