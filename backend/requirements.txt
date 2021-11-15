@@ -15,5 +15,6 @@ holoviews
 psutil
 nbstripout
 tensorflow
+torch==1.10.0
 opencv-python
 suite2p
