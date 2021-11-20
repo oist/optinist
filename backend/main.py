@@ -109,41 +109,11 @@ async def create_file(response: Response, fileName: str, element_id: str = Form(
 
     return {"json_data_path": json_data_path, "tiff_file_path": tiff_file_path}
 
-@app.post("/api/run")
-async def run(flowList: List[FlowItem]):
-    import run_pipeline
-    # print('run_code')
-    # print(wrapper_dict)
-    info = run_pipeline.run_code(wrapper_dict, flowList)
+@app.get("/api/run/ready/{request_id}")
+async  def run_ready(request_id: str):
+    return {'message': 'ready...', 'status': 'ready', 'outputPaths': {} , "requestId": request_id}
 
-    results = OrderedDict()
-    for item in flowList:
-        results[item.label] = {}
-        for k, v in info[item.label].items():
-            if type(v) is ImageData:
-                print("ImageData")
-                results[item.label][k] = {}
-                results[item.label][k]['path'] = v.path
-                results[item.label][k]['type'] = 'images'
-                # results[item.label][k]['max_index'] = len(v.data)
-            elif type(v) is TimeSeriesData:
-                print("TimeSeriesData")
-                results[item.label][k] = {}
-                results[item.label][k]['path'] = v.path
-                results[item.label][k]['type'] = 'timeseries'
-            elif type(v) is CorrelationData:
-                print("CorrelationData")
-                results[item.label][k] = {}
-                results[item.label][k]['path'] = v.path
-                results[item.label][k]['type'] = 'heatmap'
-            else:
-                pass
-
-    # print('results', results)
-
-    return {'message': 'success', 'outputPaths': results}
-
-@app.websocket("/api/ws")
+@app.websocket("/run")
 async def websocket_endpoint(websocket: WebSocket):
     import json
     import run_pipeline
@@ -152,37 +122,39 @@ async def websocket_endpoint(websocket: WebSocket):
     # Wait for any message from the client
     flowList = await websocket.receive_text()
     flowList = list(map(lambda x: FlowItem(**x), json.loads(flowList)))
+    try:
+        info = run_pipeline.run_code(wrapper_dict, flowList)
+        for item in flowList:
+            results = OrderedDict()
+            results[item.label] = {}
+            for k, v in info[item.label].items():
+                if type(v) is ImageData:
+                    print("ImageData")
+                    results[item.label][k] = {}
+                    results[item.label][k]['path'] = v.path
+                    results[item.label][k]['type'] = 'images'
+                    results[item.label][k]['max_index'] = len(v.data)
+                elif type(v) is TimeSeriesData:
+                    print("TimeSeriesData")
+                    results[item.label][k] = {}
+                    results[item.label][k]['path'] = v.path
+                    results[item.label][k]['type'] = 'timeseries'
+                elif type(v) is CorrelationData:
+                    print("CorrelationData")
+                    results[item.label][k] = {}
+                    results[item.label][k]['path'] = v.path
+                    results[item.label][k]['type'] = 'heatmap'
+                else:
+                    pass
 
-    info = run_pipeline.run_code(wrapper_dict, flowList)
-
-    for item in flowList:
-        results = OrderedDict()
-        results[item.label] = {}
-        for k, v in info[item.label].items():
-            if type(v) is ImageData:
-                print("ImageData")
-                results[item.label][k] = {}
-                results[item.label][k]['path'] = v.path
-                results[item.label][k]['type'] = 'images'
-                results[item.label][k]['max_index'] = len(v.data)
-            elif type(v) is TimeSeriesData:
-                print("TimeSeriesData")
-                results[item.label][k] = {}
-                results[item.label][k]['path'] = v.path
-                results[item.label][k]['type'] = 'timeseries'
-            elif type(v) is CorrelationData:
-                print("CorrelationData")
-                results[item.label][k] = {}
-                results[item.label][k]['path'] = v.path
-                results[item.label][k]['type'] = 'heatmap'
-            else:
-                pass
-
-        # Send message to the client
-        await websocket.send_json({'message': 'success', 'outputPaths': results})
-
-    print('Bye..')
-    await websocket.close()
+            # Send message to the client
+            await websocket.send_json({'message': item.label+' success', 'status': 'success', 'outputPaths': results})
+    except Exception as e:
+        print(e)
+        await websocket.send_json({'message': 'failed to run', 'status': 'error', 'outputPaths': {}})
+    finally:
+        print('Bye..')
+        await websocket.close()
 
 @app.get("/api/outputs/{file_path:path}")
 async def read_file(file_path: str):

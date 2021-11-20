@@ -1,22 +1,24 @@
-import {
-  configureStore,
-  ThunkAction,
-  Action,
-  combineReducers,
-} from '@reduxjs/toolkit'
+import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
+import { setupListeners } from '@reduxjs/toolkit/query'
 import elementReducer from './slice/Element/Element'
 import algorithmReducer from './slice/Algorithm/Algorithm'
 import uploadImageReducer from './slice/UploadImage/UploadImage'
 import plotDataReducer from './slice/PlotData/PlotData'
+import { webSocketApi } from '../api/Run/Run'
 
 export const store = configureStore({
-  reducer: combineReducers({
+  reducer: {
     element: elementReducer,
     algorithm: algorithmReducer,
     uploadImage: uploadImageReducer,
     plotData: plotDataReducer,
-  }),
+    [webSocketApi.reducerPath]: webSocketApi.reducer,
+  },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(webSocketApi.middleware),
 })
+
+setupListeners(store.dispatch)
 
 export type AppDispatch = typeof store.dispatch
 export type RootState = ReturnType<typeof store.getState>
