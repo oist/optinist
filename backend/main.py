@@ -123,11 +123,24 @@ async def websocket_endpoint(websocket: WebSocket):
     flowList = await websocket.receive_text()
     flowList = list(map(lambda x: FlowItem(**x), json.loads(flowList)))
     try:
-        info = run_pipeline.run_code(wrapper_dict, flowList)
+        # info = run_pipeline.run_code(wrapper_dict, flowList)
         for item in flowList:
+
+            # run algorithm
+            info = None
+            if item.type == 'data':
+                info = {'path': ImageData(item.path, '')}
+            elif item.type == 'algo':
+                info = wrapper_dict[item.label](
+                    *prev_info.values(), params=item.param)
+
+            prev_info = info
+
+            assert info is not None
+
             results = OrderedDict()
             results[item.label] = {}
-            for k, v in info[item.label].items():
+            for k, v in info.items():
                 if type(v) is ImageData:
                     print("ImageData")
                     results[item.label][k] = {}
