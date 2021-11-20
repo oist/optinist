@@ -111,7 +111,7 @@ async def create_file(response: Response, fileName: str, element_id: str = Form(
 
 @app.get("/api/run/ready/{request_id}")
 async  def run_ready(request_id: str):
-    return {'message': 'ready...', 'status': 'ready', 'outputPaths': {} , "requestId": request_id}
+    return {'message': 'ready...', 'status': 'ready', "requestId": request_id}
 
 @app.websocket("/run")
 async def websocket_endpoint(websocket: WebSocket):
@@ -125,7 +125,7 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         # info = run_pipeline.run_code(wrapper_dict, flowList)
         for item in flowList:
-
+            await websocket.send_json({'message': item.label+' started', 'status': 'ready'})
             # run algorithm
             info = None
             if item.type == 'data':
@@ -162,9 +162,10 @@ async def websocket_endpoint(websocket: WebSocket):
 
             # Send message to the client
             await websocket.send_json({'message': item.label+' success', 'status': 'success', 'outputPaths': results})
+        await websocket.send_json({'message': 'completed', 'status': 'completed'})
     except Exception as e:
         print(e)
-        await websocket.send_json({'message': 'failed to run', 'status': 'error', 'outputPaths': {}})
+        await websocket.send_json({'message': 'failed to run', 'status': 'error'})
     finally:
         print('Bye..')
         await websocket.close()

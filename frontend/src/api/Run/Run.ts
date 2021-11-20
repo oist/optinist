@@ -5,7 +5,7 @@ import { AlgoNodeData, InputNodeData } from 'const/NodeData'
 export type RunPipelineDTO = {
   status: string
   message: string
-  outputPaths: OutputPathsDTO
+  outputPaths?: OutputPathsDTO
   requestId?: string
 }
 

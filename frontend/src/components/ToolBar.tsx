@@ -55,7 +55,7 @@ export const ToolBarImple = React.memo(() => {
   }
   React.useEffect(() => {
     if (result.data != null && !result.isFetching) {
-      dispatch(reflectRunPipelineResult(result.data.outputPaths))
+      dispatch(reflectRunPipelineResult(result.data.outputPaths ?? {}))
       if (result.data.status === 'ready') {
         setIsReady(true)
       } else {
@@ -64,7 +64,8 @@ export const ToolBarImple = React.memo(() => {
           variant:
             result.data.status === 'error'
               ? 'error'
-              : result.data.status === 'success'
+              : result.data.status === 'success' ||
+                result.data.status === 'completed'
               ? 'success'
               : undefined,
         })
