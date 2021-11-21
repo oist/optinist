@@ -4,6 +4,7 @@ import elementReducer from './slice/Element/Element'
 import algorithmReducer from './slice/Algorithm/Algorithm'
 import uploadImageReducer from './slice/UploadImage/UploadImage'
 import plotDataReducer from './slice/PlotData/PlotData'
+import HandleTypeColorReducer from './slice/HandleTypeColor/HandleTypeColor'
 import { webSocketApi } from '../api/Run/Run'
 
 export const store = configureStore({
@@ -12,6 +13,7 @@ export const store = configureStore({
     algorithm: algorithmReducer,
     uploadImage: uploadImageReducer,
     plotData: plotDataReducer,
+    handleColor: HandleTypeColorReducer,
     [webSocketApi.reducerPath]: webSocketApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>

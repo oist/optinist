@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Handle, Position, NodeProps } from 'react-flow-renderer'
+import { Handle, Position, NodeProps, Connection } from 'react-flow-renderer'
 import { NodeData } from 'const/NodeData'
 import {
   alpha,
@@ -22,7 +22,13 @@ import { FlexLayoutModelContext } from 'App'
 import { arrayEqualityFn } from 'utils/EqualityUtils'
 import { OUTPUT_TABSET_ID, PARAM_FORM_TABSET_ID } from 'const/flexlayout'
 import { useTabAction } from 'FlexLayoutHook'
-import { OUTPUT_TYPE_SET } from 'store/slice/Algorithm/AlgorithmType'
+import { AlgoInfo, OUTPUT_TYPE_SET } from 'store/slice/Algorithm/AlgorithmType'
+import {
+  handleTypeColorSelector,
+  nextColorKeySelector,
+} from 'store/slice/HandleTypeColor/HandleTypeColorSelector'
+import { addColor } from 'store/slice/HandleTypeColor/HandleTypeColor'
+import { HANDLE_COLOR_PRESET_MAP } from 'const/HandleColor'
 
 const leftHandleStyle: CSSProperties = {
   width: 8,
@@ -86,20 +92,11 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
     }
   }, [selectedOutputKey, actionForOutputTab, model, selectedOutputType])
 
-  const algoArgs = useSelector(algoArgsSelector(nodeId), (a, b) => {
-    if (a != null && b != null) {
-      return arrayEqualityFn(a, b)
-    } else {
-      return a === undefined && b === undefined
-    }
-  })
-  const algoReturns = useSelector(algoReturnsSelector(nodeId), (a, b) => {
-    if (a != null && b != null) {
-      return arrayEqualityFn(a, b)
-    } else {
-      return a === undefined && b === undefined
-    }
-  })
+  const algoArgs = useSelector(algoArgsSelector(nodeId), algoInfoListEqualtyFn)
+  const algoReturns = useSelector(
+    algoReturnsSelector(nodeId),
+    algoInfoListEqualtyFn,
+  )
   return (
     <div
       style={{
@@ -125,40 +122,16 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
       <div>
         {algoArgs != null
           ? algoArgs
-              .filter((name) => name !== 'params')
-              .map((argsName, i) => {
-                return (
-                  <Handle
-                    key={i.toFixed()}
-                    type="target"
-                    position={Position.Left}
-                    id={`${nodeId}-${argsName}`}
-                    style={{
-                      ...leftHandleStyle,
-                      top: i * 35 + 15,
-                    }}
-                    isConnectable={isConnectable}
-                  />
-                )
+              .filter((info) => info.type !== 'params')
+              .map((algoInfo, i) => {
+                return <ArgHandle algoInfo={algoInfo} i={i} nodeId={nodeId} />
               })
           : null}
       </div>
       {algoReturns != null ? (
         algoReturns.length > 0 ? (
-          algoReturns.map((returnsName, i) => {
-            return (
-              <Handle
-                key={i.toFixed()}
-                type="source"
-                position={Position.Right}
-                id={`${nodeId}-${returnsName}`}
-                style={{
-                  ...rightHandleStyle,
-                  top: i * 35 + 15,
-                }}
-                isConnectable={isConnectable}
-              />
-            )
+          algoReturns.map((algoInfo, i) => {
+            return <ReturnHandle algoInfo={algoInfo} i={i} nodeId={nodeId} />
           })
         ) : (
           // algoReturns.lengthが0の場合の応急処置
@@ -209,3 +182,106 @@ const OutputKeySelect = React.memo<{ nodeId: string }>(({ nodeId }) => {
     return null
   }
 })
+
+type HandleProps = {
+  algoInfo: AlgoInfo
+  nodeId: string
+  i: number
+}
+
+const ArgHandle = React.memo<HandleProps>(
+  ({ algoInfo: { name, type }, nodeId, i }) => {
+    const color = useHandleColor(type)
+    const id = toHandleId(nodeId, name, type)
+    return (
+      <Handle
+        key={i.toFixed()}
+        type="target"
+        position={Position.Left}
+        id={id}
+        style={{
+          ...leftHandleStyle,
+          background: color,
+          top: i * 35 + 15,
+        }}
+        isValidConnection={isValidConnection}
+      />
+    )
+  },
+)
+
+const ReturnHandle = React.memo<HandleProps>(
+  ({ algoInfo: { name, type }, nodeId, i }) => {
+    const color = useHandleColor(type)
+    const id = toHandleId(nodeId, name, type)
+    return (
+      <Handle
+        key={i.toFixed()}
+        type="source"
+        position={Position.Right}
+        id={id}
+        style={{
+          ...rightHandleStyle,
+          background: color,
+          top: i * 35 + 15,
+          zIndex: 1,
+        }}
+        isValidConnection={isValidConnection}
+      />
+    )
+  },
+)
+
+function toHandleId(nodeId: string, name: string, type: string) {
+  return `${nodeId}--${name}--${type}`
+}
+
+function getHandleType(handleId: string) {
+  return handleId.split('--')[2]
+}
+
+function isValidConnection(connection: Connection) {
+  if (connection.sourceHandle != null && connection.targetHandle != null) {
+    return (
+      getHandleType(connection.sourceHandle) ===
+      getHandleType(connection.targetHandle)
+    )
+  } else {
+    return true
+  }
+}
+
+function useHandleColor(type: string) {
+  const dispatch = useDispatch()
+  const color = useSelector(handleTypeColorSelector(type))
+  const nextColorKey = useSelector(nextColorKeySelector)
+  React.useEffect(() => {
+    if (color === undefined) {
+      const nextColor = HANDLE_COLOR_PRESET_MAP.get(nextColorKey)
+      dispatch(
+        addColor({
+          type,
+          color:
+            nextColor ??
+            '#' + Math.floor(Math.random() * 0xffffff).toString(16),
+        }),
+      )
+    }
+  }, [type, color, nextColorKey, dispatch])
+  return color
+}
+
+function algoInfoListEqualtyFn(
+  a: AlgoInfo[] | undefined,
+  b: AlgoInfo[] | undefined,
+) {
+  if (a != null && b != null) {
+    return (
+      a === b ||
+      (a.length === b.length &&
+        a.every((v, i) => v.type === b[i].type && v.name === b[i].name))
+    )
+  } else {
+    return a === undefined && b === undefined
+  }
+}
