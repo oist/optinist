@@ -8,6 +8,7 @@ import {
   useTheme,
   Select,
   MenuItem,
+  Tooltip,
 } from '@material-ui/core'
 import {
   algoArgsSelector,
@@ -129,24 +130,22 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
           : null}
       </div>
       {algoReturns != null ? (
-        algoReturns.length > 0 ? (
-          algoReturns.map((algoInfo, i) => {
-            return <ReturnHandle algoInfo={algoInfo} i={i} nodeId={nodeId} />
-          })
-        ) : (
-          // algoReturns.lengthが0の場合の応急処置
-          <Handle
-            type="source"
-            position={Position.Right}
-            id={`${nodeId}`}
-            style={{
-              ...rightHandleStyle,
-              height: '100%',
-            }}
-            isConnectable={isConnectable}
-          />
-        )
-      ) : null}
+        algoReturns?.map((algoInfo, i) => {
+          return <ReturnHandle algoInfo={algoInfo} i={i} nodeId={nodeId} />
+        })
+      ) : (
+        // algoReturns.lengthが0の場合の応急処置
+        <Handle
+          type="source"
+          position={Position.Right}
+          id={`${nodeId}`}
+          style={{
+            ...rightHandleStyle,
+            height: '100%',
+          }}
+          isConnectable={isConnectable}
+        />
+      )}
       <OutputKeySelect nodeId={nodeId} />
     </div>
   )
@@ -193,8 +192,11 @@ const ArgHandle = React.memo<HandleProps>(
   ({ algoInfo: { name, type }, nodeId, i }) => {
     const color = useHandleColor(type)
     const id = toHandleId(nodeId, name, type)
+    const [isHover, setHover] = React.useState(false)
     return (
       <Handle
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
         key={i.toFixed()}
         type="target"
         position={Position.Left}
@@ -205,7 +207,21 @@ const ArgHandle = React.memo<HandleProps>(
           top: i * 35 + 15,
         }}
         isValidConnection={isValidConnection}
-      />
+      >
+        <Tooltip
+          title={
+            <>
+              <Typography color="inherit">name: {name}</Typography>
+              <Typography color="inherit">type: {type}</Typography>
+            </>
+          }
+          open={isHover}
+          placement="left-end"
+          arrow
+        >
+          <div />
+        </Tooltip>
+      </Handle>
     )
   },
 )
@@ -214,8 +230,11 @@ const ReturnHandle = React.memo<HandleProps>(
   ({ algoInfo: { name, type }, nodeId, i }) => {
     const color = useHandleColor(type)
     const id = toHandleId(nodeId, name, type)
+    const [isHover, setHover] = React.useState(false)
     return (
       <Handle
+        onMouseEnter={() => setHover(true)}
+        onMouseLeave={() => setHover(false)}
         key={i.toFixed()}
         type="source"
         position={Position.Right}
@@ -227,7 +246,21 @@ const ReturnHandle = React.memo<HandleProps>(
           zIndex: 1,
         }}
         isValidConnection={isValidConnection}
-      />
+      >
+        <Tooltip
+          title={
+            <>
+              <Typography color="inherit">name: {name}</Typography>
+              <Typography color="inherit">type: {type}</Typography>
+            </>
+          }
+          open={isHover}
+          placement="right-end"
+          arrow
+        >
+          <div />
+        </Tooltip>
+      </Handle>
     )
   },
 )
