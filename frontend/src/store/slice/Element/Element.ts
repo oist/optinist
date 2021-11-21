@@ -7,7 +7,6 @@ import {
 } from 'const/flowchart'
 import { NodeData, NODE_DATA_TYPE_SET } from 'const/NodeData'
 import { isAlgoNodeData, isInputNodeData, isNodeData } from 'utils/ElementUtils'
-import { runPipeline, stopPipeline } from './ElementAction'
 import { Element, ELEMENT_SLICE_NAME, RUN_STATUS } from './ElementType'
 import { uploadImageFile } from '../UploadImage/UploadImageAction'
 
@@ -50,38 +49,19 @@ export const elementSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(uploadImageFile.fulfilled, (state, action) => {
-        const { nodeId } = action.meta.arg
-        const { tiffFilePath } = action.payload
-        const idx = state.flowElements.findIndex((e) => e.id === nodeId)
-        const node = state.flowElements[idx]
-        if (isNodeData(node) && node.data) {
-          node.data = {
-            ...node.data,
-            type: NODE_DATA_TYPE_SET.DATA,
-            path: tiffFilePath,
-          }
+    builder.addCase(uploadImageFile.fulfilled, (state, action) => {
+      const { nodeId } = action.meta.arg
+      const { tiffFilePath } = action.payload
+      const idx = state.flowElements.findIndex((e) => e.id === nodeId)
+      const node = state.flowElements[idx]
+      if (isNodeData(node) && node.data) {
+        node.data = {
+          ...node.data,
+          type: NODE_DATA_TYPE_SET.DATA,
+          path: tiffFilePath,
         }
-      })
-      .addCase(runPipeline.pending, (state) => {
-        state.runStatus = RUN_STATUS.RUNNING
-      })
-      .addCase(runPipeline.rejected, (state, action) => {
-        state.runStatus = RUN_STATUS.FAILED
-        state.runMessage = action.error.message
-      })
-      .addCase(runPipeline.fulfilled, (state, action) => {
-        if (action.payload.message === 'success') {
-          state.runStatus = RUN_STATUS.SUCCESS
-        } else {
-          state.runStatus = RUN_STATUS.FAILED
-        }
-        state.runMessage = action.payload.message
-      })
-      .addCase(stopPipeline, (state) => {
-        state.runStatus = RUN_STATUS.STOPPED
-      })
+      }
+    })
   },
 })
 

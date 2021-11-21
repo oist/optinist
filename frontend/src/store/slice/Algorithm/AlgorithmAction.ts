@@ -1,8 +1,9 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk, createAction } from '@reduxjs/toolkit'
 import { ALGORITHM_SLICE_NAME } from './AlgorithmType'
 import axios from 'axios'
 import { AlgoParam } from 'const/NodeData'
 import { BASE_URL } from 'const/API'
+import { OutputPathsDTO } from 'api/Run/Run'
 
 export const getAlgoParams = createAsyncThunk<
   AlgoParam,
@@ -35,4 +36,8 @@ export const getAlgoList = createAsyncThunk<AlgoListDTO, void>(
       return rejectWithValue(e)
     }
   },
+)
+
+export const reflectRunPipelineResult = createAction<OutputPathsDTO>(
+  `${ALGORITHM_SLICE_NAME}/reflectRunPipelineResult`,
 )
