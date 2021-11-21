@@ -66,18 +66,28 @@ async def run() -> List:
 
         # get args
         sig = inspect.signature(value)
-        arg_names = [x.name for x in sig.parameters.values()]
+
+        algo_dict[key]['args'] = [
+            {
+                'name': x.name, 
+                'type': x.annotation.__name__
+            }
+            for x in sig.parameters.values()
+            if x.name != 'params'
+        ]
 
         # get returns
         return_names = []
         return_types = []
         if sig.return_annotation is not inspect._empty:
-            return_names = list(sig.return_annotation.keys())
-            return_types = list(sig.return_annotation.values())
-
-        algo_dict[key]['args'] = arg_names
-        algo_dict[key]['returns'] = return_names
-
+            algo_dict[key]['returns'] = [
+                {
+                    'name': k,
+                    'type': v.__name__
+                }
+                for k, v in sig.return_annotation.items()
+            ]
+    
     return algo_dict
 
 @app.get("/api/cookie-test")
