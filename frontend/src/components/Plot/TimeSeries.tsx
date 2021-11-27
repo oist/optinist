@@ -49,6 +49,7 @@ const TimeSeriesImple = React.memo(() => {
         name: `${name}(${i})`,
         x: Object.keys(timeSeriesData),
         y: Object.values(timeSeriesData).map((value) => value[i]),
+        visible: i == 0 ? true : 'legendonly',
       }
     })
   }, [timeSeriesData, name])
