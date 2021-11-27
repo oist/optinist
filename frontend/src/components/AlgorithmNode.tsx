@@ -57,6 +57,13 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
 
   const actionForParamFormTab = useTabAction(nodeId)
 
+  React.useEffect(() => {
+    // Nodeが置かれたタイミングでparamFormのタブを作成する
+    if (actionForParamFormTab != null) {
+      model.doAction(actionForParamFormTab('paramForm', PARAM_FORM_TABSET_ID))
+    }
+  }, [model, actionForParamFormTab])
+
   const onClick = () => {
     if (actionForParamFormTab != null) {
       model.doAction(actionForParamFormTab('paramForm', PARAM_FORM_TABSET_ID))
