@@ -1,6 +1,7 @@
 import inspect
 import functools
 
+from wrappers.optinist_exception import ArgsMissingException, ArgsTypeException
 
 def args_check(func):
     @functools.wraps(func)
@@ -16,7 +17,7 @@ def args_check(func):
                 # import pdb; pdb.set_trace()
                 error_msg = f'args type error: need " {x.__name__} " type, \
                             more than " {request_type_list.count(x) - arg_type_list.count(x)} " '
-                raise AttributeError(error_msg)
+                raise ArgsMissingException(error_msg)
         
         # いらない型の引数を削除する
         for i, x in reversed(list(enumerate(arg_type_list))):
@@ -64,7 +65,7 @@ def args_check(func):
             request_type = annot if type(annot) is type else inspect._empty
             if request_type is not inspect._empty and arg_type is not request_type:
                 error_msg = f'args"{arg_key}" (type: {arg_type}) is invalid. （ type: {request_type} is require'
-                raise TypeError(error_msg)
+                raise ArgsTypeException(error_msg)
 
         print(args)
                 

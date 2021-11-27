@@ -55,7 +55,15 @@ export const ToolBarImple = React.memo(() => {
   }
   React.useEffect(() => {
     if (result.data != null && !result.isFetching) {
-      dispatch(reflectRunPipelineResult(result.data.outputPaths ?? {}))
+      dispatch(
+        reflectRunPipelineResult({
+          dto: result.data.outputPaths ?? {},
+          error:
+            result.data.name != null
+              ? { name: result.data.name, message: result.data.message }
+              : undefined,
+        }),
+      )
       if (result.data.status === 'ready') {
         setIsReady(true)
       } else {

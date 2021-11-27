@@ -79,41 +79,50 @@ export const algorithmSlice = createSlice({
         }
       })
       .addCase(reflectRunPipelineResult, (state, action) => {
-        Object.entries(action.payload).forEach(([algoName, outputPaths]) => {
-          Object.entries(state.algoNodeMap).forEach(([id, algo]) => {
-            // todo とりあえず名前一致だが、後でサーバーサイドとフロントで両方idにする
-            if (algo.name === algoName && state.algoNodeMap[id]) {
-              const outputState = {
-                ...state.algoNodeMap[id].output,
-              }
-              Object.entries(outputPaths).forEach(([key, pathInfo]) => {
-                if (pathInfo.type === 'images') {
-                  outputState[key] = {
-                    type: OUTPUT_TYPE_SET.IMAGE,
-                    path: {
-                      value: pathInfo.path,
-                    },
-                  }
-                } else if (pathInfo.type === 'timeseries') {
-                  outputState[key] = {
-                    type: OUTPUT_TYPE_SET.TIME_SERIES,
-                    path: {
-                      value: pathInfo.path,
-                    },
-                  }
-                } else if (pathInfo.type === 'heatmap') {
-                  outputState[key] = {
-                    type: OUTPUT_TYPE_SET.HEAT_MAP,
-                    path: {
-                      value: pathInfo.path,
-                    },
-                  }
+        Object.entries(action.payload.dto).forEach(
+          ([algoName, outputPaths]) => {
+            Object.entries(state.algoNodeMap).forEach(([id, algo]) => {
+              // todo とりあえず名前一致だが、後でサーバーサイドとフロントで両方idにする
+              if (algo.name === algoName && state.algoNodeMap[id]) {
+                const outputState = {
+                  ...state.algoNodeMap[id].output,
                 }
-                state.algoNodeMap[id].selectedOutputKey = key
-              })
-              state.algoNodeMap[id].output = outputState
-            }
-          })
+                Object.entries(outputPaths).forEach(([key, pathInfo]) => {
+                  if (pathInfo.type === 'images') {
+                    outputState[key] = {
+                      type: OUTPUT_TYPE_SET.IMAGE,
+                      path: {
+                        value: pathInfo.path,
+                      },
+                    }
+                  } else if (pathInfo.type === 'timeseries') {
+                    outputState[key] = {
+                      type: OUTPUT_TYPE_SET.TIME_SERIES,
+                      path: {
+                        value: pathInfo.path,
+                      },
+                    }
+                  } else if (pathInfo.type === 'heatmap') {
+                    outputState[key] = {
+                      type: OUTPUT_TYPE_SET.HEAT_MAP,
+                      path: {
+                        value: pathInfo.path,
+                      },
+                    }
+                  }
+                  state.algoNodeMap[id].selectedOutputKey = key
+                })
+                state.algoNodeMap[id].output = outputState
+              }
+            })
+          },
+        )
+        Object.entries(state.algoNodeMap).forEach(([id, algo]) => {
+          if (algo.name === action.payload.error?.name) {
+            state.algoNodeMap[id].error = action.payload.error?.message
+          } else {
+            state.algoNodeMap[id].error = undefined
+          }
         })
       })
   },

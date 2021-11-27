@@ -5,6 +5,7 @@ import { AlgoNodeData, InputNodeData } from 'const/NodeData'
 export type RunPipelineDTO = {
   status: string
   message: string
+  name?: string
   outputPaths?: OutputPathsDTO
   requestId?: string
 }
@@ -47,6 +48,7 @@ export const webSocketApi = createApi({
             updateCachedData((draft) => {
               draft.status = data.status
               draft.message = data.message
+              draft.name = data.name
               draft.outputPaths = {
                 ...draft.outputPaths,
                 ...data.outputPaths,

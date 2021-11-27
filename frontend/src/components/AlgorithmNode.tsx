@@ -9,9 +9,15 @@ import {
   Select,
   MenuItem,
   Tooltip,
+  FormHelperText,
+  IconButton,
 } from '@material-ui/core'
+import ErrorIcon from '@material-ui/icons/Error'
+import Popover from '@material-ui/core/Popover'
+
 import {
   algoArgsSelector,
+  algoErrorSelector,
   algoReturnsSelector,
   outputKeyListSelector,
   selectedOutputKeySelector,
@@ -30,6 +36,7 @@ import {
 } from 'store/slice/HandleTypeColor/HandleTypeColorSelector'
 import { addColor } from 'store/slice/HandleTypeColor/HandleTypeColor'
 import { HANDLE_COLOR_PRESET_MAP } from 'const/HandleColor'
+import { RootState } from 'store/store'
 
 const leftHandleStyle: CSSProperties = {
   width: 8,
@@ -105,6 +112,9 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
     algoReturnsSelector(nodeId),
     algoInfoListEqualtyFn,
   )
+  const isError = useSelector(
+    (state: RootState) => algoErrorSelector(nodeId)(state) != null,
+  )
   return (
     <div
       style={{
@@ -122,9 +132,14 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
           paddingLeft: 16,
         }}
       >
-        <Typography style={{ textAlign: 'left' }}>
+        <Typography
+          style={{
+            textAlign: 'left',
+            color: isError ? theme.palette.error.main : undefined,
+          }}
+        >
           {element.data.label}
-          {/* ({element.id}) */}
+          <ErrorMessage nodeId={nodeId} />
         </Typography>
       </div>
       <div>
@@ -148,7 +163,7 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
           id={`${nodeId}`}
           style={{
             ...rightHandleStyle,
-            height: '100%',
+            top: 15,
           }}
           isConnectable={isConnectable}
         />
@@ -250,7 +265,6 @@ const ReturnHandle = React.memo<HandleProps>(
           ...rightHandleStyle,
           background: color,
           top: i * 35 + 15,
-          zIndex: 1,
         }}
         isValidConnection={isValidConnection}
       >
@@ -271,6 +285,48 @@ const ReturnHandle = React.memo<HandleProps>(
     )
   },
 )
+
+const ErrorMessage = React.memo<{
+  nodeId: string
+}>(({ nodeId }) => {
+  const error = useSelector(algoErrorSelector(nodeId))
+  const anchorElRef = React.useRef<HTMLButtonElement | null>(null)
+  const [open, setOpen] = React.useState(false)
+  const theme = useTheme()
+  if (error != null) {
+    return (
+      <>
+        <IconButton
+          ref={anchorElRef}
+          onClick={() => setOpen((prevOpen) => !prevOpen)}
+          size="small"
+          style={{ color: theme.palette.error.main }}
+        >
+          <ErrorIcon />
+        </IconButton>
+        <Popover
+          open={open}
+          anchorEl={anchorElRef.current}
+          onClose={() => setOpen(false)}
+          anchorOrigin={{
+            vertical: 'top',
+            horizontal: 'right',
+          }}
+          transformOrigin={{
+            vertical: 'bottom',
+            horizontal: 'left',
+          }}
+        >
+          <div style={{ margin: 8 }}>
+            <FormHelperText error={true}>{error}</FormHelperText>
+          </div>
+        </Popover>
+      </>
+    )
+  } else {
+    return null
+  }
+})
 
 function toHandleId(nodeId: string, name: string, type: string) {
   return `${nodeId}--${name}--${type}`

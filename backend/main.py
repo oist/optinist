@@ -17,6 +17,8 @@ sys.path.append('../optinist')
 from wrappers import wrapper_dict
 from collections import OrderedDict
 from wrappers.data_wrapper import *
+from wrappers.optinist_exception import AlgorithmException
+import traceback
 
 app = FastAPI(docs_url="/api/docs", openapi_url="/api")
 
@@ -175,12 +177,12 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.send_json({'message': item.label+' success', 'status': 'success', 'outputPaths': results})
 
         await websocket.send_json({'message': 'completed', 'status': 'completed'})
-    except KeyError as e:
-        print('key error: ', e)
-        await websocket.send_json({'message': f'key error: {str(e)} not exist', 'name': item.label, 'status': 'error'})
+    except AlgorithmException as e:
+        await websocket.send_json({'message': e.get_message(), 'name': item.label, 'status': 'error'})
     except Exception as e:
-        print('error: ', e)
-        await websocket.send_json({'message': str(e), 'name': item.label, 'status': 'error'})
+        message  = list(traceback.TracebackException.from_exception(e).format())[-1]
+        print(traceback.format_exc())
+        await websocket.send_json({'message': message, 'name': item.label, 'status': 'error'})
     finally:
         print('Bye..')
         await websocket.close()
