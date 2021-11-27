@@ -3,6 +3,8 @@ from .cnmf import caiman_cnmf
 
 
 caiman_wrapper_dict = {
-	'caiman_mc': caiman_mc,
-	'caiman_cnmf': caiman_cnmf,
+	'caiman': {
+		'caiman_mc': caiman_mc,
+		'caiman_cnmf': caiman_cnmf,
+	}
 }
