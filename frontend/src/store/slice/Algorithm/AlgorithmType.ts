@@ -21,14 +21,19 @@ export type AlgoListType = {
 export type AlgoNodeType = AlgoChild | AlgoParent
 export type AlgoChild = {
   type: 'child'
-  args: string[]
-  returns: string[]
+  args: AlgoInfo[]
+  returns: AlgoInfo[]
 }
 export type AlgoParent = {
   type: 'parent'
   children: {
     [name: string]: AlgoNodeType
   }
+}
+
+export type AlgoInfo = {
+  name: string
+  type: string
 }
 
 export type OutputPaths = {
