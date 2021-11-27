@@ -126,16 +126,17 @@ async  def run_ready(request_id: str):
 @app.websocket("/run")
 async def websocket_endpoint(websocket: WebSocket):
     import json
-    import run_pipeline
+    # import run_pipeline
 
     await websocket.accept()
     # Wait for any message from the client
     flowList = await websocket.receive_text()
     flowList = list(map(lambda x: FlowItem(**x), json.loads(flowList)))
     try:
-        # info = run_pipeline.run_code(wrapper_dict, flowList)
         for item in flowList:
+
             await websocket.send_json({'message': item.label+' started', 'status': 'ready'})
+
             # run algorithm
             info = None
             if item.type == 'data':
@@ -172,10 +173,14 @@ async def websocket_endpoint(websocket: WebSocket):
 
             # Send message to the client
             await websocket.send_json({'message': item.label+' success', 'status': 'success', 'outputPaths': results})
+
         await websocket.send_json({'message': 'completed', 'status': 'completed'})
+    except KeyError as e:
+        print('key error: ', e)
+        await websocket.send_json({'message': f'key error: {str(e)} not exist', 'name': item.label, 'status': 'error'})
     except Exception as e:
-        print(e)
-        await websocket.send_json({'message': 'failed to run', 'status': 'error'})
+        print('error: ', e)
+        await websocket.send_json({'message': str(e), 'name': item.label, 'status': 'error'})
     finally:
         print('Bye..')
         await websocket.close()
