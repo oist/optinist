@@ -12,6 +12,7 @@ import {
   Algorithm,
   OUTPUT_TYPE_SET,
 } from './AlgorithmType'
+import { convertToAlgoListType } from './AlgorithmUtils'
 
 const initialState: Algorithm = {
   algoNodeMap: {},
@@ -60,14 +61,7 @@ export const algorithmSlice = createSlice({
         }
       })
       .addCase(getAlgoList.fulfilled, (state, action) => {
-        const dto = action.payload
-        Object.entries(dto).forEach(([name, node]) => {
-          state.algoList[name] = {
-            type: 'child',
-            args: node.args,
-            returns: node.returns,
-          }
-        })
+        state.algoList = convertToAlgoListType(action.payload)
       })
       .addCase(getAlgoParams.fulfilled, (state, action) => {
         const { id, algoName } = action.meta.arg

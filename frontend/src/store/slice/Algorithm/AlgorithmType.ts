@@ -69,3 +69,12 @@ type ImagePathType = Path
 type TimeSeriesPathType = Path
 
 type HeatMapPathType = Path
+
+export type AlgoListDTO = {
+  [name: string]:
+    | {
+        args: AlgoInfo[]
+        returns: AlgoInfo[]
+      }
+    | { children: AlgoListDTO }
+}
