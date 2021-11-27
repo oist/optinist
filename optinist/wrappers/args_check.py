@@ -1,22 +1,7 @@
 import inspect
 import functools
 
-
-# def args_check(func):
-#     @functools.wraps(func)
-#     def args_type_check_wrapper(*args, **kwargs):
-#         sig = inspect.signature(func)
-#         for arg_key, arg_val in sig.bind(*args, **kwargs).arguments.items():
-#             annot = sig.parameters[arg_key].annotation
-#             request_type = annot if type(annot) is type else inspect._empty
-#             if request_type is not inspect._empty and type(arg_val) is not request_type:
-#                 error_msg = f'args"{arg_key}" (type: {type(arg_val)}) is invalid. （ type: {request_type} is require'
-#                 raise TypeError(error_msg)
-
-#         return func(*args, **kwargs)
-
-#     return args_type_check_wrapper
-
+from wrappers.optinist_exception import ArgsMissingException, ArgsTypeException
 
 def args_check(func):
     @functools.wraps(func)
@@ -27,13 +12,12 @@ def args_check(func):
         request_type_list = [x.annotation for x in sig.parameters.values()]
 
         # 引数が足らない場合はエラーさせる
-        # print(arg_type_list)
-        # print(request_type_list)
         for x in set(request_type_list):
-            
             if x is not dict and arg_type_list.count(x) < request_type_list.count(x):
-                error_msg = f'You need "{x}"  argument more than "{request_type_list.count(x) - arg_type_list.count(x)}".'
-                raise AttributeError(error_msg)
+                # import pdb; pdb.set_trace()
+                error_msg = f'args type error: need " {x.__name__} " type, \
+                            more than " {request_type_list.count(x) - arg_type_list.count(x)} " '
+                raise ArgsMissingException(error_msg)
         
         # いらない型の引数を削除する
         for i, x in reversed(list(enumerate(arg_type_list))):
@@ -81,7 +65,7 @@ def args_check(func):
             request_type = annot if type(annot) is type else inspect._empty
             if request_type is not inspect._empty and arg_type is not request_type:
                 error_msg = f'args"{arg_key}" (type: {arg_type}) is invalid. （ type: {request_type} is require'
-                raise TypeError(error_msg)
+                raise ArgsTypeException(error_msg)
 
         print(args)
                 

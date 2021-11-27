@@ -43,6 +43,14 @@ export const outputKeyListSelector = (id: string) => (state: RootState) => {
   }
 }
 
+export const algoErrorSelector = (id: string) => (state: RootState) => {
+  if (Object.keys(state.algorithm.algoNodeMap).includes(id)) {
+    return state.algorithm.algoNodeMap[id].error
+  } else {
+    return undefined
+  }
+}
+
 export const selectedOutputKeySelector = (id: string) => (state: RootState) => {
   if (Object.keys(state.algorithm.algoNodeMap).includes(id)) {
     return state.algorithm.algoNodeMap[id].selectedOutputKey

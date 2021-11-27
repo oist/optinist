@@ -17,6 +17,8 @@ sys.path.append('../optinist')
 from wrappers import wrapper_dict
 from collections import OrderedDict
 from wrappers.data_wrapper import *
+from wrappers.optinist_exception import AlgorithmException
+import traceback
 
 app = FastAPI(docs_url="/api/docs", openapi_url="/api")
 
@@ -126,16 +128,17 @@ async  def run_ready(request_id: str):
 @app.websocket("/run")
 async def websocket_endpoint(websocket: WebSocket):
     import json
-    import run_pipeline
+    # import run_pipeline
 
     await websocket.accept()
     # Wait for any message from the client
     flowList = await websocket.receive_text()
     flowList = list(map(lambda x: FlowItem(**x), json.loads(flowList)))
     try:
-        # info = run_pipeline.run_code(wrapper_dict, flowList)
         for item in flowList:
+
             await websocket.send_json({'message': item.label+' started', 'status': 'ready'})
+
             # run algorithm
             info = None
             if item.type == 'data':
@@ -172,10 +175,14 @@ async def websocket_endpoint(websocket: WebSocket):
 
             # Send message to the client
             await websocket.send_json({'message': item.label+' success', 'status': 'success', 'outputPaths': results})
+
         await websocket.send_json({'message': 'completed', 'status': 'completed'})
+    except AlgorithmException as e:
+        await websocket.send_json({'message': e.get_message(), 'name': item.label, 'status': 'error'})
     except Exception as e:
-        print(e)
-        await websocket.send_json({'message': 'failed to run', 'status': 'error'})
+        message  = list(traceback.TracebackException.from_exception(e).format())[-1]
+        print(traceback.format_exc())
+        await websocket.send_json({'message': message, 'name': item.label, 'status': 'error'})
     finally:
         print('Bye..')
         await websocket.close()

@@ -9,6 +9,7 @@ export type Algorithm = {
       param?: AlgoParam
       output?: OutputPaths
       selectedOutputKey?: string // key of OutputPaths
+      error?: string
     }
   }
   algoList: AlgoListType

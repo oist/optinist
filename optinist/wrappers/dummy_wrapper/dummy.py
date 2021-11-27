@@ -89,3 +89,26 @@ def dummy_time8image2image8time(timeseries: TimeSeriesData, image: ImageData, pa
     info['image'] = ImageData(np.random.rand((100)).reshape(10, 10), sys._getframe().f_code.co_name)
     info['timeseries'] = TimeSeriesData(np.random.rand((100)).reshape(10, 10), sys._getframe().f_code.co_name)
     return info
+
+
+@args_check
+def dummy_keyerror(image: ImageData, params: dict=None):
+    
+    """
+        get image
+        return image
+    """
+    print(params['AAA'])
+    info = {}
+    return info
+
+
+@args_check
+def dummy_typeerror(image: str, params: dict=None):
+    
+    """
+        get image
+        return image
+    """
+    info = {}
+    return info

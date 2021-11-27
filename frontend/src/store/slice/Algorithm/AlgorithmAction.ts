@@ -38,6 +38,7 @@ export const getAlgoList = createAsyncThunk<AlgoListDTO, void>(
   },
 )
 
-export const reflectRunPipelineResult = createAction<OutputPathsDTO>(
-  `${ALGORITHM_SLICE_NAME}/reflectRunPipelineResult`,
-)
+export const reflectRunPipelineResult = createAction<{
+  dto: OutputPathsDTO
+  error?: { name: string; message: string } | null
+}>(`${ALGORITHM_SLICE_NAME}/reflectRunPipelineResult`)
