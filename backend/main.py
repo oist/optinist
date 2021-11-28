@@ -50,9 +50,41 @@ async def params(name: str):
     print(config)
     return config
 
+def get_nest_dict(value):
+    algo_dict = {}
+    for _k, _v in value.items():
+        algo_dict[_k] = {}
+        if type(_v) is dict:
+            algo_dict[_k]['children'] = get_nest_dict(_v)
+        else:
+            algo_dict[_k] = {}
+
+            # get args
+            sig = inspect.signature(_v)
+            algo_dict[_k]['args'] = [
+                {
+                    'name': x.name, 
+                    'type': x.annotation.__name__
+                }
+                for x in sig.parameters.values()
+                if x.name != 'params'
+            ]
+
+            # get returns
+            if sig.return_annotation is not inspect._empty:
+                algo_dict[_k]['returns'] = [
+                    {
+                        'name': k,
+                        'type': v.__name__
+                    }
+                    for k, v in sig.return_annotation.items()
+                ]
+
+    return algo_dict
+
 @app.get("/api/algolist")
 async def run() -> List:
-    print(wrapper_dict.keys())
+    # print(wrapper_dict.keys())
     {
         'caiman_mc' : {
             'args': ['images', 'timeseries']
@@ -62,34 +94,8 @@ async def run() -> List:
         }
     }
 
-    algo_dict = {}
-    for key, value in wrapper_dict.items():
-        algo_dict[key] = {}
+    algo_dict = get_nest_dict(wrapper_dict)
 
-        # get args
-        sig = inspect.signature(value)
-
-        algo_dict[key]['args'] = [
-            {
-                'name': x.name, 
-                'type': x.annotation.__name__
-            }
-            for x in sig.parameters.values()
-            if x.name != 'params'
-        ]
-
-        # get returns
-        return_names = []
-        return_types = []
-        if sig.return_annotation is not inspect._empty:
-            algo_dict[key]['returns'] = [
-                {
-                    'name': k,
-                    'type': v.__name__
-                }
-                for k, v in sig.return_annotation.items()
-            ]
-    
     return algo_dict
 
 @app.get("/api/cookie-test")

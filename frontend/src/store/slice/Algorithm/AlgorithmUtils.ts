@@ -1,5 +1,7 @@
 import {
   AlgoChild,
+  AlgoInfo,
+  AlgoListDTO,
   AlgoListType,
   AlgoNodeType,
   AlgoParent,
@@ -51,14 +53,44 @@ export function getAlgoChild(
   algoName: string,
 ): AlgoChild | null {
   let result: AlgoChild | null = null
-  Object.entries(algoList).forEach(([name, node]) => {
+  for (const [name, node] of Object.entries(algoList)) {
     if (isAlgoChild(node)) {
       if (name === algoName) {
         result = node
       }
     } else {
-      result = getAlgoChild(node.children, name)
+      result = getAlgoChild(node.children, algoName)
+    }
+    if (result != null) {
+      break
+    }
+  }
+  return result
+}
+
+export function convertToAlgoListType(dto: AlgoListDTO) {
+  const algoList: AlgoListType = {}
+  Object.entries(dto).forEach(([name, value]) => {
+    if (Object.prototype.hasOwnProperty.call(value, 'children')) {
+      algoList[name] = {
+        type: 'parent',
+        children: convertToAlgoListType(
+          (
+            value as {
+              children: AlgoListDTO
+            }
+          ).children as AlgoListDTO,
+        ),
+      }
+    } else {
+      algoList[name] = {
+        type: 'child',
+        ...(value as {
+          args: AlgoInfo[]
+          returns: AlgoInfo[]
+        }),
+      }
     }
   })
-  return result
+  return algoList
 }

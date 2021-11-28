@@ -1,5 +1,5 @@
 import { createAsyncThunk, createAction } from '@reduxjs/toolkit'
-import { AlgoInfo, ALGORITHM_SLICE_NAME } from './AlgorithmType'
+import { AlgoListDTO, ALGORITHM_SLICE_NAME } from './AlgorithmType'
 import axios from 'axios'
 import { AlgoParam } from 'const/NodeData'
 import { BASE_URL } from 'const/API'
@@ -17,13 +17,6 @@ export const getAlgoParams = createAsyncThunk<
     return rejectWithValue(e)
   }
 })
-
-type AlgoListDTO = {
-  [name: string]: {
-    args: AlgoInfo[]
-    returns: AlgoInfo[]
-  } // | { children: AlgoListDTO }
-}
 
 export const getAlgoList = createAsyncThunk<AlgoListDTO, void>(
   `${ALGORITHM_SLICE_NAME}/getAlgoList`,
