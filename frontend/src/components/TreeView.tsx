@@ -32,9 +32,12 @@ export const SideBar = React.memo(() => {
     }
   }, [dispatch, algoList])
 
-  const onDragStart = (event: DragEvent, nodeName: string) => {
+  const onDragStart = (event: DragEvent, nodeName: string, path?: string) => {
     if (event.dataTransfer != null) {
-      event.dataTransfer.setData('application/reactflow', nodeName)
+      event.dataTransfer.setData('nodeName', nodeName)
+      if (path != null) {
+        event.dataTransfer.setData('path', path)
+      }
       event.dataTransfer.effectAllowed = 'move'
     }
   }
@@ -70,14 +73,14 @@ export const SideBar = React.memo(() => {
 const AlgoNodeComponent = React.memo<{
   name: string
   node: AlgoNodeType
-  onDragStart: (event: DragEvent, nodeName: string) => void
+  onDragStart: (event: DragEvent, nodeName: string, path?: string) => void
 }>(({ name, node, onDragStart }) => {
   if (isAlgoChild(node)) {
     return (
       <TreeItem
         nodeId={name}
         label={name}
-        onDragStart={(event: DragEvent) => onDragStart(event, name)}
+        onDragStart={(event: DragEvent) => onDragStart(event, name, node.path)}
         draggable
       />
     )

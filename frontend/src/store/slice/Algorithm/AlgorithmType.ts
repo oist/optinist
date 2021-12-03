@@ -6,6 +6,7 @@ export type Algorithm = {
   algoNodeMap: {
     [id: string]: {
       name: string
+      path: string
       param?: AlgoParam
       output?: OutputPaths
       selectedOutputKey?: string // key of OutputPaths
@@ -24,6 +25,7 @@ export type AlgoChild = {
   type: 'child'
   args: AlgoInfo[]
   returns: AlgoInfo[]
+  path: string
 }
 export type AlgoParent = {
   type: 'parent'
@@ -75,6 +77,7 @@ export type AlgoListDTO = {
     | {
         args: AlgoInfo[]
         returns: AlgoInfo[]
+        path: string
       }
     | { children: AlgoListDTO }
 }

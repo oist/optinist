@@ -92,6 +92,13 @@ def get_nest_dict(value, parent_k):
 
     return algo_dict
 
+def get_dict_leaf_value(root_dict: dict, path_list: List[str]):
+    path = path_list.pop(0)
+    if(len(path_list) > 0):
+        return get_dict_leaf_value(root_dict[path],path_list)
+    else:
+        return root_dict[path]
+
 @app.get("/api/algolist")
 async def run() -> List:
     # print(wrapper_dict.keys())
@@ -174,7 +181,8 @@ async def websocket_endpoint(websocket: WebSocket):
             if item.type == 'data':
                 info = {'path': ImageData(item.path, '')}
             elif item.type == 'algo':
-                info = wrapper_dict[item.label](
+                wrapper = get_dict_leaf_value(wrapper_dict, item.path.split('/'))
+                info = wrapper["function"](
                     *prev_info.values(), params=item.param)
 
             prev_info = info
@@ -182,24 +190,24 @@ async def websocket_endpoint(websocket: WebSocket):
             assert info is not None
 
             results = OrderedDict()
-            results[item.label] = {}
+            results[item.path] = {}
             for k, v in info.items():
                 if type(v) is ImageData:
                     print("ImageData")
-                    results[item.label][k] = {}
-                    results[item.label][k]['path'] = v.path
-                    results[item.label][k]['type'] = 'images'
-                    results[item.label][k]['max_index'] = len(v.data)
+                    results[item.path][k] = {}
+                    results[item.path][k]['path'] = v.path
+                    results[item.path][k]['type'] = 'images'
+                    results[item.path][k]['max_index'] = len(v.data)
                 elif type(v) is TimeSeriesData:
                     print("TimeSeriesData")
-                    results[item.label][k] = {}
-                    results[item.label][k]['path'] = v.path
-                    results[item.label][k]['type'] = 'timeseries'
+                    results[item.path][k] = {}
+                    results[item.path][k]['path'] = v.path
+                    results[item.path][k]['type'] = 'timeseries'
                 elif type(v) is CorrelationData:
                     print("CorrelationData")
-                    results[item.label][k] = {}
-                    results[item.label][k]['path'] = v.path
-                    results[item.label][k]['type'] = 'heatmap'
+                    results[item.path][k] = {}
+                    results[item.path][k]['path'] = v.path
+                    results[item.path][k]['type'] = 'heatmap'
                 else:
                     pass
 

@@ -81,7 +81,8 @@ export const FlowChart = React.memo(() => {
     event.preventDefault()
 
     if (reactFlowInstance) {
-      const name = event.dataTransfer.getData('application/reactflow')
+      const name = event.dataTransfer.getData('nodeName')
+      const path = event.dataTransfer.getData('path')
       const position = reactFlowInstance.project({
         x: event.clientX - 50 - 250,
         y: event.clientY - 100,
@@ -99,7 +100,7 @@ export const FlowChart = React.memo(() => {
         id: String(maxElementId + 1),
         type: nodeType,
         position,
-        data: { label: name, type: dataType },
+        data: { label: name, type: dataType, path },
       }
 
       dispatch(addFlowElement(newNode))

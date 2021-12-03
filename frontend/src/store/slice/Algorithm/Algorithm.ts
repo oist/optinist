@@ -53,9 +53,11 @@ export const algorithmSlice = createSlice({
       .addCase(addFlowElement, (state, action) => {
         if (isAlgoNodeData(action.payload)) {
           const algoName = action.payload.data?.label
-          if (algoName != null) {
+          const path = action.payload.data?.path
+          if (algoName != null && path != null) {
             state.algoNodeMap[action.payload.id] = {
               name: algoName,
+              path,
             }
           }
         }
@@ -73,44 +75,42 @@ export const algorithmSlice = createSlice({
         }
       })
       .addCase(reflectRunPipelineResult, (state, action) => {
-        Object.entries(action.payload.dto).forEach(
-          ([algoName, outputPaths]) => {
-            Object.entries(state.algoNodeMap).forEach(([id, algo]) => {
-              // todo とりあえず名前一致だが、後でサーバーサイドとフロントで両方idにする
-              if (algo.name === algoName && state.algoNodeMap[id]) {
-                const outputState = {
-                  ...state.algoNodeMap[id].output,
-                }
-                Object.entries(outputPaths).forEach(([key, pathInfo]) => {
-                  if (pathInfo.type === 'images') {
-                    outputState[key] = {
-                      type: OUTPUT_TYPE_SET.IMAGE,
-                      path: {
-                        value: pathInfo.path,
-                      },
-                    }
-                  } else if (pathInfo.type === 'timeseries') {
-                    outputState[key] = {
-                      type: OUTPUT_TYPE_SET.TIME_SERIES,
-                      path: {
-                        value: pathInfo.path,
-                      },
-                    }
-                  } else if (pathInfo.type === 'heatmap') {
-                    outputState[key] = {
-                      type: OUTPUT_TYPE_SET.HEAT_MAP,
-                      path: {
-                        value: pathInfo.path,
-                      },
-                    }
-                  }
-                  state.algoNodeMap[id].selectedOutputKey = key
-                })
-                state.algoNodeMap[id].output = outputState
+        Object.entries(action.payload.dto).forEach(([path, outputPaths]) => {
+          Object.entries(state.algoNodeMap).forEach(([id, algo]) => {
+            // todo とりあえず名前一致だが、後でサーバーサイドとフロントで両方idにする
+            if (algo.path === path && state.algoNodeMap[id]) {
+              const outputState = {
+                ...state.algoNodeMap[id].output,
               }
-            })
-          },
-        )
+              Object.entries(outputPaths).forEach(([key, pathInfo]) => {
+                if (pathInfo.type === 'images') {
+                  outputState[key] = {
+                    type: OUTPUT_TYPE_SET.IMAGE,
+                    path: {
+                      value: pathInfo.path,
+                    },
+                  }
+                } else if (pathInfo.type === 'timeseries') {
+                  outputState[key] = {
+                    type: OUTPUT_TYPE_SET.TIME_SERIES,
+                    path: {
+                      value: pathInfo.path,
+                    },
+                  }
+                } else if (pathInfo.type === 'heatmap') {
+                  outputState[key] = {
+                    type: OUTPUT_TYPE_SET.HEAT_MAP,
+                    path: {
+                      value: pathInfo.path,
+                    },
+                  }
+                }
+                state.algoNodeMap[id].selectedOutputKey = key
+              })
+              state.algoNodeMap[id].output = outputState
+            }
+          })
+        })
         Object.entries(state.algoNodeMap).forEach(([id, algo]) => {
           if (algo.name === action.payload.error?.name) {
             state.algoNodeMap[id].error = action.payload.error?.message

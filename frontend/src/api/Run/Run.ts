@@ -11,7 +11,7 @@ export type RunPipelineDTO = {
 }
 
 export type OutputPathsDTO = {
-  [algoName: string]: {
+  [path: string]: {
     [key: string]: {
       path: string
       type: string
