@@ -50,17 +50,18 @@ async def params(name: str):
     print(config)
     return config
 
-def get_nest_dict(value):
+def get_nest_dict(value, parent_k):
     algo_dict = {}
     for _k, _v in value.items():
         algo_dict[_k] = {}
-        if type(_v) is dict:
-            algo_dict[_k]['children'] = get_nest_dict(_v)
+        if type(_v) is dict and 'function' not in _v.keys():
+            algo_dict[_k]['children'] = get_nest_dict(
+                _v, parent_k+'/'+_k if parent_k != '' else _k)
         else:
             algo_dict[_k] = {}
 
             # get args
-            sig = inspect.signature(_v)
+            sig = inspect.signature(_v['function'])
             algo_dict[_k]['args'] = [
                 {
                     'name': x.name, 
@@ -79,6 +80,15 @@ def get_nest_dict(value):
                     }
                     for k, v in sig.return_annotation.items()
                 ]
+            
+            # parameter path
+            if 'parameter' in _v.keys():
+                algo_dict[_k]['parameter'] = _v['parameter']
+            else:
+                algo_dict[_k]['parameter'] = ''
+            
+            # path
+            algo_dict[_k]['path'] = parent_k + '/' + _k
 
     return algo_dict
 
@@ -86,15 +96,29 @@ def get_nest_dict(value):
 async def run() -> List:
     # print(wrapper_dict.keys())
     {
-        'caiman_mc' : {
-            'args': ['images', 'timeseries']
-        },
-        'caiman_cnmf': {
-            'args': ['images', 'timeseries']
+        'caiman': {
+            'children': {
+                'caiman_mc' : {
+                    'args': ['images', 'timeseries'],
+                    'path': 'caiman/caiman_mc'
+                },
+                'caiman_cnmf': {
+                    'args': ['images', 'timeseries'],
+                    'path': 'caiman/caiman_mc'
+                }
+            }
         }
     }
+    {
+        'caiman.caiman_mc': {
 
-    algo_dict = get_nest_dict(wrapper_dict)
+        },
+        'caiman.caiman_cnmf': {
+
+        },
+    }
+
+    algo_dict = get_nest_dict(wrapper_dict, '')
 
     return algo_dict
 
