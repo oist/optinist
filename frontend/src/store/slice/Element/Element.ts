@@ -9,6 +9,7 @@ import { NodeData, NODE_DATA_TYPE_SET } from 'const/NodeData'
 import { isAlgoNodeData, isInputNodeData, isNodeData } from 'utils/ElementUtils'
 import { Element, ELEMENT_SLICE_NAME, RUN_STATUS } from './ElementType'
 import { uploadImageFile } from '../UploadImage/UploadImageAction'
+import { selectImageFile } from '../UploadImage/UploadImage'
 
 const initialState: Element = {
   flowElements: initialElements,
@@ -49,21 +50,38 @@ export const elementSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(uploadImageFile.fulfilled, (state, action) => {
-      const { nodeId } = action.meta.arg
-      const { tiffFilePath } = action.payload
-      const idx = state.flowElements.findIndex((e) => e.id === nodeId)
-      const node = state.flowElements[idx]
-      if (isNodeData(node) && node.data) {
-        node.data = {
-          ...node.data,
-          type: NODE_DATA_TYPE_SET.DATA,
-          path: tiffFilePath,
-        }
-      }
-    })
+    builder
+      .addCase(uploadImageFile.fulfilled, (state, action) => {
+        const { nodeId } = action.meta.arg
+        const { tiffFilePath } = action.payload
+        setFilePathFn(state, nodeId, tiffFilePath)
+      })
+      .addCase(uploadImageFile.pending, (state, action) => {
+        const { nodeId } = action.meta.arg
+        setFilePathFn(state, nodeId, undefined)
+      })
+      .addCase(selectImageFile, (state, action) => {
+        const { nodeId, path } = action.payload
+        setFilePathFn(state, nodeId, path)
+      })
   },
 })
+
+function setFilePathFn(
+  state: Element,
+  nodeId: string,
+  path: string | undefined,
+) {
+  const idx = state.flowElements.findIndex((e) => e.id === nodeId)
+  const node = state.flowElements[idx]
+  if (isNodeData(node) && node.data) {
+    node.data = {
+      ...node.data,
+      type: NODE_DATA_TYPE_SET.DATA,
+      path,
+    }
+  }
+}
 
 export const { setFlowElements, addFlowElement } = elementSlice.actions
 

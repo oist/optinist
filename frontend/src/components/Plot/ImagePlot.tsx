@@ -13,7 +13,7 @@ import { getImageData } from 'store/slice/PlotData/PlotDataAction'
 import { RootState } from 'store/store'
 import {
   imageIsUploadedByIdSelector,
-  imagePathByIdSelector,
+  imageJsonPathByIdSelector,
 } from 'store/slice/UploadImage/UploadImageSelector'
 import {
   Button,
@@ -33,13 +33,8 @@ import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 export const ImagePlot = React.memo(() => {
   const { nodeId, outputKey } = React.useContext(ImageDataContext)
   const isUploaded = useSelector(imageIsUploadedByIdSelector(nodeId))
-  if (outputKey != null) {
+  if (outputKey != null || isUploaded === true) {
     return <ImagePlotContainer />
-  }
-  if (isUploaded === true) {
-    return <ImagePlotContainer />
-  } else if (isUploaded === false) {
-    return <LinearProgress />
   } else {
     return null
   }
@@ -52,7 +47,7 @@ const ImagePlotContainer = React.memo(() => {
     if (outputKey != null) {
       return outputPathValueByIdSelector(nodeId, outputKey)(state)
     } else {
-      return imagePathByIdSelector(nodeId)(state)
+      return imageJsonPathByIdSelector(nodeId)(state)
     }
   })
   const isLoaded = useSelector(
@@ -65,6 +60,8 @@ const ImagePlotContainer = React.memo(() => {
   }, [dispatch, isLoaded, path])
   if (isLoaded && path != null) {
     return <ImagePlotImple path={path} />
+  } else if (!isLoaded && path != null) {
+    return <LinearProgress />
   } else {
     return null
   }

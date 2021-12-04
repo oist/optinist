@@ -6,7 +6,8 @@ export interface UploadImage {
 
 export type UploadImageType = {
   fileName: string
-  path: string
+  jsonPath: string
   maxIndex: number
   isFulfilled: boolean
+  isUploading: boolean
 }

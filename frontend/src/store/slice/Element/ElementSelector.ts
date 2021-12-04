@@ -52,3 +52,8 @@ export const pathIsUndefinedSelector = (state: RootState) => {
   })
   return pathErrorNodeList.length > 0
 }
+
+export const filePathSelector = (nodeId: string) => (state: RootState) => {
+  const node = nodeByIdSelector(nodeId)(state)
+  return node?.data?.path
+}

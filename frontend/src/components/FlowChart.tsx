@@ -18,7 +18,7 @@ import {
 } from 'store/slice/Element/ElementSelector'
 import { NodeData, NODE_DATA_TYPE, NODE_DATA_TYPE_SET } from 'const/NodeData'
 import 'style/flow.css'
-import { FileSelectorNode } from './FileSelectorNode'
+import { ImageFileNode } from './ImageFileNode'
 import { AlgorithmNode } from './AlgorithmNode'
 import { FlexLayoutModelContext } from 'App'
 import { useGetDeleteTabActions } from 'FlexLayoutHook'
@@ -29,7 +29,7 @@ export const FlowChart = React.memo(() => {
   const dispatch = useDispatch()
 
   const nodeTypes = {
-    selectorNode: FileSelectorNode,
+    selectorNode: ImageFileNode,
     default: AlgorithmNode,
   }
 

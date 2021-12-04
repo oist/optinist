@@ -11,8 +11,15 @@ export const uploadImageByIdSelector = (id: string) => (state: RootState) => {
   }
 }
 
-export const imagePathByIdSelector = (id: string) => (state: RootState) =>
-  uploadImageByIdSelector(id)(state)?.path
+export const imageJsonPathByIdSelector = (id: string) => (state: RootState) =>
+  uploadImageByIdSelector(id)(state)?.jsonPath
+
+export const imageFileNameByIdSelector = (id: string) => (state: RootState) =>
+  uploadImageByIdSelector(id)(state)?.fileName
 
 export const imageIsUploadedByIdSelector = (id: string) => (state: RootState) =>
   uploadImageByIdSelector(id)(state)?.isFulfilled
+
+export const imageIsUploadingByIdSelector =
+  (id: string) => (state: RootState) =>
+    uploadImageByIdSelector(id)(state)?.isUploading
