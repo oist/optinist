@@ -1,0 +1,13 @@
+standardization_n_mean: True
+standardization_n_std: True
+standardization_b_mean: True
+standardization_b_std: True
+
+behavior: 'c'
+add_constant: True
+link: 'log'
+family: 'Gaussian'
+
+offset:
+exposure:
+missing:
