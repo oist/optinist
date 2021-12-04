@@ -21,6 +21,7 @@ export interface InputNodeData extends BaseNodeData {
 export interface AlgoNodeData extends BaseNodeData {
   type: 'algo'
   param?: AlgoParam
+  path: string
 }
 
 export type AlgoParam = {

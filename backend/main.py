@@ -50,17 +50,18 @@ async def params(name: str):
     print(config)
     return config
 
-def get_nest_dict(value):
+def get_nest_dict(value, parent_k):
     algo_dict = {}
     for _k, _v in value.items():
         algo_dict[_k] = {}
-        if type(_v) is dict:
-            algo_dict[_k]['children'] = get_nest_dict(_v)
+        if type(_v) is dict and 'function' not in _v.keys():
+            algo_dict[_k]['children'] = get_nest_dict(
+                _v, parent_k+'/'+_k if parent_k != '' else _k)
         else:
             algo_dict[_k] = {}
 
             # get args
-            sig = inspect.signature(_v)
+            sig = inspect.signature(_v['function'])
             algo_dict[_k]['args'] = [
                 {
                     'name': x.name, 
@@ -79,22 +80,52 @@ def get_nest_dict(value):
                     }
                     for k, v in sig.return_annotation.items()
                 ]
+            
+            # parameter path
+            if 'parameter' in _v.keys():
+                algo_dict[_k]['parameter'] = _v['parameter']
+            else:
+                algo_dict[_k]['parameter'] = ''
+            
+            # path
+            algo_dict[_k]['path'] = parent_k + '/' + _k
 
     return algo_dict
+
+def get_dict_leaf_value(root_dict: dict, path_list: List[str]):
+    path = path_list.pop(0)
+    if(len(path_list) > 0):
+        return get_dict_leaf_value(root_dict[path],path_list)
+    else:
+        return root_dict[path]
 
 @app.get("/api/algolist")
 async def run() -> List:
     # print(wrapper_dict.keys())
     {
-        'caiman_mc' : {
-            'args': ['images', 'timeseries']
-        },
-        'caiman_cnmf': {
-            'args': ['images', 'timeseries']
+        'caiman': {
+            'children': {
+                'caiman_mc' : {
+                    'args': ['images', 'timeseries'],
+                    'path': 'caiman/caiman_mc'
+                },
+                'caiman_cnmf': {
+                    'args': ['images', 'timeseries'],
+                    'path': 'caiman/caiman_mc'
+                }
+            }
         }
     }
+    {
+        'caiman.caiman_mc': {
 
-    algo_dict = get_nest_dict(wrapper_dict)
+        },
+        'caiman.caiman_cnmf': {
+
+        },
+    }
+
+    algo_dict = get_nest_dict(wrapper_dict, '')
 
     return algo_dict
 
@@ -150,7 +181,8 @@ async def websocket_endpoint(websocket: WebSocket):
             if item.type == 'data':
                 info = {'path': ImageData(item.path, '')}
             elif item.type == 'algo':
-                info = wrapper_dict[item.label](
+                wrapper = get_dict_leaf_value(wrapper_dict, item.path.split('/'))
+                info = wrapper["function"](
                     *prev_info.values(), params=item.param)
 
             prev_info = info
@@ -158,24 +190,24 @@ async def websocket_endpoint(websocket: WebSocket):
             assert info is not None
 
             results = OrderedDict()
-            results[item.label] = {}
+            results[item.path] = {}
             for k, v in info.items():
                 if type(v) is ImageData:
                     print("ImageData")
-                    results[item.label][k] = {}
-                    results[item.label][k]['path'] = v.path
-                    results[item.label][k]['type'] = 'images'
-                    results[item.label][k]['max_index'] = len(v.data)
+                    results[item.path][k] = {}
+                    results[item.path][k]['path'] = v.path
+                    results[item.path][k]['type'] = 'images'
+                    results[item.path][k]['max_index'] = len(v.data)
                 elif type(v) is TimeSeriesData:
                     print("TimeSeriesData")
-                    results[item.label][k] = {}
-                    results[item.label][k]['path'] = v.path
-                    results[item.label][k]['type'] = 'timeseries'
+                    results[item.path][k] = {}
+                    results[item.path][k]['path'] = v.path
+                    results[item.path][k]['type'] = 'timeseries'
                 elif type(v) is CorrelationData:
                     print("CorrelationData")
-                    results[item.label][k] = {}
-                    results[item.label][k]['path'] = v.path
-                    results[item.label][k]['type'] = 'heatmap'
+                    results[item.path][k] = {}
+                    results[item.path][k]['path'] = v.path
+                    results[item.path][k]['type'] = 'heatmap'
                 else:
                     pass
 
