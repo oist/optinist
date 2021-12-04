@@ -14,7 +14,7 @@ export const getTimeSeriesData = createAsyncThunk<
   { path: string }
 >(`${PLOT_DATA_SLICE_NAME}/getTimeSeriesData`, async ({ path }, thunkAPI) => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/outputs/${path}`)
+    const response = await axios.get(`${BASE_URL}/outputs/${path}`)
     return response.data
   } catch (e) {
     return thunkAPI.rejectWithValue(e)
@@ -26,7 +26,7 @@ export const getHeatMapData = createAsyncThunk<
   { path: string }
 >(`${PLOT_DATA_SLICE_NAME}/getHeatMapData`, async ({ path }, thunkAPI) => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/outputs/${path}`)
+    const response = await axios.get(`${BASE_URL}/outputs/${path}`)
     return response.data
   } catch (e) {
     return thunkAPI.rejectWithValue(e)
@@ -38,7 +38,7 @@ export const getImageData = createAsyncThunk<
   { path: string }
 >(`${PLOT_DATA_SLICE_NAME}/getImageData`, async ({ path }, thunkAPI) => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/outputs/${path}`)
+    const response = await axios.get(`${BASE_URL}/outputs/${path}`)
     return response.data
   } catch (e) {
     return thunkAPI.rejectWithValue(e)

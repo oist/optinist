@@ -20,7 +20,7 @@ export const uploadImageFile = createAsyncThunk<
     try {
       formData.append('element_id', nodeId)
       const response = await fetch(
-        `${BASE_URL}/api/upload/${fileName}/${inputFileNumber}`,
+        `${BASE_URL}/files/upload/${fileName}/${inputFileNumber}`,
         {
           method: 'POST',
           mode: 'cors',

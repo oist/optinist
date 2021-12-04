@@ -22,7 +22,7 @@ export type OutputPathsDTO = {
 
 export const webSocketApi = createApi({
   reducerPath: 'webSocketApi',
-  baseQuery: fetchBaseQuery({ baseUrl: `${BASE_URL}/api/` }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${BASE_URL}/` }),
   endpoints: (builder) => ({
     runPipeline: builder.query<
       RunPipelineDTO,
