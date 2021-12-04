@@ -7,6 +7,3 @@ export const handleTypeColorSelector = (key: string) => (state: RootState) => {
     return undefined
   }
 }
-
-export const nextColorKeySelector = (state: RootState) =>
-  state.handleColor.nextKey
