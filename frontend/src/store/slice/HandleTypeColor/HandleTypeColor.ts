@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { HANDLE_COLOR_PRESET_MAP } from 'const/HandleColor'
 
 export type HandleTypeColor = {
   colorMap: { [type: string]: string }
@@ -16,11 +17,11 @@ export const handleTypeColorSlice = createSlice({
   name: SLICE_NAME,
   initialState,
   reducers: {
-    addColor: (
-      state,
-      action: PayloadAction<{ type: string; color: string }>,
-    ) => {
-      state.colorMap[action.payload.type] = action.payload.color
+    addColor: (state, action: PayloadAction<string>) => {
+      const nextColor =
+        HANDLE_COLOR_PRESET_MAP.get(state.nextKey) ??
+        '#' + Math.floor(Math.random() * 0xffffff).toString(16)
+      state.colorMap[action.payload] = nextColor
       state.nextKey++
     },
   },

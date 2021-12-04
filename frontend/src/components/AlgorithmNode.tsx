@@ -30,12 +30,8 @@ import { arrayEqualityFn } from 'utils/EqualityUtils'
 import { OUTPUT_TABSET_ID, PARAM_FORM_TABSET_ID } from 'const/flexlayout'
 import { useTabAction } from 'FlexLayoutHook'
 import { AlgoInfo, OUTPUT_TYPE_SET } from 'store/slice/Algorithm/AlgorithmType'
-import {
-  handleTypeColorSelector,
-  nextColorKeySelector,
-} from 'store/slice/HandleTypeColor/HandleTypeColorSelector'
+import { handleTypeColorSelector } from 'store/slice/HandleTypeColor/HandleTypeColorSelector'
 import { addColor } from 'store/slice/HandleTypeColor/HandleTypeColor'
-import { HANDLE_COLOR_PRESET_MAP } from 'const/HandleColor'
 import { RootState } from 'store/store'
 
 const leftHandleStyle: CSSProperties = {
@@ -350,20 +346,11 @@ function isValidConnection(connection: Connection) {
 function useHandleColor(type: string) {
   const dispatch = useDispatch()
   const color = useSelector(handleTypeColorSelector(type))
-  const nextColorKey = useSelector(nextColorKeySelector)
   React.useEffect(() => {
     if (color === undefined) {
-      const nextColor = HANDLE_COLOR_PRESET_MAP.get(nextColorKey)
-      dispatch(
-        addColor({
-          type,
-          color:
-            nextColor ??
-            '#' + Math.floor(Math.random() * 0xffffff).toString(16),
-        }),
-      )
+      dispatch(addColor(type))
     }
-  }, [type, color, nextColorKey, dispatch])
+  }, [type, color, dispatch])
   return color
 }
 
