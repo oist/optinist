@@ -15,11 +15,13 @@ export const nodeByIdSelector =
   }
 
 export const maxElementIdSelector = (state: RootState) =>
-  state.element.flowElements
-    .map((element) => element.id)
-    .map((id) => Number(id))
-    .filter((id) => !isNaN(id))
-    .reduce((a, b) => Math.max(a, b))
+  state.element.flowElements.length === 0
+    ? 0
+    : state.element.flowElements
+        .map((element) => element.id)
+        .map((id) => Number(id))
+        .filter((id) => !isNaN(id))
+        .reduce((a, b) => Math.max(a, b))
 
 export const nodeDataListForRunSelector = (state: RootState) =>
   flowElementsSelector(state)

@@ -60,7 +60,7 @@ export const SideBar = React.memo(() => {
           nodeId="image"
           label="image"
           onDragStart={(event: DragEvent) =>
-            onDragStart(event, 'image', NODE_DATA_TYPE_SET.IMAGE)
+            onDragStart(event, 'ImageData', NODE_DATA_TYPE_SET.IMAGE)
           }
           draggable
         />
@@ -68,7 +68,7 @@ export const SideBar = React.memo(() => {
           nodeId="csv"
           label="csv"
           onDragStart={(event: DragEvent) =>
-            onDragStart(event, 'csv', NODE_DATA_TYPE_SET.CSV)
+            onDragStart(event, 'CsvData', NODE_DATA_TYPE_SET.CSV)
           }
           draggable
         />
