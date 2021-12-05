@@ -13,6 +13,7 @@ def Granger(timeseries: TimeSeriesData, iscell: IscellData, params: dict):
 
     # data shold be time x component matrix
     iscell = iscell.data
+    timeseries = timeseries.data
     ind  = np.where(iscell > 0)[0]
     timeseries = timeseries[ind, :]
 
@@ -102,7 +103,7 @@ def Granger(timeseries: TimeSeriesData, iscell: IscellData, params: dict):
     GC['gc_OLS_restriction_matrix'] = [[0] * num_lag for i in range(num_comb)]
 
     # for figure presentation
-    GC['Granger_fval_mat'] = [np.zeros([num_cell, num_cell]) for i in range(num_lag )]
+    GC['Granger_fval_mat'] = [np.zeros([num_cell, num_cell]) for i in range(num_lag)]
 
     for i in range(len(comb)):
         # The Null hypothesis for grangercausalitytests is that the time series in the second column1,
@@ -147,6 +148,6 @@ def Granger(timeseries: TimeSeriesData, iscell: IscellData, params: dict):
 
     # main results for plot
     info = {}
-    info['Granger_fval_mat'] = CorrelationData( GC['Granger_fval_mat'])
+    info['Granger_fval_mat'] = CorrelationData(GC['Granger_fval_mat'], 'gfm')
 
     return info

@@ -2,8 +2,6 @@ import { IJsonModel } from 'flexlayout-react'
 import { toLayoutTab } from 'utils/FlexLayoutUtils'
 import {
   INITIAL_IMAGE_ELEMENT_ID,
-  INITIAL_ALGO_ELEMENT_ID,
-  INITIAL_ALGO_ELEMENT_NAME,
   INITIAL_IMAGE_ELEMENT_NAME,
 } from './flowchart'
 
@@ -41,13 +39,7 @@ const flexjson: IJsonModel = {
                 id: PARAM_FORM_TABSET_ID,
                 selected: 0,
                 enableMaximize: false,
-                children: [
-                  toLayoutTab(
-                    INITIAL_ALGO_ELEMENT_ID,
-                    'paramForm',
-                    INITIAL_ALGO_ELEMENT_NAME,
-                  ),
-                ],
+                children: [],
               },
               {
                 type: 'tabset',

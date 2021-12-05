@@ -21,10 +21,6 @@ export const maxElementIdSelector = (state: RootState) =>
     .filter((id) => !isNaN(id))
     .reduce((a, b) => Math.max(a, b))
 
-export const runStatusSelector = (state: RootState) => state.element.runStatus
-
-export const runMassageSelector = (state: RootState) => state.element.runMessage
-
 export const nodeDataListForRunSelector = (state: RootState) =>
   flowElementsSelector(state)
     .filter((element) => isInputNodeData(element) || isAlgoNodeData(element))
@@ -51,4 +47,9 @@ export const pathIsUndefinedSelector = (state: RootState) => {
     return false
   })
   return pathErrorNodeList.length > 0
+}
+
+export const filePathSelector = (nodeId: string) => (state: RootState) => {
+  const node = nodeByIdSelector(nodeId)(state)
+  return node?.data?.path
 }

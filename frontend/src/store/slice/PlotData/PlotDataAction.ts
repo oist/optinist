@@ -14,7 +14,7 @@ export const getTimeSeriesData = createAsyncThunk<
   { path: string }
 >(`${PLOT_DATA_SLICE_NAME}/getTimeSeriesData`, async ({ path }, thunkAPI) => {
   try {
-    const response = await axios.get(`${BASE_URL}/outputs/${path}`)
+    const response = await axios.get(`${BASE_URL}/outputs/data/${path}`)
     return response.data
   } catch (e) {
     return thunkAPI.rejectWithValue(e)
@@ -26,7 +26,7 @@ export const getHeatMapData = createAsyncThunk<
   { path: string }
 >(`${PLOT_DATA_SLICE_NAME}/getHeatMapData`, async ({ path }, thunkAPI) => {
   try {
-    const response = await axios.get(`${BASE_URL}/outputs/${path}`)
+    const response = await axios.get(`${BASE_URL}/outputs/data/${path}`)
     return response.data
   } catch (e) {
     return thunkAPI.rejectWithValue(e)
@@ -35,12 +35,19 @@ export const getHeatMapData = createAsyncThunk<
 
 export const getImageData = createAsyncThunk<
   { data: ImageData },
-  { path: string }
->(`${PLOT_DATA_SLICE_NAME}/getImageData`, async ({ path }, thunkAPI) => {
-  try {
-    const response = await axios.get(`${BASE_URL}/outputs/${path}`)
-    return response.data
-  } catch (e) {
-    return thunkAPI.rejectWithValue(e)
-  }
-})
+  { path: string; maxIndex?: number }
+>(
+  `${PLOT_DATA_SLICE_NAME}/getImageData`,
+  async ({ path, maxIndex }, thunkAPI) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/outputs/image/${path}`, {
+        params: {
+          max_index: maxIndex,
+        },
+      })
+      return response.data
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)

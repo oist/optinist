@@ -23,5 +23,8 @@ dummy_wrapper_dict = {
         'dummy_typeerror': {
             'function': dummy_typeerror
         },
+        'dummy_image2time8iscell': {
+            'function': dummy_image2time8iscell
+        },
     }
 }

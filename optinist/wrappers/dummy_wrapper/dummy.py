@@ -112,3 +112,16 @@ def dummy_typeerror(image: str, params: dict=None):
     """
     info = {}
     return info
+
+
+@args_check
+def dummy_image2time8iscell(image1: ImageData, params: dict=None) -> {'timeseries': TimeSeriesData, 'iscell': IscellData}:
+    
+    """
+        get image
+        return image
+    """
+    info = {}
+    info['timeseries'] = TimeSeriesData(np.random.rand((100)).reshape(10, 10), sys._getframe().f_code.co_name)
+    info['iscell'] = IscellData(np.random.rand((100)).reshape(10, 10))
+    return info

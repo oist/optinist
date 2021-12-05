@@ -77,6 +77,6 @@ def GLM(timeseries1: TimeSeriesData, timeseries2: TimeSeriesData,  iscell: Iscel
     # plot should be reconsidered --- what they should be!
     info = {}
     #info['params'] = BarSeriesData(Res.params.values)  # add something 1d but not timesereies
-    info['actual_predicted'] = TimeSeriesData(np.array([Res._endog, Res.mu]).transpose())
+    info['actual_predicted'] = TimeSeriesData(np.array([Res._endog, Res.mu]).transpose(), 'actual_pred')
 
     return info

@@ -1,11 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import { BASE_URL } from 'const/API'
 
-import { UPLOAD_IMAGE_SLICE_NAME } from './UploadImageType'
+import { UPLOAD_IMAGE_SLICE_NAME } from './ImageFileType'
 
 export const uploadImageFile = createAsyncThunk<
   {
-    jsonDataPath: string
     tiffFilePath: string
   },
   {
@@ -30,7 +29,6 @@ export const uploadImageFile = createAsyncThunk<
       )
       const data = await response.json()
       return {
-        jsonDataPath: data.json_data_path,
         tiffFilePath: data.tiff_file_path,
       }
     } catch (e) {
