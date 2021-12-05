@@ -14,9 +14,11 @@ async def read_file(file_path: str):
 
     if ext == '.tif':
         folder_path = os.path.dirname(file_path)
+        tiff_file_path = file_path
         file_path = os.path.join(folder_path, f'{file_name}.json')
         if not os.path.exists(file_path):
-            save_tiff_to_json(file_path, 10)
+            save_tiff_to_json(tiff_file_path, 10)
+        
 
     with open(file_path, 'r') as f:
         json_dict = json.load(f)
