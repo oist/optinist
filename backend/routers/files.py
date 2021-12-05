@@ -1,7 +1,7 @@
 from typing import List, Optional, TypedDict
 from fastapi import APIRouter, File, Response, UploadFile, Form
-import imageio
-import pandas as pd
+# import imageio
+# import pandas as pd
 import os
 from glob import glob
 
@@ -18,7 +18,8 @@ class TreeNode(TypedDict):
 def get_accept_files(path: str, file_types: List[str]):
     files_list = []
     for file_type in  file_types:
-        files_list.extend(glob(path+"/**/*."+file_type, recursive=True))
+        files_list.extend(glob(
+            os.path.join(path, "**", f"*.{file_type}"), recursive=True))
     return files_list
 
 def get_dir_tree(dir_path: str, file_types: List[str]) -> List[TreeNode]:
@@ -32,7 +33,7 @@ def get_dir_tree(dir_path: str, file_types: List[str]) -> List[TreeNode]:
                 "isdir": False,
             })
         elif os.path.isdir(node_path) and len(get_accept_files(node_path, file_types)) > 0:
-             nodes.append({
+            nodes.append({
                 "path": node_path,
                 "name": node_name,
                 "isdir": True,
@@ -58,18 +59,16 @@ async def create_file(response: Response, fileName: str, element_id: str = Form(
     root_dir = os.path.join("files", fileName+"("+element_id+")")
     os.makedirs(root_dir, exist_ok=True)
 
-    contents = await file.read()
     tiff_file_path = os.path.join(root_dir, fileName)
+
+    contents = await file.read()
+
     with open(tiff_file_path, "wb") as f:
         f.write(contents)
 
-    tiffs = imageio.volread(tiff_file_path)[:inputFileNumer]
+    from .utils import save_tiff_to_json
 
-    images = []
-    for i, _img in enumerate(tiffs):
-        images.append(_img.tolist())
-
+    save_tiff_to_json(tiff_file_path, inputFileNumer)
     json_data_path = os.path.join(root_dir, 'image.json')
-    pd.DataFrame(images).to_json(json_data_path, indent=4, orient="values")
 
     return {"json_data_path": json_data_path, "tiff_file_path": tiff_file_path}
