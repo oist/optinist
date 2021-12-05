@@ -13,8 +13,9 @@ import { getImageData } from 'store/slice/PlotData/PlotDataAction'
 import { RootState } from 'store/store'
 import {
   imageIsUploadedByIdSelector,
-  imageJsonPathByIdSelector,
-} from 'store/slice/UploadImage/UploadImageSelector'
+  imageTiffPathByIdSelector,
+  imageMaxIndexByIdSelector,
+} from 'store/slice/ImageFile/ImageFileSelector'
 import {
   Button,
   LinearProgress,
@@ -45,19 +46,22 @@ const ImagePlotContainer = React.memo(() => {
   const dispatch = useDispatch()
   const path = useSelector((state: RootState) => {
     if (outputKey != null) {
+      // Algoの出力データの場合
       return outputPathValueByIdSelector(nodeId, outputKey)(state)
     } else {
-      return imageJsonPathByIdSelector(nodeId)(state)
+      // 画像ファイルの入力データの場合
+      return imageTiffPathByIdSelector(nodeId)(state)
     }
   })
+  const maxIndex = useSelector(imageMaxIndexByIdSelector(nodeId))
   const isLoaded = useSelector(
     imageDataIsLoadedSelector(path ?? ''), // 応急処置
   )
   React.useEffect(() => {
     if (!isLoaded && path != null) {
-      dispatch(getImageData({ path }))
+      dispatch(getImageData({ path, maxIndex }))
     }
-  }, [dispatch, isLoaded, path])
+  }, [dispatch, isLoaded, path, maxIndex])
   if (isLoaded && path != null) {
     return <ImagePlotImple path={path} />
   } else if (!isLoaded && path != null) {

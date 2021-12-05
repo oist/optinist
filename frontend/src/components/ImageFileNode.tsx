@@ -14,10 +14,10 @@ import { Handle, Position, NodeProps } from 'react-flow-renderer'
 import { FlexLayoutModelContext } from 'App'
 import { useTabAction } from 'FlexLayoutHook'
 import { OUTPUT_TABSET_ID } from 'const/flexlayout'
-import { uploadImageFile } from 'store/slice/UploadImage/UploadImageAction'
-import { imageIsUploadingByIdSelector } from 'store/slice/UploadImage/UploadImageSelector'
+import { uploadImageFile } from 'store/slice/ImageFile/ImageFileAction'
+import { imageIsUploadingByIdSelector } from 'store/slice/ImageFile/ImageFileSelector'
 import { filePathSelector } from 'store/slice/Element/ElementSelector'
-import { selectImageFile } from 'store/slice/UploadImage/UploadImage'
+import { selectImageFile } from 'store/slice/ImageFile/ImageFile'
 import { FileSelectDialog } from 'components/FileSelectDialog'
 
 export const ImageFileNode = React.memo<NodeProps>((element) => {

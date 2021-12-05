@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { uploadImageFile } from './UploadImageAction'
-import { UploadImage, UPLOAD_IMAGE_SLICE_NAME } from './UploadImageType'
+import { uploadImageFile } from './ImageFileAction'
+import { ImageFile, UPLOAD_IMAGE_SLICE_NAME } from './ImageFileType'
 
-const initialState: UploadImage = {}
+const initialState: ImageFile = {}
 
-export const uploadImageSlice = createSlice({
+export const imageFileSlice = createSlice({
   name: UPLOAD_IMAGE_SLICE_NAME,
   initialState,
   reducers: {
@@ -14,11 +14,11 @@ export const uploadImageSlice = createSlice({
       action: PayloadAction<{ nodeId: string; path: string; maxIndex: number }>,
     ) {
       const { nodeId, path, maxIndex } = action.payload
-      const [parentDirPath, fileName] = getFileNameAndParentDirPath(path)
+      const fileName = getFileNameAndParentDirPath(path)
       state[nodeId] = {
         fileName: fileName,
         maxIndex,
-        jsonPath: parentDirPath + '/' + fileName,
+        path: path,
         isFulfilled: true,
         isUploading: false,
       }
@@ -31,18 +31,18 @@ export const uploadImageSlice = createSlice({
         state[nodeId] = {
           fileName: '',
           maxIndex: inputFileNumber,
-          jsonPath: '',
+          path: '',
           isFulfilled: false,
           isUploading: true,
         }
       })
       .addCase(uploadImageFile.fulfilled, (state, action) => {
         const { nodeId, fileName, inputFileNumber } = action.meta.arg
-        const { jsonDataPath } = action.payload
+        const { tiffFilePath } = action.payload
         state[nodeId] = {
           fileName,
           maxIndex: inputFileNumber,
-          jsonPath: jsonDataPath,
+          path: tiffFilePath,
           isFulfilled: true,
           isUploading: false,
         }
@@ -50,18 +50,16 @@ export const uploadImageSlice = createSlice({
   },
 })
 
-function getFileNameAndParentDirPath(filePath: string): [string, string] {
-  let dirPath = ''
+function getFileNameAndParentDirPath(filePath: string): string {
   let fileName = filePath
   filePath.split('/')
   const lastIndex = filePath.lastIndexOf('/')
   if (lastIndex !== -1) {
-    dirPath = filePath.substr(0, lastIndex)
     fileName = filePath.substr(lastIndex + 1)
   }
-  return [dirPath, fileName]
+  return fileName
 }
 
-export const { selectImageFile } = uploadImageSlice.actions
+export const { selectImageFile } = imageFileSlice.actions
 
-export default uploadImageSlice.reducer
+export default imageFileSlice.reducer

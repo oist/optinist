@@ -2,7 +2,7 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import elementReducer from './slice/Element/Element'
 import algorithmReducer from './slice/Algorithm/Algorithm'
-import uploadImageReducer from './slice/UploadImage/UploadImage'
+import imageFileReducer from './slice/ImageFile/ImageFile'
 import plotDataReducer from './slice/PlotData/PlotData'
 import HandleTypeColorReducer from './slice/HandleTypeColor/HandleTypeColor'
 import FilesReducer from './slice/Files/Files'
@@ -12,7 +12,7 @@ export const store = configureStore({
   reducer: {
     element: elementReducer,
     algorithm: algorithmReducer,
-    uploadImage: uploadImageReducer,
+    imageFile: imageFileReducer,
     plotData: plotDataReducer,
     handleColor: HandleTypeColorReducer,
     files: FilesReducer,
