@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import TreeView from '@material-ui/lab/TreeView'
 import TreeItem from '@material-ui/lab/TreeItem'
 import FolderIcon from '@material-ui/icons/Folder'
-// import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile'
 import InsertDriveFileOutlinedIcon from '@material-ui/icons/InsertDriveFileOutlined'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
@@ -17,15 +16,19 @@ import React from 'react'
 import {
   filesIsLatestSelector,
   filesIsLoadingSelector,
-  filesTreeSelector,
-} from 'store/slice/Files/FilesSelector'
-import { getFiles } from 'store/slice/Files/FilesAction'
-import { TreeNodeType } from 'store/slice/Files/FilesType'
+  filesTreeNodesSelector,
+} from 'store/slice/FilesTree/FilesTreeSelector'
+import { getFilesTree } from 'store/slice/FilesTree/FilesTreeAction'
+import {
+  FILE_TYPE,
+  FILE_TYPE_SET,
+  TreeNodeType,
+} from 'store/slice/FilesTree/FilesTreeType'
 
 type FileSelectDialogProps = {
   selectedFilePath: string
   onClickOk: (path: string) => void
-  fileType?: string
+  fileType?: FILE_TYPE
   title?: string
   open: boolean
   onClickCancel: () => void
@@ -40,7 +43,7 @@ export const FileSelectDialog = React.memo<FileSelectDialogProps>(
     onClickOk,
     onClose,
     title,
-    fileType,
+    fileType = FILE_TYPE_SET.ALL,
   }) => {
     const [clickedFilePath, setClickedFilePath] =
       React.useState(selectedFilePath)
@@ -89,14 +92,14 @@ export const FileSelectDialog = React.memo<FileSelectDialogProps>(
 
 const FileTreeView = React.memo<{
   onClickFile: (path: string) => void
-  fileType?: string
+  fileType: FILE_TYPE
 }>(({ onClickFile, fileType }) => {
   const [tree, isLoading] = useFileTree(fileType)
   return (
     <div>
       {isLoading && <LinearProgress />}
       <TreeView>
-        {tree.map((node) => (
+        {tree?.map((node) => (
           <TreeNode node={node} onClickFile={onClickFile} />
         ))}
       </TreeView>
@@ -132,14 +135,16 @@ const TreeNode = React.memo<{
   }
 })
 
-function useFileTree(fileType?: string): [TreeNodeType[], boolean] {
+function useFileTree(
+  fileType: FILE_TYPE,
+): [TreeNodeType[] | undefined, boolean] {
   const dispatch = useDispatch()
-  const tree = useSelector(filesTreeSelector)
-  const isLatest = useSelector(filesIsLatestSelector)
-  const isLoading = useSelector(filesIsLoadingSelector)
+  const tree = useSelector(filesTreeNodesSelector(fileType))
+  const isLatest = useSelector(filesIsLatestSelector(fileType))
+  const isLoading = useSelector(filesIsLoadingSelector(fileType))
   React.useEffect(() => {
     if (!isLatest && !isLoading) {
-      dispatch(getFiles(fileType))
+      dispatch(getFilesTree(fileType))
     }
   }, [isLatest, isLoading, fileType, dispatch])
   return [tree, isLoading]

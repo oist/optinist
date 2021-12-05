@@ -22,10 +22,10 @@ export const INITIAL_DATA_STYLE: React.CSSProperties = {
 export const initialElements: Elements<NodeData> = [
   {
     id: INITIAL_IMAGE_ELEMENT_ID,
-    type: 'selectorNode',
+    type: 'ImageFileNode',
     data: {
-      type: NODE_DATA_TYPE_SET.DATA,
-      label: 'data',
+      type: NODE_DATA_TYPE_SET.IMAGE,
+      label: 'image',
     },
     style: INITIAL_DATA_STYLE,
     position: { x: 50, y: 60 },

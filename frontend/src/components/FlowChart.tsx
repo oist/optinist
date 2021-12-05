@@ -18,8 +18,9 @@ import {
 } from 'store/slice/Element/ElementSelector'
 import { NodeData, NODE_DATA_TYPE, NODE_DATA_TYPE_SET } from 'const/NodeData'
 import 'style/flow.css'
-import { ImageFileNode } from './ImageFileNode'
-import { AlgorithmNode } from './AlgorithmNode'
+import { ImageFileNode } from './FlowChartNode/ImageFileNode'
+import { AlgorithmNode } from './FlowChartNode/AlgorithmNode'
+import { CsvFileNode } from './FlowChartNode/CsvFileNode'
 import { FlexLayoutModelContext } from 'App'
 import { useGetDeleteTabActions } from 'FlexLayoutHook'
 
@@ -29,8 +30,9 @@ export const FlowChart = React.memo(() => {
   const dispatch = useDispatch()
 
   const nodeTypes = {
-    selectorNode: ImageFileNode,
-    default: AlgorithmNode,
+    ImageFileNode,
+    CsvFileNode,
+    AlgorithmNode,
   }
 
   const onConnect = (params: Connection | Edge) => {
@@ -48,14 +50,6 @@ export const FlowChart = React.memo(() => {
       ),
     )
   }
-
-  // const onElementClick = (
-  //   event: React.MouseEvent<Element, MouseEvent>,
-  //   element: Node<NodeData> | Edge<any>,
-  // ) => {
-  //   if (event.isTrusted && isNodeData(element) && element.data) {
-  //   }
-  // }
 
   const model = React.useContext(FlexLayoutModelContext)
   const getDeleteTabActions = useGetDeleteTabActions()
@@ -81,19 +75,30 @@ export const FlowChart = React.memo(() => {
     event.preventDefault()
 
     if (reactFlowInstance) {
+      const type = event.dataTransfer.getData('type')
       const name = event.dataTransfer.getData('nodeName')
       const path = event.dataTransfer.getData('path')
       const position = reactFlowInstance.project({
         x: event.clientX - 50 - 250,
         y: event.clientY - 100,
       })
-
-      let nodeType = 'default'
+      let nodeType = ''
       let dataType: NODE_DATA_TYPE = 'algo'
-
-      if (name.includes('data')) {
-        dataType = NODE_DATA_TYPE_SET.DATA
-        nodeType = 'selectorNode'
+      switch (type) {
+        case NODE_DATA_TYPE_SET.ALGO:
+          dataType = NODE_DATA_TYPE_SET.ALGO
+          nodeType = 'AlgorithmNode'
+          break
+        case NODE_DATA_TYPE_SET.IMAGE:
+          dataType = NODE_DATA_TYPE_SET.IMAGE
+          nodeType = 'ImageFileNode'
+          break
+        case NODE_DATA_TYPE_SET.CSV:
+          dataType = NODE_DATA_TYPE_SET.CSV
+          nodeType = 'CsvFileNode'
+          break
+        default:
+          break
       }
 
       const newNode: Node<NodeData> = {

@@ -47,21 +47,23 @@ async  def get_files(file_type: Optional[str] = None):
     else:
         if file_type == "image":
             tree = get_dir_tree(os.path.join("files"), ["tif"])
+        elif file_type == "csv":
+            tree = get_dir_tree(os.path.join("files"), ["csv"])
         else:
             # TODO 他のファイル種別の仕様が分かり次第追加
             pass
     return tree
 
-@router.post("/files/upload/{fileName}/{inputFileNumer}")
-async def create_file(response: Response, fileName: str, element_id: str = Form(...), file: UploadFile = File(...), inputFileNumer: int=1):
+@router.post("/files/upload/{fileName}")
+async def create_file(response: Response, fileName: str, element_id: str = Form(...), file: UploadFile = File(...)):
     root_dir = os.path.join("files", fileName+"("+element_id+")")
     os.makedirs(root_dir, exist_ok=True)
 
-    tiff_file_path = os.path.join(root_dir, fileName)
+    file_path = os.path.join(root_dir, fileName)
 
     contents = await file.read()
 
-    with open(tiff_file_path, "wb") as f:
+    with open(file_path, "wb") as f:
         f.write(contents)
 
-    return { "tiff_file_path": tiff_file_path }
+    return { "file_path": file_path }

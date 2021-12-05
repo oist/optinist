@@ -46,7 +46,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
             # run algorithm
             info = None
-            if item.type == 'data':
+            if item.type == 'image':
                 info = {'path': ImageData(item.path, '')}
             elif item.type == 'algo':
                 wrapper = get_dict_leaf_value(wrapper_dict, item.path.split('/'))
