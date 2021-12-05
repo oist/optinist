@@ -18,7 +18,7 @@ export const uploadImageSlice = createSlice({
       state[nodeId] = {
         fileName: fileName,
         maxIndex,
-        jsonPath: parentDirPath + '/image.json',
+        jsonPath: parentDirPath + '/' + fileName,
         isFulfilled: true,
         isUploading: false,
       }

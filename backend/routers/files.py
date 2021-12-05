@@ -1,7 +1,5 @@
 from typing import List, Optional, TypedDict
 from fastapi import APIRouter, File, Response, UploadFile, Form
-# import imageio
-# import pandas as pd
 import os
 from glob import glob
 
@@ -17,7 +15,7 @@ class TreeNode(TypedDict):
 
 def get_accept_files(path: str, file_types: List[str]):
     files_list = []
-    for file_type in  file_types:
+    for file_type in file_types:
         files_list.extend(glob(
             os.path.join(path, "**", f"*.{file_type}"), recursive=True))
     return files_list
