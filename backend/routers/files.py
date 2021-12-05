@@ -64,10 +64,4 @@ async def create_file(response: Response, fileName: str, element_id: str = Form(
     with open(tiff_file_path, "wb") as f:
         f.write(contents)
 
-    from .utils import save_tiff_to_json
-
-    save_tiff_to_json(tiff_file_path, inputFileNumer)
-    file_name, ext = os.path.splitext(os.path.basename(tiff_file_path))
-    json_data_path = os.path.join(root_dir, f'{file_name}.json')
-
-    return {"json_data_path": json_data_path, "tiff_file_path": tiff_file_path}
+    return { "tiff_file_path": tiff_file_path }

@@ -1,6 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-import { uploadImageFile } from '../UploadImage/UploadImageAction'
+import { uploadImageFile } from '../ImageFile/ImageFileAction'
 import { getFiles } from './FilesAction'
 import { Files, FILES_SLICE_NAME } from './FilesType'
 import { convertToTreeNodeType } from './FilesUtils'

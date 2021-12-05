@@ -7,13 +7,12 @@ import {
 } from 'const/flowchart'
 import { NodeData, NODE_DATA_TYPE_SET } from 'const/NodeData'
 import { isAlgoNodeData, isInputNodeData, isNodeData } from 'utils/ElementUtils'
-import { Element, ELEMENT_SLICE_NAME, RUN_STATUS } from './ElementType'
-import { uploadImageFile } from '../UploadImage/UploadImageAction'
-import { selectImageFile } from '../UploadImage/UploadImage'
+import { Element, ELEMENT_SLICE_NAME } from './ElementType'
+import { uploadImageFile } from '../ImageFile/ImageFileAction'
+import { selectImageFile } from '../ImageFile/ImageFile'
 
 const initialState: Element = {
   flowElements: initialElements,
-  runStatus: RUN_STATUS.STOPPED,
 }
 
 export const elementSlice = createSlice({

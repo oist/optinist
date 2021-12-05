@@ -21,10 +21,6 @@ export const maxElementIdSelector = (state: RootState) =>
     .filter((id) => !isNaN(id))
     .reduce((a, b) => Math.max(a, b))
 
-export const runStatusSelector = (state: RootState) => state.element.runStatus
-
-export const runMassageSelector = (state: RootState) => state.element.runMessage
-
 export const nodeDataListForRunSelector = (state: RootState) =>
   flowElementsSelector(state)
     .filter((element) => isInputNodeData(element) || isAlgoNodeData(element))
