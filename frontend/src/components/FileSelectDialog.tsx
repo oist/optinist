@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux'
 import TreeView from '@material-ui/lab/TreeView'
 import TreeItem from '@material-ui/lab/TreeItem'
 import FolderIcon from '@material-ui/icons/Folder'
-import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile'
+// import InsertDriveFileIcon from '@material-ui/icons/InsertDriveFile'
+import InsertDriveFileOutlinedIcon from '@material-ui/icons/InsertDriveFileOutlined'
 import DialogActions from '@material-ui/core/DialogActions'
 import DialogContent from '@material-ui/core/DialogContent'
 import DialogTitle from '@material-ui/core/DialogTitle'
@@ -109,7 +110,11 @@ const TreeNode = React.memo<{
 }>(({ node, onClickFile }) => {
   if (node.isDir) {
     return (
-      <TreeItem icon={<FolderIcon />} nodeId={node.path} label={node.name}>
+      <TreeItem
+        icon={<FolderIcon htmlColor="skyblue" />}
+        nodeId={node.path}
+        label={node.name}
+      >
         {node.nodes.map((childNode, i) => (
           <TreeNode node={childNode} key={i} onClickFile={onClickFile} />
         ))}
@@ -118,7 +123,7 @@ const TreeNode = React.memo<{
   } else {
     return (
       <TreeItem
-        icon={<InsertDriveFileIcon fontSize="small" />}
+        icon={<InsertDriveFileOutlinedIcon fontSize="small" />}
         nodeId={node.path}
         label={node.name}
         onClick={() => onClickFile(node.path)}
