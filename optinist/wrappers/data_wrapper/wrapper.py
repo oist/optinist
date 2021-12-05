@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import imageio
 from PIL import Image
+import cv2
 
 class ImageData:
     def __init__(self, data, func_name='image'):
@@ -13,7 +14,7 @@ class ImageData:
             self.data = data
             # self.path = os.path.join('files', func_name, 'images')
             _dir = os.path.join('files', func_name)
-            self.path = os.path.join(_dir, 'image.json')
+            self.path = os.path.join(_dir, f'{func_name}.json')
 
             if not os.path.exists(_dir):
                 os.makedirs(_dir, exist_ok=True)
@@ -21,10 +22,9 @@ class ImageData:
             if len(self.data.shape) == 2:
                 self.data = self.data[np.newaxis, :, :]
 
-            # self.data = np.uint8(self.data)
-            # import pdb; pdb.set_trace()
+            save_data = cv2.resize(self.data, (150, 150))
             images = []
-            for i, _img in enumerate(self.data[:10]):
+            for i, _img in enumerate(save_data[:10]):
                 images.append(_img.tolist())
 
             pd.DataFrame(images).to_json(self.path, indent=4, orient="values")
@@ -39,7 +39,10 @@ class TimeSeriesData:
         if not os.path.exists(_dir):
             os.makedirs(_dir, exist_ok=True)
 
-        self.path = os.path.join(_dir, 'timeseries.json')
+        if len(self.data.shape) == 1:
+            self.data = self.data[np.newaxis, :]
+
+        self.path = os.path.join(_dir, f'{func_name}.json')
 
         pd.DataFrame(self.data).to_json(self.path, indent=4)
 
@@ -53,7 +56,7 @@ class CorrelationData:
         if not os.path.exists(_dir):
             os.makedirs(_dir, exist_ok=True)
 
-        self.path = os.path.join(_dir, 'correlation.json')
+        self.path = os.path.join(_dir, f'{func_name}.json')
 
         pd.DataFrame(self.data).to_json(self.path, indent=4, orient="values")
 

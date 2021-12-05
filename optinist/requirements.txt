@@ -7,3 +7,4 @@ ipyparallel
 holoviews
 psutil
 nbstripout
+statsmodels

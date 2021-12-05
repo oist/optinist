@@ -9,7 +9,7 @@ def PCA(timeseries: TimeSeriesData, iscell: IscellData, params: dict=None):
 
     timeseries = timeseries.data
     iscell = iscell.data
-    ind  = np.where(iscell > 0)[0]
+    ind = np.where(iscell > 0)[0]
     timeseries = timeseries[ind, :]
 
     # data shold be time x component matrix
@@ -47,8 +47,8 @@ def PCA(timeseries: TimeSeriesData, iscell: IscellData, params: dict=None):
     #Out_nwb['feature_names_in'] = pca.feature_names_in_
 
     info = {}
-    info['components'] = CorrelationData(pca.components_)
-    info['explained_variance_ratio'] = TimeSeriesData(pca.explained_variance_ratio_)
-    info['projected'] = TimeSeriesData(proj_X[:, 0:2])  # change to 2D scatter plots
+    info['components'] = CorrelationData(pca.components_, 'components')
+    info['explained_variance_ratio'] = TimeSeriesData(pca.explained_variance_ratio_, 'evr')
+    info['projected'] = TimeSeriesData(proj_X[:, 0:2].transpose(1, 0), 'projected')  # change to 2D scatter plots
 
     return info
