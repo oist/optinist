@@ -15,7 +15,7 @@ import {
   imageIsUploadedByIdSelector,
   imageTiffPathByIdSelector,
   imageMaxIndexByIdSelector,
-} from 'store/slice/ImageFile/ImageFileSelector'
+} from 'store/slice/FileData/FileDataSelector'
 import {
   Button,
   LinearProgress,

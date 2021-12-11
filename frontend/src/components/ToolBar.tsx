@@ -9,8 +9,8 @@ import {
 import { Box, IconButton, LinearProgress } from '@material-ui/core'
 import Close from '@material-ui/icons/Close'
 import { reflectRunPipelineResult } from 'store/slice/Algorithm/AlgorithmAction'
-import { useLazyRunPipelineQuery } from 'api/Run/Run'
-import { AlgoNodeData, InputNodeData } from 'const/NodeData'
+import { useLazyRunPipelineQuery, RunPipeLineNodeDataType } from 'api/Run/Run'
+import { AlgoNodeData, CsvNodeData, ImageNodeData } from 'const/NodeData'
 import { nanoid } from '@reduxjs/toolkit'
 import { SnackbarProvider, SnackbarKey, useSnackbar } from 'notistack'
 
@@ -106,8 +106,8 @@ export const ToolBarImple = React.memo(() => {
 })
 
 function nodeDataListForRunEqualityFn(
-  a: (InputNodeData | AlgoNodeData | undefined)[],
-  b: (InputNodeData | AlgoNodeData | undefined)[],
+  a: (RunPipeLineNodeDataType | undefined)[],
+  b: (RunPipeLineNodeDataType | undefined)[],
 ) {
   return (
     a === b ||
@@ -117,15 +117,17 @@ function nodeDataListForRunEqualityFn(
 }
 
 function nodeDataForRunEqualityFn(
-  a: InputNodeData | AlgoNodeData | undefined,
-  b: InputNodeData | AlgoNodeData | undefined,
+  a: RunPipeLineNodeDataType | undefined,
+  b: RunPipeLineNodeDataType | undefined,
 ) {
   if (a !== undefined && b !== undefined) {
     return (
       (a.type === 'algo' &&
         b.type === 'algo' &&
         algoNodeDataEqualityFn(a, b)) ||
-      (a.type === 'data' && b.type === 'data' && inputNodeDataEqualityFn(a, b))
+      (a.type === 'image' &&
+        b.type === 'image' &&
+        inputNodeDataEqualityFn(a, b))
     )
   } else {
     return a === undefined && b === undefined
@@ -156,6 +158,9 @@ function algoNodeDataParamaEqualityFn(
   }
 }
 
-function inputNodeDataEqualityFn(a: InputNodeData, b: InputNodeData) {
+function inputNodeDataEqualityFn(
+  a: ImageNodeData | CsvNodeData,
+  b: ImageNodeData | CsvNodeData,
+) {
   return a.path === b.path && a.label === b.label
 }

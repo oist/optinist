@@ -1,4 +1,4 @@
-export const FILES_SLICE_NAME = 'files'
+export const FILES_TREE_SLICE_NAME = 'filesTree'
 
 export type TreeNodeTypeDTO = DirNodeDTO | FileNodeDTO
 
@@ -34,8 +34,18 @@ export interface FileNode extends NodeBase {
   isDir: false
 }
 
-export interface Files {
-  isLatest: boolean
-  isLoading: boolean
-  tree: TreeNodeType[]
+export interface FilesTree {
+  [fileType: string]: {
+    isLatest: boolean
+    isLoading: boolean
+    tree: TreeNodeType[]
+  }
 }
+
+export const FILE_TYPE_SET = {
+  IMAGE: 'image',
+  CSV: 'csv',
+  ALL: 'all',
+} as const
+
+export type FILE_TYPE = typeof FILE_TYPE_SET[keyof typeof FILE_TYPE_SET]

@@ -6,10 +6,14 @@ import {
   INITIAL_DATA_STYLE,
 } from 'const/flowchart'
 import { NodeData, NODE_DATA_TYPE_SET } from 'const/NodeData'
-import { isAlgoNodeData, isInputNodeData, isNodeData } from 'utils/ElementUtils'
+import {
+  isAlgoNodeData,
+  isCsvNodeData,
+  isImageNodeData,
+} from 'utils/ElementUtils'
 import { Element, ELEMENT_SLICE_NAME } from './ElementType'
-import { uploadImageFile } from '../ImageFile/ImageFileAction'
-import { selectImageFile } from '../ImageFile/ImageFile'
+import { uploadCsvFile, uploadImageFile } from '../FileData/FileDataAction'
+import { selectCsvFile, selectImageFile } from '../FileData/FileData'
 
 const initialState: Element = {
   flowElements: initialElements,
@@ -34,7 +38,7 @@ export const elementSlice = createSlice({
           targetPosition: Position.Left,
           sourcePosition: Position.Right,
         }
-      } else if (isInputNodeData(node)) {
+      } else if (isImageNodeData(node) || isCsvNodeData(node)) {
         node = {
           ...node,
           style: {
@@ -52,14 +56,27 @@ export const elementSlice = createSlice({
     builder
       .addCase(uploadImageFile.fulfilled, (state, action) => {
         const { nodeId } = action.meta.arg
-        const { tiffFilePath } = action.payload
-        setFilePathFn(state, nodeId, tiffFilePath)
+        const { path } = action.payload
+        setFilePathFn(state, nodeId, path)
       })
       .addCase(uploadImageFile.pending, (state, action) => {
         const { nodeId } = action.meta.arg
         setFilePathFn(state, nodeId, undefined)
       })
       .addCase(selectImageFile, (state, action) => {
+        const { nodeId, path } = action.payload
+        setFilePathFn(state, nodeId, path)
+      })
+      .addCase(uploadCsvFile.fulfilled, (state, action) => {
+        const { nodeId } = action.meta.arg
+        const { path } = action.payload
+        setFilePathFn(state, nodeId, path)
+      })
+      .addCase(uploadCsvFile.pending, (state, action) => {
+        const { nodeId } = action.meta.arg
+        setFilePathFn(state, nodeId, undefined)
+      })
+      .addCase(selectCsvFile, (state, action) => {
         const { nodeId, path } = action.payload
         setFilePathFn(state, nodeId, path)
       })
@@ -73,10 +90,16 @@ function setFilePathFn(
 ) {
   const idx = state.flowElements.findIndex((e) => e.id === nodeId)
   const node = state.flowElements[idx]
-  if (isNodeData(node) && node.data) {
+  if (isImageNodeData(node) && node.data) {
     node.data = {
       ...node.data,
-      type: NODE_DATA_TYPE_SET.DATA,
+      type: NODE_DATA_TYPE_SET.IMAGE,
+      path,
+    }
+  } else if (isCsvNodeData(node) && node.data) {
+    node.data = {
+      ...node.data,
+      type: NODE_DATA_TYPE_SET.CSV,
       path,
     }
   }

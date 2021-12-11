@@ -11,6 +11,7 @@ import { AlgoListType, AlgoNodeType } from 'store/slice/Algorithm/AlgorithmType'
 import { arrayEqualityFn } from 'utils/EqualityUtils'
 import { getAlgoList } from 'store/slice/Algorithm/AlgorithmAction'
 import { isAlgoChild, isAlgoParent } from 'store/slice/Algorithm/AlgorithmUtils'
+import { NODE_DATA_TYPE, NODE_DATA_TYPE_SET } from 'const/NodeData'
 
 const useStyles = makeStyles({
   root: {
@@ -32,9 +33,15 @@ export const SideBar = React.memo(() => {
     }
   }, [dispatch, algoList])
 
-  const onDragStart = (event: DragEvent, nodeName: string, path?: string) => {
+  const onDragStart = (
+    event: DragEvent,
+    nodeName: string,
+    nodeDataType: NODE_DATA_TYPE,
+    path?: string,
+  ) => {
     if (event.dataTransfer != null) {
       event.dataTransfer.setData('nodeName', nodeName)
+      event.dataTransfer.setData('type', nodeDataType)
       if (path != null) {
         event.dataTransfer.setData('path', path)
       }
@@ -50,9 +57,19 @@ export const SideBar = React.memo(() => {
     >
       <TreeItem nodeId="Data" label="Data">
         <TreeItem
-          nodeId="data"
-          label="data"
-          onDragStart={(event: DragEvent) => onDragStart(event, 'data')}
+          nodeId="image"
+          label="image"
+          onDragStart={(event: DragEvent) =>
+            onDragStart(event, 'ImageData', NODE_DATA_TYPE_SET.IMAGE)
+          }
+          draggable
+        />
+        <TreeItem
+          nodeId="csv"
+          label="csv"
+          onDragStart={(event: DragEvent) =>
+            onDragStart(event, 'CsvData', NODE_DATA_TYPE_SET.CSV)
+          }
           draggable
         />
       </TreeItem>
@@ -61,7 +78,9 @@ export const SideBar = React.memo(() => {
           <AlgoNodeComponent
             name={name}
             node={node}
-            onDragStart={onDragStart}
+            onDragStart={(event, nodeName, path) =>
+              onDragStart(event, nodeName, NODE_DATA_TYPE_SET.ALGO, path)
+            }
             key={i.toFixed()}
           />
         ))}

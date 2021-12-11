@@ -119,13 +119,14 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
         background: element.selected
           ? alpha(theme.palette.primary.light, 0.1)
           : undefined,
+        border: '1px solid',
       }}
       onClick={onClick}
     >
       <div
         style={{
           padding: 8,
-          paddingLeft: 16,
+          paddingLeft: 8,
         }}
       >
         <Typography

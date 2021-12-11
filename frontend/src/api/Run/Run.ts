@@ -1,6 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { BASE_URL, WS_BASE_URL } from 'const/API'
-import { AlgoNodeData, InputNodeData } from 'const/NodeData'
+import { AlgoNodeData, CsvNodeData, ImageNodeData } from 'const/NodeData'
+
+export type RunPipeLineNodeDataType = ImageNodeData | AlgoNodeData | CsvNodeData
 
 export type RunPipelineDTO = {
   status: string
@@ -28,7 +30,7 @@ export const webSocketApi = createApi({
       RunPipelineDTO,
       {
         requestId: string
-        nodeDataListForRun: (InputNodeData | AlgoNodeData | undefined)[]
+        nodeDataListForRun: (RunPipeLineNodeDataType | undefined)[]
       }
     >({
       // リクエストするたびにキャッシュをクリアするためにidを振っておく
