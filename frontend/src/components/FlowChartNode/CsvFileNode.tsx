@@ -5,11 +5,15 @@ import { FlexLayoutModelContext } from 'App'
 import { useTabAction } from 'FlexLayoutHook'
 import { OUTPUT_TABSET_ID } from 'const/flexlayout'
 import { FileSelect } from './FileSelect'
-import { alpha, LinearProgress, useTheme } from '@material-ui/core'
+import { alpha, useTheme } from '@material-ui/core'
 import { selectCsvFile } from 'store/slice/FileData/FileData'
 import { uploadCsvFile } from 'store/slice/FileData/FileDataAction'
-import { csvIsUploadingByIdSelector } from 'store/slice/FileData/FileDataSelector'
+import {
+  csvIsUploadingByIdSelector,
+  csvUploadingProgressSelector,
+} from 'store/slice/FileData/FileDataSelector'
 import { FILE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
+import { LinearProgressWithLabel } from './LinerProgressWithLabel'
 
 const sourceHandleStyle: CSSProperties = {
   width: 8,
@@ -30,6 +34,7 @@ export const CsvFileNode = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   }
   const theme = useTheme()
   const csvIsUploading = useSelector(csvIsUploadingByIdSelector(nodeId))
+  const uploadProgress = useSelector(csvUploadingProgressSelector(nodeId))
   return (
     <div
       style={{
@@ -40,7 +45,11 @@ export const CsvFileNode = React.memo<NodeProps>(({ id: nodeId, selected }) => {
       }}
       onClick={onClick}
     >
-      {csvIsUploading && <LinearProgress />}
+      {csvIsUploading && uploadProgress != null && (
+        <div style={{ marginLeft: 2, marginRight: 2 }}>
+          <LinearProgressWithLabel value={uploadProgress} />
+        </div>
+      )}
       <CsvFileSelect nodeId={nodeId} />
       <Handle
         type="source"

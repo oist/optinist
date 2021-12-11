@@ -42,3 +42,11 @@ export const csvIsUploadedByIdSelector = (id: string) => (state: RootState) =>
 
 export const csvIsUploadingByIdSelector = (id: string) => (state: RootState) =>
   csvFileByIdSelector(id)(state)?.isUploading
+
+export const imageUploadingProgressSelector =
+  (id: string) => (state: RootState) =>
+    imageFileByIdSelector(id)(state)?.progess
+
+export const csvUploadingProgressSelector =
+  (id: string) => (state: RootState) =>
+    csvFileByIdSelector(id)(state)?.progess

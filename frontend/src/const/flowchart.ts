@@ -16,7 +16,7 @@ export const INITIAL_ALGO_STYLE: React.CSSProperties = {
 
 export const INITIAL_DATA_STYLE: React.CSSProperties = {
   border: '1px solid #777',
-  height: 110,
+  height: 120,
 } as const
 
 export const initialElements: Elements<NodeData> = [

@@ -15,6 +15,7 @@ export type ImageFileType = {
   maxIndex: number
   isFulfilled: boolean
   isUploading: boolean
+  progess?: number
 }
 
 export type CsvFileType = {
@@ -22,4 +23,5 @@ export type CsvFileType = {
   path: string
   isFulfilled: boolean
   isUploading: boolean
+  progess?: number
 }

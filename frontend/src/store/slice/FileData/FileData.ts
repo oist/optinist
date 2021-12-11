@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
-import { uploadCsvFile, uploadImageFile } from './FileDataAction'
+import {
+  uploadCsvFile,
+  uploadImageFile,
+  setUploadProgress,
+} from './FileDataAction'
 import { FileData, FILE_DATA_SLICE_NAME } from './FileDataType'
 
 const initialState: FileData = {
@@ -42,6 +46,10 @@ export const fileDataSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      .addCase(setUploadProgress, (state, action) => {
+        const { progess, nodeId, fileDataKey } = action.payload
+        state[fileDataKey][nodeId].progess = progess
+      })
       .addCase(uploadImageFile.pending, (state, action) => {
         const { nodeId, maxIndex } = action.meta.arg
         state.image[nodeId] = {
