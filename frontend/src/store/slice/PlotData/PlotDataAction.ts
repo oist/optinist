@@ -7,6 +7,7 @@ import {
   TimeSeriesData,
   PLOT_DATA_SLICE_NAME,
   HeatMapData,
+  TableData,
 } from './PlotDataType'
 
 export const getTimeSeriesData = createAsyncThunk<
@@ -51,3 +52,18 @@ export const getImageData = createAsyncThunk<
     }
   },
 )
+
+export const getTableData = createAsyncThunk<
+  {
+    columns: string[]
+    data: TableData
+  },
+  { path: string }
+>(`${PLOT_DATA_SLICE_NAME}/getTableData`, async ({ path }, thunkAPI) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/outputs/csv/${path}`)
+    return response.data.data
+  } catch (e) {
+    return thunkAPI.rejectWithValue(e)
+  }
+})
