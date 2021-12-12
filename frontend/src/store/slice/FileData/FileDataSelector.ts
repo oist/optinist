@@ -37,6 +37,9 @@ export const imageIsUploadingByIdSelector =
   (id: string) => (state: RootState) =>
     imageFileByIdSelector(id)(state)?.isUploading
 
+export const csvPathByIdSelector = (id: string) => (state: RootState) =>
+  csvFileByIdSelector(id)(state)?.path
+
 export const csvIsUploadedByIdSelector = (id: string) => (state: RootState) =>
   csvFileByIdSelector(id)(state)?.isFulfilled
 

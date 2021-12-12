@@ -1,6 +1,6 @@
 import React, { CSSProperties, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { alpha, Typography, useTheme } from '@material-ui/core'
+import { alpha, useTheme } from '@material-ui/core'
 import TextField from '@material-ui/core/TextField'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
 

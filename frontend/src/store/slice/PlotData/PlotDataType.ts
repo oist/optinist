@@ -24,6 +24,13 @@ export type PlotData = {
       data: ImageData
     }
   }
+  tableDataMap: {
+    // PlotDataKeyの時と、ファイル選択ノードのnodeIdの時がある
+    [path: string]: {
+      columns: string[]
+      data: TableData
+    }
+  }
 }
 
 export type TimeSeriesData = {
@@ -35,3 +42,5 @@ export type TimeSeriesData = {
 export type HeatMapData = number[][]
 
 export type ImageData = number[][][]
+
+export type TableData = number[][]

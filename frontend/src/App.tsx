@@ -10,6 +10,7 @@ import { ToolBar } from 'components/ToolBar'
 import React from 'react'
 import { getNodeId, getSuffix } from 'utils/FlexLayoutUtils'
 import { ImagePlot } from 'components/Plot/ImagePlot'
+import { TablePlot } from 'components/Plot/TablePlot'
 
 const model = Model.fromJson(flexjson)
 
@@ -22,8 +23,12 @@ export const OutputPlotContext = React.createContext<{
 
 export const ImageDataContext = React.createContext<{
   nodeId: string
-  outputKey: string | null // FileSelectorNodeでアップロードされた場合はoutputKeyがnull
+  outputKey: string | null // ImageFileNodeでアップロードされた場合はoutputKeyがnull
 }>({ nodeId: '', outputKey: null })
+
+export const TableDataContext = React.createContext<{
+  nodeId: string
+}>({ nodeId: '' })
 
 function App() {
   const factory = (node: TabNode) => {
@@ -61,6 +66,12 @@ function App() {
           <ImageDataContext.Provider value={{ nodeId, outputKey: key }}>
             <ImagePlot />
           </ImageDataContext.Provider>
+        )
+      case 'csv':
+        return (
+          <TableDataContext.Provider value={{ nodeId }}>
+            <TablePlot />
+          </TableDataContext.Provider>
         )
       default:
         return null

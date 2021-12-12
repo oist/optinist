@@ -26,10 +26,10 @@ const sourceHandleStyle: CSSProperties = {
 
 export const CsvFileNode = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   const model = React.useContext(FlexLayoutModelContext)
-  const actionForImageTab = useTabAction(nodeId)
+  const actionForOutputTab = useTabAction(nodeId)
   const onClick = () => {
-    if (actionForImageTab != null) {
-      model.doAction(actionForImageTab('output', OUTPUT_TABSET_ID))
+    if (actionForOutputTab != null) {
+      model.doAction(actionForOutputTab('csv', OUTPUT_TABSET_ID))
     }
   }
   const theme = useTheme()
@@ -64,7 +64,7 @@ export const CsvFileNode = React.memo<NodeProps>(({ id: nodeId, selected }) => {
 const CsvFileSelect = React.memo<{ nodeId: string }>(({ nodeId }) => {
   const dispatch = useDispatch()
   const model = React.useContext(FlexLayoutModelContext)
-  const actionForImageTab = useTabAction(nodeId)
+  const actionForOutputTab = useTabAction(nodeId)
   const onUploadFile = (formData: FormData, fileName: string) => {
     dispatch(
       uploadCsvFile({
@@ -73,14 +73,14 @@ const CsvFileSelect = React.memo<{ nodeId: string }>(({ nodeId }) => {
         formData,
       }),
     )
-    if (actionForImageTab != null) {
-      model.doAction(actionForImageTab('output', OUTPUT_TABSET_ID))
+    if (actionForOutputTab != null) {
+      model.doAction(actionForOutputTab('csv', OUTPUT_TABSET_ID))
     }
   }
   const onSelectFile = (path: string) => {
     dispatch(selectCsvFile({ nodeId, path }))
-    if (actionForImageTab != null) {
-      model.doAction(actionForImageTab('output', OUTPUT_TABSET_ID))
+    if (actionForOutputTab != null) {
+      model.doAction(actionForOutputTab('csv', OUTPUT_TABSET_ID))
     }
   }
   return (
