@@ -7,8 +7,8 @@ services:
     tty: true
     volumes:
       - ./backend:/app/:cached
-      - ./.docker/.ipython:/root/.ipython:cached
       - ./optinist:/optinist:cached
+      - /tmp/optinist:/app/files
     ports:
       - 8000:8000
     environment:
