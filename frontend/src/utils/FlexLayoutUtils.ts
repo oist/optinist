@@ -26,7 +26,7 @@ type LayoutTabId =
   | `${string}${typeof SEPARATOR}${ComponentType}${typeof SEPARATOR}${string}`
   | `${string}${typeof SEPARATOR}${ComponentType}${typeof SEPARATOR}${string}${typeof SEPARATOR}${string}`
 
-export type ComponentType = 'paramForm' | 'output' | 'image'
+export type ComponentType = 'paramForm' | 'output' | 'image' | 'csv'
 //   | 'flowchart'
 //   | 'sidebar'
 

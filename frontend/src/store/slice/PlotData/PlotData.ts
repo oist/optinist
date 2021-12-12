@@ -3,6 +3,7 @@ import {
   getHeatMapData,
   getTimeSeriesData,
   getImageData,
+  getTableData,
 } from './PlotDataAction'
 import { PlotData, PLOT_DATA_SLICE_NAME } from './PlotDataType'
 
@@ -10,6 +11,7 @@ const initialState: PlotData = {
   timeSeriesDataMap: {},
   heatMapDataMap: {},
   imageDataMap: {},
+  tableDataMap: {},
 }
 
 export const plotDataSlice = createSlice({
@@ -55,6 +57,13 @@ export const plotDataSlice = createSlice({
         const { path } = action.meta.arg
         state.imageDataMap[path] = {
           activeIndex: 0,
+          data: action.payload.data,
+        }
+      })
+      .addCase(getTableData.fulfilled, (state, action) => {
+        const { path } = action.meta.arg
+        state.tableDataMap[path] = {
+          columns: action.payload.columns,
           data: action.payload.data,
         }
       })
