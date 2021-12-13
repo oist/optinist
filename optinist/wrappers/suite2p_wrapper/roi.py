@@ -8,8 +8,9 @@ def suite2p_roi(ops: Suite2pData, params: dict=None):
 
     import numpy as np
     from suite2p import extraction, classification, detection, ROI
+    from suite2p import default_ops
 
-    ops = {**ops, **params}
+    ops = {**ops, **params, **default_ops()}
 
     # ROI detection
     classfile = classification.user_classfile
@@ -45,6 +46,7 @@ def suite2p_roi(ops: Suite2pData, params: dict=None):
         func_name='suite2p_roi',
         file_name='max_proj'
     )
+    import pdb; pdb.set_trace()
     info['F'] = TimeSeriesData(
         F,
         func_name='suite2p_roi',
