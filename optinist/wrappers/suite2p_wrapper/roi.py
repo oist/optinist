@@ -9,6 +9,8 @@ def suite2p_roi(ops: Suite2pData, params: dict=None):
     import numpy as np
     from suite2p import extraction, classification, detection, ROI
 
+    ops = {**ops, **params}
+
     # ROI detection
     classfile = classification.user_classfile
     ops, stat = detection.detect(ops=ops, classfile=classfile)
@@ -38,8 +40,16 @@ def suite2p_roi(ops: Suite2pData, params: dict=None):
     ops['Fneu'] = Fneu
 
     info = {}
-    info['max_proj'] = ImageData(ops['max_proj'], 'suite2p_roi')
-    info['F'] = TimeSeriesData(F, 'suite2p_roi')
+    info['max_proj'] = ImageData(
+        ops['max_proj'],
+        func_name='suite2p_roi',
+        file_name='max_proj'
+    )
+    info['F'] = TimeSeriesData(
+        F,
+        func_name='suite2p_roi',
+        file_name='F'
+    )
 
     info['ops'] = Suite2pData(ops)
 

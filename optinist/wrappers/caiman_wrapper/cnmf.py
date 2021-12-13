@@ -32,12 +32,12 @@ def caiman_cnmf(images: ImageData, params: dict=None):
         cont_cent[i, :] = np.nanmean(cont[i]['coordinates'], axis=0)
 
     iscell = np.zeros(cont_cent.shape[0])
-    iscell[cnm.estimates.idx_components]=1
+    iscell[cnm.estimates.idx_components] = 1
 
     info = {}
-    info['images'] = ImageData(np.array(Cn * 255, dtype=np.uint8), 'caiman_cnmf')
-    info['fluo'] = TimeSeriesData(cnm.estimates.C, 'caiman_cnmf')
-    info['iscell'] = IscellData(iscell)
+    info['images'] = ImageData(np.array(Cn * 255, dtype=np.uint8), func_name='caiman_cnmf', file_name='images')
+    info['fluo'] = TimeSeriesData(cnm.estimates.C, func_name='caiman_cnmf', file_name='fluo')
+    info['iscell'] = IscellData(iscell, func_name='caiman_cnmf', file_name='iscell')
     info['roi'] = cont_cent
 
     return info

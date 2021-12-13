@@ -32,7 +32,7 @@ def caiman_mc(image: ImageData, params: dict=None):
     #     Yr.T, [T] + list(dims), order='F'))
     images = Yr.T.reshape((T,) + dims, order='F')
 
-    info['images'] = ImageData(images, 'caiman_mc')
+    info['images'] = ImageData(images, func_name='caiman_mc')
 
     return info
 
