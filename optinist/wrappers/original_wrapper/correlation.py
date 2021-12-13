@@ -20,6 +20,10 @@ def correlation(timeseries: TimeSeriesData, iscell: IscellData, params: dict=Non
                 corr[i, j] = np.corrcoef(timeseries[i, :], timeseries[j, :])[0, 1]
 
     info = {}
-    info['corr'] = CorrelationData(corr, 'corr')
+    info['corr'] = CorrelationData(
+        corr,
+        func_name='correlation',
+        file_name='corr'
+    )
 
     return info

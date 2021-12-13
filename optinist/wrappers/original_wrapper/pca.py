@@ -47,8 +47,20 @@ def PCA(timeseries: TimeSeriesData, iscell: IscellData, params: dict=None):
     #Out_nwb['feature_names_in'] = pca.feature_names_in_
 
     info = {}
-    info['components'] = CorrelationData(pca.components_, 'components')
-    info['explained_variance_ratio'] = TimeSeriesData(pca.explained_variance_ratio_, 'evr')
-    info['projected'] = TimeSeriesData(proj_X[:, 0:2].transpose(1, 0), 'projected')  # change to 2D scatter plots
+    info['components'] = CorrelationData(
+        pca.components_,
+        func_name='pca',
+        file_name='components'
+    )
+    info['explained_variance_ratio'] = TimeSeriesData(
+        pca.explained_variance_ratio_,
+        func_name='pca',
+        file_name='evr'
+    )
+    info['projected'] = TimeSeriesData(
+        proj_X[:, 0:2].transpose(1, 0),
+        func_name='pca',
+        file_name='projected'
+    )  # change to 2D scatter plots
 
     return info

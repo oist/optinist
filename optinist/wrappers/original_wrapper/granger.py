@@ -148,6 +148,10 @@ def Granger(timeseries: TimeSeriesData, iscell: IscellData, params: dict):
 
     # main results for plot
     info = {}
-    info['Granger_fval_mat'] = CorrelationData(GC['Granger_fval_mat'], 'gfm')
+    info['Granger_fval_mat'] = CorrelationData(
+        GC['Granger_fval_mat'],
+        func_name='granger',
+        file_name='gfm'
+    )
 
     return info
