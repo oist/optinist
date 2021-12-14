@@ -68,3 +68,8 @@ class Suite2pData:
 class IscellData:
     def __init__(self, data, func_name='iscell', file_name='iscell'):
         self.data = data
+
+
+class RoiData:
+    def __init__(self, data, func_name='roi', file_name='roi'):
+        self.data = data

@@ -2,7 +2,7 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 @args_check
-def PCA(timeseries: TimeSeriesData, iscell: IscellData, params: dict=None):
+def PCA(timeseries: TimeSeriesData, iscell: IscellData, params: dict=None) -> {'components': CorrelationData, 'explained_variance_ratio': TimeSeriesData, 'projected': TimeSeriesData}:
     # modules specific to function
     from sklearn.preprocessing import StandardScaler
     from sklearn.decomposition import PCA

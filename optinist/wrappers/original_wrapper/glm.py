@@ -8,7 +8,7 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 @args_check
-def GLM(timeseries1: TimeSeriesData, timeseries2: TimeSeriesData,  iscell: IscellData, params: dict):
+def GLM(timeseries1: TimeSeriesData, timeseries2: TimeSeriesData,  iscell: IscellData, params: dict) -> {'actual_predicted': TimeSeriesData}:
 
     # modules specific to function
     import statsmodels.api as sm

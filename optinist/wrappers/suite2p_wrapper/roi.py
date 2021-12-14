@@ -3,7 +3,7 @@ from wrappers.args_check import args_check
 
 
 @args_check
-def suite2p_roi(ops: Suite2pData, params: dict=None):
+def suite2p_roi(ops: Suite2pData, params: dict=None) -> {'ops': Suite2pData, 'max_proj': ImageData, 'F': TimeSeriesData}:
     ops = ops.data
 
     import numpy as np
@@ -46,7 +46,7 @@ def suite2p_roi(ops: Suite2pData, params: dict=None):
         func_name='suite2p_roi',
         file_name='max_proj'
     )
-    import pdb; pdb.set_trace()
+    # import pdb; pdb.set_trace()
     info['F'] = TimeSeriesData(
         F,
         func_name='suite2p_roi',

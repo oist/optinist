@@ -3,7 +3,7 @@ from wrappers.args_check import args_check
 
 
 @args_check
-def suite2p_spike_deconv(ops: Suite2pData, params: dict=None):
+def suite2p_spike_deconv(ops: Suite2pData, params: dict=None) -> {'ops': Suite2pData, 'spks': TimeSeriesData}:
     ops = ops.data
     from suite2p import extraction
 

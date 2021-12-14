@@ -3,7 +3,7 @@ from wrappers.args_check import args_check
 
 
 @args_check
-def suite2p_file_convert(image: ImageData, params: dict=None):
+def suite2p_file_convert(image: ImageData, params: dict=None) -> {'images': ImageData, 'ops': Suite2pData}:
     import os
     import numpy as np
     from natsort import natsorted
