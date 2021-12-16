@@ -59,3 +59,25 @@ export const imageDataMaxIndexSelector =
       return undefined
     }
   }
+
+export const tableDataIsLoadedSelector =
+  (path: string) => (state: RootState) => {
+    return Object.keys(state.plotData.tableDataMap).includes(path)
+  }
+
+export const tableDataSelector = (path: string) => (state: RootState) => {
+  if (Object.keys(state.plotData.tableDataMap).includes(path)) {
+    return state.plotData.tableDataMap[path].data
+  } else {
+    return undefined
+  }
+}
+
+export const tableDataColumnsSelector =
+  (path: string) => (state: RootState) => {
+    if (Object.keys(state.plotData.tableDataMap).includes(path)) {
+      return state.plotData.tableDataMap[path].columns
+    } else {
+      return undefined
+    }
+  }

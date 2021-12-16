@@ -1,6 +1,6 @@
 import { AlgoNodeData } from 'const/NodeData'
 import { ElementId } from 'react-flow-renderer'
-import { isNodeData, isInputNodeData, isAlgoNodeData } from 'utils/ElementUtils'
+import { isNodeData, isImageNodeData, isAlgoNodeData } from 'utils/ElementUtils'
 import { RootState } from '../../store'
 import { algoParamByIdSelector } from '../Algorithm/AlgorithmSelector'
 
@@ -15,19 +15,17 @@ export const nodeByIdSelector =
   }
 
 export const maxElementIdSelector = (state: RootState) =>
-  state.element.flowElements
-    .map((element) => element.id)
-    .map((id) => Number(id))
-    .filter((id) => !isNaN(id))
-    .reduce((a, b) => Math.max(a, b))
-
-export const runStatusSelector = (state: RootState) => state.element.runStatus
-
-export const runMassageSelector = (state: RootState) => state.element.runMessage
+  state.element.flowElements.length === 0
+    ? 0
+    : state.element.flowElements
+        .map((element) => element.id)
+        .map((id) => Number(id))
+        .filter((id) => !isNaN(id))
+        .reduce((a, b) => Math.max(a, b))
 
 export const nodeDataListForRunSelector = (state: RootState) =>
   flowElementsSelector(state)
-    .filter((element) => isInputNodeData(element) || isAlgoNodeData(element))
+    .filter((element) => isImageNodeData(element) || isAlgoNodeData(element))
     .map((element) => {
       if (element.data && element.data.type === 'algo') {
         const param = algoParamByIdSelector(element.id)(state)
@@ -43,7 +41,7 @@ export const nodeDataListForRunSelector = (state: RootState) =>
 
 export const pathIsUndefinedSelector = (state: RootState) => {
   const pathErrorNodeList = flowElementsSelector(state).filter((element) => {
-    if (isInputNodeData(element)) {
+    if (isImageNodeData(element)) {
       if (!element.data?.path) {
         return true
       }
@@ -51,4 +49,9 @@ export const pathIsUndefinedSelector = (state: RootState) => {
     return false
   })
   return pathErrorNodeList.length > 0
+}
+
+export const filePathSelector = (nodeId: string) => (state: RootState) => {
+  const node = nodeByIdSelector(nodeId)(state)
+  return node?.data?.path
 }

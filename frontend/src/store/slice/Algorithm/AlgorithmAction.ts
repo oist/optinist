@@ -11,7 +11,7 @@ export const getAlgoParams = createAsyncThunk<
 >(`${ALGORITHM_SLICE_NAME}/getAlgoParams`, async ({ algoName }, thunkAPI) => {
   const { rejectWithValue } = thunkAPI
   try {
-    const response = await axios.get(`${BASE_URL}/api/params/${algoName}`)
+    const response = await axios.get(`${BASE_URL}/params/${algoName}`)
     return response.data
   } catch (e) {
     return rejectWithValue(e)
@@ -23,7 +23,7 @@ export const getAlgoList = createAsyncThunk<AlgoListDTO, void>(
   async (_, thunkAPI) => {
     const { rejectWithValue } = thunkAPI
     try {
-      const response = await axios.get(`${BASE_URL}/api/algolist`)
+      const response = await axios.get(`${BASE_URL}/algolist`)
       return response.data
     } catch (e) {
       return rejectWithValue(e)

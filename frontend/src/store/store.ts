@@ -2,18 +2,20 @@ import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import elementReducer from './slice/Element/Element'
 import algorithmReducer from './slice/Algorithm/Algorithm'
-import uploadImageReducer from './slice/UploadImage/UploadImage'
+import fileDataReducer from './slice/FileData/FileData'
 import plotDataReducer from './slice/PlotData/PlotData'
-import HandleTypeColorReducer from './slice/HandleTypeColor/HandleTypeColor'
+import handleTypeColorReducer from './slice/HandleTypeColor/HandleTypeColor'
+import filesTreeReducer from './slice/FilesTree/FilesTree'
 import { webSocketApi } from '../api/Run/Run'
 
 export const store = configureStore({
   reducer: {
     element: elementReducer,
     algorithm: algorithmReducer,
-    uploadImage: uploadImageReducer,
+    fileData: fileDataReducer,
     plotData: plotDataReducer,
-    handleColor: HandleTypeColorReducer,
+    handleColor: handleTypeColorReducer,
+    filesTree: filesTreeReducer,
     [webSocketApi.reducerPath]: webSocketApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>

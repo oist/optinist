@@ -88,6 +88,7 @@ export function convertToAlgoListType(dto: AlgoListDTO) {
         ...(value as {
           args: AlgoInfo[]
           returns: AlgoInfo[]
+          path: string
         }),
       }
     }

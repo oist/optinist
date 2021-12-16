@@ -7,6 +7,7 @@ import {
   TimeSeriesData,
   PLOT_DATA_SLICE_NAME,
   HeatMapData,
+  TableData,
 } from './PlotDataType'
 
 export const getTimeSeriesData = createAsyncThunk<
@@ -14,7 +15,7 @@ export const getTimeSeriesData = createAsyncThunk<
   { path: string }
 >(`${PLOT_DATA_SLICE_NAME}/getTimeSeriesData`, async ({ path }, thunkAPI) => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/outputs/${path}`)
+    const response = await axios.get(`${BASE_URL}/outputs/data/${path}`)
     return response.data
   } catch (e) {
     return thunkAPI.rejectWithValue(e)
@@ -26,7 +27,7 @@ export const getHeatMapData = createAsyncThunk<
   { path: string }
 >(`${PLOT_DATA_SLICE_NAME}/getHeatMapData`, async ({ path }, thunkAPI) => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/outputs/${path}`)
+    const response = await axios.get(`${BASE_URL}/outputs/data/${path}`)
     return response.data
   } catch (e) {
     return thunkAPI.rejectWithValue(e)
@@ -35,11 +36,33 @@ export const getHeatMapData = createAsyncThunk<
 
 export const getImageData = createAsyncThunk<
   { data: ImageData },
+  { path: string; maxIndex?: number }
+>(
+  `${PLOT_DATA_SLICE_NAME}/getImageData`,
+  async ({ path, maxIndex }, thunkAPI) => {
+    try {
+      const response = await axios.get(`${BASE_URL}/outputs/image/${path}`, {
+        params: {
+          max_index: maxIndex,
+        },
+      })
+      return response.data
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
+
+export const getTableData = createAsyncThunk<
+  {
+    columns: string[]
+    data: TableData
+  },
   { path: string }
->(`${PLOT_DATA_SLICE_NAME}/getImageData`, async ({ path }, thunkAPI) => {
+>(`${PLOT_DATA_SLICE_NAME}/getTableData`, async ({ path }, thunkAPI) => {
   try {
-    const response = await axios.get(`${BASE_URL}/api/outputs/${path}`)
-    return response.data
+    const response = await axios.get(`${BASE_URL}/outputs/csv/${path}`)
+    return response.data.data
   } catch (e) {
     return thunkAPI.rejectWithValue(e)
   }

@@ -3,7 +3,7 @@ from wrappers.args_check import args_check
 
 
 @args_check
-def suite2p_file_convert(image: ImageData, params: dict=None):
+def suite2p_file_convert(image: ImageData, params: dict=None) -> {'images': ImageData, 'ops': Suite2pData}:
     import os
     import numpy as np
     from natsort import natsorted
@@ -24,10 +24,9 @@ def suite2p_file_convert(image: ImageData, params: dict=None):
         'save_folder': 'suite2p'
     }
 
-    if params is None or len(params) == 0:
-        ops = {**default_ops(), **db}
-    else:
-        ops = {**params, **db}
+    ops = {**params, **db}
+
+    ops['input_format'] = 'tif'
 
     # save folderを指定
     save_folder = os.path.join(ops['save_path0'], ops['save_folder'])
@@ -36,13 +35,6 @@ def suite2p_file_convert(image: ImageData, params: dict=None):
         f.path for f in os.scandir(save_folder) if f.is_dir() and f.name[:5]=='plane'])
 
     ops_path = [os.path.join(f, 'ops.npy') for f in plane_folders]
-
-    if len(ops['h5py']):
-        ops['input_format'] = 'h5'
-    elif ops.get('mesoscan'):
-        ops['input_format'] = 'mesoscan'
-    elif not 'input_format' in ops:
-        ops['input_format'] = 'tif'
 
     # copy file format to a binary file
     convert_funs = {
@@ -58,8 +50,7 @@ def suite2p_file_convert(image: ImageData, params: dict=None):
     ops = convert_funs[ops['input_format']](ops.copy())
 
     info = {}
-    print(ops['meanImg'])
-    info['images'] = ImageData(ops['meanImg'], 'suite2p_convert')
-    info['ops'] = Suite2pData(ops)
+    info['images'] = ImageData(ops['meanImg'], func_name='suite2p_convert', file_name='images')
+    info['ops'] = Suite2pData(ops, func_name='suite2p_convert', file_name='ops')
 
     return info

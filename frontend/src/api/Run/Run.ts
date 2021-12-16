@@ -1,6 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { BASE_URL, WS_BASE_URL } from 'const/API'
-import { AlgoNodeData, InputNodeData } from 'const/NodeData'
+import { AlgoNodeData, CsvNodeData, ImageNodeData } from 'const/NodeData'
+
+export type RunPipeLineNodeDataType = ImageNodeData | AlgoNodeData | CsvNodeData
 
 export type RunPipelineDTO = {
   status: string
@@ -11,7 +13,7 @@ export type RunPipelineDTO = {
 }
 
 export type OutputPathsDTO = {
-  [algoName: string]: {
+  [path: string]: {
     [key: string]: {
       path: string
       type: string
@@ -22,13 +24,13 @@ export type OutputPathsDTO = {
 
 export const webSocketApi = createApi({
   reducerPath: 'webSocketApi',
-  baseQuery: fetchBaseQuery({ baseUrl: `${BASE_URL}/api/` }),
+  baseQuery: fetchBaseQuery({ baseUrl: `${BASE_URL}/` }),
   endpoints: (builder) => ({
     runPipeline: builder.query<
       RunPipelineDTO,
       {
         requestId: string
-        nodeDataListForRun: (InputNodeData | AlgoNodeData | undefined)[]
+        nodeDataListForRun: (RunPipeLineNodeDataType | undefined)[]
       }
     >({
       // リクエストするたびにキャッシュをクリアするためにidを振っておく
