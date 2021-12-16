@@ -50,7 +50,7 @@ export const FileSelectDialog = React.memo<FileSelectDialogProps>(
     const theme = useTheme()
     return (
       <Dialog open={open} onClose={onClose} fullWidth>
-        <DialogTitle>{title ?? 'ファイルを選択'}</DialogTitle>
+        <DialogTitle>{title ?? 'Select File'}</DialogTitle>
         <DialogContent dividers>
           <div
             style={{
@@ -67,14 +67,14 @@ export const FileSelectDialog = React.memo<FileSelectDialogProps>(
               fileType={fileType}
             />
           </div>
-          <Typography variant="subtitle1">選択ファイル</Typography>
+          <Typography variant="subtitle1">Select File</Typography>
           <Typography variant="subtitle2">
             {!!clickedFilePath ? clickedFilePath : '---'}
           </Typography>
         </DialogContent>
         <DialogActions>
           <Button onClick={onClickCancel} variant="outlined">
-            キャンセル
+            cancel
           </Button>
           <Button
             onClick={() => onClickOk(clickedFilePath)}
