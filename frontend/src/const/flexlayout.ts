@@ -21,7 +21,7 @@ const flexjson: IJsonModel = {
         children: [
           {
             type: 'tabset',
-            height: 380,
+            height: 300,
             selected: 0,
             children: [
               {
@@ -38,6 +38,7 @@ const flexjson: IJsonModel = {
               {
                 type: 'tabset',
                 id: PARAM_FORM_TABSET_ID,
+                width: 500,
                 selected: 0,
                 enableMaximize: false,
                 children: [],
