@@ -1,9 +1,9 @@
+import sys
+sys.path.append('../optinist')
 from wrappers.data_wrapper import *
-from wrappers.args_check import args_check
 
-@args_check
-def caiman_mc(image: ImageData, params: dict=None):
-    file_path = image.path
+
+def caiman_mc(file_path: str, params: dict=None):
     import numpy as np
     from caiman.source_extraction.cnmf.params import CNMFParams
     from caiman.motion_correction import MotionCorrect
@@ -31,17 +31,15 @@ def caiman_mc(image: ImageData, params: dict=None):
     # images = np.array(np.reshape(
     #     Yr.T, [T] + list(dims), order='F'))
     images = Yr.T.reshape((T,) + dims, order='F')
-
     info['images'] = ImageData(images, 'caiman_mc')
+
+    print(info)
 
     return info
 
+if __name__ == "__main__":
+    print(snakemake.input[0])
 
-if __name__ == '__main__':
-    import os
-    info = {}
-    file_path = os.path.join(
-        '/Users', 'shogoakiyama', 'caiman_data', 
-        'example_movies', 'Sue_2x_3000_40_-46.tif')
-    info['caiman_mc'] = caiman_mc(file_path)
-    print(info)
+    file_path = snakemake.input[0]
+
+    result = caiman_mc(file_path=file_path)

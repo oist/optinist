@@ -82,11 +82,11 @@ def get_nest_dict(value):
 
     return algo_dict
 
+
 @app.get("/api/algolist")
 async def run() -> List:
-    # print(wrapper_dict.keys())
     {
-        'caiman_mc' : {
+        'caiman_mc': {
             'args': ['images', 'timeseries']
         },
         'caiman_cnmf': {
