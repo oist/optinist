@@ -145,7 +145,7 @@ const ImagePlotChart = React.memo<{ path: string }>(({ path }) => {
     title: 'dummy',
     margin: {
       t: 30, // top
-      l: 90, // left
+      l: 120, // left
       b: 30, // bottom
     },
     autosize: true,
@@ -157,7 +157,11 @@ const ImagePlotChart = React.memo<{ path: string }>(({ path }) => {
   const config = {
     displayModeBar: true,
   }
-  return <PlotlyChart data={data} layout={layout} config={config} />
+  return (
+    <div className="imagePlotChart">
+      <PlotlyChart data={data} layout={layout} config={config} />
+    </div>
+  )
 })
 
 function imageDataEqualtyFn(

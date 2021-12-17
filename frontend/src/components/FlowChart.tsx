@@ -41,7 +41,6 @@ export const FlowChart = React.memo(() => {
         addEdge(
           {
             ...params,
-            type: 'smoothstep',
             animated: false,
             style: { width: 5 },
           },

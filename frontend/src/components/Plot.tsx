@@ -3,9 +3,10 @@ import { useSelector } from 'react-redux'
 
 import { outputPathTypeByIdSelector } from 'store/slice/Algorithm/AlgorithmSelector'
 import { OutputPlotContext } from 'App'
-import { TimeSeries } from './TimeSeries'
-import { HeatMap } from './HeatMap'
+import { TimeSeries } from './Plot/TimeSeries'
+import { HeatMap } from './Plot/HeatMap'
 import { OUTPUT_TYPE_SET } from 'store/slice/Algorithm/AlgorithmType'
+import 'style/plot.css'
 
 export const Plot = React.memo(function PlotOutput() {
   const { nodeId, outputKey } = React.useContext(OutputPlotContext)
