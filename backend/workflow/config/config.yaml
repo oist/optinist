@@ -1,0 +1,49 @@
+last_output: ../files/caiman_cnmf/caiman_cnmf_out.pkl
+rules:
+  caiman_cnmf:
+    input: ../files/caiman_mc/caiman_mc_out.pkl
+    output: ../files/caiman_cnmf/caiman_cnmf_out.pkl
+    param:
+      K: 4
+      gSig:
+      - 4
+      - 4
+      gnb: 2
+      merge_thr: 0.85
+      method_init: greedy_roi
+      p: 1
+      rf: 15
+      ssub: 1
+      stride_cnmf: 6
+      tsub: 1
+    rule_file: rules/caiman_cnmf.smk
+  caiman_mc:
+    input: ../files/Sue_2x_3000_40_-46.tif(0)/Sue_2x_3000_40_-46.tif
+    output: ../files/caiman_mc/caiman_mc_out.pkl
+    param:
+      border_nan: copy
+      gSig_filt: null
+      is3D: false
+      max_deviation_rigid: 3
+      max_shifts:
+      - 6
+      - 6
+      min_mov: null
+      niter_rig: 1
+      nonneg_movie: true
+      num_frames_split: 80
+      num_splits_to_process_els: null
+      num_splits_to_process_rig: null
+      overlaps:
+      - 32
+      - 32
+      pw_rigid: false
+      shifts_opencv: true
+      splits_els: 14
+      splits_rig: 14
+      strides:
+      - 96
+      - 96
+      upsample_factor_grid: 4
+      use_cuda: false
+    rule_file: rules/caiman_mc.smk

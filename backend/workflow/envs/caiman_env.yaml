@@ -1,0 +1,7 @@
+channels:
+  - conda-forge
+dependencies:
+  - caiman
+  - scikit-image==0.17.0
+  - pip:
+      - numpy
