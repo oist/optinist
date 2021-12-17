@@ -38,7 +38,6 @@ const flexjson: IJsonModel = {
               {
                 type: 'tabset',
                 id: PARAM_FORM_TABSET_ID,
-                width: 500,
                 selected: 0,
                 enableMaximize: false,
                 children: [],
@@ -47,6 +46,7 @@ const flexjson: IJsonModel = {
                 type: 'tabset',
                 id: OUTPUT_TABSET_ID,
                 selected: 0,
+                width: 700,
                 // enableDeleteWhenEmpty: false,
                 children: [
                   toLayoutTab(
