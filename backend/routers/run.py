@@ -2,8 +2,11 @@ from fastapi import APIRouter, WebSocket
 from pydantic import BaseModel
 from typing import Dict, List, Optional
 import traceback
+import os
 import sys
 import json
+import yaml
+import subprocess
 from wrappers import wrapper_dict
 from collections import OrderedDict
 from wrappers.data_wrapper import *
@@ -27,6 +30,44 @@ def get_dict_leaf_value(root_dict: dict, path_list: List[str]):
     else:
         return root_dict[path]
 
+def create_snakefile_config_from_flowlist(flowList: List[FlowItem]):
+    '''
+    flowListを受け取り、Snakemakeに渡すconfig.yamlとして出力する。
+    '''
+    flow_config = {}
+    rules_to_execute = {}
+    prev_algo_output = None
+    for i, item in enumerate(flowList):
+        if item.type == 'image':
+            initial_input = "../" + item.path
+        elif item.type == 'algo':
+            if i == 1:
+                algo_input = initial_input
+            else:
+                algo_input = prev_algo_output
+            
+            output_base_path = f"../files/{item.label}"
+            
+            if not os.path.exists(output_base_path):
+                os.makedirs(output_base_path)
+            algo_output = os.path.join(output_base_path, f"{item.label}_out.pkl")
+            
+            rules_to_execute[item.label] ={   
+                    "rule_file": f"rules/{item.label}.smk",
+                    "input": algo_input,
+                    "param": item.param,
+                    "output": algo_output
+                }
+
+            # 次のalgoのinputに渡すため、現在の出力ファイルのパスを保存
+            prev_algo_output = algo_output
+
+    flow_config["rules"] = rules_to_execute
+    flow_config["last_output"] = algo_output
+    
+    with open('./workflow/config/config.yaml', "w") as f:
+        yaml.dump(flow_config, f)
+
 @router.get("/run/ready/{request_id}")
 async  def run_ready(request_id: str):
     return {'message': 'ready...', 'status': 'ready', "requestId": request_id}
@@ -39,6 +80,13 @@ async def websocket_endpoint(websocket: WebSocket):
     # Wait for any message from the client
     flowList = await websocket.receive_text()
     flowList = list(map(lambda x: FlowItem(**x), json.loads(flowList)))
+
+    # flowListの内容をconfig.yamlに出力
+    create_snakefile_config_from_flowlist(flowList)
+
+    # snakemake実行
+    # subprocess.run("snakemake --cores 1 --use-conda", shell=True, cwd="./workflow")
+
     try:
         for item in flowList:
 
