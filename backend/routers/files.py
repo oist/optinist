@@ -1,7 +1,8 @@
+import os
+import shutil
+from glob import glob
 from typing import List, Optional, TypedDict
 from fastapi import APIRouter, File, Response, UploadFile, Form
-import os
-from glob import glob
 
 router = APIRouter()
 
@@ -52,18 +53,19 @@ async  def get_files(file_type: Optional[str] = None):
         else:
             # TODO 他のファイル種別の仕様が分かり次第追加
             pass
+
     return tree
 
 @router.post("/files/upload/{fileName}")
 async def create_file(response: Response, fileName: str, element_id: str = Form(...), file: UploadFile = File(...)):
-    root_dir = os.path.join("files", fileName+"("+element_id+")")
+    root_dir = os.path.join("files", fileName)
     os.makedirs(root_dir, exist_ok=True)
 
     file_path = os.path.join(root_dir, fileName)
 
-    contents = await file.read()
-
     with open(file_path, "wb") as f:
-        f.write(contents)
+        # contents = await file.read()
+        # f.write(contents)
+        shutil.copyfileobj(file.file, f)
 
     return { "file_path": file_path }
