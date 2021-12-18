@@ -12,7 +12,9 @@ def dummy_image2image(image: ImageData, params: dict=None) -> {'image2image': Im
         return image
     """
     info = {}
-    info['image2image'] = ImageData(np.random.rand((100)).reshape(10, 10), sys._getframe().f_code.co_name)
+    info['image2image'] = ImageData(
+        np.random.rand((100)).reshape(10, 10),
+        func_name=sys._getframe().f_code.co_name)
     return info
 
 
@@ -24,7 +26,9 @@ def dummy_image2time(image: ImageData, params: dict=None) -> {'image2time': Time
         return image
     """
     info = {}
-    info['image2time'] = TimeSeriesData(np.random.rand((10000)).reshape(10, 1000), sys._getframe().f_code.co_name)
+    info['image2time'] = TimeSeriesData(
+        np.random.rand((10000)).reshape(10, 1000),
+        func_name=sys._getframe().f_code.co_name)
     return info
 
 
@@ -36,7 +40,9 @@ def dummy_image2heat(image: ImageData, params: dict=None) -> {'image2heat': Corr
         return image
     """
     info = {}
-    info['image2heat'] = CorrelationData(np.random.rand((10000)).reshape(100, 100), sys._getframe().f_code.co_name)
+    info['image2heat'] = CorrelationData(
+        np.random.rand((10000)).reshape(100, 100),
+        func_name=sys._getframe().f_code.co_name)
     return info
 
 
@@ -48,7 +54,9 @@ def dummy_time2time(timeseries: TimeSeriesData, params: dict=None) -> {'time2tim
         return image
     """
     info = {}
-    info['time2time'] = TimeSeriesData(np.random.rand((10000)).reshape(10, 1000), sys._getframe().f_code.co_name)
+    info['time2time'] = TimeSeriesData(
+        np.random.rand((10000)).reshape(10, 1000),
+        func_name=sys._getframe().f_code.co_name)
     return info
 
 
@@ -60,8 +68,12 @@ def dummy_image2image8time(image1: ImageData, params: dict=None) -> {'image': Im
         return image
     """
     info = {}
-    info['image'] = ImageData(np.random.rand((100)).reshape(10, 10), sys._getframe().f_code.co_name)
-    info['timeseries'] = TimeSeriesData(np.random.rand((10000)).reshape(10, 1000), sys._getframe().f_code.co_name)
+    info['image'] = ImageData(
+        np.random.rand((100)).reshape(10, 10),
+        func_name=sys._getframe().f_code.co_name)
+    info['timeseries'] = TimeSeriesData(
+        np.random.rand((10000)).reshape(10, 1000),
+        func_name=sys._getframe().f_code.co_name)
     return info
 
 
@@ -73,8 +85,14 @@ def dummy_image8image2image8time(image1: ImageData, image2: ImageData, params: d
         return image
     """
     info = {}
-    info['image'] = ImageData(np.random.rand((100)).reshape(10, 10), sys._getframe().f_code.co_name)
-    info['timeseries'] = TimeSeriesData(np.random.rand((10000)).reshape(10, 1000), sys._getframe().f_code.co_name)
+    info['image'] = ImageData(
+        np.random.rand((100)).reshape(10, 10),
+        func_name=sys._getframe().f_code.co_name,
+        file_name='image')
+    info['timeseries'] = TimeSeriesData(
+        np.random.rand((10000)).reshape(10, 1000),
+        func_name=sys._getframe().f_code.co_name,
+        file_name='timeseries')
     return info
 
 
@@ -86,8 +104,14 @@ def dummy_time8image2image8time(timeseries: TimeSeriesData, image: ImageData, pa
         return image
     """
     info = {}
-    info['image'] = ImageData(np.random.rand((100)).reshape(10, 10), sys._getframe().f_code.co_name)
-    info['timeseries'] = TimeSeriesData(np.random.rand((100)).reshape(10, 10), sys._getframe().f_code.co_name)
+    info['image'] = ImageData(
+        np.random.rand((100)).reshape(10, 10),
+        func_name=sys._getframe().f_code.co_name,
+        file_name='image')
+    info['timeseries'] = TimeSeriesData(
+        np.random.rand((100)).reshape(10, 10),
+        func_name=sys._getframe().f_code.co_name,
+        file_name='timeseries')
     return info
 
 
@@ -122,6 +146,12 @@ def dummy_image2time8iscell(image1: ImageData, params: dict=None) -> {'timeserie
         return image
     """
     info = {}
-    info['timeseries'] = TimeSeriesData(np.random.rand((100)).reshape(10, 10), sys._getframe().f_code.co_name)
-    info['iscell'] = IscellData(np.random.rand((100)).reshape(10, 10))
+    info['timeseries'] = TimeSeriesData(
+        np.random.rand((100)).reshape(10, 10),
+        func_name=sys._getframe().f_code.co_name,
+        file_name='image')
+    info['iscell'] = IscellData(
+        np.random.rand((100)).reshape(10, 10),
+        func_name=sys._getframe().f_code.co_name,
+        file_name='timeseries')
     return info

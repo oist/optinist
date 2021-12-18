@@ -21,13 +21,14 @@ const flexjson: IJsonModel = {
         children: [
           {
             type: 'tabset',
-            height: 500,
+            height: 300,
             selected: 0,
             children: [
               {
                 type: 'tab',
                 name: 'flowchart',
                 component: 'flowchart',
+                enableClose: false,
               },
             ],
           },
@@ -45,7 +46,8 @@ const flexjson: IJsonModel = {
                 type: 'tabset',
                 id: OUTPUT_TABSET_ID,
                 selected: 0,
-                enableDeleteWhenEmpty: false,
+                width: 700,
+                // enableDeleteWhenEmpty: false,
                 children: [
                   toLayoutTab(
                     INITIAL_IMAGE_ELEMENT_ID,

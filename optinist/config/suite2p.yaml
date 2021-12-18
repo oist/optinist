@@ -9,19 +9,19 @@ mesoscan: False       # for reading in scanimage mesoscope files
 bruker: False         # whether or not single page BRUKER tiffs!
 bruker_bidirectional: False # bidirectional multiplane in bruker: 0 1 2 2 1 0 (True) vs 0 1 2 0 1 2 (False)
 h5py: []              # take h5py as input (deactivates data_path)
-h5py_key: 'data'      # key in h5py where data array is stored
-nwb_file: ''          # take nwb file as input (deactivates data_path)
-nwb_driver: ''        # driver for nwb file (nothing if file is local)
-nwb_series: ''        # TwoPhotonSeries name defaults to first TwoPhotonSeries in nwb file
+h5py_key: 'data     # key in h5py where data array is stored
+nwb_file: '         # take nwb file as input (deactivates data_path)
+nwb_driver: '       # driver for nwb file (nothing if file is local)
+nwb_series: '       # TwoPhotonSeries name defaults to first TwoPhotonSeries in nwb file
 save_path0: []        # stores results defaults to first item in data_path
 save_folder: []
 subfolders: []
 move_bin: False       # if 1 and fast_disk is different than save_disk binary file is moved to save_disk
 
 # main settings
-nplanes' : 1          # each tiff has these many planes in sequence
-nchannels' : 1        # each tiff has these many channels per plane
-functional_chan' : 1  # this channel is used to extract functional ROIs (1-based)
+nplanes: 1          # each tiff has these many planes in sequence
+nchannels: 1        # each tiff has these many channels per plane
+functional_chan: 1  # this channel is used to extract functional ROIs (1-based)
 tau:  1.0             # this is the main parameter for deconvolution
 fs: 10.0              # sampling rate (PER PLANE e.g. for 12 plane recordings it will be around 2.5)
 force_sktiff: False   # whether or not to use scikit-image for tiff reading
@@ -48,10 +48,10 @@ keep_movie_raw: False
 nimg_init: 300        # subsampled frames for finding reference image
 batch_size: 500       # number of frames per batch
 maxregshift: 0.1      # max allowed registration shift as a fraction of frame max(width and height)
-align_by_chan' : 1    # when multi-channel you can align by non-functional channel (1-based)
+align_by_chan : 1    # when multi-channel you can align by non-functional channel (1-based)
 reg_tif: False        # whether to save registered tiffs
 reg_tif_chan2: False  # whether to save channel 2 registered tiffs
-subpixel' : 10        # precision of subpixel registration (1/subpixel steps)
+subpixel: 10        # precision of subpixel registration (1/subpixel steps)
 smooth_sigma_time: 0  # gaussian smoothing in time
 smooth_sigma: 1.15    # ~1 good for 2P recordings recommend 3-5 for 1P recordings
 th_badframes: 1.0     # this parameter determines which frames to exclude when determining cropping - set it smaller to exclude more frames
@@ -87,7 +87,7 @@ nbinned: 5000         # max number of binned frames for cell detection
 max_iterations: 20    # maximum number of iterations to do cell detection
 threshold_scaling: 1.0  # adjust the automatically determined threshold by this scalar multiplier
 max_overlap: 0.75     # cells with more overlap than this get removed during triage before refinement
-high_pass: 100        # running mean subtraction with window of size 'high_pass' (use low values for 1P)
+high_pass: 100        # running mean subtraction with window of size 'high_pass(use low values for 1P)
 denoise: False        # denoise binned movie for cell detection in sparse_mode
 
 # classification parameters
@@ -108,7 +108,7 @@ classifier_path: 0    # path to classifier
 chan2_thres: 0.65     # minimum for detection of brightness on channel 2
 
 # deconvolution settings
-baseline: 'maximin'   # baselining mode (can also choose 'prctile')
+baseline: 'maximin'  # baselining mode (can also choose 'prctile')
 win_baseline: 60.     # window for maximin
 sig_baseline: 10.     # smoothing constant for gaussian filter
 prctile_baseline: 8.  # optional (whether to use a percentile baseline)

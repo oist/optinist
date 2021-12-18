@@ -35,16 +35,16 @@ import { addColor } from 'store/slice/HandleTypeColor/HandleTypeColor'
 import { RootState } from 'store/store'
 
 const leftHandleStyle: CSSProperties = {
-  width: 8,
-  height: '15%',
+  width: '4%',
+  height: '13%',
   border: '1px solid',
   borderRadius: 0,
 }
 const rightHandleStyle: CSSProperties = {
-  width: 8,
-  height: '15%',
+  width: '4%',
+  height: '13%',
   border: '1px solid',
-  borderColor: 'black',
+  // borderColor: 'black',
   borderRadius: 0,
 }
 
@@ -117,7 +117,7 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
         width: '100%',
         height: '100%',
         background: element.selected
-          ? alpha(theme.palette.primary.light, 0.1)
+          ? alpha(theme.palette.primary.light, 0.15)
           : undefined,
         border: '1px solid',
       }}
@@ -128,6 +128,7 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
           padding: 8,
           paddingLeft: 8,
         }}
+        className="algoName"
       >
         <Typography
           style={{
@@ -165,7 +166,9 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
           isConnectable={isConnectable}
         />
       )}
-      <OutputKeySelect nodeId={nodeId} />
+      <div className="outputkey">
+        <OutputKeySelect nodeId={nodeId} />
+      </div>
     </div>
   )
 })
@@ -223,7 +226,7 @@ const ArgHandle = React.memo<HandleProps>(
         style={{
           ...leftHandleStyle,
           background: color,
-          top: i * 35 + 15,
+          top: i * 25 + 15,
         }}
         isValidConnection={isValidConnection}
       >
@@ -261,7 +264,7 @@ const ReturnHandle = React.memo<HandleProps>(
         style={{
           ...rightHandleStyle,
           background: color,
-          top: i * 35 + 15,
+          top: i * 25 + 15,
         }}
         isValidConnection={isValidConnection}
       >

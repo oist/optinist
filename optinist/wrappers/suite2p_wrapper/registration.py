@@ -3,7 +3,7 @@ from wrappers.args_check import args_check
 
 
 @args_check
-def suite2p_registration(image: ImageData, ops: Suite2pData=None, params: dict=None):
+def suite2p_registration(image: ImageData, ops: Suite2pData=None, params: dict=None) -> {'ops': Suite2pData, 'images': ImageData, 'meanImgE': ImageData}:
     refImg = image.data
     ops = ops.data
 
@@ -19,6 +19,8 @@ def suite2p_registration(image: ImageData, ops: Suite2pData=None, params: dict=N
     # if ops is None:
     #     ops = {**default_ops()}
 
+    ops = {**ops, **params}
+
     ops = registration.register_binary(ops, refImg=refImg) # register binary
 
     # compute metrics for registration
@@ -27,9 +29,21 @@ def suite2p_registration(image: ImageData, ops: Suite2pData=None, params: dict=N
 
     info = {}
     print(ops['refImg'])
-    info['images'] = ImageData(ops['refImg'].astype(np.uint8), 'refImg')
+    info['images'] = ImageData(
+        ops['refImg'].astype(np.uint8),
+        func_name='suite2p_registration',
+        file_name='refImg'
+    )
     print(ops['meanImgE'])
-    info['meanImgE'] = ImageData(ops['meanImgE'].astype(np.uint8), 'meanImgE')
-    info['ops'] = Suite2pData(ops)
+    info['meanImgE'] = ImageData(
+        ops['meanImgE'].astype(np.uint8),
+        func_name='suite2p_registration',
+        file_name='meanImgE'
+    )
+    info['ops'] = Suite2pData(
+        ops,
+        func_name='suite2p_registration',
+        file_name='ops'
+    )
 
     return info

@@ -52,10 +52,10 @@ export const FileSelect = React.memo<FileSelectProps>(
       >
         <ButtonGroup size="small" style={{ marginRight: 4 }}>
           <Button variant="outlined" onClick={() => setOpen(true)}>
-            {!!selectButtonLabel ? selectButtonLabel : 'ファイルを選択'}
+            {!!selectButtonLabel ? selectButtonLabel : 'Select File'}
           </Button>
           <Button onClick={onClick} variant="outlined">
-            {!!uploadButtonLabel ? uploadButtonLabel : 'またはアップロード'}
+            {!!uploadButtonLabel ? uploadButtonLabel : 'or Upload'}
           </Button>
         </ButtonGroup>
         <div>
@@ -70,8 +70,8 @@ export const FileSelect = React.memo<FileSelectProps>(
               height: 0,
             }}
           />
-          <Typography variant="caption">
-            {filePath != null ? filePath : '---'}
+          <Typography className="selectFilePath" variant="caption">
+            {filePath != null ? filePath : "File doesn't select."}
           </Typography>
         </div>
         <FileSelectDialog

@@ -18,7 +18,7 @@ const useStyles = makeStyles({
     // height: 240,
     flexGrow: 1,
     background: '#F0F0F0',
-    height: 1000,
+    height: '100%',
   },
 })
 
