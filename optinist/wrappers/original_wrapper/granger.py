@@ -2,7 +2,7 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 @args_check
-def Granger(timeseries: TimeSeriesData, iscell: IscellData, params: dict):
+def Granger(timeseries: TimeSeriesData, iscell: IscellData, params: dict) -> {'Granger_fval_mat': CorrelationData}:
 
     # modules specific to function
     from sklearn.preprocessing import StandardScaler
@@ -148,6 +148,10 @@ def Granger(timeseries: TimeSeriesData, iscell: IscellData, params: dict):
 
     # main results for plot
     info = {}
-    info['Granger_fval_mat'] = CorrelationData(GC['Granger_fval_mat'], 'gfm')
+    info['Granger_fval_mat'] = CorrelationData(
+        GC['Granger_fval_mat'],
+        func_name='granger',
+        file_name='gfm'
+    )
 
     return info

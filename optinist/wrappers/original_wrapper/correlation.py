@@ -2,7 +2,7 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 @args_check
-def correlation(timeseries: TimeSeriesData, iscell: IscellData, params: dict=None):
+def correlation(timeseries: TimeSeriesData, iscell: IscellData, params: dict=None) -> {'corr': CorrelationData}:
     timeseries = timeseries.data
     iscell = iscell.data
 
@@ -20,6 +20,10 @@ def correlation(timeseries: TimeSeriesData, iscell: IscellData, params: dict=Non
                 corr[i, j] = np.corrcoef(timeseries[i, :], timeseries[j, :])[0, 1]
 
     info = {}
-    info['corr'] = CorrelationData(corr, 'corr')
+    info['corr'] = CorrelationData(
+        corr,
+        func_name='correlation',
+        file_name='corr'
+    )
 
     return info

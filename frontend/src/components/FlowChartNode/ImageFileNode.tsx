@@ -17,12 +17,13 @@ import { FileSelect } from './FileSelect'
 import { FILE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
 import { LinearProgressWithLabel } from './LinerProgressWithLabel'
 
+// Connection部分のレイアウト
 const sourceHandleStyle: CSSProperties = {
-  width: 8,
-  height: 15,
+  width: '4%',
+  height: '13%',
   top: 15,
   border: '1px solid',
-  borderColor: '#555',
+  // borderColor: '#555',
   borderRadius: 0,
 }
 
@@ -43,8 +44,8 @@ export const ImageFileNode = React.memo<NodeProps>((element) => {
   const uploadProgress = useSelector(imageUploadingProgressSelector(element.id))
   return (
     <div
+      className="imageFileNode"
       style={{
-        height: '100%',
         background: element.selected
           ? alpha(theme.palette.primary.light, 0.1)
           : undefined,
@@ -105,7 +106,7 @@ const ImageFileSelect = React.memo<{ nodeId: string; maxIndex: number }>(
         onSelectFile={onSelectFile}
         onUploadFile={onUploadFile}
         fileType={FILE_TYPE_SET.IMAGE}
-        selectButtonLabel="画像を選択"
+        selectButtonLabel="Select Image"
       />
     )
   },

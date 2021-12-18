@@ -8,7 +8,7 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 @args_check
-def GLM(timeseries1: TimeSeriesData, timeseries2: TimeSeriesData,  iscell: IscellData, params: dict):
+def GLM(timeseries1: TimeSeriesData, timeseries2: TimeSeriesData,  iscell: IscellData, params: dict) -> {'actual_predicted': TimeSeriesData}:
 
     # modules specific to function
     import statsmodels.api as sm
@@ -77,6 +77,10 @@ def GLM(timeseries1: TimeSeriesData, timeseries2: TimeSeriesData,  iscell: Iscel
     # plot should be reconsidered --- what they should be!
     info = {}
     #info['params'] = BarSeriesData(Res.params.values)  # add something 1d but not timesereies
-    info['actual_predicted'] = TimeSeriesData(np.array([Res._endog, Res.mu]).transpose(), 'actual_pred')
+    info['actual_predicted'] = TimeSeriesData(
+        np.array([Res._endog, Res.mu]).transpose(),
+        func_name='glm',
+        file_name='actual_predicted'
+    )
 
     return info

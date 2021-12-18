@@ -2,7 +2,7 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 @args_check
-def caiman_mc(image: ImageData, params: dict=None):
+def caiman_mc(image: ImageData, params: dict=None) -> {'images': ImageData}:
     file_path = image.path
     import numpy as np
     from caiman.source_extraction.cnmf.params import CNMFParams
@@ -32,7 +32,7 @@ def caiman_mc(image: ImageData, params: dict=None):
     #     Yr.T, [T] + list(dims), order='F'))
     images = Yr.T.reshape((T,) + dims, order='F')
 
-    info['images'] = ImageData(images, 'caiman_mc')
+    info['images'] = ImageData(images, func_name='caiman_mc')
 
     return info
 

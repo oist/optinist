@@ -1,0 +1,29 @@
+# main settings
+tau:  1.0              # this is the main parameter for deconvolution
+fs: 10.0               # sampling rate (PER PLANE e.g. for 12 plane recordings it will be around 2.5)
+
+# classification parameters
+soma_crop: True        # crop dendrites for cell classification stats like compactness
+
+# cell detection settings
+high_pass: 100         # running mean subtraction with window of size 'high_pass(use low values for 1P)
+sparse_mode: True      # whether or not to run sparse_mode
+max_overlap: 0.75      # cells with more overlap than this get removed during triage before refinement
+nbinned: 5000          # max number of binned frames for cell detection
+spatial_scale: 0       # 0: multi-scale; 1: 6 pixels 2: 12 pixels 3: 24 pixels 4: 48 pixels
+threshold_scaling: 1.0 # adjust the automatically determined threshold by this scalar multiplier
+max_iterations: 20     # maximum number of iterations to do cell detection
+
+# 1P settings
+spatial_hp_detect: 25  # window for spatial high-pass filtering for neuropil subtraction before detection
+
+# output settings
+preclassify: 0.       # apply classifier before signal extraction with probability 0.3
+
+# ROI extraction parameters
+allow_overlap: False      # pixels that are overlapping are thrown out (False) or added to both ROIs (True)
+inner_neuropil_radius: 2  # number of pixels to keep between ROI and neuropil donut
+min_neuropil_pixels: 350  # minimum number of pixels in the neuropil
+
+# deconvolution settings
+neucoeff: .7          # neuropil coefficient

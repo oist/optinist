@@ -3,11 +3,14 @@ from wrappers.args_check import args_check
 
 
 @args_check
-def suite2p_roi(ops: Suite2pData, params: dict=None):
+def suite2p_roi(ops: Suite2pData, params: dict=None) -> {'ops': Suite2pData, 'max_proj': ImageData, 'F': TimeSeriesData}:
     ops = ops.data
 
     import numpy as np
     from suite2p import extraction, classification, detection, ROI
+    from suite2p import default_ops
+
+    ops = {**ops, **params, **default_ops()}
 
     # ROI detection
     classfile = classification.user_classfile
@@ -38,8 +41,17 @@ def suite2p_roi(ops: Suite2pData, params: dict=None):
     ops['Fneu'] = Fneu
 
     info = {}
-    info['max_proj'] = ImageData(ops['max_proj'], 'suite2p_roi')
-    info['F'] = TimeSeriesData(F, 'suite2p_roi')
+    info['max_proj'] = ImageData(
+        ops['max_proj'],
+        func_name='suite2p_roi',
+        file_name='max_proj'
+    )
+    # import pdb; pdb.set_trace()
+    info['F'] = TimeSeriesData(
+        F,
+        func_name='suite2p_roi',
+        file_name='F'
+    )
 
     info['ops'] = Suite2pData(ops)
 
