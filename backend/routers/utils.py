@@ -1,16 +1,27 @@
 import os
-import imageio
 import pandas as pd
 import cv2
+import numpy as np
+from PIL import Image, ImageSequence
 
 
 def save_tiff_to_json(tiff_file_path, maxidx=10):
+    print("save_tiff_to_json")
     folder_path = os.path.dirname(tiff_file_path)
     file_name, ext = os.path.splitext(os.path.basename(tiff_file_path))
 
-    tiffs = imageio.volread(tiff_file_path)[:maxidx]
-    # import pdb; pdb.set_trace()
-    tiffs = cv2.resize(tiffs.transpose(1, 2, 0), (150, 150)).transpose(2, 0, 1)
+    # Tiff画像を読み込む
+    tiffs = []
+    image = Image.open(tiff_file_path)
+
+    for i, page in enumerate(ImageSequence.Iterator(image)):
+        # print(page)
+        tiffs.append(np.array(page.resize((150, 150))))
+
+        if i >= maxidx:
+            break
+
+    tiffs = np.array(tiffs)
 
     images = []
     for i, _img in enumerate(tiffs):
