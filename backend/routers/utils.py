@@ -30,8 +30,33 @@ def save_tiff_to_json(tiff_file_path, maxidx=10):
     pd.DataFrame(images).to_json(
         os.path.join(folder_path, f'{file_name}.json'), indent=4, orient="values")
 
+
 def save_csv_to_json(csv_file_path):
     folder_path = os.path.dirname(csv_file_path)
     file_name, ext = os.path.splitext(os.path.basename(csv_file_path))
     pd.read_csv(csv_file_path).to_json(
         os.path.join(folder_path, f'{file_name}.json'), indent=4,orient="split")
+
+
+def get_nest2dict(value):
+    nwb_dict = {}
+
+    for _k, _v in value.items():
+        if _v['type'] == 'child':
+            nwb_dict[_k] = _v['value']
+        elif _v['type'] == 'parent':
+            nwb_dict[_k] = get_nest2dict(_v['children'])
+
+    return nwb_dict
+
+
+def get_dict2nest(value):
+    nwb_dict = {}
+    for _k, _v in value.items():
+        nwb_dict[_k] = {}
+        if type(_v) is dict:
+            nwb_dict[_k]['children'] = get_dict2nest(_v)
+        else:
+            nwb_dict[_k] = _v
+
+    return nwb_dict

@@ -2,55 +2,50 @@
 from fastapi import APIRouter
 import os
 import yaml
+from .utils import get_dict2nest
 
 router = APIRouter()
 
-@router.get("/nwb")
-async def params():
-    config = {
-      'session_description': 'optinist',
-      'identifier': 'optinist',
-      'device': {
+nwb_config = {
+  'session_description': 'optinist',
+  'identifier': 'optinist',
+  'experiment_description': 'None',
+  'device': {
+      'name': 'Microscope device',
+      'description': 'Microscope Information',
+      'manufacturer': 'Microscope Manufacture'
+  },
+  'optical_channel': {
+      'name': 'OpticalChannel',
+      'description': 'optical channel',
+      'emission_lambda': 500.
+  },
+  'imaging_plane': {
+      'name': 'ImagingPlane',
+      'description': 'standard',
+      'imaging_rate': 30.,
+      'excitation_lambda': 600.,
+      'indicator': 'GCaMap',
+      'location': 'V1',
+  },
+  'image_series': {
+      'name': 'TwoPhotonSeries',
+      'starting_time': 0,
+      'starting_frame': 0,
+  },
+  'ophys': {
+      'plane_segmentation': {
         'children': {
-          'name': 'Microscope device',
-          'description': 'Microscope Information',
-          'manufacturer': 'Microscope Manufacture'
-        }
-      },
-      'optical channel': {
-        'children': {
-          'name': 'OpticalChannel',
-          'description': 'optical channel',
-          'emission_lambda': 500
-        }
-      },
-      'imaging plane': {
-        'children': {
-          'name': 'ImagingPlane',
-          'description': 'standard',
-          'imaging_rate': 30,
-          'excitation_lambda': 600,
-          'indicator': 'GCaMap',
-          'location': 'V1',
-        }
-      },
-      'image series': {
-        'children': {
-          'name': 'TwoPhotonSeries',
-          'starting_time': 0,
-          'starting_frame': 0,
-        }
-      },
-      'ophys': {
-        'children': {
-          'plane_segmentation': {
-            'children': {
-              'name': 'PlaneSegmentation',
-              'description': '',
-            }
-          }
+          'name': 'PlaneSegmentation',
+          'description': '',
         }
       }
-    }
-    
+  }
+}
+
+
+@router.get("/nwb")
+async def params():
+    config = get_dict2nest(nwb_config)
+    print(config)
     return config

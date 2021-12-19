@@ -14,8 +14,6 @@ def get_nest_dict(value, parent_k):
             algo_dict[_k]['children'] = get_nest_dict(
                 _v, parent_k+'/'+_k if parent_k != '' else _k)
         else:
-            algo_dict[_k] = {}
-
             # get args
             sig = inspect.signature(_v['function'])
             algo_dict[_k]['args'] = [
