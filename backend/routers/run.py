@@ -37,8 +37,14 @@ async def websocket_endpoint(websocket: WebSocket):
 
     await websocket.accept()
     # Wait for any message from the client
-    flowList = await websocket.receive_text()
-    flowList = list(map(lambda x: FlowItem(**x), json.loads(flowList)))
+    message = await websocket.receive_text()
+    message = json.loads(message)
+    flowList = list(map(lambda x: FlowItem(**x), message['nodeDataListForRun']))
+    nwbParam = message['nwbParam']
+    print('message: ', message)
+    print('flowList: ', flowList)
+    print('nwbParam: ', nwbParam)
+
     try:
         for item in flowList:
 

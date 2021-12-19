@@ -14,6 +14,7 @@ import { AlgoNodeData, CsvNodeData, ImageNodeData } from 'const/NodeData'
 import { nanoid } from '@reduxjs/toolkit'
 import { SnackbarProvider, SnackbarKey, useSnackbar } from 'notistack'
 import { NWB } from './NWB'
+import { nwbListSelector } from 'store/slice/NWB/NWBSelector'
 
 export const ToolBar = React.memo(() => (
   <SnackbarProvider
@@ -43,13 +44,15 @@ export const ToolBarImple = React.memo(() => {
     nodeDataListForRunSelector,
     nodeDataListForRunEqualityFn,
   )
+  const nwbParam = useSelector(nwbListSelector)
+
   const [triggerRunPipeline, result] = useLazyRunPipelineQuery()
   const [isReady, setIsReady] = React.useState(false)
   const onRunBtnClick = () => {
     if (pathIsUndefined) {
       enqueueSnackbar('failed to read file path.', { variant: 'error' })
     } else {
-      triggerRunPipeline({ nodeDataListForRun, requestId: nanoid() })
+      triggerRunPipeline({ nodeDataListForRun, requestId: nanoid(), nwbParam })
       closeSnackbar()
       setIsReady(true)
     }

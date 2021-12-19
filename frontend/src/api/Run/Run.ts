@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { BASE_URL, WS_BASE_URL } from 'const/API'
 import { AlgoNodeData, CsvNodeData, ImageNodeData } from 'const/NodeData'
+import { NWBListType } from 'store/slice/NWB/NWBType'
 
 export type RunPipeLineNodeDataType = ImageNodeData | AlgoNodeData | CsvNodeData
 
@@ -31,18 +32,19 @@ export const webSocketApi = createApi({
       {
         requestId: string
         nodeDataListForRun: (RunPipeLineNodeDataType | undefined)[]
+        nwbParam: NWBListType
       }
     >({
       // リクエストするたびにキャッシュをクリアするためにidを振っておく
       query: ({ requestId }) => `run/ready/${requestId}`,
       async onCacheEntryAdded(
-        { nodeDataListForRun },
+        { nodeDataListForRun, nwbParam },
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved },
       ) {
         const ws = new WebSocket(`${WS_BASE_URL}/run`)
         try {
           ws.addEventListener('open', () =>
-            ws.send(JSON.stringify(nodeDataListForRun)),
+            ws.send(JSON.stringify({ nodeDataListForRun, nwbParam })),
           )
           await cacheDataLoaded
           const listener = (event: MessageEvent) => {
