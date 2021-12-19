@@ -13,6 +13,7 @@ import { useLazyRunPipelineQuery, RunPipeLineNodeDataType } from 'api/Run/Run'
 import { AlgoNodeData, CsvNodeData, ImageNodeData } from 'const/NodeData'
 import { nanoid } from '@reduxjs/toolkit'
 import { SnackbarProvider, SnackbarKey, useSnackbar } from 'notistack'
+import { NWB } from './NWB'
 
 export const ToolBar = React.memo(() => (
   <SnackbarProvider
@@ -87,6 +88,7 @@ export const ToolBarImple = React.memo(() => {
         justifyContent="flex-end"
         style={{ paddingBottom: 4 }}
       >
+        <NWB />
         <Box>
           <Button
             className="ctrl_btn"
