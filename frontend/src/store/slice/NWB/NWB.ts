@@ -1,10 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { getNWBParams } from './NWBAction'
 import { NWBType, NWB_SLICE_NAME } from './NWBType'
-import { convertToNWBListType } from './NWBUtils'
+import { convertToNWBListType, getNWBChild } from './NWBUtils'
 
 const initialState: NWBType = {
-  params: {},
   nwbList: {},
 }
 
@@ -15,12 +14,15 @@ export const nwbSlice = createSlice({
     updateParam: (
       state,
       action: PayloadAction<{
-        paramName: string
+        paramPath: string
         newValue: unknown
       }>,
     ) => {
-      const { paramName, newValue } = action.payload
-      state.params[paramName] = newValue
+      const { paramPath, newValue } = action.payload
+      const targetNode = getNWBChild(state.nwbList, paramPath)
+      if (targetNode != null) {
+        targetNode.value = newValue
+      }
     },
   },
   extraReducers: (builder) => {

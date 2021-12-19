@@ -1,12 +1,7 @@
 export const NWB_SLICE_NAME = 'NWB'
 
 export type NWBType = {
-  params: ParamType
   nwbList: NWBListType
-}
-
-export type ParamType = {
-  [name: string]: unknown
 }
 
 export type NWBListDTO = {
@@ -19,12 +14,13 @@ export type NWBListType = {
 
 export type NWBNodeType = NWBChild | NWBParent
 
-type NWBChild = {
+export type NWBChild = {
   type: 'child'
   value: unknown
+  path: string
 }
 
-type NWBParent = {
+export type NWBParent = {
   type: 'parent'
   children: {
     [name: string]: NWBNodeType
