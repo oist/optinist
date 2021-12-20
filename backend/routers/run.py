@@ -49,10 +49,11 @@ def create_snakefile_config_from_flowlist(flowList: List[FlowItem]):
             output_base_path = f"../files/{item.label}"
             
             if not os.path.exists(output_base_path):
+                print(f"Creating {output_base_path}")
                 os.makedirs(output_base_path)
             algo_output = os.path.join(output_base_path, f"{item.label}_out.pkl")
             
-            rules_to_execute[item.label] ={   
+            rules_to_execute[item.label] = {   
                     "rule_file": f"rules/{item.label}.smk",
                     "input": algo_input,
                     "param": item.param,
@@ -64,7 +65,7 @@ def create_snakefile_config_from_flowlist(flowList: List[FlowItem]):
 
     flow_config["rules"] = rules_to_execute
     flow_config["last_output"] = algo_output
-    
+
     with open('./workflow/config/config.yaml', "w") as f:
         yaml.dump(flow_config, f)
 

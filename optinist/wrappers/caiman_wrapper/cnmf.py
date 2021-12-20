@@ -11,6 +11,7 @@ def caiman_cnmf(images: ImageData, params: dict=None) -> {'images': ImageData, '
     import numpy as np
 
     images = images.data
+    # WIP 
     new_images = np.memmap(
         "/app/files/Sue_2x_3000_40_-46.tif(0)/memmap__d1_170_d2_170_d3_1_order_C_frames_3000_.mmap",
         dtype='float32',
