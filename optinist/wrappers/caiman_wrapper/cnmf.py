@@ -11,17 +11,25 @@ def caiman_cnmf(images: ImageData, params: dict=None) -> {'images': ImageData, '
     import numpy as np
 
     images = images.data
+    new_images = np.memmap(
+        "/app/files/Sue_2x_3000_40_-46.tif(0)/memmap__d1_170_d2_170_d3_1_order_C_frames_3000_.mmap",
+        dtype='float32',
+        mode='w+',
+        shape=images.shape
+    )
+    new_images[:] = images
 
     if params is None:
         params = CNMFParams()
     else:
         params = CNMFParams(params_dict=params)
+    print(new_images.filename)
 
     cnm = cnmf.CNMF(1, params=params, dview=None)
-    cnm = cnm.fit(images)
+    cnm = cnm.fit(new_images)
 
     # contours plot
-    Cn = local_correlations(images.transpose(1, 2, 0))
+    Cn = local_correlations(new_images.transpose(1, 2, 0))
     Cn[np.isnan(Cn)] = 0
     cnm.estimates.plot_contours(img=Cn)
 
