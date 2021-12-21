@@ -5,6 +5,7 @@ import imageio
 from PIL import Image
 import cv2
 
+
 class ImageData:
     def __init__(self, data, func_name='image', file_name='image'):
         if type(data) == str:
@@ -27,7 +28,6 @@ class ImageData:
                 images.append(_img.tolist())
 
             pd.DataFrame(images).to_json(self.path, indent=4, orient="values")
-
 
 
 class TimeSeriesData:

@@ -34,6 +34,12 @@ def caiman_mc(image: ImageData, params: dict=None) -> {'images': ImageData}:
 
     info['images'] = ImageData(images, func_name='caiman_mc')
 
+	xy_trans_data = (np.array(mc.x_shifts_els), np.array(mc.y_shifts_els)) \
+					if param['pw_rigid'] else np.array(mc.shifts_rig)
+
+    info['nwb'] = nwb_motion_correction(
+        params['nwb'], images, xy_trans_data)
+
     return info
 
 
