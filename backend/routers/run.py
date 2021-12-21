@@ -67,7 +67,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 if type(v) is ImageData:
                     print("ImageData")
                     results[item.path][k] = {}
-                    results[item.path][k]['path'] = v.path
+                    results[item.path][k]['path'] = v.json_path
                     results[item.path][k]['type'] = 'images'
                     results[item.path][k]['max_index'] = len(v.data)
                 elif type(v) is TimeSeriesData:

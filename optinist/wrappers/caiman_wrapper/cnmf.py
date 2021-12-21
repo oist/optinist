@@ -3,7 +3,7 @@ from wrappers.args_check import args_check
 
 
 @args_check
-def caiman_cnmf(images: ImageData, params: dict=None) -> {'images': ImageData, 'fluo': TimeSeriesData, 'iscell': IscellData, 'roi': RoiData}:
+def caiman_cnmf(images: ImageData, params: dict=None) -> {'fluo': TimeSeriesData, 'iscell': IscellData, 'roi': RoiData}:
     import caiman
     from caiman import local_correlations
     from caiman.source_extraction.cnmf import cnmf
