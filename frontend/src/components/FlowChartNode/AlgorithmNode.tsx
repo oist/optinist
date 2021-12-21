@@ -30,8 +30,7 @@ import { arrayEqualityFn } from 'utils/EqualityUtils'
 import { OUTPUT_TABSET_ID, PARAM_FORM_TABSET_ID } from 'const/flexlayout'
 import { useTabAction } from 'FlexLayoutHook'
 import { AlgoInfo, OUTPUT_TYPE_SET } from 'store/slice/Algorithm/AlgorithmType'
-import { handleTypeColorSelector } from 'store/slice/HandleTypeColor/HandleTypeColorSelector'
-import { addColor } from 'store/slice/HandleTypeColor/HandleTypeColor'
+import { useHandleColor } from './HandleColorHook'
 import { RootState } from 'store/store'
 
 const leftHandleStyle: CSSProperties = {
@@ -345,17 +344,6 @@ function isValidConnection(connection: Connection) {
   } else {
     return true
   }
-}
-
-function useHandleColor(type: string) {
-  const dispatch = useDispatch()
-  const color = useSelector(handleTypeColorSelector(type))
-  React.useEffect(() => {
-    if (color === undefined) {
-      dispatch(addColor(type))
-    }
-  }, [type, color, dispatch])
-  return color
 }
 
 function algoInfoListEqualtyFn(
