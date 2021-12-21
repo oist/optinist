@@ -4,30 +4,39 @@ import pandas as pd
 import imageio
 from PIL import Image
 import cv2
+import tifffile
+
 
 class ImageData:
     def __init__(self, data, func_name='image', file_name='image'):
         if type(data) == str:
             self.path = data
             self.data = np.array(imageio.volread(self.path))
+            self.json_path = None
         else:
             self.data = data
             _dir = os.path.join('files', func_name)
-            self.path = os.path.join(_dir, f'{file_name}.json')
 
             if not os.path.exists(_dir):
                 os.makedirs(_dir, exist_ok=True)
 
-            if len(self.data.shape) == 2:
-                self.data = self.data[np.newaxis, :, :]
+            self.path = os.path.join(_dir, f'{file_name}.tif')
+            self.json_path = os.path.join(_dir, f'{file_name}.json')
+
+            tifffile.imsave(self.path, data)
 
             save_data = cv2.resize(self.data, (150, 150))
+
+            if len(self.data.shape) == 2:
+                self.data = self.data[np.newaxis, :, :]
+                save_data = save_data[np.newaxis, :, :]
+
             images = []
+            # import pdb; pdb.set_trace()
             for i, _img in enumerate(save_data[:10]):
                 images.append(_img.tolist())
 
-            pd.DataFrame(images).to_json(self.path, indent=4, orient="values")
-
+            pd.DataFrame(images).to_json(self.json_path, indent=4, orient="values")
 
 
 class TimeSeriesData:

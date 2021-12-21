@@ -3,7 +3,7 @@ from wrappers.args_check import args_check
 
 
 @args_check
-def suite2p_registration(image: ImageData, ops: Suite2pData=None, params: dict=None) -> {'ops': Suite2pData, 'images': ImageData, 'meanImgE': ImageData}:
+def suite2p_registration(image: ImageData, ops: Suite2pData=None, params: dict=None) -> {'ops': Suite2pData}:
     refImg = image.data
     ops = ops.data
 
