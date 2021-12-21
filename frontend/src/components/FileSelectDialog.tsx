@@ -14,21 +14,21 @@ import { useTheme } from '@material-ui/core/styles'
 import React from 'react'
 
 import {
-  filesIsLatestSelector,
-  filesIsLoadingSelector,
-  filesTreeNodesSelector,
-} from 'store/slice/FilesTree/FilesTreeSelector'
+  selectFilesIsLatest,
+  selectFilesIsLoading,
+  selectFilesTreeNodes,
+} from 'store/slice/FilesTree/FilesTreeSelectors'
 import { getFilesTree } from 'store/slice/FilesTree/FilesTreeAction'
 import {
-  FILE_TYPE,
-  FILE_TYPE_SET,
+  FILE_TREE_TYPE,
+  FILE_TREE_TYPE_SET,
   TreeNodeType,
 } from 'store/slice/FilesTree/FilesTreeType'
 
 type FileSelectDialogProps = {
   selectedFilePath: string
   onClickOk: (path: string) => void
-  fileType?: FILE_TYPE
+  fileType?: FILE_TREE_TYPE
   title?: string
   open: boolean
   onClickCancel: () => void
@@ -43,7 +43,7 @@ export const FileSelectDialog = React.memo<FileSelectDialogProps>(
     onClickOk,
     onClose,
     title,
-    fileType = FILE_TYPE_SET.ALL,
+    fileType = FILE_TREE_TYPE_SET.ALL,
   }) => {
     const [clickedFilePath, setClickedFilePath] =
       React.useState(selectedFilePath)
@@ -92,7 +92,7 @@ export const FileSelectDialog = React.memo<FileSelectDialogProps>(
 
 const FileTreeView = React.memo<{
   onClickFile: (path: string) => void
-  fileType: FILE_TYPE
+  fileType: FILE_TREE_TYPE
 }>(({ onClickFile, fileType }) => {
   const [tree, isLoading] = useFileTree(fileType)
   return (
@@ -136,12 +136,12 @@ const TreeNode = React.memo<{
 })
 
 function useFileTree(
-  fileType: FILE_TYPE,
+  fileType: FILE_TREE_TYPE,
 ): [TreeNodeType[] | undefined, boolean] {
   const dispatch = useDispatch()
-  const tree = useSelector(filesTreeNodesSelector(fileType))
-  const isLatest = useSelector(filesIsLatestSelector(fileType))
-  const isLoading = useSelector(filesIsLoadingSelector(fileType))
+  const tree = useSelector(selectFilesTreeNodes(fileType))
+  const isLatest = useSelector(selectFilesIsLatest(fileType))
+  const isLoading = useSelector(selectFilesIsLoading(fileType))
   React.useEffect(() => {
     if (!isLatest && !isLoading) {
       dispatch(getFilesTree(fileType))

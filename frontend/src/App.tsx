@@ -1,82 +1,67 @@
-import './App.css'
+import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { Layout, Model, TabNode } from 'flexlayout-react'
 import 'flexlayout-react/style/light.css'
+import './App.css'
 import { flexjson } from 'const/flexlayout'
 import { SideBar } from 'components/TreeView'
 import { FlowChart } from 'components/FlowChart'
-import { ParamForm } from 'components/ParamForm/ParamForm'
+import { ParamForm } from 'components/ParamForm'
 import { Plot } from 'components/Plot'
 import { ToolBar } from 'components/ToolBar'
-import React from 'react'
-import { getNodeId, getSuffix } from 'utils/FlexLayoutUtils'
-import { ImagePlot } from 'components/Plot/ImagePlot'
-import { TablePlot } from 'components/Plot/TablePlot'
+import {
+  selectDataTypeByTabId,
+  selectFilePathByTabId,
+  selectNodeIdByTabId,
+  selectTabIsList,
+} from 'store/slice/LayoutTab/LayoutTabSelectors'
+import { arrayEqualityFn } from 'utils/EqualityUtils'
+import { deleteAllTabsByIdList } from 'store/slice/LayoutTab/LayputTabSlice'
+import { DATA_TYPE } from 'store/slice/DisplayData/DisplayDataType'
+import { TAB_COMPONENT_TYPE_SET } from 'store/slice/LayoutTab/LayoutTabType'
 
 const model = Model.fromJson(flexjson)
 
 export const FlexLayoutModelContext = React.createContext<Model>(model)
-export const NodeIdContext = React.createContext<string>('')
-export const OutputPlotContext = React.createContext<{
+/**
+ * nodeId
+ */
+export const ParamFormTabContext = React.createContext<string>('')
+export const DisplayDataTabContext = React.createContext<{
   nodeId: string
-  outputKey: string
-}>({ nodeId: '', outputKey: '' })
+  filePath: string
+  dataType: DATA_TYPE
+}>({ nodeId: '', filePath: '', dataType: 'table' })
 
-export const ImageDataContext = React.createContext<{
-  nodeId: string
-  outputKey: string | null // ImageFileNodeでアップロードされた場合はoutputKeyがnull
-}>({ nodeId: '', outputKey: null })
-
-export const TableDataContext = React.createContext<{
-  nodeId: string
-}>({ nodeId: '' })
+const Factory = (node: TabNode) => {
+  var component = node.getComponent()
+  const layoutTabId = node.getId()
+  switch (component) {
+    case 'flowchart':
+      return <FlowChart />
+    case 'sidebar':
+      return <SideBar />
+    case TAB_COMPONENT_TYPE_SET.PARAM_FORM:
+      return <ParamFormTab layoutTabId={layoutTabId} />
+    case TAB_COMPONENT_TYPE_SET.DISPLAY_DATA:
+      return <DisplayTab layoutTabId={layoutTabId} />
+    default:
+      return null
+  }
+}
 
 function App() {
-  const factory = (node: TabNode) => {
-    var component = node.getComponent()
-    const layoutTabId = node.getId()
-    const nodeId = getNodeId(layoutTabId)
-    if (nodeId == null) {
-      return null
+  // modelのtabが削除された場合にstateの方も削除する
+  const dispatch = useDispatch()
+  const stateTabIdList = useSelector(selectTabIsList, arrayEqualityFn)
+  React.useEffect(() => {
+    const remainderTabIdList = stateTabIdList.filter(
+      (tabId) => model.getNodeById(tabId) === null,
+    )
+    if (remainderTabIdList.length > 0) {
+      dispatch(deleteAllTabsByIdList(remainderTabIdList))
     }
-    switch (component) {
-      case 'flowchart':
-        return <FlowChart />
-      case 'sidebar':
-        return <SideBar />
-      case 'paramForm':
-        return (
-          <NodeIdContext.Provider value={nodeId}>
-            <ParamForm />
-          </NodeIdContext.Provider>
-        )
-      case 'output':
-        const outputKey = getSuffix(layoutTabId)
-        if (outputKey != null) {
-          return (
-            <OutputPlotContext.Provider value={{ nodeId, outputKey }}>
-              <Plot />
-            </OutputPlotContext.Provider>
-          )
-        } else {
-          return null
-        }
-      case 'image':
-        const key = getSuffix(layoutTabId)
-        return (
-          <ImageDataContext.Provider value={{ nodeId, outputKey: key }}>
-            <ImagePlot />
-          </ImageDataContext.Provider>
-        )
-      case 'csv':
-        return (
-          <TableDataContext.Provider value={{ nodeId }}>
-            <TablePlot />
-          </TableDataContext.Provider>
-        )
-      default:
-        return null
-    }
-  }
+  }, [stateTabIdList, dispatch])
 
   return (
     <div id="container">
@@ -86,12 +71,36 @@ function App() {
             <ToolBar />
           </div>
           <div className="contents">
-            <Layout model={model} factory={factory} />
+            <Layout model={model} factory={Factory} />
           </div>
         </FlexLayoutModelContext.Provider>
       </div>
     </div>
   )
 }
+
+const DisplayTab = React.memo<{ layoutTabId: string }>(({ layoutTabId }) => {
+  const nodeId = useSelector(selectNodeIdByTabId(layoutTabId))
+  const dataType = useSelector(selectDataTypeByTabId(layoutTabId))
+  const filePath = useSelector(selectFilePathByTabId(layoutTabId))
+  if (filePath != null && dataType != null) {
+    return (
+      <DisplayDataTabContext.Provider value={{ nodeId, filePath, dataType }}>
+        <Plot />
+      </DisplayDataTabContext.Provider>
+    )
+  } else {
+    return null
+  }
+})
+
+const ParamFormTab = React.memo<{ layoutTabId: string }>(({ layoutTabId }) => {
+  const nodeId = useSelector(selectNodeIdByTabId(layoutTabId))
+  return (
+    <ParamFormTabContext.Provider value={nodeId}>
+      <ParamForm />
+    </ParamFormTabContext.Provider>
+  )
+})
 
 export default App

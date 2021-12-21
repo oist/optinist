@@ -1,45 +1,44 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { nodeByIdSelector } from 'store/slice/Element/ElementSelector'
-
-import { getAlgoParams } from 'store/slice/Algorithm/AlgorithmAction'
-import { ParamItemContainer } from './ParamItem'
 import Typography from '@material-ui/core/Typography'
-import { isAlgoNodeData } from 'utils/ElementUtils'
+
 import {
-  algoParamByIdSelector,
-  algoNameByIdSelector,
-} from 'store/slice/Algorithm/AlgorithmSelector'
-import { NodeIdContext } from 'App'
+  selectAlgorithmName,
+  selectAlgorithmParamsExit,
+  selectAlgorithmParamsKeyList,
+} from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
+import { getAlgoParams } from 'store/slice/AlgorithmNode/AlgorithmNodeActions'
 
-export const ParamForm = React.memo(() => {
-  const nodeId = React.useContext(NodeIdContext)
-  const currentAlgoName = useSelector(algoNameByIdSelector(nodeId))
-  const currentNode = useSelector(nodeByIdSelector(nodeId))
-  const algoParam = useSelector(algoParamByIdSelector(nodeId))
+import { ParamFormTabContext } from 'App'
+import { arrayEqualityFn } from 'utils/EqualityUtils'
+import { ParamItemContainer } from './ParamItem'
+
+const ParamForm = React.memo(() => {
+  const nodeId = React.useContext(ParamFormTabContext)
   const dispatch = useDispatch()
-
+  const algoName = useSelector(selectAlgorithmName(nodeId))
+  const algoParamIsLoaded = useSelector(selectAlgorithmParamsExit(nodeId))
+  const paramKeyList = useSelector(
+    selectAlgorithmParamsKeyList(nodeId),
+    arrayEqualityFn,
+  )
   useEffect(() => {
-    if (isAlgoNodeData(currentNode) && currentNode.data && !algoParam) {
-      const algoName = currentNode.data.label
-      dispatch(getAlgoParams({ id: nodeId, algoName }))
+    if (!algoParamIsLoaded) {
+      dispatch(getAlgoParams({ nodeId, algoName }))
     }
-  }, [dispatch, nodeId, algoParam, currentNode])
-
-  if (algoParam === undefined) {
-    return null
-  }
-
+  }, [dispatch, nodeId, algoName, algoParamIsLoaded])
   return (
     <div style={{ padding: 8 }}>
       <Typography variant="h5">
-        {currentAlgoName}({nodeId})
+        {algoName}({nodeId})
       </Typography>
       <div style={{ paddingLeft: 8 }}>
-        {Object.keys(algoParam).map((paramName) => (
-          <ParamItemContainer key={paramName} paramKey={paramName} />
+        {paramKeyList.map((paramKey) => (
+          <ParamItemContainer key={paramKey} paramKey={paramKey} />
         ))}
       </div>
     </div>
   )
 })
+
+export default ParamForm

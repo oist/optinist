@@ -1,7 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { BASE_URL, WS_BASE_URL } from 'const/API'
 import { NWBListType } from 'store/slice/NWB/NWBType'
-import { NodeData } from 'const/NodeData'
 import { Edge, Node } from 'react-flow-renderer'
 
 export type RunPipelineDTO = {
@@ -30,7 +29,7 @@ export const webSocketApi = createApi({
       RunPipelineDTO,
       {
         requestId: string
-        elementListForRun: { nodeList: Node<NodeData>[]; edgeList: Edge[] }
+        elementListForRun: { nodeList: Node[]; edgeList: Edge[] }
         nwbParam: NWBListType
       }
     >({
@@ -69,4 +68,4 @@ export const webSocketApi = createApi({
   }),
 })
 
-export const { useLazyRunPipelineQuery } = webSocketApi
+export const { useLazyRunPipelineQuery, useRunPipelineQuery } = webSocketApi

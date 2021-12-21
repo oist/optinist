@@ -1,31 +1,31 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
 import { Button, Typography } from '@material-ui/core'
 import ButtonGroup from '@material-ui/core/ButtonGroup'
 
-import { filePathSelector } from 'store/slice/Element/ElementSelector'
 import { FileSelectDialog } from 'components/FileSelectDialog'
-import { FILE_TYPE, FILE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
+import {
+  FILE_TREE_TYPE,
+  FILE_TREE_TYPE_SET,
+} from 'store/slice/FilesTree/FilesTreeType'
 
 type FileSelectProps = {
-  nodeId: string
+  filePath: string
   onUploadFile: (formData: FormData, fileName: string) => void
   onSelectFile: (path: string) => void
-  fileType?: FILE_TYPE
+  fileTreeType?: FILE_TREE_TYPE
   selectButtonLabel?: string
   uploadButtonLabel?: string
 }
 
 export const FileSelect = React.memo<FileSelectProps>(
   ({
-    nodeId,
+    filePath,
     onSelectFile,
     onUploadFile,
-    fileType,
+    fileTreeType,
     selectButtonLabel,
     uploadButtonLabel,
   }) => {
-    const filePath = useSelector(filePathSelector(nodeId))
     const onFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       event.preventDefault()
       if (event.target.files != null && event.target.files[0] != null) {
@@ -43,7 +43,7 @@ export const FileSelect = React.memo<FileSelectProps>(
       }
     }
     const [open, setOpen] = React.useState(false)
-    const accept = getFileInputAccept(fileType)
+    const accept = getFileInputAccept(fileTreeType)
     return (
       <div
         style={{
@@ -71,7 +71,7 @@ export const FileSelect = React.memo<FileSelectProps>(
             }}
           />
           <Typography className="selectFilePath" variant="caption">
-            {filePath != null ? filePath : "File doesn't select."}
+            {!!filePath ? filePath : "File doesn't select."}
           </Typography>
         </div>
         <FileSelectDialog
@@ -85,18 +85,18 @@ export const FileSelect = React.memo<FileSelectProps>(
             setOpen(false)
           }}
           onClose={() => setOpen(false)}
-          fileType={fileType}
+          fileType={fileTreeType}
         />
       </div>
     )
   },
 )
 
-function getFileInputAccept(fileType: FILE_TYPE | undefined) {
+function getFileInputAccept(fileType: FILE_TREE_TYPE | undefined) {
   switch (fileType) {
-    case FILE_TYPE_SET.IMAGE:
+    case FILE_TREE_TYPE_SET.IMAGE:
       return '.tif'
-    case FILE_TYPE_SET.CSV:
+    case FILE_TREE_TYPE_SET.CSV:
       return '.csv'
     default:
       return undefined

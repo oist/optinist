@@ -1,23 +1,33 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
 import { webSocketApi } from '../api/Run/Run'
-import elementReducer from './slice/Element/Element'
-import algorithmReducer from './slice/Algorithm/Algorithm'
-import fileDataReducer from './slice/FileData/FileData'
-import plotDataReducer from './slice/PlotData/PlotData'
-import handleTypeColorReducer from './slice/HandleTypeColor/HandleTypeColor'
-import filesTreeReducer from './slice/FilesTree/FilesTree'
-import nwbReducer from './slice/NWB/NWB'
+import {
+  algorithmListReducer,
+  algorithmNodeReducer,
+  displayDataReducer,
+  fileUploaderReducer,
+  flowElementReducer,
+  inputNodeReducer,
+  layoutTabReducer,
+  runPipelineResultReducer,
+  nwbReducer,
+  filesTreeReducer,
+  handleTypeColorReducer,
+} from './slice'
 
 export const store = configureStore({
   reducer: {
-    element: elementReducer,
-    algorithm: algorithmReducer,
-    fileData: fileDataReducer,
-    plotData: plotDataReducer,
+    algorithmList: algorithmListReducer,
+    algorithmNode: algorithmNodeReducer,
+    displayData: displayDataReducer,
+    fileUploader: fileUploaderReducer,
+    flowElement: flowElementReducer,
+    inputNode: inputNodeReducer,
+    layoutTab: layoutTabReducer,
     handleColor: handleTypeColorReducer,
     filesTree: filesTreeReducer,
     nwb: nwbReducer,
+    runPipelineResult: runPipelineResultReducer,
     [webSocketApi.reducerPath]: webSocketApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>

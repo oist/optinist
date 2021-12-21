@@ -1,12 +1,7 @@
 import { IJsonModel } from 'flexlayout-react'
-import { toLayoutTab } from 'utils/FlexLayoutUtils'
-import {
-  INITIAL_IMAGE_ELEMENT_ID,
-  INITIAL_IMAGE_ELEMENT_NAME,
-} from './flowchart'
 
-export const PARAM_FORM_TABSET_ID = 'PARAM_FORM_TABSET_ID'
-export const OUTPUT_TABSET_ID = 'OUTPUT_TABSET_ID'
+export const PARAM_FORM_TABSET_ID = 'PARAM_FORM_TABSET'
+export const DISPLAY_DATA_TABSET_ID = 'DISPLAY_DATA_TABSET'
 
 const flexjson: IJsonModel = {
   global: {
@@ -44,17 +39,10 @@ const flexjson: IJsonModel = {
               },
               {
                 type: 'tabset',
-                id: OUTPUT_TABSET_ID,
+                id: DISPLAY_DATA_TABSET_ID,
                 selected: 0,
-                width: 700,
-                // enableDeleteWhenEmpty: false,
-                children: [
-                  toLayoutTab(
-                    INITIAL_IMAGE_ELEMENT_ID,
-                    'image',
-                    INITIAL_IMAGE_ELEMENT_NAME,
-                  ),
-                ],
+                width: 600,
+                children: [],
               },
             ],
           },

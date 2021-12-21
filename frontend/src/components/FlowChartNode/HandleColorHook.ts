@@ -1,11 +1,11 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { handleTypeColorSelector } from 'store/slice/HandleTypeColor/HandleTypeColorSelector'
-import { addColor } from 'store/slice/HandleTypeColor/HandleTypeColor'
+import { selectHandleTypeColor } from 'store/slice/HandleTypeColor/HandleTypeColorSelectors'
+import { addColor } from 'store/slice/HandleTypeColor/HandleTypeColorSlice'
 
 export function useHandleColor(type: string) {
   const dispatch = useDispatch()
-  const color = useSelector(handleTypeColorSelector(type))
+  const color = useSelector(selectHandleTypeColor(type))
   React.useEffect(() => {
     if (color === undefined) {
       dispatch(addColor(type))
