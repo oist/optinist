@@ -35,3 +35,14 @@ def save_csv_to_json(csv_file_path):
     file_name, ext = os.path.splitext(os.path.basename(csv_file_path))
     pd.read_csv(csv_file_path).to_json(
         os.path.join(folder_path, f'{file_name}.json'), indent=4,orient="split")
+
+
+def string_to_float(params):
+    for k, v in params.items():
+        if isinstance(v, str) and v.isdecimal():
+            v = float(v)
+            if v.is_integer():
+                v = int(v)
+            params[k] = v
+
+    return params

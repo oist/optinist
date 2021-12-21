@@ -1,8 +1,8 @@
 p: 1
-gnb: 2
+nb: 2
 merge_thr: 0.85
-rf: 15
-stride_cnmf: 6
+rf:
+stride: 6
 K: 4
 gSig: [4, 4]
 method_init: 'greedy_roi'

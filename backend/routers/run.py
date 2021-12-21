@@ -49,6 +49,10 @@ async def websocket_endpoint(websocket: WebSocket):
             if item.type == 'image':
                 info = {'path': ImageData(item.path, '')}
             elif item.type == 'algo':
+                # parameterをint, floatに変換
+                from .utils import string_to_float
+                item.param = string_to_float(item.param)
+
                 wrapper = get_dict_leaf_value(wrapper_dict, item.path.split('/'))
                 info = wrapper["function"](
                     *prev_info.values(), params=item.param)
