@@ -9,8 +9,7 @@ import {
 import { Box, IconButton, LinearProgress } from '@material-ui/core'
 import Close from '@material-ui/icons/Close'
 import { reflectRunPipelineResult } from 'store/slice/Algorithm/AlgorithmAction'
-import { useLazyRunPipelineQuery, RunPipeLineNodeDataType } from 'api/Run/Run'
-import { AlgoNodeData, CsvNodeData, ImageNodeData } from 'const/NodeData'
+import { useLazyRunPipelineQuery } from 'api/Run/Run'
 import { nanoid } from '@reduxjs/toolkit'
 import { SnackbarProvider, SnackbarKey, useSnackbar } from 'notistack'
 
@@ -38,10 +37,7 @@ export const ToolBarImple = React.memo(() => {
   const dispatch = useDispatch()
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
   const pathIsUndefined = useSelector(pathIsUndefinedSelector)
-  const nodeDataListForRun = useSelector(
-    nodeDataListForRunSelector,
-    nodeDataListForRunEqualityFn,
-  )
+  const nodeDataListForRun = useSelector(nodeDataListForRunSelector)
   const [triggerRunPipeline, result] = useLazyRunPipelineQuery()
   const [isReady, setIsReady] = React.useState(false)
   const onRunBtnClick = () => {
@@ -104,63 +100,3 @@ export const ToolBarImple = React.memo(() => {
     </div>
   )
 })
-
-function nodeDataListForRunEqualityFn(
-  a: (RunPipeLineNodeDataType | undefined)[],
-  b: (RunPipeLineNodeDataType | undefined)[],
-) {
-  return (
-    a === b ||
-    (a.length === b.length &&
-      a.every((v, i) => nodeDataForRunEqualityFn(v, b[i])))
-  )
-}
-
-function nodeDataForRunEqualityFn(
-  a: RunPipeLineNodeDataType | undefined,
-  b: RunPipeLineNodeDataType | undefined,
-) {
-  if (a !== undefined && b !== undefined) {
-    return (
-      (a.type === 'algo' &&
-        b.type === 'algo' &&
-        algoNodeDataEqualityFn(a, b)) ||
-      (a.type === 'image' &&
-        b.type === 'image' &&
-        inputNodeDataEqualityFn(a, b))
-    )
-  } else {
-    return a === undefined && b === undefined
-  }
-}
-
-function algoNodeDataEqualityFn(a: AlgoNodeData, b: AlgoNodeData) {
-  return a.label === b.label && algoNodeDataParamaEqualityFn(a.param, b.param)
-}
-
-function algoNodeDataParamaEqualityFn(
-  a: AlgoNodeData['param'],
-  b: AlgoNodeData['param'],
-) {
-  if (a !== undefined && b !== undefined) {
-    const aArray = Object.entries(a)
-    const bArray = Object.entries(b)
-    return (
-      a === b ||
-      (aArray.length === bArray.length &&
-        aArray.every(([aKey, aValue], i) => {
-          const [bKey, bValue] = bArray[i]
-          return bKey === aKey && bValue === aValue
-        }))
-    )
-  } else {
-    return a === undefined && b === undefined
-  }
-}
-
-function inputNodeDataEqualityFn(
-  a: ImageNodeData | CsvNodeData,
-  b: ImageNodeData | CsvNodeData,
-) {
-  return a.path === b.path && a.label === b.label
-}

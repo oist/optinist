@@ -1,6 +1,5 @@
-import { AlgoNodeData } from 'const/NodeData'
 import { ElementId } from 'react-flow-renderer'
-import { isNodeData, isImageNodeData, isAlgoNodeData } from 'utils/ElementUtils'
+import { isNodeData, isImageNodeData } from 'utils/ElementUtils'
 import { RootState } from '../../store'
 import { algoParamByIdSelector } from '../Algorithm/AlgorithmSelector'
 
@@ -24,20 +23,20 @@ export const maxElementIdSelector = (state: RootState) =>
         .reduce((a, b) => Math.max(a, b))
 
 export const nodeDataListForRunSelector = (state: RootState) =>
-  flowElementsSelector(state)
-    .filter((element) => isImageNodeData(element) || isAlgoNodeData(element))
-    .map((element) => {
-      if (element.data && element.data.type === 'algo') {
-        const param = algoParamByIdSelector(element.id)(state)
-        const data: AlgoNodeData = {
+  flowElementsSelector(state).map((element) => {
+    if (element.data && element.data.type === 'algo') {
+      const param = algoParamByIdSelector(element.id)(state)
+      return {
+        ...element,
+        data: {
           ...element.data,
           param,
-        }
-        return data
-      } else {
-        return element.data
+        },
       }
-    })
+    } else {
+      return element
+    }
+  })
 
 export const pathIsUndefinedSelector = (state: RootState) => {
   const pathErrorNodeList = flowElementsSelector(state).filter((element) => {
