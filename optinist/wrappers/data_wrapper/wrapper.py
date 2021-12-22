@@ -15,7 +15,7 @@ class ImageData:
             self.json_path = None
         else:
             self.data = data
-            _dir = os.path.join('files', func_name)
+            _dir = os.path.join('/app/files', func_name)
 
             if not os.path.exists(_dir):
                 os.makedirs(_dir, exist_ok=True)
@@ -42,7 +42,7 @@ class ImageData:
 class TimeSeriesData:
     def __init__(self, data, func_name='timeseries', file_name='timeseries'):
         self.data = data
-        _dir = os.path.join("../files", func_name)
+        _dir = os.path.join("/app/files", func_name)
 
         if not os.path.exists(_dir):
             os.makedirs(_dir, exist_ok=True)
@@ -59,7 +59,7 @@ class CorrelationData:
     def __init__(self, data, func_name='heatmap', file_name='heatmap'):
         self.data = data
 
-        _dir = os.path.join("../files", func_name)
+        _dir = os.path.join("/app/files", func_name)
 
         if not os.path.exists(_dir):
             os.makedirs(_dir, exist_ok=True)

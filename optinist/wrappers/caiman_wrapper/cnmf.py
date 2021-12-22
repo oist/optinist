@@ -13,15 +13,7 @@ def caiman_cnmf(images: ImageData, params: dict=None) -> {'fluo': TimeSeriesData
 
     file_path = images.path
     images = images.data
-    # WIP 
-    new_images = np.memmap(
-        "/app/files/Sue_2x_3000_40_-46.tif(0)/memmap__d1_170_d2_170_d3_1_order_C_frames_3000_.mmap",
-        dtype='float32',
-        mode='w+',
-        shape=images.shape
-    )
-    new_images[:] = images
-
+    
     # np.arrayをmmapへ変換
     order = 'C'
     dims = images.shape[1:]
@@ -45,7 +37,6 @@ def caiman_cnmf(images: ImageData, params: dict=None) -> {'fluo': TimeSeriesData
         params = CNMFParams()
     else:
         params = CNMFParams(params_dict=params)
-    print(new_images.filename)
 
     cnm = cnmf.CNMF(1, params=params, dview=None)
     cnm = cnm.fit(mmap_images)
