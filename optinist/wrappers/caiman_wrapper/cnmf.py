@@ -3,13 +3,15 @@ from wrappers.args_check import args_check
 
 
 @args_check
-def caiman_cnmf(images: ImageData, params: dict=None) -> {'images': ImageData, 'fluo': TimeSeriesData, 'iscell': IscellData, 'roi': RoiData}:
+def caiman_cnmf(images: ImageData, params: dict=None) -> {'fluo': TimeSeriesData, 'iscell': IscellData, 'roi': RoiData}:
+    import caiman
     from caiman import local_correlations
     from caiman.source_extraction.cnmf import cnmf
     from caiman.source_extraction.cnmf.params import CNMFParams
     import caiman.utils.visualization as visualization
     import numpy as np
 
+    file_path = images.path
     images = images.data
     # WIP 
     new_images = np.memmap(
@@ -20,6 +22,25 @@ def caiman_cnmf(images: ImageData, params: dict=None) -> {'images': ImageData, '
     )
     new_images[:] = images
 
+    # np.arrayをmmapへ変換
+    order = 'C'
+    dims = images.shape[1:]
+    T = images.shape[0]
+    shape_mov = (np.prod(dims), T)
+
+    dir_path = os.path.dirname(file_path)
+    basename = os.path.splitext(os.path.basename(file_path))[0]
+    fname_tot = caiman.paths.memmap_frames_filename(basename, dims, T, order)
+    mmap_images = np.memmap(
+        os.path.join(dir_path, fname_tot),
+        mode='w+',
+        dtype=np.float32,
+        shape=caiman.mmapping.prepare_shape(shape_mov),
+        order=order)
+
+    mmap_images = np.reshape(mmap_images.T, [T] + list(dims), order='F')
+    mmap_images[:] = images[:]
+
     if params is None:
         params = CNMFParams()
     else:
@@ -27,10 +48,10 @@ def caiman_cnmf(images: ImageData, params: dict=None) -> {'images': ImageData, '
     print(new_images.filename)
 
     cnm = cnmf.CNMF(1, params=params, dview=None)
-    cnm = cnm.fit(new_images)
+    cnm = cnm.fit(mmap_images)
 
     # contours plot
-    Cn = local_correlations(new_images.transpose(1, 2, 0))
+    Cn = local_correlations(mmap_images.transpose(1, 2, 0))
     Cn[np.isnan(Cn)] = 0
     cnm.estimates.plot_contours(img=Cn)
 
@@ -50,6 +71,7 @@ def caiman_cnmf(images: ImageData, params: dict=None) -> {'images': ImageData, '
     info['roi'] = RoiData(cont_cent)
 
     return info
+
 
 if __name__ == '__main__':
     import os

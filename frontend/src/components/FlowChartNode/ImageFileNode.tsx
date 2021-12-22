@@ -16,13 +16,15 @@ import { selectImageFile } from 'store/slice/FileData/FileData'
 import { FileSelect } from './FileSelect'
 import { FILE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
 import { LinearProgressWithLabel } from './LinerProgressWithLabel'
+import { useHandleColor } from './HandleColorHook'
 
+// Connection部分のレイアウト
 const sourceHandleStyle: CSSProperties = {
-  width: 8,
-  height: 15,
+  width: '4%',
+  height: '13%',
   top: 15,
   border: '1px solid',
-  borderColor: '#555',
+  // borderColor: '#555',
   borderRadius: 0,
 }
 
@@ -41,10 +43,11 @@ export const ImageFileNode = React.memo<NodeProps>((element) => {
   const theme = useTheme()
   const imageIsUploading = useSelector(imageIsUploadingByIdSelector(element.id))
   const uploadProgress = useSelector(imageUploadingProgressSelector(element.id))
+  const imageColor = useHandleColor('ImageData')
   return (
     <div
+      className="imageFileNode"
       style={{
-        height: '100%',
         background: element.selected
           ? alpha(theme.palette.primary.light, 0.1)
           : undefined,
@@ -69,7 +72,10 @@ export const ImageFileNode = React.memo<NodeProps>((element) => {
         type="source"
         position={Position.Right}
         id={`image-${element.id}`}
-        style={sourceHandleStyle}
+        style={{
+          ...sourceHandleStyle,
+          background: imageColor,
+        }}
       />
     </div>
   )
@@ -105,7 +111,7 @@ const ImageFileSelect = React.memo<{ nodeId: string; maxIndex: number }>(
         onSelectFile={onSelectFile}
         onUploadFile={onUploadFile}
         fileType={FILE_TYPE_SET.IMAGE}
-        selectButtonLabel="画像を選択"
+        selectButtonLabel="Select Image"
       />
     )
   },

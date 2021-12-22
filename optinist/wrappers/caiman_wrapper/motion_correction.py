@@ -30,7 +30,7 @@ def caiman_mc(image: ImageData, params: dict=None) -> {'images': ImageData}:
     Yr, dims, T = load_memmap(fname_new)
     # images = np.array(np.reshape(
     #     Yr.T, [T] + list(dims), order='F'))
-    images = Yr.T.reshape((T,) + dims, order='F')
+    images = np.array(Yr.T.reshape((T,) + dims, order='F'))
 
     info['images'] = ImageData(images, func_name='caiman_mc')
 
