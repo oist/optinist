@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import Button from '@material-ui/core/Button'
 import PlayArrowIcon from '@material-ui/icons/PlayArrow'
 import {
-  nodeDataListForRunSelector,
+  elementListForRunSelector,
   pathIsUndefinedSelector,
 } from 'store/slice/Element/ElementSelector'
 import { Box, IconButton, LinearProgress } from '@material-ui/core'
@@ -37,14 +37,16 @@ export const ToolBarImple = React.memo(() => {
   const dispatch = useDispatch()
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
   const pathIsUndefined = useSelector(pathIsUndefinedSelector)
-  const nodeDataListForRun = useSelector(nodeDataListForRunSelector)
+  const elementListForRun = useSelector(elementListForRunSelector)
   const [triggerRunPipeline, result] = useLazyRunPipelineQuery()
   const [isReady, setIsReady] = React.useState(false)
   const onRunBtnClick = () => {
     if (pathIsUndefined) {
       enqueueSnackbar('failed to read file path.', { variant: 'error' })
+    } else if (elementListForRun.edgeList.length === 0) {
+      enqueueSnackbar('there are no edges.', { variant: 'error' })
     } else {
-      triggerRunPipeline({ nodeDataListForRun, requestId: nanoid() })
+      triggerRunPipeline({ elementListForRun, requestId: nanoid() })
       closeSnackbar()
       setIsReady(true)
     }

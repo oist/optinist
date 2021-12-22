@@ -1,4 +1,4 @@
-import { ElementId } from 'react-flow-renderer'
+import { ElementId, isEdge } from 'react-flow-renderer'
 import { isNodeData, isImageNodeData } from 'utils/ElementUtils'
 import { RootState } from '../../store'
 import { algoParamByIdSelector } from '../Algorithm/AlgorithmSelector'
@@ -22,8 +22,9 @@ export const maxElementIdSelector = (state: RootState) =>
         .filter((id) => !isNaN(id))
         .reduce((a, b) => Math.max(a, b))
 
-export const nodeDataListForRunSelector = (state: RootState) =>
-  flowElementsSelector(state).map((element) => {
+export const elementListForRunSelector = (state: RootState) => {
+  const elements = flowElementsSelector(state)
+  const nodeList = elements.filter(isNodeData).map((element) => {
     if (element.data && element.data.type === 'algo') {
       const param = algoParamByIdSelector(element.id)(state)
       return {
@@ -37,6 +38,9 @@ export const nodeDataListForRunSelector = (state: RootState) =>
       return element
     }
   })
+  const edgeList = elements.filter(isEdge)
+  return { nodeList, edgeList }
+}
 
 export const pathIsUndefinedSelector = (state: RootState) => {
   const pathErrorNodeList = flowElementsSelector(state).filter((element) => {
