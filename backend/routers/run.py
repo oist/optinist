@@ -39,14 +39,14 @@ def create_snakefile_config_from_flowlist(flowList: List[FlowItem]):
     prev_algo_output = None
     for i, item in enumerate(flowList):
         if item.type == 'image':
-            initial_input = "../" + item.path
+            initial_input = "/app/" + item.path
         elif item.type == 'algo':
             if i == 1:
                 algo_input = initial_input
             else:
                 algo_input = prev_algo_output
             
-            output_base_path = f"../files/{item.label}"
+            output_base_path = f"/app/files/{item.label}"
             
             if not os.path.exists(output_base_path):
                 print(f"Creating {output_base_path}")
@@ -81,12 +81,14 @@ async def websocket_endpoint(websocket: WebSocket):
     # Wait for any message from the client
     flowList = await websocket.receive_text()
     flowList = list(map(lambda x: FlowItem(**x), json.loads(flowList)))
+    print(flowList)
 
     # flowListの内容をconfig.yamlに出力
     create_snakefile_config_from_flowlist(flowList)
 
     # snakemake実行
-    # subprocess.run("snakemake --cores 1 --use-conda", shell=True, cwd="./workflow")
+    print("Executing Snakefile")
+    subprocess.run("snakemake --cores 1", shell=True, cwd="./workflow")
 
     try:
         for item in flowList:
@@ -94,43 +96,43 @@ async def websocket_endpoint(websocket: WebSocket):
             await websocket.send_json({'message': item.label+' started', 'status': 'ready'})
 
             # run algorithm
-            info = None
-            if item.type == 'image':
-                info = {'path': ImageData(item.path, '')}
-            elif item.type == 'algo':
-                # parameterをint, floatに変換
-                from .utils import string_to_float
-                item.param = string_to_float(item.param)
+            # info = None
+            # if item.type == 'image':
+            #     info = {'path': ImageData(item.path, '')}
+            # elif item.type == 'algo':
+            #     # parameterをint, floatに変換
+            #     from .utils import string_to_float
+            #     item.param = string_to_float(item.param)
 
-                wrapper = get_dict_leaf_value(wrapper_dict, item.path.split('/'))
-                info = wrapper["function"](
-                    *prev_info.values(), params=item.param)
+            #     wrapper = get_dict_leaf_value(wrapper_dict, item.path.split('/'))
+            #     info = wrapper["function"](
+            #         *prev_info.values(), params=item.param)
 
-            prev_info = info
+            # prev_info = info
 
-            assert info is not None
+            # assert info is not None
 
-            results = OrderedDict()
-            results[item.path] = {}
-            for k, v in info.items():
-                if type(v) is ImageData:
-                    print("ImageData")
-                    results[item.path][k] = {}
-                    results[item.path][k]['path'] = v.json_path
-                    results[item.path][k]['type'] = 'images'
-                    results[item.path][k]['max_index'] = len(v.data)
-                elif type(v) is TimeSeriesData:
-                    print("TimeSeriesData")
-                    results[item.path][k] = {}
-                    results[item.path][k]['path'] = v.path
-                    results[item.path][k]['type'] = 'timeseries'
-                elif type(v) is CorrelationData:
-                    print("CorrelationData")
-                    results[item.path][k] = {}
-                    results[item.path][k]['path'] = v.path
-                    results[item.path][k]['type'] = 'heatmap'
-                else:
-                    pass
+            # results = OrderedDict()
+            # results[item.path] = {}
+            # for k, v in info.items():
+            #     if type(v) is ImageData:
+            #         print("ImageData")
+            #         results[item.path][k] = {}
+            #         results[item.path][k]['path'] = v.json_path
+            #         results[item.path][k]['type'] = 'images'
+            #         results[item.path][k]['max_index'] = len(v.data)
+            #     elif type(v) is TimeSeriesData:
+            #         print("TimeSeriesData")
+            #         results[item.path][k] = {}
+            #         results[item.path][k]['path'] = v.path
+            #         results[item.path][k]['type'] = 'timeseries'
+            #     elif type(v) is CorrelationData:
+            #         print("CorrelationData")
+            #         results[item.path][k] = {}
+            #         results[item.path][k]['path'] = v.path
+            #         results[item.path][k]['type'] = 'heatmap'
+            #     else:
+            #         pass
 
             # Send message to the client
             await websocket.send_json({'message': item.label+' success', 'status': 'success', 'outputPaths': results})
