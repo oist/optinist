@@ -16,6 +16,7 @@ import { selectImageFile } from 'store/slice/FileData/FileData'
 import { FileSelect } from './FileSelect'
 import { FILE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
 import { LinearProgressWithLabel } from './LinerProgressWithLabel'
+import { useHandleColor } from './HandleColorHook'
 
 // Connection部分のレイアウト
 const sourceHandleStyle: CSSProperties = {
@@ -42,6 +43,7 @@ export const ImageFileNode = React.memo<NodeProps>((element) => {
   const theme = useTheme()
   const imageIsUploading = useSelector(imageIsUploadingByIdSelector(element.id))
   const uploadProgress = useSelector(imageUploadingProgressSelector(element.id))
+  const imageColor = useHandleColor('ImageData')
   return (
     <div
       className="imageFileNode"
@@ -70,7 +72,10 @@ export const ImageFileNode = React.memo<NodeProps>((element) => {
         type="source"
         position={Position.Right}
         id={`image-${element.id}`}
-        style={sourceHandleStyle}
+        style={{
+          ...sourceHandleStyle,
+          background: imageColor,
+        }}
       />
     </div>
   )

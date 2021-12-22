@@ -1,3 +1,10 @@
+from pynwb import NWBFile
+from pynwb.ophys import (
+    OpticalChannel, TwoPhotonSeries, ImageSegmentation,
+    RoiResponseSeries, Fluorescence, ImageSeries,
+)
+from datetime import datetime
+from dateutil.tz import tzlocal
 
 
 def nwb_add_acquisition(nwb_dict):

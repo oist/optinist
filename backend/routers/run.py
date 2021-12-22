@@ -3,11 +3,12 @@ from pydantic import BaseModel
 from typing import Dict, List, Optional
 import traceback
 import sys
-import json
+
 from wrappers import wrapper_dict
 from collections import OrderedDict
 from wrappers.data_wrapper import *
 from wrappers.optinist_exception import AlgorithmException
+from .utils import get_algo_network, run_algorithm, get_results
 
 # NWB
 from pynwb import NWBFile, NWBHDF5IO
@@ -19,25 +20,11 @@ from .utils import get_nest2dict
 from .nwb import nwb_config
 from datetime import datetime
 from dateutil.tz import tzlocal
+import json
 
 sys.path.append('../../optinist')
 
 router = APIRouter()
-
-
-class FlowItem(BaseModel):
-    label: str
-    path: Optional[str] = None
-    type: str
-    param: Optional[Dict] = {}
-
-
-def get_dict_leaf_value(root_dict: dict, path_list: List[str]):
-    path = path_list.pop(0)
-    if(len(path_list) > 0):
-        return get_dict_leaf_value(root_dict[path],path_list)
-    else:
-        return root_dict[path]
 
 
 @router.get("/run/ready/{request_id}")
@@ -51,31 +38,36 @@ async def websocket_endpoint(websocket: WebSocket):
 
     await websocket.accept()
     # Wait for any message from the client
+
     message = await websocket.receive_text()
+    graph, startNodeList, nodeDict = get_algo_network(message)
+
     message = json.loads(message)
-    flowList = list(map(lambda x: FlowItem(**x), message['nodeDataListForRun']))
+
     if message['nwbParam'] == {}:
         nwb_dict = nwb_config
     else:
         nwb_dict = get_nest2dict(message['nwbParam'])
-    print('message: ', message)
-    print('flowList: ', flowList)
-    print('nwbParam: ', nwb_dict)
 
     try:
-        for item in flowList:
+        item = nodeDict[startNodeList[0]]
+        info = None
+        prev_info = None
+
+        while True:
 
             await websocket.send_json({
-                'message': item.label+' started',
+                'message': item['data']['label'] + ' started',
                 'status': 'ready'
             })
 
             # run algorithm
-            info = None
-            if item.type == 'image':
-                info = {'path': ImageData(item.path, '')}
-                # NWBを登録
-                nwb_dict['image_series']['external_file'] = info.data
+            info = run_algorithm(info, prev_info, item)
+            prev_info = info
+
+            # NWB登録
+            if item['type'] == 'ImageFileNode':
+                nwb_dict['image_series']['external_file'] = info['images'].data
                 nwbfile = nwb_add_acquisition(nwb_dict)
                 info['nwb'] = {}
                 info['nwb']['nwbfile'] = nwbfile
@@ -83,64 +75,52 @@ async def websocket_endpoint(websocket: WebSocket):
                     name='ophys',
                     description='optical physiology processed data'
                 )
-            elif item.type == 'algo':
-                wrapper = get_dict_leaf_value(wrapper_dict, item.path.split('/'))
-                info = wrapper["function"](
-                    *prev_info.values(), params=item.param)
-
-            prev_info = info
 
             assert info is not None
 
-            results = OrderedDict()
-            results[item.path] = {}
-            save_result(item, results, info)
+            results = get_results(info, item)
 
-            # NWBを保存
-            print(item.path)
-            save_path = item.path.split('.')[0]
-            if not os.path.exists(save_path):
-                os.makedirs(save_path)
+            # # NWBを保存
+            # save_path = item['data']['path'].split('.')[0]
+            # if not os.path.exists(save_path):
+            #     os.makedirs(save_path)
 
-            with NWBHDF5IO(os.path.join(save_path, f'{item.label}.nwb'), 'w') as io:
-                io.write(nwbfile)
+            # with NWBHDF5IO(os.path.join(
+            #         save_path, f'{item["data"]["label"]}.nwb'), 'w') as io:
+            #     io.write(nwbfile)
 
             # Send message to the client
             await websocket.send_json({
-                'message': item.label+' success',
+                'message': item['data']['label'] + ' success',
                 'status': 'success',
                 'outputPaths': results
             })
 
-        await websocket.send_json({'message': 'completed', 'status': 'completed'})
+            if len(graph[item['id']]) > 0:
+                node_id = graph[item['id']][0]
+                item = nodeDict[node_id]
+            else:
+                break
+
+        await websocket.send_json({
+            'message': 'completed',
+            'status': 'completed'
+        })
+
     except AlgorithmException as e:
-        await websocket.send_json({'message': e.get_message(), 'name': item.label, 'status': 'error'})
+        await websocket.send_json({
+            'message': e.get_message(),
+            'name': item['data']['label'],
+            'status': 'error'
+        })
     except Exception as e:
         message  = list(traceback.TracebackException.from_exception(e).format())[-1]
         print(traceback.format_exc())
-        await websocket.send_json({'message': message, 'name': item.label, 'status': 'error'})
+        await websocket.send_json({
+            'message': message,
+            'name': item['data']['label'],
+            'status': 'error'
+        })
     finally:
         print('Bye..')
         await websocket.close()
-
-
-def save_result(item, results, info):
-    for k, v in info.items():
-        if type(v) is ImageData:
-            print("ImageData")
-            results[item.path][k] = {}
-            results[item.path][k]['path'] = v.path
-            results[item.path][k]['type'] = 'images'
-            results[item.path][k]['max_index'] = len(v.data)
-        elif type(v) is TimeSeriesData:
-            print("TimeSeriesData")
-            results[item.path][k] = {}
-            results[item.path][k]['path'] = v.path
-            results[item.path][k]['type'] = 'timeseries'
-        elif type(v) is CorrelationData:
-            print("CorrelationData")
-            results[item.path][k] = {}
-            results[item.path][k]['path'] = v.path
-            results[item.path][k]['type'] = 'heatmap'
-        else:
-            pass
