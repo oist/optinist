@@ -48,43 +48,43 @@ def nwb_add_acquisition(nwb_dict):
 
 
 def nwb_motion_correction(nwb, mc_data, xy_trans_data):
-	# motion correction
-	original = ImageSeries(
-		name='original',  # this must be named "corrected"
-		data=list(nwb['nwbfile'].acquisition.values())[0],
-		unit='na',
-		format='raw',
-		starting_time=0.0,
-		rate=1.0
-	)
+    # motion correction
+    original = ImageSeries(
+        name='original',  # this must be named "corrected"
+        data=list(nwb['nwbfile'].acquisition.values())[0],
+        unit='na',
+        format='raw',
+        starting_time=0.0,
+        rate=1.0
+    )
 
-	corrected = ImageSeries(
-		name='corrected',  # this must be named "corrected"
-		data=mc_data,
-		unit='na',
-		format='raw',
-		starting_time=0.0,
-		rate=1.0
-	)
+    corrected = ImageSeries(
+        name='corrected',  # this must be named "corrected"
+        data=mc_data,
+        unit='na',
+        format='raw',
+        starting_time=0.0,
+        rate=1.0
+    )
 
-	xy_translation = TimeSeries(
-		name='xy_translation',
-		data=xy_trans_data,
-		unit='pixels',
-		starting_time=0.0,
-		rate=1.0,
-	)
+    xy_translation = TimeSeries(
+        name='xy_translation',
+        data=xy_trans_data,
+        unit='pixels',
+        starting_time=0.0,
+        rate=1.0,
+    )
 
-	corrected_image_stack = CorrectedImageStack(
-		corrected=corrected,
-		original=original,
-		xy_translation=xy_translation,
-	)
+    corrected_image_stack = CorrectedImageStack(
+        corrected=corrected,
+        original=original,
+        xy_translation=xy_translation,
+    )
 
-	motion_correction = MotionCorrection(
-		corrected_image_stacks=corrected_image_stack
-	)
-	nwb['ophys'].add(motion_correction)
+    motion_correction = MotionCorrection(
+        corrected_image_stacks=corrected_image_stack
+    )
+    nwb['ophys'].add(motion_correction)
 
     return nwb
 
