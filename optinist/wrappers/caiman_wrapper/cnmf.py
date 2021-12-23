@@ -3,7 +3,9 @@ from wrappers.args_check import args_check
 
 
 @args_check
-def caiman_cnmf(images: ImageData, params: dict=None) -> {'fluo': TimeSeriesData, 'iscell': IscellData, 'roi': RoiData}:
+def caiman_cnmf(
+        images: ImageData, nwbfile: NWBFile=None, params: dict=None
+    ) -> {'fluo': TimeSeriesData, 'iscell': IscellData, 'roi': RoiData}:
     import caiman
     from caiman import local_correlations
     from caiman.source_extraction.cnmf import cnmf
@@ -47,7 +49,8 @@ def caiman_cnmf(images: ImageData, params: dict=None) -> {'fluo': TimeSeriesData
     cnm.estimates.plot_contours(img=Cn)
 
     # get roi center
-    cont = visualization.get_contours(cnm.estimates.A, cnm.dims, thr=0.9, thr_method='nrg', swap_dim=False)
+    cont = visualization.get_contours(
+        cnm.estimates.A, cnm.dims, thr=0.9, thr_method='nrg', swap_dim=False)
     cont_cent = np.zeros([len(cont), 2])
     for i in range(len(cont)):
         cont_cent[i, :] = np.nanmean(cont[i]['coordinates'], axis=0)

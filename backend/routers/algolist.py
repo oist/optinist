@@ -6,6 +6,9 @@ from wrappers import wrapper_dict
 
 router = APIRouter()
 
+NOT_DISPLAY_ARGS_LIST = ['params', 'nwbfile']
+
+
 def get_nest_dict(value, parent_k):
     algo_dict = {}
     for _k, _v in value.items():
@@ -22,7 +25,7 @@ def get_nest_dict(value, parent_k):
                     'type': x.annotation.__name__
                 }
                 for x in sig.parameters.values()
-                if x.name != 'params'
+                if x.name not in NOT_DISPLAY_ARGS_LIST
             ]
 
             # get returns

@@ -113,14 +113,12 @@ def get_algo_network(flowList):
     return graph, startNodeList, nodeDict
 
 
-def run_algorithm(info, prev_info, item):
+def run_algorithm(prev_info, item):
     if item['type'] == 'ImageFileNode':
         info = {'images': ImageData(item['data']['path'], '')}
     elif item['type'] == 'AlgorithmNode':
         # parameterをint, floatに変換
         params = string_to_float(item['data']['param'])
-        params['nwb'] = info['nwb']
-        info.pop('nwb')
 
         wrapper = get_dict_leaf_value(
             wrapper_dict, item['data']['path'].split('/'))

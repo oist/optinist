@@ -11,7 +11,7 @@ from wrappers.optinist_exception import AlgorithmException
 from .utils import get_algo_network, run_algorithm, get_results
 
 # NWB
-from pynwb import NWBFile, NWBHDF5IO
+from pynwb import NWBFile, NWBHDF5IO, get_manager
 from pynwb.ophys import (
     OpticalChannel, TwoPhotonSeries, ImageSegmentation,
     RoiResponseSeries, Fluorescence, ImageSeries,
@@ -25,6 +25,8 @@ import json
 sys.path.append('../../optinist')
 
 router = APIRouter()
+
+manager = get_manager()
 
 
 @router.get("/run/ready/{request_id}")
@@ -51,7 +53,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
     try:
         item = nodeDict[startNodeList[0]]
-        info = None
+        info = {}
         prev_info = None
 
         while True:
@@ -62,32 +64,38 @@ async def websocket_endpoint(websocket: WebSocket):
             })
 
             # run algorithm
-            info = run_algorithm(info, prev_info, item)
-            prev_info = info
+            info = run_algorithm(prev_info, item)
 
             # NWB登録
             if item['type'] == 'ImageFileNode':
                 nwb_dict['image_series']['external_file'] = info['images'].data
                 nwbfile = nwb_add_acquisition(nwb_dict)
-                info['nwb'] = {}
-                info['nwb']['nwbfile'] = nwbfile
-                info['nwb']['ophys'] = nwbfile.create_processing_module(
+                nwbfile.create_processing_module(
                     name='ophys',
                     description='optical physiology processed data'
                 )
 
-            assert info is not None
+                info['nwbfile'] = nwbfile
+
+            # prev_infoを登録
+            if 'nwbfile' not in info.keys():
+                nwbfile = prev_info['nwbfile']
+                info['nwbfile'] = nwbfile
+
+            assert info is not None and 'nwbfile' in info.keys()
 
             results = get_results(info, item)
 
-            # # NWBを保存
-            # save_path = item['data']['path'].split('.')[0]
-            # if not os.path.exists(save_path):
-            #     os.makedirs(save_path)
+            # NWBを保存
+            save_path = os.path.join(
+                './files', item['data']['path'].split('.')[0].split('/')[-1])
+            # import pdb; pdb.set_trace()
+            if not os.path.exists(save_path):
+                os.makedirs(save_path)
 
-            # with NWBHDF5IO(os.path.join(
-            #         save_path, f'{item["data"]["label"]}.nwb'), 'w') as io:
-            #     io.write(nwbfile)
+            nwbfile = info['nwbfile']
+            with NWBHDF5IO(os.path.join(save_path, 'tmp.nwb'), 'w', manager=manager) as io:
+                io.write(nwbfile)
 
             # Send message to the client
             await websocket.send_json({
@@ -101,6 +109,8 @@ async def websocket_endpoint(websocket: WebSocket):
                 item = nodeDict[node_id]
             else:
                 break
+
+            prev_info = info
 
         await websocket.send_json({
             'message': 'completed',

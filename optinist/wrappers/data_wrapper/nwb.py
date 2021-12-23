@@ -1,7 +1,8 @@
 from pynwb import NWBFile
 from pynwb.ophys import (
     OpticalChannel, TwoPhotonSeries, ImageSegmentation,
-    RoiResponseSeries, Fluorescence, ImageSeries,
+    RoiResponseSeries, Fluorescence, ImageSeries, TimeSeries,
+    CorrectedImageStack, MotionCorrection
 )
 from datetime import datetime
 from dateutil.tz import tzlocal
@@ -30,7 +31,7 @@ def nwb_add_acquisition(nwb_dict):
     )
 
     # imaging planeを追加
-    nwbfile.create_imaging_plane(
+    imaging_plane = nwbfile.create_imaging_plane(
         name=nwb_dict['imaging_plane']['name'],
         description=nwb_dict['imaging_plane']['description'],
         optical_channel=optical_channel,   # 光チャネル
@@ -41,12 +42,22 @@ def nwb_add_acquisition(nwb_dict):
         location=nwb_dict['imaging_plane']['location'],
     )
 
-    image_series = ImageSeries(
-        name=nwb_dict['image_series']['name'],
-        external_file=nwb_dict['image_series']['external_file'],
-        format='external',
-        rate=nwb_dict['imaging_plane']['imaging_rate'],
-        starting_frame=[nwb_dict['image_series']['starting_frame']]
+    # image_series = ImageSeries(
+    #     name=nwb_dict['image_series']['name'],
+    #     external_file=nwb_dict['image_series']['external_file'],
+    #     format='external',
+    #     rate=nwb_dict['imaging_plane']['imaging_rate'],
+    #     starting_frame=[nwb_dict['image_series']['starting_frame']]
+    # )
+    # import pdb; pdb.set_trace()
+
+    # using internal data. this data will be stored inside the NWB file
+    image_series = TwoPhotonSeries(
+        name='TwoPhotonSeries',
+        data=nwb_dict['image_series']['external_file'],
+        imaging_plane=imaging_plane,
+        rate=1.0,
+        unit='normalized amplitude'
     )
 
     nwbfile.add_acquisition(image_series)
@@ -54,16 +65,17 @@ def nwb_add_acquisition(nwb_dict):
     return nwbfile
 
 
-def nwb_motion_correction(nwb, mc_data, xy_trans_data):
+def nwb_motion_correction(nwbfile, mc_data, xy_trans_data):
     # motion correction
-    original = ImageSeries(
-        name='original',  # this must be named "corrected"
-        data=list(nwb['nwbfile'].acquisition.values())[0],
-        unit='na',
-        format='raw',
-        starting_time=0.0,
-        rate=1.0
-    )
+    # import pdb; pdb.set_trace()
+    # original = ImageSeries(
+    #     name='original',  # this must be named "corrected"
+    #     data=nwbfile.acquisition['TwoPhotonSeries'],#list(nwbfile.acquisition.values())[0],
+    #     unit='na',
+    #     format='raw',
+    #     starting_time=0.0,
+    #     rate=1.0
+    # )
 
     corrected = ImageSeries(
         name='corrected',  # this must be named "corrected"
@@ -84,14 +96,13 @@ def nwb_motion_correction(nwb, mc_data, xy_trans_data):
 
     corrected_image_stack = CorrectedImageStack(
         corrected=corrected,
-        original=original,
+        original=nwbfile.acquisition['TwoPhotonSeries'],
         xy_translation=xy_translation,
     )
 
     motion_correction = MotionCorrection(
         corrected_image_stacks=corrected_image_stack
     )
-    nwb['ophys'].add(motion_correction)
+    nwbfile.processing['ophys'].add(motion_correction)
 
-    return nwb
-
+    return nwbfile
