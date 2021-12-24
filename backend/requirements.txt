@@ -14,6 +14,8 @@ pynwb
 ipyparallel
 holoviews
 psutil
+graphviz
+pygraphviz
 nbstripout
 tensorflow
 torch==1.10.0

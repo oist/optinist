@@ -5,6 +5,7 @@ WORKDIR /app
 
 RUN apt-get --allow-releaseinfo-change update
 RUN apt-get install -y git gcc g++ libgl1
+RUN apt-get install -y graphviz libgraphviz-dev
 
 RUN /usr/local/bin/python -m pip install --upgrade pip
 COPY requirements.txt ./
