@@ -42,15 +42,6 @@ def nwb_add_acquisition(nwb_dict):
         location=nwb_dict['imaging_plane']['location'],
     )
 
-    # image_series = ImageSeries(
-    #     name=nwb_dict['image_series']['name'],
-    #     external_file=nwb_dict['image_series']['external_file'],
-    #     format='external',
-    #     rate=nwb_dict['imaging_plane']['imaging_rate'],
-    #     starting_frame=[nwb_dict['image_series']['starting_frame']]
-    # )
-    # import pdb; pdb.set_trace()
-
     # using internal data. this data will be stored inside the NWB file
     image_series = TwoPhotonSeries(
         name='TwoPhotonSeries',
@@ -65,18 +56,21 @@ def nwb_add_acquisition(nwb_dict):
     return nwbfile
 
 
-def nwb_motion_correction(nwbfile, mc_data, xy_trans_data):
-    # motion correction
-    # import pdb; pdb.set_trace()
-    # original = ImageSeries(
-    #     name='original',  # this must be named "corrected"
-    #     data=nwbfile.acquisition['TwoPhotonSeries'],#list(nwbfile.acquisition.values())[0],
-    #     unit='na',
-    #     format='raw',
-    #     starting_time=0.0,
-    #     rate=1.0
-    # )
+def nwb_add_ophys(nwbfile):
+    img_seg = ImageSegmentation()
+    nwbfile.processing['ophys'].add(img_seg)
 
+    img_seg.create_plane_segmentation(
+        name='PlaneSegmentation',
+        description='suite2p output',
+        imaging_plane=nwbfile.imaging_planes['ImagingPlane'],
+        reference_images=nwbfile.acquisition['TwoPhotonSeries']
+    )
+
+    return nwbfile
+
+
+def nwb_motion_correction(nwbfile, mc_data, xy_trans_data):
     corrected = ImageSeries(
         name='corrected',  # this must be named "corrected"
         data=mc_data,
@@ -104,5 +98,19 @@ def nwb_motion_correction(nwbfile, mc_data, xy_trans_data):
         corrected_image_stacks=corrected_image_stack
     )
     nwbfile.processing['ophys'].add(motion_correction)
+
+    return nwbfile
+
+
+def nwb_add_ps_column(nwbfile, roi_list):
+    ohys = nwbfile.processing['ophys']
+    image_seg = ohys.data_interfaces['ImageSegmentation']
+    plane_seg = image_seg.plane_segmentations['PlaneSegmentation']
+
+    for col in roi_list[0].keys():
+        plane_seg.add_column(col, f'in {col} list')
+
+    for col in roi_list:
+        plane_seg.add_roi(**col)
 
     return nwbfile

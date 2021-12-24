@@ -18,13 +18,13 @@ nwb_config = {
   'optical_channel': {
       'name': 'OpticalChannel',
       'description': 'optical channel',
-      'emission_lambda': 500.
+      'emission_lambda': 500.1
   },
   'imaging_plane': {
       'name': 'ImagingPlane',
       'description': 'standard',
-      'imaging_rate': 30.,
-      'excitation_lambda': 600.,
+      'imaging_rate': 30.1,
+      'excitation_lambda': 600.1,
       'indicator': 'GCaMap',
       'location': 'V1',
   },

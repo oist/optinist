@@ -53,7 +53,6 @@ async def websocket_endpoint(websocket: WebSocket):
 
     try:
         item = nodeDict[startNodeList[0]]
-        info = {}
         prev_info = None
 
         while True:
@@ -74,6 +73,7 @@ async def websocket_endpoint(websocket: WebSocket):
                     name='ophys',
                     description='optical physiology processed data'
                 )
+                nwbfile = nwb_add_ophys(nwbfile)
 
                 info['nwbfile'] = nwbfile
 

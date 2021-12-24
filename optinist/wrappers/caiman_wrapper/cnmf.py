@@ -64,6 +64,21 @@ def caiman_cnmf(
     info['iscell'] = IscellData(iscell, func_name='caiman_cnmf', file_name='iscell')
     info['roi'] = RoiData(cont_cent)
 
+    # NWBにROIを追加
+    roi_list = []
+    n_cells = cnm.estimates.A.shape[-1]
+    for i in range(n_cells):
+        kargs = {}
+        kargs['image_mask'] = cnm.estimates.A.T[i].T.toarray().reshape(cnm.estimates.dims)
+        # image_mask_list.append()
+        if hasattr(cnm.estimates, 'accepted_list'):
+            kargs['accepted'] = i in cnm.estimates.accepted_list
+        if hasattr(cnm.estimates, 'rejected_list'):
+            kargs['rejected'] = i in cnm.estimates.rejected_list
+        roi_list.append(kargs)
+
+    info['nwbfile'] = nwb_add_ps_column(nwbfile, roi_list)
+
     return info
 
 
