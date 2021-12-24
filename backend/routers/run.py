@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from typing import Dict, List, Optional
 import traceback
 import sys
+import copy
 
 from wrappers import wrapper_dict
 from collections import OrderedDict
@@ -47,7 +48,7 @@ async def websocket_endpoint(websocket: WebSocket):
     message = json.loads(message)
 
     if message['nwbParam'] == {}:
-        nwb_dict = nwb_config
+        nwb_dict = copy.deepcopy(nwb_config)
     else:
         nwb_dict = get_nest2dict(message['nwbParam'])
 
