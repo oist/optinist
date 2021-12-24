@@ -5,6 +5,7 @@ import imageio
 from PIL import Image
 import cv2
 import tifffile
+import copy
 
 
 class ImageData:
@@ -25,14 +26,15 @@ class ImageData:
 
             tifffile.imsave(self.path, data)
 
-            save_data = cv2.resize(self.data, (150, 150))
+            save_data = copy.deepcopy(self.data)
+            if self.data.shape[-1] >= 200 and self.data.shape[-2] >= 200:
+                save_data = cv2.resize(save_data, (200, 200))
 
             if len(self.data.shape) == 2:
                 self.data = self.data[np.newaxis, :, :]
                 save_data = save_data[np.newaxis, :, :]
 
             images = []
-            # import pdb; pdb.set_trace()
             for i, _img in enumerate(save_data[:10]):
                 images.append(_img.tolist())
 

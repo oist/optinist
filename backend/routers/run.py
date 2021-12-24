@@ -7,10 +7,12 @@ import sys
 import json
 import yaml
 import subprocess
+
 from wrappers import wrapper_dict
 from collections import OrderedDict
 from wrappers.data_wrapper import *
 from wrappers.optinist_exception import AlgorithmException
+from .utils import get_algo_network, run_algorithm, get_results
 
 import time
 sys.path.append('../../optinist')
@@ -18,49 +20,41 @@ sys.path.append('../../optinist')
 router = APIRouter()
 
 
-class FlowItem(BaseModel):
-    label: str
-    path: Optional[str] = None
-    type: str
-    param: Optional[Dict] = {}
-
-def get_dict_leaf_value(root_dict: dict, path_list: List[str]):
-    path = path_list.pop(0)
-    if(len(path_list) > 0):
-        return get_dict_leaf_value(root_dict[path],path_list)
-    else:
-        return root_dict[path]
 
 def current_time():
     print(time.perf_counter())
 
-def create_snakefile_config_from_flowlist(flowList: List[FlowItem]):
+def create_snakefile_config_from_flowlist(flowList):
     '''
     flowListを受け取り、Snakemakeに渡すconfig.yamlとして出力する。
     '''
+    nodeList = flowList.get('nodeList')
+
     flow_config = {}
     rules_to_execute = {}
     prev_algo_output = None
-    for i, item in enumerate(flowList):
-        if item.type == 'image':
-            initial_input = "/app/" + item.path
-        elif item.type == 'algo':
+    for i, item in enumerate(nodeList):
+        if item["data"]["type"] == 'image':
+            initial_input = "/app/" + item["data"]["path"]
+        elif item["data"]["type"] == 'algo':
+            algo_name = item["data"]["label"]
             if i == 1:
                 algo_input = initial_input
             else:
                 algo_input = prev_algo_output
             
-            output_base_path = f"/app/files/{item.label}"
+            output_base_path = f"/app/files/{algo_name}"
             
             if not os.path.exists(output_base_path):
                 print(f"Creating {output_base_path}")
                 os.makedirs(output_base_path)
-            algo_output = os.path.join(output_base_path, f"{item.label}_out.pkl")
             
-            rules_to_execute[item.label] = {   
-                    "rule_file": f"rules/{item.label}.smk",
+            algo_output = os.path.join(output_base_path, f"{algo_name}_out.pkl")
+            
+            rules_to_execute[algo_name] = {   
+                    "rule_file": f"rules/{algo_name}.smk",
                     "input": algo_input,
-                    "param": item.param,
+                    "param": item["data"]["param"],
                     "output": algo_output
                 }
 
@@ -73,7 +67,7 @@ def create_snakefile_config_from_flowlist(flowList: List[FlowItem]):
     with open('./workflow/config/config.yaml', "w") as f:
         yaml.dump(flow_config, f)
 
-def run_snakemake(flowList: List[FlowItem], use_conda=False):
+def run_snakemake(flowList, use_conda=False):
     # flowListの内容をconfig.yamlに出力
     create_snakefile_config_from_flowlist(flowList)
 
@@ -88,7 +82,7 @@ def run_snakemake(flowList: List[FlowItem], use_conda=False):
     # subprocess.run("snakemake --cores 1 --report report.html", shell=True, cwd="./workflow")
     return result
 
-def get_flow_outputs(flowList: List[FlowItem], flow_config: dict):
+def get_flow_outputs(flowList, flow_config: dict):
     flow_rules = flow_config.get("rules")
     
     flowoutputs = dict()
@@ -107,6 +101,7 @@ def get_flow_outputs(flowList: List[FlowItem], flow_config: dict):
 async  def run_ready(request_id: str):
     return {'message': 'ready...', 'status': 'ready', "requestId": request_id}
 
+
 @router.websocket("/run")
 async def websocket_endpoint(websocket: WebSocket):
     # import run_pipeline
@@ -114,70 +109,55 @@ async def websocket_endpoint(websocket: WebSocket):
     await websocket.accept()
     # Wait for any message from the client
     flowList = await websocket.receive_text()
-    flowList = list(map(lambda x: FlowItem(**x), json.loads(flowList)))
-
-    with open('./workflow/config/config.yaml', "r") as f:
-        flow_config = yaml.safe_load(f)
-    
-    flow_outputs = get_flow_outputs(flowList, flow_config)
+    # flowList = list(map(lambda x: FlowItem(**x), json.loads(flowList)))
+    flowList = json.loads(flowList)
 
     # snakemake実行
-    run_snakemake(flowList, use_conda=True)
+    run_snakemake(flowList, use_conda=False)
 
-    # try:
-    #     for item in flowList:
+    graph, startNodeList, nodeDict = get_algo_network(flowList)
 
-    #         await websocket.send_json({'message': item.label+' started', 'status': 'ready'})
+    try:
+        item = nodeDict[startNodeList[0]]
+        info = None
+        prev_info = None
 
-    #         # run algorithm
-    #         # info = None
-    #         # if item.type == 'image':
-    #         #     info = {'path': ImageData(item.path, '')}
-    #         # elif item.type == 'algo':
-    #         #     # parameterをint, floatに変換
-    #         #     from .utils import string_to_float
-    #         #     item.param = string_to_float(item.param)
+        while True:
 
-    #         #     wrapper = get_dict_leaf_value(wrapper_dict, item.path.split('/'))
-    #         #     info = wrapper["function"](
-    #         #         *prev_info.values(), params=item.param)
+            await websocket.send_json({
+                'message': item['data']['label'] + ' started',
+                'status': 'ready'
+            })
 
-    #         # prev_info = info
+            # run algorithm
+            info = run_algorithm(info, prev_info, item)
+            prev_info = info
 
-    #         # assert info is not None
+            assert info is not None
 
-    #         results = OrderedDict()
-    #         results[item.path] = {}
-    #         # for k, v in info.items():
-    #         #     if type(v) is ImageData:
-    #         #         print("ImageData")
-    #         #         results[item.path][k] = {}
-    #         #         results[item.path][k]['path'] = v.json_path
-    #         #         results[item.path][k]['type'] = 'images'
-    #         #         results[item.path][k]['max_index'] = len(v.data)
-    #         #     elif type(v) is TimeSeriesData:
-    #         #         print("TimeSeriesData")
-    #         #         results[item.path][k] = {}
-    #         #         results[item.path][k]['path'] = v.path
-    #         #         results[item.path][k]['type'] = 'timeseries'
-    #         #     elif type(v) is CorrelationData:
-    #         #         print("CorrelationData")
-    #         #         results[item.path][k] = {}
-    #         #         results[item.path][k]['path'] = v.path
-    #         #         results[item.path][k]['type'] = 'heatmap'
-    #         #     else:
-    #         #         pass
+            results = get_results(info, item)
 
-    #         # Send message to the client
-    #         await websocket.send_json({'message': item.label+' success', 'status': 'success', 'outputPaths': results})
+            # Send message to the client
+            await websocket.send_json({
+                'message': item['data']['label'] + ' success',
+                'status': 'success',
+                'outputPaths': results
+            })
 
-    #     await websocket.send_json({'message': 'completed', 'status': 'completed'})
-    # except AlgorithmException as e:
-    #     await websocket.send_json({'message': e.get_message(), 'name': item.label, 'status': 'error'})
-    # except Exception as e:
-    #     message  = list(traceback.TracebackException.from_exception(e).format())[-1]
-    #     print(traceback.format_exc())
-    #     await websocket.send_json({'message': message, 'name': item.label, 'status': 'error'})
-    # finally:
-    #     print('Bye..')
-    #     await websocket.close()
+            if len(graph[item['id']]) > 0:
+                node_id = graph[item['id']][0]
+                item = nodeDict[node_id]
+            else:
+                break
+
+        await websocket.send_json({'message': 'completed', 'status': 'completed'})
+
+    except AlgorithmException as e:
+        await websocket.send_json({'message': e.get_message(), 'name': item['data']['label'], 'status': 'error'})
+    except Exception as e:
+        message  = list(traceback.TracebackException.from_exception(e).format())[-1]
+        print(traceback.format_exc())
+        await websocket.send_json({'message': message, 'name': item['data']['label'], 'status': 'error'})
+    finally:
+        print('Bye..')
+        await websocket.close()
