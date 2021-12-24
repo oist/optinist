@@ -118,7 +118,10 @@ def run_algorithm(prev_info, item):
         info = {'images': ImageData(item['data']['path'], '')}
     elif item['type'] == 'AlgorithmNode':
         # parameterをint, floatに変換
-        params = string_to_float(item['data']['param'])
+        if 'param' in item['data'].keys():
+            params = string_to_float(item['data']['param'])
+        else:
+            params = {}
 
         wrapper = get_dict_leaf_value(
             wrapper_dict, item['data']['path'].split('/'))

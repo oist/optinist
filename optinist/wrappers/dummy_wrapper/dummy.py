@@ -1,9 +1,10 @@
 import numpy as np
 import sys
+from pynwb import NWBFile
 
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
-from pynwb import NWBFile
+
 
 @args_check
 def dummy_image2image(
@@ -16,7 +17,7 @@ def dummy_image2image(
     """
     info = {}
     info['image2image'] = ImageData(
-        np.random.rand((100)).reshape(10, 10),
+        np.random.rand((3000)).reshape(30, 10, 10),
         func_name=sys._getframe().f_code.co_name)
     return info
 
@@ -111,7 +112,8 @@ def dummy_image8image2image8time(
 
 @args_check
 def dummy_time8image2image8time(
-    timeseries: TimeSeriesData, image: ImageData, nwbfile: NWBFile=None, params: dict=None):
+    timeseries: TimeSeriesData, image: ImageData, nwbfile: NWBFile=None, params: dict=None
+    ):
 
     """
         get image
