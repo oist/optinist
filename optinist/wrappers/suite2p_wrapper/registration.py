@@ -28,13 +28,11 @@ def suite2p_registration(image: ImageData, ops: Suite2pData=None, params: dict=N
         ops = registration.get_pc_metrics(ops)
 
     info = {}
-    print(ops['refImg'])
     info['images'] = ImageData(
         ops['refImg'].astype(np.uint8),
         func_name='suite2p_registration',
         file_name='refImg'
     )
-    print(ops['meanImgE'])
     info['meanImgE'] = ImageData(
         ops['meanImgE'].astype(np.uint8),
         func_name='suite2p_registration',

@@ -58,12 +58,6 @@ def caiman_cnmf(
     iscell = np.zeros(cont_cent.shape[0])
     iscell[cnm.estimates.idx_components] = 1
 
-    info = {}
-    info['images'] = ImageData(np.array(Cn * 255, dtype=np.uint8), func_name='caiman_cnmf', file_name='images')
-    info['fluo'] = TimeSeriesData(cnm.estimates.C, func_name='caiman_cnmf', file_name='fluo')
-    info['iscell'] = IscellData(iscell, func_name='caiman_cnmf', file_name='iscell')
-    info['roi'] = RoiData(cont_cent)
-
     # NWBにROIを追加
     roi_list = []
     n_cells = cnm.estimates.A.shape[-1]
@@ -77,7 +71,55 @@ def caiman_cnmf(
             kargs['rejected'] = i in cnm.estimates.rejected_list
         roi_list.append(kargs)
 
-    info['nwbfile'] = nwb_add_ps_column(nwbfile, roi_list)
+    nwbfile = nwb_add_ps_column(nwbfile, roi_list)
+
+    # backgroundsを追加
+    bg_list = []
+    for bg in cnm.estimates.b.T:
+        kwargs = dict(
+            image_mask=bg.reshape(cnm.estimates.dims),
+            accepted=False,
+            rejected=False
+        )
+        bg_list.append(kargs)
+
+    nwbfile = nwb_add_ps_column(nwbfile, bg_list)
+
+    # Fluorescence
+    starting_time = 0
+    imaging_rate = nwbfile.imaging_planes['ImagingPlane'].imaging_rate
+    timestamps = np.arange(cnm.estimates.f.shape[1]) / imaging_rate + starting_time
+    n_rois = cnm.estimates.A.shape[-1]
+    n_bg = len(cnm.estimates.f)
+
+    ### roiを追加
+    nwb_add_fluorescence(
+        nwbfile,
+        table_name='ROIs',
+        region=list(range(n_rois)),
+        name='RoiResponseSeries',
+        data=cnm.estimates.C.T,
+        unit='lumens',
+        timestamps=timestamps
+    )
+
+    ### backgroundsを追加
+    nwb_add_fluorescence(
+        nwbfile,
+        table_name='Background',
+        region=list(range(n_rois, n_rois+n_bg)),
+        name='Background_Fluorescence_Response',
+        data=cnm.estimates.f.T,
+        unit='lumens',
+        timestamps=timestamps
+    )
+
+    info = {}
+    info['images'] = ImageData(np.array(Cn * 255, dtype=np.uint8), func_name='caiman_cnmf', file_name='images')
+    info['fluo'] = TimeSeriesData(cnm.estimates.C, func_name='caiman_cnmf', file_name='fluo')
+    info['iscell'] = IscellData(iscell, func_name='caiman_cnmf', file_name='iscell')
+    info['roi'] = RoiData(cont_cent)
+    info['nwbfile'] = nwbfile
 
     return info
 
