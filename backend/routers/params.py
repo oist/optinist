@@ -5,6 +5,7 @@ import yaml
 
 router = APIRouter()
 
+
 @router.get("/params/{name}")
 async def params(name: str):
     config = {}

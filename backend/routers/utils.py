@@ -46,7 +46,7 @@ def save_tiff_to_json(tiff_file_path, maxidx=10):
         images.append(_img.tolist())
 
     pd.DataFrame(images).to_json(
-        os.path.join(folder_path, f'{file_name}.json'), indent=4, orient="values")
+        os.path.join(folder_path, f'{file_name}_{str(maxidx)}.json'), indent=4, orient="values")
 
 
 def save_csv_to_json(csv_file_path):

@@ -8,11 +8,13 @@ router = APIRouter()
 
 ACCEPT_FILE_TYPES = ["tif", "json", "csv", "nwb"]
 
+
 class TreeNode(TypedDict):
     path: str
     name: str
     isdir: bool
     nodes: Optional[List["TreeNode"]]
+
 
 def get_accept_files(path: str, file_types: List[str]):
     files_list = []
@@ -20,6 +22,7 @@ def get_accept_files(path: str, file_types: List[str]):
         files_list.extend(glob(
             os.path.join(path, "**", f"*.{file_type}"), recursive=True))
     return files_list
+
 
 def get_dir_tree(dir_path: str, file_types: List[str]) -> List[TreeNode]:
     nodes: List[TreeNode] = []
@@ -40,6 +43,7 @@ def get_dir_tree(dir_path: str, file_types: List[str]) -> List[TreeNode]:
             })
     return nodes
 
+
 @router.get("/files")
 async  def get_files(file_type: Optional[str] = None):
     tree = []
@@ -56,6 +60,7 @@ async  def get_files(file_type: Optional[str] = None):
 
     return tree
 
+
 @router.post("/files/upload/{fileName}")
 async def create_file(response: Response, fileName: str, element_id: str = Form(...), file: UploadFile = File(...)):
     root_dir = os.path.join("files", fileName)
@@ -64,8 +69,6 @@ async def create_file(response: Response, fileName: str, element_id: str = Form(
     file_path = os.path.join(root_dir, fileName)
 
     with open(file_path, "wb") as f:
-        # contents = await file.read()
-        # f.write(contents)
         shutil.copyfileobj(file.file, f)
 
     return { "file_path": file_path }
