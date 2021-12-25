@@ -2,7 +2,9 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 @args_check
-def caiman_mc(image: ImageData, params: dict=None) -> {'images': ImageData}:
+def caiman_mc(
+        image: ImageData, nwbfile: NWBFile=None, params: dict=None
+    ) -> {'images': ImageData}:
     file_path = image.path
     import numpy as np
     from caiman.source_extraction.cnmf.params import CNMFParams
@@ -28,11 +30,16 @@ def caiman_mc(image: ImageData, params: dict=None) -> {'images': ImageData}:
 
     # now load the file
     Yr, dims, T = load_memmap(fname_new)
-    # images = np.array(np.reshape(
-    #     Yr.T, [T] + list(dims), order='F'))
+
     images = np.array(Yr.T.reshape((T,) + dims, order='F'))
 
     info['images'] = ImageData(images, func_name='caiman_mc')
+
+    xy_trans_data = (np.array(mc.x_shifts_els), np.array(mc.y_shifts_els)) \
+                    if params['pw_rigid'] else np.array(mc.shifts_rig)
+
+    info['nwbfile'] = nwb_motion_correction(
+        nwbfile, images, xy_trans_data)
 
     return info
 

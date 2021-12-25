@@ -3,7 +3,9 @@ from wrappers.args_check import args_check
 
 
 @args_check
-def caiman_cnmf(images: ImageData, params: dict=None) -> {'fluo': TimeSeriesData, 'iscell': IscellData, 'roi': RoiData}:
+def caiman_cnmf(
+        images: ImageData, nwbfile: NWBFile=None, params: dict=None
+    ) -> {'fluo': TimeSeriesData, 'iscell': IscellData, 'roi': RoiData}:
     import caiman
     from caiman import local_correlations
     from caiman.source_extraction.cnmf import cnmf
@@ -47,7 +49,8 @@ def caiman_cnmf(images: ImageData, params: dict=None) -> {'fluo': TimeSeriesData
     cnm.estimates.plot_contours(img=Cn)
 
     # get roi center
-    cont = visualization.get_contours(cnm.estimates.A, cnm.dims, thr=0.9, thr_method='nrg', swap_dim=False)
+    cont = visualization.get_contours(
+        cnm.estimates.A, cnm.dims, thr=0.9, thr_method='nrg', swap_dim=False)
     cont_cent = np.zeros([len(cont), 2])
     for i in range(len(cont)):
         cont_cent[i, :] = np.nanmean(cont[i]['coordinates'], axis=0)
@@ -55,11 +58,68 @@ def caiman_cnmf(images: ImageData, params: dict=None) -> {'fluo': TimeSeriesData
     iscell = np.zeros(cont_cent.shape[0])
     iscell[cnm.estimates.idx_components] = 1
 
+    # NWBにROIを追加
+    roi_list = []
+    n_cells = cnm.estimates.A.shape[-1]
+    for i in range(n_cells):
+        kargs = {}
+        kargs['image_mask'] = cnm.estimates.A.T[i].T.toarray().reshape(cnm.estimates.dims)
+        # image_mask_list.append()
+        if hasattr(cnm.estimates, 'accepted_list'):
+            kargs['accepted'] = i in cnm.estimates.accepted_list
+        if hasattr(cnm.estimates, 'rejected_list'):
+            kargs['rejected'] = i in cnm.estimates.rejected_list
+        roi_list.append(kargs)
+
+    nwbfile = nwb_add_ps_column(nwbfile, roi_list)
+
+    # backgroundsを追加
+    bg_list = []
+    for bg in cnm.estimates.b.T:
+        kwargs = dict(
+            image_mask=bg.reshape(cnm.estimates.dims),
+            accepted=False,
+            rejected=False
+        )
+        bg_list.append(kargs)
+
+    nwbfile = nwb_add_ps_column(nwbfile, bg_list)
+
+    # Fluorescence
+    starting_time = 0
+    imaging_rate = nwbfile.imaging_planes['ImagingPlane'].imaging_rate
+    timestamps = np.arange(cnm.estimates.f.shape[1]) / imaging_rate + starting_time
+    n_rois = cnm.estimates.A.shape[-1]
+    n_bg = len(cnm.estimates.f)
+
+    ### roiを追加
+    nwbfile = nwb_add_fluorescence(
+        nwbfile,
+        table_name='ROIs',
+        region=list(range(n_rois)),
+        name='RoiResponseSeries',
+        data=cnm.estimates.C.T,
+        unit='lumens',
+        timestamps=timestamps
+    )
+
+    ### backgroundsを追加
+    nwbfile = nwb_add_fluorescence(
+        nwbfile,
+        table_name='Background',
+        region=list(range(n_rois, n_rois+n_bg)),
+        name='Background_Fluorescence_Response',
+        data=cnm.estimates.f.T,
+        unit='lumens',
+        timestamps=timestamps
+    )
+
     info = {}
     info['images'] = ImageData(np.array(Cn * 255, dtype=np.uint8), func_name='caiman_cnmf', file_name='images')
-    info['fluo'] = TimeSeriesData(cnm.estimates.C, func_name='caiman_cnmf', file_name='fluo')
+    info['F'] = TimeSeriesData(cnm.estimates.C, func_name='caiman_cnmf', file_name='F')
     info['iscell'] = IscellData(iscell, func_name='caiman_cnmf', file_name='iscell')
     info['roi'] = RoiData(cont_cent)
+    info['nwbfile'] = nwbfile
 
     return info
 

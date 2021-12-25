@@ -40,7 +40,6 @@ class ImageData:
 
             pd.DataFrame(images).to_json(self.json_path, indent=4, orient="values")
 
-
 class TimeSeriesData:
     def __init__(self, data, func_name='timeseries', file_name='timeseries'):
         self.data = data

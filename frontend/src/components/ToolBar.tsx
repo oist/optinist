@@ -12,6 +12,8 @@ import { reflectRunPipelineResult } from 'store/slice/Algorithm/AlgorithmAction'
 import { useLazyRunPipelineQuery } from 'api/Run/Run'
 import { nanoid } from '@reduxjs/toolkit'
 import { SnackbarProvider, SnackbarKey, useSnackbar } from 'notistack'
+import { NWB } from './NWB'
+import { nwbListSelector } from 'store/slice/NWB/NWBSelector'
 
 export const ToolBar = React.memo(() => (
   <SnackbarProvider
@@ -37,6 +39,7 @@ export const ToolBarImple = React.memo(() => {
   const dispatch = useDispatch()
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
   const pathIsUndefined = useSelector(pathIsUndefinedSelector)
+  const nwbParam = useSelector(nwbListSelector)
   const elementListForRun = useSelector(elementListForRunSelector)
   const [triggerRunPipeline, result] = useLazyRunPipelineQuery()
   const [isReady, setIsReady] = React.useState(false)
@@ -46,7 +49,7 @@ export const ToolBarImple = React.memo(() => {
     } else if (elementListForRun.edgeList.length === 0) {
       enqueueSnackbar('there are no edges.', { variant: 'error' })
     } else {
-      triggerRunPipeline({ elementListForRun, requestId: nanoid() })
+      triggerRunPipeline({ elementListForRun, requestId: nanoid(), nwbParam })
       closeSnackbar()
       setIsReady(true)
     }
@@ -85,6 +88,7 @@ export const ToolBarImple = React.memo(() => {
         justifyContent="flex-end"
         style={{ paddingBottom: 4 }}
       >
+        <NWB />
         <Box>
           <Button
             className="ctrl_btn"

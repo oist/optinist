@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { BASE_URL, WS_BASE_URL } from 'const/API'
+import { NWBListType } from 'store/slice/NWB/NWBType'
 import { NodeData } from 'const/NodeData'
 import { Edge, Node } from 'react-flow-renderer'
 
@@ -30,18 +31,19 @@ export const webSocketApi = createApi({
       {
         requestId: string
         elementListForRun: { nodeList: Node<NodeData>[]; edgeList: Edge[] }
+        nwbParam: NWBListType
       }
     >({
       // リクエストするたびにキャッシュをクリアするためにidを振っておく
       query: ({ requestId }) => `run/ready/${requestId}`,
       async onCacheEntryAdded(
-        { elementListForRun },
+        { elementListForRun, nwbParam },
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved },
       ) {
         const ws = new WebSocket(`${WS_BASE_URL}/run`)
         try {
           ws.addEventListener('open', () =>
-            ws.send(JSON.stringify(elementListForRun)),
+            ws.send(JSON.stringify({ elementListForRun, nwbParam })),
           )
           await cacheDataLoaded
           const listener = (event: MessageEvent) => {

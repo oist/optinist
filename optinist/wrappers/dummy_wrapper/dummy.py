@@ -1,26 +1,32 @@
 import numpy as np
 import sys
+from pynwb import NWBFile
 
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
+
 @args_check
-def dummy_image2image(image: ImageData, params: dict=None) -> {'image2image': ImageData}:
-    
+def dummy_image2image(
+    image: ImageData, nwbfile: NWBFile=None, params: dict=None
+    ) -> {'image2image': ImageData}:
+
     """
         get image
         return image
     """
     info = {}
     info['image2image'] = ImageData(
-        np.random.rand((100)).reshape(10, 10),
+        np.random.rand((3000)).reshape(30, 10, 10),
         func_name=sys._getframe().f_code.co_name)
     return info
 
 
 @args_check
-def dummy_image2time(image: ImageData, params: dict=None) -> {'image2time': TimeSeriesData}:
-    
+def dummy_image2time(
+    image: ImageData, nwbfile: NWBFile=None, params: dict=None
+    ) -> {'image2time': TimeSeriesData}:
+
     """
         get image
         return image
@@ -33,8 +39,10 @@ def dummy_image2time(image: ImageData, params: dict=None) -> {'image2time': Time
 
 
 @args_check
-def dummy_image2heat(image: ImageData, params: dict=None) -> {'image2heat': CorrelationData}:
-    
+def dummy_image2heat(
+    image: ImageData, nwbfile: NWBFile=None, params: dict=None
+    ) -> {'image2heat': CorrelationData}:
+
     """
         get image
         return image
@@ -47,8 +55,10 @@ def dummy_image2heat(image: ImageData, params: dict=None) -> {'image2heat': Corr
 
 
 @args_check
-def dummy_time2time(timeseries: TimeSeriesData, params: dict=None) -> {'time2time': TimeSeriesData}:
-    
+def dummy_time2time(
+    timeseries: TimeSeriesData, nwbfile: NWBFile=None, params: dict=None
+    ) -> {'time2time': TimeSeriesData}:
+
     """
         get image
         return image
@@ -61,8 +71,10 @@ def dummy_time2time(timeseries: TimeSeriesData, params: dict=None) -> {'time2tim
 
 
 @args_check
-def dummy_image2image8time(image1: ImageData, params: dict=None) -> {'image': ImageData, 'timeseries': TimeSeriesData}:
-    
+def dummy_image2image8time(
+    image1: ImageData, nwbfile: NWBFile=None, params: dict=None
+    ) -> {'image': ImageData, 'timeseries': TimeSeriesData}:
+
     """
         get image
         return image
@@ -78,8 +90,10 @@ def dummy_image2image8time(image1: ImageData, params: dict=None) -> {'image': Im
 
 
 @args_check
-def dummy_image8image2image8time(image1: ImageData, image2: ImageData, params: dict=None) -> {'image': ImageData, 'timeseries': TimeSeriesData}:
-    
+def dummy_image8image2image8time(
+    image1: ImageData, image2: ImageData, nwbfile: NWBFile=None, params: dict=None
+    ) -> {'image': ImageData, 'timeseries': TimeSeriesData}:
+
     """
         get image
         return image
@@ -97,8 +111,10 @@ def dummy_image8image2image8time(image1: ImageData, image2: ImageData, params: d
 
 
 @args_check
-def dummy_time8image2image8time(timeseries: TimeSeriesData, image: ImageData, params: dict=None):
-    
+def dummy_time8image2image8time(
+    timeseries: TimeSeriesData, image: ImageData, nwbfile: NWBFile=None, params: dict=None
+    ):
+
     """
         get image
         return image
@@ -116,8 +132,8 @@ def dummy_time8image2image8time(timeseries: TimeSeriesData, image: ImageData, pa
 
 
 @args_check
-def dummy_keyerror(image: ImageData, params: dict=None):
-    
+def dummy_keyerror(image: ImageData, nwbfile: NWBFile=None, params: dict=None):
+
     """
         get image
         return image
@@ -128,8 +144,8 @@ def dummy_keyerror(image: ImageData, params: dict=None):
 
 
 @args_check
-def dummy_typeerror(image: str, params: dict=None):
-    
+def dummy_typeerror(image: str, nwbfile: NWBFile=None, params: dict=None):
+
     """
         get image
         return image
@@ -139,8 +155,10 @@ def dummy_typeerror(image: str, params: dict=None):
 
 
 @args_check
-def dummy_image2time8iscell(image1: ImageData, params: dict=None) -> {'timeseries': TimeSeriesData, 'iscell': IscellData}:
-    
+def dummy_image2time8iscell(
+    image1: ImageData, nwbfile: NWBFile=None,  params: dict=None
+    ) -> {'timeseries': TimeSeriesData, 'iscell': IscellData}:
+
     """
         get image
         return image
