@@ -1,0 +1,23 @@
+version: "3.7"
+services:
+  backend:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    tty: true
+    volumes:
+      - ./backend:/app/:cached
+      - ./optinist:/optinist:cached
+      - /tmp/optinist:/app/files
+    ports:
+      - 8000:8000
+    environment:
+      PYTHONPATH: .
+      TZ: Asia/Tokyo
+  frontend:
+    build:
+      context: frontend
+      dockerfile: Dockerfile
+    stdin_open: true
+    ports:
+      - 3000:80
