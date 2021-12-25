@@ -18,17 +18,17 @@ async def read_file(file_path: str):
 async def read_image(file_path: str, max_index: Optional[int] = None):
     file_path = os.path.join(".", file_path)
     print(file_path)
-    import pdb; pdb.set_trace()
 
     file_name, ext = os.path.splitext(os.path.basename(file_path))
 
     if ext == '.tif':
         folder_path = os.path.dirname(file_path)
         tiff_file_path = file_path
-        file_path = os.path.join(folder_path, f'{file_name}.json')
-        if not os.path.exists(file_path):
+        json_file_path = os.path.join(
+            folder_path, f'{file_name}_{str(max_index)}.json')
+        if not os.path.exists(json_file_path):
             save_tiff_to_json(tiff_file_path, max_index)
-    with open(file_path, 'r') as f:
+    with open(json_file_path, 'r') as f:
         json_dict = json.load(f)
 
     return { "data": json_dict}
