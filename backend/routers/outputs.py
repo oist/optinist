@@ -28,6 +28,8 @@ async def read_image(file_path: str, max_index: Optional[int] = None):
             folder_path, f'{file_name}_{str(max_index)}.json')
         if not os.path.exists(json_file_path):
             save_tiff_to_json(tiff_file_path, max_index)
+    else:
+        json_file_path = file_path
     with open(json_file_path, 'r') as f:
         json_dict = json.load(f)
 
