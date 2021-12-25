@@ -5,7 +5,7 @@ from wrappers.args_check import args_check
 @args_check
 def caiman_cnmf(
         images: ImageData, nwbfile: NWBFile=None, params: dict=None
-    ) -> {'F': TimeSeriesData, 'iscell': IscellData, 'roi': RoiData}:
+    ) -> {'fluo': TimeSeriesData, 'iscell': IscellData, 'roi': RoiData}:
     import caiman
     from caiman import local_correlations
     from caiman.source_extraction.cnmf import cnmf
@@ -93,7 +93,7 @@ def caiman_cnmf(
     n_bg = len(cnm.estimates.f)
 
     ### roiを追加
-    nwb_add_fluorescence(
+    nwbfile = nwb_add_fluorescence(
         nwbfile,
         table_name='ROIs',
         region=list(range(n_rois)),
@@ -104,7 +104,7 @@ def caiman_cnmf(
     )
 
     ### backgroundsを追加
-    nwb_add_fluorescence(
+    nwbfile = nwb_add_fluorescence(
         nwbfile,
         table_name='Background',
         region=list(range(n_rois, n_rois+n_bg)),

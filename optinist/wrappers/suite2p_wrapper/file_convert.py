@@ -4,7 +4,7 @@ from wrappers.args_check import args_check
 
 @args_check
 def suite2p_file_convert(
-        image: ImageData, params: dict=None
+        image: ImageData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'ops': Suite2pData, 'images': ImageData}:
     import os
     import numpy as np

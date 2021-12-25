@@ -67,8 +67,6 @@ def nwb_add_ophys(nwbfile):
         reference_images=nwbfile.acquisition['TwoPhotonSeries']
     )
 
-    nwbfile.processing['ophys'].add(Fluorescence())
-
     return nwbfile
 
 
@@ -110,8 +108,7 @@ def nwb_add_ps_column(nwbfile, roi_list):
     plane_seg = image_seg.plane_segmentations['PlaneSegmentation']
 
     for col in roi_list[0].keys():
-        # import pdb; pdb.set_trace()
-        if col not in plane_seg.colnames:
+        if col != 'pixel_mask' and col not in plane_seg.colnames:
             plane_seg.add_column(col, f'{col} list')
 
     for col in roi_list:
@@ -121,22 +118,29 @@ def nwb_add_ps_column(nwbfile, roi_list):
 
 
 def nwb_add_fluorescence(
-        nwbfile, table_name, region, 
-        name, data, unit, timestamps):
+        nwbfile, table_name, region, name, data, unit, 
+        timestamps=None, rate=None):
 
     data_interfaces = nwbfile.processing['ophys'].data_interfaces
     plane_seg = data_interfaces['ImageSegmentation'].plane_segmentations['PlaneSegmentation']
-    fluo = data_interfaces['Fluorescence']
 
     region_roi = plane_seg.create_roi_table_region(
         table_name, region=region)
 
-    fluo.create_roi_response_series(
+    roi_resp_series = RoiResponseSeries(
         name=name,
         data=data,
         rois=region_roi,
         unit=unit,
-        timestamps=timestamps
+        timestamps=timestamps,
+        rate=rate
     )
+
+    fluo = Fluorescence(
+        name=name,
+        roi_response_series=roi_resp_series
+    )
+
+    nwbfile.processing['ophys'].add(fluo)
 
     return nwbfile

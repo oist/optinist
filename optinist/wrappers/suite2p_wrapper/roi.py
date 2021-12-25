@@ -4,7 +4,7 @@ from wrappers.args_check import args_check
 
 @args_check
 def suite2p_roi(
-        ops: Suite2pData, params: dict=None
+        ops: Suite2pData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'ops': Suite2pData, 'F': TimeSeriesData, 'iscell': IscellData}:
     ops = ops.data
 
@@ -26,7 +26,6 @@ def suite2p_roi(
     else:
         print(f'NOTE: applying default {str(user_classfile)}')
         classfile = user_classfile
-
 
     ops, stat = detection.detect(ops=ops, classfile=classfile)
 
@@ -55,25 +54,13 @@ def suite2p_roi(
     ops['cell_roi'] = np.nanmax(im[iscell], axis=0)
     ops['F'] = F
     ops['Fneu'] = Fneu
+    ops['stat'] = stat
 
     info = {}
-    info['max_proj'] = ImageData(
-        ops['max_proj'],
-        func_name='suite2p_roi',
-        file_name='max_proj'
-    )
-
-    info['F'] = TimeSeriesData(
-        F,
-        func_name='suite2p_roi',
-        file_name='F'
-    )
-
     info['ops'] = Suite2pData(ops)
-    info['iscell'] = IscellData(
-        iscell,
-        func_name='suite2p_roi',
-        file_name='iscell'
-    )
+    info['max_proj'] = ImageData(ops['max_proj'], func_name='suite2p_roi', file_name='max_proj')
+    info['F'] = TimeSeriesData(F, func_name='suite2p_roi', file_name='F')
+    info['iscell'] = IscellData(iscell, func_name='suite2p_roi', file_name='iscell')
+    info['nwbfile'] = nwbfile
 
     return info
