@@ -5,7 +5,7 @@ from wrappers.args_check import args_check
 @args_check
 def caiman_cnmf(
         images: ImageData, nwbfile: NWBFile=None, params: dict=None
-    ) -> {'fluo': TimeSeriesData, 'iscell': IscellData, 'roi': RoiData}:
+    ) -> {'F': TimeSeriesData, 'iscell': IscellData, 'roi': RoiData}:
     import caiman
     from caiman import local_correlations
     from caiman.source_extraction.cnmf import cnmf
@@ -116,7 +116,7 @@ def caiman_cnmf(
 
     info = {}
     info['images'] = ImageData(np.array(Cn * 255, dtype=np.uint8), func_name='caiman_cnmf', file_name='images')
-    info['fluo'] = TimeSeriesData(cnm.estimates.C, func_name='caiman_cnmf', file_name='fluo')
+    info['F'] = TimeSeriesData(cnm.estimates.C, func_name='caiman_cnmf', file_name='F')
     info['iscell'] = IscellData(iscell, func_name='caiman_cnmf', file_name='iscell')
     info['roi'] = RoiData(cont_cent)
     info['nwbfile'] = nwbfile

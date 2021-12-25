@@ -3,17 +3,31 @@ from wrappers.args_check import args_check
 
 
 @args_check
-def suite2p_roi(ops: Suite2pData, params: dict=None) -> {'ops': Suite2pData, 'F': TimeSeriesData, 'iscell': IscellData}:
+def suite2p_roi(
+        ops: Suite2pData, params: dict=None
+    ) -> {'ops': Suite2pData, 'F': TimeSeriesData, 'iscell': IscellData}:
     ops = ops.data
 
     import numpy as np
-    from suite2p import extraction, classification, detection, ROI
-    from suite2p import default_ops
+    from suite2p import extraction, classification, detection, ROI, default_ops
 
     ops = {**ops, **params, **default_ops()}
 
     # ROI detection
-    classfile = classification.user_classfile
+    ops_classfile = ops.get('classifier_path')
+    builtin_classfile = classification.builtin_classfile
+    user_classfile = classification.user_classfile
+    if ops_classfile:
+        print(f'NOTE: applying classifier {str(ops_classfile)}')
+        classfile = ops_classfile
+    elif ops['use_builtin_classifier'] or not user_classfile.is_file():
+        print(f'NOTE: Applying builtin classifier at {str(builtin_classfile)}')
+        classfile = builtin_classfile
+    else:
+        print(f'NOTE: applying default {str(user_classfile)}')
+        classfile = user_classfile
+
+
     ops, stat = detection.detect(ops=ops, classfile=classfile)
 
     ######## ROI EXTRACTION ##############
@@ -26,7 +40,9 @@ def suite2p_roi(ops: Suite2pData, params: dict=None) -> {'ops': Suite2pData, 'F'
     arrays = []
     for i, s in enumerate(stat):
         array = ROI(
-            ypix=s['ypix'], xpix=s['xpix'], lam=s['lam'], med=s['med'], do_crop=False
+            ypix=s['ypix'], xpix=s['xpix'],
+            lam=s['lam'], med=s['med'],
+            do_crop=False
         ).to_array(Ly=ops['Ly'], Lx=ops['Lx'])
         array *= i + 1
         arrays.append(array)
@@ -46,7 +62,7 @@ def suite2p_roi(ops: Suite2pData, params: dict=None) -> {'ops': Suite2pData, 'F'
         func_name='suite2p_roi',
         file_name='max_proj'
     )
-    # import pdb; pdb.set_trace()
+
     info['F'] = TimeSeriesData(
         F,
         func_name='suite2p_roi',
@@ -54,6 +70,10 @@ def suite2p_roi(ops: Suite2pData, params: dict=None) -> {'ops': Suite2pData, 'F'
     )
 
     info['ops'] = Suite2pData(ops)
-    info['iscell'] = IscellData(iscell, func_name='suite2p_roi', file_name='iscell')
+    info['iscell'] = IscellData(
+        iscell,
+        func_name='suite2p_roi',
+        file_name='iscell'
+    )
 
     return info

@@ -39,6 +39,9 @@ def args_check(func):
 
         while check_order(arg_type_list, request_type_list):
             for i in range(len(args)-1):
+                if arg_type_list[i] == request_type_list[i]:
+                    continue
+
                 if check_order(arg_type_list, request_type_list):
                     args[i], args[i+1] = args[i+1], args[i]
                     arg_type_list[i], arg_type_list[i+1] = arg_type_list[i+1], arg_type_list[i]
@@ -49,13 +52,16 @@ def args_check(func):
         # 引数が多い場合は余分な引数を捨てる
         args = args[:len(sig.parameters)]
         arg_type_list = [type(x) for x in args]
-        
-        if len(arg_type_list) == len(request_type_list) and request_type_list[-1] == dict and arg_type_list[-1] != request_type_list[-1]:
+
+        # paramsを抜く
+        if len(arg_type_list) == len(request_type_list) and \
+                request_type_list[-1] == dict and \
+                arg_type_list[-1] != request_type_list[-1]:
             args = args[:-1]
         
         arg_type_list = [type(x) for x in args]
         request_type_list = [x.annotation for x in sig.parameters.values()]
-    
+
         for arg_key, arg_val in sig.bind(*args, **kwargs).arguments.items():
             # 渡した引数
             arg_type = type(arg_val)
@@ -67,8 +73,6 @@ def args_check(func):
                 error_msg = f'args"{arg_key}" (type: {arg_type}) is invalid. （ type: {request_type} is require'
                 raise ArgsTypeException(error_msg)
 
-        print(args)
-                
         return func(*args, **kwargs)
 
     return args_type_check_wrapper

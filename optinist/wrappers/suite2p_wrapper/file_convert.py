@@ -3,12 +3,13 @@ from wrappers.args_check import args_check
 
 
 @args_check
-def suite2p_file_convert(image: ImageData, params: dict=None) -> {'ops': Suite2pData}:
+def suite2p_file_convert(
+        image: ImageData, params: dict=None
+    ) -> {'ops': Suite2pData, 'images': ImageData}:
     import os
     import numpy as np
     from natsort import natsorted
-    import suite2p.io as io
-    from suite2p import default_ops
+    from suite2p import io, default_ops
 
     file_path = image.path
     data_path = '/'.join(file_path.split('/')[:-1])
@@ -32,7 +33,8 @@ def suite2p_file_convert(image: ImageData, params: dict=None) -> {'ops': Suite2p
     save_folder = os.path.join(ops['save_path0'], ops['save_folder'])
     os.makedirs(save_folder, exist_ok=True)
     plane_folders = natsorted([
-        f.path for f in os.scandir(save_folder) if f.is_dir() and f.name[:5]=='plane'])
+        f.path for f in os.scandir(save_folder) 
+        if f.is_dir() and f.name[:5]=='plane'])
 
     ops_path = [os.path.join(f, 'ops.npy') for f in plane_folders]
 
@@ -50,7 +52,9 @@ def suite2p_file_convert(image: ImageData, params: dict=None) -> {'ops': Suite2p
     ops = convert_funs[ops['input_format']](ops.copy())
 
     info = {}
-    info['images'] = ImageData(ops['meanImg'], func_name='suite2p_convert', file_name='images')
+    images = io.BinaryFile(read_filename=ops['reg_file'], Ly=ops['Ly'], Lx=ops['Lx']).data
+    info['images'] = ImageData(images, func_name='suite2p_registration', file_name='images')
+    info['meanImg'] = ImageData(ops['meanImg'], func_name='suite2p_convert', file_name='meanImg')
     info['ops'] = Suite2pData(ops, func_name='suite2p_convert', file_name='ops')
 
     return info
