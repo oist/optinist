@@ -1,5 +1,7 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
+import gc
+
 
 @args_check
 def caiman_mc(
@@ -31,7 +33,8 @@ def caiman_mc(
     # now load the file
     Yr, dims, T = load_memmap(fname_new)
 
-    images = np.array(Yr.T.reshape((T,) + dims, order='F'))
+    images = np.array(
+        Yr.T.reshape((T,) + dims, order='F'))
 
     info['images'] = ImageData(images, func_name='caiman_mc')
 
@@ -40,6 +43,9 @@ def caiman_mc(
 
     info['nwbfile'] = nwb_motion_correction(
         nwbfile, images, xy_trans_data)
+
+    del images, mc, fname_new
+    gc.collect()
 
     return info
 

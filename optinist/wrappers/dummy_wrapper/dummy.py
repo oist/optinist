@@ -17,7 +17,7 @@ def dummy_image2image(
     """
     info = {}
     info['image2image'] = ImageData(
-        np.random.rand((3000)).reshape(30, 10, 10),
+        np.random.rand((300_0000)).reshape(300, 100, 100),
         func_name=sys._getframe().f_code.co_name)
     return info
 

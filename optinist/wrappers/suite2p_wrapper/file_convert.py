@@ -1,5 +1,6 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
+import gc
 
 
 @args_check
@@ -56,5 +57,8 @@ def suite2p_file_convert(
     info['images'] = ImageData(images, func_name='suite2p_registration', file_name='images')
     info['meanImg'] = ImageData(ops['meanImg'], func_name='suite2p_convert', file_name='meanImg')
     info['ops'] = Suite2pData(ops, func_name='suite2p_convert', file_name='ops')
+
+    del images, io
+    gc.collect()
 
     return info

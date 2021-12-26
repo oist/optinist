@@ -1,4 +1,5 @@
 import os
+import gc
 import pandas as pd
 import cv2
 import numpy as np
@@ -8,12 +9,13 @@ from wrappers import wrapper_dict
 from wrappers.data_wrapper import *
 from collections import OrderedDict
 from typing import List
+import copy
 
 
 def get_dict_leaf_value(root_dict: dict, path_list: List[str]):
     path = path_list.pop(0)
     if(len(path_list) > 0):
-        return get_dict_leaf_value(root_dict[path],path_list)
+        return get_dict_leaf_value(root_dict[path], path_list)
     else:
         return root_dict[path]
 
@@ -114,6 +116,7 @@ def get_algo_network(flowList):
 
 
 def run_algorithm(prev_info, item):
+
     if item['type'] == 'ImageFileNode':
         info = {'images': ImageData(item['data']['path'], '')}
     elif item['type'] == 'AlgorithmNode':
@@ -124,12 +127,27 @@ def run_algorithm(prev_info, item):
             params = {}
 
         wrapper = get_dict_leaf_value(
-            wrapper_dict, item['data']['path'].split('/'))
-        info = wrapper["function"](
-            *prev_info.values(), params=params)
+            wrapper_dict,
+            item['data']['path'].split('/')
+        )
+
+        info = run_function(
+            copy.deepcopy(wrapper["function"]),
+            params,
+            *prev_info.values(),
+        )
+
+        del wrapper, prev_info
+        gc.collect()
     else:
         assert False, 'run_algorithm error'
 
+    return info
+
+
+def run_function(func_name, params, *args):
+    # import pdb; pdb.set_trace()
+    info = func_name(params=params, *args)
     return info
 
 

@@ -4,8 +4,8 @@ from typing import Dict, List, Optional
 import traceback
 import sys
 import copy
+import gc
 
-from wrappers import wrapper_dict
 from collections import OrderedDict
 from wrappers.data_wrapper import *
 from wrappers.optinist_exception import AlgorithmException
@@ -23,11 +23,39 @@ from datetime import datetime
 from dateutil.tz import tzlocal
 import json
 from .const import BASE_DIR
+import tracemalloc
 
 sys.path.append('../../optinist')
 
 router = APIRouter()
 manager = get_manager()
+
+
+import linecache
+import os
+import tracemalloc
+
+def display_top(snapshot, key_type='lineno', limit=10):
+    snapshot = snapshot.filter_traces((
+        tracemalloc.Filter(False, "<frozen importlib._bootstrap>"),
+        tracemalloc.Filter(False, "<unknown>"),
+    ))
+    top_stats = snapshot.statistics(key_type)
+
+    print("Top %s lines" % limit)
+    for index, stat in enumerate(top_stats[:limit], 1):
+        frame = stat.traceback[0]
+        print("#%s: %s:%s: %.1f KiB" % (index, frame.filename, frame.lineno, stat.size / 1024))
+        line = linecache.getline(frame.filename, frame.lineno).strip()
+        if line:
+            print('    %s' % line)
+
+    other = top_stats[limit:]
+    if other:
+        size = sum(stat.size for stat in other)
+        print("%s other: %.1f KiB" % (len(other), size / 1024))
+    total = sum(stat.size for stat in top_stats)
+    print("Total allocated size: %.1f KiB" % (total / 1024))
 
 
 @router.get("/run/ready/{request_id}")
@@ -53,8 +81,12 @@ async def websocket_endpoint(websocket: WebSocket):
         nwb_dict = get_nest2dict(message['nwbParam'])
 
     try:
+        # import pdb; pdb.set_trace()
+        tracemalloc.start()
         item = nodeDict[startNodeList[0]]
         prev_info = None
+        info = None
+        results = None
 
         while True:
 
@@ -74,29 +106,30 @@ async def websocket_endpoint(websocket: WebSocket):
                     name='ophys',
                     description='optical physiology processed data'
                 )
-                nwbfile = nwb_add_ophys(nwbfile)
+                nwb_add_ophys(nwbfile)
 
                 info['nwbfile'] = nwbfile
 
             # prev_infoを登録
             if 'nwbfile' not in info.keys():
-                nwbfile = prev_info['nwbfile']
-                info['nwbfile'] = nwbfile
+                info['nwbfile'] = prev_info['nwbfile']
+            else:
+                # pass
+                assert info is not None and 'nwbfile' in info.keys()
 
-            assert info is not None and 'nwbfile' in info.keys()
+                # NWBを保存
+                save_path = os.path.join(
+                    BASE_DIR, item['data']['path'].split('.')[0].split('/')[-1])
+
+                if not os.path.exists(save_path):
+                    os.makedirs(save_path)
+
+                # with NWBHDF5IO(
+                #         os.path.join(save_path, 'tmp.nwb'), 'w',
+                #         manager=manager) as f:
+                #     f.write(info['nwbfile'])
 
             results = get_results(info, item)
-
-            # NWBを保存
-            save_path = os.path.join(
-                BASE_DIR, item['data']['path'].split('.')[0].split('/')[-1])
-
-            if not os.path.exists(save_path):
-                os.makedirs(save_path)
-
-            nwbfile = info['nwbfile']
-            with NWBHDF5IO(os.path.join(save_path, 'tmp.nwb'), 'w', manager=manager) as io:
-                io.write(nwbfile)
 
             # Send message to the client
             await websocket.send_json({
@@ -112,6 +145,22 @@ async def websocket_endpoint(websocket: WebSocket):
                 break
 
             prev_info = info
+
+        with NWBHDF5IO(os.path.join(save_path, 'tmp.nwb'), 'w') as f:
+            f.write(info['nwbfile'])
+
+        del prev_info, info, nwbfile, results
+        gc.collect()
+
+        snapshot = tracemalloc.take_snapshot()
+        top_stats = snapshot.statistics("lineno")
+
+        print("---------------------------------------------------------")
+        print("[ Top 10 ]")
+        for stat in top_stats[:3]:
+            print(stat)
+        
+        display_top(snapshot)
 
         await websocket.send_json({
             'message': 'completed',
@@ -133,5 +182,6 @@ async def websocket_endpoint(websocket: WebSocket):
             'status': 'error'
         })
     finally:
+        gc.collect()
         print('Bye..')
         await websocket.close()
