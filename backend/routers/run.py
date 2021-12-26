@@ -22,11 +22,11 @@ from .nwb import nwb_config
 from datetime import datetime
 from dateutil.tz import tzlocal
 import json
+from .const import BASE_DIR
 
 sys.path.append('../../optinist')
 
 router = APIRouter()
-
 manager = get_manager()
 
 
@@ -89,8 +89,8 @@ async def websocket_endpoint(websocket: WebSocket):
 
             # NWBを保存
             save_path = os.path.join(
-                '/files', item['data']['path'].split('.')[0].split('/')[-1])
-            # import pdb; pdb.set_trace()
+                BASE_DIR, item['data']['path'].split('.')[0].split('/')[-1])
+
             if not os.path.exists(save_path):
                 os.makedirs(save_path)
 

@@ -3,6 +3,7 @@ import shutil
 from glob import glob
 from typing import List, Optional, TypedDict
 from fastapi import APIRouter, File, Response, UploadFile, Form
+from .const import BASE_DIR
 
 router = APIRouter()
 
@@ -48,12 +49,12 @@ def get_dir_tree(dir_path: str, file_types: List[str]) -> List[TreeNode]:
 async  def get_files(file_type: Optional[str] = None):
     tree = []
     if(file_type is None):
-        tree = get_dir_tree(os.path.join("files"), ACCEPT_FILE_TYPES)
+        tree = get_dir_tree(BASE_DIR, ACCEPT_FILE_TYPES)
     else:
         if file_type == "image":
-            tree = get_dir_tree(os.path.join("files"), ["tif"])
+            tree = get_dir_tree(BASE_DIR, ["tif"])
         elif file_type == "csv":
-            tree = get_dir_tree(os.path.join("files"), ["csv"])
+            tree = get_dir_tree(BASE_DIR, ["csv"])
         else:
             # TODO 他のファイル種別の仕様が分かり次第追加
             pass
@@ -63,7 +64,7 @@ async  def get_files(file_type: Optional[str] = None):
 
 @router.post("/files/upload/{fileName}")
 async def create_file(response: Response, fileName: str, element_id: str = Form(...), file: UploadFile = File(...)):
-    root_dir = os.path.splitext(os.path.join("files", fileName))[0]
+    root_dir = os.path.splitext(os.path.join(BASE_DIR, fileName))[0]
     if not os.path.exists(root_dir):
         os.makedirs(root_dir, exist_ok=True)
 
