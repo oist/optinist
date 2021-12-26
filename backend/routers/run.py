@@ -89,7 +89,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
             # NWBを保存
             save_path = os.path.join(
-                './files', item['data']['path'].split('.')[0].split('/')[-1])
+                '/files', item['data']['path'].split('.')[0].split('/')[-1])
             # import pdb; pdb.set_trace()
             if not os.path.exists(save_path):
                 os.makedirs(save_path)
