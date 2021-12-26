@@ -26,7 +26,11 @@ class ImageData:
 
             tifffile.imsave(self.path, data)
 
-            save_data = copy.deepcopy(self.data)
+            if len(self.data.shape) == 2:
+                save_data = copy.deepcopy(self.data)
+            else:
+                save_data = copy.deepcopy(self.data[:10])
+
             if self.data.shape[-1] >= 200 and self.data.shape[-2] >= 200:
                 save_data = cv2.resize(save_data, (200, 200))
 
@@ -35,7 +39,7 @@ class ImageData:
                 save_data = save_data[np.newaxis, :, :]
 
             images = []
-            for i, _img in enumerate(save_data[:10]):
+            for i, _img in enumerate(save_data):
                 images.append(_img.tolist())
 
             pd.DataFrame(images).to_json(self.json_path, indent=4, orient="values")
