@@ -3,3 +3,4 @@ channels:
 dependencies:
   - caiman
   - scikit-image=0.18.0
+  - tensorflow
