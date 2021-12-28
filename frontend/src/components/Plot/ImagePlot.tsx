@@ -2,7 +2,10 @@ import React from 'react'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { useSelector, useDispatch } from 'react-redux'
 import { ImageDataContext } from 'App'
-import { outputPathValueByIdSelector } from 'store/slice/Algorithm/AlgorithmSelector'
+import {
+  outputPathValueByIdSelector,
+  algoNameByIdSelector,
+} from 'store/slice/Algorithm/AlgorithmSelector'
 import {
   imageDataActiveIndexselector,
   activeImageDataSelector,
@@ -57,13 +60,15 @@ const ImagePlotContainer = React.memo(() => {
   const isLoaded = useSelector(
     imageDataIsLoadedSelector(path ?? ''), // 応急処置
   )
+  const algoName = useSelector(algoNameByIdSelector(nodeId))!
+
   React.useEffect(() => {
     if (!isLoaded && path != null) {
       dispatch(getImageData({ path, maxIndex }))
     }
   }, [dispatch, isLoaded, path, maxIndex])
   if (isLoaded && path != null) {
-    return <ImagePlotImple path={path} />
+    return <ImagePlotImple path={path} algoName={algoName} />
   } else if (!isLoaded && path != null) {
     return <LinearProgress />
   } else {
@@ -71,98 +76,117 @@ const ImagePlotContainer = React.memo(() => {
   }
 })
 
-const ImagePlotImple = React.memo<{ path: string }>(({ path }) => {
-  const activeIndex = useSelector(
-    (state: RootState) => imageDataActiveIndexselector(path)(state) ?? 0,
-  )
-  const dispatch = useDispatch()
-  const handleNext = () => dispatch(incrementImageActiveIndex({ path }))
-  const handleBack = () => dispatch(decrementImageActiveIndex({ path }))
-  const maxIndex = useSelector(imageDataMaxIndexSelector(path))
-  const theme = useTheme()
-  return (
-    <>
-      <MobileStepper
-        steps={(maxIndex ?? 0) + 1}
-        position="static"
-        variant="text"
-        activeStep={activeIndex}
-        nextButton={
-          <Button
-            size="small"
-            onClick={handleNext}
-            disabled={activeIndex === (maxIndex ?? 0)}
-          >
-            <Typography>Next</Typography>
-            {theme.direction === 'rtl' ? (
-              <KeyboardArrowLeft />
-            ) : (
-              <KeyboardArrowRight />
-            )}
-          </Button>
-        }
-        backButton={
-          <Button
-            size="small"
-            onClick={handleBack}
-            disabled={activeIndex === 0}
-          >
-            {theme.direction === 'rtl' ? (
-              <KeyboardArrowRight />
-            ) : (
-              <KeyboardArrowLeft />
-            )}
-            <Typography>Back</Typography>
-          </Button>
-        }
-      />
-      <ImagePlotChart path={path} />
-    </>
-  )
-})
+const ImagePlotImple = React.memo<{ path: string; algoName: string }>(
+  ({ path, algoName }) => {
+    const activeIndex = useSelector(
+      (state: RootState) => imageDataActiveIndexselector(path)(state) ?? 0,
+    )
+    const dispatch = useDispatch()
+    const handleNext = () => dispatch(incrementImageActiveIndex({ path }))
+    const handleBack = () => dispatch(decrementImageActiveIndex({ path }))
+    const maxIndex = useSelector(imageDataMaxIndexSelector(path))
+    const theme = useTheme()
+    return (
+      <>
+        <MobileStepper
+          steps={(maxIndex ?? 0) + 1}
+          position="static"
+          variant="text"
+          activeStep={activeIndex}
+          nextButton={
+            <Button
+              size="small"
+              onClick={handleNext}
+              disabled={activeIndex === (maxIndex ?? 0)}
+            >
+              <Typography>Next</Typography>
+              {theme.direction === 'rtl' ? (
+                <KeyboardArrowLeft />
+              ) : (
+                <KeyboardArrowRight />
+              )}
+            </Button>
+          }
+          backButton={
+            <Button
+              size="small"
+              onClick={handleBack}
+              disabled={activeIndex === 0}
+            >
+              {theme.direction === 'rtl' ? (
+                <KeyboardArrowRight />
+              ) : (
+                <KeyboardArrowLeft />
+              )}
+              <Typography>Back</Typography>
+            </Button>
+          }
+        />
+        <ImagePlotChart path={path} algoName={algoName} />
+      </>
+    )
+  },
+)
 
-const ImagePlotChart = React.memo<{ path: string }>(({ path }) => {
-  const imageData = useSelector(
-    activeImageDataSelector(path),
-    imageDataEqualtyFn,
-  )
-  const data = React.useMemo(
-    () => [
-      {
-        z: imageData,
-        type: 'heatmap',
-        colorscale: [
-          [0, '#000000'],
-          [1, '#ffffff'],
-        ],
-        hoverongaps: false,
-        showscale: false,
+const ImagePlotChart = React.memo<{ path: string; algoName: string }>(
+  ({ path, algoName }) => {
+    const imageData = useSelector(
+      activeImageDataSelector(path),
+      imageDataEqualtyFn,
+    )
+    const data = React.useMemo(
+      () => [
+        {
+          z: imageData,
+          type: 'heatmap',
+          colorscale: [
+            [0, '#000000'],
+            [1, '#ffffff'],
+          ],
+          hoverongaps: false,
+          showscale: false,
+        },
+      ],
+      [imageData],
+    )
+    const layout = {
+      title: algoName,
+      margin: {
+        t: 30, // top
+        l: 120, // left
+        b: 30, // bottom
       },
-    ],
-    [imageData],
-  )
-  const layout = {
-    title: 'dummy',
-    margin: {
-      t: 30, // top
-      l: 120, // left
-      b: 30, // bottom
-    },
-    autosize: true,
-    height: 350,
-    yaxis: {
-      autorange: 'reversed',
-    },
-  }
-  const config = {
-    displayModeBar: true,
-  }
-  return (
-    <div className="imagePlotChart">
-      <PlotlyChart data={data} layout={layout} config={config} />
-    </div>
-  )
-})
+      dragmode: 'pan',
+      xaxis: {
+        autorange: true,
+        showgrid: false,
+        zeroline: false,
+        showline: false,
+        autotick: true,
+        ticks: '',
+        showticklabels: false,
+      },
+      yaxis: {
+        autorange: 'reversed',
+        showgrid: false,
+        zeroline: false,
+        showline: false,
+        autotick: true,
+        ticks: '',
+        showticklabels: false,
+      },
+    }
+    const config = {
+      displayModeBar: false,
+      scrollZoom: true,
+    }
+    return (
+      <div className="imagePlotChart">
+        <PlotlyChart data={data} layout={layout} config={config} />
+      </div>
+    )
+  },
+)
 
 function imageDataEqualtyFn(
   a: number[][] | undefined,
