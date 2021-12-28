@@ -40,8 +40,13 @@ def caiman_cnmf(
     else:
         params = CNMFParams(params_dict=params)
 
-    cnm = cnmf.CNMF(1, params=params, dview=None)
+    c, dview, n_processes = cm.cluster.setup_cluster(
+        backend='local', n_processes=None, single_thread=False)
+
+    cnm = cnmf.CNMF(n_processes, params=params, dview=dview)
     cnm = cnm.fit(mmap_images)
+
+    stop_server(dview=dview)
 
     # contours plot
     Cn = local_correlations(mmap_images.transpose(1, 2, 0))
