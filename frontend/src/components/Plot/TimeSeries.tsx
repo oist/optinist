@@ -1,31 +1,37 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-
 import PlotlyChart from 'react-plotlyjs-ts'
+import { LinearProgress, Typography } from '@material-ui/core'
 
+import { DisplayDataTabContext } from 'App'
 import {
-  algoNameByIdSelector,
-  outputPathValueByIdSelector,
-} from 'store/slice/Algorithm/AlgorithmSelector'
-import { OutputPlotContext } from 'App'
-import {
-  timeSeriesDataSelector,
-  timeSeriesDataIsLoadedSelector,
-} from 'store/slice/PlotData/PlotDataSelector'
-import { getTimeSeriesData } from 'store/slice/PlotData/PlotDataAction'
-import { TimeSeriesData } from 'store/slice/PlotData/PlotDataType'
+  selectTimeSeriesData,
+  selectTimeSeriesDataError,
+  selectTimeSeriesDataIsFulfilled,
+  selectTimeSeriesDataIsInitialized,
+  selectTimeSeriesDataIsPending,
+} from 'store/slice/DisplayData/DisplayDataSelectors'
+import { getTimeSeriesData } from 'store/slice/DisplayData/DisplayDataActions'
+import { TimeSeriesData } from 'store/slice/DisplayData/DisplayDataType'
+import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
 
 export const TimeSeries = React.memo(() => {
-  const { nodeId, outputKey } = React.useContext(OutputPlotContext)
+  const { filePath: path } = React.useContext(DisplayDataTabContext)
   const dispatch = useDispatch()
-  const path = useSelector(outputPathValueByIdSelector(nodeId, outputKey))
-  const isLoaded = useSelector(timeSeriesDataIsLoadedSelector(path ?? ''))
+  const isPending = useSelector(selectTimeSeriesDataIsPending(path))
+  const isInitialized = useSelector(selectTimeSeriesDataIsInitialized(path))
+  const error = useSelector(selectTimeSeriesDataError(path))
+  const isFulfilled = useSelector(selectTimeSeriesDataIsFulfilled(path))
   React.useEffect(() => {
-    if (!isLoaded && path != null) {
+    if (!isInitialized) {
       dispatch(getTimeSeriesData({ path }))
     }
-  }, [dispatch, isLoaded, path])
-  if (isLoaded) {
+  }, [dispatch, isInitialized, path])
+  if (isPending) {
+    return <LinearProgress />
+  } else if (error != null) {
+    return <Typography color="error">{error}</Typography>
+  } else if (isFulfilled) {
     return <TimeSeriesImple />
   } else {
     return null
@@ -33,11 +39,10 @@ export const TimeSeries = React.memo(() => {
 })
 
 const TimeSeriesImple = React.memo(() => {
-  const { nodeId, outputKey } = React.useContext(OutputPlotContext)
-  const name = useSelector(algoNameByIdSelector(nodeId))
-  const path = useSelector(outputPathValueByIdSelector(nodeId, outputKey))
+  const { filePath: path, nodeId } = React.useContext(DisplayDataTabContext)
+  const label = useSelector(selectNodeLabelById(nodeId))
   const timeSeriesData = useSelector(
-    timeSeriesDataSelector(path ?? ''),
+    selectTimeSeriesData(path),
     timeSeriesDataEqualityFn,
   )
   const data = React.useMemo(() => {
@@ -46,17 +51,17 @@ const TimeSeriesImple = React.memo(() => {
     }
     return Object.keys(timeSeriesData['0']).map((_, i) => {
       return {
-        name: `${name}(${i})`,
+        name: `(${i})`,
         x: Object.keys(timeSeriesData),
         y: Object.values(timeSeriesData).map((value) => value[i]),
         visible: i === 0 ? true : 'legendonly',
       }
     })
-  }, [timeSeriesData, name])
+  }, [timeSeriesData])
 
   const layout = React.useMemo(
     () => ({
-      title: name,
+      title: label,
       margin: {
         t: 60, // top
         l: 50, // left
@@ -65,7 +70,7 @@ const TimeSeriesImple = React.memo(() => {
       autosize: true,
       height: 300,
     }),
-    [name],
+    [label],
   )
 
   const config = React.useMemo(

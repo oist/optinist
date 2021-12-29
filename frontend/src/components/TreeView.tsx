@@ -6,12 +6,15 @@ import TreeItem from '@material-ui/lab/TreeItem'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 
-import { algoListSelector } from 'store/slice/Algorithm/AlgorithmSelector'
-import { AlgoListType, AlgoNodeType } from 'store/slice/Algorithm/AlgorithmType'
-import { arrayEqualityFn } from 'utils/EqualityUtils'
-import { getAlgoList } from 'store/slice/Algorithm/AlgorithmAction'
-import { isAlgoChild, isAlgoParent } from 'store/slice/Algorithm/AlgorithmUtils'
-import { NODE_DATA_TYPE, NODE_DATA_TYPE_SET } from 'const/NodeData'
+import {
+  selectAlgorithmListIsLated,
+  selectAlgorithmListTree,
+} from 'store/slice/AlgorithmList/AlgorithmListSelectors'
+import { AlgorithmNodeType } from 'store/slice/AlgorithmList/AlgorithmListType'
+import { isAlgoChild } from 'store/slice/AlgorithmList/AlgorithmListUtils'
+import { getAlgoList } from 'store/slice/AlgorithmList/AlgorithmListActions'
+import { NODE_TYPE_SET } from 'store/slice/FlowElement/FlowElementType'
+import { FILE_TYPE, FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 
 const useStyles = makeStyles({
   root: {
@@ -25,26 +28,37 @@ const useStyles = makeStyles({
 export const SideBar = React.memo(() => {
   const dispatch = useDispatch()
   const classes = useStyles()
-  const algoList = useSelector(algoListSelector, algoListEqualityFn)
+  const algoList = useSelector(selectAlgorithmListTree)
+  const isLatest = useSelector(selectAlgorithmListIsLated)
 
   useEffect(() => {
-    if (Object.keys(algoList).length === 0) {
+    if (!isLatest) {
       dispatch(getAlgoList())
     }
-  }, [dispatch, algoList])
+  }, [dispatch, isLatest])
 
-  const onDragStart = (
+  const onAlgoNodeDragStart = (
     event: DragEvent,
     nodeName: string,
-    nodeDataType: NODE_DATA_TYPE,
-    path?: string,
+    functionPath: string,
   ) => {
     if (event.dataTransfer != null) {
       event.dataTransfer.setData('nodeName', nodeName)
-      event.dataTransfer.setData('type', nodeDataType)
-      if (path != null) {
-        event.dataTransfer.setData('path', path)
-      }
+      event.dataTransfer.setData('nodeType', NODE_TYPE_SET.ALGORITHM)
+      event.dataTransfer.setData('functionPath', functionPath)
+      event.dataTransfer.effectAllowed = 'move'
+    }
+  }
+
+  const onDataNodeDragStart = (
+    event: DragEvent,
+    nodeName: string,
+    fileType: FILE_TYPE,
+  ) => {
+    if (event.dataTransfer != null) {
+      event.dataTransfer.setData('nodeName', nodeName)
+      event.dataTransfer.setData('nodeType', NODE_TYPE_SET.INPUT)
+      event.dataTransfer.setData('fileType', fileType)
       event.dataTransfer.effectAllowed = 'move'
     }
   }
@@ -60,7 +74,7 @@ export const SideBar = React.memo(() => {
           nodeId="image"
           label="image"
           onDragStart={(event: DragEvent) =>
-            onDragStart(event, 'ImageData', NODE_DATA_TYPE_SET.IMAGE)
+            onDataNodeDragStart(event, 'ImageData', FILE_TYPE_SET.IMAGE)
           }
           draggable
         />
@@ -68,7 +82,7 @@ export const SideBar = React.memo(() => {
           nodeId="csv"
           label="csv"
           onDragStart={(event: DragEvent) =>
-            onDragStart(event, 'CsvData', NODE_DATA_TYPE_SET.CSV)
+            onDataNodeDragStart(event, 'CsvData', FILE_TYPE_SET.CSV)
           }
           draggable
         />
@@ -78,8 +92,8 @@ export const SideBar = React.memo(() => {
           <AlgoNodeComponent
             name={name}
             node={node}
-            onDragStart={(event, nodeName, path) =>
-              onDragStart(event, nodeName, NODE_DATA_TYPE_SET.ALGO, path)
+            onDragStart={(event, nodeName, functionPath) =>
+              onAlgoNodeDragStart(event, nodeName, functionPath)
             }
             key={i.toFixed()}
           />
@@ -91,15 +105,21 @@ export const SideBar = React.memo(() => {
 
 const AlgoNodeComponent = React.memo<{
   name: string
-  node: AlgoNodeType
-  onDragStart: (event: DragEvent, nodeName: string, path?: string) => void
+  node: AlgorithmNodeType
+  onDragStart: (
+    event: DragEvent,
+    nodeName: string,
+    functionPath: string,
+  ) => void
 }>(({ name, node, onDragStart }) => {
   if (isAlgoChild(node)) {
     return (
       <TreeItem
         nodeId={name}
         label={name}
-        onDragStart={(event: DragEvent) => onDragStart(event, name, node.path)}
+        onDragStart={(event: DragEvent) =>
+          onDragStart(event, name, node.functionPath)
+        }
         draggable
       />
     )
@@ -118,38 +138,3 @@ const AlgoNodeComponent = React.memo<{
     )
   }
 })
-
-function algoListEqualityFn(a: AlgoListType, b: AlgoListType) {
-  const aArray = Object.entries(a)
-  const bArray = Object.entries(b)
-  return (
-    a === b ||
-    (aArray.length === bArray.length &&
-      aArray.every(([aKey, aValue], i) => {
-        const [bKey, bValue] = bArray[i]
-        return bKey === aKey && algoNodeEqualityFn(bValue, aValue)
-      }))
-  )
-}
-
-function algoNodeEqualityFn(a: AlgoNodeType, b: AlgoNodeType): boolean {
-  if (a === b) {
-    return true
-  }
-  if (isAlgoChild(a) && isAlgoChild(b)) {
-    return arrayEqualityFn(a.args, b.args)
-  } else if (isAlgoParent(a) && isAlgoParent(b)) {
-    const aArray = Object.entries(a.children)
-    const bArray = Object.entries(b.children)
-    return (
-      a.children === b.children ||
-      (aArray.length === bArray.length &&
-        aArray.every(([aKey, aValue], i) => {
-          const [bKey, bValue] = bArray[i]
-          return bKey === aKey && algoNodeEqualityFn(bValue, aValue)
-        }))
-    )
-  } else {
-    return false
-  }
-}

@@ -42,10 +42,11 @@ export interface FilesTree {
   }
 }
 
-export const FILE_TYPE_SET = {
+export const FILE_TREE_TYPE_SET = {
   IMAGE: 'image',
   CSV: 'csv',
   ALL: 'all',
 } as const
 
-export type FILE_TYPE = typeof FILE_TYPE_SET[keyof typeof FILE_TYPE_SET]
+export type FILE_TREE_TYPE =
+  typeof FILE_TREE_TYPE_SET[keyof typeof FILE_TREE_TYPE_SET]

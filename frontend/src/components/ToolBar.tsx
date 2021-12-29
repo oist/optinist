@@ -1,19 +1,18 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { nanoid } from '@reduxjs/toolkit'
 import Button from '@material-ui/core/Button'
 import PlayArrowIcon from '@material-ui/icons/PlayArrow'
-import {
-  elementListForRunSelector,
-  pathIsUndefinedSelector,
-} from 'store/slice/Element/ElementSelector'
 import { Box, IconButton, LinearProgress } from '@material-ui/core'
 import Close from '@material-ui/icons/Close'
-import { reflectRunPipelineResult } from 'store/slice/Algorithm/AlgorithmAction'
-import { useLazyRunPipelineQuery } from 'api/Run/Run'
-import { nanoid } from '@reduxjs/toolkit'
 import { SnackbarProvider, SnackbarKey, useSnackbar } from 'notistack'
+
+import { useLazyRunPipelineQuery } from 'api/Run/Run'
 import { NWB } from './NWB'
-import { nwbListSelector } from 'store/slice/NWB/NWBSelector'
+import { selectNwbList } from 'store/slice/NWB/NWBSelectors'
+import { selectFilePathIsUndefined } from 'store/slice/InputNode/InputNodeSelectors'
+import { selectElementListForRun } from 'store/slice/FlowElement/FlowElementSelectors'
+import { reflectResult } from 'store/slice/RunPipelineResult/RunPipelineResultSlice'
 
 export const ToolBar = React.memo(() => (
   <SnackbarProvider
@@ -38,9 +37,9 @@ const SnackbarCloseButton: React.FC<{ snackbarKey: SnackbarKey }> = ({
 export const ToolBarImple = React.memo(() => {
   const dispatch = useDispatch()
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
-  const pathIsUndefined = useSelector(pathIsUndefinedSelector)
-  const nwbParam = useSelector(nwbListSelector)
-  const elementListForRun = useSelector(elementListForRunSelector)
+  const pathIsUndefined = useSelector(selectFilePathIsUndefined)
+  const nwbParam = useSelector(selectNwbList)
+  const elementListForRun = useSelector(selectElementListForRun)
   const [triggerRunPipeline, result] = useLazyRunPipelineQuery()
   const [isReady, setIsReady] = React.useState(false)
   const onRunBtnClick = () => {
@@ -56,15 +55,6 @@ export const ToolBarImple = React.memo(() => {
   }
   React.useEffect(() => {
     if (result.data != null && !result.isFetching) {
-      dispatch(
-        reflectRunPipelineResult({
-          dto: result.data.outputPaths ?? {},
-          error:
-            result.data.name != null
-              ? { name: result.data.name, message: result.data.message }
-              : undefined,
-        }),
-      )
       if (result.data.status === 'ready') {
         setIsReady(true)
       } else {
@@ -78,6 +68,7 @@ export const ToolBarImple = React.memo(() => {
               ? 'success'
               : undefined,
         })
+        dispatch(reflectResult(result.data))
       }
     }
   }, [result, enqueueSnackbar, closeSnackbar, dispatch])

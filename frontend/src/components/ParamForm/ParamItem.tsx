@@ -5,9 +5,10 @@ import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
 import Box from '@material-ui/core/Box'
 import Typography from '@material-ui/core/Typography'
-import { updateParam } from 'store/slice/Algorithm/Algorithm'
-import { paramValueSelector } from 'store/slice/Algorithm/AlgorithmSelector'
-import { NodeIdContext } from 'App'
+
+import { updateParam } from 'store/slice/AlgorithmNode/AlgorithmNodeSlice'
+import { selectAlgorithmParamsValue } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
+import { ParamFormTabContext } from 'App'
 
 type ParamItemProps = {
   paramKey: string
@@ -106,10 +107,10 @@ const ParamItemForBoolean = React.memo<ParamItemProps>(({ paramKey }) => {
 function useParamValueUpdate(
   paramKey: string,
 ): [unknown, (newValue: unknown) => AnyAction] {
-  const nodeId = React.useContext(NodeIdContext)
-  const value = useSelector(paramValueSelector(nodeId, paramKey))
+  const nodeId = React.useContext(ParamFormTabContext)
+  const value = useSelector(selectAlgorithmParamsValue(nodeId, paramKey))
   const updateParamAction = (newValue: unknown) => {
-    return updateParam({ id: nodeId, paramKey, newValue })
+    return updateParam({ nodeId, paramKey, newValue })
   }
   return [value, updateParamAction]
 }
