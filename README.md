@@ -47,6 +47,7 @@ docker-compose up frontend
 pip install pipenv
 ```
 
+backendを起動。
 ```
 cd optinist/backend
 pipenv install -r requirements.txt
@@ -54,7 +55,7 @@ pipenv run python main.py
 ```
 
 ### ファイルの保存場所
-
+`/tmp/optinist`に保存されるため、直接tifファイルをこちらに入れてもらうと、ファイルをアップロードする必要がなくなる。
 
 
 <!-- # 開発環境
