@@ -32,8 +32,9 @@ class ImageData:
             else:
                 save_data = copy.deepcopy(data[:10])
 
-            if data.shape[-1] >= 200 and data.shape[-2] >= 200:
-                save_data = cv2.resize(save_data, (200, 200))
+            # if save_data.shape[-1] >= 200 and save_data.shape[-2] >= 200:
+            #     import pdb; pdb.set_trace()
+            #     save_data = cv2.resize(save_data, (200, 200), interpolation=cv2.INTER_LINEAR_EXACT)
 
             if len(data.shape) == 2:
                 data = data[np.newaxis, :, :]
