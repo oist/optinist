@@ -7,7 +7,10 @@ def caiman_cnmf(
         images: ImageData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'fluo': TimeSeriesData, 'iscell': IscellData, 'roi': RoiData}:
     import caiman
-    from caiman import local_correlations
+    from caiman import local_correlations, stop_server
+    from caiman.paths import memmap_frames_filename
+    from caiman.mmapping import prepare_shape
+    from caiman.cluster import setup_cluster
     from caiman.source_extraction.cnmf import cnmf
     from caiman.source_extraction.cnmf.params import CNMFParams
     import caiman.utils.visualization as visualization
@@ -24,12 +27,12 @@ def caiman_cnmf(
 
     dir_path = os.path.dirname(file_path)
     basename = os.path.splitext(os.path.basename(file_path))[0]
-    fname_tot = caiman.paths.memmap_frames_filename(basename, dims, T, order)
+    fname_tot = memmap_frames_filename(basename, dims, T, order)
     mmap_images = np.memmap(
         os.path.join(dir_path, fname_tot),
         mode='w+',
         dtype=np.float32,
-        shape=caiman.mmapping.prepare_shape(shape_mov),
+        shape=prepare_shape(shape_mov),
         order=order)
 
     mmap_images = np.reshape(mmap_images.T, [T] + list(dims), order='F')
@@ -40,7 +43,7 @@ def caiman_cnmf(
     else:
         params = CNMFParams(params_dict=params)
 
-    c, dview, n_processes = cm.cluster.setup_cluster(
+    c, dview, n_processes = setup_cluster(
         backend='local', n_processes=None, single_thread=False)
 
     cnm = cnmf.CNMF(n_processes, params=params, dview=dview)

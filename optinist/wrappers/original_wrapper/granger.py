@@ -127,6 +127,8 @@ def Granger(timeseries: TimeSeriesData, iscell: IscellData, params: dict) -> {'G
 
             GC['Granger_fval_mat'][j][comb[i][0], comb[i][1]] = tp[j+1][0]['ssr_ftest'][0]
 
+    GC['Granger_fval_mat'] = np.array(GC['Granger_fval_mat'])
+
     # output structures ###################
     Out_nwb = {}
 

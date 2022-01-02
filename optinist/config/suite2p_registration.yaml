@@ -21,3 +21,4 @@ diameter: 0
 spatial_hp_reg: 42
 pre_smooth: 0
 spatial_taper: 40
+bidi_corrected: False
