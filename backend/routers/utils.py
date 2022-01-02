@@ -37,7 +37,7 @@ def save_tiff_to_json(tiff_file_path, maxidx=10):
         page = np.array(page)
 
         if page.shape[-1] >= 200 and page.shape[-2] >= 200:
-            page = cv2.resize(save_data, (200, 200))
+            page = cv2.resize(page, (200, 200))
 
         tiffs.append(page)
 
