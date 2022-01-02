@@ -1,42 +1,47 @@
 import React from 'react'
-
 import { useSelector, useDispatch } from 'react-redux'
-
 import PlotlyChart from 'react-plotlyjs-ts'
+import { LinearProgress, Typography } from '@material-ui/core'
 
-import { OutputPlotContext } from 'App'
-import {
-  heatMapDataSelector,
-  heatMapDataIsLoadedSelector,
-} from 'store/slice/PlotData/PlotDataSelector'
-import { outputPathValueByIdSelector } from 'store/slice/Algorithm/AlgorithmSelector'
-import { getHeatMapData } from 'store/slice/PlotData/PlotDataAction'
+import { DisplayDataTabContext } from 'App'
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
+import {
+  selectHeatMapData,
+  selectHeatMapDataError,
+  selectHeatMapDataIsFulfilled,
+  selectHeatMapDataIsInitialized,
+  selectHeatMapDataIsPending,
+} from 'store/slice/DisplayData/DisplayDataSelectors'
+import { getHeatMapData } from 'store/slice/DisplayData/DisplayDataActions'
+import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
 
 export const HeatMap = React.memo(() => {
-  const { nodeId, outputKey } = React.useContext(OutputPlotContext)
+  const { filePath: path } = React.useContext(DisplayDataTabContext)
   const dispatch = useDispatch()
-  const path = useSelector(outputPathValueByIdSelector(nodeId, outputKey))
-  const isLoaded = useSelector(heatMapDataIsLoadedSelector(path ?? ''))
+  const isPending = useSelector(selectHeatMapDataIsPending(path))
+  const isInitialized = useSelector(selectHeatMapDataIsInitialized(path))
+  const error = useSelector(selectHeatMapDataError(path))
+  const isFulfilled = useSelector(selectHeatMapDataIsFulfilled(path))
   React.useEffect(() => {
-    if (!isLoaded && path != null) {
+    if (!isInitialized) {
       dispatch(getHeatMapData({ path }))
     }
-  }, [dispatch, isLoaded, path])
-  if (isLoaded) {
+  }, [dispatch, isInitialized, path])
+  if (isPending) {
+    return <LinearProgress />
+  } else if (error != null) {
+    return <Typography color="error">{error}</Typography>
+  } else if (isFulfilled) {
     return <HeatMapImple />
   } else {
     return null
   }
 })
-const HeatMapImple = React.memo(() => {
-  const { nodeId, outputKey } = React.useContext(OutputPlotContext)
-  const path = useSelector(outputPathValueByIdSelector(nodeId, outputKey))
-  const heatMapData = useSelector(
-    heatMapDataSelector(path ?? ''),
-    heatMapDataEqualtyFn,
-  )
 
+const HeatMapImple = React.memo(() => {
+  const { filePath: path, nodeId } = React.useContext(DisplayDataTabContext)
+  const label = useSelector(selectNodeLabelById(nodeId))
+  const heatMapData = useSelector(selectHeatMapData(path), heatMapDataEqualtyFn)
   const data = React.useMemo(
     () =>
       heatMapData != null
@@ -54,7 +59,7 @@ const HeatMapImple = React.memo(() => {
   )
 
   const layout = {
-    title: 'dummy',
+    title: label,
     margin: {
       t: 60, // top
       l: 50, // left

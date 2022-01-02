@@ -19,9 +19,9 @@ import {
   withStyles,
   WithStyles,
 } from '@material-ui/core/styles'
-import { nwbListSelector } from 'store/slice/NWB/NWBSelector'
+import { selectNwbList } from 'store/slice/NWB/NWBSelectors'
 import { NWBChild, NWBNodeType } from 'store/slice/NWB/NWBType'
-import { updateParam } from 'store/slice/NWB/NWB'
+import { updateParam } from 'store/slice/NWB/NWBSlice'
 import { getNWBParams } from 'store/slice/NWB/NWBAction'
 
 export const NWB = React.memo(() => {
@@ -57,7 +57,7 @@ export const NWB = React.memo(() => {
 })
 
 const ParamBar = React.memo(() => {
-  const nwbList = useSelector(nwbListSelector)
+  const nwbList = useSelector(selectNwbList)
 
   const dispatch = useDispatch()
 

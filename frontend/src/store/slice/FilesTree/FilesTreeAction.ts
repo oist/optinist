@@ -4,11 +4,11 @@ import { BASE_URL } from 'const/API'
 
 import {
   FILES_TREE_SLICE_NAME,
-  FILE_TYPE,
+  FILE_TREE_TYPE,
   TreeNodeTypeDTO,
 } from './FilesTreeType'
 
-export const getFilesTree = createAsyncThunk<TreeNodeTypeDTO[], FILE_TYPE>(
+export const getFilesTree = createAsyncThunk<TreeNodeTypeDTO[], FILE_TREE_TYPE>(
   `${FILES_TREE_SLICE_NAME}/getFilesTree`,
   async (fileType, thunkAPI) => {
     try {

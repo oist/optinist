@@ -1,22 +1,26 @@
-import React, { CSSProperties, useState } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { alpha, useTheme } from '@material-ui/core'
-import TextField from '@material-ui/core/TextField'
+import React, { CSSProperties } from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
+import { alpha, useTheme } from '@material-ui/core/styles'
+import TextField from '@material-ui/core/TextField'
+import { Typography } from '@material-ui/core'
 
-import { FlexLayoutModelContext } from 'App'
-import { useTabAction } from 'FlexLayoutHook'
-import { OUTPUT_TABSET_ID } from 'const/flexlayout'
-import { uploadImageFile } from 'store/slice/FileData/FileDataAction'
+import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
+import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
+import { useFileUplader } from 'store/slice/FileUploader/FileUploaderHook'
 import {
-  imageIsUploadingByIdSelector,
-  imageUploadingProgressSelector,
-} from 'store/slice/FileData/FileDataSelector'
-import { selectImageFile } from 'store/slice/FileData/FileData'
-import { FileSelect } from './FileSelect'
-import { FILE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
-import { LinearProgressWithLabel } from './LinerProgressWithLabel'
+  selectImageInputNodeMaxIndex,
+  selectInputNodeDefined,
+  selectInputNodeSelectedFilePath,
+} from 'store/slice/InputNode/InputNodeSelectors'
+import { setInputImageNodeFile } from 'store/slice/InputNode/InputNodeSlice'
+import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
+
+import { useDisplayDataTabAciton } from 'components/flextlayout/FlexLayoutHook'
 import { useHandleColor } from './HandleColorHook'
+import { FileSelect } from './FileSelect'
+import { LinearProgressWithLabel } from './LinerProgressWithLabel'
+import { toHandleId, isValidConnection } from './FlowChartUtils'
 
 // Connection部分のレイアウト
 const sourceHandleStyle: CSSProperties = {
@@ -29,90 +33,126 @@ const sourceHandleStyle: CSSProperties = {
 }
 
 export const ImageFileNode = React.memo<NodeProps>((element) => {
-  const [inputMaxIndex, setInputMaxIndex] = useState(10)
-  const model = React.useContext(FlexLayoutModelContext)
-  const actionForImageTab = useTabAction(element.id)
-  const onClick = () => {
-    if (actionForImageTab != null) {
-      model.doAction(actionForImageTab('image', OUTPUT_TABSET_ID))
-    }
+  const defined = useSelector(selectInputNodeDefined(element.id))
+  if (defined) {
+    return <ImageFileNodeImple {...element} />
+  } else {
+    return null
   }
-  const onChangeNumber = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setInputMaxIndex(Math.max(1, Number(event.target.value)))
-  }
-  const theme = useTheme()
-  const imageIsUploading = useSelector(imageIsUploadingByIdSelector(element.id))
-  const uploadProgress = useSelector(imageUploadingProgressSelector(element.id))
-  const imageColor = useHandleColor('ImageData')
-  return (
-    <div
-      className="imageFileNode"
-      style={{
-        background: element.selected
-          ? alpha(theme.palette.primary.light, 0.1)
-          : undefined,
-      }}
-      onClick={onClick}
-    >
-      {imageIsUploading && uploadProgress != null && (
-        <div style={{ marginLeft: 2, marginRight: 2 }}>
-          <LinearProgressWithLabel value={uploadProgress} />
-        </div>
-      )}
-      <ImageFileSelect nodeId={element.id} maxIndex={inputMaxIndex} />
-      <TextField
-        type="number"
-        InputLabelProps={{
-          shrink: true,
-        }}
-        value={inputMaxIndex}
-        onChange={onChangeNumber}
-      />
-      <Handle
-        type="source"
-        position={Position.Right}
-        id={`image-${element.id}`}
-        style={{
-          ...sourceHandleStyle,
-          background: imageColor,
-        }}
-      />
-    </div>
-  )
 })
 
-const ImageFileSelect = React.memo<{ nodeId: string; maxIndex: number }>(
-  ({ nodeId, maxIndex }) => {
+const ImageFileNodeImple = React.memo<NodeProps>(
+  ({ id: nodeId, selected: elementSelected }) => {
     const dispatch = useDispatch()
-    const model = React.useContext(FlexLayoutModelContext)
-    const actionForImageTab = useTabAction(nodeId)
-    const onUploadFile = (formData: FormData, fileName: string) => {
+    const inputRef = React.useRef<HTMLInputElement | null>(null)
+    const { setDisplayTab } = useDisplayDataTabAciton(nodeId)
+    const filePath = useSelector(selectInputNodeSelectedFilePath(nodeId))
+    const defaultMaxIndex = useSelector(selectImageInputNodeMaxIndex(nodeId))
+    const onChangeFilePath = (path: string) => {
       dispatch(
-        uploadImageFile({
+        setInputImageNodeFile({
           nodeId,
-          fileName,
-          formData,
-          maxIndex,
+          filePath: path,
+          maxIndex: Math.max(1, Number(inputRef.current?.value)),
         }),
       )
-      if (actionForImageTab != null) {
-        model.doAction(actionForImageTab('image', OUTPUT_TABSET_ID))
+    }
+    const onClick = () => {
+      if (filePath != null) {
+        setDisplayTab(filePath, DATA_TYPE_SET.IMAGE)
       }
     }
-    const onSelectFile = (path: string) => {
-      dispatch(selectImageFile({ nodeId, path, maxIndex }))
-      if (actionForImageTab != null) {
-        model.doAction(actionForImageTab('image', OUTPUT_TABSET_ID))
-      }
-    }
+    const theme = useTheme()
+    const returnType = 'ImageData'
+    const imageColor = useHandleColor(returnType)
     return (
-      <FileSelect
-        nodeId={nodeId}
-        onSelectFile={onSelectFile}
-        onUploadFile={onUploadFile}
-        fileType={FILE_TYPE_SET.IMAGE}
-        selectButtonLabel="Select Image"
-      />
+      <div
+        className="imageFileNode"
+        style={{
+          background: elementSelected
+            ? alpha(theme.palette.primary.light, 0.1)
+            : undefined,
+        }}
+        onClick={onClick}
+      >
+        <ImageFileSelect
+          nodeId={nodeId}
+          onChangeFilePath={onChangeFilePath}
+          filePath={filePath ?? ''}
+        />
+        <TextField
+          inputRef={inputRef}
+          type="number"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          defaultValue={defaultMaxIndex}
+        />
+        <Handle
+          type="source"
+          position={Position.Right}
+          id={toHandleId(nodeId, 'image', returnType)}
+          style={{
+            ...sourceHandleStyle,
+            background: imageColor,
+          }}
+          isValidConnection={isValidConnection}
+        />
+      </div>
     )
   },
 )
+
+const ImageFileSelect = React.memo<{
+  nodeId: string
+  filePath: string
+  onChangeFilePath: (path: string) => void
+}>(({ nodeId, filePath, onChangeFilePath }) => {
+  const { setDisplayTab, deleteDisplayTab } = useDisplayDataTabAciton(nodeId)
+  const {
+    filePath: uploadedFilePath,
+    onUploadFile,
+    pending,
+    uninitialized,
+    progress,
+    error,
+  } = useFileUplader(FILE_TYPE_SET.IMAGE)
+  const onUploadFileHandle = (formData: FormData, fileName: string) => {
+    onUploadFile(formData, fileName)
+    if (uploadedFilePath != null) {
+      onChangeFilePath(uploadedFilePath)
+      setDisplayTab(uploadedFilePath, DATA_TYPE_SET.IMAGE)
+      if (filePath !== uploadedFilePath) {
+        deleteDisplayTab(filePath) // 前回のfilePathを表示するtabは削除
+      }
+    }
+  }
+  const onSelectFile = (selectedPath: string) => {
+    onChangeFilePath(selectedPath)
+    setDisplayTab(selectedPath, DATA_TYPE_SET.IMAGE)
+    if (selectedPath !== filePath) {
+      deleteDisplayTab(filePath) // 前回のfilePathを表示するtabは削除
+    }
+  }
+  return (
+    <>
+      {!uninitialized && pending && progress != null && (
+        <div style={{ marginLeft: 2, marginRight: 2 }}>
+          <LinearProgressWithLabel value={progress} />
+        </div>
+      )}
+      <FileSelect
+        filePath={filePath}
+        onSelectFile={onSelectFile}
+        onUploadFile={onUploadFileHandle}
+        fileTreeType={FILE_TREE_TYPE_SET.IMAGE}
+        selectButtonLabel="Select Image"
+      />
+      {error != null && (
+        <Typography variant="caption" color="error">
+          {error}
+        </Typography>
+      )}
+    </>
+  )
+})
