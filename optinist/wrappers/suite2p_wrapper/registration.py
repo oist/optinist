@@ -6,6 +6,7 @@ from wrappers.args_check import args_check
 def suite2p_registration(
         ops: Suite2pData=None, nwbfile: NWBFile=None, params: dict=None
     ) -> {'ops': Suite2pData, 'images': ImageData}:
+    print('start registration')
     # refImg = image.data
     ops = ops.data
     refImg = ops['meanImg']

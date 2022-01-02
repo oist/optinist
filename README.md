@@ -26,7 +26,38 @@ fastapi で記述されている。
 optinist ディレクトリは Python での CUI 処理を記述する。
 NeuroScience の解析部分の一連のフローなどはこちらに記述する。
 
-# 開発環境
+
+# 実行手順
+
+### docker build
+docker環境をbuildする。
+```
+docker-compose build
+```
+### フロント側をdockerで起動
+dockerでfront側を起動する。
+```
+cd optinist
+docker-compose up frontend
+```
+
+### バックエンドをpipenvで起動
+ローカル環境にpipenvがない場合はインストール。
+```
+pip install pipenv
+```
+
+```
+cd optinist/backend
+pipenv install -r requirements.txt
+pipenv run python main.py
+```
+
+### ファイルの保存場所
+
+
+
+<!-- # 開発環境
 
 ## backend
 
@@ -73,4 +104,4 @@ $ cd ./frontend
 $ yarn start
 ```
 
-- [http://localhost:3000](http://localhost:3000)にアクセス
+- [http://localhost:3000](http://localhost:3000)にアクセス -->

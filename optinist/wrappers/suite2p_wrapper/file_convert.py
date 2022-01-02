@@ -7,6 +7,7 @@ import gc
 def suite2p_file_convert(
         image: ImageData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'ops': Suite2pData, 'images': ImageData}:
+    print('start file_convert')
     import os
     import numpy as np
     from natsort import natsorted

@@ -159,18 +159,18 @@ def get_results(info, item):
 
     for k, v in info.items():
         if isinstance(v, ImageData):
-            print("ImageData")
+            # print("ImageData")
             results[path][k] = {}
             results[path][k]['path'] = v.json_path
             results[path][k]['type'] = 'images'
             results[path][k]['max_index'] = len(v.data)
         elif isinstance(v, TimeSeriesData):
-            print("TimeSeriesData")
+            # print("TimeSeriesData")
             results[path][k] = {}
             results[path][k]['path'] = v.path
             results[path][k]['type'] = 'timeseries'
         elif isinstance(v, CorrelationData):
-            print("CorrelationData")
+            # print("CorrelationData")
             results[path][k] = {}
             results[path][k]['path'] = v.path
             results[path][k]['type'] = 'heatmap'

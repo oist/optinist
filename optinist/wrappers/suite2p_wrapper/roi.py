@@ -6,6 +6,7 @@ from wrappers.args_check import args_check
 def suite2p_roi(
         ops: Suite2pData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'ops': Suite2pData, 'F': TimeSeriesData, 'iscell': IscellData}:
+    print('start roi')
     ops = ops.data
 
     import numpy as np
