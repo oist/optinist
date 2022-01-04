@@ -47,6 +47,16 @@ docker-compose up frontend
 pip install pipenv
 ```
 
+pyenvもインストールする。
+macの場合
+```
+brew install pyenv
+```
+
+windowsの場合のpyenvのインストール[https://github.com/pyenv/pyenv#windows]
+
+<br />
+
 backendを起動。
 ```
 cd optinist/backend
