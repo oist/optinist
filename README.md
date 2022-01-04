@@ -58,9 +58,22 @@ windowsの場合のpyenvのインストール[https://github.com/pyenv/pyenv#win
 <br />
 
 backendを起動。
+python3.9の環境を作成する。
 ```
 cd optinist/backend
 pipenv --python 3.9
+```
+
+上でエラーした場合（OSXのバージョンが古い場合に、python=3.9が入らない時がある。その場合は、zlibをインストールすると解決できるときがある。）
+```
+brew install zlib
+export LDFLAGS="-L/usr/local/opt/zlib/lib"
+export CPPFLAGS="-I/usr/local/opt/zlib/include"
+```
+
+
+
+```
 pipenv install -r requirements.txt
 pipenv run python main.py
 ```
