@@ -50,6 +50,7 @@ pip install pipenv
 backendを起動。
 ```
 cd optinist/backend
+pipenv --python 3.9
 pipenv install -r requirements.txt
 pipenv run python main.py
 ```
