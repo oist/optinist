@@ -1,7 +1,13 @@
 import os
 import shutil
 from glob import glob
-from typing import List, Optional, TypedDict
+import sys
+
+if sys.version_info >= (3, 8):
+    from typing import List, Optional, TypedDict
+else:
+    from typing_extensions import List, Optional, TypedDict
+# from typing import List, Optional, TypedDict
 from fastapi import APIRouter, File, Response, UploadFile, Form
 from .const import BASE_DIR
 
