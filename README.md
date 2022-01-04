@@ -74,7 +74,7 @@ export CPPFLAGS="-I/usr/local/opt/zlib/include"
 
 
 ```
-pipenv install -r requirements.txt
+pipenv sync
 pipenv run python main.py
 ```
 
