@@ -27,21 +27,29 @@ optinist ディレクトリは Python での CUI 処理を記述する。
 NeuroScience の解析部分の一連のフローなどはこちらに記述する。
 
 
-# 実行手順
+# 環境構築
+2022/1月時点では、frontendとbackendを別々に環境構築するのを推奨する。
+frontendはdockerで構築する。
+backendはメモリを多く使用するためローカル環境で構築する。
+
+## frontendの環境構築
 
 ### docker build
-docker環境をbuildする。
-```
-docker-compose build
-```
-### フロント側をdockerで起動
-dockerでfront側を起動する。
+｀optinist｀ディレクトリに移動し、dockerをbuildする。
 ```
 cd optinist
+docker-compose build
+```
+### frontendをdockerで起動
+dockerでfront側を起動する。
+```
 docker-compose up frontend
 ```
 
-### バックエンドをpipenvで起動
+## backendの環境構築
+
+### pipenvで起動
+### pipenvをインストール
 ローカル環境にpipenvがない場合はインストール。
 ```
 pip install pipenv
@@ -57,24 +65,16 @@ windowsの場合のpyenvのインストール[https://github.com/pyenv/pyenv#win
 
 <br />
 
-backendを起動。
-python3.9の環境を作成する。
+### 仮想環境の構築
+backendディレクトリに移動し、packageをインストールする。
 ```
 cd optinist/backend
-pipenv --python 3.9
+pipenv install --skip-lock
 ```
 
-上でエラーした場合（OSXのバージョンが古い場合に、python=3.9が入らない時がある。その場合は、zlibをインストールすると解決できるときがある。）
+### backendの起動
+backendをpipenv環境で実行する。
 ```
-brew install zlib
-export LDFLAGS="-L/usr/local/opt/zlib/lib"
-export CPPFLAGS="-I/usr/local/opt/zlib/include"
-```
-
-
-
-```
-pipenv sync
 pipenv run python main.py
 ```
 
