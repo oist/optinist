@@ -6,7 +6,8 @@ import sys
 if sys.version_info >= (3, 8):
     from typing import List, Optional, TypedDict
 else:
-    from typing_extensions import List, Optional, TypedDict
+    from typing import List, Optional
+    from typing_extensions import TypedDict
 # from typing import List, Optional, TypedDict
 from fastapi import APIRouter, File, Response, UploadFile, Form
 from .const import BASE_DIR
@@ -58,7 +59,7 @@ async  def get_files(file_type: Optional[str] = None):
         tree = get_dir_tree(BASE_DIR, ACCEPT_FILE_TYPES)
     else:
         if file_type == "image":
-            tree = get_dir_tree(BASE_DIR, ["tif"])
+            tree = get_dir_tree(BASE_DIR, ["tif", 'TIF'])
         elif file_type == "csv":
             tree = get_dir_tree(BASE_DIR, ["csv"])
         else:

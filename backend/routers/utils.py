@@ -122,7 +122,7 @@ def run_algorithm(prev_info, item):
         info = {'images': ImageData(item['data']['path'], '')}
     elif item['type'] == 'AlgorithmNode':
         # parameterをint, floatに変換
-        if 'param' in item['data'].keys():
+        if 'param' in item['data'].keys() and item['data']['param'] is not None:
             params = string_to_float(item['data']['param'])
         else:
             params = {}

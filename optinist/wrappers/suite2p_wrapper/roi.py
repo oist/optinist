@@ -12,7 +12,7 @@ def suite2p_roi(
     import numpy as np
     from suite2p import extraction, classification, detection, ROI, default_ops
 
-    ops = {**ops, **params, **default_ops()}
+    ops = {**default_ops(), **ops, **params}
 
     # ROI detection
     ops_classfile = ops.get('classifier_path')

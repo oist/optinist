@@ -1,19 +1,20 @@
 version: "3.7"
 services:
-  # backend:
-  #   build:
-  #     context: backend
-  #     dockerfile: Dockerfile
-  #   tty: true
-  #   volumes:
-  #     - ./backend:/app/:cached
-  #     - ./optinist:/optinist:cached
-  #     - /tmp:/tmp
-  #   ports:
-  #     - 8000:8000
-  #   environment:
-  #     PYTHONPATH: .
-  #     TZ: Asia/Tokyo
+  backend:
+    build:
+      context: backend
+      dockerfile: Dockerfile
+    tty: true
+    volumes:
+      - ./backend:/app/:cached
+      - ./optinist:/optinist:cached
+      - /tmp:/tmp:delegated
+    ports:
+      - 8000:8000
+    environment:
+      PYTHONPATH: .
+      TZ: Asia/Tokyo
+    oom_kill_disable: true
   frontend:
     build:
       context: frontend

@@ -2,6 +2,8 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 import gc
 
+BASE_DIR = '/tmp/optinist'
+
 
 @args_check
 def suite2p_file_convert(
@@ -23,7 +25,7 @@ def suite2p_file_convert(
     db = {
         'data_path': [data_path],
         'tiff_list': [data_name],
-        'save_path0': './files',
+        'save_path0': BASE_DIR,
         'save_folder': 'suite2p'
     }
 

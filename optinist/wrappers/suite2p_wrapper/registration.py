@@ -18,12 +18,14 @@ def suite2p_registration(
     if len(refImg.shape) == 3:
         refImg = refImg[0]
 
-    ops = {**ops, **params}
+    ops = {**default_ops(), **ops, **params}
+    # import pdb; pdb.set_trace()
 
     # register binary
     ops = registration.register_binary(ops, refImg=refImg)
 
     # compute metrics for registration
+    # import pdb; pdb.set_trace()
     if ops.get('do_regmetrics', True) and ops['nframes']>=1500:
         ops = registration.get_pc_metrics(ops)
 

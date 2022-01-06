@@ -7,9 +7,9 @@ def suite2p_spike_deconv(
         ops: Suite2pData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'ops': Suite2pData, 'spks': TimeSeriesData}:
     ops = ops.data
-    from suite2p import extraction
+    from suite2p import extraction, default_ops
 
-    ops = {**ops, **params}
+    ops = {**default_ops, **ops, **params}
 
     dF = ops['F'].copy() - ops['neucoeff']*ops['Fneu']
     dF = extraction.preprocess(
