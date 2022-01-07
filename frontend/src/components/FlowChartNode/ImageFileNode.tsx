@@ -7,7 +7,7 @@ import { Typography } from '@material-ui/core'
 
 import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
 import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
-import { useFileUplader } from 'store/slice/FileUploader/FileUploaderHook'
+import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import {
   selectImageInputNodeMaxIndex,
   selectInputNodeDefined,
@@ -116,7 +116,7 @@ const ImageFileSelect = React.memo<{
     uninitialized,
     progress,
     error,
-  } = useFileUplader(FILE_TYPE_SET.IMAGE)
+  } = useFileUploader(FILE_TYPE_SET.IMAGE)
   const onUploadFileHandle = (formData: FormData, fileName: string) => {
     onUploadFile(formData, fileName)
     if (uploadedFilePath != null) {
