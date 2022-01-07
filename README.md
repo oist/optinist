@@ -70,6 +70,7 @@ cd /CaImAn && pip install -e .
 ```
 
 * ```pip list```などでcaimanやsuite2pなどが正しくインストールできていることを確認すると良い。
+* caimanをインストール後にnumpyなどを再インストールすると、numpyのエラーが起きることが分かっているが、まだ明確な解決策が提示されていないと思っている。[https://stackoverflow.com/questions/66060487/valueerror-numpy-ndarray-size-changed-may-indicate-binary-incompatibility-exp]
 
 #### 実行
 backendディレクトリに移動
@@ -82,36 +83,6 @@ cd optinist/backend
 python main.py
 ```
 
-
-## pipenvで起動
-#### pipenvをインストール
-ローカル環境にpipenvがない場合はインストール。
-```
-pip install pipenv
-```
-
-pyenvもインストールする。
-macの場合
-```
-brew install pyenv
-```
-
-windowsの場合のpyenvのインストール[https://github.com/pyenv/pyenv#windows]
-
-<br />
-
-#### 仮想環境の構築
-backendディレクトリに移動し、packageをインストールする。
-```
-cd optinist/backend
-pipenv install --skip-lock
-```
-
-#### backendの起動
-backendをpipenv環境で実行する。
-```
-pipenv run python main.py
-```
 
 ### ファイルの保存場所
 `/tmp/optinist`に保存されるため、直接tifファイルをこちらに入れてもらうと、ファイルをアップロードする必要がなくなる。
