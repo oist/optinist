@@ -29,7 +29,7 @@ def suite2p_file_convert(
         'save_folder': 'suite2p'
     }
 
-    ops = {**params, **db}
+    ops = {**default_ops(), **params, **db}
 
     ops['input_format'] = 'tif'
 
