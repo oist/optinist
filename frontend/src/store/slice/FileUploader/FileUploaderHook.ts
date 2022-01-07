@@ -13,7 +13,7 @@ import {
 } from './FileUploaderSelectors'
 import { FILE_TYPE } from '../InputNode/InputNodeType'
 
-export function useFileUplader(fileType?: FILE_TYPE) {
+export function useFileUploader(fileType?: FILE_TYPE) {
   const dispatch = useDispatch()
   const id = React.useRef(nanoid())
   React.useEffect(() => {

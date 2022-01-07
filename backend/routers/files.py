@@ -70,7 +70,7 @@ async  def get_files(file_type: Optional[str] = None):
 
 
 @router.post("/files/upload/{fileName}")
-async def create_file(response: Response, fileName: str, element_id: str = Form(...), file: UploadFile = File(...)):
+async def create_file(response: Response, fileName: str, file: UploadFile = File(...)):
     root_dir = os.path.splitext(os.path.join(BASE_DIR, fileName))[0]
     if not os.path.exists(root_dir):
         os.makedirs(root_dir, exist_ok=True)
