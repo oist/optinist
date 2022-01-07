@@ -19,10 +19,11 @@ async def read_file(file_path: str):
 async def read_image(file_path: str, max_index: Optional[int] = None):
     file_path = os.path.join(BASE_DIR, file_path)
     print(file_path)
+    print(max_index)
 
     file_name, ext = os.path.splitext(os.path.basename(file_path))
 
-    if ext == '.tif':
+    if ext == '.tif' or ext == '.TIF':
         folder_path = os.path.dirname(file_path)
         tiff_file_path = file_path
         json_file_path = os.path.join(
