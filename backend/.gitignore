@@ -1,2 +1,4 @@
 files/*
 Pipfile.lock
+optinist.egg-info
+.tox
