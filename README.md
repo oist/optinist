@@ -2,7 +2,7 @@
 
 optinist のディレクトリ。
 
-## ディレクトリ構成
+# 1.ディレクトリ構成
 
 ```
 optinist
@@ -27,12 +27,12 @@ optinist ディレクトリは Python での CUI 処理を記述する。
 NeuroScience の解析部分の一連のフローなどはこちらに記述する。
 
 
-# 環境構築
+# 2. 環境構築
 2022/1月時点では、frontendとbackendを別々に環境構築するのを推奨する。
 frontendはdockerで構築する。
 backendはメモリを多く使用するためローカル環境で構築する。
 
-## frontendの環境構築
+## 2.1 frontendの環境構築
 
 ### docker build
 ｀optinist｀ディレクトリに移動し、dockerをbuildする。
@@ -46,10 +46,32 @@ dockerでfront側を起動する。
 docker-compose up frontend
 ```
 
-## backendの環境構築
+## 2.2 backendの環境構築
+手元の環境によって、使いやすいものを選択するのをおすすめする。
+ここでは、anacondaやvirutualenvで作った仮想環境にインストールする方法と、pipenvで作った仮想環境での方法を提示する。
+
+### anacondaやvirtualenvで起動
+#### 仮想環境を作成
+```
+conda create -n optinist python=3.9.7
+conda activate optinsit
+```
+
+#### 初めに最低限インストールする。
+numpyとCythonを先にインストールしないとCaImAnのインストールでエラーするため、ここでは先にインストールする。
+```
+pip install numpy Cython
+```
+
+#### 必要なライブラリをインストール
+```
+pip install -r requirements.txt
+```
+
+```pip list```などでcaimanやsuite2pなどが正しくインストールできていることを確認すると良い。
 
 ### pipenvで起動
-### pipenvをインストール
+#### pipenvをインストール
 ローカル環境にpipenvがない場合はインストール。
 ```
 pip install pipenv
@@ -65,14 +87,14 @@ windowsの場合のpyenvのインストール[https://github.com/pyenv/pyenv#win
 
 <br />
 
-### 仮想環境の構築
+#### 仮想環境の構築
 backendディレクトリに移動し、packageをインストールする。
 ```
 cd optinist/backend
 pipenv install --skip-lock
 ```
 
-### backendの起動
+#### backendの起動
 backendをpipenv環境で実行する。
 ```
 pipenv run python main.py
