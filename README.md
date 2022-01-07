@@ -50,7 +50,7 @@ docker-compose up frontend
 手元の環境によって、使いやすいものを選択するのをおすすめする。
 ここでは、anacondaやvirutualenvで作った仮想環境にインストールする方法と、pipenvで作った仮想環境での方法を提示する。
 
-### anacondaやvirtualenvで起動
+## anacondaやvirtualenvで起動
 #### 仮想環境を作成
 ```
 conda create -n optinist python=3.9.7
@@ -70,7 +70,7 @@ pip install -r requirements.txt
 
 ```pip list```などでcaimanやsuite2pなどが正しくインストールできていることを確認すると良い。
 
-### pipenvで起動
+## pipenvで起動
 #### pipenvをインストール
 ローカル環境にpipenvがない場合はインストール。
 ```
