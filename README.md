@@ -57,18 +57,31 @@ conda create -n optinist python=3.9.7
 conda activate optinsit
 ```
 
-#### 初めに最低限インストールする。
-numpyとCythonを先にインストールしないとCaImAnのインストールでエラーするため、ここでは先にインストールする。
-```
-pip install numpy Cython
-```
-
 #### 必要なライブラリをインストール
 ```
 pip install -r requirements.txt
 ```
 
-```pip list```などでcaimanやsuite2pなどが正しくインストールできていることを確認すると良い。
+#### caimanを個別にインストール
+caimanをインストールする。インストールする場所はユーザに任せる。
+```
+git clone https://github.com/flatironinstitute/CaImAn -b v1.9.7
+cd /CaImAn && pip install -e .
+```
+
+* ```pip list```などでcaimanやsuite2pなどが正しくインストールできていることを確認すると良い。
+
+#### 実行
+backendディレクトリに移動
+```
+cd optinist/backend
+```
+
+実行
+```
+python main.py
+```
+
 
 ## pipenvで起動
 #### pipenvをインストール
@@ -102,53 +115,4 @@ pipenv run python main.py
 
 ### ファイルの保存場所
 `/tmp/optinist`に保存されるため、直接tifファイルをこちらに入れてもらうと、ファイルをアップロードする必要がなくなる。
-
-
-<!-- # 開発環境
-
-## backend
-
-Docker コンテナ上で API サーバーを動かします。pip 等で依存ライブラリをインストールする必要はありません。
-
-### [Docker](https://docs.docker.com/)のインストール
-
-[https://docs.docker.com/get-docker/](https://docs.docker.com/get-docker/)からダウンロードする。
-
-### Docker イメージ作成
-
-```
-$ docker-compose build backend
-```
-
-### Docker コンテナ起動
-
-```
-$ docker-compose up backend
-```
-
-## frontend
-
-### [yarn](https://yarnpkg.com/) のインストール
-
-1. [https://nodejs.org/](https://nodejs.org/)から Node.js をインストール
-
-2. Node.js がインストールできたら、yarn をインストールする
-   ```
-   $ npm install -g yarn
-   ```
-
-### プロジェクトの依存パッケージをインストール
-
-```
-$ cd ./frontend
-$ yarn
-```
-
-### アプリの実行
-
-```
-$ cd ./frontend
-$ yarn start
-```
-
-- [http://localhost:3000](http://localhost:3000)にアクセス -->
+* ｀/tmp｀フォルダはPCを再起動するとデータが消えるため注意が必要。
