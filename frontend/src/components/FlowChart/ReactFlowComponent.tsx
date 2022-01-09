@@ -29,7 +29,7 @@ import {
 import { ImageFileNode } from './FlowChartNode/ImageFileNode'
 import { AlgorithmNode } from './FlowChartNode/AlgorithmNode'
 import { CsvFileNode } from './FlowChartNode/CsvFileNode'
-import { useDeleteTabByNodeIdListActions } from './flextlayout/FlexLayoutHook'
+import { useDeleteTabByNodeIdListActions } from '../flextlayout/FlexLayoutHook'
 
 const componentTypes = {
   ImageFileNode,
@@ -37,7 +37,7 @@ const componentTypes = {
   AlgorithmNode,
 } as const
 
-export const FlowChart = React.memo(() => {
+export const ReactFlowComponent = React.memo(() => {
   const [reactFlowInstance, setReactFlowInstance] = useState<OnLoadParams>()
   const flowElements = useSelector(selectFlowElements)
   const dispatch = useDispatch()

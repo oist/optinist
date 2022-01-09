@@ -13,6 +13,7 @@ import {
   nwbReducer,
   filesTreeReducer,
   handleTypeColorReducer,
+  rightDrawerReducer,
 } from './slice'
 
 export const store = configureStore({
@@ -28,6 +29,7 @@ export const store = configureStore({
     filesTree: filesTreeReducer,
     nwb: nwbReducer,
     runPipelineResult: runPipelineResultReducer,
+    rightDrawer: rightDrawerReducer,
     [webSocketApi.reducerPath]: webSocketApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>

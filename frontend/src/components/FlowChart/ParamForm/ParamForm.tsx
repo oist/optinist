@@ -9,12 +9,12 @@ import {
 } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
 import { getAlgoParams } from 'store/slice/AlgorithmNode/AlgorithmNodeActions'
 
-import { ParamFormTabContext } from 'App'
+import { ParamFormContext } from 'App'
 import { arrayEqualityFn } from 'utils/EqualityUtils'
 import { ParamItemContainer } from './ParamItem'
 
 const ParamForm = React.memo(() => {
-  const nodeId = React.useContext(ParamFormTabContext)
+  const nodeId = React.useContext(ParamFormContext)
   const dispatch = useDispatch()
   const algoName = useSelector(selectAlgorithmName(nodeId))
   const algoParamIsLoaded = useSelector(selectAlgorithmParamsExit(nodeId))

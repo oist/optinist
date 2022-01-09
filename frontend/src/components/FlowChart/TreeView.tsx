@@ -18,14 +18,12 @@ import { FILE_TYPE, FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 
 const useStyles = makeStyles({
   root: {
-    // height: 240,
     flexGrow: 1,
-    background: '#F0F0F0',
     height: '100%',
   },
 })
 
-export const SideBar = React.memo(() => {
+export const AlgorithmTreeView = React.memo(() => {
   const dispatch = useDispatch()
   const classes = useStyles()
   const algoList = useSelector(selectAlgorithmListTree)

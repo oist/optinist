@@ -10,6 +10,7 @@ import {
   Tooltip,
   FormHelperText,
   IconButton,
+  Button,
 } from '@material-ui/core'
 import ErrorIcon from '@material-ui/icons/Error'
 import Popover from '@material-ui/core/Popover'
@@ -39,6 +40,7 @@ import {
 } from 'components/flextlayout/FlexLayoutHook'
 import { useHandleColor } from './HandleColorHook'
 import { toHandleId, isValidConnection } from './FlowChartUtils'
+import { toggleParamForm } from 'store/slice/RightDrawer/RightDrawerSlice'
 
 const leftHandleStyle: CSSProperties = {
   width: '4%',
@@ -144,6 +146,10 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
     )
 
     const error = useSelector(selectResultError(nodeId))
+
+    const onClickButton = () => {
+      dispatch(toggleParamForm(nodeId))
+    }
     return (
       <div
         style={{
@@ -172,6 +178,9 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
             {data.label}
             <ErrorMessage error={error} />
           </Typography>
+          <Button variant="outlined" onClick={onClickButton}>
+            ParamForm
+          </Button>
         </div>
         <div>
           {algoArgs != null
