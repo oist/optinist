@@ -72,7 +72,7 @@ export const selectImageDataIsFulfilled =
 
 export const selectImageDataMaxIndex =
   (filePath: string) => (state: RootState) => {
-    if (selectImageDataIsPending(filePath)(state)) {
+    if (!selectImageDataIsPending(filePath)(state)) {
       return selectImageData(filePath)(state).data.length - 1
     } else {
       return undefined
