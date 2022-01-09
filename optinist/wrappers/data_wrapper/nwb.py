@@ -133,7 +133,7 @@ def nwb_add_fluorescence(
         rois=region_roi,
         unit=unit,
         timestamps=timestamps,
-        rate=rate
+        rate=float(rate)
     )
 
     fluo = Fluorescence(

@@ -14,7 +14,7 @@ import copy
 
 def get_dict_leaf_value(root_dict: dict, path_list: List[str]):
     path = path_list.pop(0)
-    if(len(path_list) > 0):
+    if len(path_list) > 0:
         return get_dict_leaf_value(root_dict[path], path_list)
     else:
         return root_dict[path]
@@ -30,16 +30,10 @@ def save_tiff_to_json(tiff_file_path, maxidx=10):
     image = Image.open(tiff_file_path)
 
     for i, page in enumerate(ImageSequence.Iterator(image)):
-
         if i >= maxidx:
             break
 
         page = np.array(page)
-
-        # if page.shape[-1] >= 200 and page.shape[-2] >= 200:
-        #     # import pdb; pdb.set_trace()
-        #     page = cv2.resize(page, (200, 200), interpolation=cv2.INTER_LINEAR_EXACT)
-
         tiffs.append(page)
 
     tiffs = np.array(tiffs)
@@ -49,7 +43,10 @@ def save_tiff_to_json(tiff_file_path, maxidx=10):
         images.append(_img.tolist())
 
     pd.DataFrame(images).to_json(
-        os.path.join(folder_path, f'{file_name}_{str(maxidx)}.json'), indent=4, orient="values")
+        os.path.join(folder_path, f'{file_name}_{str(maxidx)}.json'), 
+        indent=4,
+        orient="values"
+    )
 
 
 def save_csv_to_json(csv_file_path):
@@ -147,7 +144,6 @@ def run_algorithm(prev_info, item):
 
 
 def run_function(func_name, params, *args):
-    # import pdb; pdb.set_trace()
     info = func_name(params=params, *args)
     return info
 
@@ -159,21 +155,22 @@ def get_results(info, item):
 
     for k, v in info.items():
         if isinstance(v, ImageData):
-            # print("ImageData")
             results[path][k] = {}
             results[path][k]['path'] = v.json_path
             results[path][k]['type'] = 'images'
             results[path][k]['max_index'] = len(v.data)
         elif isinstance(v, TimeSeriesData):
-            # print("TimeSeriesData")
             results[path][k] = {}
             results[path][k]['path'] = v.path
             results[path][k]['type'] = 'timeseries'
         elif isinstance(v, CorrelationData):
-            # print("CorrelationData")
             results[path][k] = {}
             results[path][k]['path'] = v.path
             results[path][k]['type'] = 'heatmap'
+        elif isinstance(v, RoiData):
+            results[path][k] = {}
+            results[path][k]['path'] = v.path
+            results[path][k]['type'] = 'roi'
         else:
             pass
 

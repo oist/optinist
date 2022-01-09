@@ -173,3 +173,22 @@ def dummy_image2time8iscell(
         func_name=sys._getframe().f_code.co_name,
         file_name='timeseries')
     return info
+
+
+@args_check
+def dummy_image2image8roi(
+    image1: ImageData, nwbfile: NWBFile=None,  params: dict=None
+    ) -> {'image': ImageData, 'roi': RoiData}:
+
+    """
+        get image
+        return image
+    """
+    info = {}
+    info['images'] = ImageData(
+        np.random.rand((100_00)).reshape(1, 100, 100),
+        func_name=sys._getframe().f_code.co_name)
+    info['roi'] = RoiData(
+        np.random.rand((100_00)).reshape(100, 100),
+        func_name=sys._getframe().f_code.co_name)
+    return info
