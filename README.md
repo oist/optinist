@@ -54,15 +54,21 @@ docker-compose up frontend
 #### 仮想環境を作成
 ```
 conda create -n optinist python=3.9.7
-conda activate optinsit
+conda activate optinist
 ```
 
 #### 必要なライブラリをインストール
 ```
+cd optinist/backend
 pip install -r requirements.txt
 ```
 
 #### caimanを個別にインストール
+optinistの仮想環境になっていることを確認。
+```
+conda activate optinist
+```
+
 caimanをインストールする。インストールする場所はユーザに任せる。
 ```
 git clone https://github.com/flatironinstitute/CaImAn -b v1.9.7
