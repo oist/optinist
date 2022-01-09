@@ -64,7 +64,9 @@ pip install -r requirements.txt
 ```
 
 #### caimanを個別にインストール
-optinistの仮想環境になっていることを確認。
+* m1 macの場合、tensorflowがうまくインストールできず、caimanを動かすことができない。
+
+optinistの仮想環境に入る。（既に入っている場合には省略可）
 ```
 conda activate optinist
 ```
