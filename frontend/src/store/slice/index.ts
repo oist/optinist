@@ -9,3 +9,4 @@ export { default as runPipelineResultReducer } from './RunPipelineResult/RunPipe
 export { default as filesTreeReducer } from './FilesTree/FilesTreeSlice'
 export { default as nwbReducer } from './NWB/NWBSlice'
 export { default as handleTypeColorReducer } from './HandleTypeColor/HandleTypeColorSlice'
+export { default as rightDrawerReducer } from './RightDrawer/RightDrawerSlice'

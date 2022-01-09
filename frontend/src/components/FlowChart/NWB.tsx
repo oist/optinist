@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import IconButton from '@material-ui/core/IconButton'
-import CloseIcon from '@material-ui/icons/Close'
+
 import TextField from '@material-ui/core/TextField'
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
@@ -10,53 +9,26 @@ import MuiAccordion from '@material-ui/core/Accordion'
 import AccordionDetails from '@material-ui/core/AccordionDetails'
 import AccordionSummary from '@material-ui/core/AccordionSummary'
 import Typography from '@material-ui/core/Typography'
-import Dialog from '@material-ui/core/Dialog'
-import DialogContent from '@material-ui/core/DialogContent'
-import MuiDialogTitle from '@material-ui/core/DialogTitle'
-import {
-  createStyles,
-  Theme,
-  withStyles,
-  WithStyles,
-} from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/core/styles'
 import { selectNwbList } from 'store/slice/NWB/NWBSelectors'
 import { NWBChild, NWBNodeType } from 'store/slice/NWB/NWBType'
 import { updateParam } from 'store/slice/NWB/NWBSlice'
 import { getNWBParams } from 'store/slice/NWB/NWBAction'
+import { toggleNwb } from 'store/slice/RightDrawer/RightDrawerSlice'
 
-export const NWB = React.memo(() => {
-  const [open, setOpen] = React.useState(false)
-  const anchorElRef = React.useRef<HTMLButtonElement | null>(null)
-
+export const NWBSettingButton = React.memo(() => {
+  const dispatch = useDispatch()
   const handleClick = () => {
-    setOpen((prevOpen) => !prevOpen)
+    dispatch(toggleNwb())
   }
-
-  const handleClose = () => {
-    setOpen(false)
-  }
-
   return (
-    <div>
-      <Button
-        variant="contained"
-        color="default"
-        onClick={handleClick}
-        ref={anchorElRef}
-      >
-        NWB setting
-      </Button>
-      <Dialog open={open} onClose={handleClose}>
-        <DialogTitle onClose={handleClose}>NWB Parameter</DialogTitle>
-        <DialogContent dividers>
-          <ParamBar />
-        </DialogContent>
-      </Dialog>
-    </div>
+    <Button variant="contained" color="default" onClick={handleClick}>
+      NWB setting
+    </Button>
   )
 })
 
-const ParamBar = React.memo(() => {
+export const NWBSettingContents = React.memo(() => {
   const nwbList = useSelector(selectNwbList)
 
   const dispatch = useDispatch()
@@ -67,7 +39,7 @@ const ParamBar = React.memo(() => {
     }
   })
   return (
-    <div className="nwbParam">
+    <div className="nwbParam" style={{ margin: 4 }}>
       {Object.entries(nwbList).map(([name, node], i) => (
         <ParamComponent key={name} name={name} node={node} />
       ))}
@@ -133,44 +105,6 @@ const ParamItem = React.memo<{
         <TextField value={String(value)} onChange={onChange} />
       </Box>
     </Box>
-  )
-})
-
-const styles = (theme: Theme) =>
-  createStyles({
-    root: {
-      margin: 0,
-      padding: theme.spacing(2),
-    },
-    closeButton: {
-      position: 'absolute',
-      right: theme.spacing(1),
-      top: theme.spacing(1),
-      color: theme.palette.grey[500],
-    },
-  })
-
-interface DialogTitleProps extends WithStyles<typeof styles> {
-  id?: string
-  children: React.ReactNode
-  onClose: () => void
-}
-
-const DialogTitle = withStyles(styles)((props: DialogTitleProps) => {
-  const { children, classes, onClose, ...other } = props
-  return (
-    <MuiDialogTitle disableTypography className={classes.root} {...other}>
-      <Typography variant="h6">{children}</Typography>
-      {onClose ? (
-        <IconButton
-          aria-label="close"
-          className={classes.closeButton}
-          onClick={onClose}
-        >
-          <CloseIcon />
-        </IconButton>
-      ) : null}
-    </MuiDialogTitle>
   )
 })
 
