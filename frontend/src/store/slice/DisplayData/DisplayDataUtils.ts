@@ -11,6 +11,8 @@ export function toDataType(value: string): DATA_TYPE {
       return DATA_TYPE_SET.TIME_SERIES
     case 'heatmap':
       return DATA_TYPE_SET.HEAT_MAP
+    case 'roi':
+      return DATA_TYPE_SET.IMAGE
     default:
       throw new Error(`failed to map dataType: ${value}`)
   }

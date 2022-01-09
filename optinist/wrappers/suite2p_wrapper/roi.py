@@ -50,9 +50,9 @@ def suite2p_roi(
     im = np.stack(arrays)
     im[im == 0] = np.nan
 
-    ops['ROI_found'] = np.nanmax(im, axis=0)
-    ops['non_cell_roi'] = np.nanmax(im[~iscell])
-    ops['cell_roi'] = np.nanmax(im[iscell], axis=0)
+    # ops['ROI_found'] = np.nanmax(im, axis=0)
+    # ops['non_cell_roi'] = np.nanmax(im[~iscell], axis=0)
+    # ops['cell_roi'] = np.nanmax(im[iscell], axis=0)
     ops['F'] = F
     ops['Fneu'] = Fneu
     ops['stat'] = stat
@@ -62,6 +62,10 @@ def suite2p_roi(
     info['max_proj'] = ImageData(ops['max_proj'], func_name='suite2p_roi', file_name='max_proj')
     info['F'] = TimeSeriesData(F, func_name='suite2p_roi', file_name='F')
     info['iscell'] = IscellData(iscell, func_name='suite2p_roi', file_name='iscell')
+    info['all_roi'] = RoiData(np.nanmax(im, axis=0), func_name='suite2p_roi', file_name='all_roi')
+    info['non_cell_roi'] = RoiData(np.nanmax(im[~iscell], axis=0), func_name='suite2p_roi', file_name='noncell_roi')
+    info['cell_roi'] = RoiData(np.nanmax(im[iscell], axis=0), func_name='suite2p_roi', file_name='cell_roi')
+
     info['nwbfile'] = nwbfile
 
     return info
