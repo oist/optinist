@@ -35,7 +35,7 @@ backendはメモリを多く使用するためローカル環境で構築する�
 ## 2.1 frontendの環境構築
 
 ### docker build
-｀optinist｀ディレクトリに移動し、dockerをbuildする。
+optinistディレクトリに移動し、dockerをbuildする。
 ```
 cd optinist
 docker-compose build
@@ -92,4 +92,4 @@ python main.py
 
 ### ファイルの保存場所
 `/tmp/optinist`に保存されるため、直接tifファイルをこちらに入れてもらうと、ファイルをアップロードする必要がなくなる。
-* ｀/tmp｀フォルダはPCを再起動するとデータが消えるため注意が必要。
+* `/tmp`フォルダはPCを再起動するとデータが消えるため注意が必要。
