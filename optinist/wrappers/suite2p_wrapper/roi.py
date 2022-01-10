@@ -50,16 +50,29 @@ def suite2p_roi(
     im = np.stack(arrays)
     im[im == 0] = np.nan
 
-    # ops['ROI_found'] = np.nanmax(im, axis=0)
-    # ops['non_cell_roi'] = np.nanmax(im[~iscell], axis=0)
-    # ops['cell_roi'] = np.nanmax(im[iscell], axis=0)
+    # NWBを追加
+
+    ### roiを追加
+    roi_list = []
+    for i in range(len(stat)):
+        kargs = {}
+        kargs['pixel_mask'] = np.array([
+            stat[i]['ypix'], stat[i]['xpix'], stat[i]['lam']]).T
+        roi_list.append(kargs)
+
+    nwbfile = nwb_add_roi(nwbfile, roi_list)
+    # import pdb; pdb.set_trace()
+    ### iscellを追加
+    nwbfile = nwb_add_column(
+        nwbfile, 'iscell', 'two columns - iscell & probcell', iscell)
+
     ops['F'] = F
     ops['Fneu'] = Fneu
-    ops['stat'] = stat
 
     info = {}
     info['ops'] = Suite2pData(ops)
     info['max_proj'] = ImageData(ops['max_proj'], func_name='suite2p_roi', file_name='max_proj')
+    info['Vcorr'] = ImageData(ops['Vcorr'], func_name='suite2p_roi', file_name='Vcorr')    
     info['F'] = TimeSeriesData(F, func_name='suite2p_roi', file_name='F')
     info['iscell'] = IscellData(iscell, func_name='suite2p_roi', file_name='iscell')
     info['all_roi'] = RoiData(np.nanmax(im, axis=0), func_name='suite2p_roi', file_name='all_roi')

@@ -25,16 +25,6 @@ def suite2p_spike_deconv(
     ops['spks'] = spks
 
     # NWBを追加
-    stat = ops['stat']
-    ### roiを追加
-    roi_list = []
-    for i in range(len(stat)):
-        kargs = {}
-        kargs['pixel_mask'] = np.array([
-            stat[i]['ypix'], stat[i]['xpix'], stat[i]['lam']]).T
-        roi_list.append(kargs)
-
-    nwbfile = nwb_add_ps_column(nwbfile, roi_list)
 
     ### Fluorenceを追加
     for name, data in zip(
@@ -43,7 +33,7 @@ def suite2p_spike_deconv(
         nwbfile = nwb_add_fluorescence(
             nwbfile,
             table_name=name,
-            region=list(range(len(stat))),
+            region=list(range(len(data))),
             name=name,
             data=data,
             unit='lumens',

@@ -102,7 +102,16 @@ def nwb_motion_correction(nwbfile, mc_data, xy_trans_data):
     return nwbfile
 
 
-def nwb_add_ps_column(nwbfile, roi_list):
+def nwb_add_column(nwbfile, name, discription, data):
+    ohys = nwbfile.processing['ophys']
+    image_seg = ohys.data_interfaces['ImageSegmentation']
+    plane_seg = image_seg.plane_segmentations['PlaneSegmentation']
+    plane_seg.add_column(name, discription, data)
+
+    return nwbfile
+
+
+def nwb_add_roi(nwbfile, roi_list):
     ohys = nwbfile.processing['ophys']
     image_seg = ohys.data_interfaces['ImageSegmentation']
     plane_seg = image_seg.plane_segmentations['PlaneSegmentation']
