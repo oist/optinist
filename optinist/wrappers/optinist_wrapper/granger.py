@@ -2,7 +2,9 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 @args_check
-def Granger(timeseries: TimeSeriesData, iscell: IscellData, params: dict) -> {'Granger_fval_mat': CorrelationData}:
+def Granger(
+        timeseries: TimeSeriesData, iscell: IscellData=None, params: dict=None
+    ) -> {'Granger_fval_mat': CorrelationData}:
 
     # modules specific to function
     from sklearn.preprocessing import StandardScaler
@@ -10,12 +12,15 @@ def Granger(timeseries: TimeSeriesData, iscell: IscellData, params: dict) -> {'G
     from statsmodels.tsa.stattools import adfuller
     from statsmodels.tsa.stattools import coint
     import itertools
+    from tqdm import tqdm
+
+    timeseries = timeseries.data
 
     # data shold be time x component matrix
-    iscell = iscell.data
-    timeseries = timeseries.data
-    ind  = np.where(iscell > 0)[0]
-    timeseries = timeseries[ind, :]
+    if iscell is not None:
+        iscell = iscell.data
+        ind  = np.where(iscell > 0)[0]
+        timeseries = timeseries[ind, :]
 
     X = timeseries.transpose()
     num_cell = X.shape[1]
@@ -41,7 +46,7 @@ def Granger(timeseries: TimeSeriesData, iscell: IscellData, params: dict) -> {'G
     if (params['adfuller_test']):
         print('adfuller test ')
 
-        for i in range(num_cell):
+        for i in tqdm(range(num_cell)):
             tp = adfuller(
                 tX[:, i],
                 maxlag=params['adfuller_maxlag'],
@@ -70,7 +75,7 @@ def Granger(timeseries: TimeSeriesData, iscell: IscellData, params: dict) -> {'G
     if (params['coint_test']):
         print('cointegration test ')
 
-        for i in range(num_comb):
+        for i in tqdm(range(num_comb)):
             tp = coint(
                 X[:, comb[i][0]],
                 X[:, comb[i][1]],
@@ -105,7 +110,7 @@ def Granger(timeseries: TimeSeriesData, iscell: IscellData, params: dict) -> {'G
     # for figure presentation
     GC['Granger_fval_mat'] = [np.zeros([num_cell, num_cell]) for i in range(num_lag)]
 
-    for i in range(len(comb)):
+    for i in tqdm(range(len(comb))):
         # The Null hypothesis for grangercausalitytests is that the time series in the second column1,
         # does NOT Granger cause the time series in the first column0
         # column 1 -> colum 0

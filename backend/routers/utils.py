@@ -10,6 +10,10 @@ from wrappers.data_wrapper import *
 from collections import OrderedDict
 from typing import List
 import copy
+from pynwb import NWBHDF5IO
+import tracemalloc
+import linecache
+from datetime import datetime
 
 
 def get_dict_leaf_value(root_dict: dict, path_list: List[str]):
@@ -114,9 +118,11 @@ def get_algo_network(flowList):
 
 
 def run_algorithm(prev_info, item):
-
+    print(item)
     if item['type'] == 'ImageFileNode':
         info = {'images': ImageData(item['data']['path'], '')}
+    elif item['type'] == 'CsvFileNode':
+        info = {'timeseries': TimeSeriesData(item['data']['path'], '')}
     elif item['type'] == 'AlgorithmNode':
         # parameterをint, floatに変換
         if 'param' in item['data'].keys() and item['data']['param'] is not None:
@@ -146,6 +152,46 @@ def run_algorithm(prev_info, item):
 def run_function(func_name, params, *args):
     info = func_name(params=params, *args)
     return info
+
+
+def save_nwb(nwbfile):
+    from datetime import datetime
+    save_path = os.path.join(BASE_DIR, 'nwb')
+    time = datetime.now().strftime("%Y%m%d-%H%M")
+
+    if not os.path.exists(save_path):
+        os.makedirs(save_path)
+
+    with NWBHDF5IO(os.path.join(save_path, f'{time}.nwb'), 'w') as f:
+        f.write(nwbfile)
+
+
+def display_top(snapshot, top_stats, key_type='lineno', limit=10):
+    print("---------------------------------------------------------")
+    print("[ Top 10 ]")
+    for stat in top_stats[:3]:
+        print(stat)
+
+    snapshot = snapshot.filter_traces((
+        tracemalloc.Filter(False, "<frozen importlib._bootstrap>"),
+        tracemalloc.Filter(False, "<unknown>"),
+    ))
+    top_stats = snapshot.statistics(key_type)
+
+    print("Top %s lines" % limit)
+    for index, stat in enumerate(top_stats[:limit], 1):
+        frame = stat.traceback[0]
+        print("#%s: %s:%s: %.1f KiB" % (index, frame.filename, frame.lineno, stat.size / 1024))
+        line = linecache.getline(frame.filename, frame.lineno).strip()
+        if line:
+            print('    %s' % line)
+
+    other = top_stats[limit:]
+    if other:
+        size = sum(stat.size for stat in other)
+        print("%s other: %.1f KiB" % (len(other), size / 1024))
+    total = sum(stat.size for stat in top_stats)
+    print("Total allocated size: %.1f KiB" % (total / 1024))
 
 
 def get_results(info, item):

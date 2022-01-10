@@ -2,60 +2,37 @@ from fastapi import APIRouter, WebSocket
 from pydantic import BaseModel
 from typing import Dict, List, Optional
 import traceback
+import os
 import sys
 import copy
 import gc
+import json
+import tracemalloc
 
-from collections import OrderedDict
 from wrappers.data_wrapper import *
 from wrappers.optinist_exception import AlgorithmException
-from .utils import get_algo_network, run_algorithm, get_results
 
 # NWB
-from pynwb import NWBFile, NWBHDF5IO, get_manager
+from pynwb import NWBFile, get_manager
 from pynwb.ophys import (
     OpticalChannel, TwoPhotonSeries, ImageSegmentation,
     RoiResponseSeries, Fluorescence, ImageSeries,
 )
-from .utils import get_nest2dict
+from .utils import (
+    get_nest2dict,
+    save_nwb,
+    get_algo_network,
+    run_algorithm,
+    get_results,
+    display_top
+)
 from .nwb import nwb_config
-from datetime import datetime
-from dateutil.tz import tzlocal
-import json
 from .const import BASE_DIR
-import tracemalloc
 
 sys.path.append('../../optinist')
 
 router = APIRouter()
 manager = get_manager()
-
-
-import linecache
-import os
-import tracemalloc
-
-def display_top(snapshot, key_type='lineno', limit=10):
-    snapshot = snapshot.filter_traces((
-        tracemalloc.Filter(False, "<frozen importlib._bootstrap>"),
-        tracemalloc.Filter(False, "<unknown>"),
-    ))
-    top_stats = snapshot.statistics(key_type)
-
-    print("Top %s lines" % limit)
-    for index, stat in enumerate(top_stats[:limit], 1):
-        frame = stat.traceback[0]
-        print("#%s: %s:%s: %.1f KiB" % (index, frame.filename, frame.lineno, stat.size / 1024))
-        line = linecache.getline(frame.filename, frame.lineno).strip()
-        if line:
-            print('    %s' % line)
-
-    other = top_stats[limit:]
-    if other:
-        size = sum(stat.size for stat in other)
-        print("%s other: %.1f KiB" % (len(other), size / 1024))
-    total = sum(stat.size for stat in top_stats)
-    print("Total allocated size: %.1f KiB" % (total / 1024))
 
 
 @router.get("/run/ready/{request_id}")
@@ -81,7 +58,6 @@ async def websocket_endpoint(websocket: WebSocket):
         nwb_dict = get_nest2dict(message['nwbParam'])
 
     try:
-        # import pdb; pdb.set_trace()
         tracemalloc.start()
         item = nodeDict[startNodeList[0]]
         prev_info = None
@@ -110,24 +86,15 @@ async def websocket_endpoint(websocket: WebSocket):
 
                 info['nwbfile'] = nwbfile
 
+            elif item['type'] == 'CsvFileNode':
+                nwbfile = None
+                info['nwbfile'] = nwbfile
+
             # prev_infoを登録
             if 'nwbfile' not in info.keys():
                 info['nwbfile'] = prev_info['nwbfile']
             else:
-                # pass
                 assert info is not None and 'nwbfile' in info.keys()
-
-                # NWBを保存
-                save_path = os.path.join(
-                    BASE_DIR, item['data']['path'].split('.')[0].split('/')[-1])
-
-                if not os.path.exists(save_path):
-                    os.makedirs(save_path)
-
-                # with NWBHDF5IO(
-                #         os.path.join(save_path, 'tmp.nwb'), 'w',
-                #         manager=manager) as f:
-                #     f.write(info['nwbfile'])
 
             results = get_results(info, item)
 
@@ -146,21 +113,16 @@ async def websocket_endpoint(websocket: WebSocket):
 
             prev_info = info
 
-        with NWBHDF5IO(os.path.join(save_path, 'tmp.nwb'), 'w') as f:
-            f.write(info['nwbfile'])
+        # NWBを保存
+        if info['nwbfile'] is not None:
+            save_nwb(info['nwbfile'])
 
         del prev_info, info, nwbfile, results
         gc.collect()
 
         snapshot = tracemalloc.take_snapshot()
         top_stats = snapshot.statistics("lineno")
-
-        print("---------------------------------------------------------")
-        print("[ Top 10 ]")
-        for stat in top_stats[:3]:
-            print(stat)
-        
-        display_top(snapshot)
+        display_top(snapshot, top_stats)
 
         await websocket.send_json({
             'message': 'completed',

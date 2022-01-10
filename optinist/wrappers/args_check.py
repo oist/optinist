@@ -1,6 +1,7 @@
 import inspect
 import functools
 
+from pynwb import NWBFile
 from wrappers.optinist_exception import ArgsMissingException, ArgsTypeException
 
 def args_check(func):
@@ -10,15 +11,15 @@ def args_check(func):
         args = list(args)
         arg_type_list = [type(x) for x in args]
         request_type_list = [x.annotation for x in sig.parameters.values()]
+        request_default_list = [x.default for x in sig.parameters.values()]
 
         # 引数が足らない場合はエラーさせる
-        for x in set(request_type_list):
-            if x is not dict and arg_type_list.count(x) < request_type_list.count(x):
-                # import pdb; pdb.set_trace()
+        for x, de in zip(request_type_list, request_default_list):
+            if de is not None and arg_type_list.count(x) < request_type_list.count(x):
                 error_msg = f'args type error: need " {x.__name__} " type, \
                             more than " {request_type_list.count(x) - arg_type_list.count(x)} " '
                 raise ArgsMissingException(error_msg)
-        
+
         # いらない型の引数を削除する
         for i, x in reversed(list(enumerate(arg_type_list))):
             if x not in request_type_list:
@@ -26,23 +27,25 @@ def args_check(func):
 
         arg_type_list = [type(x) for x in args]
         request_type_list = [x.annotation for x in sig.parameters.values()]
+        request_default_list = [x.default for x in sig.parameters.values()]
         
         # 型の順番を揃える
-        def check_order(arg_type_list, request_type_list):
-            flag = False
-            for i in range(len(request_type_list)-1):
-                if arg_type_list[i] != request_type_list[i]:
-                    flag = True
+        def check_order(arg_type_list, request_type_list, request_default_list):
+            not_good = False
+            # import pdb; pdb.set_trace()
+            for i in range(len(request_type_list)):
+                if request_default_list[i] is not None and arg_type_list[i] != request_type_list[i]:
+                    not_good = True
                     break
 
-            return flag
+            return not_good
 
-        while check_order(arg_type_list, request_type_list):
+        while check_order(arg_type_list, request_type_list, request_default_list):
             for i in range(len(args)-1):
                 if arg_type_list[i] == request_type_list[i]:
                     continue
 
-                if check_order(arg_type_list, request_type_list):
+                if check_order(arg_type_list, request_type_list, request_default_list):
                     args[i], args[i+1] = args[i+1], args[i]
                     arg_type_list[i], arg_type_list[i+1] = arg_type_list[i+1], arg_type_list[i]
 
@@ -58,7 +61,7 @@ def args_check(func):
                 request_type_list[-1] == dict and \
                 arg_type_list[-1] != request_type_list[-1]:
             args = args[:-1]
-        
+
         arg_type_list = [type(x) for x in args]
         request_type_list = [x.annotation for x in sig.parameters.values()]
 

@@ -29,5 +29,8 @@ dummy_wrapper_dict = {
         'dummy_image2image8roi': {
             'function': dummy_image2image8roi
         },
+        'dummy_time2time': {
+            'function': dummy_time2time
+        },
     }
 }

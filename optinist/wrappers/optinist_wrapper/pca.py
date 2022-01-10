@@ -2,15 +2,19 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 @args_check
-def PCA(timeseries: TimeSeriesData, iscell: IscellData, params: dict=None) -> {'components': CorrelationData, 'explained_variance_ratio': TimeSeriesData, 'projected': TimeSeriesData}:
+def PCA(
+        timeseries: TimeSeriesData, iscell: IscellData=None, params: dict=None
+    ) -> {'components': CorrelationData, 'explained_variance_ratio': TimeSeriesData, 'projected': TimeSeriesData}:
     # modules specific to function
     from sklearn.preprocessing import StandardScaler
     from sklearn.decomposition import PCA
 
     timeseries = timeseries.data
-    iscell = iscell.data
-    ind = np.where(iscell > 0)[0]
-    timeseries = timeseries[ind, :]
+
+    if iscell is not None:
+        iscell = iscell.data
+        ind = np.where(iscell > 0)[0]
+        timeseries = timeseries[ind, :]
 
     # data shold be time x component matrix
     X = timeseries.transpose()

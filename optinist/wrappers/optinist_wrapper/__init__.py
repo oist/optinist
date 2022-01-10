@@ -3,8 +3,8 @@ from .pca import PCA
 from .granger import Granger
 from .glm import GLM
 
-original_wrapper_dict = {
-    'original': {
+optinist_wrapper_dict = {
+    'optinist': {
         'correlation': {
 			'function': correlation
         },

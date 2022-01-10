@@ -75,7 +75,10 @@ class ImageData:
 
 class TimeSeriesData:
     def __init__(self, data, func_name='timeseries', file_name='timeseries'):
-        self.data = data
+        if type(data) == str:
+            self.data = pd.read_csv(data).values.T
+        else:
+            self.data = data
 
         if len(self.data.shape) == 1:
             self.data = self.data[np.newaxis, :]

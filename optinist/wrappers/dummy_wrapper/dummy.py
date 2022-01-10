@@ -192,3 +192,19 @@ def dummy_image2image8roi(
         np.random.rand((100_00)).reshape(100, 100),
         func_name=sys._getframe().f_code.co_name)
     return info
+
+
+@args_check
+def dummy_time2time(
+    time1: TimeSeriesData, nwbfile: NWBFile=None,  params: dict=None
+    ) -> {'time': TimeSeriesData}:
+
+    """
+        get image
+        return image
+    """
+    info = {}
+    info['time2time'] = TimeSeriesData(
+        np.random.rand((10000)).reshape(10, 1000),
+        func_name=sys._getframe().f_code.co_name)
+    return info
