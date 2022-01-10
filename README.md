@@ -64,7 +64,9 @@ pip install -r requirements.txt
 ```
 
 #### caimanを個別にインストール
-optinistの仮想環境になっていることを確認。
+* m1 macの場合、tensorflowがうまくインストールできず、caimanを動かすことができない。
+
+optinistの仮想環境に入る。（既に入っている場合には省略可）
 ```
 conda activate optinist
 ```
@@ -76,7 +78,9 @@ cd /CaImAn && pip install -e .
 ```
 
 * ```pip list```などでcaimanやsuite2pなどが正しくインストールできていることを確認すると良い。
-* caimanをインストール後にnumpyなどを再インストールすると、numpyのエラーが起きることが分かっているが、まだ明確な解決策が提示されていないと思っている。[https://stackoverflow.com/questions/66060487/valueerror-numpy-ndarray-size-changed-may-indicate-binary-incompatibility-exp]
+* caimanをインストール後にnumpyなどを再インストールすると、numpyのエラーが起きることが分かっているが、これはnumpyの仕様が変更されたためである。これに対する明確な解決策が提示されていない。
+versionを上げるとcaimanのエラーは解決されるが、versionを挙げたことによって逆にsuite2pが使っているnumbaライブラリでのエラーがでる。
+[https://stackoverflow.com/questions/66060487/valueerror-numpy-ndarray-size-changed-may-indicate-binary-incompatibility-exp]
 
 #### 実行
 backendディレクトリに移動
