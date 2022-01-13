@@ -89,8 +89,9 @@ cd optinist/backend
 ```
 
 実行
+gunicornで起動
 ```
-python main.py
+> gunicorn
 ```
 
 
