@@ -8,7 +8,7 @@ if sys.version_info >= (3, 8):
 else:
     from typing import List, Optional
     from typing_extensions import TypedDict
-# from typing import List, Optional, TypedDict
+
 from fastapi import APIRouter, File, Response, UploadFile, Form
 from .const import BASE_DIR
 
