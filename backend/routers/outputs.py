@@ -2,7 +2,7 @@ from typing import Optional
 from fastapi import APIRouter
 import os
 import json
-from .utils import save_tiff_to_json, save_csv_to_json
+from .utils.save import save_tiff2json, save_csv2json
 from .const import BASE_DIR
 
 router = APIRouter()
@@ -18,8 +18,6 @@ async def read_file(file_path: str):
 @router.get("/outputs/image/{file_path:path}")
 async def read_image(file_path: str, max_index: Optional[int] = None):
     file_path = os.path.join(BASE_DIR, file_path)
-    print(file_path)
-    print(max_index)
 
     file_name, ext = os.path.splitext(os.path.basename(file_path))
 
@@ -29,7 +27,7 @@ async def read_image(file_path: str, max_index: Optional[int] = None):
         json_file_path = os.path.join(
             folder_path, f'{file_name}_{str(max_index)}.json')
         if not os.path.exists(json_file_path):
-            save_tiff_to_json(tiff_file_path, max_index)
+            save_tiff2json(tiff_file_path, max_index)
     else:
         json_file_path = file_path
     with open(json_file_path, 'r') as f:
@@ -47,7 +45,7 @@ async def read_csv(file_path: str):
         csv_file_path = file_path
         file_path = os.path.join(folder_path, f'{file_name}.json')
         if not os.path.exists(file_path):
-            save_csv_to_json(csv_file_path)
+            save_csv2json(csv_file_path)
     with open(file_path, 'r') as f:
         json_dict = json.load(f)
     return { "data": json_dict}

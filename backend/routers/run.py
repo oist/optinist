@@ -1,10 +1,5 @@
-from fastapi import APIRouter, WebSocket
-from pydantic import BaseModel
-from typing import Dict, List, Optional
 import traceback
 import os
-import sys
-import copy
 import gc
 import json
 import tracemalloc
@@ -12,27 +7,16 @@ import tracemalloc
 from wrappers.data_wrapper import *
 from wrappers.optinist_exception import AlgorithmException
 
-# NWB
-from pynwb import NWBFile, get_manager
-from pynwb.ophys import (
-    OpticalChannel, TwoPhotonSeries, ImageSegmentation,
-    RoiResponseSeries, Fluorescence, ImageSeries,
-)
-from .utils import (
-    get_nest2dict,
-    save_nwb,
-    get_algo_network,
-    run_algorithm,
-    get_results,
-    display_top
-)
-from .nwb import nwb_config
 from .const import BASE_DIR
+from .utils.save import save_nwb
+from .utils.run import run_algorithm
+from .utils.memory import display_top
+from .utils.results import get_results
+from .utils.utils import algo_network
+from .utils.set_data import set_data
 
-sys.path.append('../../optinist')
-
+from fastapi import APIRouter, WebSocket
 router = APIRouter()
-manager = get_manager()
 
 
 @router.get("/run/ready/{request_id}")
@@ -48,14 +32,11 @@ async def websocket_endpoint(websocket: WebSocket):
     # Wait for any message from the client
 
     message = await websocket.receive_text()
-    graph, startNodeList, nodeDict = get_algo_network(message)
+    graph, startNodeList, nodeDict = algo_network(message)
 
     message = json.loads(message)
 
-    if message['nwbParam'] == {}:
-        nwb_dict = copy.deepcopy(nwb_config)
-    else:
-        nwb_dict = get_nest2dict(message['nwbParam'])
+    nwb_params = message['nwbParam']
 
     try:
         tracemalloc.start()
@@ -71,24 +52,11 @@ async def websocket_endpoint(websocket: WebSocket):
                 'status': 'ready'
             })
 
-            # run algorithm
-            info = run_algorithm(prev_info, item)
-
-            # NWB登録
-            if item['type'] == 'ImageFileNode':
-                nwb_dict['image_series']['external_file'] = info['images'].data
-                nwbfile = nwb_add_acquisition(nwb_dict)
-                nwbfile.create_processing_module(
-                    name='ophys',
-                    description='optical physiology processed data'
-                )
-                nwb_add_ophys(nwbfile)
-
-                info['nwbfile'] = nwbfile
-
-            elif item['type'] == 'CsvFileNode':
-                nwbfile = None
-                info['nwbfile'] = nwbfile
+            # 実行
+            if item['type'] == 'AlgorithmNode':
+                info = run_algorithm(info, item)
+            else:
+                info = set_data(info, item, nwb_params)
 
             # prev_infoを登録
             if 'nwbfile' not in info.keys():
@@ -115,9 +83,9 @@ async def websocket_endpoint(websocket: WebSocket):
 
         # NWBを保存
         if info['nwbfile'] is not None:
-            save_nwb(info['nwbfile'])
+            save_nwb(info['nwbfile'], os.path.join(BASE_DIR, 'nwb'))
 
-        del prev_info, info, nwbfile, results
+        del prev_info, info, results
         gc.collect()
 
         snapshot = tracemalloc.take_snapshot()
