@@ -1,5 +1,7 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
+from wrappers.optinist_wrapper.utils import standard_norm
+
 
 @args_check
 def PCA(
@@ -19,9 +21,8 @@ def PCA(
     # data shold be time x component matrix
     X = timeseries.transpose()
 
-    # preprocessing  ##################
-    sc = StandardScaler(with_mean = params['standardization_mean'], with_std = params['standardization_std'])
-    tX = sc.fit_transform(X)
+    # # preprocessing  ##################
+    tX = standard_norm(X, params['standard_mean'], params['standard_std'])
 
     # calculate PCA ##################
     pca = PCA(
@@ -33,22 +34,7 @@ def PCA(
         iterated_power=params['iterated_power'],
         random_state= params['random_state']
     )
-    pca.fit(tX)
-
-    proj_X = pca.transform(tX)
-
-    # output structures ###################
-    Out_nwb = {}
-    Out_nwb['components'] = pca.components_
-    Out_nwb['explained_variance'] = pca.explained_variance_
-    Out_nwb['explained_variance_ratio'] = pca.explained_variance_ratio_
-    Out_nwb['singular_values'] = pca.singular_values_
-    Out_nwb['mean'] = pca.mean_
-    Out_nwb['n_components'] = pca.n_components_
-    Out_nwb['n_samples'] = pca.n_samples_
-    Out_nwb['noise_variance'] = pca.noise_variance_
-    Out_nwb['n_features_in'] = pca.n_features_in_
-    #Out_nwb['feature_names_in'] = pca.feature_names_in_
+    proj_X = pca.fit_transform(tX)
 
     info = {}
     info['components'] = CorrelationData(
