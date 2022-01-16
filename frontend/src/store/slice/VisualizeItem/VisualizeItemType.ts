@@ -21,7 +21,13 @@ export const VISUALIZE_ITEM_TYPE_SET = {
 export type VISUALIZE_ITEM_TYPE =
   typeof VISUALIZE_ITEM_TYPE_SET[keyof typeof VISUALIZE_ITEM_TYPE_SET]
 
-export interface DisplayDataItem extends ItemBaseType<'displayData'> {
+export type DisplayDataItem =
+  | ImageItem
+  | TimeSeriesItem
+  | HeatMapItem
+  | TableItem
+
+export interface DisplayDataItemBaseType extends ItemBaseType<'displayData'> {
   filePath: string | null
   nodeId: string | null
   dataType: DATA_TYPE | null
@@ -34,12 +40,16 @@ export interface DefaultSetItem extends ItemBaseType<'defaultSet'> {
   otherItem?: DisplayDataItem
 }
 
-interface ImageItem extends DisplayDataItem {
+export interface ImageItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.IMAGE
+  showticklabels: boolean
 }
-interface TimeSeriesItem extends DisplayDataItem {
+export interface TimeSeriesItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.TIME_SERIES
 }
-interface HeatMapItem extends DisplayDataItem {
+export interface HeatMapItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.HEAT_MAP
+}
+export interface TableItem extends DisplayDataItemBaseType {
+  dataType: typeof DATA_TYPE_SET.TABLE
 }

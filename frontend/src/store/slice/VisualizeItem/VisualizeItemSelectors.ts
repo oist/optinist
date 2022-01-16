@@ -1,6 +1,7 @@
 import { RootState } from 'store/store'
+import { DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 import { selectNodeLabelById } from '../FlowElement/FlowElementSelectors'
-import { isDisplayDataItem } from './VisualizeItemUtils'
+import { isDisplayDataItem, isImageItem } from './VisualizeItemUtils'
 
 export const selectSelectedVisualizeItemId = (state: RootState) =>
   state.visualaizeItem.selectedItemId
@@ -49,6 +50,16 @@ export const selectVisualizeDataFilePath =
     const item = selectVisualizeItems(state)[itemId]
     if (isDisplayDataItem(item)) {
       return item.filePath
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectImageItemShowticklabels =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isImageItem(item)) {
+      return item.showticklabels
     } else {
       throw new Error('invalid VisualaizeItemType')
     }

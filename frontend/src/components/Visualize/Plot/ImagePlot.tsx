@@ -29,6 +29,7 @@ import {
 import { getImageData } from 'store/slice/DisplayData/DisplayDataActions'
 import { selectImageMaxIndexByNodeId } from 'store/slice/InputNode/InputNodeSelectors'
 import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
+import { selectImageItemShowticklabels } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 export const ImagePlot = React.memo(() => {
   const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
@@ -104,7 +105,11 @@ const ImagePlotImple = React.memo(() => {
 })
 
 const ImagePlotChart = React.memo(() => {
-  const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
+  const {
+    filePath: path,
+    nodeId,
+    itemId,
+  } = React.useContext(DisplayDataContext)
   const label = useSelector(selectNodeLabelById(nodeId))
   const imageData = useSelector(selectActiveImageData(path), imageDataEqualtyFn)
   // const testData1 = [
@@ -174,6 +179,7 @@ const ImagePlotChart = React.memo(() => {
     [imageData],
   )
 
+  const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
   const layout = {
     title: label,
     margin: {
@@ -189,7 +195,7 @@ const ImagePlotChart = React.memo(() => {
       showline: false,
       autotick: true,
       ticks: '',
-      showticklabels: false,
+      showticklabels: showticklabels,
     },
     yaxis: {
       autorange: 'reversed',

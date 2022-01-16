@@ -32,6 +32,7 @@ import { selectAlgorithmNode } from 'store/slice/AlgorithmNode/AlgorithmNodeSele
 import { selectOutputPaths } from 'store/slice/RunPipelineResult/RenPipelineResultSelectors'
 import { toDataType } from 'store/slice/DisplayData/DisplayDataUtils'
 import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
+import { ImageItemEditor } from './ImageItemEditor'
 
 export const VisualizeItemEditor = () => {
   const selectedItemId = useSelector(selectSelectedVisualizeItemId)
@@ -52,7 +53,7 @@ export const VisualizeItemEditor = () => {
   )
 }
 
-const SelectedItemIdContext = React.createContext<number>(NaN)
+export const SelectedItemIdContext = React.createContext<number>(NaN)
 
 const ItemTypeSelect: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
@@ -114,10 +115,14 @@ const DefaultSetItemEditor: React.FC = () => {
 
 const DisplayDataItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
+  const dataType = useSelector(selectVisualizeDataType(itemId))
   return (
     <div>
-      DisplayDataItemEditor
       <FilePathSelect />
+      <div style={{ marginTop: 8 }}>
+        {dataType === DATA_TYPE_SET.IMAGE && <ImageItemEditor />}
+        {/* 他のtypeのEditorも必要になったら追加する */}
+      </div>
     </div>
   )
 }

@@ -4,41 +4,63 @@ import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 import {
   DefaultSetItem,
   DisplayDataItem,
+  HeatMapItem,
+  ImageItem,
+  TableItem,
+  TimeSeriesItem,
   VisualaizeItem,
   VISUALIZE_ITEM_TYPE,
   VISUALIZE_ITEM_TYPE_SET,
 } from './VisualizeItemType'
-import { isDefaultSetItem, isDisplayDataItem } from './VisualizeItemUtils'
+import {
+  isDefaultSetItem,
+  isDisplayDataItem,
+  isImageItem,
+} from './VisualizeItemUtils'
 export const initialState: VisualaizeItem = {
   items: {},
   selectedItemId: null,
 }
-const displayDataItemInitialValue: DisplayDataItem = {
+const displayDataCommonInitialValue = {
   itemType: VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA,
-  dataType: null,
   filePath: null,
   nodeId: null,
 }
+const imageItemInitialValue: ImageItem = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.IMAGE,
+  showticklabels: false,
+}
+const timeSeriesItemInitialValue: TimeSeriesItem = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.TIME_SERIES,
+}
+const heatMapItemInitialValue: HeatMapItem = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.HEAT_MAP,
+}
+const tableItemInitialValue: TableItem = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.TABLE,
+}
+function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
+  switch (dataType) {
+    case DATA_TYPE_SET.IMAGE:
+      return imageItemInitialValue
+    case DATA_TYPE_SET.HEAT_MAP:
+      return heatMapItemInitialValue
+    case DATA_TYPE_SET.TIME_SERIES:
+      return timeSeriesItemInitialValue
+    case DATA_TYPE_SET.TABLE:
+      return tableItemInitialValue
+  }
+}
+
 const defaultSetItemInitialValue: DefaultSetItem = {
   itemType: VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET,
-  imageItem: {
-    itemType: VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA,
-    dataType: DATA_TYPE_SET.IMAGE,
-    filePath: null,
-    nodeId: null,
-  },
-  timeSeriesItem: {
-    itemType: VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA,
-    dataType: DATA_TYPE_SET.TIME_SERIES,
-    filePath: null,
-    nodeId: null,
-  },
-  heatMapItem: {
-    itemType: VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA,
-    dataType: DATA_TYPE_SET.HEAT_MAP,
-    filePath: null,
-    nodeId: null,
-  },
+  imageItem: imageItemInitialValue,
+  timeSeriesItem: timeSeriesItemInitialValue,
+  heatMapItem: heatMapItemInitialValue,
 }
 export const visualaizeItemSlice = createSlice({
   name: 'visualaizeItem',
@@ -99,10 +121,19 @@ export const visualaizeItemSlice = createSlice({
         isDefaultSetItem(targetItem) &&
         type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
       ) {
-        state.items[itemId] = {
-          ...displayDataItemInitialValue,
-          dataType: type,
-        }
+        state.items[itemId] = getDisplayDataItemInitialValue(type)
+      }
+    },
+    setImageItemShowticklabels: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        showticklabels: boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.showticklabels = action.payload.showticklabels
       }
     },
   },
@@ -120,6 +151,7 @@ export const {
   selectItem,
   setItemType,
   setDisplayDataPath,
+  setImageItemShowticklabels,
 } = visualaizeItemSlice.actions
 
 export default visualaizeItemSlice.reducer
