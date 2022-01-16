@@ -7,7 +7,7 @@ import { flexjson } from 'const/flexlayout'
 // import { AlgorithmTreeView } from 'components/TreeView'
 // import { FlowChart } from 'components/FlowChart'
 import { ParamForm } from 'components/FlowChart/ParamForm'
-import { Plot } from 'components/Plot'
+import { Plot } from 'components/Visualize/Plot'
 import { ToolBar } from 'components/ToolBar'
 import {
   selectDataTypeByTabId,

@@ -16,9 +16,9 @@ import { FILE_TYPE } from '../InputNode/InputNodeType'
 export function useFileUploader(fileType?: FILE_TYPE) {
   const dispatch = useDispatch()
   const id = React.useRef(nanoid())
-  React.useEffect(() => {
-    dispatch(setFileUploaderStateById(id.current))
-  }, [dispatch])
+  // React.useEffect(() => { // todo 解明
+  //   dispatch(setFileUploaderStateById(id.current))
+  // }, [dispatch, id.current])
   const onUploadFile = React.useCallback(
     (formData: FormData, fileName: string) => {
       dispatch(

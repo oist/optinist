@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { LinearProgress, Typography } from '@material-ui/core'
 
-import { DisplayDataTabContext } from 'App'
+import { DisplayDataContext } from '../DisplayDataItem'
 import {
   selectTimeSeriesData,
   selectTimeSeriesDataError,
@@ -16,7 +16,7 @@ import { TimeSeriesData } from 'store/slice/DisplayData/DisplayDataType'
 import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
 
 export const TimeSeries = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataTabContext)
+  const { filePath: path } = React.useContext(DisplayDataContext)
   const dispatch = useDispatch()
   const isPending = useSelector(selectTimeSeriesDataIsPending(path))
   const isInitialized = useSelector(selectTimeSeriesDataIsInitialized(path))
@@ -39,7 +39,7 @@ export const TimeSeries = React.memo(() => {
 })
 
 const TimeSeriesImple = React.memo(() => {
-  const { filePath: path, nodeId } = React.useContext(DisplayDataTabContext)
+  const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
   const label = useSelector(selectNodeLabelById(nodeId))
   const timeSeriesData = useSelector(
     selectTimeSeriesData(path),

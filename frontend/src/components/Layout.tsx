@@ -6,7 +6,7 @@ import Typography from '@material-ui/core/Typography'
 import { makeStyles } from '@material-ui/core/styles'
 import Toolbar from '@material-ui/core/Toolbar'
 import FlowChart from './FlowChart/FlowChart'
-import Visualize from './Visualize'
+import Visualize from './Visualize/Visualize'
 
 const Layout: React.FC = () => {
   const classes = useStyles()

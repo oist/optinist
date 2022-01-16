@@ -1,9 +1,10 @@
 import React, { useEffect, DragEvent, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { TreeView, TreeItem } from '@material-ui/lab'
-import { makeStyles, IconButton, Typography } from '@material-ui/core'
+import { makeStyles, Typography } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import IconButton from '@material-ui/core/IconButton'
 import AddIcon from '@material-ui/icons/Add'
 
 import {

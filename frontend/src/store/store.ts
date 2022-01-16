@@ -14,6 +14,7 @@ import {
   filesTreeReducer,
   handleTypeColorReducer,
   rightDrawerReducer,
+  visualaizeItemReducer,
 } from './slice'
 
 export const store = configureStore({
@@ -30,6 +31,7 @@ export const store = configureStore({
     nwb: nwbReducer,
     runPipelineResult: runPipelineResultReducer,
     rightDrawer: rightDrawerReducer,
+    visualaizeItem: visualaizeItemReducer,
     [webSocketApi.reducerPath]: webSocketApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>

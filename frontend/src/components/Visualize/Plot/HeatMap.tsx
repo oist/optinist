@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { LinearProgress, Typography } from '@material-ui/core'
 
-import { DisplayDataTabContext } from 'App'
+import { DisplayDataContext } from '../DisplayDataItem'
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 import {
   selectHeatMapData,
@@ -16,7 +16,7 @@ import { getHeatMapData } from 'store/slice/DisplayData/DisplayDataActions'
 import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
 
 export const HeatMap = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataTabContext)
+  const { filePath: path } = React.useContext(DisplayDataContext)
   const dispatch = useDispatch()
   const isPending = useSelector(selectHeatMapDataIsPending(path))
   const isInitialized = useSelector(selectHeatMapDataIsInitialized(path))
@@ -39,7 +39,7 @@ export const HeatMap = React.memo(() => {
 })
 
 const HeatMapImple = React.memo(() => {
-  const { filePath: path, nodeId } = React.useContext(DisplayDataTabContext)
+  const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
   const label = useSelector(selectNodeLabelById(nodeId))
   const heatMapData = useSelector(selectHeatMapData(path), heatMapDataEqualtyFn)
   const data = React.useMemo(

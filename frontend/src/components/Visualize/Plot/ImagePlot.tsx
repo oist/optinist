@@ -12,7 +12,7 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
 
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
-import { DisplayDataTabContext } from 'App'
+import { DisplayDataContext } from '../DisplayDataItem'
 import {
   decrementImageActiveIndex,
   incrementImageActiveIndex,
@@ -31,7 +31,7 @@ import { selectImageMaxIndexByNodeId } from 'store/slice/InputNode/InputNodeSele
 import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
 
 export const ImagePlot = React.memo(() => {
-  const { filePath: path, nodeId } = React.useContext(DisplayDataTabContext)
+  const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
   const maxIndex = useSelector(selectImageMaxIndexByNodeId(nodeId))
   const dispatch = useDispatch()
   const isPending = useSelector(selectImageDataIsPending(path))
@@ -55,7 +55,7 @@ export const ImagePlot = React.memo(() => {
 })
 
 const ImagePlotImple = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataTabContext)
+  const { filePath: path } = React.useContext(DisplayDataContext)
   const maxIndex = useSelector(selectImageDataMaxIndex(path))
   const activeIndex = useSelector(selectImageDataActiveIndex(path))
   const dispatch = useDispatch()
@@ -104,7 +104,7 @@ const ImagePlotImple = React.memo(() => {
 })
 
 const ImagePlotChart = React.memo(() => {
-  const { filePath: path, nodeId } = React.useContext(DisplayDataTabContext)
+  const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
   const label = useSelector(selectNodeLabelById(nodeId))
   const imageData = useSelector(selectActiveImageData(path), imageDataEqualtyFn)
   // const testData1 = [
@@ -161,6 +161,7 @@ const ImagePlotChart = React.memo(() => {
         type: 'heatmap',
         name: 'images',
         colorscale: [
+          // todo グラデーションの設定
           [0, '#000000'],
           [1, '#ffffff'],
         ],
@@ -195,13 +196,13 @@ const ImagePlotChart = React.memo(() => {
       showgrid: false,
       zeroline: false,
       showline: false,
-      autotick: true,
+      autotick: true, // todo
       ticks: '',
-      showticklabels: false,
+      showticklabels: true, // todo
     },
   }
   const config = {
-    displayModeBar: false,
+    displayModeBar: true,
     scrollZoom: true,
   }
   return (

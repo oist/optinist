@@ -3,7 +3,7 @@ import PlotlyChart from 'react-plotlyjs-ts'
 import { LinearProgress, Typography } from '@material-ui/core'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { DisplayDataTabContext } from 'App'
+import { DisplayDataContext } from '../DisplayDataItem'
 import { arrayEqualityFn, twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 import {
   selectTableData,
@@ -18,7 +18,7 @@ import { TableData } from 'store/slice/DisplayData/DisplayDataType'
 import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
 
 export const TablePlot = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataTabContext)
+  const { filePath: path } = React.useContext(DisplayDataContext)
   const isInitialized = useSelector(selectTableDataIsInitialized(path))
   const isPending = useSelector(selectTableDataIsPending(path))
   const isFulfilled = useSelector(selectTableDataIsFulfilled(path))
@@ -41,7 +41,7 @@ export const TablePlot = React.memo(() => {
 })
 
 const TablePlotImple = React.memo(() => {
-  const { filePath: path, nodeId } = React.useContext(DisplayDataTabContext)
+  const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
   const label = useSelector(selectNodeLabelById(nodeId))
   const tableData = useSelector(
     selectTableData(path),
