@@ -22,6 +22,7 @@ import { useHandleColor } from './HandleColorHook'
 import { FileSelect } from './FileSelect'
 import { LinearProgressWithLabel } from './LinerProgressWithLabel'
 import { toHandleId, isValidConnection } from './FlowChartUtils'
+import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
 
 // Connection部分のレイアウト
 const sourceHandleStyle: CSSProperties = {
@@ -68,7 +69,7 @@ const ImageFileNodeImple = React.memo<NodeProps>(
     const imageColor = useHandleColor(returnType)
 
     const onClickDeleteIcon = () => {
-      alert('delete icon')
+      dispatch(deleteFlowElementsById(nodeId))
     }
 
     return (

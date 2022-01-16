@@ -1,5 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Elements, removeElements, Node, Position } from 'react-flow-renderer'
+import {
+  Elements,
+  removeElements,
+  Node,
+  Position,
+  isEdge,
+} from 'react-flow-renderer'
 import {
   FLOW_ELEMENT_SLICE_NAME,
   FlowElement,
@@ -41,6 +47,14 @@ export const flowElementSlice = createSlice({
     deleteFlowElements: (state, action: PayloadAction<Elements>) => {
       state.flowElements = removeElements(action.payload, state.flowElements)
     },
+    deleteFlowElementsById: (state, action: PayloadAction<string>) => {
+      const element = state.flowElements.find(
+        (edge) => edge.id === action.payload,
+      )
+      if (element !== undefined) {
+        state.flowElements = removeElements([element], state.flowElements)
+      }
+    },
     addFlowElementNode: (
       state,
       action: PayloadAction<{
@@ -76,7 +90,11 @@ export const flowElementSlice = createSlice({
   },
 })
 
-export const { setFlowElements, addFlowElementNode, deleteFlowElements } =
-  flowElementSlice.actions
+export const {
+  setFlowElements,
+  addFlowElementNode,
+  deleteFlowElements,
+  deleteFlowElementsById,
+} = flowElementSlice.actions
 
 export default flowElementSlice.reducer

@@ -3,6 +3,7 @@ import { INITIAL_IMAGE_ELEMENT_ID } from 'const/flowchart'
 import {
   addFlowElementNode,
   deleteFlowElements,
+  deleteFlowElementsById,
 } from '../FlowElement/FlowElementSlice'
 import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
 import { isNodeData } from '../FlowElement/FlowElementUtils'
@@ -82,6 +83,11 @@ export const inputNodeSlice = createSlice({
               delete state[node.id]
             }
           })
+      })
+      .addCase(deleteFlowElementsById, (state, action) => {
+        if (Object.keys(state).includes(action.payload)) {
+          delete state[action.payload]
+        }
       }),
 })
 

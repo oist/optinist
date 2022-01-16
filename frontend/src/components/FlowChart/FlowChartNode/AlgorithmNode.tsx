@@ -42,6 +42,7 @@ import {
 import { useHandleColor } from './HandleColorHook'
 import { toHandleId, isValidConnection } from './FlowChartUtils'
 import { toggleParamForm } from 'store/slice/RightDrawer/RightDrawerSlice'
+import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
 
 const leftHandleStyle: CSSProperties = {
   width: '4%',
@@ -145,7 +146,7 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
     }
 
     const onClickDeleteIcon = () => {
-      alert('delete icon')
+      dispatch(deleteFlowElementsById(nodeId))
     }
 
     return (

@@ -1,3 +1,4 @@
+import { useDispatch } from 'react-redux'
 import {
   EdgeProps,
   getBezierPath,
@@ -6,6 +7,7 @@ import {
 } from 'react-flow-renderer'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
 import { IconButton } from '@material-ui/core'
+import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
 
 const foreignObjectSize = 40
 
@@ -38,9 +40,10 @@ export const CustomEdge: React.FC<EdgeProps> = ({
     targetY,
   })
 
-  const onEdgeClick = (event: any, id: string) => {
-    event.stopPropagation()
-    alert(`remove ${id}`)
+  const dispatch = useDispatch()
+
+  const onEdgeClick = () => {
+    dispatch(deleteFlowElementsById(id))
   }
 
   return (
@@ -61,7 +64,7 @@ export const CustomEdge: React.FC<EdgeProps> = ({
       >
         <body>
           <IconButton aria-label="delete">
-            <CloseOutlinedIcon onClick={(event) => onEdgeClick(event, id)} />
+            <CloseOutlinedIcon onClick={onEdgeClick} />
           </IconButton>
         </body>
       </foreignObject>

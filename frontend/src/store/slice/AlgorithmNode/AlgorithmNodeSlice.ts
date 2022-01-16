@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import {
   addFlowElementNode,
   deleteFlowElements,
+  deleteFlowElementsById,
 } from '../FlowElement/FlowElementSlice'
 import { isNodeData } from '../FlowElement/FlowElementUtils'
 import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
@@ -66,6 +67,11 @@ export const algorithmNodeSlice = createSlice({
               delete state[node.id]
             }
           })
+      })
+      .addCase(deleteFlowElementsById, (state, action) => {
+        if (Object.keys(state).includes(action.payload)) {
+          delete state[action.payload]
+        }
       })
   },
 })

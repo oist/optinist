@@ -18,6 +18,7 @@ import { useDisplayDataTabAciton } from 'components/flextlayout/FlexLayoutHook'
 import { toHandleId } from './FlowChartUtils'
 import { FileSelect } from './FileSelect'
 import { LinearProgressWithLabel } from './LinerProgressWithLabel'
+import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
 
 const sourceHandleStyle: CSSProperties = {
   width: 8,
@@ -52,7 +53,7 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   const theme = useTheme()
 
   const onClickDeleteIcon = () => {
-    alert('delete icon')
+    dispatch(deleteFlowElementsById(nodeId))
   }
 
   return (
