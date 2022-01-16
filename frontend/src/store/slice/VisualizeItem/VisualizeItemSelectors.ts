@@ -1,6 +1,4 @@
 import { RootState } from 'store/store'
-import { DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
-import { selectNodeLabelById } from '../FlowElement/FlowElementSelectors'
 import { isDisplayDataItem, isImageItem } from './VisualizeItemUtils'
 
 export const selectSelectedVisualizeItemId = (state: RootState) =>

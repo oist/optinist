@@ -8,7 +8,8 @@ import { deleteItem } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 export const VisualizeItemDeleteButton = React.memo<{ itemId: number }>(
   ({ itemId }) => {
     const dispatch = useDispatch()
-    const onClick = () => {
+    const onClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+      e.stopPropagation() // 親divのonClickを反応させないため
       dispatch(deleteItem(itemId))
     }
     return (

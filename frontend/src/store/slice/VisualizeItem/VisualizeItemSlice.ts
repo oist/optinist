@@ -1,15 +1,13 @@
-import { createSlice, PayloadAction, createAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 
 import {
   DefaultSetItem,
-  DisplayDataItem,
   HeatMapItem,
   ImageItem,
   TableItem,
   TimeSeriesItem,
   VisualaizeItem,
-  VISUALIZE_ITEM_TYPE,
   VISUALIZE_ITEM_TYPE_SET,
 } from './VisualizeItemType'
 import {

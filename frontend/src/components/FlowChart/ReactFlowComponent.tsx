@@ -29,7 +29,6 @@ import {
 import { ImageFileNode } from './FlowChartNode/ImageFileNode'
 import { AlgorithmNode } from './FlowChartNode/AlgorithmNode'
 import { CsvFileNode } from './FlowChartNode/CsvFileNode'
-import { useDeleteTabByNodeIdListActions } from '../flextlayout/FlexLayoutHook'
 import { CustomEdge } from './CustomEdge'
 
 const componentTypes = {
@@ -63,11 +62,8 @@ export const ReactFlowComponent = React.memo(() => {
     )
   }
 
-  const deleteTabActions = useDeleteTabByNodeIdListActions()
   const onElementsRemove = (elementsToRemove: Elements) => {
     dispatch(deleteFlowElements(elementsToRemove))
-    const targetNodeIds = elementsToRemove.map((elm) => elm.id)
-    deleteTabActions(targetNodeIds)
   }
 
   const onLoad = (_reactFlowInstance: OnLoadParams) =>

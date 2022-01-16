@@ -109,8 +109,8 @@ const Editor: React.FC = () => {
 }
 
 const DefaultSetItemEditor: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
-  return <div>DefaultSetItemEditor</div>
+  // const itemId = React.useContext(SelectedItemIdContext)
+  return <div>DefaultSetItemEditor(not imple)</div>
 }
 
 const DisplayDataItemEditor: React.FC = () => {
@@ -131,9 +131,6 @@ const FilePathSelect: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
   const dataType = useSelector(selectVisualizeDataType(itemId))
-  //
-  // nodeId, filePath, dataTypeはItemTypeSelectで決まってる
-  //
   const inputNodeFilePathInfoList = useSelector(
     (state: RootState) => {
       const inputNodes = selectInputNode(state)
@@ -200,71 +197,45 @@ const FilePathSelect: React.FC = () => {
     handleClose()
   }
 
-  // 使わないかも
-  // const selectedValueLabel = useSelector((state: RootState) => {
-  //   const selectedFilePath = selectVisualizeDataFilePath(itemId)(state)
-  //   const selectedNodeId = selectVisualizeDataNodeId(itemId)(state)
-  //   const selectedInputNodePathInfo = inputNodeFilePathInfoList.find(
-  //     (pathInfo) =>
-  //       pathInfo.filePath === selectedFilePath &&
-  //       pathInfo.nodeId === selectedNodeId,
-  //   )
-  //   if (selectedInputNodePathInfo != null) {
-  //     return `${selectedInputNodePathInfo.nodeName}`
-  //   } else {
-  //     const selectedOutputPathInfo = algorithmNodeOutputPathInfoList.find(
-  //       (pathInfo) => pathInfo.nodeId === selectedNodeId,
-  //     )
-  //     if (
-  //       selectedOutputPathInfo != null &&
-  //       selectedOutputPathInfo.paths != null
-  //     ) {
-  //       return `${
-  //         selectedOutputPathInfo.paths.find(
-  //           (path) => path.filePath === selectedFilePath,
-  //         )?.outputKey
-  //       }(${selectedOutputPathInfo.nodeName})`
-  //     } else {
-  //       return ''
-  //     }
-  //   }
-  // })
-
   const selectedFilePath = useSelector(selectVisualizeDataFilePath(itemId))
   const selectedNodeId = useSelector(selectVisualizeDataNodeId(itemId))
 
+  const menuItemList: React.ReactElement[] = []
+  inputNodeFilePathInfoList.forEach((pathInfo) => {
+    menuItemList.push(
+      <MenuItem
+        value={`${pathInfo.nodeId}/${pathInfo.filePath}`}
+        onClick={() => onSelect(pathInfo.nodeId, pathInfo.filePath ?? '')}
+        key={pathInfo.nodeId}
+      >
+        {pathInfo.nodeName}
+      </MenuItem>,
+    )
+  })
+  algorithmNodeOutputPathInfoList.forEach((pathInfo) => {
+    menuItemList.push(<ListSubheader>{pathInfo.nodeName}</ListSubheader>)
+    pathInfo.paths.forEach((outputPath, i) => {
+      menuItemList.push(
+        <MenuItem
+          value={`${pathInfo.nodeId}/${outputPath.filePath}`}
+          onClick={() => onSelect(pathInfo.nodeId, outputPath.filePath)}
+          key={`${pathInfo.nodeId}/${outputPath.filePath}`}
+        >
+          {outputPath.outputKey}
+        </MenuItem>,
+      )
+    })
+  })
   return (
     <FormControl style={{ minWidth: 150, maxWidth: 220 }}>
       <InputLabel>Select Item</InputLabel>
       <Select
-        value={`${selectedNodeId}/${selectedFilePath}`} // todo algonodeの方が表示されない
+        value={`${selectedNodeId}/${selectedFilePath}`}
         open={open}
         onClose={handleClose}
         onOpen={handleOpen}
       >
-        {inputNodeFilePathInfoList.map((pathInfo) => (
-          <MenuItem
-            value={`${pathInfo.nodeId}/${pathInfo.filePath}`}
-            onClick={() => onSelect(pathInfo.nodeId, pathInfo.filePath ?? '')}
-            key={pathInfo.nodeId}
-          >
-            {pathInfo.nodeName}
-          </MenuItem>
-        ))}
-        {algorithmNodeOutputPathInfoList.map((pathInfo) => (
-          <>
-            <ListSubheader>{pathInfo.nodeName}</ListSubheader>
-            {pathInfo.paths.map((outputPath, i) => (
-              <MenuItem
-                value={`${pathInfo.nodeId}/${outputPath.filePath}`}
-                onClick={() => onSelect(pathInfo.nodeId, outputPath.filePath)}
-                key={i}
-              >
-                {outputPath.outputKey}
-              </MenuItem>
-            ))}
-          </>
-        ))}
+        {menuItemList}
       </Select>
       {inputNodeFilePathInfoList.length +
         algorithmNodeOutputPathInfoList.length ===

@@ -9,9 +9,9 @@ import {
 } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
 import { getAlgoParams } from 'store/slice/AlgorithmNode/AlgorithmNodeActions'
 
-import { ParamFormContext } from 'App'
 import { arrayEqualityFn } from 'utils/EqualityUtils'
 import { ParamItemContainer } from './ParamItem'
+import { ParamFormContext } from '../RightDrawer'
 
 const ParamForm = React.memo(() => {
   const nodeId = React.useContext(ParamFormContext)

@@ -7,7 +7,6 @@ import { Typography, IconButton } from '@material-ui/core'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
 
 import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
-import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
 import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import {
   selectImageInputNodeMaxIndex,
@@ -17,7 +16,6 @@ import {
 import { setInputImageNodeFile } from 'store/slice/InputNode/InputNodeSlice'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 
-import { useDisplayDataTabAciton } from 'components/flextlayout/FlexLayoutHook'
 import { useHandleColor } from './HandleColorHook'
 import { FileSelect } from './FileSelect'
 import { LinearProgressWithLabel } from './LinerProgressWithLabel'
@@ -47,7 +45,6 @@ const ImageFileNodeImple = React.memo<NodeProps>(
   ({ id: nodeId, selected: elementSelected }) => {
     const dispatch = useDispatch()
     const inputRef = React.useRef<HTMLInputElement | null>(null)
-    const { setDisplayTab } = useDisplayDataTabAciton(nodeId)
     const filePath = useSelector(selectInputNodeSelectedFilePath(nodeId))
     const defaultMaxIndex = useSelector(selectImageInputNodeMaxIndex(nodeId))
     const onChangeFilePath = (path: string) => {
@@ -59,11 +56,7 @@ const ImageFileNodeImple = React.memo<NodeProps>(
         }),
       )
     }
-    const onClickElement = () => {
-      if (filePath != null) {
-        setDisplayTab(filePath, DATA_TYPE_SET.IMAGE)
-      }
-    }
+
     const theme = useTheme()
     const returnType = 'ImageData'
     const imageColor = useHandleColor(returnType)
@@ -80,7 +73,6 @@ const ImageFileNodeImple = React.memo<NodeProps>(
             ? alpha(theme.palette.primary.light, 0.1)
             : undefined,
         }}
-        onClick={onClickElement}
       >
         <IconButton
           aria-label="delete"
@@ -122,7 +114,6 @@ const ImageFileSelect = React.memo<{
   filePath: string
   onChangeFilePath: (path: string) => void
 }>(({ nodeId, filePath, onChangeFilePath }) => {
-  const { setDisplayTab, deleteDisplayTab } = useDisplayDataTabAciton(nodeId)
   const {
     filePath: uploadedFilePath,
     onUploadFile,
@@ -135,18 +126,10 @@ const ImageFileSelect = React.memo<{
     onUploadFile(formData, fileName)
     if (uploadedFilePath != null) {
       onChangeFilePath(uploadedFilePath)
-      setDisplayTab(uploadedFilePath, DATA_TYPE_SET.IMAGE)
-      if (filePath !== uploadedFilePath) {
-        deleteDisplayTab(filePath) // 前回のfilePathを表示するtabは削除
-      }
     }
   }
   const onSelectFile = (selectedPath: string) => {
     onChangeFilePath(selectedPath)
-    setDisplayTab(selectedPath, DATA_TYPE_SET.IMAGE)
-    if (selectedPath !== filePath) {
-      deleteDisplayTab(filePath) // 前回のfilePathを表示するtabは削除
-    }
   }
   return (
     <>

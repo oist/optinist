@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
+import { createStyles, makeStyles } from '@material-ui/core/styles'
 import Drawer from '@material-ui/core/Drawer'
 import Toolbar from '@material-ui/core/Toolbar'
 import Typography from '@material-ui/core/Typography'
@@ -20,7 +20,6 @@ import {
 import { NWBSettingContents } from './NWB'
 import { RootState } from 'store/store'
 import { ParamForm } from './ParamForm'
-import { ParamFormContext } from 'App'
 
 const RightDrawer: React.FC = () => {
   const open = useSelector(selectRightDrawerIsOpen)
@@ -74,6 +73,11 @@ const Contents: React.FC = () => {
       return null
   }
 }
+
+/**
+ * nodeId
+ */
+export const ParamFormContext = React.createContext<string>('')
 
 const ParamFormConetent: React.FC = () => {
   const nodeId = useSelector(selectRightDrawerCurrentNodeId)

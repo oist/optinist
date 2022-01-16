@@ -6,7 +6,6 @@ import { Typography, IconButton } from '@material-ui/core'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
 
 import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
-import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
 import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import {
@@ -14,7 +13,6 @@ import {
   selectInputNodeSelectedFilePath,
 } from 'store/slice/InputNode/InputNodeSelectors'
 import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeSlice'
-import { useDisplayDataTabAciton } from 'components/flextlayout/FlexLayoutHook'
 import { toHandleId } from './FlowChartUtils'
 import { FileSelect } from './FileSelect'
 import { LinearProgressWithLabel } from './LinerProgressWithLabel'
@@ -39,16 +37,10 @@ export const CsvFileNode = React.memo<NodeProps>((element) => {
 })
 
 const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
-  const { setDisplayTab } = useDisplayDataTabAciton(nodeId)
   const dispatch = useDispatch()
   const filePath = useSelector(selectInputNodeSelectedFilePath(nodeId))
   const onChangeFilePath = (path: string) => {
     dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
-  }
-  const onClickElement = () => {
-    if (filePath != null) {
-      setDisplayTab(filePath, DATA_TYPE_SET.TABLE)
-    }
   }
   const theme = useTheme()
 
@@ -64,7 +56,6 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
           ? alpha(theme.palette.primary.light, 0.1)
           : undefined,
       }}
-      onClick={onClickElement}
     >
       <IconButton
         aria-label="delete"
@@ -93,7 +84,6 @@ const CsvFileSelect = React.memo<{
   filePath: string
   onChangeFilePath: (path: string) => void
 }>(({ nodeId, filePath, onChangeFilePath }) => {
-  const { setDisplayTab, deleteDisplayTab } = useDisplayDataTabAciton(nodeId)
   const {
     filePath: uploadedFilePath,
     onUploadFile,
@@ -106,18 +96,10 @@ const CsvFileSelect = React.memo<{
     onUploadFile(formData, fileName)
     if (uploadedFilePath != null) {
       onChangeFilePath(uploadedFilePath)
-      setDisplayTab(uploadedFilePath, DATA_TYPE_SET.TABLE)
-      if (filePath !== uploadedFilePath) {
-        deleteDisplayTab(filePath) // 前回のfilePathを表示するtabは削除
-      }
     }
   }
   const onSelectFile = (selectedPath: string) => {
     onChangeFilePath(selectedPath)
-    setDisplayTab(selectedPath, DATA_TYPE_SET.TABLE)
-    if (selectedPath !== filePath) {
-      deleteDisplayTab(filePath) // 前回のfilePathを表示するtabは削除
-    }
   }
   return (
     <>

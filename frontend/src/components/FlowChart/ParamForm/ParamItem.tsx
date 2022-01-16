@@ -8,7 +8,7 @@ import Typography from '@material-ui/core/Typography'
 
 import { updateParam } from 'store/slice/AlgorithmNode/AlgorithmNodeSlice'
 import { selectAlgorithmParamsValue } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
-import { ParamFormContext } from 'App'
+import { ParamFormContext } from '../RightDrawer'
 
 type ParamItemProps = {
   paramKey: string
