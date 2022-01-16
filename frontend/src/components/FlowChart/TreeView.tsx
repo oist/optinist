@@ -1,10 +1,13 @@
-import React, { useEffect, DragEvent } from 'react'
+import React, { useEffect, DragEvent, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { makeStyles } from '@material-ui/core/styles'
 import TreeView from '@material-ui/lab/TreeView'
 import TreeItem from '@material-ui/lab/TreeItem'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import IconButton from '@mui/material/IconButton'
+import AddIcon from '@material-ui/icons/Add'
+import Typography from '@material-ui/core/Typography'
 
 import {
   selectAlgorithmListIsLated,
@@ -13,8 +16,15 @@ import {
 import { AlgorithmNodeType } from 'store/slice/AlgorithmList/AlgorithmListType'
 import { isAlgoChild } from 'store/slice/AlgorithmList/AlgorithmListUtils'
 import { getAlgoList } from 'store/slice/AlgorithmList/AlgorithmListActions'
-import { NODE_TYPE_SET } from 'store/slice/FlowElement/FlowElementType'
 import { FILE_TYPE, FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
+import { selectMaxElementId } from 'store/slice/FlowElement/FlowElementSelectors'
+import {
+  NodeData,
+  NODE_TYPE,
+  NODE_TYPE_SET,
+} from 'store/slice/FlowElement/FlowElementType'
+import { addFlowElementNode } from 'store/slice/FlowElement/FlowElementSlice'
+import { Node } from 'react-flow-renderer'
 
 const useStyles = makeStyles({
   root: {
@@ -61,6 +71,69 @@ export const AlgorithmTreeView = React.memo(() => {
     }
   }
 
+  const maxElementId = useSelector(selectMaxElementId)
+
+  const [coord, setCoord] = useState({ x: 300, y: 100 })
+
+  const onDataNodeClick = (
+    nodeType: NODE_TYPE,
+    nodeName: string,
+    fileType: FILE_TYPE,
+  ) => {
+    const position = {
+      x: coord.x,
+      y: coord.y,
+    }
+    updateCoord()
+
+    let componentType = ''
+    switch (fileType) {
+      case FILE_TYPE_SET.CSV:
+        componentType = 'CsvFileNode'
+        break
+      case FILE_TYPE_SET.IMAGE:
+        componentType = 'ImageFileNode'
+        fileType = FILE_TYPE_SET.IMAGE
+        break
+    }
+    const newNode: Node<NodeData> = {
+      id: String(maxElementId + 1),
+      type: componentType,
+      position,
+      data: { label: nodeName, type: nodeType },
+    }
+    dispatch(addFlowElementNode({ node: newNode, inputNodeInfo: { fileType } }))
+  }
+
+  const updateCoord = () => {
+    setCoord({ x: coord.x + 150, y: coord.y + 50 })
+    if (coord.x > 800 || coord.y > 200) {
+      setCoord({ x: 300, y: 100 })
+    }
+  }
+
+  const onAlgoNodeClick = (nodeName: string, functionPath: string) => {
+    const name = nodeName
+    const position = {
+      x: coord.x,
+      y: coord.y,
+    }
+    updateCoord()
+
+    const newNode: Node<NodeData> = {
+      id: String(maxElementId + 1),
+      type: 'AlgorithmNode',
+      position,
+      data: { label: name, type: NODE_TYPE_SET.ALGORITHM },
+    }
+    dispatch(
+      addFlowElementNode({
+        node: newNode,
+        algoNodeInfo: { name, functionPath },
+      }),
+    )
+  }
+
   return (
     <TreeView
       className={classes.root}
@@ -70,15 +143,37 @@ export const AlgorithmTreeView = React.memo(() => {
       <TreeItem nodeId="Data" label="Data">
         <TreeItem
           nodeId="image"
-          label="image"
+          label={
+            <AddButton
+              name="image"
+              onClick={() =>
+                onDataNodeClick(
+                  NODE_TYPE_SET.INPUT,
+                  'ImageData',
+                  FILE_TYPE_SET.IMAGE,
+                )
+              }
+            />
+          }
           onDragStart={(event: DragEvent) =>
             onDataNodeDragStart(event, 'ImageData', FILE_TYPE_SET.IMAGE)
           }
           draggable
-        />
+        ></TreeItem>
         <TreeItem
           nodeId="csv"
-          label="csv"
+          label={
+            <AddButton
+              name="csv"
+              onClick={() =>
+                onDataNodeClick(
+                  NODE_TYPE_SET.INPUT,
+                  'CsvData',
+                  FILE_TYPE_SET.CSV,
+                )
+              }
+            />
+          }
           onDragStart={(event: DragEvent) =>
             onDataNodeDragStart(event, 'CsvData', FILE_TYPE_SET.CSV)
           }
@@ -92,6 +187,9 @@ export const AlgorithmTreeView = React.memo(() => {
             node={node}
             onDragStart={(event, nodeName, functionPath) =>
               onAlgoNodeDragStart(event, nodeName, functionPath)
+            }
+            onAlgoNodeClick={(name, functionPath) =>
+              onAlgoNodeClick(name, functionPath)
             }
             key={i.toFixed()}
           />
@@ -109,12 +207,18 @@ const AlgoNodeComponent = React.memo<{
     nodeName: string,
     functionPath: string,
   ) => void
-}>(({ name, node, onDragStart }) => {
+  onAlgoNodeClick: (nodeName: string, functionPath: string) => void
+}>(({ name, node, onDragStart, onAlgoNodeClick }) => {
   if (isAlgoChild(node)) {
     return (
       <TreeItem
         nodeId={name}
-        label={name}
+        label={
+          <AddButton
+            name={name}
+            onClick={() => onAlgoNodeClick(name, node.functionPath)}
+          />
+        }
         onDragStart={(event: DragEvent) =>
           onDragStart(event, name, node.functionPath)
         }
@@ -130,9 +234,36 @@ const AlgoNodeComponent = React.memo<{
             node={node}
             onDragStart={onDragStart}
             key={i.toFixed()}
+            onAlgoNodeClick={(name, functionPath) =>
+              onAlgoNodeClick(name, functionPath)
+            }
           />
         ))}
       </TreeItem>
     )
   }
+})
+
+const AddButton = React.memo<{
+  name: string
+  onClick: () => void
+}>(({ name, onClick }) => {
+  return (
+    <>
+      <IconButton aria-label="add">
+        <AddIcon onClick={() => onClick()} />
+      </IconButton>
+      <Typography
+        variant="inherit"
+        style={{
+          textOverflow: 'ellipsis',
+          overflow: 'visible',
+          width: '8rem',
+          display: 'inline-block',
+        }}
+      >
+        {name}
+      </Typography>
+    </>
+  )
 })

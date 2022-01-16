@@ -30,11 +30,16 @@ import { ImageFileNode } from './FlowChartNode/ImageFileNode'
 import { AlgorithmNode } from './FlowChartNode/AlgorithmNode'
 import { CsvFileNode } from './FlowChartNode/CsvFileNode'
 import { useDeleteTabByNodeIdListActions } from '../flextlayout/FlexLayoutHook'
+import { CustomEdge } from './CustomEdge'
 
 const componentTypes = {
   ImageFileNode,
   CsvFileNode,
   AlgorithmNode,
+} as const
+
+const edgeTypes = {
+  buttonedge: CustomEdge,
 } as const
 
 export const ReactFlowComponent = React.memo(() => {
@@ -50,6 +55,7 @@ export const ReactFlowComponent = React.memo(() => {
             ...params,
             animated: false,
             style: { width: 5 },
+            type: 'buttonedge',
           },
           flowElements,
         ),
@@ -134,6 +140,7 @@ export const ReactFlowComponent = React.memo(() => {
             onDrop={onDrop}
             onDragOver={onDragOver}
             nodeTypes={componentTypes}
+            edgeTypes={edgeTypes}
           >
             <Controls />
           </ReactFlow>
