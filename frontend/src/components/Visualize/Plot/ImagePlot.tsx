@@ -29,7 +29,10 @@ import {
 import { getImageData } from 'store/slice/DisplayData/DisplayDataActions'
 import { selectImageMaxIndexByNodeId } from 'store/slice/InputNode/InputNodeSelectors'
 import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
-import { selectImageItemShowticklabels } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import {
+  selectImageItemShowticklabels,
+  selectImageItemZsmooth,
+} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 export const ImagePlot = React.memo(() => {
   const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
@@ -159,6 +162,9 @@ const ImagePlotChart = React.memo(() => {
   //   [testData1, testData2],
   // )
 
+  const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
+  const zsmooth = useSelector(selectImageItemZsmooth(itemId))
+  console.log(zsmooth)
   const data = React.useMemo(
     () => [
       {
@@ -172,14 +178,13 @@ const ImagePlotChart = React.memo(() => {
         ],
         hoverongaps: false,
         showscale: false,
-        zsmooth: 'best', // ['best', 'fast', false]
+        zsmooth: zsmooth, // ['best', 'fast', false]
         showlegend: true,
       },
     ],
-    [imageData],
+    [imageData, zsmooth],
   )
 
-  const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
   const layout = {
     title: label,
     margin: {
@@ -204,7 +209,7 @@ const ImagePlotChart = React.memo(() => {
       showline: false,
       autotick: true, // todo
       ticks: '',
-      showticklabels: true, // todo
+      showticklabels: showticklabels, // todo
     },
   }
   const config = {

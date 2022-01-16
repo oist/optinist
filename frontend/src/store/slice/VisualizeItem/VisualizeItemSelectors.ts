@@ -64,3 +64,13 @@ export const selectImageItemShowticklabels =
       throw new Error('invalid VisualaizeItemType')
     }
   }
+
+export const selectImageItemZsmooth =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isImageItem(item)) {
+      return item.zsmooth
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }

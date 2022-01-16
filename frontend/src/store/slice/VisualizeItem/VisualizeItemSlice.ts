@@ -30,6 +30,7 @@ const imageItemInitialValue: ImageItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.IMAGE,
   showticklabels: false,
+  zsmooth: 'best',
 }
 const timeSeriesItemInitialValue: TimeSeriesItem = {
   ...displayDataCommonInitialValue,
@@ -136,6 +137,18 @@ export const visualaizeItemSlice = createSlice({
         targetItem.showticklabels = action.payload.showticklabels
       }
     },
+    setImageItemZsmooth: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        zsmooth: string | boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.zsmooth = action.payload.zsmooth
+      }
+    },
   },
 })
 
@@ -152,6 +165,7 @@ export const {
   setItemType,
   setDisplayDataPath,
   setImageItemShowticklabels,
+  setImageItemZsmooth,
 } = visualaizeItemSlice.actions
 
 export default visualaizeItemSlice.reducer
