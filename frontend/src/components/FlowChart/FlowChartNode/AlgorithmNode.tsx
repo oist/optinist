@@ -14,6 +14,7 @@ import {
 } from '@material-ui/core'
 import ErrorIcon from '@material-ui/icons/Error'
 import Popover from '@material-ui/core/Popover'
+import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
 
 import { OutputPathsDTO } from 'api/Run/Run'
 import { AlgorithmInfo } from 'store/slice/AlgorithmList/AlgorithmListType'
@@ -112,7 +113,7 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
             ([outputKey, outputInfo]) => outputKey === selectedOutputKey,
           )?.[1]
         : undefined
-    const onClick = () => {
+    const onClickElement = () => {
       setParamFormTab()
       if (selectetOutput !== undefined) {
         setDisplayTab(
@@ -139,17 +140,14 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
       }
     }
 
-    const algoArgs = useSelector(selectAlgoArgs(nodeId), algoInfoListEqualtyFn)
-    const algoReturns = useSelector(
-      selectAlgoReturns(nodeId),
-      algoInfoListEqualtyFn,
-    )
-
-    const error = useSelector(selectResultError(nodeId))
-
-    const onClickButton = () => {
+    const onClickParamButton = () => {
       dispatch(toggleParamForm(nodeId))
     }
+
+    const onClickDeleteIcon = () => {
+      alert('delete icon')
+    }
+
     return (
       <div
         style={{
@@ -160,54 +158,21 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
             : undefined,
           border: '1px solid',
         }}
-        onClick={onClick}
+        onClick={onClickElement}
       >
-        <div
-          style={{
-            padding: 8,
-            paddingLeft: 8,
-          }}
-          className="algoName"
+        <IconButton
+          aria-label="delete"
+          style={{ color: 'black', position: 'absolute', top: -20, right: -5 }}
+          onClick={onClickDeleteIcon}
         >
-          <Typography
-            style={{
-              textAlign: 'left',
-              color: error != null ? theme.palette.error.main : undefined,
-            }}
-          >
-            {data.label}
-            <ErrorMessage error={error} />
-          </Typography>
-          <Button variant="outlined" onClick={onClickButton}>
-            ParamForm
-          </Button>
-        </div>
-        <div>
-          {algoArgs != null
-            ? algoArgs
-                .filter((info) => info.type !== 'params')
-                .map((algoInfo, i) => {
-                  return <ArgHandle algoInfo={algoInfo} i={i} nodeId={nodeId} />
-                })
-            : null}
-        </div>
-        {algoReturns != null ? (
-          algoReturns?.map((algoInfo, i) => {
-            return <ReturnHandle algoInfo={algoInfo} i={i} nodeId={nodeId} />
-          })
-        ) : (
-          // algoReturns.lengthが0の場合の応急処置
-          <Handle
-            type="source"
-            position={Position.Right}
-            id={`${nodeId}`}
-            style={{
-              ...rightHandleStyle,
-              top: 15,
-            }}
-            isConnectable={isConnectable}
-          />
-        )}
+          <CloseOutlinedIcon />
+        </IconButton>
+        <AlgoName nodeId={nodeId} data={data} />
+        <Button variant="outlined" onClick={onClickParamButton}>
+          Param
+        </Button>
+        <AlgoArgs nodeId={nodeId} />
+        <AlgoReturns nodeId={nodeId} isConnectable={isConnectable} />
         {outputKeyList != null && outputKeyList.length > 0 && (
           <div className="outputkey">
             <OutputKeySelect
@@ -221,6 +186,83 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
     )
   },
 )
+
+const AlgoName = React.memo<{
+  nodeId: string
+  data: NodeData
+}>(({ nodeId, data }) => {
+  const theme = useTheme()
+  const error = useSelector(selectResultError(nodeId))
+
+  return (
+    <div
+      style={{
+        padding: 8,
+        paddingLeft: 8,
+      }}
+      className="algoName"
+    >
+      <Typography
+        style={{
+          textAlign: 'left',
+          color: error != null ? theme.palette.error.main : undefined,
+        }}
+      >
+        {data.label}
+        <ErrorMessage error={error} />
+      </Typography>
+    </div>
+  )
+})
+
+const AlgoArgs = React.memo<{
+  nodeId: string
+}>(({ nodeId }) => {
+  const algoArgs = useSelector(selectAlgoArgs(nodeId), algoInfoListEqualtyFn)
+
+  return (
+    <>
+      {algoArgs != null
+        ? algoArgs
+            .filter((info) => info.type !== 'params')
+            .map((algoInfo, i) => {
+              return <ArgHandle algoInfo={algoInfo} i={i} nodeId={nodeId} />
+            })
+        : null}
+    </>
+  )
+})
+
+const AlgoReturns = React.memo<{
+  nodeId: string
+  isConnectable: boolean
+}>(({ nodeId, isConnectable }) => {
+  const algoReturns = useSelector(
+    selectAlgoReturns(nodeId),
+    algoInfoListEqualtyFn,
+  )
+  return (
+    <>
+      {algoReturns != null ? (
+        algoReturns?.map((algoInfo, i) => {
+          return <ReturnHandle algoInfo={algoInfo} i={i} nodeId={nodeId} />
+        })
+      ) : (
+        // algoReturns.lengthが0の場合の応急処置
+        <Handle
+          type="source"
+          position={Position.Right}
+          id={`${nodeId}`}
+          style={{
+            ...rightHandleStyle,
+            top: 15,
+          }}
+          isConnectable={isConnectable}
+        />
+      )}
+    </>
+  )
+})
 
 const OutputKeySelect = React.memo<{
   outputKeyList: string[]

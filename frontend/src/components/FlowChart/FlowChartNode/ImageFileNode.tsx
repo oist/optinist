@@ -3,7 +3,8 @@ import { useSelector, useDispatch } from 'react-redux'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
 import { alpha, useTheme } from '@material-ui/core/styles'
 import TextField from '@material-ui/core/TextField'
-import { Typography } from '@material-ui/core'
+import { Typography, IconButton } from '@material-ui/core'
+import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
 
 import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
 import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
@@ -57,7 +58,7 @@ const ImageFileNodeImple = React.memo<NodeProps>(
         }),
       )
     }
-    const onClick = () => {
+    const onClickElement = () => {
       if (filePath != null) {
         setDisplayTab(filePath, DATA_TYPE_SET.IMAGE)
       }
@@ -65,6 +66,11 @@ const ImageFileNodeImple = React.memo<NodeProps>(
     const theme = useTheme()
     const returnType = 'ImageData'
     const imageColor = useHandleColor(returnType)
+
+    const onClickDeleteIcon = () => {
+      alert('delete icon')
+    }
+
     return (
       <div
         className="imageFileNode"
@@ -73,8 +79,15 @@ const ImageFileNodeImple = React.memo<NodeProps>(
             ? alpha(theme.palette.primary.light, 0.1)
             : undefined,
         }}
-        onClick={onClick}
+        onClick={onClickElement}
       >
+        <IconButton
+          aria-label="delete"
+          style={{ color: 'black', position: 'absolute', top: -20, right: -5 }}
+          onClick={onClickDeleteIcon}
+        >
+          <CloseOutlinedIcon />
+        </IconButton>
         <ImageFileSelect
           nodeId={nodeId}
           onChangeFilePath={onChangeFilePath}

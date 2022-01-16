@@ -6,6 +6,7 @@ import {
 } from 'react-flow-renderer'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
 import IconButton from '@mui/material/IconButton'
+
 const foreignObjectSize = 40
 
 export const CustomEdge: React.FC<EdgeProps> = ({
@@ -57,7 +58,6 @@ export const CustomEdge: React.FC<EdgeProps> = ({
         x={edgeCenterX - foreignObjectSize / 2}
         y={edgeCenterY - foreignObjectSize / 2}
         className="edgebutton-foreignobject"
-        // requiredExtensions="http://www.w3.org/1999/xhtml"
       >
         <body>
           <IconButton aria-label="delete">

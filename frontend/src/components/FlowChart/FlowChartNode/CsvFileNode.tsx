@@ -2,7 +2,8 @@ import React, { CSSProperties } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
 import { alpha, useTheme } from '@material-ui/core/styles'
-import { Typography } from '@material-ui/core'
+import { Typography, IconButton } from '@material-ui/core'
+import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
 
 import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
 import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
@@ -43,12 +44,17 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   const onChangeFilePath = (path: string) => {
     dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
   }
-  const onClick = () => {
+  const onClickElement = () => {
     if (filePath != null) {
       setDisplayTab(filePath, DATA_TYPE_SET.TABLE)
     }
   }
   const theme = useTheme()
+
+  const onClickDeleteIcon = () => {
+    alert('delete icon')
+  }
+
   return (
     <div
       style={{
@@ -57,8 +63,15 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
           ? alpha(theme.palette.primary.light, 0.1)
           : undefined,
       }}
-      onClick={onClick}
+      onClick={onClickElement}
     >
+      <IconButton
+        aria-label="delete"
+        style={{ color: 'black', position: 'absolute', top: -20, right: -5 }}
+        onClick={onClickDeleteIcon}
+      >
+        <CloseOutlinedIcon />
+      </IconButton>
       <CsvFileSelect
         nodeId={nodeId}
         onChangeFilePath={onChangeFilePath}
