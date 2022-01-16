@@ -2,50 +2,17 @@
 from fastapi import APIRouter
 import os
 import yaml
-from .utils import get_dict2nest
+from .utils.utils import dict2nest
+from .utils.params import get_params
 
 router = APIRouter()
-
-nwb_config = {
-  'session_description': 'optinist',
-  'identifier': 'optinist',
-  'experiment_description': 'None',
-  'device': {
-      'name': 'Microscope device',
-      'description': 'Microscope Information',
-      'manufacturer': 'Microscope Manufacture'
-  },
-  'optical_channel': {
-      'name': 'OpticalChannel',
-      'description': 'optical channel',
-      'emission_lambda': 500.5
-  },
-  'imaging_plane': {
-      'name': 'ImagingPlane',
-      'description': 'standard',
-      'imaging_rate': 30.5,
-      'excitation_lambda': 600.5,
-      'indicator': 'GCaMap',
-      'location': 'V1',
-  },
-  'image_series': {
-      'name': 'TwoPhotonSeries',
-      'starting_time': 0,
-      'starting_frame': 0,
-  },
-  'ophys': {
-      'plane_segmentation': {
-        'children': {
-          'name': 'PlaneSegmentation',
-          'description': '',
-        }
-      }
-  }
-}
 
 
 @router.get("/nwb")
 async def params():
-    config = get_dict2nest(nwb_config)
-    print(config)
+    filepath = os.path.join('..', 'optinist', 'config', 'nwb.yaml')
+    config = get_params(filepath)
+    
+    config = dict2nest(config)
+
     return config

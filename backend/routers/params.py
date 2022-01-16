@@ -1,7 +1,6 @@
-
-from fastapi import APIRouter
 import os
-import yaml
+from fastapi import APIRouter
+from .utils.params import get_params
 
 router = APIRouter()
 
@@ -10,9 +9,5 @@ router = APIRouter()
 async def params(name: str):
     config = {}
     filepath = os.path.join('..', 'optinist', 'config', f'{name}.yaml')
-    print('filepath:', filepath)
-    if os.path.exists(filepath):
-        with open(filepath) as f:
-            config = yaml.safe_load(f)
-    print(config)
+    config = get_params(filepath)
     return config
