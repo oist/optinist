@@ -5,7 +5,7 @@ import {
   getEdgeCenter,
 } from 'react-flow-renderer'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
-import IconButton from '@mui/material/IconButton'
+import { IconButton } from '@material-ui/core'
 
 const foreignObjectSize = 40
 
