@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useTheme } from '@material-ui/core/styles'
 import Box from '@material-ui/core/Box'
 import Paper from '@material-ui/core/Paper'
-import IconButton from '@material-ui/core/IconButton'
-import MoreHorizIcon from '@material-ui/icons/MoreHoriz'
 
 import { arrayEqualityFn } from 'utils/EqualityUtils'
 
@@ -57,19 +55,14 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
       key={itemId}
       style={{
         width: '100%',
-        // width: 300,
-        // height: 300,
         margin: theme.spacing(1),
         padding: theme.spacing(1),
+        cursor: 'pointer',
         borderColor: isSelected ? theme.palette.primary.light : undefined,
       }}
+      onClick={onSelect}
     >
-      <Box display="flex">
-        <Box flexGrow={1}>
-          <IconButton onClick={onSelect}>
-            <MoreHorizIcon />
-          </IconButton>
-        </Box>
+      <Box display="flex" justifyContent="flex-end">
         <Box>
           <VisualizeItemDeleteButton itemId={itemId} />
         </Box>

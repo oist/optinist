@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { DATA_TYPE } from 'store/slice/DisplayData/DisplayDataType'
 import {
   selectVisualizeDataFilePath,
