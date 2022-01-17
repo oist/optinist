@@ -47,6 +47,10 @@ export interface ImageItem extends DisplayDataItemBaseType {
   showline: boolean
   showgrid: boolean
   showscale: boolean
+  colors: {
+    rgb: string
+    offset: string
+  }[]
 }
 export interface TimeSeriesItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.TIME_SERIES

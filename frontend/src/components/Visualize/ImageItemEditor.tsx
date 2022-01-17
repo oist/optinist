@@ -12,6 +12,7 @@ import {
   selectImageItemShowticklabels,
   selectImageItemZsmooth,
   selectImageItemShowScale,
+  selectImageItemColors,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from './VisualizeItemEditor'
 
@@ -21,6 +22,7 @@ import {
   setImageItemShowticklabels,
   setImageItemZsmooth,
   setImageItemShowScale,
+  setImageItemColors,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 import { GradientPicker } from 'react-linear-gradient-picker'
@@ -36,7 +38,7 @@ export const ImageItemEditor: React.FC = () => {
       <ShowGrid />
       <ShowScale />
       <Zsmooth />
-      <ColorScale />
+      <GradientColorPicker />
     </div>
   )
 }
@@ -131,35 +133,15 @@ const Zsmooth: React.FC = () => {
   )
 }
 
-const ColorScale = React.memo(() => {
-  const [colors, setColors] = React.useState([
-    { rgb: `rgb(255, 255, 255)`, offset: '0' },
-    { rgb: `rgb(255, 255, 255)`, offset: '0.25' },
-    { rgb: `rgb(0, 0, 0)`, offset: '0.5' },
-    { rgb: `rgb(0, 0, 0)`, offset: '0.75' },
-    { rgb: `rgb(0, 0, 0)`, offset: '1.0' },
-  ])
+const GradientColorPicker: React.FC = () => {
+  const itemId = React.useContext(SelectedItemIdContext)
+  const colors = useSelector(selectImageItemColors(itemId))
+  const dispatch = useDispatch()
 
-  return <GradientColorPicker setColors={setColors} colors={colors} />
-})
-
-interface GradientColorPickerProps {
-  setColors: (colors: { rgb: string; offset: string }[]) => void
-  colors: {
-    rgb: string
-    offset: string
-  }[]
-  label?: string
-}
-
-const GradientColorPicker: React.FC<GradientColorPickerProps> = ({
-  setColors,
-  colors,
-}) => {
-  const palette: PALETTE_COLOR_SHAPE_TYPE[] = colors.map((color, index) => {
+  const palette: PALETTE_COLOR_SHAPE_TYPE[] = colors.map((value) => {
     return {
-      offset: color.offset,
-      color: color.rgb,
+      offset: value.offset,
+      color: value.rgb,
     }
   })
 
@@ -177,7 +159,7 @@ const GradientColorPicker: React.FC<GradientColorPickerProps> = ({
         offset: value.offset,
       }
     })
-    setColors(colorCode)
+    dispatch(setImageItemColors({ itemId, colors: colorCode }))
   }
 
   return (
@@ -197,13 +179,11 @@ const GradientColorPicker: React.FC<GradientColorPickerProps> = ({
 type WrapperPropTypes = {
   onSelect?: (color: string, opacity?: number) => void
   color?: string
-  opacity?: number
 }
 
 const WrappedSketchPicker: React.FC<WrapperPropTypes> = ({
   onSelect,
   color,
-  opacity,
 }) => {
   return (
     <SketchPicker

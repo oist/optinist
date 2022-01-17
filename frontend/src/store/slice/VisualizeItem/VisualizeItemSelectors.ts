@@ -102,3 +102,12 @@ export const selectImageItemShowScale =
       throw new Error('invalid VisualaizeItemType')
     }
   }
+
+export const selectImageItemColors = (itemId: number) => (state: RootState) => {
+  const item = selectVisualizeItems(state)[itemId]
+  if (isImageItem(item)) {
+    return item.colors
+  } else {
+    throw new Error('invalid VisualaizeItemType')
+  }
+}

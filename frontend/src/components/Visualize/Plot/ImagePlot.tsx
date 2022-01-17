@@ -35,7 +35,9 @@ import {
   selectImageItemShowLine,
   selectImageItemShowGrid,
   selectImageItemShowScale,
+  selectImageItemColors,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import { color } from '@mui/system'
 
 export const ImagePlot = React.memo(() => {
   const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
@@ -170,26 +172,35 @@ const ImagePlotChart = React.memo(() => {
   const zsmooth = useSelector(selectImageItemZsmooth(itemId))
   const showgrid = useSelector(selectImageItemShowGrid(itemId))
   const showscale = useSelector(selectImageItemShowScale(itemId))
+  const colorscale = useSelector(selectImageItemColors(itemId))
 
-  console.log(zsmooth)
   const data = React.useMemo(
     () => [
       {
         z: imageData,
         type: 'heatmap',
         name: 'images',
-        colorscale: [
-          // todo グラデーションの設定
-          [0, '#000000'],
-          [1, '#ffffff'],
-        ],
+        colorscale: colorscale.map((value) => {
+          let offset: number = parseFloat(value.offset)
+          const offsets: number[] = colorscale.map((v) => {
+            return parseFloat(v.offset)
+          })
+          // plotlyは端[0.0, 1.0]がないとダメなので、その設定
+          if (offset === Math.max(...offsets)) {
+            offset = 1.0
+          }
+          if (offset === Math.min(...offsets)) {
+            offset = 0.0
+          }
+          return [offset, value.rgb]
+        }),
         hoverongaps: false,
         showscale: showscale,
         zsmooth: zsmooth, // ['best', 'fast', false]
         showlegend: true,
       },
     ],
-    [imageData, zsmooth, showscale],
+    [imageData, zsmooth, showscale, colorscale],
   )
 
   const layout = {

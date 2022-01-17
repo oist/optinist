@@ -32,6 +32,10 @@ const imageItemInitialValue: ImageItem = {
   zsmooth: 'best',
   showgrid: false,
   showscale: false,
+  colors: [
+    { rgb: `rgb(0, 0, 0)`, offset: '0' },
+    { rgb: `rgb(255, 255, 255)`, offset: '1.0' },
+  ],
 }
 const timeSeriesItemInitialValue: TimeSeriesItem = {
   ...displayDataCommonInitialValue,
@@ -186,6 +190,21 @@ export const visualaizeItemSlice = createSlice({
         targetItem.showscale = action.payload.showscale
       }
     },
+    setImageItemColors: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        colors: {
+          rgb: string
+          offset: string
+        }[]
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.colors = action.payload.colors
+      }
+    },
   },
 })
 
@@ -206,6 +225,7 @@ export const {
   setImageItemShowLine,
   setImageItemShowGrid,
   setImageItemShowScale,
+  setImageItemColors,
 } = visualaizeItemSlice.actions
 
 export default visualaizeItemSlice.reducer
