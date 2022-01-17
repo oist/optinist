@@ -28,7 +28,10 @@ const imageItemInitialValue: ImageItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.IMAGE,
   showticklabels: false,
+  showline: true,
   zsmooth: 'best',
+  showgrid: false,
+  showscale: false,
 }
 const timeSeriesItemInitialValue: TimeSeriesItem = {
   ...displayDataCommonInitialValue,
@@ -147,6 +150,42 @@ export const visualaizeItemSlice = createSlice({
         targetItem.zsmooth = action.payload.zsmooth
       }
     },
+    setImageItemShowLine: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        showline: boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.showline = action.payload.showline
+      }
+    },
+    setImageItemShowGrid: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        showgrid: boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.showgrid = action.payload.showgrid
+      }
+    },
+    setImageItemShowScale: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        showscale: boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.showscale = action.payload.showscale
+      }
+    },
   },
 })
 
@@ -164,6 +203,9 @@ export const {
   setDisplayDataPath,
   setImageItemShowticklabels,
   setImageItemZsmooth,
+  setImageItemShowLine,
+  setImageItemShowGrid,
+  setImageItemShowScale,
 } = visualaizeItemSlice.actions
 
 export default visualaizeItemSlice.reducer

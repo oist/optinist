@@ -72,3 +72,33 @@ export const selectImageItemZsmooth =
       throw new Error('invalid VisualaizeItemType')
     }
   }
+
+export const selectImageItemShowLine =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isImageItem(item)) {
+      return item.showline
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectImageItemShowGrid =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isImageItem(item)) {
+      return item.showgrid
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectImageItemShowScale =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isImageItem(item)) {
+      return item.showscale
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }

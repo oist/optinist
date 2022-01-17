@@ -32,6 +32,9 @@ import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelector
 import {
   selectImageItemShowticklabels,
   selectImageItemZsmooth,
+  selectImageItemShowLine,
+  selectImageItemShowGrid,
+  selectImageItemShowScale,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 export const ImagePlot = React.memo(() => {
@@ -163,7 +166,11 @@ const ImagePlotChart = React.memo(() => {
   // )
 
   const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
+  const showline = useSelector(selectImageItemShowLine(itemId))
   const zsmooth = useSelector(selectImageItemZsmooth(itemId))
+  const showgrid = useSelector(selectImageItemShowGrid(itemId))
+  const showscale = useSelector(selectImageItemShowScale(itemId))
+
   console.log(zsmooth)
   const data = React.useMemo(
     () => [
@@ -177,12 +184,12 @@ const ImagePlotChart = React.memo(() => {
           [1, '#ffffff'],
         ],
         hoverongaps: false,
-        showscale: false,
+        showscale: showscale,
         zsmooth: zsmooth, // ['best', 'fast', false]
         showlegend: true,
       },
     ],
-    [imageData, zsmooth],
+    [imageData, zsmooth, showscale],
   )
 
   const layout = {
@@ -195,18 +202,18 @@ const ImagePlotChart = React.memo(() => {
     dragmode: 'pan',
     xaxis: {
       autorange: true,
-      showgrid: false,
+      showgrid: showgrid,
+      showline: showline,
       zeroline: false,
-      showline: false,
       autotick: true,
       ticks: '',
       showticklabels: showticklabels,
     },
     yaxis: {
       autorange: 'reversed',
-      showgrid: false,
+      showgrid: showgrid,
+      showline: showline,
       zeroline: false,
-      showline: false,
       autotick: true, // todo
       ticks: '',
       showticklabels: showticklabels, // todo

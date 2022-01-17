@@ -44,6 +44,9 @@ export interface ImageItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.IMAGE
   showticklabels: boolean
   zsmooth: string | boolean
+  showline: boolean
+  showgrid: boolean
+  showscale: boolean
 }
 export interface TimeSeriesItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.TIME_SERIES
