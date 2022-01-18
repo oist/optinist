@@ -62,6 +62,7 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
     <div
       style={{
         height: '100%',
+        width: '230px',
         background: selected
           ? alpha(theme.palette.primary.light, 0.1)
           : undefined,

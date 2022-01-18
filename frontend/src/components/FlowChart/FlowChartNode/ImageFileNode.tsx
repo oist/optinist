@@ -77,8 +77,9 @@ const ImageFileNodeImple = React.memo<NodeProps>(
 
     return (
       <div
-        className="imageFileNode"
         style={{
+          height: '100%',
+          width: '250px',
           background: elementSelected
             ? alpha(theme.palette.primary.light, 0.1)
             : undefined,
@@ -94,7 +95,7 @@ const ImageFileNodeImple = React.memo<NodeProps>(
         <ImageFileSelect
           nodeId={nodeId}
           onChangeFilePath={onChangeFilePath}
-          filePath={filePath ? filePath.split('/').reverse()[0] : ''}
+          filePath={filePath ?? ''}
         />
         <TextField
           inputRef={inputRef}

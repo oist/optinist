@@ -38,11 +38,6 @@
   width: 8em
 }
 
-.imageFileNode {
-  height: 100%;
-  width: 250px;
-}
-
 .selectFilePath {
   text-underline-offset: 3px;
   word-break: break-all;
