@@ -37,7 +37,7 @@ import {
   selectImageItemShowScale,
   selectImageItemColors,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { color } from '@mui/system'
+import { fileURLToPath } from 'url'
 
 export const ImagePlot = React.memo(() => {
   const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
@@ -49,7 +49,7 @@ export const ImagePlot = React.memo(() => {
   const error = useSelector(selectImageDataError(path))
   React.useEffect(() => {
     if (!isInitialized) {
-      dispatch(getImageData({ path, maxIndex: maxIndex ?? undefined }))
+      dispatch(getImageData({ path, maxIndex: maxIndex ?? 1 }))
     }
   }, [dispatch, isInitialized, path, maxIndex])
   if (isPending) {
@@ -118,7 +118,7 @@ const ImagePlotChart = React.memo(() => {
     nodeId,
     itemId,
   } = React.useContext(DisplayDataContext)
-  const label = useSelector(selectNodeLabelById(nodeId))
+  // const label = useSelector(selectNodeLabelById(nodeId))
   const imageData = useSelector(selectActiveImageData(path), imageDataEqualtyFn)
   // const testData1 = [
   //   [0, 10, 30],
@@ -204,7 +204,7 @@ const ImagePlotChart = React.memo(() => {
   )
 
   const layout = {
-    title: label,
+    title: path.split('/').reverse()[0],
     margin: {
       t: 30, // top
       l: 120, // left

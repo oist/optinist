@@ -23,16 +23,51 @@ import {
   setImageItemZsmooth,
   setImageItemShowScale,
   setImageItemColors,
+  setDisplayDataPath,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 import { GradientPicker } from 'react-linear-gradient-picker'
 import { SketchPicker } from 'react-color'
 import { PALETTE_COLOR_SHAPE_TYPE } from 'react-linear-gradient-picker'
 import 'react-linear-gradient-picker/dist/index.css'
+import { FileSelect } from 'components/FlowChart/FlowChartNode/FileSelect'
+import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
+import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
+import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
 
 export const ImageItemEditor: React.FC = () => {
+  const itemId = React.useContext(SelectedItemIdContext)
+  const [filePath, setFilePath] = useState('')
+  const dispatch = useDispatch()
+  const onSelectFile = (path: string) => {
+    setFilePath(path)
+    dispatch(setDisplayDataPath({ nodeId: '', filePath: path, itemId }))
+  }
+
+  const {
+    filePath: uploadedFilePath,
+    onUploadFile,
+    pending,
+    uninitialized,
+    progress,
+    error,
+  } = useFileUploader(FILE_TYPE_SET.IMAGE)
+  const onUploadFileHandle = (formData: FormData, fileName: string) => {
+    onUploadFile(formData, fileName)
+    if (uploadedFilePath != null) {
+      // onChangeFilePath(uploadedFilePath)
+    }
+  }
+
   return (
     <div style={{ margin: '10px' }}>
+      <FileSelect
+        filePath={filePath ?? ''}
+        onSelectFile={onSelectFile}
+        onUploadFile={onUploadFileHandle}
+        fileTreeType={FILE_TREE_TYPE_SET.IMAGE}
+        selectButtonLabel="Select Image"
+      />
       <Showticklabels />
       <ShowLine />
       <ShowGrid />

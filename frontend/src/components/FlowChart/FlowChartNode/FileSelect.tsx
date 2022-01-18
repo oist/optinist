@@ -44,6 +44,7 @@ export const FileSelect = React.memo<FileSelectProps>(
     }
     const [open, setOpen] = React.useState(false)
     const accept = getFileInputAccept(fileTreeType)
+    const fileName = filePath.split('/').reverse()[0]
     return (
       <div
         style={{
@@ -71,11 +72,11 @@ export const FileSelect = React.memo<FileSelectProps>(
             }}
           />
           <Typography className="selectFilePath" variant="caption">
-            {!!filePath ? filePath : "File doesn't select."}
+            {!!fileName ? fileName : "File doesn't select."}
           </Typography>
         </div>
         <FileSelectDialog
-          selectedFilePath={filePath ?? ''}
+          selectedFilePath={fileName ?? ''}
           open={open}
           onClickOk={(path) => {
             onSelectFile(path)
