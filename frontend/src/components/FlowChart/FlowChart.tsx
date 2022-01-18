@@ -1,6 +1,6 @@
 import React from 'react'
 import clsx from 'clsx'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import Drawer from '@material-ui/core/Drawer'
 import { default as MuiToolbar } from '@material-ui/core/Toolbar'
 import { createStyles, Theme, makeStyles } from '@material-ui/core/styles'
@@ -11,7 +11,7 @@ import RightDrawer, { rightDrawerWidth } from './RightDrawer'
 import { selectRightDrawerIsOpen } from 'store/slice/RightDrawer/RightDrawerSelectors'
 
 const FlowChart: React.FC = () => {
-  const classes = useAppDrawerStyles()
+  const classes = useStyles()
   const open = useSelector(selectRightDrawerIsOpen)
   return (
     <div className={classes.root}>
@@ -41,9 +41,9 @@ const FlowChart: React.FC = () => {
   )
 }
 
-const drawerWidth = 240
+export const drawerWidth = 240
 
-export const useAppDrawerStyles = makeStyles((theme: Theme) =>
+const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
       display: 'flex',

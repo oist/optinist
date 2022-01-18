@@ -1,11 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import {
-  Elements,
-  removeElements,
-  Node,
-  Position,
-  isEdge,
-} from 'react-flow-renderer'
+import { Elements, removeElements, Node, Position } from 'react-flow-renderer'
 import {
   FLOW_ELEMENT_SLICE_NAME,
   FlowElement,

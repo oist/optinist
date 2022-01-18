@@ -8,12 +8,12 @@ import {
   fileUploaderReducer,
   flowElementReducer,
   inputNodeReducer,
-  layoutTabReducer,
   runPipelineResultReducer,
   nwbReducer,
   filesTreeReducer,
   handleTypeColorReducer,
   rightDrawerReducer,
+  visualaizeItemReducer,
 } from './slice'
 
 export const store = configureStore({
@@ -24,12 +24,12 @@ export const store = configureStore({
     fileUploader: fileUploaderReducer,
     flowElement: flowElementReducer,
     inputNode: inputNodeReducer,
-    layoutTab: layoutTabReducer,
     handleColor: handleTypeColorReducer,
     filesTree: filesTreeReducer,
     nwb: nwbReducer,
     runPipelineResult: runPipelineResultReducer,
     rightDrawer: rightDrawerReducer,
+    visualaizeItem: visualaizeItemReducer,
     [webSocketApi.reducerPath]: webSocketApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>

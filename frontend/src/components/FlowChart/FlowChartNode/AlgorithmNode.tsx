@@ -29,16 +29,11 @@ import {
 } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
 import { setSelectedOutputKey } from 'store/slice/AlgorithmNode/AlgorithmNodeSlice'
 import { NodeData } from 'store/slice/FlowElement/FlowElementType'
-import { toDataType } from 'store/slice/DisplayData/DisplayDataUtils'
 import {
   selectOutputPaths,
   selectResultError,
 } from 'store/slice/RunPipelineResult/RenPipelineResultSelectors'
 
-import {
-  useDisplayDataTabAciton,
-  useParamFormTabAction,
-} from 'components/flextlayout/FlexLayoutHook'
 import { useHandleColor } from './HandleColorHook'
 import { toHandleId, isValidConnection } from './FlowChartUtils'
 import { toggleParamForm } from 'store/slice/RightDrawer/RightDrawerSlice'
@@ -78,8 +73,6 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
     const outputKeyList =
       outputPaths != null ? getOutputKeyList(outputPaths, functionPath) : null
 
-    const setParamFormTab = useParamFormTabAction(nodeId)
-    const { setDisplayTab } = useDisplayDataTabAciton(nodeId)
     React.useEffect(() => {
       if (outputPaths != null) {
         const keyList = getOutputKeyList(outputPaths, functionPath)
@@ -94,36 +87,7 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
           )
         }
       }
-    }, [
-      dispatch,
-      outputPaths,
-      functionPath,
-      setDisplayTab,
-      nodeId,
-      selectedOutputKey,
-    ])
-
-    React.useEffect(() => {
-      // Nodeが置かれたタイミングでparamFormのタブを作成する
-      setParamFormTab()
-    }, [setParamFormTab])
-
-    const selectetOutput =
-      outputPaths != null && getOutputPathMap(outputPaths, functionPath) != null
-        ? Object.entries(outputPaths[functionPath]).find(
-            ([outputKey, outputInfo]) => outputKey === selectedOutputKey,
-          )?.[1]
-        : undefined
-    const onClickElement = () => {
-      setParamFormTab()
-      if (selectetOutput !== undefined) {
-        setDisplayTab(
-          selectetOutput.path,
-          toDataType(selectetOutput.type),
-          selectedOutputKey ?? undefined,
-        )
-      }
-    }
+    }, [dispatch, outputPaths, functionPath, nodeId, selectedOutputKey])
 
     const onChangeOutputKey = (outputKey: string) => {
       dispatch(
@@ -132,13 +96,6 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
           selectedOutputKey: outputKey,
         }),
       )
-      if (selectetOutput !== undefined) {
-        setDisplayTab(
-          selectetOutput.path,
-          toDataType(selectetOutput.type),
-          selectedOutputKey ?? selectetOutput.path,
-        )
-      }
     }
 
     const onClickParamButton = () => {
@@ -159,7 +116,6 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
             : undefined,
           border: '1px solid',
         }}
-        onClick={onClickElement}
       >
         <IconButton
           aria-label="delete"

@@ -12,7 +12,7 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
 
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
-import { DisplayDataTabContext } from 'App'
+import { DisplayDataContext } from '../DisplayDataItem'
 import {
   decrementImageActiveIndex,
   incrementImageActiveIndex,
@@ -29,9 +29,18 @@ import {
 import { getImageData } from 'store/slice/DisplayData/DisplayDataActions'
 import { selectImageMaxIndexByNodeId } from 'store/slice/InputNode/InputNodeSelectors'
 import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
+import {
+  selectImageItemShowticklabels,
+  selectImageItemZsmooth,
+  selectImageItemShowLine,
+  selectImageItemShowGrid,
+  selectImageItemShowScale,
+  selectImageItemColors,
+} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import { color } from '@mui/system'
 
 export const ImagePlot = React.memo(() => {
-  const { filePath: path, nodeId } = React.useContext(DisplayDataTabContext)
+  const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
   const maxIndex = useSelector(selectImageMaxIndexByNodeId(nodeId))
   const dispatch = useDispatch()
   const isPending = useSelector(selectImageDataIsPending(path))
@@ -55,7 +64,7 @@ export const ImagePlot = React.memo(() => {
 })
 
 const ImagePlotImple = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataTabContext)
+  const { filePath: path } = React.useContext(DisplayDataContext)
   const maxIndex = useSelector(selectImageDataMaxIndex(path))
   const activeIndex = useSelector(selectImageDataActiveIndex(path))
   const dispatch = useDispatch()
@@ -104,7 +113,11 @@ const ImagePlotImple = React.memo(() => {
 })
 
 const ImagePlotChart = React.memo(() => {
-  const { filePath: path, nodeId } = React.useContext(DisplayDataTabContext)
+  const {
+    filePath: path,
+    nodeId,
+    itemId,
+  } = React.useContext(DisplayDataContext)
   const label = useSelector(selectNodeLabelById(nodeId))
   const imageData = useSelector(selectActiveImageData(path), imageDataEqualtyFn)
   // const testData1 = [
@@ -154,23 +167,40 @@ const ImagePlotChart = React.memo(() => {
   //   [testData1, testData2],
   // )
 
+  const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
+  const showline = useSelector(selectImageItemShowLine(itemId))
+  const zsmooth = useSelector(selectImageItemZsmooth(itemId))
+  const showgrid = useSelector(selectImageItemShowGrid(itemId))
+  const showscale = useSelector(selectImageItemShowScale(itemId))
+  const colorscale = useSelector(selectImageItemColors(itemId))
+
   const data = React.useMemo(
     () => [
       {
         z: imageData,
         type: 'heatmap',
         name: 'images',
-        colorscale: [
-          [0, '#000000'],
-          [1, '#ffffff'],
-        ],
+        colorscale: colorscale.map((value) => {
+          let offset: number = parseFloat(value.offset)
+          const offsets: number[] = colorscale.map((v) => {
+            return parseFloat(v.offset)
+          })
+          // plotlyは端[0.0, 1.0]がないとダメなので、その設定
+          if (offset === Math.max(...offsets)) {
+            offset = 1.0
+          }
+          if (offset === Math.min(...offsets)) {
+            offset = 0.0
+          }
+          return [offset, value.rgb]
+        }),
         hoverongaps: false,
-        showscale: false,
-        zsmooth: 'best', // ['best', 'fast', false]
+        showscale: showscale,
+        zsmooth: zsmooth, // ['best', 'fast', false]
         showlegend: true,
       },
     ],
-    [imageData],
+    [imageData, zsmooth, showscale, colorscale],
   )
 
   const layout = {
@@ -183,25 +213,25 @@ const ImagePlotChart = React.memo(() => {
     dragmode: 'pan',
     xaxis: {
       autorange: true,
-      showgrid: false,
+      showgrid: showgrid,
+      showline: showline,
       zeroline: false,
-      showline: false,
       autotick: true,
       ticks: '',
-      showticklabels: false,
+      showticklabels: showticklabels,
     },
     yaxis: {
       autorange: 'reversed',
-      showgrid: false,
+      showgrid: showgrid,
+      showline: showline,
       zeroline: false,
-      showline: false,
-      autotick: true,
+      autotick: true, // todo
       ticks: '',
-      showticklabels: false,
+      showticklabels: showticklabels, // todo
     },
   }
   const config = {
-    displayModeBar: false,
+    displayModeBar: true,
     scrollZoom: true,
   }
   return (

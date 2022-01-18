@@ -1,13 +1,13 @@
 import React from 'react'
-import { DisplayDataTabContext } from 'App'
 import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
 import { TablePlot } from './TablePlot'
 import { TimeSeries } from './TimeSeries'
 import { HeatMap } from './HeatMap'
 import { ImagePlot } from './ImagePlot'
+import { DisplayDataContext } from '../DisplayDataItem'
 
 const Plot = React.memo(() => {
-  const { dataType } = React.useContext(DisplayDataTabContext)
+  const { dataType } = React.useContext(DisplayDataContext)
   switch (dataType) {
     case DATA_TYPE_SET.TABLE:
       return <TablePlot />
