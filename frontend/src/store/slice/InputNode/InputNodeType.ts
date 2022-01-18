@@ -23,6 +23,4 @@ interface InputNodeBaseType<T extends FILE_TYPE> {
 
 export interface CsvInputNode extends InputNodeBaseType<'csv'> {}
 
-export interface ImageInputNode extends InputNodeBaseType<'image'> {
-  maxIndex: number
-}
+export interface ImageInputNode extends InputNodeBaseType<'image'> {}

@@ -62,6 +62,16 @@ export const selectImageItemZsmooth =
     }
   }
 
+export const selectImageItemMaxIndex =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isImageItem(item)) {
+      return item.maxIndex
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
 export const selectImageItemShowLine =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]

@@ -13,6 +13,7 @@ import {
   selectImageItemZsmooth,
   selectImageItemShowScale,
   selectImageItemColors,
+  selectImageItemMaxIndex,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from './VisualizeItemEditor'
 
@@ -24,6 +25,7 @@ import {
   setImageItemShowScale,
   setImageItemColors,
   setDisplayDataPath,
+  setImageItemMaxIndex,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 import {
@@ -37,6 +39,7 @@ import { FileSelect } from 'components/FlowChart/FlowChartNode/FileSelect'
 import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
+import { TextField } from '@material-ui/core'
 
 export const ImageItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
@@ -68,6 +71,7 @@ export const ImageItemEditor: React.FC = () => {
         fileTreeType={FILE_TREE_TYPE_SET.IMAGE}
         selectButtonLabel="Select Image"
       />
+      <MaxIndex />
       <Showticklabels />
       <ShowLine />
       <ShowGrid />
@@ -164,6 +168,33 @@ const Zsmooth: React.FC = () => {
         </Select>
       }
       label="smooth"
+    />
+  )
+}
+
+const MaxIndex: React.FC = () => {
+  const itemId = React.useContext(SelectedItemIdContext)
+  const maxIndex = useSelector(selectImageItemMaxIndex(itemId))
+  const dispatch = useDispatch()
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value === '' ? '' : Number(event.target.value)
+    if (typeof newValue === 'number') {
+      dispatch(setImageItemMaxIndex({ itemId, maxIndex: newValue }))
+    }
+  }
+  return (
+    <FormControlLabel
+      control={
+        <TextField
+          type="number"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          onChange={onChange}
+          defaultValue={maxIndex}
+        />
+      }
+      label="maxIndex"
     />
   )
 }

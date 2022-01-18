@@ -27,6 +27,7 @@ const displayDataCommonInitialValue = {
 const imageItemInitialValue: ImageItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.IMAGE,
+  maxIndex: 10,
   showticklabels: false,
   showline: true,
   zsmooth: 'best',
@@ -226,6 +227,18 @@ export const visualaizeItemSlice = createSlice({
         targetItem.colors = action.payload.colors
       }
     },
+    setImageItemMaxIndex: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        maxIndex: number
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.maxIndex = action.payload.maxIndex
+      }
+    },
   },
 })
 
@@ -249,6 +262,7 @@ export const {
   setImageItemShowGrid,
   setImageItemShowScale,
   setImageItemColors,
+  setImageItemMaxIndex,
 } = visualaizeItemSlice.actions
 
 export default visualaizeItemSlice.reducer

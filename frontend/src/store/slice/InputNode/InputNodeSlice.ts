@@ -17,7 +17,6 @@ import { isImageInputNode } from './InputNodeUtils'
 const initialState: InputNode = {
   [INITIAL_IMAGE_ELEMENT_ID]: {
     fileType: FILE_TYPE_SET.IMAGE,
-    maxIndex: 10,
   },
 }
 
@@ -33,15 +32,12 @@ export const inputNodeSlice = createSlice({
       action: PayloadAction<{
         nodeId: string
         filePath: string
-        maxIndex: number
+        // maxIndex: number
       }>,
     ) {
-      const { nodeId, filePath, maxIndex } = action.payload
+      // const { nodeId, filePath, maxIndex } = action.payload
+      const { nodeId, filePath } = action.payload
       state[nodeId].selectedFilePath = filePath
-      const inputNode = state[nodeId]
-      if (isImageInputNode(inputNode)) {
-        inputNode.maxIndex = maxIndex
-      }
     },
     setInputNodeFilePath(
       state,
@@ -69,7 +65,6 @@ export const inputNodeSlice = createSlice({
             case FILE_TYPE_SET.IMAGE:
               state[node.id] = {
                 fileType,
-                maxIndex: 10,
               }
               break
           }

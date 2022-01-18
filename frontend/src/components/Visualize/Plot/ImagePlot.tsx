@@ -23,7 +23,7 @@ import {
   selectActiveImageData,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getImageData } from 'store/slice/DisplayData/DisplayDataActions'
-import { selectImageMaxIndexByNodeId } from 'store/slice/InputNode/InputNodeSelectors'
+// import { selectImageMaxIndexByNodeId } from 'store/slice/InputNode/InputNodeSelectors'
 import {
   selectImageItemShowticklabels,
   selectImageItemZsmooth,
@@ -32,27 +32,22 @@ import {
   selectImageItemShowScale,
   selectImageItemColors,
   selectImageItemActiveIndex,
+  selectImageItemMaxIndex,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { RootState } from 'store/store'
 import {
   decrementImageActiveIndex,
   incrementImageActiveIndex,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 export const ImagePlot = React.memo(() => {
-  const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
-  const maxIndex = useSelector((state: RootState) => {
-    if (nodeId) {
-      return selectImageMaxIndexByNodeId(nodeId)(state)
-    } else {
-      return 1
-    }
-  })
-  const dispatch = useDispatch()
+  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+  const maxIndex = useSelector(selectImageItemMaxIndex(itemId))
   const isPending = useSelector(selectImageDataIsPending(path))
   const isInitialized = useSelector(selectImageDataIsInitialized(path))
   const isFulfilled = useSelector(selectImageDataIsFulfilled(path))
   const error = useSelector(selectImageDataError(path))
+
+  const dispatch = useDispatch()
   React.useEffect(() => {
     if (!isInitialized) {
       dispatch(getImageData({ path, maxIndex: maxIndex ?? 1 }))

@@ -9,7 +9,6 @@ import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
 import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
 import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import {
-  selectImageInputNodeMaxIndex,
   selectInputNodeDefined,
   selectInputNodeSelectedFilePath,
 } from 'store/slice/InputNode/InputNodeSelectors'
@@ -47,15 +46,12 @@ export const ImageFileNode = React.memo<NodeProps>((element) => {
 const ImageFileNodeImple = React.memo<NodeProps>(
   ({ id: nodeId, selected: elementSelected }) => {
     const dispatch = useDispatch()
-    const inputRef = React.useRef<HTMLInputElement | null>(null)
     const filePath = useSelector(selectInputNodeSelectedFilePath(nodeId))
-    const defaultMaxIndex = useSelector(selectImageInputNodeMaxIndex(nodeId))
     const onChangeFilePath = (path: string) => {
       dispatch(
         setInputImageNodeFile({
           nodeId,
           filePath: path,
-          maxIndex: Math.max(1, Number(inputRef.current?.value)),
         }),
       )
       const fileName = path.split('/').reverse()[0]
@@ -96,14 +92,6 @@ const ImageFileNodeImple = React.memo<NodeProps>(
           nodeId={nodeId}
           onChangeFilePath={onChangeFilePath}
           filePath={filePath ?? ''}
-        />
-        <TextField
-          inputRef={inputRef}
-          type="number"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          defaultValue={defaultMaxIndex}
         />
         <Handle
           type="source"
