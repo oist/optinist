@@ -81,6 +81,21 @@ export const flowElementSlice = createSlice({
       }
       state.flowElements.push(node)
     },
+    edifFlowElementsLabelById: (
+      state,
+      action: PayloadAction<{
+        nodeId: string
+        fileName: string
+      }>,
+    ) => {
+      let { nodeId, fileName } = action.payload
+      const elementIdx = state.flowElements.findIndex(
+        (ele) => ele.id === nodeId,
+      )
+      if (state.flowElements[elementIdx].data?.label) {
+        state.flowElements[elementIdx].data!.label = fileName
+      }
+    },
   },
 })
 
@@ -89,6 +104,7 @@ export const {
   addFlowElementNode,
   deleteFlowElements,
   deleteFlowElementsById,
+  edifFlowElementsLabelById,
 } = flowElementSlice.actions
 
 export default flowElementSlice.reducer

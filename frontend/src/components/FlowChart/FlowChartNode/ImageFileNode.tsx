@@ -20,7 +20,10 @@ import { useHandleColor } from './HandleColorHook'
 import { FileSelect } from './FileSelect'
 import { LinearProgressWithLabel } from './LinerProgressWithLabel'
 import { toHandleId, isValidConnection } from './FlowChartUtils'
-import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
+import {
+  deleteFlowElementsById,
+  edifFlowElementsLabelById,
+} from 'store/slice/FlowElement/FlowElementSlice'
 
 // Connection部分のレイアウト
 const sourceHandleStyle: CSSProperties = {
@@ -55,6 +58,13 @@ const ImageFileNodeImple = React.memo<NodeProps>(
           maxIndex: Math.max(1, Number(inputRef.current?.value)),
         }),
       )
+      const fileName = path.split('/').reverse()[0]
+      dispatch(
+        edifFlowElementsLabelById({
+          nodeId,
+          fileName,
+        }),
+      )
     }
 
     const theme = useTheme()
@@ -84,7 +94,7 @@ const ImageFileNodeImple = React.memo<NodeProps>(
         <ImageFileSelect
           nodeId={nodeId}
           onChangeFilePath={onChangeFilePath}
-          filePath={filePath ?? ''}
+          filePath={filePath ? filePath.split('/').reverse()[0] : ''}
         />
         <TextField
           inputRef={inputRef}

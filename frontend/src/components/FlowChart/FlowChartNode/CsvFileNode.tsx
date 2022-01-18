@@ -16,7 +16,10 @@ import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeSlice'
 import { toHandleId } from './FlowChartUtils'
 import { FileSelect } from './FileSelect'
 import { LinearProgressWithLabel } from './LinerProgressWithLabel'
-import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
+import {
+  deleteFlowElementsById,
+  edifFlowElementsLabelById,
+} from 'store/slice/FlowElement/FlowElementSlice'
 
 const sourceHandleStyle: CSSProperties = {
   width: 8,
@@ -41,6 +44,13 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   const filePath = useSelector(selectInputNodeSelectedFilePath(nodeId))
   const onChangeFilePath = (path: string) => {
     dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
+    const fileName = path.split('/').reverse()[0]
+    dispatch(
+      edifFlowElementsLabelById({
+        nodeId,
+        fileName,
+      }),
+    )
   }
   const theme = useTheme()
 
@@ -67,7 +77,7 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
       <CsvFileSelect
         nodeId={nodeId}
         onChangeFilePath={onChangeFilePath}
-        filePath={filePath ?? ''}
+        filePath={filePath ? filePath.split('/').reverse()[0] : ''}
       />
       <Handle
         type="source"
