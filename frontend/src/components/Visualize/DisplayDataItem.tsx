@@ -13,7 +13,7 @@ export const DisplayDataItem = React.memo<{ itemId: number }>(({ itemId }) => {
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
   const nodeId = useSelector(selectVisualizeDataNodeId(itemId))
   const dataType = useSelector(selectVisualizeDataType(itemId))
-  if (nodeId != null && filePath != null && dataType != null) {
+  if (filePath != null && dataType != null) {
     return (
       <DisplayDataContext.Provider
         value={{ nodeId, filePath, dataType, itemId }}
@@ -27,7 +27,7 @@ export const DisplayDataItem = React.memo<{ itemId: number }>(({ itemId }) => {
 })
 
 export const DisplayDataContext = React.createContext<{
-  nodeId: string
+  nodeId: string | null
   filePath: string
   dataType: DATA_TYPE
   itemId: number

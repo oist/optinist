@@ -14,6 +14,7 @@ import {
 import { getTimeSeriesData } from 'store/slice/DisplayData/DisplayDataActions'
 import { TimeSeriesData } from 'store/slice/DisplayData/DisplayDataType'
 import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
+import { RootState } from 'store/store'
 
 export const TimeSeries = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -40,7 +41,13 @@ export const TimeSeries = React.memo(() => {
 
 const TimeSeriesImple = React.memo(() => {
   const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
-  const label = useSelector(selectNodeLabelById(nodeId))
+  const label = useSelector((state: RootState) => {
+    if (nodeId) {
+      return selectNodeLabelById(nodeId)(state)
+    } else {
+      return path
+    }
+  })
   const timeSeriesData = useSelector(
     selectTimeSeriesData(path),
     timeSeriesDataEqualityFn,

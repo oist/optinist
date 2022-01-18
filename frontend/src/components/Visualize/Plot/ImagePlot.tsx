@@ -38,10 +38,18 @@ import {
   selectImageItemColors,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { fileURLToPath } from 'url'
+import { RootState } from 'store/store'
 
 export const ImagePlot = React.memo(() => {
   const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
-  const maxIndex = useSelector(selectImageMaxIndexByNodeId(nodeId))
+  // const maxIndex = useSelector(selectImageMaxIndexByNodeId(nodeId))
+  const maxIndex = useSelector((state: RootState) => {
+    if (nodeId) {
+      return selectImageMaxIndexByNodeId(nodeId)(state)
+    } else {
+      return 1
+    }
+  })
   const dispatch = useDispatch()
   const isPending = useSelector(selectImageDataIsPending(path))
   const isInitialized = useSelector(selectImageDataIsInitialized(path))
@@ -118,7 +126,6 @@ const ImagePlotChart = React.memo(() => {
     nodeId,
     itemId,
   } = React.useContext(DisplayDataContext)
-  // const label = useSelector(selectNodeLabelById(nodeId))
   const imageData = useSelector(selectActiveImageData(path), imageDataEqualtyFn)
   // const testData1 = [
   //   [0, 10, 30],

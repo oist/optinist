@@ -92,7 +92,7 @@ export const visualaizeItemSlice = createSlice({
       action: PayloadAction<{
         itemId: number
         filePath: string
-        nodeId: string
+        nodeId: string | null
       }>,
     ) => {
       const { itemId, filePath, nodeId } = action.payload

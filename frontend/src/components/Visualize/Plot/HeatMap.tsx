@@ -14,6 +14,7 @@ import {
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getHeatMapData } from 'store/slice/DisplayData/DisplayDataActions'
 import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
+import { RootState } from 'store/store'
 
 export const HeatMap = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -40,7 +41,13 @@ export const HeatMap = React.memo(() => {
 
 const HeatMapImple = React.memo(() => {
   const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
-  const label = useSelector(selectNodeLabelById(nodeId))
+  const label = useSelector((state: RootState) => {
+    if (nodeId) {
+      return selectNodeLabelById(nodeId)(state)
+    } else {
+      return path
+    }
+  })
   const heatMapData = useSelector(selectHeatMapData(path), heatMapDataEqualtyFn)
   const data = React.useMemo(
     () =>

@@ -41,7 +41,7 @@ export const ImageItemEditor: React.FC = () => {
   const dispatch = useDispatch()
   const onSelectFile = (path: string) => {
     setFilePath(path)
-    dispatch(setDisplayDataPath({ nodeId: '', filePath: path, itemId }))
+    dispatch(setDisplayDataPath({ nodeId: null, filePath: path, itemId }))
   }
 
   const {
@@ -54,9 +54,6 @@ export const ImageItemEditor: React.FC = () => {
   } = useFileUploader(FILE_TYPE_SET.IMAGE)
   const onUploadFileHandle = (formData: FormData, fileName: string) => {
     onUploadFile(formData, fileName)
-    if (uploadedFilePath != null) {
-      // onChangeFilePath(uploadedFilePath)
-    }
   }
 
   return (

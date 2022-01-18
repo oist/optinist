@@ -17,6 +17,7 @@ import { getTableData } from 'store/slice/DisplayData/DisplayDataActions'
 import { TableData } from 'store/slice/DisplayData/DisplayDataType'
 import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
 import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid'
+import { RootState } from 'store/store'
 
 export const TablePlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -43,8 +44,14 @@ export const TablePlot = React.memo(() => {
 
 const TablePlotImple = React.memo(() => {
   const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
-  const label = useSelector(selectNodeLabelById(nodeId))
-
+  // const label = useSelector(selectNodeLabelById(nodeId)
+  const label = useSelector((state: RootState) => {
+    if (nodeId) {
+      return selectNodeLabelById(nodeId)(state)
+    } else {
+      return path
+    }
+  })
   const tableData = useSelector(
     selectTableData(path),
     (a: TableData | undefined, b: TableData | undefined) => {
