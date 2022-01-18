@@ -97,6 +97,7 @@ export const ReactFlowComponent = React.memo(() => {
             fileType = FILE_TYPE_SET.IMAGE
             break
         }
+
         const newNode: Node<NodeData> = {
           id: String(maxElementId + 1),
           type: componentType,
