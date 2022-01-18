@@ -78,14 +78,10 @@ export const selectImageDataMaxIndex =
       return undefined
     }
   }
-export const selectImageDataActiveIndex =
-  (filePath: string) => (state: RootState) =>
-    selectImageData(filePath)(state).activeIndex
 
 export const selectActiveImageData =
-  (filePath: string) => (state: RootState) => {
-    const index = selectImageDataActiveIndex(filePath)(state)
-    return selectImageData(filePath)(state).data[index]
+  (filePath: string, activeIndex: number) => (state: RootState) => {
+    return selectImageData(filePath)(state).data[activeIndex]
   }
 
 export const selectTableData = (filePath: string) => (state: RootState) =>

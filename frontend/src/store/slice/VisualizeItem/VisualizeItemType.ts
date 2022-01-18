@@ -42,6 +42,7 @@ export interface DefaultSetItem extends ItemBaseType<'defaultSet'> {
 
 export interface ImageItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.IMAGE
+  activeIndex: number
   showticklabels: boolean
   zsmooth: string | boolean
   showline: boolean

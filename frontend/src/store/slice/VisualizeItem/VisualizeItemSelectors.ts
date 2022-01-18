@@ -22,17 +22,6 @@ export const selectVisualizeDataType =
     }
   }
 
-// export const selectVisualizeDataNodeLabel =
-//   (itemId: number) => (state: RootState) => {
-//     const item = selectVisualizeItems(state)[itemId]
-//     if (isDisplayDataItem(item)) {
-//       return item.nodeId != null
-//         ? selectNodeLabelById(item.nodeId)(state)
-//         : null
-//     } else {
-//       throw new Error('failed to read dataType')
-//     }
-//   }
 export const selectVisualizeDataNodeId =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
@@ -111,3 +100,13 @@ export const selectImageItemColors = (itemId: number) => (state: RootState) => {
     throw new Error('invalid VisualaizeItemType')
   }
 }
+
+export const selectImageItemActiveIndex =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isImageItem(item)) {
+      return item.activeIndex
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }

@@ -13,22 +13,17 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
 
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 import { DisplayDataContext } from '../DisplayDataItem'
+
 import {
-  decrementImageActiveIndex,
-  incrementImageActiveIndex,
-} from 'store/slice/DisplayData/DisplayDataSlice'
-import {
-  selectActiveImageData,
-  selectImageDataActiveIndex,
   selectImageDataError,
   selectImageDataIsInitialized,
   selectImageDataIsPending,
   selectImageDataMaxIndex,
   selectImageDataIsFulfilled,
+  selectActiveImageData,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getImageData } from 'store/slice/DisplayData/DisplayDataActions'
 import { selectImageMaxIndexByNodeId } from 'store/slice/InputNode/InputNodeSelectors'
-import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
 import {
   selectImageItemShowticklabels,
   selectImageItemZsmooth,
@@ -36,13 +31,16 @@ import {
   selectImageItemShowGrid,
   selectImageItemShowScale,
   selectImageItemColors,
+  selectImageItemActiveIndex,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { fileURLToPath } from 'url'
 import { RootState } from 'store/store'
+import {
+  decrementImageActiveIndex,
+  incrementImageActiveIndex,
+} from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 export const ImagePlot = React.memo(() => {
   const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
-  // const maxIndex = useSelector(selectImageMaxIndexByNodeId(nodeId))
   const maxIndex = useSelector((state: RootState) => {
     if (nodeId) {
       return selectImageMaxIndexByNodeId(nodeId)(state)
@@ -72,12 +70,14 @@ export const ImagePlot = React.memo(() => {
 })
 
 const ImagePlotImple = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataContext)
+  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
   const maxIndex = useSelector(selectImageDataMaxIndex(path))
-  const activeIndex = useSelector(selectImageDataActiveIndex(path))
+  const activeIndex = useSelector(selectImageItemActiveIndex(itemId))
   const dispatch = useDispatch()
-  const handleNext = () => dispatch(incrementImageActiveIndex({ path }))
-  const handleBack = () => dispatch(decrementImageActiveIndex({ path }))
+  const handleNext = () =>
+    dispatch(incrementImageActiveIndex({ itemId, activeIndex }))
+  const handleBack = () =>
+    dispatch(decrementImageActiveIndex({ itemId, activeIndex }))
   const theme = useTheme()
   return (
     <>
@@ -115,18 +115,19 @@ const ImagePlotImple = React.memo(() => {
           </Button>
         }
       />
-      <ImagePlotChart />
+      <ImagePlotChart activeIndex={activeIndex} />
     </>
   )
 })
 
-const ImagePlotChart = React.memo(() => {
-  const {
-    filePath: path,
-    nodeId,
-    itemId,
-  } = React.useContext(DisplayDataContext)
-  const imageData = useSelector(selectActiveImageData(path), imageDataEqualtyFn)
+const ImagePlotChart = React.memo<{
+  activeIndex: number
+}>(({ activeIndex }) => {
+  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+  const imageData = useSelector(
+    selectActiveImageData(path, activeIndex),
+    imageDataEqualtyFn,
+  )
   // const testData1 = [
   //   [0, 10, 30],
   //   [10, 20, 10],

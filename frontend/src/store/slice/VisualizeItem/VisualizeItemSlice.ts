@@ -36,6 +36,7 @@ const imageItemInitialValue: ImageItem = {
     { rgb: `rgb(0, 0, 0)`, offset: '0' },
     { rgb: `rgb(255, 255, 255)`, offset: '1.0' },
   ],
+  activeIndex: 0,
 }
 const timeSeriesItemInitialValue: TimeSeriesItem = {
   ...displayDataCommonInitialValue,
@@ -130,6 +131,26 @@ export const visualaizeItemSlice = createSlice({
         state.items[itemId] = getDisplayDataItemInitialValue(type)
       }
     },
+    incrementImageActiveIndex: (
+      state,
+      action: PayloadAction<{ itemId: number; activeIndex: number }>,
+    ) => {
+      const { itemId, activeIndex } = action.payload
+      const targetItem = state.items[itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.activeIndex = activeIndex + 1
+      }
+    },
+    decrementImageActiveIndex: (
+      state,
+      action: PayloadAction<{ itemId: number; activeIndex: number }>,
+    ) => {
+      const { itemId, activeIndex } = action.payload
+      const targetItem = state.items[itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.activeIndex = activeIndex - 1
+      }
+    },
     setImageItemShowticklabels: (
       state,
       action: PayloadAction<{
@@ -220,6 +241,8 @@ export const {
   selectItem,
   setItemType,
   setDisplayDataPath,
+  incrementImageActiveIndex,
+  decrementImageActiveIndex,
   setImageItemShowticklabels,
   setImageItemZsmooth,
   setImageItemShowLine,
