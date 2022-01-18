@@ -16,6 +16,7 @@ import {
 import { getTableData } from 'store/slice/DisplayData/DisplayDataActions'
 import { TableData } from 'store/slice/DisplayData/DisplayDataType'
 import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
+import { DataGrid, GridRowsProp, GridColDef } from '@mui/x-data-grid'
 
 export const TablePlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -43,6 +44,7 @@ export const TablePlot = React.memo(() => {
 const TablePlotImple = React.memo(() => {
   const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
   const label = useSelector(selectNodeLabelById(nodeId))
+
   const tableData = useSelector(
     selectTableData(path),
     (a: TableData | undefined, b: TableData | undefined) => {
@@ -53,6 +55,64 @@ const TablePlotImple = React.memo(() => {
       }
     },
   )
+  // const sample_columns = useSelector(selectTableDataColumns(path), (a, b) => {
+  //   if (a != null && b != null) {
+  //     return arrayEqualityFn(a, b)
+  //   } else {
+  //     return a === undefined && b === undefined
+  //   }
+  // })
+
+  // const rows: GridRowsProp = [
+  //   { id: 1, col1: 'Hello', col2: 'World' },
+  //   { id: 2, col1: 'DataGridPro', col2: 'is Awesome' },
+  //   { id: 3, col1: 'Material-UI', col2: 'is Amazing' },
+  // ];
+
+  // const columns: GridColDef[] =
+  //   sample_columns.map((x, idx) => {
+  //     return {field: "col"+String(idx), headerName: x, width: 150}
+  //   })
+
+  // const sample_rows =
+  //   tableData.map((row, row_id) => {
+  //     // console.log(row)
+  //     row.reduce((array, b, col_id) => {
+  //       // console.log(array)
+  //       return array
+  //       // if (typeof array === "number") {
+  //       //   return {id: row_id, array, ["col"+col_id]: b}
+  //       // }
+  //       // else if (typeof array !== "number") {
+  //       //   return {array, ["col"+col_id]: b}
+  //       // }
+  //     });
+  //   })
+
+  //   tableData = [
+  //     [1, 2, 3,],
+  //     [4, 5, 6],
+  //   ]
+
+  //   [
+  //     {id: 1, col1: 1, col2: 2, col3: 3,},
+  //     {id: 2, col1: 1, col2: 2, col3: 3,},
+  //   ]
+
+  // console.log(rows)
+
+  // const columns: GridColDef[] = [
+  //   { field: 'col1', headerName: 'Column 1', width: 150 },
+  //   { field: 'col2', headerName: 'Column 2', width: 150 },
+  //   { field: 'col3', headerName: 'Column 1', width: 150 },
+  // ];
+
+  // return (
+  //   <div style={{ height: 300, width: '100%' }}>
+  //     <DataGrid rows={rows} columns={columns} />
+  //   </div>
+  // );
+
   const colmuns = useSelector(selectTableDataColumns(path), (a, b) => {
     if (a != null && b != null) {
       return arrayEqualityFn(a, b)

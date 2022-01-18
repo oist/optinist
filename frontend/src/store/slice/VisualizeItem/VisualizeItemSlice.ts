@@ -28,6 +28,14 @@ const imageItemInitialValue: ImageItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.IMAGE,
   showticklabels: false,
+  showline: true,
+  zsmooth: 'best',
+  showgrid: false,
+  showscale: false,
+  colors: [
+    { rgb: `rgb(0, 0, 0)`, offset: '0' },
+    { rgb: `rgb(255, 255, 255)`, offset: '1.0' },
+  ],
 }
 const timeSeriesItemInitialValue: TimeSeriesItem = {
   ...displayDataCommonInitialValue,
@@ -134,6 +142,69 @@ export const visualaizeItemSlice = createSlice({
         targetItem.showticklabels = action.payload.showticklabels
       }
     },
+    setImageItemZsmooth: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        zsmooth: string | boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.zsmooth = action.payload.zsmooth
+      }
+    },
+    setImageItemShowLine: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        showline: boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.showline = action.payload.showline
+      }
+    },
+    setImageItemShowGrid: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        showgrid: boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.showgrid = action.payload.showgrid
+      }
+    },
+    setImageItemShowScale: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        showscale: boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.showscale = action.payload.showscale
+      }
+    },
+    setImageItemColors: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        colors: {
+          rgb: string
+          offset: string
+        }[]
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.colors = action.payload.colors
+      }
+    },
   },
 })
 
@@ -150,6 +221,11 @@ export const {
   setItemType,
   setDisplayDataPath,
   setImageItemShowticklabels,
+  setImageItemZsmooth,
+  setImageItemShowLine,
+  setImageItemShowGrid,
+  setImageItemShowScale,
+  setImageItemColors,
 } = visualaizeItemSlice.actions
 
 export default visualaizeItemSlice.reducer
