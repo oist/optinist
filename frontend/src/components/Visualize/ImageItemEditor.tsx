@@ -26,7 +26,10 @@ import {
   setDisplayDataPath,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
-import { GradientPicker } from 'react-linear-gradient-picker'
+import {
+  GradientPicker,
+  GradientPickerPopover,
+} from 'react-linear-gradient-picker'
 import { SketchPicker } from 'react-color'
 import { PALETTE_COLOR_SHAPE_TYPE } from 'react-linear-gradient-picker'
 import 'react-linear-gradient-picker/dist/index.css'
@@ -194,17 +197,32 @@ const GradientColorPicker: React.FC = () => {
     dispatch(setImageItemColors({ itemId, colors: colorCode }))
   }
 
+  const [open, setOpen] = useState(false)
+
   return (
-    <GradientPicker
-      width={220}
-      // maxStops={5}
-      paletteHeight={32}
+    // <GradientPicker
+    //   width={200}
+    //   maxStops={10}
+    //   paletteHeight={32}
+    //   palette={palette}
+    //   onPaletteChange={onPaletteChange}
+    //   flatStyle={true}
+    // >
+    //   <WrappedSketchPicker />
+    // </GradientPicker>
+    <GradientPickerPopover
+      open={open}
+      setOpen={() => setOpen(!open)}
+      // showAnglePicker={true}
+      width={150}
+      maxStops={10}
+      paletteHeight={25}
       palette={palette}
       onPaletteChange={onPaletteChange}
       flatStyle={true}
     >
       <WrappedSketchPicker />
-    </GradientPicker>
+    </GradientPickerPopover>
   )
 }
 
@@ -220,6 +238,8 @@ const WrappedSketchPicker: React.FC<WrapperPropTypes> = ({
   return (
     <SketchPicker
       color={color}
+      width="150px"
+      // styles={{width: "10px"}}
       onChange={(c) => {
         const { r, g, b, a } = c.rgb
         onSelect?.(`rgb(${r}, ${g}, ${b})`, a)
