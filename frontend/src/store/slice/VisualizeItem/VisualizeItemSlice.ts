@@ -49,6 +49,10 @@ const timeSeriesItemInitialValue: TimeSeriesItem = {
   showline: true,
   showticklabels: true,
   zeroline: false,
+  xrange: {
+    left: undefined,
+    right: undefined,
+  },
 }
 const heatMapItemInitialValue: HeatMapItem = {
   ...displayDataCommonInitialValue,
@@ -331,6 +335,30 @@ export const visualaizeItemSlice = createSlice({
         targetItem.zeroline = action.payload.zeroline
       }
     },
+    setTimeSeriesItemXrangeLeft: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        left: number | undefined
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isTimeSeriesItem(targetItem)) {
+        targetItem.xrange.left = action.payload.left
+      }
+    },
+    setTimeSeriesItemXrangeRight: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        right: number | undefined
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isTimeSeriesItem(targetItem)) {
+        targetItem.xrange.right = action.payload.right
+      }
+    },
   },
 })
 
@@ -361,6 +389,8 @@ export const {
   setTimeSeriesItemShowLine,
   setTimeSeriesItemShowTickLabels,
   setTimeSeriesItemZeroLine,
+  setTimeSeriesItemXrangeLeft,
+  setTimeSeriesItemXrangeRight,
 } = visualaizeItemSlice.actions
 
 export default visualaizeItemSlice.reducer

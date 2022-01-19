@@ -62,6 +62,10 @@ export interface TimeSeriesItem extends DisplayDataItemBaseType {
   showline: boolean
   showticklabels: boolean
   zeroline: boolean
+  xrange: {
+    left: number | undefined
+    right: number | undefined
+  }
 }
 export interface HeatMapItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.HEAT_MAP

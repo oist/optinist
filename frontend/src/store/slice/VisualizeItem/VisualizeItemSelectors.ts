@@ -184,3 +184,13 @@ export const selectTimeSeriesItemZeroLine =
       throw new Error('invalid VisualaizeItemType')
     }
   }
+
+export const selectTimeSeriesItemXrange =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isTimeSeriesItem(item)) {
+      return item.xrange
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }

@@ -23,6 +23,7 @@ import {
   selectTimeSeriesItemShowLine,
   selectTimeSeriesItemShowTickLabels,
   selectTimeSeriesItemSpan,
+  selectTimeSeriesItemXrange,
   selectTimeSeriesItemZeroLine,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
@@ -64,6 +65,7 @@ const TimeSeriesImple = React.memo(() => {
   const showline = useSelector(selectTimeSeriesItemShowLine(itemId))
   const showticklabels = useSelector(selectTimeSeriesItemShowTickLabels(itemId))
   const zeroline = useSelector(selectTimeSeriesItemZeroLine(itemId))
+  const xrange = useSelector(selectTimeSeriesItemXrange(itemId))
 
   const data = React.useMemo(() => {
     if (timeSeriesData == null) {
@@ -114,6 +116,7 @@ const TimeSeriesImple = React.memo(() => {
       autosize: true,
       height: 300,
       xaxis: {
+        range: [xrange.left, xrange.right],
         showgrid: showgrid,
         showline: showline,
         showticklabels: showticklabels,
@@ -126,7 +129,7 @@ const TimeSeriesImple = React.memo(() => {
         zeroline: zeroline,
       },
     }),
-    [showgrid, showline, showticklabels, zeroline],
+    [xrange, showgrid, showline, showticklabels, zeroline],
   )
 
   const config = {

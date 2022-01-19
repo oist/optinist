@@ -7,6 +7,7 @@ import {
   selectTimeSeriesItemShowLine,
   selectTimeSeriesItemShowTickLabels,
   selectTimeSeriesItemSpan,
+  selectTimeSeriesItemXrange,
   selectTimeSeriesItemZeroLine,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
@@ -16,6 +17,8 @@ import {
   setTimeSeriesItemShowLine,
   setTimeSeriesItemShowTickLabels,
   setTimeSeriesItemSpan,
+  setTimeSeriesItemXrangeLeft,
+  setTimeSeriesItemXrangeRight,
   setTimeSeriesItemZeroLine,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
@@ -28,6 +31,7 @@ export const TimeSeriesItemEditor: React.FC = () => {
       <ShowLine />
       <ShowTickLabels />
       <ZeroLine />
+      <Xrange />
     </div>
   )
 }
@@ -140,6 +144,55 @@ const ZeroLine: React.FC = () => {
     <FormControlLabel
       control={<Switch checked={zeroline} onChange={toggleChecked} />}
       label="zeroline"
+    />
+  )
+}
+
+const Xrange: React.FC = () => {
+  const itemId = React.useContext(SelectedItemIdContext)
+  const xrange = useSelector(selectTimeSeriesItemXrange(itemId))
+
+  const dispatch = useDispatch()
+  const onChangeLeft = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newLeft = event.target.value === '' ? '' : Number(event.target.value)
+    if (typeof newLeft === 'number') {
+      dispatch(setTimeSeriesItemXrangeLeft({ itemId, left: newLeft }))
+    }
+  }
+  const onChangeRight = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newRight = event.target.value === '' ? '' : Number(event.target.value)
+    if (typeof newRight === 'number') {
+      dispatch(setTimeSeriesItemXrangeRight({ itemId, right: newRight }))
+    }
+  }
+
+  return (
+    <FormControlLabel
+      control={
+        <>
+          left:
+          <TextField
+            style={{ width: 50 }}
+            type="number"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            onChange={onChangeLeft}
+            defaultValue={xrange.left}
+          />
+          right:
+          <TextField
+            style={{ width: 50 }}
+            type="number"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            onChange={onChangeRight}
+            defaultValue={xrange.right}
+          />
+        </>
+      }
+      label=""
     />
   )
 }
