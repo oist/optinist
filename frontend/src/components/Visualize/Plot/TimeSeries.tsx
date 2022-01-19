@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { LinearProgress, Typography } from '@material-ui/core'
@@ -10,11 +10,13 @@ import {
   selectTimeSeriesDataIsFulfilled,
   selectTimeSeriesDataIsInitialized,
   selectTimeSeriesDataIsPending,
+  selectTimeSeriesPlotlyData,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getTimeSeriesData } from 'store/slice/DisplayData/DisplayDataActions'
 import { TimeSeriesData } from 'store/slice/DisplayData/DisplayDataType'
 import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
 import { RootState } from 'store/store'
+import { LegendClickEvent } from 'plotly.js'
 
 export const TimeSeries = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -40,35 +42,60 @@ export const TimeSeries = React.memo(() => {
 })
 
 const TimeSeriesImple = React.memo(() => {
-  const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
-  const label = useSelector((state: RootState) => {
-    if (nodeId) {
-      return selectNodeLabelById(nodeId)(state)
-    } else {
-      return path
-    }
-  })
+  const { filePath: path } = React.useContext(DisplayDataContext)
+
   const timeSeriesData = useSelector(
     selectTimeSeriesData(path),
     timeSeriesDataEqualityFn,
   )
+
+  const [displayNumbers, setDisplayNumbers] = useState([0])
+
   const data = React.useMemo(() => {
     if (timeSeriesData == null) {
       return []
     }
-    return Object.keys(timeSeriesData['0']).map((_, i) => {
-      return {
-        name: `(${i})`,
-        x: Object.keys(timeSeriesData),
-        y: Object.values(timeSeriesData).map((value) => value[i]),
-        visible: i === 0 ? true : 'legendonly',
-      }
-    })
-  }, [timeSeriesData])
+    return Object.keys(timeSeriesData['0'])
+      .map((_, i) => {
+        return {
+          name: `(${i})`,
+          x: Object.keys(timeSeriesData),
+          y: Object.values(timeSeriesData).map((value) => value[i]),
+        }
+      })
+      .map((v, idx) => {
+        if (displayNumbers.includes(idx)) {
+          const span = 3
+          const activeIdx: number = displayNumbers.findIndex(
+            (value) => value == idx,
+          )
+          const mean: number = v.y.reduce((a, b) => a + b) / v.y.length
+          const std: number =
+            span *
+            Math.sqrt(
+              v.y.reduce((a, b) => a + Math.pow(b - mean, 2)) / v.y.length,
+            )
+          const newArray = v.y.map((value) => (value - mean) / std + activeIdx)
+          return {
+            name: v.name,
+            x: v.x,
+            y: newArray,
+            visible: true,
+          }
+        } else {
+          return {
+            name: v.name,
+            x: v.x,
+            y: v.y,
+            visible: 'legendonly',
+          }
+        }
+      })
+  }, [timeSeriesData, displayNumbers])
 
   const layout = React.useMemo(
     () => ({
-      title: label,
+      title: path.split('/').reverse()[0],
       margin: {
         t: 60, // top
         l: 50, // left
@@ -77,7 +104,7 @@ const TimeSeriesImple = React.memo(() => {
       autosize: true,
       height: 300,
     }),
-    [label],
+    [],
   )
 
   const config = React.useMemo(
@@ -86,7 +113,25 @@ const TimeSeriesImple = React.memo(() => {
     }),
     [],
   )
-  return <PlotlyChart data={data} layout={layout} config={config} />
+
+  const onClick = (event: any) => {
+    const clickNumber = event.curveNumber
+    if (displayNumbers.includes(clickNumber)) {
+      setDisplayNumbers(displayNumbers.filter((value) => value != clickNumber))
+    } else {
+      setDisplayNumbers((prev) => [...prev, clickNumber])
+    }
+    return false
+  }
+
+  return (
+    <PlotlyChart
+      data={data}
+      layout={layout}
+      config={config}
+      onLegendClick={onClick}
+    />
+  )
 })
 
 function timeSeriesDataEqualityFn(

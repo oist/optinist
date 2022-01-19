@@ -206,33 +206,36 @@ const ImagePlotChart = React.memo<{
     [imageData, zsmooth, showscale, colorscale],
   )
 
-  const layout = {
-    title: path.split('/').reverse()[0],
-    margin: {
-      t: 30, // top
-      l: 120, // left
-      b: 30, // bottom
-    },
-    dragmode: 'pan',
-    xaxis: {
-      autorange: true,
-      showgrid: showgrid,
-      showline: showline,
-      zeroline: false,
-      autotick: true,
-      ticks: '',
-      showticklabels: showticklabels,
-    },
-    yaxis: {
-      autorange: 'reversed',
-      showgrid: showgrid,
-      showline: showline,
-      zeroline: false,
-      autotick: true, // todo
-      ticks: '',
-      showticklabels: showticklabels, // todo
-    },
-  }
+  const layout = React.useMemo(
+    () => ({
+      title: path.split('/').reverse()[0],
+      margin: {
+        t: 30, // top
+        l: 120, // left
+        b: 30, // bottom
+      },
+      dragmode: 'pan',
+      xaxis: {
+        autorange: true,
+        showgrid: showgrid,
+        showline: showline,
+        zeroline: false,
+        autotick: true,
+        ticks: '',
+        showticklabels: showticklabels,
+      },
+      yaxis: {
+        autorange: 'reversed',
+        showgrid: showgrid,
+        showline: showline,
+        zeroline: false,
+        autotick: true, // todo
+        ticks: '',
+        showticklabels: showticklabels, // todo
+      },
+    }),
+    [showgrid, showline, showticklabels],
+  )
   const config = {
     displayModeBar: true,
     scrollZoom: true,
