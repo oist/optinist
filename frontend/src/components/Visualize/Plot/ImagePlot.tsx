@@ -69,10 +69,8 @@ const ImagePlotImple = React.memo(() => {
   const maxIndex = useSelector(selectImageDataMaxIndex(path))
   const activeIndex = useSelector(selectImageItemActiveIndex(itemId))
   const dispatch = useDispatch()
-  const handleNext = () =>
-    dispatch(incrementImageActiveIndex({ itemId, activeIndex }))
-  const handleBack = () =>
-    dispatch(decrementImageActiveIndex({ itemId, activeIndex }))
+  const handleNext = () => dispatch(incrementImageActiveIndex({ itemId }))
+  const handleBack = () => dispatch(decrementImageActiveIndex({ itemId }))
   const theme = useTheme()
   return (
     <>

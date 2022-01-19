@@ -147,22 +147,22 @@ export const visualaizeItemSlice = createSlice({
     },
     incrementImageActiveIndex: (
       state,
-      action: PayloadAction<{ itemId: number; activeIndex: number }>,
+      action: PayloadAction<{ itemId: number }>,
     ) => {
-      const { itemId, activeIndex } = action.payload
+      const { itemId } = action.payload
       const targetItem = state.items[itemId]
       if (isImageItem(targetItem)) {
-        targetItem.activeIndex = activeIndex + 1
+        targetItem.activeIndex++
       }
     },
     decrementImageActiveIndex: (
       state,
-      action: PayloadAction<{ itemId: number; activeIndex: number }>,
+      action: PayloadAction<{ itemId: number }>,
     ) => {
-      const { itemId, activeIndex } = action.payload
+      const { itemId } = action.payload
       const targetItem = state.items[itemId]
       if (isImageItem(targetItem)) {
-        targetItem.activeIndex = activeIndex - 1
+        targetItem.activeIndex--
       }
     },
     setImageItemShowticklabels: (
