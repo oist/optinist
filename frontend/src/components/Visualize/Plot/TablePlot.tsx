@@ -77,10 +77,17 @@ const TablePlotImple = React.memo(() => {
   // ];
 
   // const columns: GridColDef[] =
-  //   sample_columns.map((x, idx) => {
+  //   useSelector(selectTableDataColumns(path), (a, b) => {
+  //     if (a != null && b != null) {
+  //       return arrayEqualityFn(a, b)
+  //     } else {
+  //       return a === undefined && b === undefined
+  //     }
+  //   }).map((x, idx) => {
   //     return {field: "col"+String(idx), headerName: x, width: 150}
   //   })
 
+  // console.log(columns)
   // const sample_rows =
   //   tableData.map((row, row_id) => {
   //     // console.log(row)

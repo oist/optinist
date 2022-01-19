@@ -14,8 +14,9 @@ import {
   selectImageItemShowScale,
   selectImageItemColors,
   selectImageItemMaxIndex,
+  selectVisualizeDataFilePath,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { SelectedItemIdContext } from './VisualizeItemEditor'
+import { SelectedItemIdContext } from '../VisualizeItemEditor'
 
 import {
   setImageItemShowGrid,
@@ -43,20 +44,21 @@ import { TextField } from '@material-ui/core'
 
 export const ImageItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
-  const [filePath, setFilePath] = useState('')
+  // const [filePath, setFilePath] = useState('')
   const dispatch = useDispatch()
   const onSelectFile = (path: string) => {
-    setFilePath(path)
+    // setFilePath(path)
     dispatch(setDisplayDataPath({ nodeId: null, filePath: path, itemId }))
   }
+  const filePath = useSelector(selectVisualizeDataFilePath(itemId))
 
   const {
-    filePath: uploadedFilePath,
+    // filePath: uploadedFilePath,
     onUploadFile,
-    pending,
-    uninitialized,
-    progress,
-    error,
+    // pending,
+    // uninitialized,
+    // progress,
+    // error,
   } = useFileUploader(FILE_TYPE_SET.IMAGE)
   const onUploadFileHandle = (formData: FormData, fileName: string) => {
     onUploadFile(formData, fileName)

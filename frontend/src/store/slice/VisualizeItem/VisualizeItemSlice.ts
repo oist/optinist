@@ -113,24 +113,37 @@ export const visualaizeItemSlice = createSlice({
     ) => {
       const { itemId, type } = action.payload
       const targetItem = state.items[itemId]
-      if (
-        isDisplayDataItem(targetItem) &&
-        type === VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
-      ) {
-        state.items[itemId] = defaultSetItemInitialValue
-      } else if (
-        isDisplayDataItem(targetItem) &&
-        type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
-      ) {
-        targetItem.dataType = type
-        targetItem.filePath = null
-        targetItem.nodeId = null
-      } else if (
-        isDefaultSetItem(targetItem) &&
-        type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
-      ) {
+      if (type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET) {
         state.items[itemId] = getDisplayDataItemInitialValue(type)
+      } else {
+        state.items[itemId] = defaultSetItemInitialValue
       }
+
+      // if (
+      //   isDisplayDataItem(targetItem) &&
+      //   type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
+      // ) {
+      //   state.items[itemId] = defaultSetItemInitialValue
+      //   targetItem.dataType = type
+      //   targetItem.filePath = null
+      //   targetItem.nodeId = null
+      // }
+      // } else if (
+      //   isDisplayDataItem(targetItem) &&
+      //   type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
+      // ) {
+      //   targetItem.dataType = type
+      //   targetItem.filePath = null
+      //   targetItem.nodeId = null
+      // } else if (
+      //   isDefaultSetItem(targetItem) &&
+      //   type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
+      // ) {
+      //   state.items[itemId] = getDisplayDataItemInitialValue(type)
+      // }
+      // if (type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET){
+      //   state.items[itemId] = getDisplayDataItemInitialValue(type)
+      // }
     },
     incrementImageActiveIndex: (
       state,
