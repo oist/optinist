@@ -44,10 +44,8 @@ import { TextField } from '@material-ui/core'
 
 export const ImageItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
-  // const [filePath, setFilePath] = useState('')
   const dispatch = useDispatch()
   const onSelectFile = (path: string) => {
-    // setFilePath(path)
     dispatch(setDisplayDataPath({ nodeId: null, filePath: path, itemId }))
   }
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
