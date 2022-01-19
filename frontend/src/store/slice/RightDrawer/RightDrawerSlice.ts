@@ -1,4 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import {
+  deleteFlowElements,
+  deleteFlowElementsById,
+} from '../FlowElement/FlowElementSlice'
 
 type RightDrawer = {
   open: boolean
@@ -57,6 +61,21 @@ export const rightDrawerSlice = createSlice({
       }
       state.currendNodeId = null
     },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(deleteFlowElements, (state, action) => {
+        if (
+          action.payload.findIndex((elm) => elm.id === state.currendNodeId) > 0
+        ) {
+          state.currendNodeId = null
+        }
+      })
+      .addCase(deleteFlowElementsById, (state, action) => {
+        if (action.payload === state.currendNodeId) {
+          state.currendNodeId = null
+        }
+      })
   },
 })
 
