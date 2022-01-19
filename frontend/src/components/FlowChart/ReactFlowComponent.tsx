@@ -1,4 +1,4 @@
-import React, { useState, DragEvent } from 'react'
+import React, { useState, DragEvent, MouseEvent } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import ReactFlow, {
   ReactFlowProvider,
@@ -9,6 +9,7 @@ import ReactFlow, {
   Connection,
   Edge,
   Node,
+  FlowTransform,
 } from 'react-flow-renderer'
 
 import 'style/flow.css'
@@ -20,6 +21,7 @@ import { FILE_TYPE, FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import {
   addFlowElementNode,
   deleteFlowElements,
+  editFlowElementPositionById,
   setFlowElements,
 } from 'store/slice/FlowElement/FlowElementSlice'
 import {
@@ -125,6 +127,15 @@ export const ReactFlowComponent = React.memo(() => {
     }
   }
 
+  const onMoveEnd = (event: MouseEvent, node: Node) => {
+    dispatch(
+      editFlowElementPositionById({
+        nodeId: node.id,
+        coord: { x: node.position.x, y: node.position.y },
+      }),
+    )
+  }
+
   return (
     <div className="flow">
       <ReactFlowProvider>
@@ -136,6 +147,7 @@ export const ReactFlowComponent = React.memo(() => {
             onLoad={onLoad}
             onDrop={onDrop}
             onDragOver={onDragOver}
+            onNodeDragStop={onMoveEnd}
             nodeTypes={componentTypes}
             edgeTypes={edgeTypes}
           >

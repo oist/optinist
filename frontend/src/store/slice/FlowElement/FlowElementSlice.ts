@@ -1,5 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Elements, removeElements, Node, Position } from 'react-flow-renderer'
+import {
+  Elements,
+  removeElements,
+  Node,
+  Position,
+  isNode,
+} from 'react-flow-renderer'
 import {
   FLOW_ELEMENT_SLICE_NAME,
   FlowElement,
@@ -96,6 +102,25 @@ export const flowElementSlice = createSlice({
         state.flowElements[elementIdx].data!.label = fileName
       }
     },
+    editFlowElementPositionById: (
+      state,
+      action: PayloadAction<{
+        nodeId: string
+        coord: {
+          x: number
+          y: number
+        }
+      }>,
+    ) => {
+      let { nodeId, coord } = action.payload
+      const elementIdx = state.flowElements.findIndex(
+        (ele) => ele.id === nodeId,
+      )
+      const targetItem = state.flowElements[elementIdx]
+      if (isNode(targetItem)) {
+        targetItem.position = coord
+      }
+    },
   },
 })
 
@@ -105,6 +130,7 @@ export const {
   deleteFlowElements,
   deleteFlowElementsById,
   edifFlowElementsLabelById,
+  editFlowElementPositionById,
 } = flowElementSlice.actions
 
 export default flowElementSlice.reducer

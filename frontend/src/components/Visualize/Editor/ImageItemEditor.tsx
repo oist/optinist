@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 
 import { useDispatch, useSelector } from 'react-redux'
 import Switch from '@material-ui/core/Switch'
