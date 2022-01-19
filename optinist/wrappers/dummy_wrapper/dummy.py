@@ -33,7 +33,7 @@ def dummy_image2time(
     """
     info = {}
     info['image2time'] = TimeSeriesData(
-        np.random.rand((10000)).reshape(10, 1000),
+        np.random.rand((100000)).reshape(100, 1000),
         func_name=sys._getframe().f_code.co_name)
     return info
 

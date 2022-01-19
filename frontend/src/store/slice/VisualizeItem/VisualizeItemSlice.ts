@@ -14,6 +14,7 @@ import {
   isDefaultSetItem,
   isDisplayDataItem,
   isImageItem,
+  isTimeSeriesItem,
 } from './VisualizeItemUtils'
 export const initialState: VisualaizeItem = {
   items: {},
@@ -42,6 +43,12 @@ const imageItemInitialValue: ImageItem = {
 const timeSeriesItemInitialValue: TimeSeriesItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.TIME_SERIES,
+  offset: false,
+  span: 3,
+  showgrid: true,
+  showline: true,
+  showticklabels: true,
+  zeroline: false,
 }
 const heatMapItemInitialValue: HeatMapItem = {
   ...displayDataCommonInitialValue,
@@ -252,6 +259,78 @@ export const visualaizeItemSlice = createSlice({
         targetItem.maxIndex = action.payload.maxIndex
       }
     },
+    setTimeSeriesItemOffset: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        offset: boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isTimeSeriesItem(targetItem)) {
+        targetItem.offset = action.payload.offset
+      }
+    },
+    setTimeSeriesItemSpan: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        span: number
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isTimeSeriesItem(targetItem)) {
+        targetItem.span = action.payload.span
+      }
+    },
+    setTimeSeriesItemShowGrid: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        showgrid: boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isTimeSeriesItem(targetItem)) {
+        targetItem.showgrid = action.payload.showgrid
+      }
+    },
+    setTimeSeriesItemShowLine: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        showline: boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isTimeSeriesItem(targetItem)) {
+        targetItem.showline = action.payload.showline
+      }
+    },
+    setTimeSeriesItemShowTickLabels: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        showticklabels: boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isTimeSeriesItem(targetItem)) {
+        targetItem.showticklabels = action.payload.showticklabels
+      }
+    },
+    setTimeSeriesItemZeroLine: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        zeroline: boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isTimeSeriesItem(targetItem)) {
+        targetItem.zeroline = action.payload.zeroline
+      }
+    },
   },
 })
 
@@ -276,6 +355,12 @@ export const {
   setImageItemShowScale,
   setImageItemColors,
   setImageItemMaxIndex,
+  setTimeSeriesItemOffset,
+  setTimeSeriesItemSpan,
+  setTimeSeriesItemShowGrid,
+  setTimeSeriesItemShowLine,
+  setTimeSeriesItemShowTickLabels,
+  setTimeSeriesItemZeroLine,
 } = visualaizeItemSlice.actions
 
 export default visualaizeItemSlice.reducer

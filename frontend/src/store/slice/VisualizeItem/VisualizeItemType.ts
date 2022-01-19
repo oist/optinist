@@ -56,6 +56,12 @@ export interface ImageItem extends DisplayDataItemBaseType {
 }
 export interface TimeSeriesItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.TIME_SERIES
+  offset: boolean
+  span: number
+  showgrid: boolean
+  showline: boolean
+  showticklabels: boolean
+  zeroline: boolean
 }
 export interface HeatMapItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.HEAT_MAP

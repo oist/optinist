@@ -1,5 +1,9 @@
 import { RootState } from 'store/store'
-import { isDisplayDataItem, isImageItem } from './VisualizeItemUtils'
+import {
+  isDisplayDataItem,
+  isImageItem,
+  isTimeSeriesItem,
+} from './VisualizeItemUtils'
 
 export const selectSelectedVisualizeItemId = (state: RootState) =>
   state.visualaizeItem.selectedItemId
@@ -116,6 +120,66 @@ export const selectImageItemActiveIndex =
     const item = selectVisualizeItems(state)[itemId]
     if (isImageItem(item)) {
       return item.activeIndex
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectTimeSeriesItemOffset =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isTimeSeriesItem(item)) {
+      return item.offset
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectTimeSeriesItemSpan =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isTimeSeriesItem(item)) {
+      return item.span
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectTimeSeriesItemShowGrid =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isTimeSeriesItem(item)) {
+      return item.showgrid
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectTimeSeriesItemShowLine =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isTimeSeriesItem(item)) {
+      return item.showline
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectTimeSeriesItemShowTickLabels =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isTimeSeriesItem(item)) {
+      return item.showticklabels
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectTimeSeriesItemZeroLine =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isTimeSeriesItem(item)) {
+      return item.zeroline
     } else {
       throw new Error('invalid VisualaizeItemType')
     }

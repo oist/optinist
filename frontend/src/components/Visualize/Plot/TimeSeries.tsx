@@ -17,6 +17,14 @@ import { TimeSeriesData } from 'store/slice/DisplayData/DisplayDataType'
 import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
 import { RootState } from 'store/store'
 import { LegendClickEvent } from 'plotly.js'
+import {
+  selectTimeSeriesItemOffset,
+  selectTimeSeriesItemShowGrid,
+  selectTimeSeriesItemShowLine,
+  selectTimeSeriesItemShowTickLabels,
+  selectTimeSeriesItemSpan,
+  selectTimeSeriesItemZeroLine,
+} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 export const TimeSeries = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -42,7 +50,7 @@ export const TimeSeries = React.memo(() => {
 })
 
 const TimeSeriesImple = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataContext)
+  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
 
   const timeSeriesData = useSelector(
     selectTimeSeriesData(path),
@@ -50,6 +58,12 @@ const TimeSeriesImple = React.memo(() => {
   )
 
   const [displayNumbers, setDisplayNumbers] = useState([0])
+  const offset = useSelector(selectTimeSeriesItemOffset(itemId))
+  const span = useSelector(selectTimeSeriesItemSpan(itemId))
+  const showgrid = useSelector(selectTimeSeriesItemShowGrid(itemId))
+  const showline = useSelector(selectTimeSeriesItemShowLine(itemId))
+  const showticklabels = useSelector(selectTimeSeriesItemShowTickLabels(itemId))
+  const zeroline = useSelector(selectTimeSeriesItemZeroLine(itemId))
 
   const data = React.useMemo(() => {
     if (timeSeriesData == null) {
@@ -65,33 +79,28 @@ const TimeSeriesImple = React.memo(() => {
       })
       .map((v, idx) => {
         if (displayNumbers.includes(idx)) {
-          const span = 3
-          const activeIdx: number = displayNumbers.findIndex(
-            (value) => value == idx,
-          )
-          const mean: number = v.y.reduce((a, b) => a + b) / v.y.length
-          const std: number =
-            span *
-            Math.sqrt(
-              v.y.reduce((a, b) => a + Math.pow(b - mean, 2)) / v.y.length,
+          if (offset) {
+            const activeIdx: number = displayNumbers.findIndex(
+              (value) => value == idx,
             )
-          const newArray = v.y.map((value) => (value - mean) / std + activeIdx)
-          return {
-            name: v.name,
-            x: v.x,
-            y: newArray,
-            visible: true,
+            const mean: number = v.y.reduce((a, b) => a + b) / v.y.length
+            const std: number =
+              span *
+              Math.sqrt(
+                v.y.reduce((a, b) => a + Math.pow(b - mean, 2)) / v.y.length,
+              )
+            const newArray = v.y.map(
+              (value) => (value - mean) / std + activeIdx,
+            )
+            return { name: v.name, x: v.x, y: newArray, visible: true }
+          } else {
+            return { name: v.name, x: v.x, y: v.y, visible: true }
           }
         } else {
-          return {
-            name: v.name,
-            x: v.x,
-            y: v.y,
-            visible: 'legendonly',
-          }
+          return { name: v.name, x: v.x, y: v.y, visible: 'legendonly' }
         }
       })
-  }, [timeSeriesData, displayNumbers])
+  }, [timeSeriesData, displayNumbers, offset, span])
 
   const layout = React.useMemo(
     () => ({
@@ -101,18 +110,29 @@ const TimeSeriesImple = React.memo(() => {
         l: 50, // left
         b: 30, // bottom
       },
+      dragmode: 'pan',
       autosize: true,
       height: 300,
+      xaxis: {
+        showgrid: showgrid,
+        showline: showline,
+        showticklabels: showticklabels,
+        zeroline: zeroline,
+      },
+      yaxis: {
+        showgrid: showgrid,
+        showline: showline,
+        showticklabels: showticklabels,
+        zeroline: zeroline,
+      },
     }),
-    [],
+    [showgrid, showline, showticklabels, zeroline],
   )
 
-  const config = React.useMemo(
-    () => ({
-      displayModeBar: true,
-    }),
-    [],
-  )
+  const config = {
+    displayModeBar: true,
+    scrollZoom: true,
+  }
 
   const onClick = (event: any) => {
     const clickNumber = event.curveNumber
