@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { Action } from 'flexlayout-react'
 import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 
 import {
@@ -13,6 +14,7 @@ import {
 import {
   isDefaultSetItem,
   isDisplayDataItem,
+  isHeatMapItem,
   isImageItem,
   isTimeSeriesItem,
 } from './VisualizeItemUtils'
@@ -57,6 +59,12 @@ const timeSeriesItemInitialValue: TimeSeriesItem = {
 const heatMapItemInitialValue: HeatMapItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.HEAT_MAP,
+  showscale: true,
+  colors: [
+    { rgb: `rgb(0, 0, 255)`, offset: '0' },
+    { rgb: `rgb(200, 200, 200)`, offset: '0.5' },
+    { rgb: `rgb(255, 0, 0)`, offset: '1.0' },
+  ],
 }
 const tableItemInitialValue: TableItem = {
   ...displayDataCommonInitialValue,
@@ -359,6 +367,33 @@ export const visualaizeItemSlice = createSlice({
         targetItem.xrange.right = action.payload.right
       }
     },
+    setHeatMapItemShowScale: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        showscale: boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isHeatMapItem(targetItem)) {
+        targetItem.showscale = action.payload.showscale
+      }
+    },
+    setHeatMapItemColors: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        colors: {
+          rgb: string
+          offset: string
+        }[]
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isHeatMapItem(targetItem)) {
+        targetItem.colors = action.payload.colors
+      }
+    },
   },
 })
 
@@ -391,6 +426,8 @@ export const {
   setTimeSeriesItemZeroLine,
   setTimeSeriesItemXrangeLeft,
   setTimeSeriesItemXrangeRight,
+  setHeatMapItemShowScale,
+  setHeatMapItemColors,
 } = visualaizeItemSlice.actions
 
 export default visualaizeItemSlice.reducer

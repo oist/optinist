@@ -3,6 +3,7 @@ import {
   isDisplayDataItem,
   isImageItem,
   isTimeSeriesItem,
+  isHeatMapItem,
 } from './VisualizeItemUtils'
 
 export const selectSelectedVisualizeItemId = (state: RootState) =>
@@ -190,6 +191,26 @@ export const selectTimeSeriesItemXrange =
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.xrange
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectHeatMapItemShowScale =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isHeatMapItem(item)) {
+      return item.showscale
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectHeatMapItemColors =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isHeatMapItem(item)) {
+      return item.colors
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
