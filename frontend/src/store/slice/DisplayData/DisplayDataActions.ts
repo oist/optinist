@@ -75,7 +75,7 @@ export const getRoiData = createAsyncThunk<{ data: RoiData }, { path: string }>(
   `${DISPLAY_DATA_SLICE_NAME}/getRoiData`,
   async ({ path }, thunkAPI) => {
     try {
-      const response = await axios.get(`${BASE_URL}/outputs/roi/${path}`, {})
+      const response = await axios.get(`${BASE_URL}/outputs/image/${path}`, {})
       return response.data
     } catch (e) {
       return thunkAPI.rejectWithValue(e)

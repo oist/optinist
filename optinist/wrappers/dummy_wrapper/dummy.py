@@ -184,10 +184,13 @@ def dummy_image2roi(
         get image
         return image
     """
+    roi_data = np.random.rand((100_00))
+    import random
+    null_data = np.array(random.sample(list(np.arange(100_00)), 90_00))
+    roi_data[null_data] = np.nan
+    roi_data = roi_data.reshape(100, 100)
     info = {}
-    info['roi'] = RoiData(
-        np.random.rand((100_00)).reshape(100, 100),
-        func_name=sys._getframe().f_code.co_name)
+    info['roi'] = RoiData(roi_data, func_name=sys._getframe().f_code.co_name)
     return info
 
 @args_check

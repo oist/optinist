@@ -4,7 +4,6 @@ import { useSelector, useDispatch } from 'react-redux'
 import { DisplayDataContext } from '../DisplayDataItem'
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 import {
-  selectRoiActivateData,
   selectRoiData,
   selectRoiDataError,
   selectRoiDataIsFulfilled,
@@ -46,8 +45,7 @@ export const RoiPlot = React.memo(() => {
 
 const RoiPlotImple = React.memo<{}>(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
-  const imageData = useSelector(selectRoiActivateData(path), imageDataEqualtyFn)
-  console.log(imageData)
+  const imageData = useSelector(selectRoiData(path), imageDataEqualtyFn)
 
   // const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
   // const showline = useSelector(selectImageItemShowLine(itemId))
@@ -69,6 +67,7 @@ const RoiPlotImple = React.memo<{}>(() => {
         hoverongaps: false,
         // showscale: showscale,
         // zsmooth: zsmooth, // ['best', 'fast', false]
+        zsmooth: false,
         showlegend: true,
       },
     ],

@@ -5,6 +5,7 @@ import {
   getHeatMapData,
   getImageData,
   getTimeSeriesData,
+  getRoiData,
 } from './DisplayDataActions'
 
 const initialState: DisplayData = {
@@ -141,6 +142,36 @@ export const displayDataSlice = createSlice({
         state.table[path] = {
           type: 'table',
           columns: [],
+          data: [],
+          pending: false,
+          fulfilled: false,
+          error: action.error.message ?? 'rejected',
+        }
+      })
+      .addCase(getRoiData.pending, (state, action) => {
+        const { path } = action.meta.arg
+        state.roi[path] = {
+          type: 'roi',
+          data: [],
+          pending: true,
+          fulfilled: false,
+          error: null,
+        }
+      })
+      .addCase(getRoiData.fulfilled, (state, action) => {
+        const { path } = action.meta.arg
+        state.roi[path] = {
+          type: 'roi',
+          data: action.payload.data,
+          pending: false,
+          fulfilled: true,
+          error: null,
+        }
+      })
+      .addCase(getRoiData.rejected, (state, action) => {
+        const { path } = action.meta.arg
+        state.roi[path] = {
+          type: 'roi',
           data: [],
           pending: false,
           fulfilled: false,

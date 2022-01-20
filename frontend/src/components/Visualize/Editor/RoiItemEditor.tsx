@@ -30,6 +30,7 @@ export const RoiItemEditor: React.FC = () => {
         fileTreeType={FILE_TREE_TYPE_SET.CSV}
         selectButtonLabel="Select CSV"
       /> */}
+      {/* <GradientColorPicker /> */}
     </>
   )
 }

@@ -126,13 +126,8 @@ export const selectTableDataColumns =
   (filePath: string) => (state: RootState) =>
     selectDisplayData(state).table[filePath].columns
 
-// export const selectRoiData =
-//   (filePath: string, activeIndex: number) => (state: RootState) => {
-//     return selectImageData(filePath)(state).data[activeIndex]
-//   }
-
 export const selectRoiData = (filePath: string) => (state: RootState) =>
-  selectDisplayData(state).roi[filePath]
+  selectDisplayData(state).roi[filePath].data[0]
 
 export const selectRoiDataIsInitialized =
   (filePath: string) => (state: RootState) =>
@@ -152,8 +147,3 @@ export const selectRoiDataIsFulfilled =
   (filePath: string) => (state: RootState) =>
     selectRoiDataIsInitialized(filePath)(state) &&
     selectDisplayData(state).roi[filePath].fulfilled
-
-export const selectRoiActivateData =
-  (filePath: string) => (state: RootState) => {
-    return selectRoiData(filePath)(state).data[0]
-  }

@@ -49,15 +49,3 @@ async def read_csv(file_path: str):
     with open(file_path, 'r') as f:
         json_dict = json.load(f)
     return { "data": json_dict}
-
-
-@router.get("/outputs/roi/{file_path:path}")
-async def read_image(file_path: str):
-    file_path = os.path.join(BASE_DIR, file_path)
-    file_name, ext = os.path.splitext(os.path.basename(file_path))
-
-    with open(file_path, 'r') as f:
-        json_dict = json.load(f)
-
-    print(json_dict)
-    return { "data": json_dict}
