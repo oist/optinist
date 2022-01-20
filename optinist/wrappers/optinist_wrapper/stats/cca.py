@@ -4,7 +4,7 @@ from wrappers.optinist_wrapper.utils import standard_norm
 
 
 @args_check
-def PCA(
+def CCA(
         timeseries: TimeSeriesData,
         iscell: IscellData=None,
         params: dict=None

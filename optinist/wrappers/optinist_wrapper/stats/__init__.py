@@ -2,6 +2,7 @@ from .correlation import correlation
 from .granger import Granger
 from .pca import PCA
 from .tsne import TSNE
+from .cca import CCA
 
 
 stats_wrapper_dict = {
@@ -16,5 +17,8 @@ stats_wrapper_dict = {
     },
     'tsne': {
         'function':  TSNE
+    },
+    'cca': {
+        'function':  CCA
     }
 }
