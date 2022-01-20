@@ -26,6 +26,9 @@ dummy_wrapper_dict = {
         'dummy_image2time8iscell': {
             'function': dummy_image2time8iscell
         },
+        'dummy_image2roi': {
+            'function': dummy_image2roi
+        },
         'dummy_image2image8roi': {
             'function': dummy_image2image8roi
         },

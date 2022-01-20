@@ -29,13 +29,14 @@ import {
 import { selectInputNode } from 'store/slice/InputNode/InputNodeSelectors'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import { selectAlgorithmNode } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
-import { selectOutputPaths } from 'store/slice/RunPipelineResult/RenPipelineResultSelectors'
+import { selectOutputPaths } from 'store/slice/RunPipelineResult/RunPipelineResultSelectors'
 import { toDataType } from 'store/slice/DisplayData/DisplayDataUtils'
 import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
 import { ImageItemEditor } from './Editor/ImageItemEditor'
 import { TableItemEditor } from './Editor/TableItemEditor'
 import { HeatmapItemEditor } from './Editor/HeatmapItemEditor'
 import { TimeSeriesItemEditor } from './Editor/TimeSeriesItemEditor'
+import { RoiItemEditor } from './Editor/RoiItemEditor'
 
 export const VisualizeItemEditor = () => {
   const selectedItemId = useSelector(selectSelectedVisualizeItemId)
@@ -128,6 +129,7 @@ const DisplayDataItemEditor: React.FC = () => {
         {dataType === DATA_TYPE_SET.TABLE && <TableItemEditor />}
         {dataType === DATA_TYPE_SET.HEAT_MAP && <HeatmapItemEditor />}
         {dataType === DATA_TYPE_SET.TIME_SERIES && <TimeSeriesItemEditor />}
+        {dataType === DATA_TYPE_SET.ROI && <RoiItemEditor />}
       </div>
     </div>
   )

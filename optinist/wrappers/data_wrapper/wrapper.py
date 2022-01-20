@@ -5,37 +5,10 @@ import imageio
 from PIL import Image
 import cv2
 import tifffile
-import copy
 import gc
+from .utils import get_file_path, get_images_list
 
 BASE_DIR = '/tmp/optinist'
-
-
-def get_file_path(func_name, file_name):
-    _dir = os.path.join(BASE_DIR, func_name, func_name)
-    if not os.path.exists(_dir):
-        os.makedirs(_dir, exist_ok=True)
-
-    return os.path.join(_dir, f'{file_name}.json')
-
-
-def get_images_list(data):
-    if len(data.shape) == 2:
-        save_data = copy.deepcopy(data)
-    elif len(data.shape) == 3:
-        save_data = copy.deepcopy(data[:10])
-    else:
-        assert False, 'data is error'
-
-    if len(data.shape) == 2:
-        data = data[np.newaxis, :, :]
-        save_data = save_data[np.newaxis, :, :]
-
-    images = []
-    for i, _img in enumerate(save_data):
-        images.append(_img.tolist())
-    
-    return images
 
 
 class ImageData:
@@ -51,7 +24,7 @@ class ImageData:
             #     os.makedirs(_dir, exist_ok=True)
 
             # self.json_path = os.path.join(_dir, f'{file_name}.json')
-            self.json_path = get_file_path(func_name, file_name)
+            self.json_path = get_file_path(_dir, file_name)
 
             self.path = os.path.join(_dir, f'{file_name}.tif')
 
@@ -87,7 +60,8 @@ class TimeSeriesData:
         #     os.makedirs(_dir, exist_ok=True)
 
         # self.path = os.path.join(_dir, f'{file_name}.json')
-        self.path = get_file_path(func_name, file_name)
+        _dir = os.path.join(BASE_DIR, func_name)
+        self.path = get_file_path(_dir, file_name)
 
         pd.DataFrame(self.data).to_json(self.path, indent=4)
 
@@ -106,7 +80,8 @@ class CorrelationData:
         #     os.makedirs(_dir, exist_ok=True)
 
         # self.path = os.path.join(_dir, f'{file_name}.json')
-        self.path = get_file_path(func_name, file_name)
+        _dir = os.path.join(BASE_DIR, func_name)
+        self.path = get_file_path(_dir, file_name)
 
         pd.DataFrame(self.data).to_json(self.path, indent=4, orient="values")
 
@@ -121,7 +96,8 @@ class RoiData:
 
         images = get_images_list(data)
 
-        self.path = get_file_path(func_name, file_name)
+        _dir = os.path.join(BASE_DIR, func_name)
+        self.path = get_file_path(_dir, file_name)
         pd.DataFrame(images).to_json(self.path, indent=4, orient="values")
 
         del images, data
@@ -135,7 +111,8 @@ class RoiData:
 class Suite2pData:
     def __init__(self, data, func_name='suite2p', file_name='suite2p'):
         self.data = data
-        self.path = get_file_path(func_name, file_name)
+        _dir = os.path.join(BASE_DIR, func_name)
+        self.path = get_file_path(_dir, file_name)
 
     def __del__(self):
         del self
@@ -145,7 +122,8 @@ class Suite2pData:
 class IscellData:
     def __init__(self, data, func_name='iscell', file_name='iscell'):
         self.data = data
-        self.path = get_file_path(func_name, file_name)
+        _dir = os.path.join(BASE_DIR, func_name)
+        self.path = get_file_path(_dir, file_name)
 
     def __del__(self):
         del self

@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Action } from 'flexlayout-react'
 import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 
 import {
@@ -8,6 +7,7 @@ import {
   ImageItem,
   TableItem,
   TimeSeriesItem,
+  RoiItem,
   VisualaizeItem,
   VISUALIZE_ITEM_TYPE_SET,
 } from './VisualizeItemType'
@@ -16,8 +16,11 @@ import {
   isDisplayDataItem,
   isHeatMapItem,
   isImageItem,
+  isRoiItem,
   isTimeSeriesItem,
 } from './VisualizeItemUtils'
+import createColormap from 'colormap'
+
 export const initialState: VisualaizeItem = {
   items: {},
   selectedItemId: null,
@@ -70,6 +73,18 @@ const tableItemInitialValue: TableItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.TABLE,
 }
+const roiItemInitialValue: RoiItem = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.ROI,
+  colors: createColormap({
+    colormap: 'jet',
+    nshades: 10,
+    format: 'hex',
+    alpha: 1,
+  }).map((v, idx) => {
+    return { rgb: v, offset: String(idx / 9) }
+  }),
+}
 function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
   switch (dataType) {
     case DATA_TYPE_SET.IMAGE:
@@ -80,6 +95,8 @@ function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
       return timeSeriesItemInitialValue
     case DATA_TYPE_SET.TABLE:
       return tableItemInitialValue
+    case DATA_TYPE_SET.ROI:
+      return roiItemInitialValue
   }
 }
 
@@ -394,6 +411,21 @@ export const visualaizeItemSlice = createSlice({
         targetItem.colors = action.payload.colors
       }
     },
+    setRoiItemColors: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        colors: {
+          rgb: string
+          offset: string
+        }[]
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isRoiItem(targetItem)) {
+        targetItem.colors = action.payload.colors
+      }
+    },
   },
 })
 
@@ -428,6 +460,7 @@ export const {
   setTimeSeriesItemXrangeRight,
   setHeatMapItemShowScale,
   setHeatMapItemColors,
+  setRoiItemColors,
 } = visualaizeItemSlice.actions
 
 export default visualaizeItemSlice.reducer

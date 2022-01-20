@@ -32,7 +32,7 @@ import { NodeData } from 'store/slice/FlowElement/FlowElementType'
 import {
   selectOutputPaths,
   selectResultError,
-} from 'store/slice/RunPipelineResult/RenPipelineResultSelectors'
+} from 'store/slice/RunPipelineResult/RunPipelineResultSelectors'
 
 import { useHandleColor } from './HandleColorHook'
 import { toHandleId, isValidConnection } from './FlowChartUtils'

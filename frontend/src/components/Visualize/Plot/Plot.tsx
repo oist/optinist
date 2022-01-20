@@ -5,6 +5,7 @@ import { TimeSeries } from './TimeSeries'
 import { HeatMap } from './HeatMap'
 import { ImagePlot } from './ImagePlot'
 import { DisplayDataContext } from '../DisplayDataItem'
+import { RoiPlot } from './RoiPlot'
 
 const Plot = React.memo(() => {
   const { dataType } = React.useContext(DisplayDataContext)
@@ -17,6 +18,8 @@ const Plot = React.memo(() => {
       return <HeatMap />
     case DATA_TYPE_SET.IMAGE:
       return <ImagePlot />
+    case DATA_TYPE_SET.ROI:
+      return <RoiPlot />
   }
 })
 

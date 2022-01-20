@@ -125,3 +125,25 @@ export const selectTableDataIsFulfilled =
 export const selectTableDataColumns =
   (filePath: string) => (state: RootState) =>
     selectDisplayData(state).table[filePath].columns
+
+export const selectRoiData = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).roi[filePath].data[0]
+
+export const selectRoiDataIsInitialized =
+  (filePath: string) => (state: RootState) =>
+    Object.keys(selectDisplayData(state).roi).includes(filePath)
+
+export const selectRoiDataError = (filePath: string) => (state: RootState) =>
+  selectRoiDataIsInitialized(filePath)(state)
+    ? selectDisplayData(state).roi[filePath].error
+    : null
+
+export const selectRoiDataIsPending =
+  (filePath: string) => (state: RootState) =>
+    selectRoiDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).roi[filePath].pending
+
+export const selectRoiDataIsFulfilled =
+  (filePath: string) => (state: RootState) =>
+    selectRoiDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).roi[filePath].fulfilled

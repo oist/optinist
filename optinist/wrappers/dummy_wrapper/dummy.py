@@ -176,6 +176,24 @@ def dummy_image2time8iscell(
 
 
 @args_check
+def dummy_image2roi(
+    image1: ImageData, nwbfile: NWBFile=None,  params: dict=None
+    ) -> {'roi': RoiData}:
+
+    """
+        get image
+        return image
+    """
+    roi_data = np.random.rand((100_00))
+    import random
+    null_data = np.array(random.sample(list(np.arange(100_00)), 90_00))
+    roi_data[null_data] = np.nan
+    roi_data = roi_data.reshape(100, 100)
+    info = {}
+    info['roi'] = RoiData(roi_data, func_name=sys._getframe().f_code.co_name)
+    return info
+
+@args_check
 def dummy_image2image8roi(
     image1: ImageData, nwbfile: NWBFile=None,  params: dict=None
     ) -> {'image': ImageData, 'roi': RoiData}:
