@@ -7,6 +7,7 @@ import {
   ImageItem,
   TableItem,
   TimeSeriesItem,
+  RoiItem,
   VisualaizeItem,
   VISUALIZE_ITEM_TYPE_SET,
 } from './VisualizeItemType'
@@ -62,6 +63,10 @@ const tableItemInitialValue: TableItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.TABLE,
 }
+const roiItemInitialValue: RoiItem = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.ROI,
+}
 function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
   switch (dataType) {
     case DATA_TYPE_SET.IMAGE:
@@ -72,6 +77,8 @@ function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
       return timeSeriesItemInitialValue
     case DATA_TYPE_SET.TABLE:
       return tableItemInitialValue
+    case DATA_TYPE_SET.ROI:
+      return roiItemInitialValue
   }
 }
 

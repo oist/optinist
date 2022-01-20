@@ -12,7 +12,7 @@ export function toDataType(value: string): DATA_TYPE {
     case 'heatmap':
       return DATA_TYPE_SET.HEAT_MAP
     case 'roi':
-      return DATA_TYPE_SET.IMAGE
+      return DATA_TYPE_SET.ROI
     default:
       throw new Error(`failed to map dataType: ${value}`)
   }

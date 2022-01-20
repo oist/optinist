@@ -12,6 +12,7 @@ const initialState: DisplayData = {
   heatMap: {},
   image: {},
   table: {},
+  roi: {},
 }
 
 export const displayDataSlice = createSlice({
