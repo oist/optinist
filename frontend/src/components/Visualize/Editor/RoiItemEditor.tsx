@@ -2,11 +2,19 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { FileSelect } from 'components/FlowChart/FlowChartNode/FileSelect'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
-import { selectVisualizeDataFilePath } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { setDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import {
+  selectRoiItemColors,
+  selectVisualizeDataFilePath,
+} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import {
+  setDisplayDataPath,
+  setRoiItemColors,
+} from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
+import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
+import { GradientColorPicker } from './GradientColorPicker'
 
 export const RoiItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
@@ -20,9 +28,13 @@ export const RoiItemEditor: React.FC = () => {
     onUploadFile(formData, fileName)
   }
 
+  const colors = useSelector(selectRoiItemColors(itemId))
+  const dispathSetColor = (colorCode: ColorType[]) => {
+    dispatch(setRoiItemColors({ itemId, colors: colorCode }))
+  }
+
   return (
     <>
-      roi editor
       {/* <FileSelect
         filePath={filePath ?? ''}
         onSelectFile={onSelectFile}
@@ -31,6 +43,7 @@ export const RoiItemEditor: React.FC = () => {
         selectButtonLabel="Select CSV"
       /> */}
       {/* <GradientColorPicker /> */}
+      <GradientColorPicker colors={colors} dispatchSetColor={dispathSetColor} />
     </>
   )
 }

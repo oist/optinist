@@ -82,4 +82,5 @@ export interface TableItem extends DisplayDataItemBaseType {
 }
 export interface RoiItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.ROI
+  colors: ColorType[]
 }

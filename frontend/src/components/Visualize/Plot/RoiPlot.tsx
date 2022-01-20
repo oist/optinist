@@ -18,6 +18,7 @@ import {
   useTheme,
 } from '@material-ui/core'
 import { getRoiData } from 'store/slice/DisplayData/DisplayDataActions'
+import { selectRoiItemColors } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 export const RoiPlot = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
@@ -52,7 +53,8 @@ const RoiPlotImple = React.memo<{}>(() => {
   // const zsmooth = useSelector(selectImageItemZsmooth(itemId))
   // const showgrid = useSelector(selectImageItemShowGrid(itemId))
   // const showscale = useSelector(selectImageItemShowScale(itemId))
-  // const colorscale = useSelector(selectImageItemColors(itemId))
+  const colorscale = useSelector(selectRoiItemColors(itemId))
+  console.log(colorscale)
 
   const data = React.useMemo(
     () => [
@@ -60,10 +62,20 @@ const RoiPlotImple = React.memo<{}>(() => {
         z: imageData,
         type: 'heatmap',
         name: 'images',
-        colorscale: [
-          [0, 'rgb(255, 255, 255)'],
-          [1.0, 'rgb(0, 0, 0)'],
-        ],
+        colorscale: colorscale.map((value) => {
+          let offset: number = parseFloat(value.offset)
+          const offsets: number[] = colorscale.map((v) => {
+            return parseFloat(v.offset)
+          })
+          // plotlyは端[0.0, 1.0]がないとダメなので、その設定
+          if (offset === Math.max(...offsets)) {
+            offset = 1.0
+          }
+          if (offset === Math.min(...offsets)) {
+            offset = 0.0
+          }
+          return [offset, value.rgb]
+        }),
         hoverongaps: false,
         // showscale: showscale,
         // zsmooth: zsmooth, // ['best', 'fast', false]
@@ -71,7 +83,7 @@ const RoiPlotImple = React.memo<{}>(() => {
         showlegend: true,
       },
     ],
-    [imageData],
+    [imageData, colorscale],
   )
 
   const layout = React.useMemo(

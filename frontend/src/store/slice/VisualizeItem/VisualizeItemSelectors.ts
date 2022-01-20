@@ -4,6 +4,7 @@ import {
   isImageItem,
   isTimeSeriesItem,
   isHeatMapItem,
+  isRoiItem,
 } from './VisualizeItemUtils'
 
 export const selectSelectedVisualizeItemId = (state: RootState) =>
@@ -215,3 +216,12 @@ export const selectHeatMapItemColors =
       throw new Error('invalid VisualaizeItemType')
     }
   }
+
+export const selectRoiItemColors = (itemId: number) => (state: RootState) => {
+  const item = selectVisualizeItems(state)[itemId]
+  if (isRoiItem(item)) {
+    return item.colors
+  } else {
+    throw new Error('invalid VisualaizeItemType')
+  }
+}
