@@ -38,7 +38,7 @@ backendはメモリを多く使用するためローカル環境で構築する�
 optinistディレクトリに移動し、dockerをbuildする。
 ```
 cd optinist
-docker-compose build
+docker-compose build frontend
 ```
 ### frontendをdockerで起動
 dockerでfront側を起動する。
