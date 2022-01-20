@@ -46,6 +46,10 @@ dockerでfront側を起動する。
 docker-compose up frontend
 ```
 
+browserを起動。
+
+[http://localhost:3000](http://localhost:3000)
+
 ## 2.2 backendの環境構築
 手元の環境によって、使いやすいものを選択するのをおすすめする。
 ここでは、anacondaやvirutualenvで作った仮想環境にインストールする方法と、pipenvで作った仮想環境での方法を提示する。
