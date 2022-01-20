@@ -5,6 +5,22 @@ const selectDisplayData = (state: RootState) => state.displayData
 export const selectTimeSeriesData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).timeSeries[filePath].data
 
+export const selectTimeSeriesPlotlyData =
+  (filePath: string) => (state: RootState) => {
+    let timeSeriesData = selectDisplayData(state).timeSeries[filePath].data
+    if (timeSeriesData == null) {
+      return []
+    }
+    return Object.keys(timeSeriesData['0']).map((_, i) => {
+      return {
+        name: `(${i})`,
+        x: Object.keys(timeSeriesData),
+        y: Object.values(timeSeriesData).map((value) => value[i]),
+        visible: i === 0 ? true : 'legendonly',
+      }
+    })
+  }
+
 export const selectTimeSeriesDataIsInitialized =
   (filePath: string) => (state: RootState) =>
     Object.keys(selectDisplayData(state).timeSeries).includes(filePath)
@@ -78,14 +94,10 @@ export const selectImageDataMaxIndex =
       return undefined
     }
   }
-export const selectImageDataActiveIndex =
-  (filePath: string) => (state: RootState) =>
-    selectImageData(filePath)(state).activeIndex
 
 export const selectActiveImageData =
-  (filePath: string) => (state: RootState) => {
-    const index = selectImageDataActiveIndex(filePath)(state)
-    return selectImageData(filePath)(state).data[index]
+  (filePath: string, activeIndex: number) => (state: RootState) => {
+    return selectImageData(filePath)(state).data[activeIndex]
   }
 
 export const selectTableData = (filePath: string) => (state: RootState) =>

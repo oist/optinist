@@ -44,9 +44,7 @@ export interface HeatMapDisplayData
   extends BaseDisplay<'heatMap', HeatMapData> {}
 export type HeatMapData = number[][]
 
-export interface ImageDisplayData extends BaseDisplay<'image', ImageData> {
-  activeIndex: number
-}
+export interface ImageDisplayData extends BaseDisplay<'image', ImageData> {}
 export type ImageData = number[][][]
 
 export interface TableDisplayData extends BaseDisplay<'table', TableData> {

@@ -3,6 +3,7 @@ import { INITIAL_IMAGE_ELEMENT_ID } from 'const/flowchart'
 import {
   addFlowElementNode,
   deleteFlowElements,
+  deleteFlowElementsById,
 } from '../FlowElement/FlowElementSlice'
 import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
 import { isNodeData } from '../FlowElement/FlowElementUtils'
@@ -16,7 +17,6 @@ import { isImageInputNode } from './InputNodeUtils'
 const initialState: InputNode = {
   [INITIAL_IMAGE_ELEMENT_ID]: {
     fileType: FILE_TYPE_SET.IMAGE,
-    maxIndex: 10,
   },
 }
 
@@ -32,15 +32,12 @@ export const inputNodeSlice = createSlice({
       action: PayloadAction<{
         nodeId: string
         filePath: string
-        maxIndex: number
+        // maxIndex: number
       }>,
     ) {
-      const { nodeId, filePath, maxIndex } = action.payload
+      // const { nodeId, filePath, maxIndex } = action.payload
+      const { nodeId, filePath } = action.payload
       state[nodeId].selectedFilePath = filePath
-      const inputNode = state[nodeId]
-      if (isImageInputNode(inputNode)) {
-        inputNode.maxIndex = maxIndex
-      }
     },
     setInputNodeFilePath(
       state,
@@ -68,7 +65,6 @@ export const inputNodeSlice = createSlice({
             case FILE_TYPE_SET.IMAGE:
               state[node.id] = {
                 fileType,
-                maxIndex: 10,
               }
               break
           }
@@ -82,6 +78,11 @@ export const inputNodeSlice = createSlice({
               delete state[node.id]
             }
           })
+      })
+      .addCase(deleteFlowElementsById, (state, action) => {
+        if (Object.keys(state).includes(action.payload)) {
+          delete state[action.payload]
+        }
       }),
 })
 

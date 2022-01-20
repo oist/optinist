@@ -17,28 +17,7 @@ const initialState: DisplayData = {
 export const displayDataSlice = createSlice({
   name: DISPLAY_DATA_SLICE_NAME,
   initialState,
-  reducers: {
-    incrementImageActiveIndex: (
-      state,
-      action: PayloadAction<{ path: string; amount?: number }>,
-    ) => {
-      const { path, amount } = action.payload
-      const newIndex = state.image[path].activeIndex + (amount ?? 1)
-      if (state.image[path].data[newIndex] != null) {
-        state.image[path].activeIndex = newIndex
-      }
-    },
-    decrementImageActiveIndex: (
-      state,
-      action: PayloadAction<{ path: string; amount?: number }>,
-    ) => {
-      const { path, amount } = action.payload
-      const newIndex = state.image[path].activeIndex - (amount ?? 1)
-      if (newIndex >= 0) {
-        state.image[path].activeIndex = newIndex
-      }
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
       .addCase(getTimeSeriesData.pending, (state, action) => {
@@ -105,7 +84,7 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.image[path] = {
           type: 'image',
-          activeIndex: 0,
+          // activeIndex: 0,
           data: [],
           pending: true,
           fulfilled: false,
@@ -116,7 +95,7 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.image[path] = {
           type: 'image',
-          activeIndex: 0,
+          // activeIndex: 0,
           data: action.payload.data,
           pending: false,
           fulfilled: true,
@@ -127,7 +106,7 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.image[path] = {
           type: 'image',
-          activeIndex: 0,
+          // activeIndex: 0,
           data: [],
           pending: false,
           fulfilled: false,
@@ -169,8 +148,5 @@ export const displayDataSlice = createSlice({
       })
   },
 })
-
-export const { decrementImageActiveIndex, incrementImageActiveIndex } =
-  displayDataSlice.actions
 
 export default displayDataSlice.reducer

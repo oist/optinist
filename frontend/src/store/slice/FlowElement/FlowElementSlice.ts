@@ -1,5 +1,11 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Elements, removeElements, Node, Position } from 'react-flow-renderer'
+import {
+  Elements,
+  removeElements,
+  Node,
+  Position,
+  isNode,
+} from 'react-flow-renderer'
 import {
   FLOW_ELEMENT_SLICE_NAME,
   FlowElement,
@@ -41,6 +47,14 @@ export const flowElementSlice = createSlice({
     deleteFlowElements: (state, action: PayloadAction<Elements>) => {
       state.flowElements = removeElements(action.payload, state.flowElements)
     },
+    deleteFlowElementsById: (state, action: PayloadAction<string>) => {
+      const element = state.flowElements.find(
+        (edge) => edge.id === action.payload,
+      )
+      if (element !== undefined) {
+        state.flowElements = removeElements([element], state.flowElements)
+      }
+    },
     addFlowElementNode: (
       state,
       action: PayloadAction<{
@@ -73,10 +87,50 @@ export const flowElementSlice = createSlice({
       }
       state.flowElements.push(node)
     },
+    edifFlowElementsLabelById: (
+      state,
+      action: PayloadAction<{
+        nodeId: string
+        fileName: string
+      }>,
+    ) => {
+      let { nodeId, fileName } = action.payload
+      const elementIdx = state.flowElements.findIndex(
+        (ele) => ele.id === nodeId,
+      )
+      if (state.flowElements[elementIdx].data?.label) {
+        state.flowElements[elementIdx].data!.label = fileName
+      }
+    },
+    editFlowElementPositionById: (
+      state,
+      action: PayloadAction<{
+        nodeId: string
+        coord: {
+          x: number
+          y: number
+        }
+      }>,
+    ) => {
+      let { nodeId, coord } = action.payload
+      const elementIdx = state.flowElements.findIndex(
+        (ele) => ele.id === nodeId,
+      )
+      const targetItem = state.flowElements[elementIdx]
+      if (isNode(targetItem)) {
+        targetItem.position = coord
+      }
+    },
   },
 })
 
-export const { setFlowElements, addFlowElementNode, deleteFlowElements } =
-  flowElementSlice.actions
+export const {
+  setFlowElements,
+  addFlowElementNode,
+  deleteFlowElements,
+  deleteFlowElementsById,
+  edifFlowElementsLabelById,
+  editFlowElementPositionById,
+} = flowElementSlice.actions
 
 export default flowElementSlice.reducer

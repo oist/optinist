@@ -1,6 +1,6 @@
 import { RootState } from 'store/store'
 
-const selectAlgorithmNode = (state: RootState) => state.algorithmNode
+export const selectAlgorithmNode = (state: RootState) => state.algorithmNode
 
 export const selectAlgorithmNodeDefined =
   (nodeId: string) => (state: RootState) =>

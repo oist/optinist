@@ -18,10 +18,9 @@ export type InputNodeType = CsvInputNode | ImageInputNode
 interface InputNodeBaseType<T extends FILE_TYPE> {
   fileType: T
   selectedFilePath?: string // 複数ファイル指定の予定あり
+  selectedFileName?: string
 }
 
 export interface CsvInputNode extends InputNodeBaseType<'csv'> {}
 
-export interface ImageInputNode extends InputNodeBaseType<'image'> {
-  maxIndex: number
-}
+export interface ImageInputNode extends InputNodeBaseType<'image'> {}

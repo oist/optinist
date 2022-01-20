@@ -8,7 +8,7 @@ import Close from '@material-ui/icons/Close'
 import { SnackbarProvider, SnackbarKey, useSnackbar } from 'notistack'
 
 import { useLazyRunPipelineQuery } from 'api/Run/Run'
-import { NWB } from './NWB'
+import { NWBSettingButton } from './FlowChart/NWB'
 import { selectNwbList } from 'store/slice/NWB/NWBSelectors'
 import { selectFilePathIsUndefined } from 'store/slice/InputNode/InputNodeSelectors'
 import { selectElementListForRun } from 'store/slice/FlowElement/FlowElementSelectors'
@@ -34,7 +34,7 @@ const SnackbarCloseButton: React.FC<{ snackbarKey: SnackbarKey }> = ({
   )
 }
 
-export const ToolBarImple = React.memo(() => {
+const ToolBarImple = React.memo(() => {
   const dispatch = useDispatch()
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
   const pathIsUndefined = useSelector(selectFilePathIsUndefined)
@@ -74,12 +74,8 @@ export const ToolBarImple = React.memo(() => {
   }, [result, enqueueSnackbar, closeSnackbar, dispatch])
   return (
     <div style={{ width: '100%' }}>
-      <Box
-        display="flex"
-        justifyContent="flex-end"
-        style={{ paddingBottom: 4 }}
-      >
-        <NWB />
+      <Box display="flex" justifyContent="flex-end" style={{ padding: 4 }}>
+        <NWBSettingButton />
         <Box>
           <Button
             className="ctrl_btn"
