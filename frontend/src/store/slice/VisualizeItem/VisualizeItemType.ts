@@ -13,6 +13,11 @@ export interface ItemBaseType<T extends VISUALIZE_ITEM_TYPE> {
   itemType: T
 }
 
+export type ColorType = {
+  rgb: string
+  offset: string
+}
+
 export const VISUALIZE_ITEM_TYPE_SET = {
   DEFAULT_SET: 'defaultSet',
   DISPLAY_DATA: 'displayData',
@@ -49,11 +54,9 @@ export interface ImageItem extends DisplayDataItemBaseType {
   showline: boolean
   showgrid: boolean
   showscale: boolean
-  colors: {
-    rgb: string
-    offset: string
-  }[]
+  colors: ColorType[]
 }
+
 export interface TimeSeriesItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.TIME_SERIES
   offset: boolean
@@ -67,8 +70,11 @@ export interface TimeSeriesItem extends DisplayDataItemBaseType {
     right: number | undefined
   }
 }
+
 export interface HeatMapItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.HEAT_MAP
+  showscale: boolean
+  colors: ColorType[]
 }
 export interface TableItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.TABLE

@@ -1,5 +1,4 @@
-import React, { ChangeEvent, useState } from 'react'
-
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Switch from '@material-ui/core/Switch'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -12,9 +11,9 @@ import {
   selectImageItemShowticklabels,
   selectImageItemZsmooth,
   selectImageItemShowScale,
-  selectImageItemColors,
   selectImageItemMaxIndex,
   selectVisualizeDataFilePath,
+  selectImageItemColors,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 
@@ -24,23 +23,19 @@ import {
   setImageItemShowticklabels,
   setImageItemZsmooth,
   setImageItemShowScale,
-  setImageItemColors,
   setDisplayDataPath,
   setImageItemMaxIndex,
+  setImageItemColors,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
-import {
-  GradientPicker,
-  GradientPickerPopover,
-} from 'react-linear-gradient-picker'
-import { SketchPicker } from 'react-color'
-import { PALETTE_COLOR_SHAPE_TYPE } from 'react-linear-gradient-picker'
 import 'react-linear-gradient-picker/dist/index.css'
 import { FileSelect } from 'components/FlowChart/FlowChartNode/FileSelect'
 import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
 import { TextField } from '@material-ui/core'
+import { GradientColorPicker } from './GradientColorPicker'
+import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
 
 export const ImageItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
@@ -62,6 +57,11 @@ export const ImageItemEditor: React.FC = () => {
     onUploadFile(formData, fileName)
   }
 
+  const colors = useSelector(selectImageItemColors(itemId))
+  const dispathSetColor = (colorCode: ColorType[]) => {
+    dispatch(setImageItemColors({ itemId, colors: colorCode }))
+  }
+
   return (
     <div style={{ margin: '10px' }}>
       <FileSelect
@@ -77,7 +77,7 @@ export const ImageItemEditor: React.FC = () => {
       <ShowGrid />
       <ShowScale />
       <Zsmooth />
-      <GradientColorPicker />
+      <GradientColorPicker colors={colors} dispatchSetColor={dispathSetColor} />
     </div>
   )
 }
@@ -195,86 +195,6 @@ const MaxIndex: React.FC = () => {
         />
       }
       label="maxIndex"
-    />
-  )
-}
-
-const GradientColorPicker: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
-  const colors = useSelector(selectImageItemColors(itemId))
-  const dispatch = useDispatch()
-
-  const palette: PALETTE_COLOR_SHAPE_TYPE[] = colors.map((value) => {
-    return {
-      offset: value.offset,
-      color: value.rgb,
-    }
-  })
-
-  const onPaletteChange = (palette: PALETTE_COLOR_SHAPE_TYPE[]) => {
-    const colorCode = palette.map((value) => {
-      const color = value.color
-      const rgbStr = color.replace(/[^0-9,]/g, '').split(',')
-      const rgb = {
-        r: Number(rgbStr[0]),
-        g: Number(rgbStr[1]),
-        b: Number(rgbStr[2]),
-      }
-      return {
-        rgb: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
-        offset: value.offset,
-      }
-    })
-    dispatch(setImageItemColors({ itemId, colors: colorCode }))
-  }
-
-  const [open, setOpen] = useState(false)
-
-  return (
-    // <GradientPicker
-    //   width={200}
-    //   maxStops={10}
-    //   paletteHeight={32}
-    //   palette={palette}
-    //   onPaletteChange={onPaletteChange}
-    //   flatStyle={true}
-    // >
-    //   <WrappedSketchPicker />
-    // </GradientPicker>
-    <GradientPickerPopover
-      open={open}
-      setOpen={() => setOpen(!open)}
-      // showAnglePicker={true}
-      width={150}
-      maxStops={10}
-      paletteHeight={25}
-      palette={palette}
-      onPaletteChange={onPaletteChange}
-      flatStyle={true}
-    >
-      <WrappedSketchPicker />
-    </GradientPickerPopover>
-  )
-}
-
-type WrapperPropTypes = {
-  onSelect?: (color: string, opacity?: number) => void
-  color?: string
-}
-
-const WrappedSketchPicker: React.FC<WrapperPropTypes> = ({
-  onSelect,
-  color,
-}) => {
-  return (
-    <SketchPicker
-      color={color}
-      width="150px"
-      // styles={{width: "10px"}}
-      onChange={(c) => {
-        const { r, g, b, a } = c.rgb
-        onSelect?.(`rgb(${r}, ${g}, ${b})`, a)
-      }}
     />
   )
 }

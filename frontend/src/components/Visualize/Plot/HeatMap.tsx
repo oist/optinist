@@ -13,8 +13,11 @@ import {
   selectHeatMapDataIsPending,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getHeatMapData } from 'store/slice/DisplayData/DisplayDataActions'
-import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
-import { RootState } from 'store/store'
+import { setImageItemShowScale } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import {
+  selectHeatMapItemColors,
+  selectHeatMapItemShowScale,
+} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 export const HeatMap = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -40,15 +43,11 @@ export const HeatMap = React.memo(() => {
 })
 
 const HeatMapImple = React.memo(() => {
-  const { filePath: path, nodeId } = React.useContext(DisplayDataContext)
-  const label = useSelector((state: RootState) => {
-    if (nodeId) {
-      return selectNodeLabelById(nodeId)(state)
-    } else {
-      return path
-    }
-  })
+  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
   const heatMapData = useSelector(selectHeatMapData(path), heatMapDataEqualtyFn)
+  const showscale = useSelector(selectHeatMapItemShowScale(itemId))
+  const colorscale = useSelector(selectHeatMapItemColors(itemId))
+
   const data = React.useMemo(
     () =>
       heatMapData != null
@@ -58,15 +57,33 @@ const HeatMapImple = React.memo(() => {
               x: heatMapData.map((_, i) => i),
               y: heatMapData[0].map((_, i) => i),
               type: 'heatmap',
+              name: 'heatmap',
+              colorscale: colorscale.map((value) => {
+                let offset: number = parseFloat(value.offset)
+                const offsets: number[] = colorscale.map((v) => {
+                  return parseFloat(v.offset)
+                })
+                // plotlyは端[0.0, 1.0]がないとダメなので、その設定
+                if (offset === Math.max(...offsets)) {
+                  offset = 1.0
+                }
+                if (offset === Math.min(...offsets)) {
+                  offset = 0.0
+                }
+                return [offset, value.rgb]
+              }),
               hoverongaps: false,
+              showlegend: true,
+              showscale: showscale,
             },
           ]
         : [],
-    [heatMapData],
+    [heatMapData, showscale, colorscale],
   )
 
   const layout = {
-    title: label,
+    title: path.split('/').reverse()[0],
+    dragmode: 'pan',
     margin: {
       t: 60, // top
       l: 50, // left
@@ -77,6 +94,7 @@ const HeatMapImple = React.memo(() => {
   }
   const config = {
     displayModeBar: true,
+    scrollZoom: true,
   }
   return <PlotlyChart data={data} layout={layout} config={config} />
 })

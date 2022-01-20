@@ -6,6 +6,7 @@ import {
   VISUALIZE_ITEM_TYPE_SET,
   ImageItem,
   TimeSeriesItem,
+  HeatMapItem,
 } from './VisualizeItemType'
 
 export function isDefaultSetItem(
@@ -33,5 +34,12 @@ export function isTimeSeriesItem(
   return (
     item.itemType === VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA &&
     item.dataType === DATA_TYPE_SET.TIME_SERIES
+  )
+}
+
+export function isHeatMapItem(item: VisualaizeItemType): item is HeatMapItem {
+  return (
+    item.itemType === VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA &&
+    item.dataType === DATA_TYPE_SET.HEAT_MAP
   )
 }
