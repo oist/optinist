@@ -7,10 +7,8 @@ def Granger(
     ) -> {'Granger_fval_mat': CorrelationData}:
 
     # modules specific to function
-    from sklearn.preprocessing import StandardScaler
-    from statsmodels.tsa.stattools import grangercausalitytests
-    from statsmodels.tsa.stattools import adfuller
-    from statsmodels.tsa.stattools import coint
+    # from sklearn.preprocessing import StandardScaler
+    from statsmodels.tsa.stattools import grangercausalitytests, adfuller, coint
     import itertools
     from tqdm import tqdm
 
@@ -27,9 +25,11 @@ def Granger(
     comb = list(itertools.permutations(range(num_cell), 2))  # combinations with dup
     num_comb= len(comb)
 
-    # preprocessing  ##################
-    sc = StandardScaler(with_mean = params['standardization_mean'], with_std = params['standardization_std'])
-    tX = sc.fit_transform(X)
+    # # preprocessing  ##################
+    # sc = StandardScaler(with_mean = params['standardization_mean'], with_std = params['standardization_std'])
+    # tX = sc.fit_transform(X)
+    
+    tX = standard_norm(X, params['standard_mean'], params['standard_std'])
 
     # calculate dickey-fuller test  ##################
     # augmented dickey-fuller test---- if p val is large, it cannot reject  there is a unit root

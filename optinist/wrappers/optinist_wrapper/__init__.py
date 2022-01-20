@@ -1,21 +1,9 @@
-from .correlation import correlation
-from .pca import PCA
-from .granger import Granger
-from .glm import GLM
+from .stats import stats_wrapper_dict
+from .model import model_wrapper_dict
 
 optinist_wrapper_dict = {
     'optinist': {
-        'correlation': {
-			'function': correlation
-        },
-        'pca': {
-			'function': PCA
-        },
-        'granger': {
-            'function': Granger
-        },
-        'glm': {
-            'function': GLM
-        }
+        'stats': stats_wrapper_dict,
+        'model': model_wrapper_dict
     }
 }
