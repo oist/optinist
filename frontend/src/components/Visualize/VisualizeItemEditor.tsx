@@ -4,9 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import FormControl from '@material-ui/core/FormControl'
 import MenuItem from '@material-ui/core/MenuItem'
 import InputLabel from '@material-ui/core/InputLabel'
-import FormHelperText from '@material-ui/core/FormHelperText'
 import Select from '@material-ui/core/Select'
-import ListSubheader from '@material-ui/core/ListSubheader'
 import Box from '@material-ui/core/Box'
 
 import {
@@ -22,21 +20,13 @@ import {
   DATA_TYPE_SET,
 } from 'store/slice/DisplayData/DisplayDataType'
 import { RootState } from 'store/store'
-import {
-  setDisplayDataPath,
-  setItemType,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { selectInputNode } from 'store/slice/InputNode/InputNodeSelectors'
-import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
-import { selectAlgorithmNode } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
-import { selectOutputPaths } from 'store/slice/RunPipelineResult/RunPipelineResultSelectors'
-import { toDataType } from 'store/slice/DisplayData/DisplayDataUtils'
-import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
+import { setItemType } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { ImageItemEditor } from './Editor/ImageItemEditor'
 import { TableItemEditor } from './Editor/TableItemEditor'
 import { HeatmapItemEditor } from './Editor/HeatmapItemEditor'
 import { TimeSeriesItemEditor } from './Editor/TimeSeriesItemEditor'
 import { RoiItemEditor } from './Editor/RoiItemEditor'
+import { FilePathSelect } from './FilePathSelect'
 
 export const VisualizeItemEditor = () => {
   const selectedItemId = useSelector(selectSelectedVisualizeItemId)
@@ -120,9 +110,16 @@ const DefaultSetItemEditor: React.FC = () => {
 const DisplayDataItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const dataType = useSelector(selectVisualizeDataType(itemId))
+  const selectedNodeId = useSelector(selectVisualizeDataNodeId(itemId))
+  const selectedFilePath = useSelector(selectVisualizeDataFilePath(itemId))
   return (
     <div>
-      <FilePathSelect />
+      <FilePathSelect
+        itemId={itemId}
+        dataType={dataType}
+        selectedNodeId={selectedNodeId}
+        selectedFilePath={selectedFilePath}
+      />
       <div style={{ marginTop: 8 }}>
         {dataType === DATA_TYPE_SET.IMAGE && <ImageItemEditor />}
         {/* 他のtypeのEditorも必要になったら追加する */}
@@ -132,122 +129,5 @@ const DisplayDataItemEditor: React.FC = () => {
         {dataType === DATA_TYPE_SET.ROI && <RoiItemEditor />}
       </div>
     </div>
-  )
-}
-
-const FilePathSelect: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
-  const dispatch = useDispatch()
-  const dataType = useSelector(selectVisualizeDataType(itemId))
-  const inputNodeFilePathInfoList = useSelector(
-    (state: RootState) => {
-      const inputNodes = selectInputNode(state)
-      return Object.entries(inputNodes)
-        .map(([nodeId, inputNode]) => ({
-          nodeId,
-          filePath: inputNode.selectedFilePath,
-          fileType: inputNode.fileType,
-          nodeName: selectNodeLabelById(nodeId)(state),
-        }))
-        .filter(({ filePath }) => filePath != null)
-        .filter(({ fileType }) => {
-          switch (dataType) {
-            case DATA_TYPE_SET.IMAGE:
-              return fileType === FILE_TYPE_SET.IMAGE
-            case DATA_TYPE_SET.TABLE:
-              return fileType === FILE_TYPE_SET.CSV
-            default:
-              return false
-          }
-        })
-    },
-    // todo 比較関数
-  )
-
-  const algorithmNodeOutputPathInfoList = useSelector((state: RootState) => {
-    const algorithms = selectAlgorithmNode(state)
-    const outputPaths = selectOutputPaths(state)
-    if (outputPaths != null) {
-      return Object.entries(algorithms)
-        .filter(([nodeId, algoNode]) =>
-          Object.keys(outputPaths).includes(algoNode.functionPath),
-        )
-        .map(([nodeId, algoNode]) => {
-          const paths = Object.entries(outputPaths[algoNode.functionPath])
-            .map(([outputKey, outputPath]) => ({
-              outputKey,
-              filePath: outputPath.path,
-              type: toDataType(outputPath.type),
-            }))
-            .filter(({ type }) => type === dataType)
-          return {
-            nodeName: selectNodeLabelById(nodeId)(state),
-            nodeId,
-            paths,
-          }
-        })
-        .filter(({ paths }) => paths.length > 0)
-    } else {
-      return []
-    }
-  })
-
-  const [open, setOpen] = React.useState(false)
-  const handleClose = () => {
-    setOpen(false)
-  }
-
-  const handleOpen = () => {
-    setOpen(true)
-  }
-  const onSelect = (nodeId: string, filePath: string) => {
-    dispatch(setDisplayDataPath({ nodeId, filePath, itemId }))
-    handleClose()
-  }
-
-  const selectedFilePath = useSelector(selectVisualizeDataFilePath(itemId))
-  const selectedNodeId = useSelector(selectVisualizeDataNodeId(itemId))
-
-  const menuItemList: React.ReactElement[] = []
-  inputNodeFilePathInfoList.forEach((pathInfo) => {
-    menuItemList.push(
-      <MenuItem
-        value={`${pathInfo.nodeId}/${pathInfo.filePath}`}
-        onClick={() => onSelect(pathInfo.nodeId, pathInfo.filePath ?? '')}
-        key={pathInfo.nodeId}
-      >
-        {pathInfo.nodeName}
-      </MenuItem>,
-    )
-  })
-  algorithmNodeOutputPathInfoList.forEach((pathInfo) => {
-    menuItemList.push(<ListSubheader>{pathInfo.nodeName}</ListSubheader>)
-    pathInfo.paths.forEach((outputPath, i) => {
-      menuItemList.push(
-        <MenuItem
-          value={`${pathInfo.nodeId}/${outputPath.filePath}`}
-          onClick={() => onSelect(pathInfo.nodeId, outputPath.filePath)}
-          key={`${pathInfo.nodeId}/${outputPath.filePath}`}
-        >
-          {outputPath.outputKey}
-        </MenuItem>,
-      )
-    })
-  })
-  return (
-    <FormControl style={{ minWidth: 150, maxWidth: 220 }}>
-      <InputLabel>Select Item</InputLabel>
-      <Select
-        value={`${selectedNodeId}/${selectedFilePath}`}
-        open={open}
-        onClose={handleClose}
-        onOpen={handleOpen}
-      >
-        {menuItemList}
-      </Select>
-      {inputNodeFilePathInfoList.length +
-        algorithmNodeOutputPathInfoList.length ===
-        0 && <FormHelperText error={true}>no data</FormHelperText>}
-    </FormControl>
   )
 }

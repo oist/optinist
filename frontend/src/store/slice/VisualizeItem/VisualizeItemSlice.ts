@@ -138,6 +138,34 @@ export const visualaizeItemSlice = createSlice({
       if (isDisplayDataItem(targetItem)) {
         targetItem.filePath = filePath
         targetItem.nodeId = nodeId
+      } else {
+        throw new Error('invalid VisualaizeItemType')
+      }
+    },
+    setDefaultSetPath: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        filePath: string
+        nodeId: string | null
+        dataType: string
+      }>,
+    ) => {
+      const { itemId, filePath, nodeId, dataType } = action.payload
+      const targetItem = state.items[itemId]
+      if (isDefaultSetItem(targetItem)) {
+        if (dataType === 'image') {
+          targetItem.imageItem.filePath = filePath
+          targetItem.imageItem.nodeId = nodeId
+        } else if (dataType === 'timeSeries') {
+          targetItem.timeSeriesItem.filePath = filePath
+          targetItem.timeSeriesItem.nodeId = nodeId
+        } else if (dataType === 'heatMap') {
+          targetItem.heatMapItem.filePath = filePath
+          targetItem.heatMapItem.nodeId = nodeId
+        }
+      } else {
+        throw new Error('invalid VisualaizeItemType')
       }
     },
     setItemType: (
@@ -441,6 +469,7 @@ export const {
   selectItem,
   setItemType,
   setDisplayDataPath,
+  setDefaultSetPath,
   incrementImageActiveIndex,
   decrementImageActiveIndex,
   setImageItemShowticklabels,
