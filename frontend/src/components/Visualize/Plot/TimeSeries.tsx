@@ -14,9 +14,6 @@ import {
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getTimeSeriesData } from 'store/slice/DisplayData/DisplayDataActions'
 import { TimeSeriesData } from 'store/slice/DisplayData/DisplayDataType'
-import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
-import { RootState } from 'store/store'
-import { LegendClickEvent } from 'plotly.js'
 import {
   selectTimeSeriesItemOffset,
   selectTimeSeriesItemShowGrid,
@@ -71,37 +68,42 @@ const TimeSeriesImple = React.memo(() => {
     if (timeSeriesData == null) {
       return []
     }
-    return Object.keys(timeSeriesData['0'])
-      .map((_, i) => {
-        return {
-          name: `(${i})`,
-          x: Object.keys(timeSeriesData),
-          y: Object.values(timeSeriesData).map((value) => value[i]),
-        }
-      })
-      .map((v, idx) => {
-        if (displayNumbers.includes(idx)) {
-          if (offset) {
-            const activeIdx: number = displayNumbers.findIndex(
-              (value) => value == idx,
-            )
-            const mean: number = v.y.reduce((a, b) => a + b) / v.y.length
-            const std: number =
-              span *
-              Math.sqrt(
-                v.y.reduce((a, b) => a + Math.pow(b - mean, 2)) / v.y.length,
-              )
-            const newArray = v.y.map(
-              (value) => (value - mean) / std + activeIdx,
-            )
-            return { name: v.name, x: v.x, y: newArray, visible: true }
-          } else {
-            return { name: v.name, x: v.x, y: v.y, visible: true }
+    return Object.keys(timeSeriesData).map((key, i) => {
+      let y = Object.values(timeSeriesData[key])
+
+      if (displayNumbers.includes(i)) {
+        if (offset) {
+          const activeIdx: number = displayNumbers.findIndex(
+            (value) => value == i,
+          )
+          const mean: number = y.reduce((a, b) => a + b) / y.length
+          const std: number =
+            span *
+            Math.sqrt(y.reduce((a, b) => a + Math.pow(b - mean, 2)) / y.length)
+          const newArray = y.map((value) => (value - mean) / std + activeIdx)
+          return {
+            name: `(${key})`,
+            x: Object.keys(timeSeriesData[key]),
+            y: newArray,
+            visible: true,
           }
         } else {
-          return { name: v.name, x: v.x, y: v.y, visible: 'legendonly' }
+          return {
+            name: `(${key})`,
+            x: Object.keys(timeSeriesData[key]),
+            y: y,
+            visible: true,
+          }
         }
-      })
+      } else {
+        return {
+          name: `(${key})`,
+          x: Object.keys(timeSeriesData[key]),
+          y: y,
+          visible: 'legendonly',
+        }
+      }
+    })
   }, [timeSeriesData, displayNumbers, offset, span])
 
   const layout = React.useMemo(
