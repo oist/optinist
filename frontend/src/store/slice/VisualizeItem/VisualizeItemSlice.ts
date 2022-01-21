@@ -110,7 +110,7 @@ export const visualaizeItemSlice = createSlice({
   name: 'visualaizeItem',
   initialState,
   reducers: {
-    deleteItem: (state, action: PayloadAction<number>) => {
+    deleteVisualizeItem: (state, action: PayloadAction<number>) => {
       const itemId = action.payload
       delete state.items[itemId]
       if (itemId === state.selectedItemId) {
@@ -437,7 +437,7 @@ function getMaxItemId(state: VisualaizeItem) {
 
 export const {
   addInitialItem,
-  deleteItem,
+  deleteVisualizeItem,
   selectItem,
   setItemType,
   setDisplayDataPath,

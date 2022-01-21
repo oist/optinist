@@ -10,13 +10,7 @@ import {
   selectRoiDataIsInitialized,
   selectRoiDataIsPending,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
-import {
-  Button,
-  LinearProgress,
-  MobileStepper,
-  Typography,
-  useTheme,
-} from '@material-ui/core'
+import { LinearProgress, Typography } from '@material-ui/core'
 import { getRoiData } from 'store/slice/DisplayData/DisplayDataActions'
 import { selectRoiItemColors } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
@@ -54,7 +48,6 @@ const RoiPlotImple = React.memo<{}>(() => {
   // const showgrid = useSelector(selectImageItemShowGrid(itemId))
   // const showscale = useSelector(selectImageItemShowScale(itemId))
   const colorscale = useSelector(selectRoiItemColors(itemId))
-  console.log(colorscale)
 
   const data = React.useMemo(
     () => [

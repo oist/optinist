@@ -19,7 +19,15 @@ const initialState: DisplayData = {
 export const displayDataSlice = createSlice({
   name: DISPLAY_DATA_SLICE_NAME,
   initialState,
-  reducers: {},
+  reducers: {
+    // deleteDisplayItem: (state, action: PayloadAction<number>) => {
+    //   const itemId = action.payload
+    //   delete state[itemId]
+    //   if (itemId === state.selectedItemId) {
+    //     state.selectedItemId = null
+    //   }
+    // },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getTimeSeriesData.pending, (state, action) => {

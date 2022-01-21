@@ -20,10 +20,6 @@ class ImageData:
         else:
             _dir = os.path.join(BASE_DIR, func_name)
 
-            # if not os.path.exists(_dir):
-            #     os.makedirs(_dir, exist_ok=True)
-
-            # self.json_path = os.path.join(_dir, f'{file_name}.json')
             self.json_path = get_file_path(_dir, file_name)
 
             self.path = os.path.join(_dir, f'{file_name}.tif')
@@ -49,21 +45,17 @@ class ImageData:
 class TimeSeriesData:
     def __init__(self, data, func_name='timeseries', file_name='timeseries'):
         if type(data) == str:
-            self.data = pd.read_csv(data).values.T
+            self.data = pd.read_csv(data).values
         else:
             self.data = data
 
         if len(self.data.shape) == 1:
             self.data = self.data[np.newaxis, :]
 
-        # if not os.path.exists(_dir):
-        #     os.makedirs(_dir, exist_ok=True)
-
-        # self.path = os.path.join(_dir, f'{file_name}.json')
         _dir = os.path.join(BASE_DIR, func_name)
         self.path = get_file_path(_dir, file_name)
 
-        pd.DataFrame(self.data).to_json(self.path, indent=4)
+        pd.DataFrame(self.data.T).to_json(self.path, indent=4)
 
     def __del__(self):
         del self
@@ -74,12 +66,6 @@ class CorrelationData:
     def __init__(self, data, func_name='heatmap', file_name='heatmap'):
         self.data = data
 
-        # _dir = os.path.join(BASE_DIR, func_name)
-
-        # if not os.path.exists(_dir):
-        #     os.makedirs(_dir, exist_ok=True)
-
-        # self.path = os.path.join(_dir, f'{file_name}.json')
         _dir = os.path.join(BASE_DIR, func_name)
         self.path = get_file_path(_dir, file_name)
 
