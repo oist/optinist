@@ -1,5 +1,5 @@
 import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useSelector } from 'react-redux'
 
 import FormControl from '@material-ui/core/FormControl'
 import MenuItem from '@material-ui/core/MenuItem'
@@ -10,22 +10,20 @@ import ListSubheader from '@material-ui/core/ListSubheader'
 
 import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
 import { RootState } from 'store/store'
-import { setFilePath } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { selectInputNode } from 'store/slice/InputNode/InputNodeSelectors'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import { selectAlgorithmNode } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
 import { selectOutputPaths } from 'store/slice/RunPipelineResult/RunPipelineResultSelectors'
 import { toDataType } from 'store/slice/DisplayData/DisplayDataUtils'
 import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
-import { selectVisualizeItemType } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 export const FilePathSelect: React.FC<{
-  itemId: number
   dataType: string
   selectedNodeId: string | null
   selectedFilePath: string | null
-}> = ({ itemId, dataType, selectedNodeId, selectedFilePath }) => {
-  const dispatch = useDispatch()
+  onSelect: (nodeId: string, filePath: string) => void
+  label?: string
+}> = ({ dataType, selectedNodeId, selectedFilePath, onSelect, label }) => {
   const inputNodeFilePathInfoList = useSelector(
     (state: RootState) => {
       const inputNodes = selectInputNode(state)
@@ -88,8 +86,8 @@ export const FilePathSelect: React.FC<{
     setOpen(true)
   }
 
-  const onSelect = (nodeId: string, filePath: string) => {
-    dispatch(setFilePath({ nodeId, filePath, itemId, dataType }))
+  const onSelectHandle = (nodeId: string, filePath: string) => {
+    onSelect(nodeId, filePath)
     handleClose()
   }
 
@@ -98,7 +96,7 @@ export const FilePathSelect: React.FC<{
     menuItemList.push(
       <MenuItem
         value={`${pathInfo.nodeId}/${pathInfo.filePath}`}
-        onClick={() => onSelect(pathInfo.nodeId, pathInfo.filePath ?? '')}
+        onClick={() => onSelectHandle(pathInfo.nodeId, pathInfo.filePath ?? '')}
         key={pathInfo.nodeId}
       >
         {pathInfo.nodeName}
@@ -111,7 +109,7 @@ export const FilePathSelect: React.FC<{
       menuItemList.push(
         <MenuItem
           value={`${pathInfo.nodeId}/${outputPath.filePath}`}
-          onClick={() => onSelect(pathInfo.nodeId, outputPath.filePath)}
+          onClick={() => onSelectHandle(pathInfo.nodeId, outputPath.filePath)}
           key={`${pathInfo.nodeId}/${outputPath.filePath}`}
         >
           {outputPath.outputKey}
@@ -121,10 +119,9 @@ export const FilePathSelect: React.FC<{
   })
   return (
     <FormControl style={{ minWidth: 150, maxWidth: 220 }}>
-      <InputLabel>Select Item</InputLabel>
+      <InputLabel>{!!label ? label : 'Select Item'}</InputLabel>
       <Select
         value={`${selectedNodeId}/${selectedFilePath}`}
-        // value={"aa"}
         open={open}
         onClose={handleClose}
         onOpen={handleOpen}

@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 import { DisplayData, DISPLAY_DATA_SLICE_NAME } from './DisplayDataType'
 import {
   getTableData,

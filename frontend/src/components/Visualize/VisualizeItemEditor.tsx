@@ -20,7 +20,10 @@ import {
   DATA_TYPE_SET,
 } from 'store/slice/DisplayData/DisplayDataType'
 import { RootState } from 'store/store'
-import { setItemType } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import {
+  setDisplayDataPath,
+  setItemType,
+} from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { ImageItemEditor } from './Editor/ImageItemEditor'
 import { TableItemEditor } from './Editor/TableItemEditor'
 import { HeatmapItemEditor } from './Editor/HeatmapItemEditor'
@@ -112,13 +115,16 @@ const DisplayDataItemEditor: React.FC = () => {
   const dataType = useSelector(selectVisualizeDataType(itemId))
   const selectedNodeId = useSelector(selectVisualizeDataNodeId(itemId))
   const selectedFilePath = useSelector(selectVisualizeDataFilePath(itemId))
+  const dispatch = useDispatch()
+  const onSelect = (nodeId: string, filePath: string) =>
+    dispatch(setDisplayDataPath({ itemId, nodeId, filePath }))
   return (
     <div>
       <FilePathSelect
-        itemId={itemId}
         dataType={dataType}
         selectedNodeId={selectedNodeId}
         selectedFilePath={selectedFilePath}
+        onSelect={onSelect}
       />
       <div style={{ marginTop: 8 }}>
         {dataType === DATA_TYPE_SET.IMAGE && <ImageItemEditor />}

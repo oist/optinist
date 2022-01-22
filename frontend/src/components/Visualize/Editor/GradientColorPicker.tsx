@@ -1,16 +1,10 @@
 import React, { useState } from 'react'
 
-import {
-  GradientPicker,
-  GradientPickerPopover,
-} from 'react-linear-gradient-picker'
+import { GradientPickerPopover } from 'react-linear-gradient-picker'
 import { SketchPicker } from 'react-color'
 import { PALETTE_COLOR_SHAPE_TYPE } from 'react-linear-gradient-picker'
 import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
 
-// const ImagePlotChart = React.memo<{
-//   activeIndex: number
-// }>(({ activeIndex }) => {
 export const GradientColorPicker = React.memo<{
   colors: { rgb: string; offset: string }[]
   dispatchSetColor: (colorCode: ColorType[]) => void
@@ -42,16 +36,6 @@ export const GradientColorPicker = React.memo<{
   const [open, setOpen] = useState(false)
 
   return (
-    // <GradientPicker
-    //   width={200}
-    //   maxStops={10}
-    //   paletteHeight={32}
-    //   palette={palette}
-    //   onPaletteChange={onPaletteChange}
-    //   flatStyle={true}
-    // >
-    //   <WrappedSketchPicker />
-    // </GradientPicker>
     <GradientPickerPopover
       open={open}
       setOpen={() => setOpen(!open)}

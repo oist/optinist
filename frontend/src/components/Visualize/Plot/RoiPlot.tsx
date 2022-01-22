@@ -107,7 +107,7 @@ const RoiPlotImple = React.memo<{}>(() => {
         // showticklabels: showticklabels, // todo
       },
     }),
-    [],
+    [path],
   )
   const config = {
     displayModeBar: true,

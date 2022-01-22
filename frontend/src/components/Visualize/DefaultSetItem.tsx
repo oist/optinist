@@ -1,10 +1,22 @@
 import React from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { FilePathSelect } from './FilePathSelect'
 import {
-  selectDefaultSetFilePath,
-  selectDefaultSetNodeId,
+  selectDefaultSetImageItemNodeId,
+  selectDefaultSetImageItemFilePath,
+  selectDefaultSetTimeSeriesItemNodeId,
+  selectDefaultSetTimeSeriesItemFilePath,
+  selectDefaultSetHeatMapItemNodeId,
+  selectDefaultSetHeatMapItemFilePath,
+  selectDefaultSetRoiItemNodeId,
+  selectDefaultSetRoiItemFilePath,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import {
+  setHeatMapItemFilePath,
+  setImageItemFilePath,
+  setTimeSeriesItemFilePath,
+  setRoiItemFilePath,
+} from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { ImagePlot } from './Plot/ImagePlot'
 import { DisplayDataContext } from './DataContext'
 import { TimeSeries } from './Plot/TimeSeries'
@@ -13,37 +25,57 @@ import { HeatMap } from './Plot/HeatMap'
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
+import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
 
 export const DefaultSetItem = React.memo<{
   itemId: number
 }>(({ itemId }) => {
+  const dispatch = useDispatch()
   return (
     <>
       <FilePathSelect
-        itemId={itemId}
-        dataType={'image'}
-        selectedNodeId={useSelector(selectDefaultSetNodeId(itemId, 'image'))}
+        dataType={DATA_TYPE_SET.IMAGE}
+        selectedNodeId={useSelector(selectDefaultSetImageItemNodeId(itemId))}
         selectedFilePath={useSelector(
-          selectDefaultSetFilePath(itemId, 'image'),
+          selectDefaultSetImageItemFilePath(itemId),
         )}
+        onSelect={(nodeId, filePath) =>
+          dispatch(setImageItemFilePath({ itemId, nodeId, filePath }))
+        }
+        label="Select image"
       />
       <FilePathSelect
-        itemId={itemId}
-        dataType={'timeSeries'}
+        dataType={DATA_TYPE_SET.TIME_SERIES}
         selectedNodeId={useSelector(
-          selectDefaultSetNodeId(itemId, 'timeSeries'),
+          selectDefaultSetTimeSeriesItemNodeId(itemId),
         )}
         selectedFilePath={useSelector(
-          selectDefaultSetFilePath(itemId, 'timeSeries'),
+          selectDefaultSetTimeSeriesItemFilePath(itemId),
         )}
+        onSelect={(nodeId, filePath) =>
+          dispatch(setTimeSeriesItemFilePath({ itemId, nodeId, filePath }))
+        }
+        label="Select timeseries"
       />
       <FilePathSelect
-        itemId={itemId}
-        dataType={'heatMap'}
-        selectedNodeId={useSelector(selectDefaultSetNodeId(itemId, 'heatMap'))}
+        dataType={DATA_TYPE_SET.HEAT_MAP}
+        selectedNodeId={useSelector(selectDefaultSetHeatMapItemNodeId(itemId))}
         selectedFilePath={useSelector(
-          selectDefaultSetFilePath(itemId, 'heatMap'),
+          selectDefaultSetHeatMapItemFilePath(itemId),
         )}
+        onSelect={(nodeId, filePath) =>
+          dispatch(setHeatMapItemFilePath({ itemId, nodeId, filePath }))
+        }
+        label="Select heatmap"
+      />
+      <FilePathSelect
+        dataType={DATA_TYPE_SET.ROI}
+        selectedNodeId={useSelector(selectDefaultSetRoiItemNodeId(itemId))}
+        selectedFilePath={useSelector(selectDefaultSetRoiItemFilePath(itemId))}
+        onSelect={(nodeId, filePath) =>
+          dispatch(setRoiItemFilePath({ itemId, nodeId, filePath }))
+        }
+        label="Select roi"
       />
       <DefaultPlot itemId={itemId} />
     </>
@@ -91,13 +123,12 @@ const DefaultPlot = React.memo<{
 const DefaultImagePlot = React.memo<{
   itemId: number
 }>(({ itemId }) => {
-  const dataType = 'image'
-  const filePath = useSelector(selectDefaultSetFilePath(itemId, dataType))
-  const nodeId = useSelector(selectDefaultSetNodeId(itemId, dataType))
-  if (filePath != null && dataType != null) {
+  const filePath = useSelector(selectDefaultSetImageItemFilePath(itemId))
+  const nodeId = useSelector(selectDefaultSetImageItemNodeId(itemId))
+  if (filePath != null) {
     return (
       <DisplayDataContext.Provider
-        value={{ nodeId, filePath, dataType, itemId }}
+        value={{ nodeId, filePath, dataType: DATA_TYPE_SET.IMAGE, itemId }}
       >
         <ImagePlot />
       </DisplayDataContext.Provider>
@@ -110,13 +141,17 @@ const DefaultImagePlot = React.memo<{
 const DefaultTimeSeriesPlot = React.memo<{
   itemId: number
 }>(({ itemId }) => {
-  const dataType = 'timeSeries'
-  const filePath = useSelector(selectDefaultSetFilePath(itemId, dataType))
-  const nodeId = useSelector(selectDefaultSetNodeId(itemId, dataType))
-  if (filePath != null && dataType != null) {
+  const filePath = useSelector(selectDefaultSetTimeSeriesItemFilePath(itemId))
+  const nodeId = useSelector(selectDefaultSetTimeSeriesItemNodeId(itemId))
+  if (filePath != null) {
     return (
       <DisplayDataContext.Provider
-        value={{ nodeId, filePath, dataType, itemId }}
+        value={{
+          nodeId,
+          filePath,
+          dataType: DATA_TYPE_SET.TIME_SERIES,
+          itemId,
+        }}
       >
         <TimeSeries />
       </DisplayDataContext.Provider>
@@ -129,13 +164,12 @@ const DefaultTimeSeriesPlot = React.memo<{
 const DefaultHeatMapPlot = React.memo<{
   itemId: number
 }>(({ itemId }) => {
-  const dataType = 'heatMap'
-  const filePath = useSelector(selectDefaultSetFilePath(itemId, dataType))
-  const nodeId = useSelector(selectDefaultSetNodeId(itemId, dataType))
-  if (filePath != null && dataType != null) {
+  const filePath = useSelector(selectDefaultSetHeatMapItemFilePath(itemId))
+  const nodeId = useSelector(selectDefaultSetHeatMapItemNodeId(itemId))
+  if (filePath != null) {
     return (
       <DisplayDataContext.Provider
-        value={{ nodeId, filePath, dataType, itemId }}
+        value={{ nodeId, filePath, dataType: DATA_TYPE_SET.HEAT_MAP, itemId }}
       >
         <HeatMap />
       </DisplayDataContext.Provider>

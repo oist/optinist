@@ -9,7 +9,6 @@ import ReactFlow, {
   Connection,
   Edge,
   Node,
-  FlowTransform,
 } from 'react-flow-renderer'
 
 import 'style/flow.css'

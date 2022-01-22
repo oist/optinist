@@ -44,6 +44,7 @@ const imageItemInitialValue: ImageItem = {
     { rgb: `rgb(255, 255, 255)`, offset: '1.0' },
   ],
   activeIndex: 0,
+  roiItem: null,
 }
 const timeSeriesItemInitialValue: TimeSeriesItem = {
   ...displayDataCommonInitialValue,
@@ -125,6 +126,40 @@ export const visualaizeItemSlice = createSlice({
     selectItem: (state, action: PayloadAction<number>) => {
       state.selectedItemId = action.payload
     },
+    setRoiItemFilePath: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        filePath: string
+        nodeId: string | null
+      }>,
+    ) => {
+      const { itemId, filePath, nodeId } = action.payload
+      const targetItem = state.items[itemId]
+      if (isDefaultSetItem(targetItem)) {
+        if (targetItem.imageItem.roiItem != null) {
+          targetItem.imageItem.filePath = filePath
+          targetItem.imageItem.nodeId = nodeId
+        } else {
+          targetItem.imageItem.roiItem = {
+            ...roiItemInitialValue,
+            filePath,
+            nodeId,
+          }
+        }
+      } else if (isImageItem(targetItem)) {
+        if (targetItem.roiItem != null) {
+          targetItem.roiItem.filePath = filePath
+          targetItem.roiItem.nodeId = nodeId
+        } else {
+          targetItem.roiItem = {
+            ...roiItemInitialValue,
+            filePath,
+            nodeId,
+          }
+        }
+      }
+    },
     setFilePath: (
       state,
       action: PayloadAction<{
@@ -154,6 +189,60 @@ export const visualaizeItemSlice = createSlice({
         throw new Error('error')
       }
     },
+    setImageItemFilePath: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        filePath: string
+        nodeId: string | null
+      }>,
+    ) => {
+      const { itemId, filePath, nodeId } = action.payload
+      const targetItem = state.items[itemId]
+      if (isDefaultSetItem(targetItem)) {
+        targetItem.imageItem.filePath = filePath
+        targetItem.imageItem.nodeId = nodeId
+      } else if (isImageItem(targetItem)) {
+        targetItem.filePath = filePath
+        targetItem.nodeId = nodeId
+      }
+    },
+    setTimeSeriesItemFilePath: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        filePath: string
+        nodeId: string | null
+      }>,
+    ) => {
+      const { itemId, filePath, nodeId } = action.payload
+      const targetItem = state.items[itemId]
+      if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.filePath = filePath
+        targetItem.timeSeriesItem.nodeId = nodeId
+      } else if (isTimeSeriesItem(targetItem)) {
+        targetItem.filePath = filePath
+        targetItem.nodeId = nodeId
+      }
+    },
+    setHeatMapItemFilePath: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        filePath: string
+        nodeId: string | null
+      }>,
+    ) => {
+      const { itemId, filePath, nodeId } = action.payload
+      const targetItem = state.items[itemId]
+      if (isDefaultSetItem(targetItem)) {
+        targetItem.heatMapItem.filePath = filePath
+        targetItem.heatMapItem.nodeId = nodeId
+      } else if (isHeatMapItem(targetItem)) {
+        targetItem.filePath = filePath
+        targetItem.nodeId = nodeId
+      }
+    },
     setDisplayDataPath: (
       state,
       action: PayloadAction<{
@@ -179,7 +268,6 @@ export const visualaizeItemSlice = createSlice({
       }>,
     ) => {
       const { itemId, type } = action.payload
-      const targetItem = state.items[itemId]
       if (type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET) {
         state.items[itemId] = getDisplayDataItemInitialValue(type)
       } else {
@@ -484,6 +572,10 @@ export const {
   selectItem,
   setItemType,
   setFilePath,
+  setHeatMapItemFilePath,
+  setImageItemFilePath,
+  setTimeSeriesItemFilePath,
+  setRoiItemFilePath,
   setDisplayDataPath,
   incrementImageActiveIndex,
   decrementImageActiveIndex,

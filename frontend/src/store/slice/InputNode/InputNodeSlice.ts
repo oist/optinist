@@ -12,7 +12,6 @@ import {
   InputNode,
   INPUT_NODE_SLICE_NAME,
 } from './InputNodeType'
-import { isImageInputNode } from './InputNodeUtils'
 
 const initialState: InputNode = {
   [INITIAL_IMAGE_ELEMENT_ID]: {

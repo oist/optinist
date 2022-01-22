@@ -21,8 +21,12 @@ import {
   selectImageDataMaxIndex,
   selectImageDataIsFulfilled,
   selectActiveImageData,
+  selectRoiData,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
-import { getImageData } from 'store/slice/DisplayData/DisplayDataActions'
+import {
+  getImageData,
+  getRoiData,
+} from 'store/slice/DisplayData/DisplayDataActions'
 import {
   selectImageItemShowticklabels,
   selectImageItemZsmooth,
@@ -32,11 +36,14 @@ import {
   selectImageItemColors,
   selectImageItemActiveIndex,
   selectImageItemMaxIndex,
+  selectRoiItemFilePath,
+  selectRoiItemColors,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
   decrementImageActiveIndex,
   incrementImageActiveIndex,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { RootState } from 'store/store'
 
 export const ImagePlot = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
@@ -47,12 +54,17 @@ export const ImagePlot = React.memo(() => {
   const isFulfilled = useSelector(selectImageDataIsFulfilled(path))
   const error = useSelector(selectImageDataError(path))
 
+  const roiFilePath = useSelector(selectRoiItemFilePath(itemId))
+
   const dispatch = useDispatch()
   React.useEffect(() => {
     if (!isInitialized) {
       dispatch(getImageData({ path, maxIndex: maxIndex ?? 1 }))
     }
-  }, [dispatch, isInitialized, path, maxIndex])
+    if (roiFilePath != null) {
+      dispatch(getRoiData({ path: roiFilePath }))
+    }
+  }, [dispatch, isInitialized, path, maxIndex, roiFilePath])
   if (isPending) {
     return <LinearProgress />
   } else if (error != null) {
@@ -121,6 +133,14 @@ const ImagePlotChart = React.memo<{
     selectActiveImageData(path, activeIndex),
     imageDataEqualtyFn,
   )
+  const roiFilePath = useSelector(selectRoiItemFilePath(itemId))
+  const roiData = useSelector(
+    (state: RootState) =>
+      roiFilePath != null ? selectRoiData(roiFilePath)(state) : [],
+    imageDataEqualtyFn,
+  )
+  const colorscaleRoi = useSelector(selectRoiItemColors(itemId))
+
   // const testData1 = [
   //   [0, 10, 30],
   //   [10, 20, 10],
@@ -200,8 +220,32 @@ const ImagePlotChart = React.memo<{
         zsmooth: zsmooth, // ['best', 'fast', false]
         showlegend: true,
       },
+      {
+        z: roiData,
+        type: 'heatmap',
+        name: 'images',
+        colorscale: colorscaleRoi.map((value) => {
+          let offset: number = parseFloat(value.offset)
+          const offsets: number[] = colorscaleRoi.map((v) => {
+            return parseFloat(v.offset)
+          })
+          // plotlyは端[0.0, 1.0]がないとダメなので、その設定
+          if (offset === Math.max(...offsets)) {
+            offset = 1.0
+          }
+          if (offset === Math.min(...offsets)) {
+            offset = 0.0
+          }
+          return [offset, value.rgb]
+        }),
+        hoverongaps: false,
+        // showscale: showscale,
+        // zsmooth: zsmooth, // ['best', 'fast', false]
+        zsmooth: false,
+        showlegend: true,
+      },
     ],
-    [imageData, zsmooth, showscale, colorscale],
+    [imageData, roiData, zsmooth, showscale, colorscale, colorscaleRoi],
   )
 
   const layout = React.useMemo(
@@ -232,7 +276,7 @@ const ImagePlotChart = React.memo<{
         showticklabels: showticklabels, // todo
       },
     }),
-    [showgrid, showline, showticklabels],
+    [path, showgrid, showline, showticklabels],
   )
   const config = {
     displayModeBar: true,

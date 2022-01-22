@@ -1,17 +1,13 @@
 import React from 'react'
 
 import { useSelector } from 'react-redux'
-import {
-  DATA_TYPE,
-  DATA_TYPE_SET,
-} from 'store/slice/DisplayData/DisplayDataType'
+import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
 import {
   selectVisualizeDataFilePath,
   selectVisualizeDataNodeId,
   selectVisualizeDataType,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { DisplayDataContext } from './DataContext'
-// import { Plot } from './Plot'
 import { HeatMap } from './Plot/HeatMap'
 import { ImagePlot } from './Plot/ImagePlot'
 import { RoiPlot } from './Plot/RoiPlot'

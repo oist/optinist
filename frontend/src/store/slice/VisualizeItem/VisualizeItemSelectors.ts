@@ -1,4 +1,3 @@
-import { ContactSupportOutlined } from '@material-ui/icons'
 import { RootState } from 'store/store'
 import {
   isDisplayDataItem,
@@ -20,59 +19,70 @@ export const selectVisualizeItemIdList = (state: RootState) =>
 export const selectVisualizeItemType = (itemId: number) => (state: RootState) =>
   selectVisualizeItems(state)[itemId].itemType
 
-export const selectDefaultSetNodeId =
-  (itemId: number, dataType: string) => (state: RootState) => {
+export const selectDefaultSetImageItem =
+  (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
     if (isDefaultSetItem(item)) {
-      if (dataType === 'image') {
-        return item.imageItem.nodeId
-      } else if (dataType === 'timeSeries') {
-        return item.timeSeriesItem.nodeId
-      } else if (dataType === 'heatMap') {
-        return item.heatMapItem.nodeId
-      } else {
-        throw new Error('invalid VisualaizeItemType')
-      }
+      return item.imageItem
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
   }
 
-export const selectDefaultSetFilePath =
-  (itemId: number, dataType: string) => (state: RootState) => {
+export const selectDefaultSetImageItemNodeId =
+  (itemId: number) => (state: RootState) =>
+    selectDefaultSetImageItem(itemId)(state).nodeId
+
+export const selectDefaultSetImageItemFilePath =
+  (itemId: number) => (state: RootState) =>
+    selectDefaultSetImageItem(itemId)(state).filePath
+
+export const selectDefaultSetTimeSeriesItem =
+  (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
     if (isDefaultSetItem(item)) {
-      if (dataType === 'image') {
-        return item.imageItem.filePath
-      } else if (dataType === 'timeSeries') {
-        return item.timeSeriesItem.filePath
-      } else if (dataType === 'heatMap') {
-        return item.heatMapItem.filePath
-      } else {
-        throw new Error('invalid VisualaizeItemType')
-      }
+      return item.timeSeriesItem
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
   }
 
-export const selectDefaultSetType =
-  (itemId: number, dataType: string) => (state: RootState) => {
+export const selectDefaultSetRoiItem = (itemId: number) => (state: RootState) =>
+  selectDefaultSetImageItem(itemId)(state).roiItem
+
+export const selectDefaultSetRoiItemNodeId =
+  (itemId: number) => (state: RootState) =>
+    selectDefaultSetRoiItem(itemId)(state)?.nodeId ?? null
+
+export const selectDefaultSetRoiItemFilePath =
+  (itemId: number) => (state: RootState) =>
+    selectDefaultSetRoiItem(itemId)(state)?.filePath ?? null
+
+export const selectDefaultSetTimeSeriesItemNodeId =
+  (itemId: number) => (state: RootState) =>
+    selectDefaultSetTimeSeriesItem(itemId)(state).nodeId
+
+export const selectDefaultSetTimeSeriesItemFilePath =
+  (itemId: number) => (state: RootState) =>
+    selectDefaultSetTimeSeriesItem(itemId)(state).filePath
+
+export const selectDefaultSetHeatMapItem =
+  (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
     if (isDefaultSetItem(item)) {
-      if (dataType === 'image') {
-        return item.imageItem.dataType
-      } else if (dataType === 'timeSeries') {
-        return item.timeSeriesItem.dataType
-      } else if (dataType === 'heatMap') {
-        return item.heatMapItem.dataType
-      } else {
-        return new Error('invalid VisualaizeItemType')
-      }
+      return item.heatMapItem
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
   }
+
+export const selectDefaultSetHeatMapItemNodeId =
+  (itemId: number) => (state: RootState) =>
+    selectDefaultSetHeatMapItem(itemId)(state).nodeId
+
+export const selectDefaultSetHeatMapItemFilePath =
+  (itemId: number) => (state: RootState) =>
+    selectDefaultSetHeatMapItem(itemId)(state).filePath
 
 export const selectVisualizeDataType =
   (itemId: number) => (state: RootState) => {
@@ -105,6 +115,28 @@ export const selectVisualizeDataFilePath =
       throw new Error('invalid VisualaizeItemType')
     }
   }
+
+export const selectRoiItemNodeId = (itemId: number) => (state: RootState) => {
+  const item = selectVisualizeItems(state)[itemId]
+  if (isImageItem(item)) {
+    return item.roiItem?.nodeId ?? null
+  } else if (isDefaultSetItem(item)) {
+    return item.imageItem.roiItem?.nodeId ?? null
+  } else {
+    throw new Error('invalid VisualaizeItemType')
+  }
+}
+
+export const selectRoiItemFilePath = (itemId: number) => (state: RootState) => {
+  const item = selectVisualizeItems(state)[itemId]
+  if (isImageItem(item)) {
+    return item.roiItem?.filePath ?? null
+  } else if (isDefaultSetItem(item)) {
+    return item.imageItem.roiItem?.filePath ?? null
+  } else {
+    throw new Error('invalid VisualaizeItemType')
+  }
+}
 
 export const selectImageItemShowticklabels =
   (itemId: number) => (state: RootState) => {
@@ -315,6 +347,8 @@ export const selectRoiItemColors = (itemId: number) => (state: RootState) => {
   const item = selectVisualizeItems(state)[itemId]
   if (isRoiItem(item)) {
     return item.colors
+  } else if (isDefaultSetItem(item)) {
+    return item.imageItem.roiItem?.colors ?? []
   } else {
     throw new Error('invalid VisualaizeItemType')
   }
