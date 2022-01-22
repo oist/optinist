@@ -3,7 +3,7 @@ import PlotlyChart from 'react-plotlyjs-ts'
 import { LinearProgress, Typography } from '@material-ui/core'
 import { useSelector, useDispatch } from 'react-redux'
 
-import { DisplayDataContext } from '../DisplayDataItem'
+import { DisplayDataContext } from '../DataContext'
 import { arrayEqualityFn, twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 import {
   selectTableData,

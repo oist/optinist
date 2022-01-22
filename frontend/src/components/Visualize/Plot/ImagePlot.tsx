@@ -12,7 +12,7 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
 
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
-import { DisplayDataContext } from '../DisplayDataItem'
+import { DisplayDataContext } from '../DataContext'
 
 import {
   selectImageDataError,
@@ -23,7 +23,6 @@ import {
   selectActiveImageData,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getImageData } from 'store/slice/DisplayData/DisplayDataActions'
-// import { selectImageMaxIndexByNodeId } from 'store/slice/InputNode/InputNodeSelectors'
 import {
   selectImageItemShowticklabels,
   selectImageItemZsmooth,
@@ -40,9 +39,8 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 export const ImagePlot = React.memo(() => {
-  const { filePath: path, itemId: itemId } =
-    React.useContext(DisplayDataContext)
-  console.log(itemId)
+  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+
   const maxIndex = useSelector(selectImageItemMaxIndex(itemId))
   const isPending = useSelector(selectImageDataIsPending(path))
   const isInitialized = useSelector(selectImageDataIsInitialized(path))

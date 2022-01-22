@@ -3,14 +3,13 @@ import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { LinearProgress, Typography } from '@material-ui/core'
 
-import { DisplayDataContext } from '../DisplayDataItem'
+import { DisplayDataContext } from '../DataContext'
 import {
   selectTimeSeriesData,
   selectTimeSeriesDataError,
   selectTimeSeriesDataIsFulfilled,
   selectTimeSeriesDataIsInitialized,
   selectTimeSeriesDataIsPending,
-  selectTimeSeriesPlotlyData,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getTimeSeriesData } from 'store/slice/DisplayData/DisplayDataActions'
 import { TimeSeriesData } from 'store/slice/DisplayData/DisplayDataType'

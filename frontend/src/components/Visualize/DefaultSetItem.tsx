@@ -8,6 +8,7 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { ImagePlot } from './Plot/ImagePlot'
 import { DATA_TYPE } from 'store/slice/DisplayData/DisplayDataType'
+import { DisplayDataContext } from './DataContext'
 
 export const DefaultSetItem = React.memo<{
   itemId: number
@@ -48,7 +49,6 @@ export const DefaultSetItem = React.memo<{
 const DefaultPlot = React.memo<{
   itemId: number
 }>(({ itemId }) => {
-  console.log(itemId)
   const dataType = 'image'
   const filePath = useSelector(selectDefaultSetFilePath(itemId, dataType))
   const nodeId = useSelector(selectDefaultSetNodeId(itemId, dataType))
@@ -65,10 +65,3 @@ const DefaultPlot = React.memo<{
     return <div>Please select item correctly.</div>
   }
 })
-
-export const DisplayDataContext = React.createContext<{
-  nodeId: string | null
-  filePath: string
-  dataType: DATA_TYPE
-  itemId: number
-}>({ nodeId: '', filePath: '', dataType: 'image', itemId: 1 })

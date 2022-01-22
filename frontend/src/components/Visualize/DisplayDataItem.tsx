@@ -10,6 +10,7 @@ import {
   selectVisualizeDataNodeId,
   selectVisualizeDataType,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import { DisplayDataContext } from './DataContext'
 // import { Plot } from './Plot'
 import { HeatMap } from './Plot/HeatMap'
 import { ImagePlot } from './Plot/ImagePlot'
@@ -49,10 +50,3 @@ export const DisplayDataItem = React.memo<{
     return <div>Please select item correctly.</div>
   }
 })
-
-export const DisplayDataContext = React.createContext<{
-  nodeId: string | null
-  filePath: string
-  dataType: DATA_TYPE
-  itemId: number
-}>({ nodeId: '', filePath: '', dataType: 'table', itemId: NaN })
