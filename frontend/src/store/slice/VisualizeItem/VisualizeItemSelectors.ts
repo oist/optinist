@@ -349,6 +349,8 @@ export const selectRoiItemColors = (itemId: number) => (state: RootState) => {
     return item.colors
   } else if (isDefaultSetItem(item)) {
     return item.imageItem.roiItem?.colors ?? []
+  } else if (isImageItem(item)) {
+    return item.roiItem?.colors ?? []
   } else {
     throw new Error('invalid VisualaizeItemType')
   }
