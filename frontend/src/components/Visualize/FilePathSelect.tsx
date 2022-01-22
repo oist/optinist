@@ -10,10 +10,7 @@ import ListSubheader from '@material-ui/core/ListSubheader'
 
 import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
 import { RootState } from 'store/store'
-import {
-  setDefaultSetPath,
-  setDisplayDataPath,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { setFilePath } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { selectInputNode } from 'store/slice/InputNode/InputNodeSelectors'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import { selectAlgorithmNode } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
@@ -91,18 +88,8 @@ export const FilePathSelect: React.FC<{
     setOpen(true)
   }
 
-  const itemType = useSelector(selectVisualizeItemType(itemId))
-
   const onSelect = (nodeId: string, filePath: string) => {
-    // const targetItem = useSelector(selectVisualizeItemById(itemId))
-    if (itemType === 'defaultSet') {
-      dispatch(setDefaultSetPath({ nodeId, filePath, itemId, dataType }))
-    } else if (itemType === 'displayData') {
-      dispatch(setDisplayDataPath({ nodeId, filePath, itemId }))
-    } else {
-      throw 'error'
-    }
-
+    dispatch(setFilePath({ nodeId, filePath, itemId, dataType }))
     handleClose()
   }
 

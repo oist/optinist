@@ -125,30 +125,13 @@ export const visualaizeItemSlice = createSlice({
     selectItem: (state, action: PayloadAction<number>) => {
       state.selectedItemId = action.payload
     },
-    setDisplayDataPath: (
+    setFilePath: (
       state,
       action: PayloadAction<{
         itemId: number
         filePath: string
         nodeId: string | null
-      }>,
-    ) => {
-      const { itemId, filePath, nodeId } = action.payload
-      const targetItem = state.items[itemId]
-      if (isDisplayDataItem(targetItem)) {
-        targetItem.filePath = filePath
-        targetItem.nodeId = nodeId
-      } else {
-        throw new Error('invalid VisualaizeItemType')
-      }
-    },
-    setDefaultSetPath: (
-      state,
-      action: PayloadAction<{
-        itemId: number
-        filePath: string
-        nodeId: string | null
-        dataType: string
+        dataType?: string
       }>,
     ) => {
       const { itemId, filePath, nodeId, dataType } = action.payload
@@ -164,6 +147,26 @@ export const visualaizeItemSlice = createSlice({
           targetItem.heatMapItem.filePath = filePath
           targetItem.heatMapItem.nodeId = nodeId
         }
+      } else if (isDisplayDataItem(targetItem)) {
+        targetItem.filePath = filePath
+        targetItem.nodeId = nodeId
+      } else {
+        throw new Error('error')
+      }
+    },
+    setDisplayDataPath: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        filePath: string
+        nodeId: string | null
+      }>,
+    ) => {
+      const { itemId, filePath, nodeId } = action.payload
+      const targetItem = state.items[itemId]
+      if (isDisplayDataItem(targetItem)) {
+        targetItem.filePath = filePath
+        targetItem.nodeId = nodeId
       } else {
         throw new Error('invalid VisualaizeItemType')
       }
@@ -182,32 +185,6 @@ export const visualaizeItemSlice = createSlice({
       } else {
         state.items[itemId] = defaultSetItemInitialValue
       }
-
-      // if (
-      //   isDisplayDataItem(targetItem) &&
-      //   type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
-      // ) {
-      //   state.items[itemId] = defaultSetItemInitialValue
-      //   targetItem.dataType = type
-      //   targetItem.filePath = null
-      //   targetItem.nodeId = null
-      // }
-      // } else if (
-      //   isDisplayDataItem(targetItem) &&
-      //   type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
-      // ) {
-      //   targetItem.dataType = type
-      //   targetItem.filePath = null
-      //   targetItem.nodeId = null
-      // } else if (
-      //   isDefaultSetItem(targetItem) &&
-      //   type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
-      // ) {
-      //   state.items[itemId] = getDisplayDataItemInitialValue(type)
-      // }
-      // if (type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET){
-      //   state.items[itemId] = getDisplayDataItemInitialValue(type)
-      // }
     },
     incrementImageActiveIndex: (
       state,
@@ -506,8 +483,8 @@ export const {
   deleteVisualizeItem,
   selectItem,
   setItemType,
+  setFilePath,
   setDisplayDataPath,
-  setDefaultSetPath,
   incrementImageActiveIndex,
   decrementImageActiveIndex,
   setImageItemShowticklabels,

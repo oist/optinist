@@ -1,4 +1,8 @@
-import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
+import {
+  DATA_TYPE,
+  DATA_TYPE_SET,
+  RoiData,
+} from '../DisplayData/DisplayDataType'
 
 export type VisualaizeItem = {
   selectedItemId: number | null
@@ -56,6 +60,7 @@ export interface ImageItem extends DisplayDataItemBaseType {
   showgrid: boolean
   showscale: boolean
   colors: ColorType[]
+  roiItem?: RoiItem
 }
 
 export interface TimeSeriesItem extends DisplayDataItemBaseType {

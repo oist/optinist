@@ -35,5 +35,8 @@ dummy_wrapper_dict = {
         'dummy_time2time': {
             'function': dummy_time2time
         },
+        'dummy_image2image8roi8time8heat': {
+            'function': dummy_image2image8roi8time8heat
+        },
     }
 }

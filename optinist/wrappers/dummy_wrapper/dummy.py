@@ -202,13 +202,16 @@ def dummy_image2image8roi(
         get image
         return image
     """
+    import random
     info = {}
     info['images'] = ImageData(
         np.random.rand((100_00)).reshape(1, 100, 100),
         func_name=sys._getframe().f_code.co_name)
-    info['roi'] = RoiData(
-        np.random.rand((100_00)).reshape(100, 100),
-        func_name=sys._getframe().f_code.co_name)
+    roi_data = np.random.rand((100_00))
+    null_data = np.array(random.sample(list(np.arange(100_00)), 90_00))
+    roi_data[null_data] = np.nan
+    roi_data = roi_data.reshape(100, 100)
+    info['roi'] = RoiData(roi_data, func_name=sys._getframe().f_code.co_name)
     return info
 
 
@@ -224,5 +227,33 @@ def dummy_time2time(
     info = {}
     info['time2time'] = TimeSeriesData(
         np.random.rand((10000)).reshape(10, 1000),
+        func_name=sys._getframe().f_code.co_name)
+    return info
+
+@args_check
+def dummy_image2image8roi8time8heat(
+    image1: ImageData, nwbfile: NWBFile=None,  params: dict=None
+    ) -> {'image': ImageData, 'roi': RoiData, 'timeseries': TimeSeriesData, 'heat': CorrelationData}:
+
+    """
+        get image
+        return image
+    """
+    import random
+    info = {}
+    info['images'] = ImageData(
+        np.random.rand((100_00)).reshape(1, 100, 100),
+        func_name=sys._getframe().f_code.co_name)
+    roi_data = np.random.rand((100_00))
+    null_data = np.array(random.sample(list(np.arange(100_00)), 90_00))
+    roi_data[null_data] = np.nan
+    roi_data = roi_data.reshape(100, 100)
+    info['roi'] = RoiData(roi_data, func_name=sys._getframe().f_code.co_name)
+    info['timeseries'] = TimeSeriesData(
+        np.random.rand((100)).reshape(10, 10),
+        func_name=sys._getframe().f_code.co_name,
+        file_name='image')
+    info['heat'] = CorrelationData(
+        np.random.rand((10000)).reshape(100, 100),
         func_name=sys._getframe().f_code.co_name)
     return info
