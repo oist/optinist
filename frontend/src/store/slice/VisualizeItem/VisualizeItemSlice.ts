@@ -344,6 +344,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.offset = action.payload.offset
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.offset = action.payload.offset
       }
     },
     setTimeSeriesItemSpan: (
@@ -356,6 +358,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.span = action.payload.span
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.span = action.payload.span
       }
     },
     setTimeSeriesItemShowGrid: (
@@ -368,6 +372,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.showgrid = action.payload.showgrid
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.showgrid = action.payload.showgrid
       }
     },
     setTimeSeriesItemShowLine: (
@@ -380,6 +386,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.showline = action.payload.showline
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.showline = action.payload.showline
       }
     },
     setTimeSeriesItemShowTickLabels: (
@@ -392,6 +400,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.showticklabels = action.payload.showticklabels
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.showticklabels = action.payload.showticklabels
       }
     },
     setTimeSeriesItemZeroLine: (
@@ -404,6 +414,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.zeroline = action.payload.zeroline
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.zeroline = action.payload.zeroline
       }
     },
     setTimeSeriesItemXrangeLeft: (
@@ -416,6 +428,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.xrange.left = action.payload.left
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.xrange.left = action.payload.left
       }
     },
     setTimeSeriesItemXrangeRight: (
@@ -428,6 +442,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.xrange.right = action.payload.right
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.xrange.right = action.payload.right
       }
     },
     setHeatMapItemShowScale: (
@@ -440,6 +456,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isHeatMapItem(targetItem)) {
         targetItem.showscale = action.payload.showscale
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.heatMapItem.showscale = action.payload.showscale
       }
     },
     setHeatMapItemColors: (
@@ -455,6 +473,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isHeatMapItem(targetItem)) {
         targetItem.colors = action.payload.colors
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.heatMapItem.colors = action.payload.colors
       }
     },
     setRoiItemColors: (

@@ -208,6 +208,8 @@ export const selectTimeSeriesItemOffset =
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.offset
+    } else if (isDefaultSetItem(item)) {
+      return item.timeSeriesItem.offset
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
@@ -218,6 +220,8 @@ export const selectTimeSeriesItemSpan =
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.span
+    } else if (isDefaultSetItem(item)) {
+      return item.timeSeriesItem.span
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
@@ -228,6 +232,8 @@ export const selectTimeSeriesItemShowGrid =
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.showgrid
+    } else if (isDefaultSetItem(item)) {
+      return item.timeSeriesItem.showgrid
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
@@ -238,6 +244,8 @@ export const selectTimeSeriesItemShowLine =
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.showline
+    } else if (isDefaultSetItem(item)) {
+      return item.timeSeriesItem.showline
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
@@ -248,6 +256,8 @@ export const selectTimeSeriesItemShowTickLabels =
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.showticklabels
+    } else if (isDefaultSetItem(item)) {
+      return item.timeSeriesItem.showticklabels
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
@@ -258,6 +268,8 @@ export const selectTimeSeriesItemZeroLine =
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.zeroline
+    } else if (isDefaultSetItem(item)) {
+      return item.timeSeriesItem.zeroline
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
@@ -268,6 +280,8 @@ export const selectTimeSeriesItemXrange =
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.xrange
+    } else if (isDefaultSetItem(item)) {
+      return item.timeSeriesItem.xrange
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
@@ -278,6 +292,8 @@ export const selectHeatMapItemShowScale =
     const item = selectVisualizeItems(state)[itemId]
     if (isHeatMapItem(item)) {
       return item.showscale
+    } else if (isDefaultSetItem(item)) {
+      return item.heatMapItem.showscale
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
@@ -288,6 +304,8 @@ export const selectHeatMapItemColors =
     const item = selectVisualizeItems(state)[itemId]
     if (isHeatMapItem(item)) {
       return item.colors
+    } else if (isDefaultSetItem(item)) {
+      return item.heatMapItem.colors
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
