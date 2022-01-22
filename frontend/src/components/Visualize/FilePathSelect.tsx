@@ -92,7 +92,6 @@ export const FilePathSelect: React.FC<{
   }
 
   const itemType = useSelector(selectVisualizeItemType(itemId))
-  console.log(itemType)
 
   const onSelect = (nodeId: string, filePath: string) => {
     // const targetItem = useSelector(selectVisualizeItemById(itemId))

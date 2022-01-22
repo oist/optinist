@@ -1,11 +1,13 @@
 import React from 'react'
 import { useSelector } from 'react-redux'
-import { DefaultPlot } from './Plot/DefaultPlot'
+// import { DefaultPlot } from './Plot/DefaultPlot'
 import { FilePathSelect } from './FilePathSelect'
 import {
   selectDefaultSetFilePath,
   selectDefaultSetNodeId,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import { ImagePlot } from './Plot/ImagePlot'
+import { DATA_TYPE } from 'store/slice/DisplayData/DisplayDataType'
 
 export const DefaultSetItem = React.memo<{
   itemId: number
@@ -42,3 +44,31 @@ export const DefaultSetItem = React.memo<{
     </>
   )
 })
+
+const DefaultPlot = React.memo<{
+  itemId: number
+}>(({ itemId }) => {
+  console.log(itemId)
+  const dataType = 'image'
+  const filePath = useSelector(selectDefaultSetFilePath(itemId, dataType))
+  const nodeId = useSelector(selectDefaultSetNodeId(itemId, dataType))
+  if (filePath != null && dataType != null) {
+    return (
+      <DisplayDataContext.Provider
+        value={{ nodeId, filePath, dataType, itemId }}
+      >
+        <ImagePlot />
+        <div>default plot</div>
+      </DisplayDataContext.Provider>
+    )
+  } else {
+    return <div>Please select item correctly.</div>
+  }
+})
+
+export const DisplayDataContext = React.createContext<{
+  nodeId: string | null
+  filePath: string
+  dataType: DATA_TYPE
+  itemId: number
+}>({ nodeId: '', filePath: '', dataType: 'image', itemId: 1 })

@@ -40,7 +40,9 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 export const ImagePlot = React.memo(() => {
-  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+  const { filePath: path, itemId: itemId } =
+    React.useContext(DisplayDataContext)
+  console.log(itemId)
   const maxIndex = useSelector(selectImageItemMaxIndex(itemId))
   const isPending = useSelector(selectImageDataIsPending(path))
   const isInitialized = useSelector(selectImageDataIsInitialized(path))
