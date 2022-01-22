@@ -1,7 +1,7 @@
 import React from 'react'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { useSelector, useDispatch } from 'react-redux'
-import { DisplayDataContext } from '../DisplayDataItem'
+import { DisplayDataContext } from '../DataContext'
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 import {
   selectRoiData,
@@ -15,7 +15,7 @@ import { getRoiData } from 'store/slice/DisplayData/DisplayDataActions'
 import { selectRoiItemColors } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 export const RoiPlot = React.memo(() => {
-  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+  const { filePath: path } = React.useContext(DisplayDataContext)
   const isPending = useSelector(selectRoiDataIsPending(path))
   const isInitialized = useSelector(selectRoiDataIsInitialized(path))
   const isFulfilled = useSelector(selectRoiDataIsFulfilled(path))
@@ -107,7 +107,7 @@ const RoiPlotImple = React.memo<{}>(() => {
         // showticklabels: showticklabels, // todo
       },
     }),
-    [],
+    [path],
   )
   const config = {
     displayModeBar: true,

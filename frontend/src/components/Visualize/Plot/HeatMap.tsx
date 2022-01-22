@@ -3,7 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { LinearProgress, Typography } from '@material-ui/core'
 
-import { DisplayDataContext } from '../DisplayDataItem'
+import { DisplayDataContext } from '../DataContext'
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 import {
   selectHeatMapData,
@@ -13,7 +13,6 @@ import {
   selectHeatMapDataIsPending,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getHeatMapData } from 'store/slice/DisplayData/DisplayDataActions'
-import { setImageItemShowScale } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import {
   selectHeatMapItemColors,
   selectHeatMapItemShowScale,

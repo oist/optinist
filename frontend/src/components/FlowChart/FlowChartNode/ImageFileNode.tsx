@@ -2,7 +2,6 @@ import React, { CSSProperties } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
 import { alpha, useTheme } from '@material-ui/core/styles'
-import TextField from '@material-ui/core/TextField'
 import { Typography, IconButton } from '@material-ui/core'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
 

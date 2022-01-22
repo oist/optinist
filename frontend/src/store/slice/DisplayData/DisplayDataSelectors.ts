@@ -127,7 +127,7 @@ export const selectTableDataColumns =
     selectDisplayData(state).table[filePath].columns
 
 export const selectRoiData = (filePath: string) => (state: RootState) =>
-  selectDisplayData(state).roi[filePath].data[0]
+  selectDisplayData(state).roi[filePath]?.data[0] ?? []
 
 export const selectRoiDataIsInitialized =
   (filePath: string) => (state: RootState) =>

@@ -44,6 +44,7 @@ const imageItemInitialValue: ImageItem = {
     { rgb: `rgb(255, 255, 255)`, offset: '1.0' },
   ],
   activeIndex: 0,
+  roiItem: null,
 }
 const timeSeriesItemInitialValue: TimeSeriesItem = {
   ...displayDataCommonInitialValue,
@@ -125,6 +126,123 @@ export const visualaizeItemSlice = createSlice({
     selectItem: (state, action: PayloadAction<number>) => {
       state.selectedItemId = action.payload
     },
+    setRoiItemFilePath: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        filePath: string
+        nodeId: string | null
+      }>,
+    ) => {
+      const { itemId, filePath, nodeId } = action.payload
+      const targetItem = state.items[itemId]
+      if (isDefaultSetItem(targetItem)) {
+        if (targetItem.imageItem.roiItem != null) {
+          targetItem.imageItem.filePath = filePath
+          targetItem.imageItem.nodeId = nodeId
+        } else {
+          targetItem.imageItem.roiItem = {
+            ...roiItemInitialValue,
+            filePath,
+            nodeId,
+          }
+        }
+      } else if (isImageItem(targetItem)) {
+        if (targetItem.roiItem != null) {
+          targetItem.roiItem.filePath = filePath
+          targetItem.roiItem.nodeId = nodeId
+        } else {
+          targetItem.roiItem = {
+            ...roiItemInitialValue,
+            filePath,
+            nodeId,
+          }
+        }
+      }
+    },
+    setFilePath: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        filePath: string
+        nodeId: string | null
+        dataType?: string
+      }>,
+    ) => {
+      const { itemId, filePath, nodeId, dataType } = action.payload
+      const targetItem = state.items[itemId]
+      if (isDefaultSetItem(targetItem)) {
+        if (dataType === 'image') {
+          targetItem.imageItem.filePath = filePath
+          targetItem.imageItem.nodeId = nodeId
+        } else if (dataType === 'timeSeries') {
+          targetItem.timeSeriesItem.filePath = filePath
+          targetItem.timeSeriesItem.nodeId = nodeId
+        } else if (dataType === 'heatMap') {
+          targetItem.heatMapItem.filePath = filePath
+          targetItem.heatMapItem.nodeId = nodeId
+        }
+      } else if (isDisplayDataItem(targetItem)) {
+        targetItem.filePath = filePath
+        targetItem.nodeId = nodeId
+      } else {
+        throw new Error('error')
+      }
+    },
+    setImageItemFilePath: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        filePath: string
+        nodeId: string | null
+      }>,
+    ) => {
+      const { itemId, filePath, nodeId } = action.payload
+      const targetItem = state.items[itemId]
+      if (isDefaultSetItem(targetItem)) {
+        targetItem.imageItem.filePath = filePath
+        targetItem.imageItem.nodeId = nodeId
+      } else if (isImageItem(targetItem)) {
+        targetItem.filePath = filePath
+        targetItem.nodeId = nodeId
+      }
+    },
+    setTimeSeriesItemFilePath: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        filePath: string
+        nodeId: string | null
+      }>,
+    ) => {
+      const { itemId, filePath, nodeId } = action.payload
+      const targetItem = state.items[itemId]
+      if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.filePath = filePath
+        targetItem.timeSeriesItem.nodeId = nodeId
+      } else if (isTimeSeriesItem(targetItem)) {
+        targetItem.filePath = filePath
+        targetItem.nodeId = nodeId
+      }
+    },
+    setHeatMapItemFilePath: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        filePath: string
+        nodeId: string | null
+      }>,
+    ) => {
+      const { itemId, filePath, nodeId } = action.payload
+      const targetItem = state.items[itemId]
+      if (isDefaultSetItem(targetItem)) {
+        targetItem.heatMapItem.filePath = filePath
+        targetItem.heatMapItem.nodeId = nodeId
+      } else if (isHeatMapItem(targetItem)) {
+        targetItem.filePath = filePath
+        targetItem.nodeId = nodeId
+      }
+    },
     setDisplayDataPath: (
       state,
       action: PayloadAction<{
@@ -138,6 +256,8 @@ export const visualaizeItemSlice = createSlice({
       if (isDisplayDataItem(targetItem)) {
         targetItem.filePath = filePath
         targetItem.nodeId = nodeId
+      } else {
+        throw new Error('invalid VisualaizeItemType')
       }
     },
     setItemType: (
@@ -148,38 +268,11 @@ export const visualaizeItemSlice = createSlice({
       }>,
     ) => {
       const { itemId, type } = action.payload
-      const targetItem = state.items[itemId]
       if (type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET) {
         state.items[itemId] = getDisplayDataItemInitialValue(type)
       } else {
         state.items[itemId] = defaultSetItemInitialValue
       }
-
-      // if (
-      //   isDisplayDataItem(targetItem) &&
-      //   type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
-      // ) {
-      //   state.items[itemId] = defaultSetItemInitialValue
-      //   targetItem.dataType = type
-      //   targetItem.filePath = null
-      //   targetItem.nodeId = null
-      // }
-      // } else if (
-      //   isDisplayDataItem(targetItem) &&
-      //   type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
-      // ) {
-      //   targetItem.dataType = type
-      //   targetItem.filePath = null
-      //   targetItem.nodeId = null
-      // } else if (
-      //   isDefaultSetItem(targetItem) &&
-      //   type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
-      // ) {
-      //   state.items[itemId] = getDisplayDataItemInitialValue(type)
-      // }
-      // if (type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET){
-      //   state.items[itemId] = getDisplayDataItemInitialValue(type)
-      // }
     },
     incrementImageActiveIndex: (
       state,
@@ -189,6 +282,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[itemId]
       if (isImageItem(targetItem)) {
         targetItem.activeIndex++
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.imageItem.activeIndex++
       }
     },
     decrementImageActiveIndex: (
@@ -199,6 +294,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[itemId]
       if (isImageItem(targetItem)) {
         targetItem.activeIndex--
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.imageItem.activeIndex--
       }
     },
     setImageItemShowticklabels: (
@@ -211,6 +308,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.showticklabels = action.payload.showticklabels
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.imageItem.showticklabels = action.payload.showticklabels
       }
     },
     setImageItemZsmooth: (
@@ -223,6 +322,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.zsmooth = action.payload.zsmooth
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.imageItem.zsmooth = action.payload.zsmooth
       }
     },
     setImageItemShowLine: (
@@ -235,6 +336,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.showline = action.payload.showline
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.imageItem.showline = action.payload.showline
       }
     },
     setImageItemShowGrid: (
@@ -247,6 +350,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.showgrid = action.payload.showgrid
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.imageItem.showgrid = action.payload.showgrid
       }
     },
     setImageItemShowScale: (
@@ -259,6 +364,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.showscale = action.payload.showscale
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.imageItem.showscale = action.payload.showscale
       }
     },
     setImageItemColors: (
@@ -274,6 +381,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.colors = action.payload.colors
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.imageItem.colors = action.payload.colors
       }
     },
     setImageItemMaxIndex: (
@@ -286,6 +395,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.maxIndex = action.payload.maxIndex
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.imageItem.maxIndex = action.payload.maxIndex
       }
     },
     setTimeSeriesItemOffset: (
@@ -298,6 +409,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.offset = action.payload.offset
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.offset = action.payload.offset
       }
     },
     setTimeSeriesItemSpan: (
@@ -310,6 +423,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.span = action.payload.span
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.span = action.payload.span
       }
     },
     setTimeSeriesItemShowGrid: (
@@ -322,6 +437,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.showgrid = action.payload.showgrid
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.showgrid = action.payload.showgrid
       }
     },
     setTimeSeriesItemShowLine: (
@@ -334,6 +451,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.showline = action.payload.showline
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.showline = action.payload.showline
       }
     },
     setTimeSeriesItemShowTickLabels: (
@@ -346,6 +465,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.showticklabels = action.payload.showticklabels
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.showticklabels = action.payload.showticklabels
       }
     },
     setTimeSeriesItemZeroLine: (
@@ -358,6 +479,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.zeroline = action.payload.zeroline
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.zeroline = action.payload.zeroline
       }
     },
     setTimeSeriesItemXrangeLeft: (
@@ -370,6 +493,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.xrange.left = action.payload.left
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.xrange.left = action.payload.left
       }
     },
     setTimeSeriesItemXrangeRight: (
@@ -382,6 +507,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.xrange.right = action.payload.right
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.xrange.right = action.payload.right
       }
     },
     setHeatMapItemShowScale: (
@@ -394,6 +521,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isHeatMapItem(targetItem)) {
         targetItem.showscale = action.payload.showscale
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.heatMapItem.showscale = action.payload.showscale
       }
     },
     setHeatMapItemColors: (
@@ -409,6 +538,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isHeatMapItem(targetItem)) {
         targetItem.colors = action.payload.colors
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.heatMapItem.colors = action.payload.colors
       }
     },
     setRoiItemColors: (
@@ -440,6 +571,11 @@ export const {
   deleteVisualizeItem,
   selectItem,
   setItemType,
+  setFilePath,
+  setHeatMapItemFilePath,
+  setImageItemFilePath,
+  setTimeSeriesItemFilePath,
+  setRoiItemFilePath,
   setDisplayDataPath,
   incrementImageActiveIndex,
   decrementImageActiveIndex,

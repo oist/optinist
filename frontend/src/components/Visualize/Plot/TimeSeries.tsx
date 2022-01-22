@@ -3,14 +3,13 @@ import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { LinearProgress, Typography } from '@material-ui/core'
 
-import { DisplayDataContext } from '../DisplayDataItem'
+import { DisplayDataContext } from '../DataContext'
 import {
   selectTimeSeriesData,
   selectTimeSeriesDataError,
   selectTimeSeriesDataIsFulfilled,
   selectTimeSeriesDataIsInitialized,
   selectTimeSeriesDataIsPending,
-  selectTimeSeriesPlotlyData,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getTimeSeriesData } from 'store/slice/DisplayData/DisplayDataActions'
 import { TimeSeriesData } from 'store/slice/DisplayData/DisplayDataType'
@@ -74,7 +73,7 @@ const TimeSeriesImple = React.memo(() => {
       if (displayNumbers.includes(i)) {
         if (offset) {
           const activeIdx: number = displayNumbers.findIndex(
-            (value) => value == i,
+            (value) => value === i,
           )
           const mean: number = y.reduce((a, b) => a + b) / y.length
           const std: number =
@@ -131,7 +130,7 @@ const TimeSeriesImple = React.memo(() => {
         zeroline: zeroline,
       },
     }),
-    [xrange, showgrid, showline, showticklabels, zeroline],
+    [path, xrange, showgrid, showline, showticklabels, zeroline],
   )
 
   const config = {
@@ -142,7 +141,7 @@ const TimeSeriesImple = React.memo(() => {
   const onClick = (event: any) => {
     const clickNumber = event.curveNumber
     if (displayNumbers.includes(clickNumber)) {
-      setDisplayNumbers(displayNumbers.filter((value) => value != clickNumber))
+      setDisplayNumbers(displayNumbers.filter((value) => value !== clickNumber))
     } else {
       setDisplayNumbers((prev) => [...prev, clickNumber])
     }

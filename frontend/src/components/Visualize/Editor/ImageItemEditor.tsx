@@ -14,6 +14,8 @@ import {
   selectImageItemMaxIndex,
   selectVisualizeDataFilePath,
   selectImageItemColors,
+  selectRoiItemNodeId,
+  selectRoiItemFilePath,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 
@@ -26,6 +28,7 @@ import {
   setDisplayDataPath,
   setImageItemMaxIndex,
   setImageItemColors,
+  setRoiItemFilePath,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 import 'react-linear-gradient-picker/dist/index.css'
@@ -36,6 +39,8 @@ import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
 import { TextField } from '@material-ui/core'
 import { GradientColorPicker } from './GradientColorPicker'
 import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
+import { FilePathSelect } from '../FilePathSelect'
+import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
 
 export const ImageItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
@@ -62,6 +67,11 @@ export const ImageItemEditor: React.FC = () => {
     dispatch(setImageItemColors({ itemId, colors: colorCode }))
   }
 
+  const roiItemNodeId = useSelector(selectRoiItemNodeId(itemId))
+  const roiItemFilePath = useSelector(selectRoiItemFilePath(itemId))
+  const onSelectRoiFilePath = (nodeId: string, filePath: string) => {
+    dispatch(setRoiItemFilePath({ itemId, nodeId, filePath }))
+  }
   return (
     <div style={{ margin: '10px' }}>
       <FileSelect
@@ -70,6 +80,12 @@ export const ImageItemEditor: React.FC = () => {
         onUploadFile={onUploadFileHandle}
         fileTreeType={FILE_TREE_TYPE_SET.IMAGE}
         selectButtonLabel="Select Image"
+      />
+      <FilePathSelect
+        selectedFilePath={roiItemFilePath}
+        selectedNodeId={roiItemNodeId}
+        onSelect={onSelectRoiFilePath}
+        dataType={DATA_TYPE_SET.ROI}
       />
       <MaxIndex />
       <Showticklabels />
