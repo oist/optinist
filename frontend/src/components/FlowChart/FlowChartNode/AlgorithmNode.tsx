@@ -15,6 +15,7 @@ import {
 import ErrorIcon from '@material-ui/icons/Error'
 import Popover from '@material-ui/core/Popover'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
+import DehazeIcon from '@material-ui/icons/Dehaze'
 
 import { OutputPathsDTO } from 'api/Run/Run'
 import { AlgorithmInfo } from 'store/slice/AlgorithmList/AlgorithmListType'
@@ -110,7 +111,7 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
       <div
         style={{
           width: '100%',
-          height: '100%',
+          height: '110%',
           background: elementSelected
             ? alpha(theme.palette.primary.light, 0.15)
             : undefined,
@@ -125,8 +126,9 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
           <CloseOutlinedIcon />
         </IconButton>
         <AlgoName nodeId={nodeId} data={data} />
-        <Button variant="outlined" onClick={onClickParamButton}>
+        <Button size="small" variant="outlined" onClick={onClickParamButton}>
           Param
+          {/* <DehazeIcon fontSize='small'/> */}
         </Button>
         <AlgoArgs nodeId={nodeId} />
         <AlgoReturns nodeId={nodeId} isConnectable={isConnectable} />
