@@ -43,7 +43,7 @@ export const RoiItemEditor: React.FC = () => {
         selectButtonLabel="Select CSV"
       /> */}
       {/* <GradientColorPicker /> */}
-      <GradientColorPicker colors={colors} dispatchSetColor={dispathSetColor} />
+      {/* <GradientColorPicker colors={colors} dispatchSetColor={dispathSetColor} /> */}
     </>
   )
 }
