@@ -52,10 +52,16 @@ class TimeSeriesData:
         if len(self.data.shape) == 1:
             self.data = self.data[np.newaxis, :]
 
-        _dir = os.path.join(BASE_DIR, func_name)
-        self.path = get_file_path(_dir, file_name)
+        _dir = os.path.join(BASE_DIR, func_name, f'{file_name}')
+        # self.path = get_file_path(_dir, file_name)
+        if not os.path.exists(_dir):
+            os.makedirs(_dir, exist_ok=True)
 
-        pd.DataFrame(self.data.T).to_json(self.path, indent=4)
+        self.path = os.path.join(_dir)
+
+        for i, data in enumerate(self.data):
+            pd.DataFrame(data).to_json(
+                os.path.join(_dir, f'{str(i)}.json'), indent=4)
 
     def __del__(self):
         del self

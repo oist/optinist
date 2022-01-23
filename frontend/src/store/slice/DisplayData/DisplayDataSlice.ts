@@ -32,22 +32,29 @@ export const displayDataSlice = createSlice({
     builder
       .addCase(getTimeSeriesData.pending, (state, action) => {
         const { path } = action.meta.arg
-        state.timeSeries[path] = {
-          type: 'timeSeries',
-          data: {},
-          pending: true,
-          fulfilled: false,
-          error: null,
+        if (!state.timeSeries.hasOwnProperty(path)) {
+          state.timeSeries[path] = {
+            type: 'timeSeries',
+            data: {},
+            pending: true,
+            fulfilled: false,
+            error: null,
+          }
+        } else {
+          state.timeSeries[path].pending = true
+          state.timeSeries[path].fulfilled = false
+          state.timeSeries[path].error = null
         }
       })
       .addCase(getTimeSeriesData.fulfilled, (state, action) => {
-        const { path } = action.meta.arg
-        state.timeSeries[path] = {
-          type: 'timeSeries',
-          data: action.payload.data,
-          pending: false,
-          fulfilled: true,
-          error: null,
+        const { path, index } = action.meta.arg
+        state.timeSeries[path].pending = false
+        state.timeSeries[path].fulfilled = true
+        state.timeSeries[path].error = null
+        if (Object.keys(state.timeSeries[path].data).length === 0) {
+          state.timeSeries[path].data = action.payload.data
+        } else {
+          state.timeSeries[path].data[index] = action.payload.data[index]
         }
       })
       .addCase(getTimeSeriesData.rejected, (state, action) => {

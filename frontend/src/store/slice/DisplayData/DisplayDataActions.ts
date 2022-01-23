@@ -12,12 +12,16 @@ import {
 
 export const getTimeSeriesData = createAsyncThunk<
   { data: TimeSeriesData },
-  { path: string }
+  { path: string; index: number }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesData`,
-  async ({ path }, thunkAPI) => {
+  async ({ path, index }, thunkAPI) => {
     try {
-      const response = await axios.get(`${BASE_URL}/outputs/data/${path}`)
+      const response = await axios.get(`${BASE_URL}/outputs/timedata/${path}`, {
+        params: {
+          index: index,
+        },
+      })
       return response.data
     } catch (e) {
       return thunkAPI.rejectWithValue(e)

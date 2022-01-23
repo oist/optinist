@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
+import { LegendClickEvent } from 'plotly.js'
 import { LinearProgress, Typography } from '@material-ui/core'
 
 import { DisplayDataContext } from '../DataContext'
@@ -22,39 +23,60 @@ import {
   selectTimeSeriesItemXrange,
   selectTimeSeriesItemZeroLine,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import { setDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 export const TimeSeries = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
   const dispatch = useDispatch()
+  const [displayNumbers, setDisplayNumbers] = useState([0])
   const isPending = useSelector(selectTimeSeriesDataIsPending(path))
   const isInitialized = useSelector(selectTimeSeriesDataIsInitialized(path))
   const error = useSelector(selectTimeSeriesDataError(path))
   const isFulfilled = useSelector(selectTimeSeriesDataIsFulfilled(path))
   React.useEffect(() => {
     if (!isInitialized) {
-      dispatch(getTimeSeriesData({ path }))
+      dispatch(getTimeSeriesData({ path, index: 0 }))
     }
   }, [dispatch, isInitialized, path])
-  if (isPending) {
+  if (isPending && displayNumbers.length == 1) {
     return <LinearProgress />
   } else if (error != null) {
     return <Typography color="error">{error}</Typography>
-  } else if (isFulfilled) {
-    return <TimeSeriesImple />
+  } else if (isFulfilled || displayNumbers.length >= 2) {
+    return (
+      <TimeSeriesImple
+        displayNumbers={displayNumbers}
+        setDisplayNumbers={setDisplayNumbers}
+      />
+    )
   } else {
     return null
   }
 })
 
-const TimeSeriesImple = React.memo(() => {
+const TimeSeriesImple = React.memo<{
+  displayNumbers: number[]
+  setDisplayNumbers: React.Dispatch<React.SetStateAction<number[]>>
+}>(({ displayNumbers, setDisplayNumbers }) => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
 
+  // const timeSeriesData = useSelector(
+  //   selectTimeSeriesData(path),
+  //   timeSeriesDataEqualityFn,
+  // )
+  // const timeSeriesData: TimeSeriesData = {
+  //   0: {0: 1, 1: 2},
+  //   1: {0: 0},
+  //   2: {0: 0},
+  // }
+  // console.log(timeSeriesData)
+  // 0番のデータとkeysだけをとってくる
+  const dispatch = useDispatch()
   const timeSeriesData = useSelector(
     selectTimeSeriesData(path),
     timeSeriesDataEqualityFn,
   )
 
-  const [displayNumbers, setDisplayNumbers] = useState([0])
   const offset = useSelector(selectTimeSeriesItemOffset(itemId))
   const span = useSelector(selectTimeSeriesItemSpan(itemId))
   const showgrid = useSelector(selectTimeSeriesItemShowGrid(itemId))
@@ -138,12 +160,13 @@ const TimeSeriesImple = React.memo(() => {
     scrollZoom: true,
   }
 
-  const onClick = (event: any) => {
+  const onClick = (event: LegendClickEvent) => {
     const clickNumber = event.curveNumber
     if (displayNumbers.includes(clickNumber)) {
       setDisplayNumbers(displayNumbers.filter((value) => value !== clickNumber))
     } else {
       setDisplayNumbers((prev) => [...prev, clickNumber])
+      dispatch(getTimeSeriesData({ path, index: clickNumber }))
     }
     return false
   }
