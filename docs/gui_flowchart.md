@@ -5,6 +5,7 @@ Optinist GUI is separated "FlowChart" and "Visualize", you can switch page in ta
 # FlowChart Page
 You can create and run workflow by gui.
 <br>
+<p align="center">
 <img width="500px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/flow_chart.png" alt="flowchart" />
 
 <br/>
@@ -16,8 +17,9 @@ If you want to use own image data. Click "UPLOAD" button and upload file to `tmp
 Large file data takes long time to upload, so it copy to `tmp/optinist` directly and load file more quickly.  
 ** Input image need to .tiff or .TIFF extension now.(developing other extension)
 <br>
+<p align="center">
 <img width="300px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/imageNode.png" alt="imageNode" />
-
+</p>
 
 <br/>
 
@@ -25,16 +27,18 @@ Large file data takes long time to upload, so it copy to `tmp/optinist` directly
 Next, add algorithm from left treeview.
 Select algorithm from treeview, push "+" button or drag&drop to flowchart.
 <br>
-<img width="300px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/add_algorithm.png" alt="Add Algorithm" />
+<p align="center">
+  <img width="300px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/add_algorithm.png" alt="Add Algorithm" />
+</p>
 
-
-<br/>
+<br>
 
 ## Set Parameter
 Click "PARAM" button and change parameters.
 <br>
-<img width="300px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/set_param.png" alt="Set Parameter" />
-
+<p align="center">
+<img width="300px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/setparam.png" alt="Set Parameter" />
+</p>
 
 <br/>
 
@@ -42,31 +46,34 @@ Click "PARAM" button and change parameters.
 To make workflow, connect edge between node to node by drag&drop.  
 You can only connect same color edge (correspond to arguments and returns type, imageType, timeSeries type, ...). But csv input is considered as many type, so it is black color and connect all arguments.
 <br>
+<p align="center">
 <img width="300px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/connect_edge.png" alt="Connect Algorithm" />
-
+</p>
 
 <br/>
 
 ## Run workflow
 After you make workflow graph, push "Run" button and run workflow.
 <br>
-<img width="400px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/run_flow.png" alt="Run Workflow" />
-
+<p align="center">
+<img width="500px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/run_flow.png" alt="Run Workflow" />
+</p>
 
 ## Finish Run
 If put on select tab in algorithm node, the node is finished running.  
 You can check result image, timseries or heatmap data at visualize page.
 <br>
-<img width="400px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/finish_run.png" alt="Finish Run" />
-
+<p align="center">
+<img width="500px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/finish_run.png" alt="Finish Run" />
+</p>
 
 ## CSV Input
 Csv input is considered as many type, so it is black color and connect all arguments.
 <br>
+<p align="center">
 <img width="400px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/csv_connect.png" alt="CSV Connect" />
-
+</p>
 
 
 <br/>
 
-# Visualize Page
