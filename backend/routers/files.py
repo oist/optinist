@@ -14,7 +14,7 @@ from .const import BASE_DIR
 
 router = APIRouter()
 
-ACCEPT_FILE_TYPES = ["tif", "json", "csv", "nwb"]
+ACCEPT_FILE_TYPES = ["tif", "tiff", "TIF", "TIFF", "json", "csv", "nwb"]
 
 
 class TreeNode(TypedDict):
@@ -59,7 +59,7 @@ async  def get_files(file_type: Optional[str] = None):
         tree = get_dir_tree(BASE_DIR, ACCEPT_FILE_TYPES)
     else:
         if file_type == "image":
-            tree = get_dir_tree(BASE_DIR, ["tif", 'TIF'])
+            tree = get_dir_tree(BASE_DIR, ["tif", 'TIF', 'tiff', 'TIFF'])
         elif file_type == "csv":
             tree = get_dir_tree(BASE_DIR, ["csv"])
         else:

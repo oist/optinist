@@ -18,10 +18,11 @@ import {
   selectImageDataError,
   selectImageDataIsInitialized,
   selectImageDataIsPending,
-  selectImageDataMaxIndex,
   selectImageDataIsFulfilled,
   selectActiveImageData,
   selectRoiData,
+  selectImageDataEndIndex,
+  selectImageDataStartIndex,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import {
   getImageData,
@@ -35,7 +36,8 @@ import {
   selectImageItemShowScale,
   selectImageItemColors,
   selectImageItemActiveIndex,
-  selectImageItemMaxIndex,
+  selectImageItemStartIndex,
+  selectImageItemEndIndex,
   selectRoiItemFilePath,
   selectRoiItemColors,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
@@ -48,7 +50,8 @@ import { RootState } from 'store/store'
 export const ImagePlot = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
 
-  const maxIndex = useSelector(selectImageItemMaxIndex(itemId))
+  const startIndex = useSelector(selectImageItemStartIndex(itemId))
+  const endIndex = useSelector(selectImageItemEndIndex(itemId))
   const isPending = useSelector(selectImageDataIsPending(path))
   const isInitialized = useSelector(selectImageDataIsInitialized(path))
   const isFulfilled = useSelector(selectImageDataIsFulfilled(path))
@@ -59,12 +62,18 @@ export const ImagePlot = React.memo(() => {
   const dispatch = useDispatch()
   React.useEffect(() => {
     if (!isInitialized) {
-      dispatch(getImageData({ path, maxIndex: maxIndex ?? 1 }))
+      dispatch(
+        getImageData({
+          path,
+          startIndex: startIndex ?? 1,
+          endIndex: endIndex ?? 10,
+        }),
+      )
     }
     if (roiFilePath != null) {
       dispatch(getRoiData({ path: roiFilePath }))
     }
-  }, [dispatch, isInitialized, path, maxIndex, roiFilePath])
+  }, [dispatch, isInitialized, path, startIndex, roiFilePath])
   if (isPending) {
     return <LinearProgress />
   } else if (error != null) {
@@ -78,7 +87,12 @@ export const ImagePlot = React.memo(() => {
 
 const ImagePlotImple = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
-  const maxIndex = useSelector(selectImageDataMaxIndex(path))
+  const itemStartIndex = useSelector(selectImageItemStartIndex(itemId))
+  const itemEndIndex = useSelector(selectImageItemEndIndex(itemId))
+  const startIndex = selectImageDataStartIndex(path)
+  const endIndex = useSelector(selectImageDataEndIndex(path))
+  console.log(startIndex)
+  console.log(endIndex)
   const activeIndex = useSelector(selectImageItemActiveIndex(itemId))
   const dispatch = useDispatch()
   const handleNext = () => dispatch(incrementImageActiveIndex({ itemId }))
@@ -87,15 +101,15 @@ const ImagePlotImple = React.memo(() => {
   return (
     <>
       <MobileStepper
-        steps={(maxIndex ?? 0) + 1}
+        steps={itemEndIndex}
         position="static"
         variant="text"
-        activeStep={activeIndex}
+        activeStep={activeIndex + itemStartIndex - 1}
         nextButton={
           <Button
             size="small"
             onClick={handleNext}
-            disabled={activeIndex === (maxIndex ?? 0)}
+            disabled={activeIndex === (endIndex ?? 0)}
           >
             <Typography>Next</Typography>
             {theme.direction === 'rtl' ? (
@@ -140,53 +154,6 @@ const ImagePlotChart = React.memo<{
     imageDataEqualtyFn,
   )
   const colorscaleRoi = useSelector(selectRoiItemColors(itemId))
-
-  // const testData1 = [
-  //   [0, 10, 30],
-  //   [10, 20, 10],
-  //   [0, 10, 10],
-  //   [20, 0, 10],
-  // ]
-  // const testData2 = [
-  //   [null, 1, 2],
-  //   [3, null, 5],
-  //   [6, 7, 8],
-  //   [9, 10, 11],
-  // ]
-  // const data = React.useMemo(
-  //   () => [
-  //     {
-  //       z: testData1,
-  //       type: 'heatmap',
-  //       name: 'images',
-  //       colorscale: [
-  //         [0, '#000000'],
-  //         [1, '#ffffff'],
-  //       ],
-  //       hoverongaps: false,
-  //       showscale: false,
-  //       zsmooth: false,   // ['best', 'fast', false]
-  //       showlegend: true,
-  //     },
-  //     {
-  //       z: testData2,
-  //       type: 'heatmap',
-  //       name: 'iscell',
-  //       colorscale:  [
-  //         [0, 'rgb(166,206,227)'],
-  //         [0.25, 'rgb(31,120,180)'],
-  //         [0.45, 'rgb(178,223,138)'],
-  //         [0.65, 'rgb(51,160,44)'],
-  //         [0.85, 'rgb(251,154,153)'],
-  //         [1, 'rgb(227,26,28)'],
-  //       ],
-  //       hoverongaps: false,
-  //       showscale: false,
-  //       showlegend: true
-  //     },
-  //   ],
-  //   [testData1, testData2],
-  // )
 
   const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
   const showline = useSelector(selectImageItemShowLine(itemId))
@@ -239,9 +206,7 @@ const ImagePlotChart = React.memo<{
           return [offset, value.rgb]
         }),
         hoverongaps: false,
-        // showscale: showscale,
-        // zsmooth: zsmooth, // ['best', 'fast', false]
-        zsmooth: false,
+        zsmooth: false, // ['best', 'fast', false]
         showlegend: true,
       },
     ],
@@ -281,11 +246,12 @@ const ImagePlotChart = React.memo<{
   const config = {
     displayModeBar: true,
     scrollZoom: true,
+    // responsive: true,
   }
   return (
-    <div className="imagePlotChart">
+    <>
       <PlotlyChart data={data} layout={layout} config={config} />
-    </div>
+    </>
   )
 })
 

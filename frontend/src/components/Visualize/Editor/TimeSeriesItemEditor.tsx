@@ -24,7 +24,7 @@ import {
 
 export const TimeSeriesItemEditor: React.FC = () => {
   return (
-    <div style={{ margin: '10px' }}>
+    <div style={{ margin: '10px', padding: 10 }}>
       <Offset />
       <Span />
       <ShowGrid />
@@ -67,6 +67,7 @@ const Span: React.FC = () => {
       control={
         <TextField
           type="number"
+          style={{ width: '6vw' }}
           InputLabelProps={{
             shrink: true,
           }}
@@ -74,7 +75,7 @@ const Span: React.FC = () => {
           defaultValue={span}
         />
       }
-      label="span"
+      label="offset std"
     />
   )
 }

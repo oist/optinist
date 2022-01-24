@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Switch from '@material-ui/core/Switch'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
@@ -11,7 +11,6 @@ import {
   selectImageItemShowticklabels,
   selectImageItemZsmooth,
   selectImageItemShowScale,
-  selectImageItemMaxIndex,
   selectVisualizeDataFilePath,
   selectImageItemColors,
   selectRoiItemNodeId,
@@ -26,9 +25,11 @@ import {
   setImageItemZsmooth,
   setImageItemShowScale,
   setDisplayDataPath,
-  setImageItemMaxIndex,
+  setImageItemStartIndex,
+  setImageItemEndIndex,
   setImageItemColors,
   setRoiItemFilePath,
+  resetImageActiveIndex,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 import 'react-linear-gradient-picker/dist/index.css'
@@ -41,6 +42,8 @@ import { GradientColorPicker } from './GradientColorPicker'
 import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
 import { FilePathSelect } from '../FilePathSelect'
 import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
+import Button from '@material-ui/core/Button'
+import { getImageData } from 'store/slice/DisplayData/DisplayDataActions'
 
 export const ImageItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
@@ -73,7 +76,7 @@ export const ImageItemEditor: React.FC = () => {
     dispatch(setRoiItemFilePath({ itemId, nodeId, filePath }))
   }
   return (
-    <div style={{ margin: '10px' }}>
+    <div style={{ margin: '10px', padding: 10 }}>
       <FileSelect
         filePath={filePath ?? ''}
         onSelectFile={onSelectFile}
@@ -86,8 +89,9 @@ export const ImageItemEditor: React.FC = () => {
         selectedNodeId={roiItemNodeId}
         onSelect={onSelectRoiFilePath}
         dataType={DATA_TYPE_SET.ROI}
+        label={'Select Roi'}
       />
-      <MaxIndex />
+      <StartEndIndex />
       <Showticklabels />
       <ShowLine />
       <ShowGrid />
@@ -188,29 +192,72 @@ const Zsmooth: React.FC = () => {
   )
 }
 
-const MaxIndex: React.FC = () => {
+const StartEndIndex: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
-  const maxIndex = useSelector(selectImageItemMaxIndex(itemId))
+  const [startIndex, setStartIndex] = useState(1)
+  const [endIndex, setEndIndex] = useState(10)
   const dispatch = useDispatch()
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onStartChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value === '' ? '' : Number(event.target.value)
     if (typeof newValue === 'number') {
-      dispatch(setImageItemMaxIndex({ itemId, maxIndex: newValue }))
+      setStartIndex(newValue)
     }
   }
+  const onEndChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value === '' ? '' : Number(event.target.value)
+    if (typeof newValue === 'number') {
+      setEndIndex(newValue)
+    }
+  }
+
+  const filePath = useSelector(selectVisualizeDataFilePath(itemId))
+  const onClickButton = () => {
+    dispatch(resetImageActiveIndex({ itemId }))
+    dispatch(setImageItemStartIndex({ itemId, startIndex: startIndex }))
+    dispatch(setImageItemEndIndex({ itemId, endIndex: endIndex }))
+    if (filePath !== null) {
+      dispatch(
+        getImageData({
+          path: filePath,
+          startIndex: startIndex ?? 1,
+          endIndex: endIndex ?? 10,
+        }),
+      )
+    }
+  }
+
   return (
     <FormControlLabel
       control={
-        <TextField
-          type="number"
-          InputLabelProps={{
-            shrink: true,
-          }}
-          onChange={onChange}
-          defaultValue={maxIndex}
-        />
+        <>
+          <TextField
+            type="number"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            onChange={onStartChange}
+            defaultValue={startIndex}
+          />
+          ~
+          <TextField
+            type="number"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            onChange={onEndChange}
+            defaultValue={endIndex}
+          />
+          <Button
+            size="small"
+            className="ctrl_btn"
+            variant="contained"
+            onClick={onClickButton}
+          >
+            load
+          </Button>
+        </>
       }
-      label="maxIndex"
+      label=""
     />
   )
 }

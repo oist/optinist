@@ -33,7 +33,8 @@ const displayDataCommonInitialValue = {
 const imageItemInitialValue: ImageItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.IMAGE,
-  maxIndex: 10,
+  startIndex: 1,
+  endIndex: 10,
   showticklabels: false,
   showline: true,
   zsmooth: 'best',
@@ -274,6 +275,18 @@ export const visualaizeItemSlice = createSlice({
         state.items[itemId] = defaultSetItemInitialValue
       }
     },
+    resetImageActiveIndex: (
+      state,
+      action: PayloadAction<{ itemId: number }>,
+    ) => {
+      const { itemId } = action.payload
+      const targetItem = state.items[itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.activeIndex = 0
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.imageItem.activeIndex = 0
+      }
+    },
     incrementImageActiveIndex: (
       state,
       action: PayloadAction<{ itemId: number }>,
@@ -385,18 +398,32 @@ export const visualaizeItemSlice = createSlice({
         targetItem.imageItem.colors = action.payload.colors
       }
     },
-    setImageItemMaxIndex: (
+    setImageItemStartIndex: (
       state,
       action: PayloadAction<{
         itemId: number
-        maxIndex: number
+        startIndex: number
       }>,
     ) => {
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
-        targetItem.maxIndex = action.payload.maxIndex
+        targetItem.startIndex = action.payload.startIndex
       } else if (isDefaultSetItem(targetItem)) {
-        targetItem.imageItem.maxIndex = action.payload.maxIndex
+        targetItem.imageItem.startIndex = action.payload.startIndex
+      }
+    },
+    setImageItemEndIndex: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        endIndex: number
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.endIndex = action.payload.endIndex
+      } else if (isDefaultSetItem(targetItem)) {
+        targetItem.imageItem.endIndex = action.payload.endIndex
       }
     },
     setTimeSeriesItemOffset: (
@@ -577,6 +604,7 @@ export const {
   setTimeSeriesItemFilePath,
   setRoiItemFilePath,
   setDisplayDataPath,
+  resetImageActiveIndex,
   incrementImageActiveIndex,
   decrementImageActiveIndex,
   setImageItemShowticklabels,
@@ -585,7 +613,8 @@ export const {
   setImageItemShowGrid,
   setImageItemShowScale,
   setImageItemColors,
-  setImageItemMaxIndex,
+  setImageItemStartIndex,
+  setImageItemEndIndex,
   setTimeSeriesItemOffset,
   setTimeSeriesItemSpan,
   setTimeSeriesItemShowGrid,

@@ -43,14 +43,15 @@ export const getHeatMapData = createAsyncThunk<
 
 export const getImageData = createAsyncThunk<
   { data: ImageData },
-  { path: string; maxIndex?: number }
+  { path: string; startIndex?: number; endIndex?: number }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getImageData`,
-  async ({ path, maxIndex }, thunkAPI) => {
+  async ({ path, startIndex, endIndex }, thunkAPI) => {
     try {
       const response = await axios.get(`${BASE_URL}/outputs/image/${path}`, {
         params: {
-          max_index: maxIndex,
+          start_index: startIndex,
+          end_index: endIndex,
         },
       })
       return response.data
