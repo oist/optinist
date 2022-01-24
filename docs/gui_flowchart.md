@@ -11,10 +11,10 @@ You can create and run workflow by gui.
 <br/>
 
 ## Set Image Input
-First, set input image at image node.
+First, set input images at image node.
 This sytetem read data from `tmp/optinist` local directory, so input data need to locate in there. Click "SELECT IMAGE" button and set as input images.  
 If you want to use own image data, Click "UPLOAD" button and upload file to `tmp/optinist`.  
-Large file data takes long time to upload, so it copy to `tmp/optinist` directly and load file more quickly.  
+An large data file takes long time to upload, so it copy to `tmp/optinist` directly and load file more quickly.  
 ** Input image need to .tiff or .TIFF extension now.(developing other extension)
 <br>
 <p align="center">
