@@ -44,7 +44,7 @@ Click "PARAM" button and change parameters.
 
 ## Connect Algorithm Edge
 To make workflow, connect edges between node to node by drag&drop.  
-You can only connect the same color edges (correspond to arguments and returns type, imageType, timeSeries type, ...). However, csv input could be many types, so it is black color and could be connected with all arguments.
+You can only connect the same color edges (correspond to arguments and returns type, imageType, timeSeries type, ...). However, csv input could be any types, so it is black color and could be connected with any arguments.
 <br>
 <p align="center">
 <img width="300px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/connect_edge.png" alt="Connect Algorithm" />
@@ -60,15 +60,15 @@ After you make workflow graph, click "Run" button and run workflow.
 </p>
 
 ## Finish Run
-If put on select tab in algorithm node, the node is finished running.  
-You can check result image, timseries or heatmap data at visualize page.
+If you put on select tab in algorithm node, the node is finished running.  
+You can check result image, timseries or heatmap data at the visualize page.
 <br>
 <p align="center">
 <img width="500px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/finish_run.png" alt="Finish Run" />
 </p>
 
 ## CSV Input
-Csv input is considered as many type, so it is black color and connect all arguments.
+Csv input could be any types, so it is shown in black color and could be connected with any arguments.
 <br>
 <p align="center">
 <img width="400px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/csv_connect.png" alt="CSV Connect" />
