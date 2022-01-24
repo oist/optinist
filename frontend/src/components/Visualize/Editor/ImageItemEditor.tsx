@@ -73,7 +73,7 @@ export const ImageItemEditor: React.FC = () => {
     dispatch(setRoiItemFilePath({ itemId, nodeId, filePath }))
   }
   return (
-    <div style={{ margin: '10px' }}>
+    <div style={{ margin: '10px', padding: 10 }}>
       <FileSelect
         filePath={filePath ?? ''}
         onSelectFile={onSelectFile}

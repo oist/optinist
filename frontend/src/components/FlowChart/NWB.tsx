@@ -99,7 +99,7 @@ const ParamItem = React.memo<{
           width: '50%',
         }}
       >
-        <Typography>{name}</Typography>
+        <Typography style={{ overflow: 'scroll' }}>{name}</Typography>
       </Box>
       <Box sx={{ width: '50%' }}>
         <TextField value={String(value)} onChange={onChange} />

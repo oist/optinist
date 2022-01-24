@@ -22,6 +22,7 @@ export const ParamItemContainer = React.memo<ParamItemProps>(({ paramKey }) => {
         marginTop: 16,
         marginBottom: 16,
         alignItems: 'center',
+        overflow: 'scroll',
       }}
     >
       <Box
@@ -31,7 +32,7 @@ export const ParamItemContainer = React.memo<ParamItemProps>(({ paramKey }) => {
           width: '50%',
         }}
       >
-        <Typography>{paramKey}</Typography>
+        <Typography style={{ overflow: 'scroll' }}>{paramKey}</Typography>
       </Box>
       <Box sx={{ width: '50%' }}>
         <ParamItemForValueType paramKey={paramKey} />
