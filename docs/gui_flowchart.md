@@ -15,7 +15,7 @@ First, set input images at image node.
 This sytetem read data from `tmp/optinist` local directory, so input data need to locate in there. Click "SELECT IMAGE" button and set as input images.  
 If you want to use own image data, Click "UPLOAD" button and upload file to `tmp/optinist`.  
 An large data file takes long time to upload, so it copy to `tmp/optinist` directly and load file more quickly.  
-** Input image need to .tiff or .TIFF extension now.(developing other extension)
+** Currentlly, input images need to be .tiff or .TIFF extension.(developing other extension)
 <br>
 <p align="center">
 <img width="300px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/imageNode.png" alt="imageNode" />
