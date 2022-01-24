@@ -28,13 +28,18 @@ def args_check(func):
         arg_type_list = [type(x) for x in args]
         request_type_list = [x.annotation for x in sig.parameters.values()]
         request_default_list = [x.default for x in sig.parameters.values()]
-        
+
         # 型の順番を揃える
         def check_order(arg_type_list, request_type_list, request_default_list):
             not_good = False
-            # import pdb; pdb.set_trace()
             for i in range(len(request_type_list)):
-                if request_default_list[i] is not None and arg_type_list[i] != request_type_list[i]:
+                # if request_default_list[i] is not None and arg_type_list[i] != request_type_list[i]:
+                #     not_good = True
+                #     break
+                # if len(arg_type_list) < len(request_type_list) and request_default_list[i] is not None:
+                #     continue
+
+                if len(arg_type_list) > i and arg_type_list[i] != request_type_list[i]:
                     not_good = True
                     break
 
@@ -43,6 +48,7 @@ def args_check(func):
         while check_order(arg_type_list, request_type_list, request_default_list):
             for i in range(len(args)-1):
                 if arg_type_list[i] == request_type_list[i]:
+                    # import pdb; pdb.set_trace()
                     continue
 
                 if check_order(arg_type_list, request_type_list, request_default_list):

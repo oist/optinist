@@ -128,7 +128,7 @@ def nwb_add_roi(nwbfile, roi_list):
 
 def nwb_add_fluorescence(
         nwbfile, table_name, region, name, data, unit, 
-        timestamps=None, rate=None):
+        timestamps=None, rate=0.0):
 
     data_interfaces = nwbfile.processing['ophys'].data_interfaces
     plane_seg = data_interfaces['ImageSegmentation'].plane_segmentations['PlaneSegmentation']

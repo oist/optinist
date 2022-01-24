@@ -6,7 +6,7 @@ import gc
 @args_check
 def caiman_mc(
         image: ImageData, nwbfile: NWBFile=None, params: dict=None
-    ) -> {'images': ImageData, 'iscell': IscellData}:
+    ) -> {'mc_images': ImageData, 'iscell': IscellData}:
     file_path = image.path
     import numpy as np
     from caiman import load, save_memmap, load_memmap, stop_server
@@ -48,7 +48,7 @@ def caiman_mc(
         meanImg, gSig=7, expand_method='dilation')[0].reshape(
             meanImg.shape[0], meanImg.shape[1], -1).transpose(2, 0, 1)
 
-    info['images'] = ImageData(images, func_name='caiman_mc', file_name='images')
+    info['images'] = ImageData(images, func_name='caiman_mc', file_name='mc_images')
     info['meanImg'] = ImageData(meanImg, func_name='caiman_mc', file_name='meanImg')
     info['iscell'] = IscellData(meanImg, func_name='caiman_mc', file_name='iscell')
 

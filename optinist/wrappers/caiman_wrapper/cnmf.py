@@ -43,10 +43,17 @@ def caiman_cnmf(
     else:
         params = CNMFParams(params_dict=params)
 
+    if 'dview' in locals():
+        cm.stop_server(dview=dview)
+
     c, dview, n_processes = setup_cluster(
         backend='local', n_processes=None, single_thread=False)
 
-    cnm = cnmf.CNMF(n_processes, params=params, dview=dview)
+    print(n_processes)
+    print(dview)
+    print(params)
+
+    cnm = cnmf.CNMF(n_processes=n_processes, dview=dview, Ain=None, params=params)
     cnm = cnm.fit(mmap_images)
 
     stop_server(dview=dview)
@@ -73,8 +80,7 @@ def caiman_cnmf(
     n_cells = cnm.estimates.A.shape[-1]
     for i in range(n_cells):
         kargs = {}
-        kargs['image_mask'] = cnm.estimates.A.T[i].T.toarray().reshape(cnm.estimates.dims)
-        # image_mask_list.append()
+        kargs['image_mask'] = cnm.estimates.A.T[i].T.toarray().reshape(dims)
         if hasattr(cnm.estimates, 'accepted_list'):
             kargs['accepted'] = i in cnm.estimates.accepted_list
         if hasattr(cnm.estimates, 'rejected_list'):
@@ -86,18 +92,19 @@ def caiman_cnmf(
     ### backgroundsを追加
     bg_list = []
     for bg in cnm.estimates.b.T:
-        kwargs = dict(
-            image_mask=bg.reshape(cnm.estimates.dims),
-            accepted=False,
-            rejected=False
-        )
+        kargs = {}
+        kargs['image_mask'] = bg.reshape(dims)
+        if hasattr(cnm.estimates, 'accepted_list'):
+            kargs['accepted'] = False
+        if hasattr(cnm.estimates, 'rejected_list'):
+            kargs['rejected'] = False
         bg_list.append(kargs)
 
     nwbfile = nwb_add_roi(nwbfile, bg_list)
 
-    ### iscellを追加
-    nwbfile = nwb_add_column(
-        nwbfile, 'iscell', 'two columns - iscell & probcell', iscell)
+    # ### iscellを追加
+    # nwbfile = nwb_add_column(
+    #     nwbfile, 'iscell', 'two columns - iscell & probcell', iscell)
 
     ### Fluorescence
     starting_time = 0
@@ -105,7 +112,7 @@ def caiman_cnmf(
     timestamps = np.arange(cnm.estimates.f.shape[1]) / imaging_rate + starting_time
     n_rois = cnm.estimates.A.shape[-1]
     n_bg = len(cnm.estimates.f)
-
+    print(timestamps)
     ### roiを追加
     nwbfile = nwb_add_fluorescence(
         nwbfile,
@@ -114,7 +121,7 @@ def caiman_cnmf(
         name='RoiResponseSeries',
         data=cnm.estimates.C.T,
         unit='lumens',
-        timestamps=timestamps
+        # timestamps=timestamps,
     )
 
     ### backgroundsを追加
@@ -125,7 +132,7 @@ def caiman_cnmf(
         name='Background_Fluorescence_Response',
         data=cnm.estimates.f.T,
         unit='lumens',
-        timestamps=timestamps
+        # timestamps=timestamps,
     )
 
     info = {}
