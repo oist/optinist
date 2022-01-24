@@ -8,7 +8,7 @@ import Toolbar from '@material-ui/core/Toolbar'
 import FlowChart from './FlowChart/FlowChart'
 import Visualize from './Visualize/Visualize'
 import { useLazyRunPipelineQuery } from 'api/Run/Run'
-import { RunPipeLineContext } from './Visualize/DataContext'
+import { RunPipeLineContext } from './RunContext'
 
 const Layout: React.FC = () => {
   const classes = useStyles()

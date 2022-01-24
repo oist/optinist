@@ -7,9 +7,3 @@ export const DisplayDataContext = React.createContext<{
   dataType: DATA_TYPE
   itemId: number
 }>({ nodeId: '', filePath: '', dataType: 'table', itemId: NaN })
-
-export const RunPipeLineContext = React.createContext<{
-  // const [triggerRunPipeline, result] = useLazyRunPipelineQuery()
-  runPipeLine: any
-  result: any
-}>({ runPipeLine: null, result: null })

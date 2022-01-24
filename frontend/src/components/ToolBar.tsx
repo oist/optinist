@@ -7,13 +7,12 @@ import { Box, IconButton, LinearProgress } from '@material-ui/core'
 import Close from '@material-ui/icons/Close'
 import { SnackbarProvider, SnackbarKey, useSnackbar } from 'notistack'
 
-import { useLazyRunPipelineQuery } from 'api/Run/Run'
 import { NWBSettingButton } from './FlowChart/NWB'
 import { selectNwbList } from 'store/slice/NWB/NWBSelectors'
 import { selectFilePathIsUndefined } from 'store/slice/InputNode/InputNodeSelectors'
 import { selectElementListForRun } from 'store/slice/FlowElement/FlowElementSelectors'
 import { reflectResult } from 'store/slice/RunPipelineResult/RunPipelineResultSlice'
-import { RunPipeLineContext } from './Visualize/DataContext'
+import { RunPipeLineContext } from './RunContext'
 
 export const ToolBar = React.memo(() => (
   <SnackbarProvider
