@@ -53,7 +53,7 @@ You can only connect the same color edges (correspond to arguments and returns t
 <br/>
 
 ## Run workflow
-After you make workflow graph, push "Run" button and run workflow.
+After you make workflow graph, click "Run" button and run workflow.
 <br>
 <p align="center">
 <img width="500px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/run_flow.png" alt="Run Workflow" />
