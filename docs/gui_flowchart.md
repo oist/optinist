@@ -25,7 +25,7 @@ An large data file takes long time to upload, so it copy to `tmp/optinist` direc
 
 ## Add Algorithm
 Next, add algorithm from left treeview.
-Select algorithm from treeview, push "+" button or drag&drop to flowchart.
+Select algorithms from the treeview, click "+" button or drag&drop to flowchart.
 <br>
 <p align="center">
   <img width="300px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/add_algorithm.png" alt="Add Algorithm" />
@@ -43,8 +43,8 @@ Click "PARAM" button and change parameters.
 <br/>
 
 ## Connect Algorithm Edge
-To make workflow, connect edge between node to node by drag&drop.  
-You can only connect same color edge (correspond to arguments and returns type, imageType, timeSeries type, ...). But csv input is considered as many type, so it is black color and connect all arguments.
+To make workflow, connect edges between node to node by drag&drop.  
+You can only connect the same color edges (correspond to arguments and returns type, imageType, timeSeries type, ...). However, csv input could be many types, so it is black color and could be connected with all arguments.
 <br>
 <p align="center">
 <img width="300px" src="https://github.com/oist/optinist/blob/develop/docs/images/flowchart/connect_edge.png" alt="Connect Algorithm" />
