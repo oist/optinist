@@ -1,6 +1,6 @@
 # Using the GUI
 I introduce how to use optinist GUI in this document.
-Optinist GUI is separated "FlowChart" and "Visualize", you can switch pages in tab.
+Optinist GUI is separated "FlowChart" and "Visualize", you can switch pages in the tab.
 
 # FlowChart Page
 You can create and run workflow by gui.
