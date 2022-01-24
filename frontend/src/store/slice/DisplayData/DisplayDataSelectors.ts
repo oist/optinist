@@ -70,7 +70,16 @@ export const selectImageDataIsFulfilled =
     selectImageDataIsInitialized(filePath)(state) &&
     selectDisplayData(state).image[filePath].fulfilled
 
-export const selectImageDataMaxIndex =
+export const selectImageDataStartIndex =
+  (filePath: string) => (state: RootState) => {
+    if (!selectImageDataIsPending(filePath)(state)) {
+      return 0
+    } else {
+      return undefined
+    }
+  }
+
+export const selectImageDataEndIndex =
   (filePath: string) => (state: RootState) => {
     if (!selectImageDataIsPending(filePath)(state)) {
       return selectImageData(filePath)(state).data.length - 1

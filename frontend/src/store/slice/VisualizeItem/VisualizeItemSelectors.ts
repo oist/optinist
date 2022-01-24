@@ -162,15 +162,25 @@ export const selectImageItemZsmooth =
     }
   }
 
-export const selectImageItemMaxIndex =
+export const selectImageItemStartIndex =
   (itemId: number) => (state: RootState) => {
-    console.log(itemId)
     const item = selectVisualizeItems(state)[itemId]
-    console.log(item)
     if (isImageItem(item)) {
-      return item.maxIndex
+      return item.startIndex
     } else if (isDefaultSetItem(item)) {
-      return item.imageItem.maxIndex
+      return item.imageItem.startIndex
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectImageItemEndIndex =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isImageItem(item)) {
+      return item.endIndex
+    } else if (isDefaultSetItem(item)) {
+      return item.imageItem.endIndex
     } else {
       throw new Error('invalid VisualaizeItemType')
     }

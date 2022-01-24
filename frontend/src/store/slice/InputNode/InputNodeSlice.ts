@@ -31,10 +31,8 @@ export const inputNodeSlice = createSlice({
       action: PayloadAction<{
         nodeId: string
         filePath: string
-        // maxIndex: number
       }>,
     ) {
-      // const { nodeId, filePath, maxIndex } = action.payload
       const { nodeId, filePath } = action.payload
       state[nodeId].selectedFilePath = filePath
     },

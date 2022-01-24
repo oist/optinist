@@ -33,23 +33,24 @@ async def read_file(file_path: str):
 
 
 @router.get("/outputs/image/{file_path:path}")
-async def read_image(file_path: str, max_index: Optional[int] = None):
+async def read_image(
+        file_path: str,
+        start_index: Optional[int] = None,
+        end_index: Optional[int] = None
+    ):
     file_path = os.path.join(BASE_DIR, file_path)
     file_name, ext = os.path.splitext(os.path.basename(file_path))
-
     if ext == '.tif' or ext == '.tiff' or ext == ".TIF" or ext == ".TIFF":
         folder_path = os.path.dirname(file_path)
         tiff_file_path = file_path
         file_path = os.path.join(
-            folder_path, f'{file_name}_{str(max_index)}.json')
-
+            folder_path, f'{file_name}_{str(start_index)}_{str(end_index)}.json')
         if not os.path.exists(file_path):
-            save_tiff2json(tiff_file_path, max_index)
+            save_tiff2json(tiff_file_path, start_index, end_index)
     elif ext == '.json':
         pass
     else:
         assert False, "Extension Error"
-
 
     with open(file_path, 'r') as f:
         json_dict = json.load(f)

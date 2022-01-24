@@ -6,16 +6,18 @@ from pynwb import NWBHDF5IO
 from PIL import Image, ImageSequence
 
 
-def save_tiff2json(tiff_file_path, maxidx=10):
+def save_tiff2json(tiff_file_path, start_index=None, end_index=None):
     folder_path = os.path.dirname(tiff_file_path)
     file_name, ext = os.path.splitext(os.path.basename(tiff_file_path))
 
     # Tiff画像を読み込む
     tiffs = []
     image = Image.open(tiff_file_path)
-
     for i, page in enumerate(ImageSequence.Iterator(image)):
-        if i >= maxidx:
+        if i < start_index-1:
+            continue
+
+        if i >= end_index:
             break
 
         page = np.array(page)
@@ -28,7 +30,7 @@ def save_tiff2json(tiff_file_path, maxidx=10):
         images.append(_img.tolist())
 
     pd.DataFrame(images).to_json(
-        os.path.join(folder_path, f'{file_name}_{str(maxidx)}.json'), 
+        os.path.join(folder_path, f'{file_name}_{str(start_index)}_{str(end_index)}.json'),
         indent=4,
         orient="values"
     )
@@ -38,7 +40,7 @@ def save_csv2json(csv_file_path):
     folder_path = os.path.dirname(csv_file_path)
     file_name, ext = os.path.splitext(os.path.basename(csv_file_path))
     pd.read_csv(csv_file_path).to_json(
-        os.path.join(folder_path, f'{file_name}.json'), indent=4,orient="split")
+        os.path.join(folder_path, f'{file_name}.json'), indent=4, orient="split")
 
 
 def save_nwb(nwbfile, save_path):
