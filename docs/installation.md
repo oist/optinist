@@ -13,7 +13,7 @@ cd "your working repository"
 git clone git@github.com:oist/optinist.git
 ```
 
-If you don't have access authority, please contact with in charge of person.
+If you don't have access authority, please contact with a person who is in charge.
 
 <br />
 
@@ -34,12 +34,12 @@ How to open setting display.
 
 **** memory setting ****
 
-Please, Check whether docker open or not in the command.
+Please, Check whether docker is open or not in the command.
 ```
 docker ps
 ```
 
-If you get below message, docker doesn't launch. so click docker icon in your LaunchPad(mac).
+If you get message below, docker has not been launched. In that case, click docker icon in your LaunchPad(mac).
 
 > Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
 
@@ -62,7 +62,7 @@ docker-compose up frontend
 ```
 
 Launch browser.  http://localhost:3000  
-It open correctly!
+It opens correctly!
 
 <br />
 
@@ -72,7 +72,7 @@ It open correctly!
 
 ## Create anaconda or virtualenv
 Prepare virtual environment, anaconda or virtualenv.
-You can install in local environment directly, but I recommend using virtual environment.
+You can install in local environment directly, but I recommend to use virtual environment.
 
 
 We introduce how to setup in anaconda environment.
@@ -96,7 +96,7 @@ Install library from requirements.txt
 pip install -r requirements.txt
 ```
 
-We know that M1 mac doesn't install tensorflow easily, but we use tensorflow in caiman code, so comment out tensorflow from requirements.txt and skip caiman. (Release in progress…)
+We use tensorflow in caiman code. We know that M1 mac doesn't install tensorflow easily, so if there is a proboem, please comment out tensorflow from requirements.txt and skip caiman. (Release in progress…)
 
 
 <br />
@@ -133,4 +133,4 @@ run with gunicorn
 > gunicorn
 ```
 
-It open correctly!
+It opens correctly!
