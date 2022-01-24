@@ -40,7 +40,11 @@ def args_check(func):
 
             return not_good
 
+        count_loop = 0
         while check_order(arg_type_list, request_type_list, request_default_list):
+            count_loop += 1
+            if count_loop > 100:
+                raise "loop error"
             for i in range(len(args)-1):
                 if arg_type_list[i] == request_type_list[i]:
                     # import pdb; pdb.set_trace()

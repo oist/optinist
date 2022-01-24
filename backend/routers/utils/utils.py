@@ -77,5 +77,3 @@ def algo_network(flowList):
         graph[edge['source']].append(edge['target'])
 
     return graph, startNodeList, nodeDict
-
-

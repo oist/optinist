@@ -30,9 +30,9 @@ def GLM(
         timeseries1 = timeseries1[ind, :]
 
     # data shold be time x component matrix
-    neural_data = timeseries1['timeseries'].transpose()  # neural data
+    neural_data = timeseries1.transpose()  # neural data
 
-    behavioral_data = timeseries2[params['behavior']].values.reshape(-1, 1)    # behavioral dataframe
+    behavioral_data = timeseries2.reshape(-1, 1)    # behavioral dataframe
 
     # preprocessing
     # sc = StandardScaler(
@@ -40,14 +40,7 @@ def GLM(
     #     with_std=params['standardization_n_std']
     # )
     # neural_data = sc.fit_transform(neural_data)
-    from utils import standard_norm
     neural_data = standard_norm(neural_data, params['standard_n_mean'], params['standard_n_std'])
-
-    # sc = StandardScaler(
-    #     with_mean=params['standardization_b_mean'],
-    #     with_std=params['standardization_b_std']
-    # )
-    # behavioral_data = sc.fit_transform(behavioral_data)
     behavioral_data = standard_norm(behavioral_data, params['standard_b_mean'], params['standard_b_std'])
 
     # calculate GLM

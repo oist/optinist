@@ -1,7 +1,7 @@
-standardization_n_mean: True
-standardization_n_std: True
-standardization_b_mean: True
-standardization_b_std: True
+standard_n_mean: True
+standard_n_std: True
+standard_b_mean: True
+standard_b_std: True
 
 behavior: 'c'
 add_constant: True

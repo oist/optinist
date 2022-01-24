@@ -5,8 +5,8 @@ Granger_maxlag: 3
 #Include a constant in the model or not.
 Granger_addconst: True
 
-standardization_mean: True
-standardization_std: True
+standard_mean: True
+standard_std: True
 
 ##########################################################
 # adfuller_test: whether perform adfuller test or not

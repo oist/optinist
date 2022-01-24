@@ -1,5 +1,6 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
+from wrappers.optinist_wrapper.utils import standard_norm
 
 @args_check
 def Granger(
@@ -84,9 +85,10 @@ def Granger(
                 maxlag=params['coint_maxlag'],
                 autolag=params['coint_autolag']
             )
-
-            cit['cit_count_t'][i] = tp[0]
-            cit['cit_pvalue'][i] = tp[1]
+            if not np.isnan(tp[0]):
+                cit['cit_count_t'][i] = tp[0]
+            if not np.isnan(tp[1]):
+                cit['cit_pvalue'][i] = tp[1]
             cit['cit_crit_value'][i, :] = tp[2]
 
     #  Granger causality ##################

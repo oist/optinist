@@ -44,6 +44,7 @@ async def websocket_endpoint(websocket: WebSocket):
         prev_info = None
         info = None
         results = None
+        node_id = None
 
         while True:
 
@@ -72,6 +73,10 @@ async def websocket_endpoint(websocket: WebSocket):
                 'status': 'success',
                 'outputPaths': results
             })
+
+            """ add other input """
+            info = add_other_input(graph, item, nodeDict, info)
+            """ add other input """
 
             if len(graph[item['id']]) > 0:
                 node_id = graph[item['id']][0]
@@ -115,3 +120,23 @@ async def websocket_endpoint(websocket: WebSocket):
         gc.collect()
         print('Bye..')
         await websocket.close()
+
+
+
+def add_other_input(graph, item, nodeDict, info):
+    other_input = None
+    if len(graph[item['id']]) > 0:
+        prev_id = item["id"]
+        node_id = graph[item['id']][0]
+        for k, v in graph.items():
+            if k != prev_id and k != node_id and node_id in v:
+                other_input = set_data(None, nodeDict[k], None)
+
+    if other_input is not None:
+        for k, v in other_input.items():
+            if k in info.keys():
+                info[f"{k}{np.random.randint(10000)}"] = v
+            else:
+                info[k] = v
+    
+    return info
