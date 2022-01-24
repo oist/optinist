@@ -18,11 +18,7 @@ import { GradientColorPicker } from './GradientColorPicker'
 
 export const RoiItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
-  const filePath = useSelector(selectVisualizeDataFilePath(itemId))
   const dispatch = useDispatch()
-  const onSelectFile = (path: string) => {
-    dispatch(setDisplayDataPath({ nodeId: null, filePath: path, itemId }))
-  }
   const { onUploadFile } = useFileUploader(FILE_TYPE_SET.CSV)
   const onUploadFileHandle = (formData: FormData, fileName: string) => {
     onUploadFile(formData, fileName)
@@ -35,13 +31,6 @@ export const RoiItemEditor: React.FC = () => {
 
   return (
     <>
-      {/* <FileSelect
-        filePath={filePath ?? ''}
-        onSelectFile={onSelectFile}
-        onUploadFile={onUploadFileHandle}
-        fileTreeType={FILE_TREE_TYPE_SET.CSV}
-        selectButtonLabel="Select CSV"
-      /> */}
       {/* <GradientColorPicker /> */}
       {/* <GradientColorPicker colors={colors} dispatchSetColor={dispathSetColor} /> */}
     </>
