@@ -60,7 +60,7 @@ After you make workflow graph, click "Run" button and run workflow.
 </p>
 
 ## Finish Run
-If you put on select tab in algorithm node, the node is finished running.  
+If the node get select tab in algorithm node, it means that the node is finished running.  
 You can check result image, timseries or heatmap data at the visualize page.
 <br>
 <p align="center">
