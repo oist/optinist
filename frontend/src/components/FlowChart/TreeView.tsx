@@ -248,7 +248,7 @@ const AddButton = React.memo<{
 }>(({ name, onClick }) => {
   return (
     <>
-      <IconButton aria-label="add">
+      <IconButton aria-label="add" style={{ padding: 2 }}>
         <AddIcon onClick={() => onClick()} />
       </IconButton>
       <Typography
