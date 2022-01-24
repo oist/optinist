@@ -1,6 +1,6 @@
 # Using the GUI
 I introduce how to use optinist GUI in this document.
-Optinist GUI is separated "FlowChart" and "Visualize", you can switch page in tab.
+Optinist GUI is separated "FlowChart" and "Visualize", you can switch pages in tab.
 
 # FlowChart Page
 You can create and run workflow by gui.
@@ -12,8 +12,8 @@ You can create and run workflow by gui.
 
 ## Set Image Input
 First, set input image at image node.
-This sytetem read data from `tmp/optinist` local directory, so input data need to locate in there. Click "SLECT IMAGE" button and set as input image.  
-If you want to use own image data. Click "UPLOAD" button and upload file to `tmp/optinist`.  
+This sytetem read data from `tmp/optinist` local directory, so input data need to locate in there. Click "SELECT IMAGE" button and set as input images.  
+If you want to use own image data, Click "UPLOAD" button and upload file to `tmp/optinist`.  
 Large file data takes long time to upload, so it copy to `tmp/optinist` directly and load file more quickly.  
 ** Input image need to .tiff or .TIFF extension now.(developing other extension)
 <br>
