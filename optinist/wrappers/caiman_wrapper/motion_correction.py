@@ -58,9 +58,6 @@ def caiman_mc(
     info['nwbfile'] = nwb_motion_correction(
         nwbfile, images, xy_trans_data)
 
-    del images, mc, fname_new
-    gc.collect()
-
     return info
 
 

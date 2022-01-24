@@ -25,7 +25,7 @@ def run_algorithm(prev_info, item):
         )
 
         info = run_function(
-            copy.deepcopy(wrapper["function"]),
+            wrapper["function"],
             params,
             *prev_info.values(),
         )

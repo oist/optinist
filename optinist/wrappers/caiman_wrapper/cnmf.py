@@ -49,10 +49,6 @@ def caiman_cnmf(
     c, dview, n_processes = setup_cluster(
         backend='local', n_processes=None, single_thread=False)
 
-    print(n_processes)
-    print(dview)
-    print(params)
-
     cnm = cnmf.CNMF(n_processes=n_processes, dview=dview, Ain=None, params=params)
     cnm = cnm.fit(mmap_images)
 

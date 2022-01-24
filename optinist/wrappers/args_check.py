@@ -9,6 +9,7 @@ def args_check(func):
     def args_type_check_wrapper(*args, **kwargs):
         sig = inspect.signature(func)
         args = list(args)
+
         arg_type_list = [type(x) for x in args]
         request_type_list = [x.annotation for x in sig.parameters.values()]
         request_default_list = [x.default for x in sig.parameters.values()]
@@ -33,13 +34,7 @@ def args_check(func):
         def check_order(arg_type_list, request_type_list, request_default_list):
             not_good = False
             for i in range(len(request_type_list)):
-                # if request_default_list[i] is not None and arg_type_list[i] != request_type_list[i]:
-                #     not_good = True
-                #     break
-                # if len(arg_type_list) < len(request_type_list) and request_default_list[i] is not None:
-                #     continue
-
-                if len(arg_type_list) > i and arg_type_list[i] != request_type_list[i]:
+                if len(arg_type_list) > i and arg_type_list[i] != request_type_list[i] and request_type_list[i] != dict:
                     not_good = True
                     break
 
