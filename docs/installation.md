@@ -1,6 +1,6 @@
 # Installation
 We introduce how to install optinist.
-We have developed optinist python(backend) and typescript(frontend), so you need to make both of environment.
+We have developed optinist python(backend) and typescript(frontend), so you need to make both environment.
 Please follow instrunctions below.
 
 <br />
