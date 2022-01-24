@@ -86,6 +86,7 @@ export const ImageItemEditor: React.FC = () => {
         selectedNodeId={roiItemNodeId}
         onSelect={onSelectRoiFilePath}
         dataType={DATA_TYPE_SET.ROI}
+        label={'Select Roi'}
       />
       <MaxIndex />
       <Showticklabels />

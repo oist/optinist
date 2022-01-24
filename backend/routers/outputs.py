@@ -45,6 +45,8 @@ async def read_image(file_path: str, max_index: Optional[int] = None):
 
         if not os.path.exists(file_path):
             save_tiff2json(tiff_file_path, max_index)
+    elif ext == '.json':
+        pass
     else:
         assert False, "Extension Error"
 
