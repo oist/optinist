@@ -37,7 +37,7 @@ async def read_image(file_path: str, max_index: Optional[int] = None):
     file_path = os.path.join(BASE_DIR, file_path)
     file_name, ext = os.path.splitext(os.path.basename(file_path))
 
-    if ext == '.tif' or ext == '.TIF':
+    if ext == '.tif' or ext == '.tiff' or ext == ".TIF" or ext == ".TIFF":
         folder_path = os.path.dirname(file_path)
         tiff_file_path = file_path
         file_path = os.path.join(
@@ -45,6 +45,9 @@ async def read_image(file_path: str, max_index: Optional[int] = None):
 
         if not os.path.exists(file_path):
             save_tiff2json(tiff_file_path, max_index)
+    else:
+        assert False, "Extension Error"
+
 
     with open(file_path, 'r') as f:
         json_dict = json.load(f)
