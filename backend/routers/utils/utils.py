@@ -74,6 +74,6 @@ def algo_network(flowList):
 
     # 隣接リストを登録
     for edge in edgeList:
-        graph[edge['source']].append(edge['target'])
+        graph[edge['source']] = {edge['target']: edge["targetHandle"].split("--")[1]}
 
     return graph, startNodeList, nodeDict
