@@ -19,8 +19,8 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { ImagePlot } from './Plot/ImagePlot'
 import { DisplayDataContext } from './DataContext'
-import { TimeSeries } from './Plot/TimeSeries'
-import { HeatMap } from './Plot/HeatMap'
+import { TimeSeriesPlot } from './Plot/TimeSeriesPlot'
+import { HeatMapPlot } from './Plot/HeatMapPlot'
 
 import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
@@ -153,7 +153,7 @@ const DefaultTimeSeriesPlot = React.memo<{
           itemId,
         }}
       >
-        <TimeSeries />
+        <TimeSeriesPlot />
       </DisplayDataContext.Provider>
     )
   } else {
@@ -171,7 +171,7 @@ const DefaultHeatMapPlot = React.memo<{
       <DisplayDataContext.Provider
         value={{ nodeId, filePath, dataType: DATA_TYPE_SET.HEAT_MAP, itemId }}
       >
-        <HeatMap />
+        <HeatMapPlot />
       </DisplayDataContext.Provider>
     )
   } else {

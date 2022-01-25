@@ -45,10 +45,10 @@ def TSNE(
     proj_X = tsne.fit_transform(tX)
 
     info = {}
-    info['projected'] = TimeSeriesData(
+    info['projected2d'] = ScatterData(
         proj_X[:, 0:2],
-        func_name='pca',
-        file_name='projected'
+        func_name='tsne',
+        file_name='projected2d'
     )
 
     return info

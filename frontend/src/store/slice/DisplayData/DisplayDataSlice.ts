@@ -6,6 +6,7 @@ import {
   getImageData,
   getTimeSeriesData,
   getRoiData,
+  getScatterData,
 } from './DisplayDataActions'
 
 const initialState: DisplayData = {
@@ -14,6 +15,7 @@ const initialState: DisplayData = {
   image: {},
   table: {},
   roi: {},
+  scatter: {},
 }
 
 export const displayDataSlice = createSlice({
@@ -187,6 +189,36 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.roi[path] = {
           type: 'roi',
+          data: [],
+          pending: false,
+          fulfilled: false,
+          error: action.error.message ?? 'rejected',
+        }
+      })
+      .addCase(getScatterData.pending, (state, action) => {
+        const { path } = action.meta.arg
+        state.scatter[path] = {
+          type: 'scatter',
+          data: [],
+          pending: true,
+          fulfilled: false,
+          error: null,
+        }
+      })
+      .addCase(getScatterData.fulfilled, (state, action) => {
+        const { path } = action.meta.arg
+        state.scatter[path] = {
+          type: 'scatter',
+          data: action.payload.data,
+          pending: false,
+          fulfilled: true,
+          error: null,
+        }
+      })
+      .addCase(getScatterData.rejected, (state, action) => {
+        const { path } = action.meta.arg
+        state.scatter[path] = {
+          type: 'scatter',
           data: [],
           pending: false,
           fulfilled: false,

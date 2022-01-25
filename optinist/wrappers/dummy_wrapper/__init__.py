@@ -38,5 +38,8 @@ dummy_wrapper_dict = {
         'dummy_image2image8roi8time8heat': {
             'function': dummy_image2image8roi8time8heat
         },
+        'dummy_image2scatter': {
+            'function': dummy_image2scatter
+        }
     }
 }

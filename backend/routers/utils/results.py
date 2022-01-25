@@ -25,6 +25,10 @@ def get_results(info, item):
             results[path][k] = {}
             results[path][k]['path'] = v.path
             results[path][k]['type'] = 'roi'
+        elif isinstance(v, ScatterData):
+            results[path][k] = {}
+            results[path][k]['path'] = v.path
+            results[path][k]['type'] = 'scatter'
         else:
             pass
 
