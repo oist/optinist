@@ -121,6 +121,7 @@ const DisplayDataItemEditor: React.FC = () => {
     dispatch(setDisplayDataPath({ itemId, nodeId, filePath }))
 
   const Editor = (dataType: DATA_TYPE) => {
+    console.log(dataType)
     /* 他のtypeのEditorも必要になったら追加する */
     switch (dataType) {
       case DATA_TYPE_SET.IMAGE:
@@ -145,7 +146,7 @@ const DisplayDataItemEditor: React.FC = () => {
         selectedFilePath={selectedFilePath}
         onSelect={onSelect}
       />
-      <div style={{ marginTop: 8 }}>{Editor}</div>
+      <div style={{ marginTop: 8 }}>{Editor(dataType)}</div>
     </>
   )
 }
