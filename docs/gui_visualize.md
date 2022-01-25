@@ -51,7 +51,7 @@ Offset enables to compare data more easily.
 
 ## Table Plot
 Table plot displays csv data in table.  
-(Customize parameter is developing now.)
+("Customize parameter" is currently under development.)
 <p align="center">
 <img width="500px" src="https://github.com/oist/optinist/blob/develop/docs/images/visualize/table_plot.png" alt="TablePlot" />
 </p>
