@@ -196,6 +196,7 @@ const StartEndIndex: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const [startIndex, setStartIndex] = useState(1)
   const [endIndex, setEndIndex] = useState(10)
+  const [inputError, setInputError] = useState(false)
   const dispatch = useDispatch()
   const onStartChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value === '' ? '' : Number(event.target.value)
@@ -212,17 +213,22 @@ const StartEndIndex: React.FC = () => {
 
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
   const onClickButton = () => {
-    dispatch(resetImageActiveIndex({ itemId }))
-    dispatch(setImageItemStartIndex({ itemId, startIndex: startIndex }))
-    dispatch(setImageItemEndIndex({ itemId, endIndex: endIndex }))
-    if (filePath !== null) {
-      dispatch(
-        getImageData({
-          path: filePath,
-          startIndex: startIndex ?? 1,
-          endIndex: endIndex ?? 10,
-        }),
-      )
+    if (startIndex > 0) {
+      setInputError(false)
+      dispatch(resetImageActiveIndex({ itemId }))
+      dispatch(setImageItemStartIndex({ itemId, startIndex: startIndex }))
+      dispatch(setImageItemEndIndex({ itemId, endIndex: endIndex }))
+      if (filePath !== null) {
+        dispatch(
+          getImageData({
+            path: filePath,
+            startIndex: startIndex ?? 1,
+            endIndex: endIndex ?? 10,
+          }),
+        )
+      }
+    } else {
+      setInputError(true)
     }
   }
 
@@ -231,12 +237,14 @@ const StartEndIndex: React.FC = () => {
       control={
         <>
           <TextField
+            error={inputError}
             type="number"
             InputLabelProps={{
               shrink: true,
             }}
             onChange={onStartChange}
             defaultValue={startIndex}
+            helperText={inputError ? 'index > 0' : ''}
           />
           ~
           <TextField

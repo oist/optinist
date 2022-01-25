@@ -7,12 +7,12 @@ import { Box, IconButton, LinearProgress } from '@material-ui/core'
 import Close from '@material-ui/icons/Close'
 import { SnackbarProvider, SnackbarKey, useSnackbar } from 'notistack'
 
-import { useLazyRunPipelineQuery } from 'api/Run/Run'
 import { NWBSettingButton } from './FlowChart/NWB'
 import { selectNwbList } from 'store/slice/NWB/NWBSelectors'
 import { selectFilePathIsUndefined } from 'store/slice/InputNode/InputNodeSelectors'
 import { selectElementListForRun } from 'store/slice/FlowElement/FlowElementSelectors'
 import { reflectResult } from 'store/slice/RunPipelineResult/RunPipelineResultSlice'
+import { RunPipeLineContext } from './RunContext'
 
 export const ToolBar = React.memo(() => (
   <SnackbarProvider
@@ -40,7 +40,8 @@ const ToolBarImple = React.memo(() => {
   const pathIsUndefined = useSelector(selectFilePathIsUndefined)
   const nwbParam = useSelector(selectNwbList)
   const elementListForRun = useSelector(selectElementListForRun)
-  const [triggerRunPipeline, result] = useLazyRunPipelineQuery()
+  // const [triggerRunPipeline, result] = useLazyRunPipelineQuery()
+  const { runPipeLine, result } = React.useContext(RunPipeLineContext)
   const [isReady, setIsReady] = React.useState(false)
   const onRunBtnClick = () => {
     if (pathIsUndefined) {
@@ -48,7 +49,8 @@ const ToolBarImple = React.memo(() => {
     } else if (elementListForRun.edgeList.length === 0) {
       enqueueSnackbar('there are no edges.', { variant: 'error' })
     } else {
-      triggerRunPipeline({ elementListForRun, requestId: nanoid(), nwbParam })
+      // triggerRunPipeline({ elementListForRun, requestId: nanoid(), nwbParam })
+      runPipeLine({ elementListForRun, requestId: nanoid(), nwbParam })
       closeSnackbar()
       setIsReady(true)
     }
