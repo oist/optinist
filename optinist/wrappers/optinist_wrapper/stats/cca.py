@@ -6,20 +6,24 @@ from wrappers.optinist_wrapper.utils import standard_norm
 @args_check
 def CCA(
         timeseries: TimeSeriesData,
+        behaviors: TimeSeriesData,
         iscell: IscellData=None,
         params: dict=None
     ) -> {}:
     from sklearn.cross_decomposition import CCA
 
     timeseries = timeseries.data
+    behaviors = behaviors.data
 
     if iscell is not None:
         iscell = iscell.data
         ind = np.where(iscell > 0)[0]
         timeseries = timeseries[ind, :]
+        behaviors = behaviors[ind, :]
 
     # data shold be time x component matrix
     X = timeseries.transpose()
+    Y = behaviors.transpose()
 
     # # preprocessing  ##################
     tX = standard_norm(X, params['standard_x_mean'], params['standard_x_std'])
