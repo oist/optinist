@@ -25,7 +25,7 @@ Select output data.
 
 ## Image Plot
 Image plot displays .tiff data. 
-You can customize parameter, like line, axis and color.
+You can customize parameters such as line, axis and color.
 <p align="center">
 <img width="400px" src="https://github.com/oist/optinist/blob/develop/docs/images/visualize/image_plot.png" alt="ImagePlot" />
 </p>
@@ -41,7 +41,7 @@ If you get roi output, select and add roi plot.
 ## TimeSeries Plot
 TimeSeries plot displays timeseries output.
 Click legend number and add display data.
-Offset is more easily to compare data.
+Offset enables to compare data more easily.
 <p align="center">
 <img width="500px" src="https://github.com/oist/optinist/blob/develop/docs/images/visualize/timeseries_plot.png" alt="TimeSeriesPlot" />
 </p>
@@ -57,7 +57,7 @@ Table plot displays csv data in table.
 </p>
 
 ## Default Plot
-Default plot compare image, timeseries and heatmap output.  
+The default plot compares images, timeseries and heatmap output.  
 (Synthronize cell number and customize parameter is developing now.)
 <p align="center">
 <img width="500px" src="https://github.com/oist/optinist/blob/develop/docs/images/visualize/default_plot.png" alt="DefaultPlot" />
