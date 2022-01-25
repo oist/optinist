@@ -1,5 +1,5 @@
 # Using the GUI
-I introduce how to use optinist GUI in this document.
+This document explains how to use optinist GUI.
 Optinist GUI is separated into "FlowChart" and "Visualize", and you can switch pages in the tab.
 
 # Visualize Page
