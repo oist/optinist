@@ -41,6 +41,7 @@ async def websocket_endpoint(websocket: WebSocket):
     try:
         tracemalloc.start()
         item = nodeDict[startNodeList[0]]
+        item['key'] = list(graph[startNodeList[0]].values())[0]
         prev_info = None
         info = None
         results = None
@@ -79,7 +80,7 @@ async def websocket_endpoint(websocket: WebSocket):
             """ add other input """
 
             if len(graph[item['id']]) > 0:
-                node_id = graph[item['id']][0]
+                node_id = list(graph[item['id']].keys())[0]
                 item = nodeDict[node_id]
             else:
                 break
@@ -122,15 +123,16 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket.close()
 
 
-
 def add_other_input(graph, item, nodeDict, info):
     other_input = None
     if len(graph[item['id']]) > 0:
         prev_id = item["id"]
-        node_id = graph[item['id']][0]
+        node_id = list(graph[item['id']].keys())[0]
         for k, v in graph.items():
             if k != prev_id and k != node_id and node_id in v:
-                other_input = set_data(None, nodeDict[k], None)
+                item = nodeDict[k]
+                item['key'] = list(graph[k].values())[0]
+                other_input = set_data(None, item, None)
 
     if other_input is not None:
         for k, v in other_input.items():

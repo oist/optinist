@@ -24,10 +24,13 @@ def run_algorithm(prev_info, item):
             item['data']['path'].split('/')
         )
 
+        prev_info = order_args(wrapper, prev_info)
+
         info = run_function(
             wrapper["function"],
             params,
             *prev_info.values(),
+            # prev_info,
         )
 
         del wrapper, prev_info
@@ -49,3 +52,19 @@ def dict2leaf(root_dict: dict, path_list: List[str]):
         return dict2leaf(root_dict[path], path_list)
     else:
         return root_dict[path]
+
+def order_args(wrapper, prev_info):
+    import inspect
+    sig = inspect.signature(wrapper["function"])
+
+    # 引数名の順番に揃える
+    new_args = {}
+    for key in sig.parameters.keys():
+        if key in prev_info.keys():
+            new_args[key] = prev_info[key]
+
+    for key in prev_info.keys():
+        if not key in new_args:
+            new_args[key] = prev_info[key]
+
+    return new_args

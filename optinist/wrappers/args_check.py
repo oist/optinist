@@ -47,9 +47,8 @@ def args_check(func):
                 raise "loop error"
             for i in range(len(args)-1):
                 if arg_type_list[i] == request_type_list[i]:
-                    # import pdb; pdb.set_trace()
                     continue
-
+                
                 if check_order(arg_type_list, request_type_list, request_default_list):
                     args[i], args[i+1] = args[i+1], args[i]
                     arg_type_list[i], arg_type_list[i+1] = arg_type_list[i+1], arg_type_list[i]

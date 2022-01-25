@@ -26,11 +26,10 @@ def set_data(info, item, nwb_params):
         nwb_add_ophys(nwbfile)
 
     elif item['type'] == 'CsvFileNode':
-        info = {'timeseries': TimeSeriesData(item['data']['path'], '')}
+        # import pdb; pdb.set_trace()
+        info = {item['key']: TimeSeriesData(item['data']['path'], '')}
         nwbfile = None
 
     info['nwbfile'] = nwbfile
 
     return info
-
-

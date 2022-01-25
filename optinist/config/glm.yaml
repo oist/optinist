@@ -11,3 +11,5 @@ family: 'Gaussian'
 offset:
 exposure:
 missing:
+
+target_index: 0
