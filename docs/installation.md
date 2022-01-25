@@ -39,7 +39,7 @@ Please, Check whether docker is open or not in the command.
 docker ps
 ```
 
-If you get message below, docker has not been launched. In that case, click docker icon in your LaunchPad(mac).
+If you get the message below, docker has not been launched. In that case, click docker icon in your LaunchPad(mac).
 
 > Cannot connect to the Docker daemon at unix:///var/run/docker.sock. Is the docker daemon running?
 
