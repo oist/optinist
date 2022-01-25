@@ -8,11 +8,12 @@ import {
   selectVisualizeDataType,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { DisplayDataContext } from './DataContext'
-import { HeatMap } from './Plot/HeatMap'
+import { HeatMapPlot } from './Plot/HeatMapPlot'
 import { ImagePlot } from './Plot/ImagePlot'
 import { RoiPlot } from './Plot/RoiPlot'
+import { ScatterPlot } from './Plot/ScatterPlot'
 import { TablePlot } from './Plot/TablePlot'
-import { TimeSeries } from './Plot/TimeSeries'
+import { TimeSeriesPlot } from './Plot/TimeSeriesPlot'
 
 export const DisplayDataItem = React.memo<{
   itemId: number
@@ -25,13 +26,15 @@ export const DisplayDataItem = React.memo<{
       case DATA_TYPE_SET.TABLE:
         return <TablePlot />
       case DATA_TYPE_SET.TIME_SERIES:
-        return <TimeSeries />
+        return <TimeSeriesPlot />
       case DATA_TYPE_SET.HEAT_MAP:
-        return <HeatMap />
+        return <HeatMapPlot />
       case DATA_TYPE_SET.IMAGE:
         return <ImagePlot />
       case DATA_TYPE_SET.ROI:
         return <RoiPlot />
+      case DATA_TYPE_SET.SCATTER:
+        return <ScatterPlot />
     }
   }
   if (filePath != null && dataType != null) {

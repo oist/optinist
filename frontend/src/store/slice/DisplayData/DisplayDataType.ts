@@ -16,6 +16,9 @@ export type DisplayData = {
   roi: {
     [filePath: string]: RoiDisplayData
   }
+  scatter: {
+    [filePath: string]: ScatterDisplayData
+  }
 }
 
 export const DATA_TYPE_SET = {
@@ -24,6 +27,7 @@ export const DATA_TYPE_SET = {
   IMAGE: 'image',
   TABLE: 'table',
   ROI: 'roi',
+  SCATTER: 'scatter',
 } as const
 
 export type DATA_TYPE = typeof DATA_TYPE_SET[keyof typeof DATA_TYPE_SET]
@@ -58,3 +62,6 @@ export type TableData = number[][]
 
 export interface RoiDisplayData extends BaseDisplay<'roi', RoiData> {}
 export type RoiData = number[][][]
+
+export interface ScatterDisplayData extends BaseDisplay<'scatter', RoiData> {}
+export type ScatterData = number[][][]

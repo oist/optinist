@@ -8,6 +8,7 @@ import {
   TableItem,
   TimeSeriesItem,
   RoiItem,
+  ScatterItem,
   VisualaizeItem,
   VISUALIZE_ITEM_TYPE_SET,
 } from './VisualizeItemType'
@@ -18,6 +19,7 @@ import {
   isImageItem,
   isRoiItem,
   isTimeSeriesItem,
+  isScatterItem,
 } from './VisualizeItemUtils'
 import createColormap from 'colormap'
 
@@ -87,6 +89,10 @@ const roiItemInitialValue: RoiItem = {
     return { rgb: v, offset: String(idx / 9) }
   }),
 }
+const scatterItemInitialValue: ScatterItem = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.SCATTER,
+}
 function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
   switch (dataType) {
     case DATA_TYPE_SET.IMAGE:
@@ -99,6 +105,8 @@ function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
       return tableItemInitialValue
     case DATA_TYPE_SET.ROI:
       return roiItemInitialValue
+    case DATA_TYPE_SET.SCATTER:
+      return scatterItemInitialValue
   }
 }
 

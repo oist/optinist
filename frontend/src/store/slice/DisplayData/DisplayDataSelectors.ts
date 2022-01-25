@@ -140,3 +140,26 @@ export const selectRoiDataIsFulfilled =
   (filePath: string) => (state: RootState) =>
     selectRoiDataIsInitialized(filePath)(state) &&
     selectDisplayData(state).roi[filePath].fulfilled
+
+export const selectScatterData = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).scatter[filePath]?.data ?? []
+
+export const selectScatterDataIsInitialized =
+  (filePath: string) => (state: RootState) =>
+    Object.keys(selectDisplayData(state).scatter).includes(filePath)
+
+export const selectScatterDataError =
+  (filePath: string) => (state: RootState) =>
+    selectScatterDataIsInitialized(filePath)(state)
+      ? selectDisplayData(state).scatter[filePath].error
+      : null
+
+export const selectScatterDataIsPending =
+  (filePath: string) => (state: RootState) =>
+    selectScatterDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).scatter[filePath].pending
+
+export const selectScatterDataIsFulfilled =
+  (filePath: string) => (state: RootState) =>
+    selectScatterDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).scatter[filePath].fulfilled

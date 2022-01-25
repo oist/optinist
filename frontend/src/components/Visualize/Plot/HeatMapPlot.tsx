@@ -18,7 +18,7 @@ import {
   selectHeatMapItemShowScale,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
-export const HeatMap = React.memo(() => {
+export const HeatMapPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
   const dispatch = useDispatch()
   const isPending = useSelector(selectHeatMapDataIsPending(path))

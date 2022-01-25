@@ -6,12 +6,13 @@ from wrappers.optinist_wrapper.utils import standard_norm
 @args_check
 def PCA(
         timeseries: TimeSeriesData, iscell: IscellData=None, params: dict=None
-    ) -> {'components': CorrelationData, 'explained_variance_ratio': TimeSeriesData, 'projected': TimeSeriesData}:
+    ) -> {}:
     # modules specific to function
     from sklearn.preprocessing import StandardScaler
     from sklearn.decomposition import PCA
 
     timeseries = timeseries.data
+    
 
     if iscell is not None:
         iscell = iscell.data
@@ -47,8 +48,8 @@ def PCA(
         func_name='pca',
         file_name='evr'
     )
-    info['projected'] = TimeSeriesData(
-        proj_X[:, 0:2].transpose(1, 0),
+    info['projected2d'] = ScatterData(
+        proj_X[:, 0:2],
         func_name='pca',
         file_name='projected'
     )  # change to 2D scatter plots

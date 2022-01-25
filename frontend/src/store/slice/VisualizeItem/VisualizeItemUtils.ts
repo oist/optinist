@@ -8,6 +8,7 @@ import {
   TimeSeriesItem,
   HeatMapItem,
   RoiItem,
+  ScatterItem,
 } from './VisualizeItemType'
 
 export function isDefaultSetItem(
@@ -49,5 +50,12 @@ export function isRoiItem(item: VisualaizeItemType): item is RoiItem {
   return (
     item.itemType === VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA &&
     item.dataType === DATA_TYPE_SET.ROI
+  )
+}
+
+export function isScatterItem(item: VisualaizeItemType): item is ScatterItem {
+  return (
+    item.itemType === VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA &&
+    item.dataType === DATA_TYPE_SET.SCATTER
   )
 }

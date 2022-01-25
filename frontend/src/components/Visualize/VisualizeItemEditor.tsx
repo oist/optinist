@@ -30,6 +30,7 @@ import { HeatmapItemEditor } from './Editor/HeatmapItemEditor'
 import { TimeSeriesItemEditor } from './Editor/TimeSeriesItemEditor'
 import { RoiItemEditor } from './Editor/RoiItemEditor'
 import { FilePathSelect } from './FilePathSelect'
+import { ScatterItemEditor } from './Editor/ScatterEditor'
 
 export const VisualizeItemEditor = () => {
   const selectedItemId = useSelector(selectSelectedVisualizeItemId)
@@ -118,22 +119,33 @@ const DisplayDataItemEditor: React.FC = () => {
   const dispatch = useDispatch()
   const onSelect = (nodeId: string, filePath: string) =>
     dispatch(setDisplayDataPath({ itemId, nodeId, filePath }))
+
+  const Editor = (dataType: DATA_TYPE) => {
+    /* 他のtypeのEditorも必要になったら追加する */
+    switch (dataType) {
+      case DATA_TYPE_SET.IMAGE:
+        return <ImageItemEditor />
+      case DATA_TYPE_SET.TABLE:
+        return <TableItemEditor />
+      case DATA_TYPE_SET.HEAT_MAP:
+        return <HeatmapItemEditor />
+      case DATA_TYPE_SET.TIME_SERIES:
+        return <TimeSeriesItemEditor />
+      case DATA_TYPE_SET.ROI:
+        return <RoiItemEditor />
+      case DATA_TYPE_SET.SCATTER:
+        return <ScatterItemEditor />
+    }
+  }
   return (
-    <div>
+    <>
       <FilePathSelect
         dataType={dataType}
         selectedNodeId={selectedNodeId}
         selectedFilePath={selectedFilePath}
         onSelect={onSelect}
       />
-      <div style={{ marginTop: 8 }}>
-        {dataType === DATA_TYPE_SET.IMAGE && <ImageItemEditor />}
-        {/* 他のtypeのEditorも必要になったら追加する */}
-        {dataType === DATA_TYPE_SET.TABLE && <TableItemEditor />}
-        {dataType === DATA_TYPE_SET.HEAT_MAP && <HeatmapItemEditor />}
-        {dataType === DATA_TYPE_SET.TIME_SERIES && <TimeSeriesItemEditor />}
-        {dataType === DATA_TYPE_SET.ROI && <RoiItemEditor />}
-      </div>
-    </div>
+      <div style={{ marginTop: 8 }}>{Editor}</div>
+    </>
   )
 }

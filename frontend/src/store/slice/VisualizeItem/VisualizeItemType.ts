@@ -32,6 +32,7 @@ export type DisplayDataItem =
   | HeatMapItem
   | TableItem
   | RoiItem
+  | ScatterItem
 
 export interface DisplayDataItemBaseType extends ItemBaseType<'displayData'> {
   filePath: string | null
@@ -85,4 +86,8 @@ export interface TableItem extends DisplayDataItemBaseType {
 export interface RoiItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.ROI
   colors: ColorType[]
+}
+
+export interface ScatterItem extends DisplayDataItemBaseType {
+  dataType: typeof DATA_TYPE_SET.SCATTER
 }

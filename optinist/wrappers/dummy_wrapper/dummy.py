@@ -257,3 +257,18 @@ def dummy_image2image8roi8time8heat(
         np.random.rand((10000)).reshape(100, 100),
         func_name=sys._getframe().f_code.co_name)
     return info
+
+@args_check
+def dummy_image2scatter(
+    image: ImageData, nwbfile: NWBFile=None,  params: dict=None
+    ) -> {'scatter': ScatterData}:
+
+    """
+        get image
+        return scatter
+    """
+    info = {}
+    info['image2scatter'] = ScatterData(
+        np.random.rand((1000)).reshape(500, 2),
+        func_name=sys._getframe().f_code.co_name)
+    return info

@@ -8,6 +8,7 @@ import {
   HeatMapData,
   TableData,
   RoiData,
+  ScatterData,
 } from './DisplayDataType'
 
 export const getTimeSeriesData = createAsyncThunk<
@@ -87,3 +88,15 @@ export const getRoiData = createAsyncThunk<{ data: RoiData }, { path: string }>(
     }
   },
 )
+
+export const getScatterData = createAsyncThunk<
+  { data: ScatterData },
+  { path: string }
+>(`${DISPLAY_DATA_SLICE_NAME}/getScatterData`, async ({ path }, thunkAPI) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/outputs/data/${path}`, {})
+    return response.data
+  } catch (e) {
+    return thunkAPI.rejectWithValue(e)
+  }
+})

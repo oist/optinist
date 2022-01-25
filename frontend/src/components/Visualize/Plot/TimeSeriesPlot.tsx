@@ -25,7 +25,7 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { setDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
-export const TimeSeries = React.memo(() => {
+export const TimeSeriesPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
   const dispatch = useDispatch()
   const [displayNumbers, setDisplayNumbers] = useState([0])
@@ -44,7 +44,7 @@ export const TimeSeries = React.memo(() => {
     return <Typography color="error">{error}</Typography>
   } else if (isFulfilled || displayNumbers.length >= 2) {
     return (
-      <TimeSeriesImple
+      <TimeSeriesPlotImple
         displayNumbers={displayNumbers}
         setDisplayNumbers={setDisplayNumbers}
       />
@@ -54,7 +54,7 @@ export const TimeSeries = React.memo(() => {
   }
 })
 
-const TimeSeriesImple = React.memo<{
+const TimeSeriesPlotImple = React.memo<{
   displayNumbers: number[]
   setDisplayNumbers: React.Dispatch<React.SetStateAction<number[]>>
 }>(({ displayNumbers, setDisplayNumbers }) => {
