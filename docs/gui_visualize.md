@@ -58,7 +58,7 @@ Table plot displays csv data in table.
 
 ## Default Plot
 The default plot compares images, timeseries and heatmap output.  
-(Synthronize cell number and customize parameter is developing now.)
+("Synthronize cell number" and "customize parameter" are currently under development.)
 <p align="center">
 <img width="500px" src="https://github.com/oist/optinist/blob/develop/docs/images/visualize/default_plot.png" alt="DefaultPlot" />
 </p>
