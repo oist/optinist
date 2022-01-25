@@ -58,6 +58,8 @@ class TimeSeriesData:
             os.makedirs(_dir, exist_ok=True)
 
         self.path = os.path.join(_dir)
+        # import pdb; pdb.set_trace()
+        pd.DataFrame(self.data.T).to_csv(os.path.join(self.path, f'{file_name}.csv'))
 
         for i, data in enumerate(self.data):
             pd.DataFrame(data).to_json(

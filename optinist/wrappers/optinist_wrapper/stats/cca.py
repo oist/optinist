@@ -22,12 +22,14 @@ def CCA(
         behaviors = behaviors[ind, :]
 
     # data shold be time x component matrix
-    X = timeseries.transpose()
-    Y = behaviors.transpose()
+    X = timeseries
+    Y = behaviors[:, params['target_index']].reshape(-1, 1)
 
     # # preprocessing  ##################
     tX = standard_norm(X, params['standard_x_mean'], params['standard_x_std'])
     tY = standard_norm(Y, params['standard_y_mean'], params['standard_y_std'])
+
+    # import pdb; pdb.set_trace()
 
     # calculate CCA 
     cca = CCA(
@@ -39,9 +41,13 @@ def CCA(
     )
     projX, projY = cca.fit_transform(tX, tY)
 
+    proj = np.concatenate([projX, projY], axis=1)
+
+    # import pdb; pdb.set_trace()
+
     info = {}
     info['projected2d'] = ScatterData(
-        proj_X[:, 0:2],
+        proj,
         func_name='cca',
         file_name='projected2d'
     )

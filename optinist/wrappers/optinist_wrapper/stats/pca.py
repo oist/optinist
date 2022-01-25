@@ -12,7 +12,6 @@ def PCA(
     from sklearn.decomposition import PCA
 
     timeseries = timeseries.data
-    
 
     if iscell is not None:
         iscell = iscell.data
@@ -20,7 +19,7 @@ def PCA(
         timeseries = timeseries[ind, :]
 
     # data shold be time x component matrix
-    X = timeseries.transpose()
+    X = timeseries
 
     # # preprocessing  ##################
     tX = standard_norm(X, params['standard_mean'], params['standard_std'])

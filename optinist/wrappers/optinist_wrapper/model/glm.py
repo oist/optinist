@@ -11,7 +11,7 @@ from wrappers.optinist_wrapper.utils import standard_norm
 @args_check
 def GLM(
         timeseries1: TimeSeriesData,
-        timeseries2: TimeSeriesData, 
+        behaviors: TimeSeriesData, 
         iscell: IscellData=None,
         params: dict=None
     ) -> {'actual_predicted': TimeSeriesData}:
@@ -22,24 +22,19 @@ def GLM(
     import pandas as pd
 
     timeseries1 = timeseries1.data
-    timeseries2 = timeseries2.data
+    behaviors = behaviors.data
 
     if iscell is not None:
         iscell = iscell.data
         ind  = np.where(iscell > 0)[0]
         timeseries1 = timeseries1[ind, :]
+        behaviors = behaviors[ind, :]
 
     # data shold be time x component matrix
-    neural_data = timeseries1.transpose()  # neural data
-
-    behavioral_data = timeseries2.reshape(-1, 1)    # behavioral dataframe
+    neural_data = timeseries1 # neural data
+    behavioral_data = behaviors[:, params['target_index']].reshape(-1, 1)
 
     # preprocessing
-    # sc = StandardScaler(
-    #     with_mean=params['standardization_n_mean'],
-    #     with_std=params['standardization_n_std']
-    # )
-    # neural_data = sc.fit_transform(neural_data)
     neural_data = standard_norm(neural_data, params['standard_n_mean'], params['standard_n_std'])
     behavioral_data = standard_norm(behavioral_data, params['standard_b_mean'], params['standard_b_std'])
 
@@ -66,7 +61,7 @@ def GLM(
     # plot should be reconsidered --- what they should be!
     info = {}
     #info['params'] = BarSeriesData(Res.params.values)  # add something 1d but not timesereies
-    info['actual_predicted'] = TimeSeriesData(
+    info['actual_predicted'] = ScatterData(
         np.array([Res._endog, Res.mu]).transpose(),
         func_name='glm',
         file_name='actual_predicted'
