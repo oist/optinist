@@ -36,10 +36,10 @@ def CCA(
     projX, projY = cca.fit_transform(tX, tY)
 
     info = {}
-    info['projected'] = TimeSeriesData(
-        proj_X[:, 0:2].transpose(1, 0),
+    info['projected2d'] = ScatterData(
+        proj_X[:, 0:2],
         func_name='cca',
-        file_name='projected'
+        file_name='projected2d'
     )
 
     return info

@@ -51,7 +51,7 @@ def PCA(
     info['projected2d'] = ScatterData(
         proj_X[:, 0:2],
         func_name='pca',
-        file_name='projected'
+        file_name='projected2d'
     )  # change to 2D scatter plots
 
     return info
