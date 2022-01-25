@@ -11,7 +11,7 @@ First, click "+" button and add display box.
 
 
 Select data type(image, timeSeries ...).
-Whether you don't use flowchart page or not, image and table plot can upload .tiff or .csv file.
+In both of cases that you use flowchart page or not, image and table plot can be uploaded in .tiff and .csv file, respectively.
 <p align="center">
 <img width="400px" src="https://github.com/oist/optinist/blob/develop/docs/images/visualize/select_type.png" alt="SelectType" />
 </p>
