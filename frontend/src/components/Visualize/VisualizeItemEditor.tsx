@@ -120,24 +120,6 @@ const DisplayDataItemEditor: React.FC = () => {
   const onSelect = (nodeId: string, filePath: string) =>
     dispatch(setDisplayDataPath({ itemId, nodeId, filePath }))
 
-  const Editor = (dataType: DATA_TYPE) => {
-    console.log(dataType)
-    /* 他のtypeのEditorも必要になったら追加する */
-    switch (dataType) {
-      case DATA_TYPE_SET.IMAGE:
-        return <ImageItemEditor />
-      case DATA_TYPE_SET.TABLE:
-        return <TableItemEditor />
-      case DATA_TYPE_SET.HEAT_MAP:
-        return <HeatmapItemEditor />
-      case DATA_TYPE_SET.TIME_SERIES:
-        return <TimeSeriesItemEditor />
-      case DATA_TYPE_SET.ROI:
-        return <RoiItemEditor />
-      case DATA_TYPE_SET.SCATTER:
-        return <ScatterItemEditor />
-    }
-  }
   return (
     <>
       <FilePathSelect
@@ -146,7 +128,31 @@ const DisplayDataItemEditor: React.FC = () => {
         selectedFilePath={selectedFilePath}
         onSelect={onSelect}
       />
-      <div style={{ marginTop: 8 }}>{Editor(dataType)}</div>
+      <div style={{ marginTop: 8 }}>
+        <DisplayEditor dataType={dataType} />
+      </div>
     </>
   )
+}
+
+const DisplayEditor: React.FC<{
+  dataType: string
+}> = ({ dataType }) => {
+  /* 他のtypeのEditorも必要になったら追加する */
+  switch (dataType) {
+    case DATA_TYPE_SET.IMAGE:
+      return <ImageItemEditor />
+    case DATA_TYPE_SET.TABLE:
+      return <TableItemEditor />
+    case DATA_TYPE_SET.HEAT_MAP:
+      return <HeatmapItemEditor />
+    case DATA_TYPE_SET.TIME_SERIES:
+      return <TimeSeriesItemEditor />
+    case DATA_TYPE_SET.ROI:
+      return <RoiItemEditor />
+    case DATA_TYPE_SET.SCATTER:
+      return <ScatterItemEditor />
+    default:
+      throw new Error('dataType Error')
+  }
 }

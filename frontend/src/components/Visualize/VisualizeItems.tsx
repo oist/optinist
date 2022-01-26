@@ -14,11 +14,12 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 import { VisualizeItemAddButton } from './VisualizeItemAddButton'
-import { VisualizeItemDeleteButton } from './VisualizeItemDeleteButton'
+import { DisplayItemDeleteButton } from './DisplayItemDeleteButton'
 import { DefaultSetItem } from './DefaultSetItem'
 import { DisplayDataItem } from './DisplayDataItem'
 import { selectItem } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { RootState } from 'store/store'
+import { DefaultSetDeleteButton } from './DefaultItemDeleteButton'
 
 export const VisualizeItems: React.FC = () => {
   return (
@@ -41,6 +42,8 @@ const FlexItemList: React.FC = () => {
 }
 
 const Item = React.memo<{ itemId: number }>(({ itemId }) => {
+  const itemType = useSelector(selectVisualizeItemType(itemId))
+
   const dispatch = useDispatch()
   const onSelect = () => {
     dispatch(selectItem(itemId))
@@ -49,6 +52,7 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
     (state: RootState) => selectSelectedVisualizeItemId(state) === itemId,
   )
   const theme = useTheme()
+
   return (
     <Paper
       variant="outlined"
@@ -64,20 +68,38 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
     >
       <Box display="flex" justifyContent="flex-end">
         <Box>
-          <VisualizeItemDeleteButton itemId={itemId} />
+          <DeleteButton itemType={itemType} itemId={itemId} />
         </Box>
       </Box>
-      <ItemByType itemId={itemId} />
+      <ItemByType itemType={itemType} itemId={itemId} />
     </Paper>
   )
 })
 
-const ItemByType = React.memo<{ itemId: number }>(({ itemId }) => {
-  const itemType = useSelector(selectVisualizeItemType(itemId))
+const DeleteButton: React.FC<{
+  itemType: string
+  itemId: number
+}> = ({ itemType, itemId }) => {
+  switch (itemType) {
+    case 'displayData':
+      return <DisplayItemDeleteButton itemId={itemId} />
+    case 'defaultSet':
+      return <DefaultSetDeleteButton itemId={itemId} />
+    default:
+      throw new Error('itemType Error')
+  }
+}
+
+const ItemByType = React.memo<{
+  itemType: string
+  itemId: number
+}>(({ itemType, itemId }) => {
   switch (itemType) {
     case 'defaultSet':
       return <DefaultSetItem itemId={itemId} />
     case 'displayData':
       return <DisplayDataItem itemId={itemId} />
+    default:
+      throw new Error('itemType Error')
   }
 })

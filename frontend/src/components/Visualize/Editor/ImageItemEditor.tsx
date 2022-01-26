@@ -50,6 +50,7 @@ export const ImageItemEditor: React.FC = () => {
   const dispatch = useDispatch()
   const onSelectFile = (path: string) => {
     dispatch(setDisplayDataPath({ nodeId: null, filePath: path, itemId }))
+    dispatch(resetImageActiveIndex({ itemId }))
   }
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
 
