@@ -30,7 +30,7 @@ export type DisplayDataItem =
   | ImageItem
   | TimeSeriesItem
   | HeatMapItem
-  | TableItem
+  | CsvItem
   | RoiItem
   | ScatterItem
 
@@ -80,8 +80,8 @@ export interface HeatMapItem extends DisplayDataItemBaseType {
   showscale: boolean
   colors: ColorType[]
 }
-export interface TableItem extends DisplayDataItemBaseType {
-  dataType: typeof DATA_TYPE_SET.TABLE
+export interface CsvItem extends DisplayDataItemBaseType {
+  dataType: typeof DATA_TYPE_SET.CSV
 }
 export interface RoiItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.ROI

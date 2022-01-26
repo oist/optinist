@@ -5,7 +5,7 @@ import {
   DefaultSetItem,
   HeatMapItem,
   ImageItem,
-  TableItem,
+  CsvItem,
   TimeSeriesItem,
   RoiItem,
   ScatterItem,
@@ -73,9 +73,9 @@ const heatMapItemInitialValue: HeatMapItem = {
     { rgb: `rgb(255, 0, 0)`, offset: '1.0' },
   ],
 }
-const tableItemInitialValue: TableItem = {
+const csvItemInitialValue: CsvItem = {
   ...displayDataCommonInitialValue,
-  dataType: DATA_TYPE_SET.TABLE,
+  dataType: DATA_TYPE_SET.CSV,
 }
 const roiItemInitialValue: RoiItem = {
   ...displayDataCommonInitialValue,
@@ -101,8 +101,8 @@ function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
       return heatMapItemInitialValue
     case DATA_TYPE_SET.TIME_SERIES:
       return timeSeriesItemInitialValue
-    case DATA_TYPE_SET.TABLE:
-      return tableItemInitialValue
+    case DATA_TYPE_SET.CSV:
+      return csvItemInitialValue
     case DATA_TYPE_SET.ROI:
       return roiItemInitialValue
     case DATA_TYPE_SET.SCATTER:

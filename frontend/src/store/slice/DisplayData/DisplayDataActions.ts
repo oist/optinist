@@ -6,7 +6,7 @@ import {
   TimeSeriesData,
   DISPLAY_DATA_SLICE_NAME,
   HeatMapData,
-  TableData,
+  CsvData,
   RoiData,
   ScatterData,
 } from './DisplayDataType'
@@ -62,13 +62,13 @@ export const getImageData = createAsyncThunk<
   },
 )
 
-export const getTableData = createAsyncThunk<
+export const getCsvData = createAsyncThunk<
   {
     columns: string[]
-    data: TableData
+    data: CsvData
   },
   { path: string }
->(`${DISPLAY_DATA_SLICE_NAME}/getTableData`, async ({ path }, thunkAPI) => {
+>(`${DISPLAY_DATA_SLICE_NAME}/getCsvData`, async ({ path }, thunkAPI) => {
   try {
     const response = await axios.get(`${BASE_URL}/outputs/csv/${path}`)
     return response.data.data

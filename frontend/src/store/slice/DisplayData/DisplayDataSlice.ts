@@ -2,7 +2,7 @@ import { useSelector } from 'react-redux'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { DisplayData, DISPLAY_DATA_SLICE_NAME } from './DisplayDataType'
 import {
-  getTableData,
+  getCsvData,
   getHeatMapData,
   getImageData,
   getTimeSeriesData,
@@ -18,7 +18,7 @@ const initialState: DisplayData = {
   timeSeries: {},
   heatMap: {},
   image: {},
-  table: {},
+  csv: {},
   roi: {},
   scatter: {},
 }
@@ -43,13 +43,13 @@ export const displayDataSlice = createSlice({
     ) => {
       delete state.timeSeries[action.payload.filePath]
     },
-    deleteDisplayTableItem: (
+    deleteDisplayCsvItem: (
       state,
       action: PayloadAction<{
         filePath: string
       }>,
     ) => {
-      delete state.table[action.payload.filePath]
+      delete state.csv[action.payload.filePath]
     },
     deleteDisplayHeatMapItem: (
       state,
@@ -178,10 +178,10 @@ export const displayDataSlice = createSlice({
           error: action.error.message ?? 'rejected',
         }
       })
-      .addCase(getTableData.pending, (state, action) => {
+      .addCase(getCsvData.pending, (state, action) => {
         const { path } = action.meta.arg
-        state.table[path] = {
-          type: 'table',
+        state.csv[path] = {
+          type: 'csv',
           columns: [],
           data: [],
           pending: true,
@@ -189,10 +189,10 @@ export const displayDataSlice = createSlice({
           error: null,
         }
       })
-      .addCase(getTableData.fulfilled, (state, action) => {
+      .addCase(getCsvData.fulfilled, (state, action) => {
         const { path } = action.meta.arg
-        state.table[path] = {
-          type: 'table',
+        state.csv[path] = {
+          type: 'csv',
           columns: action.payload.columns,
           data: action.payload.data,
           pending: false,
@@ -200,10 +200,10 @@ export const displayDataSlice = createSlice({
           error: null,
         }
       })
-      .addCase(getTableData.rejected, (state, action) => {
+      .addCase(getCsvData.rejected, (state, action) => {
         const { path } = action.meta.arg
-        state.table[path] = {
-          type: 'table',
+        state.csv[path] = {
+          type: 'csv',
           columns: [],
           data: [],
           pending: false,
@@ -277,7 +277,7 @@ export const displayDataSlice = createSlice({
 export const {
   deleteDisplayImageItem,
   deleteDisplayTimeSeriesItem,
-  deleteDisplayTableItem,
+  deleteDisplayCsvItem,
   deleteDisplayHeatMapItem,
   deleteDisplayRoiItem,
   deleteDisplayScatterItem,

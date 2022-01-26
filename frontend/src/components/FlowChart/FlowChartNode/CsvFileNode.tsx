@@ -83,7 +83,7 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
       <Handle
         type="source"
         position={Position.Right}
-        id={toHandleId(nodeId, 'csv', 'TableData')}
+        id={toHandleId(nodeId, 'csv', 'CsvData')}
         style={sourceHandleStyle}
       />
     </div>

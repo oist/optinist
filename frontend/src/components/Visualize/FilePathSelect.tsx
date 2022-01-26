@@ -39,7 +39,7 @@ export const FilePathSelect: React.FC<{
           switch (dataType) {
             case DATA_TYPE_SET.IMAGE:
               return fileType === FILE_TYPE_SET.IMAGE
-            case DATA_TYPE_SET.TABLE:
+            case DATA_TYPE_SET.CSV:
               return fileType === FILE_TYPE_SET.CSV
             default:
               return false

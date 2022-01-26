@@ -8,7 +8,7 @@ import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
 
-export const TableItemEditor: React.FC = () => {
+export const CsvItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
   const dispatch = useDispatch()
