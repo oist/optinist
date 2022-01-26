@@ -53,14 +53,6 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
   )
   const theme = useTheme()
 
-  const DeleteButton = (itemType: string) => {
-    if (itemType === 'displayData') {
-      return <DisplayItemDeleteButton itemId={itemId} />
-    } else {
-      return <DefaultSetDeleteButton itemId={itemId} />
-    }
-  }
-
   return (
     <Paper
       variant="outlined"
@@ -75,19 +67,39 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
       onClick={onSelect}
     >
       <Box display="flex" justifyContent="flex-end">
-        <Box>{DeleteButton(itemType)}</Box>
+        <Box>
+          <DeleteButton itemType={itemType} itemId={itemId} />
+        </Box>
       </Box>
-      <ItemByType itemId={itemId} />
+      <ItemByType itemType={itemType} itemId={itemId} />
     </Paper>
   )
 })
 
-const ItemByType = React.memo<{ itemId: number }>(({ itemId }) => {
-  const itemType = useSelector(selectVisualizeItemType(itemId))
+const DeleteButton: React.FC<{
+  itemType: string
+  itemId: number
+}> = ({ itemType, itemId }) => {
+  switch (itemType) {
+    case 'displayData':
+      return <DisplayItemDeleteButton itemId={itemId} />
+    case 'defaultSet':
+      return <DefaultSetDeleteButton itemId={itemId} />
+    default:
+      throw new Error('itemType Error')
+  }
+}
+
+const ItemByType = React.memo<{
+  itemType: string
+  itemId: number
+}>(({ itemType, itemId }) => {
   switch (itemType) {
     case 'defaultSet':
       return <DefaultSetItem itemId={itemId} />
     case 'displayData':
       return <DisplayDataItem itemId={itemId} />
+    default:
+      throw new Error('itemType Error')
   }
 })
