@@ -4,6 +4,7 @@ import pandas as pd
 from datetime import datetime
 from pynwb import NWBHDF5IO
 from PIL import Image, ImageSequence
+import tifffile
 
 
 def save_tiff2json(tiff_file_path, start_index=None, end_index=None):
@@ -12,8 +13,13 @@ def save_tiff2json(tiff_file_path, start_index=None, end_index=None):
 
     # Tiff画像を読み込む
     tiffs = []
-    image = Image.open(tiff_file_path)
-    for i, page in enumerate(ImageSequence.Iterator(image)):
+    # image = Image.open(tiff_file_path)
+    # for i, page in enumerate(ImageSequence.Iterator(image)):
+    image = tifffile.imread(tiff_file_path)
+    if image.ndim == 2:
+        image = image[np.newaxis, :, :]
+
+    for i, page in enumerate(image):
         if i < start_index-1:
             continue
 
