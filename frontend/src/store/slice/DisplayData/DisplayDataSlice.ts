@@ -1,4 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { useSelector } from 'react-redux'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { DisplayData, DISPLAY_DATA_SLICE_NAME } from './DisplayDataType'
 import {
   getTableData,
@@ -8,6 +9,10 @@ import {
   getRoiData,
   getScatterData,
 } from './DisplayDataActions'
+import {
+  selectVisualizeDataFilePath,
+  selectVisualizeDataType,
+} from '../VisualizeItem/VisualizeItemSelectors'
 
 const initialState: DisplayData = {
   timeSeries: {},
@@ -22,13 +27,54 @@ export const displayDataSlice = createSlice({
   name: DISPLAY_DATA_SLICE_NAME,
   initialState,
   reducers: {
-    // deleteDisplayItem: (state, action: PayloadAction<number>) => {
-    //   const itemId = action.payload
-    //   delete state[itemId]
-    //   if (itemId === state.selectedItemId) {
-    //     state.selectedItemId = null
-    //   }
-    // },
+    deleteDisplayImageItem: (
+      state,
+      action: PayloadAction<{
+        filePath: string
+      }>,
+    ) => {
+      delete state.image[action.payload.filePath]
+    },
+    deleteDisplayTimeSeriesItem: (
+      state,
+      action: PayloadAction<{
+        filePath: string
+      }>,
+    ) => {
+      delete state.timeSeries[action.payload.filePath]
+    },
+    deleteDisplayTableItem: (
+      state,
+      action: PayloadAction<{
+        filePath: string
+      }>,
+    ) => {
+      delete state.table[action.payload.filePath]
+    },
+    deleteDisplayHeatMapItem: (
+      state,
+      action: PayloadAction<{
+        filePath: string
+      }>,
+    ) => {
+      delete state.heatMap[action.payload.filePath]
+    },
+    deleteDisplayRoiItem: (
+      state,
+      action: PayloadAction<{
+        filePath: string
+      }>,
+    ) => {
+      delete state.roi[action.payload.filePath]
+    },
+    deleteDisplayScatterItem: (
+      state,
+      action: PayloadAction<{
+        filePath: string
+      }>,
+    ) => {
+      delete state.scatter[action.payload.filePath]
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -227,5 +273,14 @@ export const displayDataSlice = createSlice({
       })
   },
 })
+
+export const {
+  deleteDisplayImageItem,
+  deleteDisplayTimeSeriesItem,
+  deleteDisplayTableItem,
+  deleteDisplayHeatMapItem,
+  deleteDisplayRoiItem,
+  deleteDisplayScatterItem,
+} = displayDataSlice.actions
 
 export default displayDataSlice.reducer

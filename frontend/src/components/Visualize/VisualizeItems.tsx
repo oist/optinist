@@ -14,11 +14,12 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 import { VisualizeItemAddButton } from './VisualizeItemAddButton'
-import { VisualizeItemDeleteButton } from './VisualizeItemDeleteButton'
+import { DisplayItemDeleteButton } from './DisplayItemDeleteButton'
 import { DefaultSetItem } from './DefaultSetItem'
 import { DisplayDataItem } from './DisplayDataItem'
 import { selectItem } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { RootState } from 'store/store'
+import { DefaultSetDeleteButton } from './DefaultItemDeleteButton'
 
 export const VisualizeItems: React.FC = () => {
   return (
@@ -41,6 +42,8 @@ const FlexItemList: React.FC = () => {
 }
 
 const Item = React.memo<{ itemId: number }>(({ itemId }) => {
+  const itemType = useSelector(selectVisualizeItemType(itemId))
+
   const dispatch = useDispatch()
   const onSelect = () => {
     dispatch(selectItem(itemId))
@@ -49,6 +52,15 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
     (state: RootState) => selectSelectedVisualizeItemId(state) === itemId,
   )
   const theme = useTheme()
+
+  const DeleteButton = (itemType: string) => {
+    if (itemType === 'displayData') {
+      return <DisplayItemDeleteButton itemId={itemId} />
+    } else {
+      return <DefaultSetDeleteButton itemId={itemId} />
+    }
+  }
+
   return (
     <Paper
       variant="outlined"
@@ -63,9 +75,7 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
       onClick={onSelect}
     >
       <Box display="flex" justifyContent="flex-end">
-        <Box>
-          <VisualizeItemDeleteButton itemId={itemId} />
-        </Box>
+        <Box>{DeleteButton(itemType)}</Box>
       </Box>
       <ItemByType itemId={itemId} />
     </Paper>
