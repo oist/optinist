@@ -92,6 +92,7 @@ class RoiData:
 
         _dir = os.path.join(BASE_DIR, func_name)
         self.path = get_file_path(_dir, file_name)
+        tifffile.imsave(os.path.join(_dir, f'{file_name}.tif'), images)
         pd.DataFrame(images).to_json(self.path, indent=4, orient="values")
 
         del images, data

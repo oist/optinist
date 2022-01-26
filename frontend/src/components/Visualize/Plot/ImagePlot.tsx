@@ -91,8 +91,6 @@ const ImagePlotImple = React.memo(() => {
   const itemEndIndex = useSelector(selectImageItemEndIndex(itemId))
   const startIndex = selectImageDataStartIndex(path)
   const endIndex = useSelector(selectImageDataEndIndex(path))
-  console.log(startIndex)
-  console.log(endIndex)
   const activeIndex = useSelector(selectImageItemActiveIndex(itemId))
   const dispatch = useDispatch()
   const handleNext = () => dispatch(incrementImageActiveIndex({ itemId }))
