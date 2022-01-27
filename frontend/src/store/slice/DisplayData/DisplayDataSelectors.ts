@@ -115,9 +115,6 @@ export const selectCsvDataIsFulfilled =
     selectCsvDataIsInitialized(filePath)(state) &&
     selectDisplayData(state).csv[filePath].fulfilled
 
-// export const selectCsvDataColumns = (filePath: string) => (state: RootState) =>
-//   selectDisplayData(state).csv[filePath].columns
-
 export const selectRoiData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).roi[filePath]?.data[0] ?? []
 

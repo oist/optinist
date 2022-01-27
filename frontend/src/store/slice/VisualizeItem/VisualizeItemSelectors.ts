@@ -376,3 +376,22 @@ export const selectCsvItemTranspose =
       throw new Error('invalid VisualaizeItemType')
     }
   }
+
+export const selectCsvItemSetColumn =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isCsvItem(item)) {
+      return item.setColumn
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectCsvItemSetIndex = (itemId: number) => (state: RootState) => {
+  const item = selectVisualizeItems(state)[itemId]
+  if (isCsvItem(item)) {
+    return item.setIndex
+  } else {
+    throw new Error('invalid VisualaizeItemType')
+  }
+}

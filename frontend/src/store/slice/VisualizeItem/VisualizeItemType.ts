@@ -83,7 +83,7 @@ export interface HeatMapItem extends DisplayDataItemBaseType {
 export interface CsvItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.CSV
   setColumn: number | null
-  setIndex: number | null
+  setIndex: boolean
   transpose: boolean
 }
 export interface RoiItem extends DisplayDataItemBaseType {

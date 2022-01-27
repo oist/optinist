@@ -3,17 +3,21 @@ import { useSelector, useDispatch } from 'react-redux'
 import { FileSelect } from 'components/FlowChart/FlowChartNode/FileSelect'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 import {
+  selectCsvItemSetColumn,
+  selectCsvItemSetIndex,
   selectCsvItemTranspose,
   selectVisualizeDataFilePath,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
+  setCsvItemSetColumn,
+  setCsvItemSetIndex,
   setCsvItemTranspose,
   setDisplayDataPath,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
-import { FormControlLabel, Switch } from '@material-ui/core'
+import { FormControlLabel, Switch, TextField } from '@material-ui/core'
 
 export const CsvItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
@@ -28,7 +32,7 @@ export const CsvItemEditor: React.FC = () => {
   }
 
   return (
-    <>
+    <div style={{ margin: '10px', padding: 10 }}>
       <FileSelect
         filePath={filePath ?? ''}
         onSelectFile={onSelectFile}
@@ -37,7 +41,9 @@ export const CsvItemEditor: React.FC = () => {
         selectButtonLabel="Select CSV"
       />
       <Transpose />
-    </>
+      <SetColumn />
+      <SetIndex />
+    </div>
   )
 }
 
@@ -52,6 +58,55 @@ const Transpose: React.FC = () => {
     <FormControlLabel
       control={<Switch checked={transpose} onChange={toggleChecked} />}
       label="transpose"
+    />
+  )
+}
+
+const SetColumn: React.FC = () => {
+  const itemId = React.useContext(SelectedItemIdContext)
+  const setColumn = useSelector(selectCsvItemSetColumn(itemId))
+
+  const dispatch = useDispatch()
+  const onChangeSetColumn = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue =
+      event.target.value === '' ? null : Number(event.target.value)
+    if (newValue === null || newValue >= 0) {
+      dispatch(setCsvItemSetColumn({ itemId, setColumn: newValue }))
+    }
+  }
+
+  return (
+    <FormControlLabel
+      control={
+        <>
+          <TextField
+            style={{ width: 50 }}
+            type="number"
+            InputLabelProps={{
+              shrink: true,
+            }}
+            onChange={onChangeSetColumn}
+            defaultValue={setColumn}
+          />
+          column
+        </>
+      }
+      label=""
+    />
+  )
+}
+
+const SetIndex: React.FC = () => {
+  const itemId = React.useContext(SelectedItemIdContext)
+  const setIndex = useSelector(selectCsvItemSetIndex(itemId))
+  const dispatch = useDispatch()
+  const toggleChecked = () => {
+    dispatch(setCsvItemSetIndex({ itemId, setIndex: !setIndex }))
+  }
+  return (
+    <FormControlLabel
+      control={<Switch checked={setIndex} onChange={toggleChecked} />}
+      label="setIndex"
     />
   )
 }

@@ -15,6 +15,11 @@ import {
 import { getCsvData } from 'store/slice/DisplayData/DisplayDataActions'
 import { CsvData } from 'store/slice/DisplayData/DisplayDataType'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
+import {
+  selectCsvItemSetColumn,
+  selectCsvItemSetIndex,
+  selectCsvItemTranspose,
+} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 export const CsvPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -40,9 +45,12 @@ export const CsvPlot = React.memo(() => {
 })
 
 const CsvPlotImple = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataContext)
+  const { itemId, filePath: path } = React.useContext(DisplayDataContext)
+  const transpose = useSelector(selectCsvItemTranspose(itemId))
+  const setColumn = useSelector(selectCsvItemSetColumn(itemId))
+  const setIndex = useSelector(selectCsvItemSetIndex(itemId))
 
-  const csvData = useSelector(
+  const data = useSelector(
     selectCsvData(path),
     (a: CsvData | undefined, b: CsvData | undefined) => {
       if (a != null && b != null) {
@@ -53,35 +61,51 @@ const CsvPlotImple = React.memo(() => {
     },
   )
 
-  // const columns: GridColDef[] = useSelector(
-  //   selectCsvDataColumns(path),
-  //   (a, b) => {
-  //     if (a != null && b != null) {
-  //       return arrayEqualityFn(a, b)
-  //     } else {
-  //       return a === undefined && b === undefined
-  //     }
-  //   },
-  // ).map((x, idx) => {
-  //   return { field: 'col' + String(idx), headerName: `${idx}`, width: 150 }
-  // })
+  const csvData = React.useMemo(() => {
+    if (transpose) {
+      return data[0].map((col, i) => data.map((row) => row[i]))
+    }
+    return data
+  }, [data, transpose])
 
-  console.log(csvData)
-  console.log(
-    csvData.map((array, idx) => {
-      return idx
-    }),
-  )
-  const columns: GridColDef[] = csvData.map((array, idx) => {
-    return { field: `col${idx}`, headerName: `${idx}`, width: 150 }
-  })
+  const columns: GridColDef[] = React.useMemo(() => {
+    const columnData = () => {
+      if (setColumn === null) {
+        return csvData[0]
+      } else {
+        if (setColumn >= csvData.length) {
+          return csvData[csvData.length - 1]
+        } else {
+          return csvData[setColumn]
+        }
+      }
+    }
 
-  // console.log(columns)
-  // console.log(csvData[0].map((col, i) => csvData.map(row => row[i])))
+    if (setIndex) {
+      return [
+        { field: 'col0', headerName: 'index', width: 150 },
+        ...columnData().map((value, idx) => {
+          return {
+            field: `col${idx + 1}`,
+            headerName: `${setColumn === null ? idx : value}`,
+            width: 150,
+          }
+        }),
+      ]
+    } else {
+      return columnData().map((value, idx) => {
+        return {
+          field: `col${idx + 1}`,
+          headerName: `${setColumn === null ? idx : value}`,
+          width: 150,
+        }
+      })
+    }
+  }, [csvData, setColumn, setIndex])
 
   const rows = csvData.map((row, row_id) => {
     let rowObj = Object.fromEntries(
-      row.map((value, index) => {
+      [row_id, ...row].map((value, index) => {
         return [`col${index}`, value]
       }),
     )

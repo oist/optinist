@@ -78,7 +78,7 @@ const csvItemInitialValue: CsvItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.CSV,
   setColumn: null,
-  setIndex: null,
+  setIndex: false,
   transpose: false,
 }
 const roiItemInitialValue: RoiItem = {
@@ -608,6 +608,30 @@ export const visualaizeItemSlice = createSlice({
         targetItem.transpose = action.payload.transpose
       }
     },
+    setCsvItemSetColumn: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        setColumn: number | null
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isCsvItem(targetItem)) {
+        targetItem.setColumn = action.payload.setColumn
+      }
+    },
+    setCsvItemSetIndex: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        setIndex: boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isCsvItem(targetItem)) {
+        targetItem.setIndex = action.payload.setIndex
+      }
+    },
   },
 })
 
@@ -651,6 +675,8 @@ export const {
   setHeatMapItemColors,
   setRoiItemColors,
   setCsvItemTranspose,
+  setCsvItemSetColumn,
+  setCsvItemSetIndex,
 } = visualaizeItemSlice.actions
 
 export default visualaizeItemSlice.reducer

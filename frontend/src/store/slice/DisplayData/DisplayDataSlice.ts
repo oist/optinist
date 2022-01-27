@@ -1,4 +1,3 @@
-import { useSelector } from 'react-redux'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { DisplayData, DISPLAY_DATA_SLICE_NAME } from './DisplayDataType'
 import {
@@ -9,10 +8,6 @@ import {
   getRoiData,
   getScatterData,
 } from './DisplayDataActions'
-import {
-  selectVisualizeDataFilePath,
-  selectVisualizeDataType,
-} from '../VisualizeItem/VisualizeItemSelectors'
 
 const initialState: DisplayData = {
   timeSeries: {},
@@ -179,7 +174,6 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.csv[path] = {
           type: 'csv',
-          // columns: [],
           data: [],
           pending: true,
           fulfilled: false,
@@ -190,7 +184,6 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.csv[path] = {
           type: 'csv',
-          // columns: action.payload.columns,
           data: action.payload.data,
           pending: false,
           fulfilled: true,
@@ -201,7 +194,6 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.csv[path] = {
           type: 'csv',
-          // columns: [],
           data: [],
           pending: false,
           fulfilled: false,
