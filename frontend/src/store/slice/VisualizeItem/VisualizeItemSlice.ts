@@ -181,13 +181,13 @@ export const visualaizeItemSlice = createSlice({
       const { itemId, filePath, nodeId, dataType } = action.payload
       const targetItem = state.items[itemId]
       if (isDefaultSetItem(targetItem)) {
-        if (dataType === 'image') {
+        if (dataType === DATA_TYPE_SET.IMAGE) {
           targetItem.imageItem.filePath = filePath
           targetItem.imageItem.nodeId = nodeId
-        } else if (dataType === 'timeSeries') {
+        } else if (dataType === DATA_TYPE_SET.TIME_SERIES) {
           targetItem.timeSeriesItem.filePath = filePath
           targetItem.timeSeriesItem.nodeId = nodeId
-        } else if (dataType === 'heatMap') {
+        } else if (dataType === DATA_TYPE_SET.HEAT_MAP) {
           targetItem.heatMapItem.filePath = filePath
           targetItem.heatMapItem.nodeId = nodeId
         }
