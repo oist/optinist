@@ -22,14 +22,23 @@ def CCA(
         behaviors = behaviors[ind, :]
 
     # data shold be time x component matrix
-    X = timeseries
-    Y = behaviors[:, params['target_index']].reshape(-1, 1)
+    if params['transpose_x']:
+        X = timeseries.transpose()
+    else:
+        X = timeseries
+
+    if params['transpose_y']:
+        Y = behaviors.transpose()
+    else:
+        Y = behaviors
+
+    Y = Y[:, params['target_index']].reshape(-1, 1)
+
+    assert X.shape[0] == Y.shape[0], f'X and Y is not same data, X.shape{X.shape}, Y.shape{Y.shape}'
 
     # # preprocessing  ##################
     tX = standard_norm(X, params['standard_x_mean'], params['standard_x_std'])
     tY = standard_norm(Y, params['standard_y_mean'], params['standard_y_std'])
-
-    # import pdb; pdb.set_trace()
 
     # calculate CCA 
     cca = CCA(

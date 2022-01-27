@@ -5,6 +5,7 @@ from wrappers.args_check import args_check
 def correlation(
         timeseries: TimeSeriesData, iscell: IscellData=None, params: dict=None
     ) -> {'corr': CorrelationData}:
+
     timeseries = timeseries.data
 
     if iscell is not None:
@@ -12,10 +13,16 @@ def correlation(
         ind  = np.where(iscell > 0)[0]
         timeseries = timeseries[ind, :]
 
-    num_cell = timeseries.shape[0]
+    # data shold be time x component matrix
+    if params['transpose']:
+        X = timeseries.transpose()
+    else:
+        X = timeseries
+
+    num_cell = X.shape[0]
 
     # calculate correlation
-    corr = np.corrcoef(timeseries)
+    corr = np.corrcoef(X)
     for i in range(num_cell):
         corr[i, i] = np.nan
 

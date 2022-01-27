@@ -3,6 +3,8 @@
 standard_mean: True
 standard_std: True
 
+transpose: True
+
 n_components: 2
 perplexity: 30.0
 early_exaggeration: 12.0
