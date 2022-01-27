@@ -1,10 +1,14 @@
-standard_n_mean: True
-standard_n_std: True
-standard_b_mean: True
-standard_b_std: True
+standard_x_mean: True
+standard_x_std: True
+
+standard_y_mean: True
+standard_y_std: True
+
+transpose_x: False
+transpose_y: False
 
 behavior: 'c'
-add_constant: True
+add_constant: False
 link: 'log'
 family: 'Gaussian'
 

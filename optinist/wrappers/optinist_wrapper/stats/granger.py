@@ -21,15 +21,16 @@ def Granger(
         ind  = np.where(iscell > 0)[0]
         timeseries = timeseries[ind, :]
 
-    X = timeseries.transpose()
-    num_cell = X.shape[1]
+    if params['transpose']:
+        X = timeseries.transpose()
+    else:
+        X = timesereies
+
+    num_cell = X.shape[0]
     comb = list(itertools.permutations(range(num_cell), 2))  # combinations with dup
     num_comb= len(comb)
 
     # # preprocessing  ##################
-    # sc = StandardScaler(with_mean = params['standardization_mean'], with_std = params['standardization_std'])
-    # tX = sc.fit_transform(X)
-    
     tX = standard_norm(X, params['standard_mean'], params['standard_std'])
 
     # calculate dickey-fuller test  ##################
@@ -158,7 +159,7 @@ def Granger(
     # main results for plot
     info = {}
     info['Granger_fval_mat'] = CorrelationData(
-        GC['Granger_fval_mat'],
+        GC['Granger_fval_mat'][0],
         func_name='granger',
         file_name='gfm'
     )

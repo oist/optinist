@@ -19,7 +19,10 @@ def TSNE(
         timeseries = timeseries[ind, :]
 
     # data shold be time x component matrix
-    X = timeseries.transpose()
+    if params['transpose']:
+        X = timeseries.transpose()
+    else:
+        X = timeseries
 
     # preprocessing  ##################
     tX = standard_norm(X, params['standard_mean'], params['standard_std'])

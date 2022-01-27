@@ -2,11 +2,15 @@
 # default = None
 n_components:
 
+transpose: True
+
+# whether standardize the data or not
+standard_mean: True
+standard_std: True
 
 # copy: If False, data passed to fit are overwritten and running fit(X).transform(X) will not yield the expected results, use fit_transform(X) instead.
 # default = True
 copy: True
-
 
 # whiten: When True (False by default) the components_ vectors are multiplied by the
 #  square root of n_samples and then divided by the singular values to ensure uncorrelated
@@ -17,7 +21,6 @@ copy: True
 #  some hard-wired assumptions.
 # default: False
 whiten: False
-
 
 # svd_solver{‘auto’, ‘full’, ‘arpack’, ‘randomized’},
 # If auto : The solver is selected by a default policy based on X.shape and n_components.
@@ -36,12 +39,9 @@ whiten: False
 #default=’auto’
 svd_solver: 'auto'
 
-
-
 # tol: Tolerance for singular values computed by svd_solver == ‘arpack’. Must be of range [0.0, infinity).
 # default=0:
 tol: 0.0
-
 
 # iterated_power(int or ‘auto’): Number of iterations for the power method computed by svd_solver == ‘randomized’.
 #  Must be of range [0, infinity).
@@ -52,8 +52,3 @@ iterated_power: 'auto'
 # Pass an int for reproducible results across multiple function calls.
 # default = None
 random_state:
-
-
-# whether standardize the data or not
-standard_mean: True
-standard_std: True

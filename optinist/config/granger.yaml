@@ -1,12 +1,14 @@
 # Granger_maxlag(int, Iterable[int]): If an integer, computes the test for all lags up to maxlag. If an iterable, computes the tests only for the lags in maxlag.
 # no default value
-Granger_maxlag: 3
+Granger_maxlag: 1
 
 #Include a constant in the model or not.
 Granger_addconst: True
 
 standard_mean: True
 standard_std: True
+
+transpose: True
 
 ##########################################################
 # adfuller_test: whether perform adfuller test or not

@@ -10,8 +10,8 @@ from wrappers.optinist_wrapper.utils import standard_norm
 
 @args_check
 def GLM(
-        timeseries1: TimeSeriesData,
-        behaviors: TimeSeriesData, 
+        neural_data: TimeSeriesData,
+        behaviors_data: TimeSeriesData, 
         iscell: IscellData=None,
         params: dict=None
     ) -> {'actual_predicted': TimeSeriesData}:
@@ -21,29 +21,40 @@ def GLM(
     from sklearn.preprocessing import StandardScaler
     import pandas as pd
 
-    timeseries1 = timeseries1.data
-    behaviors = behaviors.data
+    neural_data = neural_data.data
+    behaviors_data = behaviors_data.data
 
     if iscell is not None:
         iscell = iscell.data
         ind  = np.where(iscell > 0)[0]
-        timeseries1 = timeseries1[ind, :]
+        neural_data = neural_data[ind, :]
         behaviors = behaviors[ind, :]
 
     # data shold be time x component matrix
-    neural_data = timeseries1 # neural data
-    behavioral_data = behaviors[:, params['target_index']].reshape(-1, 1)
+    if params['transpose_x']:
+        X = neural_data.transpose()
+    else:
+        X = neural_data
+
+    if params['transpose_y']:
+        Y = behaviors_data.transpose()
+    else:
+        Y = behaviors_data
+
+    Y = Y[:, params['target_index']].reshape(-1, 1)
+
+    assert X.shape[0] == Y.shape[0], f'X and Y is not same data, X.shape{X.shape}, Y.shape{Y.shape}'
 
     # preprocessing
-    neural_data = standard_norm(neural_data, params['standard_n_mean'], params['standard_n_std'])
-    behavioral_data = standard_norm(behavioral_data, params['standard_b_mean'], params['standard_b_std'])
+    tX = standard_norm(X, params['standard_x_mean'], params['standard_x_std'])
+    tY = standard_norm(Y, params['standard_y_mean'], params['standard_y_std'])
 
     # calculate GLM
-    neural_data = pd.DataFrame(neural_data)
-    behavioral_data = pd.DataFrame(behavioral_data)
+    tX = pd.DataFrame(tX)
+    tY = pd.DataFrame(tY)
 
     if(params['add_constant']):
-        neural_data = sm.add_constant(neural_data, prepend=False)
+        tX = sm.add_constant(tX, prepend=False)
 
     # set link function
     link = getattr(sm.genmod.families.links, params['link'])()
@@ -53,7 +64,7 @@ def GLM(
 
     # model fit
     model = sm.GLM(
-        behavioral_data, neural_data, family=family, offset=params['offset'], 
+        tY, tX, family=family, offset=params['offset'], 
         exposure=params['exposure'], missing=params['missing'])
     Res = model.fit()
 
