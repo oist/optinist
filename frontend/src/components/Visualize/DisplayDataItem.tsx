@@ -12,7 +12,7 @@ import { HeatMapPlot } from './Plot/HeatMapPlot'
 import { ImagePlot } from './Plot/ImagePlot'
 import { RoiPlot } from './Plot/RoiPlot'
 import { ScatterPlot } from './Plot/ScatterPlot'
-import { TablePlot } from './Plot/TablePlot'
+import { CsvPlot } from './Plot/CsvPlot'
 import { TimeSeriesPlot } from './Plot/TimeSeriesPlot'
 
 export const DisplayDataItem = React.memo<{
@@ -23,8 +23,8 @@ export const DisplayDataItem = React.memo<{
   const dataType = useSelector(selectVisualizeDataType(itemId))
   const Plot = () => {
     switch (dataType) {
-      case DATA_TYPE_SET.TABLE:
-        return <TablePlot />
+      case DATA_TYPE_SET.CSV:
+        return <CsvPlot />
       case DATA_TYPE_SET.TIME_SERIES:
         return <TimeSeriesPlot />
       case DATA_TYPE_SET.HEAT_MAP:

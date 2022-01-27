@@ -93,31 +93,27 @@ export const selectActiveImageData =
     return selectImageData(filePath)(state).data[activeIndex]
   }
 
-export const selectTableData = (filePath: string) => (state: RootState) =>
-  selectDisplayData(state).table[filePath].data
+export const selectCsvData = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).csv[filePath].data
 
-export const selectTableDataIsInitialized =
+export const selectCsvDataIsInitialized =
   (filePath: string) => (state: RootState) =>
-    Object.keys(selectDisplayData(state).table).includes(filePath)
+    Object.keys(selectDisplayData(state).csv).includes(filePath)
 
-export const selectTableDataError = (filePath: string) => (state: RootState) =>
-  selectTableDataIsInitialized(filePath)(state)
-    ? selectDisplayData(state).table[filePath].error
+export const selectCsvDataError = (filePath: string) => (state: RootState) =>
+  selectCsvDataIsInitialized(filePath)(state)
+    ? selectDisplayData(state).csv[filePath].error
     : null
 
-export const selectTableDataIsPending =
+export const selectCsvDataIsPending =
   (filePath: string) => (state: RootState) =>
-    selectTableDataIsInitialized(filePath)(state) &&
-    selectDisplayData(state).table[filePath].pending
+    selectCsvDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).csv[filePath].pending
 
-export const selectTableDataIsFulfilled =
+export const selectCsvDataIsFulfilled =
   (filePath: string) => (state: RootState) =>
-    selectTableDataIsInitialized(filePath)(state) &&
-    selectDisplayData(state).table[filePath].fulfilled
-
-export const selectTableDataColumns =
-  (filePath: string) => (state: RootState) =>
-    selectDisplayData(state).table[filePath].columns
+    selectCsvDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).csv[filePath].fulfilled
 
 export const selectRoiData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).roi[filePath]?.data[0] ?? []

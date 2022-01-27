@@ -13,7 +13,7 @@ import {
   deleteDisplayImageItem,
   deleteDisplayRoiItem,
   deleteDisplayScatterItem,
-  deleteDisplayTableItem,
+  deleteDisplayCsvItem,
   deleteDisplayTimeSeriesItem,
 } from 'store/slice/DisplayData/DisplayDataSlice'
 
@@ -33,8 +33,8 @@ export const DisplayItemDeleteButton = React.memo<{ itemId: number }>(
           dispatch(deleteDisplayImageItem({ filePath }))
         } else if (dataType === 'timeSeries') {
           dispatch(deleteDisplayTimeSeriesItem({ filePath }))
-        } else if (dataType === 'table') {
-          dispatch(deleteDisplayTableItem({ filePath }))
+        } else if (dataType === 'csv') {
+          dispatch(deleteDisplayCsvItem({ filePath }))
         } else if (dataType === 'heatMap') {
           dispatch(deleteDisplayHeatMapItem({ filePath }))
         } else if (dataType === 'roi') {
