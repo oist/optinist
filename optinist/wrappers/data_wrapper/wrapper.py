@@ -60,7 +60,8 @@ class TimeSeriesData:
         self.path = os.path.join(_dir)
 
         pd.DataFrame(self.data.T).to_csv(
-            os.path.join(self.path, f'{file_name}.csv'))
+            os.path.join(self.path, f'{file_name}.csv'),
+            header=False, index=False)
 
         for i, data in enumerate(self.data):
             pd.DataFrame(data).to_json(

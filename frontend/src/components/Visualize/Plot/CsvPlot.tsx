@@ -103,15 +103,17 @@ const CsvPlotImple = React.memo(() => {
     }
   }, [csvData, setColumn, setIndex])
 
-  const rows = csvData.map((row, row_id) => {
-    let rowObj = Object.fromEntries(
-      [row_id, ...row].map((value, index) => {
-        return [`col${index}`, value]
-      }),
-    )
-    rowObj['id'] = row_id
-    return rowObj
-  })
+  const rows = csvData
+    .map((row, row_id) => {
+      let rowObj = Object.fromEntries(
+        [row_id, ...row].map((value, index) => {
+          return [`col${index}`, value]
+        }),
+      )
+      rowObj['id'] = row_id
+      return rowObj
+    })
+    .filter((value, idx) => idx !== setColumn)
 
   return (
     <div style={{ height: 300, width: '100%' }}>

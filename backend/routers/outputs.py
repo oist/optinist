@@ -69,8 +69,8 @@ async def read_csv(file_path: str):
         csv_file_path = file_path
         file_path = os.path.join(folder_path, f'{file_name}.json')
 
-        if not os.path.exists(file_path):
-            save_csv2json(csv_file_path)
+        # if not os.path.exists(file_path):
+        save_csv2json(csv_file_path)
 
     with open(file_path, 'r') as f:
         json_dict = json.load(f)
