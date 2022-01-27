@@ -6,7 +6,7 @@ import { DisplayDataContext } from '../DataContext'
 import { arrayEqualityFn, twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 import {
   selectCsvData,
-  selectCsvDataColumns,
+  // selectCsvDataColumns,
   selectCsvDataError,
   selectCsvDataIsFulfilled,
   selectCsvDataIsInitialized,
@@ -53,18 +53,31 @@ const CsvPlotImple = React.memo(() => {
     },
   )
 
-  const columns: GridColDef[] = useSelector(
-    selectCsvDataColumns(path),
-    (a, b) => {
-      if (a != null && b != null) {
-        return arrayEqualityFn(a, b)
-      } else {
-        return a === undefined && b === undefined
-      }
-    },
-  ).map((x, idx) => {
-    return { field: 'col' + String(idx), headerName: x, width: 150 }
+  // const columns: GridColDef[] = useSelector(
+  //   selectCsvDataColumns(path),
+  //   (a, b) => {
+  //     if (a != null && b != null) {
+  //       return arrayEqualityFn(a, b)
+  //     } else {
+  //       return a === undefined && b === undefined
+  //     }
+  //   },
+  // ).map((x, idx) => {
+  //   return { field: 'col' + String(idx), headerName: `${idx}`, width: 150 }
+  // })
+
+  console.log(csvData)
+  console.log(
+    csvData.map((array, idx) => {
+      return idx
+    }),
+  )
+  const columns: GridColDef[] = csvData.map((array, idx) => {
+    return { field: `col${idx}`, headerName: `${idx}`, width: 150 }
   })
+
+  // console.log(columns)
+  // console.log(csvData[0].map((col, i) => csvData.map(row => row[i])))
 
   const rows = csvData.map((row, row_id) => {
     let rowObj = Object.fromEntries(

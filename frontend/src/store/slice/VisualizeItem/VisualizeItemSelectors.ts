@@ -6,6 +6,7 @@ import {
   isHeatMapItem,
   isRoiItem,
   isDefaultSetItem,
+  isCsvItem,
 } from './VisualizeItemUtils'
 
 export const selectSelectedVisualizeItemId = (state: RootState) =>
@@ -365,3 +366,13 @@ export const selectRoiItemColors = (itemId: number) => (state: RootState) => {
     throw new Error('invalid VisualaizeItemType')
   }
 }
+
+export const selectCsvItemTranspose =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isCsvItem(item)) {
+      return item.transpose
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }

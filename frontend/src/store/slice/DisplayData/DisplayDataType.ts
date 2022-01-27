@@ -56,7 +56,7 @@ export interface ImageDisplayData extends BaseDisplay<'image', ImageData> {}
 export type ImageData = number[][][]
 
 export interface CsvDisplayData extends BaseDisplay<'csv', CsvData> {
-  columns: string[]
+  // columns: string[]
 }
 export type CsvData = number[][]
 

@@ -19,6 +19,7 @@ import {
   isImageItem,
   isRoiItem,
   isTimeSeriesItem,
+  isCsvItem,
   isScatterItem,
 } from './VisualizeItemUtils'
 import createColormap from 'colormap'
@@ -76,6 +77,9 @@ const heatMapItemInitialValue: HeatMapItem = {
 const csvItemInitialValue: CsvItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.CSV,
+  setColumn: null,
+  setIndex: null,
+  transpose: false,
 }
 const roiItemInitialValue: RoiItem = {
   ...displayDataCommonInitialValue,
@@ -592,6 +596,18 @@ export const visualaizeItemSlice = createSlice({
         targetItem.colors = action.payload.colors
       }
     },
+    setCsvItemTranspose: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        transpose: boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isCsvItem(targetItem)) {
+        targetItem.transpose = action.payload.transpose
+      }
+    },
   },
 })
 
@@ -634,6 +650,7 @@ export const {
   setHeatMapItemShowScale,
   setHeatMapItemColors,
   setRoiItemColors,
+  setCsvItemTranspose,
 } = visualaizeItemSlice.actions
 
 export default visualaizeItemSlice.reducer

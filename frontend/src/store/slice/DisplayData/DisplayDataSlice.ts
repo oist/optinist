@@ -149,7 +149,6 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.image[path] = {
           type: 'image',
-          // activeIndex: 0,
           data: [],
           pending: true,
           fulfilled: false,
@@ -160,7 +159,6 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.image[path] = {
           type: 'image',
-          // activeIndex: 0,
           data: action.payload.data,
           pending: false,
           fulfilled: true,
@@ -171,7 +169,6 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.image[path] = {
           type: 'image',
-          // activeIndex: 0,
           data: [],
           pending: false,
           fulfilled: false,
@@ -182,7 +179,7 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.csv[path] = {
           type: 'csv',
-          columns: [],
+          // columns: [],
           data: [],
           pending: true,
           fulfilled: false,
@@ -193,7 +190,7 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.csv[path] = {
           type: 'csv',
-          columns: action.payload.columns,
+          // columns: action.payload.columns,
           data: action.payload.data,
           pending: false,
           fulfilled: true,
@@ -204,7 +201,7 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.csv[path] = {
           type: 'csv',
-          columns: [],
+          // columns: [],
           data: [],
           pending: false,
           fulfilled: false,

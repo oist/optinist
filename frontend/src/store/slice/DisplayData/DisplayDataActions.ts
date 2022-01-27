@@ -64,14 +64,15 @@ export const getImageData = createAsyncThunk<
 
 export const getCsvData = createAsyncThunk<
   {
-    columns: string[]
+    // columns: string[]
     data: CsvData
   },
   { path: string }
 >(`${DISPLAY_DATA_SLICE_NAME}/getCsvData`, async ({ path }, thunkAPI) => {
   try {
     const response = await axios.get(`${BASE_URL}/outputs/csv/${path}`)
-    return response.data.data
+    // return response.data.data
+    return response.data
   } catch (e) {
     return thunkAPI.rejectWithValue(e)
   }

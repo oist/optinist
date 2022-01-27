@@ -9,6 +9,7 @@ import {
   HeatMapItem,
   RoiItem,
   ScatterItem,
+  CsvItem,
 } from './VisualizeItemType'
 
 export function isDefaultSetItem(
@@ -36,6 +37,13 @@ export function isTimeSeriesItem(
   return (
     item.itemType === VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA &&
     item.dataType === DATA_TYPE_SET.TIME_SERIES
+  )
+}
+
+export function isCsvItem(item: VisualaizeItemType): item is CsvItem {
+  return (
+    item.itemType === VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA &&
+    item.dataType === DATA_TYPE_SET.CSV
   )
 }
 
