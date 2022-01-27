@@ -10,8 +10,8 @@ export type DisplayData = {
   image: {
     [filePath: string]: ImageDisplayData
   }
-  table: {
-    [filePath: string]: TableDisplayData
+  csv: {
+    [filePath: string]: CsvDisplayData
   }
   roi: {
     [filePath: string]: RoiDisplayData
@@ -25,7 +25,7 @@ export const DATA_TYPE_SET = {
   TIME_SERIES: 'timeSeries',
   HEAT_MAP: 'heatMap',
   IMAGE: 'image',
-  TABLE: 'table',
+  CSV: 'csv',
   ROI: 'roi',
   SCATTER: 'scatter',
 } as const
@@ -55,10 +55,10 @@ export type HeatMapData = number[][]
 export interface ImageDisplayData extends BaseDisplay<'image', ImageData> {}
 export type ImageData = number[][][]
 
-export interface TableDisplayData extends BaseDisplay<'table', TableData> {
-  columns: string[]
+export interface CsvDisplayData extends BaseDisplay<'csv', CsvData> {
+  // columns: string[]
 }
-export type TableData = number[][]
+export type CsvData = number[][]
 
 export interface RoiDisplayData extends BaseDisplay<'roi', RoiData> {}
 export type RoiData = number[][][]

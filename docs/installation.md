@@ -96,8 +96,12 @@ Install library from requirements.txt
 pip install -r requirements.txt
 ```
 
+- For m1 mac user
 We use tensorflow in caiman code. We know that M1 mac doesn't install tensorflow easily, so if there is a proboem, please comment out tensorflow from requirements.txt and skip caiman. (Release in progress…)
-
+Install library from requirements_m1mac.txt
+```
+pip install -r requirements_m1mac.txt
+```
 
 <br />
 

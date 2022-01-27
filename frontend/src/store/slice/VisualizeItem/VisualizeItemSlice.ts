@@ -5,7 +5,7 @@ import {
   DefaultSetItem,
   HeatMapItem,
   ImageItem,
-  TableItem,
+  CsvItem,
   TimeSeriesItem,
   RoiItem,
   ScatterItem,
@@ -19,6 +19,7 @@ import {
   isImageItem,
   isRoiItem,
   isTimeSeriesItem,
+  isCsvItem,
   isScatterItem,
 } from './VisualizeItemUtils'
 import createColormap from 'colormap'
@@ -73,9 +74,12 @@ const heatMapItemInitialValue: HeatMapItem = {
     { rgb: `rgb(255, 0, 0)`, offset: '1.0' },
   ],
 }
-const tableItemInitialValue: TableItem = {
+const csvItemInitialValue: CsvItem = {
   ...displayDataCommonInitialValue,
-  dataType: DATA_TYPE_SET.TABLE,
+  dataType: DATA_TYPE_SET.CSV,
+  setColumn: null,
+  setIndex: false,
+  transpose: false,
 }
 const roiItemInitialValue: RoiItem = {
   ...displayDataCommonInitialValue,
@@ -101,8 +105,8 @@ function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
       return heatMapItemInitialValue
     case DATA_TYPE_SET.TIME_SERIES:
       return timeSeriesItemInitialValue
-    case DATA_TYPE_SET.TABLE:
-      return tableItemInitialValue
+    case DATA_TYPE_SET.CSV:
+      return csvItemInitialValue
     case DATA_TYPE_SET.ROI:
       return roiItemInitialValue
     case DATA_TYPE_SET.SCATTER:
@@ -592,6 +596,42 @@ export const visualaizeItemSlice = createSlice({
         targetItem.colors = action.payload.colors
       }
     },
+    setCsvItemTranspose: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        transpose: boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isCsvItem(targetItem)) {
+        targetItem.transpose = action.payload.transpose
+      }
+    },
+    setCsvItemSetColumn: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        setColumn: number | null
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isCsvItem(targetItem)) {
+        targetItem.setColumn = action.payload.setColumn
+      }
+    },
+    setCsvItemSetIndex: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        setIndex: boolean
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isCsvItem(targetItem)) {
+        targetItem.setIndex = action.payload.setIndex
+      }
+    },
   },
 })
 
@@ -634,6 +674,9 @@ export const {
   setHeatMapItemShowScale,
   setHeatMapItemColors,
   setRoiItemColors,
+  setCsvItemTranspose,
+  setCsvItemSetColumn,
+  setCsvItemSetIndex,
 } = visualaizeItemSlice.actions
 
 export default visualaizeItemSlice.reducer

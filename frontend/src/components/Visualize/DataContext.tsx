@@ -6,4 +6,4 @@ export const DisplayDataContext = React.createContext<{
   filePath: string
   dataType: DATA_TYPE
   itemId: number
-}>({ nodeId: '', filePath: '', dataType: 'table', itemId: NaN })
+}>({ nodeId: '', filePath: '', dataType: 'csv', itemId: NaN })

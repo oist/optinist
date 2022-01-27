@@ -6,6 +6,7 @@ import {
   isHeatMapItem,
   isRoiItem,
   isDefaultSetItem,
+  isCsvItem,
 } from './VisualizeItemUtils'
 
 export const selectSelectedVisualizeItemId = (state: RootState) =>
@@ -361,6 +362,35 @@ export const selectRoiItemColors = (itemId: number) => (state: RootState) => {
     return item.imageItem.roiItem?.colors ?? []
   } else if (isImageItem(item)) {
     return item.roiItem?.colors ?? []
+  } else {
+    throw new Error('invalid VisualaizeItemType')
+  }
+}
+
+export const selectCsvItemTranspose =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isCsvItem(item)) {
+      return item.transpose
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectCsvItemSetColumn =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isCsvItem(item)) {
+      return item.setColumn
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectCsvItemSetIndex = (itemId: number) => (state: RootState) => {
+  const item = selectVisualizeItems(state)[itemId]
+  if (isCsvItem(item)) {
+    return item.setIndex
   } else {
     throw new Error('invalid VisualaizeItemType')
   }

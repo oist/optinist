@@ -72,8 +72,14 @@ cd optinist/backend
 pip install -r requirements.txt
 ```
 
+- For m1 mac user
+```
+cd optinist/backend
+pip install -r requirements_m1mac.txt
+```
+
 #### caimanを個別にインストール
-* m1 macの場合、tensorflowがうまくインストールできず、caimanを動かすことができない。
+* m1 macの場合、tensorflowがうまくインストールできず、caimanを動かすことができないため、ここはスキップ。
 
 optinistの仮想環境に入る。（既に入っている場合には省略可）
 ```

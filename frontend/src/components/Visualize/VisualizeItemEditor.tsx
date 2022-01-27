@@ -25,7 +25,7 @@ import {
   setItemType,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { ImageItemEditor } from './Editor/ImageItemEditor'
-import { TableItemEditor } from './Editor/TableItemEditor'
+import { CsvItemEditor } from './Editor/CsvItemEditor'
 import { HeatmapItemEditor } from './Editor/HeatmapItemEditor'
 import { TimeSeriesItemEditor } from './Editor/TimeSeriesItemEditor'
 import { RoiItemEditor } from './Editor/RoiItemEditor'
@@ -142,8 +142,8 @@ const DisplayEditor: React.FC<{
   switch (dataType) {
     case DATA_TYPE_SET.IMAGE:
       return <ImageItemEditor />
-    case DATA_TYPE_SET.TABLE:
-      return <TableItemEditor />
+    case DATA_TYPE_SET.CSV:
+      return <CsvItemEditor />
     case DATA_TYPE_SET.HEAT_MAP:
       return <HeatmapItemEditor />
     case DATA_TYPE_SET.TIME_SERIES:

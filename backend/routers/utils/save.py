@@ -45,8 +45,10 @@ def save_tiff2json(tiff_file_path, start_index=None, end_index=None):
 def save_csv2json(csv_file_path):
     folder_path = os.path.dirname(csv_file_path)
     file_name, ext = os.path.splitext(os.path.basename(csv_file_path))
-    pd.read_csv(csv_file_path).to_json(
-        os.path.join(folder_path, f'{file_name}.json'), indent=4, orient="split")
+    # pd.read_csv(csv_file_path).to_json(
+    #     os.path.join(folder_path, f'{file_name}.json'), indent=4, orient="split")
+    pd.read_csv(csv_file_path, header=None).to_json(
+        os.path.join(folder_path, f'{file_name}.json'), indent=4, orient='values')
 
 
 def save_nwb(nwbfile, save_path):

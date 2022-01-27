@@ -1,24 +1,19 @@
-import { useSelector } from 'react-redux'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { DisplayData, DISPLAY_DATA_SLICE_NAME } from './DisplayDataType'
 import {
-  getTableData,
+  getCsvData,
   getHeatMapData,
   getImageData,
   getTimeSeriesData,
   getRoiData,
   getScatterData,
 } from './DisplayDataActions'
-import {
-  selectVisualizeDataFilePath,
-  selectVisualizeDataType,
-} from '../VisualizeItem/VisualizeItemSelectors'
 
 const initialState: DisplayData = {
   timeSeries: {},
   heatMap: {},
   image: {},
-  table: {},
+  csv: {},
   roi: {},
   scatter: {},
 }
@@ -43,13 +38,13 @@ export const displayDataSlice = createSlice({
     ) => {
       delete state.timeSeries[action.payload.filePath]
     },
-    deleteDisplayTableItem: (
+    deleteDisplayCsvItem: (
       state,
       action: PayloadAction<{
         filePath: string
       }>,
     ) => {
-      delete state.table[action.payload.filePath]
+      delete state.csv[action.payload.filePath]
     },
     deleteDisplayHeatMapItem: (
       state,
@@ -149,7 +144,6 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.image[path] = {
           type: 'image',
-          // activeIndex: 0,
           data: [],
           pending: true,
           fulfilled: false,
@@ -160,7 +154,6 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.image[path] = {
           type: 'image',
-          // activeIndex: 0,
           data: action.payload.data,
           pending: false,
           fulfilled: true,
@@ -171,40 +164,36 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.image[path] = {
           type: 'image',
-          // activeIndex: 0,
           data: [],
           pending: false,
           fulfilled: false,
           error: action.error.message ?? 'rejected',
         }
       })
-      .addCase(getTableData.pending, (state, action) => {
+      .addCase(getCsvData.pending, (state, action) => {
         const { path } = action.meta.arg
-        state.table[path] = {
-          type: 'table',
-          columns: [],
+        state.csv[path] = {
+          type: 'csv',
           data: [],
           pending: true,
           fulfilled: false,
           error: null,
         }
       })
-      .addCase(getTableData.fulfilled, (state, action) => {
+      .addCase(getCsvData.fulfilled, (state, action) => {
         const { path } = action.meta.arg
-        state.table[path] = {
-          type: 'table',
-          columns: action.payload.columns,
+        state.csv[path] = {
+          type: 'csv',
           data: action.payload.data,
           pending: false,
           fulfilled: true,
           error: null,
         }
       })
-      .addCase(getTableData.rejected, (state, action) => {
+      .addCase(getCsvData.rejected, (state, action) => {
         const { path } = action.meta.arg
-        state.table[path] = {
-          type: 'table',
-          columns: [],
+        state.csv[path] = {
+          type: 'csv',
           data: [],
           pending: false,
           fulfilled: false,
@@ -277,7 +266,7 @@ export const displayDataSlice = createSlice({
 export const {
   deleteDisplayImageItem,
   deleteDisplayTimeSeriesItem,
-  deleteDisplayTableItem,
+  deleteDisplayCsvItem,
   deleteDisplayHeatMapItem,
   deleteDisplayRoiItem,
   deleteDisplayScatterItem,
