@@ -27,23 +27,8 @@ def TSNE(
     # preprocessing  ##################
     tX = standard_norm(X, params['standard_mean'], params['standard_std'])
 
-    # calculate PCA ##################
-    tsne = TSNE(
-        n_components=params['n_components'],
-        perplexity=params['perplexity'],
-        early_exaggeration= params['early_exaggeration'],
-        learning_rate= params['learning_rate'],
-        n_iter=params['n_iter'],
-        n_iter_without_progress= params['n_iter_without_progress'],
-        min_grad_norm= params['min_grad_norm'],
-        metric=params['metric'],
-        init=params['init'],
-        random_state=params['random_state'],
-        method=params['method'],
-        angle=params['angle'],
-        n_jobs=params['n_jobs'],
-        square_distances=params['square_distances']
-    )
+    # calculate TSNE ##################
+    tsne = TSNE(**params['TSNE'])
 
     proj_X = tsne.fit_transform(tX)
 

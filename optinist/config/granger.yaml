@@ -1,3 +1,8 @@
+standard_mean: True
+standard_std: True
+
+transpose: True
+
 # Granger_maxlag(int, Iterable[int]): If an integer, computes the test for all lags up to maxlag. If an iterable, computes the tests only for the lags in maxlag.
 # no default value
 Granger_maxlag: 1
@@ -5,69 +10,18 @@ Granger_maxlag: 1
 #Include a constant in the model or not.
 Granger_addconst: True
 
-standard_mean: True
-standard_std: True
+use_adfuller_test: True
+use_coint_test: True
 
-transpose: True
+adfuller:
+  maxlag:
+  regression: 'c'
+  autolag: 'AIC'
+  store: False
+  regresults: False
 
-##########################################################
-# adfuller_test: whether perform adfuller test or not
-# default=True
-adfuller_test: True
-
-# adfuller_maxlag(None, int): Maximum lag which is included in test, default value of 12*(nobs/100)^{1/4} is used when None.
-# default = None
-adfuller_maxlag:
-
-# adfuller_regression(“c”,”ct”,”ctt”,”n”):Constant and trend order to include in regression.
-# c: constant onky
-# ct: constant and trend
-# ctt: constant, and linear and quadratic trend.
-# n: no constant, no trend.
-# default = 'c'
-adfuller_regression: 'c'
-
-# adfuller_autolag(“AIC”, “BIC”, “t-stat”, None):Method to use when automatically determining the lag length among the values 0, 1, …, maxlag.
-# If “AIC” (default) or “BIC”, then the number of lags is chosen to minimize the corresponding information criterion.
-# “t-stat” based choice of maxlag. Starts with maxlag and drops a lag until the t-statistic on the last lag length is significant using a 5%-sized test.
-# If None, then the number of included lags is set to maxlag.
-# default='AIC'
-adfuller_autolag: 'AIC'
-
-# adfuller_store:If True, then a result instance is returned additionally to the adf statistic.
-# default = False
-adfuller_store: False
-
-# adfuller_regresults: If True, the full regression results are returned.
-# default = False
-adfuller_regresults: False
-
-##########################################################
-# wheter no-cointegration test is performed or not
-# default = True
-coint_test: True
-
-# cont_trend(“c”, “ct”):The trend term included in regression for cointegrating equation.
-# c: constant
-# ct: constant andlinear trend
-# ctt: constant, and linear and quadratic trend.
-# n: no constant, no trend.
-# default = '?'
-coint_trend: 'c'
-
-# coint_method(“aeg”): only 'aeg' is available
-# default: “aeg”
-coint_method: 'aeg'
-
-# coint_maxlag (None or int): Argument for adfuller, largest or given number of lags.
-# default: None
-coint_maxlag:
-
-# coint_autolag (None, 'AIC', 'BIC', 't-stat'):
-# Argument for adfuller, lag selection criterion.
-#
-#If None, then maxlag lags are used without lag search.
-#If “AIC” (default) or “BIC”, then the number of lags is chosen to minimize the corresponding information criterion.
-#“t-stat” based choice of maxlag. Starts with maxlag and drops a lag until the t-statistic on the last lag length is significant using a 5%-sized test.
-# default: 'AIC'
-coint_autolag: 'AIC'
+coint:
+  trend: 'c'
+  method: 'aeg'
+  maxlag:
+  autolag: 'AIC'

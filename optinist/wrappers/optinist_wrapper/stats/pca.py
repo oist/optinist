@@ -28,15 +28,7 @@ def PCA(
     tX = standard_norm(X, params['standard_mean'], params['standard_std'])
 
     # calculate PCA ##################
-    pca = PCA(
-        n_components=params['n_components'],
-        copy=params['copy'],
-        whiten= params['whiten'],
-        svd_solver= params['svd_solver'],
-        tol= params['tol'],
-        iterated_power=params['iterated_power'],
-        random_state= params['random_state']
-    )
+    pca = PCA(**params['PCA'])
     proj_X = pca.fit_transform(tX)
 
     info = {}

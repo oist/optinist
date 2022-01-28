@@ -63,9 +63,7 @@ def GLM(
     family = eval('sm.families.' + params['family'] + '(link=link)')
 
     # model fit
-    model = sm.GLM(
-        tY, tX, family=family, offset=params['offset'], 
-        exposure=params['exposure'], missing=params['missing'])
+    model = sm.GLM(tY, tX, family=family, **params['GLM'])
     Res = model.fit()
 
     # main results for plot

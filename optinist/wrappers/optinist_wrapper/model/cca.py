@@ -41,18 +41,10 @@ def CCA(
     tY = standard_norm(Y, params['standard_y_mean'], params['standard_y_std'])
 
     # calculate CCA 
-    cca = CCA(
-        n_components=params['n_components'],
-        scale=params['scale'],
-        max_iter=params['max_iter'],
-        tol=params['tol'],
-        copy=params['copy']
-    )
+    cca = CCA(**params['CCA'])
     projX, projY = cca.fit_transform(tX, tY)
 
     proj = np.concatenate([projX, projY], axis=1)
-
-    # import pdb; pdb.set_trace()
 
     info = {}
     info['projected2d'] = ScatterData(

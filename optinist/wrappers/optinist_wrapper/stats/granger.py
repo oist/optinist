@@ -37,26 +37,20 @@ def Granger(
     # augmented dickey-fuller test---- if p val is large, it cannot reject  there is a unit root
     # -> small p-val means OK : means this is not unit root process that it can apply Causality test
 
-    adf = {}
-    adf['adf_teststat'] = np.zeros([num_cell], dtype = 'float64')
-    adf['adf_pvalue'] = np.zeros([num_cell], dtype = 'float64')
-    adf['adf_usedlag'] = np.zeros([num_cell], dtype = 'int')
-    adf['adf_nobs'] = np.zeros([num_cell], dtype = 'int')
-    adf['adf_critical_values'] = np.zeros([num_cell, 3], dtype = 'float64')
-    adf['adf_icbest'] = np.zeros([num_cell], dtype = 'float64')
+    adf = {
+        'adf_teststat': np.zeros([num_cell], dtype = 'float64'),
+        'adf_pvalue': np.zeros([num_cell], dtype = 'float64'),
+        'adf_usedlag': np.zeros([num_cell], dtype = 'int'),
+        'adf_nobs': np.zeros([num_cell], dtype = 'int'),
+        'adf_critical_values': np.zeros([num_cell, 3], dtype = 'float64'),
+        'adf_icbest': np.zeros([num_cell], dtype = 'float64'),
+    }
 
-    if (params['adfuller_test']):
+    if params['use_adfuller_test']:
         print('adfuller test ')
 
         for i in tqdm(range(num_cell)):
-            tp = adfuller(
-                tX[:, i],
-                maxlag=params['adfuller_maxlag'],
-                regression=params['adfuller_regression'],
-                autolag=params['adfuller_autolag'],
-                store=params['adfuller_store'],
-                regresults=params['adfuller_regresults']
-            )
+            tp = adfuller(tX[:, i], **params['adfuller'])
 
             adf['adf_teststat'][i] = tp[0]
             adf['adf_pvalue'][i] = tp[1]
@@ -69,23 +63,17 @@ def Granger(
     # augmented engle-granger two-step test ----- Test for no-cointegration of a univariate equation
     # if p val is small, the relation is cointegration
     # -> check this if ADF pval is large
-    cit={}
-    cit['cit_count_t'] = np.zeros([num_comb], dtype='float64')
-    cit['cit_pvalue'] = np.zeros([num_comb], dtype='int')
-    cit['cit_crit_value'] = np.zeros([num_comb, 3], dtype='float64')
+    cit={
+        'cit_count_t': np.zeros([num_comb], dtype='float64'),
+        'cit_pvalue': np.zeros([num_comb], dtype='int'),
+        'cit_crit_value': np.zeros([num_comb, 3], dtype='float64'),
+    }
 
-    if (params['coint_test']):
+    if params['use_coint_test']:
         print('cointegration test ')
 
         for i in tqdm(range(num_comb)):
-            tp = coint(
-                X[:, comb[i][0]],
-                X[:, comb[i][1]],
-                trend=params['coint_trend'],
-                method=params['coint_method'],
-                maxlag=params['coint_maxlag'],
-                autolag=params['coint_autolag']
-            )
+            tp = coint(X[:, comb[i][0]], X[:, comb[i][1]], **params['coint'])
             if not np.isnan(tp[0]):
                 cit['cit_count_t'][i] = tp[0]
             if not np.isnan(tp[1]):
@@ -100,18 +88,17 @@ def Granger(
     else:
         num_lag = params['Granger_maxlag']
 
-    GC = {}
-    GC['gc_combinations'] = comb
-    GC['gc_ssr_ftest'] = np.zeros([num_comb, num_lag, 4], dtype='float64') # test statistic, pvalues, deg-free
-    GC['gc_ssr_chi2test'] = np.zeros([num_comb,  num_lag, 3], dtype='float64')
-    GC['gc_lrtest'] = np.zeros([num_comb, num_lag, 3], dtype='float64')
-    GC['gc_params_ftest'] = np.zeros([num_comb, num_lag, 4], dtype='float64')
-    GC['gc_OLS_restricted'] = [[0] * num_lag for i in range(num_comb)]
-    GC['gc_OLS_unrestricted'] = [[0] * num_lag for i in range(num_comb)]
-    GC['gc_OLS_restriction_matrix'] = [[0] * num_lag for i in range(num_comb)]
-
-    # for figure presentation
-    GC['Granger_fval_mat'] = [np.zeros([num_cell, num_cell]) for i in range(num_lag)]
+    GC = {
+        'gc_combinations': comb,
+        'gc_ssr_ftest': np.zeros([num_comb, num_lag, 4], dtype='float64'),
+        'gc_ssr_chi2test': np.zeros([num_comb,  num_lag, 3], dtype='float64'),
+        'gc_lrtest': np.zeros([num_comb, num_lag, 3], dtype='float64'),
+        'gc_params_ftest': np.zeros([num_comb, num_lag, 4], dtype='float64'),
+        'gc_OLS_restricted': [[0] * num_lag for i in range(num_comb)],
+        'gc_OLS_unrestricted': [[0] * num_lag for i in range(num_comb)],
+        'gc_OLS_restriction_matrix': [[0] * num_lag for i in range(num_comb)],
+        'Granger_fval_mat': [np.zeros([num_cell, num_cell]) for i in range(num_lag)],
+    }
 
     for i in tqdm(range(len(comb))):
         # The Null hypothesis for grangercausalitytests is that the time series in the second column1,
@@ -136,25 +123,6 @@ def Granger(
             GC['Granger_fval_mat'][j][comb[i][0], comb[i][1]] = tp[j+1][0]['ssr_ftest'][0]
 
     GC['Granger_fval_mat'] = np.array(GC['Granger_fval_mat'])
-
-    # output structures ###################
-    Out_nwb = {}
-
-    # main results
-    Out_nwb['gc_combinations'] = GC['gc_combinations']
-    Out_nwb['gc_ssr_ftest'] = GC['gc_ssr_ftest']
-    Out_nwb['gc_ssr_chi2test'] = GC['gc_ssr_chi2test']
-    Out_nwb['gc_lrtest'] = GC['gc_lrtest']
-    Out_nwb['gc_params_ftest'] = GC['gc_params_ftest']
-
-    Out_nwb['cit_pvalue'] = cit['cit_pvalue']
-    Out_nwb['adf_pvalue'] = adf['adf_pvalue']
-
-    # additional results
-    Out_additional = {}
-    Out_additional.update(cit)
-    Out_additional.update(adf)
-    Out_additional.update(GC)
 
     # main results for plot
     info = {}
