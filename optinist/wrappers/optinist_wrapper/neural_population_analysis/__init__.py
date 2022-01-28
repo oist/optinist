@@ -1,20 +1,16 @@
 from .correlation import correlation
+from .cross_correlation import cross_correlation
 from .granger import Granger
-from .pca import PCA
-from .tsne import TSNE
 
 
-stats_wrapper_dict = {
+neural_population_analysis_wrapper_dict = {
     'correlation': {
         'function': correlation
     },
+    'cross_correlation': {
+        'function': cross_correlation
+    },
     'granger': {
         'function': Granger
-    },
-    'pca': {
-        'function': PCA
-    },
-    'tsne': {
-        'function':  TSNE
     },
 }

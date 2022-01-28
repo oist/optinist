@@ -1,9 +1,12 @@
-from .stats import stats_wrapper_dict
-from .model import model_wrapper_dict
+from .dimension_reduction import dimension_reduction_wrapper_dict
+from .neural_population_analysis import neural_population_analysis_wrapper_dict
+from .neural_decoding import neural_decoding_wrapper_dict
+
 
 optinist_wrapper_dict = {
     'optinist': {
-        'stats': stats_wrapper_dict,
-        'model': model_wrapper_dict
+        'dimension_reduction': dimension_reduction_wrapper_dict ,
+        'neural_population_analysis': neural_population_analysis_wrapper_dict,
+        'neural_decoding': neural_decoding_wrapper_dict,
     }
 }
