@@ -4,13 +4,17 @@ from wrappers.optinist_wrapper.utils import standard_norm
 
 
 @args_check
-def CCA(
+def LDA(
         timeseries: TimeSeriesData,
         behaviors: TimeSeriesData,
         iscell: IscellData=None,
         params: dict=None
-    ) -> {}:
-    from sklearn.cross_decomposition import CCA
+    ):
+
+    # modules specific to function
+    from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
+    from sklearn.preprocessing import StandardScaler
+    from sklearn.model_selection import StratifiedKFold
 
     timeseries = timeseries.data
     behaviors = behaviors.data
@@ -21,7 +25,7 @@ def CCA(
         timeseries = timeseries[ind, :]
         behaviors = behaviors[ind, :]
 
-    # data shold be time x component matrix
+    # # preprocessing  ##################
     if params['transpose_x']:
         X = timeseries.transpose()
     else:
@@ -34,23 +38,28 @@ def CCA(
 
     Y = Y[:, params['target_index']].reshape(-1, 1)
 
-    assert X.shape[0] == Y.shape[0], f'X and Y is not same data, X.shape{X.shape}, Y.shape{Y.shape}'
-
     # # preprocessing  ##################
     tX = standard_norm(X, params['standard_x_mean'], params['standard_x_std'])
-    tY = standard_norm(Y, params['standard_y_mean'], params['standard_y_std'])
 
-    # calculate CCA 
-    cca = CCA(**params['CCA'])
-    projX, projY = cca.fit_transform(tX, tY)
+    # cross validation of LDA model ##################
+    skf = StratifiedKFold(**params['CV'])
 
-    proj = np.concatenate([projX, projY], axis=1)
+    score = []
+    classifier = []
+    for train_index, test_index in skf.split(tX, Y):
+        clf = LDA(**params['LDA'])
+
+
+        if (tX.shape[0] == 1):
+            clf.fit(tX[train_index].reshape(-1, 1), Y[train_index])
+            score.append(clf.score(tX[test_index].reshape(-1, 1), Y[test_index]))
+            classifier.append(clf)
+        else:
+            clf.fit(tX[train_index, :], Y[train_index])
+            score.append(clf.score(tX[test_index, :], Y[test_index]))
+            classifier.append(clf)
 
     info = {}
-    info['projected2d'] = ScatterData(
-        proj,
-        func_name='cca',
-        file_name='projected2d'
-    )
+    info['score'] = score
 
     return info

@@ -7,13 +7,14 @@ standard_y_std: True
 transpose_x: False
 transpose_y: False
 
+target_index: 0
+
 behavior: 'c'
 add_constant: False
 link: 'log'
 family: 'Gaussian'
 
-offset:
-exposure:
-missing:
-
-target_index: 0
+GLM:
+  offset:
+  exposure:
+  missing:

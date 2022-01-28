@@ -1,0 +1,33 @@
+# whether standardize the data or not
+standard_x_mean: True
+standard_x_std: True
+
+transpose_x: False
+transpose_y: False
+
+target_index: 1
+
+behavior: 'd'
+
+##############################
+#  StratifiedKFold  parameters
+##############################
+# n_splits = int, default=5
+# Number of folds. Must be at least 2.
+CV:
+  n_splits: 5
+  shuffle: False
+  random_state:
+
+
+##############################
+#  LDA  parameters
+##############################
+LDA:
+  solver: 'svd'
+  shrinkage:
+  priors:
+  n_components:
+  store_covariance:
+  tol: 0.0001
+  covariance_estimator:
