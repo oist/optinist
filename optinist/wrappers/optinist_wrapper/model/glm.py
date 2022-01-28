@@ -28,7 +28,7 @@ def GLM(
         iscell = iscell.data
         ind  = np.where(iscell > 0)[0]
         neural_data = neural_data[ind, :]
-        behaviors = behaviors[ind, :]
+        behaviors_data = behaviors_data[ind, :]
 
     # data shold be time x component matrix
     if params['transpose_x']:

@@ -69,7 +69,13 @@ def algo_network(flowList):
     for node in flowList['elementListForRun']['nodeList']:
         nodeDict[node['id']] = node
         graph[node['id']] = []
-        if node['type'] != 'AlgorithmNode':
+
+    for node in flowList['elementListForRun']['nodeList']:
+        if node['type'] == 'ImageFileNode':
+            startNodeList.append(node['id'])
+
+    for node in flowList['elementListForRun']['nodeList']:
+        if node['type'] == 'CsvFileNode':
             startNodeList.append(node['id'])
 
     # 隣接リストを登録
