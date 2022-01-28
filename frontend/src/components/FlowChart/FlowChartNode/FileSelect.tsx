@@ -72,7 +72,7 @@ export const FileSelect = React.memo<FileSelectProps>(
             }}
           />
           <Typography className="selectFilePath" variant="caption">
-            {!!fileName ? fileName : "File doesn't select."}
+            {!!fileName ? fileName : 'No file is selected.'}
           </Typography>
         </div>
         <FileSelectDialog
