@@ -2,6 +2,7 @@ import os
 import shutil
 from glob import glob
 import sys
+import h5py
 
 if sys.version_info >= (3, 8):
     from typing import List, Optional, TypedDict
@@ -81,3 +82,20 @@ async def create_file(response: Response, fileName: str, file: UploadFile = File
         shutil.copyfileobj(file.file, f)
 
     return { "file_path": file_path }
+
+
+@router.get("/files/nwb")
+async def get_files():
+    file_path = './data/suite2p/ophys.nwb'
+
+    print_list = []
+    def PrintOnlyDataset(name, obj):
+        if isinstance(obj, h5py.Dataset):
+            print(name)
+            print_list.append(name)
+
+    
+    with h5py.File(file_path, "r") as f:
+        f.visititems(PrintOnlyDataset)
+
+    return print_list

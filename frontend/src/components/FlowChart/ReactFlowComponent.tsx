@@ -30,11 +30,13 @@ import {
 import { ImageFileNode } from './FlowChartNode/ImageFileNode'
 import { AlgorithmNode } from './FlowChartNode/AlgorithmNode'
 import { CsvFileNode } from './FlowChartNode/CsvFileNode'
+import { NWBFileNode } from './FlowChartNode/NWBFileNode'
 import { CustomEdge } from './CustomEdge'
 
 const componentTypes = {
   ImageFileNode,
   CsvFileNode,
+  NWBFileNode,
   AlgorithmNode,
 } as const
 
@@ -96,6 +98,10 @@ export const ReactFlowComponent = React.memo(() => {
           case FILE_TYPE_SET.IMAGE:
             componentType = 'ImageFileNode'
             fileType = FILE_TYPE_SET.IMAGE
+            break
+          case FILE_TYPE_SET.NWB:
+            componentType = 'NWBFileNode'
+            fileType = FILE_TYPE_SET.NWB
             break
         }
 
