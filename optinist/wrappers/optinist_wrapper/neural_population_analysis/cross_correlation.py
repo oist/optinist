@@ -1,0 +1,112 @@
+from wrappers.data_wrapper import *
+from wrappers.args_check import args_check
+
+@args_check
+def cross_correlation(
+        timeseries: TimeSeriesData,
+        iscell: IscellData=None,
+        params: dict=None
+    ) -> {}:
+
+    #from statsmodels.tsa.stattools import ccf
+    import scipy.signal as ss
+    import itertools
+    import scipy.stats as stats
+    from tqdm import tqdm
+
+    timeseries = timeseries.data
+
+    if iscell is not None:
+        iscell = iscell.data
+        ind = np.where(iscell > 0)[0]
+        timeseries = timeseries[ind, :]
+
+    # data shold be time x component matrix
+    if params['transpose']:
+        X = timeseries.transpose()
+    else:
+        X = timeseries
+
+    # calculate cross correlation ##################
+    num_cell = X.shape[0]
+    data_len = X.shape[1]
+    shuffle_num = params['shuffle_sample_number']
+
+    lags = ss.correlation_lags(data_len, data_len, mode='same')
+    ind = np.intersect1d(
+        np.where(-params['lags'] <= lags),
+        np.where(lags <= params['lags'])
+    )
+    x = lags[ind]
+
+    mat = np.zeros([num_cell, num_cell,  len(x)])
+    s_confint = np.zeros([num_cell, num_cell,  len(x), 2])
+    s_mean = np.zeros([num_cell, num_cell, len(x)])
+
+    for i in tqdm(range(num_cell)):
+        for j in tqdm(range(num_cell)):
+            ccvals = ss.correlate(
+                X[i, :],
+                X[j, :],
+                method=params['method'],
+                mode='same'
+            )
+            mat[i, j, :] = ccvals[ind]
+
+            # baseline
+            tp_s_mat = np.zeros([len(x), shuffle_num])
+            for k in range(shuffle_num):
+                tp = X[j, :]
+                np.random.shuffle(tp)
+                ccvals = ss.correlate(
+                    X[i, :],
+                    tp,
+                    method=params['method'],
+                    mode='same'
+                )
+                tp_s_mat[:, k] = ccvals[ind]
+
+            b_mean = np.mean(tp_s_mat, axis = 1)
+            b_sem = stats.sem(tp_s_mat, axis = 1)
+            b_df = shuffle_num - 1
+
+            interval = np.zeros([len(x), 2])
+            for k in range(len(x)):
+                interval[k, :] = stats.t.interval(
+                    params['shuffle_confidence_interval'],
+                    b_df, 
+                    loc = 0,
+                    scale=b_sem[k]
+                )
+
+            s_confint[i, j, :, 0] = interval[:, 0]
+            s_confint[i, j, :, 1] = interval[:, 1]
+            s_mean[i, j, :] = b_mean
+
+    # output structures ###################
+    Out_forfigure = []
+    cb = list(itertools.combinations(range(num_cell), 2))
+
+    #for i in range(len(cb)):
+    for i in range(3):
+        forfigure={}
+        arr1 = np.stack([x, mat[cb[i][0], cb[i][1], :]], axis=1)
+        arr2 = np.stack(
+            [
+                x,
+                s_mean[cb[i][0], cb[i][1], :],
+                s_confint[cb[i][0], cb[i][1], :, 0],
+                s_confint[cb[i][0], cb[i][1], :, 1]
+            ], axis=1)
+
+        name1 = str(cb[i][0]) + '-' + str(cb[i][1])
+        name2 = 'shuffle '+ str(cb[i][0]) + '-' + str(cb[i][1])
+        forfigure[name1] = arr1
+        forfigure[name2] = arr2
+
+        Out_forfigure.append(forfigure)
+
+    info = {}
+    info['cross_correlation'] = mat
+
+    return info

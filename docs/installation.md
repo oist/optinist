@@ -134,7 +134,7 @@ cd optinist/backend
 
 run with gunicorn
 ```
-> gunicorn
+gunicorn
 ```
 
 It opens correctly!
