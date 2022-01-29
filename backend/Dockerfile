@@ -8,7 +8,9 @@ RUN apt-get install -y git gcc g++ libgl1
 
 RUN /usr/local/bin/python -m pip install --upgrade pip
 COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+COPY requirements_for_m1mac.txt ./
+# RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements_for_m1mac.txt
 
 # # caiman install
 RUN git clone https://github.com/flatironinstitute/CaImAn /CaImAn
@@ -19,4 +21,4 @@ RUN apt update && \
 
 COPY . .
 
-ENTRYPOINT ["python", "main.py" ]
+ENTRYPOINT ["python", "main.py"]

@@ -14,6 +14,7 @@ from .utils.memory import display_top
 from .utils.results import get_results
 from .utils.utils import algo_network
 from .utils.set_data import set_data
+from .utils.snakemake import create_snakemake_files
 
 from fastapi import APIRouter, WebSocket
 router = APIRouter()
@@ -33,6 +34,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
     message = await websocket.receive_text()
     graph, startNodeList, nodeDict = algo_network(message)
+    create_snakemake_files(nodeDict)
 
     message = json.loads(message)
 
