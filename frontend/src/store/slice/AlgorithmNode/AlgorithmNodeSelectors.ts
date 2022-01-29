@@ -1,5 +1,7 @@
 import { RootState } from 'store/store'
 
+import { getChildParam } from './AlgorithmNodeUtils'
+
 export const selectAlgorithmNode = (state: RootState) => state.algorithmNode
 
 export const selectAlgorithmNodeDefined =
@@ -25,12 +27,23 @@ export const selectAlgorithmParamsKeyList =
     Object.keys(selectAlgorithmNode(state)[nodeId]?.params ?? {})
 
 export const selectAlgorithmParamsValue =
+  (nodeId: string, path: string) => (state: RootState) => {
+    const params = selectAlgorithmParams(nodeId)(state)
+    if (params != null) {
+      const target = getChildParam(path, params)
+      return target?.value
+    } else {
+      throw new Error('AlgorithmParam is null')
+    }
+  }
+
+export const selectAlgorithmParam =
   (nodeId: string, paramKey: string) => (state: RootState) => {
     const params = selectAlgorithmParams(nodeId)(state)
     if (params != null) {
       return params[paramKey]
     } else {
-      return undefined
+      throw new Error('AlgorithmParam is null')
     }
   }
 

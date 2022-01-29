@@ -5,16 +5,16 @@ import TextField from '@material-ui/core/TextField'
 import Box from '@material-ui/core/Box'
 import Button from '@material-ui/core/Button'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import MuiAccordion from '@material-ui/core/Accordion'
 import AccordionDetails from '@material-ui/core/AccordionDetails'
 import AccordionSummary from '@material-ui/core/AccordionSummary'
 import Typography from '@material-ui/core/Typography'
-import { withStyles } from '@material-ui/core/styles'
+
 import { selectNwbList } from 'store/slice/NWB/NWBSelectors'
 import { NWBChild, NWBNodeType } from 'store/slice/NWB/NWBType'
 import { updateParam } from 'store/slice/NWB/NWBSlice'
 import { getNWBParams } from 'store/slice/NWB/NWBAction'
 import { toggleNwb } from 'store/slice/RightDrawer/RightDrawerSlice'
+import { Accordion } from 'components/Accordion'
 
 export const NWBSettingButton = React.memo(() => {
   const dispatch = useDispatch()
@@ -107,21 +107,3 @@ const ParamItem = React.memo<{
     </Box>
   )
 })
-
-const Accordion = withStyles((theme) => ({
-  root: {
-    border: '1px solid',
-    borderColor: theme.palette.divider,
-    boxShadow: 'none',
-    '&:not(:last-child)': {
-      borderBottom: 0,
-    },
-    '&:before': {
-      display: 'none',
-    },
-    '&$expanded': {
-      margin: 'auto',
-    },
-  },
-  expanded: {},
-}))(MuiAccordion)

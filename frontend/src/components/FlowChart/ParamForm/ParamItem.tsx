@@ -4,59 +4,108 @@ import { AnyAction } from '@reduxjs/toolkit'
 import Switch from '@material-ui/core/Switch'
 import TextField from '@material-ui/core/TextField'
 import Box from '@material-ui/core/Box'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import AccordionDetails from '@material-ui/core/AccordionDetails'
+import AccordionSummary from '@material-ui/core/AccordionSummary'
 import Typography from '@material-ui/core/Typography'
 
 import { updateParam } from 'store/slice/AlgorithmNode/AlgorithmNodeSlice'
-import { selectAlgorithmParamsValue } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
+import {
+  selectAlgorithmParamsValue,
+  selectAlgorithmParam,
+} from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
+import { isParamChild } from 'store/slice/AlgorithmNode/AlgorithmNodeUtils'
+import { ParamType } from 'store/slice/AlgorithmNode/AlgorithmNodeType'
 import { ParamFormContext } from '../RightDrawer'
+import { Accordion } from 'components/Accordion'
 
-type ParamItemProps = {
+export type ParamItemContainerProps = {
   paramKey: string
 }
 
-export const ParamItemContainer = React.memo<ParamItemProps>(({ paramKey }) => {
-  return (
-    <Box
-      sx={{
-        display: 'flex',
-        marginTop: 16,
-        marginBottom: 16,
-        alignItems: 'center',
-        overflow: 'scroll',
-      }}
-    >
-      <Box
-        style={{ verticalAlign: 'middle' }}
-        sx={{
-          flexGrow: 1,
-          width: '50%',
-        }}
-      >
-        <Typography style={{ overflow: 'scroll' }}>{paramKey}</Typography>
-      </Box>
-      <Box sx={{ width: '50%' }}>
-        <ParamItemForValueType paramKey={paramKey} />
-      </Box>
-    </Box>
-  )
-})
+export const ParamItemContainer = React.memo<{ paramKey: string }>(
+  ({ paramKey }) => {
+    const nodeId = React.useContext(ParamFormContext)
+    const param = useSelector(selectAlgorithmParam(nodeId, paramKey)) // 一階層目
+    return <ParamItem paramKey={paramKey} param={param} />
+  },
+)
 
-const ParamItemForValueType = React.memo<ParamItemProps>(({ paramKey }) => {
-  const [value] = useParamValueUpdate(paramKey)
-  if (typeof value === 'number') {
-    return <ParamItemForNumber paramKey={paramKey} />
-  } else if (typeof value === 'string') {
-    return <ParamItemForString paramKey={paramKey} />
-  } else if (typeof value === 'boolean') {
-    return <ParamItemForBoolean paramKey={paramKey} />
+type ParamItemProps = {
+  paramKey: string
+  param: ParamType
+}
+
+const ParamItem = React.memo<ParamItemProps>(({ paramKey, param }) => {
+  if (isParamChild(param)) {
+    return <ParamChildItem path={param.path} name={paramKey} />
   } else {
-    return <ParamItemForString paramKey={paramKey} />
+    return (
+      <Accordion square>
+        <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+          {paramKey}
+        </AccordionSummary>
+        <AccordionDetails>
+          <div>
+            {Object.entries(param.children).map(([paramKey, param], i) => (
+              <ParamItem param={param} paramKey={paramKey} />
+            ))}
+          </div>
+        </AccordionDetails>
+      </Accordion>
+    )
   }
 })
 
-const ParamItemForString = React.memo<ParamItemProps>(({ paramKey }) => {
+type ParamChildItemProps = {
+  path: string
+}
+
+const ParamChildItem = React.memo<ParamChildItemProps & { name: string }>(
+  ({ path, name }) => {
+    return (
+      <Box
+        sx={{
+          display: 'flex',
+          marginTop: 16,
+          marginBottom: 16,
+          alignItems: 'center',
+          overflow: 'scroll',
+        }}
+      >
+        <Box
+          style={{ verticalAlign: 'middle' }}
+          sx={{
+            flexGrow: 1,
+            width: '50%',
+          }}
+        >
+          <Typography style={{ overflow: 'scroll' }}>{name}</Typography>
+        </Box>
+        <Box sx={{ width: '50%' }}>
+          <ParamItemForValueType path={path} />
+        </Box>
+      </Box>
+    )
+  },
+)
+
+const ParamItemForValueType = React.memo<ParamChildItemProps>(({ path }) => {
+  const [value] = useParamValueUpdate(path)
+  if (typeof value === 'number') {
+    return <ParamItemForNumber path={path} />
+  } else if (typeof value === 'string') {
+    return <ParamItemForString path={path} />
+  } else if (typeof value === 'boolean') {
+    return <ParamItemForBoolean path={path} />
+  } else {
+    return <ParamItemForString path={path} />
+  }
+})
+
+const ParamItemForString = React.memo<ParamChildItemProps>(({ path }) => {
   const dispatch = useDispatch()
-  const [value, updateParamAction] = useParamValueUpdate(paramKey) // string値以外も想定されるため
+  const [value, updateParamAction] = useParamValueUpdate(path) // string値以外も想定されるため
   const onChange = (
     e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
   ) => {
@@ -66,9 +115,9 @@ const ParamItemForString = React.memo<ParamItemProps>(({ paramKey }) => {
   return <TextField value={value} onChange={onChange} multiline />
 })
 
-const ParamItemForNumber = React.memo<ParamItemProps>(({ paramKey }) => {
+const ParamItemForNumber = React.memo<ParamChildItemProps>(({ path }) => {
   const dispatch = useDispatch()
-  const [value, updateParamAction] = useParamValueUpdate(paramKey)
+  const [value, updateParamAction] = useParamValueUpdate(path)
   if (typeof value === 'number') {
     const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue =
@@ -92,9 +141,9 @@ const ParamItemForNumber = React.memo<ParamItemProps>(({ paramKey }) => {
   }
 })
 
-const ParamItemForBoolean = React.memo<ParamItemProps>(({ paramKey }) => {
+const ParamItemForBoolean = React.memo<ParamChildItemProps>(({ path }) => {
   const dispatch = useDispatch()
-  const [value, updateParamAction] = useParamValueUpdate(paramKey)
+  const [value, updateParamAction] = useParamValueUpdate(path)
   if (typeof value === 'boolean') {
     const onChange = () => {
       dispatch(updateParamAction(!value))
@@ -106,12 +155,12 @@ const ParamItemForBoolean = React.memo<ParamItemProps>(({ paramKey }) => {
 })
 
 function useParamValueUpdate(
-  paramKey: string,
+  path: string,
 ): [unknown, (newValue: unknown) => AnyAction] {
   const nodeId = React.useContext(ParamFormContext)
-  const value = useSelector(selectAlgorithmParamsValue(nodeId, paramKey))
+  const value = useSelector(selectAlgorithmParamsValue(nodeId, path))
   const updateParamAction = (newValue: unknown) => {
-    return updateParam({ nodeId, paramKey, newValue })
+    return updateParam({ nodeId, path, newValue })
   }
   return [value, updateParamAction]
 }
