@@ -8,6 +8,7 @@ import { isNodeData } from '../FlowElement/FlowElementUtils'
 import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
 import { getAlgoParams } from './AlgorithmNodeActions'
 import { ALGORITHM_NODE_SLICE_NAME, AlgorithmNode } from './AlgorithmNodeType'
+import { convertToAlgorithmParam, getChildParam } from './AlgorithmNodeUtils'
 
 const initialState: AlgorithmNode = {}
 
@@ -19,14 +20,18 @@ export const algorithmNodeSlice = createSlice({
       state,
       action: PayloadAction<{
         nodeId: string
-        paramKey: string
+        // paramKey: string
+        path: string
         newValue: unknown
       }>,
     ) => {
-      const { nodeId, paramKey, newValue } = action.payload
+      const { nodeId, path, newValue } = action.payload
       const param = state[nodeId].params
       if (param != null) {
-        param[paramKey] = newValue
+        const target = getChildParam(path, param)
+        if (target != null) {
+          target.value = newValue
+        }
       }
     },
     setSelectedOutputKey: (
@@ -44,7 +49,7 @@ export const algorithmNodeSlice = createSlice({
     builder
       .addCase(getAlgoParams.fulfilled, (state, action) => {
         const { nodeId } = action.meta.arg
-        state[nodeId].params = action.payload
+        state[nodeId].params = convertToAlgorithmParam(action.payload)
       })
       .addCase(addFlowElementNode, (state, action) => {
         const { node, algoNodeInfo } = action.payload

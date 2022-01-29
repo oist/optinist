@@ -4,13 +4,32 @@ export type AlgorithmNode = {
   [nodeId: string]: AlgrithmNodeType
 }
 
-export type AlgorithmParam = {
-  [key: string]: unknown
-}
-
 type AlgrithmNodeType = {
   functionPath: string
   name: string
   params: AlgorithmParam | null
   selectedOutputKey: string | null
+}
+
+export type AlgorithmParam = {
+  [paramKey: string]: ParamType
+}
+
+export type ParamType = ParamParent | ParamChild
+
+export type ParamParent = {
+  type: 'parent'
+  children: {
+    [key: string]: ParamType
+  }
+}
+
+export type ParamChild = {
+  type: 'child'
+  value: unknown
+  path: string
+}
+
+export type ParamDTO = {
+  [key: string]: unknown
 }
