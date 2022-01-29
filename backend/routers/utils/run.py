@@ -5,7 +5,7 @@ from typing import List
 from wrappers import wrapper_dict
 
 from .params import get_params
-from .utils import check_types
+from .utils import check_types, nest2dict
 
 
 def run_algorithm(prev_info, item):
@@ -13,11 +13,14 @@ def run_algorithm(prev_info, item):
     if item['type'] == 'AlgorithmNode':
 
         filepath = os.path.join('..', 'optinist', 'config', f'{item["data"]["path"].split("/")[-1]}.yaml')
-        params = copy.deepcopy(get_params(filepath))
+        default_params = copy.deepcopy(get_params(filepath))
 
         # parameterをint, floatに変換
         if 'param' in item['data'].keys() and item['data']['param'] is not None:
-            params = check_types(item['data']['param'], params)
+            params = nest2dict(item['data']['param'])
+            params = check_types(params, default_params)
+        else:
+            params = default_params
 
         wrapper = dict2leaf(
             wrapper_dict,
