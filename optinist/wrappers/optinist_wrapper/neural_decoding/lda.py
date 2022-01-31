@@ -6,6 +6,7 @@ def LDA(
         neural_data: TimeSeriesData,
         behaviors_data: TimeSeriesData,
         iscell: IscellData=None,
+        nwbfile: NWBFile=None,
         params: dict=None
     ):
 

@@ -4,6 +4,7 @@ from wrappers.args_check import args_check
 def correlation(
         neural_data: TimeSeriesData,
         iscell: IscellData=None,
+        nwbfile: NWBFile=None,
         params: dict=None
     ) -> {}:
 

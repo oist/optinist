@@ -5,6 +5,7 @@ from wrappers.optinist_wrapper.utils import standard_norm
 def Granger(
         neural_data: TimeSeriesData,
         iscell: IscellData=None,
+        nwbfile: NWBFile=None,
         params: dict=None
     ) -> {}:
 
