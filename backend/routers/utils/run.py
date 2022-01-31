@@ -33,7 +33,6 @@ def run_algorithm(prev_info, item):
             wrapper["function"],
             params,
             *prev_info.values(),
-            # prev_info,
         )
 
         del wrapper, prev_info

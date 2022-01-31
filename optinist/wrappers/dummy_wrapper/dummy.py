@@ -132,7 +132,7 @@ def dummy_time8image2image8time(
 
 
 @args_check
-def dummy_keyerror(image: ImageData, nwbfile: NWBFile=None, params: dict=None):
+def dummy_keyerror(image: ImageData, nwbfile: NWBFile=None, params: dict=None) -> {}:
 
     """
         get image
@@ -144,7 +144,7 @@ def dummy_keyerror(image: ImageData, nwbfile: NWBFile=None, params: dict=None):
 
 
 @args_check
-def dummy_typeerror(image: str, nwbfile: NWBFile=None, params: dict=None):
+def dummy_typeerror(image: str, nwbfile: NWBFile=None, params: dict=None) -> {}:
 
     """
         get image
@@ -214,21 +214,6 @@ def dummy_image2image8roi(
     info['roi'] = RoiData(roi_data, func_name=sys._getframe().f_code.co_name)
     return info
 
-
-@args_check
-def dummy_time2time(
-    time1: TimeSeriesData, nwbfile: NWBFile=None,  params: dict=None
-    ) -> {'time': TimeSeriesData}:
-
-    """
-        get image
-        return image
-    """
-    info = {}
-    info['time2time'] = TimeSeriesData(
-        np.random.rand((10000)).reshape(10, 1000),
-        func_name=sys._getframe().f_code.co_name)
-    return info
 
 @args_check
 def dummy_image2image8roi8time8heat(

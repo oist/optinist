@@ -3,21 +3,23 @@ from wrappers.args_check import args_check
 
 @args_check
 def correlation(
-        timeseries: TimeSeriesData, iscell: IscellData=None, params: dict=None
-    ) -> {'corr': CorrelationData}:
+        neural_data: TimeSeriesData,
+        iscell: IscellData=None,
+        params: dict=None
+    ) -> {}:
 
-    timeseries = timeseries.data
+    neural_data = neural_data.data
+
+    # data shold be time x component matrix
+    if params['transpose']:
+        X = neural_data.transpose()
+    else:
+        X = neural_data
 
     if iscell is not None:
         iscell = iscell.data
         ind  = np.where(iscell > 0)[0]
-        timeseries = timeseries[ind, :]
-
-    # data shold be time x component matrix
-    if params['transpose']:
-        X = timeseries.transpose()
-    else:
-        X = timeseries
+        X = X[ind, :]
 
     num_cell = X.shape[0]
 

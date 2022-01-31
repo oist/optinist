@@ -4,25 +4,25 @@ from wrappers.optinist_wrapper.utils import standard_norm
 
 @args_check
 def TSNE(
-        timeseries: TimeSeriesData,
+        neural_data: TimeSeriesData,
         iscell: IscellData=None,
         params: dict=None
     ) -> {}:
 
     from sklearn.manifold import TSNE
 
-    timeseries = timeseries.data
-
-    if iscell is not None:
-        iscell = iscell.data
-        ind = np.where(iscell > 0)[0]
-        timeseries = timeseries[ind, :]
+    neural_data = neural_data.data
 
     # data shold be time x component matrix
     if params['transpose']:
-        X = timeseries.transpose()
+        X = neural_data.transpose()
     else:
-        X = timeseries
+        X = neural_data
+
+    if iscell is not None:
+        iscell = iscell.data
+        ind  = np.where(iscell > 0)[0]
+        X = X[ind, :]
 
     # preprocessing  ##################
     tX = standard_norm(X, params['standard_mean'], params['standard_std'])

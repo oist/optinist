@@ -21,3 +21,4 @@ torch<=1.10.0
 opencv-python
 suite2p
 statsmodels<=0.13.1
+snakemake

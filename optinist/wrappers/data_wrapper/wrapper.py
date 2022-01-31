@@ -45,7 +45,7 @@ class ImageData:
 class TimeSeriesData:
     def __init__(self, data, func_name='timeseries', file_name='timeseries'):
         if type(data) == str:
-            self.data = pd.read_csv(data).values
+            self.data = pd.read_csv(data, header=None).values
         else:
             self.data = data
 

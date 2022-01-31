@@ -1,0 +1,28 @@
+last_output:
+- /tmp/optinist/optinist/neural_population_analysis/granger/granger_out.pkl
+rules:
+  granger:
+    input:
+    - /tmp/optinist/suite2p_roi/F/F.csv
+    output: /tmp/optinist/optinist/neural_population_analysis/granger/granger_out.pkl
+    params:
+      Granger_addconst: true
+      Granger_maxlag: 1
+      adfuller:
+        autolag: AIC
+        maxlag: null
+        regression: c
+        regresults: false
+        store: false
+      coint:
+        autolag: AIC
+        maxlag: null
+        method: aeg
+        trend: c
+      standard_mean: true
+      standard_std: true
+      transpose: true
+      use_adfuller_test: true
+      use_coint_test: true
+    path: optinist/neural_population_analysis/granger
+    rule_file: rules/optinist/neural_population_analysis/granger.py

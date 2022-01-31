@@ -27,18 +27,19 @@ def suite2p_spike_deconv(
     # NWBを追加
 
     ### Fluorenceを追加
-    for name, data in zip(
-            ['Fluorescence', 'Neuropil', 'Deconvolved'],
-            [ops['F'], ops['Fneu'], spks]):
-        nwbfile = nwb_add_fluorescence(
-            nwbfile,
-            table_name=name,
-            region=list(range(len(data))),
-            name=name,
-            data=data,
-            unit='lumens',
-            rate=ops['fs']
-        )
+    if nwbfile is not None:
+        for name, data in zip(
+                ['Fluorescence', 'Neuropil', 'Deconvolved'],
+                [ops['F'], ops['Fneu'], spks]):
+            nwbfile = nwb_add_fluorescence(
+                nwbfile,
+                table_name=name,
+                region=list(range(len(data))),
+                name=name,
+                data=data,
+                unit='lumens',
+                rate=ops['fs']
+            )
 
     info = {}
     info['ops'] = Suite2pData(ops)

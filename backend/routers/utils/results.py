@@ -2,9 +2,8 @@ from collections import OrderedDict
 from wrappers.data_wrapper import *
 
 
-def get_results(info, item):
+def get_results(info, path):
     results = OrderedDict()
-    path = item['data']['path']
     results[path] = {}
 
     for k, v in info.items():

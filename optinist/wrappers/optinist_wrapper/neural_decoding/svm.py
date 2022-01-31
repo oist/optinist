@@ -5,8 +5,8 @@ from wrappers.optinist_wrapper.utils import standard_norm
 
 @args_check
 def SVM(
-        timeseries: TimeSeriesData,
-        behaviors: TimeSeriesData,
+        neural_data: TimeSeriesData,
+        behaviors_data: TimeSeriesData,
         iscell: IscellData=None,
         params: dict=None
     ):
@@ -19,29 +19,31 @@ def SVM(
     from sklearn.model_selection import StratifiedKFold
     import json
 
-    timeseries = timeseries.data
-    behaviors = behaviors.data
+    neural_data = neural_data.data
+    behaviors_data = behaviors_data.data
+
+    # data shold be time x component matrix
+    if params['transpose_x']:
+        X = neural_data.transpose()
+    else:
+        X = neural_data
+
+    if params['transpose_y']:
+        Y = behaviors_data.transpose()
+    else:
+        Y = behaviors_data
+
+    assert X.shape[0] == Y.shape[0], f"""
+        neural_data and behaviors_data is not same dimension,
+        neural.shape{X.shape}, behavior.shape{Y.shape}"""
 
     if iscell is not None:
         iscell = iscell.data
-        ind = np.where(iscell > 0)[0]
-        timeseries = timeseries[ind, :]
-        behaviors = behaviors[ind, :]
-
-    # # preprocessing  ##################
-    if params['transpose_x']:
-        X = timeseries.transpose()
-    else:
-        X = timeseries
-
-    if params['transpose_y']:
-        Y = behaviors.transpose()
-    else:
-        Y = behaviors
+        ind  = np.where(iscell > 0)[0]
+        X = X[ind, :]
+        Y = Y[ind, :]
 
     Y = Y[:, params['target_index']].reshape(-1, 1)
-
-    assert X.shape[0] == Y.shape[0], f'X and Y is not same data, X.shape{X.shape}, Y.shape{Y.shape}'
 
     # # preprocessing  ##################
     tX = standard_norm(X, params['standard_x_mean'], params['standard_x_std'])

@@ -6,7 +6,6 @@ import copy
 
 def nest2dict(value):
     nwb_dict = {}
-
     for _k, _v in value.items():
         if _v['type'] == 'child':
             nwb_dict[_k] = _v['value']
@@ -26,17 +25,6 @@ def dict2nest(value):
             nwb_dict[_k] = _v
 
     return nwb_dict
-
-
-# def string2float(params):
-#     for k, v in params.items():
-#         if isinstance(v, str) and v.isdecimal():
-#             v = float(v)
-#             if v.is_integer():
-#                 v = int(v)
-#             params[k] = v
-
-#     return params
 
 
 def check_types(params, default_params):
@@ -82,4 +70,13 @@ def algo_network(flowList):
     for edge in edgeList:
         graph[edge['source']] = {edge['target']: edge["targetHandle"].split("--")[1]}
 
-    return graph, startNodeList, nodeDict
+    countDict = {key: 0 for key in nodeDict.keys()}
+    for edge in edgeList:
+        countDict[edge["source"]] += 1
+
+    endNodeList = []
+    for key, value in countDict.items():
+        if value == 0:
+            endNodeList.append(key)
+
+    return graph, startNodeList, nodeDict, edgeList, endNodeList

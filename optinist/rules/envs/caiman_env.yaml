@@ -1,0 +1,6 @@
+channels:
+  - conda-forge
+dependencies:
+  - caiman
+  - scikit-image=0.18.0
+  - tensorflow

@@ -14,7 +14,7 @@ def GLM(
         behaviors_data: TimeSeriesData, 
         iscell: IscellData=None,
         params: dict=None
-    ) -> {'actual_predicted': TimeSeriesData}:
+    ) -> {}:
 
     # modules specific to function
     import statsmodels.api as sm
@@ -23,12 +23,6 @@ def GLM(
 
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data
-
-    if iscell is not None:
-        iscell = iscell.data
-        ind  = np.where(iscell > 0)[0]
-        neural_data = neural_data[ind, :]
-        behaviors_data = behaviors_data[ind, :]
 
     # data shold be time x component matrix
     if params['transpose_x']:
@@ -41,9 +35,17 @@ def GLM(
     else:
         Y = behaviors_data
 
-    Y = Y[:, params['target_index']].reshape(-1, 1)
+    assert X.shape[0] == Y.shape[0], f"""
+        neural_data and behaviors_data is not same dimension,
+        neural.shape{X.shape}, behavior.shape{Y.shape}"""
 
-    assert X.shape[0] == Y.shape[0], f'X and Y is not same data, X.shape{X.shape}, Y.shape{Y.shape}'
+    if iscell is not None:
+        iscell = iscell.data
+        ind  = np.where(iscell > 0)[0]
+        X = X[ind, :]
+        Y = Y[ind, :]
+
+    Y = Y[:, params['target_index']].reshape(-1, 1)
 
     # preprocessing
     tX = standard_norm(X, params['standard_x_mean'], params['standard_x_std'])

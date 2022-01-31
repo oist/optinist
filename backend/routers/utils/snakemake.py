@@ -1,8 +1,18 @@
 import os
 import yaml
+import sys
+import copy
+import inspect
+from snakemake import snakemake
+from pytools.persistent_dict import PersistentDict
+from wrappers.data_wrapper import *
+from wrappers import wrapper_dict
+from .set_data import set_data
+from .params import get_params
+from .utils import nest2dict, check_types
 
 
-def create_snakemake_files(nodeDict):
+def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeList):
     '''
     flowListを受け取り、Snakemakeに渡すconfig.yamlとして出力する。
     '''
@@ -10,35 +20,137 @@ def create_snakemake_files(nodeDict):
     flow_config = {}
     rules_to_execute = {}
     prev_algo_output = None
-    
-    for i, item in nodeDict.items():
-        if item['data']['type'] == 'input':
-            algo_input = item["data"]["path"]
-            algo_output = algo_input
-        elif item["data"]["type"] == 'algorithm':
-            algo_name = item["data"]["label"]
-            algo_input = prev_output
 
-            output_base_path = f"./files/{algo_name}"
+    storage = PersistentDict("mystorage")
+    storage.clear()
 
-            if not os.path.exists(output_base_path):
-                print(f"Creating {output_base_path}")
-                os.makedirs(output_base_path)
+    all_outputs = {}
+    last_outputs = []
 
-            algo_output = os.path.join(output_base_path, f"{algo_name}_out.pkl")
+    for key, node in nodeDict.items():
+        algo_label = node['data']['label']
+        algo_path = node['data']['path']
 
-            rules_to_execute[algo_name] = {   
-                "rule_file": f"rules/{algo_name}.smk",
+        if node["type"] == 'ImageFileNode':
+            filepath = os.path.join(OPTINIST_DIR, 'config', f'nwb.yaml')
+            nwb_dict = copy.deepcopy(get_params(filepath))
+
+            # if nwb_params != {}:
+            #     nwb_dict = check_types(nest2dict(nwb_params), nwb_dict)
+
+            info = {'images': ImageData(algo_path, '')}
+            nwb_dict['image_series']['external_file'] = info['images'].data
+            nwbfile = nwb_add_acquisition(nwb_dict)
+            nwbfile.create_processing_module(
+                name='ophys',
+                description='optical physiology processed data'
+            )
+            nwb_add_ophys(nwbfile)
+            info['nwbfile'] = None #nwbfile
+            storage.store(algo_path, info)
+        
+        elif node["type"] == "CsvFileNode":
+            info = {algo_path: TimeSeriesData(algo_path, '')}
+            # info['nwbfile'] = None
+            storage.store(algo_path, info)
+
+        elif node["type"] == "AlgorithmNode":
+
+            algo_input = []
+            args_type_dict = {}
+            for edge in edgeList:
+                # inputとして入れる
+                if edge["target"] == key:
+                    var_name = edge["targetHandle"].split("--")[1]
+                    sourceNode = nodeDict[edge["source"]]
+                    if sourceNode["type"] == "AlgorithmNode":
+                        args_type_dict[var_name] = os.path.join(
+                            BASE_DIR, sourceNode["data"]["path"], f"{sourceNode['data']['label']}_out.pkl")
+
+                        # algo_input.append(os.path.join(
+                        #     BASE_DIR, sourceNode["data"]["path"], f"{sourceNode['data']['label']}_out.pkl"))
+                    else:
+                        args_type_dict[var_name] = sourceNode["data"]["path"]
+
+                        # algo_input.append(sourceNode["data"]["path"])
+            
+            # 引数の順番を揃える
+            algo_input = order_args(args_type_dict, node["data"]["path"])
+
+            # parameter
+            params = get_algo_params(OPTINIST_DIR, algo_path, node)
+
+            algo_output = os.path.join(BASE_DIR, algo_path, f"{algo_label}_out.pkl")
+
+            rules_to_execute[algo_label] = {   
+                "rule_file": f"rules/{algo_path}.py",
                 "input": algo_input,
-                "param": item["data"]["param"],
-                "output": algo_output
+                "params": params,
+                "output": algo_output,
+                "path": algo_path,
             }
 
-        # 次のalgoのinputに渡すため、現在の出力ファイルのパスを保存
-        prev_output = algo_output
+            # storage.store(algo_label, {'params': params})
+
+            if node["id"] in endNodeList:
+                last_outputs.append(algo_output)
+
+            all_outputs[algo_output] = {
+                "label": algo_label,
+                "path": algo_path,
+            }
 
     flow_config["rules"] = rules_to_execute
-    flow_config["last_output"] = algo_output
+    flow_config["last_output"] = last_outputs
 
-    with open('./files/config.yaml', "w") as f:
+    with open(os.path.join(OPTINIST_DIR, 'config.yaml'), "w") as f:
         yaml.dump(flow_config, f)
+
+    # run snakemake
+    snakemake(os.path.join(OPTINIST_DIR, 'Snakefile'), cores=-1, forceall=True)
+
+    # Send message to the client
+    for key, value in all_outputs.items():
+        all_outputs[key]['info'] = storage.fetch(key)
+
+    return all_outputs
+
+
+def get_algo_params(OPTINIST_DIR, algo_path, node):
+    filepath = os.path.join(OPTINIST_DIR, 'config', f'{algo_path.split("/")[-1]}.yaml')
+    default_params = copy.deepcopy(get_params(filepath))
+    params = default_params
+    if 'param' in node['data'].keys() and node['data']['param'] is not None:
+        params = nest2dict(node['data']['param'])
+        params = check_types(params, default_params)
+    return params
+
+
+def order_args(args_type_dict, item_path):
+    wrapper = dict2leaf(
+        wrapper_dict,
+        item_path.split('/')
+    )
+    
+    import inspect
+    sig = inspect.signature(wrapper["function"])
+
+    # 引数名の順番に揃える
+    new_args = {}
+    for key in sig.parameters.keys():
+        if key in args_type_dict.keys():
+            new_args[key] = args_type_dict[key]
+
+    for key in args_type_dict.keys():
+        if not key in new_args:
+            new_args[key] = args_type_dict[key]
+
+    algo_input = list(new_args.values())
+    return algo_input
+
+def dict2leaf(root_dict, path_list):
+    path = path_list.pop(0)
+    if len(path_list) > 0:
+        return dict2leaf(root_dict[path], path_list)
+    else:
+        return root_dict[path]
