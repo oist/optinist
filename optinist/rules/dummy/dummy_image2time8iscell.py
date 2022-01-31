@@ -1,22 +1,30 @@
-import sys
-sys.path.append('../optinist')
 from wrappers import wrapper_dict
 from pytools.persistent_dict import PersistentDict
+import traceback
 
 storage = PersistentDict("mystorage")
 
 rule:
-    input: 
+    input:
         config["rules"]["dummy_image2time8iscell"]["input"]
-    output: 
+    output:
         touch(config["rules"]["dummy_image2time8iscell"]["output"])
     run:
         __func_config = config["rules"]["dummy_image2time8iscell"]
-        info = storage.fetch(__func_config["input"])
-        wrapper = dict2leaf(wrapper_dict, __func_config["path"].split('/'))
-        info = wrapper["function"](*info.values())
-        print(info)
-        storage.store(__func_config["output"], info)
+        try:
+            input_files = __func_config["input"]
+            info = {}
+            for path in input_files:
+                info.update(storage.fetch(path))
+
+            params = __func_config["params"]
+            wrapper = dict2leaf(wrapper_dict, __func_config["path"].split('/'))
+
+            output_info = wrapper["function"](params=params, *info.values())
+            storage.store(__func_config["output"], output_info)
+        except Exception as e:
+            error_message  = list(traceback.TracebackException.from_exception(e).format())[-1]
+            storage.store(__func_config["output"], error_message)
 
 
 def dict2leaf(root_dict: dict, path_list):

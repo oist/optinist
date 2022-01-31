@@ -1,5 +1,3 @@
-import sys
-sys.path.append('../optinist')
 from wrappers import wrapper_dict
 from pytools.persistent_dict import PersistentDict
 import traceback
