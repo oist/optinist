@@ -37,20 +37,27 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
 
             # if nwb_params != {}:
             #     nwb_dict = check_types(nest2dict(nwb_params), nwb_dict)
-
-            info = {'images': ImageData(algo_path, '')}
-            nwb_dict['image_series']['external_file'] = info['images'].data
-            nwbfile = nwb_add_acquisition(nwb_dict)
-            nwbfile.create_processing_module(
-                name='ophys',
-                description='optical physiology processed data'
-            )
-            nwb_add_ophys(nwbfile)
+            for edge in edgeList:
+                if edge["source"] == key:
+                    arg_name = edge["targetHandle"].split("--")[1]
+                    # info = {arg_name: TimeSeriesData(algo_path, '')}
+                    info = {arg_name: ImageData(algo_path, '')}
+            nwb_dict['image_series']['external_file'] = info['image'].data
+            # nwbfile = nwb_add_acquisition(nwb_dict)
+            # nwbfile.create_processing_module(
+            #     name='ophys',
+            #     description='optical physiology processed data'
+            # )
+            # nwb_add_ophys(nwbfile)
             info['nwbfile'] = None #nwbfile
             storage.store(algo_path, info)
         
         elif node["type"] == "CsvFileNode":
-            info = {algo_path: TimeSeriesData(algo_path, '')}
+            for edge in edgeList:
+                if edge["source"] == key:
+                    arg_name = edge["targetHandle"].split("--")[1]
+                    info = {arg_name: TimeSeriesData(algo_path, '')}
+
             # info['nwbfile'] = None
             storage.store(algo_path, info)
 
@@ -58,24 +65,24 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
 
             algo_input = []
             args_type_dict = {}
+            return_arg_names = {}
             for edge in edgeList:
                 # inputとして入れる
                 if edge["target"] == key:
-                    var_name = edge["targetHandle"].split("--")[1]
+                    arg_name = edge["targetHandle"].split("--")[1]
+                    return_name = edge["sourceHandle"].split("--")[1]
                     sourceNode = nodeDict[edge["source"]]
                     if sourceNode["type"] == "AlgorithmNode":
-                        args_type_dict[var_name] = os.path.join(
-                            BASE_DIR, sourceNode["data"]["path"], f"{sourceNode['data']['label']}_out.pkl")
-
-                        # algo_input.append(os.path.join(
-                        #     BASE_DIR, sourceNode["data"]["path"], f"{sourceNode['data']['label']}_out.pkl"))
+                        algo_input.append(os.path.join(
+                            BASE_DIR, sourceNode["data"]["path"], f"{sourceNode['data']['label']}_out.pkl"))
                     else:
-                        args_type_dict[var_name] = sourceNode["data"]["path"]
+                        return_name = arg_name
+                        algo_input.append(sourceNode["data"]["path"])
 
-                        # algo_input.append(sourceNode["data"]["path"])
-            
-            # 引数の順番を揃える
-            algo_input = order_args(args_type_dict, node["data"]["path"])
+                    return_arg_names[return_name] = arg_name
+
+            # # 引数の順番を揃える
+            # algo_input = order_args(args_type_dict, node["data"]["path"])
 
             # parameter
             params = get_algo_params(OPTINIST_DIR, algo_path, node)
@@ -85,12 +92,11 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
             rules_to_execute[algo_label] = {   
                 "rule_file": f"rules/{algo_path}.py",
                 "input": algo_input,
+                "return_arg": return_arg_names,
                 "params": params,
                 "output": algo_output,
                 "path": algo_path,
             }
-
-            # storage.store(algo_label, {'params': params})
 
             if node["id"] in endNodeList:
                 last_outputs.append(algo_output)
@@ -154,3 +160,6 @@ def dict2leaf(root_dict, path_list):
         return dict2leaf(root_dict[path], path_list)
     else:
         return root_dict[path]
+
+def get_arg_return_names():
+    pass

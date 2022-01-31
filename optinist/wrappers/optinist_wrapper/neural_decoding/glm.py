@@ -8,7 +8,6 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 from wrappers.optinist_wrapper.utils import standard_norm
 
-@args_check
 def GLM(
         neural_data: TimeSeriesData,
         behaviors_data: TimeSeriesData, 

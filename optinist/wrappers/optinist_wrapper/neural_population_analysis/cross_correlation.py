@@ -1,7 +1,6 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
-@args_check
 def cross_correlation(
         neural_data: TimeSeriesData,
         iscell: IscellData=None,

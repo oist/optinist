@@ -2,7 +2,6 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 
-@args_check
 def suite2p_roi(
         ops: Suite2pData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'ops': Suite2pData, 'F': TimeSeriesData, 'iscell': IscellData}:

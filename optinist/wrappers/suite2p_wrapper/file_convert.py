@@ -5,7 +5,6 @@ import gc
 BASE_DIR = '/tmp/optinist'
 
 
-@args_check
 def suite2p_file_convert(
         image: ImageData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'ops': Suite2pData, 'images': ImageData}:

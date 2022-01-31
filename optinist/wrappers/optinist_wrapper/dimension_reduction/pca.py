@@ -2,8 +2,6 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 from wrappers.optinist_wrapper.utils import standard_norm
 
-
-@args_check
 def PCA(
         neural_data: TimeSeriesData,
         iscell: IscellData=None,

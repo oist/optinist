@@ -48,9 +48,12 @@ async def websocket_endpoint(websocket: WebSocket):
             path = value["path"]
             label = value['label']
 
-            if isinstance(info, str):
+            if isinstance(info, str) or isinstance(info, list):
                 # error
-                message = value["info"]
+                if isinstance(info, str):
+                    message = info
+                else:
+                    message = "¥n".join(info)
                 await websocket.send_json({
                     'message': message,
                     'name': label,

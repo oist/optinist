@@ -6,7 +6,6 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 
-@args_check
 def dummy_image2image(
     image: ImageData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'image2image': ImageData}:
@@ -22,7 +21,6 @@ def dummy_image2image(
     return info
 
 
-@args_check
 def dummy_image2time(
     image: ImageData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'image2time': TimeSeriesData}:
@@ -38,7 +36,6 @@ def dummy_image2time(
     return info
 
 
-@args_check
 def dummy_image2heat(
     image: ImageData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'image2heat': CorrelationData}:
@@ -54,7 +51,6 @@ def dummy_image2heat(
     return info
 
 
-@args_check
 def dummy_time2time(
     timeseries: TimeSeriesData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'time2time': TimeSeriesData}:
@@ -70,7 +66,6 @@ def dummy_time2time(
     return info
 
 
-@args_check
 def dummy_image2image8time(
     image1: ImageData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'image': ImageData, 'timeseries': TimeSeriesData}:
@@ -89,7 +84,6 @@ def dummy_image2image8time(
     return info
 
 
-@args_check
 def dummy_image8image2image8time(
     image1: ImageData, image2: ImageData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'image': ImageData, 'timeseries': TimeSeriesData}:
@@ -110,7 +104,6 @@ def dummy_image8image2image8time(
     return info
 
 
-@args_check
 def dummy_time8image2image8time(
     timeseries: TimeSeriesData, image: ImageData, nwbfile: NWBFile=None, params: dict=None
     ):
@@ -131,7 +124,6 @@ def dummy_time8image2image8time(
     return info
 
 
-@args_check
 def dummy_keyerror(image: ImageData, nwbfile: NWBFile=None, params: dict=None) -> {}:
 
     """
@@ -143,7 +135,6 @@ def dummy_keyerror(image: ImageData, nwbfile: NWBFile=None, params: dict=None) -
     return info
 
 
-@args_check
 def dummy_typeerror(image: str, nwbfile: NWBFile=None, params: dict=None) -> {}:
 
     """
@@ -154,7 +145,6 @@ def dummy_typeerror(image: str, nwbfile: NWBFile=None, params: dict=None) -> {}:
     return info
 
 
-@args_check
 def dummy_image2time8iscell(
     image1: ImageData, nwbfile: NWBFile=None,  params: dict=None
     ) -> {'timeseries': TimeSeriesData, 'iscell': IscellData}:
@@ -175,7 +165,6 @@ def dummy_image2time8iscell(
     return info
 
 
-@args_check
 def dummy_image2roi(
     image1: ImageData, nwbfile: NWBFile=None,  params: dict=None
     ) -> {'roi': RoiData}:
@@ -193,7 +182,6 @@ def dummy_image2roi(
     info['roi'] = RoiData(roi_data, func_name=sys._getframe().f_code.co_name)
     return info
 
-@args_check
 def dummy_image2image8roi(
     image1: ImageData, nwbfile: NWBFile=None,  params: dict=None
     ) -> {'image': ImageData, 'roi': RoiData}:
@@ -215,7 +203,6 @@ def dummy_image2image8roi(
     return info
 
 
-@args_check
 def dummy_image2image8roi8time8heat(
     image1: ImageData, nwbfile: NWBFile=None,  params: dict=None
     ) -> {'image': ImageData, 'roi': RoiData, 'timeseries': TimeSeriesData, 'heat': CorrelationData}:
@@ -243,7 +230,6 @@ def dummy_image2image8roi8time8heat(
         func_name=sys._getframe().f_code.co_name)
     return info
 
-@args_check
 def dummy_image2scatter(
     image: ImageData, nwbfile: NWBFile=None,  params: dict=None
     ) -> {'scatter': ScatterData}:
