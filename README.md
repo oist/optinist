@@ -106,7 +106,7 @@ cd optinist/backend
 実行
 gunicornで起動
 ```
-> gunicorn
+gunicorn
 ```
 
 
