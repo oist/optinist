@@ -45,13 +45,13 @@ def set_data(dataType, nwb_params):
             nwb_dict = check_types(nest2dict(nwb_params), nwb_dict)
 
         info = {'images': ImageData(item['data']['path'], '')}
-        nwb_dict['image_series']['external_file'] = info['images'].data
-        nwbfile = nwb_add_acquisition(nwb_dict)
-        nwbfile.create_processing_module(
-            name='ophys',
-            description='optical physiology processed data'
-        )
-        nwb_add_ophys(nwbfile)
+        # nwb_dict['image_series']['external_file'] = info['images'].data
+        # nwbfile = nwb_add_acquisition(nwb_dict)
+        # nwbfile.create_processing_module(
+        #     name='ophys',
+        #     description='optical physiology processed data'
+        # )
+        # nwb_add_ophys(nwbfile)
 
     elif dataType == 'CsvFileNode':
         info = {item['key']: TimeSeriesData(item['data']['path'], '')}
