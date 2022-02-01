@@ -49,8 +49,8 @@ def run_script(__func_config):
         output_info = wrapper["function"](params=params, **info)
         storage.store(__func_config["output"], output_info)
 
-        outdir = ".".join(__func_config["output"].split("/")[-1:])
-        # os.makedirs(outdir, exist_ok=True)
+        outdir = "/".join(__func_config["output"].split("/")[:-1])
+        os.makedirs(outdir, exist_ok=True)
         with open(__func_config["output"], 'wb') as f:
             pickle.dump(output_info, f)
         
