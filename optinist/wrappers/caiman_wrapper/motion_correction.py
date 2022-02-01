@@ -3,7 +3,6 @@ from wrappers.args_check import args_check
 import gc
 
 
-@args_check
 def caiman_mc(
         image: ImageData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'mc_images': ImageData, 'iscell': IscellData}:

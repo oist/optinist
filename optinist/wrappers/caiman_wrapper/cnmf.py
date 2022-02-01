@@ -2,7 +2,6 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 
-@args_check
 def caiman_cnmf(
         images: ImageData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'fluo': TimeSeriesData, 'iscell': IscellData, 'roi': RoiData}:

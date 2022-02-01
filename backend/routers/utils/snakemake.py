@@ -124,7 +124,7 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
         yaml.dump(flow_config, f)
 
     # run snakemake
-    snakemake(os.path.join(OPTINIST_DIR, 'Snakefile'), cores=-1, forceall=True, forcetargets=True)
+    snakemake(os.path.join(OPTINIST_DIR, 'Snakefile'), cores=-1, forceall=True, forcetargets=True, use_conda=True)
     # snakemake(os.path.join(OPTINIST_DIR, 'Snakefile'), cores=2, use_conda=True)
 
     print("finish")
