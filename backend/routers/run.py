@@ -51,14 +51,10 @@ async def websocket_endpoint(websocket: WebSocket):
             if isinstance(info, str) or isinstance(info, list):
                 # error
                 if isinstance(info, str):
-                    message = info
+                    error_message = info
                 else:
-                    message = "¥n".join(info)
-                await websocket.send_json({
-                    'message': message,
-                    'name': label,
-                    'status': 'error'
-                })
+                    error_message = "¥n".join(info)
+                error_label = label
                 error_flag = True
             else:
                 results = get_results(info, path)
@@ -74,6 +70,13 @@ async def websocket_endpoint(websocket: WebSocket):
         snapshot = tracemalloc.take_snapshot()
         top_stats = snapshot.statistics("lineno")
         display_top(snapshot, top_stats)
+
+        if error_flag:
+            await websocket.send_json({
+                'message': error_message,
+                'name': error_label,
+                'status': 'error'
+            })
 
         if not error_flag:
             await websocket.send_json({

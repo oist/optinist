@@ -2,7 +2,6 @@ import os
 import numpy as np
 import pandas as pd
 import imageio
-from PIL import Image
 import cv2
 import tifffile
 import gc

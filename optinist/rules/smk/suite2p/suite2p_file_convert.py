@@ -1,0 +1,9 @@
+rule:
+    input:
+        config["rules"]["suite2p_file_convert"]["input"]
+    output:
+        touch(config["rules"]["suite2p_file_convert"]["output"])
+    conda:
+        "../envs/suite2p_env.yaml"
+    script:
+        "../../scripts/suite2p/suite2p_file_convert.py"

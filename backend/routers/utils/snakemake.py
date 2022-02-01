@@ -3,6 +3,7 @@ import yaml
 import sys
 import copy
 import inspect
+import pickle
 from snakemake import snakemake
 from pytools.persistent_dict import PersistentDict
 from wrappers.data_wrapper import *
@@ -42,7 +43,7 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
                     arg_name = edge["targetHandle"].split("--")[1]
                     # info = {arg_name: TimeSeriesData(algo_path, '')}
                     info = {arg_name: ImageData(algo_path, '')}
-            nwb_dict['image_series']['external_file'] = info['image'].data
+            nwb_dict['image_series']['external_file'] = info[arg_name].data
             # nwbfile = nwb_add_acquisition(nwb_dict)
             # nwbfile.create_processing_module(
             #     name='ophys',
@@ -51,6 +52,9 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
             # nwb_add_ophys(nwbfile)
             info['nwbfile'] = None #nwbfile
             storage.store(algo_path, info)
+            # output to pickle
+            # with open(algo_path, 'wb') as f:
+            #     pickle.dump(info, f)
         
         elif node["type"] == "CsvFileNode":
             for edge in edgeList:
@@ -60,6 +64,8 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
 
             # info['nwbfile'] = None
             storage.store(algo_path, info)
+            # with open(algo_path, 'wb') as f:
+            #     pickle.dump(info, f)
 
         elif node["type"] == "AlgorithmNode":
 
@@ -90,7 +96,7 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
             algo_output = os.path.join(BASE_DIR, algo_path, f"{algo_label}_out.pkl")
 
             rules_to_execute[algo_label] = {   
-                "rule_file": f"rules/{algo_path}.py",
+                "rule_file": f"rules/smk/{algo_path}.py",
                 "input": algo_input,
                 "return_arg": return_arg_names,
                 "params": params,
