@@ -3,7 +3,8 @@ import os
 import gc
 import json
 import tracemalloc
-from pytools.persistent_dict import PersistentDict
+import time
+# from pytools.persistent_dict import PersistentDict
 
 from wrappers.data_wrapper import *
 from wrappers.optinist_exception import AlgorithmException
@@ -42,6 +43,7 @@ async def websocket_endpoint(websocket: WebSocket):
         all_outputs = create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeList)
 
         error_flag = False
+        time.sleep(1)
         # Send message to the client
         for key, value in all_outputs.items():
             info = value["info"]
@@ -59,6 +61,7 @@ async def websocket_endpoint(websocket: WebSocket):
             else:
                 print("finish")
                 results = get_results(info, path)
+                time.sleep(5)
                 await websocket.send_json({
                     'message': label + ' success',
                     'status': 'success',
@@ -73,18 +76,21 @@ async def websocket_endpoint(websocket: WebSocket):
         display_top(snapshot, top_stats)
 
         if error_flag:
+            time.sleep(5)
             await websocket.send_json({
                 'message': error_message,
                 'name': error_label,
                 'status': 'error'
             })
         else:
+            time.sleep(5)
             await websocket.send_json({
                 'message': 'completed',
                 'status': 'completed'
             })
 
     except AlgorithmException as e:
+        time.sleep(1)
         await websocket.send_json({
             'message': e.get_message(),
             # 'name': item['data']['label'],
@@ -94,6 +100,7 @@ async def websocket_endpoint(websocket: WebSocket):
     except Exception as e:
         message  = list(traceback.TracebackException.from_exception(e).format())[-1]
         print(traceback.format_exc())
+        time.sleep(1)
         await websocket.send_json({
             'message': message,
             # 'name': item['data']['label'],

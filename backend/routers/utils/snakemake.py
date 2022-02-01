@@ -5,7 +5,7 @@ import copy
 import inspect
 import pickle
 from snakemake import snakemake
-from pytools.persistent_dict import PersistentDict
+# from pytools.persistent_dict import PersistentDict
 from wrappers.data_wrapper import *
 from wrappers import wrapper_dict
 from .set_data import set_data
@@ -22,8 +22,8 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
     rules_to_execute = {}
     prev_algo_output = None
 
-    storage = PersistentDict("mystorage")
-    storage.clear()
+    # storage = PersistentDict("mystorage")
+    # storage.clear()
 
     all_outputs = {}
     last_outputs = []
@@ -51,7 +51,7 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
             # )
             # nwb_add_ophys(nwbfile)
             info['nwbfile'] = None #nwbfile
-            storage.store(algo_path, info)
+            # storage.store(algo_path, info)
 
             # output to pickle
             path = algo_path.split(".")[0] + ".pkl"
@@ -124,14 +124,16 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
         yaml.dump(flow_config, f)
 
     # run snakemake
-    # snakemake(os.path.join(OPTINIST_DIR, 'Snakefile'), cores=-1, forceall=True)
-    snakemake(os.path.join(OPTINIST_DIR, 'Snakefile'), cores=-1, forceall=True, use_conda=True)
+    snakemake(os.path.join(OPTINIST_DIR, 'Snakefile'), cores=-1, forceall=True, forcetargets=True)
+    # snakemake(os.path.join(OPTINIST_DIR, 'Snakefile'), cores=2, use_conda=True)
 
     print("finish")
 
     # Send message to the client
     for key, value in all_outputs.items():
         # all_outputs[key]['info'] = storage.fetch(key)
+        import time
+        time.sleep(5)
         with open(key, "rb") as f:
             data = pickle.load(f)
             all_outputs[key]['info'] = data

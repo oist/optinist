@@ -1,10 +1,10 @@
 from wrappers import wrapper_dict
-from pytools.persistent_dict import PersistentDict
+# from pytools.persistent_dict import PersistentDict
 import traceback
 import os
 import pickle
 
-storage = PersistentDict("mystorage")
+# storage = PersistentDict("mystorage")
 
 
 def dict2leaf(root_dict: dict, path_list):
@@ -47,7 +47,7 @@ def run_script(__func_config):
                 info.pop(key)
 
         output_info = wrapper["function"](params=params, **info)
-        storage.store(__func_config["output"], output_info)
+        # storage.store(__func_config["output"], output_info)
 
         outdir = "/".join(__func_config["output"].split("/")[:-1])
         os.makedirs(outdir, exist_ok=True)
