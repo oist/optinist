@@ -49,7 +49,7 @@ async def websocket_endpoint(websocket: WebSocket):
             label = value['label']
 
             if isinstance(info, str) or isinstance(info, list):
-                # error
+                print("error")
                 if isinstance(info, str):
                     error_message = info
                 else:
@@ -57,6 +57,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 error_label = label
                 error_flag = True
             else:
+                print("finish")
                 results = get_results(info, path)
                 await websocket.send_json({
                     'message': label + ' success',

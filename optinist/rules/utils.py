@@ -61,4 +61,3 @@ def run_script(__func_config):
         # storage.store(__func_config["output"], error_message)
         with open(__func_config["output"], 'wb') as f:
             pickle.dump(error_message, f)
-        raise "error"
