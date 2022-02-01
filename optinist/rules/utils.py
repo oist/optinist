@@ -1,6 +1,8 @@
 from wrappers import wrapper_dict
 from pytools.persistent_dict import PersistentDict
 import traceback
+import os
+import pickle
 
 storage = PersistentDict("mystorage")
 
@@ -23,8 +25,16 @@ def run_script(__func_config):
         input_files = __func_config["input"]
         return_arg = __func_config["return_arg"]
         info = {}
+
         for path in input_files:
-            info.update(storage.fetch(path))
+            # info.update(storage.fetch(path))
+            # with open(path, 'rb') as f:
+            #     info.update(pickle.load(f))
+            path = path.split(".")[0] + ".pkl"
+            with open(path, 'rb') as f:
+                data = pickle.load(f)
+                info.update(data)
+
         params = __func_config["params"]
         wrapper = dict2leaf(wrapper_dict, __func_config["path"].split('/'))
         print(wrapper)
@@ -38,6 +48,17 @@ def run_script(__func_config):
 
         output_info = wrapper["function"](params=params, **info)
         storage.store(__func_config["output"], output_info)
+
+        outdir = ".".join(__func_config["output"].split("/")[-1:])
+        # os.makedirs(outdir, exist_ok=True)
+        with open(__func_config["output"], 'wb') as f:
+            pickle.dump(output_info, f)
+        
+        print("output: ", __func_config["output"])
+        
     except Exception as e:
         error_message  = list(traceback.TracebackException.from_exception(e).format())[-2:]
-        storage.store(__func_config["output"], error_message)
+        # storage.store(__func_config["output"], error_message)
+        with open(__func_config["output"], 'wb') as f:
+            pickle.dump(error_message, f)
+        raise "error"

@@ -52,9 +52,11 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
             # nwb_add_ophys(nwbfile)
             info['nwbfile'] = None #nwbfile
             storage.store(algo_path, info)
+
             # output to pickle
-            # with open(algo_path, 'wb') as f:
-            #     pickle.dump(info, f)
+            path = algo_path.split(".")[0] + ".pkl"
+            with open(path, 'wb') as f:
+                pickle.dump(info, f)
         
         elif node["type"] == "CsvFileNode":
             for edge in edgeList:
@@ -66,6 +68,9 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
             storage.store(algo_path, info)
             # with open(algo_path, 'wb') as f:
             #     pickle.dump(info, f)
+            path = algo_path.split(".")[0] + ".pkl"
+            with open(path, 'wb') as f:
+                pickle.dump(info, f)
 
         elif node["type"] == "AlgorithmNode":
 
@@ -119,11 +124,17 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
         yaml.dump(flow_config, f)
 
     # run snakemake
-    snakemake(os.path.join(OPTINIST_DIR, 'Snakefile'), cores=-1, forceall=True)
+    # snakemake(os.path.join(OPTINIST_DIR, 'Snakefile'), cores=-1, forceall=True)
+    snakemake(os.path.join(OPTINIST_DIR, 'Snakefile'), cores=-1, forceall=True, use_conda=True)
+
+    print("finish")
 
     # Send message to the client
     for key, value in all_outputs.items():
-        all_outputs[key]['info'] = storage.fetch(key)
+        # all_outputs[key]['info'] = storage.fetch(key)
+        with open(key, "rb") as f:
+            data = pickle.load(f)
+            all_outputs[key]['info'] = data
 
     return all_outputs
 

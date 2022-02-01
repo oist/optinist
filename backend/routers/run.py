@@ -77,8 +77,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 'name': error_label,
                 'status': 'error'
             })
-
-        if not error_flag:
+        else:
             await websocket.send_json({
                 'message': 'completed',
                 'status': 'completed'

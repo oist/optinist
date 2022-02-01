@@ -1,10 +1,8 @@
-# from rules.utils import run_script
-
 rule:
     input:
         config["rules"]["dummy_image2time8iscell"]["input"]
     output:
-        touch(config["rules"]["dummy_image2time8iscell"]["output"])
+        config["rules"]["dummy_image2time8iscell"]["output"]
     # run:
     #     __func_config = config["rules"]["dummy_image2time8iscell"]
     #     run_script(__func_config)

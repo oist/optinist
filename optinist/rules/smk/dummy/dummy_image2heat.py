@@ -1,10 +1,8 @@
-# from rules.utils import run_script
-
 rule:
     input:
         config["rules"]["dummy_image2heat"]["input"]
     output:
-        touch(config["rules"]["dummy_image2heat"]["output"])
+        config["rules"]["dummy_image2heat"]["output"]
     # run:
     #     __func_config = config["rules"]["dummy_image2heat"]
     #     run_script(__func_config)

@@ -2,7 +2,7 @@ rule:
     input:
         config["rules"]["correlation"]["input"]
     output:
-        touch(config["rules"]["correlation"]["output"])
+        config["rules"]["correlation"]["output"]
     # run:
     #     __func_config = config["rules"]["svm"]
     #     run_script(__func_config)
