@@ -62,6 +62,10 @@ def LDA(
             classifier.append(clf)
 
     info = {}
-    info['score'] = score
+    info['score'] = BarData(
+        score,
+        func_name='lda',
+        file_name='score'
+    )
 
     return info

@@ -77,5 +77,10 @@ def GLM(
         func_name='glm',
         file_name='actual_predicted'
     )
+    info['params'] = BarData(
+        Res.params.values,
+        func_name='glm',
+        file_name='params'
+    )
 
     return info

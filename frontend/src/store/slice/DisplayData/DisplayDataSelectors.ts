@@ -159,3 +159,25 @@ export const selectScatterDataIsFulfilled =
   (filePath: string) => (state: RootState) =>
     selectScatterDataIsInitialized(filePath)(state) &&
     selectDisplayData(state).scatter[filePath].fulfilled
+
+export const selectBarData = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).bar[filePath]?.data ?? []
+
+export const selectBarDataIsInitialized =
+  (filePath: string) => (state: RootState) =>
+    Object.keys(selectDisplayData(state).bar).includes(filePath)
+
+export const selectBarDataError = (filePath: string) => (state: RootState) =>
+  selectBarDataIsInitialized(filePath)(state)
+    ? selectDisplayData(state).bar[filePath].error
+    : null
+
+export const selectBarDataIsPending =
+  (filePath: string) => (state: RootState) =>
+    selectBarDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).bar[filePath].pending
+
+export const selectBarDataIsFulfilled =
+  (filePath: string) => (state: RootState) =>
+    selectBarDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).bar[filePath].fulfilled

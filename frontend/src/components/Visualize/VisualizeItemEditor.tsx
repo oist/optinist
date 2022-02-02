@@ -30,7 +30,8 @@ import { HeatmapItemEditor } from './Editor/HeatmapItemEditor'
 import { TimeSeriesItemEditor } from './Editor/TimeSeriesItemEditor'
 import { RoiItemEditor } from './Editor/RoiItemEditor'
 import { FilePathSelect } from './FilePathSelect'
-import { ScatterItemEditor } from './Editor/ScatterEditor'
+import { ScatterItemEditor } from './Editor/ScatterItemEditor'
+import { BarItemEditor } from './Editor/BarItemEditor'
 
 export const VisualizeItemEditor = () => {
   const selectedItemId = useSelector(selectSelectedVisualizeItemId)
@@ -152,7 +153,9 @@ const DisplayEditor: React.FC<{
       return <RoiItemEditor />
     case DATA_TYPE_SET.SCATTER:
       return <ScatterItemEditor />
+    case DATA_TYPE_SET.BAR:
+      return <BarItemEditor />
     default:
-      throw new Error('dataType Error')
+      throw new Error('dataType error')
   }
 }

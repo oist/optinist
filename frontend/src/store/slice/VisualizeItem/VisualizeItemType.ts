@@ -33,6 +33,7 @@ export type DisplayDataItem =
   | CsvItem
   | RoiItem
   | ScatterItem
+  | BarItem
 
 export interface DisplayDataItemBaseType extends ItemBaseType<'displayData'> {
   filePath: string | null
@@ -93,4 +94,8 @@ export interface RoiItem extends DisplayDataItemBaseType {
 
 export interface ScatterItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.SCATTER
+}
+
+export interface BarItem extends DisplayDataItemBaseType {
+  dataType: typeof DATA_TYPE_SET.BAR
 }

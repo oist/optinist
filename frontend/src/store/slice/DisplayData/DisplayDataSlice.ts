@@ -7,6 +7,7 @@ import {
   getTimeSeriesData,
   getRoiData,
   getScatterData,
+  getBarData,
 } from './DisplayDataActions'
 
 const initialState: DisplayData = {
@@ -16,6 +17,7 @@ const initialState: DisplayData = {
   csv: {},
   roi: {},
   scatter: {},
+  bar: {},
 }
 
 export const displayDataSlice = createSlice({
@@ -254,6 +256,36 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.scatter[path] = {
           type: 'scatter',
+          data: [],
+          pending: false,
+          fulfilled: false,
+          error: action.error.message ?? 'rejected',
+        }
+      })
+      .addCase(getBarData.pending, (state, action) => {
+        const { path } = action.meta.arg
+        state.bar[path] = {
+          type: 'bar',
+          data: [],
+          pending: true,
+          fulfilled: false,
+          error: null,
+        }
+      })
+      .addCase(getBarData.fulfilled, (state, action) => {
+        const { path } = action.meta.arg
+        state.bar[path] = {
+          type: 'bar',
+          data: action.payload.data,
+          pending: false,
+          fulfilled: true,
+          error: null,
+        }
+      })
+      .addCase(getBarData.rejected, (state, action) => {
+        const { path } = action.meta.arg
+        state.bar[path] = {
+          type: 'bar',
           data: [],
           pending: false,
           fulfilled: false,

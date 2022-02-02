@@ -144,3 +144,23 @@ class ScatterData:
         del self
         gc.collect()
 
+
+class BarData:
+    def __init__(self, data, func_name='bar', file_name='bar'):
+        data = np.array(data)
+
+        if not data.ndim == 1:
+            raise 'Bar Dimension Error'
+
+        _dir = os.path.join(BASE_DIR, func_name, f'{file_name}')
+        if not os.path.exists(_dir):
+            os.makedirs(_dir, exist_ok=True)
+
+        self.path = get_file_path(_dir, file_name)
+
+        pd.DataFrame(data).to_json(
+            os.path.join(_dir, f'{file_name}.json'), indent=4, orient="values")
+
+    def __del__(self):
+        del self
+        gc.collect()

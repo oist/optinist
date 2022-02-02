@@ -45,6 +45,7 @@ const ScatterPlotImple = React.memo(() => {
     scatterDataEqualityFn,
   )
 
+  console.log(scatterData)
   const data = React.useMemo(
     () => [
       {

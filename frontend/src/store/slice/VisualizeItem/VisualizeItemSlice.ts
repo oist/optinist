@@ -11,6 +11,7 @@ import {
   ScatterItem,
   VisualaizeItem,
   VISUALIZE_ITEM_TYPE_SET,
+  BarItem,
 } from './VisualizeItemType'
 import {
   isDefaultSetItem,
@@ -97,6 +98,11 @@ const scatterItemInitialValue: ScatterItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.SCATTER,
 }
+const barItemInitialValue: BarItem = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.BAR,
+}
+
 function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
   switch (dataType) {
     case DATA_TYPE_SET.IMAGE:
@@ -111,6 +117,8 @@ function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
       return roiItemInitialValue
     case DATA_TYPE_SET.SCATTER:
       return scatterItemInitialValue
+    case DATA_TYPE_SET.BAR:
+      return barItemInitialValue
   }
 }
 
