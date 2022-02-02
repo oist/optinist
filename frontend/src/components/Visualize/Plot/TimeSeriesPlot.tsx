@@ -23,7 +23,6 @@ import {
   selectTimeSeriesItemXrange,
   selectTimeSeriesItemZeroLine,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { setDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 export const TimeSeriesPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -38,7 +37,7 @@ export const TimeSeriesPlot = React.memo(() => {
       dispatch(getTimeSeriesData({ path, index: 0 }))
     }
   }, [dispatch, isInitialized, path])
-  if (isPending && displayNumbers.length == 1) {
+  if (isPending && displayNumbers.length === 1) {
     return <LinearProgress />
   } else if (error != null) {
     return <Typography color="error">{error}</Typography>
@@ -86,7 +85,7 @@ const TimeSeriesPlotImple = React.memo<{
   const xrange = useSelector(selectTimeSeriesItemXrange(itemId))
 
   const data = React.useMemo(() => {
-    if (timeSeriesData == null) {
+    if (timeSeriesData === null) {
       return []
     }
     return Object.keys(timeSeriesData).map((key, i) => {

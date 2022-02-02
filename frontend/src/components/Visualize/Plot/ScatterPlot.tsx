@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { LinearProgress, Typography } from '@material-ui/core'
@@ -38,7 +38,7 @@ export const ScatterPlot = React.memo(() => {
 })
 
 const ScatterPlotImple = React.memo(() => {
-  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+  const { filePath: path } = React.useContext(DisplayDataContext)
 
   const scatterData = useSelector(
     selectScatterData(path),
