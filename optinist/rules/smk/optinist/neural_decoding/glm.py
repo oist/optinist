@@ -3,8 +3,7 @@ rule:
         config["rules"]["glm"]["input"]
     output:
         config["rules"]["glm"]["output"]
-    # run:
-    #     __func_config = config["rules"]["glm"]
-    #     run_script(__func_config)
+    conda:
+        "../../../envs/optinist_env.yaml"
     script:
         "../../../scripts/optinist/neural_decoding/glm.py"

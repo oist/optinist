@@ -3,8 +3,7 @@ rule:
         config["rules"]["cross_correlation"]["input"]
     output:
         config["rules"]["cross_correlation"]["output"]
-    # run:
-    #     __func_config = config["rules"]["svm"]
-    #     run_script(__func_config)
+    conda:
+        "../../../envs/optinist_env.yaml"
     script:
         "../../../scripts/optinist/neural_population_analysis/cross_correlation.py"

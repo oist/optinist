@@ -3,8 +3,7 @@ rule:
         config["rules"]["svm"]["input"]
     output:
         config["rules"]["svm"]["output"]
-    # run:
-    #     __func_config = config["rules"]["svm"]
-    #     run_script(__func_config)
+    conda:
+        "../../../envs/optinist_env.yaml"
     script:
         "../../../scripts/optinist/neural_decoding/svm.py"

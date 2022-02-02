@@ -3,8 +3,7 @@ rule:
         config["rules"]["lda"]["input"]
     output:
         config["rules"]["lda"]["output"]
-    # run:
-    #     __func_config = config["rules"]["lda"]
-    #     run_script(__func_config)
+    conda:
+        "../../../envs/optinist_env.yaml"
     script:
         "../../../scripts/optinist/neural_decoding/lda.py"
