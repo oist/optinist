@@ -12,6 +12,7 @@ import {
   selectBarDataIsPending,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getBarData } from 'store/slice/DisplayData/DisplayDataActions'
+import { BarData } from 'store/slice/DisplayData/DisplayDataType'
 
 export const BarPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -39,10 +40,7 @@ export const BarPlot = React.memo(() => {
 const BarPlotImple = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
 
-  const barData = useSelector(
-    selectBarData(path),
-    // barDataEqualityFn,
-  )
+  const barData = useSelector(selectBarData(path), barDataEqualityFn)
 
   // const barData = {
   //   x: ['giraffes', 'orangutans', 'monkeys'],
@@ -82,22 +80,19 @@ const BarPlotImple = React.memo(() => {
   return <PlotlyChart data={data} layout={layout} config={config} />
 })
 
-// function barDataEqualityFn(
-//   a: BarData | undefined,
-//   b: BarData | undefined,
-// ) {
-//   if (a != null && b != null) {
-//     const aArray = Object.entries(a)
-//     const bArray = Object.entries(b)
-//     return (
-//       a === b ||
-//       (aArray.length === bArray.length &&
-//         aArray.every(([aKey, aValue], i) => {
-//           const [bKey, bValue] = bArray[i]
-//           return bKey === aKey // && nestEqualityFun(bValue, aValue)
-//         }))
-//     )
-//   } else {
-//     return a === undefined && b === undefined
-//   }
-// }
+function barDataEqualityFn(a: BarData | undefined, b: BarData | undefined) {
+  if (a != null && b != null) {
+    const aArray = Object.entries(a)
+    const bArray = Object.entries(b)
+    return (
+      a === b ||
+      (aArray.length === bArray.length &&
+        aArray.every(([aKey, aValue], i) => {
+          const [bKey, bValue] = bArray[i]
+          return bKey === aKey // && nestEqualityFun(bValue, aValue)
+        }))
+    )
+  } else {
+    return a === undefined && b === undefined
+  }
+}
