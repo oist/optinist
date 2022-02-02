@@ -132,6 +132,11 @@ Check you're working in `optinist` environment.
 conda activate optinist
 ```
 
+Install cython for caiman
+```
+pip install cython
+```
+
 Install caiman, donwload directory is up to you.
 ```
 git clone https://github.com/flatironinstitute/CaImAn -b v1.9.7
@@ -151,7 +156,7 @@ Check you're working directory in `optinist/backend`
 cd optinist/backend
 ```
 
-run with gunicorn
+run backend
 ```
 python main.py
 ```
