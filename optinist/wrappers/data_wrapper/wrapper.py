@@ -2,8 +2,6 @@ import os
 import numpy as np
 import pandas as pd
 import imageio
-from PIL import Image
-import cv2
 import tifffile
 import gc
 from .utils import get_file_path, get_images_list
@@ -45,7 +43,7 @@ class ImageData:
 class TimeSeriesData:
     def __init__(self, data, func_name='timeseries', file_name='timeseries'):
         if type(data) == str:
-            self.data = pd.read_csv(data).values
+            self.data = pd.read_csv(data, header=None).values
         else:
             self.data = data
 

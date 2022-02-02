@@ -2,7 +2,6 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 
-@args_check
 def suite2p_roi(
         ops: Suite2pData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'ops': Suite2pData, 'F': TimeSeriesData, 'iscell': IscellData}:
@@ -60,11 +59,11 @@ def suite2p_roi(
             stat[i]['ypix'], stat[i]['xpix'], stat[i]['lam']]).T
         roi_list.append(kargs)
 
-    nwbfile = nwb_add_roi(nwbfile, roi_list)
-    # import pdb; pdb.set_trace()
-    ### iscellを追加
-    nwbfile = nwb_add_column(
-        nwbfile, 'iscell', 'two columns - iscell & probcell', iscell)
+    if nwbfile is not None:
+        nwbfile = nwb_add_roi(nwbfile, roi_list)
+        ### iscellを追加
+        nwbfile = nwb_add_column(
+            nwbfile, 'iscell', 'two columns - iscell & probcell', iscell)
 
     ops['F'] = F
     ops['Fneu'] = Fneu

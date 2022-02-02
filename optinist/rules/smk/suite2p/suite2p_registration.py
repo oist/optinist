@@ -1,0 +1,9 @@
+rule:
+    input:
+        config["rules"]["suite2p_registration"]["input"]
+    output:
+        config["rules"]["suite2p_registration"]["output"]
+    conda:
+        "../../envs/suite2p_env.yaml"
+    script:
+        "../../scripts/suite2p/suite2p_registration.py"

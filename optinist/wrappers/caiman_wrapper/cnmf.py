@@ -2,7 +2,6 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 
 
-@args_check
 def caiman_cnmf(
         images: ImageData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'fluo': TimeSeriesData, 'iscell': IscellData, 'roi': RoiData}:
@@ -70,66 +69,67 @@ def caiman_cnmf(
     iscell[cnm.estimates.idx_components] = 1
 
     # NWBの追加
+    if nwbfile is not None:
+        ### NWBにROIを追加
+        roi_list = []
+        n_cells = cnm.estimates.A.shape[-1]
+        for i in range(n_cells):
+            kargs = {}
+            kargs['image_mask'] = cnm.estimates.A.T[i].T.toarray().reshape(dims)
+            if hasattr(cnm.estimates, 'accepted_list'):
+                kargs['accepted'] = i in cnm.estimates.accepted_list
+            if hasattr(cnm.estimates, 'rejected_list'):
+                kargs['rejected'] = i in cnm.estimates.rejected_list
+            roi_list.append(kargs)
 
-    ### NWBにROIを追加
-    roi_list = []
-    n_cells = cnm.estimates.A.shape[-1]
-    for i in range(n_cells):
-        kargs = {}
-        kargs['image_mask'] = cnm.estimates.A.T[i].T.toarray().reshape(dims)
-        if hasattr(cnm.estimates, 'accepted_list'):
-            kargs['accepted'] = i in cnm.estimates.accepted_list
-        if hasattr(cnm.estimates, 'rejected_list'):
-            kargs['rejected'] = i in cnm.estimates.rejected_list
-        roi_list.append(kargs)
+        nwbfile = nwb_add_roi(nwbfile, roi_list)
 
-    nwbfile = nwb_add_roi(nwbfile, roi_list)
+        ### backgroundsを追加
+        bg_list = []
+        for bg in cnm.estimates.b.T:
+            kargs = {}
+            kargs['image_mask'] = bg.reshape(dims)
+            if hasattr(cnm.estimates, 'accepted_list'):
+                kargs['accepted'] = False
+            if hasattr(cnm.estimates, 'rejected_list'):
+                kargs['rejected'] = False
+            bg_list.append(kargs)
 
-    ### backgroundsを追加
-    bg_list = []
-    for bg in cnm.estimates.b.T:
-        kargs = {}
-        kargs['image_mask'] = bg.reshape(dims)
-        if hasattr(cnm.estimates, 'accepted_list'):
-            kargs['accepted'] = False
-        if hasattr(cnm.estimates, 'rejected_list'):
-            kargs['rejected'] = False
-        bg_list.append(kargs)
-
-    nwbfile = nwb_add_roi(nwbfile, bg_list)
+        nwbfile = nwb_add_roi(nwbfile, bg_list)
 
     # ### iscellを追加
     # nwbfile = nwb_add_column(
     #     nwbfile, 'iscell', 'two columns - iscell & probcell', iscell)
 
-    ### Fluorescence
-    starting_time = 0
-    imaging_rate = nwbfile.imaging_planes['ImagingPlane'].imaging_rate
-    timestamps = np.arange(cnm.estimates.f.shape[1]) / imaging_rate + starting_time
-    n_rois = cnm.estimates.A.shape[-1]
-    n_bg = len(cnm.estimates.f)
-    print(timestamps)
-    ### roiを追加
-    nwbfile = nwb_add_fluorescence(
-        nwbfile,
-        table_name='ROIs',
-        region=list(range(n_rois)),
-        name='RoiResponseSeries',
-        data=cnm.estimates.C.T,
-        unit='lumens',
-        # timestamps=timestamps,
-    )
+        ### Fluorescence
+        starting_time = 0
+        imaging_rate = nwbfile.imaging_planes['ImagingPlane'].imaging_rate
+        timestamps = np.arange(cnm.estimates.f.shape[1]) / imaging_rate + starting_time
+        n_rois = cnm.estimates.A.shape[-1]
+        n_bg = len(cnm.estimates.f)
+        print(timestamps)
 
-    ### backgroundsを追加
-    nwbfile = nwb_add_fluorescence(
-        nwbfile,
-        table_name='Background',
-        region=list(range(n_rois, n_rois+n_bg)),
-        name='Background_Fluorescence_Response',
-        data=cnm.estimates.f.T,
-        unit='lumens',
-        # timestamps=timestamps,
-    )
+        ### roiを追加
+        nwbfile = nwb_add_fluorescence(
+            nwbfile,
+            table_name='ROIs',
+            region=list(range(n_rois)),
+            name='RoiResponseSeries',
+            data=cnm.estimates.C.T,
+            unit='lumens',
+            # timestamps=timestamps,
+        )
+
+        ### backgroundsを追加
+        nwbfile = nwb_add_fluorescence(
+            nwbfile,
+            table_name='Background',
+            region=list(range(n_rois, n_rois+n_bg)),
+            name='Background_Fluorescence_Response',
+            data=cnm.estimates.f.T,
+            unit='lumens',
+            # timestamps=timestamps,
+        )
 
     info = {}
     info['images'] = ImageData(np.array(Cn * 255, dtype=np.uint8), func_name='caiman_cnmf', file_name='images')

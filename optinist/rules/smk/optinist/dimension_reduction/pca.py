@@ -1,0 +1,9 @@
+rule:
+    input:
+        config["rules"]["pca"]["input"]
+    output:
+        config["rules"]["pca"]["output"]
+    conda:
+        "../../../envs/optinist_env.yaml"
+    script:
+        "../../../scripts/optinist/dimension_reduction/pca.py"

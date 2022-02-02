@@ -1,0 +1,9 @@
+rule:
+    input:
+        config["rules"]["correlation"]["input"]
+    output:
+        config["rules"]["correlation"]["output"]
+    conda:
+        "../../../envs/optinist_env.yaml"
+    script:
+        "../../../scripts/optinist/neural_population_analysis/correlation.py"

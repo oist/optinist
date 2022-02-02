@@ -1,0 +1,9 @@
+rule:
+    input:
+        config["rules"]["tsne"]["input"]
+    output:
+        config["rules"]["tsne"]["output"]
+    conda:
+        "../../../envs/optinist_env.yaml"
+    script:
+        "../../../scripts/optinist/dimension_reduction/tsne.py"

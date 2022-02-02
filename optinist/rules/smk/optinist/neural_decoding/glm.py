@@ -1,0 +1,9 @@
+rule:
+    input:
+        config["rules"]["glm"]["input"]
+    output:
+        config["rules"]["glm"]["output"]
+    conda:
+        "../../../envs/optinist_env.yaml"
+    script:
+        "../../../scripts/optinist/neural_decoding/glm.py"

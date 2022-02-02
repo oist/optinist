@@ -1,0 +1,9 @@
+rule:
+    input:
+        config["rules"]["cca"]["input"]
+    output:
+        config["rules"]["cca"]["output"]
+    conda:
+        "../../../envs/optinist_env.yaml"
+    script:
+        "../../../scripts/optinist/dimension_reduction/cca.py"

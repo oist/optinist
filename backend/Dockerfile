@@ -19,4 +19,4 @@ RUN apt update && \
 
 COPY . .
 
-ENTRYPOINT ["python", "main.py" ]
+ENTRYPOINT ["python", "main.py"]

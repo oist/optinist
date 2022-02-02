@@ -1,0 +1,9 @@
+rule:
+    input:
+        config["rules"]["lda"]["input"]
+    output:
+        config["rules"]["lda"]["output"]
+    conda:
+        "../../../envs/optinist_env.yaml"
+    script:
+        "../../../scripts/optinist/neural_decoding/lda.py"

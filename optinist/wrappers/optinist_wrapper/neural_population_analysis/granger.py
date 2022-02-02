@@ -2,10 +2,12 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 from wrappers.optinist_wrapper.utils import standard_norm
 
-@args_check
 def Granger(
-        timeseries: TimeSeriesData, iscell: IscellData=None, params: dict=None
-    ) -> {'Granger_fval_mat': CorrelationData}:
+        neural_data: TimeSeriesData,
+        iscell: IscellData=None,
+        nwbfile: NWBFile=None,
+        params: dict=None
+    ) -> {}:
 
     # modules specific to function
     # from sklearn.preprocessing import StandardScaler
@@ -13,18 +15,18 @@ def Granger(
     import itertools
     from tqdm import tqdm
 
-    timeseries = timeseries.data
+    neural_data = neural_data.data
 
     # data shold be time x component matrix
+    if params['transpose']:
+        X = neural_data.transpose()
+    else:
+        X = neural_data
+
     if iscell is not None:
         iscell = iscell.data
         ind  = np.where(iscell > 0)[0]
-        timeseries = timeseries[ind, :]
-
-    if params['transpose']:
-        X = timeseries.transpose()
-    else:
-        X = timesereies
+        X = X[ind, :]
 
     num_cell = X.shape[0]
     comb = list(itertools.permutations(range(num_cell), 2))  # combinations with dup

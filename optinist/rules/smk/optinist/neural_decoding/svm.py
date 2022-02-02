@@ -1,0 +1,9 @@
+rule:
+    input:
+        config["rules"]["svm"]["input"]
+    output:
+        config["rules"]["svm"]["output"]
+    conda:
+        "../../../envs/optinist_env.yaml"
+    script:
+        "../../../scripts/optinist/neural_decoding/svm.py"

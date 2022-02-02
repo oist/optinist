@@ -1,0 +1,9 @@
+rule:
+    input:
+        config["rules"]["granger"]["input"]
+    output:
+        config["rules"]["granger"]["output"]
+    conda:
+        "../../../envs/optinist_env.yaml"
+    script:
+        "../../../scripts/optinist/neural_population_analysis/granger.py"

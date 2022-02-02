@@ -2,12 +2,11 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 from wrappers.optinist_wrapper.utils import standard_norm
 
-
-@args_check
 def LDA(
-        timeseries: TimeSeriesData,
-        behaviors: TimeSeriesData,
+        neural_data: TimeSeriesData,
+        behaviors_data: TimeSeriesData,
         iscell: IscellData=None,
+        nwbfile: NWBFile=None,
         params: dict=None
     ):
 
@@ -16,25 +15,29 @@ def LDA(
     from sklearn.preprocessing import StandardScaler
     from sklearn.model_selection import StratifiedKFold
 
-    timeseries = timeseries.data
-    behaviors = behaviors.data
+    neural_data = neural_data.data
+    behaviors_data = behaviors_data.data
+
+    # data shold be time x component matrix
+    if params['transpose_x']:
+        X = neural_data.transpose()
+    else:
+        X = neural_data
+
+    if params['transpose_y']:
+        Y = behaviors_data.transpose()
+    else:
+        Y = behaviors_data
+
+    assert X.shape[0] == Y.shape[0], f"""
+        neural_data and behaviors_data is not same dimension,
+        neural.shape{neural_data.shape}, behavior.shape{behaviors_data.shape}"""
 
     if iscell is not None:
         iscell = iscell.data
-        ind = np.where(iscell > 0)[0]
-        timeseries = timeseries[ind, :]
-        behaviors = behaviors[ind, :]
-
-    # # preprocessing  ##################
-    if params['transpose_x']:
-        X = timeseries.transpose()
-    else:
-        X = timeseries
-
-    if params['transpose_y']:
-        Y = behaviors.transpose()
-    else:
-        Y = behaviors
+        ind  = np.where(iscell > 0)[0]
+        X = X[ind, :]
+        Y = Y[ind, :]
 
     Y = Y[:, params['target_index']].reshape(-1, 1)
 
@@ -48,7 +51,6 @@ def LDA(
     classifier = []
     for train_index, test_index in skf.split(tX, Y):
         clf = LDA(**params['LDA'])
-
 
         if (tX.shape[0] == 1):
             clf.fit(tX[train_index].reshape(-1, 1), Y[train_index])

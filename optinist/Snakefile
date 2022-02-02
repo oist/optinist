@@ -1,0 +1,7 @@
+configfile: "../optinist/config.yaml"
+
+for rule, details in config["rules"].items():
+    include: details.get("rule_file")
+
+rule all:
+    input: config["last_output"]
