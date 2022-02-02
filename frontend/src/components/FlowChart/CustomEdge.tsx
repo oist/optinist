@@ -5,7 +5,7 @@ import {
   getMarkerEnd,
   getEdgeCenter,
 } from 'react-flow-renderer'
-import CloseIcon from '@material-ui/icons/Close'
+import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
 import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
 
 const foreignObjectSize = 40
@@ -61,11 +61,7 @@ export const CustomEdge: React.FC<EdgeProps> = ({
         y={edgeCenterY - foreignObjectSize / 2}
         className="edgebutton-foreignobject"
       >
-        <body>
-          <button>
-            <CloseIcon onClick={onEdgeClick} />
-          </button>
-        </body>
+        <CloseOutlinedIcon onClick={onEdgeClick} />
       </foreignObject>
     </>
   )
