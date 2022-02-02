@@ -14,6 +14,7 @@ export const RIGHT_DRAWER_MODE = {
   NONE: 'none',
   NWB: 'nwb',
   PARAM_FORM: 'paramForm',
+  SNAKEMAKE: 'snakemake',
 } as const
 
 export type RIGHT_DRAWER_MODE_TYPE =
@@ -61,6 +62,16 @@ export const rightDrawerSlice = createSlice({
       }
       state.currendNodeId = null
     },
+    toggleSnakemake: (state) => {
+      if (state.open && state.mode === RIGHT_DRAWER_MODE.SNAKEMAKE) {
+        state.open = false
+        state.mode = RIGHT_DRAWER_MODE.NONE
+      } else {
+        state.open = true
+        state.mode = RIGHT_DRAWER_MODE.SNAKEMAKE
+      }
+      state.currendNodeId = null
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -79,7 +90,12 @@ export const rightDrawerSlice = createSlice({
   },
 })
 
-export const { toggleParamForm, toggleNwb, openRightDrawer, closeRightDrawer } =
-  rightDrawerSlice.actions
+export const {
+  toggleParamForm,
+  toggleNwb,
+  toggleSnakemake,
+  openRightDrawer,
+  closeRightDrawer,
+} = rightDrawerSlice.actions
 
 export default rightDrawerSlice.reducer

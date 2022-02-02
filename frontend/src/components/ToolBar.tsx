@@ -13,6 +13,7 @@ import { selectFilePathIsUndefined } from 'store/slice/InputNode/InputNodeSelect
 import { selectElementListForRun } from 'store/slice/FlowElement/FlowElementSelectors'
 import { reflectResult } from 'store/slice/RunPipelineResult/RunPipelineResultSlice'
 import { RunPipeLineContext } from './RunContext'
+import { SnakemakeButton } from './FlowChart/Snakemake'
 
 export const ToolBar = React.memo(() => (
   <SnackbarProvider
@@ -77,6 +78,7 @@ const ToolBarImple = React.memo(() => {
   return (
     <div style={{ width: '100%' }}>
       <Box display="flex" justifyContent="flex-end" style={{ padding: 4 }}>
+        <SnakemakeButton />
         <NWBSettingButton />
         <Box>
           <Button

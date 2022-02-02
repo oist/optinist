@@ -20,6 +20,7 @@ import {
 import { NWBSettingContents } from './NWB'
 import { RootState } from 'store/store'
 import { ParamForm } from './ParamForm'
+import { SnakemakeContents } from './Snakemake'
 
 const RightDrawer: React.FC = () => {
   const open = useSelector(selectRightDrawerIsOpen)
@@ -33,6 +34,8 @@ const RightDrawer: React.FC = () => {
         return 'NWB Setting'
       case RIGHT_DRAWER_MODE.PARAM_FORM:
         return 'Param From'
+      case RIGHT_DRAWER_MODE.SNAKEMAKE:
+        return 'Snakemake'
       default:
         return 'none'
     }
@@ -69,6 +72,8 @@ const Contents: React.FC = () => {
       return <NWBSettingContents />
     case RIGHT_DRAWER_MODE.PARAM_FORM:
       return <ParamFormConetent />
+    case RIGHT_DRAWER_MODE.SNAKEMAKE:
+      return <SnakemakeContents />
     default:
       return null
   }
