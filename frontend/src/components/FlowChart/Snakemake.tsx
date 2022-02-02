@@ -33,7 +33,6 @@ export const SnakemakeButton = React.memo(() => {
 
 export const SnakemakeContents = React.memo(() => {
   const SnakemakeList = useSelector(selectSnakemakeList)
-  console.log(SnakemakeList)
 
   const dispatch = useDispatch()
 
