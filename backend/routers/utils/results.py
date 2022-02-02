@@ -28,6 +28,10 @@ def get_results(info, path):
             results[path][k] = {}
             results[path][k]['path'] = v.path
             results[path][k]['type'] = 'scatter'
+        elif isinstance(v, BarData):
+            results[path][k] = {}
+            results[path][k]['path'] = v.path
+            results[path][k]['type'] = 'bar'
         else:
             pass
 

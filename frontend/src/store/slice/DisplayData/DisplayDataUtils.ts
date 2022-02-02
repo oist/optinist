@@ -15,6 +15,8 @@ export function toDataType(value: string): DATA_TYPE {
       return DATA_TYPE_SET.ROI
     case 'scatter':
       return DATA_TYPE_SET.SCATTER
+    case 'bar':
+      return DATA_TYPE_SET.BAR
     default:
       throw new Error(`failed to map dataType: ${value}`)
   }

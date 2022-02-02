@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { LinearProgress, Typography } from '@material-ui/core'
@@ -13,6 +13,10 @@ import {
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getScatterData } from 'store/slice/DisplayData/DisplayDataActions'
 import { ScatterData } from 'store/slice/DisplayData/DisplayDataType'
+import {
+  selectScatterItemXIndex,
+  selectScatterItemYIndex,
+} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 export const ScatterPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -45,11 +49,21 @@ const ScatterPlotImple = React.memo(() => {
     scatterDataEqualityFn,
   )
 
+  const xIndex = useSelector(selectScatterItemXIndex(itemId))
+  const yIndex = useSelector(selectScatterItemYIndex(itemId))
+  const maxIndex = Object.keys(scatterData).length - 1
+
   const data = React.useMemo(
     () => [
       {
-        x: Object.values(scatterData[0]),
-        y: Object.values(scatterData[1]),
+        x:
+          xIndex < maxIndex
+            ? Object.values(scatterData[xIndex])
+            : Object.values(scatterData[maxIndex]),
+        y:
+          yIndex < maxIndex
+            ? Object.values(scatterData[yIndex])
+            : Object.values(scatterData[maxIndex]),
         type: 'scatter',
         mode: 'markers', //'markers+text',
         text: Object.keys(scatterData[0]),
@@ -63,7 +77,7 @@ const ScatterPlotImple = React.memo(() => {
         },
       },
     ],
-    [scatterData],
+    [scatterData, xIndex, yIndex, maxIndex],
   )
 
   const layout = React.useMemo(
@@ -76,8 +90,32 @@ const ScatterPlotImple = React.memo(() => {
       },
       dragmode: 'pan',
       autosize: true,
+      xaxis: {
+        title: {
+          text: `x: ${
+            xIndex < Object.keys(scatterData).length ? xIndex : maxIndex
+          }`,
+          font: {
+            family: 'Courier New, monospace',
+            size: 18,
+            color: '#7f7f7f',
+          },
+        },
+      },
+      yaxis: {
+        title: {
+          text: `y: ${
+            yIndex < Object.keys(scatterData).length ? yIndex : maxIndex
+          }`,
+          font: {
+            family: 'Courier New, monospace',
+            size: 18,
+            color: '#7f7f7f',
+          },
+        },
+      },
     }),
-    [],
+    [xIndex, yIndex, maxIndex],
   )
 
   const config = {

@@ -33,18 +33,13 @@ def PCA(
     proj_X = pca.fit_transform(tX)
 
     info = {}
-    info['components'] = CorrelationData(
-        pca.components_,
-        func_name='pca',
-        file_name='components'
-    )
-    info['explained_variance_ratio'] = TimeSeriesData(
+    info['explained_variance'] = BarData(
         pca.explained_variance_ratio_,
         func_name='pca',
         file_name='evr'
     )
     info['projected2d'] = ScatterData(
-        proj_X[:, 0:2],
+        proj_X,
         func_name='pca',
         file_name='projected2d'
     )  # change to 2D scatter plots

@@ -11,6 +11,7 @@ import {
   ScatterItem,
   VisualaizeItem,
   VISUALIZE_ITEM_TYPE_SET,
+  BarItem,
 } from './VisualizeItemType'
 import {
   isDefaultSetItem,
@@ -96,7 +97,14 @@ const roiItemInitialValue: RoiItem = {
 const scatterItemInitialValue: ScatterItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.SCATTER,
+  xIndex: 0,
+  yIndex: 1,
 }
+const barItemInitialValue: BarItem = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.BAR,
+}
+
 function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
   switch (dataType) {
     case DATA_TYPE_SET.IMAGE:
@@ -111,6 +119,8 @@ function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
       return roiItemInitialValue
     case DATA_TYPE_SET.SCATTER:
       return scatterItemInitialValue
+    case DATA_TYPE_SET.BAR:
+      return barItemInitialValue
   }
 }
 
@@ -632,6 +642,30 @@ export const visualaizeItemSlice = createSlice({
         targetItem.setIndex = action.payload.setIndex
       }
     },
+    setScatterItemXIndex: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        xIndex: number
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isScatterItem(targetItem)) {
+        targetItem.xIndex = action.payload.xIndex
+      }
+    },
+    setScatterItemYIndex: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        yIndex: number
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isScatterItem(targetItem)) {
+        targetItem.yIndex = action.payload.yIndex
+      }
+    },
   },
 })
 
@@ -677,6 +711,8 @@ export const {
   setCsvItemTranspose,
   setCsvItemSetColumn,
   setCsvItemSetIndex,
+  setScatterItemXIndex,
+  setScatterItemYIndex,
 } = visualaizeItemSlice.actions
 
 export default visualaizeItemSlice.reducer

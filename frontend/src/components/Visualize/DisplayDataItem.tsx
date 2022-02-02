@@ -14,6 +14,7 @@ import { RoiPlot } from './Plot/RoiPlot'
 import { ScatterPlot } from './Plot/ScatterPlot'
 import { CsvPlot } from './Plot/CsvPlot'
 import { TimeSeriesPlot } from './Plot/TimeSeriesPlot'
+import { BarPlot } from './Plot/BarPlot'
 
 export const DisplayDataItem = React.memo<{
   itemId: number
@@ -35,6 +36,8 @@ export const DisplayDataItem = React.memo<{
         return <RoiPlot />
       case DATA_TYPE_SET.SCATTER:
         return <ScatterPlot />
+      case DATA_TYPE_SET.BAR:
+        return <BarPlot />
     }
   }
   if (filePath != null && dataType != null) {

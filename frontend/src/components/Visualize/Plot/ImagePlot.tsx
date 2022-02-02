@@ -22,7 +22,6 @@ import {
   selectActiveImageData,
   selectRoiData,
   selectImageDataEndIndex,
-  selectImageDataStartIndex,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import {
   getImageData,
@@ -89,7 +88,6 @@ const ImagePlotImple = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
   const itemStartIndex = useSelector(selectImageItemStartIndex(itemId))
   const itemEndIndex = useSelector(selectImageItemEndIndex(itemId))
-  const startIndex = selectImageDataStartIndex(path)
   const endIndex = useSelector(selectImageDataEndIndex(path))
   const activeIndex = useSelector(selectImageItemActiveIndex(itemId))
   const dispatch = useDispatch()

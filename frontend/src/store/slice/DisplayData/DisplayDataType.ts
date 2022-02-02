@@ -19,6 +19,9 @@ export type DisplayData = {
   scatter: {
     [filePath: string]: ScatterDisplayData
   }
+  bar: {
+    [filePath: string]: BarDisplayData
+  }
 }
 
 export const DATA_TYPE_SET = {
@@ -28,6 +31,7 @@ export const DATA_TYPE_SET = {
   CSV: 'csv',
   ROI: 'roi',
   SCATTER: 'scatter',
+  BAR: 'bar',
 } as const
 
 export type DATA_TYPE = typeof DATA_TYPE_SET[keyof typeof DATA_TYPE_SET]
@@ -63,5 +67,9 @@ export type CsvData = number[][]
 export interface RoiDisplayData extends BaseDisplay<'roi', RoiData> {}
 export type RoiData = number[][][]
 
-export interface ScatterDisplayData extends BaseDisplay<'scatter', RoiData> {}
+export interface ScatterDisplayData
+  extends BaseDisplay<'scatter', ScatterData> {}
 export type ScatterData = number[][][]
+
+export interface BarDisplayData extends BaseDisplay<'bar', BarData> {}
+export type BarData = number[][][]
