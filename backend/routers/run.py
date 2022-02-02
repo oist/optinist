@@ -4,18 +4,15 @@ import gc
 import json
 import tracemalloc
 import time
-# from pytools.persistent_dict import PersistentDict
 
 from wrappers.data_wrapper import *
 from wrappers.optinist_exception import AlgorithmException
 
 from .const import BASE_DIR, OPTINIST_DIR
 from .utils.save import save_nwb
-from .utils.run import run_algorithm
 from .utils.memory import display_top
 from .utils.results import get_results
 from .utils.utils import algo_network
-from .utils.set_data import set_data
 from .utils.snakemake import create_snakemake_files
 
 from fastapi import APIRouter, WebSocket
@@ -111,24 +108,3 @@ async def websocket_endpoint(websocket: WebSocket):
         gc.collect()
         print('Bye..')
         await websocket.close()
-
-
-def add_other_input(graph, item, nodeDict, info):
-    other_input = None
-    if len(graph[item['id']]) > 0:
-        prev_id = item["id"]
-        node_id = list(graph[item['id']].keys())[0]
-        for k, v in graph.items():
-            if k != prev_id and k != node_id and node_id in v:
-                item = nodeDict[k]
-                item['key'] = list(graph[k].values())[0]
-                other_input = set_data(None, item, None)
-
-    if other_input is not None:
-        for k, v in other_input.items():
-            if k in info.keys():
-                info[f"{k}{np.random.randint(10000)}"] = v
-            else:
-                info[k] = v
-    
-    return info
