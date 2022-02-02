@@ -39,7 +39,7 @@ def PCA(
         file_name='evr'
     )
     info['projected2d'] = ScatterData(
-        proj_X[:, 0:2],
+        proj_X,
         func_name='pca',
         file_name='projected2d'
     )  # change to 2D scatter plots

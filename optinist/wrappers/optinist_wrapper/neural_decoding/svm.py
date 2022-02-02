@@ -72,7 +72,7 @@ def SVM(
 
         clf = svm.SVC(**hp)
 
-        if (tX.shape[0] == 1):
+        if tX.shape[0] == 1:
             clf.fit(tX[train_index].reshape(-1, 1), Y[train_index])
             score.append(clf.score(tX[test_index].reshape(-1, 1), Y[test_index]))
         else:

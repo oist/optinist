@@ -128,7 +128,7 @@ class IscellData:
 class ScatterData:
     def __init__(self, data, func_name='scatter', file_name='scatter'):
 
-        if not (data.ndim == 2 and data.shape[1] == 2):
+        if not data.ndim == 2:
             raise 'Scatter Dimension Error'
 
         _dir = os.path.join(BASE_DIR, func_name, f'{file_name}')

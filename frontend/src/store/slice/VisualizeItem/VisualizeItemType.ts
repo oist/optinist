@@ -94,6 +94,8 @@ export interface RoiItem extends DisplayDataItemBaseType {
 
 export interface ScatterItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.SCATTER
+  xIndex: number
+  yIndex: number
 }
 
 export interface BarItem extends DisplayDataItemBaseType {

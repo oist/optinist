@@ -49,8 +49,6 @@ const BarPlotImple = React.memo(() => {
   //   y: [20, 14, 23],
   // }
 
-  console.log(Object.keys(barData))
-  console.log(barData.map((v) => v[0]))
   const data = React.useMemo(
     () => [
       {

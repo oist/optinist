@@ -7,6 +7,7 @@ import {
   isRoiItem,
   isDefaultSetItem,
   isCsvItem,
+  isScatterItem,
 } from './VisualizeItemUtils'
 
 export const selectSelectedVisualizeItemId = (state: RootState) =>
@@ -395,3 +396,23 @@ export const selectCsvItemSetIndex = (itemId: number) => (state: RootState) => {
     throw new Error('invalid VisualaizeItemType')
   }
 }
+
+export const selectScatterItemXIndex =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isScatterItem(item)) {
+      return item.xIndex
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectScatterItemYIndex =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isScatterItem(item)) {
+      return item.yIndex
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }

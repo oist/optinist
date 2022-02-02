@@ -128,7 +128,7 @@ def Granger(
 
     # main results for plot
     info = {}
-    info['Granger_fval_mat'] = CorrelationData(
+    info['Granger_fval_mat'] = ScatterData(
         GC['Granger_fval_mat'][0],
         func_name='granger',
         file_name='gfm'
