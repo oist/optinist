@@ -18,6 +18,21 @@ If you don't have access authority, please contact with a person who is in charg
 <br />
 
 # 2. Make frontend environment
+** For windows users or others who doesn't want to install docker users.
+When docker installation is sometimes wrong, it's easy to install nodejs directly and launch frontend in nodejs.
+
+- How to install nodejs
+https://nodejs.org/ja/download/
+- launch command
+```
+cd optinist/frontend
+yarn start
+```
+
+open `localhost:3000`  
+and skip install docker document.  
+**
+
 
 ## Install docker
 
@@ -71,16 +86,23 @@ It opens correctly!
 <br />
 
 ## Create anaconda or virtualenv
-Prepare virtual environment, anaconda or virtualenv.
-You can install in local environment directly, but I recommend to use virtual environment.
+Prepare virtual environment, optinist support anaconda.
+
+[anaconda install from this page](https://www.anaconda.com/products/individual)
 
 
 We introduce how to setup in anaconda environment.
 
 Create virtual environment, named `optinist`
 ```
-conda create -n optinist python=3.9.7
+conda create -n optinist python=3.8
 conda activate optinist
+```
+
+## Install mamba
+We use snakemake library, it needs mamba.
+```
+conda install -n base -c conda-forge mamba
 ```
 
 <br />
@@ -95,18 +117,13 @@ Install library from requirements.txt
 ```
 pip install -r requirements.txt
 ```
-
-- For m1 mac user
-We use tensorflow in caiman code. We know that M1 mac doesn't install tensorflow easily, so if there is a proboem, please comment out tensorflow from requirements.txt and skip caiman. (Release in progress…)
-Install library from requirements_m1mac.txt
-```
-pip install -r requirements_m1mac.txt
-```
-
 <br />
 
 ## Install caiman
-** If you use m1 mac, skip this.
+- For m1 mac user  
+We use tensorflow in caiman code. We know that M1 mac doesn't install tensorflow easily, so if there is a proboem, skip install caiman. (Release in progress…)
+
+** If you use m1 mac, skip this.  
 
 Check you're working in `optinist` environment.
 ```
@@ -134,7 +151,7 @@ cd optinist/backend
 
 run with gunicorn
 ```
-gunicorn
+python main.py
 ```
 
 It opens correctly!

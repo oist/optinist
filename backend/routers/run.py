@@ -59,7 +59,7 @@ async def websocket_endpoint(websocket: WebSocket):
                 error_label = label
                 error_flag = True
             else:
-                print("finish")
+                print(f"finish {label}")
                 results = get_results(info, path)
                 time.sleep(5)
                 await websocket.send_json({

@@ -2,7 +2,6 @@ import os
 import numpy as np
 import pandas as pd
 import imageio
-import cv2
 import tifffile
 import gc
 from .utils import get_file_path, get_images_list

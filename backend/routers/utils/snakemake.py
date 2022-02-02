@@ -65,7 +65,7 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
                     info = {arg_name: TimeSeriesData(algo_path, '')}
 
             # info['nwbfile'] = None
-            storage.store(algo_path, info)
+            # storage.store(algo_path, info)
             # with open(algo_path, 'wb') as f:
             #     pickle.dump(info, f)
             path = algo_path.split(".")[0] + ".pkl"
@@ -130,7 +130,7 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
         lock=False)
     # snakemake(os.path.join(OPTINIST_DIR, 'Snakefile'), cores=2, use_conda=True)
 
-    print("finish")
+    print("finish snakemake run")
 
     # Send message to the client
     for key, value in all_outputs.items():
