@@ -3,15 +3,15 @@ import {
   ParamChild,
   ParamParent,
   ParamType,
-  AlgorithmParam,
-} from './AlgorithmNodeType'
+  ParamMap,
+} from './ParamType'
 
 export function getChildParam(
   path: string,
-  algorithmParam: AlgorithmParam,
+  ParamMap: ParamMap,
 ): ParamChild | null {
   let result: ParamChild | null = null
-  for (const node of Object.values(algorithmParam)) {
+  for (const node of Object.values(ParamMap)) {
     if (isParamChild(node)) {
       if (node.path === path) {
         result = node
@@ -40,26 +40,23 @@ function isDictObject(value: unknown): value is { [key: string]: unknown } {
 
 const PATH_SEPARATOR = '/'
 
-export function convertToAlgorithmParam(
-  dto: ParamDTO,
-  keyList?: string[],
-): AlgorithmParam {
-  const algorithmParam: AlgorithmParam = {}
+export function convertToParamMap(dto: ParamDTO, keyList?: string[]): ParamMap {
+  const ParamMap: ParamMap = {}
   Object.entries(dto).forEach(([name, value]) => {
     const kList = keyList ?? []
     if (isDictObject(value)) {
       kList.push(name)
-      algorithmParam[name] = {
+      ParamMap[name] = {
         type: 'parent',
-        children: convertToAlgorithmParam(value, kList),
+        children: convertToParamMap(value, kList),
       }
     } else {
-      algorithmParam[name] = {
+      ParamMap[name] = {
         type: 'child',
         value,
         path: kList.concat([name]).join(PATH_SEPARATOR),
       }
     }
   })
-  return algorithmParam
+  return ParamMap
 }

@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 import { BASE_URL, WS_BASE_URL } from 'const/API'
-import { NWBListType } from 'store/slice/NWB/NWBType'
 import { Edge, Node } from 'react-flow-renderer'
+import { ParamMap } from 'store/utils/param/ParamType'
 
 export type RunPipelineDTO = {
   status: string
@@ -30,7 +30,8 @@ export const webSocketApi = createApi({
       {
         requestId: string
         elementListForRun: { nodeList: Node[]; edgeList: Edge[] }
-        nwbParam: NWBListType
+        nwbParam: ParamMap
+        snakemakeParam: ParamMap
       }
     >({
       // リクエストするたびにキャッシュをクリアするためにidを振っておく

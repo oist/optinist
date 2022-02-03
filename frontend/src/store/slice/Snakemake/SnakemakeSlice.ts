@@ -1,33 +1,33 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { convertToParamMap, getChildParam } from 'store/utils/param/ParamUtils'
 import { getSnakemakeParams } from './SnakemakeAction'
-import { SnakemakeType, Snakemake_SLICE_NAME } from './SnakemakeType'
-import { convertToSnakemakeListType, getSnakemakeChild } from './SnakemakeUtils'
+import { SnakemakeType, SNAKEMAKE_SLICE_NAME } from './SnakemakeType'
 
 const initialState: SnakemakeType = {
-  SnakemakeList: {},
+  params: {},
 }
 
 export const SnakemakeSlice = createSlice({
-  name: Snakemake_SLICE_NAME,
+  name: SNAKEMAKE_SLICE_NAME,
   initialState,
   reducers: {
     updateParam: (
       state,
       action: PayloadAction<{
-        paramPath: string
+        path: string
         newValue: unknown
       }>,
     ) => {
-      const { paramPath, newValue } = action.payload
-      const targetNode = getSnakemakeChild(state.SnakemakeList, paramPath)
-      if (targetNode != null) {
-        targetNode.value = newValue
+      const { path, newValue } = action.payload
+      const target = getChildParam(path, state.params)
+      if (target != null) {
+        target.value = newValue
       }
     },
   },
   extraReducers: (builder) => {
     builder.addCase(getSnakemakeParams.fulfilled, (state, action) => {
-      state.SnakemakeList = convertToSnakemakeListType(action.payload)
+      state.params = convertToParamMap(action.payload)
     })
   },
 })

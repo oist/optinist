@@ -19,7 +19,7 @@ import {
 } from 'store/slice/RightDrawer/RightDrawerSlice'
 import { NWBSettingContents } from './NWB'
 import { RootState } from 'store/store'
-import { ParamForm } from './ParamForm'
+import { AlgorithmParamForm } from './AlgorithmParamForm'
 import { SnakemakeContents } from './Snakemake'
 
 const RightDrawer: React.FC = () => {
@@ -89,7 +89,7 @@ const ParamFormConetent: React.FC = () => {
   if (nodeId != null) {
     return (
       <ParamFormContext.Provider value={nodeId}>
-        <ParamForm />
+        <AlgorithmParamForm />
       </ParamFormContext.Provider>
     )
   } else {

@@ -1,10 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { Snakemake_SLICE_NAME, SnakemakeListDTO } from './SnakemakeType'
+import { SNAKEMAKE_SLICE_NAME } from './SnakemakeType'
 import axios from 'axios'
 import { BASE_URL } from 'const/API'
+import { ParamDTO } from 'store/utils/param/ParamType'
 
-export const getSnakemakeParams = createAsyncThunk<SnakemakeListDTO, void>(
-  `${Snakemake_SLICE_NAME}/getSnakemakeParams`,
+export const getSnakemakeParams = createAsyncThunk<ParamDTO, void>(
+  `${SNAKEMAKE_SLICE_NAME}/getSnakemakeParams`,
   async (_, thunkAPI) => {
     const { rejectWithValue } = thunkAPI
     try {

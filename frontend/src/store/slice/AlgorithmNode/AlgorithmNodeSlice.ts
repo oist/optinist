@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+
+import { convertToParamMap, getChildParam } from 'store/utils/param/ParamUtils'
 import {
   addFlowElementNode,
   deleteFlowElements,
@@ -8,7 +10,6 @@ import { isNodeData } from '../FlowElement/FlowElementUtils'
 import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
 import { getAlgoParams } from './AlgorithmNodeActions'
 import { ALGORITHM_NODE_SLICE_NAME, AlgorithmNode } from './AlgorithmNodeType'
-import { convertToAlgorithmParam, getChildParam } from './AlgorithmNodeUtils'
 
 const initialState: AlgorithmNode = {}
 
@@ -49,7 +50,7 @@ export const algorithmNodeSlice = createSlice({
     builder
       .addCase(getAlgoParams.fulfilled, (state, action) => {
         const { nodeId } = action.meta.arg
-        state[nodeId].params = convertToAlgorithmParam(action.payload)
+        state[nodeId].params = convertToParamMap(action.payload)
       })
       .addCase(addFlowElementNode, (state, action) => {
         const { node, algoNodeInfo } = action.payload
