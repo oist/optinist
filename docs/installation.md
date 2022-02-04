@@ -83,15 +83,15 @@ It opens correctly!
 
 # 3. make backend environment
 
-## Create anaconda or virtualenv
-Prepare virtual environment, optinist support anaconda.
+## Create anaconda environment
+optinist support anaconda.
 
 [anaconda install from this page](https://www.anaconda.com/products/individual)
 
 
 We introduce how to setup in anaconda environment.
 
-Create virtual environment, named `optinist`
+Create conda environment, named `optinist`
 ```
 conda create -n optinist python=3.8
 conda activate optinist
