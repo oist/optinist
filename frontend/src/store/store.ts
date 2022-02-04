@@ -14,6 +14,7 @@ import {
   handleTypeColorReducer,
   rightDrawerReducer,
   visualaizeItemReducer,
+  snakemakeReducer,
 } from './slice'
 
 export const store = configureStore({
@@ -30,6 +31,7 @@ export const store = configureStore({
     runPipelineResult: runPipelineResultReducer,
     rightDrawer: rightDrawerReducer,
     visualaizeItem: visualaizeItemReducer,
+    snakemake: snakemakeReducer,
     [webSocketApi.reducerPath]: webSocketApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>

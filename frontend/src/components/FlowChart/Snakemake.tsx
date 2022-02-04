@@ -3,41 +3,42 @@ import { useSelector, useDispatch } from 'react-redux'
 
 import Button from '@material-ui/core/Button'
 
-import { updateParam } from 'store/slice/NWB/NWBSlice'
-import { getNWBParams } from 'store/slice/NWB/NWBAction'
-import { toggleNwb } from 'store/slice/RightDrawer/RightDrawerSlice'
-import { arrayEqualityFn } from 'utils/EqualityUtils'
+import { updateParam } from 'store/slice/Snakemake/SnakemakeSlice'
+import { getSnakemakeParams } from 'store/slice/Snakemake/SnakemakeAction'
+import { toggleSnakemake } from 'store/slice/RightDrawer/RightDrawerSlice'
 import {
-  selectNwbParam,
-  selectNwbParamsKeyList,
-  selectNwbParamsValue,
-} from 'store/slice/NWB/NWBSelectors'
+  selectSnakemakeParam,
+  selectSnakemakeParamsKeyList,
+  selectSnakemakeParamsValue,
+} from 'store/slice/Snakemake/SnakemakeSelectors'
+import { arrayEqualityFn } from 'utils/EqualityUtils'
 import { createParamFormItemComponent } from 'components/ParamFormItemCreator'
 
-export const NWBSettingButton = React.memo(() => {
+export const SnakemakeButton = React.memo(() => {
   const dispatch = useDispatch()
   const handleClick = () => {
-    dispatch(toggleNwb())
+    dispatch(toggleSnakemake())
   }
   return (
     <Button variant="contained" color="default" onClick={handleClick}>
-      NWB setting
+      Snakemake
     </Button>
   )
 })
 
-export const NWBSettingContents = React.memo(() => {
+export const SnakemakeContents = React.memo(() => {
   const dispatch = useDispatch()
-
-  const paramKeyList = useSelector(selectNwbParamsKeyList, arrayEqualityFn)
+  const paramKeyList = useSelector(
+    selectSnakemakeParamsKeyList,
+    arrayEqualityFn,
+  )
   useEffect(() => {
     if (paramKeyList.length === 0) {
-      dispatch(getNWBParams())
+      dispatch(getSnakemakeParams())
     }
   })
-
   return (
-    <div className="nwbParam" style={{ margin: 4 }}>
+    <div className="SnakemakeParam" style={{ margin: 4 }}>
       {paramKeyList.map((paramKey, i) => (
         <ParamItem key={i} paramKey={paramKey} />
       ))}
@@ -47,8 +48,8 @@ export const NWBSettingContents = React.memo(() => {
 
 const ParamItem = React.memo<{ paramKey: string }>(({ paramKey }) => {
   const Component = createParamFormItemComponent({
-    paramSelector: selectNwbParam,
-    paramValueSelector: selectNwbParamsValue,
+    paramSelector: selectSnakemakeParam,
+    paramValueSelector: selectSnakemakeParamsValue,
     paramUpdateActionCreator: (path, newValue) =>
       updateParam({ path, newValue }),
   })

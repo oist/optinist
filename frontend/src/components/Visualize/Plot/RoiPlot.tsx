@@ -54,7 +54,7 @@ const RoiPlotImple = React.memo<{}>(() => {
       {
         z: imageData,
         type: 'heatmap',
-        name: 'images',
+        name: 'roi',
         colorscale: colorscale.map((value) => {
           let offset: number = parseFloat(value.offset)
           const offsets: number[] = colorscale.map((v) => {

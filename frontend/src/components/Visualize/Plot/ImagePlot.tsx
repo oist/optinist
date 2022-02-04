@@ -186,7 +186,7 @@ const ImagePlotChart = React.memo<{
       {
         z: roiData,
         type: 'heatmap',
-        name: 'images',
+        name: 'roi',
         colorscale: colorscaleRoi.map((value) => {
           let offset: number = parseFloat(value.offset)
           const offsets: number[] = colorscaleRoi.map((v) => {

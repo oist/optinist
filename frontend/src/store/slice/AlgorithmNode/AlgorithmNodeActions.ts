@@ -1,7 +1,8 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { ALGORITHM_NODE_SLICE_NAME, ParamDTO } from './AlgorithmNodeType'
 import axios from 'axios'
 import { BASE_URL } from 'const/API'
+import { ParamDTO } from 'store/utils/param/ParamType'
+import { ALGORITHM_NODE_SLICE_NAME } from './AlgorithmNodeType'
 
 export const getAlgoParams = createAsyncThunk<
   ParamDTO,

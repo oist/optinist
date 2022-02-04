@@ -1,6 +1,6 @@
 import { RootState } from 'store/store'
 
-import { getChildParam } from './AlgorithmNodeUtils'
+import { getChildParam } from 'store/utils/param/ParamUtils'
 
 export const selectAlgorithmNode = (state: RootState) => state.algorithmNode
 

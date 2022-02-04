@@ -64,5 +64,9 @@ def run_script(__func_config):
         error_message  = list(traceback.TracebackException.from_exception(e).format())[-2:]
         with open(__func_config["output"], 'wb') as f:
             pickle.dump(error_message, f)
-        # with open("/tmp/optinist/error.log", 'wb') as f:
-        #     f.write("¥n".join(error_message))
+
+        file_name = __func_config["output"].split("/")[-1].split(".")[0]
+        error_path = "/tmp/optinist/error"
+        os.makedirs(error_path, exist_ok=True)
+        with open(f"{error_path}/{file_name}.log", 'w') as f:
+            f.writelines(error_message)

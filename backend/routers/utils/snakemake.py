@@ -8,13 +8,22 @@ from snakemake import snakemake
 from wrappers.data_wrapper import *
 from wrappers import wrapper_dict
 from .params import get_params
-from .utils import nest2dict, check_types
+from .utils import nest2dict, check_types, algo_network
 
 
-def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeList):
+def create_snakemake_files(BASE_DIR, OPTINIST_DIR, message):
     '''
     flowListを受け取り、Snakemakeに渡すconfig.yamlとして出力する。
     '''
+    graph, startNodeList, nodeDict, edgeList, endNodeList = algo_network(message)
+
+    ### snakemake params
+    # set default
+    filepath = os.path.join(OPTINIST_DIR, 'config', f'snakemake.yaml')
+    snakemake_params = copy.deepcopy(get_params(filepath))
+    if message["snakemakeParam"] != {}:
+        snakemake_params = check_types(nest2dict(message["snakemakeParam"]), snakemake_params)
+    ###
 
     flow_config = {}
     rules_to_execute = {}
@@ -28,11 +37,11 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
         algo_path = node['data']['path']
 
         if node["type"] == 'ImageFileNode':
+            # nwb params
             filepath = os.path.join(OPTINIST_DIR, 'config', f'nwb.yaml')
-            nwb_dict = copy.deepcopy(get_params(filepath))
-
-            # if nwb_params != {}:
-            #     nwb_dict = check_types(nest2dict(nwb_params), nwb_dict)
+            nwbfile = copy.deepcopy(get_params(filepath))
+            if message['nwbParam'] != {}:
+                nwbfile = check_types(nest2dict(message['nwbParam']), nwbfile)
 
             for edge in edgeList:
                 if edge["source"] == key:
@@ -40,8 +49,7 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
                     info = {arg_name: ImageData(algo_path, '')}
             
             # NWB file
-            nwb_dict['image_series']['external_file'] = info[arg_name].data
-            nwbfile = nwb_dict
+            nwbfile['image_series']['external_file'] = info[arg_name].data
             info['nwbfile'] = nwbfile
 
             # output to pickle
@@ -110,13 +118,8 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
     # run snakemake
     snakemake(
         os.path.join(OPTINIST_DIR, 'Snakefile'),
-        use_conda=True,
-        cores=2,
-        forceall=True,
-        forcetargets=True,
-        lock=False
+        **snakemake_params
     )
-    # snakemake(os.path.join(OPTINIST_DIR, 'Snakefile'), cores=2, use_conda=True)
 
     print("finish snakemake run")
 

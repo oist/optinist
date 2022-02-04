@@ -83,15 +83,15 @@ It opens correctly!
 
 # 3. make backend environment
 
-## Create anaconda or virtualenv
-Prepare virtual environment, optinist support anaconda.
+## Create anaconda environment
+optinist support anaconda.
 
 [anaconda install from this page](https://www.anaconda.com/products/individual)
 
 
 We introduce how to setup in anaconda environment.
 
-Create virtual environment, named `optinist`
+Create conda environment, named `optinist`
 ```
 conda create -n optinist python=3.8
 conda activate optinist
@@ -132,9 +132,9 @@ Check you're working in `optinist` environment.
 conda activate optinist
 ```
 
-Install cython for caiman
+Install other library for using caiman
 ```
-pip install cython
+pip install cython opencv-python matplotlib scikit-image==0.18.0 scikit-learn ipyparallel holoviews watershed tensorflow
 ```
 
 Install caiman, donwload directory is up to you.
