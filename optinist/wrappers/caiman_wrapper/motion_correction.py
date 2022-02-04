@@ -61,9 +61,8 @@ def caiman_mc(
                 'xy_trans_data': xy_trans_data,
             }
         }
-        info['nwbfile'] = nwbfile
-        # info['nwbfile'] = nwb_motion_correction(
-        #     nwbfile, images, xy_trans_data)
+
+    info['nwbfile'] = nwbfile
 
     return info
 
