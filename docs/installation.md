@@ -132,9 +132,9 @@ Check you're working in `optinist` environment.
 conda activate optinist
 ```
 
-Install cython for caiman
+Install other library for using caiman
 ```
-pip install cython
+pip install cython opencv-python matplotlib scikit-image==0.18.0 scikit-learn ipyparallel holoviews watershed tensorflow
 ```
 
 Install caiman, donwload directory is up to you.
