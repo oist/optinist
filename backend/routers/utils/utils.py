@@ -46,7 +46,6 @@ def check_types(params, default_params):
 
 
 def algo_network(flowList):
-    flowList = json.loads(flowList)
     nodeDict = {}
     startNodeList = []
 

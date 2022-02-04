@@ -33,6 +33,8 @@ def run_script(__func_config):
             path = path.split(".")[0] + ".pkl"
             with open(path, 'rb') as f:
                 data = pickle.load(f)
+                # if isinstance(data, list):
+                #     assert f"Error {path} is not correct file"
                 info.update(data)
 
         params = __func_config["params"]
@@ -61,3 +63,9 @@ def run_script(__func_config):
         # storage.store(__func_config["output"], error_message)
         with open(__func_config["output"], 'wb') as f:
             pickle.dump(error_message, f)
+
+        file_name = __func_config["output"].split("/")[-1].split(".")[0]
+        error_path = "/tmp/optinist/error"
+        os.makedirs(error_path, exist_ok=True)
+        with open(f"{error_path}/{file_name}.log", 'w') as f:
+            f.writelines(error_message)

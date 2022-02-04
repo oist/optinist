@@ -37,13 +37,15 @@ export const webSocketApi = createApi({
       // リクエストするたびにキャッシュをクリアするためにidを振っておく
       query: ({ requestId }) => `run/ready/${requestId}`,
       async onCacheEntryAdded(
-        { elementListForRun, nwbParam },
+        { elementListForRun, nwbParam, snakemakeParam },
         { updateCachedData, cacheDataLoaded, cacheEntryRemoved },
       ) {
         const ws = new WebSocket(`${WS_BASE_URL}/run`)
         try {
           ws.addEventListener('open', () =>
-            ws.send(JSON.stringify({ elementListForRun, nwbParam })),
+            ws.send(
+              JSON.stringify({ elementListForRun, nwbParam, snakemakeParam }),
+            ),
           )
           await cacheDataLoaded
           const listener = (event: MessageEvent) => {
