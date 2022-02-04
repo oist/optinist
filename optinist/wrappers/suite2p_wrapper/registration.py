@@ -5,13 +5,11 @@ from wrappers.args_check import args_check
 def suite2p_registration(
         ops: Suite2pData=None, nwbfile: NWBFile=None, params: dict=None
     ) -> {'ops': Suite2pData, 'images': ImageData}:
-    print('start registration')
-    # refImg = image.data
-    ops = ops.data
-    refImg = ops['meanImg']
-
     import numpy as np
     from suite2p import registration, io, default_ops, io
+    ops = ops.data
+    refImg = ops['meanImg']
+    print('start suite2_registration')
 
     ######### REGISTRATION #########
     if len(refImg.shape) == 3:

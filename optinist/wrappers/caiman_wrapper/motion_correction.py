@@ -54,9 +54,15 @@ def caiman_mc(
     xy_trans_data = (np.array(mc.x_shifts_els), np.array(mc.y_shifts_els)) \
                     if params['pw_rigid'] else np.array(mc.shifts_rig)
 
-    # if nwbfile is not None:
-    #     info['nwbfile'] = nwb_motion_correction(
-    #         nwbfile, images, xy_trans_data)
+    if nwbfile is not None:
+        nwbfile['motion_correction'] = {
+            'caiman_mc': {
+                'mc_data': images,
+                'xy_trans_data': xy_trans_data,
+            }
+        }
+
+    info['nwbfile'] = nwbfile
 
     return info
 

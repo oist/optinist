@@ -9,7 +9,6 @@ from wrappers.data_wrapper import *
 from wrappers.optinist_exception import AlgorithmException
 
 from .const import BASE_DIR, OPTINIST_DIR
-from .utils.save import save_nwb
 from .utils.memory import display_top
 from .utils.results import get_results
 from .utils.utils import algo_network
@@ -58,7 +57,7 @@ async def websocket_endpoint(websocket: WebSocket):
             else:
                 print(f"finish {label}")
                 results = get_results(info, path)
-                time.sleep(5)
+                time.sleep(1)
                 await websocket.send_json({
                     'message': label + ' success',
                     'status': 'success',
@@ -73,14 +72,14 @@ async def websocket_endpoint(websocket: WebSocket):
         display_top(snapshot, top_stats)
 
         if error_flag:
-            time.sleep(5)
+            time.sleep(1)
             await websocket.send_json({
                 'message': error_message,
                 'name': error_label,
                 'status': 'error'
             })
         else:
-            time.sleep(5)
+            time.sleep(1)
             await websocket.send_json({
                 'message': 'completed',
                 'status': 'completed'

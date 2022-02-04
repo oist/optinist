@@ -1,10 +1,8 @@
 from wrappers import wrapper_dict
-# from pytools.persistent_dict import PersistentDict
+from wrappers.data_wrapper import save_nwb
 import traceback
 import os
 import pickle
-
-# storage = PersistentDict("mystorage")
 
 
 def dict2leaf(root_dict: dict, path_list):
@@ -24,35 +22,39 @@ def run_script(__func_config):
     try:
         input_files = __func_config["input"]
         return_arg = __func_config["return_arg"]
-        info = {}
+        input_info = {}
 
         for path in input_files:
-            # info.update(storage.fetch(path))
-            # with open(path, 'rb') as f:
-            #     info.update(pickle.load(f))
             path = path.split(".")[0] + ".pkl"
             with open(path, 'rb') as f:
                 data = pickle.load(f)
-                # if isinstance(data, list):
-                #     assert f"Error {path} is not correct file"
-                info.update(data)
+                input_info.update(data)
 
         params = __func_config["params"]
         wrapper = dict2leaf(wrapper_dict, __func_config["path"].split('/'))
         print(wrapper)
 
         for return_name, arg_name in return_arg.items():
-            change_dict_key_exist(info, return_name, arg_name)
+            change_dict_key_exist(input_info, return_name, arg_name)
 
-        for key in list(info):
+        for key in list(input_info):
             if key != "nwbfile" and key not in return_arg.values():
-                info.pop(key)
+                input_info.pop(key)
 
-        output_info = wrapper["function"](params=params, **info)
-        # storage.store(__func_config["output"], output_info)
+        output_info = wrapper["function"](params=params, **input_info)
 
-        outdir = "/".join(__func_config["output"].split("/")[:-1])
-        os.makedirs(outdir, exist_ok=True)
+        # ファイル保存先
+        output_dir = "/".join(__func_config["output"].split("/")[:-1])
+        os.makedirs(output_dir, exist_ok=True)
+
+        # nwbfileの設定
+        if "nwbfile" in output_info.keys():
+            output_dir = __func_config["output"].split(".")[0]
+            save_nwb(output_info['nwbfile'], output_dir)
+        else:
+            output_info["nwbfile"] = input_info["nwbfile"]
+
+        # ファイル保存
         with open(__func_config["output"], 'wb') as f:
             pickle.dump(output_info, f)
         
@@ -60,7 +62,6 @@ def run_script(__func_config):
         
     except Exception as e:
         error_message  = list(traceback.TracebackException.from_exception(e).format())[-2:]
-        # storage.store(__func_config["output"], error_message)
         with open(__func_config["output"], 'wb') as f:
             pickle.dump(error_message, f)
 

@@ -5,8 +5,9 @@ from wrappers.args_check import args_check
 def suite2p_spike_deconv(
         ops: Suite2pData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'ops': Suite2pData, 'spks': TimeSeriesData}:
-    ops = ops.data
     from suite2p import extraction, default_ops
+    print('start suite2_spike_deconv')
+    ops = ops.data
 
     ops = {**default_ops(), **ops, **params}
 
@@ -24,21 +25,18 @@ def suite2p_spike_deconv(
     ops['spks'] = spks
 
     # NWBを追加
-
     ### Fluorenceを追加
     if nwbfile is not None:
-        for name, data in zip(
-                ['Fluorescence', 'Neuropil', 'Deconvolved'],
-                [ops['F'], ops['Fneu'], spks]):
-            nwbfile = nwb_add_fluorescence(
-                nwbfile,
-                table_name=name,
-                region=list(range(len(data))),
-                name=name,
-                data=data,
-                unit='lumens',
-                rate=ops['fs']
-            )
+        nwbfile['add_fluorescence'] = {}
+        for name, data in zip(['Fluorescence', 'Neuropil', 'Deconvolved'], [ops['F'], ops['Fneu'], spks]):
+            nwbfile['add_fluorescence'][name] = {
+                'table_name': name,
+                'region': list(range(len(data))),
+                'name': name,
+                'data': data,
+                'unit': 'lumens',
+                'rate': ops['fs'],
+            }
 
     info = {}
     info['ops'] = Suite2pData(ops)

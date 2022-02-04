@@ -29,9 +29,6 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, message):
     rules_to_execute = {}
     prev_algo_output = None
 
-    # storage = PersistentDict("mystorage")
-    # storage.clear()
-
     all_outputs = {}
     last_outputs = []
 
@@ -42,23 +39,18 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, message):
         if node["type"] == 'ImageFileNode':
             # nwb params
             filepath = os.path.join(OPTINIST_DIR, 'config', f'nwb.yaml')
-            nwb_dict = copy.deepcopy(get_params(filepath))
+            nwbfile = copy.deepcopy(get_params(filepath))
             if message['nwbParam'] != {}:
-                nwb_dict = check_types(nest2dict(message['nwbParam']), nwb_dict)
+                nwbfile = check_types(nest2dict(message['nwbParam']), nwbfile)
 
             for edge in edgeList:
                 if edge["source"] == key:
                     arg_name = edge["targetHandle"].split("--")[1]
                     info = {arg_name: ImageData(algo_path, '')}
-            nwb_dict['image_series']['external_file'] = info[arg_name].data
-            # nwbfile = nwb_add_acquisition(nwb_dict)
-            # nwbfile.create_processing_module(
-            #     name='ophys',
-            #     description='optical physiology processed data'
-            # )
-            # nwb_add_ophys(nwbfile)
-            info['nwbfile'] = None #nwbfile
-            # storage.store(algo_path, info)
+            
+            # NWB file
+            nwbfile['image_series']['external_file'] = info[arg_name].data
+            info['nwbfile'] = nwbfile
 
             # output to pickle
             path = algo_path.split(".")[0] + ".pkl"
@@ -71,9 +63,6 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, message):
                     arg_name = edge["targetHandle"].split("--")[1]
                     info = {arg_name: TimeSeriesData(algo_path, '')}
 
-            # info['nwbfile'] = None
-            # with open(algo_path, 'wb') as f:
-            #     pickle.dump(info, f)
             path = algo_path.split(".")[0] + ".pkl"
             with open(path, 'wb') as f:
                 pickle.dump(info, f)
@@ -131,7 +120,6 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, message):
         os.path.join(OPTINIST_DIR, 'Snakefile'),
         **snakemake_params
     )
-    # snakemake(os.path.join(OPTINIST_DIR, 'Snakefile'), cores=2, use_conda=True)
 
     print("finish snakemake run")
 
