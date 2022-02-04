@@ -181,7 +181,7 @@ const ImagePlotChart = React.memo<{
         hoverongaps: false,
         showscale: showscale,
         zsmooth: zsmooth, // ['best', 'fast', false]
-        showlegend: true,
+        // showlegend: true,
       },
       {
         z: roiData,
@@ -204,6 +204,7 @@ const ImagePlotChart = React.memo<{
         hoverongaps: false,
         zsmooth: false, // ['best', 'fast', false]
         showlegend: true,
+        showscale: false,
       },
     ],
     [imageData, roiData, zsmooth, showscale, colorscale, colorscaleRoi],
@@ -228,6 +229,7 @@ const ImagePlotChart = React.memo<{
         showticklabels: showticklabels,
       },
       yaxis: {
+        automargin: true,
         autorange: 'reversed',
         showgrid: showgrid,
         showline: showline,
@@ -241,8 +243,9 @@ const ImagePlotChart = React.memo<{
   )
   const config = {
     displayModeBar: true,
-    scrollZoom: true,
+    // scrollZoom: true,
     // responsive: true,
+    height: '100%',
   }
   return (
     <>
