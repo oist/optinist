@@ -69,7 +69,7 @@ async def websocket_endpoint(websocket: WebSocket):
 
         snapshot = tracemalloc.take_snapshot()
         top_stats = snapshot.statistics("lineno")
-        display_top(snapshot, top_stats)
+        # display_top(snapshot, top_stats)
 
         if error_flag:
             time.sleep(1)
