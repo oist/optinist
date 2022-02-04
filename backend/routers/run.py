@@ -95,7 +95,7 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket.close()
     except Exception as e:
         message  = list(traceback.TracebackException.from_exception(e).format())[-1]
-        print(traceback.format_exc())
+        # print(traceback.format_exc())
         time.sleep(1)
         await websocket.send_json({
             'message': message,
