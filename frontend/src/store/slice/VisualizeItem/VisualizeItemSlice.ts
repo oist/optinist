@@ -64,6 +64,7 @@ const timeSeriesItemInitialValue: TimeSeriesItem = {
     left: undefined,
     right: undefined,
   },
+  maxIndex: 0,
 }
 const heatMapItemInitialValue: HeatMapItem = {
   ...displayDataCommonInitialValue,

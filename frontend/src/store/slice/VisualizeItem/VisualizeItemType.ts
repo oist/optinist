@@ -74,6 +74,7 @@ export interface TimeSeriesItem extends DisplayDataItemBaseType {
     left: number | undefined
     right: number | undefined
   }
+  maxIndex: number
 }
 
 export interface HeatMapItem extends DisplayDataItemBaseType {

@@ -51,7 +51,6 @@ class TimeSeriesData:
             self.data = self.data[np.newaxis, :]
 
         _dir = os.path.join(BASE_DIR, func_name, f'{file_name}')
-        # self.path = get_file_path(_dir, file_name)
         if not os.path.exists(_dir):
             os.makedirs(_dir, exist_ok=True)
 
