@@ -1,15 +1,15 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { NWB_SLICE_NAME } from './NWBType'
+import { SNAKEMAKE_SLICE_NAME } from './SnakemakeType'
 import axios from 'axios'
 import { BASE_URL } from 'const/API'
 import { ParamDTO } from 'store/utils/param/ParamType'
 
-export const getNWBParams = createAsyncThunk<ParamDTO, void>(
-  `${NWB_SLICE_NAME}/getNWBParams`,
+export const getSnakemakeParams = createAsyncThunk<ParamDTO, void>(
+  `${SNAKEMAKE_SLICE_NAME}/getSnakemakeParams`,
   async (_, thunkAPI) => {
     const { rejectWithValue } = thunkAPI
     try {
-      const response = await axios.get(`${BASE_URL}/nwb`)
+      const response = await axios.get(`${BASE_URL}/snakemake`)
       return response.data
     } catch (e) {
       return rejectWithValue(e)

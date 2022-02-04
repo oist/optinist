@@ -1,7 +1,7 @@
 import { ParamMap } from 'store/utils/param/ParamType'
 
-export const NWB_SLICE_NAME = 'NWB'
+export const SNAKEMAKE_SLICE_NAME = 'Snakemake'
 
-export type NWBType = {
+export type SnakemakeType = {
   params: ParamMap
 }

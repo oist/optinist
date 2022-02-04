@@ -8,11 +8,13 @@ import Close from '@material-ui/icons/Close'
 import { SnackbarProvider, SnackbarKey, useSnackbar } from 'notistack'
 
 import { NWBSettingButton } from './FlowChart/NWB'
-import { selectNwbList } from 'store/slice/NWB/NWBSelectors'
+import { selectNwbParams } from 'store/slice/NWB/NWBSelectors'
 import { selectFilePathIsUndefined } from 'store/slice/InputNode/InputNodeSelectors'
 import { selectElementListForRun } from 'store/slice/FlowElement/FlowElementSelectors'
 import { reflectResult } from 'store/slice/RunPipelineResult/RunPipelineResultSlice'
 import { RunPipeLineContext } from './RunContext'
+import { SnakemakeButton } from './FlowChart/Snakemake'
+import { selectSnakemakeParams } from 'store/slice/Snakemake/SnakemakeSelectors'
 
 export const ToolBar = React.memo(() => (
   <SnackbarProvider
@@ -38,7 +40,8 @@ const ToolBarImple = React.memo(() => {
   const dispatch = useDispatch()
   const { enqueueSnackbar, closeSnackbar } = useSnackbar()
   const pathIsUndefined = useSelector(selectFilePathIsUndefined)
-  const nwbParam = useSelector(selectNwbList)
+  const nwbParams = useSelector(selectNwbParams)
+  const snamemakeParams = useSelector(selectSnakemakeParams)
   const elementListForRun = useSelector(selectElementListForRun)
   // const [triggerRunPipeline, result] = useLazyRunPipelineQuery()
   const { runPipeLine, result } = React.useContext(RunPipeLineContext)
@@ -50,7 +53,12 @@ const ToolBarImple = React.memo(() => {
       enqueueSnackbar('there are no edges.', { variant: 'error' })
     } else {
       // triggerRunPipeline({ elementListForRun, requestId: nanoid(), nwbParam })
-      runPipeLine({ elementListForRun, requestId: nanoid(), nwbParam })
+      runPipeLine({
+        elementListForRun,
+        requestId: nanoid(),
+        nwbParam: nwbParams,
+        snakemakeParam: snamemakeParams,
+      })
       closeSnackbar()
       setIsReady(true)
     }
@@ -77,6 +85,7 @@ const ToolBarImple = React.memo(() => {
   return (
     <div style={{ width: '100%' }}>
       <Box display="flex" justifyContent="flex-end" style={{ padding: 4 }}>
+        <SnakemakeButton />
         <NWBSettingButton />
         <Box>
           <Button

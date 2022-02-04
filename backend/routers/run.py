@@ -32,12 +32,12 @@ async def websocket_endpoint(websocket: WebSocket):
         await websocket.accept()
         # Wait for any message from the client
         message = await websocket.receive_text()
-        graph, startNodeList, nodeDict, edgeList, endNodeList = algo_network(message)
+        message = json.loads(message)
 
         tracemalloc.start()
 
         ### snakemake
-        all_outputs = create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeList)
+        all_outputs = create_snakemake_files(BASE_DIR, OPTINIST_DIR, message)
 
         error_flag = False
         time.sleep(1)
