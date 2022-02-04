@@ -64,9 +64,11 @@ def suite2p_roi(
         }
         ### iscellを追加
         nwbfile['add_column'] = {
-            'name': 'iscell',
-            'discription': 'two columns - iscell & probcell',
-            'data': iscell,
+            'roi_column': {
+                'name': 'iscell',
+                'discription': 'two columns - iscell & probcell',
+                'data': iscell,
+            }
         }
 
     ops['F'] = F

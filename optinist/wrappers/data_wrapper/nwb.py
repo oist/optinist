@@ -164,14 +164,21 @@ def save_nwb(nwb_dict, save_path):
     )
     nwb_add_ophys(nwbfile)
 
+    if 'motion_correction' in nwb_dict.keys():
+        for mc in nwb_dict['motion_correction'].values():
+            nwbfile = nwb_motion_correction(
+                nwbfile, **mc)
+
     if 'add_roi' in nwb_dict.keys():
-        nwb_add_roi(nwbfile=nwbfile, **nwb_dict['add_roi'])
+        for roi_list in nwb_dict['add_roi'].values():
+            nwb_add_roi(nwbfile, roi_list)
 
     if 'add_column' in nwb_dict.keys():
-        nwbfile = nwb_add_column(nwbfile=nwbfile, **nwb_dict['add_column'])
+        for value in nwb_dict['add_column'].values():
+            nwbfile = nwb_add_column(nwbfile, **value)
 
     if 'add_fluorescence' in nwb_dict.keys():
-        for key, value in nwb_dict['add_fluorescence'].items():
+        for value in nwb_dict['add_fluorescence'].values():
             nwbfile = nwb_add_fluorescence(nwbfile, **value)
 
     with NWBHDF5IO(f'{save_path}.nwb', 'w') as f:
