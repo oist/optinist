@@ -1,4 +1,5 @@
-from pynwb import NWBFile
+import os
+from pynwb import NWBFile, NWBHDF5IO
 from pynwb.ophys import (
     OpticalChannel, TwoPhotonSeries, ImageSegmentation,
     RoiResponseSeries, Fluorescence, ImageSeries, TimeSeries,
@@ -153,3 +154,25 @@ def nwb_add_fluorescence(
     nwbfile.processing['ophys'].add(fluo)
 
     return nwbfile
+
+
+def save_nwb(nwb_dict, save_path):
+    nwbfile = nwb_add_acquisition(nwb_dict)
+    nwbfile.create_processing_module(
+        name='ophys',
+        description='optical physiology processed data'
+    )
+    nwb_add_ophys(nwbfile)
+
+    if 'add_roi' in nwb_dict.keys():
+        nwb_add_roi(nwbfile=nwbfile, **nwb_dict['add_roi'])
+
+    if 'add_column' in nwb_dict.keys():
+        nwbfile = nwb_add_column(nwbfile=nwbfile, **nwb_dict['add_column'])
+
+    if 'add_fluorescence' in nwb_dict.keys():
+        for key, value in nwb_dict['add_fluorescence'].items():
+            nwbfile = nwb_add_fluorescence(nwbfile, **value)
+
+    with NWBHDF5IO(f'{save_path}.nwb', 'w') as f:
+        f.write(nwbfile)

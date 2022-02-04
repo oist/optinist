@@ -5,11 +5,10 @@ from wrappers.args_check import args_check
 def suite2p_roi(
         ops: Suite2pData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'ops': Suite2pData, 'F': TimeSeriesData, 'iscell': IscellData}:
-    print('start roi')
-    ops = ops.data
-
     import numpy as np
     from suite2p import extraction, classification, detection, ROI, default_ops
+    print('start suite2p_roi')
+    ops = ops.data
 
     ops = {**default_ops(), **ops, **params}
 
@@ -60,10 +59,15 @@ def suite2p_roi(
         roi_list.append(kargs)
 
     if nwbfile is not None:
-        nwbfile = nwb_add_roi(nwbfile, roi_list)
+        nwbfile['add_roi'] = {
+            'roi_list': roi_list
+        }
         ### iscellを追加
-        nwbfile = nwb_add_column(
-            nwbfile, 'iscell', 'two columns - iscell & probcell', iscell)
+        nwbfile['add_column'] = {
+            'name': 'iscell',
+            'discription': 'two columns - iscell & probcell',
+            'data': iscell,
+        }
 
     ops['F'] = F
     ops['Fneu'] = Fneu

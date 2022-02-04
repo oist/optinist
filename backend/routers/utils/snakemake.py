@@ -20,9 +20,6 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
     rules_to_execute = {}
     prev_algo_output = None
 
-    # storage = PersistentDict("mystorage")
-    # storage.clear()
-
     all_outputs = {}
     last_outputs = []
 
@@ -36,19 +33,16 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
 
             # if nwb_params != {}:
             #     nwb_dict = check_types(nest2dict(nwb_params), nwb_dict)
+
             for edge in edgeList:
                 if edge["source"] == key:
                     arg_name = edge["targetHandle"].split("--")[1]
                     info = {arg_name: ImageData(algo_path, '')}
+            
+            # NWB file
             nwb_dict['image_series']['external_file'] = info[arg_name].data
-            # nwbfile = nwb_add_acquisition(nwb_dict)
-            # nwbfile.create_processing_module(
-            #     name='ophys',
-            #     description='optical physiology processed data'
-            # )
-            # nwb_add_ophys(nwbfile)
-            info['nwbfile'] = None #nwbfile
-            # storage.store(algo_path, info)
+            nwbfile = nwb_dict
+            info['nwbfile'] = nwbfile
 
             # output to pickle
             path = algo_path.split(".")[0] + ".pkl"
@@ -61,9 +55,6 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, nodeDict, edgeList, endNodeLi
                     arg_name = edge["targetHandle"].split("--")[1]
                     info = {arg_name: TimeSeriesData(algo_path, '')}
 
-            # info['nwbfile'] = None
-            # with open(algo_path, 'wb') as f:
-            #     pickle.dump(info, f)
             path = algo_path.split(".")[0] + ".pkl"
             with open(path, 'wb') as f:
                 pickle.dump(info, f)
