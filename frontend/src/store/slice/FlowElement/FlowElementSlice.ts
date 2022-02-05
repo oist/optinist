@@ -5,6 +5,7 @@ import {
   Node,
   Position,
   isNode,
+  FlowTransform,
 } from 'react-flow-renderer'
 import {
   FLOW_ELEMENT_SLICE_NAME,
@@ -33,14 +34,24 @@ const initialElements: Elements<NodeData> = [
   },
 ]
 
+const initialFlowPosition: FlowTransform = {
+  x: 0,
+  y: 0,
+  zoom: 0.8,
+}
+
 const initialState: FlowElement = {
   flowElements: initialElements,
+  flowPosition: initialFlowPosition,
 }
 
 export const flowElementSlice = createSlice({
   name: FLOW_ELEMENT_SLICE_NAME,
   initialState,
   reducers: {
+    setFlowPosition: (state, action: PayloadAction<FlowTransform>) => {
+      state.flowPosition = action.payload
+    },
     setFlowElements: (state, action: PayloadAction<Elements>) => {
       state.flowElements = action.payload
     },
@@ -125,6 +136,7 @@ export const flowElementSlice = createSlice({
 })
 
 export const {
+  setFlowPosition,
   setFlowElements,
   addFlowElementNode,
   deleteFlowElements,

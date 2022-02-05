@@ -1,4 +1,4 @@
-import { Elements } from 'react-flow-renderer'
+import { Elements, FlowTransform } from 'react-flow-renderer'
 
 export const FLOW_ELEMENT_SLICE_NAME = 'flowElement'
 
@@ -16,4 +16,5 @@ export interface NodeData {
 
 export interface FlowElement {
   flowElements: Elements<NodeData>
+  flowPosition: FlowTransform
 }

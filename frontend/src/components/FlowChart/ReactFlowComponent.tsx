@@ -9,6 +9,7 @@ import ReactFlow, {
   Connection,
   Edge,
   Node,
+  FlowTransform,
 } from 'react-flow-renderer'
 
 import 'style/flow.css'
@@ -22,9 +23,11 @@ import {
   deleteFlowElements,
   editFlowElementPositionById,
   setFlowElements,
+  setFlowPosition,
 } from 'store/slice/FlowElement/FlowElementSlice'
 import {
   selectFlowElements,
+  selectFlowPosition,
   selectMaxElementId,
 } from 'store/slice/FlowElement/FlowElementSelectors'
 import { ImageFileNode } from './FlowChartNode/ImageFileNode'
@@ -126,13 +129,21 @@ export const ReactFlowComponent = React.memo(() => {
     }
   }
 
-  const onMoveEnd = (event: MouseEvent, node: Node) => {
+  const onNodeDragStop = (event: MouseEvent, node: Node) => {
     dispatch(
       editFlowElementPositionById({
         nodeId: node.id,
         coord: { x: node.position.x, y: node.position.y },
       }),
     )
+  }
+
+  const flowPosition = useSelector(selectFlowPosition)
+
+  const onMoveEnd = (event: FlowTransform | undefined) => {
+    if (event !== undefined) {
+      dispatch(setFlowPosition(event))
+    }
   }
 
   return (
@@ -146,9 +157,12 @@ export const ReactFlowComponent = React.memo(() => {
             onLoad={onLoad}
             onDrop={onDrop}
             onDragOver={onDragOver}
-            onNodeDragStop={onMoveEnd}
+            onNodeDragStop={onNodeDragStop}
             nodeTypes={componentTypes}
             edgeTypes={edgeTypes}
+            defaultPosition={[flowPosition.x, flowPosition.y]}
+            defaultZoom={flowPosition.zoom}
+            onMoveEnd={onMoveEnd}
           >
             <Controls />
           </ReactFlow>
