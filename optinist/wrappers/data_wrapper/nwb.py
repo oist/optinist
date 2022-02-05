@@ -74,7 +74,7 @@ def nwb_add_ophys(nwbfile):
 def nwb_motion_correction(nwbfile, mc_data, xy_trans_data):
     corrected = ImageSeries(
         name='corrected',  # this must be named "corrected"
-        data=mc_data,
+        data=mc_data.data,
         unit='na',
         format='raw',
         starting_time=0.0,
