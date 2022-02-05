@@ -109,14 +109,14 @@ async def params(runPaths: List[str] = []):
     return output
 
 
-@router.post("/run/path")
-async def params(runPaths: List[str] = []):
-    run_success = {
-        'savePaths': ["/tmp/optinist/0/A.out"],
-        'status': 'success',
-        'outputPaths': ["A.json"]
-    }
-    return run_success
+# @router.post("/run/path")
+# async def params(runPaths: List[str] = []):
+#     run_success = {
+#         'savePaths': ["/tmp/optinist/0/A.out"],
+#         'status': 'success',
+#         'outputPaths': ["A.json"]
+#     }
+#     return run_success
 
 
 # @router.websocket("/run")
