@@ -8,14 +8,7 @@ import {
   selectVisualizeDataFilePath,
   selectVisualizeDataType,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import {
-  deleteDisplayHeatMapItem,
-  deleteDisplayImageItem,
-  deleteDisplayRoiItem,
-  deleteDisplayScatterItem,
-  deleteDisplayCsvItem,
-  deleteDisplayTimeSeriesItem,
-} from 'store/slice/DisplayData/DisplayDataSlice'
+import { deleteDisplayItem } from 'store/slice/DisplayData/DisplayDataSlice'
 
 export const DisplayItemDeleteButton = React.memo<{ itemId: number }>(
   ({ itemId }) => {
@@ -28,23 +21,7 @@ export const DisplayItemDeleteButton = React.memo<{ itemId: number }>(
       e.stopPropagation() // 親divのonClickを反応させないため
       dispatch(deleteVisualizeItem(itemId))
       // visualize Itemで同じpathのデータ個数を調べて、1だったら、displayも削除
-      if (filePath !== null) {
-        if (dataType === 'image') {
-          dispatch(deleteDisplayImageItem({ filePath }))
-        } else if (dataType === 'timeSeries') {
-          dispatch(deleteDisplayTimeSeriesItem({ filePath }))
-        } else if (dataType === 'csv') {
-          dispatch(deleteDisplayCsvItem({ filePath }))
-        } else if (dataType === 'heatMap') {
-          dispatch(deleteDisplayHeatMapItem({ filePath }))
-        } else if (dataType === 'roi') {
-          dispatch(deleteDisplayRoiItem({ filePath }))
-        } else if (dataType === 'scatter') {
-          dispatch(deleteDisplayScatterItem({ filePath }))
-        } else {
-          throw new Error('invalid item Type')
-        }
-      }
+      dispatch(deleteDisplayItem({ dataType, filePath }))
     }
     return (
       <IconButton onClick={onClick}>

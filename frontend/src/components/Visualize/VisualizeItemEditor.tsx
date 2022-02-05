@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import FormControl from '@material-ui/core/FormControl'
@@ -33,6 +33,7 @@ import { RoiItemEditor } from './Editor/RoiItemEditor'
 import { FilePathSelect } from './FilePathSelect'
 import { ScatterItemEditor } from './Editor/ScatterItemEditor'
 import { BarItemEditor } from './Editor/BarItemEditor'
+import { deleteDisplayItem } from 'store/slice/DisplayData/DisplayDataSlice'
 
 export const VisualizeItemEditor = () => {
   const selectedItemId = useSelector(selectSelectedVisualizeItemId)
@@ -118,10 +119,24 @@ const DisplayDataItemEditor: React.FC = () => {
   const dataType = useSelector(selectVisualizeDataType(itemId))
   const selectedNodeId = useSelector(selectVisualizeDataNodeId(itemId))
   const selectedFilePath = useSelector(selectVisualizeDataFilePath(itemId))
+
+  const [prevItem, setPrevItem] = useState<{
+    dataType: DATA_TYPE
+    filePath: string | null
+  }>({
+    dataType: 'image',
+    filePath: null,
+  })
+
+  useEffect(() => {
+    setPrevItem({ dataType, filePath: selectedFilePath })
+  }, [selectedFilePath])
+
   const dispatch = useDispatch()
   const onSelect = (nodeId: string, filePath: string) => {
     dispatch(setDisplayDataPath({ itemId, nodeId, filePath }))
     dispatch(resetImageActiveIndex({ itemId }))
+    dispatch(deleteDisplayItem(prevItem))
   }
 
   return (

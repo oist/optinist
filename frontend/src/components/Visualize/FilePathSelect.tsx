@@ -117,6 +117,7 @@ export const FilePathSelect: React.FC<{
       )
     })
   })
+
   return (
     <FormControl style={{ minWidth: 150, maxWidth: 220 }}>
       <InputLabel>{!!label ? label : 'Select Item'}</InputLabel>

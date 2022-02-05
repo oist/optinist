@@ -1,5 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { DisplayData, DISPLAY_DATA_SLICE_NAME } from './DisplayDataType'
+import {
+  DATA_TYPE,
+  DATA_TYPE_SET,
+  DisplayData,
+  DISPLAY_DATA_SLICE_NAME,
+} from './DisplayDataType'
 import {
   getCsvData,
   getHeatMapData,
@@ -24,53 +29,30 @@ export const displayDataSlice = createSlice({
   name: DISPLAY_DATA_SLICE_NAME,
   initialState,
   reducers: {
-    deleteDisplayImageItem: (
+    deleteDisplayItem: (
       state,
       action: PayloadAction<{
-        filePath: string
+        dataType: DATA_TYPE
+        filePath: string | null
       }>,
     ) => {
-      delete state.image[action.payload.filePath]
-    },
-    deleteDisplayTimeSeriesItem: (
-      state,
-      action: PayloadAction<{
-        filePath: string
-      }>,
-    ) => {
-      delete state.timeSeries[action.payload.filePath]
-    },
-    deleteDisplayCsvItem: (
-      state,
-      action: PayloadAction<{
-        filePath: string
-      }>,
-    ) => {
-      delete state.csv[action.payload.filePath]
-    },
-    deleteDisplayHeatMapItem: (
-      state,
-      action: PayloadAction<{
-        filePath: string
-      }>,
-    ) => {
-      delete state.heatMap[action.payload.filePath]
-    },
-    deleteDisplayRoiItem: (
-      state,
-      action: PayloadAction<{
-        filePath: string
-      }>,
-    ) => {
-      delete state.roi[action.payload.filePath]
-    },
-    deleteDisplayScatterItem: (
-      state,
-      action: PayloadAction<{
-        filePath: string
-      }>,
-    ) => {
-      delete state.scatter[action.payload.filePath]
+      const { dataType, filePath } = action.payload
+      if (filePath !== null) {
+        if (dataType === DATA_TYPE_SET.IMAGE) {
+          delete state.image[filePath]
+        } else if (dataType === DATA_TYPE_SET.TIME_SERIES) {
+          delete state.timeSeries[filePath]
+        } else if (dataType === DATA_TYPE_SET.CSV) {
+        } else if (dataType === DATA_TYPE_SET.HEAT_MAP) {
+          delete state.csv[filePath]
+        } else if (dataType === DATA_TYPE_SET.ROI) {
+          delete state.roi[filePath]
+        } else if (dataType === DATA_TYPE_SET.SCATTER) {
+          delete state.scatter[filePath]
+        } else {
+          throw new Error('invalid item Type')
+        }
+      }
     },
   },
   extraReducers: (builder) => {
@@ -295,13 +277,6 @@ export const displayDataSlice = createSlice({
   },
 })
 
-export const {
-  deleteDisplayImageItem,
-  deleteDisplayTimeSeriesItem,
-  deleteDisplayCsvItem,
-  deleteDisplayHeatMapItem,
-  deleteDisplayRoiItem,
-  deleteDisplayScatterItem,
-} = displayDataSlice.actions
+export const { deleteDisplayItem } = displayDataSlice.actions
 
 export default displayDataSlice.reducer
