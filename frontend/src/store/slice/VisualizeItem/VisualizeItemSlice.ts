@@ -273,17 +273,27 @@ export const visualaizeItemSlice = createSlice({
         itemId: number
         filePath: string
         nodeId: string | null
+        dataType?: DATA_TYPE
       }>,
     ) => {
-      const { itemId, filePath, nodeId } = action.payload
+      const { itemId, filePath, nodeId, dataType } = action.payload
       const targetItem = state.items[itemId]
       if (isDisplayDataItem(targetItem)) {
-        targetItem.filePath = filePath
-        targetItem.nodeId = nodeId
+        if (dataType != null && targetItem.dataType !== dataType) {
+          state.items[itemId] = {
+            ...getDisplayDataItemInitialValue(dataType),
+            filePath,
+            nodeId,
+          }
+        } else {
+          targetItem.filePath = filePath
+          targetItem.nodeId = nodeId
+        }
       } else {
         throw new Error('invalid VisualaizeItemType')
       }
     },
+
     setItemType: (
       state,
       action: PayloadAction<{
@@ -292,10 +302,10 @@ export const visualaizeItemSlice = createSlice({
       }>,
     ) => {
       const { itemId, type } = action.payload
-      if (type !== VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET) {
-        state.items[itemId] = getDisplayDataItemInitialValue(type)
-      } else {
+      if (type === VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET) {
         state.items[itemId] = defaultSetItemInitialValue
+      } else {
+        state.items[itemId] = getDisplayDataItemInitialValue(type)
       }
     },
     resetImageActiveIndex: (
