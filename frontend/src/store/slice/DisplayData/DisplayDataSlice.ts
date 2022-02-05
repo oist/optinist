@@ -43,8 +43,9 @@ export const displayDataSlice = createSlice({
         } else if (dataType === DATA_TYPE_SET.TIME_SERIES) {
           delete state.timeSeries[filePath]
         } else if (dataType === DATA_TYPE_SET.CSV) {
-        } else if (dataType === DATA_TYPE_SET.HEAT_MAP) {
           delete state.csv[filePath]
+        } else if (dataType === DATA_TYPE_SET.HEAT_MAP) {
+          delete state.heatMap[filePath]
         } else if (dataType === DATA_TYPE_SET.ROI) {
           delete state.roi[filePath]
         } else if (dataType === DATA_TYPE_SET.SCATTER) {
