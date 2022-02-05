@@ -29,6 +29,7 @@ def get_accept_files(path: str, file_types: List[str]):
     for file_type in file_types:
         files_list.extend(glob(
             os.path.join(path, "**", f"*.{file_type}"), recursive=True))
+
     return files_list
 
 
@@ -49,6 +50,7 @@ def get_dir_tree(dir_path: str, file_types: List[str]) -> List[TreeNode]:
                 "isdir": True,
                 "nodes": get_dir_tree(node_path, file_types)
             })
+
     return nodes
 
 

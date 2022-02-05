@@ -136,7 +136,6 @@ const DisplayDataItemEditor: React.FC = () => {
   const onSelect = (nodeId: string, filePath: string) => {
     dispatch(setDisplayDataPath({ itemId, nodeId, filePath }))
     dispatch(resetImageActiveIndex({ itemId }))
-    console.log(prevItem)
     dispatch(deleteDisplayItem(prevItem))
   }
 
