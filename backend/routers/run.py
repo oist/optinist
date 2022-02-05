@@ -18,6 +18,7 @@ from fastapi import APIRouter, BackgroundTasks #, WebSocket
 from pydantic import BaseModel
 import sys
 from typing import List
+import pickle
 
 
 router = APIRouter()
@@ -30,57 +31,63 @@ async  def run_ready(request_id: str):
 
 
 class RunItem(BaseModel):
-    uid: str
-    timestamp: str
     nodeList: list = []
     edgeList: list = []
     snakemakeParam: dict = {}
     nwbParam: dict = {}
 
 
-savePaths = {}
-
-def dummy_run_pipeline():
+def dummy_run_pipeline(unique_id):
     import time
     i = 0
+    os.makedirs(f"/tmp/optinist/{unique_id}")
     while True:
         print(f"i = {str(i)}")
         if i > 60:
             break
 
         if i == 5:
-            savePaths["/tmp/optinist/0/A.out"] = {
-                "path": "A.json",
-                "status": "success"
-            }
+            with open(f"/tmp/optinist/{unique_id}/A.pkl", "wb") as f:
+                info = {
+                    'path': f"/tmp/optinist/{unique_id}/A.json",
+                    'status': 'success'
+                }
+                pickle.dump(info, f)
+            
 
         if i == 10:
-            savePaths["/tmp/optinist/0/B.out"] = {
-                "path": None,
-                "status": "error"
-            }
+            with open(f"/tmp/optinist/{unique_id}/B.pkl", "wb") as f:
+                info = {
+                    'path': None,
+                    'status': 'error'
+                }
+                pickle.dump(info, f)
 
         if i == 15:
-            savePaths["/tmp/optinist/0/C.out"] = {
-                "path": "C.json",
-                "status": "success"
-            }
+            with open(f"/tmp/optinist/{unique_id}/C.pkl", "wb") as f:
+                info = {
+                    'path': f"/tmp/optinist/{unique_id}/C.json",
+                    'status': 'success'
+                }
+                pickle.dump(info, f)
 
-        i+=1
+        i += 1
         time.sleep(1)
 
 
 @router.post("/run")
 async def params(runItem: RunItem, background_tasks: BackgroundTasks):
-    runPaths = ["/tmp/optinist/0/A.out", "/tmp/optinist/0/B.out", "/tmp/optinist/0/C.out"]
-    background_tasks.add_task(dummy_run_pipeline)
-    print("finish hevy task")
+    import uuid
+    unique_id = str(uuid.uuid4())
+    timestamp = "20220205"
+    background_tasks.add_task(dummy_run_pipeline, unique_id)
+    print("start hevy task")
 
-    return runPaths
+    return unique_id
 
 
-@router.post("/run/path")
-async def params(runPaths: List[str] = []):
+@router.post("/run/result/{uid}")
+async def params(uid: str):
     """
         output = {
             /tmp/optinist/0/A.out: {
@@ -97,14 +104,21 @@ async def params(runPaths: List[str] = []):
             }
         }
     """
+    from glob import glob
+    print(f"/tmp/optinist/{uid}/*.pkl")
+    runPaths = glob(f"/tmp/optinist/{uid}/*.pkl")
+    print(runPaths)
+
     output = {}
-    print(savePaths)
     for request_path in runPaths:
-        if request_path in savePaths:
-            output[request_path] = {
-                "path": savePaths[request_path]["path"],
-                "status": savePaths[request_path]["status"]
-            }
+        with open(request_path, "rb") as f:
+            info = pickle.load(f)
+        print(info)
+
+        output[request_path] = {
+            "path": info["path"],
+            "status": info["status"]
+        }
 
     return output
 
