@@ -8,7 +8,7 @@ def SVM(
         iscell: IscellData=None,
         nwbfile: NWBFile=None,
         params: dict=None
-    ):
+    ) -> {}:
 
     # modules specific to function
     import numpy as np

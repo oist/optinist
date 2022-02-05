@@ -22,7 +22,8 @@ def get_nest_dict(value, parent_k):
             algo_dict[_k]['args'] = [
                 {
                     'name': x.name, 
-                    'type': x.annotation.__name__
+                    'type': x.annotation.__name__,
+                    'isNone': x.default is None,
                 }
                 for x in sig.parameters.values()
                 if x.name not in NOT_DISPLAY_ARGS_LIST
