@@ -162,8 +162,8 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[itemId]
       if (isDefaultSetItem(targetItem)) {
         if (targetItem.imageItem.roiItem != null) {
-          targetItem.imageItem.filePath = filePath
-          targetItem.imageItem.nodeId = nodeId
+          targetItem.imageItem.roiItem.filePath = filePath
+          targetItem.imageItem.roiItem.nodeId = nodeId
         } else {
           targetItem.imageItem.roiItem = {
             ...roiItemInitialValue,
