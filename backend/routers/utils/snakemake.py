@@ -49,7 +49,7 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, message):
                     info = {return_name: ImageData(algo_path, '')}
             
             # NWB file
-            nwbfile['image_series']['external_file'] = info[return_name].data
+            nwbfile['image_series']['external_file'] = info[return_name]
             info['nwbfile'] = nwbfile
 
             # output to pickle
