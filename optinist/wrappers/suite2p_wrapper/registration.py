@@ -3,7 +3,7 @@ from wrappers.args_check import args_check
 
 
 def suite2p_registration(
-        ops: Suite2pData=None, nwbfile: NWBFile=None, params: dict=None
+        ops: Suite2pData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'ops': Suite2pData, 'images': ImageData}:
     import numpy as np
     from suite2p import registration, io, default_ops, io

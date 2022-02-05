@@ -25,6 +25,7 @@ export type AlgorithmParent = {
 export type AlgorithmInfo = {
   name: string
   type: string
+  isNone?: boolean
 }
 
 export type AlgoListDTO = {

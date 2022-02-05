@@ -38,6 +38,7 @@ import { useHandleColor } from './HandleColorHook'
 import { toHandleId, isValidConnection } from './FlowChartUtils'
 import { toggleParamForm } from 'store/slice/RightDrawer/RightDrawerSlice'
 import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
+import { HelpTwoTone } from '@material-ui/icons'
 
 const leftHandleStyle: CSSProperties = {
   width: '4%',
@@ -252,11 +253,35 @@ type HandleProps = {
   i: number
 }
 
+function hexToRgb(hex: string | undefined, isNone: boolean | undefined) {
+  if (hex !== undefined) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+    if (result !== null) {
+      if (isNone) {
+        return `rgba(${parseInt(result[1], 16)}, ${parseInt(
+          result[2],
+          16,
+        )}, ${parseInt(result[3], 16)}, 0.55)`
+      } else {
+        return `rgba(${parseInt(result[1], 16)}, ${parseInt(
+          result[2],
+          16,
+        )}, ${parseInt(result[3], 16)}, 1)`
+      }
+    } else {
+      return undefined
+    }
+  } else {
+    return undefined
+  }
+}
+
 const ArgHandle = React.memo<HandleProps>(
-  ({ algoInfo: { name, type }, nodeId, i }) => {
-    const color = useHandleColor(type)
+  ({ algoInfo: { name, type, isNone }, nodeId, i }) => {
+    const hex_color = useHandleColor(type)
     const id = toHandleId(nodeId, name, type)
     const [isHover, setHover] = React.useState(false)
+    const rgb_color = hexToRgb(hex_color, isNone)
     return (
       <Handle
         onMouseEnter={() => setHover(true)}
@@ -267,7 +292,7 @@ const ArgHandle = React.memo<HandleProps>(
         id={id}
         style={{
           ...leftHandleStyle,
-          background: color,
+          background: rgb_color,
           top: i * 25 + 15,
         }}
         isValidConnection={isValidConnection}

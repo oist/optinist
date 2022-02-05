@@ -11,6 +11,9 @@ import { isNodeData } from './FlowElementUtils'
 export const selectFlowElements = (state: RootState) =>
   state.flowElement.flowElements
 
+export const selectFlowPosition = (state: RootState) =>
+  state.flowElement.flowPosition
+
 export const selectMaxElementId = (state: RootState) => {
   const elementList = selectFlowElements(state)
   return elementList.length === 0
