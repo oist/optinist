@@ -261,7 +261,7 @@ function hexToRgb(hex: string | undefined, isNone: boolean | undefined) {
         return `rgba(${parseInt(result[1], 16)}, ${parseInt(
           result[2],
           16,
-        )}, ${parseInt(result[3], 16)}, 0.1)`
+        )}, ${parseInt(result[3], 16)}, 0.55)`
       } else {
         return `rgba(${parseInt(result[1], 16)}, ${parseInt(
           result[2],
