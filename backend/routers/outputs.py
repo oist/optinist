@@ -16,11 +16,12 @@ async def read_file(file_path: str, index: Optional[int] = None):
     with open(os.path.join(_dir, f'{str(index)}.json'), 'r') as f:
         json_dict = json.load(f)
 
-    num_files = len(glob(os.path.join(_dir, '*')))
+    num_files = len(glob(os.path.join(_dir, '*.json')))
 
     return_dict = {}
     if index == 0:
         return_dict = {str(i): {0: json_dict["0"]["0"]} for i in range(num_files)}
+
     return_dict[str(index)] = json_dict["0"]
 
     return { "data": return_dict }
@@ -30,6 +31,7 @@ async def read_file(file_path: str, index: Optional[int] = None):
 async def read_file(file_path: str):
     with open(os.path.join(BASE_DIR, file_path), 'r') as f:
         json_dict = json.load(f)
+
     return { "data": json_dict }
 
 

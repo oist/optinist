@@ -88,7 +88,6 @@ const ImageFileNodeImple = React.memo<NodeProps>(
           <CloseOutlinedIcon />
         </IconButton>
         <ImageFileSelect
-          nodeId={nodeId}
           onChangeFilePath={onChangeFilePath}
           filePath={filePath ?? ''}
         />
@@ -108,10 +107,9 @@ const ImageFileNodeImple = React.memo<NodeProps>(
 )
 
 const ImageFileSelect = React.memo<{
-  nodeId: string
   filePath: string
   onChangeFilePath: (path: string) => void
-}>(({ nodeId, filePath, onChangeFilePath }) => {
+}>(({ filePath, onChangeFilePath }) => {
   const {
     filePath: uploadedFilePath,
     onUploadFile,

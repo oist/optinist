@@ -11,11 +11,15 @@ def get_results(info, path):
             results[path][k] = {}
             results[path][k]['path'] = v.json_path
             results[path][k]['type'] = 'images'
-            results[path][k]['max_index'] = len(v.data)
+            if v.data.ndim == 3:
+                results[path][k]['max_index'] = len(v.data)
+            elif v.data.ndim == 2:
+                results[path][k]['max_index'] = 1
         elif isinstance(v, TimeSeriesData):
             results[path][k] = {}
             results[path][k]['path'] = v.path
             results[path][k]['type'] = 'timeseries'
+            results[path][k]['max_index'] = len(v.data)
         elif isinstance(v, CorrelationData):
             results[path][k] = {}
             results[path][k]['path'] = v.path

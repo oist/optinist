@@ -45,11 +45,11 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, message):
 
             for edge in edgeList:
                 if edge["source"] == key:
-                    arg_name = edge["targetHandle"].split("--")[1]
-                    info = {arg_name: ImageData(algo_path, '')}
+                    return_name = edge["sourceHandle"].split("--")[1]
+                    info = {return_name: ImageData(algo_path, '')}
             
             # NWB file
-            nwbfile['image_series']['external_file'] = info[arg_name].data
+            nwbfile['image_series']['external_file'] = info[return_name].data
             info['nwbfile'] = nwbfile
 
             # output to pickle
@@ -60,8 +60,8 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, message):
         elif node["type"] == "CsvFileNode":
             for edge in edgeList:
                 if edge["source"] == key:
-                    arg_name = edge["targetHandle"].split("--")[1]
-                    info = {arg_name: TimeSeriesData(algo_path, '')}
+                    return_name = edge["sourceHandle"].split("--")[1]
+                    info = {return_name: TimeSeriesData(algo_path, '')}
 
             path = algo_path.split(".")[0] + ".pkl"
             with open(path, 'wb') as f:
@@ -82,7 +82,6 @@ def create_snakemake_files(BASE_DIR, OPTINIST_DIR, message):
                         algo_input.append(os.path.join(
                             BASE_DIR, sourceNode["data"]["path"], f"{sourceNode['data']['label']}_out.pkl"))
                     else:
-                        return_name = arg_name
                         algo_input.append(sourceNode["data"]["path"])
 
                     return_arg_names[return_name] = arg_name
