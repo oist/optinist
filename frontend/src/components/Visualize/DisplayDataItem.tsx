@@ -38,6 +38,8 @@ export const DisplayDataItem = React.memo<{
         return <ScatterPlot />
       case DATA_TYPE_SET.BAR:
         return <BarPlot />
+      default:
+        return null
     }
   }
   if (filePath != null && dataType != null) {

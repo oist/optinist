@@ -293,7 +293,6 @@ export const visualaizeItemSlice = createSlice({
         throw new Error('invalid VisualaizeItemType')
       }
     },
-
     setItemType: (
       state,
       action: PayloadAction<{
@@ -306,6 +305,18 @@ export const visualaizeItemSlice = createSlice({
         state.items[itemId] = defaultSetItemInitialValue
       } else {
         state.items[itemId] = getDisplayDataItemInitialValue(type)
+      }
+    },
+    toggleItemTypeDefaultSet: (state, action: PayloadAction<number>) => {
+      const itemId = action.payload
+      if (
+        state.items[itemId].itemType === VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
+      ) {
+        state.items[itemId] = {
+          ...getDisplayDataItemInitialValue(DATA_TYPE_SET.IMAGE), // FIXME dataTypeの型をNullableに変更して影響箇所も修正する
+        }
+      } else {
+        state.items[itemId] = defaultSetItemInitialValue
       }
     },
     resetImageActiveIndex: (
@@ -691,6 +702,7 @@ export const {
   deleteVisualizeItem,
   selectItem,
   setItemType,
+  toggleItemTypeDefaultSet,
   setFilePath,
   setHeatMapItemFilePath,
   setImageItemFilePath,

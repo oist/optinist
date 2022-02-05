@@ -2,10 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import FormControl from '@material-ui/core/FormControl'
-import MenuItem from '@material-ui/core/MenuItem'
-import InputLabel from '@material-ui/core/InputLabel'
-import Select from '@material-ui/core/Select'
 import Box from '@material-ui/core/Box'
+import { FormControlLabel, Switch, TextField } from '@material-ui/core'
 
 import {
   selectSelectedVisualizeItemId,
@@ -13,17 +11,17 @@ import {
   selectVisualizeDataNodeId,
   selectVisualizeDataType,
   selectVisualizeItemType,
+  selectVisualizeItemTypeIsDefaultSet,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { VISUALIZE_ITEM_TYPE_SET } from 'store/slice/VisualizeItem/VisualizeItemType'
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
 } from 'store/slice/DisplayData/DisplayDataType'
-import { RootState } from 'store/store'
 import {
   resetImageActiveIndex,
   setDisplayDataPath,
-  setItemType,
+  toggleItemTypeDefaultSet,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { ImageItemEditor } from './Editor/ImageItemEditor'
 import { CsvItemEditor } from './Editor/CsvItemEditor'
@@ -59,41 +57,16 @@ export const SelectedItemIdContext = React.createContext<number>(NaN)
 const ItemTypeSelect: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    dispatch(
-      setItemType({
-        itemId,
-        type: event.target.value as
-          | typeof VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
-          | DATA_TYPE,
-      }),
-    )
+  const isDefualtSet = useSelector(selectVisualizeItemTypeIsDefaultSet(itemId))
+  const onChageToggle = () => {
+    dispatch(toggleItemTypeDefaultSet(itemId))
   }
-  const selectedType = useSelector((state: RootState) => {
-    const itemType = selectVisualizeItemType(itemId)(state)
-    if (itemType === VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET) {
-      return VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
-    } else {
-      return selectVisualizeDataType(itemId)(state)
-    }
-  })
-  const options: (typeof VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET | DATA_TYPE)[] = [
-    VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET,
-    ...Object.values(DATA_TYPE_SET),
-  ]
   return (
     <FormControl style={{ minWidth: 120, marginBottom: 12 }}>
-      <InputLabel id="demo-simple-select-helper-label">item type</InputLabel>
-      <Select
-        value={selectedType != null ? selectedType : 'none'}
-        onChange={handleChange}
-      >
-        {options.map((option) => (
-          <MenuItem key={option} value={option}>
-            {option}
-          </MenuItem>
-        ))}
-      </Select>
+      <FormControlLabel
+        control={<Switch checked={isDefualtSet} onChange={onChageToggle} />}
+        label="Multi plot"
+      />
     </FormControl>
   )
 }
@@ -154,7 +127,7 @@ const DisplayDataItemEditor: React.FC = () => {
 }
 
 const DisplayEditor: React.FC<{
-  dataType: string
+  dataType: DATA_TYPE | null
 }> = ({ dataType }) => {
   /* 他のtypeのEditorも必要になったら追加する */
   switch (dataType) {
@@ -173,6 +146,6 @@ const DisplayEditor: React.FC<{
     case DATA_TYPE_SET.BAR:
       return <BarItemEditor />
     default:
-      throw new Error('dataType error')
+      return null
   }
 }
