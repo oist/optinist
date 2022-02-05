@@ -46,7 +46,7 @@ def nwb_add_acquisition(nwb_dict):
     # using internal data. this data will be stored inside the NWB file
     image_series = TwoPhotonSeries(
         name='TwoPhotonSeries',
-        data=nwb_dict['image_series']['external_file'],
+        data=nwb_dict['image_series']['external_file'].data,
         imaging_plane=imaging_plane,
         rate=1.0,
         unit='normalized amplitude'
@@ -74,7 +74,7 @@ def nwb_add_ophys(nwbfile):
 def nwb_motion_correction(nwbfile, mc_data, xy_trans_data):
     corrected = ImageSeries(
         name='corrected',  # this must be named "corrected"
-        data=mc_data,
+        data=mc_data.data,
         unit='na',
         format='raw',
         starting_time=0.0,
