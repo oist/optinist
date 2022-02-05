@@ -48,7 +48,7 @@ import { getImageData } from 'store/slice/DisplayData/DisplayDataActions'
 export const ImageItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
-  const onSelectFile = (path: string) => {
+  const onSelectImageFile = (path: string) => {
     dispatch(setDisplayDataPath({ nodeId: null, filePath: path, itemId }))
     dispatch(resetImageActiveIndex({ itemId }))
   }
@@ -80,7 +80,7 @@ export const ImageItemEditor: React.FC = () => {
     <div style={{ margin: '10px', padding: 10 }}>
       <FileSelect
         filePath={filePath ?? ''}
-        onSelectFile={onSelectFile}
+        onSelectFile={onSelectImageFile}
         onUploadFile={onUploadFileHandle}
         fileTreeType={FILE_TREE_TYPE_SET.IMAGE}
         selectButtonLabel="Select Image"

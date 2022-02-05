@@ -21,6 +21,7 @@ import {
 } from 'store/slice/DisplayData/DisplayDataType'
 import { RootState } from 'store/store'
 import {
+  resetImageActiveIndex,
   setDisplayDataPath,
   setItemType,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
@@ -118,8 +119,10 @@ const DisplayDataItemEditor: React.FC = () => {
   const selectedNodeId = useSelector(selectVisualizeDataNodeId(itemId))
   const selectedFilePath = useSelector(selectVisualizeDataFilePath(itemId))
   const dispatch = useDispatch()
-  const onSelect = (nodeId: string, filePath: string) =>
+  const onSelect = (nodeId: string, filePath: string) => {
     dispatch(setDisplayDataPath({ itemId, nodeId, filePath }))
+    dispatch(resetImageActiveIndex({ itemId }))
+  }
 
   return (
     <>
