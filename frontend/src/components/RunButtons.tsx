@@ -5,12 +5,12 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 
-import { useRunPipeline } from 'store/slice/Pipeline/PipelineHook'
+import { UseRunPipelineReturnType } from 'store/slice/Pipeline/PipelineHook'
 import { RUN_STATUS } from 'store/slice/Pipeline/PipelineType'
 import { useSnackbar } from 'notistack'
 
-export const RunButtons: React.FC = () => {
-  const { status, handleCancelPipeline, handleRunPipeline } = useRunPipeline()
+export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
+  const { status, handleCancelPipeline, handleRunPipeline } = props
   const { enqueueSnackbar } = useSnackbar()
   const onClickRun = () => {
     handleRunPipeline()
@@ -30,7 +30,7 @@ export const RunButtons: React.FC = () => {
     } else if (status === RUN_STATUS.CANCELED) {
       enqueueSnackbar('Canceled', { variant: 'info' })
     }
-  }, [status])
+  }, [status, enqueueSnackbar])
 
   const classes = useStyles()
   return (
@@ -55,7 +55,7 @@ export const RunButtons: React.FC = () => {
       </Button>
     </>
   )
-}
+})
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({

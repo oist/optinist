@@ -8,13 +8,14 @@ import { NWBSettingButton } from './FlowChart/NWB'
 
 import { SnakemakeButton } from './FlowChart/Snakemake'
 import { RunButtons } from './RunButtons'
+import { UseRunPipelineReturnType } from 'store/slice/Pipeline/PipelineHook'
 
-export const ToolBar = React.memo(() => (
+export const ToolBar = React.memo<UseRunPipelineReturnType>((props) => (
   <SnackbarProvider
     maxSnack={5}
     action={(snackbarKey) => <SnackbarCloseButton snackbarKey={snackbarKey} />}
   >
-    <ToolBarImple />
+    <ToolBarImple {...props} />
   </SnackbarProvider>
 ))
 
@@ -29,13 +30,13 @@ const SnackbarCloseButton: React.FC<{ snackbarKey: SnackbarKey }> = ({
   )
 }
 
-const ToolBarImple = React.memo(() => {
+const ToolBarImple = React.memo<UseRunPipelineReturnType>((props) => {
   return (
     <div style={{ width: '100%' }}>
       <Box display="flex" justifyContent="flex-end" style={{ padding: 4 }}>
         <SnakemakeButton />
         <NWBSettingButton />
-        <RunButtons />
+        <RunButtons {...props} />
       </Box>
     </div>
   )

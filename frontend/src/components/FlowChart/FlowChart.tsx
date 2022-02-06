@@ -9,8 +9,9 @@ import { ReactFlowComponent } from './ReactFlowComponent'
 import { ToolBar } from '../ToolBar'
 import RightDrawer, { rightDrawerWidth } from './RightDrawer'
 import { selectRightDrawerIsOpen } from 'store/slice/RightDrawer/RightDrawerSelectors'
+import { UseRunPipelineReturnType } from 'store/slice/Pipeline/PipelineHook'
 
-const FlowChart: React.FC = () => {
+const FlowChart = React.memo<UseRunPipelineReturnType>((props) => {
   const classes = useStyles()
   const open = useSelector(selectRightDrawerIsOpen)
   return (
@@ -33,13 +34,13 @@ const FlowChart: React.FC = () => {
         })}
       >
         <MuiToolbar />
-        <ToolBar />
+        <ToolBar {...props} />
         <ReactFlowComponent />
       </main>
       <RightDrawer />
     </div>
   )
-}
+})
 
 export const drawerWidth = 240
 

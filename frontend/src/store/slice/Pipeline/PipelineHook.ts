@@ -12,6 +12,8 @@ import { AppDispatch, RootState } from 'store/store'
 
 const POLLING_INTERVAL = 5000
 
+export type UseRunPipelineReturnType = ReturnType<typeof useRunPipeline>
+
 export function useRunPipeline() {
   const dispatch: AppDispatch = useDispatch()
   const [uid, setUid] = React.useState<null | string>()
@@ -46,7 +48,7 @@ export function useRunPipeline() {
     }
   }, [dispatch, uid, isCanceled, isStartedSuccess])
   const status = useSelector((state: RootState) =>
-    uid != null ? selectPipelineStatus(uid)(state) : false,
+    uid != null ? selectPipelineStatus(uid)(state) : 'Uninitialized',
   )
   return { uid, status, handleRunPipeline, handleCancelPipeline }
 }
