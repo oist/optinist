@@ -2,6 +2,7 @@ import pickle
 
 from wrappers.data_wrapper import *
 from workflow.params import get_algo_params
+from routers.const import BASE_DIR
 
 
 def set_imagefile(node, edgeList, nwbfile):
@@ -30,7 +31,7 @@ def set_csvfile(node, edgeList):
     return info
 
 
-def set_algofile(node, edgeList, nodeDict):
+def set_algofile(unique_id, node, edgeList, nodeDict):
     algo_input = []
     return_arg_names = {}
     for edge in edgeList:
@@ -40,8 +41,8 @@ def set_algofile(node, edgeList, nodeDict):
             return_name = edge["sourceHandle"].split("--")[1]
             sourceNode = nodeDict[edge["source"]]
             if sourceNode["type"] == "AlgorithmNode":
-                algo_input.append(os.path.join(
-                    BASE_DIR, sourceNode["data"]["path"], f"{sourceNode['data']['label']}_out.pkl"))
+                input_pickle_file = get_pickle_file(unique_id, sourceNode["id"], sourceNode['data']['label'])
+                algo_input.append(input_pickle_file)
             else:
                 algo_input.append(sourceNode["data"]["path"])
 
@@ -53,7 +54,7 @@ def set_algofile(node, edgeList, nodeDict):
     message_params = node["data"]["param"]
     params = get_algo_params(algo_name, message_params)
 
-    algo_output = os.path.join(BASE_DIR, algo_path, f"{algo_name}_out.pkl")
+    algo_output = get_pickle_file(unique_id, node["id"], algo_name)
 
     rule = {
         "rule_file": f"rules/smk/{algo_path}.py",
@@ -63,7 +64,12 @@ def set_algofile(node, edgeList, nodeDict):
         "output": algo_output,
         "path": algo_path,
     }
+
     return rule
+
+
+def get_pickle_file(unique_id, node_id, algo_name):
+    return os.path.join(BASE_DIR, unique_id, node_id, f"{algo_name}_out.pkl")
 
 
 def save_pickle(filepath, info):
