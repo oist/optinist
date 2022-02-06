@@ -49,8 +49,19 @@ def dummy_run_pipeline(unique_id):
         if i == 5:
             with open(f"/tmp/optinist/{unique_id}/A.pkl", "wb") as f:
                 info = {
-                    'path': f"/tmp/optinist/{unique_id}/A.json",
-                    'status': 'success'
+                    'status': 'success',
+                    'message': 'A success',
+                    'name': 'A',
+                    'outputPaths': {
+                        "A_image": {
+                            "path": f"/tmp/optinist/{unique_id}/A_images.json",
+                            "type": "images",
+                        },
+                        "A_timeseries": {
+                            "path": f"/tmp/optinist/{unique_id}/A_timeseries.json",
+                            "type": "timeseries",
+                        },
+                    }
                 }
                 pickle.dump(info, f)
             
@@ -58,16 +69,28 @@ def dummy_run_pipeline(unique_id):
         if i == 10:
             with open(f"/tmp/optinist/{unique_id}/B.pkl", "wb") as f:
                 info = {
-                    'path': None,
-                    'status': 'error'
+                    'status': 'error',
+                    'message': 'error reason',
+                    'name': 'B',
                 }
                 pickle.dump(info, f)
 
         if i == 15:
             with open(f"/tmp/optinist/{unique_id}/C.pkl", "wb") as f:
                 info = {
-                    'path': f"/tmp/optinist/{unique_id}/C.json",
-                    'status': 'success'
+                    'status': 'success',
+                    'message': 'C success',
+                    'name': 'C',
+                    'outputPaths': {
+                        "C_image": {
+                            "path": f"/tmp/optinist/{unique_id}/C_heatmp.json",
+                            "type": "heatmap",
+                        },
+                        "C_timeseries": {
+                            "path": f"/tmp/optinist/{unique_id}/C_timeseries.json",
+                            "type": "timeseries",
+                        },
+                    }
                 }
                 pickle.dump(info, f)
 
@@ -88,22 +111,6 @@ async def params(runItem: RunItem, background_tasks: BackgroundTasks):
 
 @router.post("/run/result/{uid}")
 async def params(uid: str):
-    """
-        output = {
-            /tmp/optinist/0/A.out: {
-                "path": A.json
-                "status": "success"
-            },
-            /tmp/optinist/0/B.out: {
-                "path": None,
-                "status": "error"
-            },
-            /tmp/optinist/0/C.out: {
-                "path": "C.json",
-                "status": "success"
-            }
-        }
-    """
     from glob import glob
     print(f"/tmp/optinist/{uid}/*.pkl")
     runPaths = glob(f"/tmp/optinist/{uid}/*.pkl")
@@ -115,10 +122,19 @@ async def params(uid: str):
             info = pickle.load(f)
         print(info)
 
-        output[request_path] = {
-            "path": info["path"],
-            "status": info["status"]
-        }
+        if info["status"] == "success":
+            output[request_path] = {
+                "status": info["status"],
+                "message": info["message"],
+                "name": info["name"],
+                "outputPaths": info["outputPaths"],
+            }
+        else:
+            output[request_path] = {
+                "status": info["status"],
+                "message": info["message"],
+                "name": info["name"],
+            }
 
     return output
 
