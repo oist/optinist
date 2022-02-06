@@ -144,7 +144,7 @@ export const visualaizeItemSlice = createSlice({
     },
     addInitialItem: (state) => {
       const nextId = getMaxItemId(state) + 1
-      state.items[nextId] = defaultSetItemInitialValue
+      state.items[nextId] = getDisplayDataItemInitialValue(DATA_TYPE_SET.IMAGE)
       state.selectedItemId = nextId
     },
     selectItem: (state, action: PayloadAction<number>) => {
