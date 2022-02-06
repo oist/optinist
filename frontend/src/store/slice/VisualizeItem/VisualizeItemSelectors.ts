@@ -1,4 +1,5 @@
 import { RootState } from 'store/store'
+import { VISUALIZE_ITEM_TYPE_SET } from './VisualizeItemType'
 import {
   isDisplayDataItem,
   isImageItem,
@@ -20,6 +21,11 @@ export const selectVisualizeItemIdList = (state: RootState) =>
 
 export const selectVisualizeItemType = (itemId: number) => (state: RootState) =>
   selectVisualizeItems(state)[itemId].itemType
+
+export const selectVisualizeItemTypeIsDefaultSet =
+  (itemId: number) => (state: RootState) =>
+    selectVisualizeItemType(itemId)(state) ===
+    VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
 
 export const selectDefaultSetImageItem =
   (itemId: number) => (state: RootState) => {

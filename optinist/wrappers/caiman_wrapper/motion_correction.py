@@ -57,7 +57,7 @@ def caiman_mc(
     if nwbfile is not None:
         nwbfile['motion_correction'] = {
             'caiman_mc': {
-                'mc_data': images,
+                'mc_data': info['images'],
                 'xy_trans_data': xy_trans_data,
             }
         }
