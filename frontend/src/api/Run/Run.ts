@@ -3,10 +3,11 @@ import axios from 'axios'
 import { BASE_URL } from 'const/API'
 
 import { Edge, Node } from 'react-flow-renderer'
+import { NodeData } from 'store/slice/FlowElement/FlowElementType'
 import { ParamMap } from 'store/utils/param/ParamType'
 
 export type RunPostData = {
-  nodeList: Node[]
+  nodeList: Node<NodeData>[]
   edgeList: Edge[]
   nwbParam: ParamMap
   snakemakeParam: ParamMap
@@ -20,18 +21,19 @@ export async function run(data: {
   return response.data // uid
 }
 
-export const RUN_RESULT_STATUS = {
-  SUCCESS: 'success',
-  ERROR: 'error',
-} as const
-
-export type RUN_RESULT_STATUS_TYPE =
-  typeof RUN_RESULT_STATUS[keyof typeof RUN_RESULT_STATUS]
-
 export type RunResultDTO = {
-  [path: string]: {
+  [nodeId: string]: {
+    status: string
+    message: string
+    name: string
+    outputPaths?: OutputPathsDTO
+  }
+}
+
+export type OutputPathsDTO = {
+  [outputKey: string]: {
     path: string
-    stutus: RUN_RESULT_STATUS_TYPE
+    type: string
   }
 }
 

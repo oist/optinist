@@ -1,35 +1,52 @@
 import React from 'react'
 
-import { useDispatch, useSelector } from 'react-redux'
 import Button from '@material-ui/core/Button'
 import PlayArrowIcon from '@material-ui/icons/PlayArrow'
 import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
 import CloseIcon from '@material-ui/icons/Close'
 
-import { run } from 'store/slice/Pipeline/PilepineActions'
+import { useRunPipeline } from 'store/slice/Pipeline/PipelineHook'
+import { RUN_STATUS } from 'store/slice/Pipeline/PipelineType'
+import { useSnackbar } from 'notistack'
 
 export const RunButtons: React.FC = () => {
-  const dispatch = useDispatch()
+  const { status, handleCancelPipeline, handleRunPipeline } = useRunPipeline()
+  const { enqueueSnackbar } = useSnackbar()
   const onClickRun = () => {
-    dispatch(run())
+    handleRunPipeline()
+    if (status === RUN_STATUS.START_SUCCESS) {
+      enqueueSnackbar('started')
+    }
   }
   const onClickCancel = () => {
-    //  todo
+    handleCancelPipeline()
   }
+
+  React.useEffect(() => {
+    if (status === RUN_STATUS.FINISHED) {
+      enqueueSnackbar('Finished', { variant: 'success' })
+    } else if (status === RUN_STATUS.ABORTED) {
+      enqueueSnackbar('Aborted', { variant: 'error' })
+    } else if (status === RUN_STATUS.CANCELED) {
+      enqueueSnackbar('Canceled', { variant: 'info' })
+    }
+  }, [status])
+
   const classes = useStyles()
   return (
     <>
       <Button
         variant="contained"
-        color="secondary"
+        color="primary"
         endIcon={<PlayArrowIcon />}
         className={classes.button}
         onClick={onClickRun}
+        disabled={status === RUN_STATUS.START_SUCCESS}
       >
-        Run(new)
+        Run
       </Button>
       <Button
-        variant="contained"
+        variant="outlined"
         endIcon={<CloseIcon />}
         className={classes.button}
         onClick={onClickCancel}

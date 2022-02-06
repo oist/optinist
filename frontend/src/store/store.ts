@@ -50,8 +50,9 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >
-export type ThunkApiConfig<T = unknown> = {
+export type ThunkApiConfig<T = unknown, PendingMeta = unknown> = {
   state: RootState
   dispatch: AppDispatch
   rejectValue: T
+  penfingMeta: PendingMeta
 }

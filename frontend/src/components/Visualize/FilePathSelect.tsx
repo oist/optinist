@@ -16,10 +16,11 @@ import { FILE_TYPE } from 'store/slice/InputNode/InputNodeType'
 import { RootState } from 'store/store'
 import { selectInputNode } from 'store/slice/InputNode/InputNodeSelectors'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
-import { selectAlgorithmNode } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
-import { selectOutputPaths } from 'store/slice/RunPipelineResult/RunPipelineResultSelectors'
-import { toDataType } from 'store/slice/DisplayData/DisplayDataUtils'
 import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
+import {
+  selectPipelineLatestUid,
+  selectPipelineNodeResultSuccessList,
+} from 'store/slice/Pipeline/PipelineSelectors'
 
 export const FilePathSelect: React.FC<{
   dataType?: DATA_TYPE
@@ -47,29 +48,28 @@ export const FilePathSelect: React.FC<{
     // todo 比較関数
   )
 
+  const latestUid = useSelector(selectPipelineLatestUid)
+
   const algorithmNodeOutputPathInfoList = useSelector((state: RootState) => {
-    const algorithms = selectAlgorithmNode(state)
-    const outputPaths = selectOutputPaths(state)
-    if (outputPaths != null) {
-      return Object.entries(algorithms)
-        .filter(([nodeId, algoNode]) =>
-          Object.keys(outputPaths).includes(algoNode.functionPath),
-        )
-        .map(([nodeId, algoNode]) => {
-          const paths = Object.entries(outputPaths[algoNode.functionPath])
-            .map(([outputKey, outputPath]) => ({
-              outputKey,
-              filePath: outputPath.path,
-              type: toDataType(outputPath.type),
-            }))
-            .filter(({ type }) => (dataType != null ? type === dataType : true))
-          return {
-            nodeName: selectNodeLabelById(nodeId)(state),
-            nodeId,
-            paths,
-          }
-        })
-        .filter(({ paths }) => paths.length > 0)
+    if (latestUid != null) {
+      const runResult = selectPipelineNodeResultSuccessList(latestUid)(state)
+      return runResult.map(({ nodeId, nodeResult }) => {
+        return {
+          nodeId,
+          nodeName: selectNodeLabelById(nodeId)(state),
+          paths: Object.entries(nodeResult.outputPaths)
+            .map(([outputKey, value]) => {
+              return {
+                outputKey,
+                filePath: value.path,
+                type: value.type,
+              }
+            })
+            .filter(({ type }) =>
+              dataType != null ? type === dataType : true,
+            ),
+        }
+      })
     } else {
       return []
     }
