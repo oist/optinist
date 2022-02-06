@@ -9,6 +9,7 @@ import {
 import { run, pollRunResult } from './PipelineActions'
 import { cancelPipeline } from './PipelineSlice'
 import { AppDispatch, RootState } from 'store/store'
+import { selectFilePathIsUndefined } from '../InputNode/InputNodeSelectors'
 
 const POLLING_INTERVAL = 5000
 
@@ -23,6 +24,7 @@ export function useRunPipeline() {
   const isStartedSuccess = useSelector((state: RootState) =>
     uid != null ? selectPipelineIsStartedSuccess(uid)(state) : false,
   )
+  const filePathIsUndefined = useSelector(selectFilePathIsUndefined)
   const runPostData = useSelector(selectRunPostData)
   const handleRunPipeline = React.useCallback(
     (newUid?: string) => {
@@ -50,5 +52,11 @@ export function useRunPipeline() {
   const status = useSelector((state: RootState) =>
     uid != null ? selectPipelineStatus(uid)(state) : 'Uninitialized',
   )
-  return { uid, status, handleRunPipeline, handleCancelPipeline }
+  return {
+    filePathIsUndefined,
+    uid,
+    status,
+    handleRunPipeline,
+    handleCancelPipeline,
+  }
 }

@@ -10,12 +10,18 @@ import { RUN_STATUS } from 'store/slice/Pipeline/PipelineType'
 import { useSnackbar } from 'notistack'
 
 export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
-  const { status, handleCancelPipeline, handleRunPipeline } = props
+  const {
+    status,
+    filePathIsUndefined,
+    handleCancelPipeline,
+    handleRunPipeline,
+  } = props
   const { enqueueSnackbar } = useSnackbar()
   const onClickRun = () => {
-    handleRunPipeline()
-    if (status === RUN_STATUS.START_SUCCESS) {
-      enqueueSnackbar('started')
+    if (!filePathIsUndefined) {
+      handleRunPipeline()
+    } else {
+      enqueueSnackbar('please select input file', { variant: 'error' })
     }
   }
   const onClickCancel = () => {
