@@ -1,33 +1,13 @@
-import traceback
-import os
-import gc
-import json
-import tracemalloc
-import time
 
-from wrappers.data_wrapper import *
-from wrappers.optinist_exception import AlgorithmException
-
-from .const import BASE_DIR, OPTINIST_DIR
-from .utils.memory import display_top
-from .utils.results import get_results
-from .utils.utils import algo_network
-from .utils.snakemake import create_snakemake_files
-
-from fastapi import APIRouter, BackgroundTasks #, WebSocket
+from fastapi import APIRouter, BackgroundTasks
 from pydantic import BaseModel
-import sys
 from typing import List
-import pickle
+
+from workflow.params import get_snakemake_params
+from cui_api.snakemake import run_snakemake
 
 
 router = APIRouter()
-
-
-@router.get("/run/ready/{request_id}")
-async  def run_ready(request_id: str):
-    return {'message': 'ready...', 'status': 'ready', "requestId": request_id}
-
 
 
 class RunItem(BaseModel):
@@ -37,76 +17,19 @@ class RunItem(BaseModel):
     nwbParam: dict = {}
 
 
-def dummy_run_pipeline(unique_id):
-    import time
-    i = 0
-    os.makedirs(f"/tmp/optinist/{unique_id}")
-    while True:
-        print(f"i = {str(i)}")
-        if i > 60:
-            break
-
-        if i == 5:
-            with open(f"/tmp/optinist/{unique_id}/A.pkl", "wb") as f:
-                info = {
-                    'nodeId': 1,
-                    'status': 'success',
-                    'message': 'A success',
-                    'name': 'A',
-                    'outputPaths': {
-                        "A_image": {
-                            "path": f"/tmp/optinist/{unique_id}/A_images.json",
-                            "type": "images",
-                        },
-                        "A_timeseries": {
-                            "path": f"/tmp/optinist/{unique_id}/A_timeseries.json",
-                            "type": "timeseries",
-                        },
-                    }
-                }
-                pickle.dump(info, f)
-            
-
-        if i == 10:
-            with open(f"/tmp/optinist/{unique_id}/B.pkl", "wb") as f:
-                info = {
-                    'nodeId': 2,
-                    'status': 'error',
-                    'message': 'error reason',
-                    'name': 'B',
-                }
-                pickle.dump(info, f)
-
-        if i == 15:
-            with open(f"/tmp/optinist/{unique_id}/C.pkl", "wb") as f:
-                info = {
-                    'nodeId': 3,
-                    'status': 'success',
-                    'message': 'C success',
-                    'name': 'C',
-                    'outputPaths': {
-                        "C_image": {
-                            "path": f"/tmp/optinist/{unique_id}/C_heatmp.json",
-                            "type": "heatmap",
-                        },
-                        "C_timeseries": {
-                            "path": f"/tmp/optinist/{unique_id}/C_timeseries.json",
-                            "type": "timeseries",
-                        },
-                    }
-                }
-                pickle.dump(info, f)
-
-        i += 1
-        time.sleep(1)
-
-
 @router.post("/run")
 async def params(runItem: RunItem, background_tasks: BackgroundTasks):
     import uuid
     unique_id = str(uuid.uuid4())
-    timestamp = "20220205"
-    background_tasks.add_task(dummy_run_pipeline, unique_id)
+
+    from workflow.set_pipeline import set_pipeline
+    set_pipeline(runItem)
+    
+    snakemake_params = get_snakemake_params(runItem.snakemakeParam)
+    background_tasks.add_task(run_snakemake, snakemake_params)
+
+    # timestamp = "20220205"
+    # background_tasks.add_task(dummy_run_pipeline, unique_id)
     print("start hevy task")
 
     return unique_id
@@ -140,16 +63,6 @@ async def params(uid: str):
             }
 
     return output
-
-
-# @router.post("/run/path")
-# async def params(runPaths: List[str] = []):
-#     run_success = {
-#         'savePaths': ["/tmp/optinist/0/A.out"],
-#         'status': 'success',
-#         'outputPaths': ["A.json"]
-#     }
-#     return run_success
 
 
 # @router.websocket("/run")
