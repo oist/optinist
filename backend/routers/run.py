@@ -49,6 +49,7 @@ def dummy_run_pipeline(unique_id):
         if i == 5:
             with open(f"/tmp/optinist/{unique_id}/A.pkl", "wb") as f:
                 info = {
+                    'nodeId': 1,
                     'status': 'success',
                     'message': 'A success',
                     'name': 'A',
@@ -69,6 +70,7 @@ def dummy_run_pipeline(unique_id):
         if i == 10:
             with open(f"/tmp/optinist/{unique_id}/B.pkl", "wb") as f:
                 info = {
+                    'nodeId': 2,
                     'status': 'error',
                     'message': 'error reason',
                     'name': 'B',
@@ -78,6 +80,7 @@ def dummy_run_pipeline(unique_id):
         if i == 15:
             with open(f"/tmp/optinist/{unique_id}/C.pkl", "wb") as f:
                 info = {
+                    'nodeId': 3,
                     'status': 'success',
                     'message': 'C success',
                     'name': 'C',
@@ -123,14 +126,14 @@ async def params(uid: str):
         print(info)
 
         if info["status"] == "success":
-            output[request_path] = {
+            output[info["nodeId"]] = {
                 "status": info["status"],
                 "message": info["message"],
                 "name": info["name"],
                 "outputPaths": info["outputPaths"],
             }
         else:
-            output[request_path] = {
+            output[info["nodeId"]] = {
                 "status": info["status"],
                 "message": info["message"],
                 "name": info["name"],
