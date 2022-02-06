@@ -1,6 +1,6 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
-import { webSocketApi } from '../api/Run/Run'
+import { webSocketApi } from '../api/Run/Run_old'
 import {
   algorithmListReducer,
   algorithmNodeReducer,
@@ -15,6 +15,7 @@ import {
   rightDrawerReducer,
   visualaizeItemReducer,
   snakemakeReducer,
+  pipelineReducer,
 } from './slice'
 
 export const store = configureStore({
@@ -32,6 +33,7 @@ export const store = configureStore({
     rightDrawer: rightDrawerReducer,
     visualaizeItem: visualaizeItemReducer,
     snakemake: snakemakeReducer,
+    pipeline: pipelineReducer,
     [webSocketApi.reducerPath]: webSocketApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>

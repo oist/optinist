@@ -11,3 +11,4 @@ export { default as handleTypeColorReducer } from './HandleTypeColor/HandleTypeC
 export { default as rightDrawerReducer } from './RightDrawer/RightDrawerSlice'
 export { default as visualaizeItemReducer } from './VisualizeItem/VisualizeItemSlice'
 export { default as snakemakeReducer } from './Snakemake/SnakemakeSlice'
+export { default as pipelineReducer } from './Pipeline/PipelineSlice'

@@ -15,6 +15,7 @@ import { reflectResult } from 'store/slice/RunPipelineResult/RunPipelineResultSl
 import { RunPipeLineContext } from './RunContext'
 import { SnakemakeButton } from './FlowChart/Snakemake'
 import { selectSnakemakeParams } from 'store/slice/Snakemake/SnakemakeSelectors'
+import { RunButtons } from './RunButtons'
 
 export const ToolBar = React.memo(() => (
   <SnackbarProvider
@@ -98,6 +99,7 @@ const ToolBarImple = React.memo(() => {
           >
             run
           </Button>
+          <RunButtons />
         </Box>
       </Box>
       {isReady ? <LinearProgress /> : <div style={{ height: 4 }} />}

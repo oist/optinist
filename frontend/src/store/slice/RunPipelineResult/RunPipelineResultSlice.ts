@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { RunPipelineDTO } from 'api/Run/Run'
+import { RunPipelineDTO } from 'api/Run/Run_old'
 
 type RunPipeline = {
   result: RunPipelineDTO

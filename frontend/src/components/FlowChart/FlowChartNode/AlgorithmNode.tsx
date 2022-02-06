@@ -16,7 +16,7 @@ import ErrorIcon from '@material-ui/icons/Error'
 import Popover from '@material-ui/core/Popover'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
 
-import { OutputPathsDTO } from 'api/Run/Run'
+import { OutputPathsDTO } from 'api/Run/Run_old'
 import { AlgorithmInfo } from 'store/slice/AlgorithmList/AlgorithmListType'
 import {
   selectAlgoArgs,
