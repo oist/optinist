@@ -41,7 +41,7 @@ export const selectElementListForRun = (state: RootState) => {
   const nodeList = elements.filter(isNodeData).map((element) => {
     if (element.data) {
       if (element.data.type === NODE_TYPE_SET.ALGORITHM) {
-        const param = selectAlgorithmParams(element.id)(state)
+        const param = selectAlgorithmParams(element.id)(state) ?? {}
         const functionPath = selectAlgorithmFunctionPath(element.id)(state)
         return {
           ...element,

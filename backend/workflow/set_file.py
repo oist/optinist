@@ -1,7 +1,7 @@
 import pickle
 
 from wrappers.data_wrapper import *
-from workflow.params import get_algo_params
+from workflow.params import get_typecheck_params
 from routers.const import BASE_DIR
 
 
@@ -52,7 +52,7 @@ def set_algofile(unique_id, node, edgeList, nodeDict):
     algo_path = node["data"]["path"]
     algo_name = node["data"]["label"]
     message_params = node["data"]["param"]
-    params = get_algo_params(algo_name, message_params)
+    params = get_typecheck_params(message_params, algo_name)
 
     algo_output = get_pickle_file(unique_id, node["id"], algo_name)
 

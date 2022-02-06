@@ -6,7 +6,7 @@ from fastapi import APIRouter, BackgroundTasks
 from pydantic import BaseModel
 from typing import List
 
-from workflow.params import get_snakemake_params
+from workflow.params import get_typecheck_params
 from workflow.set_workflow import set_workflow
 from workflow.results import get_results
 from cui_api.snakemake import run_snakemake
@@ -29,7 +29,7 @@ async def params(runItem: RunItem, background_tasks: BackgroundTasks):
 
     set_workflow(unique_id, runItem)
     
-    snakemake_params = get_snakemake_params(runItem.snakemakeParam)
+    snakemake_params = get_typecheck_params(runItem.snakemakeParam, "snakemake")
     background_tasks.add_task(run_snakemake, snakemake_params)
 
     print("run snakemake")
