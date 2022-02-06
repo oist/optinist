@@ -28,12 +28,12 @@ import {
 import {
   selectFlowElements,
   selectFlowPosition,
-  selectMaxElementId,
 } from 'store/slice/FlowElement/FlowElementSelectors'
 import { ImageFileNode } from './FlowChartNode/ImageFileNode'
 import { AlgorithmNode } from './FlowChartNode/AlgorithmNode'
 import { CsvFileNode } from './FlowChartNode/CsvFileNode'
 import { CustomEdge } from './CustomEdge'
+import { nanoid } from '@reduxjs/toolkit'
 
 const componentTypes = {
   ImageFileNode,
@@ -78,10 +78,9 @@ export const ReactFlowComponent = React.memo(() => {
     event.dataTransfer.dropEffect = 'move'
   }
 
-  const maxElementId = useSelector(selectMaxElementId)
   const onDrop = (event: DragEvent) => {
     event.preventDefault()
-
+    const id = nanoid()
     if (reactFlowInstance) {
       const position = reactFlowInstance.project({
         x: event.clientX - 50 - 250,
@@ -103,7 +102,7 @@ export const ReactFlowComponent = React.memo(() => {
         }
 
         const newNode: Node<NodeData> = {
-          id: String(maxElementId + 1),
+          id,
           type: componentType,
           position,
           data: { label: name, type: nodeType },
@@ -114,7 +113,7 @@ export const ReactFlowComponent = React.memo(() => {
       } else if (nodeType === NODE_TYPE_SET.ALGORITHM) {
         const functionPath = event.dataTransfer.getData('functionPath')
         const newNode: Node<NodeData> = {
-          id: String(maxElementId + 1),
+          id,
           type: 'AlgorithmNode',
           position,
           data: { label: name, type: nodeType },

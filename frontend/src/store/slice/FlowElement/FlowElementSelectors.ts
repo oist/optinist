@@ -14,17 +14,6 @@ export const selectFlowElements = (state: RootState) =>
 export const selectFlowPosition = (state: RootState) =>
   state.flowElement.flowPosition
 
-export const selectMaxElementId = (state: RootState) => {
-  const elementList = selectFlowElements(state)
-  return elementList.length === 0
-    ? 0
-    : elementList
-        .map((element) => element.id)
-        .map((id) => Number(id))
-        .filter((id) => !isNaN(id))
-        .reduce((a, b) => Math.max(a, b))
-}
-
 export const selectNodeById = (nodeId: string) => (state: RootState) =>
   selectFlowElements(state)
     .filter(isNodeData)

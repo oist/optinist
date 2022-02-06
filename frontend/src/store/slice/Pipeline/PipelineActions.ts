@@ -25,22 +25,14 @@ export const run = createAsyncThunk<
 export const pollRunResult = createAsyncThunk<
   RunResultDTO,
   {
-    //   todo
     uid: string
   },
   ThunkApiConfig
->(
-  `${PIPELINE_SLICE_NAME}/pollRunResult`,
-  async ({ uid }, thunkAPI) => {
-    try {
-      const responseData = await runResult({ uid })
-      return responseData
-    } catch (e) {
-      return thunkAPI.rejectWithValue(e)
-    }
-  },
-  // todo
-  // {
-  //   condition: ({ uid }) => true,
-  // },
-)
+>(`${PIPELINE_SLICE_NAME}/pollRunResult`, async ({ uid }, thunkAPI) => {
+  try {
+    const responseData = await runResult({ uid })
+    return responseData
+  } catch (e) {
+    return thunkAPI.rejectWithValue(e)
+  }
+})
