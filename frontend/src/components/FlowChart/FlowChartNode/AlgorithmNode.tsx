@@ -5,8 +5,6 @@ import {
   alpha,
   Typography,
   useTheme,
-  Select,
-  MenuItem,
   Tooltip,
   FormHelperText,
   IconButton,
@@ -17,7 +15,6 @@ import ErrorIcon from '@material-ui/icons/Error'
 import Popover from '@material-ui/core/Popover'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
 
-import { OutputPathsDTO } from 'api/Run/Run_old'
 import { AlgorithmInfo } from 'store/slice/AlgorithmList/AlgorithmListType'
 import {
   selectAlgoArgs,
@@ -211,30 +208,6 @@ const AlgoReturns = React.memo<{
   )
 })
 
-const OutputKeySelect = React.memo<{
-  outputKeyList: string[]
-  selectedOutputKey: string
-  onChange: (outputKey: string) => void
-}>(({ outputKeyList, selectedOutputKey, onChange }) => {
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    const outputKey = event.target.value as string
-    onChange(outputKey)
-  }
-  if (outputKeyList.length !== 0) {
-    return (
-      <Select value={selectedOutputKey} label="output" onChange={handleChange}>
-        {outputKeyList.map((outputKey, i) => (
-          <MenuItem value={outputKey} key={i.toFixed()}>
-            {outputKey}
-          </MenuItem>
-        ))}
-      </Select>
-    )
-  } else {
-    return null
-  }
-})
-
 type HandleProps = {
   algoInfo: AlgorithmInfo
   nodeId: string
@@ -394,22 +367,5 @@ function algoInfoListEqualtyFn(
     )
   } else {
     return a === undefined && b === undefined
-  }
-}
-
-function getOutputPathMap(outputPaths: OutputPathsDTO, functionPath: string) {
-  if (Object.keys(outputPaths).includes(functionPath)) {
-    return outputPaths[functionPath]
-  } else {
-    return null
-  }
-}
-
-function getOutputKeyList(outputPaths: OutputPathsDTO, functionPath: string) {
-  const output = getOutputPathMap(outputPaths, functionPath)
-  if (output != null) {
-    return Object.keys(output)
-  } else {
-    return []
   }
 }

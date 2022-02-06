@@ -1,6 +1,5 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
-import { webSocketApi } from '../api/Run/Run_old'
 import {
   algorithmListReducer,
   algorithmNodeReducer,
@@ -8,7 +7,6 @@ import {
   fileUploaderReducer,
   flowElementReducer,
   inputNodeReducer,
-  runPipelineResultReducer,
   nwbReducer,
   filesTreeReducer,
   handleTypeColorReducer,
@@ -29,15 +27,11 @@ export const store = configureStore({
     handleColor: handleTypeColorReducer,
     filesTree: filesTreeReducer,
     nwb: nwbReducer,
-    runPipelineResult: runPipelineResultReducer,
     rightDrawer: rightDrawerReducer,
     visualaizeItem: visualaizeItemReducer,
     snakemake: snakemakeReducer,
     pipeline: pipelineReducer,
-    [webSocketApi.reducerPath]: webSocketApi.reducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(webSocketApi.middleware),
 })
 
 setupListeners(store.dispatch)

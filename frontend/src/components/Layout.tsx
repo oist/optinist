@@ -7,8 +7,6 @@ import { makeStyles } from '@material-ui/core/styles'
 import Toolbar from '@material-ui/core/Toolbar'
 import FlowChart from './FlowChart/FlowChart'
 import Visualize from './Visualize/Visualize'
-import { useLazyRunPipelineQuery } from 'api/Run/Run_old'
-import { RunPipeLineContext } from './RunContext'
 
 const Layout: React.FC = () => {
   const classes = useStyles()
@@ -16,7 +14,6 @@ const Layout: React.FC = () => {
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue)
   }
-  const [runPipeLine, result] = useLazyRunPipelineQuery()
 
   return (
     <div className={classes.root}>
@@ -35,9 +32,7 @@ const Layout: React.FC = () => {
         </Toolbar>
       </AppBar>
       <TabPanel value={value} index={0}>
-        <RunPipeLineContext.Provider value={{ runPipeLine, result }}>
-          <FlowChart />
-        </RunPipeLineContext.Provider>
+        <FlowChart />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Visualize />

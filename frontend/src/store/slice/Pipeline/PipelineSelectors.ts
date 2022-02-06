@@ -101,22 +101,31 @@ function isNodeResultSuccessAndNodeId(arg: {
 export const selectPipelineNodeResultStatus =
   (uid: string, nodeId: string) => (state: RootState) => {
     const pipeline = selectStartedPipeline(uid)(state)
-    return pipeline.runResult[nodeId].status
+    if (Object.keys(pipeline.runResult).includes(nodeId)) {
+      return pipeline.runResult[nodeId].status
+    } else {
+      return null
+    }
   }
 
 export const selectPipelineNodeResultMessage =
   (uid: string, nodeId: string) => (state: RootState) => {
     const pipeline = selectStartedPipeline(uid)(state)
-    return pipeline.runResult[nodeId].message
+    if (Object.keys(pipeline.runResult).includes(nodeId)) {
+      return pipeline.runResult[nodeId].message
+    } else {
+      return null
+    }
   }
 
 export const selectPipelineNodeResultOutputKeyList =
   (uid: string, nodeId: string) => (state: RootState) => {
     const pipeline = selectStartedPipeline(uid)(state)
-    const nodeResult = pipeline.runResult[nodeId]
-    if (isNodeResultSuccess(nodeResult)) {
-      return Object.keys(nodeResult.outputPaths)
-    } else {
-      return []
+    if (Object.keys(pipeline.runResult).includes(nodeId)) {
+      const nodeResult = pipeline.runResult[nodeId]
+      if (isNodeResultSuccess(nodeResult)) {
+        return Object.keys(nodeResult.outputPaths)
+      }
     }
+    return []
   }
