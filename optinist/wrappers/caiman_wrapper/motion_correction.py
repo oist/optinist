@@ -69,9 +69,10 @@ def caiman_mc(
 
 if __name__ == '__main__':
     import os
+    from cui_api.utils import join_file_path
     info = {}
-    file_path = os.path.join(
+    file_path = join_file_path([
         '/Users', 'shogoakiyama', 'caiman_data', 
-        'example_movies', 'Sue_2x_3000_40_-46.tif')
+        'example_movies', 'Sue_2x_3000_40_-46.tif'])
     info['caiman_mc'] = caiman_mc(file_path)
     print(info)

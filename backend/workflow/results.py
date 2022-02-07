@@ -3,11 +3,12 @@ from collections import OrderedDict
 from glob import glob
 
 from wrappers.data_wrapper import *
+from cui_api.utils import join_file_path
 
 
 def get_results(uid):
-    print(os.path.join(BASE_DIR, uid, "*", "*.pkl"))
-    runPaths = glob(os.path.join(BASE_DIR, uid, "*", "*.pkl"))
+    print(join_file_path([BASE_DIR, uid, "*", "*.pkl"]))
+    runPaths = glob(join_file_path([BASE_DIR, uid, "*", "*.pkl"]))
     print(runPaths)
 
     results = {}

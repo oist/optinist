@@ -1,5 +1,6 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
+from cui_api.utils import join_file_path
 
 
 def caiman_cnmf(
@@ -28,7 +29,7 @@ def caiman_cnmf(
     basename = os.path.splitext(os.path.basename(file_path))[0]
     fname_tot = memmap_frames_filename(basename, dims, T, order)
     mmap_images = np.memmap(
-        os.path.join(dir_path, fname_tot),
+        join_file_path([dir_path, fname_tot]),
         mode='w+',
         dtype=np.float32,
         shape=prepare_shape(shape_mov),
@@ -141,8 +142,8 @@ if __name__ == '__main__':
     import caiman
 
     info = {}
-    file_path = os.path.join(
+    file_path = join_file_path([
         '/Users', 'shogoakiyama', 'caiman_data', 
-        'example_movies', 'Sue_2x_3000_40_-46.tif')
+        'example_movies', 'Sue_2x_3000_40_-46.tif'])
     info['caiman_mc'] = caiman_mc(file_path)
     info['caiman_cnmf'] = caiman_cnmf(info['caiman_mc']['images'])

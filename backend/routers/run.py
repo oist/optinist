@@ -9,8 +9,9 @@ from typing import List
 from workflow.params import get_typecheck_params
 from workflow.set_workflow import set_workflow
 from workflow.results import get_results
+
 from cui_api.snakemake import run_snakemake
-from .const import BASE_DIR
+from cui_api.const import BASE_DIR
 
 
 router = APIRouter()

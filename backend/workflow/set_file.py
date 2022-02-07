@@ -2,7 +2,8 @@ import pickle
 
 from wrappers.data_wrapper import *
 from workflow.params import get_typecheck_params
-from routers.const import BASE_DIR
+from cui_api.const import BASE_DIR
+from cui_api.utils import join_file_path
 
 
 def set_imagefile(node, edgeList, nwbfile):
@@ -69,7 +70,7 @@ def set_algofile(unique_id, node, edgeList, nodeDict):
 
 
 def get_pickle_file(unique_id, node_id, algo_name):
-    return os.path.join(BASE_DIR, unique_id, node_id, f"{algo_name}_out.pkl")
+    return join_file_path([BASE_DIR, unique_id, node_id, f"{algo_name}_out.pkl"])
 
 
 def save_pickle(filepath, info):
