@@ -10,7 +10,7 @@ def get_results(uid):
     print(join_file_path([BASE_DIR, uid, "*", "*.pkl"]))
     runPaths = glob(join_file_path([BASE_DIR, uid, "*", "*.pkl"]))
     for i, path in enumerate(runPaths):
-        runPaths[i] = path.replace("¥¥", "/")
+        runPaths[i] = path.replace("\\", "/")
 
     print(runPaths)
 
