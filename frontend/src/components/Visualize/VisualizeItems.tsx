@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useTheme } from '@material-ui/core/styles'
 import Box from '@material-ui/core/Box'
 import Paper from '@material-ui/core/Paper'
+import Grid from '@mui/material/Grid'
 
 import { arrayEqualityFn } from 'utils/EqualityUtils'
 
@@ -54,25 +55,28 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
   const theme = useTheme()
 
   return (
-    <Paper
-      variant="outlined"
-      key={itemId}
-      style={{
-        width: '100%',
-        margin: theme.spacing(1),
-        padding: theme.spacing(1),
-        cursor: 'pointer',
-        borderColor: isSelected ? theme.palette.primary.light : undefined,
-      }}
-      onClick={onSelect}
-    >
-      <Box display="flex" justifyContent="flex-end">
-        <Box>
-          <DeleteButton itemType={itemType} itemId={itemId} />
-        </Box>
-      </Box>
-      <ItemByType itemType={itemType} itemId={itemId} />
-    </Paper>
+    <Grid container spacing={0} columns={100}>
+      <Grid item xs={95}>
+        <Paper
+          variant="outlined"
+          key={itemId}
+          style={{
+            margin: theme.spacing(1),
+            padding: theme.spacing(1),
+            cursor: 'pointer',
+            borderColor: isSelected ? theme.palette.primary.light : undefined,
+          }}
+          onClick={onSelect}
+        >
+          <Box display="flex" justifyContent="flex-end">
+            <Box>
+              <DeleteButton itemType={itemType} itemId={itemId} />
+            </Box>
+          </Box>
+          <ItemByType itemType={itemType} itemId={itemId} />
+        </Paper>
+      </Grid>
+    </Grid>
   )
 })
 
