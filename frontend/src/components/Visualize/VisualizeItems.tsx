@@ -55,8 +55,8 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
   const theme = useTheme()
 
   return (
-    <Grid container spacing={0} columns={100}>
-      <Grid item xs={95}>
+    <Grid container spacing={0}>
+      <Grid item xs={10}>
         <Paper
           variant="outlined"
           key={itemId}
