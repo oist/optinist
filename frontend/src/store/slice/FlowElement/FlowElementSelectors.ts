@@ -14,17 +14,6 @@ export const selectFlowElements = (state: RootState) =>
 export const selectFlowPosition = (state: RootState) =>
   state.flowElement.flowPosition
 
-export const selectMaxElementId = (state: RootState) => {
-  const elementList = selectFlowElements(state)
-  return elementList.length === 0
-    ? 0
-    : elementList
-        .map((element) => element.id)
-        .map((id) => Number(id))
-        .filter((id) => !isNaN(id))
-        .reduce((a, b) => Math.max(a, b))
-}
-
 export const selectNodeById = (nodeId: string) => (state: RootState) =>
   selectFlowElements(state)
     .filter(isNodeData)
@@ -41,7 +30,7 @@ export const selectElementListForRun = (state: RootState) => {
   const nodeList = elements.filter(isNodeData).map((element) => {
     if (element.data) {
       if (element.data.type === NODE_TYPE_SET.ALGORITHM) {
-        const param = selectAlgorithmParams(element.id)(state)
+        const param = selectAlgorithmParams(element.id)(state) ?? {}
         const functionPath = selectAlgorithmFunctionPath(element.id)(state)
         return {
           ...element,

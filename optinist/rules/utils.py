@@ -3,6 +3,7 @@ from wrappers.data_wrapper import save_nwb
 import traceback
 import os
 import pickle
+from cui_api.utils import join_file_path
 
 
 def dict2leaf(root_dict: dict, path_list):
@@ -44,7 +45,7 @@ def run_script(__func_config):
         output_info = wrapper["function"](params=params, **input_info)
 
         # ファイル保存先
-        output_dir = "/".join(__func_config["output"].split("/")[:-1])
+        output_dir = join_file_path(__func_config["output"].split("/")[:-1])
         os.makedirs(output_dir, exist_ok=True)
 
         # nwbfileの設定
@@ -65,8 +66,8 @@ def run_script(__func_config):
         with open(__func_config["output"], 'wb') as f:
             pickle.dump(error_message, f)
 
-        file_name = __func_config["output"].split("/")[-1].split(".")[0]
-        error_path = "/tmp/optinist/error"
-        os.makedirs(error_path, exist_ok=True)
-        with open(f"{error_path}/{file_name}.log", 'w') as f:
-            f.writelines(error_message)
+        # file_name = __func_config["output"].split("/")[-1].split(".")[0]
+        # error_path = "/tmp/optinist/error"
+        # os.makedirs(error_path, exist_ok=True)
+        # with open(f"{error_path}/{file_name}.log", 'w') as f:
+        #     f.writelines(error_message)

@@ -1,6 +1,5 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/query'
-import { webSocketApi } from '../api/Run/Run'
 import {
   algorithmListReducer,
   algorithmNodeReducer,
@@ -8,13 +7,13 @@ import {
   fileUploaderReducer,
   flowElementReducer,
   inputNodeReducer,
-  runPipelineResultReducer,
   nwbReducer,
   filesTreeReducer,
   handleTypeColorReducer,
   rightDrawerReducer,
   visualaizeItemReducer,
   snakemakeReducer,
+  pipelineReducer,
 } from './slice'
 
 export const store = configureStore({
@@ -28,14 +27,11 @@ export const store = configureStore({
     handleColor: handleTypeColorReducer,
     filesTree: filesTreeReducer,
     nwb: nwbReducer,
-    runPipelineResult: runPipelineResultReducer,
     rightDrawer: rightDrawerReducer,
     visualaizeItem: visualaizeItemReducer,
     snakemake: snakemakeReducer,
-    [webSocketApi.reducerPath]: webSocketApi.reducer,
+    pipeline: pipelineReducer,
   },
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(webSocketApi.middleware),
 })
 
 setupListeners(store.dispatch)
@@ -48,8 +44,9 @@ export type AppThunk<ReturnType = void> = ThunkAction<
   unknown,
   Action<string>
 >
-export type ThunkApiConfig<T = unknown> = {
+export type ThunkApiConfig<T = unknown, PendingMeta = unknown> = {
   state: RootState
   dispatch: AppDispatch
   rejectValue: T
+  penfingMeta: PendingMeta
 }

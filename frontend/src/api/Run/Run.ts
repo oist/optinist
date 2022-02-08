@@ -1,74 +1,43 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import { BASE_URL, WS_BASE_URL } from 'const/API'
+import axios from 'axios'
+
+import { BASE_URL } from 'const/API'
+
 import { Edge, Node } from 'react-flow-renderer'
+import { NodeData } from 'store/slice/FlowElement/FlowElementType'
 import { ParamMap } from 'store/utils/param/ParamType'
 
-export type RunPipelineDTO = {
-  status: string
-  message: string
-  name?: string
-  outputPaths?: OutputPathsDTO
-  requestId?: string
+export type RunPostData = {
+  nodeList: Node<NodeData>[]
+  edgeList: Edge[]
+  nwbParam: ParamMap
+  snakemakeParam: ParamMap
 }
 
-export type OutputPathsDTO = {
-  [path: string]: {
-    [key: string]: {
-      path: string
-      type: string
-      max_index?: number
-    }
+export async function run(data: {
+  runData: RunPostData
+  uid?: string
+}): Promise<string> {
+  const response = await axios.post(`${BASE_URL}/run`, data.runData)
+  return response.data // uid
+}
+
+export type RunResultDTO = {
+  [nodeId: string]: {
+    status: string
+    message: string
+    name: string
+    outputPaths?: OutputPathsDTO
   }
 }
 
-export const webSocketApi = createApi({
-  reducerPath: 'webSocketApi',
-  baseQuery: fetchBaseQuery({ baseUrl: `${BASE_URL}/` }),
-  endpoints: (builder) => ({
-    runPipeline: builder.query<
-      RunPipelineDTO,
-      {
-        requestId: string
-        elementListForRun: { nodeList: Node[]; edgeList: Edge[] }
-        nwbParam: ParamMap
-        snakemakeParam: ParamMap
-      }
-    >({
-      // リクエストするたびにキャッシュをクリアするためにidを振っておく
-      query: ({ requestId }) => `run/ready/${requestId}`,
-      async onCacheEntryAdded(
-        { elementListForRun, nwbParam, snakemakeParam },
-        { updateCachedData, cacheDataLoaded, cacheEntryRemoved },
-      ) {
-        const ws = new WebSocket(`${WS_BASE_URL}/run`)
-        try {
-          ws.addEventListener('open', () =>
-            ws.send(
-              JSON.stringify({ elementListForRun, nwbParam, snakemakeParam }),
-            ),
-          )
-          await cacheDataLoaded
-          const listener = (event: MessageEvent) => {
-            const data = JSON.parse(event.data)
-            updateCachedData((draft) => {
-              draft.status = data.status
-              draft.message = data.message
-              draft.name = data.name
-              draft.outputPaths = {
-                ...draft.outputPaths,
-                ...data.outputPaths,
-              }
-            })
-          }
-          ws.addEventListener('message', listener)
-        } catch (e) {
-          console.log(e)
-        }
-        await cacheEntryRemoved
-        ws.close()
-      },
-    }),
-  }),
-})
+export type OutputPathsDTO = {
+  [outputKey: string]: {
+    path: string
+    type: string
+  }
+}
 
-export const { useLazyRunPipelineQuery, useRunPipelineQuery } = webSocketApi
+export async function runResult(data: { uid: string }): Promise<RunResultDTO> {
+  const response = await axios.post(`${BASE_URL}/run/result/${data.uid}`)
+  return response.data
+}

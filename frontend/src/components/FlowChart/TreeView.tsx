@@ -1,5 +1,6 @@
 import React, { useEffect, DragEvent, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import { nanoid } from '@reduxjs/toolkit'
 import { TreeView, TreeItem } from '@material-ui/lab'
 import { makeStyles, Typography } from '@material-ui/core'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
@@ -15,7 +16,6 @@ import { AlgorithmNodeType } from 'store/slice/AlgorithmList/AlgorithmListType'
 import { isAlgoChild } from 'store/slice/AlgorithmList/AlgorithmListUtils'
 import { getAlgoList } from 'store/slice/AlgorithmList/AlgorithmListActions'
 import { FILE_TYPE, FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
-import { selectMaxElementId } from 'store/slice/FlowElement/FlowElementSelectors'
 import {
   NodeData,
   NODE_TYPE,
@@ -69,8 +69,6 @@ export const AlgorithmTreeView = React.memo(() => {
     }
   }
 
-  const maxElementId = useSelector(selectMaxElementId)
-
   const [coord, setCoord] = useState({ x: 300, y: 100 })
 
   const onDataNodeClick = (
@@ -95,7 +93,7 @@ export const AlgorithmTreeView = React.memo(() => {
         break
     }
     const newNode: Node<NodeData> = {
-      id: String(maxElementId + 1),
+      id: nanoid(),
       type: componentType,
       position,
       data: { label: nodeName, type: nodeType },
@@ -119,7 +117,7 @@ export const AlgorithmTreeView = React.memo(() => {
     updateCoord()
 
     const newNode: Node<NodeData> = {
-      id: String(maxElementId + 1),
+      id: nanoid(),
       type: 'AlgorithmNode',
       position,
       data: { label: name, type: NODE_TYPE_SET.ALGORITHM },

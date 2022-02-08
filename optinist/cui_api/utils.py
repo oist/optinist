@@ -7,7 +7,7 @@ def get_file_path(_dir, file_name):
     if not os.path.exists(_dir):
         os.makedirs(_dir, exist_ok=True)
 
-    return os.path.join(_dir, f'{file_name}.json')
+    return join_file_path([_dir, f'{file_name}.json'])
 
 
 def get_images_list(data):
@@ -27,3 +27,11 @@ def get_images_list(data):
         images.append(_img.tolist())
     
     return images
+
+
+def join_file_path(path_list):
+    if isinstance(path_list, str):
+        return path_list
+    elif isinstance(path_list, list):
+        return "/".join(path_list)
+    assert False, "Path is not list"

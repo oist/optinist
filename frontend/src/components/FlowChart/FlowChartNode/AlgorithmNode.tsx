@@ -5,40 +5,37 @@ import {
   alpha,
   Typography,
   useTheme,
-  Select,
-  MenuItem,
   Tooltip,
   FormHelperText,
   IconButton,
   Button,
+  LinearProgress,
 } from '@material-ui/core'
 import ErrorIcon from '@material-ui/icons/Error'
 import Popover from '@material-ui/core/Popover'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
 
-import { OutputPathsDTO } from 'api/Run/Run'
 import { AlgorithmInfo } from 'store/slice/AlgorithmList/AlgorithmListType'
 import {
   selectAlgoArgs,
   selectAlgoReturns,
 } from 'store/slice/AlgorithmList/AlgorithmListSelectors'
-import {
-  selectAlgorithmFunctionPath,
-  selectAlgorithmSelectedOutputKey,
-  selectAlgorithmNodeDefined,
-} from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
-import { setSelectedOutputKey } from 'store/slice/AlgorithmNode/AlgorithmNodeSlice'
+import { selectAlgorithmNodeDefined } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
 import { NodeData } from 'store/slice/FlowElement/FlowElementType'
-import {
-  selectOutputPaths,
-  selectResultError,
-} from 'store/slice/RunPipelineResult/RunPipelineResultSelectors'
 
 import { useHandleColor } from './HandleColorHook'
 import { toHandleId, isValidConnection } from './FlowChartUtils'
 import { toggleParamForm } from 'store/slice/RightDrawer/RightDrawerSlice'
 import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
-import { HelpTwoTone } from '@material-ui/icons'
+import {
+  selectPipelineLatestUid,
+  selectPipelineNodeResultMessage,
+  selectPipelineNodeResultOutputKeyList,
+  selectPipelineNodeResultStatus,
+} from 'store/slice/Pipeline/PipelineSelectors'
+import { RootState } from 'store/store'
+import { arrayEqualityFn } from 'utils/EqualityUtils'
+import { NODE_RESULT_STATUS } from 'store/slice/Pipeline/PipelineType'
 
 const leftHandleStyle: CSSProperties = {
   width: '4%',
@@ -66,38 +63,6 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
   ({ id: nodeId, selected: elementSelected, isConnectable, data }) => {
     const theme = useTheme()
     const dispatch = useDispatch()
-    const outputPaths = useSelector(selectOutputPaths)
-    const functionPath = useSelector(selectAlgorithmFunctionPath(nodeId))
-    const selectedOutputKey = useSelector(
-      selectAlgorithmSelectedOutputKey(nodeId),
-    )
-    const outputKeyList =
-      outputPaths != null ? getOutputKeyList(outputPaths, functionPath) : null
-
-    React.useEffect(() => {
-      if (outputPaths != null) {
-        const keyList = getOutputKeyList(outputPaths, functionPath)
-        const initialOutputKey = keyList.length > 0 ? keyList[0] : null
-        if (selectedOutputKey === null && initialOutputKey != null) {
-          // outputKeyの選択の初期値を設定
-          dispatch(
-            setSelectedOutputKey({
-              nodeId,
-              selectedOutputKey: initialOutputKey,
-            }),
-          )
-        }
-      }
-    }, [dispatch, outputPaths, functionPath, nodeId, selectedOutputKey])
-
-    const onChangeOutputKey = (outputKey: string) => {
-      dispatch(
-        setSelectedOutputKey({
-          nodeId,
-          selectedOutputKey: outputKey,
-        }),
-      )
-    }
 
     const onClickParamButton = () => {
       dispatch(toggleParamForm(nodeId))
@@ -106,6 +71,15 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
     const onClickDeleteIcon = () => {
       dispatch(deleteFlowElementsById(nodeId))
     }
+
+    const latestUid = useSelector(selectPipelineLatestUid)
+    const outputKeyList = useSelector(
+      (state: RootState) =>
+        latestUid != null
+          ? selectPipelineNodeResultOutputKeyList(latestUid, nodeId)(state)
+          : [],
+      arrayEqualityFn,
+    )
 
     return (
       <div
@@ -132,15 +106,9 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
         </Button>
         <AlgoArgs nodeId={nodeId} />
         <AlgoReturns nodeId={nodeId} isConnectable={isConnectable} />
-        {outputKeyList != null && outputKeyList.length > 0 && (
-          <div className="outputkey">
-            <OutputKeySelect
-              selectedOutputKey={selectedOutputKey ?? outputKeyList[0]}
-              outputKeyList={outputKeyList}
-              onChange={onChangeOutputKey}
-            />
-          </div>
-        )}
+        {outputKeyList != null &&
+          outputKeyList.length > 0 &&
+          outputKeyList.map((outputKey) => <li>{outputKey}</li>)}
       </div>
     )
   },
@@ -151,8 +119,19 @@ const AlgoName = React.memo<{
   data: NodeData
 }>(({ nodeId, data }) => {
   const theme = useTheme()
-  const error = useSelector(selectResultError(nodeId))
+  const latestUid = useSelector(selectPipelineLatestUid)
 
+  const message = useSelector((state: RootState) =>
+    latestUid != null
+      ? selectPipelineNodeResultMessage(latestUid, nodeId)(state) ?? null
+      : null,
+  )
+
+  const status = useSelector((state: RootState) =>
+    latestUid != null
+      ? selectPipelineNodeResultStatus(latestUid, nodeId)(state)
+      : 'uninitialized',
+  )
   return (
     <div
       style={{
@@ -161,14 +140,20 @@ const AlgoName = React.memo<{
       }}
       className="algoName"
     >
+      {status === NODE_RESULT_STATUS.PENDING && <LinearProgress />}
       <Typography
         style={{
           textAlign: 'left',
-          color: error != null ? theme.palette.error.main : undefined,
+          color:
+            status === NODE_RESULT_STATUS.ERROR
+              ? theme.palette.error.main
+              : undefined,
         }}
       >
         {data.label}
-        <ErrorMessage error={error} />
+        <ErrorMessage
+          error={status === NODE_RESULT_STATUS.ERROR ? message : null}
+        />
       </Typography>
     </div>
   )
@@ -221,30 +206,6 @@ const AlgoReturns = React.memo<{
       )}
     </>
   )
-})
-
-const OutputKeySelect = React.memo<{
-  outputKeyList: string[]
-  selectedOutputKey: string
-  onChange: (outputKey: string) => void
-}>(({ outputKeyList, selectedOutputKey, onChange }) => {
-  const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-    const outputKey = event.target.value as string
-    onChange(outputKey)
-  }
-  if (outputKeyList.length !== 0) {
-    return (
-      <Select value={selectedOutputKey} label="output" onChange={handleChange}>
-        {outputKeyList.map((outputKey, i) => (
-          <MenuItem value={outputKey} key={i.toFixed()}>
-            {outputKey}
-          </MenuItem>
-        ))}
-      </Select>
-    )
-  } else {
-    return null
-  }
 })
 
 type HandleProps = {
@@ -406,22 +367,5 @@ function algoInfoListEqualtyFn(
     )
   } else {
     return a === undefined && b === undefined
-  }
-}
-
-function getOutputPathMap(outputPaths: OutputPathsDTO, functionPath: string) {
-  if (Object.keys(outputPaths).includes(functionPath)) {
-    return outputPaths[functionPath]
-  } else {
-    return null
-  }
-}
-
-function getOutputKeyList(outputPaths: OutputPathsDTO, functionPath: string) {
-  const output = getOutputPathMap(outputPaths, functionPath)
-  if (output != null) {
-    return Object.keys(output)
-  } else {
-    return []
   }
 }

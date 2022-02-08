@@ -4,9 +4,8 @@ import pandas as pd
 import imageio
 import tifffile
 import gc
-from .utils import get_file_path, get_images_list
-
-BASE_DIR = '/tmp/optinist'
+from cui_api.utils import get_file_path, get_images_list, join_file_path
+from cui_api.const import BASE_DIR
 
 
 class ImageData:
@@ -16,11 +15,11 @@ class ImageData:
             self.path = data
             self.json_path = None
         else:
-            _dir = os.path.join(BASE_DIR, func_name)
+            _dir = join_file_path([BASE_DIR, func_name])
 
             self.json_path = get_file_path(_dir, file_name)
 
-            self.path = os.path.join(_dir, f'{file_name}.tif')
+            self.path = join_file_path([_dir, f'{file_name}.tif'])
 
             tifffile.imsave(self.path, data)
 
@@ -50,19 +49,19 @@ class TimeSeriesData:
         if len(self.data.shape) == 1:
             self.data = self.data[np.newaxis, :]
 
-        _dir = os.path.join(BASE_DIR, func_name, f'{file_name}')
+        _dir = join_file_path([BASE_DIR, func_name, f'{file_name}'])
         if not os.path.exists(_dir):
             os.makedirs(_dir, exist_ok=True)
 
-        self.path = os.path.join(_dir)
+        self.path = _dir
 
         pd.DataFrame(self.data.T).to_csv(
-            os.path.join(self.path, f'{file_name}.csv'),
+            join_file_path([self.path, f'{file_name}.csv']),
             header=False, index=False)
 
         for i, data in enumerate(self.data):
             pd.DataFrame(data).to_json(
-                os.path.join(_dir, f'{str(i)}.json'), indent=4)
+                join_file_path([_dir, f'{str(i)}.json']), indent=4)
 
     def __del__(self):
         del self
@@ -73,7 +72,7 @@ class CorrelationData:
     def __init__(self, data, func_name='heatmap', file_name='heatmap'):
         self.data = data
 
-        _dir = os.path.join(BASE_DIR, func_name)
+        _dir = join_file_path([BASE_DIR, func_name])
         self.path = get_file_path(_dir, file_name)
 
         pd.DataFrame(self.data).to_json(self.path, indent=4, orient="values")
@@ -89,9 +88,9 @@ class RoiData:
 
         images = get_images_list(data)
 
-        _dir = os.path.join(BASE_DIR, func_name)
+        _dir = join_file_path([BASE_DIR, func_name])
         self.path = get_file_path(_dir, file_name)
-        tifffile.imsave(os.path.join(_dir, f'{file_name}.tif'), images)
+        tifffile.imsave(join_file_path([_dir, f'{file_name}.tif']), images)
         pd.DataFrame(images).to_json(self.path, indent=4, orient="values")
 
         del images, data
@@ -105,7 +104,7 @@ class RoiData:
 class Suite2pData:
     def __init__(self, data, func_name='suite2p', file_name='suite2p'):
         self.data = data
-        _dir = os.path.join(BASE_DIR, func_name)
+        _dir = join_file_path([BASE_DIR, func_name])
         self.path = get_file_path(_dir, file_name)
 
     def __del__(self):
@@ -116,7 +115,7 @@ class Suite2pData:
 class IscellData:
     def __init__(self, data, func_name='iscell', file_name='iscell'):
         self.data = data
-        _dir = os.path.join(BASE_DIR, func_name)
+        _dir = join_file_path([BASE_DIR, func_name])
         self.path = get_file_path(_dir, file_name)
 
     def __del__(self):
@@ -130,14 +129,14 @@ class ScatterData:
         if not data.ndim == 2:
             raise 'Scatter Dimension Error'
 
-        _dir = os.path.join(BASE_DIR, func_name, f'{file_name}')
+        _dir = join_file_path([BASE_DIR, func_name, f'{file_name}'])
         if not os.path.exists(_dir):
             os.makedirs(_dir, exist_ok=True)
 
         self.path = get_file_path(_dir, file_name)
 
         pd.DataFrame(data).to_json(
-            os.path.join(_dir, f'{file_name}.json'), indent=4)
+            join_file_path([_dir, f'{file_name}.json']), indent=4)
 
     def __del__(self):
         del self
@@ -151,14 +150,14 @@ class BarData:
         if not data.ndim == 1:
             raise 'Bar Dimension Error'
 
-        _dir = os.path.join(BASE_DIR, func_name, f'{file_name}')
+        _dir = join_file_path([BASE_DIR, func_name, f'{file_name}'])
         if not os.path.exists(_dir):
             os.makedirs(_dir, exist_ok=True)
 
         self.path = get_file_path(_dir, file_name)
 
         pd.DataFrame(data).to_json(
-            os.path.join(_dir, f'{file_name}.json'), indent=4, orient="values")
+            join_file_path([_dir, f'{file_name}.json']), indent=4, orient="values")
 
     def __del__(self):
         del self
