@@ -1,4 +1,4 @@
-import React, { useEffect, DragEvent, useState } from 'react'
+import React, { useEffect, DragEvent } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { nanoid } from '@reduxjs/toolkit'
 import { TreeView, TreeItem } from '@material-ui/lab'
@@ -21,8 +21,12 @@ import {
   NODE_TYPE,
   NODE_TYPE_SET,
 } from 'store/slice/FlowElement/FlowElementType'
-import { addFlowElementNode } from 'store/slice/FlowElement/FlowElementSlice'
+import {
+  addFlowElementNode,
+  setElementCoord,
+} from 'store/slice/FlowElement/FlowElementSlice'
 import { Node } from 'react-flow-renderer'
+import { selectElementCoord } from 'store/slice/FlowElement/FlowElementSelectors'
 
 const useStyles = makeStyles({
   root: {
@@ -43,17 +47,78 @@ export const AlgorithmTreeView = React.memo(() => {
     }
   }, [dispatch, isLatest])
 
-  const onAlgoNodeDragStart = (
-    event: DragEvent,
+  return (
+    <TreeView
+      className={classes.root}
+      defaultCollapseIcon={<ExpandMoreIcon />}
+      defaultExpandIcon={<ChevronRightIcon />}
+    >
+      <TreeItem nodeId="Data" label="Data">
+        <InputNodeComponent
+          fileName={'image'}
+          nodeName={'imageData'}
+          fileType={FILE_TYPE_SET.IMAGE}
+        />
+        <InputNodeComponent
+          fileName={'csv'}
+          nodeName={'csvData'}
+          fileType={FILE_TYPE_SET.CSV}
+        />
+        <InputNodeComponent
+          fileName={'nwb'}
+          nodeName={'nwbData'}
+          fileType={FILE_TYPE_SET.NWB}
+        />
+      </TreeItem>
+      <TreeItem nodeId="Algorithm" label="Algorithm">
+        {Object.entries(algoList).map(([name, node], i) => (
+          <AlgoNodeComponent name={name} node={node} key={i.toFixed()} />
+        ))}
+      </TreeItem>
+    </TreeView>
+  )
+})
+
+const InputNodeComponent = React.memo<{
+  fileName: string
+  nodeName: string
+  fileType: FILE_TYPE
+}>(({ fileName, nodeName, fileType }) => {
+  const dispatch = useDispatch()
+  const elementCoord = useSelector(selectElementCoord)
+
+  const onDataNodeClick = (
+    nodeType: NODE_TYPE,
     nodeName: string,
-    functionPath: string,
+    fileType: FILE_TYPE,
   ) => {
-    if (event.dataTransfer != null) {
-      event.dataTransfer.setData('nodeName', nodeName)
-      event.dataTransfer.setData('nodeType', NODE_TYPE_SET.ALGORITHM)
-      event.dataTransfer.setData('functionPath', functionPath)
-      event.dataTransfer.effectAllowed = 'move'
+    const position = {
+      x: elementCoord.x,
+      y: elementCoord.y,
     }
+    dispatch(setElementCoord())
+
+    let componentType = ''
+    switch (fileType) {
+      case FILE_TYPE_SET.CSV:
+        componentType = 'CsvFileNode'
+        break
+      case FILE_TYPE_SET.IMAGE:
+        componentType = 'ImageFileNode'
+        fileType = FILE_TYPE_SET.IMAGE
+        break
+      case FILE_TYPE_SET.NWB:
+        componentType = 'NWBFileNode'
+        fileType = FILE_TYPE_SET.NWB
+        break
+    }
+    const newNode: Node<NodeData> = {
+      id: nanoid(),
+      type: componentType,
+      position,
+      data: { label: nodeName, type: nodeType },
+    }
+    dispatch(addFlowElementNode({ node: newNode, inputNodeInfo: { fileType } }))
   }
 
   const onDataNodeDragStart = (
@@ -69,52 +134,39 @@ export const AlgorithmTreeView = React.memo(() => {
     }
   }
 
-  const [coord, setCoord] = useState({ x: 300, y: 100 })
+  return (
+    <TreeItem
+      nodeId={fileName}
+      label={
+        <AddButton
+          name={fileName}
+          onClick={() =>
+            onDataNodeClick(NODE_TYPE_SET.INPUT, nodeName, fileType)
+          }
+        />
+      }
+      onDragStart={(event: DragEvent) =>
+        onDataNodeDragStart(event, nodeName, fileType)
+      }
+      draggable
+    ></TreeItem>
+  )
+})
 
-  const onDataNodeClick = (
-    nodeType: NODE_TYPE,
-    nodeName: string,
-    fileType: FILE_TYPE,
-  ) => {
-    const position = {
-      x: coord.x,
-      y: coord.y,
-    }
-    updateCoord()
-
-    let componentType = ''
-    switch (fileType) {
-      case FILE_TYPE_SET.CSV:
-        componentType = 'CsvFileNode'
-        break
-      case FILE_TYPE_SET.IMAGE:
-        componentType = 'ImageFileNode'
-        fileType = FILE_TYPE_SET.IMAGE
-        break
-    }
-    const newNode: Node<NodeData> = {
-      id: nanoid(),
-      type: componentType,
-      position,
-      data: { label: nodeName, type: nodeType },
-    }
-    dispatch(addFlowElementNode({ node: newNode, inputNodeInfo: { fileType } }))
-  }
-
-  const updateCoord = () => {
-    setCoord({ x: coord.x + 150, y: coord.y + 50 })
-    if (coord.x > 800 || coord.y > 200) {
-      setCoord({ x: 300, y: 100 })
-    }
-  }
+const AlgoNodeComponent = React.memo<{
+  name: string
+  node: AlgorithmNodeType
+}>(({ name, node }) => {
+  const dispatch = useDispatch()
+  const elementCoord = useSelector(selectElementCoord)
 
   const onAlgoNodeClick = (nodeName: string, functionPath: string) => {
     const name = nodeName
     const position = {
-      x: coord.x,
-      y: coord.y,
+      x: elementCoord.x,
+      y: elementCoord.y,
     }
-    updateCoord()
+    dispatch(setElementCoord())
 
     const newNode: Node<NodeData> = {
       id: nanoid(),
@@ -130,81 +182,19 @@ export const AlgorithmTreeView = React.memo(() => {
     )
   }
 
-  return (
-    <TreeView
-      className={classes.root}
-      defaultCollapseIcon={<ExpandMoreIcon />}
-      defaultExpandIcon={<ChevronRightIcon />}
-    >
-      <TreeItem nodeId="Data" label="Data">
-        <TreeItem
-          nodeId="image"
-          label={
-            <AddButton
-              name="image"
-              onClick={() =>
-                onDataNodeClick(
-                  NODE_TYPE_SET.INPUT,
-                  'ImageData',
-                  FILE_TYPE_SET.IMAGE,
-                )
-              }
-            />
-          }
-          onDragStart={(event: DragEvent) =>
-            onDataNodeDragStart(event, 'ImageData', FILE_TYPE_SET.IMAGE)
-          }
-          draggable
-        ></TreeItem>
-        <TreeItem
-          nodeId="csv"
-          label={
-            <AddButton
-              name="csv"
-              onClick={() =>
-                onDataNodeClick(
-                  NODE_TYPE_SET.INPUT,
-                  'CsvData',
-                  FILE_TYPE_SET.CSV,
-                )
-              }
-            />
-          }
-          onDragStart={(event: DragEvent) =>
-            onDataNodeDragStart(event, 'CsvData', FILE_TYPE_SET.CSV)
-          }
-          draggable
-        />
-      </TreeItem>
-      <TreeItem nodeId="Algorithm" label="Algorithm">
-        {Object.entries(algoList).map(([name, node], i) => (
-          <AlgoNodeComponent
-            name={name}
-            node={node}
-            onDragStart={(event, nodeName, functionPath) =>
-              onAlgoNodeDragStart(event, nodeName, functionPath)
-            }
-            onAlgoNodeClick={(name, functionPath) =>
-              onAlgoNodeClick(name, functionPath)
-            }
-            key={i.toFixed()}
-          />
-        ))}
-      </TreeItem>
-    </TreeView>
-  )
-})
-
-const AlgoNodeComponent = React.memo<{
-  name: string
-  node: AlgorithmNodeType
-  onDragStart: (
+  const onAlgoNodeDragStart = (
     event: DragEvent,
     nodeName: string,
     functionPath: string,
-  ) => void
-  onAlgoNodeClick: (nodeName: string, functionPath: string) => void
-}>(({ name, node, onDragStart, onAlgoNodeClick }) => {
+  ) => {
+    if (event.dataTransfer != null) {
+      event.dataTransfer.setData('nodeName', nodeName)
+      event.dataTransfer.setData('nodeType', NODE_TYPE_SET.ALGORITHM)
+      event.dataTransfer.setData('functionPath', functionPath)
+      event.dataTransfer.effectAllowed = 'move'
+    }
+  }
+
   if (isAlgoChild(node)) {
     return (
       <TreeItem
@@ -216,7 +206,7 @@ const AlgoNodeComponent = React.memo<{
           />
         }
         onDragStart={(event: DragEvent) =>
-          onDragStart(event, name, node.functionPath)
+          onAlgoNodeDragStart(event, name, node.functionPath)
         }
         draggable
       />
@@ -225,15 +215,7 @@ const AlgoNodeComponent = React.memo<{
     return (
       <TreeItem nodeId={name} label={name}>
         {Object.entries(node.children).map(([name, node], i) => (
-          <AlgoNodeComponent
-            name={name}
-            node={node}
-            onDragStart={onDragStart}
-            key={i.toFixed()}
-            onAlgoNodeClick={(name, functionPath) =>
-              onAlgoNodeClick(name, functionPath)
-            }
-          />
+          <AlgoNodeComponent name={name} node={node} key={i.toFixed()} />
         ))}
       </TreeItem>
     )

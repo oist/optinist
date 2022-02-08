@@ -53,6 +53,16 @@ export const filesTreeSlice = createSlice({
               tree: [],
             }
           }
+        } else if (fileType === FILE_TYPE_SET.NWB) {
+          if (state[FILE_TREE_TYPE_SET.NWB] != null) {
+            state[FILE_TREE_TYPE_SET.NWB].isLatest = false
+          } else {
+            state[FILE_TREE_TYPE_SET.NWB] = {
+              isLoading: false,
+              isLatest: false,
+              tree: [],
+            }
+          }
         } else {
           if (state[FILE_TREE_TYPE_SET.ALL] != null) {
             state[FILE_TREE_TYPE_SET.ALL].isLatest = false
@@ -71,6 +81,8 @@ export const filesTreeSlice = createSlice({
           state[FILE_TREE_TYPE_SET.IMAGE].isLatest = false
         } else if (fileType === FILE_TYPE_SET.CSV) {
           state[FILE_TREE_TYPE_SET.CSV].isLatest = false
+        } else if (fileType === FILE_TYPE_SET.NWB) {
+          state[FILE_TREE_TYPE_SET.NWB].isLatest = false
         } else {
           state[FILE_TREE_TYPE_SET.ALL].isLatest = false
         }

@@ -2,11 +2,9 @@ import React, { CSSProperties } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
 import { alpha, useTheme } from '@material-ui/core/styles'
-import { Typography, IconButton } from '@material-ui/core'
+import { IconButton } from '@material-ui/core'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
 
-import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
-import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import {
   selectInputNodeDefined,
   selectInputNodeSelectedFilePath,
@@ -15,8 +13,7 @@ import { setInputImageNodeFile } from 'store/slice/InputNode/InputNodeSlice'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 
 import { useHandleColor } from './HandleColorHook'
-import { FileSelect } from './FileSelect'
-import { LinearProgressWithLabel } from './LinerProgressWithLabel'
+import { FileSelectHandle } from './FileSelect'
 import { toHandleId, isValidConnection } from './FlowChartUtils'
 import {
   deleteFlowElementsById,
@@ -87,8 +84,9 @@ const ImageFileNodeImple = React.memo<NodeProps>(
         >
           <CloseOutlinedIcon />
         </IconButton>
-        <ImageFileSelect
+        <FileSelectHandle
           onChangeFilePath={onChangeFilePath}
+          fileType={FILE_TYPE_SET.IMAGE}
           filePath={filePath ?? ''}
         />
         <Handle
@@ -105,47 +103,3 @@ const ImageFileNodeImple = React.memo<NodeProps>(
     )
   },
 )
-
-const ImageFileSelect = React.memo<{
-  filePath: string
-  onChangeFilePath: (path: string) => void
-}>(({ filePath, onChangeFilePath }) => {
-  const {
-    filePath: uploadedFilePath,
-    onUploadFile,
-    pending,
-    uninitialized,
-    progress,
-    error,
-  } = useFileUploader(FILE_TYPE_SET.IMAGE)
-  const onUploadFileHandle = (formData: FormData, fileName: string) => {
-    onUploadFile(formData, fileName)
-    if (uploadedFilePath != null) {
-      onChangeFilePath(uploadedFilePath)
-    }
-  }
-  const onSelectFile = (selectedPath: string) => {
-    onChangeFilePath(selectedPath)
-  }
-  return (
-    <>
-      {!uninitialized && pending && progress != null && (
-        <div style={{ marginLeft: 2, marginRight: 2 }}>
-          <LinearProgressWithLabel value={progress} />
-        </div>
-      )}
-      <FileSelect
-        filePath={filePath}
-        onSelectFile={onSelectFile}
-        onUploadFile={onUploadFileHandle}
-        fileTreeType={FILE_TREE_TYPE_SET.IMAGE}
-        selectButtonLabel="Select Image"
-      />
-      {error != null && (
-        <Typography variant="caption" color="error">
-          {error}
-        </Typography>
-      )}
-    </>
-  )
-})

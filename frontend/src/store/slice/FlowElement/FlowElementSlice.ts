@@ -12,6 +12,7 @@ import {
   FlowElement,
   NODE_TYPE_SET,
   NodeData,
+  ElementCoord,
 } from './FlowElementType'
 import {
   INITIAL_ALGO_STYLE,
@@ -40,9 +41,15 @@ const initialFlowPosition: FlowTransform = {
   zoom: 0.8,
 }
 
+const initialElementCoord: ElementCoord = {
+  x: 350,
+  y: 60,
+}
+
 const initialState: FlowElement = {
   flowElements: initialElements,
   flowPosition: initialFlowPosition,
+  elementCoord: initialElementCoord,
 }
 
 export const flowElementSlice = createSlice({
@@ -132,6 +139,16 @@ export const flowElementSlice = createSlice({
         targetItem.position = coord
       }
     },
+    setElementCoord: (state) => {
+      const x = state.elementCoord.x
+      const y = state.elementCoord.y
+      if (x > 800 || y > 200) {
+        state.elementCoord.x = 300
+        state.elementCoord.y = 100
+      } else {
+        state.elementCoord.x += 250
+      }
+    },
   },
 })
 
@@ -143,6 +160,7 @@ export const {
   deleteFlowElementsById,
   edifFlowElementsLabelById,
   editFlowElementPositionById,
+  setElementCoord,
 } = flowElementSlice.actions
 
 export default flowElementSlice.reducer

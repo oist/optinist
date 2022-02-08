@@ -27,16 +27,16 @@ const sourceHandleStyle: CSSProperties = {
   borderRadius: 0,
 }
 
-export const CsvFileNode = React.memo<NodeProps>((element) => {
+export const NWBFileNode = React.memo<NodeProps>((element) => {
   const defined = useSelector(selectInputNodeDefined(element.id))
   if (defined) {
-    return <CsvFileNodeImple {...element} />
+    return <NWBFileNodeImple {...element} />
   } else {
     return null
   }
 })
 
-const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
+const NWBFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   const dispatch = useDispatch()
   const filePath = useSelector(selectInputNodeSelectedFilePath(nodeId))
   const onChangeFilePath = (path: string) => {
@@ -74,13 +74,13 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
       </IconButton>
       <FileSelectHandle
         onChangeFilePath={onChangeFilePath}
-        fileType={FILE_TYPE_SET.CSV}
+        fileType={FILE_TYPE_SET.NWB}
         filePath={filePath ? filePath.split('/').reverse()[0] : ''}
       />
       <Handle
         type="source"
         position={Position.Right}
-        id={toHandleId(nodeId, 'csv', 'CsvData')}
+        id={toHandleId(nodeId, 'nwb', 'NWBData')}
         style={sourceHandleStyle}
       />
     </div>

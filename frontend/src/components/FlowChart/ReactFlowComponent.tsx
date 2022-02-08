@@ -30,14 +30,16 @@ import {
   selectFlowPosition,
 } from 'store/slice/FlowElement/FlowElementSelectors'
 import { ImageFileNode } from './FlowChartNode/ImageFileNode'
-import { AlgorithmNode } from './FlowChartNode/AlgorithmNode'
 import { CsvFileNode } from './FlowChartNode/CsvFileNode'
+import { NWBFileNode } from './FlowChartNode/NWBFileNode'
+import { AlgorithmNode } from './FlowChartNode/AlgorithmNode'
 import { CustomEdge } from './CustomEdge'
 import { nanoid } from '@reduxjs/toolkit'
 
 const componentTypes = {
   ImageFileNode,
   CsvFileNode,
+  NWBFileNode,
   AlgorithmNode,
 } as const
 
@@ -94,10 +96,15 @@ export const ReactFlowComponent = React.memo(() => {
         switch (event.dataTransfer.getData('fileType')) {
           case FILE_TYPE_SET.CSV:
             componentType = 'CsvFileNode'
+            fileType = FILE_TYPE_SET.CSV
             break
           case FILE_TYPE_SET.IMAGE:
             componentType = 'ImageFileNode'
             fileType = FILE_TYPE_SET.IMAGE
+            break
+          case FILE_TYPE_SET.NWB:
+            componentType = 'NWBFileNode'
+            fileType = FILE_TYPE_SET.NWB
             break
         }
 

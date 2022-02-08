@@ -14,6 +14,9 @@ export const selectFlowElements = (state: RootState) =>
 export const selectFlowPosition = (state: RootState) =>
   state.flowElement.flowPosition
 
+export const selectElementCoord = (state: RootState) =>
+  state.flowElement.elementCoord
+
 export const selectNodeById = (nodeId: string) => (state: RootState) =>
   selectFlowElements(state)
     .filter(isNodeData)

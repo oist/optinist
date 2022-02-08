@@ -12,6 +12,7 @@ import {
   VisualaizeItem,
   VISUALIZE_ITEM_TYPE_SET,
   BarItem,
+  NWBItem,
 } from './VisualizeItemType'
 import {
   isDefaultSetItem,
@@ -106,6 +107,11 @@ const barItemInitialValue: BarItem = {
   dataType: DATA_TYPE_SET.BAR,
 }
 
+const nwbItemInitialValue: NWBItem = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.NWB,
+}
+
 function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
   switch (dataType) {
     case DATA_TYPE_SET.IMAGE:
@@ -122,6 +128,8 @@ function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
       return scatterItemInitialValue
     case DATA_TYPE_SET.BAR:
       return barItemInitialValue
+    case DATA_TYPE_SET.NWB:
+      return nwbItemInitialValue
   }
 }
 

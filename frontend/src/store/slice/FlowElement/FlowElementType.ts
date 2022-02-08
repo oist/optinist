@@ -14,7 +14,13 @@ export interface NodeData {
   type: NODE_TYPE
 }
 
+export interface ElementCoord {
+  x: number
+  y: number
+}
+
 export interface FlowElement {
   flowElements: Elements<NodeData>
   flowPosition: FlowTransform
+  elementCoord: ElementCoord
 }

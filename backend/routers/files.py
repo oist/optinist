@@ -56,7 +56,7 @@ def get_dir_tree(dir_path: str, file_types: List[str]) -> List[TreeNode]:
 
 
 @router.get("/files")
-async  def get_files(file_type: Optional[str] = None):
+async def get_files(file_type: Optional[str] = None):
     tree = []
     if(file_type is None):
         tree = get_dir_tree(BASE_DIR, ACCEPT_FILE_TYPES)
@@ -65,6 +65,8 @@ async  def get_files(file_type: Optional[str] = None):
             tree = get_dir_tree(BASE_DIR, ["tif", 'TIF', 'tiff', 'TIFF'])
         elif file_type == "csv":
             tree = get_dir_tree(BASE_DIR, ["csv"])
+        elif file_type == "nwb":
+            tree = get_dir_tree(BASE_DIR, ["nwb"])
         else:
             # TODO 他のファイル種別の仕様が分かり次第追加
             pass
@@ -72,15 +74,35 @@ async  def get_files(file_type: Optional[str] = None):
     return tree
 
 
-@router.post("/files/upload/{fileName}")
-async def create_file(response: Response, fileName: str, file: UploadFile = File(...)):
-    root_dir = os.path.splitext(join_file_path([BASE_DIR, fileName]))[0]
-    if not os.path.exists(root_dir):
-        os.makedirs(root_dir, exist_ok=True)
+# @router.post("/files/upload/{fileName}")
+# async def create_file(response: Response, fileName: str, file: UploadFile = File(...)):
+#     root_dir = os.path.splitext(join_file_path([BASE_DIR, fileName]))[0]
+#     if not os.path.exists(root_dir):
+#         os.makedirs(root_dir, exist_ok=True)
 
-    file_path = join_file_path([root_dir, fileName])
+#     file_path = join_file_path([root_dir, fileName])
 
-    with open(file_path, "wb") as f:
-        shutil.copyfileobj(file.file, f)
+#     with open(file_path, "wb") as f:
+#         shutil.copyfileobj(file.file, f)
 
-    return { "file_path": file_path }
+#     return { "file_path": file_path }
+
+
+import h5py
+
+
+@router.get("/files/nwb")
+async def get_files():
+    file_path = './data/suite2p/ophys.nwb'
+
+    print_list = []
+    def PrintOnlyDataset(name, obj):
+        if isinstance(obj, h5py.Dataset):
+            print(name)
+            print_list.append(name)
+
+
+    with h5py.File(file_path, "r") as f:
+        f.visititems(PrintOnlyDataset)
+
+    return print_list
