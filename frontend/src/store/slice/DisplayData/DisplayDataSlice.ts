@@ -23,6 +23,7 @@ const initialState: DisplayData = {
   roi: {},
   scatter: {},
   bar: {},
+  hdf5: {},
 }
 
 export const displayDataSlice = createSlice({

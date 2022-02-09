@@ -32,12 +32,14 @@ import {
 import { ImageFileNode } from './FlowChartNode/ImageFileNode'
 import { AlgorithmNode } from './FlowChartNode/AlgorithmNode'
 import { CsvFileNode } from './FlowChartNode/CsvFileNode'
+import { HDF5FileNode } from './FlowChartNode/HDF5FileNode'
 import { CustomEdge } from './CustomEdge'
 import { nanoid } from '@reduxjs/toolkit'
 
 const componentTypes = {
   ImageFileNode,
   CsvFileNode,
+  HDF5FileNode,
   AlgorithmNode,
 } as const
 
@@ -98,6 +100,10 @@ export const ReactFlowComponent = React.memo(() => {
           case FILE_TYPE_SET.IMAGE:
             componentType = 'ImageFileNode'
             fileType = FILE_TYPE_SET.IMAGE
+            break
+          case FILE_TYPE_SET.HDF5:
+            componentType = 'HDF5FileNode'
+            fileType = FILE_TYPE_SET.HDF5
             break
         }
 

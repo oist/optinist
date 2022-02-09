@@ -64,6 +64,11 @@ export const inputNodeSlice = createSlice({
                 fileType,
               }
               break
+            case FILE_TYPE_SET.HDF5:
+              state[node.id] = {
+                fileType,
+              }
+              break
           }
         }
       })
