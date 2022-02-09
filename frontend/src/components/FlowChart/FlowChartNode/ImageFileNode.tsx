@@ -13,7 +13,7 @@ import { setInputImageNodeFile } from 'store/slice/InputNode/InputNodeSlice'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 
 import { useHandleColor } from './HandleColorHook'
-import { FileSelectHandle } from './FileSelect'
+import { FileSelect } from './FileSelect'
 import { toHandleId, isValidConnection } from './FlowChartUtils'
 import {
   deleteFlowElementsById,
@@ -84,7 +84,7 @@ const ImageFileNodeImple = React.memo<NodeProps>(
         >
           <CloseOutlinedIcon />
         </IconButton>
-        <FileSelectHandle
+        <FileSelect
           onChangeFilePath={onChangeFilePath}
           fileType={FILE_TYPE_SET.IMAGE}
           filePath={filePath ?? ''}

@@ -12,7 +12,7 @@ import {
 } from 'store/slice/InputNode/InputNodeSelectors'
 import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeSlice'
 import { toHandleId } from './FlowChartUtils'
-import { FileSelectHandle } from './FileSelect'
+import { FileSelect } from './FileSelect'
 import {
   deleteFlowElementsById,
   edifFlowElementsLabelById,
@@ -72,7 +72,7 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
       >
         <CloseOutlinedIcon />
       </IconButton>
-      <FileSelectHandle
+      <FileSelect
         onChangeFilePath={onChangeFilePath}
         fileType={FILE_TYPE_SET.CSV}
         filePath={filePath ? filePath.split('/').reverse()[0] : ''}

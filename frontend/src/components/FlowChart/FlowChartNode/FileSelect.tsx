@@ -20,7 +20,7 @@ type FileSelectProps = {
   uploadButtonLabel?: string
 }
 
-export const FileSelectHandle = React.memo<{
+export const FileSelect = React.memo<{
   filePath: string
   fileType: FILE_TYPE
   onChangeFilePath: (path: string) => void
@@ -50,7 +50,7 @@ export const FileSelectHandle = React.memo<{
           <LinearProgressWithLabel value={progress} />
         </div>
       )}
-      <FileSelect
+      <FileSelectImple
         filePath={filePath}
         onSelectFile={onSelectFile}
         onUploadFile={onUploadFileHandle}
@@ -66,7 +66,7 @@ export const FileSelectHandle = React.memo<{
   )
 })
 
-export const FileSelect = React.memo<FileSelectProps>(
+export const FileSelectImple = React.memo<FileSelectProps>(
   ({
     filePath,
     onSelectFile,
