@@ -26,6 +26,7 @@ https://nodejs.org/ja/download/
 - launch command
 ```
 cd optinist/frontend
+yarn install
 yarn start
 ```
 
