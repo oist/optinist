@@ -1,6 +1,9 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { FileSelect } from 'components/FlowChart/FlowChartNode/FileSelect'
+import {
+  FileSelect,
+  FileSelectImple,
+} from 'components/FlowChart/FlowChartNode/FileSelect'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 import {
   selectCsvItemSetColumn,
@@ -33,7 +36,7 @@ export const CsvItemEditor: React.FC = () => {
 
   return (
     <div style={{ margin: '10px', padding: 10 }}>
-      <FileSelect
+      <FileSelectImple
         filePath={filePath ?? ''}
         onSelectFile={onSelectFile}
         onUploadFile={onUploadFileHandle}

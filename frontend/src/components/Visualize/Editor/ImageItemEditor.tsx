@@ -33,7 +33,10 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 import 'react-linear-gradient-picker/dist/index.css'
-import { FileSelect } from 'components/FlowChart/FlowChartNode/FileSelect'
+import {
+  FileSelect,
+  FileSelectImple,
+} from 'components/FlowChart/FlowChartNode/FileSelect'
 import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
@@ -78,7 +81,7 @@ export const ImageItemEditor: React.FC = () => {
   }
   return (
     <div style={{ margin: '10px', padding: 10 }}>
-      <FileSelect
+      <FileSelectImple
         filePath={filePath ?? ''}
         onSelectFile={onSelectImageFile}
         onUploadFile={onUploadFileHandle}

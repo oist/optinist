@@ -7,6 +7,9 @@ import {
   FILE_TREE_TYPE,
   FILE_TREE_TYPE_SET,
 } from 'store/slice/FilesTree/FilesTreeType'
+import { LinearProgressWithLabel } from './LinerProgressWithLabel'
+import { FILE_TYPE } from 'store/slice/InputNode/InputNodeType'
+import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 
 type FileSelectProps = {
   filePath: string
@@ -17,7 +20,55 @@ type FileSelectProps = {
   uploadButtonLabel?: string
 }
 
-export const FileSelect = React.memo<FileSelectProps>(
+export const FileSelect = React.memo<{
+  filePath: string
+  fileType: FILE_TYPE
+  onChangeFilePath: (path: string) => void
+}>(({ filePath, fileType, onChangeFilePath }) => {
+  const {
+    filePath: uploadedFilePath,
+    onUploadFile,
+    pending,
+    uninitialized,
+    progress,
+    error,
+  } = useFileUploader(fileType)
+
+  const onUploadFileHandle = (formData: FormData, fileName: string) => {
+    onUploadFile(formData, fileName)
+    if (uploadedFilePath != null) {
+      onChangeFilePath(uploadedFilePath)
+    }
+  }
+
+  const onSelectFile = (selectedPath: string) => {
+    onChangeFilePath(selectedPath)
+  }
+
+  return (
+    <>
+      {!uninitialized && pending && progress != null && (
+        <div style={{ marginLeft: 2, marginRight: 2 }}>
+          <LinearProgressWithLabel value={progress} />
+        </div>
+      )}
+      <FileSelectImple
+        filePath={filePath}
+        onSelectFile={onSelectFile}
+        onUploadFile={onUploadFileHandle}
+        fileTreeType={fileType}
+        selectButtonLabel={`Select ${fileType}`}
+      />
+      {error != null && (
+        <Typography variant="caption" color="error">
+          {error}
+        </Typography>
+      )}
+    </>
+  )
+})
+
+export const FileSelectImple = React.memo<FileSelectProps>(
   ({
     filePath,
     onSelectFile,
