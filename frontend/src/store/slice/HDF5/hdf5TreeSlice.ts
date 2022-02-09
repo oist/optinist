@@ -2,13 +2,13 @@ import { createSlice } from '@reduxjs/toolkit'
 import { uploadFile } from 'store/slice/FileUploader/FileUploaderActions'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 
-import { getFilesTree } from './FilesTreeAction'
+import { getHDF5FileTree } from './hdf5TreeAction'
 import {
   FilesTree,
   FILES_TREE_SLICE_NAME,
   FILE_TREE_TYPE_SET,
-} from './FilesTreeType'
-import { convertToTreeNodeType } from './FilesTreeUtils'
+} from './hdf5TreeType'
+import { convertToTreeNodeType } from './hdf5TreeUtils'
 
 const initialState: FilesTree = {}
 export const filesTreeSlice = createSlice({
@@ -17,7 +17,7 @@ export const filesTreeSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getFilesTree.pending, (state, action) => {
+      .addCase(getHDF5FileTree.pending, (state, action) => {
         const fileType = action.meta.arg
         state[fileType] = {
           isLoading: true,
@@ -25,7 +25,7 @@ export const filesTreeSlice = createSlice({
           tree: [],
         }
       })
-      .addCase(getFilesTree.fulfilled, (state, action) => {
+      .addCase(getHDF5FileTree.fulfilled, (state, action) => {
         const fileTreeType = action.meta.arg
         state[fileTreeType].tree = convertToTreeNodeType(action.payload)
         state[fileTreeType].isLatest = true

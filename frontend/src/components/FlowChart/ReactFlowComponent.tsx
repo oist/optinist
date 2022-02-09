@@ -31,7 +31,7 @@ import {
 } from 'store/slice/FlowElement/FlowElementSelectors'
 import { ImageFileNode } from './FlowChartNode/ImageFileNode'
 import { CsvFileNode } from './FlowChartNode/CsvFileNode'
-import { NWBFileNode } from './FlowChartNode/NWBFileNode'
+import { HDF5FileNode } from './FlowChartNode/HDF5FileNode'
 import { AlgorithmNode } from './FlowChartNode/AlgorithmNode'
 import { CustomEdge } from './CustomEdge'
 import { nanoid } from '@reduxjs/toolkit'
@@ -39,7 +39,7 @@ import { nanoid } from '@reduxjs/toolkit'
 const componentTypes = {
   ImageFileNode,
   CsvFileNode,
-  NWBFileNode,
+  HDF5FileNode,
   AlgorithmNode,
 } as const
 
@@ -102,9 +102,9 @@ export const ReactFlowComponent = React.memo(() => {
             componentType = 'ImageFileNode'
             fileType = FILE_TYPE_SET.IMAGE
             break
-          case FILE_TYPE_SET.NWB:
-            componentType = 'NWBFileNode'
-            fileType = FILE_TYPE_SET.NWB
+          case FILE_TYPE_SET.HDF5:
+            componentType = 'HDF5FileNode'
+            fileType = FILE_TYPE_SET.HDF5
             break
         }
 

@@ -34,7 +34,7 @@ export type DisplayDataItem =
   | RoiItem
   | ScatterItem
   | BarItem
-  | NWBItem
+  | HDF5Item
 
 export interface DisplayDataItemBaseType extends ItemBaseType<'displayData'> {
   filePath: string | null
@@ -104,6 +104,6 @@ export interface BarItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.BAR
 }
 
-export interface NWBItem extends DisplayDataItemBaseType {
-  dataType: typeof DATA_TYPE_SET.NWB
+export interface HDF5Item extends DisplayDataItemBaseType {
+  dataType: typeof DATA_TYPE_SET.HDF5
 }

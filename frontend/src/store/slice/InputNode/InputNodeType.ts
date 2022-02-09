@@ -3,7 +3,7 @@ export const INPUT_NODE_SLICE_NAME = 'inputNode'
 export const FILE_TYPE_SET = {
   CSV: 'csv',
   IMAGE: 'image',
-  NWB: 'nwb',
+  HDF5: 'hdf5',
   // JSON:"json"
 } as const
 
@@ -13,7 +13,7 @@ export type InputNode = {
   [nodeId: string]: InputNodeType
 }
 
-export type InputNodeType = CsvInputNode | ImageInputNode | NWBInputNode
+export type InputNodeType = CsvInputNode | ImageInputNode | HDF5InputNode
 
 interface InputNodeBaseType<T extends FILE_TYPE> {
   fileType: T
@@ -25,4 +25,4 @@ export interface CsvInputNode extends InputNodeBaseType<'csv'> {}
 
 export interface ImageInputNode extends InputNodeBaseType<'image'> {}
 
-export interface NWBInputNode extends InputNodeBaseType<'nwb'> {}
+export interface HDF5InputNode extends InputNodeBaseType<'hdf5'> {}

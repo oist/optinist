@@ -3,7 +3,7 @@ import {
   ImageInputNode,
   InputNodeType,
   FILE_TYPE_SET,
-  NWBInputNode,
+  HDF5InputNode,
 } from './InputNodeType'
 
 export function isImageInputNode(
@@ -18,8 +18,8 @@ export function isCsvInputNode(
   return inputNode.fileType === FILE_TYPE_SET.CSV
 }
 
-export function isNwbInputNode(
+export function isHDF5InputNode(
   inputNode: InputNodeType,
-): inputNode is NWBInputNode {
-  return inputNode.fileType === FILE_TYPE_SET.NWB
+): inputNode is HDF5InputNode {
+  return inputNode.fileType === FILE_TYPE_SET.HDF5
 }

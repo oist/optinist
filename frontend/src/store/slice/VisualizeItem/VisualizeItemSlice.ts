@@ -12,7 +12,7 @@ import {
   VisualaizeItem,
   VISUALIZE_ITEM_TYPE_SET,
   BarItem,
-  NWBItem,
+  HDF5Item,
 } from './VisualizeItemType'
 import {
   isDefaultSetItem,
@@ -107,9 +107,9 @@ const barItemInitialValue: BarItem = {
   dataType: DATA_TYPE_SET.BAR,
 }
 
-const nwbItemInitialValue: NWBItem = {
+const hdf5ItemInitialValue: HDF5Item = {
   ...displayDataCommonInitialValue,
-  dataType: DATA_TYPE_SET.NWB,
+  dataType: DATA_TYPE_SET.HDF5,
 }
 
 function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
@@ -128,8 +128,8 @@ function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
       return scatterItemInitialValue
     case DATA_TYPE_SET.BAR:
       return barItemInitialValue
-    case DATA_TYPE_SET.NWB:
-      return nwbItemInitialValue
+    case DATA_TYPE_SET.HDF5:
+      return hdf5ItemInitialValue
   }
 }
 

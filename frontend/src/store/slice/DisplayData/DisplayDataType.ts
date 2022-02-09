@@ -22,8 +22,8 @@ export type DisplayData = {
   bar: {
     [filePath: string]: BarDisplayData
   }
-  nwb: {
-    [filePath: string]: NWBDisplayData
+  hdf5: {
+    [filePath: string]: HDF5DisplayData
   }
 }
 
@@ -35,7 +35,7 @@ export const DATA_TYPE_SET = {
   ROI: 'roi',
   SCATTER: 'scatter',
   BAR: 'bar',
-  NWB: 'nwb',
+  HDF5: 'hdf5',
 } as const
 
 export type DATA_TYPE = typeof DATA_TYPE_SET[keyof typeof DATA_TYPE_SET]
@@ -78,5 +78,5 @@ export type ScatterData = number[][][]
 export interface BarDisplayData extends BaseDisplay<'bar', BarData> {}
 export type BarData = number[][][]
 
-export interface NWBDisplayData extends BaseDisplay<'nwb', NWBData> {}
-export type NWBData = number[][][]
+export interface HDF5DisplayData extends BaseDisplay<'hdf5', HDF5Data> {}
+export type HDF5Data = number[][][]

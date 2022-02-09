@@ -65,8 +65,8 @@ async def get_files(file_type: Optional[str] = None):
             tree = get_dir_tree(BASE_DIR, ["tif", 'TIF', 'tiff', 'TIFF'])
         elif file_type == "csv":
             tree = get_dir_tree(BASE_DIR, ["csv"])
-        elif file_type == "nwb":
-            tree = get_dir_tree(BASE_DIR, ["nwb"])
+        elif file_type == "hdf5":
+            tree = get_dir_tree(BASE_DIR, ["hdf5", "nwb"])
         else:
             # TODO 他のファイル種別の仕様が分かり次第追加
             pass

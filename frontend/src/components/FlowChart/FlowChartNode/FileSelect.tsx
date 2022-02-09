@@ -33,6 +33,7 @@ export const FileSelect = React.memo<{
     progress,
     error,
   } = useFileUploader(fileType)
+
   const onUploadFileHandle = (formData: FormData, fileName: string) => {
     onUploadFile(formData, fileName)
     if (uploadedFilePath != null) {
@@ -148,8 +149,8 @@ function getFileInputAccept(fileType: FILE_TREE_TYPE | undefined) {
       return '.tif'
     case FILE_TREE_TYPE_SET.CSV:
       return '.csv'
-    case FILE_TREE_TYPE_SET.NWB:
-      return '.nwb'
+    case FILE_TREE_TYPE_SET.HDF5:
+      return '.hdf5'
     default:
       return undefined
   }

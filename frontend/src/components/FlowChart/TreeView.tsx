@@ -65,9 +65,9 @@ export const AlgorithmTreeView = React.memo(() => {
           fileType={FILE_TYPE_SET.CSV}
         />
         <InputNodeComponent
-          fileName={'nwb'}
-          nodeName={'nwbData'}
-          fileType={FILE_TYPE_SET.NWB}
+          fileName={'hdf5'}
+          nodeName={'hdf5Data'}
+          fileType={FILE_TYPE_SET.HDF5}
         />
       </TreeItem>
       <TreeItem nodeId="Algorithm" label="Algorithm">
@@ -107,9 +107,9 @@ const InputNodeComponent = React.memo<{
         componentType = 'ImageFileNode'
         fileType = FILE_TYPE_SET.IMAGE
         break
-      case FILE_TYPE_SET.NWB:
-        componentType = 'NWBFileNode'
-        fileType = FILE_TYPE_SET.NWB
+      case FILE_TYPE_SET.HDF5:
+        componentType = 'HDF5FileNode'
+        fileType = FILE_TYPE_SET.HDF5
         break
     }
     const newNode: Node<NodeData> = {
