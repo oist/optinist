@@ -21,8 +21,12 @@ import {
   NODE_TYPE,
   NODE_TYPE_SET,
 } from 'store/slice/FlowElement/FlowElementType'
-import { addFlowElementNode } from 'store/slice/FlowElement/FlowElementSlice'
+import {
+  addFlowElementNode,
+  setElementCoord,
+} from 'store/slice/FlowElement/FlowElementSlice'
 import { Node } from 'react-flow-renderer'
+import { selectElementCoord } from 'store/slice/FlowElement/FlowElementSelectors'
 
 const useStyles = makeStyles({
   root: {
@@ -56,65 +60,15 @@ export const AlgorithmTreeView = React.memo(() => {
     }
   }
 
-  const onDataNodeDragStart = (
-    event: DragEvent,
-    nodeName: string,
-    fileType: FILE_TYPE,
-  ) => {
-    if (event.dataTransfer != null) {
-      event.dataTransfer.setData('nodeName', nodeName)
-      event.dataTransfer.setData('nodeType', NODE_TYPE_SET.INPUT)
-      event.dataTransfer.setData('fileType', fileType)
-      event.dataTransfer.effectAllowed = 'move'
-    }
-  }
-
-  const [coord, setCoord] = useState({ x: 300, y: 100 })
-
-  const onDataNodeClick = (
-    nodeType: NODE_TYPE,
-    nodeName: string,
-    fileType: FILE_TYPE,
-  ) => {
-    const position = {
-      x: coord.x,
-      y: coord.y,
-    }
-    updateCoord()
-
-    let componentType = ''
-    switch (fileType) {
-      case FILE_TYPE_SET.CSV:
-        componentType = 'CsvFileNode'
-        break
-      case FILE_TYPE_SET.IMAGE:
-        componentType = 'ImageFileNode'
-        fileType = FILE_TYPE_SET.IMAGE
-        break
-    }
-    const newNode: Node<NodeData> = {
-      id: nanoid(),
-      type: componentType,
-      position,
-      data: { label: nodeName, type: nodeType },
-    }
-    dispatch(addFlowElementNode({ node: newNode, inputNodeInfo: { fileType } }))
-  }
-
-  const updateCoord = () => {
-    setCoord({ x: coord.x + 150, y: coord.y + 50 })
-    if (coord.x > 800 || coord.y > 200) {
-      setCoord({ x: 300, y: 100 })
-    }
-  }
+  const elementCoord = useSelector(selectElementCoord)
 
   const onAlgoNodeClick = (nodeName: string, functionPath: string) => {
     const name = nodeName
     const position = {
-      x: coord.x,
-      y: coord.y,
+      x: elementCoord.x,
+      y: elementCoord.y,
     }
-    updateCoord()
+    dispatch(setElementCoord())
 
     const newNode: Node<NodeData> = {
       id: nanoid(),
@@ -137,43 +91,15 @@ export const AlgorithmTreeView = React.memo(() => {
       defaultExpandIcon={<ChevronRightIcon />}
     >
       <TreeItem nodeId="Data" label="Data">
-        <TreeItem
-          nodeId="image"
-          label={
-            <AddButton
-              name="image"
-              onClick={() =>
-                onDataNodeClick(
-                  NODE_TYPE_SET.INPUT,
-                  'ImageData',
-                  FILE_TYPE_SET.IMAGE,
-                )
-              }
-            />
-          }
-          onDragStart={(event: DragEvent) =>
-            onDataNodeDragStart(event, 'ImageData', FILE_TYPE_SET.IMAGE)
-          }
-          draggable
-        ></TreeItem>
-        <TreeItem
-          nodeId="csv"
-          label={
-            <AddButton
-              name="csv"
-              onClick={() =>
-                onDataNodeClick(
-                  NODE_TYPE_SET.INPUT,
-                  'CsvData',
-                  FILE_TYPE_SET.CSV,
-                )
-              }
-            />
-          }
-          onDragStart={(event: DragEvent) =>
-            onDataNodeDragStart(event, 'CsvData', FILE_TYPE_SET.CSV)
-          }
-          draggable
+        <InputNodeComponent
+          fileName={'image'}
+          nodeName={'imageData'}
+          fileType={FILE_TYPE_SET.IMAGE}
+        />
+        <InputNodeComponent
+          fileName={'csv'}
+          nodeName={'csvData'}
+          fileType={FILE_TYPE_SET.CSV}
         />
       </TreeItem>
       <TreeItem nodeId="Algorithm" label="Algorithm">
@@ -192,6 +118,76 @@ export const AlgorithmTreeView = React.memo(() => {
         ))}
       </TreeItem>
     </TreeView>
+  )
+})
+
+const InputNodeComponent = React.memo<{
+  fileName: string
+  nodeName: string
+  fileType: FILE_TYPE
+}>(({ fileName, nodeName, fileType }) => {
+  const dispatch = useDispatch()
+  const elementCoord = useSelector(selectElementCoord)
+
+  const onDataNodeClick = (
+    nodeType: NODE_TYPE,
+    nodeName: string,
+    fileType: FILE_TYPE,
+  ) => {
+    const position = {
+      x: elementCoord.x,
+      y: elementCoord.y,
+    }
+    dispatch(setElementCoord())
+
+    let componentType = ''
+    switch (fileType) {
+      case FILE_TYPE_SET.CSV:
+        componentType = 'CsvFileNode'
+        break
+      case FILE_TYPE_SET.IMAGE:
+        componentType = 'ImageFileNode'
+        fileType = FILE_TYPE_SET.IMAGE
+        break
+    }
+    const newNode: Node<NodeData> = {
+      id: nanoid(),
+      type: componentType,
+      position,
+      data: { label: nodeName, type: nodeType },
+    }
+    dispatch(addFlowElementNode({ node: newNode, inputNodeInfo: { fileType } }))
+  }
+
+  const onDataNodeDragStart = (
+    event: DragEvent,
+    nodeName: string,
+    fileType: FILE_TYPE,
+  ) => {
+    if (event.dataTransfer != null) {
+      event.dataTransfer.setData('nodeName', nodeName)
+      event.dataTransfer.setData('nodeType', NODE_TYPE_SET.INPUT)
+      event.dataTransfer.setData('fileType', fileType)
+      event.dataTransfer.effectAllowed = 'move'
+    }
+  }
+
+  return (
+    <TreeItem
+      nodeId={fileName}
+      label={
+        <AddButton
+          name={fileName}
+          onClick={() =>
+            onDataNodeClick(NODE_TYPE_SET.INPUT, nodeName, fileType)
+          }
+        />
+      }
+      onDragStart={(event: DragEvent) =>
+        onDataNodeDragStart(event, nodeName, fileType)
+      }
+      draggable
+    ></TreeItem>
   )
 })
 
