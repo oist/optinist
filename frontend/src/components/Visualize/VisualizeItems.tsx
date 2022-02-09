@@ -56,7 +56,7 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
 
   return (
     <Grid container spacing={0}>
-      <Grid item xs={10}>
+      <Grid item xs={12}>
         <Paper
           variant="outlined"
           key={itemId}
