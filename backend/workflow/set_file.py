@@ -27,6 +27,8 @@ def set_csvfile(node, edgeList):
             return_name = edge["sourceHandle"].split("--")[1]
             info = {return_name: TimeSeriesData(node['data']['path'], '')}
 
+    info['nwbfile'] = None
+
     save_pickle(node["data"]["path"], info)
 
     return info
