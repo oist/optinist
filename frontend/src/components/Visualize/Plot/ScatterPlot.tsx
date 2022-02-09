@@ -120,7 +120,8 @@ const ScatterPlotImple = React.memo(() => {
 
   const config = {
     displayModeBar: true,
-    scrollZoom: true,
+    // scrollZoom: true,
+    responsive: true,
   }
 
   return <PlotlyChart data={data} layout={layout} config={config} />

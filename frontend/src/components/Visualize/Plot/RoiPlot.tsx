@@ -111,7 +111,8 @@ const RoiPlotImple = React.memo<{}>(() => {
   )
   const config = {
     displayModeBar: true,
-    scrollZoom: true,
+    // scrollZoom: true,
+    responsive: true,
   }
   return (
     <div className="imagePlotChart">

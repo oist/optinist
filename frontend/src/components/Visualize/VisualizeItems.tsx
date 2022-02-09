@@ -55,28 +55,25 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
   const theme = useTheme()
 
   return (
-    <Grid container spacing={0}>
-      <Grid item xs={12}>
-        <Paper
-          variant="outlined"
-          key={itemId}
-          style={{
-            margin: theme.spacing(1),
-            padding: theme.spacing(1),
-            cursor: 'pointer',
-            borderColor: isSelected ? theme.palette.primary.light : undefined,
-          }}
-          onClick={onSelect}
-        >
-          <Box display="flex" justifyContent="flex-end">
-            <Box>
-              <DeleteButton itemType={itemType} itemId={itemId} />
-            </Box>
-          </Box>
-          <ItemByType itemType={itemType} itemId={itemId} />
-        </Paper>
-      </Grid>
-    </Grid>
+    <Paper
+      variant="outlined"
+      key={itemId}
+      style={{
+        width: '100%',
+        margin: theme.spacing(1),
+        padding: theme.spacing(1),
+        cursor: 'pointer',
+        borderColor: isSelected ? theme.palette.primary.light : undefined,
+      }}
+      onClick={onSelect}
+    >
+      <Box display="flex" justifyContent="flex-end">
+        <Box>
+          <DeleteButton itemType={itemType} itemId={itemId} />
+        </Box>
+      </Box>
+      <ItemByType itemType={itemType} itemId={itemId} />
+    </Paper>
   )
 })
 
