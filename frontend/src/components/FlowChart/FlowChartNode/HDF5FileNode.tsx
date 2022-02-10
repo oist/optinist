@@ -2,7 +2,14 @@ import React, { CSSProperties } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
 import { alpha, useTheme } from '@material-ui/core/styles'
-import { IconButton } from '@material-ui/core'
+import {
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  IconButton,
+} from '@material-ui/core'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
 
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
@@ -17,6 +24,13 @@ import {
   deleteFlowElementsById,
   edifFlowElementsLabelById,
 } from 'store/slice/FlowElement/FlowElementSlice'
+import {
+  selectHDF5IsLatest,
+  selectHDF5IsLoading,
+  selectHDF5Nodes,
+} from 'store/slice/HDF5/HDF5Selectors'
+import { getHDF5Tree } from 'store/slice/HDF5/HDF5Action'
+import { HDF5Tree } from 'store/slice/HDF5/HDF5Type'
 
 const sourceHandleStyle: CSSProperties = {
   width: 8,
@@ -77,6 +91,7 @@ const HDF5FileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
         fileType={FILE_TYPE_SET.HDF5}
         filePath={filePath ? filePath.split('/').reverse()[0] : ''}
       />
+      <ItemSelect />
       <Handle
         type="source"
         position={Position.Right}
@@ -86,3 +101,77 @@ const HDF5FileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
     </div>
   )
 })
+
+const ItemSelect = React.memo(() => {
+  const [open, setOpen] = React.useState(false)
+
+  const onSelectFile = (selectedPath: string) => {
+    // onChangeFilePath(selectedPath)
+  }
+
+  return (
+    <>
+      <Button variant="outlined" onClick={() => setOpen(true)}>
+        {'Structure'}
+      </Button>
+      <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
+        <DialogTitle>{'Select File'}</DialogTitle>
+        <Structure />
+        <DialogActions>
+          <Button onClick={() => setOpen(false)} variant="outlined">
+            cancel
+          </Button>
+          <Button
+            onClick={() => setOpen(false)}
+            color="primary"
+            variant="outlined"
+            autoFocus
+          >
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  )
+})
+
+const Structure = React.memo(() => {
+  const theme = useTheme()
+  return (
+    <DialogContent dividers>
+      <div
+        style={{
+          height: 300,
+          overflow: 'auto',
+          marginBottom: theme.spacing(1),
+          border: '1px solid',
+          padding: theme.spacing(1),
+          borderColor: theme.palette.divider,
+        }}
+      >
+        <FileTreeView />
+      </div>
+    </DialogContent>
+  )
+})
+
+const FileTreeView = React.memo<{}>(() => {
+  // const [tree, isLoading] = useHDF5Tree()
+  const [] = useHDF5Tree()
+  return <div></div>
+})
+
+function useHDF5Tree(): [] {
+  const dispatch = useDispatch()
+  const tree = useSelector(selectHDF5Nodes())
+  const isLatest = useSelector(selectHDF5IsLatest())
+  const isLoading = useSelector(selectHDF5IsLoading())
+  React.useEffect(() => {
+    if (!isLatest && !isLoading) {
+      dispatch(getHDF5Tree())
+    }
+  }, [isLatest, isLoading, dispatch])
+  console.log(tree)
+  // return [tree, isLoading]
+  return []
+}

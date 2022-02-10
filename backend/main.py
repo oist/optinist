@@ -10,7 +10,8 @@ from routers import (
     outputs,
     algolist,
     nwb,
-    snakemake
+    snakemake,
+    hdf5,
 )
 
 app = FastAPI(docs_url="/docs", openapi_url="/openapi")
@@ -21,6 +22,7 @@ app.include_router(params.router)
 app.include_router(run.router)
 app.include_router(nwb.router)
 app.include_router(snakemake.router)
+app.include_router(hdf5.router)
 
 app.add_middleware(
     CORSMiddleware,

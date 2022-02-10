@@ -14,6 +14,7 @@ import {
   visualaizeItemReducer,
   snakemakeReducer,
   pipelineReducer,
+  hdf5Reducer,
 } from './slice'
 
 export const store = configureStore({
@@ -31,6 +32,7 @@ export const store = configureStore({
     visualaizeItem: visualaizeItemReducer,
     snakemake: snakemakeReducer,
     pipeline: pipelineReducer,
+    hdf5: hdf5Reducer,
   },
 })
 
