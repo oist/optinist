@@ -7,6 +7,7 @@ import Toolbar from '@mui/material/Toolbar'
 import { styled } from '@mui/material/styles'
 import FlowChart from './FlowChart/FlowChart'
 import Visualize from './Visualize/Visualize'
+import Experiment from './Experiment/Experiment'
 import { useRunPipeline } from 'store/slice/Pipeline/PipelineHook'
 
 const Layout: React.FC = () => {
@@ -31,6 +32,7 @@ const Layout: React.FC = () => {
           >
             <Tab label="Flow Chart" {...a11yProps(0)} />
             <Tab label="Visualize" {...a11yProps(1)} />
+            <Tab label="Experiment" {...a11yProps(2)} />
           </Tabs>
         </Toolbar>
       </StyledAppBar>
@@ -39,6 +41,9 @@ const Layout: React.FC = () => {
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Visualize />
+      </TabPanel>
+      <TabPanel value={value} index={2}>
+        <Experiment />
       </TabPanel>
     </RootDiv>
   )
