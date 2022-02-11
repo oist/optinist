@@ -69,7 +69,7 @@ const BarPlotImple = React.memo(() => {
       dragmode: 'pan',
       autosize: true,
     }),
-    [],
+    [path],
   )
 
   const config = {
@@ -83,13 +83,13 @@ const BarPlotImple = React.memo(() => {
 
 function barDataEqualityFn(a: BarData | undefined, b: BarData | undefined) {
   if (a != null && b != null) {
-    const aArray = Object.entries(a)
-    const bArray = Object.entries(b)
+    const aArray = Object.keys(a)
+    const bArray = Object.keys(b)
     return (
       a === b ||
       (aArray.length === bArray.length &&
-        aArray.every(([aKey, aValue], i) => {
-          const [bKey, bValue] = bArray[i]
+        aArray.every((aKey, i) => {
+          const bKey = bArray[i]
           return bKey === aKey // && nestEqualityFun(bValue, aValue)
         }))
     )

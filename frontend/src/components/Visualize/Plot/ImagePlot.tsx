@@ -72,7 +72,7 @@ export const ImagePlot = React.memo(() => {
     if (roiFilePath != null) {
       dispatch(getRoiData({ path: roiFilePath }))
     }
-  }, [dispatch, isInitialized, path, startIndex, roiFilePath])
+  }, [dispatch, isInitialized, path, startIndex, endIndex, roiFilePath])
   if (isPending) {
     return <LinearProgress />
   } else if (error != null) {
