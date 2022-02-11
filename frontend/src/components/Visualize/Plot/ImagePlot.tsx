@@ -7,9 +7,9 @@ import {
   MobileStepper,
   Typography,
   useTheme,
-} from '@material-ui/core'
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
+} from '@mui/material'
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft'
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
 
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 import { DisplayDataContext } from '../DataContext'

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import FormControl from '@material-ui/core/FormControl'
-import Box from '@material-ui/core/Box'
-import { FormControlLabel, Switch } from '@material-ui/core'
+import FormControl from '@mui/material/FormControl'
+import Box from '@mui/material/Box'
+import { FormControlLabel, Switch } from '@mui/material'
 
 import {
   selectSelectedVisualizeItemId,

@@ -1,12 +1,13 @@
-import React, { useEffect, DragEvent } from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { nanoid } from '@reduxjs/toolkit'
-import { TreeView, TreeItem } from '@material-ui/lab'
-import { makeStyles, Typography } from '@material-ui/core'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
-import IconButton from '@material-ui/core/IconButton'
-import AddIcon from '@material-ui/icons/Add'
+import TreeView from '@mui/lab/TreeView'
+import TreeItem, { treeItemClasses } from '@mui/lab/TreeItem'
+import { styled, Typography } from '@mui/material'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import IconButton from '@mui/material/IconButton'
+import AddIcon from '@mui/icons-material/Add'
 
 import {
   selectAlgorithmListIsLated,
@@ -28,16 +29,8 @@ import {
 import { Node } from 'react-flow-renderer'
 import { selectElementCoord } from 'store/slice/FlowElement/FlowElementSelectors'
 
-const useStyles = makeStyles({
-  root: {
-    flexGrow: 1,
-    height: '100%',
-  },
-})
-
 export const AlgorithmTreeView = React.memo(() => {
   const dispatch = useDispatch()
-  const classes = useStyles()
   const algoList = useSelector(selectAlgorithmListTree)
   const isLatest = useSelector(selectAlgorithmListIsLated)
 
@@ -46,19 +39,6 @@ export const AlgorithmTreeView = React.memo(() => {
       dispatch(getAlgoList())
     }
   }, [dispatch, isLatest])
-
-  const onAlgoNodeDragStart = (
-    event: DragEvent,
-    nodeName: string,
-    functionPath: string,
-  ) => {
-    if (event.dataTransfer != null) {
-      event.dataTransfer.setData('nodeName', nodeName)
-      event.dataTransfer.setData('nodeType', NODE_TYPE_SET.ALGORITHM)
-      event.dataTransfer.setData('functionPath', functionPath)
-      event.dataTransfer.effectAllowed = 'move'
-    }
-  }
 
   const elementCoord = useSelector(selectElementCoord)
 
@@ -86,7 +66,10 @@ export const AlgorithmTreeView = React.memo(() => {
 
   return (
     <TreeView
-      className={classes.root}
+      sx={{
+        flexGrow: 1,
+        height: '100%',
+      }}
       defaultCollapseIcon={<ExpandMoreIcon />}
       defaultExpandIcon={<ChevronRightIcon />}
     >
@@ -107,9 +90,6 @@ export const AlgorithmTreeView = React.memo(() => {
           <AlgoNodeComponent
             name={name}
             node={node}
-            onDragStart={(event, nodeName, functionPath) =>
-              onAlgoNodeDragStart(event, nodeName, functionPath)
-            }
             onAlgoNodeClick={(name, functionPath) =>
               onAlgoNodeClick(name, functionPath)
             }
@@ -159,21 +139,8 @@ const InputNodeComponent = React.memo<{
     dispatch(addFlowElementNode({ node: newNode, inputNodeInfo: { fileType } }))
   }
 
-  const onDataNodeDragStart = (
-    event: DragEvent,
-    nodeName: string,
-    fileType: FILE_TYPE,
-  ) => {
-    if (event.dataTransfer != null) {
-      event.dataTransfer.setData('nodeName', nodeName)
-      event.dataTransfer.setData('nodeType', NODE_TYPE_SET.INPUT)
-      event.dataTransfer.setData('fileType', fileType)
-      event.dataTransfer.effectAllowed = 'move'
-    }
-  }
-
   return (
-    <TreeItem
+    <LeafItem
       nodeId={fileName}
       label={
         <AddButton
@@ -183,27 +150,18 @@ const InputNodeComponent = React.memo<{
           }
         />
       }
-      onDragStart={(event: DragEvent) =>
-        onDataNodeDragStart(event, nodeName, fileType)
-      }
-      draggable
-    ></TreeItem>
+    />
   )
 })
 
 const AlgoNodeComponent = React.memo<{
   name: string
   node: AlgorithmNodeType
-  onDragStart: (
-    event: DragEvent,
-    nodeName: string,
-    functionPath: string,
-  ) => void
   onAlgoNodeClick: (nodeName: string, functionPath: string) => void
-}>(({ name, node, onDragStart, onAlgoNodeClick }) => {
+}>(({ name, node, onAlgoNodeClick }) => {
   if (isAlgoChild(node)) {
     return (
-      <TreeItem
+      <LeafItem
         nodeId={name}
         label={
           <AddButton
@@ -211,10 +169,6 @@ const AlgoNodeComponent = React.memo<{
             onClick={() => onAlgoNodeClick(name, node.functionPath)}
           />
         }
-        onDragStart={(event: DragEvent) =>
-          onDragStart(event, name, node.functionPath)
-        }
-        draggable
       />
     )
   } else {
@@ -224,7 +178,6 @@ const AlgoNodeComponent = React.memo<{
           <AlgoNodeComponent
             name={name}
             node={node}
-            onDragStart={onDragStart}
             key={i.toFixed()}
             onAlgoNodeClick={(name, functionPath) =>
               onAlgoNodeClick(name, functionPath)
@@ -242,7 +195,7 @@ const AddButton = React.memo<{
 }>(({ name, onClick }) => {
   return (
     <>
-      <IconButton aria-label="add" style={{ padding: 2 }}>
+      <IconButton aria-label="add" style={{ padding: 2 }} size="large">
         <AddIcon onClick={() => onClick()} />
       </IconButton>
       <Typography
@@ -258,4 +211,12 @@ const AddButton = React.memo<{
       </Typography>
     </>
   )
+})
+
+// 未使用icon分の幅を消す
+const LeafItem = styled(TreeItem)({
+  [`& .${treeItemClasses.iconContainer}`]: {
+    margin: 0,
+    width: 0,
+  },
 })

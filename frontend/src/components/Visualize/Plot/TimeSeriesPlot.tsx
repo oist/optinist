@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { LegendClickEvent } from 'plotly.js'
-import { LinearProgress, Typography } from '@material-ui/core'
+import { LinearProgress, Typography } from '@mui/material'
 
 import { DisplayDataContext } from '../DataContext'
 import {

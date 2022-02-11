@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import Typography from '@material-ui/core/Typography'
+import Typography from '@mui/material/Typography'
 
 import {
   selectAlgorithmName,
@@ -32,9 +32,7 @@ export const AlgorithmParamForm = React.memo(() => {
   }, [dispatch, nodeId, algoName, algoParamIsLoaded])
   return (
     <div style={{ padding: 8 }}>
-      <Typography variant="h5">
-        {algoName}({nodeId})
-      </Typography>
+      <Typography variant="h5">{algoName}</Typography>
       <div style={{ paddingLeft: 8 }}>
         {paramKeyList.map((paramKey) => (
           <ParamItem key={paramKey} paramKey={paramKey} />

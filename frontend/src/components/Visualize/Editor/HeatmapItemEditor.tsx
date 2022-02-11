@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { FormControlLabel, Switch } from '@material-ui/core'
+import { FormControlLabel, Switch } from '@mui/material'
 import {
   selectHeatMapItemColors,
   selectHeatMapItemShowScale,

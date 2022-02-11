@@ -17,7 +17,7 @@ import {
 import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
-import { FormControlLabel, Switch, TextField } from '@material-ui/core'
+import { FormControlLabel, Switch, TextField } from '@mui/material'
 
 export const CsvItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)

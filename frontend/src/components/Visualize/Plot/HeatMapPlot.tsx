@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
-import { LinearProgress, Typography } from '@material-ui/core'
+import { LinearProgress, Typography } from '@mui/material'
 
 import { DisplayDataContext } from '../DataContext'
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'

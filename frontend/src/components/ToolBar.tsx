@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { Box, IconButton } from '@material-ui/core'
-import Close from '@material-ui/icons/Close'
+import { Box, IconButton } from '@mui/material'
+import Close from '@mui/icons-material/Close'
 import { SnackbarProvider, SnackbarKey, useSnackbar } from 'notistack'
 
 import { NWBSettingButton } from './FlowChart/NWB'
@@ -24,7 +24,7 @@ const SnackbarCloseButton: React.FC<{ snackbarKey: SnackbarKey }> = ({
 }) => {
   const { closeSnackbar } = useSnackbar()
   return (
-    <IconButton onClick={() => closeSnackbar(snackbarKey)}>
+    <IconButton onClick={() => closeSnackbar(snackbarKey)} size="large">
       <Close style={{ color: 'white' }} />
     </IconButton>
   )

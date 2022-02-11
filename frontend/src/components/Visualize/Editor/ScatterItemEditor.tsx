@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { FormControlLabel, TextField } from '@material-ui/core'
+import { FormControlLabel, TextField } from '@mui/material'
 import {
   selectScatterItemXIndex,
   selectScatterItemYIndex,

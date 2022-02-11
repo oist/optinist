@@ -1,8 +1,8 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import IconButton from '@material-ui/core/IconButton'
-import CloseIcon from '@material-ui/icons/Close'
+import IconButton from '@mui/material/IconButton'
+import CloseIcon from '@mui/icons-material/Close'
 import { deleteVisualizeItem } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import {
   selectVisualizeDataFilePath,
@@ -24,7 +24,7 @@ export const DisplayItemDeleteButton = React.memo<{ itemId: number }>(
       dispatch(deleteDisplayItem({ dataType, filePath }))
     }
     return (
-      <IconButton onClick={onClick}>
+      <IconButton onClick={onClick} size="large">
         <CloseIcon />
       </IconButton>
     )
