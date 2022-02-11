@@ -1,33 +1,23 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import IconButton from '@material-ui/core/IconButton'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableContainer from '@material-ui/core/TableContainer'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import Paper from '@material-ui/core/Paper'
-import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown'
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp'
+import { styled } from '@mui/material/styles'
+import IconButton from '@mui/material/IconButton'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableContainer from '@mui/material/TableContainer'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Paper from '@mui/material/Paper'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 
-import DoneIcon from '@material-ui/icons/Done'
-import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'
-import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
-import GetAppIcon from '@material-ui/icons/GetApp'
+import DoneIcon from '@mui/icons-material/Done'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
+import GetAppIcon from '@mui/icons-material/GetApp'
 
 import { createData } from './DataType'
 import { CollapsibleTable } from './CollapsibleTable'
-import clsx from 'clsx'
-import { createStyles, createTheme } from '@material-ui/core'
-
-const useRowStyles = makeStyles({
-  root: {
-    '& > *': {
-      borderBottom: 'unset',
-    },
-  },
-})
 
 const rows = [
   createData('2022-02-02', 'name1', true, 100),
@@ -71,11 +61,15 @@ const Row: React.FC<{
   row: ReturnType<typeof createData>
 }> = ({ row }) => {
   const [open, setOpen] = React.useState(false)
-  const classes = useRowStyles()
-
   return (
     <React.Fragment>
-      <TableRow className={classes.root}>
+      <TableRow
+        sx={{
+          '& > *': {
+            borderBottom: 'unset',
+          },
+        }}
+      >
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -111,60 +105,44 @@ const Row: React.FC<{
   )
 }
 
-const defaultTheme = createTheme()
-const useStyles = makeStyles(
-  (theme) =>
-    createStyles({
-      root: {
-        border: `1px solid ${theme.palette.divider}`,
-        position: 'relative',
-        overflow: 'hidden',
-        width: '100%',
-        height: 26,
-        borderRadius: 2,
-      },
-      value: {
-        position: 'absolute',
-        lineHeight: '24px',
-        width: '100%',
-        display: 'flex',
-        justifyContent: 'center',
-      },
-      bar: {
-        height: '100%',
-        '&.low': {
-          backgroundColor: '#f44336',
-        },
-        '&.medium': {
-          backgroundColor: '#efbb5aa3',
-        },
-        '&.high': {
-          backgroundColor: '#088208a3',
-        },
-      },
-    }),
-  { defaultTheme },
-)
-
 const ProgressBar: React.FC<{
   progress: number
 }> = ({ progress }) => {
   const valueInPercent = progress
-  const classes = useStyles()
-
   return (
-    <div className={classes.root}>
-      <div
-        className={classes.value}
-      >{`${valueInPercent.toLocaleString()} %`}</div>
-      <div
-        className={clsx(classes.bar, {
-          low: valueInPercent < 50,
-          medium: valueInPercent >= 50 && valueInPercent < 100,
-          high: valueInPercent === 100,
-        })}
-        style={{ maxWidth: `${valueInPercent}%` }}
-      />
-    </div>
+    <ProgressBarRoot>
+      <ProgressValue>{`${valueInPercent.toLocaleString()} %`}</ProgressValue>
+      <Bar valueInPercent={valueInPercent} />
+    </ProgressBarRoot>
   )
 }
+
+const ProgressBarRoot = styled('div')(({ theme }) => ({
+  border: `1px solid ${theme.palette.divider}`,
+  position: 'relative',
+  overflow: 'hidden',
+  width: '100%',
+  height: 26,
+  borderRadius: 2,
+}))
+
+const ProgressValue = styled('div')({
+  position: 'absolute',
+  lineHeight: '24px',
+  width: '100%',
+  display: 'flex',
+  justifyContent: 'center',
+})
+
+const Bar = styled('div')<{ valueInPercent: number }>(
+  ({ valueInPercent, theme }) => ({
+    height: '100%',
+    maxWidth: `${valueInPercent}%`,
+    backgroundColor:
+      valueInPercent === 100
+        ? theme.palette.success.light
+        : valueInPercent >= 50 && valueInPercent < 100
+        ? theme.palette.warning.light
+        : theme.palette.error.light,
+  }),
+)

@@ -1,14 +1,14 @@
 import React from 'react'
-import Box from '@material-ui/core/Box'
-import Collapse from '@material-ui/core/Collapse'
-import Table from '@material-ui/core/Table'
-import TableBody from '@material-ui/core/TableBody'
-import TableCell from '@material-ui/core/TableCell'
-import TableHead from '@material-ui/core/TableHead'
-import TableRow from '@material-ui/core/TableRow'
-import Typography from '@material-ui/core/Typography'
-import DoneIcon from '@material-ui/icons/Done'
-import ErrorOutlineIcon from '@material-ui/icons/ErrorOutline'
+import Box from '@mui/material/Box'
+import Collapse from '@mui/material/Collapse'
+import Table from '@mui/material/Table'
+import TableBody from '@mui/material/TableBody'
+import TableCell from '@mui/material/TableCell'
+import TableHead from '@mui/material/TableHead'
+import TableRow from '@mui/material/TableRow'
+import Typography from '@mui/material/Typography'
+import DoneIcon from '@mui/icons-material/Done'
+import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import { createData } from './DataType'
 
 export const CollapsibleTable: React.FC<{
@@ -17,7 +17,7 @@ export const CollapsibleTable: React.FC<{
 }> = ({ row, open }) => {
   return (
     <TableRow>
-      <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+      <TableCell sx={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <Box margin={1}>
             <Typography variant="h6" gutterBottom component="div">
