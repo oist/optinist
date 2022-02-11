@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useTheme } from '@material-ui/core/styles'
 import Box from '@material-ui/core/Box'
 import Paper from '@material-ui/core/Paper'
+import Grid from '@mui/material/Grid'
 
 import { arrayEqualityFn } from 'utils/EqualityUtils'
 

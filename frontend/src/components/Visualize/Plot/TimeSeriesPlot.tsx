@@ -156,7 +156,8 @@ const TimeSeriesPlotImple = React.memo<{
 
   const config = {
     displayModeBar: true,
-    scrollZoom: true,
+    // scrollZoom: true,
+    responsive: true,
   }
 
   const onClick = (event: LegendClickEvent) => {
