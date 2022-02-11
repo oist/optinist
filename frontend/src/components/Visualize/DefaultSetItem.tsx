@@ -1,6 +1,9 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { FilePathSelect } from './FilePathSelect'
+import { styled } from '@mui/material/styles'
+import Paper from '@mui/material/Paper'
+import Grid from '@mui/material/Grid'
+
 import {
   selectDefaultSetImageItemNodeId,
   selectDefaultSetImageItemFilePath,
@@ -11,6 +14,7 @@ import {
   selectDefaultSetRoiItemNodeId,
   selectDefaultSetRoiItemFilePath,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
 import {
   setHeatMapItemFilePath,
   setImageItemFilePath,
@@ -21,11 +25,7 @@ import { ImagePlot } from './Plot/ImagePlot'
 import { DisplayDataContext } from './DataContext'
 import { TimeSeriesPlot } from './Plot/TimeSeriesPlot'
 import { HeatMapPlot } from './Plot/HeatMapPlot'
-
-import { makeStyles, createStyles, Theme } from '@material-ui/core/styles'
-import Paper from '@material-ui/core/Paper'
-import Grid from '@material-ui/core/Grid'
-import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
+import { FilePathSelect } from './FilePathSelect'
 
 export const DefaultSetItem = React.memo<{
   itemId: number
@@ -82,43 +82,36 @@ export const DefaultSetItem = React.memo<{
   )
 })
 
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      flexGrow: 1,
-    },
-    paper: {
-      padding: theme.spacing(2),
-      textAlign: 'center',
-      color: theme.palette.text.secondary,
-    },
-  }),
-)
-
 const DefaultPlot = React.memo<{
   itemId: number
 }>(({ itemId }) => {
-  const classes = useStyles()
   return (
     <Grid container>
       <Grid item xs={7}>
-        <Paper className={classes.paper}>
+        <StyledPaper>
           <DefaultImagePlot itemId={itemId} />
-        </Paper>
+        </StyledPaper>
       </Grid>
       <Grid item xs={5}>
         <Grid>
-          <Paper className={classes.paper}>
+          <StyledPaper>
             <DefaultTimeSeriesPlot itemId={itemId} />
-          </Paper>
-          <Paper className={classes.paper}>
+          </StyledPaper>
+          <StyledPaper>
             <DefaultHeatMapPlot itemId={itemId} />
-          </Paper>
+          </StyledPaper>
         </Grid>
       </Grid>
     </Grid>
   )
 })
+
+const StyledPaper = styled(Paper)(({ theme }) => ({
+  padding: theme.spacing(1),
+  margin: theme.spacing(1),
+  textAlign: 'center',
+  color: theme.palette.text.secondary,
+}))
 
 const DefaultImagePlot = React.memo<{
   itemId: number

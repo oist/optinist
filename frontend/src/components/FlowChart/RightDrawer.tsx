@@ -1,13 +1,13 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { createStyles, makeStyles } from '@material-ui/core/styles'
-import Drawer from '@material-ui/core/Drawer'
-import Toolbar from '@material-ui/core/Toolbar'
-import Typography from '@material-ui/core/Typography'
-import Divider from '@material-ui/core/Divider'
-import IconButton from '@material-ui/core/IconButton'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
-import Box from '@material-ui/core/Box'
+import { styled } from '@mui/material/styles'
+import Drawer, { drawerClasses } from '@mui/material/Drawer'
+import Toolbar from '@mui/material/Toolbar'
+import Typography from '@mui/material/Typography'
+import Divider from '@mui/material/Divider'
+import IconButton from '@mui/material/IconButton'
+import ChevronRightIcon from '@mui/icons-material/ChevronRight'
+import Box from '@mui/material/Box'
 import {
   selectRightDrawerCurrentNodeId,
   selectRightDrawerIsOpen,
@@ -26,7 +26,6 @@ const RightDrawer: React.FC = () => {
   const open = useSelector(selectRightDrawerIsOpen)
   const dispatch = useDispatch()
   const onClick = () => dispatch(closeRightDrawer())
-  const classes = useStyles()
   const title = useSelector((state: RootState) => {
     const mode = selectRightDrawerMode(state)
     switch (mode) {
@@ -41,27 +40,19 @@ const RightDrawer: React.FC = () => {
     }
   })
   return (
-    <Drawer
-      open={open}
-      anchor="right"
-      variant="persistent"
-      className={classes.drawer}
-      classes={{
-        paper: classes.drawerPaper,
-      }}
-    >
+    <StyledDrawer open={open} anchor="right" variant="persistent">
       <Toolbar />
       <Box display="flex" alignItems="center">
-        <IconButton color="inherit" onClick={onClick}>
+        <IconButton color="inherit" onClick={onClick} size="large">
           <ChevronRightIcon />
         </IconButton>
         <Typography variant="h6">{title}</Typography>
       </Box>
       <Divider />
-      <div className={classes.contents}>
+      <MainContents>
         <Contents />
-      </div>
-    </Drawer>
+      </MainContents>
+    </StyledDrawer>
   )
 }
 
@@ -99,19 +90,16 @@ const ParamFormConetent: React.FC = () => {
 
 export const rightDrawerWidth = 320
 
-const useStyles = makeStyles(
-  createStyles({
-    drawer: {
-      width: rightDrawerWidth,
-      flexShrink: 0,
-    },
-    drawerPaper: {
-      width: rightDrawerWidth,
-    },
-    contents: {
-      height: '100%',
-    },
-  }),
-)
+const StyledDrawer = styled(Drawer)({
+  width: rightDrawerWidth,
+  flexShrink: 0,
+  [`& .${drawerClasses.paper}`]: {
+    width: rightDrawerWidth,
+  },
+})
+
+const MainContents = styled('main')({
+  height: '100%',
+})
 
 export default RightDrawer

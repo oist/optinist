@@ -1,9 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  FileSelect,
-  FileSelectImple,
-} from 'components/FlowChart/FlowChartNode/FileSelect'
+import { FileSelectImple } from 'components/FlowChart/FlowChartNode/FileSelect'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 import {
   selectCsvItemSetColumn,
@@ -20,7 +17,7 @@ import {
 import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
-import { FormControlLabel, Switch, TextField } from '@material-ui/core'
+import { FormControlLabel, Switch, TextField } from '@mui/material'
 
 export const CsvItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)

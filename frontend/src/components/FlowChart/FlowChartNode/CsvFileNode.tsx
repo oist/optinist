@@ -1,9 +1,9 @@
 import React, { CSSProperties } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
-import { alpha, useTheme } from '@material-ui/core/styles'
-import { IconButton } from '@material-ui/core'
-import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
+import { alpha, useTheme } from '@mui/material/styles'
+import { IconButton } from '@mui/material'
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
 
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import {
@@ -69,6 +69,7 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
         aria-label="delete"
         style={{ color: 'black', position: 'absolute', top: -20, right: -5 }}
         onClick={onClickDeleteIcon}
+        size="large"
       >
         <CloseOutlinedIcon />
       </IconButton>

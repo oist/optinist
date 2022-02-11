@@ -5,7 +5,7 @@ import {
   getMarkerEnd,
   getEdgeCenter,
 } from 'react-flow-renderer'
-import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
 import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
 
 const foreignObjectSize = 40

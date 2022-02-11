@@ -10,7 +10,7 @@ import {
   selectRoiDataIsInitialized,
   selectRoiDataIsPending,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
-import { LinearProgress, Typography } from '@material-ui/core'
+import { LinearProgress, Typography } from '@mui/material'
 import { getRoiData } from 'store/slice/DisplayData/DisplayDataActions'
 import { selectRoiItemColors } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 

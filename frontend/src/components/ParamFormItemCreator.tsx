@@ -1,13 +1,13 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AnyAction } from '@reduxjs/toolkit'
-import Switch from '@material-ui/core/Switch'
-import TextField from '@material-ui/core/TextField'
-import Box from '@material-ui/core/Box'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import AccordionDetails from '@material-ui/core/AccordionDetails'
-import AccordionSummary from '@material-ui/core/AccordionSummary'
-import Typography from '@material-ui/core/Typography'
+import Switch from '@mui/material/Switch'
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import AccordionDetails from '@mui/material/AccordionDetails'
+import AccordionSummary from '@mui/material/AccordionSummary'
+import Typography from '@mui/material/Typography'
 
 import { isParamChild } from 'store/utils/param/ParamUtils'
 import { ParamType } from 'store/utils/param/ParamType'
@@ -107,8 +107,8 @@ export function createParamFormItemComponent({
         <Box
           sx={{
             display: 'flex',
-            marginTop: 16,
-            marginBottom: 16,
+            marginTop: (theme) => theme.spacing(2),
+            marginBottom: (theme) => theme.spacing(2),
             alignItems: 'center',
             overflow: 'scroll',
           }}
@@ -134,7 +134,7 @@ export function createParamFormItemComponent({
       return <ParamChildItem path={param.path} name={paramKey} />
     } else {
       return (
-        <Accordion square>
+        <Accordion>
           <AccordionSummary expandIcon={<ExpandMoreIcon />}>
             {paramKey}
           </AccordionSummary>

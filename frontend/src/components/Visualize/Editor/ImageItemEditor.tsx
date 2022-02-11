@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Switch from '@material-ui/core/Switch'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Select from '@material-ui/core/Select'
-import MenuItem from '@material-ui/core/MenuItem'
+import Switch from '@mui/material/Switch'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Select from '@mui/material/Select'
+import MenuItem from '@mui/material/MenuItem'
 
 import {
   selectImageItemShowGrid,
@@ -33,19 +33,16 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 import 'react-linear-gradient-picker/dist/index.css'
-import {
-  FileSelect,
-  FileSelectImple,
-} from 'components/FlowChart/FlowChartNode/FileSelect'
+import { FileSelectImple } from 'components/FlowChart/FlowChartNode/FileSelect'
 import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
-import { TextField } from '@material-ui/core'
+import { TextField } from '@mui/material'
 import { GradientColorPicker } from './GradientColorPicker'
 import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
 import { FilePathSelect } from '../FilePathSelect'
 import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
-import Button from '@material-ui/core/Button'
+import Button from '@mui/material/Button'
 import { getImageData } from 'store/slice/DisplayData/DisplayDataActions'
 
 export const ImageItemEditor: React.FC = () => {
