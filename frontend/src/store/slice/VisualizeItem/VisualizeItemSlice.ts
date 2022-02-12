@@ -321,14 +321,30 @@ export const visualaizeItemSlice = createSlice({
     },
     resetImageActiveIndex: (
       state,
-      action: PayloadAction<{ itemId: number }>,
+      action: PayloadAction<{
+        itemId: number
+        startIndex?: number
+        endIndex?: number
+      }>,
     ) => {
-      const { itemId } = action.payload
+      const { itemId, startIndex, endIndex } = action.payload
       const targetItem = state.items[itemId]
       if (isImageItem(targetItem)) {
         targetItem.activeIndex = 0
+        if (startIndex != null) {
+          targetItem.startIndex = startIndex
+        }
+        if (endIndex != null) {
+          targetItem.endIndex = endIndex
+        }
       } else if (isDefaultSetItem(targetItem)) {
         targetItem.imageItem.activeIndex = 0
+        if (startIndex != null) {
+          targetItem.imageItem.startIndex = startIndex
+        }
+        if (endIndex != null) {
+          targetItem.imageItem.endIndex = endIndex
+        }
       }
     },
     incrementImageActiveIndex: (

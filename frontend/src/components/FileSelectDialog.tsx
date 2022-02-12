@@ -73,14 +73,13 @@ export const FileSelectDialog = React.memo<FileSelectDialogProps>(
           </Typography>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClickCancel} variant="outlined">
+          <Button onClick={onClickCancel} variant="outlined" color="inherit">
             cancel
           </Button>
           <Button
             onClick={() => onClickOk(clickedFilePath)}
             color="primary"
             variant="outlined"
-            autoFocus
           >
             OK
           </Button>

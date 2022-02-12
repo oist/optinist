@@ -48,7 +48,27 @@ const CsvPlotImple = React.memo(() => {
   const transpose = useSelector(selectCsvItemTranspose(itemId))
   const setColumn = useSelector(selectCsvItemSetColumn(itemId))
   const setIndex = useSelector(selectCsvItemSetIndex(itemId))
+  return (
+    <PresentationalCsvPlot
+      path={path}
+      transpose={transpose}
+      setColumn={setColumn}
+      setIndex={setIndex}
+    />
+  )
+})
 
+/**
+ * CsvFileNodeの設定時に表示するプレビューでも使用することを想定
+ *
+ * DisplayDataContextに依存しない
+ */
+export const PresentationalCsvPlot = React.memo<{
+  path: string
+  transpose: boolean
+  setColumn: number | null
+  setIndex: boolean
+}>(({ path, transpose, setIndex, setColumn }) => {
   const data = useSelector(
     selectCsvData(path),
     (a: CsvData | undefined, b: CsvData | undefined) => {
@@ -101,7 +121,6 @@ const CsvPlotImple = React.memo(() => {
       })
     }
   }, [csvData, setColumn, setIndex])
-
   const rows = csvData
     .map((row, row_id) => {
       let rowObj = Object.fromEntries(

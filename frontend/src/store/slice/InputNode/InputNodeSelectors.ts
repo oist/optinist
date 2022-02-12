@@ -1,4 +1,5 @@
 import { RootState } from 'store/store'
+import { isCsvInputNode } from './InputNodeUtils'
 
 export const selectInputNode = (state: RootState) => state.inputNode
 
@@ -18,3 +19,27 @@ export const selectFilePathIsUndefined = (state: RootState) =>
   Object.values(state.inputNode).filter(
     (inputNode) => inputNode.selectedFilePath === undefined,
   ).length > 0
+
+export const selectInputNodeParam = (nodeId: string) => (state: RootState) =>
+  selectInputNodeById(nodeId)(state).param
+
+const selectCsvInputNodeParam = (nodeId: string) => (state: RootState) => {
+  const inputNode = selectInputNodeById(nodeId)(state)
+  if (isCsvInputNode(inputNode)) {
+    return inputNode.param
+  } else {
+    throw new Error(`The InputNode is not CsvInputNode. (nodeId: ${nodeId})`)
+  }
+}
+
+export const selectCsvInputNodeParamSetColumn =
+  (nodeId: string) => (state: RootState) =>
+    selectCsvInputNodeParam(nodeId)(state).setColumn
+
+export const selectCsvInputNodeParamSetIndex =
+  (nodeId: string) => (state: RootState) =>
+    selectCsvInputNodeParam(nodeId)(state).setIndex
+
+export const selectCsvInputNodeParamTranspose =
+  (nodeId: string) => (state: RootState) =>
+    selectCsvInputNodeParam(nodeId)(state).transpose
