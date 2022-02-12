@@ -10,10 +10,10 @@ import {
   IconButton,
   Button,
   LinearProgress,
-} from '@material-ui/core'
-import ErrorIcon from '@material-ui/icons/Error'
-import Popover from '@material-ui/core/Popover'
-import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
+} from '@mui/material'
+import ErrorIcon from '@mui/icons-material/Error'
+import Popover from '@mui/material/Popover'
+import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
 
 import { AlgorithmInfo } from 'store/slice/AlgorithmList/AlgorithmListType'
 import {
@@ -96,6 +96,7 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
           aria-label="delete"
           style={{ color: 'black', position: 'absolute', top: -20, right: -5 }}
           onClick={onClickDeleteIcon}
+          size="large"
         >
           <CloseOutlinedIcon />
         </IconButton>

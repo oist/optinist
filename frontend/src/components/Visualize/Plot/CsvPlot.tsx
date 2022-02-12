@@ -1,12 +1,11 @@
 import React from 'react'
-import { LinearProgress, Typography } from '@material-ui/core'
+import { LinearProgress, Typography } from '@mui/material'
 import { useSelector, useDispatch } from 'react-redux'
 
 import { DisplayDataContext } from '../DataContext'
-import { arrayEqualityFn, twoDimarrayEqualityFn } from 'utils/EqualityUtils'
+import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 import {
   selectCsvData,
-  // selectCsvDataColumns,
   selectCsvDataError,
   selectCsvDataIsFulfilled,
   selectCsvDataIsInitialized,

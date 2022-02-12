@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -7,9 +7,9 @@ import {
   MobileStepper,
   Typography,
   useTheme,
-} from '@material-ui/core'
-import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
-import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
+} from '@mui/material'
+import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft'
+import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
 
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 import { DisplayDataContext } from '../DataContext'
@@ -72,7 +72,7 @@ export const ImagePlot = React.memo(() => {
     if (roiFilePath != null) {
       dispatch(getRoiData({ path: roiFilePath }))
     }
-  }, [dispatch, isInitialized, path, startIndex, roiFilePath])
+  }, [dispatch, isInitialized, path, startIndex, endIndex, roiFilePath])
   if (isPending) {
     return <LinearProgress />
   } else if (error != null) {
@@ -244,13 +244,31 @@ const ImagePlotChart = React.memo<{
   const config = {
     displayModeBar: true,
     // scrollZoom: true,
-    // responsive: true,
+    responsive: true,
     height: '100%',
   }
+
+  const ref = React.useRef<HTMLDivElement>(null)
+  const plotlyHeight = ref.current?.getBoundingClientRect().height
+
+  useEffect(() => {
+    const height =
+      ref.current?.getElementsByClassName('main-svg')[0].clientHeight
+    const plotContainer = (
+      ref.current?.getElementsByClassName(
+        'plot-container',
+      ) as HTMLCollectionOf<HTMLElement>
+    )[0]
+
+    if (height !== undefined && plotContainer !== undefined) {
+      plotContainer.style.height = `${height}px`
+    }
+  }, [plotlyHeight, activeIndex])
+
   return (
-    <>
+    <div ref={ref}>
       <PlotlyChart data={data} layout={layout} config={config} />
-    </>
+    </div>
   )
 })
 

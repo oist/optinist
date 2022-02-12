@@ -1,9 +1,9 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { useTheme } from '@material-ui/core/styles'
-import Box from '@material-ui/core/Box'
-import Paper from '@material-ui/core/Paper'
+import { useTheme } from '@mui/material/styles'
+import Box from '@mui/material/Box'
+import Paper from '@mui/material/Paper'
 
 import { arrayEqualityFn } from 'utils/EqualityUtils'
 

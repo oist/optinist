@@ -1,6 +1,6 @@
 import React from 'react'
-import { Button, Typography } from '@material-ui/core'
-import ButtonGroup from '@material-ui/core/ButtonGroup'
+import { Button, Typography } from '@mui/material'
+import ButtonGroup from '@mui/material/ButtonGroup'
 
 import { FileSelectDialog } from 'components/FileSelectDialog'
 import {

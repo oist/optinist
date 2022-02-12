@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { FormControlLabel, Switch, TextField } from '@material-ui/core'
+import { FormControlLabel, Switch, TextField } from '@mui/material'
 import {
   selectTimeSeriesItemOffset,
   selectTimeSeriesItemShowGrid,

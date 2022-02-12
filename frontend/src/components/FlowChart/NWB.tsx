@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import Button from '@material-ui/core/Button'
+import Button from '@mui/material/Button'
 
 import { updateParam } from 'store/slice/NWB/NWBSlice'
 import { getNWBParams } from 'store/slice/NWB/NWBAction'
@@ -20,7 +20,13 @@ export const NWBSettingButton = React.memo(() => {
     dispatch(toggleNwb())
   }
   return (
-    <Button variant="contained" color="default" onClick={handleClick}>
+    <Button
+      variant="contained"
+      onClick={handleClick}
+      sx={{
+        margin: (theme) => theme.spacing(1),
+      }}
+    >
       NWB setting
     </Button>
   )

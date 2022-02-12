@@ -1,4 +1,4 @@
-import * as MuiColors from '@material-ui/core/colors'
+import * as MuiColors from '@mui/material/colors'
 
 export const HANDLE_COLOR_PRESET_MAP = new Map<number, string>([
   [0, MuiColors.red[500]],

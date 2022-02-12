@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import FormControl from '@material-ui/core/FormControl'
-import Box from '@material-ui/core/Box'
-import { FormControlLabel, Switch, TextField } from '@material-ui/core'
+import FormControl from '@mui/material/FormControl'
+import Box from '@mui/material/Box'
+import { FormControlLabel, Switch } from '@mui/material'
 
 import {
   selectSelectedVisualizeItemId,
@@ -103,7 +103,7 @@ const DisplayDataItemEditor: React.FC = () => {
 
   useEffect(() => {
     setPrevItem({ dataType, filePath: selectedFilePath })
-  }, [selectedFilePath])
+  }, [selectedFilePath, dataType])
 
   const dispatch = useDispatch()
   const onSelect = (nodeId: string, filePath: string, dataType: DATA_TYPE) => {

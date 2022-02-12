@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
-import { LinearProgress, Typography } from '@material-ui/core'
+import { LinearProgress, Typography } from '@mui/material'
 
 import { DisplayDataContext } from '../DataContext'
 import {
@@ -115,12 +115,13 @@ const ScatterPlotImple = React.memo(() => {
         },
       },
     }),
-    [xIndex, yIndex, maxIndex],
+    [xIndex, yIndex, maxIndex, path, scatterData],
   )
 
   const config = {
     displayModeBar: true,
-    scrollZoom: true,
+    // scrollZoom: true,
+    responsive: true,
   }
 
   return <PlotlyChart data={data} layout={layout} config={config} />
@@ -131,13 +132,13 @@ function scatterDataEqualityFn(
   b: ScatterData | undefined,
 ) {
   if (a != null && b != null) {
-    const aArray = Object.entries(a)
-    const bArray = Object.entries(b)
+    const aArray = Object.keys(a)
+    const bArray = Object.keys(b)
     return (
       a === b ||
       (aArray.length === bArray.length &&
-        aArray.every(([aKey, aValue], i) => {
-          const [bKey, bValue] = bArray[i]
+        aArray.every((aKey, i) => {
+          const bKey = bArray[i]
           return bKey === aKey // && nestEqualityFun(bValue, aValue)
         }))
     )

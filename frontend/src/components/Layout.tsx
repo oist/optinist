@@ -1,16 +1,15 @@
 import React from 'react'
-import AppBar from '@material-ui/core/AppBar'
-import Tabs from '@material-ui/core/Tabs'
-import Tab from '@material-ui/core/Tab'
-import Typography from '@material-ui/core/Typography'
-import { makeStyles } from '@material-ui/core/styles'
-import Toolbar from '@material-ui/core/Toolbar'
+import AppBar from '@mui/material/AppBar'
+import Tabs from '@mui/material/Tabs'
+import Tab from '@mui/material/Tab'
+import Typography from '@mui/material/Typography'
+import Toolbar from '@mui/material/Toolbar'
+import { styled } from '@mui/material/styles'
 import FlowChart from './FlowChart/FlowChart'
 import Visualize from './Visualize/Visualize'
 import { useRunPipeline } from 'store/slice/Pipeline/PipelineHook'
 
 const Layout: React.FC = () => {
-  const classes = useStyles()
   const [value, setValue] = React.useState(0)
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue)
@@ -19,42 +18,39 @@ const Layout: React.FC = () => {
   const runPipeline = useRunPipeline() // タブ切り替えによって結果取得処理が止まってしまうのを回避するため、タブの親レイヤーで呼び出している
 
   return (
-    <div className={classes.root}>
-      <AppBar position="fixed" className={classes.appBar}>
+    <RootDiv>
+      <StyledAppBar position="fixed">
         <Toolbar variant="dense">
           <Typography variant="h6">OPTINIST</Typography>
           <Tabs
-            className={classes.tab}
+            sx={{ width: '100%' }}
             value={value}
             onChange={handleChange}
             centered
+            textColor="inherit"
           >
             <Tab label="Flow Chart" {...a11yProps(0)} />
             <Tab label="Visualize" {...a11yProps(1)} />
           </Tabs>
         </Toolbar>
-      </AppBar>
+      </StyledAppBar>
       <TabPanel value={value} index={0}>
         <FlowChart {...runPipeline} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <Visualize />
       </TabPanel>
-    </div>
+    </RootDiv>
   )
 }
 
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-    backgroundColor: theme.palette.background.paper,
-  },
-  appBar: {
-    zIndex: theme.zIndex.drawer + 1,
-  },
-  tab: {
-    width: '100%',
-  },
+const RootDiv = styled('div')(({ theme }) => ({
+  flexGrow: 1,
+  backgroundColor: theme.palette.background.paper,
+}))
+
+const StyledAppBar = styled(AppBar)(({ theme }) => ({
+  zIndex: theme.zIndex.drawer + 1,
 }))
 
 interface TabPanelProps {

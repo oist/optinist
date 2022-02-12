@@ -1,9 +1,8 @@
 import React from 'react'
 
-import Button from '@material-ui/core/Button'
-import PlayArrowIcon from '@material-ui/icons/PlayArrow'
-import { createStyles, makeStyles, Theme } from '@material-ui/core/styles'
-import CloseIcon from '@material-ui/icons/Close'
+import Button from '@mui/material/Button'
+import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import CloseIcon from '@mui/icons-material/Close'
 
 import { UseRunPipelineReturnType } from 'store/slice/Pipeline/PipelineHook'
 import { RUN_STATUS } from 'store/slice/Pipeline/PipelineType'
@@ -38,35 +37,30 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
     }
   }, [status, enqueueSnackbar])
 
-  const classes = useStyles()
   return (
     <>
       <Button
         variant="contained"
         color="primary"
         endIcon={<PlayArrowIcon />}
-        className={classes.button}
         onClick={onClickRun}
         disabled={status === RUN_STATUS.START_SUCCESS}
+        sx={{
+          margin: (theme) => theme.spacing(1),
+        }}
       >
         Run
       </Button>
       <Button
         variant="outlined"
         endIcon={<CloseIcon />}
-        className={classes.button}
         onClick={onClickCancel}
+        sx={{
+          margin: (theme) => theme.spacing(1),
+        }}
       >
         Cancel
       </Button>
     </>
   )
 })
-
-const useStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    button: {
-      margin: theme.spacing(1),
-    },
-  }),
-)
