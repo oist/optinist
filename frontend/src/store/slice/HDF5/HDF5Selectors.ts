@@ -1,8 +1,8 @@
 import { RootState } from '../../store'
 
 export const selectHDF5 = (state: RootState) => {
-  if (state.filesTree != null) {
-    return state.filesTree
+  if (state.hdf5 != null) {
+    return state.hdf5
   } else {
     return undefined
   }

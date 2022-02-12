@@ -9,6 +9,7 @@ import {
   DialogContent,
   DialogTitle,
   IconButton,
+  LinearProgress,
 } from '@material-ui/core'
 import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
 
@@ -30,7 +31,10 @@ import {
   selectHDF5Nodes,
 } from 'store/slice/HDF5/HDF5Selectors'
 import { getHDF5Tree } from 'store/slice/HDF5/HDF5Action'
-import { HDF5Tree } from 'store/slice/HDF5/HDF5Type'
+import { HDF5Tree, HDF5TreeDTO } from 'store/slice/HDF5/HDF5Type'
+import { TreeItem, TreeView } from '@material-ui/lab'
+import FolderIcon from '@material-ui/icons/Folder'
+import InsertDriveFileOutlinedIcon from '@material-ui/icons/InsertDriveFileOutlined'
 
 const sourceHandleStyle: CSSProperties = {
   width: 8,
@@ -156,12 +160,50 @@ const Structure = React.memo(() => {
 })
 
 const FileTreeView = React.memo<{}>(() => {
-  // const [tree, isLoading] = useHDF5Tree()
-  const [] = useHDF5Tree()
-  return <div></div>
+  const [tree, isLoading] = useHDF5Tree()
+  console.log(tree)
+  return (
+    <div>
+      {isLoading && <LinearProgress />}
+      <TreeView>
+        {tree?.map((node) => (
+          <TreeNode node={node} />
+        ))}
+      </TreeView>
+    </div>
+  )
 })
 
-function useHDF5Tree(): [] {
+const TreeNode = React.memo<{
+  node: HDF5TreeDTO
+}>(({ node }) => {
+  console.log(node)
+  if (node.isDir) {
+    // Directory
+    return (
+      <TreeItem
+        icon={<FolderIcon htmlColor="skyblue" />}
+        nodeId={node.name}
+        label={node.name}
+      >
+        {node.nodes.map((childNode, i) => (
+          <TreeNode node={childNode} key={i} />
+        ))}
+      </TreeItem>
+    )
+  } else {
+    // File
+    return (
+      <TreeItem
+        icon={<InsertDriveFileOutlinedIcon fontSize="small" />}
+        nodeId={node.name}
+        label={node.name + `, (shape=${node.shape})`}
+      />
+    )
+  }
+})
+
+function useHDF5Tree(): [HDF5TreeDTO[] | undefined, boolean] {
   const dispatch = useDispatch()
   const tree = useSelector(selectHDF5Nodes())
   const isLatest = useSelector(selectHDF5IsLatest())
@@ -171,7 +213,5 @@ function useHDF5Tree(): [] {
       dispatch(getHDF5Tree())
     }
   }, [isLatest, isLoading, dispatch])
-  console.log(tree)
-  // return [tree, isLoading]
-  return []
+  return [tree, isLoading]
 }
