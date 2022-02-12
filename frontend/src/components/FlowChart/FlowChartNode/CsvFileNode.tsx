@@ -172,7 +172,10 @@ const ParamSettingDialog = React.memo<{ nodeId: string; filePath: string }>(
                   shrink: true,
                 }}
                 onChange={(event) => {
-                  setSetColumn(Number(event.target.value))
+                  const value = Number(event.target.value)
+                  if (value >= 0) {
+                    setSetColumn(Number(event.target.value))
+                  }
                 }}
                 value={setColumn}
               />
