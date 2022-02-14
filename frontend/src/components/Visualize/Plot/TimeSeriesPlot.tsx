@@ -41,15 +41,15 @@ export const TimeSeriesPlot = React.memo(() => {
   const isFulfilled = useSelector(selectTimeSeriesDataIsFulfilled(path))
   React.useEffect(() => {
     if (!isInitialized) {
-      dispatch(getTimeSeriesData({ path, index: 0 }))
+      displayNumbers.map((v) => dispatch(getTimeSeriesData({ path, index: v })))
     }
   }, [dispatch, isInitialized, path])
 
-  if (isPending && displayNumbers.length < 2) {
+  if (!isInitialized) {
     return <LinearProgress />
   } else if (error != null) {
     return <Typography color="error">{error}</Typography>
-  } else if (isFulfilled || displayNumbers.length >= 2) {
+  } else if (isPending || isFulfilled) {
     return <TimeSeriesPlotImple />
   } else {
     return null
