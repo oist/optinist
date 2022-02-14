@@ -15,6 +15,7 @@ import {
 import { getTimeSeriesData } from 'store/slice/DisplayData/DisplayDataActions'
 import { TimeSeriesData } from 'store/slice/DisplayData/DisplayDataType'
 import {
+  selectTimeSeriesItemDisplayNumbers,
   selectTimeSeriesItemOffset,
   selectTimeSeriesItemShowGrid,
   selectTimeSeriesItemShowLine,
@@ -23,11 +24,17 @@ import {
   selectTimeSeriesItemXrange,
   selectTimeSeriesItemZeroLine,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import createColormap from 'colormap'
+import {
+  setDisplayDataPath,
+  setTimeSeriesItemDisplayNumbers,
+} from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 export const TimeSeriesPlot = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataContext)
+  const { itemId, filePath: path } = React.useContext(DisplayDataContext)
   const dispatch = useDispatch()
-  const [displayNumbers, setDisplayNumbers] = useState([0])
+  // const [displayNumbers, setDisplayNumbers] = useState([0])
+  const displayNumbers = useSelector(selectTimeSeriesItemDisplayNumbers(itemId))
   const isPending = useSelector(selectTimeSeriesDataIsPending(path))
   const isInitialized = useSelector(selectTimeSeriesDataIsInitialized(path))
   const error = useSelector(selectTimeSeriesDataError(path))
@@ -37,38 +44,21 @@ export const TimeSeriesPlot = React.memo(() => {
       dispatch(getTimeSeriesData({ path, index: 0 }))
     }
   }, [dispatch, isInitialized, path])
-  if (isPending && displayNumbers.length === 1) {
+
+  if (isPending && displayNumbers.length < 2) {
     return <LinearProgress />
   } else if (error != null) {
     return <Typography color="error">{error}</Typography>
   } else if (isFulfilled || displayNumbers.length >= 2) {
-    return (
-      <TimeSeriesPlotImple
-        displayNumbers={displayNumbers}
-        setDisplayNumbers={setDisplayNumbers}
-      />
-    )
+    return <TimeSeriesPlotImple />
   } else {
     return null
   }
 })
 
-const TimeSeriesPlotImple = React.memo<{
-  displayNumbers: number[]
-  setDisplayNumbers: React.Dispatch<React.SetStateAction<number[]>>
-}>(({ displayNumbers, setDisplayNumbers }) => {
+const TimeSeriesPlotImple = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
 
-  // const timeSeriesData = useSelector(
-  //   selectTimeSeriesData(path),
-  //   timeSeriesDataEqualityFn,
-  // )
-  // const timeSeriesData: TimeSeriesData = {
-  //   0: {0: 1, 1: 2},
-  //   1: {0: 0},
-  //   2: {0: 0},
-  // }
-  // console.log(timeSeriesData)
   // 0番のデータとkeysだけをとってくる
   const dispatch = useDispatch()
   const timeSeriesData = useSelector(
@@ -83,6 +73,14 @@ const TimeSeriesPlotImple = React.memo<{
   const showticklabels = useSelector(selectTimeSeriesItemShowTickLabels(itemId))
   const zeroline = useSelector(selectTimeSeriesItemZeroLine(itemId))
   const xrange = useSelector(selectTimeSeriesItemXrange(itemId))
+  const displayNumbers = useSelector(selectTimeSeriesItemDisplayNumbers(itemId))
+
+  const colorScale = createColormap({
+    colormap: 'jet',
+    nshades: Object.keys(timeSeriesData).length,
+    format: 'hex',
+    alpha: 1,
+  })
 
   const data = React.useMemo(() => {
     if (timeSeriesData === null) {
@@ -90,6 +88,7 @@ const TimeSeriesPlotImple = React.memo<{
     }
     return Object.keys(timeSeriesData).map((key, i) => {
       let y = Object.values(timeSeriesData[key])
+      const new_i = (i * 10 + i) % Object.keys(timeSeriesData).length
 
       if (displayNumbers.includes(i)) {
         if (offset) {
@@ -106,6 +105,7 @@ const TimeSeriesPlotImple = React.memo<{
             x: Object.keys(timeSeriesData[key]),
             y: newArray,
             visible: true,
+            line: { color: colorScale[new_i] },
           }
         } else {
           return {
@@ -113,6 +113,7 @@ const TimeSeriesPlotImple = React.memo<{
             x: Object.keys(timeSeriesData[key]),
             y: y,
             visible: true,
+            line: { color: colorScale[new_i] },
           }
         }
       } else {
@@ -121,6 +122,7 @@ const TimeSeriesPlotImple = React.memo<{
           x: Object.keys(timeSeriesData[key]),
           y: y,
           visible: 'legendonly',
+          line: { color: colorScale[new_i] },
         }
       }
     })
@@ -163,9 +165,15 @@ const TimeSeriesPlotImple = React.memo<{
   const onClick = (event: LegendClickEvent) => {
     const clickNumber = event.curveNumber
     if (displayNumbers.includes(clickNumber)) {
-      setDisplayNumbers(displayNumbers.filter((value) => value !== clickNumber))
+      const newValue = displayNumbers.filter((value) => value !== clickNumber)
+      dispatch(
+        setTimeSeriesItemDisplayNumbers({ itemId, displayNumbers: newValue }),
+      )
     } else {
-      setDisplayNumbers((prev) => [...prev, clickNumber])
+      const newValue = [...displayNumbers, clickNumber]
+      dispatch(
+        setTimeSeriesItemDisplayNumbers({ itemId, displayNumbers: newValue }),
+      )
       dispatch(getTimeSeriesData({ path, index: clickNumber }))
     }
     return false

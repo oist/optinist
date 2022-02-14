@@ -65,6 +65,7 @@ const timeSeriesItemInitialValue: TimeSeriesItem = {
     right: undefined,
   },
   maxIndex: 0,
+  displayNumbers: [0],
 }
 const heatMapItemInitialValue: HeatMapItem = {
   ...displayDataCommonInitialValue,
@@ -86,14 +87,14 @@ const csvItemInitialValue: CsvItem = {
 const roiItemInitialValue: RoiItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.ROI,
-  colors: createColormap({
-    colormap: 'jet',
-    nshades: 10,
-    format: 'hex',
-    alpha: 1,
-  }).map((v, idx) => {
-    return { rgb: v, offset: String(idx / 9) }
-  }),
+  // colors: createColormap({
+  //   colormap: 'jet',
+  //   nshades: 64,
+  //   format: 'hex',
+  //   alpha: 1,
+  // }).map((v, idx) => {
+  //   return { rgb: v, offset: String(idx / 63) }
+  // }),
 }
 const scatterItemInitialValue: ScatterItem = {
   ...displayDataCommonInitialValue,
@@ -582,6 +583,21 @@ export const visualaizeItemSlice = createSlice({
         targetItem.timeSeriesItem.xrange.right = action.payload.right
       }
     },
+    setTimeSeriesItemDisplayNumbers: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        displayNumbers: number[]
+      }>,
+    ) => {
+      const { itemId, displayNumbers } = action.payload
+      const targetItem = state.items[itemId]
+      if (isDefaultSetItem(targetItem)) {
+        targetItem.timeSeriesItem.displayNumbers = displayNumbers
+      } else if (isTimeSeriesItem(targetItem)) {
+        targetItem.displayNumbers = displayNumbers
+      }
+    },
     setHeatMapItemShowScale: (
       state,
       action: PayloadAction<{
@@ -613,21 +629,21 @@ export const visualaizeItemSlice = createSlice({
         targetItem.heatMapItem.colors = action.payload.colors
       }
     },
-    setRoiItemColors: (
-      state,
-      action: PayloadAction<{
-        itemId: number
-        colors: {
-          rgb: string
-          offset: string
-        }[]
-      }>,
-    ) => {
-      const targetItem = state.items[action.payload.itemId]
-      if (isRoiItem(targetItem)) {
-        targetItem.colors = action.payload.colors
-      }
-    },
+    // setRoiItemColors: (
+    //   state,
+    //   action: PayloadAction<{
+    //     itemId: number
+    //     colors: {
+    //       rgb: string
+    //       offset: string
+    //     }[]
+    //   }>,
+    // ) => {
+    //   const targetItem = state.items[action.payload.itemId]
+    //   if (isRoiItem(targetItem)) {
+    //     targetItem.colors = action.payload.colors
+    //   }
+    // },
     setCsvItemTranspose: (
       state,
       action: PayloadAction<{
@@ -728,9 +744,10 @@ export const {
   setTimeSeriesItemZeroLine,
   setTimeSeriesItemXrangeLeft,
   setTimeSeriesItemXrangeRight,
+  setTimeSeriesItemDisplayNumbers,
   setHeatMapItemShowScale,
   setHeatMapItemColors,
-  setRoiItemColors,
+  // setRoiItemColors,
   setCsvItemTranspose,
   setCsvItemSetColumn,
   setCsvItemSetIndex,

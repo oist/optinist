@@ -26,6 +26,7 @@ import {
 import {
   getImageData,
   getRoiData,
+  getTimeSeriesData,
 } from 'store/slice/DisplayData/DisplayDataActions'
 import {
   selectImageItemShowticklabels,
@@ -38,13 +39,18 @@ import {
   selectImageItemStartIndex,
   selectImageItemEndIndex,
   selectRoiItemFilePath,
-  selectRoiItemColors,
+  selectDefaultSetTimeSeriesItemFilepath,
+  selectDefaultSetTimeSeriesItemDisplayNumbers,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
   decrementImageActiveIndex,
   incrementImageActiveIndex,
+  setTimeSeriesItemDisplayNumbers,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { RootState } from 'store/store'
+import { Datum, LayoutAxis, PlotData } from 'plotly.js'
+import createColormap from 'colormap'
+import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
 
 export const ImagePlot = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
@@ -149,7 +155,6 @@ const ImagePlotChart = React.memo<{
       roiFilePath != null ? selectRoiData(roiFilePath)(state) : [],
     imageDataEqualtyFn,
   )
-  const colorscaleRoi = useSelector(selectRoiItemColors(itemId))
 
   const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
   const showline = useSelector(selectImageItemShowLine(itemId))
@@ -157,6 +162,17 @@ const ImagePlotChart = React.memo<{
   const showgrid = useSelector(selectImageItemShowGrid(itemId))
   const showscale = useSelector(selectImageItemShowScale(itemId))
   const colorscale = useSelector(selectImageItemColors(itemId))
+
+  // const colorscaleRoi = useSelector(selectRoiItemColors(itemId))
+
+  const colorscaleRoi: ColorType[] = createColormap({
+    colormap: 'jet',
+    nshades: 10,
+    format: 'hex',
+    alpha: 1,
+  }).map((v, idx) => {
+    return { rgb: v, offset: String(idx / 9) }
+  })
 
   const data = React.useMemo(
     () => [
@@ -187,6 +203,7 @@ const ImagePlotChart = React.memo<{
         z: roiData,
         type: 'heatmap',
         name: 'roi',
+        hovertemplate: 'cell id: %{z}',
         colorscale: colorscaleRoi.map((value) => {
           let offset: number = parseFloat(value.offset)
           const offsets: number[] = colorscaleRoi.map((v) => {
@@ -265,9 +282,39 @@ const ImagePlotChart = React.memo<{
     }
   }, [plotlyHeight, activeIndex])
 
+  const dispatch = useDispatch()
+  const timeSeriesFilePath = useSelector(
+    selectDefaultSetTimeSeriesItemFilepath(itemId),
+  )
+  const displayNumbers = useSelector(
+    selectDefaultSetTimeSeriesItemDisplayNumbers(itemId),
+  )
+
+  const onClick = (event: any) => {
+    const points: PlotDatum = event.points[0]
+    if (
+      timeSeriesFilePath !== null &&
+      displayNumbers !== null &&
+      points.curveNumber === 1
+    ) {
+      const newValue = [...displayNumbers, points.z - 1]
+      dispatch(
+        setTimeSeriesItemDisplayNumbers({ itemId, displayNumbers: newValue }),
+      )
+      dispatch(
+        getTimeSeriesData({ path: timeSeriesFilePath, index: points.z - 1 }),
+      )
+    }
+  }
+
   return (
     <div ref={ref}>
-      <PlotlyChart data={data} layout={layout} config={config} />
+      <PlotlyChart
+        data={data}
+        layout={layout}
+        config={config}
+        onClick={onClick}
+      />
     </div>
   )
 })
@@ -281,4 +328,17 @@ function imageDataEqualtyFn(
   } else {
     return a === undefined && b === undefined
   }
+}
+
+interface PlotDatum {
+  curveNumber: number
+  data: PlotData
+  customdata: Datum
+  pointIndex: number
+  pointNumber: number
+  x: Datum
+  xaxis: LayoutAxis
+  y: Datum
+  yaxis: LayoutAxis
+  z: number
 }

@@ -12,7 +12,9 @@ import {
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { LinearProgress, Typography } from '@mui/material'
 import { getRoiData } from 'store/slice/DisplayData/DisplayDataActions'
-import { selectRoiItemColors } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+// import { selectRoiItemColors } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import createColormap from 'colormap'
+import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
 
 export const RoiPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -47,7 +49,17 @@ const RoiPlotImple = React.memo<{}>(() => {
   // const zsmooth = useSelector(selectImageItemZsmooth(itemId))
   // const showgrid = useSelector(selectImageItemShowGrid(itemId))
   // const showscale = useSelector(selectImageItemShowScale(itemId))
-  const colorscale = useSelector(selectRoiItemColors(itemId))
+  // const colorscale = useSelector(selectRoiItemColors(itemId))
+
+  const maxRoiValue = Math.max(...imageData.map((v) => Math.max(...v)))
+  const colorscale: ColorType[] = createColormap({
+    colormap: 'jet',
+    nshades: 10,
+    format: 'hex',
+    alpha: 1,
+  }).map((v, idx) => {
+    return { rgb: v, offset: String(idx / 9) }
+  })
 
   const data = React.useMemo(
     () => [
