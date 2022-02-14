@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { LegendClickEvent } from 'plotly.js'
@@ -25,15 +25,11 @@ import {
   selectTimeSeriesItemZeroLine,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import createColormap from 'colormap'
-import {
-  setDisplayDataPath,
-  setTimeSeriesItemDisplayNumbers,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { setTimeSeriesItemDisplayNumbers } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 export const TimeSeriesPlot = React.memo(() => {
   const { itemId, filePath: path } = React.useContext(DisplayDataContext)
   const dispatch = useDispatch()
-  // const [displayNumbers, setDisplayNumbers] = useState([0])
   const displayNumbers = useSelector(selectTimeSeriesItemDisplayNumbers(itemId))
   const isPending = useSelector(selectTimeSeriesDataIsPending(path))
   const isInitialized = useSelector(selectTimeSeriesDataIsInitialized(path))
