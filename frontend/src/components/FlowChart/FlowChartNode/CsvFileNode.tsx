@@ -187,7 +187,7 @@ const ParamSettingDialog = React.memo<{ nodeId: string; filePath: string }>(
                     onChange={(event) => setSetIndex(event.target.checked)}
                   />
                 }
-                label="Set Inndex"
+                label="Set Index"
               />
             </Box>
             <Typography variant="h6">Preview</Typography>

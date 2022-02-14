@@ -131,7 +131,10 @@ export const PresentationalCsvPlot = React.memo<{
       rowObj['id'] = row_id
       return rowObj
     })
-    .filter((value, idx) => idx !== setColumn)
+    .filter(
+      (value, idx) =>
+        setColumn === null || (setColumn !== null && idx > setColumn),
+    )
 
   return (
     <div style={{ height: 300, width: '100%' }}>
