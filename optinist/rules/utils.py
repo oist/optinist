@@ -4,6 +4,7 @@ import traceback
 import os
 import pickle
 from cui_api.utils import join_file_path
+import gc
 
 
 def dict2leaf(root_dict: dict, path_list):
@@ -58,8 +59,11 @@ def run_script(__func_config):
         # ファイル保存
         with open(__func_config["output"], 'wb') as f:
             pickle.dump(output_info, f)
-        
+
         print("output: ", __func_config["output"])
+
+        del output_info
+        gc.collect()
         
     except Exception as e:
         error_message  = list(traceback.TracebackException.from_exception(e).format())[-2:]

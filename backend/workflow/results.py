@@ -26,7 +26,8 @@ def get_results(uid):
         if isinstance(info, list) or isinstance(info, str):
             results[node_id] = get_error(info)
         else:
-            results[node_id] = get_success(info, algo_name)
+            json_dir = "/".join(request_path.split("/")[:-1])
+            results[node_id] = get_success(info, algo_name, json_dir)
 
     return results
 
@@ -43,18 +44,21 @@ def get_error(info):
     return message
 
 
-def get_success(info, algo_name):
+def get_success(info, algo_name, json_dir):
     message = {
         "status": "success",
         "message": algo_name + " success",
-        "outputPaths": get_outputPaths(info)
+        "outputPaths": get_outputPaths(info, json_dir)
     }
     return message
 
 
-def get_outputPaths(info):
+def get_outputPaths(info, json_dir):
     outputPaths = {}
     for k, v in info.items():
+        if isinstance(v, BaseData):
+            v.save_json(json_dir)
+
         if isinstance(v, ImageData):
             outputPaths[k] = {}
             outputPaths[k]['path'] = v.json_path
@@ -65,24 +69,24 @@ def get_outputPaths(info):
                 outputPaths[k]['max_index'] = 1
         elif isinstance(v, TimeSeriesData):
             outputPaths[k] = {}
-            outputPaths[k]['path'] = v.path
+            outputPaths[k]['path'] = v.json_path
             outputPaths[k]['type'] = 'timeseries'
             outputPaths[k]['max_index'] = len(v.data)
         elif isinstance(v, CorrelationData):
             outputPaths[k] = {}
-            outputPaths[k]['path'] = v.path
+            outputPaths[k]['path'] = v.json_path
             outputPaths[k]['type'] = 'heatmap'
         elif isinstance(v, RoiData):
             outputPaths[k] = {}
-            outputPaths[k]['path'] = v.path
+            outputPaths[k]['path'] = v.json_path
             outputPaths[k]['type'] = 'roi'
         elif isinstance(v, ScatterData):
             outputPaths[k] = {}
-            outputPaths[k]['path'] = v.path
+            outputPaths[k]['path'] = v.json_path
             outputPaths[k]['type'] = 'scatter'
         elif isinstance(v, BarData):
             outputPaths[k] = {}
-            outputPaths[k]['path'] = v.path
+            outputPaths[k]['path'] = v.json_path
             outputPaths[k]['type'] = 'bar'
         else:
             pass
