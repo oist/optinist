@@ -337,6 +337,35 @@ export const selectTimeSeriesItemXrange =
     }
   }
 
+// export const selectTimeSeriesItemColorScale =
+//   (itemId: number) => (state: RootState) => {
+//     const item = selectVisualizeItems(state)[itemId]
+//     if (isTimeSeriesItem(item)) {
+//       return null
+//     } else if (isDefaultSetItem(item)) {
+//       const roiItem = item.imageItem.roiItem
+//       if (roiItem !== null) {
+//         return roiItem.colors
+//       } else {
+//         return null
+//       }
+//     } else {
+//       throw new Error('invalid VisualaizeItemType')
+//     }
+//   }
+
+export const selectTimeSeriesItemDisplayNumbers =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isTimeSeriesItem(item)) {
+      return item.displayNumbers
+    } else if (isDefaultSetItem(item)) {
+      return item.timeSeriesItem.displayNumbers
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
 export const selectHeatMapItemShowScale =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
@@ -361,18 +390,18 @@ export const selectHeatMapItemColors =
     }
   }
 
-export const selectRoiItemColors = (itemId: number) => (state: RootState) => {
-  const item = selectVisualizeItems(state)[itemId]
-  if (isRoiItem(item)) {
-    return item.colors
-  } else if (isDefaultSetItem(item)) {
-    return item.imageItem.roiItem?.colors ?? []
-  } else if (isImageItem(item)) {
-    return item.roiItem?.colors ?? []
-  } else {
-    throw new Error('invalid VisualaizeItemType')
-  }
-}
+// export const selectRoiItemColors = (itemId: number) => (state: RootState) => {
+//   const item = selectVisualizeItems(state)[itemId]
+//   if (isRoiItem(item)) {
+//     return item.colors
+//   } else if (isDefaultSetItem(item)) {
+//     return item.imageItem.roiItem?.colors ?? []
+//   } else if (isImageItem(item)) {
+//     return item.roiItem?.colors ?? []
+//   } else {
+//     throw new Error('invalid VisualaizeItemType')
+//   }
+// }
 
 export const selectCsvItemTranspose =
   (itemId: number) => (state: RootState) => {
@@ -421,4 +450,26 @@ export const selectScatterItemYIndex =
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
+  }
+
+export const selectDefaultSetTimeSeriesItemFilepath =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isDefaultSetItem(item)) {
+      const targetItem = selectDefaultSetTimeSeriesItem(itemId)(state)
+      const timeSeriesFilePath = targetItem.filePath
+      return timeSeriesFilePath
+    }
+    return null
+  }
+
+export const selectDefaultSetTimeSeriesItemDisplayNumbers =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isDefaultSetItem(item)) {
+      const targetItem = selectDefaultSetTimeSeriesItem(itemId)(state)
+      const displayNumbers = targetItem.displayNumbers
+      return displayNumbers
+    }
+    return null
   }

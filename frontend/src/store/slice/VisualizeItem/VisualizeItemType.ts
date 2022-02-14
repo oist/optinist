@@ -75,6 +75,7 @@ export interface TimeSeriesItem extends DisplayDataItemBaseType {
     right: number | undefined
   }
   maxIndex: number
+  displayNumbers: number[]
 }
 
 export interface HeatMapItem extends DisplayDataItemBaseType {
@@ -90,7 +91,7 @@ export interface CsvItem extends DisplayDataItemBaseType {
 }
 export interface RoiItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.ROI
-  colors: ColorType[]
+  // colors: ColorType[]
 }
 
 export interface ScatterItem extends DisplayDataItemBaseType {
