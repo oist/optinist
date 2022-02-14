@@ -50,7 +50,7 @@ const Head: React.FC = () => {
       <TableCell>Timestamp</TableCell>
       <TableCell>Name</TableCell>
       <TableCell>Status</TableCell>
-      <TableCell>Progress</TableCell>
+      {/* <TableCell>Progress</TableCell> */}
       <TableCell>Import</TableCell>
       <TableCell>Delete</TableCell>
     </TableRow>
@@ -90,9 +90,9 @@ const Row: React.FC<{
             <ErrorOutlineIcon style={{ color: 'red' }} />
           )}
         </TableCell>
-        <TableCell>
+        {/* <TableCell>
           <ProgressBar progress={row.progress} />
-        </TableCell>
+        </TableCell> */}
         <TableCell>
           <GetAppIcon style={{ color: 'blue' }} />
         </TableCell>
