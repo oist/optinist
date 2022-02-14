@@ -82,10 +82,15 @@ class CsvData(BaseData):
         super().__init__(file_name)
 
         if type(data) == str:
-            header = params["setColumn"]
-            self.data = pd.read_csv(data, header=header).values
+            self.data = pd.read_csv(data, header=None).values
+
             if params["transpose"]:
                 self.data = self.data.T
+
+            if params["setColumn"] is not None:
+                header = params["setColumn"]
+                self.data = self.data[header:]
+
         else:
             self.data = data
 

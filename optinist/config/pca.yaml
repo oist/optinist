@@ -2,7 +2,7 @@
 standard_mean: True
 standard_std: True
 
-transpose: True
+transpose: False
 
 PCA:
   n_components:
