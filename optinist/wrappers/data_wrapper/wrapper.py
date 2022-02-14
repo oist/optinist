@@ -103,6 +103,8 @@ class RoiData(BaseData):
         images = get_images_list(data)
 
         _dir = join_file_path([BASE_DIR, "tiff", func_name])
+        if not os.path.exists(_dir):
+            os.makedirs(_dir, exist_ok=True)
         self.path = join_file_path([_dir, f'{file_name}.tif'])
         tifffile.imsave(self.path, images)
 
