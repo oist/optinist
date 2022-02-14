@@ -56,12 +56,12 @@ def suite2p_file_convert(
     ops = convert_funs[ops['input_format']](ops.copy())
 
     info = {}
-    images = io.BinaryFile(read_filename=ops['reg_file'], Ly=ops['Ly'], Lx=ops['Lx']).data
-    info['images'] = ImageData(images, func_name='suite2p_registration', file_name='images')
+    # images = io.BinaryFile(read_filename=ops['reg_file'], Ly=ops['Ly'], Lx=ops['Lx']).data
+    # info['images'] = ImageData(images, func_name='suite2p_registration', file_name='images')
     info['meanImg'] = ImageData(ops['meanImg'], func_name='suite2p_convert', file_name='meanImg')
     info['ops'] = Suite2pData(ops, func_name='suite2p_convert', file_name='ops')
 
-    del images, io
-    gc.collect()
+    # del images, io
+    # gc.collect()
 
     return info
