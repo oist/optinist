@@ -25,7 +25,7 @@ def set_csvfile(node, edgeList):
     for edge in edgeList:
         if node["id"] == edge["source"]:
             return_name = edge["sourceHandle"].split("--")[1]
-            info = {return_name: TimeSeriesData(node['data']['path'], '')}
+            info = {return_name: CsvData(node['data']['path'], node["data"]["param"], '')}
 
     info['nwbfile'] = None
 
@@ -44,7 +44,8 @@ def set_algofile(unique_id, node, edgeList, nodeDict):
             return_name = edge["sourceHandle"].split("--")[1]
             sourceNode = nodeDict[edge["source"]]
             if sourceNode["type"] == "AlgorithmNode":
-                input_pickle_file = get_pickle_file(unique_id, sourceNode["id"], sourceNode['data']['label'])
+                input_pickle_file = get_pickle_file(
+                    unique_id, sourceNode["id"], sourceNode['data']['label'])
                 algo_input.append(input_pickle_file)
             else:
                 algo_input.append(sourceNode["data"]["path"])
