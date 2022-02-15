@@ -3,7 +3,15 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import FormControl from '@mui/material/FormControl'
 import Box from '@mui/material/Box'
-import { FormControlLabel, Switch } from '@mui/material'
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  FormControlLabel,
+  Switch,
+  Typography,
+} from '@mui/material'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 import {
   selectSelectedVisualizeItemId,
@@ -84,14 +92,46 @@ const Editor: React.FC = () => {
 
 const MultiPlotItemEditor: React.FC = () => {
   return (
-    <>
-      <p>ImageEditor</p>
-      <ImageItemEditor />
-      <p>TimeSereisEditor</p>
-      <TimeSeriesItemEditor />
-      <p>HeatMapEditor</p>
-      <HeatmapItemEditor />
-    </>
+    <div>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography>ImageEditor</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <ImageItemEditor />
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography>TimeSeriesEditor</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <TimeSeriesItemEditor />
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel3a-content"
+          id="panel3a-header"
+        >
+          <Typography>HeatmapEditor</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <HeatmapItemEditor />
+        </AccordionDetails>
+      </Accordion>
+    </div>
   )
 }
 
