@@ -18,12 +18,10 @@ import {
   isDisplayDataItem,
   isHeatMapItem,
   isImageItem,
-  isRoiItem,
   isTimeSeriesItem,
   isCsvItem,
   isScatterItem,
 } from './VisualizeItemUtils'
-import createColormap from 'colormap'
 
 export const initialState: VisualaizeItem = {
   items: {},
@@ -87,14 +85,6 @@ const csvItemInitialValue: CsvItem = {
 const roiItemInitialValue: RoiItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.ROI,
-  // colors: createColormap({
-  //   colormap: 'jet',
-  //   nshades: 64,
-  //   format: 'hex',
-  //   alpha: 1,
-  // }).map((v, idx) => {
-  //   return { rgb: v, offset: String(idx / 63) }
-  // }),
 }
 const scatterItemInitialValue: ScatterItem = {
   ...displayDataCommonInitialValue,
@@ -629,21 +619,6 @@ export const visualaizeItemSlice = createSlice({
         targetItem.heatMapItem.colors = action.payload.colors
       }
     },
-    // setRoiItemColors: (
-    //   state,
-    //   action: PayloadAction<{
-    //     itemId: number
-    //     colors: {
-    //       rgb: string
-    //       offset: string
-    //     }[]
-    //   }>,
-    // ) => {
-    //   const targetItem = state.items[action.payload.itemId]
-    //   if (isRoiItem(targetItem)) {
-    //     targetItem.colors = action.payload.colors
-    //   }
-    // },
     setCsvItemTranspose: (
       state,
       action: PayloadAction<{
@@ -747,7 +722,6 @@ export const {
   setTimeSeriesItemDisplayNumbers,
   setHeatMapItemShowScale,
   setHeatMapItemColors,
-  // setRoiItemColors,
   setCsvItemTranspose,
   setCsvItemSetColumn,
   setCsvItemSetIndex,

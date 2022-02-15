@@ -163,8 +163,6 @@ const ImagePlotChart = React.memo<{
   const showscale = useSelector(selectImageItemShowScale(itemId))
   const colorscale = useSelector(selectImageItemColors(itemId))
 
-  // const colorscaleRoi = useSelector(selectRoiItemColors(itemId))
-
   const colorscaleRoi: ColorType[] = createColormap({
     colormap: 'jet',
     nshades: 10,
@@ -260,7 +258,6 @@ const ImagePlotChart = React.memo<{
   )
   const config = {
     displayModeBar: true,
-    // scrollZoom: true,
     responsive: true,
     height: '100%',
   }
