@@ -5,6 +5,7 @@ import os
 import pickle
 from cui_api.utils import join_file_path
 import gc
+import copy
 
 
 def dict2leaf(root_dict: dict, path_list):
@@ -43,7 +44,8 @@ def run_script(__func_config):
             if key != "nwbfile" and key not in return_arg.values():
                 input_info.pop(key)
 
-        output_info = wrapper["function"](params=params, **input_info)
+        func = copy.deepcopy(wrapper["function"])
+        output_info = func(params=params, **input_info)
 
         # ファイル保存先
         output_dir = join_file_path(__func_config["output"].split("/")[:-1])
@@ -62,7 +64,7 @@ def run_script(__func_config):
 
         print("output: ", __func_config["output"])
 
-        del output_info
+        del input_info, output_info, func
         gc.collect()
         
     except Exception as e:

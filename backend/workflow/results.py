@@ -6,9 +6,13 @@ from wrappers.data_wrapper import *
 from cui_api.utils import join_file_path
 
 
-def get_results(uid):
-    print(join_file_path([BASE_DIR, uid, "*", "*.pkl"]))
-    runPaths = glob(join_file_path([BASE_DIR, uid, "*", "*.pkl"]))
+def get_results(uid, nodeIdList):
+    runPaths = []
+    for node_id in nodeIdList:
+        print(join_file_path([BASE_DIR, uid, node_id, "*.pkl"]))
+        for path in glob(join_file_path([BASE_DIR, uid, node_id, "*.pkl"])):
+            runPaths.append(path)
+
     for i, path in enumerate(runPaths):
         runPaths[i] = path.replace("\\", "/")
 
