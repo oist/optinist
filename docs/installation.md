@@ -569,6 +569,12 @@ cd CaImAn
 pip install -e .
 cd ..
 ```
+
+If error occuered in installing ``` requirements.txt ```, sometimes it solved in pip upgrade command.
+```
+pip install --upgrade pip
+```
+
 ### Install CaImAn
 **CAUTION for M1 Mac User**
 We use tensorflow in caiman code. We know that M1 mac doesn't install tensorflow easily, so if there is a problem, skip install caiman. (Release in progress…)
