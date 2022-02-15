@@ -87,16 +87,16 @@ const MultiPlot = React.memo<{
     <Grid container>
       <Grid item xs={7}>
         <StyledPaper>
-          <DefaultImagePlot itemId={itemId} />
+          <MultiImagePlot itemId={itemId} />
         </StyledPaper>
       </Grid>
       <Grid item xs={5}>
         <Grid>
           <StyledPaper>
-            <DefaultTimeSeriesPlot itemId={itemId} />
+            <MultiTimeSeriesPlot itemId={itemId} />
           </StyledPaper>
           <StyledPaper>
-            <DefaultHeatMapPlot itemId={itemId} />
+            <MultiHeatMapPlot itemId={itemId} />
           </StyledPaper>
         </Grid>
       </Grid>
@@ -111,7 +111,7 @@ const StyledPaper = styled(Paper)(({ theme }) => ({
   color: theme.palette.text.secondary,
 }))
 
-const DefaultImagePlot = React.memo<{
+const MultiImagePlot = React.memo<{
   itemId: number
 }>(({ itemId }) => {
   const filePath = useSelector(selectMultiPlotImageItemFilePath(itemId))
@@ -129,7 +129,7 @@ const DefaultImagePlot = React.memo<{
   }
 })
 
-const DefaultTimeSeriesPlot = React.memo<{
+const MultiTimeSeriesPlot = React.memo<{
   itemId: number
 }>(({ itemId }) => {
   const filePath = useSelector(selectMultiPlotTimeSeriesItemFilePath(itemId))
@@ -152,7 +152,7 @@ const DefaultTimeSeriesPlot = React.memo<{
   }
 })
 
-const DefaultHeatMapPlot = React.memo<{
+const MultiHeatMapPlot = React.memo<{
   itemId: number
 }>(({ itemId }) => {
   const filePath = useSelector(selectMultiPlotHeatMapItemFilePath(itemId))
