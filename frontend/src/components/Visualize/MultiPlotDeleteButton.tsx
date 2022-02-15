@@ -5,7 +5,7 @@ import IconButton from '@mui/material/IconButton'
 import CloseIcon from '@mui/icons-material/Close'
 import { deleteVisualizeItem } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
-export const DefaultSetDeleteButton = React.memo<{ itemId: number }>(
+export const MultiPlotDeleteButton = React.memo<{ itemId: number }>(
   ({ itemId }) => {
     const dispatch = useDispatch()
 

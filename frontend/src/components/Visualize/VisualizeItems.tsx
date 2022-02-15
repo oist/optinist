@@ -15,11 +15,11 @@ import {
 
 import { VisualizeItemAddButton } from './VisualizeItemAddButton'
 import { DisplayItemDeleteButton } from './DisplayItemDeleteButton'
-import { DefaultSetItem } from './DefaultSetItem'
+import { MultiPlotItem } from './MultiPlotItem'
 import { DisplayDataItem } from './DisplayDataItem'
 import { selectItem } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { RootState } from 'store/store'
-import { DefaultSetDeleteButton } from './DefaultItemDeleteButton'
+import { MultiPlotDeleteButton } from './MultiPlotDeleteButton'
 
 export const VisualizeItems: React.FC = () => {
   return (
@@ -83,8 +83,8 @@ const DeleteButton: React.FC<{
   switch (itemType) {
     case 'displayData':
       return <DisplayItemDeleteButton itemId={itemId} />
-    case 'defaultSet':
-      return <DefaultSetDeleteButton itemId={itemId} />
+    case 'MultiPlot':
+      return <MultiPlotDeleteButton itemId={itemId} />
     default:
       throw new Error('itemType Error')
   }
@@ -95,8 +95,8 @@ const ItemByType = React.memo<{
   itemId: number
 }>(({ itemType, itemId }) => {
   switch (itemType) {
-    case 'defaultSet':
-      return <DefaultSetItem itemId={itemId} />
+    case 'MultiPlot':
+      return <MultiPlotItem itemId={itemId} />
     case 'displayData':
       return <DisplayDataItem itemId={itemId} />
     default:

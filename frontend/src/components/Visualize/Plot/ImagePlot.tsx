@@ -39,8 +39,8 @@ import {
   selectImageItemStartIndex,
   selectImageItemEndIndex,
   selectRoiItemFilePath,
-  selectDefaultSetTimeSeriesItemFilepath,
-  selectDefaultSetTimeSeriesItemDisplayNumbers,
+  selectMultiPlotTimeSeriesItemFilepath,
+  selectMultiPlotTimeSeriesItemDisplayNumbers,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
   decrementImageActiveIndex,
@@ -163,8 +163,6 @@ const ImagePlotChart = React.memo<{
   const showscale = useSelector(selectImageItemShowScale(itemId))
   const colorscale = useSelector(selectImageItemColors(itemId))
 
-  // const colorscaleRoi = useSelector(selectRoiItemColors(itemId))
-
   const colorscaleRoi: ColorType[] = createColormap({
     colormap: 'jet',
     nshades: 10,
@@ -260,7 +258,6 @@ const ImagePlotChart = React.memo<{
   )
   const config = {
     displayModeBar: true,
-    // scrollZoom: true,
     responsive: true,
     height: '100%',
   }
@@ -284,10 +281,10 @@ const ImagePlotChart = React.memo<{
 
   const dispatch = useDispatch()
   const timeSeriesFilePath = useSelector(
-    selectDefaultSetTimeSeriesItemFilepath(itemId),
+    selectMultiPlotTimeSeriesItemFilepath(itemId),
   )
   const displayNumbers = useSelector(
-    selectDefaultSetTimeSeriesItemDisplayNumbers(itemId),
+    selectMultiPlotTimeSeriesItemDisplayNumbers(itemId),
   )
 
   const onClick = (event: any) => {
@@ -299,10 +296,16 @@ const ImagePlotChart = React.memo<{
     ) {
       const newValue = [...displayNumbers, points.z - 1]
       dispatch(
-        setTimeSeriesItemDisplayNumbers({ itemId, displayNumbers: newValue }),
+        setTimeSeriesItemDisplayNumbers({
+          itemId,
+          displayNumbers: newValue,
+        }),
       )
       dispatch(
-        getTimeSeriesData({ path: timeSeriesFilePath, index: points.z - 1 }),
+        getTimeSeriesData({
+          path: timeSeriesFilePath,
+          index: points.z - 1,
+        }),
       )
     }
   }

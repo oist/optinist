@@ -3,7 +3,15 @@ import { useDispatch, useSelector } from 'react-redux'
 
 import FormControl from '@mui/material/FormControl'
 import Box from '@mui/material/Box'
-import { FormControlLabel, Switch } from '@mui/material'
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  FormControlLabel,
+  Switch,
+  Typography,
+} from '@mui/material'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 import {
   selectSelectedVisualizeItemId,
@@ -11,7 +19,7 @@ import {
   selectVisualizeDataNodeId,
   selectVisualizeDataType,
   selectVisualizeItemType,
-  selectVisualizeItemTypeIsDefaultSet,
+  selectVisualizeItemTypeIsMultiPlot,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { VISUALIZE_ITEM_TYPE_SET } from 'store/slice/VisualizeItem/VisualizeItemType'
 import {
@@ -21,7 +29,7 @@ import {
 import {
   resetImageActiveIndex,
   setDisplayDataPath,
-  toggleItemTypeDefaultSet,
+  toggleItemTypeMultiPlot,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { ImageItemEditor } from './Editor/ImageItemEditor'
 import { CsvItemEditor } from './Editor/CsvItemEditor'
@@ -57,14 +65,14 @@ export const SelectedItemIdContext = React.createContext<number>(NaN)
 const ItemTypeSelect: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
-  const isDefualtSet = useSelector(selectVisualizeItemTypeIsDefaultSet(itemId))
+  const isMultiPlot = useSelector(selectVisualizeItemTypeIsMultiPlot(itemId))
   const onChageToggle = () => {
-    dispatch(toggleItemTypeDefaultSet(itemId))
+    dispatch(toggleItemTypeMultiPlot(itemId))
   }
   return (
     <FormControl style={{ minWidth: 120, marginBottom: 12 }}>
       <FormControlLabel
-        control={<Switch checked={isDefualtSet} onChange={onChageToggle} />}
+        control={<Switch checked={isMultiPlot} onChange={onChageToggle} />}
         label="Multi plot"
       />
     </FormControl>
@@ -75,16 +83,56 @@ const Editor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const itemType = useSelector(selectVisualizeItemType(itemId))
   switch (itemType) {
-    case VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET:
-      return <DefaultSetItemEditor />
+    case VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT:
+      return <MultiPlotItemEditor />
     case VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA:
       return <DisplayDataItemEditor />
   }
 }
 
-const DefaultSetItemEditor: React.FC = () => {
-  // const itemId = React.useContext(SelectedItemIdContext)
-  return <div>DefaultSetItemEditor(not imple)</div>
+const MultiPlotItemEditor: React.FC = () => {
+  return (
+    <div>
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel1a-content"
+          id="panel1a-header"
+        >
+          <Typography>ImageEditor</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <ImageItemEditor />
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel2a-content"
+          id="panel2a-header"
+        >
+          <Typography>TimeSeriesEditor</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <TimeSeriesItemEditor />
+        </AccordionDetails>
+      </Accordion>
+
+      <Accordion>
+        <AccordionSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls="panel3a-content"
+          id="panel3a-header"
+        >
+          <Typography>HeatmapEditor</Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <HeatmapItemEditor />
+        </AccordionDetails>
+      </Accordion>
+    </div>
+  )
 }
 
 const DisplayDataItemEditor: React.FC = () => {

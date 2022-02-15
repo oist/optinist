@@ -71,9 +71,11 @@ const TimeSeriesPlotImple = React.memo(() => {
   const xrange = useSelector(selectTimeSeriesItemXrange(itemId))
   const displayNumbers = useSelector(selectTimeSeriesItemDisplayNumbers(itemId))
 
+  const dataSize = Object.keys(timeSeriesData).length
+
   const colorScale = createColormap({
     colormap: 'jet',
-    nshades: Object.keys(timeSeriesData).length,
+    nshades: dataSize < 6 ? 6 : dataSize,
     format: 'hex',
     alpha: 1,
   })
@@ -84,7 +86,7 @@ const TimeSeriesPlotImple = React.memo(() => {
     }
     return Object.keys(timeSeriesData).map((key, i) => {
       let y = Object.values(timeSeriesData[key])
-      const new_i = (i * 10 + i) % Object.keys(timeSeriesData).length
+      const new_i = (i * 10 + i) % dataSize
 
       if (displayNumbers.includes(i)) {
         if (offset) {
@@ -154,7 +156,6 @@ const TimeSeriesPlotImple = React.memo(() => {
 
   const config = {
     displayModeBar: true,
-    // scrollZoom: true,
     responsive: true,
   }
 
@@ -163,12 +164,18 @@ const TimeSeriesPlotImple = React.memo(() => {
     if (displayNumbers.includes(clickNumber)) {
       const newValue = displayNumbers.filter((value) => value !== clickNumber)
       dispatch(
-        setTimeSeriesItemDisplayNumbers({ itemId, displayNumbers: newValue }),
+        setTimeSeriesItemDisplayNumbers({
+          itemId,
+          displayNumbers: newValue,
+        }),
       )
     } else {
       const newValue = [...displayNumbers, clickNumber]
       dispatch(
-        setTimeSeriesItemDisplayNumbers({ itemId, displayNumbers: newValue }),
+        setTimeSeriesItemDisplayNumbers({
+          itemId,
+          displayNumbers: newValue,
+        }),
       )
       dispatch(getTimeSeriesData({ path, index: clickNumber }))
     }

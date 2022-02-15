@@ -7,7 +7,7 @@ export type VisualaizeItem = {
   }
 }
 
-export type VisualaizeItemType = DefaultSetItem | DisplayDataItem
+export type VisualaizeItemType = MultiPlotItem | DisplayDataItem
 
 export interface ItemBaseType<T extends VISUALIZE_ITEM_TYPE> {
   itemType: T
@@ -19,7 +19,7 @@ export type ColorType = {
 }
 
 export const VISUALIZE_ITEM_TYPE_SET = {
-  DEFAULT_SET: 'defaultSet',
+  MULTI_PLOT: 'MultiPlot',
   DISPLAY_DATA: 'displayData',
 } as const
 
@@ -41,7 +41,7 @@ export interface DisplayDataItemBaseType extends ItemBaseType<'displayData'> {
   dataType: DATA_TYPE | null
 }
 
-export interface DefaultSetItem extends ItemBaseType<'defaultSet'> {
+export interface MultiPlotItem extends ItemBaseType<'MultiPlot'> {
   imageItem: ImageItem
   timeSeriesItem: TimeSeriesItem
   heatMapItem: HeatMapItem

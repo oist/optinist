@@ -120,7 +120,6 @@ const ScatterPlotImple = React.memo(() => {
 
   const config = {
     displayModeBar: true,
-    // scrollZoom: true,
     responsive: true,
   }
 
