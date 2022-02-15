@@ -164,12 +164,18 @@ const TimeSeriesPlotImple = React.memo(() => {
     if (displayNumbers.includes(clickNumber)) {
       const newValue = displayNumbers.filter((value) => value !== clickNumber)
       dispatch(
-        setTimeSeriesItemDisplayNumbers({ itemId, displayNumbers: newValue }),
+        setTimeSeriesItemDisplayNumbers({
+          itemId,
+          displayNumbers: newValue,
+        }),
       )
     } else {
       const newValue = [...displayNumbers, clickNumber]
       dispatch(
-        setTimeSeriesItemDisplayNumbers({ itemId, displayNumbers: newValue }),
+        setTimeSeriesItemDisplayNumbers({
+          itemId,
+          displayNumbers: newValue,
+        }),
       )
       dispatch(getTimeSeriesData({ path, index: clickNumber }))
     }

@@ -296,10 +296,16 @@ const ImagePlotChart = React.memo<{
     ) {
       const newValue = [...displayNumbers, points.z - 1]
       dispatch(
-        setTimeSeriesItemDisplayNumbers({ itemId, displayNumbers: newValue }),
+        setTimeSeriesItemDisplayNumbers({
+          itemId,
+          displayNumbers: newValue,
+        }),
       )
       dispatch(
-        getTimeSeriesData({ path: timeSeriesFilePath, index: points.z - 1 }),
+        getTimeSeriesData({
+          path: timeSeriesFilePath,
+          index: points.z - 1,
+        }),
       )
     }
   }

@@ -24,7 +24,7 @@ export const selectVisualizeItemType = (itemId: number) => (state: RootState) =>
 export const selectVisualizeItemTypeIsMultiPlot =
   (itemId: number) => (state: RootState) =>
     selectVisualizeItemType(itemId)(state) ===
-    VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
+    VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT
 
 export const selectMultiPlotImageItem =
   (itemId: number) => (state: RootState) => {

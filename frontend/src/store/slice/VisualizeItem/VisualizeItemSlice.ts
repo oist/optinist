@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { getTimeSeriesData } from '../DisplayData/DisplayDataActions'
 import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 
 import {
@@ -117,7 +118,7 @@ function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
 }
 
 const MultiPlotItemInitialValue: MultiPlotItem = {
-  itemType: VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET,
+  itemType: VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT,
   imageItem: imageItemInitialValue,
   timeSeriesItem: timeSeriesItemInitialValue,
   heatMapItem: heatMapItemInitialValue,
@@ -269,7 +270,18 @@ export const visualaizeItemSlice = createSlice({
     ) => {
       const { itemId, filePath, nodeId, dataType } = action.payload
       const targetItem = state.items[itemId]
-      if (isDisplayDataItem(targetItem)) {
+      if (isMultiPlotItem(targetItem)) {
+        if (dataType != null && targetItem.imageItem.dataType !== dataType) {
+          state.items[itemId] = {
+            ...getDisplayDataItemInitialValue(dataType),
+            filePath,
+            nodeId,
+          }
+        } else {
+          targetItem.imageItem.filePath = filePath
+          targetItem.imageItem.nodeId = nodeId
+        }
+      } else if (isDisplayDataItem(targetItem)) {
         if (dataType != null && targetItem.dataType !== dataType) {
           state.items[itemId] = {
             ...getDisplayDataItemInitialValue(dataType),
@@ -288,11 +300,11 @@ export const visualaizeItemSlice = createSlice({
       state,
       action: PayloadAction<{
         itemId: number
-        type: typeof VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET | DATA_TYPE
+        type: typeof VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT | DATA_TYPE
       }>,
     ) => {
       const { itemId, type } = action.payload
-      if (type === VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET) {
+      if (type === VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT) {
         state.items[itemId] = MultiPlotItemInitialValue
       } else {
         state.items[itemId] = getDisplayDataItemInitialValue(type)
@@ -300,9 +312,7 @@ export const visualaizeItemSlice = createSlice({
     },
     toggleItemTypeMultiPlot: (state, action: PayloadAction<number>) => {
       const itemId = action.payload
-      if (
-        state.items[itemId].itemType === VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
-      ) {
+      if (state.items[itemId].itemType === VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT) {
         state.items[itemId] = {
           ...getDisplayDataItemInitialValue(DATA_TYPE_SET.IMAGE), // FIXME dataTypeの型をNullableに変更して影響箇所も修正する
         }

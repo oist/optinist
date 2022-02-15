@@ -54,14 +54,7 @@ export const ImageItemEditor: React.FC = () => {
   }
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
 
-  const {
-    // filePath: uploadedFilePath,
-    onUploadFile,
-    // pending,
-    // uninitialized,
-    // progress,
-    // error,
-  } = useFileUploader(FILE_TYPE_SET.IMAGE)
+  const { onUploadFile } = useFileUploader(FILE_TYPE_SET.IMAGE)
   const onUploadFileHandle = (formData: FormData, fileName: string) => {
     onUploadFile(formData, fileName)
   }

@@ -19,7 +19,7 @@ export type ColorType = {
 }
 
 export const VISUALIZE_ITEM_TYPE_SET = {
-  DEFAULT_SET: 'MultiPlot',
+  MULTI_PLOT: 'MultiPlot',
   DISPLAY_DATA: 'displayData',
 } as const
 

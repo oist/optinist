@@ -57,14 +57,14 @@ export const SelectedItemIdContext = React.createContext<number>(NaN)
 const ItemTypeSelect: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
-  const isDefualtSet = useSelector(selectVisualizeItemTypeIsMultiPlot(itemId))
+  const isMultiPlot = useSelector(selectVisualizeItemTypeIsMultiPlot(itemId))
   const onChageToggle = () => {
     dispatch(toggleItemTypeMultiPlot(itemId))
   }
   return (
     <FormControl style={{ minWidth: 120, marginBottom: 12 }}>
       <FormControlLabel
-        control={<Switch checked={isDefualtSet} onChange={onChageToggle} />}
+        control={<Switch checked={isMultiPlot} onChange={onChageToggle} />}
         label="Multi plot"
       />
     </FormControl>
@@ -75,7 +75,7 @@ const Editor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const itemType = useSelector(selectVisualizeItemType(itemId))
   switch (itemType) {
-    case VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET:
+    case VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT:
       return <MultiPlotItemEditor />
     case VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA:
       return <DisplayDataItemEditor />
@@ -83,8 +83,16 @@ const Editor: React.FC = () => {
 }
 
 const MultiPlotItemEditor: React.FC = () => {
-  // const itemId = React.useContext(SelectedItemIdContext)
-  return <div>MultiPlotItemEditor(not imple)</div>
+  return (
+    <>
+      <p>ImageEditor</p>
+      <ImageItemEditor />
+      <p>TimeSereisEditor</p>
+      <TimeSeriesItemEditor />
+      <p>HeatMapEditor</p>
+      <HeatmapItemEditor />
+    </>
+  )
 }
 
 const DisplayDataItemEditor: React.FC = () => {

@@ -15,7 +15,7 @@ import {
 export function isMultiPlotItem(
   item: VisualaizeItemType,
 ): item is MultiPlotItem {
-  return item.itemType === VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
+  return item.itemType === VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT
 }
 
 export function isDisplayDataItem(
