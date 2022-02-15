@@ -1,8 +1,9 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { getTimeSeriesData } from '../DisplayData/DisplayDataActions'
 import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 
 import {
-  DefaultSetItem,
+  MultiPlotItem,
   HeatMapItem,
   ImageItem,
   CsvItem,
@@ -14,16 +15,14 @@ import {
   BarItem,
 } from './VisualizeItemType'
 import {
-  isDefaultSetItem,
+  isMultiPlotItem,
   isDisplayDataItem,
   isHeatMapItem,
   isImageItem,
-  isRoiItem,
   isTimeSeriesItem,
   isCsvItem,
   isScatterItem,
 } from './VisualizeItemUtils'
-import createColormap from 'colormap'
 
 export const initialState: VisualaizeItem = {
   items: {},
@@ -87,14 +86,6 @@ const csvItemInitialValue: CsvItem = {
 const roiItemInitialValue: RoiItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.ROI,
-  // colors: createColormap({
-  //   colormap: 'jet',
-  //   nshades: 64,
-  //   format: 'hex',
-  //   alpha: 1,
-  // }).map((v, idx) => {
-  //   return { rgb: v, offset: String(idx / 63) }
-  // }),
 }
 const scatterItemInitialValue: ScatterItem = {
   ...displayDataCommonInitialValue,
@@ -126,8 +117,8 @@ function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
   }
 }
 
-const defaultSetItemInitialValue: DefaultSetItem = {
-  itemType: VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET,
+const MultiPlotItemInitialValue: MultiPlotItem = {
+  itemType: VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT,
   imageItem: imageItemInitialValue,
   timeSeriesItem: timeSeriesItemInitialValue,
   heatMapItem: heatMapItemInitialValue,
@@ -161,7 +152,7 @@ export const visualaizeItemSlice = createSlice({
     ) => {
       const { itemId, filePath, nodeId } = action.payload
       const targetItem = state.items[itemId]
-      if (isDefaultSetItem(targetItem)) {
+      if (isMultiPlotItem(targetItem)) {
         if (targetItem.imageItem.roiItem != null) {
           targetItem.imageItem.roiItem.filePath = filePath
           targetItem.imageItem.roiItem.nodeId = nodeId
@@ -196,7 +187,7 @@ export const visualaizeItemSlice = createSlice({
     ) => {
       const { itemId, filePath, nodeId, dataType } = action.payload
       const targetItem = state.items[itemId]
-      if (isDefaultSetItem(targetItem)) {
+      if (isMultiPlotItem(targetItem)) {
         if (dataType === DATA_TYPE_SET.IMAGE) {
           targetItem.imageItem.filePath = filePath
           targetItem.imageItem.nodeId = nodeId
@@ -224,7 +215,7 @@ export const visualaizeItemSlice = createSlice({
     ) => {
       const { itemId, filePath, nodeId } = action.payload
       const targetItem = state.items[itemId]
-      if (isDefaultSetItem(targetItem)) {
+      if (isMultiPlotItem(targetItem)) {
         targetItem.imageItem.filePath = filePath
         targetItem.imageItem.nodeId = nodeId
       } else if (isImageItem(targetItem)) {
@@ -242,7 +233,7 @@ export const visualaizeItemSlice = createSlice({
     ) => {
       const { itemId, filePath, nodeId } = action.payload
       const targetItem = state.items[itemId]
-      if (isDefaultSetItem(targetItem)) {
+      if (isMultiPlotItem(targetItem)) {
         targetItem.timeSeriesItem.filePath = filePath
         targetItem.timeSeriesItem.nodeId = nodeId
       } else if (isTimeSeriesItem(targetItem)) {
@@ -260,7 +251,7 @@ export const visualaizeItemSlice = createSlice({
     ) => {
       const { itemId, filePath, nodeId } = action.payload
       const targetItem = state.items[itemId]
-      if (isDefaultSetItem(targetItem)) {
+      if (isMultiPlotItem(targetItem)) {
         targetItem.heatMapItem.filePath = filePath
         targetItem.heatMapItem.nodeId = nodeId
       } else if (isHeatMapItem(targetItem)) {
@@ -279,7 +270,18 @@ export const visualaizeItemSlice = createSlice({
     ) => {
       const { itemId, filePath, nodeId, dataType } = action.payload
       const targetItem = state.items[itemId]
-      if (isDisplayDataItem(targetItem)) {
+      if (isMultiPlotItem(targetItem)) {
+        if (dataType != null && targetItem.imageItem.dataType !== dataType) {
+          state.items[itemId] = {
+            ...getDisplayDataItemInitialValue(dataType),
+            filePath,
+            nodeId,
+          }
+        } else {
+          targetItem.imageItem.filePath = filePath
+          targetItem.imageItem.nodeId = nodeId
+        }
+      } else if (isDisplayDataItem(targetItem)) {
         if (dataType != null && targetItem.dataType !== dataType) {
           state.items[itemId] = {
             ...getDisplayDataItemInitialValue(dataType),
@@ -298,26 +300,24 @@ export const visualaizeItemSlice = createSlice({
       state,
       action: PayloadAction<{
         itemId: number
-        type: typeof VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET | DATA_TYPE
+        type: typeof VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT | DATA_TYPE
       }>,
     ) => {
       const { itemId, type } = action.payload
-      if (type === VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET) {
-        state.items[itemId] = defaultSetItemInitialValue
+      if (type === VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT) {
+        state.items[itemId] = MultiPlotItemInitialValue
       } else {
         state.items[itemId] = getDisplayDataItemInitialValue(type)
       }
     },
-    toggleItemTypeDefaultSet: (state, action: PayloadAction<number>) => {
+    toggleItemTypeMultiPlot: (state, action: PayloadAction<number>) => {
       const itemId = action.payload
-      if (
-        state.items[itemId].itemType === VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
-      ) {
+      if (state.items[itemId].itemType === VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT) {
         state.items[itemId] = {
           ...getDisplayDataItemInitialValue(DATA_TYPE_SET.IMAGE), // FIXME dataTypeの型をNullableに変更して影響箇所も修正する
         }
       } else {
-        state.items[itemId] = defaultSetItemInitialValue
+        state.items[itemId] = MultiPlotItemInitialValue
       }
     },
     resetImageActiveIndex: (
@@ -328,7 +328,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[itemId]
       if (isImageItem(targetItem)) {
         targetItem.activeIndex = 0
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.imageItem.activeIndex = 0
       }
     },
@@ -340,7 +340,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[itemId]
       if (isImageItem(targetItem)) {
         targetItem.activeIndex++
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.imageItem.activeIndex++
       }
     },
@@ -352,7 +352,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[itemId]
       if (isImageItem(targetItem)) {
         targetItem.activeIndex--
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.imageItem.activeIndex--
       }
     },
@@ -366,7 +366,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.showticklabels = action.payload.showticklabels
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.imageItem.showticklabels = action.payload.showticklabels
       }
     },
@@ -380,7 +380,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.zsmooth = action.payload.zsmooth
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.imageItem.zsmooth = action.payload.zsmooth
       }
     },
@@ -394,7 +394,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.showline = action.payload.showline
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.imageItem.showline = action.payload.showline
       }
     },
@@ -408,7 +408,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.showgrid = action.payload.showgrid
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.imageItem.showgrid = action.payload.showgrid
       }
     },
@@ -422,7 +422,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.showscale = action.payload.showscale
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.imageItem.showscale = action.payload.showscale
       }
     },
@@ -439,7 +439,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.colors = action.payload.colors
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.imageItem.colors = action.payload.colors
       }
     },
@@ -453,7 +453,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.startIndex = action.payload.startIndex
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.imageItem.startIndex = action.payload.startIndex
       }
     },
@@ -467,7 +467,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.endIndex = action.payload.endIndex
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.imageItem.endIndex = action.payload.endIndex
       }
     },
@@ -481,7 +481,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.offset = action.payload.offset
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.timeSeriesItem.offset = action.payload.offset
       }
     },
@@ -495,7 +495,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.span = action.payload.span
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.timeSeriesItem.span = action.payload.span
       }
     },
@@ -509,7 +509,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.showgrid = action.payload.showgrid
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.timeSeriesItem.showgrid = action.payload.showgrid
       }
     },
@@ -523,7 +523,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.showline = action.payload.showline
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.timeSeriesItem.showline = action.payload.showline
       }
     },
@@ -537,7 +537,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.showticklabels = action.payload.showticklabels
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.timeSeriesItem.showticklabels = action.payload.showticklabels
       }
     },
@@ -551,7 +551,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.zeroline = action.payload.zeroline
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.timeSeriesItem.zeroline = action.payload.zeroline
       }
     },
@@ -565,7 +565,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.xrange.left = action.payload.left
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.timeSeriesItem.xrange.left = action.payload.left
       }
     },
@@ -579,7 +579,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.xrange.right = action.payload.right
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.timeSeriesItem.xrange.right = action.payload.right
       }
     },
@@ -592,7 +592,7 @@ export const visualaizeItemSlice = createSlice({
     ) => {
       const { itemId, displayNumbers } = action.payload
       const targetItem = state.items[itemId]
-      if (isDefaultSetItem(targetItem)) {
+      if (isMultiPlotItem(targetItem)) {
         targetItem.timeSeriesItem.displayNumbers = displayNumbers
       } else if (isTimeSeriesItem(targetItem)) {
         targetItem.displayNumbers = displayNumbers
@@ -608,7 +608,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isHeatMapItem(targetItem)) {
         targetItem.showscale = action.payload.showscale
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.heatMapItem.showscale = action.payload.showscale
       }
     },
@@ -625,25 +625,10 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isHeatMapItem(targetItem)) {
         targetItem.colors = action.payload.colors
-      } else if (isDefaultSetItem(targetItem)) {
+      } else if (isMultiPlotItem(targetItem)) {
         targetItem.heatMapItem.colors = action.payload.colors
       }
     },
-    // setRoiItemColors: (
-    //   state,
-    //   action: PayloadAction<{
-    //     itemId: number
-    //     colors: {
-    //       rgb: string
-    //       offset: string
-    //     }[]
-    //   }>,
-    // ) => {
-    //   const targetItem = state.items[action.payload.itemId]
-    //   if (isRoiItem(targetItem)) {
-    //     targetItem.colors = action.payload.colors
-    //   }
-    // },
     setCsvItemTranspose: (
       state,
       action: PayloadAction<{
@@ -718,7 +703,7 @@ export const {
   deleteVisualizeItem,
   selectItem,
   setItemType,
-  toggleItemTypeDefaultSet,
+  toggleItemTypeMultiPlot,
   setFilePath,
   setHeatMapItemFilePath,
   setImageItemFilePath,
@@ -747,7 +732,6 @@ export const {
   setTimeSeriesItemDisplayNumbers,
   setHeatMapItemShowScale,
   setHeatMapItemColors,
-  // setRoiItemColors,
   setCsvItemTranspose,
   setCsvItemSetColumn,
   setCsvItemSetIndex,

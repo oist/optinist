@@ -91,11 +91,12 @@ const HeatMapImple = React.memo(() => {
     autosize: true,
     height: 350,
   }
+
   const config = {
     displayModeBar: true,
-    // scrollZoom: true,
     responsive: true,
   }
+
   return <PlotlyChart data={data} layout={layout} config={config} />
 })
 

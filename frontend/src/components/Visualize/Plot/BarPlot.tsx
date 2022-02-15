@@ -42,10 +42,6 @@ const BarPlotImple = React.memo(() => {
 
   const barData = useSelector(selectBarData(path), barDataEqualityFn)
 
-  // const barData = {
-  //   x: ['giraffes', 'orangutans', 'monkeys'],
-  //   y: [20, 14, 23],
-  // }
   const data = React.useMemo(
     () => [
       {
