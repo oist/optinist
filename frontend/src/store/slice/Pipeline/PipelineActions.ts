@@ -8,6 +8,7 @@ import {
   RunResultDTO,
   RunPostData,
 } from 'api/Run/Run'
+import { selectRunResultPendingNodeIdList } from './PipelineSelectors'
 
 export const run = createAsyncThunk<
   string,
@@ -29,8 +30,11 @@ export const pollRunResult = createAsyncThunk<
   },
   ThunkApiConfig
 >(`${PIPELINE_SLICE_NAME}/pollRunResult`, async ({ uid }, thunkAPI) => {
+  const pendingNodeIdList = selectRunResultPendingNodeIdList(uid)(
+    thunkAPI.getState(),
+  )
   try {
-    const responseData = await runResult({ uid })
+    const responseData = await runResult({ uid, pendingNodeIdList })
     return responseData
   } catch (e) {
     return thunkAPI.rejectWithValue(e)
