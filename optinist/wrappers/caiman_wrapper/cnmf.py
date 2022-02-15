@@ -1,6 +1,7 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 from cui_api.utils import join_file_path
+import gc
 
 
 def caiman_cnmf(
@@ -15,6 +16,8 @@ def caiman_cnmf(
     from caiman.source_extraction.cnmf.params import CNMFParams
     import caiman.utils.visualization as visualization
     import numpy as np
+    from skimage.measure import find_contours
+    from scipy.ndimage import binary_fill_holes
 
     file_path = images.path
     images = images.data
@@ -38,6 +41,9 @@ def caiman_cnmf(
     mmap_images = np.reshape(mmap_images.T, [T] + list(dims), order='F')
     mmap_images[:] = images[:]
 
+    del images
+    gc.collect()
+
     if params is None:
         params = CNMFParams()
     else:
@@ -59,15 +65,72 @@ def caiman_cnmf(
     Cn[np.isnan(Cn)] = 0
     cnm.estimates.plot_contours(img=Cn)
 
-    # get roi center
+    del mmap_images
+    gc.collect()
+
+    thr = 0.9
+    thr_method = 'nrg'
+    swap_dim = False
     cont = visualization.get_contours(
-        cnm.estimates.A, cnm.dims, thr=0.9, thr_method='nrg', swap_dim=False)
+        cnm.estimates.A, cnm.dims, thr=thr, thr_method=thr_method, swap_dim=swap_dim)
     cont_cent = np.zeros([len(cont), 2])
+    sparse_rois = []
     for i in range(len(cont)):
         cont_cent[i, :] = np.nanmean(cont[i]['coordinates'], axis=0)
+        sparse_rois.append(cont[i]['coordinates'].T)
 
     iscell = np.zeros(cont_cent.shape[0])
     iscell[cnm.estimates.idx_components] = 1
+
+    A = cnm.estimates.A
+    d, nr = np.shape(A)
+
+    # for each patches
+    ims = []
+    for i in range(nr):
+        pars = dict()
+        # we compute the cumulative sum of the energy of the Ath component that has been ordered from least to highest
+        patch_data = A.data[A.indptr[i]:A.indptr[i + 1]]
+        indx = np.argsort(patch_data)[::-1]
+
+        if thr_method == 'nrg':
+            cumEn = np.cumsum(patch_data[indx]**2)
+            if len(cumEn) == 0:
+                pars = dict(
+                    coordinates=np.array([]),
+                    CoM=np.array([np.NaN, np.NaN]),
+                    neuron_id=i + 1,
+                )
+                coordinates.append(pars)
+                continue
+            else:
+                # we work with normalized values
+                cumEn /= cumEn[-1]
+                Bvec = np.ones(d)
+                # we put it in a similar matrix
+                Bvec[A.indices[A.indptr[i]:A.indptr[i + 1]][indx]] = cumEn
+        else:
+            Bvec = np.zeros(d)
+            Bvec[A.indices[A.indptr[i]:A.indptr[i + 1]]] = patch_data / patch_data.max()
+
+        if swap_dim:
+            Bmat = np.reshape(Bvec, dims, order='C')
+        else:
+            Bmat = np.reshape(Bvec, dims, order='F')
+
+        r_mask = np.zeros_like(Bmat, dtype='bool')
+        contour = find_contours(Bmat, thr)
+        for c in contour:
+            r_mask[np.round(c[:, 0]).astype('int'), np.round(c[:, 1]).astype('int')] = 1
+        
+        # Fill in the hole created by the contour boundary
+        r_mask = binary_fill_holes(r_mask)
+        ims.append(r_mask + (i * r_mask))
+
+    ims = np.stack(ims)
+    roi_image = np.nanmax(ims, axis=0).astype(float)
+    # import pdb; pdb.set_trace()
+    roi_image[roi_image == 0] = np.nan
 
     # NWBの追加
     if nwbfile is not None:
@@ -100,9 +163,9 @@ def caiman_cnmf(
             'bg_list': bg_list,
         }
 
-    # ### iscellを追加
-    # nwbfile = nwb_add_column(
-    #     nwbfile, 'iscell', 'two columns - iscell & probcell', iscell)
+        # ### iscellを追加
+        # nwbfile = nwb_add_column(
+        #     nwbfile, 'iscell', 'two columns - iscell & probcell', iscell)
 
         ### Fluorescence
         n_rois = cnm.estimates.A.shape[-1]
@@ -129,7 +192,7 @@ def caiman_cnmf(
     info['images'] = ImageData(np.array(Cn * 255, dtype=np.uint8), func_name='caiman_cnmf', file_name='images')
     info['F'] = TimeSeriesData(cnm.estimates.C, func_name='caiman_cnmf', file_name='F')
     info['iscell'] = IscellData(iscell, func_name='caiman_cnmf', file_name='iscell')
-    info['roi'] = RoiData(cont_cent)
+    info['roi'] = RoiData(roi_image)
     info['nwbfile'] = nwbfile
 
     return info
