@@ -1,7 +1,7 @@
 import { DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 import {
   VisualaizeItemType,
-  DefaultSetItem,
+  MultiPlotItem,
   DisplayDataItem,
   VISUALIZE_ITEM_TYPE_SET,
   ImageItem,
@@ -12,9 +12,9 @@ import {
   CsvItem,
 } from './VisualizeItemType'
 
-export function isDefaultSetItem(
+export function isMultiPlotItem(
   item: VisualaizeItemType,
-): item is DefaultSetItem {
+): item is MultiPlotItem {
   return item.itemType === VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
 }
 

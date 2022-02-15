@@ -5,8 +5,7 @@ import {
   isImageItem,
   isTimeSeriesItem,
   isHeatMapItem,
-  isRoiItem,
-  isDefaultSetItem,
+  isMultiPlotItem,
   isCsvItem,
   isScatterItem,
 } from './VisualizeItemUtils'
@@ -22,75 +21,75 @@ export const selectVisualizeItemIdList = (state: RootState) =>
 export const selectVisualizeItemType = (itemId: number) => (state: RootState) =>
   selectVisualizeItems(state)[itemId].itemType
 
-export const selectVisualizeItemTypeIsDefaultSet =
+export const selectVisualizeItemTypeIsMultiPlot =
   (itemId: number) => (state: RootState) =>
     selectVisualizeItemType(itemId)(state) ===
     VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET
 
-export const selectDefaultSetImageItem =
+export const selectMultiPlotImageItem =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
-    if (isDefaultSetItem(item)) {
+    if (isMultiPlotItem(item)) {
       return item.imageItem
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
   }
 
-export const selectDefaultSetImageItemNodeId =
+export const selectMultiPlotImageItemNodeId =
   (itemId: number) => (state: RootState) =>
-    selectDefaultSetImageItem(itemId)(state).nodeId
+    selectMultiPlotImageItem(itemId)(state).nodeId
 
-export const selectDefaultSetImageItemFilePath =
+export const selectMultiPlotImageItemFilePath =
   (itemId: number) => (state: RootState) =>
-    selectDefaultSetImageItem(itemId)(state).filePath
+    selectMultiPlotImageItem(itemId)(state).filePath
 
-export const selectDefaultSetTimeSeriesItem =
+export const selectMultiPlotTimeSeriesItem =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
-    if (isDefaultSetItem(item)) {
+    if (isMultiPlotItem(item)) {
       return item.timeSeriesItem
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
   }
 
-export const selectDefaultSetRoiItem = (itemId: number) => (state: RootState) =>
-  selectDefaultSetImageItem(itemId)(state).roiItem
+export const selectMultiPlotRoiItem = (itemId: number) => (state: RootState) =>
+  selectMultiPlotImageItem(itemId)(state).roiItem
 
-export const selectDefaultSetRoiItemNodeId =
+export const selectMultiPlotRoiItemNodeId =
   (itemId: number) => (state: RootState) =>
-    selectDefaultSetRoiItem(itemId)(state)?.nodeId ?? null
+    selectMultiPlotRoiItem(itemId)(state)?.nodeId ?? null
 
-export const selectDefaultSetRoiItemFilePath =
+export const selectMultiPlotRoiItemFilePath =
   (itemId: number) => (state: RootState) =>
-    selectDefaultSetRoiItem(itemId)(state)?.filePath ?? null
+    selectMultiPlotRoiItem(itemId)(state)?.filePath ?? null
 
-export const selectDefaultSetTimeSeriesItemNodeId =
+export const selectMultiPlotTimeSeriesItemNodeId =
   (itemId: number) => (state: RootState) =>
-    selectDefaultSetTimeSeriesItem(itemId)(state).nodeId
+    selectMultiPlotTimeSeriesItem(itemId)(state).nodeId
 
-export const selectDefaultSetTimeSeriesItemFilePath =
+export const selectMultiPlotTimeSeriesItemFilePath =
   (itemId: number) => (state: RootState) =>
-    selectDefaultSetTimeSeriesItem(itemId)(state).filePath
+    selectMultiPlotTimeSeriesItem(itemId)(state).filePath
 
-export const selectDefaultSetHeatMapItem =
+export const selectMultiPlotHeatMapItem =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
-    if (isDefaultSetItem(item)) {
+    if (isMultiPlotItem(item)) {
       return item.heatMapItem
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
   }
 
-export const selectDefaultSetHeatMapItemNodeId =
+export const selectMultiPlotHeatMapItemNodeId =
   (itemId: number) => (state: RootState) =>
-    selectDefaultSetHeatMapItem(itemId)(state).nodeId
+    selectMultiPlotHeatMapItem(itemId)(state).nodeId
 
-export const selectDefaultSetHeatMapItemFilePath =
+export const selectMultiPlotHeatMapItemFilePath =
   (itemId: number) => (state: RootState) =>
-    selectDefaultSetHeatMapItem(itemId)(state).filePath
+    selectMultiPlotHeatMapItem(itemId)(state).filePath
 
 export const selectVisualizeDataType =
   (itemId: number) => (state: RootState) => {
@@ -117,7 +116,7 @@ export const selectVisualizeDataFilePath =
     const item = selectVisualizeItems(state)[itemId]
     if (isDisplayDataItem(item)) {
       return item.filePath
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.imageItem.filePath
     } else {
       throw new Error('invalid VisualaizeItemType')
@@ -128,7 +127,7 @@ export const selectRoiItemNodeId = (itemId: number) => (state: RootState) => {
   const item = selectVisualizeItems(state)[itemId]
   if (isImageItem(item)) {
     return item.roiItem?.nodeId ?? null
-  } else if (isDefaultSetItem(item)) {
+  } else if (isMultiPlotItem(item)) {
     return item.imageItem.roiItem?.nodeId ?? null
   } else {
     throw new Error('invalid VisualaizeItemType')
@@ -139,7 +138,7 @@ export const selectRoiItemFilePath = (itemId: number) => (state: RootState) => {
   const item = selectVisualizeItems(state)[itemId]
   if (isImageItem(item)) {
     return item.roiItem?.filePath ?? null
-  } else if (isDefaultSetItem(item)) {
+  } else if (isMultiPlotItem(item)) {
     return item.imageItem.roiItem?.filePath ?? null
   } else {
     throw new Error('invalid VisualaizeItemType')
@@ -151,7 +150,7 @@ export const selectImageItemShowticklabels =
     const item = selectVisualizeItems(state)[itemId]
     if (isImageItem(item)) {
       return item.showticklabels
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.imageItem.showticklabels
     } else {
       throw new Error('invalid VisualaizeItemType')
@@ -163,7 +162,7 @@ export const selectImageItemZsmooth =
     const item = selectVisualizeItems(state)[itemId]
     if (isImageItem(item)) {
       return item.zsmooth
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.imageItem.zsmooth
     } else {
       throw new Error('invalid VisualaizeItemType')
@@ -175,7 +174,7 @@ export const selectImageItemStartIndex =
     const item = selectVisualizeItems(state)[itemId]
     if (isImageItem(item)) {
       return item.startIndex
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.imageItem.startIndex
     } else {
       throw new Error('invalid VisualaizeItemType')
@@ -187,7 +186,7 @@ export const selectImageItemEndIndex =
     const item = selectVisualizeItems(state)[itemId]
     if (isImageItem(item)) {
       return item.endIndex
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.imageItem.endIndex
     } else {
       throw new Error('invalid VisualaizeItemType')
@@ -199,7 +198,7 @@ export const selectImageItemShowLine =
     const item = selectVisualizeItems(state)[itemId]
     if (isImageItem(item)) {
       return item.showline
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.imageItem.showline
     } else {
       throw new Error('invalid VisualaizeItemType')
@@ -211,7 +210,7 @@ export const selectImageItemShowGrid =
     const item = selectVisualizeItems(state)[itemId]
     if (isImageItem(item)) {
       return item.showgrid
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.imageItem.showgrid
     } else {
       throw new Error('invalid VisualaizeItemType')
@@ -223,7 +222,7 @@ export const selectImageItemShowScale =
     const item = selectVisualizeItems(state)[itemId]
     if (isImageItem(item)) {
       return item.showscale
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.imageItem.showscale
     } else {
       throw new Error('invalid VisualaizeItemType')
@@ -234,7 +233,7 @@ export const selectImageItemColors = (itemId: number) => (state: RootState) => {
   const item = selectVisualizeItems(state)[itemId]
   if (isImageItem(item)) {
     return item.colors
-  } else if (isDefaultSetItem(item)) {
+  } else if (isMultiPlotItem(item)) {
     return item.imageItem.colors
   } else {
     throw new Error('invalid VisualaizeItemType')
@@ -246,7 +245,7 @@ export const selectImageItemActiveIndex =
     const item = selectVisualizeItems(state)[itemId]
     if (isImageItem(item)) {
       return item.activeIndex
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.imageItem.activeIndex
     } else {
       throw new Error('invalid VisualaizeItemType')
@@ -258,7 +257,7 @@ export const selectTimeSeriesItemOffset =
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.offset
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.timeSeriesItem.offset
     } else {
       throw new Error('invalid VisualaizeItemType')
@@ -270,7 +269,7 @@ export const selectTimeSeriesItemSpan =
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.span
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.timeSeriesItem.span
     } else {
       throw new Error('invalid VisualaizeItemType')
@@ -282,7 +281,7 @@ export const selectTimeSeriesItemShowGrid =
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.showgrid
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.timeSeriesItem.showgrid
     } else {
       throw new Error('invalid VisualaizeItemType')
@@ -294,7 +293,7 @@ export const selectTimeSeriesItemShowLine =
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.showline
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.timeSeriesItem.showline
     } else {
       throw new Error('invalid VisualaizeItemType')
@@ -306,7 +305,7 @@ export const selectTimeSeriesItemShowTickLabels =
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.showticklabels
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.timeSeriesItem.showticklabels
     } else {
       throw new Error('invalid VisualaizeItemType')
@@ -318,7 +317,7 @@ export const selectTimeSeriesItemZeroLine =
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.zeroline
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.timeSeriesItem.zeroline
     } else {
       throw new Error('invalid VisualaizeItemType')
@@ -330,36 +329,19 @@ export const selectTimeSeriesItemXrange =
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.xrange
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.timeSeriesItem.xrange
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
   }
 
-// export const selectTimeSeriesItemColorScale =
-//   (itemId: number) => (state: RootState) => {
-//     const item = selectVisualizeItems(state)[itemId]
-//     if (isTimeSeriesItem(item)) {
-//       return null
-//     } else if (isDefaultSetItem(item)) {
-//       const roiItem = item.imageItem.roiItem
-//       if (roiItem !== null) {
-//         return roiItem.colors
-//       } else {
-//         return null
-//       }
-//     } else {
-//       throw new Error('invalid VisualaizeItemType')
-//     }
-//   }
-
 export const selectTimeSeriesItemDisplayNumbers =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.displayNumbers
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.timeSeriesItem.displayNumbers
     } else {
       throw new Error('invalid VisualaizeItemType')
@@ -371,7 +353,7 @@ export const selectHeatMapItemShowScale =
     const item = selectVisualizeItems(state)[itemId]
     if (isHeatMapItem(item)) {
       return item.showscale
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.heatMapItem.showscale
     } else {
       throw new Error('invalid VisualaizeItemType')
@@ -383,25 +365,12 @@ export const selectHeatMapItemColors =
     const item = selectVisualizeItems(state)[itemId]
     if (isHeatMapItem(item)) {
       return item.colors
-    } else if (isDefaultSetItem(item)) {
+    } else if (isMultiPlotItem(item)) {
       return item.heatMapItem.colors
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
   }
-
-// export const selectRoiItemColors = (itemId: number) => (state: RootState) => {
-//   const item = selectVisualizeItems(state)[itemId]
-//   if (isRoiItem(item)) {
-//     return item.colors
-//   } else if (isDefaultSetItem(item)) {
-//     return item.imageItem.roiItem?.colors ?? []
-//   } else if (isImageItem(item)) {
-//     return item.roiItem?.colors ?? []
-//   } else {
-//     throw new Error('invalid VisualaizeItemType')
-//   }
-// }
 
 export const selectCsvItemTranspose =
   (itemId: number) => (state: RootState) => {
@@ -452,22 +421,22 @@ export const selectScatterItemYIndex =
     }
   }
 
-export const selectDefaultSetTimeSeriesItemFilepath =
+export const selectMultiPlotTimeSeriesItemFilepath =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
-    if (isDefaultSetItem(item)) {
-      const targetItem = selectDefaultSetTimeSeriesItem(itemId)(state)
+    if (isMultiPlotItem(item)) {
+      const targetItem = selectMultiPlotTimeSeriesItem(itemId)(state)
       const timeSeriesFilePath = targetItem.filePath
       return timeSeriesFilePath
     }
     return null
   }
 
-export const selectDefaultSetTimeSeriesItemDisplayNumbers =
+export const selectMultiPlotTimeSeriesItemDisplayNumbers =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
-    if (isDefaultSetItem(item)) {
-      const targetItem = selectDefaultSetTimeSeriesItem(itemId)(state)
+    if (isMultiPlotItem(item)) {
+      const targetItem = selectMultiPlotTimeSeriesItem(itemId)(state)
       const displayNumbers = targetItem.displayNumbers
       return displayNumbers
     }

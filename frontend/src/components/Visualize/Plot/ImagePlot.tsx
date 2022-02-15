@@ -39,8 +39,8 @@ import {
   selectImageItemStartIndex,
   selectImageItemEndIndex,
   selectRoiItemFilePath,
-  selectDefaultSetTimeSeriesItemFilepath,
-  selectDefaultSetTimeSeriesItemDisplayNumbers,
+  selectMultiPlotTimeSeriesItemFilepath,
+  selectMultiPlotTimeSeriesItemDisplayNumbers,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
   decrementImageActiveIndex,
@@ -281,10 +281,10 @@ const ImagePlotChart = React.memo<{
 
   const dispatch = useDispatch()
   const timeSeriesFilePath = useSelector(
-    selectDefaultSetTimeSeriesItemFilepath(itemId),
+    selectMultiPlotTimeSeriesItemFilepath(itemId),
   )
   const displayNumbers = useSelector(
-    selectDefaultSetTimeSeriesItemDisplayNumbers(itemId),
+    selectMultiPlotTimeSeriesItemDisplayNumbers(itemId),
   )
 
   const onClick = (event: any) => {

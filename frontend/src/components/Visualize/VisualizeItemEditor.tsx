@@ -11,7 +11,7 @@ import {
   selectVisualizeDataNodeId,
   selectVisualizeDataType,
   selectVisualizeItemType,
-  selectVisualizeItemTypeIsDefaultSet,
+  selectVisualizeItemTypeIsMultiPlot,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { VISUALIZE_ITEM_TYPE_SET } from 'store/slice/VisualizeItem/VisualizeItemType'
 import {
@@ -21,7 +21,7 @@ import {
 import {
   resetImageActiveIndex,
   setDisplayDataPath,
-  toggleItemTypeDefaultSet,
+  toggleItemTypeMultiPlot,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { ImageItemEditor } from './Editor/ImageItemEditor'
 import { CsvItemEditor } from './Editor/CsvItemEditor'
@@ -57,9 +57,9 @@ export const SelectedItemIdContext = React.createContext<number>(NaN)
 const ItemTypeSelect: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
-  const isDefualtSet = useSelector(selectVisualizeItemTypeIsDefaultSet(itemId))
+  const isDefualtSet = useSelector(selectVisualizeItemTypeIsMultiPlot(itemId))
   const onChageToggle = () => {
-    dispatch(toggleItemTypeDefaultSet(itemId))
+    dispatch(toggleItemTypeMultiPlot(itemId))
   }
   return (
     <FormControl style={{ minWidth: 120, marginBottom: 12 }}>
@@ -76,15 +76,15 @@ const Editor: React.FC = () => {
   const itemType = useSelector(selectVisualizeItemType(itemId))
   switch (itemType) {
     case VISUALIZE_ITEM_TYPE_SET.DEFAULT_SET:
-      return <DefaultSetItemEditor />
+      return <MultiPlotItemEditor />
     case VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA:
       return <DisplayDataItemEditor />
   }
 }
 
-const DefaultSetItemEditor: React.FC = () => {
+const MultiPlotItemEditor: React.FC = () => {
   // const itemId = React.useContext(SelectedItemIdContext)
-  return <div>DefaultSetItemEditor(not imple)</div>
+  return <div>MultiPlotItemEditor(not imple)</div>
 }
 
 const DisplayDataItemEditor: React.FC = () => {
