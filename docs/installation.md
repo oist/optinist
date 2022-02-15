@@ -111,6 +111,13 @@ It opens correctly!
   - Resources -> WSL INTEGRATION -> `Enables integration with additional distros:` and `Ubuntu 20.04`
   - Apply and Restart
 
+### Install docker-compose
+```
+wget https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64
+mv docker-compose-linux-x86_64 docker-compose
+sudo mv docker-compose /usr/local/bin/docker-compose
+```
+
 ### docker-compose build
 - For avoiding docker commands with sudo, you need set $USER to docker user group.
 ```
@@ -147,13 +154,6 @@ $ docker-compose build frontend
  => => naming to docker.io/library/optinist_frontend                           0.0s
 Use ‘docker scan’ to run Snyk tests against images to find vulnerabilities and learn how to fix them
 $
-```
-
-If you haven't installed docker-compose, you need to in stall docker-compose.
-```
-wget https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64
-mv docker-compose-linux-x86_64 docker-compose
-sudo mv docker-compose /usr/local/bin/docker-compose
 ```
 
 ### docker-compose up frontend
@@ -382,12 +382,7 @@ It opens correctly!
 ## For Mac Users
 ### Install Docker desktop
 - Install [Docker Desktop](https://www.docker.com/products/docker-desktop) for Mac.
-### Install docker-compose
-```
-wget https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-darwin-x86_64
-mv docker-compose-darwin-x86_64 docker-compose
-sudo mv docker-compose /usr/local/bin/docker-compose
-```
+
 ### docker-compose build frontend
 ```
 docker-compose build frontend
@@ -419,6 +414,14 @@ $ docker-compose build frontend
 Use ‘docker scan’ to run Snyk tests against images to find vulnerabilities and learn how to fix them
 $
 ```
+
+If you haven't installed docker-compose, you need to in stall docker-compose.
+```
+wget https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64
+mv docker-compose-linux-x86_64 docker-compose
+sudo mv docker-compose /usr/local/bin/docker-compose
+```
+
 ### docker-compose up frontend
 ```
 docker-compose up frontend
