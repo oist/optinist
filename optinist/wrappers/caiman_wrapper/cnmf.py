@@ -65,6 +65,9 @@ def caiman_cnmf(
     Cn[np.isnan(Cn)] = 0
     cnm.estimates.plot_contours(img=Cn)
 
+    del mmap_images
+    gc.collect()
+
     thr = 0.9
     thr_method = 'nrg'
     swap_dim = False
