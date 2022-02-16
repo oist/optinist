@@ -576,7 +576,7 @@ pip install -e .
 cd ..
 ```
 
-If error occuered in installing ``` requirements.txt ```, sometimes it solved in pip upgrade command.
+If error occuered in installing ``` requirements.txt ```, pip upgrade command below may solve the error.
 ```
 pip install --upgrade pip
 ```
