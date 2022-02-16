@@ -614,5 +614,5 @@ Done!
 
 
 ### FAQ
-If you get warning below, we recommend `rm -rf /Users/usename/opt/anaconda3/envs/optinist ` and recreate conda environment.
+If you get the warning message shown below, we recommend `rm -rf /Users/usename/opt/anaconda3/envs/optinist ` and recreate conda environment.
 > WARNING: A directory already exists at the target location '/Users/usename/opt/anaconda3/envs/optinist' but it is not a conda environment.
