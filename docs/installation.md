@@ -415,7 +415,7 @@ Use ‘docker scan’ to run Snyk tests against images to find vulnerabilities a
 $
 ```
 
-If you haven't installed docker-compose, you need to in stall docker-compose.
+If you haven't installed docker-compose, you need to install docker-compose.
 ```
 wget https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64
 mv docker-compose-linux-x86_64 docker-compose
