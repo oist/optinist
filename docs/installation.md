@@ -585,7 +585,7 @@ pip install --upgrade pip
 **CAUTION for M1 Mac User**
 We use tensorflow in caiman code. We know that M1 mac doesn't install tensorflow easily, so if there is a problem, skip install caiman. (Release in progress…)
 
-If you use m1 mac, skip this.
+If you are m1 mac user, skip this.
 
 ```bash
 # for CaImAn
