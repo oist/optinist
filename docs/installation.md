@@ -218,7 +218,7 @@ sudo apt update
 
 sudo apt install docker-ce
 ```
-- For avoiding docker commands with sudo, you need set $USER to docker user group.
+- To avoid using docker commands with sudo, you need to set $USER to docker user group.
 ```
 sudo usermod -aG docker $USER
 ```
