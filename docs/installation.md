@@ -417,8 +417,8 @@ $
 
 If you haven't installed docker-compose, you need to install docker-compose.
 ```
-wget https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-linux-x86_64
-mv docker-compose-linux-x86_64 docker-compose
+wget https://github.com/docker/compose/releases/download/v2.2.3/docker-compose-darwin-x86_64
+mv docker-compose-darwin-x86_64 docker-compose
 sudo mv docker-compose /usr/local/bin/docker-compose
 ```
 
@@ -570,11 +570,6 @@ conda install -n base -c conda-forge mamba
 ```bash
 cd backend
 pip install -r requirements.txt
-# for CaImAn
-git clone https://github.com/flatironinstitute/CaImAn -b v1.9.7
-pip install cython opencv-python matplotlib scikit-image==0.18.0 scikit-learn ipyparallel holoviews watershed tensorflow
-cd CaImAn
-pip install -e .
 cd ..
 ```
 
