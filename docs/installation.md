@@ -560,7 +560,7 @@ conda create -n optinist python=3.8
 conda activate optinist
 ```
 ### Install mamba
-We use snakemake library, it needs mamba.
+We use snakemake library, it requires mamba.
 ```
 conda install -n base -c conda-forge mamba
 ```
