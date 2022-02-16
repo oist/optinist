@@ -462,7 +462,7 @@ conda create -n optinist python=3.8
 conda activate optinist
 ```
 ### Install mamba
-We use snakemake library, it requires mamba.
+We use snakemake library, and it requires mamba.
 On the Anaconda PowerShell Prompt(anaconda3),
 ```
 conda install -n base -c conda-forge mamba
@@ -517,7 +517,7 @@ conda create -n optinist python=3.8
 conda activate optinist
 ```
 ### Install mamba
-We use snakemake library, it requires mamba.
+We use snakemake library, and it requires mamba.
 ```
 conda install -n base -c conda-forge mamba
 ```
@@ -562,7 +562,7 @@ conda create -n optinist python=3.8
 conda activate optinist
 ```
 ### Install mamba
-We use snakemake library, it requires mamba.
+We use snakemake library, and it requires mamba.
 ```
 conda install -n base -c conda-forge mamba
 ```
