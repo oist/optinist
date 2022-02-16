@@ -119,7 +119,7 @@ sudo mv docker-compose /usr/local/bin/docker-compose
 ```
 
 ### docker-compose build
-- For avoiding docker commands with sudo, you need set $USER to docker user group.
+- To avoid using docker commands with sudo, you need to set $USER to docker user group.
 ```
 sudo usermod -aG docker $USER
 ```
