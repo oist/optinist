@@ -501,7 +501,7 @@ It opens correctly!
 
 <br />
 
-# 3. make backend environment
+# 3. Make backend environment
 
 ## For Windows(PowerShell) Users
 ### Install Visutal Studio Build Tools
