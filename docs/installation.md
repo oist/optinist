@@ -26,7 +26,7 @@ Table of Contents
       * [docker-compose build frontend](#docker-compose-build-frontend)
       * [docker-compose up frontend](#docker-compose-up-frontend-2)
       * [Launch browser.  <a href="http://localhost:3000" rel="nofollow">http://localhost:3000</a>](#launch-browser--httplocalhost3000-3)
-* [3. make backend environment](#3-make-backend-environment)
+* [3. ake backend environment](#3-make-backend-environment)
    * [For Windows(PowerShell) Users](#for-windowspowershell-users-1)
       * [Install Visutal Studio Build Tools](#install-visutal-studio-build-tools)
       * [Install Anaconda](#install-anaconda)
