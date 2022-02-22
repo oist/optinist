@@ -26,4 +26,6 @@ export interface CsvInputNode extends InputNodeBaseType<'csv'> {}
 
 export interface ImageInputNode extends InputNodeBaseType<'image'> {}
 
-export interface HDF5InputNode extends InputNodeBaseType<'hdf5'> {}
+export interface HDF5InputNode extends InputNodeBaseType<'hdf5'> {
+  hdf5Path?: string
+}

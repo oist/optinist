@@ -1,4 +1,5 @@
 import { RootState } from 'store/store'
+import { isHDF5InputNode } from './InputNodeUtils'
 
 export const selectInputNode = (state: RootState) => state.inputNode
 
@@ -18,3 +19,13 @@ export const selectFilePathIsUndefined = (state: RootState) =>
   Object.values(state.inputNode).filter(
     (inputNode) => inputNode.selectedFilePath === undefined,
   ).length > 0
+
+export const selectInputNodeHDF5Path =
+  (nodeId: string) => (state: RootState) => {
+    const item = selectInputNodeById(nodeId)(state)
+    if (isHDF5InputNode(item)) {
+      return item.hdf5Path
+    } else {
+      throw 'It is not HDF5'
+    }
+  }
