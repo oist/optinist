@@ -6,6 +6,7 @@ export interface HDF5DirDTO {
   isDir: true
   name: string
   nodes: HDF5TreeDTO[]
+  path: string
 }
 
 export interface HDF5FileDTO {
@@ -13,6 +14,7 @@ export interface HDF5FileDTO {
   name: string
   shape: [number]
   path: string
+  nbytes: string
 }
 
 export interface HDF5Tree {

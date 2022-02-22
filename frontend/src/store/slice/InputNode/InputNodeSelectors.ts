@@ -26,6 +26,6 @@ export const selectInputNodeHDF5Path =
     if (isHDF5InputNode(item)) {
       return item.hdf5Path
     } else {
-      throw 'It is not HDF5'
+      return null
     }
   }

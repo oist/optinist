@@ -4,7 +4,10 @@ import {
   selectAlgorithmFunctionPath,
   selectAlgorithmParams,
 } from '../AlgorithmNode/AlgorithmNodeSelectors'
-import { selectInputNodeSelectedFilePath } from '../InputNode/InputNodeSelectors'
+import {
+  selectInputNodeHDF5Path,
+  selectInputNodeSelectedFilePath,
+} from '../InputNode/InputNodeSelectors'
 import { NODE_TYPE_SET } from './FlowElementType'
 import { isNodeData } from './FlowElementUtils'
 
@@ -45,11 +48,13 @@ export const selectElementListForRun = (state: RootState) => {
         }
       } else if (element.data.type === NODE_TYPE_SET.INPUT) {
         const filePath = selectInputNodeSelectedFilePath(element.id)(state)
+        const hdf5Path = selectInputNodeHDF5Path(element.id)(state)
         return {
           ...element,
           data: {
             ...element.data,
             path: filePath,
+            hdf5Path: hdf5Path,
           },
         }
       }

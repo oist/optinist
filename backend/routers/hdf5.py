@@ -12,12 +12,15 @@ async def get_files(file_path: str):
         fullname = node.name
         if isinstance(node, h5py.Dataset):
             path_list = name.split('/')
-            path = name
             if len(node.shape) != 0:
-                get_dir_tree(ds_list, path_list, node, path)
+                get_dir_tree(ds_list, path_list, node, "")
 
     def get_dir_tree(nodes, path_list, node, path):
         name = path_list[0]
+        if path == "":
+            path = name
+        else:
+            path += "/" + name
         is_exists = False
         # 既にkeyがある
         for i, value in enumerate(nodes):
@@ -31,6 +34,7 @@ async def get_files(file_path: str):
                 nodes.append({
                     "isDir": True,
                     "name": name,
+                    "path": path,
                     "nodes": [],
                 })
                 get_dir_tree(nodes[-1]["nodes"], path_list[1:], node, path)
@@ -40,6 +44,7 @@ async def get_files(file_path: str):
                     "name": name,
                     "shape": node.shape,
                     "path": path,
+                    "nbytes": f"{int(node.nbytes / (1000**2))} M",
                 })
 
     with h5py.File(file_path, "r") as f:

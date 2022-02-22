@@ -201,7 +201,7 @@ const TreeNode = React.memo<{
     return (
       <TreeItem
         icon={<FolderIcon htmlColor="skyblue" />}
-        nodeId={node.name}
+        nodeId={node.path}
         label={node.name}
       >
         {node.nodes.map((childNode, i) => (
@@ -214,8 +214,8 @@ const TreeNode = React.memo<{
     return (
       <TreeItem
         icon={<InsertDriveFileOutlinedIcon fontSize="small" />}
-        nodeId={node.name}
-        label={node.name + `   (shape=${node.shape})`}
+        nodeId={node.path}
+        label={node.name + `   (shape=${node.shape}, nbytes=${node.nbytes})`}
         onClick={() => onClickFile(node.path)}
       />
     )

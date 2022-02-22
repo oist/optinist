@@ -53,8 +53,6 @@ export const displayDataSlice = createSlice({
           delete state.scatter[filePath]
         } else if (dataType === DATA_TYPE_SET.BAR) {
           delete state.bar[filePath]
-        } else {
-          throw new Error('invalid item Type')
         }
       }
     },
