@@ -90,7 +90,6 @@ class CsvData(BaseData):
             if params["setColumn"] is not None:
                 header = params["setColumn"]
                 self.data = self.data[header:]
-
         else:
             self.data = data
 
