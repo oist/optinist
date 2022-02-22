@@ -12,6 +12,7 @@ export function convertToTreeNodeType(dto: HDF5TreeDTO[]): HDF5TreeDTO[] {
           name: node.name,
           isDir: false,
           shape: node.shape,
+          path: node.path,
         },
   )
 }

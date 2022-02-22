@@ -16,8 +16,6 @@ import LinearProgress from '@mui/material/LinearProgress'
 import Button from '@mui/material/Button'
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
 
-// import CloseOutlinedIcon from '@material-ui/icons/CloseOutlined'
-
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import {
   selectInputNodeDefined,
@@ -37,6 +35,7 @@ import {
 } from 'store/slice/HDF5/HDF5Selectors'
 import { getHDF5Tree } from 'store/slice/HDF5/HDF5Action'
 import { HDF5TreeDTO } from 'store/slice/HDF5/HDF5Type'
+import { Typography } from '@mui/material'
 
 const sourceHandleStyle: CSSProperties = {
   width: 8,
@@ -97,7 +96,7 @@ const HDF5FileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
         fileType={FILE_TYPE_SET.HDF5}
         filePath={filePath ? filePath.split('/').reverse()[0] : ''}
       />
-      <ItemSelect />
+      {filePath !== undefined ? <ItemSelect nodeId={nodeId} /> : ''}
       <Handle
         type="source"
         position={Position.Right}
@@ -108,21 +107,25 @@ const HDF5FileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   )
 })
 
-const ItemSelect = React.memo(() => {
+const ItemSelect = React.memo<{
+  nodeId: string
+}>(({ nodeId }) => {
   const [open, setOpen] = React.useState(false)
 
-  const onSelectFile = (selectedPath: string) => {
-    // onChangeFilePath(selectedPath)
-  }
+  const [structureFileName, setStructureFileName] = React.useState('')
 
   return (
     <>
-      <Button variant="outlined" onClick={() => setOpen(true)}>
+      <Button variant="outlined" size="small" onClick={() => setOpen(true)}>
         {'Structure'}
       </Button>
+      <Typography className="selectStructure" variant="caption">
+        {!!structureFileName ? structureFileName : 'No structure is selected.'}
+      </Typography>
+
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
         <DialogTitle>{'Select File'}</DialogTitle>
-        <Structure />
+        <Structure nodeId={nodeId} onClickFile={setStructureFileName} />
         <DialogActions>
           <Button onClick={() => setOpen(false)} variant="outlined">
             cancel
@@ -141,7 +144,10 @@ const ItemSelect = React.memo(() => {
   )
 })
 
-const Structure = React.memo(() => {
+const Structure = React.memo<{
+  nodeId: string
+  onClickFile: (path: string) => void
+}>(({ nodeId, onClickFile }) => {
   const theme = useTheme()
   return (
     <DialogContent dividers>
@@ -155,21 +161,23 @@ const Structure = React.memo(() => {
           borderColor: theme.palette.divider,
         }}
       >
-        <FileTreeView />
+        <FileTreeView nodeId={nodeId} onClickFile={onClickFile} />
       </div>
     </DialogContent>
   )
 })
 
-const FileTreeView = React.memo<{}>(() => {
-  const [tree, isLoading] = useHDF5Tree()
-  console.log(tree)
+const FileTreeView = React.memo<{
+  nodeId: string
+  onClickFile: (path: string) => void
+}>(({ nodeId, onClickFile }) => {
+  const [tree, isLoading] = useHDF5Tree(nodeId)
   return (
     <div>
       {isLoading && <LinearProgress />}
       <TreeView>
         {tree?.map((node) => (
-          <TreeNode node={node} />
+          <TreeNode node={node} onClickFile={onClickFile} />
         ))}
       </TreeView>
     </div>
@@ -178,8 +186,8 @@ const FileTreeView = React.memo<{}>(() => {
 
 const TreeNode = React.memo<{
   node: HDF5TreeDTO
-}>(({ node }) => {
-  console.log(node)
+  onClickFile: (path: string) => void
+}>(({ node, onClickFile }) => {
   if (node.isDir) {
     // Directory
     return (
@@ -189,7 +197,7 @@ const TreeNode = React.memo<{
         label={node.name}
       >
         {node.nodes.map((childNode, i) => (
-          <TreeNode node={childNode} key={i} />
+          <TreeNode node={childNode} key={i} onClickFile={onClickFile} />
         ))}
       </TreeItem>
     )
@@ -199,20 +207,22 @@ const TreeNode = React.memo<{
       <TreeItem
         icon={<InsertDriveFileOutlinedIcon fontSize="small" />}
         nodeId={node.name}
-        label={node.name + `, (shape=${node.shape})`}
+        label={node.name + `   (shape=${node.shape})`}
+        onClick={() => onClickFile(node.path)}
       />
     )
   }
 })
 
-function useHDF5Tree(): [HDF5TreeDTO[] | undefined, boolean] {
+function useHDF5Tree(nodeId: string): [HDF5TreeDTO[] | undefined, boolean] {
   const dispatch = useDispatch()
   const tree = useSelector(selectHDF5Nodes())
   const isLatest = useSelector(selectHDF5IsLatest())
   const isLoading = useSelector(selectHDF5IsLoading())
+  const filePath = useSelector(selectInputNodeSelectedFilePath(nodeId))
   React.useEffect(() => {
-    if (!isLatest && !isLoading) {
-      dispatch(getHDF5Tree())
+    if (!isLatest && !isLoading && filePath) {
+      dispatch(getHDF5Tree({ path: filePath }))
     }
   }, [isLatest, isLoading, dispatch])
   return [tree, isLoading]

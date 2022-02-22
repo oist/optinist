@@ -12,6 +12,7 @@ export interface HDF5FileDTO {
   isDir: false
   name: string
   shape: [number]
+  path: string
 }
 
 export interface HDF5Tree {

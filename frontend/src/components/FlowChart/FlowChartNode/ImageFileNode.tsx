@@ -85,10 +85,6 @@ const ImageFileNodeImple = React.memo<NodeProps>(
         >
           <CloseOutlinedIcon />
         </IconButton>
-        {/* <ImageFileSelect
-          onChangeFilePath={onChangeFilePath}
-          filePath={filePath ?? ''}
-        /> */}
         <FileSelect
           onChangeFilePath={onChangeFilePath}
           fileType={FILE_TYPE_SET.IMAGE}
