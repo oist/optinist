@@ -15,7 +15,7 @@ from cui_api.utils import join_file_path
 
 router = APIRouter()
 
-ACCEPT_FILE_TYPES = ["tif", "tiff", "TIF", "TIFF", "json", "csv", "nwb"]
+ACCEPT_FILE_TYPES = ["tif", "tiff", "TIF", "TIFF", "json", "csv", "hdf5", "nwb"]
 
 
 class TreeNode(TypedDict):
@@ -56,7 +56,7 @@ def get_dir_tree(dir_path: str, file_types: List[str]) -> List[TreeNode]:
 
 
 @router.get("/files")
-async  def get_files(file_type: Optional[str] = None):
+async def get_files(file_type: Optional[str] = None):
     tree = []
     if(file_type is None):
         tree = get_dir_tree(BASE_DIR, ACCEPT_FILE_TYPES)
@@ -65,6 +65,8 @@ async  def get_files(file_type: Optional[str] = None):
             tree = get_dir_tree(BASE_DIR, ["tif", 'TIF', 'tiff', 'TIFF'])
         elif file_type == "csv":
             tree = get_dir_tree(BASE_DIR, ["csv"])
+        elif file_type == "hdf5":
+            tree = get_dir_tree(BASE_DIR, ["hdf5", "nwb"])
         else:
             # TODO 他のファイル種別の仕様が分かり次第追加
             pass

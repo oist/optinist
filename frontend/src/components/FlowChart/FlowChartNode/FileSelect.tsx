@@ -150,6 +150,8 @@ function getFileInputAccept(fileType: FILE_TREE_TYPE | undefined) {
       return '.tif'
     case FILE_TREE_TYPE_SET.CSV:
       return '.csv'
+    case FILE_TREE_TYPE_SET.HDF5:
+      return '.hdf5,.nwb'
     default:
       return undefined
   }

@@ -1,7 +1,10 @@
 import React from 'react'
 
 import { useSelector } from 'react-redux'
-import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
+import {
+  DATA_TYPE,
+  DATA_TYPE_SET,
+} from 'store/slice/DisplayData/DisplayDataType'
 import {
   selectVisualizeDataFilePath,
   selectVisualizeDataNodeId,
@@ -22,35 +25,38 @@ export const DisplayDataItem = React.memo<{
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
   const nodeId = useSelector(selectVisualizeDataNodeId(itemId))
   const dataType = useSelector(selectVisualizeDataType(itemId))
-  const Plot = () => {
-    switch (dataType) {
-      case DATA_TYPE_SET.CSV:
-        return <CsvPlot />
-      case DATA_TYPE_SET.TIME_SERIES:
-        return <TimeSeriesPlot />
-      case DATA_TYPE_SET.HEAT_MAP:
-        return <HeatMapPlot />
-      case DATA_TYPE_SET.IMAGE:
-        return <ImagePlot />
-      case DATA_TYPE_SET.ROI:
-        return <RoiPlot />
-      case DATA_TYPE_SET.SCATTER:
-        return <ScatterPlot />
-      case DATA_TYPE_SET.BAR:
-        return <BarPlot />
-      default:
-        return null
-    }
-  }
   if (filePath != null && dataType != null) {
     return (
       <DisplayDataContext.Provider
         value={{ nodeId, filePath, dataType, itemId }}
       >
-        <Plot />
+        <DisplayPlot dataType={dataType} />
       </DisplayDataContext.Provider>
     )
   } else {
     return <div>Please select item correctly.</div>
+  }
+})
+
+const DisplayPlot = React.memo<{
+  dataType: DATA_TYPE
+}>(({ dataType }) => {
+  switch (dataType) {
+    case DATA_TYPE_SET.CSV:
+      return <CsvPlot />
+    case DATA_TYPE_SET.TIME_SERIES:
+      return <TimeSeriesPlot />
+    case DATA_TYPE_SET.HEAT_MAP:
+      return <HeatMapPlot />
+    case DATA_TYPE_SET.IMAGE:
+      return <ImagePlot />
+    case DATA_TYPE_SET.ROI:
+      return <RoiPlot />
+    case DATA_TYPE_SET.SCATTER:
+      return <ScatterPlot />
+    case DATA_TYPE_SET.BAR:
+      return <BarPlot />
+    default:
+      return null
   }
 })

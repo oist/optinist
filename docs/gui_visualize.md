@@ -56,8 +56,8 @@ Table plot displays csv data in table.
 <img width="500px" src="https://github.com/oist/optinist/blob/develop/docs/images/visualize/table_plot.png" alt="TablePlot" />
 </p>
 
-## Default Plot
-The default plot compares images, timeseries and heatmap output.  
+## Multi Plot
+The multi plot compares images, timeseries and heatmap output.  
 ("Synthronize cell number" and "customize parameter" are currently under development.)
 <p align="center">
 <img width="500px" src="https://github.com/oist/optinist/blob/develop/docs/images/visualize/default_plot.png" alt="DefaultPlot" />

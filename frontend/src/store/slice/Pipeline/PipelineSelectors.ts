@@ -21,6 +21,7 @@ import { selectNwbParams } from '../NWB/NWBSelectors'
 import { selectSnakemakeParams } from '../Snakemake/SnakemakeSelectors'
 import {
   NodeResult,
+  NodeResultPending,
   NodeResultSuccess,
   RUN_STATUS,
   StartedPipeline,
@@ -117,6 +118,25 @@ export const selectRunResultPendingList =
     const pipeline = selectStartedPipeline(uid)(state)
     return Object.values(pipeline.runResult).filter(isNodeResultPending)
   }
+
+export const selectRunResultPendingNodeIdList =
+  (uid: string) => (state: RootState) => {
+    const pipeline = selectStartedPipeline(uid)(state)
+    return Object.entries(pipeline.runResult)
+      .map(([nodeId, nodeResult]) => ({ nodeId, nodeResult }))
+      .filter(isNodeResultPendingAndNodeId)
+      .map(({ nodeId }) => nodeId)
+  }
+
+function isNodeResultPendingAndNodeId(arg: {
+  nodeId: string
+  nodeResult: NodeResult
+}): arg is {
+  nodeId: string
+  nodeResult: NodeResultPending
+} {
+  return isNodeResultPending(arg.nodeResult)
+}
 
 export const selectPipelineStatus = (uid: string) => (state: RootState) => {
   const pipeline = selectStartedPipeline(uid)(state)

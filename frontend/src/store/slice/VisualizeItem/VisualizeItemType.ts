@@ -7,7 +7,7 @@ export type VisualaizeItem = {
   }
 }
 
-export type VisualaizeItemType = DefaultSetItem | DisplayDataItem
+export type VisualaizeItemType = MultiPlotItem | DisplayDataItem
 
 export interface ItemBaseType<T extends VISUALIZE_ITEM_TYPE> {
   itemType: T
@@ -19,7 +19,7 @@ export type ColorType = {
 }
 
 export const VISUALIZE_ITEM_TYPE_SET = {
-  DEFAULT_SET: 'defaultSet',
+  MULTI_PLOT: 'MultiPlot',
   DISPLAY_DATA: 'displayData',
 } as const
 
@@ -34,6 +34,7 @@ export type DisplayDataItem =
   | RoiItem
   | ScatterItem
   | BarItem
+  | HDF5Item
 
 export interface DisplayDataItemBaseType extends ItemBaseType<'displayData'> {
   filePath: string | null
@@ -41,7 +42,7 @@ export interface DisplayDataItemBaseType extends ItemBaseType<'displayData'> {
   dataType: DATA_TYPE | null
 }
 
-export interface DefaultSetItem extends ItemBaseType<'defaultSet'> {
+export interface MultiPlotItem extends ItemBaseType<'MultiPlot'> {
   imageItem: ImageItem
   timeSeriesItem: TimeSeriesItem
   heatMapItem: HeatMapItem
@@ -75,6 +76,7 @@ export interface TimeSeriesItem extends DisplayDataItemBaseType {
     right: number | undefined
   }
   maxIndex: number
+  displayNumbers: number[]
 }
 
 export interface HeatMapItem extends DisplayDataItemBaseType {
@@ -90,7 +92,7 @@ export interface CsvItem extends DisplayDataItemBaseType {
 }
 export interface RoiItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.ROI
-  colors: ColorType[]
+  // colors: ColorType[]
 }
 
 export interface ScatterItem extends DisplayDataItemBaseType {
@@ -101,4 +103,8 @@ export interface ScatterItem extends DisplayDataItemBaseType {
 
 export interface BarItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.BAR
+}
+
+export interface HDF5Item extends DisplayDataItemBaseType {
+  dataType: typeof DATA_TYPE_SET.HDF5
 }

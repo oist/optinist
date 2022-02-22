@@ -13,7 +13,7 @@ import {
   InputNode,
   INPUT_NODE_SLICE_NAME,
 } from './InputNodeType'
-import { isCsvInputNode } from './InputNodeUtils'
+import { isCsvInputNode, isHDF5InputNode } from './InputNodeUtils'
 
 const initialState: InputNode = {
   [INITIAL_IMAGE_ELEMENT_ID]: {
@@ -59,6 +59,19 @@ export const inputNodeSlice = createSlice({
         inputNode.param = param
       }
     },
+    setInputNodeHDF5Path(
+      state,
+      action: PayloadAction<{
+        nodeId: string
+        path: string
+      }>,
+    ) {
+      const { nodeId, path } = action.payload
+      const item = state[nodeId]
+      if (isHDF5InputNode(item)) {
+        item.hdf5Path = path
+      }
+    },
   },
   extraReducers: (builder) =>
     builder
@@ -78,6 +91,12 @@ export const inputNodeSlice = createSlice({
               }
               break
             case FILE_TYPE_SET.IMAGE:
+              state[node.id] = {
+                fileType,
+                param: {},
+              }
+              break
+            case FILE_TYPE_SET.HDF5:
               state[node.id] = {
                 fileType,
                 param: {},
@@ -106,6 +125,7 @@ export const {
   setInputNodeFilePath,
   setInputImageNodeFile,
   setCsvInputNodeParam,
+  setInputNodeHDF5Path,
 } = inputNodeSlice.actions
 
 export default inputNodeSlice.reducer

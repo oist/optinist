@@ -77,5 +77,8 @@
     "singleQuote": true,
     "tabWidth": 2,
     "trailingComma": "all"
+  },
+  "resolutions": {
+    "react-error-overlay": "6.0.9"
   }
 }

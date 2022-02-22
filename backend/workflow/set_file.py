@@ -1,4 +1,5 @@
 import pickle
+import h5py
 
 from wrappers.data_wrapper import *
 from workflow.params import get_typecheck_params
@@ -26,6 +27,28 @@ def set_csvfile(node, edgeList):
         if node["id"] == edge["source"]:
             return_name = edge["sourceHandle"].split("--")[1]
             info = {return_name: CsvData(node['data']['path'], node["data"]["param"], '')}
+
+    info['nwbfile'] = None
+
+    save_pickle(node["data"]["path"], info)
+
+    return info
+
+
+def set_hdf5file(node, edgeList):
+    path = node["data"]["path"]
+    h5path = node["data"]["hdf5Path"]
+
+    with h5py.File(path, "r") as f:
+        data = f[h5path][:]
+
+    for edge in edgeList:
+        if node["id"] == edge["source"]:
+            return_name = edge["sourceHandle"].split("--")[1]
+            if data.ndim == 3:
+                info = {return_name: ImageData(data, '')}
+            elif data.ndim == 2:
+                info = {return_name: TimeSeriesData(data, '')}
 
     info['nwbfile'] = None
 

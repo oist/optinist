@@ -2,7 +2,7 @@ import yaml
 
 from workflow.get_network import get_network
 from workflow.params import get_typecheck_params
-from workflow.set_file import set_imagefile, set_csvfile, set_algofile
+from workflow.set_file import set_imagefile, set_csvfile, set_algofile, set_hdf5file
 from cui_api.snakemake import write_snakemake_config
 
 
@@ -35,6 +35,8 @@ def get_workflow(unique_id, runItem):
             set_imagefile(node, edgeList, nwbfile)
         elif node["type"] == "CsvFileNode":
             set_csvfile(node, edgeList)
+        elif node["type"] == "HDF5FileNode":
+            set_hdf5file(node, edgeList)
         elif node["type"] == "AlgorithmNode":
             rule = set_algofile(unique_id, node, edgeList, nodeDict)
 

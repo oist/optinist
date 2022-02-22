@@ -38,7 +38,11 @@ async def params(runItem: RunItem, background_tasks: BackgroundTasks):
     return unique_id
 
 
+class NodeItem(BaseModel):
+    pendingNodeIdList: list = []
+
+
 @router.post("/run/result/{uid}")
-async def params(uid: str):
-    results = get_results(uid)
+async def params(uid: str, nodeList: NodeItem):
+    results = get_results(uid, nodeList.pendingNodeIdList)
     return results

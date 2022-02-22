@@ -54,7 +54,13 @@ export type OutputPathsDTO = {
   }
 }
 
-export async function runResult(data: { uid: string }): Promise<RunResultDTO> {
-  const response = await axios.post(`${BASE_URL}/run/result/${data.uid}`)
+export async function runResult(data: {
+  uid: string
+  pendingNodeIdList: string[]
+}): Promise<RunResultDTO> {
+  const { uid, pendingNodeIdList } = data
+  const response = await axios.post(`${BASE_URL}/run/result/${uid}`, {
+    pendingNodeIdList,
+  })
   return response.data
 }

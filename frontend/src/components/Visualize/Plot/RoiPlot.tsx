@@ -12,7 +12,8 @@ import {
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { LinearProgress, Typography } from '@mui/material'
 import { getRoiData } from 'store/slice/DisplayData/DisplayDataActions'
-import { selectRoiItemColors } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import createColormap from 'colormap'
+import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
 
 export const RoiPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -42,12 +43,14 @@ const RoiPlotImple = React.memo<{}>(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
   const imageData = useSelector(selectRoiData(path), imageDataEqualtyFn)
 
-  // const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
-  // const showline = useSelector(selectImageItemShowLine(itemId))
-  // const zsmooth = useSelector(selectImageItemZsmooth(itemId))
-  // const showgrid = useSelector(selectImageItemShowGrid(itemId))
-  // const showscale = useSelector(selectImageItemShowScale(itemId))
-  const colorscale = useSelector(selectRoiItemColors(itemId))
+  const colorscale: ColorType[] = createColormap({
+    colormap: 'jet',
+    nshades: 10,
+    format: 'hex',
+    alpha: 1,
+  }).map((v, idx) => {
+    return { rgb: v, offset: String(idx / 9) }
+  })
 
   const data = React.useMemo(
     () => [
@@ -70,7 +73,6 @@ const RoiPlotImple = React.memo<{}>(() => {
           return [offset, value.rgb]
         }),
         hoverongaps: false,
-        // showscale: showscale,
         // zsmooth: zsmooth, // ['best', 'fast', false]
         zsmooth: false,
         showlegend: true,
@@ -90,21 +92,15 @@ const RoiPlotImple = React.memo<{}>(() => {
       dragmode: 'pan',
       xaxis: {
         autorange: true,
-        // showgrid: showgrid,
-        // showline: showline,
         zeroline: false,
         autotick: true,
         ticks: '',
-        // showticklabels: showticklabels,
       },
       yaxis: {
         autorange: 'reversed',
-        // showgrid: showgrid,
-        // showline: showline,
         zeroline: false,
         autotick: true, // todo
         ticks: '',
-        // showticklabels: showticklabels, // todo
       },
     }),
     [path],

@@ -1,5 +1,5 @@
 import { RootState } from 'store/store'
-import { isCsvInputNode } from './InputNodeUtils'
+import { isHDF5InputNode, isCsvInputNode } from './InputNodeUtils'
 
 export const selectInputNode = (state: RootState) => state.inputNode
 
@@ -43,3 +43,13 @@ export const selectCsvInputNodeParamSetIndex =
 export const selectCsvInputNodeParamTranspose =
   (nodeId: string) => (state: RootState) =>
     selectCsvInputNodeParam(nodeId)(state).transpose
+
+export const selectInputNodeHDF5Path =
+  (nodeId: string) => (state: RootState) => {
+    const item = selectInputNodeById(nodeId)(state)
+    if (isHDF5InputNode(item)) {
+      return item.hdf5Path
+    } else {
+      return null
+    }
+  }

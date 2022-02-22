@@ -8,7 +8,7 @@ from cui_api.utils import join_file_path
 
 def suite2p_file_convert(
         image: ImageData, nwbfile: NWBFile=None, params: dict=None
-    ) -> {'ops': Suite2pData, 'images': ImageData}:
+    ) -> {'ops': Suite2pData}:
     import os
     import numpy as np
     from natsort import natsorted

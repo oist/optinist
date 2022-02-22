@@ -45,6 +45,7 @@ export interface FilesTree {
 export const FILE_TREE_TYPE_SET = {
   IMAGE: 'image',
   CSV: 'csv',
+  HDF5: 'hdf5',
   ALL: 'all',
 } as const
 
