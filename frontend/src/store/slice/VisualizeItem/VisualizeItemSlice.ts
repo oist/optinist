@@ -13,6 +13,7 @@ import {
   VisualaizeItem,
   VISUALIZE_ITEM_TYPE_SET,
   BarItem,
+  HDF5Item,
 } from './VisualizeItemType'
 import {
   isMultiPlotItem,
@@ -97,6 +98,10 @@ const barItemInitialValue: BarItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.BAR,
 }
+const hdf5ItemInitialValue: HDF5Item = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.HDF5,
+}
 
 function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
   switch (dataType) {
@@ -114,6 +119,8 @@ function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
       return scatterItemInitialValue
     case DATA_TYPE_SET.BAR:
       return barItemInitialValue
+    case DATA_TYPE_SET.HDF5:
+      return hdf5ItemInitialValue
   }
 }
 
