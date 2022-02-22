@@ -50,6 +50,6 @@ export const selectInputNodeHDF5Path =
     if (isHDF5InputNode(item)) {
       return item.hdf5Path
     } else {
-      return null
+      return undefined
     }
   }

@@ -23,6 +23,7 @@ export interface InputNodePostData extends InputNodeData {
   param?: {
     [key: string]: unknown
   }
+  hdf5Path?: string
 }
 
 export interface AlgorithmNodePostData extends AlgorithmNodeData {

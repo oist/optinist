@@ -37,6 +37,7 @@ import {
   selectAlgorithmParams,
 } from '../AlgorithmNode/AlgorithmNodeSelectors'
 import {
+  selectInputNodeHDF5Path,
   selectInputNodeParam,
   selectInputNodeSelectedFilePath,
 } from '../InputNode/InputNodeSelectors'
@@ -86,6 +87,7 @@ export const selectNodePostDataListForRun = (
     } else {
       const filePath = selectInputNodeSelectedFilePath(node.id)(state)
       const param = selectInputNodeParam(node.id)(state)
+      const hdf5Path = selectInputNodeHDF5Path(node.id)(state)
       const inputNodePosyData: Node<InputNodePostData> = {
         ...node,
         data: {
@@ -94,6 +96,7 @@ export const selectNodePostDataListForRun = (
           type: NODE_TYPE_SET.INPUT,
           path: filePath ?? '',
           param,
+          hdf5Path: hdf5Path,
         },
       }
       return inputNodePosyData
