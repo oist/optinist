@@ -8,6 +8,7 @@ from cui_api.utils import join_file_path
 
 
 def set_imagefile(node, edgeList, nwbfile):
+    info = {}
     for edge in edgeList:
         if node["id"] == edge["source"]:
             return_name = edge["sourceHandle"].split("--")[1]
@@ -23,6 +24,7 @@ def set_imagefile(node, edgeList, nwbfile):
 
 
 def set_csvfile(node, edgeList):
+    info = {}
     for edge in edgeList:
         if node["id"] == edge["source"]:
             return_name = edge["sourceHandle"].split("--")[1]
@@ -36,6 +38,7 @@ def set_csvfile(node, edgeList):
 
 
 def set_hdf5file(node, edgeList):
+    info = {}
     path = node["data"]["path"]
     h5path = node["data"]["hdf5Path"]
 
