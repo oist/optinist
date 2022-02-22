@@ -189,15 +189,3 @@ class BarData(BaseData):
     def __del__(self):
         del self
         gc.collect()
-
-
-class HDF5Data(BaseData):
-    def __init__(self, data, params, func_name='hdf5', file_name='hdf5'):
-        super().__init__(file_name)
-
-        if type(data) == str:
-            self.data = pd.read_csv(data, header=None).values
-
-    def __del__(self):
-        del self
-        gc.collect()
