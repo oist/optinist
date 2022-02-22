@@ -16,16 +16,27 @@ export type InputNode = {
 
 export type InputNodeType = CsvInputNode | ImageInputNode | HDF5InputNode
 
-interface InputNodeBaseType<T extends FILE_TYPE> {
+interface InputNodeBaseType<
+  T extends FILE_TYPE,
+  P extends { [key: string]: unknown },
+> {
   fileType: T
   selectedFilePath?: string // 複数ファイル指定の予定あり
   selectedFileName?: string
+  param: P
 }
 
-export interface CsvInputNode extends InputNodeBaseType<'csv'> {}
+export type CsvInputParamType = {
+  setColumn: number | null
+  setIndex: boolean
+  transpose: boolean
+}
 
-export interface ImageInputNode extends InputNodeBaseType<'image'> {}
+export interface CsvInputNode
+  extends InputNodeBaseType<'csv', CsvInputParamType> {}
 
-export interface HDF5InputNode extends InputNodeBaseType<'hdf5'> {
+export interface ImageInputNode extends InputNodeBaseType<'image', {}> {}
+
+export interface HDF5InputNode extends InputNodeBaseType<'hdf5', {}> {
   hdf5Path?: string
 }

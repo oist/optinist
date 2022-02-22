@@ -9,10 +9,18 @@ export const NODE_TYPE_SET = {
 
 export type NODE_TYPE = typeof NODE_TYPE_SET[keyof typeof NODE_TYPE_SET]
 
-export interface NodeData {
+export type NodeData = AlgorithmNodeData | InputNodeData
+
+interface NodeDataBaseType<T extends NODE_TYPE> {
   label: string
-  type: NODE_TYPE
+  type: T
 }
+
+export interface InputNodeData
+  extends NodeDataBaseType<typeof NODE_TYPE_SET.INPUT> {}
+
+export interface AlgorithmNodeData
+  extends NodeDataBaseType<typeof NODE_TYPE_SET.ALGORITHM> {}
 
 export interface ElementCoord {
   x: number

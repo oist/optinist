@@ -76,23 +76,18 @@ const SetColumn: React.FC = () => {
   }
 
   return (
-    <FormControlLabel
-      control={
-        <>
-          <TextField
-            style={{ width: 50 }}
-            type="number"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={onChangeSetColumn}
-            defaultValue={setColumn}
-          />
-          column
-        </>
-      }
-      label=""
-    />
+    <div>
+      <TextField
+        label="column"
+        style={{ width: 50 }}
+        type="number"
+        InputLabelProps={{
+          shrink: true,
+        }}
+        onChange={onChangeSetColumn}
+        value={setColumn}
+      />
+    </div>
   )
 }
 

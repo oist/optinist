@@ -8,15 +8,17 @@ import {
 import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
 import { isNodeData } from '../FlowElement/FlowElementUtils'
 import {
+  CsvInputParamType,
   FILE_TYPE_SET,
   InputNode,
   INPUT_NODE_SLICE_NAME,
 } from './InputNodeType'
-import { isHDF5InputNode } from './InputNodeUtils'
+import { isCsvInputNode, isHDF5InputNode } from './InputNodeUtils'
 
 const initialState: InputNode = {
   [INITIAL_IMAGE_ELEMENT_ID]: {
     fileType: FILE_TYPE_SET.IMAGE,
+    param: {},
   },
 }
 
@@ -47,6 +49,16 @@ export const inputNodeSlice = createSlice({
       const { nodeId, filePath } = action.payload
       state[nodeId].selectedFilePath = filePath
     },
+    setCsvInputNodeParam(
+      state,
+      action: PayloadAction<{ nodeId: string; param: CsvInputParamType }>,
+    ) {
+      const { nodeId, param } = action.payload
+      const inputNode = state[nodeId]
+      if (isCsvInputNode(inputNode)) {
+        inputNode.param = param
+      }
+    },
     setInputNodeHDF5Path(
       state,
       action: PayloadAction<{
@@ -71,16 +83,23 @@ export const inputNodeSlice = createSlice({
             case FILE_TYPE_SET.CSV:
               state[node.id] = {
                 fileType,
+                param: {
+                  setColumn: null,
+                  setIndex: false,
+                  transpose: false,
+                },
               }
               break
             case FILE_TYPE_SET.IMAGE:
               state[node.id] = {
                 fileType,
+                param: {},
               }
               break
             case FILE_TYPE_SET.HDF5:
               state[node.id] = {
                 fileType,
+                param: {},
               }
               break
           }
@@ -105,6 +124,7 @@ export const inputNodeSlice = createSlice({
 export const {
   setInputNodeFilePath,
   setInputImageNodeFile,
+  setCsvInputNodeParam,
   setInputNodeHDF5Path,
 } = inputNodeSlice.actions
 

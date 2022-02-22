@@ -1,6 +1,22 @@
-import { RunPostData } from 'api/Run/Run'
+import { Node } from 'react-flow-renderer'
+
+import {
+  AlgorithmNodePostData,
+  InputNodePostData,
+  NodePostDataType,
+  RunPostData,
+} from 'api/Run/Run'
+
 import { RootState } from 'store/store'
-import { selectElementListForRun } from '../FlowElement/FlowElementSelectors'
+import {
+  selectEdgeListForRun,
+  selectFlowElements,
+} from '../FlowElement/FlowElementSelectors'
+import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
+import {
+  isAlgorithmNodeData,
+  isNodeData,
+} from '../FlowElement/FlowElementUtils'
 import { selectNwbParams } from '../NWB/NWBSelectors'
 import { selectSnakemakeParams } from '../Snakemake/SnakemakeSelectors'
 import {
@@ -16,6 +32,16 @@ import {
   isNodeResultSuccess,
 } from './PipelineUtils'
 
+import {
+  selectAlgorithmFunctionPath,
+  selectAlgorithmParams,
+} from '../AlgorithmNode/AlgorithmNodeSelectors'
+import {
+  selectInputNodeHDF5Path,
+  selectInputNodeParam,
+  selectInputNodeSelectedFilePath,
+} from '../InputNode/InputNodeSelectors'
+
 export const selectPipelineLatestUid = (state: RootState) => {
   const history = state.pipeline.uidHistory
   if (history.length > 0) {
@@ -28,13 +54,55 @@ export const selectPipelineLatestUid = (state: RootState) => {
 export const selectRunPostData = (state: RootState) => {
   const nwbParam = selectNwbParams(state)
   const snakemakeParam = selectSnakemakeParams(state)
-  const elementListForRun = selectElementListForRun(state)
+  const edgeListForRun = selectEdgeListForRun(state)
+  const nodePostDataList = selectNodePostDataListForRun(state)
   const runPostData: RunPostData = {
     nwbParam,
     snakemakeParam,
-    ...elementListForRun,
+    edgeList: edgeListForRun,
+    nodeList: nodePostDataList,
   }
   return runPostData
+}
+
+export const selectNodePostDataListForRun = (
+  state: RootState,
+): Node<NodePostDataType>[] => {
+  const elements = selectFlowElements(state)
+  const nodeList = elements.filter(isNodeData).map((node) => {
+    if (isAlgorithmNodeData(node)) {
+      const param = selectAlgorithmParams(node.id)(state) ?? {}
+      const functionPath = selectAlgorithmFunctionPath(node.id)(state)
+      const algorithmNodePostData: Node<AlgorithmNodePostData> = {
+        ...node,
+        data: {
+          ...node.data,
+          label: node.data?.label ?? '',
+          type: NODE_TYPE_SET.ALGORITHM,
+          path: functionPath,
+          param,
+        },
+      }
+      return algorithmNodePostData
+    } else {
+      const filePath = selectInputNodeSelectedFilePath(node.id)(state)
+      const param = selectInputNodeParam(node.id)(state)
+      const hdf5Path = selectInputNodeHDF5Path(node.id)(state)
+      const inputNodePosyData: Node<InputNodePostData> = {
+        ...node,
+        data: {
+          ...node.data,
+          label: node.data?.label ?? '',
+          type: NODE_TYPE_SET.INPUT,
+          path: filePath ?? '',
+          param,
+          hdf5Path: hdf5Path,
+        },
+      }
+      return inputNodePosyData
+    }
+  })
+  return nodeList
 }
 
 export const selectStartedPipeline = (uid: string) => (state: RootState) => {

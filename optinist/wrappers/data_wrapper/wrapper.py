@@ -68,9 +68,39 @@ class TimeSeriesData(BaseData):
         if not os.path.exists(self.json_path):
             os.makedirs(self.json_path, exist_ok=True)
 
-        # pd.DataFrame(self.data.T).to_csv(
-        #     join_file_path([self.json_path, f'{self.file_name}.csv']),
-        #     header=False, index=False)
+        for i, data in enumerate(self.data):
+            pd.DataFrame(data).to_json(
+                join_file_path([self.json_path, f'{str(i)}.json']), indent=4)
+
+    def __del__(self):
+        del self
+        gc.collect()
+
+
+class CsvData(BaseData):
+    def __init__(self, data, params, func_name='csv', file_name='csv'):
+        super().__init__(file_name)
+
+        if type(data) == str:
+            self.data = pd.read_csv(data, header=None).values
+
+            if params["transpose"]:
+                self.data = self.data.T
+
+            if params["setColumn"] is not None:
+                header = params["setColumn"]
+                self.data = self.data[header:]
+        else:
+            self.data = data
+
+        if len(self.data.shape) == 1:
+            self.data = self.data[np.newaxis, :]
+
+    def save_json(self, json_dir):
+        # timeseriesだけはdirを返す
+        self.json_path = join_file_path([json_dir, self.file_name])
+        if not os.path.exists(self.json_path):
+            os.makedirs(self.json_path, exist_ok=True)
 
         for i, data in enumerate(self.data):
             pd.DataFrame(data).to_json(

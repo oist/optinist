@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Switch from '@mui/material/Switch'
 import FormControlLabel from '@mui/material/FormControlLabel'
-import Select from '@mui/material/Select'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
+import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
 
 import {
   selectImageItemShowGrid,
@@ -15,6 +17,8 @@ import {
   selectImageItemColors,
   selectRoiItemNodeId,
   selectRoiItemFilePath,
+  selectImageItemStartIndex,
+  selectImageItemEndIndex,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 
@@ -37,7 +41,7 @@ import { FileSelectImple } from 'components/FlowChart/FlowChartNode/FileSelect'
 import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
-import { TextField } from '@mui/material'
+import { Box, TextField } from '@mui/material'
 import { GradientColorPicker } from './GradientColorPicker'
 import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
 import { FilePathSelect } from '../FilePathSelect'
@@ -162,56 +166,44 @@ const Zsmooth: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const zsmooth = useSelector(selectImageItemZsmooth(itemId))
   const dispatch = useDispatch()
-  const [value, setValue] = React.useState(zsmooth)
-  const handleChange = (event: any) => {
-    setValue(event.target.value as string)
+  const handleChange = (event: SelectChangeEvent<string | boolean>) => {
     dispatch(setImageItemZsmooth({ itemId, zsmooth: event.target.value }))
   }
   return (
-    <FormControlLabel
-      control={
-        <Select
-          labelId="demo-simple-select-label"
-          id="demo-simple-select"
-          value={value}
-          onChange={handleChange}
-        >
-          <MenuItem value={'best'}>best</MenuItem>
-          <MenuItem value={'fast'}>fast</MenuItem>
-          <MenuItem value={'false'}>False</MenuItem>
-        </Select>
-      }
-      label="smooth"
-    />
+    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+      <InputLabel>smooth</InputLabel>
+      <Select label="smooth" value={zsmooth} onChange={handleChange}>
+        <MenuItem value={'best'}>best</MenuItem>
+        <MenuItem value={'fast'}>fast</MenuItem>
+        <MenuItem value={'false'}>False</MenuItem>
+      </Select>
+    </FormControl>
   )
 }
 
 const StartEndIndex: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
-  const [startIndex, setStartIndex] = useState(1)
-  const [endIndex, setEndIndex] = useState(10)
-  const [inputError, setInputError] = useState(false)
+  const startIndex = useSelector(selectImageItemStartIndex(itemId))
+  const endIndex = useSelector(selectImageItemEndIndex(itemId))
+  const inputError = !(startIndex > 0)
   const dispatch = useDispatch()
   const onStartChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value === '' ? '' : Number(event.target.value)
     if (typeof newValue === 'number') {
-      setStartIndex(newValue)
+      dispatch(setImageItemStartIndex({ itemId, startIndex: newValue }))
     }
   }
   const onEndChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value === '' ? '' : Number(event.target.value)
     if (typeof newValue === 'number') {
-      setEndIndex(newValue)
+      dispatch(setImageItemEndIndex({ itemId, endIndex: newValue }))
     }
   }
 
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
   const onClickButton = () => {
     if (startIndex > 0) {
-      setInputError(false)
-      dispatch(resetImageActiveIndex({ itemId }))
-      dispatch(setImageItemStartIndex({ itemId, startIndex: startIndex }))
-      dispatch(setImageItemEndIndex({ itemId, endIndex: endIndex }))
+      dispatch(resetImageActiveIndex({ itemId, startIndex, endIndex }))
       if (filePath !== null) {
         dispatch(
           getImageData({
@@ -221,45 +213,38 @@ const StartEndIndex: React.FC = () => {
           }),
         )
       }
-    } else {
-      setInputError(true)
     }
   }
 
   return (
-    <FormControlLabel
-      control={
-        <>
-          <TextField
-            error={inputError}
-            type="number"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={onStartChange}
-            defaultValue={startIndex}
-            helperText={inputError ? 'index > 0' : ''}
-          />
-          ~
-          <TextField
-            type="number"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={onEndChange}
-            defaultValue={endIndex}
-          />
-          <Button
-            size="small"
-            className="ctrl_btn"
-            variant="contained"
-            onClick={onClickButton}
-          >
-            load
-          </Button>
-        </>
-      }
-      label=""
-    />
+    <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+      <TextField
+        error={inputError}
+        type="number"
+        InputLabelProps={{
+          shrink: true,
+        }}
+        onChange={onStartChange}
+        value={startIndex}
+        helperText={inputError ? 'index > 0' : undefined}
+      />
+      ~
+      <TextField
+        type="number"
+        InputLabelProps={{
+          shrink: true,
+        }}
+        onChange={onEndChange}
+        value={endIndex}
+      />
+      <Button
+        size="small"
+        className="ctrl_btn"
+        variant="contained"
+        onClick={onClickButton}
+      >
+        load
+      </Button>
+    </Box>
   )
 }
