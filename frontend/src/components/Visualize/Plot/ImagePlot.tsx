@@ -288,7 +288,8 @@ const ImagePlotChart = React.memo<{
     if (
       timeSeriesFilePath !== null &&
       displayNumbers !== null &&
-      points.curveNumber >= 1
+      points.curveNumber >= 1 &&
+      !displayNumbers.includes(points.z - 1)
     ) {
       const newValue = [...displayNumbers, points.z - 1]
       dispatch(
