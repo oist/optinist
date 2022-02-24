@@ -40,7 +40,7 @@ export const RoiPlot = React.memo(() => {
 })
 
 const RoiPlotImple = React.memo<{}>(() => {
-  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+  const { filePath: path } = React.useContext(DisplayDataContext)
   const imageData = useSelector(selectRoiData(path), imageDataEqualtyFn)
 
   const colorscale: ColorType[] = createColormap({

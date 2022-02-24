@@ -42,7 +42,7 @@ export const TimeSeriesPlot = React.memo(() => {
     if (!isInitialized) {
       displayNumbers.map((v) => dispatch(getTimeSeriesData({ path, index: v })))
     }
-  }, [dispatch, isInitialized, path])
+  }, [dispatch, isInitialized, path, displayNumbers])
 
   if (!isInitialized) {
     return <LinearProgress />
@@ -132,7 +132,7 @@ const TimeSeriesPlotImple = React.memo(() => {
         }
       }
     })
-  }, [timeSeriesData, displayNumbers, offset, span])
+  }, [timeSeriesData, displayNumbers, offset, span, colorScale])
 
   const layout = React.useMemo(
     () => ({

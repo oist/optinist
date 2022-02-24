@@ -218,7 +218,15 @@ const ImagePlotChart = React.memo<{
         showscale: false,
       },
     ],
-    [imageData, roiData, zsmooth, showscale, colorscale, colorscaleRoi],
+    [
+      imageData,
+      roiData,
+      zsmooth,
+      showscale,
+      colorscale,
+      colorscaleRoi,
+      timeDataMaxIndex,
+    ],
   )
 
   const layout = React.useMemo(

@@ -100,7 +100,7 @@ const HDF5FileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
         fileType={FILE_TYPE_SET.HDF5}
         filePath={filePath ? filePath.split('/').reverse()[0] : ''}
       />
-      {filePath !== undefined ? <ItemSelect nodeId={nodeId} /> : ''}
+      {filePath !== undefined && <ItemSelect nodeId={nodeId} />}
       <Handle
         type="source"
         position={Position.Right}
@@ -232,6 +232,6 @@ function useHDF5Tree(nodeId: string): [HDF5TreeDTO[] | undefined, boolean] {
     if (!isLatest && !isLoading && filePath) {
       dispatch(getHDF5Tree({ path: filePath }))
     }
-  }, [isLatest, isLoading, dispatch])
+  }, [isLatest, isLoading, filePath, dispatch])
   return [tree, isLoading]
 }
