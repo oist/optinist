@@ -348,6 +348,18 @@ export const selectTimeSeriesItemDisplayNumbers =
     }
   }
 
+export const selectTimeSeriesItemMaxIndex =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isTimeSeriesItem(item)) {
+      return item.maxIndex
+    } else if (isMultiPlotItem(item)) {
+      return item.timeSeriesItem.maxIndex
+    } else {
+      return 0
+    }
+  }
+
 export const selectHeatMapItemShowScale =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]

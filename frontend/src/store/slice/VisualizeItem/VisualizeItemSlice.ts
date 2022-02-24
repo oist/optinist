@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { getTimeSeriesData } from '../DisplayData/DisplayDataActions'
 import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 
 import {
@@ -615,6 +614,21 @@ export const visualaizeItemSlice = createSlice({
         targetItem.displayNumbers = displayNumbers
       }
     },
+    setTimeSeriesItemMaxIndex: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        maxIndex: number
+      }>,
+    ) => {
+      const { itemId, maxIndex } = action.payload
+      const targetItem = state.items[itemId]
+      if (isMultiPlotItem(targetItem)) {
+        targetItem.timeSeriesItem.maxIndex = maxIndex
+      } else if (isTimeSeriesItem(targetItem)) {
+        targetItem.maxIndex = maxIndex
+      }
+    },
     setHeatMapItemShowScale: (
       state,
       action: PayloadAction<{
@@ -747,6 +761,7 @@ export const {
   setTimeSeriesItemXrangeLeft,
   setTimeSeriesItemXrangeRight,
   setTimeSeriesItemDisplayNumbers,
+  setTimeSeriesItemMaxIndex,
   setHeatMapItemShowScale,
   setHeatMapItemColors,
   setCsvItemTranspose,

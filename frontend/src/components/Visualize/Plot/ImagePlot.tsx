@@ -41,6 +41,7 @@ import {
   selectRoiItemFilePath,
   selectMultiPlotTimeSeriesItemFilepath,
   selectMultiPlotTimeSeriesItemDisplayNumbers,
+  selectTimeSeriesItemMaxIndex,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
   decrementImageActiveIndex,
@@ -50,7 +51,6 @@ import {
 import { RootState } from 'store/store'
 import { Datum, LayoutAxis, PlotData } from 'plotly.js'
 import createColormap from 'colormap'
-import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
 
 export const ImagePlot = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
@@ -162,14 +162,17 @@ const ImagePlotChart = React.memo<{
   const showgrid = useSelector(selectImageItemShowGrid(itemId))
   const showscale = useSelector(selectImageItemShowScale(itemId))
   const colorscale = useSelector(selectImageItemColors(itemId))
+  let timeDataMaxIndex = useSelector(selectTimeSeriesItemMaxIndex(itemId))
 
-  const colorscaleRoi: ColorType[] = createColormap({
+  if (timeDataMaxIndex === 0 && roiData.length !== 0) {
+    timeDataMaxIndex = Math.max(...roiData.map((arr) => Math.max(...arr)))
+  }
+
+  const colorscaleRoi = createColormap({
     colormap: 'jet',
-    nshades: 10,
+    nshades: 100, //timeDataMaxIndex >= 6 ? timeDataMaxIndex : 6,
     format: 'hex',
     alpha: 1,
-  }).map((v, idx) => {
-    return { rgb: v, offset: String(idx / 9) }
   })
 
   const data = React.useMemo(
@@ -202,23 +205,16 @@ const ImagePlotChart = React.memo<{
         type: 'heatmap',
         name: 'roi',
         hovertemplate: 'cell id: %{z}',
-        colorscale: colorscaleRoi.map((value) => {
-          let offset: number = parseFloat(value.offset)
-          const offsets: number[] = colorscaleRoi.map((v) => {
-            return parseFloat(v.offset)
-          })
-          // plotlyは端[0.0, 1.0]がないとダメなので、その設定
-          if (offset === Math.max(...offsets)) {
-            offset = 1.0
-          }
-          if (offset === Math.min(...offsets)) {
-            offset = 0.0
-          }
-          return [offset, value.rgb]
+        colorscale: [...Array(timeDataMaxIndex)].map((_, i) => {
+          const new_i = Math.floor((i % 10) * 10 + i / 10)
+          const offset = i / (timeDataMaxIndex - 1)
+          const rgb = colorscaleRoi[new_i]
+          return [offset, rgb]
         }),
+        zmin: 1,
+        zmax: timeDataMaxIndex,
         hoverongaps: false,
-        zsmooth: false, // ['best', 'fast', false]
-        showlegend: true,
+        zsmooth: false,
         showscale: false,
       },
     ],
@@ -292,7 +288,7 @@ const ImagePlotChart = React.memo<{
     if (
       timeSeriesFilePath !== null &&
       displayNumbers !== null &&
-      points.curveNumber === 1
+      points.curveNumber >= 1
     ) {
       const newValue = [...displayNumbers, points.z - 1]
       dispatch(
