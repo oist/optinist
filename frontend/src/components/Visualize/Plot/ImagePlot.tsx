@@ -41,7 +41,7 @@ import {
   selectRoiItemFilePath,
   selectMultiPlotTimeSeriesItemFilepath,
   selectMultiPlotTimeSeriesItemDisplayNumbers,
-  selectTimeSeriesItemMaxIndex,
+  selectRoiItemIndex,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
   decrementImageActiveIndex,
@@ -162,11 +162,8 @@ const ImagePlotChart = React.memo<{
   const showgrid = useSelector(selectImageItemShowGrid(itemId))
   const showscale = useSelector(selectImageItemShowScale(itemId))
   const colorscale = useSelector(selectImageItemColors(itemId))
-  let timeDataMaxIndex = useSelector(selectTimeSeriesItemMaxIndex(itemId))
 
-  if (timeDataMaxIndex === 0 && roiData.length !== 0) {
-    timeDataMaxIndex = Math.max(...roiData.map((arr) => Math.max(...arr)))
-  }
+  const timeDataMaxIndex = useSelector(selectRoiItemIndex(itemId, roiFilePath))
 
   const colorscaleRoi = createColormap({
     colormap: 'jet',
