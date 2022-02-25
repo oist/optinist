@@ -1,0 +1,13 @@
+data_endoscope.tif:
+  position:
+    x: 50
+    y: 61
+  success: null
+name: test
+success: null
+suite2p_file_convert:
+  position:
+    x: 350
+    y: 60
+  success: null
+timestamp: '2022-02-25 14:52:01'

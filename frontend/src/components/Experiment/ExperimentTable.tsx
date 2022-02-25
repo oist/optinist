@@ -49,7 +49,7 @@ const Head: React.FC = () => {
       <TableCell />
       <TableCell>Timestamp</TableCell>
       <TableCell>Name</TableCell>
-      <TableCell>Status</TableCell>
+      <TableCell>Success</TableCell>
       {/* <TableCell>Progress</TableCell> */}
       <TableCell>Import</TableCell>
       <TableCell>Delete</TableCell>

@@ -12,6 +12,7 @@ from routers import (
     nwb,
     snakemake,
     hdf5,
+    experiment,
 )
 
 app = FastAPI(docs_url="/docs", openapi_url="/openapi")
@@ -23,6 +24,7 @@ app.include_router(run.router)
 app.include_router(nwb.router)
 app.include_router(snakemake.router)
 app.include_router(hdf5.router)
+app.include_router(experiment.router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -34,7 +36,7 @@ app.add_middleware(
 
 @app.get("/")
 async def root():
-    return {"message": "Hello World"}
+    return {"message": "Hello Optinist"}
 
 @app.get("/cookie-test")
 def create_cookie(response: Response):
