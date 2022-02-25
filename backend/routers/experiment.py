@@ -9,7 +9,7 @@ from cui_api.utils import join_file_path
 router = APIRouter()
 
 
-@router.get("/experiment")
+@router.get("/experiments")
 async def read_experiment():
     experiment_config = {}
     config_paths = glob(join_file_path([BASE_DIR, "*", "experiment.yaml"]))
@@ -21,14 +21,14 @@ async def read_experiment():
     return experiment_config
 
 
-@router.get("/experiment/{unique_id}")
+@router.get("/experiments/{unique_id}")
 async def read_experiment(unique_id: str):
     with open(join_file_path([BASE_DIR, unique_id, "experiment.yaml"])) as f:
         config = yaml.safe_load(f)
     return config
 
 
-@router.delete("/experiment/{unique_id}")
+@router.delete("/experiments/{unique_id}")
 async def delete_experiment(unique_id: str):
     try:
         shutil.rmtree(join_file_path([BASE_DIR, unique_id]))
