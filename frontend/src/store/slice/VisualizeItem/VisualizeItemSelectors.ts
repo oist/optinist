@@ -1,4 +1,5 @@
 import { RootState } from 'store/store'
+import { selectRoiData } from '../DisplayData/DisplayDataSelectors'
 import { VISUALIZE_ITEM_TYPE_SET } from './VisualizeItemType'
 import {
   isDisplayDataItem,
@@ -345,6 +346,38 @@ export const selectTimeSeriesItemDisplayNumbers =
       return item.timeSeriesItem.displayNumbers
     } else {
       throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectRoiItemIndex =
+  (itemId: number, roiFilePath: string | null) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isTimeSeriesItem(item)) {
+      const maxIdx = item.maxIndex
+      if (maxIdx !== 0) {
+        return maxIdx
+      }
+    } else if (isMultiPlotItem(item)) {
+      const maxIdx = item.timeSeriesItem.maxIndex
+      if (maxIdx !== 0) {
+        return maxIdx
+      }
+    }
+
+    if (roiFilePath !== null) {
+      return selectRoiItemMaxNumber(roiFilePath)(state)
+    } else {
+      return 0
+    }
+  }
+
+export const selectRoiItemMaxNumber =
+  (roiFilePath: string) => (state: RootState) => {
+    const roiData = selectRoiData(roiFilePath)(state)
+    if (roiData.length !== 0) {
+      return Math.max(...roiData.map((arr) => Math.max(...arr)))
+    } else {
+      return 0
     }
   }
 

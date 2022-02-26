@@ -25,7 +25,10 @@ import {
   selectTimeSeriesItemZeroLine,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import createColormap from 'colormap'
-import { setTimeSeriesItemDisplayNumbers } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import {
+  setTimeSeriesItemDisplayNumbers,
+  setTimeSeriesItemMaxIndex,
+} from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 export const TimeSeriesPlot = React.memo(() => {
   const { itemId, filePath: path } = React.useContext(DisplayDataContext)
@@ -39,7 +42,7 @@ export const TimeSeriesPlot = React.memo(() => {
     if (!isInitialized) {
       displayNumbers.map((v) => dispatch(getTimeSeriesData({ path, index: v })))
     }
-  }, [dispatch, isInitialized, path])
+  }, [dispatch, isInitialized, path, displayNumbers])
 
   if (!isInitialized) {
     return <LinearProgress />
@@ -71,11 +74,9 @@ const TimeSeriesPlotImple = React.memo(() => {
   const xrange = useSelector(selectTimeSeriesItemXrange(itemId))
   const displayNumbers = useSelector(selectTimeSeriesItemDisplayNumbers(itemId))
 
-  const dataSize = Object.keys(timeSeriesData).length
-
   const colorScale = createColormap({
     colormap: 'jet',
-    nshades: dataSize < 6 ? 6 : dataSize,
+    nshades: 100, //maxIndex >= 6 ? maxIndex : 6,
     format: 'hex',
     alpha: 1,
   })
@@ -86,7 +87,7 @@ const TimeSeriesPlotImple = React.memo(() => {
     }
     return Object.keys(timeSeriesData).map((key, i) => {
       let y = Object.values(timeSeriesData[key])
-      const new_i = (i * 10 + i) % dataSize
+      const new_i = Math.floor((i % 10) * 10 + i / 10) % 100
 
       if (displayNumbers.includes(i)) {
         if (offset) {
@@ -99,7 +100,7 @@ const TimeSeriesPlotImple = React.memo(() => {
             Math.sqrt(y.reduce((a, b) => a + Math.pow(b - mean, 2)) / y.length)
           const newArray = y.map((value) => (value - mean) / std + activeIdx)
           return {
-            name: `(${key})`,
+            name: `(${String(parseInt(key) + 1)})`,
             x: Object.keys(timeSeriesData[key]),
             y: newArray,
             visible: true,
@@ -107,7 +108,7 @@ const TimeSeriesPlotImple = React.memo(() => {
           }
         } else {
           return {
-            name: `(${key})`,
+            name: `(${String(parseInt(key) + 1)})`,
             x: Object.keys(timeSeriesData[key]),
             y: y,
             visible: true,
@@ -116,7 +117,7 @@ const TimeSeriesPlotImple = React.memo(() => {
         }
       } else {
         return {
-          name: `(${key})`,
+          name: `(${String(parseInt(key) + 1)})`,
           x: Object.keys(timeSeriesData[key]),
           y: y,
           visible: 'legendonly',
@@ -124,7 +125,7 @@ const TimeSeriesPlotImple = React.memo(() => {
         }
       }
     })
-  }, [timeSeriesData, displayNumbers, offset, span])
+  }, [timeSeriesData, displayNumbers, offset, span, colorScale])
 
   const layout = React.useMemo(
     () => ({
