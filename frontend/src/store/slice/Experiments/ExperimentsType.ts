@@ -26,7 +26,6 @@ export type ExperimentType = {
     [nodeId: string]: ExperimentFunction
   }
   name: string
-  status: EXPERIMENTS_STATUS
   timestamp: string
 }
 

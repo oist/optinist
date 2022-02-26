@@ -1,4 +1,5 @@
 import { RootState } from 'store/store'
+import { EXPERIMENTS_STATUS } from './ExperimentsType'
 
 const selectExperiments = (state: RootState) => state.experiments
 
@@ -44,8 +45,19 @@ export const selectExperimentTimeStamp = (uid: string) => (state: RootState) =>
 export const selectExperimentName = (uid: string) => (state: RootState) =>
   selectExperiment(uid)(state).name
 
-export const selectExperimentStatus = (uid: string) => (state: RootState) =>
-  selectExperiment(uid)(state).status
+export const selectExperimentStatus =
+  (uid: string) =>
+  (state: RootState): EXPERIMENTS_STATUS => {
+    const functions = selectExperimentList(state)[uid].functions
+    const statusList = Object.values(functions).map((f) => f.status)
+    if (statusList.findIndex((status) => status === 'error') >= 0) {
+      return 'error'
+    } else if (statusList.findIndex((status) => status === 'running') >= 0) {
+      return 'running'
+    } else {
+      return 'success'
+    }
+  }
 
 export const selectExperimentFunctionNodeIdList =
   (uid: string) => (state: RootState) =>

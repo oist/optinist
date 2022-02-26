@@ -31,7 +31,6 @@ export function convertToExperimentType(dto: ExperimentDTO): ExperimentType {
     timestamp: dto.timestamp,
     name: dto.name,
     functions,
-    status: convertToExperimentStatus(dto.success),
   }
 }
 

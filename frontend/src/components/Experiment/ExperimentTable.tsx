@@ -1,6 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Button from '@mui/material/Button'
+import Box from '@mui/material/Box'
 import Alert from '@mui/material/Alert'
 import AlertTitle from '@mui/material/AlertTitle'
 import IconButton from '@mui/material/IconButton'
@@ -18,6 +19,7 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import GetAppIcon from '@mui/icons-material/GetApp'
+import ReplayIcon from '@mui/icons-material/Replay'
 
 import { CollapsibleTable } from './CollapsibleTable'
 import {
@@ -68,21 +70,44 @@ export const ExperimentUidContext = React.createContext<string>('')
 
 const TableImple: React.FC = () => {
   const uidList = useSelector(selectExperimentUidList, arrayEqualityFn)
+  const dispatch = useDispatch()
+  const onClickReload = () => {
+    dispatch(getExperiments())
+  }
   return (
-    <TableContainer component={Paper} elevation={0} variant="outlined">
-      <Table aria-label="collapsible table">
-        <TableHead>
-          <Head />
-        </TableHead>
-        <TableBody>
-          {uidList.map((uid) => (
-            <ExperimentUidContext.Provider value={uid} key={uid}>
-              <Row key={uid} />
-            </ExperimentUidContext.Provider>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <Box>
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}
+      >
+        <Button
+          sx={{
+            marginBottom: (theme) => theme.spacing(1),
+          }}
+          variant="outlined"
+          endIcon={<ReplayIcon />}
+          onClick={onClickReload}
+        >
+          Reload
+        </Button>
+      </Box>
+      <TableContainer component={Paper} elevation={0} variant="outlined">
+        <Table aria-label="collapsible table">
+          <TableHead>
+            <Head />
+          </TableHead>
+          <TableBody>
+            {uidList.map((uid) => (
+              <ExperimentUidContext.Provider value={uid} key={uid}>
+                <Row key={uid} />
+              </ExperimentUidContext.Provider>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Box>
   )
 }
 
