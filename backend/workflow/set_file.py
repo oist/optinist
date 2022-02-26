@@ -99,7 +99,7 @@ def set_algofile(unique_id, node, edgeList, nodeDict):
 
 
 def get_pickle_file(unique_id, node_id, algo_name):
-    return join_file_path([BASE_DIR, unique_id, node_id, f"{algo_name}_out.pkl"])
+    return join_file_path([BASE_DIR, unique_id, node_id, f"{algo_name}.pkl"])
 
 
 def save_pickle(filepath, info):

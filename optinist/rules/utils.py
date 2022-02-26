@@ -66,7 +66,7 @@ def run_script(__func_config):
 
         del input_info, output_info, func
         gc.collect()
-        
+
     except Exception as e:
         error_message  = list(traceback.TracebackException.from_exception(e).format())[-2:]
         with open(__func_config["output"], 'wb') as f:

@@ -10,7 +10,7 @@ from workflow.params import get_typecheck_params
 from workflow.set_workflow import set_workflow
 from workflow.results import get_results
 
-from cui_api.snakemake import run_snakemake
+from cui_api.run import run_snakemake
 from cui_api.const import BASE_DIR
 
 
@@ -29,7 +29,7 @@ async def params(runItem: RunItem, background_tasks: BackgroundTasks):
     unique_id = str(uuid.uuid4())
 
     set_workflow(unique_id, runItem)
-    
+
     snakemake_params = get_typecheck_params(runItem.snakemakeParam, "snakemake")
     background_tasks.add_task(run_snakemake, snakemake_params)
 

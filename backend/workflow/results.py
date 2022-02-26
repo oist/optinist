@@ -1,16 +1,18 @@
 import pickle
+import yaml
 from collections import OrderedDict
 from glob import glob
-
 from wrappers.data_wrapper import *
+
 from cui_api.utils import join_file_path
+from cui_api.const import BASE_DIR
 
 
-def get_results(uid, nodeIdList):
+def get_results(unique_id, nodeIdList):
     runPaths = []
     for node_id in nodeIdList:
-        print(join_file_path([BASE_DIR, uid, node_id, "*.pkl"]))
-        for path in glob(join_file_path([BASE_DIR, uid, node_id, "*.pkl"])):
+        print(join_file_path([BASE_DIR, unique_id, node_id, "*.pkl"]))
+        for path in glob(join_file_path([BASE_DIR, unique_id, node_id, "*.pkl"])):
             runPaths.append(path)
 
     for i, path in enumerate(runPaths):
@@ -21,39 +23,59 @@ def get_results(uid, nodeIdList):
     results = {}
     for request_path in runPaths:
         node_id = request_path.split("/")[-2]
-        algo_name = request_path.split("/")[-1]
+        algo_name = request_path.split("/")[-1].split(".")[0]
+        # import pdb; pdb.set_trace()
         results[node_id] = {}
 
         with open(request_path, "rb") as f:
             info = pickle.load(f)
 
         if isinstance(info, list) or isinstance(info, str):
-            results[node_id] = get_error(info)
+            results[node_id] = get_error(info, algo_name, unique_id)
         else:
             json_dir = "/".join(request_path.split("/")[:-1])
-            results[node_id] = get_success(info, algo_name, json_dir)
+            results[node_id] = get_success(info, algo_name, json_dir, unique_id)
 
     return results
 
 
-def get_error(info):
+def get_error(info, algo_name, unique_id):
+    with open(join_file_path([BASE_DIR, unique_id, "experiment.yaml"]), "r") as f:
+        config = yaml.safe_load(f)
+
+    config["function"][algo_name]["success"] = "error"
+
+    with open(join_file_path([BASE_DIR, unique_id, "experiment.yaml"]), "w") as f:
+        yaml.dump(config, f)
+
     if isinstance(info, str):
         error_message = info
     else:
         error_message = "¥n".join(info)
+
     message = {
         "status": "error",
         "message": error_message,
     }
+
     return message
 
 
-def get_success(info, algo_name, json_dir):
+def get_success(info, algo_name, json_dir, unique_id):
+    with open(join_file_path([BASE_DIR, unique_id, "experiment.yaml"]), "r") as f:
+        config = yaml.safe_load(f)
+
+    config["function"][algo_name]["success"] = "success"
+
+    with open(join_file_path([BASE_DIR, unique_id, "experiment.yaml"]), "w") as f:
+        yaml.dump(config, f)
+
     message = {
         "status": "success",
         "message": algo_name + " success",
         "outputPaths": get_outputPaths(info, json_dir)
     }
+
     return message
 
 
