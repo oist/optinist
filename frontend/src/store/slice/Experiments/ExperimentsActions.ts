@@ -1,9 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import {
   ExperimentsDTO,
-  //   ExperimentDTO,
   getExperiments as getExperimentsApi,
-  //   getExperimentByUid as getExperimentByUidApi,
   deleteExperimentByUid as deleteExperimentByUidApi,
 } from 'api/experiments/Experiments'
 import { EXPERIMENTS_SLICE_NAME } from './ExperimentsType'
