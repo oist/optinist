@@ -25,10 +25,7 @@ import {
   selectTimeSeriesItemZeroLine,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import createColormap from 'colormap'
-import {
-  setTimeSeriesItemDisplayNumbers,
-  setTimeSeriesItemMaxIndex,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { setTimeSeriesItemDisplayNumbers } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 export const TimeSeriesPlot = React.memo(() => {
   const { itemId, filePath: path } = React.useContext(DisplayDataContext)
