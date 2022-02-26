@@ -8,7 +8,7 @@ import CircularProgress from '@mui/material/CircularProgress'
 export const ExperimentStatusIcon = React.memo<{ status: EXPERIMENTS_STATUS }>(
   ({ status }) => {
     switch (status) {
-      case 'failed':
+      case 'error':
         return <ErrorOutlineIcon color="error" />
       case 'success':
         return <DoneIcon color="success" />

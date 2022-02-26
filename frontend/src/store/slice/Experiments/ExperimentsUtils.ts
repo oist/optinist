@@ -41,8 +41,8 @@ function convertToExperimentStatus(dto: string): EXPERIMENTS_STATUS {
       return 'running'
     case 'success':
       return 'success'
-    case 'failed':
-      return 'failed'
+    case 'error':
+      return 'error'
     default:
       throw new Error('failed to convert to EXPERIMENTS_STATUS')
   }

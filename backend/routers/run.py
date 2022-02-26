@@ -29,7 +29,7 @@ async def params(runItem: RunItem, background_tasks: BackgroundTasks):
     unique_id = str(uuid.uuid4())
 
     set_workflow(unique_id, runItem)
-    
+
     snakemake_params = get_typecheck_params(runItem.snakemakeParam, "snakemake")
     background_tasks.add_task(run_snakemake, snakemake_params)
 

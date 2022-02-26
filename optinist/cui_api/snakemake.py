@@ -24,18 +24,22 @@ def write_experiment_config(unique_id, rule_config, runItem):
         "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         "name": "test",
         "unique_id": unique_id,
-        "success": "running",
         "function": {},
+        "success": "success"
     }
 
     for node in runItem.nodeList:
         name = node["data"]["label"]
         position = node["position"]
 
+        success = "running"
+        if node["type"] == "ImageFileNode":
+            success = "success"
+
         experiment_config["function"][name] = {
             "unique_id": node["id"],
             "position": position,
-            "success": "running",
+            "success": success,
         }
         
     save_path = join_file_path([BASE_DIR, unique_id])

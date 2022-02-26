@@ -40,4 +40,4 @@ export type ExperimentFunction = {
   status: EXPERIMENTS_STATUS
 }
 
-export type EXPERIMENTS_STATUS = 'success' | 'failed' | 'running'
+export type EXPERIMENTS_STATUS = 'success' | 'error' | 'running'
