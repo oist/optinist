@@ -1,9 +1,9 @@
 import React from 'react'
 import DoneIcon from '@mui/icons-material/Done'
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
+import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule'
 
 import { EXPERIMENTS_STATUS } from 'store/slice/Experiments/ExperimentsType'
-import CircularProgress from '@mui/material/CircularProgress'
 
 export const ExperimentStatusIcon = React.memo<{ status: EXPERIMENTS_STATUS }>(
   ({ status }) => {
@@ -13,7 +13,7 @@ export const ExperimentStatusIcon = React.memo<{ status: EXPERIMENTS_STATUS }>(
       case 'success':
         return <DoneIcon color="success" />
       case 'running':
-        return <CircularProgress size={25} />
+        return <HorizontalRuleIcon color="inherit" />
     }
   },
 )
