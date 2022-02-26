@@ -65,13 +65,6 @@ const TimeSeriesPlotImple = React.memo(() => {
     timeSeriesDataEqualityFn,
   )
 
-  dispatch(
-    setTimeSeriesItemMaxIndex({
-      itemId,
-      maxIndex: Object.keys(timeSeriesData).length,
-    }),
-  )
-
   const offset = useSelector(selectTimeSeriesItemOffset(itemId))
   const span = useSelector(selectTimeSeriesItemSpan(itemId))
   const showgrid = useSelector(selectTimeSeriesItemShowGrid(itemId))
