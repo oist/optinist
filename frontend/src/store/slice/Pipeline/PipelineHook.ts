@@ -10,7 +10,6 @@ import { run, pollRunResult } from './PipelineActions'
 import { cancelPipeline } from './PipelineSlice'
 import { AppDispatch, RootState } from 'store/store'
 import { selectFilePathIsUndefined } from '../InputNode/InputNodeSelectors'
-import { useSnackbar } from 'notistack'
 
 const POLLING_INTERVAL = 5000
 
