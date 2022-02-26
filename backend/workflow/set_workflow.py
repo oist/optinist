@@ -3,7 +3,7 @@ import yaml
 from workflow.get_network import get_network
 from workflow.params import get_typecheck_params
 from workflow.set_file import set_imagefile, set_csvfile, set_algofile, set_hdf5file
-from cui_api.snakemake import write_snakemake_config, write_experiment_config
+from cui_api.write_config import write_snakemake_config, write_experiment_config
 
 
 def set_workflow(unique_id, runItem):

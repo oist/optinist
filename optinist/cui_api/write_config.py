@@ -1,7 +1,6 @@
 import os
 import yaml
 from datetime import datetime
-from snakemake import snakemake
 
 from cui_api.const import BASE_DIR, OPTINIST_DIR
 from cui_api.utils import join_file_path
@@ -25,12 +24,13 @@ def write_experiment_config(unique_id, rule_config, runItem):
         "name": "test",
         "unique_id": unique_id,
         "function": {},
-        "success": "success"
+        "nodeList": runItem.nodeList,
+        "edgeList": runItem.edgeList,
     }
 
     for node in runItem.nodeList:
         name = node["data"]["label"]
-        position = node["position"]
+        # position = node["position"]
 
         success = "running"
         if node["type"] == "ImageFileNode":
@@ -38,7 +38,7 @@ def write_experiment_config(unique_id, rule_config, runItem):
 
         experiment_config["function"][name] = {
             "unique_id": node["id"],
-            "position": position,
+            # "position": position,
             "success": success,
         }
         
@@ -48,11 +48,3 @@ def write_experiment_config(unique_id, rule_config, runItem):
 
     with open(join_file_path([save_path, 'experiment.yaml']), "w") as f:
         yaml.dump(experiment_config, f)
-
-
-def run_snakemake(snakemake_params):
-    # run snakemake
-    snakemake(
-        join_file_path([OPTINIST_DIR, 'Snakefile']),
-        **snakemake_params
-    )

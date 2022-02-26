@@ -10,7 +10,7 @@ from workflow.params import get_typecheck_params
 from workflow.set_workflow import set_workflow
 from workflow.results import get_results
 
-from cui_api.snakemake import run_snakemake
+from cui_api.run import run_snakemake
 from cui_api.const import BASE_DIR
 
 

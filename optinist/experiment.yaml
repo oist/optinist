@@ -1,13 +1,51 @@
-data_endoscope.tif:
-  position:
-    x: 50
-    y: 61
-  success: null
+edgeList:
+- animated: false
+  id: reactflow__edge-00--image--ImageData-4l80M9-FnfKsc3Rxqrtfe4l80M9-FnfKsc3Rxqrtfe--image--ImageData
+  source: '0'
+  sourceHandle: 0--image--ImageData
+  style:
+    width: 5
+  target: 4l80M9-FnfKsc3Rxqrtfe
+  targetHandle: 4l80M9-FnfKsc3Rxqrtfe--image--ImageData
+  type: buttonedge
+function:
+  data_endoscope.tif:
+    success: success
+    unique_id: '0'
+  suite2p_file_convert:
+    success: success
+    unique_id: 4l80M9-FnfKsc3Rxqrtfe
 name: test
-success: null
-suite2p_file_convert:
+nodeList:
+- data:
+    label: data_endoscope.tif
+    param: {}
+    path: /tmp/optinist/data_endoscope/data_endoscope.tif
+    type: input
+  id: '0'
   position:
-    x: 350
+    x: 51
     y: 60
-  success: null
-timestamp: '2022-02-25 14:52:01'
+  style:
+    border: '1px solid #777'
+    height: 120
+  type: ImageFileNode
+- data:
+    label: suite2p_file_convert
+    param: {}
+    path: suite2p/suite2p_file_convert
+    type: algorithm
+  id: 4l80M9-FnfKsc3Rxqrtfe
+  position:
+    x: 378
+    y: 63
+  sourcePosition: right
+  style:
+    borderRadius: 0
+    height: 100
+    padding: 0
+    width: 180
+  targetPosition: left
+  type: AlgorithmNode
+timestamp: '2022-02-27 01:44:38'
+unique_id: 37d2ddd2-bd89-4080-84f2-b925babf83c1

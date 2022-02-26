@@ -21,11 +21,16 @@ async def read_experiment():
     return experiment_config
 
 
-@router.get("/experiments/{unique_id}")
+@router.get("/experiments/import/{unique_id}")
 async def read_experiment(unique_id: str):
     with open(join_file_path([BASE_DIR, unique_id, "experiment.yaml"])) as f:
         config = yaml.safe_load(f)
-    return config
+
+    response_config = {}
+    response_config["nodeList"] = config["nodeList"]
+    response_config["edgeList"] = config["edgeList"]
+
+    return response_config
 
 
 @router.delete("/experiments/{unique_id}")
