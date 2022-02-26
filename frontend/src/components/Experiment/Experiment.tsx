@@ -11,6 +11,7 @@ const Experiment: React.FC = () => {
           flexDirection: 'column',
           flexGrow: 1,
           height: '100vh',
+          padding: 16,
         }}
       >
         <MuiToolbar />

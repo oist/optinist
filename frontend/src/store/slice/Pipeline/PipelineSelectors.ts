@@ -5,7 +5,7 @@ import {
   InputNodePostData,
   NodePostDataType,
   RunPostData,
-} from 'api/Run/Run'
+} from 'api/run/Run'
 
 import { RootState } from 'store/store'
 import {

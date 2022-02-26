@@ -1,41 +1,84 @@
 import React from 'react'
-import { styled } from '@mui/material/styles'
+import { useSelector, useDispatch } from 'react-redux'
+import Button from '@mui/material/Button'
+import Alert from '@mui/material/Alert'
+import AlertTitle from '@mui/material/AlertTitle'
 import IconButton from '@mui/material/IconButton'
 import Table from '@mui/material/Table'
 import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
+import TableCell, { tableCellClasses } from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogTitle from '@mui/material/DialogTitle'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
-
-import DoneIcon from '@mui/icons-material/Done'
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import GetAppIcon from '@mui/icons-material/GetApp'
 
-import { createData } from './DataType'
 import { CollapsibleTable } from './CollapsibleTable'
-
-const rows = [
-  createData('2022-02-02', 'name1', true, 100),
-  createData('2022-02-03', 'name2', false, 80),
-  createData('2022-02-04', 'name3', true, 100),
-  createData('2022-02-05', 'name4', false, 30),
-]
+import {
+  selectExperimentsSatusIsUninitialized,
+  selectExperimentsSatusIsFulfilled,
+  selectExperimentUidList,
+  selectExperimentTimeStamp,
+  selectExperimentName,
+  selectExperimentStatus,
+  selectExperimentsSatusIsError,
+  selectExperimentsErrorMessage,
+} from 'store/slice/Experiments/ExperimentsSelectors'
+import { deleteExperimentByUid } from 'store/slice/Experiments/ExperimentsActions'
+import { getExperiments } from 'store/slice/Experiments/ExperimentsActions'
+import { arrayEqualityFn } from 'utils/EqualityUtils'
+import { ExperimentStatusIcon } from './ExperimentStatusIcon'
 
 export const ExperimentTable: React.FC = () => {
+  const isUninitialized = useSelector(selectExperimentsSatusIsUninitialized)
+  const isFulfilled = useSelector(selectExperimentsSatusIsFulfilled)
+  const isError = useSelector(selectExperimentsSatusIsError)
+  const dispatch = useDispatch()
+  React.useEffect(() => {
+    if (isUninitialized) {
+      dispatch(getExperiments())
+    }
+  }, [dispatch, isUninitialized])
+  if (isFulfilled) {
+    return <TableImple />
+  } else if (isError) {
+    return <ExperimentsErrorView />
+  } else {
+    return null
+  }
+}
+
+const ExperimentsErrorView: React.FC = () => {
+  const message = useSelector(selectExperimentsErrorMessage)
   return (
-    <TableContainer component={Paper}>
+    <Alert severity="error">
+      <AlertTitle>failed to get experiments...</AlertTitle>
+      {message}
+    </Alert>
+  )
+}
+
+export const ExperimentUidContext = React.createContext<string>('')
+
+const TableImple: React.FC = () => {
+  const uidList = useSelector(selectExperimentUidList, arrayEqualityFn)
+  return (
+    <TableContainer component={Paper} elevation={0} variant="outlined">
       <Table aria-label="collapsible table">
         <TableHead>
           <Head />
         </TableHead>
         <TableBody>
-          {rows.map((row, idx) => (
-            <Row key={idx} row={row} />
+          {uidList.map((uid) => (
+            <ExperimentUidContext.Provider value={uid} key={uid}>
+              <Row key={uid} />
+            </ExperimentUidContext.Provider>
           ))}
         </TableBody>
       </Table>
@@ -50,16 +93,17 @@ const Head: React.FC = () => {
       <TableCell>Timestamp</TableCell>
       <TableCell>Name</TableCell>
       <TableCell>Success</TableCell>
-      {/* <TableCell>Progress</TableCell> */}
       <TableCell>Import</TableCell>
       <TableCell>Delete</TableCell>
     </TableRow>
   )
 }
 
-const Row: React.FC<{
-  row: ReturnType<typeof createData>
-}> = ({ row }) => {
+const Row: React.FC = () => {
+  const uid = React.useContext(ExperimentUidContext)
+  const timestamp = useSelector(selectExperimentTimeStamp(uid))
+  const status = useSelector(selectExperimentStatus(uid))
+  const name = useSelector(selectExperimentName(uid))
   const [open, setOpen] = React.useState(false)
   return (
     <React.Fragment>
@@ -68,81 +112,74 @@ const Row: React.FC<{
           '& > *': {
             borderBottom: 'unset',
           },
+          [`& .${tableCellClasses.root}`]: {
+            borderBottomWidth: 0,
+          },
         }}
       >
         <TableCell>
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={() => setOpen(!open)}
+            onClick={() => setOpen((prevOpen) => !prevOpen)}
           >
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
         <TableCell component="th" scope="row">
-          {row.date}
+          {timestamp}
         </TableCell>
-        <TableCell>{row.name}</TableCell>
+        <TableCell>{name}</TableCell>
         <TableCell>
-          {row.status ? (
-            <DoneIcon style={{ color: 'green' }} />
-          ) : (
-            <ErrorOutlineIcon style={{ color: 'red' }} />
-          )}
-        </TableCell>
-        {/* <TableCell>
-          <ProgressBar progress={row.progress} />
-        </TableCell> */}
-        <TableCell>
-          <GetAppIcon style={{ color: 'blue' }} />
+          <ExperimentStatusIcon status={status} />
         </TableCell>
         <TableCell>
-          <DeleteOutlineIcon style={{ color: 'red' }} />
+          <IconButton>
+            <GetAppIcon color="primary" />
+          </IconButton>
+        </TableCell>
+        <TableCell>
+          <ExperimentDeleteButton />
         </TableCell>
       </TableRow>
-      <CollapsibleTable row={row} open={open} />
+      <CollapsibleTable open={open} />
     </React.Fragment>
   )
 }
 
-const ProgressBar: React.FC<{
-  progress: number
-}> = ({ progress }) => {
-  const valueInPercent = progress
+const ExperimentDeleteButton: React.FC = () => {
+  const dispatch = useDispatch()
+  const uid = React.useContext(ExperimentUidContext)
+
+  const name = useSelector(selectExperimentName(uid))
+  const [open, setOpen] = React.useState(false)
+
+  const onClickOpen = () => {
+    setOpen(true)
+  }
+  const onClickCancel = () => {
+    setOpen(false)
+  }
+  const onClickOk = () => {
+    setOpen(false)
+    dispatch(deleteExperimentByUid(uid))
+  }
   return (
-    <ProgressBarRoot>
-      <ProgressValue>{`${valueInPercent.toLocaleString()} %`}</ProgressValue>
-      <Bar valueInPercent={valueInPercent} />
-    </ProgressBarRoot>
+    <>
+      <IconButton onClick={onClickOpen}>
+        <DeleteOutlineIcon color="error" />
+      </IconButton>
+      <Dialog open={open}>
+        <DialogTitle>Are you sure you want to delete {name}?</DialogTitle>
+        <DialogActions>
+          <Button onClick={onClickCancel} variant="outlined" color="inherit">
+            Cancel
+          </Button>
+          <Button onClick={onClickOk} variant="outlined" autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
   )
 }
-
-const ProgressBarRoot = styled('div')(({ theme }) => ({
-  border: `1px solid ${theme.palette.divider}`,
-  position: 'relative',
-  overflow: 'hidden',
-  width: '100%',
-  height: 26,
-  borderRadius: 2,
-}))
-
-const ProgressValue = styled('div')({
-  position: 'absolute',
-  lineHeight: '24px',
-  width: '100%',
-  display: 'flex',
-  justifyContent: 'center',
-})
-
-const Bar = styled('div')<{ valueInPercent: number }>(
-  ({ valueInPercent, theme }) => ({
-    height: '100%',
-    maxWidth: `${valueInPercent}%`,
-    backgroundColor:
-      valueInPercent === 100
-        ? theme.palette.success.light
-        : valueInPercent >= 50 && valueInPercent < 100
-        ? theme.palette.warning.light
-        : theme.palette.error.light,
-  }),
-)

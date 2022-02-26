@@ -24,7 +24,7 @@ def write_experiment_config(unique_id, rule_config, runItem):
         "timestamp": datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
         "name": "test",
         "unique_id": unique_id,
-        "success": None,
+        "success": "running",
         "function": {},
     }
 
@@ -35,7 +35,7 @@ def write_experiment_config(unique_id, rule_config, runItem):
         experiment_config["function"][name] = {
             "unique_id": node["id"],
             "position": position,
-            "success": None,
+            "success": "running",
         }
         
     save_path = join_file_path([BASE_DIR, unique_id])

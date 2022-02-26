@@ -1,4 +1,4 @@
-import { RunPostData, RunResultDTO, OutputPathsDTO } from 'api/Run/Run'
+import { RunPostData, RunResultDTO, OutputPathsDTO } from 'api/run/Run'
 
 import { toDataType } from '../DisplayData/DisplayDataUtils'
 import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'

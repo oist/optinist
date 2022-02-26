@@ -27,15 +27,20 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
     handleCancelPipeline()
   }
 
+  // タブ移動による再レンダリングするたびにスナックバーが実行されてしまう挙動を回避するために前回の値を保持
+  const [prevStatus, setPrevStatus] = React.useState(status)
   React.useEffect(() => {
-    if (status === RUN_STATUS.FINISHED) {
-      enqueueSnackbar('Finished', { variant: 'success' })
-    } else if (status === RUN_STATUS.ABORTED) {
-      enqueueSnackbar('Aborted', { variant: 'error' })
-    } else if (status === RUN_STATUS.CANCELED) {
-      enqueueSnackbar('Canceled', { variant: 'info' })
+    if (prevStatus !== status) {
+      if (status === RUN_STATUS.FINISHED) {
+        enqueueSnackbar('Finished', { variant: 'success' })
+      } else if (status === RUN_STATUS.ABORTED) {
+        enqueueSnackbar('Aborted', { variant: 'error' })
+      } else if (status === RUN_STATUS.CANCELED) {
+        enqueueSnackbar('Canceled', { variant: 'info' })
+      }
+      setPrevStatus(status)
     }
-  }, [status, enqueueSnackbar])
+  }, [status, prevStatus, enqueueSnackbar])
 
   return (
     <>

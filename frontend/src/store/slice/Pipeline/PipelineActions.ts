@@ -7,7 +7,7 @@ import {
   runResult,
   RunResultDTO,
   RunPostData,
-} from 'api/Run/Run'
+} from 'api/run/Run'
 import { selectRunResultPendingNodeIdList } from './PipelineSelectors'
 
 export const run = createAsyncThunk<
