@@ -73,6 +73,10 @@ Go to GitHub and follow the steps below to register your public key.
 
 This completes the SSH connection settings!
 # 1. Clone optinist repository
+If you've already installed optinist directory, please git pull command and not need to git clone process.
+```
+git pull origin develop
+```
 
 First, you get optinist code from github repository.
 ```
