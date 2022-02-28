@@ -25,7 +25,10 @@ import {
   selectTimeSeriesItemZeroLine,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import createColormap from 'colormap'
-import { setTimeSeriesItemDisplayNumbers } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import {
+  setTimeSeriesItemCheckedList,
+  setTimeSeriesItemDisplayNumbers,
+} from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 export const TimeSeriesPlot = React.memo(() => {
   const { itemId, filePath: path } = React.useContext(DisplayDataContext)
@@ -77,6 +80,13 @@ const TimeSeriesPlotImple = React.memo(() => {
     format: 'hex',
     alpha: 1,
   })
+
+  const checkedList = [...Array(Object.keys(timeSeriesData).length)].map(
+    (_) => {
+      return false
+    },
+  )
+  setTimeSeriesItemCheckedList({ itemId, checkedList })
 
   const data = React.useMemo(() => {
     if (timeSeriesData === null) {
@@ -157,7 +167,7 @@ const TimeSeriesPlotImple = React.memo(() => {
     responsive: true,
   }
 
-  const onClick = (event: LegendClickEvent) => {
+  const onLegendClick = (event: LegendClickEvent) => {
     const clickNumber = event.curveNumber
     if (displayNumbers.includes(clickNumber)) {
       const newValue = displayNumbers.filter((value) => value !== clickNumber)
@@ -185,7 +195,7 @@ const TimeSeriesPlotImple = React.memo(() => {
       data={data}
       layout={layout}
       config={config}
-      onLegendClick={onClick}
+      onLegendClick={onLegendClick}
     />
   )
 })

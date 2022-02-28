@@ -1,7 +1,10 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { FormControlLabel, Switch, TextField } from '@mui/material'
+import Box from '@mui/material/Box'
+import Checkbox from '@mui/material/Checkbox'
 import {
+  selectTimeSeriesItemDisplayNumbers,
   selectTimeSeriesItemOffset,
   selectTimeSeriesItemShowGrid,
   selectTimeSeriesItemShowLine,
@@ -32,6 +35,7 @@ export const TimeSeriesItemEditor: React.FC = () => {
       <ShowTickLabels />
       <ZeroLine />
       <Xrange />
+      <LegendSelect />
     </div>
   )
 }
@@ -195,5 +199,57 @@ const Xrange: React.FC = () => {
       }
       label=""
     />
+  )
+}
+
+const LegendSelect: React.FC = () => {
+  const itemId = React.useContext(SelectedItemIdContext)
+  const [checked, setChecked] = React.useState([true, false])
+
+  const allHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newChecked = checked.map((_) => {
+      return event.target.checked
+    })
+    console.log(newChecked)
+    setChecked(newChecked)
+  }
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newChecked = checked.map((v, i) => {
+      if (i === parseInt(event.target.value)) {
+        return event.target.checked
+      }
+      return v
+    })
+    console.log(newChecked)
+    setChecked(newChecked)
+  }
+
+  const children = (
+    <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
+      {checked.map((v, i) => (
+        <FormControlLabel
+          key={`${i}`}
+          label={`Index ${i}`}
+          control={<Checkbox checked={v} onChange={handleChange} value={i} />}
+        />
+      ))}
+    </Box>
+  )
+
+  return (
+    <div>
+      <FormControlLabel
+        label="All Check"
+        control={
+          <Checkbox
+            checked={checked[0] && checked[1]}
+            indeterminate={checked[0] !== checked[1]}
+            onChange={allHandleChange}
+          />
+        }
+      />
+      {children}
+    </div>
   )
 }

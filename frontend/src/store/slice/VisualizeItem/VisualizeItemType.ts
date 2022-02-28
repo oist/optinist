@@ -77,6 +77,7 @@ export interface TimeSeriesItem extends DisplayDataItemBaseType {
   }
   maxIndex: number
   displayNumbers: number[]
+  checkedList: boolean[]
 }
 
 export interface HeatMapItem extends DisplayDataItemBaseType {
