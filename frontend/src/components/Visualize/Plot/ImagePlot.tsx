@@ -26,7 +26,7 @@ import {
 import {
   getImageData,
   getRoiData,
-  getTimeSeriesData,
+  getTimeSeriesDataById,
 } from 'store/slice/DisplayData/DisplayDataActions'
 import {
   selectImageItemShowticklabels,
@@ -304,7 +304,7 @@ const ImagePlotChart = React.memo<{
         }),
       )
       dispatch(
-        getTimeSeriesData({
+        getTimeSeriesDataById({
           path: timeSeriesFilePath,
           index: points.z - 1,
         }),

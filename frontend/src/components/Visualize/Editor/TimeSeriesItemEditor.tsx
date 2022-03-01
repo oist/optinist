@@ -28,7 +28,10 @@ import {
   setTimeSeriesItemXrangeRight,
   setTimeSeriesItemZeroLine,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { getTimeSeriesData } from 'store/slice/DisplayData/DisplayDataActions'
+import {
+  getTimeSeriesAllData,
+  getTimeSeriesDataById,
+} from 'store/slice/DisplayData/DisplayDataActions'
 
 export const TimeSeriesItemEditor: React.FC = () => {
   return (
@@ -223,6 +226,27 @@ const LegendSelect: React.FC = () => {
         }),
       }),
     )
+
+    if (event.target.checked) {
+      dispatch(
+        setTimeSeriesItemDisplayNumbers({
+          itemId,
+          displayNumbers: checkedList.map((_, i) => {
+            return i
+          }),
+        }),
+      )
+      if (filePath !== null) {
+        dispatch(getTimeSeriesAllData({ path: filePath }))
+      }
+    } else {
+      dispatch(
+        setTimeSeriesItemDisplayNumbers({
+          itemId,
+          displayNumbers: [],
+        }),
+      )
+    }
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -259,7 +283,7 @@ const LegendSelect: React.FC = () => {
     )
 
     if (filePath !== null) {
-      dispatch(getTimeSeriesData({ path: filePath, index }))
+      dispatch(getTimeSeriesDataById({ path: filePath, index }))
     }
   }
 

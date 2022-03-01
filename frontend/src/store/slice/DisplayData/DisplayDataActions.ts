@@ -12,11 +12,11 @@ import {
   BarData,
 } from './DisplayDataType'
 
-export const getTimeSeriesData = createAsyncThunk<
+export const getTimeSeriesDataById = createAsyncThunk<
   { data: TimeSeriesData },
   { path: string; index: number }
 >(
-  `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesData`,
+  `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesDataById`,
   async ({ path, index }, thunkAPI) => {
     try {
       const response = await axios.get(`${BASE_URL}/outputs/timedata/${path}`, {
@@ -24,6 +24,23 @@ export const getTimeSeriesData = createAsyncThunk<
           index: index,
         },
       })
+      return response.data
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
+
+export const getTimeSeriesAllData = createAsyncThunk<
+  { data: TimeSeriesData },
+  { path: string }
+>(
+  `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesAllData`,
+  async ({ path }, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/outputs/alltimedata/${path}`,
+      )
       return response.data
     } catch (e) {
       return thunkAPI.rejectWithValue(e)

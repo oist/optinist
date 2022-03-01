@@ -12,7 +12,7 @@ import {
   selectTimeSeriesDataIsInitialized,
   selectTimeSeriesDataIsPending,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
-import { getTimeSeriesData } from 'store/slice/DisplayData/DisplayDataActions'
+import { getTimeSeriesDataById } from 'store/slice/DisplayData/DisplayDataActions'
 import { TimeSeriesData } from 'store/slice/DisplayData/DisplayDataType'
 import {
   selectTimeSeriesItemCheckedList,
@@ -40,7 +40,7 @@ export const TimeSeriesPlot = React.memo(() => {
 
   React.useEffect(() => {
     if (!isInitialized) {
-      displayNumbers.map((v) => dispatch(getTimeSeriesData({ path, index: v })))
+      dispatch(getTimeSeriesDataById({ path, index: 0 }))
     }
   }, [dispatch, isInitialized, path, displayNumbers])
 
@@ -223,7 +223,7 @@ const TimeSeriesPlotImple = React.memo(() => {
         }),
       )
 
-      dispatch(getTimeSeriesData({ path, index: clickNumber }))
+      dispatch(getTimeSeriesDataById({ path, index: clickNumber }))
     }
 
     return false
