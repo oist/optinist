@@ -7,6 +7,7 @@ import {
 } from './ExperimentsActions'
 import { convertToExperimentListType } from './ExperimentsUtils'
 import { pollRunResult, run } from '../Pipeline/PipelineActions'
+import { setFlowElements } from '../FlowElement/FlowElementSlice'
 
 const initialState: Experiments = {
   status: 'uninitialized',
@@ -47,8 +48,7 @@ export const experimentsSlice = createSlice({
         }
       })
       .addCase(importExperimentByUid.fulfilled, (state, action) => {
-        console.log(action.payload)
-        const experimentList = convertToExperimentListType(action.payload)
+        const nodeList = action.payload.nodeList
       })
       .addCase(pollRunResult.fulfilled, (state, action) => {
         if (state.status === 'fulfilled') {
