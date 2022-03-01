@@ -3,7 +3,10 @@ import {
   ExperimentsDTO,
   getExperiments as getExperimentsApi,
   deleteExperimentByUid as deleteExperimentByUidApi,
+  importExperimentByUidApi,
 } from 'api/experiments/Experiments'
+import { Elements } from 'react-flow-renderer'
+import { NodeData } from '../FlowElement/FlowElementType'
 import { EXPERIMENTS_SLICE_NAME } from './ExperimentsType'
 
 export const getExperiments = createAsyncThunk<ExperimentsDTO, undefined>(
@@ -35,6 +38,18 @@ export const deleteExperimentByUid = createAsyncThunk<boolean, string>(
   async (uid, thunkAPI) => {
     try {
       const response = await deleteExperimentByUidApi(uid)
+      return response
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
+
+export const importExperimentByUid = createAsyncThunk<{}, string>(
+  `${EXPERIMENTS_SLICE_NAME}/importExperimentByUid`,
+  async (uid, thunkAPI) => {
+    try {
+      const response = await importExperimentByUidApi(uid)
       return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)
