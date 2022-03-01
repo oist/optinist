@@ -85,10 +85,18 @@ const TimeSeriesPlotImple = React.memo(() => {
   React.useEffect(() => {
     const keys = Object.keys(timeSeriesData)
     if (checkedList.length === 0 && keys.length !== 0) {
-      const checkedList = keys.map((_) => {
+      const checkedList = keys.map((_, i) => {
+        if (i === 0) {
+          return true
+        }
         return false
       })
-      dispatch(setTimeSeriesItemCheckedList({ itemId, checkedList }))
+      dispatch(
+        setTimeSeriesItemCheckedList({
+          itemId,
+          checkedList,
+        }),
+      )
     }
   }, [timeSeriesData])
 
@@ -109,11 +117,10 @@ const TimeSeriesPlotImple = React.memo(() => {
           const std: number =
             span *
             Math.sqrt(y.reduce((a, b) => a + Math.pow(b - mean, 2)) / y.length)
-          const newArray = y.map((value) => (value - mean) / std + activeIdx)
           return {
             name: `(${String(parseInt(key) + 1)})`,
             x: Object.keys(timeSeriesData[key]),
-            y: newArray,
+            y: y.map((value) => (value - mean) / std + activeIdx),
             visible: true,
             line: { color: colorScale[new_i] },
           }
@@ -173,24 +180,52 @@ const TimeSeriesPlotImple = React.memo(() => {
 
   const onLegendClick = (event: LegendClickEvent) => {
     const clickNumber = event.curveNumber
+
+    // set DisplayNumbers
     if (displayNumbers.includes(clickNumber)) {
-      const newValue = displayNumbers.filter((value) => value !== clickNumber)
       dispatch(
         setTimeSeriesItemDisplayNumbers({
           itemId,
-          displayNumbers: newValue,
+          displayNumbers: displayNumbers.filter(
+            (value) => value !== clickNumber,
+          ),
+        }),
+      )
+
+      dispatch(
+        setTimeSeriesItemCheckedList({
+          itemId,
+          checkedList: checkedList.map((v, i) => {
+            if (i === clickNumber) {
+              return false
+            }
+            return v
+          }),
         }),
       )
     } else {
-      const newValue = [...displayNumbers, clickNumber]
       dispatch(
         setTimeSeriesItemDisplayNumbers({
           itemId,
-          displayNumbers: newValue,
+          displayNumbers: [...displayNumbers, clickNumber],
         }),
       )
+
+      dispatch(
+        setTimeSeriesItemCheckedList({
+          itemId,
+          checkedList: checkedList.map((v, i) => {
+            if (i === clickNumber) {
+              return true
+            }
+            return v
+          }),
+        }),
+      )
+
       dispatch(getTimeSeriesData({ path, index: clickNumber }))
     }
+
     return false
   }
 
