@@ -5,8 +5,7 @@ import {
   deleteExperimentByUid as deleteExperimentByUidApi,
   importExperimentByUidApi,
 } from 'api/experiments/Experiments'
-import { Elements } from 'react-flow-renderer'
-import { NodeData } from '../FlowElement/FlowElementType'
+import { RunPostData } from 'api/run/Run'
 import { EXPERIMENTS_SLICE_NAME } from './ExperimentsType'
 
 export const getExperiments = createAsyncThunk<ExperimentsDTO, undefined>(
@@ -45,7 +44,7 @@ export const deleteExperimentByUid = createAsyncThunk<boolean, string>(
   },
 )
 
-export const importExperimentByUid = createAsyncThunk<{}, string>(
+export const importExperimentByUid = createAsyncThunk<RunPostData, string>(
   `${EXPERIMENTS_SLICE_NAME}/importExperimentByUid`,
   async (uid, thunkAPI) => {
     try {
