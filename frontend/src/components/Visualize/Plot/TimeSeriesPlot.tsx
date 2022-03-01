@@ -15,6 +15,7 @@ import {
 import { getTimeSeriesData } from 'store/slice/DisplayData/DisplayDataActions'
 import { TimeSeriesData } from 'store/slice/DisplayData/DisplayDataType'
 import {
+  selectTimeSeriesItemCheckedList,
   selectTimeSeriesItemDisplayNumbers,
   selectTimeSeriesItemOffset,
   selectTimeSeriesItemShowGrid,
@@ -24,11 +25,9 @@ import {
   selectTimeSeriesItemXrange,
   selectTimeSeriesItemZeroLine,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import { setTimeSeriesItemCheckedList } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import createColormap from 'colormap'
-import {
-  setTimeSeriesItemCheckedList,
-  setTimeSeriesItemDisplayNumbers,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { setTimeSeriesItemDisplayNumbers } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 export const TimeSeriesPlot = React.memo(() => {
   const { itemId, filePath: path } = React.useContext(DisplayDataContext)
@@ -38,6 +37,7 @@ export const TimeSeriesPlot = React.memo(() => {
   const isInitialized = useSelector(selectTimeSeriesDataIsInitialized(path))
   const error = useSelector(selectTimeSeriesDataError(path))
   const isFulfilled = useSelector(selectTimeSeriesDataIsFulfilled(path))
+
   React.useEffect(() => {
     if (!isInitialized) {
       displayNumbers.map((v) => dispatch(getTimeSeriesData({ path, index: v })))
@@ -73,6 +73,7 @@ const TimeSeriesPlotImple = React.memo(() => {
   const zeroline = useSelector(selectTimeSeriesItemZeroLine(itemId))
   const xrange = useSelector(selectTimeSeriesItemXrange(itemId))
   const displayNumbers = useSelector(selectTimeSeriesItemDisplayNumbers(itemId))
+  const checkedList = useSelector(selectTimeSeriesItemCheckedList(itemId))
 
   const colorScale = createColormap({
     colormap: 'jet',
@@ -81,12 +82,15 @@ const TimeSeriesPlotImple = React.memo(() => {
     alpha: 1,
   })
 
-  const checkedList = [...Array(Object.keys(timeSeriesData).length)].map(
-    (_) => {
-      return false
-    },
-  )
-  setTimeSeriesItemCheckedList({ itemId, checkedList })
+  React.useEffect(() => {
+    const keys = Object.keys(timeSeriesData)
+    if (checkedList.length === 0 && keys.length !== 0) {
+      const checkedList = keys.map((_) => {
+        return false
+      })
+      dispatch(setTimeSeriesItemCheckedList({ itemId, checkedList }))
+    }
+  }, [timeSeriesData])
 
   const data = React.useMemo(() => {
     if (timeSeriesData === null) {

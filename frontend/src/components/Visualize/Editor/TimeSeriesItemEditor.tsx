@@ -4,7 +4,7 @@ import { FormControlLabel, Switch, TextField } from '@mui/material'
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
 import {
-  selectTimeSeriesItemDisplayNumbers,
+  selectTimeSeriesItemCheckedList,
   selectTimeSeriesItemOffset,
   selectTimeSeriesItemShowGrid,
   selectTimeSeriesItemShowLine,
@@ -15,6 +15,7 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 import {
+  setTimeSeriesItemCheckedList,
   setTimeSeriesItemOffset,
   setTimeSeriesItemShowGrid,
   setTimeSeriesItemShowLine,
@@ -204,30 +205,29 @@ const Xrange: React.FC = () => {
 
 const LegendSelect: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
-  const [checked, setChecked] = React.useState([true, false])
+  const dispatch = useDispatch()
+  const checkedList = useSelector(selectTimeSeriesItemCheckedList(itemId))
 
   const allHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newChecked = checked.map((_) => {
+    const newChecked = checkedList.map((_) => {
       return event.target.checked
     })
-    console.log(newChecked)
-    setChecked(newChecked)
+    dispatch(setTimeSeriesItemCheckedList({ itemId, checkedList: newChecked }))
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newChecked = checked.map((v, i) => {
+    const newChecked = checkedList.map((v, i) => {
       if (i === parseInt(event.target.value)) {
         return event.target.checked
       }
       return v
     })
-    console.log(newChecked)
-    setChecked(newChecked)
+    dispatch(setTimeSeriesItemCheckedList({ itemId, checkedList: newChecked }))
   }
 
   const children = (
     <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
-      {checked.map((v, i) => (
+      {checkedList.map((v, i) => (
         <FormControlLabel
           key={`${i}`}
           label={`Index ${i}`}
@@ -243,8 +243,9 @@ const LegendSelect: React.FC = () => {
         label="All Check"
         control={
           <Checkbox
-            checked={checked[0] && checked[1]}
-            indeterminate={checked[0] !== checked[1]}
+            checked={checkedList.every((v) => {
+              return v
+            })}
             onChange={allHandleChange}
           />
         }
