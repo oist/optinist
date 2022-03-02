@@ -6,7 +6,7 @@ import {
   selectPipelineStatus,
   selectRunPostData,
 } from './PipelineSelectors'
-import { run, pollRunResult } from './PipelineActions'
+import { run, pollRunResult, runByUid } from './PipelineActions'
 import { cancelPipeline } from './PipelineSlice'
 import { AppDispatch, RootState } from 'store/store'
 import { selectFilePathIsUndefined } from '../InputNode/InputNodeSelectors'
@@ -26,9 +26,14 @@ export function useRunPipeline() {
   )
   const filePathIsUndefined = useSelector(selectFilePathIsUndefined)
   const runPostData = useSelector(selectRunPostData)
-  const handleRunPipeline = React.useCallback(
-    (newUid?: string) => {
-      dispatch(run({ uid: newUid, runPostData }))
+  const handleRunPipeline = React.useCallback(() => {
+    dispatch(run({ runPostData }))
+      .unwrap()
+      .then((result) => setUid(result))
+  }, [dispatch, runPostData])
+  const handleRunPipelineByUid = React.useCallback(
+    (newUid: string) => {
+      dispatch(runByUid({ uid: newUid, runPostData }))
         .unwrap()
         .then((result) => setUid(result))
     },
@@ -57,6 +62,7 @@ export function useRunPipeline() {
     uid,
     status,
     handleRunPipeline,
+    handleRunPipelineByUid,
     handleCancelPipeline,
   }
 }

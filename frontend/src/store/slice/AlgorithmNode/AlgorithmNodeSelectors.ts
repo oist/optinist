@@ -46,7 +46,3 @@ export const selectAlgorithmParam =
       throw new Error('AlgorithmParam is null')
     }
   }
-
-export const selectAlgorithmSelectedOutputKey =
-  (nodeId: string) => (state: RootState) =>
-    selectAlgorithmNode(state)[nodeId].selectedOutputKey

@@ -15,10 +15,7 @@ import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import { useHandleColor } from './HandleColorHook'
 import { FileSelect } from './FileSelect'
 import { toHandleId, isValidConnection } from './FlowChartUtils'
-import {
-  deleteFlowElementsById,
-  edifFlowElementsLabelById,
-} from 'store/slice/FlowElement/FlowElementSlice'
+import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
 
 // Connection部分のレイアウト
 const sourceHandleStyle: CSSProperties = {
@@ -48,13 +45,6 @@ const ImageFileNodeImple = React.memo<NodeProps>(
         setInputImageNodeFile({
           nodeId,
           filePath: path,
-        }),
-      )
-      const fileName = path.split('/').reverse()[0]
-      dispatch(
-        edifFlowElementsLabelById({
-          nodeId,
-          fileName,
         }),
       )
     }

@@ -8,8 +8,10 @@ import {
 } from '../FlowElement/FlowElementSlice'
 import { isNodeData } from '../FlowElement/FlowElementUtils'
 import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
+import { importExperimentByUid } from '../Experiments/ExperimentsActions'
 import { getAlgoParams } from './AlgorithmNodeActions'
 import { ALGORITHM_NODE_SLICE_NAME, AlgorithmNode } from './AlgorithmNodeType'
+import { isAlgorithmNodePostData } from 'api/run/RunUtils'
 
 const initialState: AlgorithmNode = {}
 
@@ -35,16 +37,6 @@ export const algorithmNodeSlice = createSlice({
         }
       }
     },
-    setSelectedOutputKey: (
-      state,
-      action: PayloadAction<{
-        nodeId: string
-        selectedOutputKey: string
-      }>,
-    ) => {
-      const { nodeId, selectedOutputKey } = action.payload
-      state[nodeId].selectedOutputKey = selectedOutputKey
-    },
   },
   extraReducers: (builder) => {
     builder
@@ -61,7 +53,6 @@ export const algorithmNodeSlice = createSlice({
           state[node.id] = {
             ...algoNodeInfo,
             params: null,
-            selectedOutputKey: null,
           }
         }
       })
@@ -79,8 +70,23 @@ export const algorithmNodeSlice = createSlice({
           delete state[action.payload]
         }
       })
+      .addCase(importExperimentByUid.fulfilled, (_, action) => {
+        const newState: AlgorithmNode = {}
+        action.payload.nodeList
+          .filter(isAlgorithmNodePostData)
+          .forEach((node) => {
+            if (node.data != null) {
+              newState[node.id] = {
+                name: node.data.label,
+                functionPath: node.data.path,
+                params: node.data.param,
+              }
+            }
+          })
+        return newState
+      })
   },
 })
 
-export const { updateParam, setSelectedOutputKey } = algorithmNodeSlice.actions
+export const { updateParam } = algorithmNodeSlice.actions
 export default algorithmNodeSlice.reducer

@@ -7,6 +7,7 @@ import type {
   AlgorithmNodeData,
   InputNodeData,
 } from 'store/slice/FlowElement/FlowElementType'
+import type { FILE_TYPE } from 'store/slice/InputNode/InputNodeType'
 import type { ParamMap } from 'store/utils/param/ParamType'
 
 export type RunPostData = {
@@ -20,6 +21,7 @@ export type NodePostDataType = AlgorithmNodePostData | InputNodePostData
 
 export interface InputNodePostData extends InputNodeData {
   path: string
+  fileType: FILE_TYPE
   param?: {
     [key: string]: unknown
   }
@@ -31,12 +33,17 @@ export interface AlgorithmNodePostData extends AlgorithmNodeData {
   param: ParamMap
 }
 
-export async function run(data: {
-  runData: RunPostData
-  uid?: string
-}): Promise<string> {
-  const response = await axios.post(`${BASE_URL}/run`, data.runData)
-  return response.data // uid
+export async function runApi(data: RunPostData): Promise<string> {
+  const response = await axios.post(`${BASE_URL}/run`, data)
+  return response.data
+}
+
+export async function runByUidApi(
+  uid: string,
+  data: RunPostData,
+): Promise<string> {
+  const response = await axios.post(`${BASE_URL}/run/${uid}`, data)
+  return response.data
 }
 
 export type RunResultDTO = {

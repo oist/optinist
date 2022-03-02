@@ -37,6 +37,7 @@ import {
   selectAlgorithmParams,
 } from '../AlgorithmNode/AlgorithmNodeSelectors'
 import {
+  selectInputNodeFileType,
   selectInputNodeHDF5Path,
   selectInputNodeParam,
   selectInputNodeSelectedFilePath,
@@ -70,6 +71,7 @@ export const selectNodePostDataListForRun = (
 ): Node<NodePostDataType>[] => {
   const elements = selectFlowElements(state)
   const nodeList = elements.filter(isNodeData).map((node) => {
+    console.log('node:', node)
     if (isAlgorithmNodeData(node)) {
       const param = selectAlgorithmParams(node.id)(state) ?? {}
       const functionPath = selectAlgorithmFunctionPath(node.id)(state)
@@ -86,6 +88,7 @@ export const selectNodePostDataListForRun = (
       return algorithmNodePostData
     } else {
       const filePath = selectInputNodeSelectedFilePath(node.id)(state)
+      const fileType = selectInputNodeFileType(node.id)(state)
       const param = selectInputNodeParam(node.id)(state)
       const hdf5Path = selectInputNodeHDF5Path(node.id)(state)
       const inputNodePosyData: Node<InputNodePostData> = {
@@ -97,6 +100,7 @@ export const selectNodePostDataListForRun = (
           path: filePath ?? '',
           param,
           hdf5Path: hdf5Path,
+          fileType,
         },
       }
       return inputNodePosyData

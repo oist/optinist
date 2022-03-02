@@ -1,5 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { isInputNodePostData } from 'api/run/RunUtils'
 import { INITIAL_IMAGE_ELEMENT_ID } from 'const/flowchart'
+import { importExperimentByUid } from '../Experiments/ExperimentsActions'
 import {
   addFlowElementNode,
   deleteFlowElements,
@@ -7,6 +9,7 @@ import {
 } from '../FlowElement/FlowElementSlice'
 import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
 import { isNodeData } from '../FlowElement/FlowElementUtils'
+import { setInputNodeFilePath } from './InputNodeActions'
 import {
   CsvInputParamType,
   FILE_TYPE_SET,
@@ -30,16 +33,6 @@ export const inputNodeSlice = createSlice({
       delete state[action.payload]
     },
     setInputImageNodeFile(
-      state,
-      action: PayloadAction<{
-        nodeId: string
-        filePath: string
-      }>,
-    ) {
-      const { nodeId, filePath } = action.payload
-      state[nodeId].selectedFilePath = filePath
-    },
-    setInputNodeFilePath(
       state,
       action: PayloadAction<{
         nodeId: string
@@ -75,6 +68,10 @@ export const inputNodeSlice = createSlice({
   },
   extraReducers: (builder) =>
     builder
+      .addCase(setInputNodeFilePath, (state, action) => {
+        const { nodeId, filePath } = action.payload
+        state[nodeId].selectedFilePath = filePath
+      })
       .addCase(addFlowElementNode, (state, action) => {
         const { node, inputNodeInfo } = action.payload
         if (node.data?.type === NODE_TYPE_SET.INPUT && inputNodeInfo != null) {
@@ -118,11 +115,38 @@ export const inputNodeSlice = createSlice({
         if (Object.keys(state).includes(action.payload)) {
           delete state[action.payload]
         }
+      })
+      .addCase(importExperimentByUid.fulfilled, (_, action) => {
+        const newState: InputNode = {}
+        action.payload.nodeList.filter(isInputNodePostData).forEach((node) => {
+          if (node.data != null) {
+            if (node.data.fileType === FILE_TYPE_SET.CSV) {
+              newState[node.id] = {
+                fileType: FILE_TYPE_SET.CSV,
+                selectedFilePath: node.data.path,
+                param: node.data.param as CsvInputParamType,
+              }
+            } else if (node.data.fileType === FILE_TYPE_SET.HDF5) {
+              newState[node.id] = {
+                fileType: FILE_TYPE_SET.HDF5,
+                hdf5Path: node.data.hdf5Path,
+                selectedFilePath: node.data.path,
+                param: {},
+              }
+            } else {
+              newState[node.id] = {
+                fileType: node.data.fileType,
+                selectedFilePath: node.data.path,
+                param: {},
+              }
+            }
+          }
+        })
+        return newState
       }),
 })
 
 export const {
-  setInputNodeFilePath,
   setInputImageNodeFile,
   setCsvInputNodeParam,
   setInputNodeHDF5Path,

@@ -1,13 +1,8 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { EXPERIMENTS_SLICE_NAME, Experiments } from './ExperimentsType'
-import {
-  getExperiments,
-  deleteExperimentByUid,
-  importExperimentByUid,
-} from './ExperimentsActions'
+import { getExperiments, deleteExperimentByUid } from './ExperimentsActions'
 import { convertToExperimentListType } from './ExperimentsUtils'
 import { pollRunResult, run } from '../Pipeline/PipelineActions'
-import { setFlowElements } from '../FlowElement/FlowElementSlice'
 
 const initialState: Experiments = {
   status: 'uninitialized',
@@ -46,9 +41,6 @@ export const experimentsSlice = createSlice({
         if (action.payload && state.status === 'fulfilled') {
           delete state.experimentList[action.meta.arg]
         }
-      })
-      .addCase(importExperimentByUid.fulfilled, (state, action) => {
-        const nodeList = action.payload.nodeList
       })
       .addCase(pollRunResult.fulfilled, (state, action) => {
         if (state.status === 'fulfilled') {

@@ -22,16 +22,11 @@ import {
   selectInputNodeHDF5Path,
   selectInputNodeSelectedFilePath,
 } from 'store/slice/InputNode/InputNodeSelectors'
-import {
-  setInputNodeFilePath,
-  setInputNodeHDF5Path,
-} from 'store/slice/InputNode/InputNodeSlice'
+import { setInputNodeHDF5Path } from 'store/slice/InputNode/InputNodeSlice'
+import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
 import { toHandleId } from './FlowChartUtils'
 import { FileSelect } from './FileSelect'
-import {
-  deleteFlowElementsById,
-  edifFlowElementsLabelById,
-} from 'store/slice/FlowElement/FlowElementSlice'
+import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
 import {
   selectHDF5IsLatest,
   selectHDF5IsLoading,
@@ -64,13 +59,6 @@ const HDF5FileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   const filePath = useSelector(selectInputNodeSelectedFilePath(nodeId))
   const onChangeFilePath = (path: string) => {
     dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
-    const fileName = path.split('/').reverse()[0]
-    dispatch(
-      edifFlowElementsLabelById({
-        nodeId,
-        fileName,
-      }),
-    )
   }
   const theme = useTheme()
 

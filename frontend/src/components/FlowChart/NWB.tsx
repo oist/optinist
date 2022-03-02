@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
 import Button from '@mui/material/Button'
-
+import TuneIcon from '@mui/icons-material/Tune'
 import { updateParam } from 'store/slice/NWB/NWBSlice'
 import { getNWBParams } from 'store/slice/NWB/NWBAction'
 import { toggleNwb } from 'store/slice/RightDrawer/RightDrawerSlice'
@@ -21,11 +21,12 @@ export const NWBSettingButton = React.memo(() => {
   }
   return (
     <Button
-      variant="contained"
+      variant="outlined"
       onClick={handleClick}
       sx={{
         margin: (theme) => theme.spacing(1),
       }}
+      endIcon={<TuneIcon />}
     >
       NWB setting
     </Button>
