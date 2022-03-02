@@ -3,7 +3,8 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import { ThunkApiConfig } from 'store/store'
 import { PIPELINE_SLICE_NAME } from './PipelineType'
 import {
-  run as runRequest,
+  runApi,
+  runByUidApi,
   runResult,
   RunResultDTO,
   RunPostData,
@@ -12,11 +13,24 @@ import { selectRunResultPendingNodeIdList } from './PipelineSelectors'
 
 export const run = createAsyncThunk<
   string,
-  { uid: string | undefined; runPostData: RunPostData },
+  { runPostData: RunPostData },
+  ThunkApiConfig
+>(`${PIPELINE_SLICE_NAME}/run`, async ({ runPostData }, thunkAPI) => {
+  try {
+    const responseData = await runApi(runPostData)
+    return responseData
+  } catch (e) {
+    return thunkAPI.rejectWithValue(e)
+  }
+})
+
+export const runByUid = createAsyncThunk<
+  string,
+  { uid: string; runPostData: RunPostData },
   ThunkApiConfig
 >(`${PIPELINE_SLICE_NAME}/run`, async ({ uid, runPostData }, thunkAPI) => {
   try {
-    const responseData = await runRequest({ runData: runPostData, uid })
+    const responseData = await runByUidApi(uid, runPostData)
     return responseData
   } catch (e) {
     return thunkAPI.rejectWithValue(e)

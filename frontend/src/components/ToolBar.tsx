@@ -7,11 +7,17 @@ import { SnakemakeButton } from './FlowChart/Snakemake'
 import { RunButtons } from './RunButtons'
 
 export const ToolBar = React.memo<UseRunPipelineReturnType>((props) => (
-  <div style={{ width: '100%' }}>
-    <Box display="flex" justifyContent="flex-end" style={{ padding: 4 }}>
-      <SnakemakeButton />
-      <NWBSettingButton />
-      <RunButtons {...props} />
-    </Box>
-  </div>
+  <Box
+    display="flex"
+    justifyContent="flex-end"
+    sx={{
+      width: '100%',
+      p: 1,
+      zIndex: (theme) => theme.zIndex.appBar,
+    }}
+  >
+    <SnakemakeButton />
+    <NWBSettingButton />
+    <RunButtons {...props} />
+  </Box>
 ))

@@ -18,16 +18,10 @@ import { isAlgoChild } from 'store/slice/AlgorithmList/AlgorithmListUtils'
 import { getAlgoList } from 'store/slice/AlgorithmList/AlgorithmListActions'
 import { FILE_TYPE, FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import {
-  NodeData,
   NODE_TYPE,
   NODE_TYPE_SET,
 } from 'store/slice/FlowElement/FlowElementType'
-import {
-  addFlowElementNode,
-  setElementCoord,
-} from 'store/slice/FlowElement/FlowElementSlice'
-import { Node } from 'react-flow-renderer'
-import { selectElementCoord } from 'store/slice/FlowElement/FlowElementSelectors'
+import { addFlowElementNode } from 'store/slice/FlowElement/FlowElementSlice'
 
 export const AlgorithmTreeView = React.memo(() => {
   const dispatch = useDispatch()
@@ -40,20 +34,11 @@ export const AlgorithmTreeView = React.memo(() => {
     }
   }, [dispatch, isLatest])
 
-  const elementCoord = useSelector(selectElementCoord)
-
   const onAlgoNodeClick = (nodeName: string, functionPath: string) => {
     const name = nodeName
-    const position = {
-      x: elementCoord.x,
-      y: elementCoord.y,
-    }
-    dispatch(setElementCoord())
-
-    const newNode: Node<NodeData> = {
+    const newNode = {
       id: nanoid(),
       type: 'AlgorithmNode',
-      position,
       data: { label: name, type: NODE_TYPE_SET.ALGORITHM },
     }
     dispatch(
@@ -112,19 +97,12 @@ const InputNodeComponent = React.memo<{
   fileType: FILE_TYPE
 }>(({ fileName, nodeName, fileType }) => {
   const dispatch = useDispatch()
-  const elementCoord = useSelector(selectElementCoord)
 
   const onDataNodeClick = (
     nodeType: NODE_TYPE,
     nodeName: string,
     fileType: FILE_TYPE,
   ) => {
-    const position = {
-      x: elementCoord.x,
-      y: elementCoord.y,
-    }
-    dispatch(setElementCoord())
-
     let componentType = ''
     switch (fileType) {
       case FILE_TYPE_SET.CSV:
@@ -139,10 +117,9 @@ const InputNodeComponent = React.memo<{
         fileType = FILE_TYPE_SET.HDF5
         break
     }
-    const newNode: Node<NodeData> = {
+    const newNode = {
       id: nanoid(),
       type: componentType,
-      position,
       data: { label: nodeName, type: nodeType },
     }
     dispatch(addFlowElementNode({ node: newNode, inputNodeInfo: { fileType } }))

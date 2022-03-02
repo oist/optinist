@@ -178,10 +178,8 @@ const ImportExperimentButton: React.FC = () => {
   const uid = React.useContext(ExperimentUidContext)
 
   const onClick = () => {
-    console.log('onClick')
     dispatch(importExperimentByUid(uid))
   }
-
   return (
     <IconButton onClick={onClick}>
       <GetAppIcon color="primary" />
