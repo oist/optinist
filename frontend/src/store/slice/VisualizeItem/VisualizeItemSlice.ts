@@ -65,6 +65,7 @@ const timeSeriesItemInitialValue: TimeSeriesItem = {
   },
   maxIndex: 0,
   displayNumbers: [0],
+  checkedList: [],
 }
 const heatMapItemInitialValue: HeatMapItem = {
   ...displayDataCommonInitialValue,
@@ -614,6 +615,21 @@ export const visualaizeItemSlice = createSlice({
         targetItem.displayNumbers = displayNumbers
       }
     },
+    setTimeSeriesItemCheckedList: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        checkedList: boolean[]
+      }>,
+    ) => {
+      const { itemId, checkedList } = action.payload
+      const targetItem = state.items[itemId]
+      if (isMultiPlotItem(targetItem)) {
+        targetItem.timeSeriesItem.checkedList = checkedList
+      } else if (isTimeSeriesItem(targetItem)) {
+        targetItem.checkedList = checkedList
+      }
+    },
     setTimeSeriesItemMaxIndex: (
       state,
       action: PayloadAction<{
@@ -761,6 +777,7 @@ export const {
   setTimeSeriesItemXrangeLeft,
   setTimeSeriesItemXrangeRight,
   setTimeSeriesItemDisplayNumbers,
+  setTimeSeriesItemCheckedList,
   setTimeSeriesItemMaxIndex,
   setHeatMapItemShowScale,
   setHeatMapItemColors,

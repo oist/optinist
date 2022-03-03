@@ -1,7 +1,11 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { FormControlLabel, Switch, TextField } from '@mui/material'
+import Box from '@mui/material/Box'
+import Checkbox from '@mui/material/Checkbox'
 import {
+  selectTimeSeriesItemCheckedList,
+  selectTimeSeriesItemDisplayNumbers,
   selectTimeSeriesItemOffset,
   selectTimeSeriesItemShowGrid,
   selectTimeSeriesItemShowLine,
@@ -9,9 +13,12 @@ import {
   selectTimeSeriesItemSpan,
   selectTimeSeriesItemXrange,
   selectTimeSeriesItemZeroLine,
+  selectVisualizeDataFilePath,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 import {
+  setTimeSeriesItemCheckedList,
+  setTimeSeriesItemDisplayNumbers,
   setTimeSeriesItemOffset,
   setTimeSeriesItemShowGrid,
   setTimeSeriesItemShowLine,
@@ -21,6 +28,10 @@ import {
   setTimeSeriesItemXrangeRight,
   setTimeSeriesItemZeroLine,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import {
+  getTimeSeriesAllData,
+  getTimeSeriesDataById,
+} from 'store/slice/DisplayData/DisplayDataActions'
 
 export const TimeSeriesItemEditor: React.FC = () => {
   return (
@@ -32,6 +43,7 @@ export const TimeSeriesItemEditor: React.FC = () => {
       <ShowTickLabels />
       <ZeroLine />
       <Xrange />
+      <LegendSelect />
     </div>
   )
 }
@@ -195,5 +207,112 @@ const Xrange: React.FC = () => {
       }
       label=""
     />
+  )
+}
+
+const LegendSelect: React.FC = () => {
+  const itemId = React.useContext(SelectedItemIdContext)
+  const dispatch = useDispatch()
+  const checkedList = useSelector(selectTimeSeriesItemCheckedList(itemId))
+  const displayNumbers = useSelector(selectTimeSeriesItemDisplayNumbers(itemId))
+  const filePath = useSelector(selectVisualizeDataFilePath(itemId))
+
+  const allHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(
+      setTimeSeriesItemCheckedList({
+        itemId,
+        checkedList: checkedList.map((_) => {
+          return event.target.checked
+        }),
+      }),
+    )
+
+    if (event.target.checked) {
+      dispatch(
+        setTimeSeriesItemDisplayNumbers({
+          itemId,
+          displayNumbers: checkedList.map((_, i) => {
+            return i
+          }),
+        }),
+      )
+      if (filePath !== null) {
+        dispatch(getTimeSeriesAllData({ path: filePath }))
+      }
+    } else {
+      dispatch(
+        setTimeSeriesItemDisplayNumbers({
+          itemId,
+          displayNumbers: [],
+        }),
+      )
+    }
+  }
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const index = parseInt(event.target.value)
+
+    // displayNumbers
+    if (event.target.checked) {
+      dispatch(
+        setTimeSeriesItemDisplayNumbers({
+          itemId,
+          displayNumbers: [...displayNumbers, index],
+        }),
+      )
+    } else {
+      dispatch(
+        setTimeSeriesItemDisplayNumbers({
+          itemId,
+          displayNumbers: displayNumbers.filter((value) => value !== index),
+        }),
+      )
+    }
+
+    // CheckList
+    dispatch(
+      setTimeSeriesItemCheckedList({
+        itemId,
+        checkedList: checkedList.map((v, i) => {
+          if (i === index) {
+            return event.target.checked
+          }
+          return v
+        }),
+      }),
+    )
+
+    if (filePath !== null) {
+      dispatch(getTimeSeriesDataById({ path: filePath, index }))
+    }
+  }
+
+  const children = (
+    <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
+      {checkedList.map((v, i) => (
+        <FormControlLabel
+          key={`${i}`}
+          label={`Index ${i + 1}`}
+          control={<Checkbox checked={v} onChange={handleChange} value={i} />}
+        />
+      ))}
+    </Box>
+  )
+
+  return (
+    <div>
+      <FormControlLabel
+        label="All Check"
+        control={
+          <Checkbox
+            checked={checkedList.every((v) => {
+              return v
+            })}
+            onChange={allHandleChange}
+          />
+        }
+      />
+      {children}
+    </div>
   )
 }

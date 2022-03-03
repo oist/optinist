@@ -12,9 +12,10 @@ import {
   selectTimeSeriesDataIsInitialized,
   selectTimeSeriesDataIsPending,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
-import { getTimeSeriesData } from 'store/slice/DisplayData/DisplayDataActions'
+import { getTimeSeriesDataById } from 'store/slice/DisplayData/DisplayDataActions'
 import { TimeSeriesData } from 'store/slice/DisplayData/DisplayDataType'
 import {
+  selectTimeSeriesItemCheckedList,
   selectTimeSeriesItemDisplayNumbers,
   selectTimeSeriesItemOffset,
   selectTimeSeriesItemShowGrid,
@@ -24,6 +25,7 @@ import {
   selectTimeSeriesItemXrange,
   selectTimeSeriesItemZeroLine,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import { setTimeSeriesItemCheckedList } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import createColormap from 'colormap'
 import { setTimeSeriesItemDisplayNumbers } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
@@ -35,9 +37,10 @@ export const TimeSeriesPlot = React.memo(() => {
   const isInitialized = useSelector(selectTimeSeriesDataIsInitialized(path))
   const error = useSelector(selectTimeSeriesDataError(path))
   const isFulfilled = useSelector(selectTimeSeriesDataIsFulfilled(path))
+
   React.useEffect(() => {
     if (!isInitialized) {
-      displayNumbers.map((v) => dispatch(getTimeSeriesData({ path, index: v })))
+      dispatch(getTimeSeriesDataById({ path, index: 0 }))
     }
   }, [dispatch, isInitialized, path, displayNumbers])
 
@@ -70,6 +73,7 @@ const TimeSeriesPlotImple = React.memo(() => {
   const zeroline = useSelector(selectTimeSeriesItemZeroLine(itemId))
   const xrange = useSelector(selectTimeSeriesItemXrange(itemId))
   const displayNumbers = useSelector(selectTimeSeriesItemDisplayNumbers(itemId))
+  const checkedList = useSelector(selectTimeSeriesItemCheckedList(itemId))
 
   const colorScale = createColormap({
     colormap: 'jet',
@@ -77,6 +81,24 @@ const TimeSeriesPlotImple = React.memo(() => {
     format: 'hex',
     alpha: 1,
   })
+
+  React.useEffect(() => {
+    const keys = Object.keys(timeSeriesData)
+    if (checkedList.length === 0 && keys.length !== 0) {
+      const checkedList = keys.map((_, i) => {
+        if (i === 0) {
+          return true
+        }
+        return false
+      })
+      dispatch(
+        setTimeSeriesItemCheckedList({
+          itemId,
+          checkedList,
+        }),
+      )
+    }
+  }, [timeSeriesData])
 
   const data = React.useMemo(() => {
     if (timeSeriesData === null) {
@@ -95,11 +117,10 @@ const TimeSeriesPlotImple = React.memo(() => {
           const std: number =
             span *
             Math.sqrt(y.reduce((a, b) => a + Math.pow(b - mean, 2)) / y.length)
-          const newArray = y.map((value) => (value - mean) / std + activeIdx)
           return {
             name: `(${String(parseInt(key) + 1)})`,
             x: Object.keys(timeSeriesData[key]),
-            y: newArray,
+            y: y.map((value) => (value - mean) / std + activeIdx),
             visible: true,
             line: { color: colorScale[new_i] },
           }
@@ -157,26 +178,54 @@ const TimeSeriesPlotImple = React.memo(() => {
     responsive: true,
   }
 
-  const onClick = (event: LegendClickEvent) => {
+  const onLegendClick = (event: LegendClickEvent) => {
     const clickNumber = event.curveNumber
+
+    // set DisplayNumbers
     if (displayNumbers.includes(clickNumber)) {
-      const newValue = displayNumbers.filter((value) => value !== clickNumber)
       dispatch(
         setTimeSeriesItemDisplayNumbers({
           itemId,
-          displayNumbers: newValue,
+          displayNumbers: displayNumbers.filter(
+            (value) => value !== clickNumber,
+          ),
+        }),
+      )
+
+      dispatch(
+        setTimeSeriesItemCheckedList({
+          itemId,
+          checkedList: checkedList.map((v, i) => {
+            if (i === clickNumber) {
+              return false
+            }
+            return v
+          }),
         }),
       )
     } else {
-      const newValue = [...displayNumbers, clickNumber]
       dispatch(
         setTimeSeriesItemDisplayNumbers({
           itemId,
-          displayNumbers: newValue,
+          displayNumbers: [...displayNumbers, clickNumber],
         }),
       )
-      dispatch(getTimeSeriesData({ path, index: clickNumber }))
+
+      dispatch(
+        setTimeSeriesItemCheckedList({
+          itemId,
+          checkedList: checkedList.map((v, i) => {
+            if (i === clickNumber) {
+              return true
+            }
+            return v
+          }),
+        }),
+      )
+
+      dispatch(getTimeSeriesDataById({ path, index: clickNumber }))
     }
+
     return false
   }
 
@@ -185,7 +234,7 @@ const TimeSeriesPlotImple = React.memo(() => {
       data={data}
       layout={layout}
       config={config}
-      onLegendClick={onClick}
+      onLegendClick={onLegendClick}
     />
   )
 })

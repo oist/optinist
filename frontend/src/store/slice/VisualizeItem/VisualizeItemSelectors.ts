@@ -349,6 +349,18 @@ export const selectTimeSeriesItemDisplayNumbers =
     }
   }
 
+export const selectTimeSeriesItemCheckedList =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isTimeSeriesItem(item)) {
+      return item.checkedList
+    } else if (isMultiPlotItem(item)) {
+      return item.timeSeriesItem.checkedList
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
 export const selectRoiItemIndex =
   (itemId: number, roiFilePath: string | null) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
