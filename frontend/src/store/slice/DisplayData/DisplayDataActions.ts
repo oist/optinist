@@ -10,6 +10,7 @@ import {
   RoiData,
   ScatterData,
   BarData,
+  HTMLData,
 } from './DisplayDataType'
 
 export const getTimeSeriesDataById = createAsyncThunk<
@@ -129,3 +130,15 @@ export const getBarData = createAsyncThunk<{ data: BarData }, { path: string }>(
     }
   },
 )
+
+export const getHTMLData = createAsyncThunk<
+  { data: HTMLData },
+  { path: string }
+>(`${DISPLAY_DATA_SLICE_NAME}/getHTMLData`, async ({ path }, thunkAPI) => {
+  try {
+    const response = await axios.get(`${BASE_URL}/outputs/html/${path}`, {})
+    return response.data
+  } catch (e) {
+    return thunkAPI.rejectWithValue(e)
+  }
+})

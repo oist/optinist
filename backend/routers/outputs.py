@@ -50,6 +50,14 @@ async def read_file(file_path: str):
     return { "data": json_dict }
 
 
+@router.get("/outputs/html/{file_path:path}")
+async def read_file(file_path: str):
+    with open(file_path, 'r') as f:
+        data = f.read()
+
+    return { "data": data }
+
+
 @router.get("/outputs/image/{file_path:path}")
 async def read_image(
         file_path: str,

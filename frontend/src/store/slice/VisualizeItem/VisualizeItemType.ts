@@ -35,6 +35,7 @@ export type DisplayDataItem =
   | ScatterItem
   | BarItem
   | HDF5Item
+  | HTMLItem
 
 export interface DisplayDataItemBaseType extends ItemBaseType<'displayData'> {
   filePath: string | null
@@ -108,4 +109,8 @@ export interface BarItem extends DisplayDataItemBaseType {
 
 export interface HDF5Item extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.HDF5
+}
+
+export interface HTMLItem extends DisplayDataItemBaseType {
+  dataType: typeof DATA_TYPE_SET.HTML
 }

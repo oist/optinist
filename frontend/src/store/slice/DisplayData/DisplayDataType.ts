@@ -25,6 +25,9 @@ export type DisplayData = {
   hdf5: {
     [filePath: string]: HDF5DisplayData
   }
+  html: {
+    [filePath: string]: HTMLDisplayData
+  }
 }
 
 export const DATA_TYPE_SET = {
@@ -36,6 +39,7 @@ export const DATA_TYPE_SET = {
   SCATTER: 'scatter',
   BAR: 'bar',
   HDF5: 'hdf5',
+  HTML: 'html',
 } as const
 
 export type DATA_TYPE = typeof DATA_TYPE_SET[keyof typeof DATA_TYPE_SET]
@@ -80,3 +84,6 @@ export type BarData = number[][][]
 
 export interface HDF5DisplayData extends BaseDisplay<'hdf5', HDF5Data> {}
 export type HDF5Data = number[][][]
+
+export interface HTMLDisplayData extends BaseDisplay<'html', HTMLData> {}
+export type HTMLData = string

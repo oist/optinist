@@ -14,6 +14,7 @@ import {
   getRoiData,
   getScatterData,
   getBarData,
+  getHTMLData,
 } from './DisplayDataActions'
 
 const initialState: DisplayData = {
@@ -25,6 +26,7 @@ const initialState: DisplayData = {
   scatter: {},
   bar: {},
   hdf5: {},
+  html: {},
 }
 
 export const displayDataSlice = createSlice({
@@ -54,6 +56,8 @@ export const displayDataSlice = createSlice({
           delete state.scatter[filePath]
         } else if (dataType === DATA_TYPE_SET.BAR) {
           delete state.bar[filePath]
+        } else if (dataType === DATA_TYPE_SET.HTML) {
+          delete state.html[filePath]
         }
       }
     },
@@ -305,6 +309,36 @@ export const displayDataSlice = createSlice({
         state.bar[path] = {
           type: 'bar',
           data: [],
+          pending: false,
+          fulfilled: false,
+          error: action.error.message ?? 'rejected',
+        }
+      })
+      .addCase(getHTMLData.pending, (state, action) => {
+        const { path } = action.meta.arg
+        state.html[path] = {
+          type: 'html',
+          data: '',
+          pending: true,
+          fulfilled: false,
+          error: null,
+        }
+      })
+      .addCase(getHTMLData.fulfilled, (state, action) => {
+        const { path } = action.meta.arg
+        state.html[path] = {
+          type: 'html',
+          data: action.payload.data,
+          pending: false,
+          fulfilled: true,
+          error: null,
+        }
+      })
+      .addCase(getHTMLData.rejected, (state, action) => {
+        const { path } = action.meta.arg
+        state.html[path] = {
+          type: 'html',
+          data: '',
           pending: false,
           fulfilled: false,
           error: action.error.message ?? 'rejected',
