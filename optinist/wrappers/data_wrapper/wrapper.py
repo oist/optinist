@@ -51,7 +51,7 @@ class ImageData(BaseData):
 
 
 class TimeSeriesData(BaseData):
-    def __init__(self, data, func_name='timeseries', file_name='timeseries'):
+    def __init__(self, data, index=None, func_name='timeseries', file_name='timeseries'):
         super().__init__(file_name)
 
         if type(data) == str:
@@ -62,6 +62,11 @@ class TimeSeriesData(BaseData):
         if len(self.data.shape) == 1:
             self.data = self.data[np.newaxis, :]
 
+        # indexを指定
+        self.index = index
+        if index == None:
+            self.index = np.arange(len(self.data[0]))
+
     def save_json(self, json_dir):
         # timeseriesだけはdirを返す
         self.json_path = join_file_path([json_dir, self.file_name])
@@ -69,8 +74,11 @@ class TimeSeriesData(BaseData):
             os.makedirs(self.json_path, exist_ok=True)
 
         for i, data in enumerate(self.data):
-            pd.DataFrame(data).to_json(
+            pd.DataFrame(data, index=self.index).to_json(
                 join_file_path([self.json_path, f'{str(i)}.json']), indent=4)
+            # import pdb; pdb.set_trace()
+            # pd.DataFrame(data).to_json(
+            #     join_file_path([self.json_path, f'{str(i)}.json']), indent=4)
 
     def __del__(self):
         del self

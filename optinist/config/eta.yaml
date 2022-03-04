@@ -1,9 +1,9 @@
 transpose_x: False
 transpose_y: False
 
-target_index: 0
+target_index: 1
 
 trigger_type: 'up' # ['up', 'down', 'cross']
-trigger_threshold: 460
-start_time: 0
-end_time: 100
+trigger_threshold: 0
+start_time: -10
+end_time: 10
