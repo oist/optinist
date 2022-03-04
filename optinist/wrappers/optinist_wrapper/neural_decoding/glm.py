@@ -82,5 +82,10 @@ def GLM(
         func_name='glm',
         file_name='params'
     )
+    info['summary'] = HTMLData(
+        Res.summary().as_html(),
+        func_name='glm',
+        file_name='summary',
+    )
 
     return info

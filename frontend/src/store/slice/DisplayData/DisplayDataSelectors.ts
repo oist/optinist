@@ -181,3 +181,25 @@ export const selectBarDataIsFulfilled =
   (filePath: string) => (state: RootState) =>
     selectBarDataIsInitialized(filePath)(state) &&
     selectDisplayData(state).bar[filePath].fulfilled
+
+export const selectHTMLData = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).html[filePath]?.data ?? ''
+
+export const selectHTMLDataIsInitialized =
+  (filePath: string) => (state: RootState) =>
+    Object.keys(selectDisplayData(state).html).includes(filePath)
+
+export const selectHTMLDataError = (filePath: string) => (state: RootState) =>
+  selectHTMLDataIsInitialized(filePath)(state)
+    ? selectDisplayData(state).html[filePath].error
+    : null
+
+export const selectHTMLDataIsPending =
+  (filePath: string) => (state: RootState) =>
+    selectHTMLDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).html[filePath].pending
+
+export const selectHTMLDataIsFulfilled =
+  (filePath: string) => (state: RootState) =>
+    selectHTMLDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).html[filePath].fulfilled

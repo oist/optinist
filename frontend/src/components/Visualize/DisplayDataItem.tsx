@@ -18,6 +18,7 @@ import { ScatterPlot } from './Plot/ScatterPlot'
 import { CsvPlot } from './Plot/CsvPlot'
 import { TimeSeriesPlot } from './Plot/TimeSeriesPlot'
 import { BarPlot } from './Plot/BarPlot'
+import { HTMLPlot } from './Plot/HTMLPlot'
 
 export const DisplayDataItem = React.memo<{
   itemId: number
@@ -56,6 +57,8 @@ const DisplayPlot = React.memo<{
       return <ScatterPlot />
     case DATA_TYPE_SET.BAR:
       return <BarPlot />
+    case DATA_TYPE_SET.HTML:
+      return <HTMLPlot />
     default:
       return null
   }

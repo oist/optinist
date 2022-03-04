@@ -193,6 +193,8 @@ const DisplayEditor: React.FC<{
       return <ScatterItemEditor />
     case DATA_TYPE_SET.BAR:
       return <BarItemEditor />
+    case DATA_TYPE_SET.HTML:
+      return <div>html editor</div>
     default:
       return null
   }
