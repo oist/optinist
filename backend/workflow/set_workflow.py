@@ -13,7 +13,7 @@ def set_workflow(unique_id, runItem):
         "rules": rules_to_execute,
         "last_output": last_outputs,
     }
-    
+
     write_snakemake_config(unique_id, flow_config)
     write_experiment_config(unique_id, rules_to_execute, runItem)
 
