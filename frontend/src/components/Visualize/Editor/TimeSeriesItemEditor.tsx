@@ -70,7 +70,7 @@ const Span: React.FC = () => {
   const dispatch = useDispatch()
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value === '' ? '' : Number(event.target.value)
-    if (typeof newValue === 'number') {
+    if (typeof newValue === 'number' && newValue > 0) {
       dispatch(setTimeSeriesItemSpan({ itemId, span: newValue }))
     }
   }
