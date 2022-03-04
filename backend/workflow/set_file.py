@@ -11,13 +11,13 @@ def set_imagefile(node, edgeList, nwbfile):
     info = {}
     for edge in edgeList:
         if node["id"] == edge["source"]:
-            return_name = edge["sourceHandle"].split("--")[1]
+            return_name = edge["sourceHandle"].split("--")[0]
             info = {return_name: ImageData(node['data']['path'], '')}
-    
+
     # NWB file
     nwbfile['image_series']['external_file'] = info[return_name]
     info['nwbfile'] = nwbfile
-    
+
     save_pickle(node["data"]["path"], info)
 
     return info
@@ -27,7 +27,7 @@ def set_csvfile(node, edgeList):
     info = {}
     for edge in edgeList:
         if node["id"] == edge["source"]:
-            return_name = edge["sourceHandle"].split("--")[1]
+            return_name = edge["sourceHandle"].split("--")[0]
             info = {return_name: CsvData(node['data']['path'], node["data"]["param"], '')}
 
     info['nwbfile'] = None
@@ -67,13 +67,15 @@ def set_algofile(unique_id, node, edgeList, nodeDict):
         # inputとして入れる
         if node["id"] == edge["target"]:
             arg_name = edge["targetHandle"].split("--")[1]
-            return_name = edge["sourceHandle"].split("--")[1]
+
             sourceNode = nodeDict[edge["source"]]
             if sourceNode["type"] == "AlgorithmNode":
+                return_name = edge["sourceHandle"].split("--")[1]
                 input_pickle_file = get_pickle_file(
                     unique_id, sourceNode["id"], sourceNode['data']['label'])
                 algo_input.append(input_pickle_file)
             else:
+                return_name = edge["sourceHandle"].split("--")[0]
                 algo_input.append(sourceNode["data"]["path"])
 
             return_arg_names[return_name] = arg_name
