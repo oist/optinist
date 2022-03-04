@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { LegendClickEvent } from 'plotly.js'
@@ -145,6 +145,25 @@ const TimeSeriesPlotImple = React.memo(() => {
     })
   }, [timeSeriesData, displayNumbers, offset, span, colorScale])
 
+  const getAnnotation = () => {
+    if (data.length !== 0) {
+      return displayNumbers.map((i) => {
+        return {
+          x: data[i].x[0],
+          y: Math.max(...data[i].y),
+          xref: 'x',
+          yref: 'y',
+          text: `cell: ${i + 1}`,
+          arrowhead: 1,
+          ax: 0,
+          ay: -10,
+        }
+      })
+    } else {
+      return []
+    }
+  }
+
   const layout = React.useMemo(
     () => ({
       title: path.split('/').reverse()[0],
@@ -169,8 +188,19 @@ const TimeSeriesPlotImple = React.memo(() => {
         showticklabels: showticklabels,
         zeroline: zeroline,
       },
+      annotations: getAnnotation(),
     }),
-    [path, xrange, showgrid, showline, showticklabels, zeroline],
+    [
+      path,
+      xrange,
+      showgrid,
+      showline,
+      showticklabels,
+      zeroline,
+      displayNumbers,
+      offset,
+      span,
+    ],
   )
 
   const config = {
@@ -229,13 +259,32 @@ const TimeSeriesPlotImple = React.memo(() => {
     return false
   }
 
+  const ref = React.useRef<HTMLDivElement>(null)
+  const plotlyHeight = ref.current?.getBoundingClientRect().height
+
+  useEffect(() => {
+    const height =
+      ref.current?.getElementsByClassName('main-svg')[0].clientHeight
+    const plotContainer = (
+      ref.current?.getElementsByClassName(
+        'plot-container',
+      ) as HTMLCollectionOf<HTMLElement>
+    )[0]
+
+    if (height !== undefined && plotContainer !== undefined) {
+      plotContainer.style.height = `${height}px`
+    }
+  }, [plotlyHeight])
+
   return (
-    <PlotlyChart
-      data={data}
-      layout={layout}
-      config={config}
-      onLegendClick={onLegendClick}
-    />
+    <div ref={ref}>
+      <PlotlyChart
+        data={data}
+        layout={layout}
+        config={config}
+        onLegendClick={onLegendClick}
+      />
+    </div>
   )
 })
 
