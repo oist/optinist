@@ -76,7 +76,7 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
     const outputKeyList = useSelector(
       (state: RootState) =>
         latestUid != null
-          ? selectPipelineNodeResultOutputKeyList(latestUid, nodeId)(state)
+          ? selectPipelineNodeResultOutputKeyList(nodeId)(state)
           : [],
       arrayEqualityFn,
     )
@@ -124,13 +124,13 @@ const AlgoName = React.memo<{
 
   const message = useSelector((state: RootState) =>
     latestUid != null
-      ? selectPipelineNodeResultMessage(latestUid, nodeId)(state) ?? null
+      ? selectPipelineNodeResultMessage(nodeId)(state) ?? null
       : null,
   )
 
   const status = useSelector((state: RootState) =>
     latestUid != null
-      ? selectPipelineNodeResultStatus(latestUid, nodeId)(state)
+      ? selectPipelineNodeResultStatus(nodeId)(state)
       : 'uninitialized',
   )
   return (

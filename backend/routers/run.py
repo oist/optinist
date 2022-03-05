@@ -45,7 +45,7 @@ async def params(uid: str, runItem: RunItem, background_tasks: BackgroundTasks):
     run_workflow(uid, background_tasks, runItem)
     print("run snakemake")
 
-    return unique_id
+    return uid
 
 
 class NodeItem(BaseModel):
