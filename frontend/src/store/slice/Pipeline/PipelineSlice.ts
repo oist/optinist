@@ -1,85 +1,79 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
+import { importExperimentByUid } from '../Experiments/ExperimentsActions'
 import { pollRunResult, run } from './PipelineActions'
 import { Pipeline, PIPELINE_SLICE_NAME, RUN_STATUS } from './PipelineType'
 
 import {
   getInitialRunResult,
   convertToRunResult,
-  isStartedPipeline,
   isNodeResultPending,
 } from './PipelineUtils'
 
 const initialState: Pipeline = {
-  pipelines: {},
-  uidHistory: [],
+  run: {
+    status: RUN_STATUS.START_UNINITIALIZED,
+  },
 }
 
 export const pipelineSlice = createSlice({
   name: PIPELINE_SLICE_NAME,
   initialState,
   reducers: {
-    cancelPipeline(state, action: PayloadAction<string>) {
-      const target = Object.values(state.pipelines).find(
-        (pipeline) =>
-          pipeline.status === RUN_STATUS.START_SUCCESS &&
-          pipeline.uid === action.payload,
-      )
-      if (target != null) {
-        target.status = RUN_STATUS.CANCELED
-        state.uidHistory.pop()
-      }
+    cancelPipeline(state) {
+      state.run.status = RUN_STATUS.CANCELED
     },
   },
   extraReducers: (builder) => {
     builder
       .addCase(run.pending, (state, action) => {
-        state.pipelines[action.meta.requestId] = {
+        state.run = {
           status: RUN_STATUS.START_PENDING,
         }
       })
       .addCase(run.fulfilled, (state, action) => {
         const runPostData = action.meta.arg.runPostData
         const uid = action.payload
-        state.pipelines[action.meta.requestId] = {
+        state.run = {
           uid,
           status: RUN_STATUS.START_SUCCESS,
           runResult: getInitialRunResult(runPostData),
           runPostData,
         }
-        state.uidHistory.push(uid)
+        state.currentPipeline = {
+          uid: action.payload,
+          name: '', // 一旦は使用しない
+        }
       })
       .addCase(run.rejected, (state, action) => {
-        state.pipelines[action.meta.requestId] = {
+        state.run = {
           status: RUN_STATUS.START_ERROR,
         }
       })
       .addCase(pollRunResult.fulfilled, (state, action) => {
-        const target = Object.values(state.pipelines).find(
-          (pipeline) =>
-            pipeline.status === RUN_STATUS.START_SUCCESS &&
-            pipeline.uid === action.meta.arg.uid,
-        )
-        if (target != null && target.status === RUN_STATUS.START_SUCCESS) {
-          target.runResult = {
-            ...target.runResult, // pendingのNodeResultはそのままでsuccessもしくはerrorのみ上書き
+        if (state.run.status === RUN_STATUS.START_SUCCESS) {
+          state.run.runResult = {
+            ...state.run.runResult, // pendingのNodeResultはそのままでsuccessもしくはerrorのみ上書き
             ...convertToRunResult(action.payload),
           }
-          const runResultPendingList = Object.values(target.runResult).filter(
-            isNodeResultPending,
-          )
+          const runResultPendingList = Object.values(
+            state.run.runResult,
+          ).filter(isNodeResultPending)
           if (runResultPendingList.length === 0) {
             // 終了
-            target.status = RUN_STATUS.FINISHED
+            state.run.status = RUN_STATUS.FINISHED
           }
         }
       })
       .addCase(pollRunResult.rejected, (state, action) => {
-        const target = Object.values(state.pipelines).find(
-          (pipeline) =>
-            isStartedPipeline(pipeline) && pipeline.uid === action.meta.arg.uid,
-        )
-        if (target != null) {
-          target.status = RUN_STATUS.ABORTED
+        state.run.status = RUN_STATUS.ABORTED
+      })
+      .addCase(importExperimentByUid.fulfilled, (state, action) => {
+        state.currentPipeline = {
+          uid: action.meta.arg,
+          name: '',
+        }
+        state.run = {
+          status: RUN_STATUS.START_UNINITIALIZED,
         }
       })
   },

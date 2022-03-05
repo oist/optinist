@@ -52,7 +52,7 @@ export const FilePathSelect: React.FC<{
 
   const algorithmNodeOutputPathInfoList = useSelector((state: RootState) => {
     if (latestUid != null) {
-      const runResult = selectPipelineNodeResultSuccessList(latestUid)(state)
+      const runResult = selectPipelineNodeResultSuccessList(state)
       return runResult.map(({ nodeId, nodeResult }) => {
         return {
           nodeId,

@@ -39,8 +39,7 @@ export function isStartedPipeline(
   return (
     pipeline.status === RUN_STATUS.START_SUCCESS ||
     pipeline.status === RUN_STATUS.FINISHED ||
-    pipeline.status === RUN_STATUS.ABORTED ||
-    pipeline.status === RUN_STATUS.CANCELED
+    pipeline.status === RUN_STATUS.ABORTED
   )
 }
 
