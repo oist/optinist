@@ -66,6 +66,7 @@ export function useRunPipeline() {
     filePathIsUndefined,
     uid,
     status,
+    isStartedSuccess,
     handleRunPipeline,
     handleRunPipelineByUid,
     handleCancelPipeline,
