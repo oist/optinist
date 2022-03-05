@@ -3,11 +3,18 @@ import copy
 import numpy as np
 
 
-def get_file_path(_dir, file_name):
+def get_json_file_path(_dir, file_name):
     if not os.path.exists(_dir):
         os.makedirs(_dir, exist_ok=True)
 
     return join_file_path([_dir, f'{file_name}.json'])
+
+
+def get_html_file_path(_dir, file_name):
+    if not os.path.exists(_dir):
+        os.makedirs(_dir, exist_ok=True)
+
+    return join_file_path([_dir, f'{file_name}.html'])
 
 
 def get_images_list(data):

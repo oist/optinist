@@ -4,7 +4,7 @@ import pandas as pd
 import imageio
 import tifffile
 import gc
-from cui_api.utils import get_file_path, get_images_list, join_file_path
+from cui_api.utils import get_json_file_path, get_html_file_path, get_images_list, join_file_path
 from cui_api.const import BASE_DIR
 
 class BaseData:
@@ -40,7 +40,7 @@ class ImageData(BaseData):
         return np.array(imageio.volread(self.path))
 
     def save_json(self, json_dir):
-        self.json_path = get_file_path(json_dir, self.file_name)
+        self.json_path = get_json_file_path(json_dir, self.file_name)
         images = get_images_list(self.data)
         pd.DataFrame(images).to_json(self.json_path, indent=4, orient="values")
         del images
@@ -51,7 +51,7 @@ class ImageData(BaseData):
 
 
 class TimeSeriesData(BaseData):
-    def __init__(self, data, func_name='timeseries', file_name='timeseries'):
+    def __init__(self, data, index=None, func_name='timeseries', file_name='timeseries'):
         super().__init__(file_name)
 
         if type(data) == str:
@@ -62,6 +62,11 @@ class TimeSeriesData(BaseData):
         if len(self.data.shape) == 1:
             self.data = self.data[np.newaxis, :]
 
+        # indexを指定
+        self.index = index
+        if index == None:
+            self.index = np.arange(len(self.data[0]))
+
     def save_json(self, json_dir):
         # timeseriesだけはdirを返す
         self.json_path = join_file_path([json_dir, self.file_name])
@@ -69,8 +74,11 @@ class TimeSeriesData(BaseData):
             os.makedirs(self.json_path, exist_ok=True)
 
         for i, data in enumerate(self.data):
-            pd.DataFrame(data).to_json(
+            pd.DataFrame(data, index=self.index).to_json(
                 join_file_path([self.json_path, f'{str(i)}.json']), indent=4)
+            # import pdb; pdb.set_trace()
+            # pd.DataFrame(data).to_json(
+            #     join_file_path([self.json_path, f'{str(i)}.json']), indent=4)
 
     def __del__(self):
         del self
@@ -118,7 +126,7 @@ class CorrelationData(BaseData):
         self.data = data
 
     def save_json(self, json_dir):
-        self.json_path = get_file_path(json_dir, self.file_name)
+        self.json_path = get_json_file_path(json_dir, self.file_name)
         pd.DataFrame(self.data).to_json(self.json_path, indent=4, orient="values")
 
     def __del__(self):
@@ -150,7 +158,7 @@ class RoiData(BaseData):
             return data
 
     def save_json(self, json_dir):
-        self.json_path = get_file_path(json_dir, self.file_name)
+        self.json_path = get_json_file_path(json_dir, self.file_name)
         images = get_images_list(self.data)
         pd.DataFrame(images).to_json(self.json_path, indent=4, orient="values")
 
@@ -165,7 +173,7 @@ class Suite2pData(BaseData):
 
         self.data = data
         _dir = join_file_path([BASE_DIR, func_name])
-        self.path = get_file_path(_dir, file_name)
+        self.path = get_json_file_path(_dir, file_name)
 
     def __del__(self):
         del self
@@ -178,7 +186,7 @@ class IscellData(BaseData):
 
         self.data = data
         _dir = join_file_path([BASE_DIR, func_name])
-        self.path = get_file_path(_dir, file_name)
+        self.path = get_json_file_path(_dir, file_name)
 
     def __del__(self):
         del self
@@ -195,7 +203,7 @@ class ScatterData(BaseData):
         self.data = data
 
     def save_json(self, json_dir):
-        self.json_path = get_file_path(json_dir, self.file_name)
+        self.json_path = get_json_file_path(json_dir, self.file_name)
         pd.DataFrame(self.data).to_json(self.json_path, indent=4)
 
     def __del__(self):
@@ -215,8 +223,24 @@ class BarData(BaseData):
         self.data = data
 
     def save_json(self, json_dir):
-        self.json_path = get_file_path(json_dir, self.file_name)
+        self.json_path = get_json_file_path(json_dir, self.file_name)
         pd.DataFrame(self.data).to_json(self.json_path, indent=4)
+
+    def __del__(self):
+        del self
+        gc.collect()
+
+
+class HTMLData(BaseData):
+    def __init__(self, data, func_name='html', file_name='html'):
+        super().__init__(file_name)
+        self.data = data
+
+    def save_json(self, json_dir):
+        self.json_path = get_html_file_path(json_dir, self.file_name)
+
+        with open(self.json_path, "w") as f:
+            f.write(self.data)
 
     def __del__(self):
         del self

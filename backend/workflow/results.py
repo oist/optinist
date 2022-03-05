@@ -114,6 +114,10 @@ def get_outputPaths(info, json_dir):
             outputPaths[k] = {}
             outputPaths[k]['path'] = v.json_path
             outputPaths[k]['type'] = 'bar'
+        elif isinstance(v, HTMLData):
+            outputPaths[k] = {}
+            outputPaths[k]['path'] = v.json_path
+            outputPaths[k]['type'] = 'html'
         else:
             pass
 
