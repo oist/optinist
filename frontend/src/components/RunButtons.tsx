@@ -29,6 +29,7 @@ const OPTIONS_LABELS = {
 export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
   const {
     uid,
+    isStartedSuccess,
     filePathIsUndefined,
     handleCancelPipeline,
     handleRunPipeline,
@@ -92,9 +93,12 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
   return (
     <>
       <ButtonGroup
+        sx={{
+          margin: (theme) => theme.spacing(1),
+        }}
         variant="contained"
         ref={anchorRef}
-        aria-label="split button"
+        disabled={isStartedSuccess}
       >
         <Button onClick={handleClick}>{OPTIONS_LABELS[selectedOption]}</Button>
         <Button size="small" onClick={handleToggle}>
