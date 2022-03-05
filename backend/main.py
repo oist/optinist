@@ -1,4 +1,7 @@
-from fastapi import FastAPI, Response
+from fastapi import FastAPI, Response, Request
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+
 import uvicorn
 from starlette.middleware.cors import CORSMiddleware
 import sys
@@ -14,6 +17,7 @@ from routers import (
     hdf5,
     experiment,
 )
+
 
 app = FastAPI(docs_url="/docs", openapi_url="/openapi")
 app.include_router(algolist.router)
@@ -34,14 +38,17 @@ app.add_middleware(
     allow_headers=["*"]
 )
 
-@app.get("/")
-async def root():
-    return {"message": "Hello Optinist"}
+app.mount(
+    "/static",
+    StaticFiles(directory="../frontend/build/static"),
+    name="static"
+)
 
-@app.get("/cookie-test")
-def create_cookie(response: Response):
-    response.set_cookie(key="fakesession", value="fake-cookie-session-value")
-    return {"message": "cookie is set."}
+templates = Jinja2Templates(directory="../frontend/build")
+
+@app.get("/")
+async def root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
 
 if __name__ == '__main__':
     uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=True)
