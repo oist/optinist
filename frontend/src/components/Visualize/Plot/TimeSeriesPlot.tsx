@@ -11,6 +11,7 @@ import {
   selectTimeSeriesDataIsFulfilled,
   selectTimeSeriesDataIsInitialized,
   selectTimeSeriesDataIsPending,
+  selectTimeSeriesStd,
   selectTimeSeriesXrange,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getTimeSeriesDataById } from 'store/slice/DisplayData/DisplayDataActions'
@@ -67,6 +68,7 @@ const TimeSeriesPlotImple = React.memo(() => {
   )
 
   const dataXrange = useSelector(selectTimeSeriesXrange(path))
+  const dataStd = useSelector(selectTimeSeriesStd(path))
 
   const offset = useSelector(selectTimeSeriesItemOffset(itemId))
   const span = useSelector(selectTimeSeriesItemSpan(itemId))
@@ -126,6 +128,11 @@ const TimeSeriesPlotImple = React.memo(() => {
             y: y.map((value) => (value - mean) / std + activeIdx),
             visible: true,
             line: { color: colorScale[new_i] },
+            error_y: {
+              type: 'data',
+              array: null,
+              visible: true,
+            },
           }
         } else {
           return {
@@ -134,6 +141,13 @@ const TimeSeriesPlotImple = React.memo(() => {
             y: y,
             visible: true,
             line: { color: colorScale[new_i] },
+            error_y: {
+              type: 'data',
+              array: Object.keys(dataStd).includes(key)
+                ? Object.values(dataStd[key])
+                : null,
+              visible: true,
+            },
           }
         }
       } else {
@@ -143,6 +157,13 @@ const TimeSeriesPlotImple = React.memo(() => {
           y: y,
           visible: 'legendonly',
           line: { color: colorScale[new_i] },
+          error_y: {
+            type: 'data',
+            array: Object.keys(dataStd).includes(key)
+              ? Object.values(dataStd[key])
+              : null,
+            visible: true,
+          },
         }
       }
     })
@@ -151,10 +172,8 @@ const TimeSeriesPlotImple = React.memo(() => {
   const getAnnotation = () => {
     if (data.length !== 0) {
       return displayNumbers.map((i) => {
-        console.log(data)
-        console.log(i + 1, ' ', Math.max(...data[i].y))
         return {
-          x: dataXrange[0], //data[i].x[0],
+          x: dataXrange[0],
           y: Math.max(...data[i].y),
           xref: 'x',
           yref: 'y',

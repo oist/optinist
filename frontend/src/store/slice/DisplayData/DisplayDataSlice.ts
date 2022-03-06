@@ -71,6 +71,7 @@ export const displayDataSlice = createSlice({
             type: 'timeSeries',
             xrange: [],
             data: {},
+            std: {},
             pending: true,
             fulfilled: false,
             error: null,
@@ -81,6 +82,18 @@ export const displayDataSlice = createSlice({
           state.timeSeries[path].error = null
         }
       })
+      .addCase(getTimeSeriesDataById.rejected, (state, action) => {
+        const { path } = action.meta.arg
+        state.timeSeries[path] = {
+          type: 'timeSeries',
+          xrange: [],
+          data: {},
+          std: {},
+          pending: false,
+          fulfilled: false,
+          error: action.error.message ?? 'rejected',
+        }
+      })
       .addCase(getTimeSeriesDataById.fulfilled, (state, action) => {
         const { path, index } = action.meta.arg
         state.timeSeries[path].pending = false
@@ -89,19 +102,12 @@ export const displayDataSlice = createSlice({
         if (Object.keys(state.timeSeries[path].data).length === 0) {
           state.timeSeries[path].xrange = action.payload.data.xrange
           state.timeSeries[path].data = action.payload.data.data
+          state.timeSeries[path].std = action.payload.data.std
         } else {
           state.timeSeries[path].data[index] = action.payload.data.data[index]
-        }
-      })
-      .addCase(getTimeSeriesDataById.rejected, (state, action) => {
-        const { path } = action.meta.arg
-        state.timeSeries[path] = {
-          type: 'timeSeries',
-          xrange: [],
-          data: {},
-          pending: false,
-          fulfilled: false,
-          error: action.error.message ?? 'rejected',
+          if (action.payload.data.std[index]) {
+            state.timeSeries[path].std[index] = action.payload.data.std[index]
+          }
         }
       })
       .addCase(getTimeSeriesAllData.pending, (state, action) => {
@@ -111,6 +117,7 @@ export const displayDataSlice = createSlice({
             type: 'timeSeries',
             xrange: [],
             data: {},
+            std: {},
             pending: true,
             fulfilled: false,
             error: null,
@@ -127,6 +134,7 @@ export const displayDataSlice = createSlice({
           type: 'timeSeries',
           xrange: [],
           data: {},
+          std: {},
           pending: false,
           fulfilled: false,
           error: action.error.message ?? 'rejected',
@@ -139,6 +147,9 @@ export const displayDataSlice = createSlice({
         state.timeSeries[path].error = null
         state.timeSeries[path].xrange = action.payload.data.xrange
         state.timeSeries[path].data = action.payload.data.data
+        if (action.payload.data.std) {
+          state.timeSeries[path].std = action.payload.data.std
+        }
       })
       .addCase(getHeatMapData.pending, (state, action) => {
         const { path } = action.meta.arg

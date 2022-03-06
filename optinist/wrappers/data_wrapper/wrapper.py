@@ -51,7 +51,7 @@ class ImageData(BaseData):
 
 
 class TimeSeriesData(BaseData):
-    def __init__(self, data, index=None, func_name='timeseries', file_name='timeseries'):
+    def __init__(self, data, std=None, index=None, func_name='timeseries', file_name='timeseries'):
         super().__init__(file_name)
 
         if type(data) == str:
@@ -62,9 +62,12 @@ class TimeSeriesData(BaseData):
         if len(self.data.shape) == 1:
             self.data = self.data[np.newaxis, :]
 
-        # indexを指定
-        self.index = index
-        if index == None:
+        self.std = std
+
+        # indexを指定        
+        if index is not None:
+            self.index = index
+        else:
             self.index = np.arange(len(self.data[0]))
 
     def save_json(self, json_dir):
@@ -73,12 +76,20 @@ class TimeSeriesData(BaseData):
         if not os.path.exists(self.json_path):
             os.makedirs(self.json_path, exist_ok=True)
 
-        for i, data in enumerate(self.data):
-            pd.DataFrame(data, index=self.index).to_json(
+        for i, _ in enumerate(self.data):
+            data = self.data[i]
+            if self.std is not None:
+                std = self.std[i]
+                df = pd.DataFrame(
+                    np.concatenate([data[:, np.newaxis], std[:, np.newaxis]], axis=1),
+                    index=self.index,
+                    columns=["data", "std"]
+                )
+            else:
+                df = pd.DataFrame(data, index=self.index, columns=["data"])
+
+            df.to_json(
                 join_file_path([self.json_path, f'{str(i)}.json']), indent=4)
-            # import pdb; pdb.set_trace()
-            # pd.DataFrame(data).to_json(
-            #     join_file_path([self.json_path, f'{str(i)}.json']), indent=4)
 
     def __del__(self):
         del self

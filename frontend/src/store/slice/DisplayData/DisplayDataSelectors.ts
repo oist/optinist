@@ -9,6 +9,9 @@ export const selectTimeSeriesXrange =
   (filePath: string) => (state: RootState) =>
     selectDisplayData(state).timeSeries[filePath].xrange
 
+export const selectTimeSeriesStd = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).timeSeries[filePath].std
+
 export const selectTimeSeriesDataIsInitialized =
   (filePath: string) => (state: RootState) =>
     Object.keys(selectDisplayData(state).timeSeries).includes(filePath)
