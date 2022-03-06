@@ -38,13 +38,13 @@ def get_nest_dict(value, parent_k):
                     }
                     for k, v in sig.return_annotation.items()
                 ]
-            
+
             # parameter path
             if 'parameter' in _v.keys():
                 algo_dict[_k]['parameter'] = _v['parameter']
             else:
                 algo_dict[_k]['parameter'] = ''
-            
+
             # path
             algo_dict[_k]['path'] = parent_k + '/' + _k
 

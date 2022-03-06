@@ -18,6 +18,8 @@ router = APIRouter()
 
 
 class RunItem(BaseModel):
+    # save_dir: str
+    # name: str
     nodeList: list = []
     edgeList: list = []
     snakemakeParam: dict = {}
