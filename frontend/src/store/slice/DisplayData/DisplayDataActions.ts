@@ -11,10 +11,11 @@ import {
   ScatterData,
   BarData,
   HTMLData,
+  TimeSeriesDisplayData,
 } from './DisplayDataType'
 
 export const getTimeSeriesDataById = createAsyncThunk<
-  { data: TimeSeriesData },
+  { data: TimeSeriesData; xrange: number[]; std: TimeSeriesData },
   { path: string; index: number }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesDataById`,
@@ -33,7 +34,7 @@ export const getTimeSeriesDataById = createAsyncThunk<
 )
 
 export const getTimeSeriesAllData = createAsyncThunk<
-  { data: TimeSeriesData },
+  { data: TimeSeriesData; xrange: number[]; std: TimeSeriesData },
   { path: string }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesAllData`,

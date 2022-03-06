@@ -17,16 +17,22 @@ async def read_file(file_path: str, index: Optional[int] = None):
     with open(join_file_path([_dir, f'{str(index)}.json']), 'r') as f:
         json_dict = json.load(f)
 
-    xrange_list = list(json_dict["0"].keys())
+    xrange_list = list(json_dict["data"].keys())
 
     return_dict = {}
+    std_dict = {}
     if index == 0:
         num_files = len(glob(join_file_path([_dir, '*.json'])))
-        return_dict = {str(i): {list(json_dict["0"].keys())[0]: json_dict["0"]["0"]} for i in range(num_files)}
+        return_dict = {str(i): {list(json_dict["data"].keys())[0]: json_dict["data"]["0"]} for i in range(num_files)}
+        if "std" in json_dict.keys():
+            std_dict = {str(i): {list(json_dict["std"].keys())[0]: json_dict["std"]["0"]} for i in range(num_files)}
 
-    return_dict[str(index)] = json_dict["0"]
+    return_dict[str(index)] = json_dict["data"]
 
-    return { "xrange": xrange_list, "data": return_dict }
+    if "std" in json_dict.keys():
+        std_dict[str(index)] = json_dict["std"]
+
+    return { "xrange": xrange_list, "data": return_dict, "std": std_dict }
 
 
 @router.get("/outputs/alltimedata/{file_path:path}")
@@ -34,12 +40,17 @@ async def read_file(file_path: str):
     _dir = file_path
 
     return_dict = {}
+    std_dict = {}
     for index, path in enumerate(glob(join_file_path([_dir, '*.json']))):
         with open(path, 'r') as f:
             json_dict = json.load(f)
-            return_dict[str(index)] = json_dict["0"]
+            return_dict[str(index)] = json_dict["data"]
+            if "std" in json_dict.keys():
+                std_dict[str(index)] = json_dict["std"]
 
-    return { "data": return_dict }
+    xrange_list = list(return_dict["0"].keys())
+
+    return { "xrange": xrange_list, "data": return_dict, "std": std_dict }
 
 
 @router.get("/outputs/data/{file_path:path}")
