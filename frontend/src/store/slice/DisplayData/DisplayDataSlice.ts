@@ -100,13 +100,14 @@ export const displayDataSlice = createSlice({
         state.timeSeries[path].fulfilled = true
         state.timeSeries[path].error = null
         if (Object.keys(state.timeSeries[path].data).length === 0) {
-          state.timeSeries[path].xrange = action.payload.data.xrange
-          state.timeSeries[path].data = action.payload.data.data
-          state.timeSeries[path].std = action.payload.data.std
+          state.timeSeries[path].xrange = action.payload.xrange
+          state.timeSeries[path].data = action.payload.data
+          state.timeSeries[path].std = action.payload.std
         } else {
-          state.timeSeries[path].data[index] = action.payload.data.data[index]
-          if (action.payload.data.std[index]) {
-            state.timeSeries[path].std[index] = action.payload.data.std[index]
+          state.timeSeries[path].data[index] = action.payload.data[index]
+          console.log(action.payload.std)
+          if (action.payload.std[index] !== undefined) {
+            state.timeSeries[path].std[index] = action.payload.std[index]
           }
         }
       })
@@ -145,10 +146,10 @@ export const displayDataSlice = createSlice({
         state.timeSeries[path].pending = false
         state.timeSeries[path].fulfilled = true
         state.timeSeries[path].error = null
-        state.timeSeries[path].xrange = action.payload.data.xrange
-        state.timeSeries[path].data = action.payload.data.data
-        if (action.payload.data.std) {
-          state.timeSeries[path].std = action.payload.data.std
+        state.timeSeries[path].xrange = action.payload.xrange
+        state.timeSeries[path].data = action.payload.data
+        if (action.payload.std !== undefined) {
+          state.timeSeries[path].std = action.payload.std
         }
       })
       .addCase(getHeatMapData.pending, (state, action) => {
