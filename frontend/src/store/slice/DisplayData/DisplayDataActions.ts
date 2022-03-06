@@ -11,10 +11,11 @@ import {
   ScatterData,
   BarData,
   HTMLData,
+  TimeSeriesDisplayData,
 } from './DisplayDataType'
 
 export const getTimeSeriesDataById = createAsyncThunk<
-  { data: TimeSeriesData },
+  { data: TimeSeriesDisplayData },
   { path: string; index: number }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesDataById`,
@@ -25,7 +26,7 @@ export const getTimeSeriesDataById = createAsyncThunk<
           index: index,
         },
       })
-      return response.data
+      return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)
     }
@@ -33,7 +34,7 @@ export const getTimeSeriesDataById = createAsyncThunk<
 )
 
 export const getTimeSeriesAllData = createAsyncThunk<
-  { data: TimeSeriesData },
+  { data: TimeSeriesDisplayData },
   { path: string }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesAllData`,
@@ -42,7 +43,7 @@ export const getTimeSeriesAllData = createAsyncThunk<
       const response = await axios.get(
         `${BASE_URL}/outputs/alltimedata/${path}`,
       )
-      return response.data
+      return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)
     }

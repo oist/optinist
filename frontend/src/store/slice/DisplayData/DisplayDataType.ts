@@ -53,7 +53,9 @@ interface BaseDisplay<T extends DATA_TYPE, Data> {
 }
 
 export interface TimeSeriesDisplayData
-  extends BaseDisplay<'timeSeries', TimeSeriesData> {}
+  extends BaseDisplay<'timeSeries', TimeSeriesData> {
+  xrange: number[]
+}
 export type TimeSeriesData = {
   [key: string]: {
     [key: number]: number

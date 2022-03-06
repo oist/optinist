@@ -39,7 +39,9 @@ async def read_file(file_path: str):
             json_dict = json.load(f)
             return_dict[str(index)] = json_dict["0"]
 
-    return { "data": return_dict }
+    xrange_list = list(return_dict["0"].keys())
+
+    return { "xrange": xrange_list, "data": return_dict }
 
 
 @router.get("/outputs/data/{file_path:path}")

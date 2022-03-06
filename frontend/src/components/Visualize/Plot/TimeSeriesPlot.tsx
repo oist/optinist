@@ -11,6 +11,7 @@ import {
   selectTimeSeriesDataIsFulfilled,
   selectTimeSeriesDataIsInitialized,
   selectTimeSeriesDataIsPending,
+  selectTimeSeriesXrange,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getTimeSeriesDataById } from 'store/slice/DisplayData/DisplayDataActions'
 import { TimeSeriesData } from 'store/slice/DisplayData/DisplayDataType'
@@ -64,6 +65,8 @@ const TimeSeriesPlotImple = React.memo(() => {
     selectTimeSeriesData(path),
     timeSeriesDataEqualityFn,
   )
+
+  const dataXrange = useSelector(selectTimeSeriesXrange(path))
 
   const offset = useSelector(selectTimeSeriesItemOffset(itemId))
   const span = useSelector(selectTimeSeriesItemSpan(itemId))
@@ -119,7 +122,7 @@ const TimeSeriesPlotImple = React.memo(() => {
             Math.sqrt(y.reduce((a, b) => a + Math.pow(b - mean, 2)) / y.length)
           return {
             name: `(${String(parseInt(key) + 1)})`,
-            x: Object.keys(timeSeriesData[key]),
+            x: dataXrange,
             y: y.map((value) => (value - mean) / std + activeIdx),
             visible: true,
             line: { color: colorScale[new_i] },
@@ -127,7 +130,7 @@ const TimeSeriesPlotImple = React.memo(() => {
         } else {
           return {
             name: `(${String(parseInt(key) + 1)})`,
-            x: Object.keys(timeSeriesData[key]),
+            x: dataXrange,
             y: y,
             visible: true,
             line: { color: colorScale[new_i] },
@@ -136,7 +139,7 @@ const TimeSeriesPlotImple = React.memo(() => {
       } else {
         return {
           name: `(${String(parseInt(key) + 1)})`,
-          x: Object.keys(timeSeriesData[key]),
+          x: dataXrange,
           y: y,
           visible: 'legendonly',
           line: { color: colorScale[new_i] },
@@ -148,8 +151,10 @@ const TimeSeriesPlotImple = React.memo(() => {
   const getAnnotation = () => {
     if (data.length !== 0) {
       return displayNumbers.map((i) => {
+        console.log(data)
+        console.log(i + 1, ' ', Math.max(...data[i].y))
         return {
-          x: data[i].x[0],
+          x: dataXrange[0], //data[i].x[0],
           y: Math.max(...data[i].y),
           xref: 'x',
           yref: 'y',
@@ -197,9 +202,9 @@ const TimeSeriesPlotImple = React.memo(() => {
       showline,
       showticklabels,
       zeroline,
-      displayNumbers,
       offset,
       span,
+      data,
     ],
   )
 

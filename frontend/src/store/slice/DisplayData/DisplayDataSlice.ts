@@ -69,6 +69,7 @@ export const displayDataSlice = createSlice({
         if (!state.timeSeries.hasOwnProperty(path)) {
           state.timeSeries[path] = {
             type: 'timeSeries',
+            xrange: [],
             data: {},
             pending: true,
             fulfilled: false,
@@ -86,15 +87,17 @@ export const displayDataSlice = createSlice({
         state.timeSeries[path].fulfilled = true
         state.timeSeries[path].error = null
         if (Object.keys(state.timeSeries[path].data).length === 0) {
-          state.timeSeries[path].data = action.payload.data
+          state.timeSeries[path].xrange = action.payload.data.xrange
+          state.timeSeries[path].data = action.payload.data.data
         } else {
-          state.timeSeries[path].data[index] = action.payload.data[index]
+          state.timeSeries[path].data[index] = action.payload.data.data[index]
         }
       })
       .addCase(getTimeSeriesDataById.rejected, (state, action) => {
         const { path } = action.meta.arg
         state.timeSeries[path] = {
           type: 'timeSeries',
+          xrange: [],
           data: {},
           pending: false,
           fulfilled: false,
@@ -106,6 +109,7 @@ export const displayDataSlice = createSlice({
         if (!state.timeSeries.hasOwnProperty(path)) {
           state.timeSeries[path] = {
             type: 'timeSeries',
+            xrange: [],
             data: {},
             pending: true,
             fulfilled: false,
@@ -117,22 +121,24 @@ export const displayDataSlice = createSlice({
           state.timeSeries[path].error = null
         }
       })
-      .addCase(getTimeSeriesAllData.fulfilled, (state, action) => {
-        const { path } = action.meta.arg
-        state.timeSeries[path].pending = false
-        state.timeSeries[path].fulfilled = true
-        state.timeSeries[path].error = null
-        state.timeSeries[path].data = action.payload.data
-      })
       .addCase(getTimeSeriesAllData.rejected, (state, action) => {
         const { path } = action.meta.arg
         state.timeSeries[path] = {
           type: 'timeSeries',
+          xrange: [],
           data: {},
           pending: false,
           fulfilled: false,
           error: action.error.message ?? 'rejected',
         }
+      })
+      .addCase(getTimeSeriesAllData.fulfilled, (state, action) => {
+        const { path } = action.meta.arg
+        state.timeSeries[path].pending = false
+        state.timeSeries[path].fulfilled = true
+        state.timeSeries[path].error = null
+        state.timeSeries[path].xrange = action.payload.data.xrange
+        state.timeSeries[path].data = action.payload.data.data
       })
       .addCase(getHeatMapData.pending, (state, action) => {
         const { path } = action.meta.arg

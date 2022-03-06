@@ -5,6 +5,10 @@ const selectDisplayData = (state: RootState) => state.displayData
 export const selectTimeSeriesData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).timeSeries[filePath].data
 
+export const selectTimeSeriesXrange =
+  (filePath: string) => (state: RootState) =>
+    selectDisplayData(state).timeSeries[filePath].xrange
+
 export const selectTimeSeriesDataIsInitialized =
   (filePath: string) => (state: RootState) =>
     Object.keys(selectDisplayData(state).timeSeries).includes(filePath)
