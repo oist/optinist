@@ -4,13 +4,17 @@ import { DATA_TYPE } from '../DisplayData/DisplayDataType'
 export const PIPELINE_SLICE_NAME = 'pipeline'
 
 export type Pipeline = {
-  pipelines: {
-    [requestId: string]: PipelineType
+  run: PipelineType
+  currentPipeline?: {
+    uid: string
   }
-  uidHistory: string[]
 }
 
 export const RUN_STATUS = {
+  /**
+   * 未実行
+   */
+  START_UNINITIALIZED: 'StartUninitialized',
   /**
    * 開始リクエスト中
    */
@@ -42,7 +46,10 @@ export type RUN_STATUS_TYPE = typeof RUN_STATUS[keyof typeof RUN_STATUS]
 export type PipelineType =
   | StartedPipeline
   | {
-      status: typeof RUN_STATUS.START_ERROR | typeof RUN_STATUS.START_PENDING
+      status:
+        | typeof RUN_STATUS.START_ERROR
+        | typeof RUN_STATUS.START_PENDING
+        | typeof RUN_STATUS.START_UNINITIALIZED
     }
 
 export type StartedPipeline = {

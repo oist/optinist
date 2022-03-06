@@ -3,23 +3,45 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import { ThunkApiConfig } from 'store/store'
 import { PIPELINE_SLICE_NAME } from './PipelineType'
 import {
-  run as runRequest,
+  runApi,
+  runByUidApi,
   runResult,
   RunResultDTO,
   RunPostData,
 } from 'api/run/Run'
-import { selectRunResultPendingNodeIdList } from './PipelineSelectors'
+import {
+  selectPipelineLatestUid,
+  selectRunResultPendingNodeIdList,
+} from './PipelineSelectors'
 
 export const run = createAsyncThunk<
   string,
-  { uid: string | undefined; runPostData: RunPostData },
+  { runPostData: RunPostData },
   ThunkApiConfig
->(`${PIPELINE_SLICE_NAME}/run`, async ({ uid, runPostData }, thunkAPI) => {
+>(`${PIPELINE_SLICE_NAME}/run`, async ({ runPostData }, thunkAPI) => {
   try {
-    const responseData = await runRequest({ runData: runPostData, uid })
+    const responseData = await runApi(runPostData)
     return responseData
   } catch (e) {
     return thunkAPI.rejectWithValue(e)
+  }
+})
+
+export const runByCurrentUid = createAsyncThunk<
+  string,
+  { runPostData: Omit<RunPostData, 'name'> },
+  ThunkApiConfig
+>(`${PIPELINE_SLICE_NAME}/run`, async ({ runPostData }, thunkAPI) => {
+  const currentUid = selectPipelineLatestUid(thunkAPI.getState())
+  if (currentUid != null) {
+    try {
+      const responseData = await runByUidApi(currentUid, runPostData)
+      return responseData
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  } else {
+    return thunkAPI.rejectWithValue('currentUid dose not exist.')
   }
 })
 
@@ -30,7 +52,7 @@ export const pollRunResult = createAsyncThunk<
   },
   ThunkApiConfig
 >(`${PIPELINE_SLICE_NAME}/pollRunResult`, async ({ uid }, thunkAPI) => {
-  const pendingNodeIdList = selectRunResultPendingNodeIdList(uid)(
+  const pendingNodeIdList = selectRunResultPendingNodeIdList(
     thunkAPI.getState(),
   )
   try {

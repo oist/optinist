@@ -20,6 +20,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import GetAppIcon from '@mui/icons-material/GetApp'
 import ReplayIcon from '@mui/icons-material/Replay'
+import { useSnackbar } from 'notistack'
 
 import { CollapsibleTable } from './CollapsibleTable'
 import {
@@ -32,10 +33,14 @@ import {
   selectExperimentsSatusIsError,
   selectExperimentsErrorMessage,
 } from 'store/slice/Experiments/ExperimentsSelectors'
-import { deleteExperimentByUid } from 'store/slice/Experiments/ExperimentsActions'
+import {
+  deleteExperimentByUid,
+  importExperimentByUid,
+} from 'store/slice/Experiments/ExperimentsActions'
 import { getExperiments } from 'store/slice/Experiments/ExperimentsActions'
 import { arrayEqualityFn } from 'utils/EqualityUtils'
 import { ExperimentStatusIcon } from './ExperimentStatusIcon'
+import { AppDispatch } from 'store/store'
 
 export const ExperimentTable: React.FC = () => {
   const isUninitialized = useSelector(selectExperimentsSatusIsUninitialized)
@@ -159,12 +164,10 @@ const Row: React.FC = () => {
           <ExperimentStatusIcon status={status} />
         </TableCell>
         <TableCell>
-          <IconButton>
-            <GetAppIcon color="primary" />
-          </IconButton>
+          <ImportExperimentButton />
         </TableCell>
         <TableCell>
-          <ExperimentDeleteButton />
+          <DeleteExperimentButton />
         </TableCell>
       </TableRow>
       <CollapsibleTable open={open} />
@@ -172,7 +175,26 @@ const Row: React.FC = () => {
   )
 }
 
-const ExperimentDeleteButton: React.FC = () => {
+const ImportExperimentButton: React.FC = () => {
+  const dispatch: AppDispatch = useDispatch()
+  const uid = React.useContext(ExperimentUidContext)
+  const { enqueueSnackbar } = useSnackbar()
+
+  const onClick = () => {
+    dispatch(importExperimentByUid(uid))
+      .unwrap()
+      .then(() =>
+        enqueueSnackbar('Successfully imported.', { variant: 'success' }),
+      )
+  }
+  return (
+    <IconButton onClick={onClick}>
+      <GetAppIcon color="primary" />
+    </IconButton>
+  )
+}
+
+const DeleteExperimentButton: React.FC = () => {
   const dispatch = useDispatch()
   const uid = React.useContext(ExperimentUidContext)
 

@@ -1,61 +1,141 @@
 import React from 'react'
 
 import Button from '@mui/material/Button'
-import PlayArrowIcon from '@mui/icons-material/PlayArrow'
+import ButtonGroup from '@mui/material/ButtonGroup'
+import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
 import CloseIcon from '@mui/icons-material/Close'
+import ClickAwayListener from '@mui/material/ClickAwayListener'
+import Grow from '@mui/material/Grow'
+import Paper from '@mui/material/Paper'
+import Popper from '@mui/material/Popper'
+import MenuItem from '@mui/material/MenuItem'
+import MenuList from '@mui/material/MenuList'
+import TextField from '@mui/material/TextField'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+
+import { useSnackbar } from 'notistack'
 
 import { UseRunPipelineReturnType } from 'store/slice/Pipeline/PipelineHook'
-import { RUN_STATUS } from 'store/slice/Pipeline/PipelineType'
-import { useSnackbar } from 'notistack'
+
+const OPTIONS = {
+  RUN_NEW: 1,
+  RUN_ALREADY: 2,
+} as const
+
+export type OPTION_TYPE = typeof OPTIONS[keyof typeof OPTIONS]
+
+const OPTIONS_LABELS = {
+  [OPTIONS.RUN_NEW]: 'RUN',
+  [OPTIONS.RUN_ALREADY]: 'RE-RUN',
+} as const
 
 export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
   const {
-    status,
+    uid,
+    isStartedSuccess,
     filePathIsUndefined,
     handleCancelPipeline,
     handleRunPipeline,
+    handleRunPipelineByUid,
   } = props
+
+  const [dialogOpen, setDialogOpen] = React.useState(false)
   const { enqueueSnackbar } = useSnackbar()
-  const onClickRun = () => {
+  const handleClick = () => {
     if (!filePathIsUndefined) {
-      handleRunPipeline()
+      if (selectedOption === OPTIONS.RUN_NEW) {
+        setDialogOpen(true)
+      } else {
+        handleRunPipelineByUid()
+      }
     } else {
       enqueueSnackbar('please select input file', { variant: 'error' })
     }
   }
+  const onClickDialogRun = (name: string) => {
+    handleRunPipeline(name)
+    setDialogOpen(false)
+  }
   const onClickCancel = () => {
     handleCancelPipeline()
   }
-
-  // タブ移動による再レンダリングするたびにスナックバーが実行されてしまう挙動を回避するために前回の値を保持
-  const [prevStatus, setPrevStatus] = React.useState(status)
-  React.useEffect(() => {
-    if (prevStatus !== status) {
-      if (status === RUN_STATUS.FINISHED) {
-        enqueueSnackbar('Finished', { variant: 'success' })
-      } else if (status === RUN_STATUS.ABORTED) {
-        enqueueSnackbar('Aborted', { variant: 'error' })
-      } else if (status === RUN_STATUS.CANCELED) {
-        enqueueSnackbar('Canceled', { variant: 'info' })
-      }
-      setPrevStatus(status)
+  const [menuOpen, setMenuOpen] = React.useState(false)
+  const anchorRef = React.useRef<HTMLDivElement>(null)
+  const [selectedOption, setSelectedOption] = React.useState<OPTION_TYPE>(
+    OPTIONS.RUN_NEW,
+  )
+  const handleMenuItemClick = (
+    event: React.MouseEvent<HTMLLIElement, MouseEvent>,
+    option: OPTION_TYPE,
+  ) => {
+    setSelectedOption(option)
+    setMenuOpen(false)
+  }
+  const handleToggle = () => {
+    setMenuOpen((prevOpen) => !prevOpen)
+  }
+  const handleClose = (event: Event) => {
+    if (
+      anchorRef.current &&
+      anchorRef.current.contains(event.target as HTMLElement)
+    ) {
+      return
     }
-  }, [status, prevStatus, enqueueSnackbar])
-
+    setMenuOpen(false)
+  }
+  const uidExists = uid != null
   return (
     <>
-      <Button
-        variant="contained"
-        color="primary"
-        endIcon={<PlayArrowIcon />}
-        onClick={onClickRun}
-        disabled={status === RUN_STATUS.START_SUCCESS}
+      <ButtonGroup
         sx={{
           margin: (theme) => theme.spacing(1),
         }}
+        variant="contained"
+        ref={anchorRef}
+        disabled={isStartedSuccess}
       >
-        Run
-      </Button>
+        <Button onClick={handleClick}>{OPTIONS_LABELS[selectedOption]}</Button>
+        <Button size="small" onClick={handleToggle}>
+          <ArrowDropDownIcon />
+        </Button>
+      </ButtonGroup>
+      <Popper
+        open={menuOpen}
+        anchorEl={anchorRef.current}
+        role={undefined}
+        transition
+        disablePortal
+      >
+        {({ TransitionProps, placement }) => (
+          <Grow
+            {...TransitionProps}
+            style={{
+              transformOrigin:
+                placement === 'bottom' ? 'center top' : 'center bottom',
+            }}
+          >
+            <Paper>
+              <ClickAwayListener onClickAway={handleClose}>
+                <MenuList>
+                  {Object.values(OPTIONS).map((option) => (
+                    <MenuItem
+                      key={option}
+                      disabled={!uidExists && option === OPTIONS.RUN_ALREADY}
+                      selected={option === selectedOption}
+                      onClick={(event) => handleMenuItemClick(event, option)}
+                    >
+                      {OPTIONS_LABELS[option]}
+                    </MenuItem>
+                  ))}
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
       <Button
         variant="outlined"
         endIcon={<CloseIcon />}
@@ -66,6 +146,58 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
       >
         Cancel
       </Button>
+      <RunDialog
+        open={dialogOpen}
+        handleRun={onClickDialogRun}
+        handleClose={() => setDialogOpen(false)}
+      />
     </>
+  )
+})
+
+const RunDialog = React.memo<{
+  open: boolean
+  handleRun: (name: string) => void
+  handleClose: () => void
+}>(({ open, handleClose, handleRun }) => {
+  const [name, setName] = React.useState('')
+  const [error, setError] = React.useState<string | null>(null)
+  const onClickRun = () => {
+    if (name !== '') {
+      handleRun(name)
+    } else {
+      setError('name is empty')
+    }
+  }
+  const onChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value)
+    if (event.target.value !== '') {
+      setError(null)
+    }
+  }
+  return (
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle>Name and run flowchart</DialogTitle>
+      <DialogContent>
+        <TextField
+          label="name"
+          autoFocus
+          margin="dense"
+          fullWidth
+          variant="standard"
+          onChange={onChangeName}
+          error={error != null}
+          helperText={error}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="inherit" variant="outlined">
+          Cancel
+        </Button>
+        <Button onClick={onClickRun} color="primary" variant="outlined">
+          Run
+        </Button>
+      </DialogActions>
+    </Dialog>
   )
 })

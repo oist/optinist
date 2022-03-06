@@ -6,6 +6,7 @@ import {
   Position,
   isNode,
   FlowTransform,
+  XYPosition,
 } from 'react-flow-renderer'
 import {
   FLOW_ELEMENT_SLICE_NAME,
@@ -20,7 +21,10 @@ import {
   INITIAL_IMAGE_ELEMENT_ID,
   INITIAL_IMAGE_ELEMENT_NAME,
 } from 'const/flowchart'
+import { importExperimentByUid } from '../Experiments/ExperimentsActions'
 import { FILE_TYPE } from '../InputNode/InputNodeType'
+import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
+import { isInputNodePostData } from 'api/run/RunUtils'
 
 const initialElements: Elements<NodeData> = [
   {
@@ -76,7 +80,7 @@ export const flowElementSlice = createSlice({
     addFlowElementNode: (
       state,
       action: PayloadAction<{
-        node: Node<NodeData>
+        node: Omit<Node<NodeData>, 'position'>
         inputNodeInfo?: { fileType: FILE_TYPE }
         algoNodeInfo?: { functionPath: string; name: string }
       }>,
@@ -103,21 +107,14 @@ export const flowElementSlice = createSlice({
           sourcePosition: Position.Right,
         }
       }
-      state.flowElements.push(node)
-    },
-    edifFlowElementsLabelById: (
-      state,
-      action: PayloadAction<{
-        nodeId: string
-        fileName: string
-      }>,
-    ) => {
-      let { nodeId, fileName } = action.payload
-      const elementIdx = state.flowElements.findIndex(
-        (ele) => ele.id === nodeId,
-      )
-      if (state.flowElements[elementIdx].data?.label) {
-        state.flowElements[elementIdx].data!.label = fileName
+      const newPosition: XYPosition = state.elementCoord
+      state.flowElements.push({ ...node, position: newPosition })
+      const { x, y } = state.elementCoord
+      if (x > 800 || y > 200) {
+        state.elementCoord.x = 300
+        state.elementCoord.y = 100
+      } else {
+        state.elementCoord.x += 250
       }
     },
     editFlowElementPositionById: (
@@ -150,6 +147,45 @@ export const flowElementSlice = createSlice({
       }
     },
   },
+  extraReducers: (builder) =>
+    builder
+      .addCase(setInputNodeFilePath, (state, action) => {
+        let { nodeId, filePath } = action.payload
+        const fileName = filePath.split('/').reverse()[0]
+        const elementIdx = state.flowElements.findIndex(
+          (ele) => ele.id === nodeId,
+        )
+        const targetNode = state.flowElements[elementIdx]
+        if (targetNode.data != null) {
+          targetNode.data.label = fileName
+        }
+      })
+      .addCase(importExperimentByUid.fulfilled, (state, action) => {
+        state.flowPosition = initialFlowPosition
+        state.elementCoord = initialElementCoord
+        const newNodeList: Elements<NodeData> = action.payload.nodeList.map(
+          (node) => {
+            if (isInputNodePostData(node)) {
+              return {
+                ...node,
+                data: {
+                  label: node.data?.label ?? '',
+                  type: node.data?.type ?? 'input',
+                },
+              }
+            } else {
+              return {
+                ...node,
+                data: {
+                  label: node.data?.label ?? '',
+                  type: node.data?.type ?? 'algorithm',
+                },
+              }
+            }
+          },
+        )
+        state.flowElements = newNodeList.concat(action.payload.edgeList)
+      }),
 })
 
 export const {
@@ -158,7 +194,6 @@ export const {
   addFlowElementNode,
   deleteFlowElements,
   deleteFlowElementsById,
-  edifFlowElementsLabelById,
   editFlowElementPositionById,
   setElementCoord,
 } = flowElementSlice.actions

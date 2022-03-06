@@ -46,3 +46,13 @@ function convertToExperimentStatus(dto: string): EXPERIMENTS_STATUS {
       throw new Error('failed to convert to EXPERIMENTS_STATUS')
   }
 }
+
+export function convertToFlowChartList(
+  dto: ExperimentsDTO,
+): ExperimentListType {
+  const experimentList: ExperimentListType = {}
+  Object.entries(dto).forEach(([uid, value]) => {
+    experimentList[uid] = convertToExperimentType(value)
+  })
+  return experimentList
+}
