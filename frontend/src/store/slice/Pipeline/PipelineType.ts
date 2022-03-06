@@ -7,7 +7,6 @@ export type Pipeline = {
   run: PipelineType
   currentPipeline?: {
     uid: string
-    name: string
   }
 }
 

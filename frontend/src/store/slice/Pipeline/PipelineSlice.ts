@@ -41,7 +41,6 @@ export const pipelineSlice = createSlice({
         }
         state.currentPipeline = {
           uid: action.payload,
-          name: '', // 一旦は使用しない
         }
       })
       .addCase(run.rejected, (state, action) => {
@@ -70,7 +69,6 @@ export const pipelineSlice = createSlice({
       .addCase(importExperimentByUid.fulfilled, (state, action) => {
         state.currentPipeline = {
           uid: action.meta.arg,
-          name: '',
         }
         state.run = {
           status: RUN_STATUS.START_UNINITIALIZED,

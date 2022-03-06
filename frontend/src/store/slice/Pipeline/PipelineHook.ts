@@ -25,9 +25,12 @@ export function useRunPipeline() {
   const isStartedSuccess = useSelector(selectPipelineIsStartedSuccess)
   const filePathIsUndefined = useSelector(selectFilePathIsUndefined)
   const runPostData = useSelector(selectRunPostData)
-  const handleRunPipeline = React.useCallback(() => {
-    dispatch(run({ runPostData }))
-  }, [dispatch, runPostData])
+  const handleRunPipeline = React.useCallback(
+    (name: string) => {
+      dispatch(run({ runPostData: { name, ...runPostData } }))
+    },
+    [dispatch, runPostData],
+  )
   const handleRunPipelineByUid = React.useCallback(() => {
     dispatch(runByCurrentUid({ runPostData }))
   }, [dispatch, runPostData])

@@ -51,7 +51,7 @@ export const selectRunPostData = (state: RootState) => {
   const snakemakeParam = selectSnakemakeParams(state)
   const edgeListForRun = selectEdgeListForRun(state)
   const nodePostDataList = selectNodePostDataListForRun(state)
-  const runPostData: RunPostData = {
+  const runPostData: Omit<RunPostData, 'name'> = {
     nwbParam,
     snakemakeParam,
     edgeList: edgeListForRun,

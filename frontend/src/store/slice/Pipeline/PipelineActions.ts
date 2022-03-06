@@ -29,7 +29,7 @@ export const run = createAsyncThunk<
 
 export const runByCurrentUid = createAsyncThunk<
   string,
-  { runPostData: RunPostData },
+  { runPostData: Omit<RunPostData, 'name'> },
   ThunkApiConfig
 >(`${PIPELINE_SLICE_NAME}/run`, async ({ runPostData }, thunkAPI) => {
   const currentUid = selectPipelineLatestUid(thunkAPI.getState())
