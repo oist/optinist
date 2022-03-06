@@ -28,8 +28,8 @@ const OPTIONS = {
 export type OPTION_TYPE = typeof OPTIONS[keyof typeof OPTIONS]
 
 const OPTIONS_LABELS = {
-  [OPTIONS.RUN_NEW]: 'RUN(NEW)',
-  [OPTIONS.RUN_ALREADY]: 'RUN(ALREADY)',
+  [OPTIONS.RUN_NEW]: 'RUN',
+  [OPTIONS.RUN_ALREADY]: 'RE-RUN',
 } as const
 
 export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {

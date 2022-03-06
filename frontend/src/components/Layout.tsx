@@ -30,9 +30,9 @@ const Layout: React.FC = () => {
             centered
             textColor="inherit"
           >
-            <Tab label="Flow Chart" {...a11yProps(0)} />
+            <Tab label="Workflow" {...a11yProps(0)} />
             <Tab label="Visualize" {...a11yProps(1)} />
-            <Tab label="Experiment" {...a11yProps(2)} />
+            <Tab label="Record" {...a11yProps(2)} />
           </Tabs>
         </Toolbar>
       </StyledAppBar>
