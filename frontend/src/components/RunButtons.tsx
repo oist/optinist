@@ -10,9 +10,15 @@ import Paper from '@mui/material/Paper'
 import Popper from '@mui/material/Popper'
 import MenuItem from '@mui/material/MenuItem'
 import MenuList from '@mui/material/MenuList'
+import TextField from '@mui/material/TextField'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogContent from '@mui/material/DialogContent'
+import DialogTitle from '@mui/material/DialogTitle'
+
+import { useSnackbar } from 'notistack'
 
 import { UseRunPipelineReturnType } from 'store/slice/Pipeline/PipelineHook'
-import { useSnackbar } from 'notistack'
 
 const OPTIONS = {
   RUN_NEW: 1,
@@ -36,30 +42,12 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
     handleRunPipelineByUid,
   } = props
 
-  // タブ移動による再レンダリングするたびにスナックバーが実行されてしまう挙動を回避するために前回の値を保持
-  // const [prevStatus, setPrevStatus] = React.useState(status)
-  // React.useEffect(() => {
-  //   if (prevStatus !== status) {
-  //     if (status === RUN_STATUS.FINISHED) {
-  //       enqueueSnackbar('Finished', { variant: 'success' })
-  //     } else if (status === RUN_STATUS.ABORTED) {
-  //       enqueueSnackbar('Aborted', { variant: 'error' })
-  //     } else if (status === RUN_STATUS.CANCELED) {
-  //       enqueueSnackbar('Canceled', { variant: 'info' })
-  //     }
-  //     setPrevStatus(status)
-  //   }
-  // }, [status, prevStatus, enqueueSnackbar])
-  const [menuOpen, setMenuOpen] = React.useState(false)
-  const anchorRef = React.useRef<HTMLDivElement>(null)
-  const [selectedOption, setSelectedOption] = React.useState<OPTION_TYPE>(
-    OPTIONS.RUN_NEW,
-  )
+  const [dialogOpen, setDialogOpen] = React.useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const handleClick = () => {
     if (!filePathIsUndefined) {
       if (selectedOption === OPTIONS.RUN_NEW) {
-        handleRunPipeline()
+        setDialogOpen(true)
       } else {
         handleRunPipelineByUid()
       }
@@ -67,9 +55,18 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
       enqueueSnackbar('please select input file', { variant: 'error' })
     }
   }
+  const onClickDialogRun = (name: string) => {
+    handleRunPipeline(name)
+    setDialogOpen(false)
+  }
   const onClickCancel = () => {
     handleCancelPipeline()
   }
+  const [menuOpen, setMenuOpen] = React.useState(false)
+  const anchorRef = React.useRef<HTMLDivElement>(null)
+  const [selectedOption, setSelectedOption] = React.useState<OPTION_TYPE>(
+    OPTIONS.RUN_NEW,
+  )
   const handleMenuItemClick = (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
     option: OPTION_TYPE,
@@ -149,6 +146,58 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
       >
         Cancel
       </Button>
+      <RunDialog
+        open={dialogOpen}
+        handleRun={onClickDialogRun}
+        handleClose={() => setDialogOpen(false)}
+      />
     </>
+  )
+})
+
+const RunDialog = React.memo<{
+  open: boolean
+  handleRun: (name: string) => void
+  handleClose: () => void
+}>(({ open, handleClose, handleRun }) => {
+  const [name, setName] = React.useState('')
+  const [error, setError] = React.useState<string | null>(null)
+  const onClickRun = () => {
+    if (name !== '') {
+      handleRun(name)
+    } else {
+      setError('name is empty')
+    }
+  }
+  const onChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value)
+    if (event.target.value !== '') {
+      setError(null)
+    }
+  }
+  return (
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle>Name and run flowchart</DialogTitle>
+      <DialogContent>
+        <TextField
+          label="name"
+          autoFocus
+          margin="dense"
+          fullWidth
+          variant="standard"
+          onChange={onChangeName}
+          error={error != null}
+          helperText={error}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="inherit" variant="outlined">
+          Cancel
+        </Button>
+        <Button onClick={onClickRun} color="primary" variant="outlined">
+          Run
+        </Button>
+      </DialogActions>
+    </Dialog>
   )
 })

@@ -11,6 +11,7 @@ import type { FILE_TYPE } from 'store/slice/InputNode/InputNodeType'
 import type { ParamMap } from 'store/utils/param/ParamType'
 
 export type RunPostData = {
+  name: string
   nodeList: Node<NodePostDataType>[]
   edgeList: Edge[]
   nwbParam: ParamMap
@@ -40,7 +41,7 @@ export async function runApi(data: RunPostData): Promise<string> {
 
 export async function runByUidApi(
   uid: string,
-  data: RunPostData,
+  data: Omit<RunPostData, 'name'>,
 ): Promise<string> {
   const response = await axios.post(`${BASE_URL}/run/${uid}`, data)
   return response.data
