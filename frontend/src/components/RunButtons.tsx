@@ -1,4 +1,5 @@
 import React from 'react'
+import { useSelector, useDispatch } from 'react-redux'
 
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
@@ -19,18 +20,13 @@ import DialogTitle from '@mui/material/DialogTitle'
 import { useSnackbar } from 'notistack'
 
 import { UseRunPipelineReturnType } from 'store/slice/Pipeline/PipelineHook'
-
-const OPTIONS = {
-  RUN_NEW: 1,
-  RUN_ALREADY: 2,
-} as const
-
-export type OPTION_TYPE = typeof OPTIONS[keyof typeof OPTIONS]
-
-const OPTIONS_LABELS = {
-  [OPTIONS.RUN_NEW]: 'RUN',
-  [OPTIONS.RUN_ALREADY]: 'RE-RUN',
-} as const
+import {
+  RUN_BTN_LABELS,
+  RUN_BTN_OPTIONS,
+  RUN_BTN_TYPE,
+} from 'store/slice/Pipeline/PipelineType'
+import { selectPipelineRunBtn } from 'store/slice/Pipeline/PipelineSelectors'
+import { setRunBtnOption } from 'store/slice/Pipeline/PipelineSlice'
 
 export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
   const {
@@ -42,11 +38,15 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
     handleRunPipelineByUid,
   } = props
 
+  const dispatch = useDispatch()
+
+  const runBtnOption = useSelector(selectPipelineRunBtn)
+
   const [dialogOpen, setDialogOpen] = React.useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const handleClick = () => {
     if (!filePathIsUndefined) {
-      if (selectedOption === OPTIONS.RUN_NEW) {
+      if (runBtnOption === RUN_BTN_OPTIONS.RUN_NEW) {
         setDialogOpen(true)
       } else {
         handleRunPipelineByUid()
@@ -64,14 +64,12 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
   }
   const [menuOpen, setMenuOpen] = React.useState(false)
   const anchorRef = React.useRef<HTMLDivElement>(null)
-  const [selectedOption, setSelectedOption] = React.useState<OPTION_TYPE>(
-    OPTIONS.RUN_NEW,
-  )
+
   const handleMenuItemClick = (
     event: React.MouseEvent<HTMLLIElement, MouseEvent>,
-    option: OPTION_TYPE,
+    option: RUN_BTN_TYPE,
   ) => {
-    setSelectedOption(option)
+    dispatch(setRunBtnOption({ runBtnOption: option }))
     setMenuOpen(false)
   }
   const handleToggle = () => {
@@ -97,7 +95,7 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
         ref={anchorRef}
         disabled={isStartedSuccess}
       >
-        <Button onClick={handleClick}>{OPTIONS_LABELS[selectedOption]}</Button>
+        <Button onClick={handleClick}>{RUN_BTN_LABELS[runBtnOption]}</Button>
         <Button size="small" onClick={handleToggle}>
           <ArrowDropDownIcon />
         </Button>
@@ -120,14 +118,16 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
             <Paper>
               <ClickAwayListener onClickAway={handleClose}>
                 <MenuList>
-                  {Object.values(OPTIONS).map((option) => (
+                  {Object.values(RUN_BTN_OPTIONS).map((option) => (
                     <MenuItem
                       key={option}
-                      disabled={!uidExists && option === OPTIONS.RUN_ALREADY}
-                      selected={option === selectedOption}
+                      disabled={
+                        !uidExists && option === RUN_BTN_OPTIONS.RUN_ALREADY
+                      }
+                      selected={option === runBtnOption}
                       onClick={(event) => handleMenuItemClick(event, option)}
                     >
-                      {OPTIONS_LABELS[option]}
+                      {RUN_BTN_LABELS[option]}
                     </MenuItem>
                   ))}
                 </MenuList>
