@@ -9,13 +9,13 @@ import {
   selectInputNodeDefined,
   selectInputNodeSelectedFilePath,
 } from 'store/slice/InputNode/InputNodeSelectors'
-import { setInputImageNodeFile } from 'store/slice/InputNode/InputNodeSlice'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 
 import { useHandleColor } from './HandleColorHook'
 import { FileSelect } from './FileSelect'
 import { toHandleId, isValidConnection } from './FlowChartUtils'
 import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
+import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
 
 // Connection部分のレイアウト
 const sourceHandleStyle: CSSProperties = {
@@ -41,12 +41,7 @@ const ImageFileNodeImple = React.memo<NodeProps>(
     const dispatch = useDispatch()
     const filePath = useSelector(selectInputNodeSelectedFilePath(nodeId))
     const onChangeFilePath = (path: string) => {
-      dispatch(
-        setInputImageNodeFile({
-          nodeId,
-          filePath: path,
-        }),
-      )
+      dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
     }
 
     const theme = useTheme()
