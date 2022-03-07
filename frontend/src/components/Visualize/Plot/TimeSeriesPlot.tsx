@@ -103,7 +103,7 @@ const TimeSeriesPlotImple = React.memo(() => {
         }),
       )
     }
-  }, [timeSeriesData])
+  }, [timeSeriesData, dispatch, itemId, checkedList.length])
 
   const data = React.useMemo(() => {
     if (timeSeriesData === null) {
@@ -167,7 +167,15 @@ const TimeSeriesPlotImple = React.memo(() => {
         }
       }
     })
-  }, [timeSeriesData, displayNumbers, offset, span, colorScale])
+  }, [
+    timeSeriesData,
+    displayNumbers,
+    offset,
+    span,
+    colorScale,
+    dataStd,
+    dataXrange,
+  ])
 
   const getAnnotation = () => {
     if (data.length !== 0) {
