@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { LegendClickEvent } from 'plotly.js'
@@ -177,7 +177,7 @@ const TimeSeriesPlotImple = React.memo(() => {
     dataXrange,
   ])
 
-  const getAnnotation = () => {
+  const getAnnotation = useCallback(() => {
     if (data.length !== 0) {
       return displayNumbers.map((i) => {
         return {
@@ -194,7 +194,7 @@ const TimeSeriesPlotImple = React.memo(() => {
     } else {
       return []
     }
-  }
+  }, [data, displayNumbers, dataXrange])
 
   const layout = React.useMemo(
     () => ({
@@ -222,17 +222,7 @@ const TimeSeriesPlotImple = React.memo(() => {
       },
       annotations: getAnnotation(),
     }),
-    [
-      path,
-      xrange,
-      showgrid,
-      showline,
-      showticklabels,
-      zeroline,
-      offset,
-      span,
-      data,
-    ],
+    [path, xrange, showgrid, showline, showticklabels, zeroline, getAnnotation],
   )
 
   const config = {

@@ -11,6 +11,7 @@ import {
   Button,
   LinearProgress,
 } from '@mui/material'
+import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import ErrorIcon from '@mui/icons-material/Error'
 import Popover from '@mui/material/Popover'
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
@@ -30,11 +31,9 @@ import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice
 import {
   selectPipelineLatestUid,
   selectPipelineNodeResultMessage,
-  selectPipelineNodeResultOutputKeyList,
   selectPipelineNodeResultStatus,
 } from 'store/slice/Pipeline/PipelineSelectors'
 import { RootState } from 'store/store'
-import { arrayEqualityFn } from 'utils/EqualityUtils'
 import { NODE_RESULT_STATUS } from 'store/slice/Pipeline/PipelineType'
 
 const leftHandleStyle: CSSProperties = {
@@ -72,15 +71,6 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
       dispatch(deleteFlowElementsById(nodeId))
     }
 
-    const latestUid = useSelector(selectPipelineLatestUid)
-    const outputKeyList = useSelector(
-      (state: RootState) =>
-        latestUid != null
-          ? selectPipelineNodeResultOutputKeyList(nodeId)(state)
-          : [],
-      arrayEqualityFn,
-    )
-
     return (
       <div
         style={{
@@ -101,15 +91,15 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
           <CloseOutlinedIcon />
         </IconButton>
         <AlgoName nodeId={nodeId} data={data} />
-        <Button size="small" variant="outlined" onClick={onClickParamButton}>
-          Param
-          {/* <DehazeIcon fontSize='small'/> */}
-        </Button>
+        <div>
+          <Button size="small" variant="outlined" onClick={onClickParamButton}>
+            Param
+            {/* <DehazeIcon fontSize='small'/> */}
+          </Button>
+        </div>
         <AlgoArgs nodeId={nodeId} />
         <AlgoReturns nodeId={nodeId} isConnectable={isConnectable} />
-        {outputKeyList != null &&
-          outputKeyList.length > 0 &&
-          outputKeyList.map((outputKey) => <li>{outputKey}</li>)}
+        <Message nodeId={nodeId} />
       </div>
     )
   },
@@ -121,12 +111,6 @@ const AlgoName = React.memo<{
 }>(({ nodeId, data }) => {
   const theme = useTheme()
   const latestUid = useSelector(selectPipelineLatestUid)
-
-  const message = useSelector((state: RootState) =>
-    latestUid != null
-      ? selectPipelineNodeResultMessage(nodeId)(state) ?? null
-      : null,
-  )
 
   const status = useSelector((state: RootState) =>
     latestUid != null
@@ -152,9 +136,6 @@ const AlgoName = React.memo<{
         }}
       >
         {data.label}
-        <ErrorMessage
-          error={status === NODE_RESULT_STATUS.ERROR ? message : null}
-        />
       </Typography>
     </div>
   )
@@ -315,20 +296,34 @@ const ReturnHandle = React.memo<HandleProps>(
   },
 )
 
-const ErrorMessage = React.memo<{
-  error: string | null
-}>(({ error }) => {
+const Message = React.memo<{
+  nodeId: string
+}>(({ nodeId }) => {
+  const latestUid = useSelector(selectPipelineLatestUid)
+  const status = useSelector((state: RootState) =>
+    latestUid != null
+      ? selectPipelineNodeResultStatus(nodeId)(state)
+      : 'uninitialized',
+  )
+
+  const errorMsg = useSelector((state: RootState) =>
+    latestUid != null
+      ? selectPipelineNodeResultMessage(nodeId)(state) ?? null
+      : null,
+  )
+
   const anchorElRef = React.useRef<HTMLButtonElement | null>(null)
   const [open, setOpen] = React.useState(false)
   const theme = useTheme()
-  if (error != null) {
+
+  if (status === NODE_RESULT_STATUS.ERROR) {
     return (
       <>
         <IconButton
           ref={anchorElRef}
           onClick={() => setOpen((prevOpen) => !prevOpen)}
           size="small"
-          style={{ color: theme.palette.error.main }}
+          style={{ color: theme.palette.error.main, float: 'right' }}
         >
           <ErrorIcon />
         </IconButton>
@@ -346,10 +341,21 @@ const ErrorMessage = React.memo<{
           }}
         >
           <div style={{ margin: 8 }}>
-            <FormHelperText error={true}>{error}</FormHelperText>
+            <FormHelperText error={true}>{errorMsg}</FormHelperText>
           </div>
         </Popover>
       </>
+    )
+  } else if (status === NODE_RESULT_STATUS.SUCCESS) {
+    return (
+      <IconButton
+        ref={anchorElRef}
+        onClick={() => setOpen((prevOpen) => !prevOpen)}
+        size="small"
+        style={{ color: theme.palette.success.main, float: 'right' }}
+      >
+        <CheckCircleRoundedIcon />
+      </IconButton>
     )
   } else {
     return null
