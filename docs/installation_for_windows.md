@@ -101,7 +101,7 @@ python main.py
 - `python main.py` log is as blow:
 ```
 (optinist) PS C:\optinist\backend> python main.py
-[32mINFO[0m:     Will watch for changes in these directories: ['C:\\Users\\playg\\Documents\\optinist\\backend']
+[32mINFO[0m:     Will watch for changes in these directories: ['C:\\optinist\\backend']
 [32mINFO[0m:     Uvicorn running on [1mhttp://0.0.0.0:8000[0m (Press CTRL+C to quit)
 [32mINFO[0m:     Started reloader process [[36m[1m16312[0m] using [36m[1mstatreload[0m
 [32mINFO[0m:     Started server process [[36m34084[0m]
