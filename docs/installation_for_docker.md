@@ -20,6 +20,8 @@ Please follow instructions below.
 
 Follow this [link](installation_github_settings.md).
 
+<br />
+
 # 1. Clone optinist repository
 
 First, you get optinist code from github repository.
