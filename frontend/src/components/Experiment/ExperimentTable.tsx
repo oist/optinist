@@ -41,6 +41,8 @@ import { getExperiments } from 'store/slice/Experiments/ExperimentsActions'
 import { arrayEqualityFn } from 'utils/EqualityUtils'
 import { ExperimentStatusIcon } from './ExperimentStatusIcon'
 import { AppDispatch } from 'store/store'
+import { setRunBtnOption } from 'store/slice/Pipeline/PipelineSlice'
+import { RUN_BTN_OPTIONS } from 'store/slice/Pipeline/PipelineType'
 
 export const ExperimentTable: React.FC = () => {
   const isUninitialized = useSelector(selectExperimentsSatusIsUninitialized)
@@ -186,6 +188,7 @@ const ImportExperimentButton: React.FC = () => {
       .then(() =>
         enqueueSnackbar('Successfully imported.', { variant: 'success' }),
       )
+    dispatch(setRunBtnOption({ runBtnOption: RUN_BTN_OPTIONS.RUN_ALREADY }))
   }
   return (
     <IconButton onClick={onClick}>

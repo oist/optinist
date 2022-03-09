@@ -113,6 +113,6 @@ export const RUN_BTN_OPTIONS = {
 export type RUN_BTN_TYPE = typeof RUN_BTN_OPTIONS[keyof typeof RUN_BTN_OPTIONS]
 
 export const RUN_BTN_LABELS = {
-  [RUN_BTN_OPTIONS.RUN_NEW]: 'RUN',
-  [RUN_BTN_OPTIONS.RUN_ALREADY]: 'RE-RUN',
+  [RUN_BTN_OPTIONS.RUN_NEW]: 'RUN ALL',
+  [RUN_BTN_OPTIONS.RUN_ALREADY]: 'RUN',
 } as const
