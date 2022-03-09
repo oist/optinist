@@ -90,4 +90,10 @@ def ETA(
         file_name='mean'
     )
 
+    info['mean_heatmap'] = CorrelationData(
+        mean,
+        func_name='eta',
+        file_name='mean_heatmap'
+    )
+
     return info

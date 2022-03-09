@@ -11,7 +11,6 @@ import {
   ScatterData,
   BarData,
   HTMLData,
-  TimeSeriesDisplayData,
 } from './DisplayDataType'
 
 export const getTimeSeriesDataById = createAsyncThunk<

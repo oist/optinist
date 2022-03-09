@@ -103,7 +103,7 @@ const TimeSeriesPlotImple = React.memo(() => {
         }),
       )
     }
-  }, [timeSeriesData])
+  }, [timeSeriesData, dispatch, itemId, checkedList.length])
 
   const data = React.useMemo(() => {
     if (timeSeriesData === null) {
@@ -167,9 +167,17 @@ const TimeSeriesPlotImple = React.memo(() => {
         }
       }
     })
-  }, [timeSeriesData, displayNumbers, offset, span, colorScale])
+  }, [
+    timeSeriesData,
+    displayNumbers,
+    offset,
+    span,
+    colorScale,
+    dataStd,
+    dataXrange,
+  ])
 
-  const getAnnotation = () => {
+  const annotations = React.useMemo(() => {
     if (data.length !== 0) {
       return displayNumbers.map((i) => {
         return {
@@ -186,7 +194,7 @@ const TimeSeriesPlotImple = React.memo(() => {
     } else {
       return []
     }
-  }
+  }, [data, displayNumbers, dataXrange])
 
   const layout = React.useMemo(
     () => ({
@@ -212,19 +220,9 @@ const TimeSeriesPlotImple = React.memo(() => {
         showticklabels: showticklabels,
         zeroline: zeroline,
       },
-      annotations: getAnnotation(),
+      annotations: annotations,
     }),
-    [
-      path,
-      xrange,
-      showgrid,
-      showline,
-      showticklabels,
-      zeroline,
-      offset,
-      span,
-      data,
-    ],
+    [path, xrange, showgrid, showline, showticklabels, zeroline, annotations],
   )
 
   const config = {

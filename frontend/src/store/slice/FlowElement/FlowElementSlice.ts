@@ -46,7 +46,7 @@ const initialFlowPosition: FlowTransform = {
 }
 
 const initialElementCoord: ElementCoord = {
-  x: 350,
+  x: 100,
   y: 60,
 }
 
@@ -136,16 +136,6 @@ export const flowElementSlice = createSlice({
         targetItem.position = coord
       }
     },
-    setElementCoord: (state) => {
-      const x = state.elementCoord.x
-      const y = state.elementCoord.y
-      if (x > 800 || y > 200) {
-        state.elementCoord.x = 300
-        state.elementCoord.y = 100
-      } else {
-        state.elementCoord.x += 250
-      }
-    },
   },
   extraReducers: (builder) =>
     builder
@@ -195,7 +185,6 @@ export const {
   deleteFlowElements,
   deleteFlowElementsById,
   editFlowElementPositionById,
-  setElementCoord,
 } = flowElementSlice.actions
 
 export default flowElementSlice.reducer

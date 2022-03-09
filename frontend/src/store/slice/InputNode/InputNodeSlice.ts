@@ -32,16 +32,6 @@ export const inputNodeSlice = createSlice({
     deleteInputNode(state, action: PayloadAction<string>) {
       delete state[action.payload]
     },
-    setInputImageNodeFile(
-      state,
-      action: PayloadAction<{
-        nodeId: string
-        filePath: string
-      }>,
-    ) {
-      const { nodeId, filePath } = action.payload
-      state[nodeId].selectedFilePath = filePath
-    },
     setCsvInputNodeParam(
       state,
       action: PayloadAction<{ nodeId: string; param: CsvInputParamType }>,
@@ -146,10 +136,7 @@ export const inputNodeSlice = createSlice({
       }),
 })
 
-export const {
-  setInputImageNodeFile,
-  setCsvInputNodeParam,
-  setInputNodeHDF5Path,
-} = inputNodeSlice.actions
+export const { setCsvInputNodeParam, setInputNodeHDF5Path } =
+  inputNodeSlice.actions
 
 export default inputNodeSlice.reducer

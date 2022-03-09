@@ -65,7 +65,6 @@ export const selectNodePostDataListForRun = (
 ): Node<NodePostDataType>[] => {
   const elements = selectFlowElements(state)
   const nodeList = elements.filter(isNodeData).map((node) => {
-    console.log('node:', node)
     if (isAlgorithmNodeData(node)) {
       const param = selectAlgorithmParams(node.id)(state) ?? {}
       const functionPath = selectAlgorithmFunctionPath(node.id)(state)
@@ -105,6 +104,10 @@ export const selectNodePostDataListForRun = (
 
 export const selectStartedPipeline = (state: RootState) => {
   return state.pipeline.run
+}
+
+export const selectPipelineRunBtn = (state: RootState) => {
+  return state.pipeline.runBtn
 }
 
 export const selectRunResultPendingList = (state: RootState) => {

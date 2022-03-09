@@ -8,6 +8,7 @@ export type Pipeline = {
   currentPipeline?: {
     uid: string
   }
+  runBtn: RUN_BTN_TYPE
 }
 
 export const RUN_STATUS = {
@@ -103,3 +104,15 @@ export interface NodeResultError
   extends NodeResultBaseType<typeof NODE_RESULT_STATUS.ERROR> {
   message: string
 }
+
+export const RUN_BTN_OPTIONS = {
+  RUN_NEW: 1,
+  RUN_ALREADY: 2,
+} as const
+
+export type RUN_BTN_TYPE = typeof RUN_BTN_OPTIONS[keyof typeof RUN_BTN_OPTIONS]
+
+export const RUN_BTN_LABELS = {
+  [RUN_BTN_OPTIONS.RUN_NEW]: 'RUN ALL',
+  [RUN_BTN_OPTIONS.RUN_ALREADY]: 'RUN',
+} as const
