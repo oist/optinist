@@ -152,7 +152,7 @@ python main.py
 - `python main.py` log is as blow:
 ```
 $ python main.py
-INFO:     Will watch for changes in these directories: ['/home/saeki/work/optinist/backend']
+INFO:     Will watch for changes in these directories: ['/home/oist/optinist/backend']
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
 INFO:     Started reloader process [3268] using statreload
 INFO:     Started server process [3311]
