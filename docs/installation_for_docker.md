@@ -15,9 +15,6 @@ Please follow instructions below.
 
 <br />
 
-**CAUTION for M1 Mac User**
-We use tensorflow in caiman code. We know that M1 mac doesn't install tensorflow easily, so if there is a problem, skip install caiman. (Release in progress…)
-
 # 0. GitHub SSH access settings
 **You only need to do the following once.**
 
