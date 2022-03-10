@@ -19,6 +19,7 @@ Table of Contents
       * [Create anaconda environment](#create-anaconda-environment-1)
       * [Install mamba](#install-mamba-1)
       * [Install library](#install-library-1)
+      * [Set saving directory](#set-saving-directory)
       * [run backend](#run-backend-1)
       * [Launch browser.  <a href="http://localhost:8000" rel="nofollow">http://localhost:8000</a>](#launch-browser--httplocalhost8000-1)
 
@@ -93,6 +94,13 @@ cd CaImAn
 pip install -e .
 cd ..
 ```
+
+## Set saving directory
+Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
+```
+export OPTINIST_DIR="your_saving_dir"
+```
+
 ### run backend
 On the Anaconda PowerShell Prompt(anaconda3),
 ```
