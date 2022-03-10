@@ -5,6 +5,7 @@ from pynwb.ophys import (
     RoiResponseSeries, Fluorescence, ImageSeries, TimeSeries,
     CorrectedImageStack, MotionCorrection
 )
+
 from datetime import datetime
 from dateutil.tz import tzlocal
 
@@ -46,18 +47,14 @@ def nwb_add_acquisition(nwb_dict):
     # using internal data. this data will be stored inside the NWB file
     if 'external_file' in nwb_dict['image_series'].keys():
         image_data = nwb_dict['image_series']['external_file'].data
-    else:
-        image_data = None
-
-    image_series = TwoPhotonSeries(
-        name='TwoPhotonSeries',
-        data=image_data,
-        imaging_plane=imaging_plane,
-        rate=1.0,
-        unit='normalized amplitude'
-    )
-
-    nwbfile.add_acquisition(image_series)
+        image_series = TwoPhotonSeries(
+            name='TwoPhotonSeries',
+            data=image_data,
+            imaging_plane=imaging_plane,
+            rate=1.0,
+            unit='normalized amplitude'
+        )
+        nwbfile.add_acquisition(image_series)
 
     return nwbfile
 
@@ -66,12 +63,15 @@ def nwb_add_ophys(nwbfile):
     img_seg = ImageSegmentation()
     nwbfile.processing['ophys'].add(img_seg)
 
-    img_seg.create_plane_segmentation(
-        name='PlaneSegmentation',
-        description='suite2p output',
-        imaging_plane=nwbfile.imaging_planes['ImagingPlane'],
-        reference_images=nwbfile.acquisition['TwoPhotonSeries']
-    )
+    if 'TwoPhotonSeries' in nwbfile.acquisition:
+        reference_images = nwbfile.acquisition['TwoPhotonSeries']
+
+        img_seg.create_plane_segmentation(
+            name='PlaneSegmentation',
+            description='suite2p output',
+            imaging_plane=nwbfile.imaging_planes['ImagingPlane'],
+            reference_images=reference_images,
+        )
 
     return nwbfile
 
@@ -161,6 +161,23 @@ def nwb_add_fluorescence(
     return nwbfile
 
 
+def nwb_add_timeseries(nwbfile, key, value):
+
+    data_interfaces = nwbfile.processing['ophys'].data_interfaces
+
+    timeseries_data = TimeSeries(
+        name=key,
+        data=value.data,
+        unit='second',
+        starting_time=0.0,
+        rate=1.0,
+    )
+
+    nwbfile.processing['ophys'].add(timeseries_data)
+
+    return nwbfile
+
+
 def save_nwb(nwb_dict, save_path):
     nwbfile = nwb_add_acquisition(nwb_dict)
     nwbfile.create_processing_module(
@@ -168,6 +185,10 @@ def save_nwb(nwb_dict, save_path):
         description='optical physiology processed data'
     )
     nwb_add_ophys(nwbfile)
+
+    if 'add_timeseries' in nwb_dict.keys():
+        for key, value in nwb_dict['add_timeseries'].items():
+            nwb_add_timeseries(nwbfile, key, value)
 
     if 'motion_correction' in nwb_dict.keys():
         for mc in nwb_dict['motion_correction'].values():
