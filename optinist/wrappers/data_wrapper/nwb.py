@@ -44,9 +44,14 @@ def nwb_add_acquisition(nwb_dict):
     )
 
     # using internal data. this data will be stored inside the NWB file
+    if 'external_file' in nwb_dict['image_series'].keys():
+        image_data = nwb_dict['image_series']['external_file'].data
+    else:
+        image_data = None
+
     image_series = TwoPhotonSeries(
         name='TwoPhotonSeries',
-        data=nwb_dict['image_series']['external_file'].data,
+        data=image_data,
         imaging_plane=imaging_plane,
         rate=1.0,
         unit='normalized amplitude'

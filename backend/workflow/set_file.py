@@ -23,14 +23,18 @@ def set_imagefile(node, edgeList, nwbfile):
     return info
 
 
-def set_csvfile(node, edgeList):
+def set_csvfile(node, edgeList, nwbfile):
     info = {}
     for edge in edgeList:
         if node["id"] == edge["source"]:
             return_name = edge["sourceHandle"].split("--")[0]
             info = {return_name: CsvData(node['data']['path'], node["data"]["param"], '')}
 
-    info['nwbfile'] = None
+    if 'add_timeseries' not in nwbfile.keys():
+        nwbfile['add_timeseries'] = {}
+
+    nwbfile['add_timeseries'][return_name] = info[return_name]
+    info['nwbfile'] = nwbfile
 
     save_pickle(node["data"]["path"], info)
 

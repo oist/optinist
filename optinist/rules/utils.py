@@ -21,7 +21,7 @@ def change_dict_key_exist(d, old_key, new_key):
         d[new_key] = d.pop(old_key)
 
 
-def run_script(__func_config):
+def run_script(__func_config, last_output):
     try:
         input_files = __func_config["input"]
         return_arg = __func_config["return_arg"]
@@ -52,11 +52,12 @@ def run_script(__func_config):
         os.makedirs(output_dir, exist_ok=True)
 
         # nwbfileの設定
-        if "nwbfile" in output_info.keys():
+        if "nwbfile" not in output_info.keys():
+            output_info["nwbfile"] = input_info["nwbfile"]
+        
+        if __func_config["output"] in last_output:
             output_dir = __func_config["output"].split(".")[0]
             save_nwb(output_info['nwbfile'], output_dir)
-        else:
-            output_info["nwbfile"] = input_info["nwbfile"]
 
         # ファイル保存
         with open(__func_config["output"], 'wb') as f:
@@ -71,9 +72,3 @@ def run_script(__func_config):
         error_message  = list(traceback.TracebackException.from_exception(e).format())[-2:]
         with open(__func_config["output"], 'wb') as f:
             pickle.dump(error_message, f)
-
-        # file_name = __func_config["output"].split("/")[-1].split(".")[0]
-        # error_path = "/tmp/optinist/error"
-        # os.makedirs(error_path, exist_ok=True)
-        # with open(f"{error_path}/{file_name}.log", 'w') as f:
-        #     f.writelines(error_message)
