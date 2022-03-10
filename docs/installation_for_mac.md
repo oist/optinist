@@ -11,7 +11,7 @@ Table of Contents
    * [Install library](#install-library)
    * [Install CaImAn](#install-caiman)
    * [Set saving directory](#set-saving-directory)
-   * [run backend](#run-backend)
+   * [Run backend](#run-backend)
    * [Launch browser.  <a href="http://localhost:8000" rel="nofollow">http://localhost:8000</a>](#launch-browser--httplocalhost8000)
    * [FAQ](#faq)
 # Installation
@@ -82,12 +82,12 @@ cd ..
 
 ## Set saving directory
 Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
-```
+```bash
 export OPTINIST_DIR="your_saving_dir"
 ```
 
 
-## run backend
+## Run backend
 ```
 python main.py
 ```

@@ -56,9 +56,13 @@ Execute in terminal
 docker exec -it optinist_container /bin/bash
 ```
 
+## Set saving directory
+Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
+```bash
+export OPTINIST_DIR="your_saving_dir"
+```
 
-
-## run backend
+## Run backend
 Change backend directory
 ```
 cd /app/backend
