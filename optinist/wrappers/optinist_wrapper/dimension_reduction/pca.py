@@ -32,16 +32,25 @@ def PCA(
     pca = PCA(**params['PCA'])
     proj_X = pca.fit_transform(tX)
 
+
     info = {}
     info['explained_variance'] = BarData(
         pca.explained_variance_ratio_,
         func_name='pca',
         file_name='evr'
     )
-    info['projected2d'] = ScatterData(
+    info['projectedNd'] = ScatterData(
         proj_X,
         func_name='pca',
-        file_name='projected2d'
+        file_name='projectedNd'
     )  # change to 2D scatter plots
+
+    # NWB追加
+    if nwbfile is not None:
+        nwbfile['add_postprocess'] = {
+            'projectedNd': proj_X
+        }
+
+    info['nwbfile'] = nwbfile
 
     return info

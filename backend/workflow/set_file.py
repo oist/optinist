@@ -33,7 +33,7 @@ def set_csvfile(node, edgeList, nwbfile):
     if 'add_timeseries' not in nwbfile.keys():
         nwbfile['add_timeseries'] = {}
 
-    nwbfile['add_timeseries'][return_name] = info[return_name]
+    nwbfile['add_timeseries'][node["data"]["label"]] = info[return_name]
     info['nwbfile'] = nwbfile
 
     save_pickle(node["data"]["path"], info)

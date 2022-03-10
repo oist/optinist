@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { LinearProgress, Typography } from '@mui/material'
@@ -73,7 +73,28 @@ const BarPlotImple = React.memo(() => {
     responsive: true,
   }
 
-  return <PlotlyChart data={data} layout={layout} config={config} />
+  const ref = React.useRef<HTMLDivElement>(null)
+  const plotlyHeight = ref.current?.getBoundingClientRect().height
+
+  useEffect(() => {
+    const height =
+      ref.current?.getElementsByClassName('main-svg')[0].clientHeight
+    const plotContainer = (
+      ref.current?.getElementsByClassName(
+        'plot-container',
+      ) as HTMLCollectionOf<HTMLElement>
+    )[0]
+
+    if (height !== undefined && plotContainer !== undefined) {
+      plotContainer.style.height = `${height}px`
+    }
+  }, [plotlyHeight])
+
+  return (
+    <div ref={ref}>
+      <PlotlyChart data={data} layout={layout} config={config} />
+    </div>
+  )
 })
 
 function barDataEqualityFn(a: BarData | undefined, b: BarData | undefined) {

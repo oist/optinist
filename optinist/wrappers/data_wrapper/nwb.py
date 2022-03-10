@@ -3,8 +3,10 @@ from pynwb import NWBFile, NWBHDF5IO
 from pynwb.ophys import (
     OpticalChannel, TwoPhotonSeries, ImageSegmentation,
     RoiResponseSeries, Fluorescence, ImageSeries, TimeSeries,
-    CorrectedImageStack, MotionCorrection
+    CorrectedImageStack, MotionCorrection,
 )
+
+from pynwb.core import NWBData
 
 from datetime import datetime
 from dateutil.tz import tzlocal
@@ -163,8 +165,6 @@ def nwb_add_fluorescence(
 
 def nwb_add_timeseries(nwbfile, key, value):
 
-    data_interfaces = nwbfile.processing['ophys'].data_interfaces
-
     timeseries_data = TimeSeries(
         name=key,
         data=value.data,
@@ -178,6 +178,21 @@ def nwb_add_timeseries(nwbfile, key, value):
     return nwbfile
 
 
+def nwb_add_postprocess(nwbfile, key, value):
+
+    nwb_data = TimeSeries(
+        name=key,
+        data=value,
+        unit='second',
+        starting_time=0.0,
+        rate=1.0,
+    )
+
+    nwbfile.processing['ophys'].add(nwb_data)
+
+    return nwbfile
+
+
 def save_nwb(nwb_dict, save_path):
     nwbfile = nwb_add_acquisition(nwb_dict)
     nwbfile.create_processing_module(
@@ -185,6 +200,10 @@ def save_nwb(nwb_dict, save_path):
         description='optical physiology processed data'
     )
     nwb_add_ophys(nwbfile)
+
+    if 'add_postprocess' in nwb_dict.keys():
+        for key, value in nwb_dict['add_postprocess'].items():
+            nwb_add_postprocess(nwbfile, key, value)
 
     if 'add_timeseries' in nwb_dict.keys():
         for key, value in nwb_dict['add_timeseries'].items():

@@ -33,10 +33,18 @@ def TSNE(
     proj_X = tsne.fit_transform(tX)
 
     info = {}
-    info['projected2d'] = ScatterData(
+    info['projectedNd'] = ScatterData(
         proj_X,
         func_name='tsne',
-        file_name='projected2d'
+        file_name='projectedNd'
     )
+
+    # NWB追加
+    if nwbfile is not None:
+        nwbfile['add_postprocess'] = {
+            'projectedNd': proj_X
+        }
+
+    info['nwbfile'] = nwbfile
 
     return info
