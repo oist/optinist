@@ -1,0 +1,21 @@
+groups:
+- datasets:
+- dims:
+  - face_number
+  - vertex_index
+  doc: faces for surface, indexes vertices
+  dtype: float
+  name: faces
+  shape:
+  - null
+- dims:
+  - vertex_number
+  - xyz
+  doc: vertices for surface, points in 3D space
+  dtype: float
+  name: vertices
+  shape:
+  - null
+doc: brain cortical surface
+neurodata_type_def: PostProcess
+neurodata_type_inc: NWBDataInterface

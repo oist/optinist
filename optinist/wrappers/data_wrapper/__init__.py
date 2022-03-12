@@ -1,2 +1,2 @@
 from .wrapper import *
-from .nwb import *
+from pynwb import NWBFile

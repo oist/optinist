@@ -88,4 +88,13 @@ def GLM(
         file_name='summary',
     )
 
+    # NWB追加
+    if nwbfile is not None:
+        nwbfile['add_postprocess'] = {
+            'actual_predicted': np.array([Res._endog, Res.mu]).transpose(),
+            'params': Res.params.values,
+        }
+
+    info['nwbfile'] = nwbfile
+
     return info

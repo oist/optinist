@@ -109,4 +109,12 @@ def cross_correlation(
     info = {}
     info['cross_correlation'] = mat
 
+    # NWB追加
+    if nwbfile is not None:
+        nwbfile['add_postprocess'] = {
+            'mat': mat,
+        }
+
+    info['nwbfile'] = nwbfile
+
     return info

@@ -1,5 +1,5 @@
 from wrappers import wrapper_dict
-from wrappers.data_wrapper import save_nwb
+from wrappers.nwb_wrapper import save_nwb
 import traceback
 import os
 import pickle

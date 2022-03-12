@@ -35,4 +35,12 @@ def correlation(
         file_name='corr'
     )
 
+    # NWB追加
+    if nwbfile is not None:
+        nwbfile['add_postprocess'] = {
+            'corr': corr,
+        }
+
+    info['nwbfile'] = nwbfile
+
     return info

@@ -68,4 +68,12 @@ def LDA(
         file_name='score'
     )
 
+    # NWB追加
+    if nwbfile is not None:
+        nwbfile['add_postprocess'] = {
+            'score': score,
+        }
+
+    info['nwbfile'] = nwbfile
+
     return info

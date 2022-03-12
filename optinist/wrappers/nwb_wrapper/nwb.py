@@ -6,10 +6,14 @@ from pynwb.ophys import (
     CorrectedImageStack, MotionCorrection,
 )
 
-from pynwb.core import NWBData
+from pynwb.core import NWBDataInterface
 
 from datetime import datetime
 from dateutil.tz import tzlocal
+
+from .optinist_data import PostProcess
+
+# from .optinist_data import PostProcess
 
 
 def nwb_add_acquisition(nwb_dict):
@@ -70,7 +74,7 @@ def nwb_add_ophys(nwbfile):
 
         img_seg.create_plane_segmentation(
             name='PlaneSegmentation',
-            description='suite2p output',
+            description='output',
             imaging_plane=nwbfile.imaging_planes['ImagingPlane'],
             reference_images=reference_images,
         )
@@ -179,16 +183,12 @@ def nwb_add_timeseries(nwbfile, key, value):
 
 
 def nwb_add_postprocess(nwbfile, key, value):
-
-    nwb_data = TimeSeries(
+    postprocess = PostProcess(
         name=key,
         data=value,
-        unit='second',
-        starting_time=0.0,
-        rate=1.0,
     )
 
-    nwbfile.processing['ophys'].add(nwb_data)
+    nwbfile.processing['optinist'].add_container(postprocess)
 
     return nwbfile
 
@@ -200,6 +200,11 @@ def save_nwb(nwb_dict, save_path):
         description='optical physiology processed data'
     )
     nwb_add_ophys(nwbfile)
+
+    nwbfile.create_processing_module(
+        name='optinist', 
+        description='description'
+    )
 
     if 'add_postprocess' in nwb_dict.keys():
         for key, value in nwb_dict['add_postprocess'].items():

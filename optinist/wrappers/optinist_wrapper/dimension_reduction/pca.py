@@ -32,7 +32,6 @@ def PCA(
     pca = PCA(**params['PCA'])
     proj_X = pca.fit_transform(tX)
 
-
     info = {}
     info['explained_variance'] = BarData(
         pca.explained_variance_ratio_,
@@ -48,7 +47,8 @@ def PCA(
     # NWB追加
     if nwbfile is not None:
         nwbfile['add_postprocess'] = {
-            'projectedNd': proj_X
+            'pca_projectedNd': proj_X,
+            'explained_variance': pca.explained_variance_ratio_,
         }
 
     info['nwbfile'] = nwbfile

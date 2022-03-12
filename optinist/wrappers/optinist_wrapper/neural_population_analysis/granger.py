@@ -134,4 +134,12 @@ def Granger(
         file_name='gfm'
     )
 
+    # NWB追加
+    if nwbfile is not None:
+        nwbfile['add_postprocess'] = {
+            'Granger_fval_mat': GC['Granger_fval_mat'][0],
+        }
+
+    info['nwbfile'] = nwbfile
+
     return info
