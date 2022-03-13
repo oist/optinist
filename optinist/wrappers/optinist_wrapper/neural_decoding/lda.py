@@ -1,6 +1,7 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 from wrappers.optinist_wrapper.utils import standard_norm
+from wrappers.nwb_wrapper.const import NWBDATASET
 
 def LDA(
         neural_data: TimeSeriesData,
@@ -67,5 +68,13 @@ def LDA(
         func_name='lda',
         file_name='score'
     )
+
+    # NWB追加
+    if nwbfile is not None:
+        nwbfile[NWBDATASET.POSTPROCESS] = {
+            'score': score,
+        }
+
+    info['nwbfile'] = nwbfile
 
     return info

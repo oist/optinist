@@ -1,6 +1,7 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 from wrappers.optinist_wrapper.utils import standard_norm
+from wrappers.nwb_wrapper.const import NWBDATASET
 
 def Granger(
         neural_data: TimeSeriesData,
@@ -133,5 +134,13 @@ def Granger(
         func_name='granger',
         file_name='gfm'
     )
+
+    # NWB追加
+    if nwbfile is not None:
+        nwbfile[NWBDATASET.POSTPROCESS] = {
+            'Granger_fval_mat': GC['Granger_fval_mat'][0],
+        }
+
+    info['nwbfile'] = nwbfile
 
     return info

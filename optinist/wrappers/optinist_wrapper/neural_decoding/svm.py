@@ -1,6 +1,7 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 from wrappers.optinist_wrapper.utils import standard_norm
+from wrappers.nwb_wrapper.const import NWBDATASET
 
 def SVM(
         neural_data: TimeSeriesData,
@@ -16,7 +17,6 @@ def SVM(
     from sklearn.model_selection import GridSearchCV
     from sklearn.preprocessing import StandardScaler
     from sklearn.model_selection import StratifiedKFold
-    import json
 
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data
@@ -87,5 +87,13 @@ def SVM(
         func_name='svm',
         file_name='score'
     )
+
+    # NWB追加
+    if nwbfile is not None:
+        nwbfile[NWBDATASET.POSTPROCESS] = {
+            'score': score,
+        }
+
+    info['nwbfile'] = nwbfile
 
     return info

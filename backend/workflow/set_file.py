@@ -5,6 +5,7 @@ from wrappers.data_wrapper import *
 from workflow.params import get_typecheck_params
 from cui_api.const import BASE_DIR
 from cui_api.utils import join_file_path
+from wrappers.nwb_wrapper.const import NWBDATASET
 
 
 def set_imagefile(node, edgeList, nwbfile):
@@ -23,14 +24,18 @@ def set_imagefile(node, edgeList, nwbfile):
     return info
 
 
-def set_csvfile(node, edgeList):
+def set_csvfile(node, edgeList, nwbfile):
     info = {}
     for edge in edgeList:
         if node["id"] == edge["source"]:
             return_name = edge["sourceHandle"].split("--")[0]
             info = {return_name: CsvData(node['data']['path'], node["data"]["param"], '')}
 
-    info['nwbfile'] = None
+    if NWBDATASET.TIMESERIES not in nwbfile.keys():
+        nwbfile[NWBDATASET.TIMESERIES] = {}
+
+    nwbfile[NWBDATASET.TIMESERIES][node["data"]["label"]] = info[return_name]
+    info['nwbfile'] = nwbfile
 
     save_pickle(node["data"]["path"], info)
 

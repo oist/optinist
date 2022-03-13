@@ -1,5 +1,6 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
+from wrappers.nwb_wrapper.const import NWBDATASET
 
 def cross_correlation(
         neural_data: TimeSeriesData,
@@ -108,5 +109,13 @@ def cross_correlation(
 
     info = {}
     info['cross_correlation'] = mat
+
+    # NWB追加
+    if nwbfile is not None:
+        nwbfile[NWBDATASET.POSTPROCESS] = {
+            'mat': mat,
+        }
+
+    info['nwbfile'] = nwbfile
 
     return info

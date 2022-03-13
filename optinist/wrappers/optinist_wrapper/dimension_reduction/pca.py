@@ -1,6 +1,7 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 from wrappers.optinist_wrapper.utils import standard_norm
+from wrappers.nwb_wrapper.const import NWBDATASET
 
 def PCA(
         neural_data: TimeSeriesData,
@@ -38,10 +39,19 @@ def PCA(
         func_name='pca',
         file_name='evr'
     )
-    info['projected2d'] = ScatterData(
+    info['projectedNd'] = ScatterData(
         proj_X,
         func_name='pca',
-        file_name='projected2d'
+        file_name='projectedNd'
     )  # change to 2D scatter plots
+
+    # NWB追加
+    if nwbfile is not None:
+        nwbfile[NWBDATASET.POSTPROCESS] = {
+            'pca_projectedNd': proj_X,
+            'explained_variance': pca.explained_variance_ratio_,
+        }
+
+    info['nwbfile'] = nwbfile
 
     return info

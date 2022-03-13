@@ -3,10 +3,16 @@ from pynwb import NWBFile, NWBHDF5IO
 from pynwb.ophys import (
     OpticalChannel, TwoPhotonSeries, ImageSegmentation,
     RoiResponseSeries, Fluorescence, ImageSeries, TimeSeries,
-    CorrectedImageStack, MotionCorrection
+    CorrectedImageStack, MotionCorrection,
 )
+
+from pynwb.core import NWBDataInterface
+
 from datetime import datetime
 from dateutil.tz import tzlocal
+
+from .optinist_data import PostProcess
+from wrappers.nwb_wrapper.const import NWBDATASET
 
 
 def nwb_add_acquisition(nwb_dict):
@@ -44,15 +50,16 @@ def nwb_add_acquisition(nwb_dict):
     )
 
     # using internal data. this data will be stored inside the NWB file
-    image_series = TwoPhotonSeries(
-        name='TwoPhotonSeries',
-        data=nwb_dict['image_series']['external_file'].data,
-        imaging_plane=imaging_plane,
-        rate=1.0,
-        unit='normalized amplitude'
-    )
-
-    nwbfile.add_acquisition(image_series)
+    if 'external_file' in nwb_dict['image_series'].keys():
+        image_data = nwb_dict['image_series']['external_file'].data
+        image_series = TwoPhotonSeries(
+            name='TwoPhotonSeries',
+            data=image_data,
+            imaging_plane=imaging_plane,
+            rate=1.0,
+            unit='normalized amplitude'
+        )
+        nwbfile.add_acquisition(image_series)
 
     return nwbfile
 
@@ -61,12 +68,15 @@ def nwb_add_ophys(nwbfile):
     img_seg = ImageSegmentation()
     nwbfile.processing['ophys'].add(img_seg)
 
-    img_seg.create_plane_segmentation(
-        name='PlaneSegmentation',
-        description='suite2p output',
-        imaging_plane=nwbfile.imaging_planes['ImagingPlane'],
-        reference_images=nwbfile.acquisition['TwoPhotonSeries']
-    )
+    if 'TwoPhotonSeries' in nwbfile.acquisition:
+        reference_images = nwbfile.acquisition['TwoPhotonSeries']
+
+        img_seg.create_plane_segmentation(
+            name='PlaneSegmentation',
+            description='output',
+            imaging_plane=nwbfile.imaging_planes['ImagingPlane'],
+            reference_images=reference_images,
+        )
 
     return nwbfile
 
@@ -156,6 +166,32 @@ def nwb_add_fluorescence(
     return nwbfile
 
 
+def nwb_add_timeseries(nwbfile, key, value):
+
+    timeseries_data = TimeSeries(
+        name=key,
+        data=value.data,
+        unit='second',
+        starting_time=0.0,
+        rate=1.0,
+    )
+
+    nwbfile.processing['ophys'].add(timeseries_data)
+
+    return nwbfile
+
+
+def nwb_add_postprocess(nwbfile, key, value):
+    postprocess = PostProcess(
+        name=key,
+        data=value,
+    )
+
+    nwbfile.processing['optinist'].add_container(postprocess)
+
+    return nwbfile
+
+
 def save_nwb(nwb_dict, save_path):
     nwbfile = nwb_add_acquisition(nwb_dict)
     nwbfile.create_processing_module(
@@ -164,21 +200,34 @@ def save_nwb(nwb_dict, save_path):
     )
     nwb_add_ophys(nwbfile)
 
-    if 'motion_correction' in nwb_dict.keys():
-        for mc in nwb_dict['motion_correction'].values():
+    nwbfile.create_processing_module(
+        name='optinist', 
+        description='description'
+    )
+
+    if NWBDATASET.POSTPROCESS in nwb_dict:
+        for key, value in nwb_dict[NWBDATASET.POSTPROCESS].items():
+            nwb_add_postprocess(nwbfile, key, value)
+
+    if NWBDATASET.TIMESERIES in nwb_dict:
+        for key, value in nwb_dict[NWBDATASET.TIMESERIES].items():
+            nwb_add_timeseries(nwbfile, key, value)
+
+    if NWBDATASET.MOTION_CORRECTION in nwb_dict:
+        for mc in nwb_dict[NWBDATASET.MOTION_CORRECTION].values():
             nwbfile = nwb_motion_correction(
                 nwbfile, **mc)
 
-    if 'add_roi' in nwb_dict.keys():
-        for roi_list in nwb_dict['add_roi'].values():
+    if NWBDATASET.ROI in nwb_dict:
+        for roi_list in nwb_dict[NWBDATASET.ROI].values():
             nwb_add_roi(nwbfile, roi_list)
 
-    if 'add_column' in nwb_dict.keys():
-        for value in nwb_dict['add_column'].values():
+    if NWBDATASET.COLUMN in nwb_dict:
+        for value in nwb_dict[NWBDATASET.COLUMN].values():
             nwbfile = nwb_add_column(nwbfile, **value)
 
-    if 'add_fluorescence' in nwb_dict.keys():
-        for value in nwb_dict['add_fluorescence'].values():
+    if NWBDATASET.FLUORESCENCE in nwb_dict:
+        for value in nwb_dict[NWBDATASET.FLUORESCENCE].values():
             nwbfile = nwb_add_fluorescence(nwbfile, **value)
 
     with NWBHDF5IO(f'{save_path}.nwb', 'w') as f:

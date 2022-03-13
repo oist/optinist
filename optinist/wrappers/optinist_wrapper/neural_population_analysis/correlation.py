@@ -1,5 +1,6 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
+from wrappers.nwb_wrapper.const import NWBDATASET
 
 def correlation(
         neural_data: TimeSeriesData,
@@ -34,5 +35,13 @@ def correlation(
         func_name='correlation',
         file_name='corr'
     )
+
+    # NWB追加
+    if nwbfile is not None:
+        nwbfile[NWBDATASET.POSTPROCESS] = {
+            'corr': corr,
+        }
+
+    info['nwbfile'] = nwbfile
 
     return info

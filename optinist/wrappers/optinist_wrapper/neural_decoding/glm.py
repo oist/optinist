@@ -7,6 +7,7 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 from wrappers.optinist_wrapper.utils import standard_norm
+from wrappers.nwb_wrapper.const import NWBDATASET
 
 def GLM(
         neural_data: TimeSeriesData,
@@ -87,5 +88,14 @@ def GLM(
         func_name='glm',
         file_name='summary',
     )
+
+    # NWB追加
+    if nwbfile is not None:
+        nwbfile[NWBDATASET.POSTPROCESS] = {
+            'actual_predicted': np.array([Res._endog, Res.mu]).transpose(),
+            'params': Res.params.values,
+        }
+
+    info['nwbfile'] = nwbfile
 
     return info
