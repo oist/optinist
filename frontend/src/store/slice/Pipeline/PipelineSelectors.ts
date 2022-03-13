@@ -23,6 +23,7 @@ import {
   NodeResult,
   NodeResultPending,
   NodeResultSuccess,
+  NODE_RESULT_STATUS,
   RUN_STATUS,
 } from './PipelineType'
 import {
@@ -33,6 +34,8 @@ import {
 
 import {
   selectAlgorithmFunctionPath,
+  selectAlgorithmIsUpdated,
+  selectAlgorithmName,
   selectAlgorithmParams,
 } from '../AlgorithmNode/AlgorithmNodeSelectors'
 import {
@@ -51,11 +54,13 @@ export const selectRunPostData = (state: RootState) => {
   const snakemakeParam = selectSnakemakeParams(state)
   const edgeListForRun = selectEdgeListForRun(state)
   const nodePostDataList = selectNodePostDataListForRun(state)
+  const forceRunList = selectForceRunList(state)
   const runPostData: Omit<RunPostData, 'name'> = {
     nwbParam,
     snakemakeParam,
     edgeList: edgeListForRun,
     nodeList: nodePostDataList,
+    forceRunList,
   }
   return runPostData
 }
@@ -100,6 +105,25 @@ export const selectNodePostDataListForRun = (
     }
   })
   return nodeList
+}
+
+/**
+ * 前回の結果で、エラーまたはParamに変更があるnodeのリストを返す
+ */
+const selectForceRunList = (state: RootState) => {
+  const elements = selectFlowElements(state)
+  // todo
+  return elements
+    .filter(isAlgorithmNodeData)
+    .filter((node) => {
+      const isUpdated = selectAlgorithmIsUpdated(node.id)(state)
+      const status = selectPipelineNodeResultStatus(node.id)(state)
+      return isUpdated || status === NODE_RESULT_STATUS.ERROR
+    })
+    .map((node) => ({
+      nodeId: node.id,
+      name: selectAlgorithmName(node.id)(state),
+    }))
 }
 
 export const selectStartedPipeline = (state: RootState) => {

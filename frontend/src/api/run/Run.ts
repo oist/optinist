@@ -16,6 +16,7 @@ export type RunPostData = {
   edgeList: Edge[]
   nwbParam: ParamMap
   snakemakeParam: ParamMap
+  forceRunList: { nodeId: string; name: string }[]
 }
 
 export type NodePostDataType = AlgorithmNodePostData | InputNodePostData

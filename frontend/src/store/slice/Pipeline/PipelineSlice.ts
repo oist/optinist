@@ -1,6 +1,6 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
 import { importExperimentByUid } from '../Experiments/ExperimentsActions'
-import { pollRunResult, run } from './PipelineActions'
+import { pollRunResult, run, runByCurrentUid } from './PipelineActions'
 import {
   Pipeline,
   PIPELINE_SLICE_NAME,
@@ -40,29 +40,6 @@ export const pipelineSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(run.pending, (state, action) => {
-        state.run = {
-          status: RUN_STATUS.START_PENDING,
-        }
-      })
-      .addCase(run.fulfilled, (state, action) => {
-        const runPostData = action.meta.arg.runPostData
-        const uid = action.payload
-        state.run = {
-          uid,
-          status: RUN_STATUS.START_SUCCESS,
-          runResult: getInitialRunResult(runPostData),
-          runPostData,
-        }
-        state.currentPipeline = {
-          uid: action.payload,
-        }
-      })
-      .addCase(run.rejected, (state, action) => {
-        state.run = {
-          status: RUN_STATUS.START_ERROR,
-        }
-      })
       .addCase(pollRunResult.fulfilled, (state, action) => {
         if (state.run.status === RUN_STATUS.START_SUCCESS) {
           state.run.runResult = {
@@ -89,6 +66,38 @@ export const pipelineSlice = createSlice({
           status: RUN_STATUS.START_UNINITIALIZED,
         }
       })
+      .addMatcher(
+        isAnyOf(run.pending, runByCurrentUid.pending),
+        (state, action) => {
+          state.run = {
+            status: RUN_STATUS.START_PENDING,
+          }
+        },
+      )
+      .addMatcher(
+        isAnyOf(run.fulfilled, runByCurrentUid.fulfilled),
+        (state, action) => {
+          const runPostData = action.meta.arg.runPostData
+          const uid = action.payload
+          state.run = {
+            uid,
+            status: RUN_STATUS.START_SUCCESS,
+            runResult: getInitialRunResult({ name: '', ...runPostData }),
+            runPostData: { name: '', ...runPostData },
+          }
+          state.currentPipeline = {
+            uid: action.payload,
+          }
+        },
+      )
+      .addMatcher(
+        isAnyOf(run.rejected, runByCurrentUid.rejected),
+        (state, action) => {
+          state.run = {
+            status: RUN_STATUS.START_ERROR,
+          }
+        },
+      )
   },
 })
 

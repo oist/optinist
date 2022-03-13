@@ -6,6 +6,7 @@ from fastapi import APIRouter, BackgroundTasks
 from pydantic import BaseModel
 from typing import List
 
+from workflow.set_file import get_forcerun_list
 from workflow.params import get_typecheck_params
 from workflow.set_workflow import set_workflow
 from workflow.results import get_results
@@ -34,7 +35,7 @@ def run_workflow(unique_id, background_tasks, runItem):
     set_workflow(unique_id, runItem)
 
     snakemake_params = get_typecheck_params(runItem.snakemakeParam, "snakemake")
-    snakemake_params["forcerun"] = get_forcerun_list(runItem.forceRunList)
+    snakemake_params["forcerun"] = get_forcerun_list(unique_id, runItem.forceRunList)
     background_tasks.add_task(run_snakemake, snakemake_params)
 
 
