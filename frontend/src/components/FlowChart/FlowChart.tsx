@@ -50,10 +50,9 @@ const DrawerContents = styled('div')({
 
 const MainContents = styled('main')<{ open: boolean }>(
   ({ theme }) => ({
-    display: 'flex',
     flexDirection: 'column',
     flexGrow: 1,
-    height: '100vh',
+    height: '80vh',
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
