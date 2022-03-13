@@ -28,7 +28,6 @@ import { toHandleId } from './FlowChartUtils'
 import { FileSelect } from './FileSelect'
 import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
 import {
-  selectHDF5IsLatest,
   selectHDF5IsLoading,
   selectHDF5Nodes,
 } from 'store/slice/HDF5/HDF5Selectors'
@@ -213,13 +212,12 @@ const TreeNode = React.memo<{
 function useHDF5Tree(nodeId: string): [HDF5TreeDTO[] | undefined, boolean] {
   const dispatch = useDispatch()
   const tree = useSelector(selectHDF5Nodes())
-  const isLatest = useSelector(selectHDF5IsLatest())
   const isLoading = useSelector(selectHDF5IsLoading())
   const filePath = useSelector(selectInputNodeSelectedFilePath(nodeId))
   React.useEffect(() => {
-    if (!isLatest && !isLoading && filePath) {
+    if (!isLoading && filePath) {
       dispatch(getHDF5Tree({ path: filePath }))
     }
-  }, [isLatest, isLoading, filePath, dispatch])
+  }, [isLoading, filePath, dispatch])
   return [tree, isLoading]
 }
