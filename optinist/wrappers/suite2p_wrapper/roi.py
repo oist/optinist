@@ -1,5 +1,6 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
+from wrappers.nwb_wrapper.const import NWBDATASET
 
 
 def suite2p_roi(
@@ -59,11 +60,11 @@ def suite2p_roi(
         roi_list.append(kargs)
 
     if nwbfile is not None:
-        nwbfile['add_roi'] = {
+        nwbfile[NWBDATASET.ROI] = {
             'roi_list': roi_list
         }
         ### iscellを追加
-        nwbfile['add_column'] = {
+        nwbfile[NWBDATASET.COLUMN] = {
             'roi_column': {
                 'name': 'iscell',
                 'discription': 'two columns - iscell & probcell',
@@ -74,10 +75,10 @@ def suite2p_roi(
     # NWBを追加
     ### Fluorenceを追加
     if nwbfile is not None:
-        if 'add_fluorescence' not in nwbfile.keys():
-            nwbfile['add_fluorescence'] = {}
+        if NWBDATASET.FLUORESCENCE not in nwbfile.keys():
+            nwbfile[NWBDATASET.FLUORESCENCE] = {}
         for name, data in zip(['Fluorescence', 'Neuropil'], [F, Fneu]):
-            nwbfile['add_fluorescence'][name] = {
+            nwbfile[NWBDATASET.FLUORESCENCE][name] = {
                 'table_name': name,
                 'region': list(range(len(data))),
                 'name': name,

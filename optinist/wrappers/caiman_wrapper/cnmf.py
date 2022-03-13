@@ -2,7 +2,7 @@ from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 from cui_api.utils import join_file_path
 import gc
-
+from wrappers.nwb_wrapper.const import NWBDATASET
 
 def caiman_cnmf(
         images: ImageData, nwbfile: NWBFile=None, params: dict=None
@@ -158,7 +158,7 @@ def caiman_cnmf(
             bg_list.append(kargs)
 
         # nwbfile = nwb_add_roi(nwbfile, bg_list)
-        nwbfile['add_roi'] = {
+        nwbfile[NWBDATASET.ROI] = {
             'roi_list': roi_list,
             'bg_list': bg_list,
         }
@@ -171,7 +171,7 @@ def caiman_cnmf(
         n_rois = cnm.estimates.A.shape[-1]
         n_bg = len(cnm.estimates.f)
 
-        nwbfile['add_fluorescence'] = {
+        nwbfile[NWBDATASET.FLUORESCENCE] = {
             'RoiResponseSeries': {
                 'table_name': 'ROIs',
                 'region': list(range(n_rois)),

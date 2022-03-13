@@ -1,6 +1,7 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 from wrappers.optinist_wrapper.utils import standard_norm
+from wrappers.nwb_wrapper.const import NWBDATASET
 
 def SVM(
         neural_data: TimeSeriesData,
@@ -89,7 +90,7 @@ def SVM(
 
     # NWB追加
     if nwbfile is not None:
-        nwbfile['add_postprocess'] = {
+        nwbfile[NWBDATASET.POSTPROCESS] = {
             'score': score,
         }
 

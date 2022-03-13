@@ -1,6 +1,7 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 import gc
+from wrappers.nwb_wrapper.const import NWBDATASET
 
 
 def caiman_mc(
@@ -55,7 +56,7 @@ def caiman_mc(
                     if params['pw_rigid'] else np.array(mc.shifts_rig)
 
     if nwbfile is not None:
-        nwbfile['motion_correction'] = {
+        nwbfile[NWBDATASET.MOTION_CORRECTION] = {
             'caiman_mc': {
                 'mc_data': info['images'],
                 'xy_trans_data': xy_trans_data,

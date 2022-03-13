@@ -1,6 +1,7 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
 from wrappers.optinist_wrapper.utils import standard_norm
+from wrappers.nwb_wrapper.const import NWBDATASET
 
 def PCA(
         neural_data: TimeSeriesData,
@@ -46,7 +47,7 @@ def PCA(
 
     # NWB追加
     if nwbfile is not None:
-        nwbfile['add_postprocess'] = {
+        nwbfile[NWBDATASET.POSTPROCESS] = {
             'pca_projectedNd': proj_X,
             'explained_variance': pca.explained_variance_ratio_,
         }

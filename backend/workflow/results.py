@@ -24,7 +24,7 @@ def get_results(unique_id, nodeIdList):
     for request_path in runPaths:
         node_id = request_path.split("/")[-2]
         algo_name = request_path.split("/")[-1].split(".")[0]
-        # import pdb; pdb.set_trace()
+
         results[node_id] = {}
 
         with open(request_path, "rb") as f:

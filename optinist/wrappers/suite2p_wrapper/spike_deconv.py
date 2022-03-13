@@ -1,5 +1,6 @@
 from wrappers.data_wrapper import *
 from wrappers.args_check import args_check
+from wrappers.nwb_wrapper.const import NWBDATASET
 
 
 def suite2p_spike_deconv(
@@ -27,10 +28,10 @@ def suite2p_spike_deconv(
     # NWBを追加
     ### Fluorenceを追加
     if nwbfile is not None:
-        if 'add_fluorescence' not in nwbfile.keys():
-            nwbfile['add_fluorescence'] = {}
+        if NWBDATASET.FLUORESCENCE not in nwbfile.keys():
+            nwbfile[NWBDATASET.FLUORESCENCE] = {}
         name = 'Deconvolved'
-        nwbfile['add_fluorescence'][name] = {
+        nwbfile[NWBDATASET.FLUORESCENCE][name] = {
             'table_name': name,
             'region': list(range(len(spks))),
             'name': name,

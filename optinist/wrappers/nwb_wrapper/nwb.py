@@ -12,8 +12,7 @@ from datetime import datetime
 from dateutil.tz import tzlocal
 
 from .optinist_data import PostProcess
-
-# from .optinist_data import PostProcess
+from wrappers.nwb_wrapper.const import NWBDATASET
 
 
 def nwb_add_acquisition(nwb_dict):
@@ -206,29 +205,29 @@ def save_nwb(nwb_dict, save_path):
         description='description'
     )
 
-    if 'add_postprocess' in nwb_dict.keys():
-        for key, value in nwb_dict['add_postprocess'].items():
+    if NWBDATASET.POSTPROCESS in nwb_dict:
+        for key, value in nwb_dict[NWBDATASET.POSTPROCESS].items():
             nwb_add_postprocess(nwbfile, key, value)
 
-    if 'add_timeseries' in nwb_dict.keys():
-        for key, value in nwb_dict['add_timeseries'].items():
+    if NWBDATASET.TIMESERIES in nwb_dict:
+        for key, value in nwb_dict[NWBDATASET.TIMESERIES].items():
             nwb_add_timeseries(nwbfile, key, value)
 
-    if 'motion_correction' in nwb_dict.keys():
-        for mc in nwb_dict['motion_correction'].values():
+    if NWBDATASET.MOTION_CORRECTION in nwb_dict:
+        for mc in nwb_dict[NWBDATASET.MOTION_CORRECTION].values():
             nwbfile = nwb_motion_correction(
                 nwbfile, **mc)
 
-    if 'add_roi' in nwb_dict.keys():
-        for roi_list in nwb_dict['add_roi'].values():
+    if NWBDATASET.ROI in nwb_dict:
+        for roi_list in nwb_dict[NWBDATASET.ROI].values():
             nwb_add_roi(nwbfile, roi_list)
 
-    if 'add_column' in nwb_dict.keys():
-        for value in nwb_dict['add_column'].values():
+    if NWBDATASET.COLUMN in nwb_dict:
+        for value in nwb_dict[NWBDATASET.COLUMN].values():
             nwbfile = nwb_add_column(nwbfile, **value)
 
-    if 'add_fluorescence' in nwb_dict.keys():
-        for value in nwb_dict['add_fluorescence'].values():
+    if NWBDATASET.FLUORESCENCE in nwb_dict:
+        for value in nwb_dict[NWBDATASET.FLUORESCENCE].values():
             nwbfile = nwb_add_fluorescence(nwbfile, **value)
 
     with NWBHDF5IO(f'{save_path}.nwb', 'w') as f:
