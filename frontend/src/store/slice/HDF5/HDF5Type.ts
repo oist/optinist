@@ -18,7 +18,6 @@ export interface HDF5FileDTO {
 }
 
 export interface HDF5Tree {
-  isLatest: boolean
   isLoading: boolean
   tree: HDF5TreeDTO[]
 }

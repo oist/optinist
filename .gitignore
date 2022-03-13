@@ -1,7 +1,8 @@
 .DS_Store
 __pycache__
 .ipynb_checkpoints
-.vscode
+.vscode/*
+!.vscode/settings.json
 
 optinist.extensions.yaml
 optinist.namespace.yaml
