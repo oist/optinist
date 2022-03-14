@@ -42,10 +42,7 @@ import { ExperimentStatusIcon } from './ExperimentStatusIcon'
 import { AppDispatch } from 'store/store'
 import { setRunBtnOption } from 'store/slice/Pipeline/PipelineSlice'
 import { RUN_BTN_OPTIONS } from 'store/slice/Pipeline/PipelineType'
-import {
-  Experiment,
-  ExperimentType,
-} from 'store/slice/Experiments/ExperimentsType'
+import { Experiment } from 'store/slice/Experiments/ExperimentsType'
 import { TableSortLabel } from '@mui/material'
 
 export const ExperimentTable: React.FC = () => {
@@ -94,8 +91,6 @@ const TableImple: React.FC = () => {
       const isAsc = sortTarget === property && order === 'asc'
       setOrder(isAsc ? 'desc' : 'asc')
       setSortTarget(property)
-      console.log(order)
-      console.log(sortTarget)
     }
 
   return (

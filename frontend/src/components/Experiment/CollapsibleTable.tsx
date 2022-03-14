@@ -45,6 +45,7 @@ const Head: React.FC = () => {
     <TableHead>
       <TableRow>
         <TableCell>Function</TableCell>
+        <TableCell>nodeID</TableCell>
         <TableCell>Success</TableCell>
       </TableRow>
     </TableHead>
@@ -75,6 +76,7 @@ const TableRowOfFunction = React.memo<{ nodeId: string }>(({ nodeId }) => {
       <TableCell component="th" scope="row">
         {name}
       </TableCell>
+      <TableCell>{nodeId}</TableCell>
       <TableCell>
         <ExperimentStatusIcon status={status} />
       </TableCell>
