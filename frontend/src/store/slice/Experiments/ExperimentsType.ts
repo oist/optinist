@@ -40,3 +40,9 @@ export type ExperimentFunction = {
 }
 
 export type EXPERIMENTS_STATUS = 'success' | 'error' | 'running'
+
+export interface Experiment {
+  uid: string
+  name: string
+  timestamp: string
+}

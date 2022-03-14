@@ -26,23 +26,27 @@ import { CollapsibleTable } from './CollapsibleTable'
 import {
   selectExperimentsSatusIsUninitialized,
   selectExperimentsSatusIsFulfilled,
-  selectExperimentUidList,
   selectExperimentTimeStamp,
   selectExperimentName,
   selectExperimentStatus,
   selectExperimentsSatusIsError,
   selectExperimentsErrorMessage,
+  selectExperimentList,
 } from 'store/slice/Experiments/ExperimentsSelectors'
 import {
   deleteExperimentByUid,
   importExperimentByUid,
 } from 'store/slice/Experiments/ExperimentsActions'
 import { getExperiments } from 'store/slice/Experiments/ExperimentsActions'
-import { arrayEqualityFn } from 'utils/EqualityUtils'
 import { ExperimentStatusIcon } from './ExperimentStatusIcon'
 import { AppDispatch } from 'store/store'
 import { setRunBtnOption } from 'store/slice/Pipeline/PipelineSlice'
 import { RUN_BTN_OPTIONS } from 'store/slice/Pipeline/PipelineType'
+import {
+  Experiment,
+  ExperimentType,
+} from 'store/slice/Experiments/ExperimentsType'
+import { TableSortLabel } from '@mui/material'
 
 export const ExperimentTable: React.FC = () => {
   const isUninitialized = useSelector(selectExperimentsSatusIsUninitialized)
@@ -76,11 +80,24 @@ const ExperimentsErrorView: React.FC = () => {
 export const ExperimentUidContext = React.createContext<string>('')
 
 const TableImple: React.FC = () => {
-  const uidList = useSelector(selectExperimentUidList, arrayEqualityFn)
+  const experimentList = useSelector(selectExperimentList)
   const dispatch = useDispatch()
   const onClickReload = () => {
     dispatch(getExperiments())
   }
+
+  const [order, setOrder] = React.useState<Order>('asc')
+  const [sortTarget, setSortTarget] =
+    React.useState<keyof Experiment>('timestamp')
+  const sortHandler =
+    (property: keyof Experiment) => (event: React.MouseEvent<unknown>) => {
+      const isAsc = sortTarget === property && order === 'asc'
+      setOrder(isAsc ? 'desc' : 'asc')
+      setSortTarget(property)
+      console.log(order)
+      console.log(sortTarget)
+    }
+
   return (
     <Box>
       <Box
@@ -103,14 +120,19 @@ const TableImple: React.FC = () => {
       <TableContainer component={Paper} elevation={0} variant="outlined">
         <Table aria-label="collapsible table">
           <TableHead>
-            <Head />
+            <Head order={order} sortHandler={sortHandler} />
           </TableHead>
           <TableBody>
-            {uidList.map((uid) => (
-              <ExperimentUidContext.Provider value={uid} key={uid}>
-                <Row key={uid} />
-              </ExperimentUidContext.Provider>
-            ))}
+            {Object.values(experimentList)
+              .sort(getComparator(order, sortTarget))
+              .map((expData) => (
+                <ExperimentUidContext.Provider
+                  value={expData.uid}
+                  key={expData.uid}
+                >
+                  <Row />
+                </ExperimentUidContext.Provider>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -118,12 +140,32 @@ const TableImple: React.FC = () => {
   )
 }
 
-const Head: React.FC = () => {
+const Head: React.FC<{
+  order: Order
+  sortHandler: any
+}> = ({ order, sortHandler }) => {
   return (
     <TableRow>
       <TableCell />
-      <TableCell>Timestamp</TableCell>
-      <TableCell>Name</TableCell>
+      <TableCell>
+        <TableSortLabel
+          active
+          direction={order}
+          onClick={sortHandler('timestamp')}
+        >
+          Timestamp
+        </TableSortLabel>
+      </TableCell>
+      <TableCell>
+        <TableSortLabel active direction={order} onClick={sortHandler('uid')}>
+          ID
+        </TableSortLabel>
+      </TableCell>
+      <TableCell>
+        <TableSortLabel active direction={order} onClick={sortHandler('name')}>
+          Name
+        </TableSortLabel>
+      </TableCell>
       <TableCell>Success</TableCell>
       <TableCell>Import</TableCell>
       <TableCell>Delete</TableCell>
@@ -161,6 +203,7 @@ const Row: React.FC = () => {
         <TableCell component="th" scope="row">
           {timestamp}
         </TableCell>
+        <TableCell>{uid}</TableCell>
         <TableCell>{name}</TableCell>
         <TableCell>
           <ExperimentStatusIcon status={status} />
@@ -232,4 +275,28 @@ const DeleteExperimentButton: React.FC = () => {
       </Dialog>
     </>
   )
+}
+
+type Order = 'asc' | 'desc'
+
+function getComparator<Key extends keyof any>(
+  order: Order,
+  orderBy: Key,
+): (
+  a: { [key in Key]: number | string },
+  b: { [key in Key]: number | string },
+) => number {
+  return order === 'desc'
+    ? (a, b) => descendingComparator(a, b, orderBy)
+    : (a, b) => -descendingComparator(a, b, orderBy)
+}
+
+function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
+  if (b[orderBy] < a[orderBy]) {
+    return -1
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1
+  }
+  return 0
 }
