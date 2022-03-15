@@ -254,21 +254,6 @@ const ImagePlotChart = React.memo<{
         ticks: '',
         showticklabels: showticklabels, // todo
       },
-      // annotations: [
-      //   {
-      //     xref: 'x1',
-      //     yref: 'y1',
-      //     x: 10,
-      //     y: 10,
-      //     text: "aaa",
-      //     showarrow: false,
-      //     font: {
-      //       family: 'Arial',
-      //       size: 30,
-      //       color: 'rgb(255, 255, 255)'
-      //     }
-      //   }
-      // ],
     }),
     [path, showgrid, showline, showticklabels],
   )

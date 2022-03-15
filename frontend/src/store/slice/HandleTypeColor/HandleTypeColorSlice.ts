@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { HANDLE_COLOR_PRESET_MAP } from 'const/HandleColor'
+import { createSlice } from '@reduxjs/toolkit'
+import * as MuiColors from '@mui/material/colors'
 
 export type HandleTypeColor = {
   colorMap: { [type: string]: string }
@@ -9,24 +9,22 @@ export type HandleTypeColor = {
   nextKey: number
 }
 
-const initialState: HandleTypeColor = { colorMap: {}, nextKey: 0 }
+const initialState: HandleTypeColor = {
+  colorMap: {
+    ImageData: MuiColors.red[500],
+    IscellData: MuiColors.indigo[500],
+    TimeSeriesData: MuiColors.yellow[500],
+    Suite2pData: MuiColors.green[500],
+  },
+  nextKey: 0,
+}
 
 const SLICE_NAME = 'handleTypeColor'
 
 export const handleTypeColorSlice = createSlice({
   name: SLICE_NAME,
   initialState,
-  reducers: {
-    addColor: (state, action: PayloadAction<string>) => {
-      const nextColor =
-        HANDLE_COLOR_PRESET_MAP.get(state.nextKey) ??
-        '#' + Math.floor(Math.random() * 0xffffff).toString(16)
-      state.colorMap[action.payload] = nextColor
-      state.nextKey++
-    },
-  },
+  reducers: {},
 })
-
-export const { addColor } = handleTypeColorSlice.actions
 
 export default handleTypeColorSlice.reducer

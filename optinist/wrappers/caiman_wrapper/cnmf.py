@@ -6,7 +6,7 @@ from wrappers.nwb_wrapper.const import NWBDATASET
 
 def caiman_cnmf(
         images: ImageData, nwbfile: NWBFile=None, params: dict=None
-    ) -> {'fluo': TimeSeriesData, 'iscell': IscellData, 'roi': RoiData}:
+    ) -> {'fluo': TimeSeriesData, 'iscell': IscellData}:
     import caiman
     from caiman import local_correlations, stop_server
     from caiman.paths import memmap_frames_filename
