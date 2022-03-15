@@ -37,7 +37,7 @@ def get_workflow(unique_id, runItem):
         elif node["type"] == "CsvFileNode":
             set_csvfile(node, edgeList, nwbfile)
         elif node["type"] == "HDF5FileNode":
-            set_hdf5file(node, edgeList)
+            set_hdf5file(node, edgeList, nwbfile)
         elif node["type"] == "AlgorithmNode":
             rule = set_algofile(unique_id, node, edgeList, nodeDict)
 
