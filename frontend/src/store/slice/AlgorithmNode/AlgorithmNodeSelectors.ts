@@ -18,6 +18,10 @@ export const selectAlgorithmName = (nodeId: string) => (state: RootState) =>
 export const selectAlgorithmParams = (nodeId: string) => (state: RootState) =>
   selectAlgorithmNode(state)[nodeId].params
 
+export const selectAlgorithmIsUpdated =
+  (nodeId: string) => (state: RootState) =>
+    selectAlgorithmNode(state)[nodeId].isUpdated
+
 export const selectAlgorithmParamsExit =
   (nodeId: string) => (state: RootState) =>
     selectAlgorithmNode(state)[nodeId].params !== null

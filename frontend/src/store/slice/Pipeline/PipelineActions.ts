@@ -31,19 +31,22 @@ export const runByCurrentUid = createAsyncThunk<
   string,
   { runPostData: Omit<RunPostData, 'name'> },
   ThunkApiConfig
->(`${PIPELINE_SLICE_NAME}/run`, async ({ runPostData }, thunkAPI) => {
-  const currentUid = selectPipelineLatestUid(thunkAPI.getState())
-  if (currentUid != null) {
-    try {
-      const responseData = await runByUidApi(currentUid, runPostData)
-      return responseData
-    } catch (e) {
-      return thunkAPI.rejectWithValue(e)
+>(
+  `${PIPELINE_SLICE_NAME}/runByCurrentUid`,
+  async ({ runPostData }, thunkAPI) => {
+    const currentUid = selectPipelineLatestUid(thunkAPI.getState())
+    if (currentUid != null) {
+      try {
+        const responseData = await runByUidApi(currentUid, runPostData)
+        return responseData
+      } catch (e) {
+        return thunkAPI.rejectWithValue(e)
+      }
+    } else {
+      return thunkAPI.rejectWithValue('currentUid dose not exist.')
     }
-  } else {
-    return thunkAPI.rejectWithValue('currentUid dose not exist.')
-  }
-})
+  },
+)
 
 export const pollRunResult = createAsyncThunk<
   RunResultDTO,

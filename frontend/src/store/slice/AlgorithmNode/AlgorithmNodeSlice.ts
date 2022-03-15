@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
 
 import { convertToParamMap, getChildParam } from 'store/utils/param/ParamUtils'
 import {
@@ -12,6 +12,7 @@ import { importExperimentByUid } from '../Experiments/ExperimentsActions'
 import { getAlgoParams } from './AlgorithmNodeActions'
 import { ALGORITHM_NODE_SLICE_NAME, AlgorithmNode } from './AlgorithmNodeType'
 import { isAlgorithmNodePostData } from 'api/run/RunUtils'
+import { run, runByCurrentUid } from '../Pipeline/PipelineActions'
 
 const initialState: AlgorithmNode = {}
 
@@ -34,6 +35,7 @@ export const algorithmNodeSlice = createSlice({
         const target = getChildParam(path, param)
         if (target != null) {
           target.value = newValue
+          state[nodeId].isUpdated = true
         }
       }
     },
@@ -53,6 +55,7 @@ export const algorithmNodeSlice = createSlice({
           state[node.id] = {
             ...algoNodeInfo,
             params: null,
+            isUpdated: false,
           }
         }
       })
@@ -80,11 +83,23 @@ export const algorithmNodeSlice = createSlice({
                 name: node.data.label,
                 functionPath: node.data.path,
                 params: node.data.param,
+                isUpdated: false,
               }
             }
           })
         return newState
       })
+      .addMatcher(
+        isAnyOf(run.fulfilled, runByCurrentUid.fulfilled),
+        (state, action) => {
+          const runPostData = action.meta.arg.runPostData
+          runPostData.nodeList
+            .filter(isAlgorithmNodePostData)
+            .forEach((node) => {
+              state[node.id].isUpdated = false
+            })
+        },
+      )
   },
 })
 

@@ -60,3 +60,45 @@ export function convertToParamMap(dto: ParamDTO, keyList?: string[]): ParamMap {
   })
   return ParamMap
 }
+
+export function equalsParamMap(a: ParamMap, b: ParamMap) {
+  if (a === b) {
+    return true
+  }
+  const aArray = Object.keys(a)
+  const bArray = Object.keys(b)
+  return (
+    aArray.length === bArray.length &&
+    aArray.every((aKey) => {
+      const aValue = a[aKey]
+      const bValue = b[aKey]
+      return equalsParam(aValue, bValue)
+    })
+  )
+}
+
+function equalsParam(a: ParamType, b: ParamType): boolean {
+  if (a === b) {
+    return true
+  }
+  if (isParamChild(a) && isParamChild(b)) {
+    return equalsParamChild(a, b)
+  } else if (isParamParent(a) && isParamParent(b)) {
+    const aArray = Object.keys(a)
+    const bArray = Object.keys(b)
+    return (
+      aArray.length === bArray.length &&
+      aArray.every((aKey) => {
+        const aValue = a.children[aKey]
+        const bValue = b.children[aKey]
+        return equalsParam(aValue, bValue)
+      })
+    )
+  } else {
+    return false
+  }
+}
+
+function equalsParamChild(a: ParamChild, b: ParamChild) {
+  return a.path === b.path && a.value === b.value
+}

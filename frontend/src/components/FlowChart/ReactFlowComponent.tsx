@@ -27,6 +27,8 @@ import { AlgorithmNode } from './FlowChartNode/AlgorithmNode'
 import { CsvFileNode } from './FlowChartNode/CsvFileNode'
 import { HDF5FileNode } from './FlowChartNode/HDF5FileNode'
 import { CustomEdge } from './CustomEdge'
+import { UseRunPipelineReturnType } from 'store/slice/Pipeline/PipelineHook'
+import { ToolBar } from 'components/ToolBar'
 
 const componentTypes = {
   ImageFileNode,
@@ -39,72 +41,75 @@ const edgeTypes = {
   buttonedge: CustomEdge,
 } as const
 
-export const ReactFlowComponent = React.memo(() => {
-  const flowElements = useSelector(selectFlowElements)
-  const dispatch = useDispatch()
+export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
+  (props) => {
+    const flowElements = useSelector(selectFlowElements)
+    const dispatch = useDispatch()
 
-  const onConnect = (params: Connection | Edge) => {
-    dispatch(
-      setFlowElements(
-        addEdge(
-          {
-            ...params,
-            animated: false,
-            style: { width: 5 },
-            type: 'buttonedge',
-          },
-          flowElements,
+    const onConnect = (params: Connection | Edge) => {
+      dispatch(
+        setFlowElements(
+          addEdge(
+            {
+              ...params,
+              animated: false,
+              style: { width: 5 },
+              type: 'buttonedge',
+            },
+            flowElements,
+          ),
         ),
-      ),
-    )
-  }
-
-  const onElementsRemove = (elementsToRemove: Elements) => {
-    dispatch(deleteFlowElements(elementsToRemove))
-  }
-
-  const onDragOver = (event: DragEvent) => {
-    event.preventDefault()
-    event.dataTransfer.dropEffect = 'move'
-  }
-
-  const onNodeDragStop = (event: MouseEvent, node: Node) => {
-    dispatch(
-      editFlowElementPositionById({
-        nodeId: node.id,
-        coord: { x: node.position.x, y: node.position.y },
-      }),
-    )
-  }
-
-  const flowPosition = useSelector(selectFlowPosition)
-
-  const onMoveEnd = (event: FlowTransform | undefined) => {
-    if (event !== undefined) {
-      dispatch(setFlowPosition(event))
+      )
     }
-  }
 
-  return (
-    <div className="flow">
-      <ReactFlowProvider>
-        <div className="reactflow-wrapper">
-          <ReactFlow
-            elements={flowElements}
-            onElementsRemove={onElementsRemove}
-            onConnect={onConnect}
-            onDragOver={onDragOver}
-            onNodeDragStop={onNodeDragStop}
-            nodeTypes={componentTypes}
-            edgeTypes={edgeTypes}
-            defaultPosition={[flowPosition.x, flowPosition.y]}
-            defaultZoom={flowPosition.zoom}
-            onMoveEnd={onMoveEnd}
-          >
-            <Controls />
-          </ReactFlow>
-        </div>
-      </ReactFlowProvider>
-    </div>
-  )
-})
+    const onElementsRemove = (elementsToRemove: Elements) => {
+      dispatch(deleteFlowElements(elementsToRemove))
+    }
+
+    const onDragOver = (event: DragEvent) => {
+      event.preventDefault()
+      event.dataTransfer.dropEffect = 'move'
+    }
+
+    const onNodeDragStop = (event: MouseEvent, node: Node) => {
+      dispatch(
+        editFlowElementPositionById({
+          nodeId: node.id,
+          coord: { x: node.position.x, y: node.position.y },
+        }),
+      )
+    }
+
+    const flowPosition = useSelector(selectFlowPosition)
+
+    const onMoveEnd = (event: FlowTransform | undefined) => {
+      if (event !== undefined) {
+        dispatch(setFlowPosition(event))
+      }
+    }
+
+    return (
+      <div className="flow">
+        <ReactFlowProvider>
+          <div className="reactflow-wrapper">
+            <ReactFlow
+              elements={flowElements}
+              onElementsRemove={onElementsRemove}
+              onConnect={onConnect}
+              onDragOver={onDragOver}
+              onNodeDragStop={onNodeDragStop}
+              nodeTypes={componentTypes}
+              edgeTypes={edgeTypes}
+              defaultPosition={[flowPosition.x, flowPosition.y]}
+              defaultZoom={flowPosition.zoom}
+              onMoveEnd={onMoveEnd}
+            >
+              <ToolBar {...props} />
+              <Controls />
+            </ReactFlow>
+          </div>
+        </ReactFlowProvider>
+      </div>
+    )
+  },
+)

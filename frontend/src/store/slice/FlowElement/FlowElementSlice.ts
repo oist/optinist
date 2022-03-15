@@ -35,19 +35,19 @@ const initialElements: Elements<NodeData> = [
       label: INITIAL_IMAGE_ELEMENT_NAME,
     },
     style: INITIAL_DATA_STYLE,
-    position: { x: 50, y: 60 },
+    position: { x: 50, y: 150 },
   },
 ]
 
 const initialFlowPosition: FlowTransform = {
   x: 0,
   y: 0,
-  zoom: 0.8,
+  zoom: 0.7,
 }
 
 const initialElementCoord: ElementCoord = {
   x: 100,
-  y: 60,
+  y: 150,
 }
 
 const initialState: FlowElement = {

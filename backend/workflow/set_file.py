@@ -120,3 +120,10 @@ def save_pickle(filepath, info):
     pickle_path = filepath.split(".")[0] + ".pkl"
     with open(pickle_path, 'wb') as f:
         pickle.dump(info, f)
+
+
+def get_forcerun_list(unique_id, forceRunList):
+    target_list = []
+    for x in forceRunList:
+        target_list.append(get_pickle_file(unique_id, x.nodeId, x.name))
+    return target_list
