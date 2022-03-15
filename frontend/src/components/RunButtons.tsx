@@ -89,7 +89,7 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
     <>
       <ButtonGroup
         sx={{
-          margin: (theme) => theme.spacing(1),
+          margin: 1,
         }}
         variant="contained"
         ref={anchorRef}
@@ -141,7 +141,8 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
         endIcon={<CloseIcon />}
         onClick={onClickCancel}
         sx={{
-          margin: (theme) => theme.spacing(1),
+          margin: 1,
+          marginRight: 4,
         }}
       >
         Cancel
@@ -160,7 +161,7 @@ const RunDialog = React.memo<{
   handleRun: (name: string) => void
   handleClose: () => void
 }>(({ open, handleClose, handleRun }) => {
-  const [name, setName] = React.useState('')
+  const [name, setName] = React.useState('New flow')
   const [error, setError] = React.useState<string | null>(null)
   const onClickRun = () => {
     if (name !== '') {
@@ -188,6 +189,7 @@ const RunDialog = React.memo<{
           onChange={onChangeName}
           error={error != null}
           helperText={error}
+          value={name}
         />
       </DialogContent>
       <DialogActions>

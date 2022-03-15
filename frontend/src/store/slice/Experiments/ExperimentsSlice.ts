@@ -1,8 +1,12 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, isAnyOf } from '@reduxjs/toolkit'
 import { EXPERIMENTS_SLICE_NAME, Experiments } from './ExperimentsType'
 import { getExperiments, deleteExperimentByUid } from './ExperimentsActions'
 import { convertToExperimentListType } from './ExperimentsUtils'
-import { pollRunResult, run } from '../Pipeline/PipelineActions'
+import {
+  pollRunResult,
+  run,
+  runByCurrentUid,
+} from '../Pipeline/PipelineActions'
 
 const initialState: Experiments = {
   status: 'uninitialized',
@@ -14,11 +18,6 @@ export const experimentsSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(run.fulfilled, () => {
-        return {
-          status: 'uninitialized',
-        }
-      })
       .addCase(getExperiments.pending, () => {
         return {
           status: 'pending',
@@ -53,6 +52,11 @@ export const experimentsSlice = createSlice({
               target.functions[nodeId].status = 'error'
             }
           })
+        }
+      })
+      .addMatcher(isAnyOf(run.fulfilled, runByCurrentUid.fulfilled), () => {
+        return {
+          status: 'uninitialized',
         }
       })
   },

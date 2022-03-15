@@ -9,7 +9,6 @@ import {
 } from './PipelineSelectors'
 import { run, pollRunResult, runByCurrentUid } from './PipelineActions'
 import { cancelPipeline } from './PipelineSlice'
-import { AppDispatch } from 'store/store'
 import { selectFilePathIsUndefined } from '../InputNode/InputNodeSelectors'
 import { useSnackbar } from 'notistack'
 import { RUN_STATUS } from './PipelineType'
@@ -19,7 +18,7 @@ const POLLING_INTERVAL = 5000
 export type UseRunPipelineReturnType = ReturnType<typeof useRunPipeline>
 
 export function useRunPipeline() {
-  const dispatch: AppDispatch = useDispatch()
+  const dispatch = useDispatch()
   const uid = useSelector(selectPipelineLatestUid)
   const isCanceled = useSelector(selectPipelineIsCanceled)
   const isStartedSuccess = useSelector(selectPipelineIsStartedSuccess)
@@ -27,7 +26,7 @@ export function useRunPipeline() {
   const runPostData = useSelector(selectRunPostData)
   const handleRunPipeline = React.useCallback(
     (name: string) => {
-      dispatch(run({ runPostData: { name, ...runPostData } }))
+      dispatch(run({ runPostData: { name, ...runPostData, forceRunList: [] } }))
     },
     [dispatch, runPostData],
   )

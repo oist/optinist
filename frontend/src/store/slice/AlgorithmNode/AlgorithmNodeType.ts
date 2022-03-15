@@ -10,4 +10,5 @@ type AlgrithmNodeType = {
   functionPath: string
   name: string
   params: ParamMap | null
+  isUpdated: boolean
 }
