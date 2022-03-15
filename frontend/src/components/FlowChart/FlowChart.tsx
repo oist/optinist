@@ -5,7 +5,6 @@ import { default as MuiToolbar } from '@mui/material/Toolbar'
 import { styled } from '@mui/material/styles'
 import { AlgorithmTreeView } from './TreeView'
 import { ReactFlowComponent } from './ReactFlowComponent'
-import { ToolBar } from '../ToolBar'
 import RightDrawer, { rightDrawerWidth } from './RightDrawer'
 import { selectRightDrawerIsOpen } from 'store/slice/RightDrawer/RightDrawerSelectors'
 import { UseRunPipelineReturnType } from 'store/slice/Pipeline/PipelineHook'
@@ -20,10 +19,10 @@ const FlowChart = React.memo<UseRunPipelineReturnType>((props) => {
           <AlgorithmTreeView />
         </DrawerContents>
       </StyledDrawer>
+
       <MainContents open={open}>
         <MuiToolbar />
-        <ToolBar {...props} />
-        <ReactFlowComponent />
+        <ReactFlowComponent {...props} />
       </MainContents>
       <RightDrawer />
     </RootDiv>
@@ -52,7 +51,7 @@ const MainContents = styled('main')<{ open: boolean }>(
   ({ theme }) => ({
     flexDirection: 'column',
     flexGrow: 1,
-    height: '80vh',
+    height: '90vh',
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,

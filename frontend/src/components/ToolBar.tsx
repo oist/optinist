@@ -8,12 +8,14 @@ import { RunButtons } from './RunButtons'
 
 export const ToolBar = React.memo<UseRunPipelineReturnType>((props) => (
   <Box
-    display="flex"
-    justifyContent="flex-end"
-    sx={{
-      width: '100%',
-      p: 1,
-      zIndex: (theme) => theme.zIndex.appBar,
+    style={{
+      position: 'absolute',
+      float: 'right',
+      textAlign: 'right',
+      top: -7,
+      right: 10,
+      zIndex: 4,
+      textTransform: 'none',
     }}
   >
     <SnakemakeButton />
