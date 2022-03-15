@@ -1,4 +1,5 @@
 from wrappers import wrapper_dict
+from wrappers.data_wrapper import ImageData
 from wrappers.nwb_wrapper import save_nwb
 import traceback
 import os
@@ -36,6 +37,10 @@ def run_script(__func_config, last_output):
         params = __func_config["params"]
         wrapper = dict2leaf(wrapper_dict, __func_config["path"].split('/'))
         print(wrapper)
+
+        for k, v in input_info.items():
+            if isinstance(v, ImageData) and v.path is None:
+                input_info[k].path = input_files[0]
 
         for return_name, arg_name in return_arg.items():
             change_dict_key_exist(input_info, return_name, arg_name)

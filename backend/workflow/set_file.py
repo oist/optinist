@@ -13,7 +13,7 @@ def set_imagefile(node, edgeList, nwbfile):
     for edge in edgeList:
         if node["id"] == edge["source"]:
             return_name = edge["sourceHandle"].split("--")[0]
-            info = {return_name: ImageData(node['data']['path'], '')}
+            info = {return_name: ImageData(None, '')}
 
     # NWB file
     nwbfile['image_series']['external_file'] = info[return_name]

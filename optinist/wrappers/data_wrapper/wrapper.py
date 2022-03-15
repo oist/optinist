@@ -21,7 +21,9 @@ class ImageData(BaseData):
 
         self.json_path = None
 
-        if type(data) == str:
+        if data is None:
+            self.path = None
+        elif type(data) == str:
             self.path = data
         else:
             _dir = join_file_path([BASE_DIR, "tiff", func_name])
@@ -183,8 +185,8 @@ class Suite2pData(BaseData):
         super().__init__(file_name)
 
         self.data = data
-        _dir = join_file_path([BASE_DIR, func_name])
-        self.path = get_json_file_path(_dir, file_name)
+        # _dir = join_file_path([BASE_DIR, func_name])
+        # self.path = get_json_file_path(_dir, file_name)
 
     def __del__(self):
         del self
@@ -196,8 +198,8 @@ class IscellData(BaseData):
         super().__init__(file_name)
 
         self.data = data
-        _dir = join_file_path([BASE_DIR, func_name])
-        self.path = get_json_file_path(_dir, file_name)
+        # _dir = join_file_path([BASE_DIR, func_name])
+        # self.path = get_json_file_path(_dir, file_name)
 
     def __del__(self):
         del self
