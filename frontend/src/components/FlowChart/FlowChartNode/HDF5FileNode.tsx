@@ -110,7 +110,7 @@ const ItemSelect = React.memo<{
       <Button variant="outlined" size="small" onClick={() => setOpen(true)}>
         {'Structure'}
       </Button>
-      <Typography className="selectStructure" variant="caption">
+      <Typography className="selectFilePath" variant="caption">
         {!!structureFileName ? structureFileName : 'No structure is selected.'}
       </Typography>
 

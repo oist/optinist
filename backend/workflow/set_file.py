@@ -42,7 +42,7 @@ def set_csvfile(node, edgeList, nwbfile):
     return info
 
 
-def set_hdf5file(node, edgeList):
+def set_hdf5file(node, edgeList, nwbfile):
     info = {}
     path = node["data"]["path"]
     h5path = node["data"]["hdf5Path"]
@@ -52,13 +52,19 @@ def set_hdf5file(node, edgeList):
 
     for edge in edgeList:
         if node["id"] == edge["source"]:
-            return_name = edge["sourceHandle"].split("--")[1]
+            return_name = edge["sourceHandle"].split("--")[0]
             if data.ndim == 3:
                 info = {return_name: ImageData(data, '')}
+
+                nwbfile['image_series']['external_file'] = info[return_name]
             elif data.ndim == 2:
                 info = {return_name: TimeSeriesData(data, '')}
 
-    info['nwbfile'] = None
+                if NWBDATASET.TIMESERIES not in nwbfile.keys():
+                    nwbfile[NWBDATASET.TIMESERIES] = {}
+                nwbfile[NWBDATASET.TIMESERIES][node["data"]["label"]] = info[return_name]
+
+    info['nwbfile'] = nwbfile
 
     save_pickle(node["data"]["path"], info)
 
