@@ -1,9 +1,13 @@
+name = "granger"
+
 rule:
     input:
-        config["rules"]["granger"]["input"]
+        [x["input"] for x in config["rules"].values() if x["type"] == name]
     output:
-        config["rules"]["granger"]["output"]
+        [x["output"] for x in config["rules"].values() if x["type"] == name]
     conda:
         "../../../envs/optinist_env.yaml"
+    params:
+        name = name
     script:
-        "../../../scripts/optinist/neural_population_analysis/granger.py"
+        '../../../scripts/func.py'

@@ -1,9 +1,13 @@
+name = "glm"
+
 rule:
     input:
-        config["rules"]["glm"]["input"]
+        [x["input"] for x in config["rules"].values() if x["type"] == name]
     output:
-        config["rules"]["glm"]["output"]
+        [x["output"] for x in config["rules"].values() if x["type"] == name]
     conda:
         "../../../envs/optinist_env.yaml"
+    params:
+        name = name
     script:
-        "../../../scripts/optinist/neural_decoding/glm.py"
+        '../../../scripts/func.py'

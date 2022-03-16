@@ -1,9 +1,13 @@
+name = "tsne"
+
 rule:
     input:
-        config["rules"]["tsne"]["input"]
+        [x["input"] for x in config["rules"].values() if x["type"] == name]
     output:
-        config["rules"]["tsne"]["output"]
+        [x["output"] for x in config["rules"].values() if x["type"] == name]
     conda:
         "../../../envs/optinist_env.yaml"
+    params:
+        name = name
     script:
-        "../../../scripts/optinist/dimension_reduction/tsne.py"
+        '../../../scripts/func.py'

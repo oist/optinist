@@ -1,7 +1,11 @@
+name = "eta"
+
 rule:
     input:
-        config["rules"]["eta"]["input"]
+        [x["input"] for x in config["rules"].values() if x["type"] == name]
     output:
-        config["rules"]["eta"]["output"]
+        [x["output"] for x in config["rules"].values() if x["type"] == name]
+    params:
+        name = name
     script:
-        "../../../scripts/optinist/basic_neural_analysis/eta.py"
+        '../../../scripts/func.py'

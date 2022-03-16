@@ -1,9 +1,13 @@
+name = "svm"
+
 rule:
     input:
-        config["rules"]["svm"]["input"]
+        [x["input"] for x in config["rules"].values() if x["type"] == name]
     output:
-        config["rules"]["svm"]["output"]
+        [x["output"] for x in config["rules"].values() if x["type"] == name]
     conda:
         "../../../envs/optinist_env.yaml"
+    params:
+        name = name
     script:
-        "../../../scripts/optinist/neural_decoding/svm.py"
+        '../../../scripts/func.py'
