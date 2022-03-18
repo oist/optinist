@@ -1,10 +1,11 @@
+name = "dummy_time2time"
+
 rule:
     input:
-        config["rules"]["dummy_time2time"]["input"]
+        [x["input"] for x in config["rules"].values() if x["type"] == name]
     output:
-        config["rules"]["dummy_time2time"]["output"]
-    # run:
-    #     __func_config = config["rules"]["dummy_time2time"]
-    #     run_script(__func_config)
+        [x["output"] for x in config["rules"].values() if x["type"] == name]
+    params:
+        name = name
     script:
-        "../../scripts/dummy/dummy_time2time.py"
+        '../../scripts/func.py'

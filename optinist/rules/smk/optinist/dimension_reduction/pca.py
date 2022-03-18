@@ -1,9 +1,13 @@
+name = "pca"
+
 rule:
     input:
-        config["rules"]["pca"]["input"]
+        [x["input"] for x in config["rules"].values() if x["type"] == name]
     output:
-        config["rules"]["pca"]["output"]
+        [x["output"] for x in config["rules"].values() if x["type"] == name]
     conda:
         "../../../envs/optinist_env.yaml"
+    params:
+        name = name
     script:
-        "../../../scripts/optinist/dimension_reduction/pca.py"
+        '../../../scripts/func.py'

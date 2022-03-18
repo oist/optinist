@@ -1,9 +1,13 @@
+name = "caiman_mc"
+
 rule:
     input:
-        config["rules"]["caiman_mc"]["input"]
+        [x["input"] for x in config["rules"].values() if x["type"] == name]
     output:
-        config["rules"]["caiman_mc"]["output"]
+        [x["output"] for x in config["rules"].values() if x["type"] == name]
+    params:
+        name = name
     # conda:
     #     "../../envs/caiman_env.yaml"
     script:
-        "../../scripts/caiman/caiman_mc.py"
+        '../../scripts/func.py'

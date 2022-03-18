@@ -8,67 +8,70 @@ from cui_api.utils import join_file_path
 from wrappers.nwb_wrapper.const import NWBDATASET
 
 
-def set_imagefile(node, edgeList, nwbfile):
-    info = {}
+def set_imagefile(unique_id, node, edgeList, nwbfile):
+    # info = {}
     for edge in edgeList:
         if node["id"] == edge["source"]:
             return_name = edge["sourceHandle"].split("--")[0]
-            info = {return_name: ImageData(None, '')}
 
-    # NWB file
-    nwbfile['image_series']['external_file'] = info[return_name]
-    info['nwbfile'] = nwbfile
+    output_file = get_pickle_file(
+        unique_id, node["id"], node["data"]["label"].split(".")[0])
 
-    save_pickle(node["data"]["path"], info)
+    rule = {
+        "rule_file": f"rules/smk/image.py",
+        "input": node['data']['path'],
+        "return_arg": return_name,
+        "params": node["data"]["param"],
+        "output": output_file,
+        "type": "image",
+        "nwbfile": nwbfile,
+    }
 
-    return info
+    return rule
 
 
-def set_csvfile(node, edgeList, nwbfile):
-    info = {}
+def set_csvfile(unique_id, node, edgeList, nwbfile):
+    # info = {}
     for edge in edgeList:
         if node["id"] == edge["source"]:
             return_name = edge["sourceHandle"].split("--")[0]
-            info = {return_name: CsvData(node['data']['path'], node["data"]["param"], '')}
 
-    if NWBDATASET.TIMESERIES not in nwbfile.keys():
-        nwbfile[NWBDATASET.TIMESERIES] = {}
+    output_file = get_pickle_file(
+        unique_id, node["id"], node["data"]["label"].split(".")[0])
 
-    nwbfile[NWBDATASET.TIMESERIES][node["data"]["label"]] = info[return_name]
-    info['nwbfile'] = nwbfile
+    rule = {
+        "rule_file": f"rules/smk/csv.py",
+        "input": node['data']['path'],
+        "return_arg": return_name,
+        "params": node["data"]["param"],
+        "output": output_file,
+        "type": "csv",
+        "nwbfile": nwbfile,
+    }
 
-    save_pickle(node["data"]["path"], info)
-
-    return info
+    return rule
 
 
-def set_hdf5file(node, edgeList, nwbfile):
-    info = {}
-    path = node["data"]["path"]
-    h5path = node["data"]["hdf5Path"]
-
-    with h5py.File(path, "r") as f:
-        data = f[h5path][:]
-
+def set_hdf5file(unique_id, node, edgeList, nwbfile):
     for edge in edgeList:
         if node["id"] == edge["source"]:
             return_name = edge["sourceHandle"].split("--")[0]
-            if data.ndim == 3:
-                info = {return_name: ImageData(data, '')}
 
-                nwbfile['image_series']['external_file'] = info[return_name]
-            elif data.ndim == 2:
-                info = {return_name: TimeSeriesData(data, '')}
+    output_file = get_pickle_file(
+        unique_id, node["id"], node["data"]["label"].split(".")[0])
 
-                if NWBDATASET.TIMESERIES not in nwbfile.keys():
-                    nwbfile[NWBDATASET.TIMESERIES] = {}
-                nwbfile[NWBDATASET.TIMESERIES][node["data"]["label"]] = info[return_name]
+    rule = {
+        "rule_file": f"rules/smk/hdf5.py",
+        "input": node['data']['path'],
+        "return_arg": return_name,
+        "params": node["data"]["param"],
+        "output": output_file,
+        "type": "hdf5",
+        "nwbfile": nwbfile,
+        "hdf5Path": node["data"]["hdf5Path"],
+    }
 
-    info['nwbfile'] = nwbfile
-
-    save_pickle(node["data"]["path"], info)
-
-    return info
+    return rule
 
 
 def set_algofile(unique_id, node, edgeList, nodeDict):
@@ -87,7 +90,9 @@ def set_algofile(unique_id, node, edgeList, nodeDict):
                 algo_input.append(input_pickle_file)
             else:
                 return_name = edge["sourceHandle"].split("--")[0]
-                algo_input.append(sourceNode["data"]["path"])
+                input_file = get_pickle_file(
+                    unique_id, sourceNode["id"], sourceNode["data"]["label"].split(".")[0])
+                algo_input.append(input_file)
 
             return_arg_names[return_name] = arg_name
 
@@ -106,6 +111,7 @@ def set_algofile(unique_id, node, edgeList, nodeDict):
         "params": params,
         "output": algo_output,
         "path": algo_path,
+        "type": algo_name,
     }
 
     return rule

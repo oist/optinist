@@ -1,4 +1,4 @@
-name = "dummy_time8image2image8time"
+name="csv"
 
 rule:
     input:
@@ -6,6 +6,6 @@ rule:
     output:
         [x["output"] for x in config["rules"].values() if x["type"] == name]
     params:
-        name = name
+        name=name
     script:
-        '../../scripts/func.py'
+        "../scripts/data.py"

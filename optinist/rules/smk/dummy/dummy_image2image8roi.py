@@ -1,10 +1,11 @@
+name="dummy_image2image8roi"
+
 rule:
     input:
-        config["rules"]["dummy_image2image8roi"]["input"]
+        [x["input"] for x in config["rules"].values() if x["type"] == name]
     output:
-        config["rules"]["dummy_image2image8roi"]["output"]
-    # run:
-    #     __func_config = config["rules"]["dummy_image2image8roi"]
-    #     run_script(__func_config)
+        [x["output"] for x in config["rules"].values() if x["type"] == name]
+    params:
+        name = name
     script:
-        "../../scripts/dummy/dummy_image2image8roi.py"
+        '../../scripts/func.py'

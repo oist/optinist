@@ -33,15 +33,17 @@ def get_workflow(unique_id, runItem):
         algo_path = node['data']['path']
 
         if node["type"] == 'ImageFileNode':
-            set_imagefile(node, edgeList, nwbfile)
+            rule = set_imagefile(unique_id, node, edgeList, nwbfile)
+            rules_to_execute[node["id"]] = rule
         elif node["type"] == "CsvFileNode":
-            set_csvfile(node, edgeList, nwbfile)
+            rule = set_csvfile(unique_id, node, edgeList, nwbfile)
+            rules_to_execute[node["id"]] = rule
         elif node["type"] == "HDF5FileNode":
-            set_hdf5file(node, edgeList, nwbfile)
+            rule = set_hdf5file(unique_id, node, edgeList, nwbfile)
+            rules_to_execute[node["id"]] = rule
         elif node["type"] == "AlgorithmNode":
             rule = set_algofile(unique_id, node, edgeList, nodeDict)
-
-            rules_to_execute[algo_label] = rule
+            rules_to_execute[node["id"]] = rule
 
             if node["id"] in endNodeList:
                 last_outputs.append(rule["output"])

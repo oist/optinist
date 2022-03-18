@@ -1,9 +1,13 @@
+name = "cca"
+
 rule:
     input:
-        config["rules"]["cca"]["input"]
+        [x["input"] for x in config["rules"].values() if x["type"] == name]
     output:
-        config["rules"]["cca"]["output"]
+        [x["output"] for x in config["rules"].values() if x["type"] == name]
     conda:
         "../../../envs/optinist_env.yaml"
+    params:
+        name = name
     script:
-        "../../../scripts/optinist/dimension_reduction/cca.py"
+        '../../../scripts/func.py'

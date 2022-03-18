@@ -1,9 +1,13 @@
+name = "suite2p_roi"
+
 rule:
     input:
-        config["rules"]["suite2p_roi"]["input"]
+        [x["input"] for x in config["rules"].values() if x["type"] == name]
     output:
-        config["rules"]["suite2p_roi"]["output"]
+        [x["output"] for x in config["rules"].values() if x["type"] == name]
+    params:
+        name = name
     conda:
         "../../envs/suite2p_env.yaml"
     script:
-        "../../scripts/suite2p/suite2p_roi.py"
+        '../../scripts/func.py'
