@@ -34,7 +34,6 @@ def save_image(rule):
 def save_hdf5(rule):
     nwbfile = rule["nwbfile"]
 
-    # データの取り出し
     with h5py.File(rule["input"], "r") as f:
         data = f[rule["hdf5Path"]][:]
 
@@ -73,4 +72,3 @@ if __name__ == '__main__':
             save_image(rule)
         elif rule["type"] == "hdf5":
             save_hdf5(rule)
-
