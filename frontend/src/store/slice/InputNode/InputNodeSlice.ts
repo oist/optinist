@@ -113,20 +113,20 @@ export const inputNodeSlice = createSlice({
             if (node.data.fileType === FILE_TYPE_SET.CSV) {
               newState[node.id] = {
                 fileType: FILE_TYPE_SET.CSV,
-                selectedFilePath: node.data.path,
+                selectedFilePath: node.data.path as string,
                 param: node.data.param as CsvInputParamType,
               }
             } else if (node.data.fileType === FILE_TYPE_SET.HDF5) {
               newState[node.id] = {
                 fileType: FILE_TYPE_SET.HDF5,
                 hdf5Path: node.data.hdf5Path,
-                selectedFilePath: node.data.path,
+                selectedFilePath: node.data.path as string,
                 param: {},
               }
             } else {
               newState[node.id] = {
                 fileType: node.data.fileType,
-                selectedFilePath: node.data.path,
+                selectedFilePath: node.data.path as string[],
                 param: {},
               }
             }

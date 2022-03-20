@@ -10,21 +10,14 @@ import {
 import { LinearProgressWithLabel } from './LinerProgressWithLabel'
 import { FILE_TYPE } from 'store/slice/InputNode/InputNodeType'
 import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
-
-type FileSelectProps = {
-  filePath: string
-  onUploadFile: (formData: FormData, fileName: string) => void
-  onSelectFile: (path: string) => void
-  fileTreeType?: FILE_TREE_TYPE
-  selectButtonLabel?: string
-  uploadButtonLabel?: string
-}
+import { getLabelByPath } from 'store/slice/FlowElement/FlowElementUtils'
 
 export const FileSelect = React.memo<{
-  filePath: string
+  multiSelect?: boolean
+  filePath: string | string[]
   fileType: FILE_TYPE
-  onChangeFilePath: (path: string) => void
-}>(({ filePath, fileType, onChangeFilePath }) => {
+  onChangeFilePath: (path: string | string[]) => void
+}>(({ multiSelect = false, filePath, fileType, onChangeFilePath }) => {
   const {
     filePath: uploadedFilePath,
     onUploadFile,
@@ -41,10 +34,6 @@ export const FileSelect = React.memo<{
     }
   }
 
-  const onSelectFile = (selectedPath: string) => {
-    onChangeFilePath(selectedPath)
-  }
-
   return (
     <>
       {!uninitialized && pending && progress != null && (
@@ -53,8 +42,9 @@ export const FileSelect = React.memo<{
         </div>
       )}
       <FileSelectImple
+        multiSelect={multiSelect}
         filePath={filePath}
-        onSelectFile={onSelectFile}
+        onSelectFile={onChangeFilePath}
         onUploadFile={onUploadFileHandle}
         fileTreeType={fileType}
         selectButtonLabel={`Select ${fileType}`}
@@ -68,8 +58,19 @@ export const FileSelect = React.memo<{
   )
 })
 
-export const FileSelectImple = React.memo<FileSelectProps>(
+type FileSelectImpleProps = {
+  multiSelect?: boolean
+  filePath: string | string[]
+  onUploadFile: (formData: FormData, fileName: string) => void
+  onSelectFile: (path: string | string[]) => void
+  fileTreeType?: FILE_TREE_TYPE
+  selectButtonLabel?: string
+  uploadButtonLabel?: string
+}
+
+export const FileSelectImple = React.memo<FileSelectImpleProps>(
   ({
+    multiSelect = false,
     filePath,
     onSelectFile,
     onUploadFile,
@@ -95,7 +96,7 @@ export const FileSelectImple = React.memo<FileSelectProps>(
     }
     const [open, setOpen] = React.useState(false)
     const accept = getFileInputAccept(fileTreeType)
-    const fileName = filePath.split('/').reverse()[0]
+    const fileName = getLabelByPath(filePath)
     return (
       <div
         style={{
@@ -127,7 +128,8 @@ export const FileSelectImple = React.memo<FileSelectProps>(
           </Typography>
         </div>
         <FileSelectDialog
-          selectedFilePath={fileName ?? ''}
+          multiSelect={multiSelect}
+          initialFilePath={filePath}
           open={open}
           onClickOk={(path) => {
             onSelectFile(path)

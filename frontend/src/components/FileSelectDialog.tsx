@@ -24,29 +24,35 @@ import {
   FILE_TREE_TYPE_SET,
   TreeNodeType,
 } from 'store/slice/FilesTree/FilesTreeType'
+import { isDirNodeByPath } from 'store/slice/FilesTree/FilesTreeUtils'
 
 type FileSelectDialogProps = {
-  selectedFilePath: string
-  onClickOk: (path: string) => void
+  initialFilePath: string[] | string
+  onClickOk: (path: string[] | string) => void
   fileType?: FILE_TREE_TYPE
   title?: string
   open: boolean
   onClickCancel: () => void
   onClose?: () => void
+  multiSelect: boolean
 }
 
 export const FileSelectDialog = React.memo<FileSelectDialogProps>(
-  ({
+  function FileSelectDialog({
     open,
-    selectedFilePath,
+    initialFilePath,
     onClickCancel,
     onClickOk,
     onClose,
     title,
     fileType = FILE_TREE_TYPE_SET.ALL,
-  }) => {
-    const [clickedFilePath, setClickedFilePath] =
-      React.useState(selectedFilePath)
+    multiSelect,
+  }) {
+    const [selectedFilePath, setSelectedFilePath] =
+      React.useState(initialFilePath)
+    const onNodeSelect = (path: string[] | string) => {
+      setSelectedFilePath(path)
+    }
     const theme = useTheme()
     return (
       <Dialog open={open} onClose={onClose} fullWidth>
@@ -63,21 +69,20 @@ export const FileSelectDialog = React.memo<FileSelectDialogProps>(
             }}
           >
             <FileTreeView
-              onClickFile={setClickedFilePath}
+              onNodeSelect={onNodeSelect}
+              multiSelect={multiSelect}
               fileType={fileType}
             />
           </div>
           <Typography variant="subtitle1">Select File</Typography>
-          <Typography variant="subtitle2">
-            {!!clickedFilePath ? clickedFilePath : '---'}
-          </Typography>
+          <FilePathSelectedListView path={selectedFilePath} />
         </DialogContent>
         <DialogActions>
           <Button onClick={onClickCancel} variant="outlined" color="inherit">
             cancel
           </Button>
           <Button
-            onClick={() => onClickOk(clickedFilePath)}
+            onClick={() => onClickOk(selectedFilePath)}
             color="primary"
             variant="outlined"
           >
@@ -89,17 +94,48 @@ export const FileSelectDialog = React.memo<FileSelectDialogProps>(
   },
 )
 
+const FilePathSelectedListView = React.memo<{ path: string | string[] }>(
+  ({ path }) => {
+    return (
+      <Typography variant="subtitle2">
+        {!!path
+          ? Array.isArray(path)
+            ? path.map((text) => <li>{text}</li>)
+            : path
+          : '---'}
+      </Typography>
+    )
+  },
+)
+
 const FileTreeView = React.memo<{
-  onClickFile: (path: string) => void
+  onNodeSelect: (path: string[] | string) => void
+  multiSelect: boolean
   fileType: FILE_TREE_TYPE
-}>(({ onClickFile, fileType }) => {
+}>(({ onNodeSelect, fileType, multiSelect }) => {
   const [tree, isLoading] = useFileTree(fileType)
+  const onNodeSelectHandler = (
+    event: React.SyntheticEvent,
+    nodeIds: Array<string> | string,
+  ) => {
+    if (multiSelect) {
+      onNodeSelect(nodeIds)
+    } else {
+      if (tree != null) {
+        // multiSelectがfalseの場合、ディレクトリは選択しない
+        const path = nodeIds as string
+        if (!isDirNodeByPath(path, tree)) {
+          onNodeSelect(path)
+        }
+      }
+    }
+  }
   return (
     <div>
       {isLoading && <LinearProgress />}
-      <TreeView>
+      <TreeView multiSelect={multiSelect} onNodeSelect={onNodeSelectHandler}>
         {tree?.map((node) => (
-          <TreeNode node={node} onClickFile={onClickFile} />
+          <TreeNode node={node} />
         ))}
       </TreeView>
     </div>
@@ -108,8 +144,7 @@ const FileTreeView = React.memo<{
 
 const TreeNode = React.memo<{
   node: TreeNodeType
-  onClickFile: (path: string) => void
-}>(({ node, onClickFile }) => {
+}>(({ node }) => {
   if (node.isDir) {
     return (
       <TreeItem
@@ -118,7 +153,7 @@ const TreeNode = React.memo<{
         label={node.name}
       >
         {node.nodes.map((childNode, i) => (
-          <TreeNode node={childNode} key={i} onClickFile={onClickFile} />
+          <TreeNode node={childNode} key={i} />
         ))}
       </TreeItem>
     )
@@ -128,7 +163,6 @@ const TreeNode = React.memo<{
         icon={<InsertDriveFileOutlinedIcon fontSize="small" />}
         nodeId={node.path}
         label={node.name}
-        onClick={() => onClickFile(node.path)}
       />
     )
   }

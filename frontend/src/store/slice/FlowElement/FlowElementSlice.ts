@@ -25,6 +25,7 @@ import { importExperimentByUid } from '../Experiments/ExperimentsActions'
 import { FILE_TYPE } from '../InputNode/InputNodeType'
 import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
 import { isInputNodePostData } from 'api/run/RunUtils'
+import { getLabelByPath } from './FlowElementUtils'
 
 const initialElements: Elements<NodeData> = [
   {
@@ -141,13 +142,13 @@ export const flowElementSlice = createSlice({
     builder
       .addCase(setInputNodeFilePath, (state, action) => {
         let { nodeId, filePath } = action.payload
-        const fileName = filePath.split('/').reverse()[0]
+        const label = getLabelByPath(filePath)
         const elementIdx = state.flowElements.findIndex(
           (ele) => ele.id === nodeId,
         )
         const targetNode = state.flowElements[elementIdx]
         if (targetNode.data != null) {
-          targetNode.data.label = fileName
+          targetNode.data.label = label
         }
       })
       .addCase(importExperimentByUid.fulfilled, (state, action) => {

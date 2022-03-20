@@ -30,6 +30,7 @@ import {
 import { setTimeSeriesItemCheckedList } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import createColormap from 'colormap'
 import { setTimeSeriesItemDisplayNumbers } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
 
 export const TimeSeriesPlot = React.memo(() => {
   const { itemId, filePath: path } = React.useContext(DisplayDataContext)
@@ -198,7 +199,7 @@ const TimeSeriesPlotImple = React.memo(() => {
 
   const layout = React.useMemo(
     () => ({
-      title: path.split('/').reverse()[0],
+      title: getFileName(path),
       margin: {
         t: 60, // top
         l: 50, // left
