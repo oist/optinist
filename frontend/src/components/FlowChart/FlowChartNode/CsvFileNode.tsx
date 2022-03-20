@@ -23,8 +23,8 @@ import {
   selectCsvInputNodeParamSetColumn,
   selectCsvInputNodeParamSetIndex,
   selectCsvInputNodeParamTranspose,
+  selectCsvInputNodeSelectedFilePath,
   selectInputNodeDefined,
-  selectInputNodeSelectedFilePath,
 } from 'store/slice/InputNode/InputNodeSelectors'
 import { setCsvInputNodeParam } from 'store/slice/InputNode/InputNodeSlice'
 import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
@@ -39,6 +39,7 @@ import {
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getCsvData } from 'store/slice/DisplayData/DisplayDataActions'
 import { PresentationalCsvPlot } from 'components/Visualize/Plot/CsvPlot'
+import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
 
 const sourceHandleStyle: CSSProperties = {
   width: 8,
@@ -60,7 +61,7 @@ export const CsvFileNode = React.memo<NodeProps>((element) => {
 
 const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   const dispatch = useDispatch()
-  const filePath = useSelector(selectInputNodeSelectedFilePath(nodeId))
+  const filePath = useSelector(selectCsvInputNodeSelectedFilePath(nodeId))
   const onChangeFilePath = (path: string) => {
     dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
   }
@@ -89,9 +90,13 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
         <CloseOutlinedIcon />
       </IconButton>
       <FileSelect
-        onChangeFilePath={onChangeFilePath}
+        onChangeFilePath={(path) => {
+          if (!Array.isArray(path)) {
+            onChangeFilePath(path)
+          }
+        }}
         fileType={FILE_TYPE_SET.CSV}
-        filePath={filePath ? filePath.split('/').reverse()[0] : ''}
+        filePath={filePath ? getFileName(filePath) : ''}
       />
       {!!filePath && <ParamSettingDialog nodeId={nodeId} filePath={filePath} />}
       <Handle

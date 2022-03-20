@@ -17,6 +17,7 @@ import {
   selectHeatMapItemColors,
   selectHeatMapItemShowScale,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
 
 export const HeatMapPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -81,7 +82,7 @@ const HeatMapImple = React.memo(() => {
   )
 
   const layout = {
-    title: path.split('/').reverse()[0],
+    title: getFileName(path),
     dragmode: 'pan',
     margin: {
       t: 60, // top

@@ -21,7 +21,7 @@ interface InputNodeBaseType<
   P extends { [key: string]: unknown },
 > {
   fileType: T
-  selectedFilePath?: string // 複数ファイル指定の予定あり
+  selectedFilePath?: string | string[]
   selectedFileName?: string
   param: P
 }
@@ -33,10 +33,15 @@ export type CsvInputParamType = {
 }
 
 export interface CsvInputNode
-  extends InputNodeBaseType<'csv', CsvInputParamType> {}
+  extends InputNodeBaseType<'csv', CsvInputParamType> {
+  selectedFilePath?: string
+}
 
-export interface ImageInputNode extends InputNodeBaseType<'image', {}> {}
+export interface ImageInputNode extends InputNodeBaseType<'image', {}> {
+  selectedFilePath?: string[]
+}
 
 export interface HDF5InputNode extends InputNodeBaseType<'hdf5', {}> {
+  selectedFilePath?: string
   hdf5Path?: string
 }

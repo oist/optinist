@@ -13,6 +13,7 @@ import {
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getBarData } from 'store/slice/DisplayData/DisplayDataActions'
 import { BarData } from 'store/slice/DisplayData/DisplayDataType'
+import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
 
 export const BarPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -55,7 +56,7 @@ const BarPlotImple = React.memo(() => {
 
   const layout = React.useMemo(
     () => ({
-      title: path.split('/').reverse()[0],
+      title: getFileName(path),
       margin: {
         t: 60, // top
         l: 50, // left

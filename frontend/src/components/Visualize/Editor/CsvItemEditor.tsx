@@ -35,7 +35,7 @@ export const CsvItemEditor: React.FC = () => {
     <div style={{ margin: '10px', padding: 10 }}>
       <FileSelectImple
         filePath={filePath ?? ''}
-        onSelectFile={onSelectFile}
+        onSelectFile={(path) => !Array.isArray(path) && onSelectFile(path)}
         onUploadFile={onUploadFileHandle}
         fileTreeType={FILE_TREE_TYPE_SET.CSV}
         selectButtonLabel="Select CSV"

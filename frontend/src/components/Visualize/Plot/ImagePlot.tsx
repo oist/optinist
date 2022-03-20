@@ -51,6 +51,7 @@ import {
 import { RootState } from 'store/store'
 import { Datum, LayoutAxis, PlotData } from 'plotly.js'
 import createColormap from 'colormap'
+import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
 
 export const ImagePlot = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
@@ -228,7 +229,7 @@ const ImagePlotChart = React.memo<{
 
   const layout = React.useMemo(
     () => ({
-      title: path.split('/').reverse()[0],
+      title: getFileName(path),
       margin: {
         t: 30, // top
         l: 120, // left

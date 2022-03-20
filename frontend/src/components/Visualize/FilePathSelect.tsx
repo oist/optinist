@@ -21,6 +21,7 @@ import {
   selectPipelineLatestUid,
   selectPipelineNodeResultSuccessList,
 } from 'store/slice/Pipeline/PipelineSelectors'
+import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
 
 export const FilePathSelect: React.FC<{
   dataType?: DATA_TYPE
@@ -95,21 +96,34 @@ export const FilePathSelect: React.FC<{
 
   const menuItemList: React.ReactElement[] = []
   inputNodeFilePathInfoList.forEach((pathInfo) => {
-    menuItemList.push(
-      <MenuItem
-        value={`${pathInfo.nodeId}/${pathInfo.filePath}`}
-        onClick={() =>
-          onSelectHandle(
-            pathInfo.nodeId,
-            pathInfo.filePath ?? '',
-            pathInfo.dataType,
-          )
-        }
-        key={pathInfo.nodeId}
-      >
-        {pathInfo.nodeName}
-      </MenuItem>,
-    )
+    const filePath = pathInfo.filePath
+    if (Array.isArray(filePath)) {
+      filePath.forEach((pathElm) => {
+        menuItemList.push(
+          <MenuItem
+            value={`${pathInfo.nodeId}/${pathElm}`}
+            onClick={() =>
+              onSelectHandle(pathInfo.nodeId, pathElm ?? '', pathInfo.dataType)
+            }
+            key={pathInfo.nodeId}
+          >
+            {getFileName(pathElm)}
+          </MenuItem>,
+        )
+      })
+    } else {
+      menuItemList.push(
+        <MenuItem
+          value={`${pathInfo.nodeId}/${pathInfo.filePath}`}
+          onClick={() =>
+            onSelectHandle(pathInfo.nodeId, filePath ?? '', pathInfo.dataType)
+          }
+          key={pathInfo.nodeId}
+        >
+          {pathInfo.nodeName}
+        </MenuItem>,
+      )
+    }
   })
   algorithmNodeOutputPathInfoList.forEach((pathInfo) => {
     menuItemList.push(<ListSubheader>{pathInfo.nodeName}</ListSubheader>)

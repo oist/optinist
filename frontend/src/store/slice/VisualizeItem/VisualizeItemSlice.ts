@@ -309,6 +309,7 @@ export const visualaizeItemSlice = createSlice({
       } else {
         throw new Error('invalid VisualaizeItemType')
       }
+      resetImageActiveIndexFn(state, { itemId })
     },
     setItemType: (
       state,
@@ -342,19 +343,7 @@ export const visualaizeItemSlice = createSlice({
         endIndex?: number
       }>,
     ) => {
-      const { itemId, startIndex, endIndex } = action.payload
-      const targetItem = state.items[itemId]
-      if (isImageItem(targetItem)) {
-        targetItem.activeIndex = 0
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.imageItem.activeIndex = 0
-        if (startIndex != null) {
-          targetItem.imageItem.startIndex = startIndex
-        }
-        if (endIndex != null) {
-          targetItem.imageItem.endIndex = endIndex
-        }
-      }
+      resetImageActiveIndexFn(state, action.payload)
     },
     incrementImageActiveIndex: (
       state,
@@ -750,6 +739,29 @@ function getMaxItemId(state: VisualaizeItem) {
   const idList = Object.keys(state.items).map((key) => Number(key))
   const maxId = idList.length > 0 ? idList.reduce((a, b) => Math.max(a, b)) : 0
   return maxId
+}
+
+function resetImageActiveIndexFn(
+  state: VisualaizeItem,
+  args: {
+    itemId: number
+    startIndex?: number
+    endIndex?: number
+  },
+) {
+  const { itemId, startIndex, endIndex } = args
+  const targetItem = state.items[itemId]
+  if (isImageItem(targetItem)) {
+    targetItem.activeIndex = 0
+  } else if (isMultiPlotItem(targetItem)) {
+    targetItem.imageItem.activeIndex = 0
+    if (startIndex != null) {
+      targetItem.imageItem.startIndex = startIndex
+    }
+    if (endIndex != null) {
+      targetItem.imageItem.endIndex = endIndex
+    }
+  }
 }
 
 export const {
