@@ -91,7 +91,7 @@ export const selectImageDataEndIndex =
     if (!selectImageDataIsPending(filePath)(state)) {
       return selectImageData(filePath)(state).data.length - 1
     } else {
-      return undefined
+      return 0
     }
   }
 

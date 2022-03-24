@@ -95,7 +95,8 @@ const ImagePlotImple = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
   const itemStartIndex = useSelector(selectImageItemStartIndex(itemId))
   const itemEndIndex = useSelector(selectImageItemEndIndex(itemId))
-  const endIndex = useSelector(selectImageDataEndIndex(path))
+  const itemSize = itemEndIndex - itemStartIndex
+  const maxSize = useSelector(selectImageDataEndIndex(path))
   const activeIndex = useSelector(selectImageItemActiveIndex(itemId))
   const dispatch = useDispatch()
   const handleNext = () => dispatch(incrementImageActiveIndex({ itemId }))
@@ -104,7 +105,7 @@ const ImagePlotImple = React.memo(() => {
   return (
     <>
       <MobileStepper
-        steps={itemEndIndex}
+        steps={itemSize - maxSize ? maxSize + 1 : itemEndIndex}
         position="static"
         variant="text"
         activeStep={activeIndex + itemStartIndex - 1}
@@ -112,7 +113,7 @@ const ImagePlotImple = React.memo(() => {
           <Button
             size="small"
             onClick={handleNext}
-            disabled={activeIndex === (endIndex ?? 0)}
+            disabled={activeIndex === (maxSize ?? 0)}
           >
             <Typography>Next</Typography>
             {theme.direction === 'rtl' ? (
@@ -137,7 +138,9 @@ const ImagePlotImple = React.memo(() => {
           </Button>
         }
       />
+      {/* <div style={{ display: "flex", justifyContent: "center" }}> */}
       <ImagePlotChart activeIndex={activeIndex} />
+      {/* </div> */}
     </>
   )
 })
@@ -234,6 +237,8 @@ const ImagePlotChart = React.memo<{
   const layout = React.useMemo(
     () => ({
       title: path.split('/').reverse()[0],
+      // width: 600,
+      // height: 600,
       margin: {
         t: 30, // top
         l: 120, // left
@@ -266,7 +271,7 @@ const ImagePlotChart = React.memo<{
   const config = {
     displayModeBar: true,
     responsive: true,
-    height: '100%',
+    // height: '100%',
   }
 
   const ref = React.useRef<HTMLDivElement>(null)

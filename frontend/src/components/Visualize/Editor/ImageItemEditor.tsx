@@ -223,26 +223,32 @@ const RoiAlpha: React.FC = () => {
 
 const StartEndIndex: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
-  const startIndex = useSelector(selectImageItemStartIndex(itemId))
-  const endIndex = useSelector(selectImageItemEndIndex(itemId))
+  const [startIndex, onChangeStartIndex] = React.useState(
+    useSelector(selectImageItemStartIndex(itemId)),
+  )
+  const [endIndex, onChangeEndIndex] = React.useState(
+    useSelector(selectImageItemEndIndex(itemId)),
+  )
   const inputError = !(startIndex > 0)
   const dispatch = useDispatch()
   const onStartChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value === '' ? '' : Number(event.target.value)
     if (typeof newValue === 'number') {
-      dispatch(setImageItemStartIndex({ itemId, startIndex: newValue }))
+      onChangeStartIndex(newValue)
     }
   }
   const onEndChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value === '' ? '' : Number(event.target.value)
     if (typeof newValue === 'number') {
-      dispatch(setImageItemEndIndex({ itemId, endIndex: newValue }))
+      onChangeEndIndex(newValue)
     }
   }
 
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
   const onClickButton = () => {
     if (startIndex > 0) {
+      dispatch(setImageItemStartIndex({ itemId, startIndex }))
+      dispatch(setImageItemEndIndex({ itemId, endIndex }))
       dispatch(resetImageActiveIndex({ itemId, startIndex, endIndex }))
       if (filePath !== null) {
         dispatch(

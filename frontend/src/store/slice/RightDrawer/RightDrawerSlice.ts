@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { importExperimentByUid } from '../Experiments/ExperimentsActions'
 import {
   deleteFlowElements,
   deleteFlowElementsById,
@@ -86,6 +87,9 @@ export const rightDrawerSlice = createSlice({
         if (action.payload === state.currendNodeId) {
           state.currendNodeId = null
         }
+      })
+      .addCase(importExperimentByUid.fulfilled, () => {
+        return initialState
       })
   },
 })
