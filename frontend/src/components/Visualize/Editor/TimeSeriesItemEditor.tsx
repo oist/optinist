@@ -163,6 +163,7 @@ const ZeroLine: React.FC = () => {
 
 const Xrange: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
+
   const xrange = useSelector(selectTimeSeriesItemXrange(itemId))
 
   const dispatch = useDispatch()
@@ -187,6 +188,10 @@ const Xrange: React.FC = () => {
           <TextField
             style={{ width: 50 }}
             type="number"
+            inputProps={{
+              step: 1,
+              min: 0,
+            }}
             InputLabelProps={{
               shrink: true,
             }}

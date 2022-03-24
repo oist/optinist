@@ -198,17 +198,16 @@ const RoiAlpha: React.FC = () => {
       dispatch(setImageItemRoiAlpha({ itemId, roiAlpha: newValue }))
     }
   }
-  const inputProps = {
-    step: 0.1,
-    min: 0,
-    max: 1.0,
-  }
   return (
     <>
       <TextField
         error={inputError}
         type="number"
-        inputProps={inputProps}
+        inputProps={{
+          step: 0.1,
+          min: 0,
+          max: 1.0,
+        }}
         InputLabelProps={{
           shrink: true,
         }}
@@ -267,6 +266,10 @@ const StartEndIndex: React.FC = () => {
       <TextField
         error={inputError}
         type="number"
+        inputProps={{
+          step: 1,
+          min: 0,
+        }}
         InputLabelProps={{
           shrink: true,
         }}
