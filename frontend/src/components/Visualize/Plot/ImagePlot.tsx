@@ -42,6 +42,7 @@ import {
   selectMultiPlotTimeSeriesItemFilepath,
   selectMultiPlotTimeSeriesItemDisplayNumbers,
   selectRoiItemIndex,
+  selectImageItemRoiAlpha,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
   decrementImageActiveIndex,
@@ -165,11 +166,13 @@ const ImagePlotChart = React.memo<{
 
   const timeDataMaxIndex = useSelector(selectRoiItemIndex(itemId, roiFilePath))
 
+  const roiAlpha = useSelector(selectImageItemRoiAlpha(itemId))
+
   const colorscaleRoi = createColormap({
     colormap: 'jet',
     nshades: 100, //timeDataMaxIndex >= 6 ? timeDataMaxIndex : 6,
-    format: 'hex',
-    alpha: 1,
+    format: 'rgba',
+    alpha: 1.0,
   })
 
   const data = React.useMemo(
@@ -205,8 +208,9 @@ const ImagePlotChart = React.memo<{
         colorscale: [...Array(timeDataMaxIndex)].map((_, i) => {
           const new_i = Math.floor((i % 10) * 10 + i / 10)
           const offset = i / (timeDataMaxIndex - 1)
-          const rgb = colorscaleRoi[new_i]
-          return [offset, rgb]
+          const rgba = colorscaleRoi[new_i]
+          const hex = rgba2hex(rgba, roiAlpha)
+          return [offset, hex]
         }),
         zmin: 1,
         zmax: timeDataMaxIndex,
@@ -223,6 +227,7 @@ const ImagePlotChart = React.memo<{
       colorscale,
       colorscaleRoi,
       timeDataMaxIndex,
+      roiAlpha,
     ],
   )
 
@@ -347,4 +352,29 @@ interface PlotDatum {
   y: Datum
   yaxis: LayoutAxis
   z: number
+}
+
+function rgba2hex(rgba: [number, number, number, number], alpha: number) {
+  const r = rgba[0]
+  const g = rgba[1]
+  const b = rgba[2]
+  const a = alpha
+
+  var outParts = [
+    r.toString(16),
+    g.toString(16),
+    b.toString(16),
+    Math.round(a * 255)
+      .toString(16)
+      .substring(0, 2),
+  ]
+
+  // Pad single-digit output values
+  outParts.forEach(function (part, i) {
+    if (part.length === 1) {
+      outParts[i] = '0' + part
+    }
+  })
+
+  return '#' + outParts.join('')
 }

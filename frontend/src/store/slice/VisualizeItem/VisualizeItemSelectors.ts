@@ -253,6 +253,18 @@ export const selectImageItemActiveIndex =
     }
   }
 
+export const selectImageItemRoiAlpha =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isImageItem(item)) {
+      return item.roiAlpha
+    } else if (isMultiPlotItem(item)) {
+      return item.imageItem.roiAlpha
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
 export const selectTimeSeriesItemOffset =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]

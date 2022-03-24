@@ -19,6 +19,7 @@ import {
   selectRoiItemFilePath,
   selectImageItemStartIndex,
   selectImageItemEndIndex,
+  selectImageItemRoiAlpha,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 
@@ -34,6 +35,7 @@ import {
   setImageItemColors,
   setRoiItemFilePath,
   resetImageActiveIndex,
+  setImageItemRoiAlpha,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 import 'react-linear-gradient-picker/dist/index.css'
@@ -82,13 +84,6 @@ export const ImageItemEditor: React.FC = () => {
         fileTreeType={FILE_TREE_TYPE_SET.IMAGE}
         selectButtonLabel="Select Image"
       />
-      <FilePathSelect
-        selectedFilePath={roiItemFilePath}
-        selectedNodeId={roiItemNodeId}
-        onSelect={onSelectRoiFilePath}
-        dataType={DATA_TYPE_SET.ROI}
-        label={'Select Roi'}
-      />
       <StartEndIndex />
       <Showticklabels />
       <ShowLine />
@@ -96,6 +91,17 @@ export const ImageItemEditor: React.FC = () => {
       <ShowScale />
       <Zsmooth />
       <GradientColorPicker colors={colors} dispatchSetColor={dispathSetColor} />
+      <div>
+        <h3>Roi Setting</h3>
+        <FilePathSelect
+          selectedFilePath={roiItemFilePath}
+          selectedNodeId={roiItemNodeId}
+          onSelect={onSelectRoiFilePath}
+          dataType={DATA_TYPE_SET.ROI}
+          label={'Select Roi'}
+        />
+        <RoiAlpha />
+      </div>
     </div>
   )
 }
@@ -178,6 +184,40 @@ const Zsmooth: React.FC = () => {
         <MenuItem value={'false'}>False</MenuItem>
       </Select>
     </FormControl>
+  )
+}
+
+const RoiAlpha: React.FC = () => {
+  const itemId = React.useContext(SelectedItemIdContext)
+  const dispatch = useDispatch()
+  const roiAlpha = useSelector(selectImageItemRoiAlpha(itemId))
+  const inputError = !(roiAlpha > 0)
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value === '' ? '' : Number(event.target.value)
+    if (typeof newValue === 'number') {
+      dispatch(setImageItemRoiAlpha({ itemId, roiAlpha: newValue }))
+    }
+  }
+  const inputProps = {
+    step: 0.1,
+    min: 0,
+    max: 1.0,
+  }
+  return (
+    <>
+      <TextField
+        error={inputError}
+        type="number"
+        inputProps={inputProps}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        onChange={onChange}
+        value={roiAlpha}
+        helperText={inputError ? 'index > 0' : undefined}
+      />
+      alpha
+    </>
   )
 }
 
