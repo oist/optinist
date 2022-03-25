@@ -22,6 +22,7 @@ import {
   NODE_TYPE_SET,
 } from 'store/slice/FlowElement/FlowElementType'
 import { addFlowElementNode } from 'store/slice/FlowElement/FlowElementSlice'
+import { getAlgoParams } from 'store/slice/AlgorithmNode/AlgorithmNodeActions'
 
 export const AlgorithmTreeView = React.memo(() => {
   const dispatch = useDispatch()
@@ -45,6 +46,12 @@ export const AlgorithmTreeView = React.memo(() => {
       addFlowElementNode({
         node: newNode,
         algoNodeInfo: { name, functionPath },
+      }),
+    )
+    dispatch(
+      getAlgoParams({
+        nodeId: newNode.id,
+        algoName: name,
       }),
     )
   }
