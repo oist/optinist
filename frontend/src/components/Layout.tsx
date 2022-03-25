@@ -9,6 +9,7 @@ import FlowChart from './FlowChart/FlowChart'
 import Visualize from './Visualize/Visualize'
 import Experiment from './Experiment/Experiment'
 import { useRunPipeline } from 'store/slice/Pipeline/PipelineHook'
+import optinistLogo from './optinist.png'
 
 const Layout: React.FC = () => {
   const [value, setValue] = React.useState(0)
@@ -20,15 +21,15 @@ const Layout: React.FC = () => {
 
   return (
     <RootDiv>
-      <StyledAppBar position="fixed">
+      <StyledAppBar position="fixed" color="inherit">
         <Toolbar variant="dense">
-          <Typography variant="h6">OPTINIST</Typography>
+          <img src={optinistLogo} alt="optinist" width={120} />
           <Tabs
             sx={{ width: '100%' }}
             value={value}
             onChange={handleChange}
             centered
-            textColor="inherit"
+            textColor="primary"
           >
             <Tab label="Workflow" {...a11yProps(0)} />
             <Tab label="Visualize" {...a11yProps(1)} />
@@ -56,6 +57,7 @@ const RootDiv = styled('div')(({ theme }) => ({
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
+  backgroundColor: '#C3EBE1',
 }))
 
 interface TabPanelProps {
