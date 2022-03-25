@@ -45,9 +45,10 @@ def write_experiment_config(unique_id, rule_config, runItem):
     for node in runItem.nodeList:
         name = node["data"]["label"]
 
-        success = "running"
-        if node["type"] == "ImageFileNode":
+        if node["data"]["type"] == "input":
             success = "success"
+        else:
+            success = "running"
 
         experiment_config["function"][name] = {
             "unique_id": node["id"],
