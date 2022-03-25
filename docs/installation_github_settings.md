@@ -19,7 +19,7 @@ make your ssh key
 ```
 mkdir ~/.ssh
 cd ~/.ssh
-ssh-keygen -t rsa -C 'user@oist.jp'
+ssh-keygen -t rsa
 #Enter
 #Input passphrase (empty for no passphrase):
 #Input passphrase (again)
