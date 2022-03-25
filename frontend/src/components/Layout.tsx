@@ -57,6 +57,7 @@ const RootDiv = styled('div')(({ theme }) => ({
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
+  backgroundColor: '#C3EBE1',
 }))
 
 interface TabPanelProps {
