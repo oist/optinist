@@ -62,6 +62,7 @@ export interface ImageItem extends DisplayDataItemBaseType {
   showscale: boolean
   colors: ColorType[]
   roiItem: RoiItem | null
+  roiAlpha: number
 }
 
 export interface TimeSeriesItem extends DisplayDataItemBaseType {

@@ -15,7 +15,7 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 import {
   selectSelectedVisualizeItemId,
-  selectVisualizeDataFilePath,
+  selectImageItemFilePath,
   selectVisualizeDataNodeId,
   selectVisualizeDataType,
   selectVisualizeItemType,
@@ -139,7 +139,7 @@ const DisplayDataItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const dataType = useSelector(selectVisualizeDataType(itemId))
   const selectedNodeId = useSelector(selectVisualizeDataNodeId(itemId))
-  const selectedFilePath = useSelector(selectVisualizeDataFilePath(itemId))
+  const selectedFilePath = useSelector(selectImageItemFilePath(itemId))
 
   const [prevItem, setPrevItem] = useState<{
     dataType: DATA_TYPE

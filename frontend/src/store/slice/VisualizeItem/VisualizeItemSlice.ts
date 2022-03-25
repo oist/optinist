@@ -50,6 +50,7 @@ const imageItemInitialValue: ImageItem = {
   ],
   activeIndex: 0,
   roiItem: null,
+  roiAlpha: 1.0,
 }
 const timeSeriesItemInitialValue: TimeSeriesItem = {
   ...displayDataCommonInitialValue,
@@ -495,6 +496,20 @@ export const visualaizeItemSlice = createSlice({
         targetItem.imageItem.endIndex = action.payload.endIndex
       }
     },
+    setImageItemRoiAlpha: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        roiAlpha: number
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.roiAlpha = action.payload.roiAlpha
+      } else if (isMultiPlotItem(targetItem)) {
+        targetItem.imageItem.roiAlpha = action.payload.roiAlpha
+      }
+    },
     setTimeSeriesItemOffset: (
       state,
       action: PayloadAction<{
@@ -775,6 +790,7 @@ export const {
   setImageItemColors,
   setImageItemStartIndex,
   setImageItemEndIndex,
+  setImageItemRoiAlpha,
   setTimeSeriesItemOffset,
   setTimeSeriesItemSpan,
   setTimeSeriesItemShowGrid,

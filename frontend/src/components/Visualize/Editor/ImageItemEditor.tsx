@@ -13,12 +13,13 @@ import {
   selectImageItemShowticklabels,
   selectImageItemZsmooth,
   selectImageItemShowScale,
-  selectVisualizeDataFilePath,
   selectImageItemColors,
   selectRoiItemNodeId,
   selectRoiItemFilePath,
   selectImageItemStartIndex,
   selectImageItemEndIndex,
+  selectImageItemRoiAlpha,
+  selectImageItemFilePath,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 
@@ -34,6 +35,7 @@ import {
   setImageItemColors,
   setRoiItemFilePath,
   resetImageActiveIndex,
+  setImageItemRoiAlpha,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 import 'react-linear-gradient-picker/dist/index.css'
@@ -56,7 +58,7 @@ export const ImageItemEditor: React.FC = () => {
     dispatch(setDisplayDataPath({ nodeId: null, filePath: path, itemId }))
     dispatch(resetImageActiveIndex({ itemId }))
   }
-  const filePath = useSelector(selectVisualizeDataFilePath(itemId))
+  const filePath = useSelector(selectImageItemFilePath(itemId))
 
   const { onUploadFile } = useFileUploader(FILE_TYPE_SET.IMAGE)
   const onUploadFileHandle = (formData: FormData, fileName: string) => {
@@ -82,13 +84,6 @@ export const ImageItemEditor: React.FC = () => {
         fileTreeType={FILE_TREE_TYPE_SET.IMAGE}
         selectButtonLabel="Select Image"
       />
-      <FilePathSelect
-        selectedFilePath={roiItemFilePath}
-        selectedNodeId={roiItemNodeId}
-        onSelect={onSelectRoiFilePath}
-        dataType={DATA_TYPE_SET.ROI}
-        label={'Select Roi'}
-      />
       <StartEndIndex />
       <Showticklabels />
       <ShowLine />
@@ -96,6 +91,17 @@ export const ImageItemEditor: React.FC = () => {
       <ShowScale />
       <Zsmooth />
       <GradientColorPicker colors={colors} dispatchSetColor={dispathSetColor} />
+      <div>
+        <h3>Roi Setting</h3>
+        <FilePathSelect
+          selectedFilePath={roiItemFilePath}
+          selectedNodeId={roiItemNodeId}
+          onSelect={onSelectRoiFilePath}
+          dataType={DATA_TYPE_SET.ROI}
+          label={'Select Roi'}
+        />
+        <RoiAlpha />
+      </div>
     </div>
   )
 }
@@ -181,28 +187,67 @@ const Zsmooth: React.FC = () => {
   )
 }
 
+const RoiAlpha: React.FC = () => {
+  const itemId = React.useContext(SelectedItemIdContext)
+  const dispatch = useDispatch()
+  const roiAlpha = useSelector(selectImageItemRoiAlpha(itemId))
+  const inputError = !(roiAlpha > 0)
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value === '' ? '' : Number(event.target.value)
+    if (typeof newValue === 'number') {
+      dispatch(setImageItemRoiAlpha({ itemId, roiAlpha: newValue }))
+    }
+  }
+  return (
+    <>
+      <TextField
+        error={inputError}
+        type="number"
+        inputProps={{
+          step: 0.1,
+          min: 0,
+          max: 1.0,
+        }}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        onChange={onChange}
+        value={roiAlpha}
+        helperText={inputError ? 'index > 0' : undefined}
+      />
+      alpha
+    </>
+  )
+}
+
 const StartEndIndex: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
-  const startIndex = useSelector(selectImageItemStartIndex(itemId))
-  const endIndex = useSelector(selectImageItemEndIndex(itemId))
+  const [startIndex, onChangeStartIndex] = React.useState(
+    useSelector(selectImageItemStartIndex(itemId)),
+  )
+  const [endIndex, onChangeEndIndex] = React.useState(
+    useSelector(selectImageItemEndIndex(itemId)),
+  )
   const inputError = !(startIndex > 0)
   const dispatch = useDispatch()
   const onStartChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value === '' ? '' : Number(event.target.value)
     if (typeof newValue === 'number') {
-      dispatch(setImageItemStartIndex({ itemId, startIndex: newValue }))
+      onChangeStartIndex(newValue)
     }
   }
   const onEndChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value === '' ? '' : Number(event.target.value)
     if (typeof newValue === 'number') {
-      dispatch(setImageItemEndIndex({ itemId, endIndex: newValue }))
+      onChangeEndIndex(newValue)
     }
   }
 
-  const filePath = useSelector(selectVisualizeDataFilePath(itemId))
+  const filePath = useSelector(selectImageItemFilePath(itemId))
   const onClickButton = () => {
     if (startIndex > 0) {
+      dispatch(setImageItemStartIndex({ itemId, startIndex }))
+      dispatch(setImageItemEndIndex({ itemId, endIndex }))
       dispatch(resetImageActiveIndex({ itemId, startIndex, endIndex }))
       if (filePath !== null) {
         dispatch(
@@ -221,6 +266,10 @@ const StartEndIndex: React.FC = () => {
       <TextField
         error={inputError}
         type="number"
+        inputProps={{
+          step: 1,
+          min: 0,
+        }}
         InputLabelProps={{
           shrink: true,
         }}

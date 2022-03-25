@@ -117,8 +117,30 @@ export const selectVisualizeDataFilePath =
     const item = selectVisualizeItems(state)[itemId]
     if (isDisplayDataItem(item)) {
       return item.filePath
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectImageItemFilePath =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isDisplayDataItem(item)) {
+      return item.filePath
     } else if (isMultiPlotItem(item)) {
       return item.imageItem.filePath
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectTimeSeriesItemFilePath =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isDisplayDataItem(item)) {
+      return item.filePath
+    } else if (isMultiPlotItem(item)) {
+      return item.timeSeriesItem.filePath
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
@@ -248,6 +270,18 @@ export const selectImageItemActiveIndex =
       return item.activeIndex
     } else if (isMultiPlotItem(item)) {
       return item.imageItem.activeIndex
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectImageItemRoiAlpha =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isImageItem(item)) {
+      return item.roiAlpha
+    } else if (isMultiPlotItem(item)) {
+      return item.imageItem.roiAlpha
     } else {
       throw new Error('invalid VisualaizeItemType')
     }

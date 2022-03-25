@@ -42,6 +42,7 @@ import {
   selectMultiPlotTimeSeriesItemFilepath,
   selectMultiPlotTimeSeriesItemDisplayNumbers,
   selectRoiItemIndex,
+  selectImageItemRoiAlpha,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
   decrementImageActiveIndex,
@@ -51,6 +52,7 @@ import {
 import { RootState } from 'store/store'
 import { Datum, LayoutAxis, PlotData } from 'plotly.js'
 import createColormap from 'colormap'
+import GetAppIcon from '@mui/icons-material/GetApp'
 
 export const ImagePlot = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
@@ -94,7 +96,8 @@ const ImagePlotImple = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
   const itemStartIndex = useSelector(selectImageItemStartIndex(itemId))
   const itemEndIndex = useSelector(selectImageItemEndIndex(itemId))
-  const endIndex = useSelector(selectImageDataEndIndex(path))
+  const itemSize = itemEndIndex - itemStartIndex
+  const maxSize = useSelector(selectImageDataEndIndex(path))
   const activeIndex = useSelector(selectImageItemActiveIndex(itemId))
   const dispatch = useDispatch()
   const handleNext = () => dispatch(incrementImageActiveIndex({ itemId }))
@@ -103,7 +106,7 @@ const ImagePlotImple = React.memo(() => {
   return (
     <>
       <MobileStepper
-        steps={itemEndIndex}
+        steps={itemSize - maxSize ? maxSize + 1 : itemEndIndex}
         position="static"
         variant="text"
         activeStep={activeIndex + itemStartIndex - 1}
@@ -111,7 +114,7 @@ const ImagePlotImple = React.memo(() => {
           <Button
             size="small"
             onClick={handleNext}
-            disabled={activeIndex === (endIndex ?? 0)}
+            disabled={activeIndex === (maxSize ?? 0)}
           >
             <Typography>Next</Typography>
             {theme.direction === 'rtl' ? (
@@ -136,7 +139,9 @@ const ImagePlotImple = React.memo(() => {
           </Button>
         }
       />
+      {/* <div style={{ display: "flex", justifyContent: "center" }}> */}
       <ImagePlotChart activeIndex={activeIndex} />
+      {/* </div> */}
     </>
   )
 })
@@ -165,11 +170,13 @@ const ImagePlotChart = React.memo<{
 
   const timeDataMaxIndex = useSelector(selectRoiItemIndex(itemId, roiFilePath))
 
+  const roiAlpha = useSelector(selectImageItemRoiAlpha(itemId))
+
   const colorscaleRoi = createColormap({
     colormap: 'jet',
     nshades: 100, //timeDataMaxIndex >= 6 ? timeDataMaxIndex : 6,
-    format: 'hex',
-    alpha: 1,
+    format: 'rgba',
+    alpha: 1.0,
   })
 
   const data = React.useMemo(
@@ -205,8 +212,9 @@ const ImagePlotChart = React.memo<{
         colorscale: [...Array(timeDataMaxIndex)].map((_, i) => {
           const new_i = Math.floor((i % 10) * 10 + i / 10)
           const offset = i / (timeDataMaxIndex - 1)
-          const rgb = colorscaleRoi[new_i]
-          return [offset, rgb]
+          const rgba = colorscaleRoi[new_i]
+          const hex = rgba2hex(rgba, roiAlpha)
+          return [offset, hex]
         }),
         zmin: 1,
         zmax: timeDataMaxIndex,
@@ -223,18 +231,24 @@ const ImagePlotChart = React.memo<{
       colorscale,
       colorscaleRoi,
       timeDataMaxIndex,
+      roiAlpha,
     ],
   )
 
   const layout = React.useMemo(
     () => ({
       title: path.split('/').reverse()[0],
+      // modebar: {
+      //   add: "select",
+      // },
+      // width: 600,
+      // height: 600,
       margin: {
         t: 30, // top
         l: 120, // left
         b: 30, // bottom
       },
-      dragmode: 'pan',
+      dragmode: 'pan', //'select',
       xaxis: {
         autorange: true,
         showgrid: showgrid,
@@ -261,7 +275,6 @@ const ImagePlotChart = React.memo<{
   const config = {
     displayModeBar: true,
     responsive: true,
-    height: '100%',
   }
 
   const ref = React.useRef<HTMLDivElement>(null)
@@ -313,6 +326,23 @@ const ImagePlotChart = React.memo<{
     }
   }
 
+  const onSelecting = (event: any) => {
+    if (event.range) {
+      const x1 = event.range.x[0]
+      const x2 = event.range.x[1]
+      const y1 = event.range.y[0]
+      const y2 = event.range.y[1]
+
+      const newArray = roiData
+        .slice(y1, y2)
+        .map((arr) => arr.slice(x1, x2).filter((v) => v))
+        .flat()
+        .filter((v, idx, self) => {
+          return self.indexOf(v) === idx
+        })
+    }
+  }
+
   return (
     <div ref={ref}>
       <PlotlyChart
@@ -320,6 +350,7 @@ const ImagePlotChart = React.memo<{
         layout={layout}
         config={config}
         onClick={onClick}
+        onSelecting={onSelecting}
       />
     </div>
   )
@@ -347,4 +378,29 @@ interface PlotDatum {
   y: Datum
   yaxis: LayoutAxis
   z: number
+}
+
+function rgba2hex(rgba: [number, number, number, number], alpha: number) {
+  const r = rgba[0]
+  const g = rgba[1]
+  const b = rgba[2]
+  const a = alpha
+
+  var outParts = [
+    r.toString(16),
+    g.toString(16),
+    b.toString(16),
+    Math.round(a * 255)
+      .toString(16)
+      .substring(0, 2),
+  ]
+
+  // Pad single-digit output values
+  outParts.forEach(function (part, i) {
+    if (part.length === 1) {
+      outParts[i] = '0' + part
+    }
+  })
+
+  return '#' + outParts.join('')
 }
