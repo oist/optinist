@@ -13,7 +13,7 @@ import {
   selectTimeSeriesItemSpan,
   selectTimeSeriesItemXrange,
   selectTimeSeriesItemZeroLine,
-  selectVisualizeDataFilePath,
+  selectTimeSeriesItemFilePath,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 import {
@@ -220,7 +220,7 @@ const LegendSelect: React.FC = () => {
   const dispatch = useDispatch()
   const checkedList = useSelector(selectTimeSeriesItemCheckedList(itemId))
   const displayNumbers = useSelector(selectTimeSeriesItemDisplayNumbers(itemId))
-  const filePath = useSelector(selectVisualizeDataFilePath(itemId))
+  const filePath = useSelector(selectTimeSeriesItemFilePath(itemId))
 
   const allHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(

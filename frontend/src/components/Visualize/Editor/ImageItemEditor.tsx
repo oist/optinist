@@ -13,13 +13,13 @@ import {
   selectImageItemShowticklabels,
   selectImageItemZsmooth,
   selectImageItemShowScale,
-  selectVisualizeDataFilePath,
   selectImageItemColors,
   selectRoiItemNodeId,
   selectRoiItemFilePath,
   selectImageItemStartIndex,
   selectImageItemEndIndex,
   selectImageItemRoiAlpha,
+  selectImageItemFilePath,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 
@@ -58,7 +58,7 @@ export const ImageItemEditor: React.FC = () => {
     dispatch(setDisplayDataPath({ nodeId: null, filePath: path, itemId }))
     dispatch(resetImageActiveIndex({ itemId }))
   }
-  const filePath = useSelector(selectVisualizeDataFilePath(itemId))
+  const filePath = useSelector(selectImageItemFilePath(itemId))
 
   const { onUploadFile } = useFileUploader(FILE_TYPE_SET.IMAGE)
   const onUploadFileHandle = (formData: FormData, fileName: string) => {
@@ -243,7 +243,7 @@ const StartEndIndex: React.FC = () => {
     }
   }
 
-  const filePath = useSelector(selectVisualizeDataFilePath(itemId))
+  const filePath = useSelector(selectImageItemFilePath(itemId))
   const onClickButton = () => {
     if (startIndex > 0) {
       dispatch(setImageItemStartIndex({ itemId, startIndex }))
