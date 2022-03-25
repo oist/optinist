@@ -94,7 +94,7 @@ def suite2p_roi(
     info['ops'] = Suite2pData(ops)
     info['max_proj'] = ImageData(ops['max_proj'], func_name='suite2p_roi', file_name='max_proj')
     info['Vcorr'] = ImageData(ops['Vcorr'], func_name='suite2p_roi', file_name='Vcorr')    
-    info['F'] = TimeSeriesData(F, func_name='suite2p_roi', file_name='F')
+    info['fluorescence'] = TimeSeriesData(F, func_name='suite2p_roi', file_name='fluorescence')
     info['iscell'] = IscellData(iscell, func_name='suite2p_roi', file_name='iscell')
     info['all_roi'] = RoiData(np.nanmax(im, axis=0), func_name='suite2p_roi', file_name='all_roi')
     info['non_cell_roi'] = RoiData(np.nanmax(im[~iscell], axis=0), func_name='suite2p_roi', file_name='noncell_roi')
