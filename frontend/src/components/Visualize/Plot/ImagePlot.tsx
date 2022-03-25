@@ -52,6 +52,7 @@ import {
 import { RootState } from 'store/store'
 import { Datum, LayoutAxis, PlotData } from 'plotly.js'
 import createColormap from 'colormap'
+import GetAppIcon from '@mui/icons-material/GetApp'
 
 export const ImagePlot = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
@@ -237,6 +238,9 @@ const ImagePlotChart = React.memo<{
   const layout = React.useMemo(
     () => ({
       title: path.split('/').reverse()[0],
+      // modebar: {
+      //   add: "select",
+      // },
       // width: 600,
       // height: 600,
       margin: {
@@ -244,7 +248,7 @@ const ImagePlotChart = React.memo<{
         l: 120, // left
         b: 30, // bottom
       },
-      dragmode: 'pan',
+      dragmode: 'pan', //'select',
       xaxis: {
         autorange: true,
         showgrid: showgrid,
@@ -271,7 +275,6 @@ const ImagePlotChart = React.memo<{
   const config = {
     displayModeBar: true,
     responsive: true,
-    // height: '100%',
   }
 
   const ref = React.useRef<HTMLDivElement>(null)
@@ -323,6 +326,23 @@ const ImagePlotChart = React.memo<{
     }
   }
 
+  const onSelecting = (event: any) => {
+    if (event.range) {
+      const x1 = event.range.x[0]
+      const x2 = event.range.x[1]
+      const y1 = event.range.y[0]
+      const y2 = event.range.y[1]
+
+      const newArray = roiData
+        .slice(y1, y2)
+        .map((arr) => arr.slice(x1, x2).filter((v) => v))
+        .flat()
+        .filter((v, idx, self) => {
+          return self.indexOf(v) === idx
+        })
+    }
+  }
+
   return (
     <div ref={ref}>
       <PlotlyChart
@@ -330,6 +350,7 @@ const ImagePlotChart = React.memo<{
         layout={layout}
         config={config}
         onClick={onClick}
+        onSelecting={onSelecting}
       />
     </div>
   )
