@@ -34,7 +34,6 @@ import {
 import { getHDF5Tree } from 'store/slice/HDF5/HDF5Action'
 import { HDF5TreeDTO } from 'store/slice/HDF5/HDF5Type'
 import { Typography } from '@mui/material'
-import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
 
 const sourceHandleStyle: CSSProperties = {
   width: 8,
@@ -90,7 +89,7 @@ const HDF5FileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
           }
         }}
         fileType={FILE_TYPE_SET.HDF5}
-        filePath={filePath ? getFileName(filePath) : ''}
+        filePath={filePath ?? ''}
       />
       {filePath !== undefined && <ItemSelect nodeId={nodeId} />}
       <Handle

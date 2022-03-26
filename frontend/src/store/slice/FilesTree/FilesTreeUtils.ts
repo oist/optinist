@@ -26,7 +26,7 @@ export function isDirNodeByPath(path: string, tree: TreeNodeType[]): boolean {
   }
 }
 
-function getNodeByPath(
+export function getNodeByPath(
   path: string,
   tree: TreeNodeType[],
 ): TreeNodeType | null {

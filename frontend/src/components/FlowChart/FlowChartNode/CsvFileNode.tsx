@@ -39,7 +39,6 @@ import {
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getCsvData } from 'store/slice/DisplayData/DisplayDataActions'
 import { PresentationalCsvPlot } from 'components/Visualize/Plot/CsvPlot'
-import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
 
 const sourceHandleStyle: CSSProperties = {
   width: 8,
@@ -96,7 +95,7 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
           }
         }}
         fileType={FILE_TYPE_SET.CSV}
-        filePath={filePath ? getFileName(filePath) : ''}
+        filePath={filePath ?? ''}
       />
       {!!filePath && <ParamSettingDialog nodeId={nodeId} filePath={filePath} />}
       <Handle
