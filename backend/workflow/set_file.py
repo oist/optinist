@@ -9,7 +9,6 @@ from wrappers.nwb_wrapper.const import NWBDATASET
 
 
 def set_imagefile(unique_id, node, edgeList, nwbfile):
-    # info = {}
     for edge in edgeList:
         if node["id"] == edge["source"]:
             return_name = edge["sourceHandle"].split("--")[0]
@@ -31,7 +30,6 @@ def set_imagefile(unique_id, node, edgeList, nwbfile):
 
 
 def set_csvfile(unique_id, node, edgeList, nwbfile):
-    # info = {}
     for edge in edgeList:
         if node["id"] == edge["source"]:
             return_name = edge["sourceHandle"].split("--")[0]

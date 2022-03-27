@@ -21,7 +21,10 @@ import {
   NODE_TYPE,
   NODE_TYPE_SET,
 } from 'store/slice/FlowElement/FlowElementType'
-import { addFlowElementNode } from 'store/slice/FlowElement/FlowElementSlice'
+import {
+  addAlgorithmNode,
+  addInputNode,
+} from 'store/slice/FlowElement/FlowElementActions'
 
 export const AlgorithmTreeView = React.memo(() => {
   const dispatch = useDispatch()
@@ -42,9 +45,10 @@ export const AlgorithmTreeView = React.memo(() => {
       data: { label: name, type: NODE_TYPE_SET.ALGORITHM },
     }
     dispatch(
-      addFlowElementNode({
+      addAlgorithmNode({
         node: newNode,
-        algoNodeInfo: { name, functionPath },
+        name,
+        functionPath,
       }),
     )
   }
@@ -122,7 +126,7 @@ const InputNodeComponent = React.memo<{
       type: componentType,
       data: { label: nodeName, type: nodeType },
     }
-    dispatch(addFlowElementNode({ node: newNode, inputNodeInfo: { fileType } }))
+    dispatch(addInputNode({ node: newNode, fileType }))
   }
 
   return (
