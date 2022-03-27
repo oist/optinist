@@ -190,19 +190,19 @@ const TreeNode = React.memo<{
         .filter((node) => !node.isDir)
         .map((node) => node.path)
         .every((filePath) => selectedFilePath.includes(filePath))
-    const allNotCheck =
+    const allNotChecked =
       Array.isArray(selectedFilePath) &&
       node.nodes
         .filter((node) => !node.isDir)
         .map((node) => node.path)
         .every((filePath) => !selectedFilePath.includes(filePath))
-    const indeterminate = !(allChecked || allNotCheck)
+    const indeterminate = !(allChecked || allNotChecked)
     return (
       <TreeItem
         icon={<FolderIcon htmlColor="skyblue" />}
         nodeId={node.path}
         label={
-          multiSelect ? (
+          multiSelect && node.nodes.filter((node) => !node.isDir).length > 0 ? (
             <TreeItemLabel
               label={node.name}
               checkboxProps={{
