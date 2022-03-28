@@ -9,7 +9,8 @@ export type ExperimentsDTO = {
 
 export type ExperimentDTO = {
   function: {
-    [name: string]: {
+    [uid: string]: {
+      name: string
       position: {
         x: number
         y: number

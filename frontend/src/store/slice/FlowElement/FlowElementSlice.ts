@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import {
   Elements,
   removeElements,
-  Node,
   Position,
   isNode,
   FlowTransform,
@@ -22,10 +21,9 @@ import {
   INITIAL_IMAGE_ELEMENT_NAME,
 } from 'const/flowchart'
 import { importExperimentByUid } from '../Experiments/ExperimentsActions'
-import { FILE_TYPE } from '../InputNode/InputNodeType'
 import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
 import { isInputNodePostData } from 'api/run/RunUtils'
-import { getLabelByPath } from './FlowElementUtils'
+import { addAlgorithmNode, addInputNode } from './FlowElementActions'
 
 const initialElements: Elements<NodeData> = [
   {
@@ -78,46 +76,6 @@ export const flowElementSlice = createSlice({
         state.flowElements = removeElements([element], state.flowElements)
       }
     },
-    addFlowElementNode: (
-      state,
-      action: PayloadAction<{
-        node: Omit<Node<NodeData>, 'position'>
-        inputNodeInfo?: { fileType: FILE_TYPE }
-        algoNodeInfo?: { functionPath: string; name: string }
-      }>,
-    ) => {
-      let { node } = action.payload
-      if (node.data?.type === NODE_TYPE_SET.INPUT) {
-        node = {
-          ...node,
-          style: {
-            ...node.style,
-            ...INITIAL_DATA_STYLE,
-          },
-          targetPosition: Position.Left,
-          sourcePosition: Position.Right,
-        }
-      } else if (node.data?.type === NODE_TYPE_SET.ALGORITHM) {
-        node = {
-          ...node,
-          style: {
-            ...node.style,
-            ...INITIAL_ALGO_STYLE,
-          },
-          targetPosition: Position.Left,
-          sourcePosition: Position.Right,
-        }
-      }
-      const newPosition: XYPosition = state.elementCoord
-      state.flowElements.push({ ...node, position: newPosition })
-      const { x, y } = state.elementCoord
-      if (x > 800 || y > 200) {
-        state.elementCoord.x = 300
-        state.elementCoord.y = 100
-      } else {
-        state.elementCoord.x += 250
-      }
-    },
     editFlowElementPositionById: (
       state,
       action: PayloadAction<{
@@ -140,6 +98,40 @@ export const flowElementSlice = createSlice({
   },
   extraReducers: (builder) =>
     builder
+      .addCase(addAlgorithmNode.fulfilled, (state, action) => {
+        let { node } = action.meta.arg
+        if (node.data?.type === NODE_TYPE_SET.ALGORITHM) {
+          node = {
+            ...node,
+            style: {
+              ...node.style,
+              ...INITIAL_ALGO_STYLE,
+            },
+            targetPosition: Position.Left,
+            sourcePosition: Position.Right,
+          }
+        }
+        const newPosition: XYPosition = state.elementCoord
+        state.flowElements.push({ ...node, position: newPosition })
+        updateElementCoord(state)
+      })
+      .addCase(addInputNode, (state, action) => {
+        let { node } = action.payload
+        if (node.data?.type === NODE_TYPE_SET.INPUT) {
+          node = {
+            ...node,
+            style: {
+              ...node.style,
+              ...INITIAL_DATA_STYLE,
+            },
+            targetPosition: Position.Left,
+            sourcePosition: Position.Right,
+          }
+        }
+        const newPosition: XYPosition = state.elementCoord
+        state.flowElements.push({ ...node, position: newPosition })
+        updateElementCoord(state)
+      })
       .addCase(setInputNodeFilePath, (state, action) => {
         let { nodeId, filePath } = action.payload
         const label = getLabelByPath(filePath)
@@ -179,10 +171,19 @@ export const flowElementSlice = createSlice({
       }),
 })
 
+function updateElementCoord(state: FlowElement) {
+  const { x, y } = state.elementCoord
+  if (x > 800 || y > 200) {
+    state.elementCoord.x = 300
+    state.elementCoord.y = 100
+  } else {
+    state.elementCoord.x += 250
+  }
+}
+
 export const {
   setFlowPosition,
   setFlowElements,
-  addFlowElementNode,
   deleteFlowElements,
   deleteFlowElementsById,
   editFlowElementPositionById,

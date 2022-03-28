@@ -2,8 +2,8 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { isInputNodePostData } from 'api/run/RunUtils'
 import { INITIAL_IMAGE_ELEMENT_ID } from 'const/flowchart'
 import { importExperimentByUid } from '../Experiments/ExperimentsActions'
+import { addInputNode } from '../FlowElement/FlowElementActions'
 import {
-  addFlowElementNode,
   deleteFlowElements,
   deleteFlowElementsById,
 } from '../FlowElement/FlowElementSlice'
@@ -62,10 +62,9 @@ export const inputNodeSlice = createSlice({
         const { nodeId, filePath } = action.payload
         state[nodeId].selectedFilePath = filePath
       })
-      .addCase(addFlowElementNode, (state, action) => {
-        const { node, inputNodeInfo } = action.payload
-        if (node.data?.type === NODE_TYPE_SET.INPUT && inputNodeInfo != null) {
-          const fileType = inputNodeInfo.fileType
+      .addCase(addInputNode, (state, action) => {
+        const { node, fileType } = action.payload
+        if (node.data?.type === NODE_TYPE_SET.INPUT) {
           switch (fileType) {
             case FILE_TYPE_SET.CSV:
               state[node.id] = {

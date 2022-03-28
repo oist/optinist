@@ -2,7 +2,6 @@ import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
 
 import { convertToParamMap, getChildParam } from 'store/utils/param/ParamUtils'
 import {
-  addFlowElementNode,
   deleteFlowElements,
   deleteFlowElementsById,
 } from '../FlowElement/FlowElementSlice'
@@ -13,6 +12,7 @@ import { getAlgoParams } from './AlgorithmNodeActions'
 import { ALGORITHM_NODE_SLICE_NAME, AlgorithmNode } from './AlgorithmNodeType'
 import { isAlgorithmNodePostData } from 'api/run/RunUtils'
 import { run, runByCurrentUid } from '../Pipeline/PipelineActions'
+import { addAlgorithmNode } from '../FlowElement/FlowElementActions'
 
 const initialState: AlgorithmNode = {}
 
@@ -46,15 +46,14 @@ export const algorithmNodeSlice = createSlice({
         const { nodeId } = action.meta.arg
         state[nodeId].params = convertToParamMap(action.payload)
       })
-      .addCase(addFlowElementNode, (state, action) => {
-        const { node, algoNodeInfo } = action.payload
-        if (
-          node.data?.type === NODE_TYPE_SET.ALGORITHM &&
-          algoNodeInfo != null
-        ) {
+      .addCase(addAlgorithmNode.fulfilled, (state, action) => {
+        const { node, functionPath, name } = action.meta.arg
+        const params = action.payload
+        if (node.data?.type === NODE_TYPE_SET.ALGORITHM) {
           state[node.id] = {
-            ...algoNodeInfo,
-            params: null,
+            functionPath,
+            name,
+            params: convertToParamMap(params),
             isUpdated: false,
           }
         }

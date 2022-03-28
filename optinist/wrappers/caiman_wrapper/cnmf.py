@@ -129,7 +129,6 @@ def caiman_cnmf(
 
     ims = np.stack(ims)
     roi_image = np.nanmax(ims, axis=0).astype(float)
-    # import pdb; pdb.set_trace()
     roi_image[roi_image == 0] = np.nan
 
     # NWBの追加

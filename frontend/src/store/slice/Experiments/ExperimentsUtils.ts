@@ -18,9 +18,9 @@ export function convertToExperimentListType(
 
 export function convertToExperimentType(dto: ExperimentDTO): ExperimentType {
   const functions: { [nodeId: string]: ExperimentFunction } = {}
-  Object.entries(dto.function).forEach(([name, value]) => {
+  Object.entries(dto.function).forEach(([_, value]) => {
     functions[value.unique_id] = {
-      name,
+      name: value.name,
       nodeId: value.unique_id,
       postion: value.position,
       status: convertToExperimentStatus(value.success),
