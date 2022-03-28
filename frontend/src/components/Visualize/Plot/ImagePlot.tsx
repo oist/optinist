@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { useSelector, useDispatch } from 'react-redux'
 import {
@@ -47,12 +47,15 @@ import {
 import {
   decrementImageActiveIndex,
   incrementImageActiveIndex,
+  setImageActiveIndex,
   setTimeSeriesItemDisplayNumbers,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { RootState } from 'store/store'
 import { Datum, LayoutAxis, PlotData } from 'plotly.js'
 import createColormap from 'colormap'
 import GetAppIcon from '@mui/icons-material/GetApp'
+import Slider from '@mui/material/Slider'
+import Box from '@mui/material/Box'
 
 export const ImagePlot = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
@@ -105,7 +108,7 @@ const ImagePlotImple = React.memo(() => {
   const theme = useTheme()
   return (
     <>
-      <MobileStepper
+      {/* <MobileStepper
         steps={itemSize - maxSize ? maxSize + 1 : itemEndIndex}
         position="static"
         variant="text"
@@ -138,7 +141,7 @@ const ImagePlotImple = React.memo(() => {
             <Typography>Back</Typography>
           </Button>
         }
-      />
+      /> */}
       {/* <div style={{ display: "flex", justifyContent: "center" }}> */}
       <ImagePlotChart activeIndex={activeIndex} />
       {/* </div> */}
@@ -161,6 +164,7 @@ const ImagePlotChart = React.memo<{
     imageDataEqualtyFn,
   )
 
+  const maxSize = useSelector(selectImageDataEndIndex(path))
   const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
   const showline = useSelector(selectImageItemShowLine(itemId))
   const zsmooth = useSelector(selectImageItemZsmooth(itemId))
@@ -343,6 +347,50 @@ const ImagePlotChart = React.memo<{
     }
   }
 
+  const onSliderChange = (
+    event: Event,
+    value: number | number[],
+    activeThumb: number,
+  ) => {
+    if (typeof value === 'number') {
+      const newIndex = value - 1
+      if (newIndex !== activeIndex) {
+        dispatch(setImageActiveIndex({ itemId, activeIndex: newIndex }))
+        setPlayActiveIndex(activeIndex)
+      }
+    }
+  }
+
+  const [playActiveIndex, setPlayActiveIndex] = React.useState<number>(0)
+  const intervalRef = React.useRef<null | NodeJS.Timeout>(null)
+
+  useEffect(() => {
+    if (intervalRef.current !== null) {
+      dispatch(setImageActiveIndex({ itemId, activeIndex: playActiveIndex }))
+      if (playActiveIndex >= maxSize) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+        setPlayActiveIndex(0)
+      }
+    }
+  }, [playActiveIndex])
+
+  const onPlayClick = useCallback(() => {
+    if (intervalRef.current === null) {
+      setPlayActiveIndex(activeIndex)
+      intervalRef.current = setInterval(() => {
+        setPlayActiveIndex((v) => v + 1)
+      }, 500)
+    }
+  }, [])
+
+  const onPauseClick = () => {
+    if (intervalRef.current !== null) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+  }
+
   return (
     <div ref={ref}>
       <PlotlyChart
@@ -352,6 +400,26 @@ const ImagePlotChart = React.memo<{
         onClick={onClick}
         onSelecting={onSelecting}
       />
+      <Box sx={{ width: '50%' }}>
+        <Button variant="outlined" onClick={onPlayClick}>
+          Play
+        </Button>
+        <Button variant="outlined" onClick={onPauseClick}>
+          Pause
+        </Button>
+        <Typography>Index: {activeIndex + 1}</Typography>
+        <Slider
+          aria-label="Index"
+          defaultValue={1}
+          value={activeIndex + 1}
+          valueLabelDisplay="auto"
+          step={1}
+          marks
+          min={1}
+          max={maxSize + 1}
+          onChange={onSliderChange}
+        />
+      </Box>
     </div>
   )
 })

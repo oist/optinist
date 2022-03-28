@@ -381,6 +381,21 @@ export const visualaizeItemSlice = createSlice({
         targetItem.imageItem.activeIndex--
       }
     },
+    setImageActiveIndex: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        activeIndex: number
+      }>,
+    ) => {
+      const { itemId, activeIndex } = action.payload
+      const targetItem = state.items[itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.activeIndex = activeIndex
+      } else if (isMultiPlotItem(targetItem)) {
+        targetItem.imageItem.activeIndex = activeIndex
+      }
+    },
     setImageItemShowticklabels: (
       state,
       action: PayloadAction<{
@@ -782,6 +797,7 @@ export const {
   resetImageActiveIndex,
   incrementImageActiveIndex,
   decrementImageActiveIndex,
+  setImageActiveIndex,
   setImageItemShowticklabels,
   setImageItemZsmooth,
   setImageItemShowLine,
