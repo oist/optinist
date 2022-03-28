@@ -5,7 +5,7 @@ from wrappers.nwb_wrapper.const import NWBDATASET
 
 def suite2p_roi(
         ops: Suite2pData, nwbfile: NWBFile=None, params: dict=None
-    ) -> {'ops': Suite2pData, 'F': TimeSeriesData, 'iscell': IscellData}:
+    ) -> {'ops': Suite2pData, 'fluorescence': TimeSeriesData, 'iscell': IscellData}:
     import numpy as np
     from suite2p import extraction, classification, detection, ROI, default_ops
     print('start suite2p_roi')
