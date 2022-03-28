@@ -31,19 +31,19 @@ def get_results(unique_id, nodeIdList):
             info = pickle.load(f)
 
         if isinstance(info, list) or isinstance(info, str):
-            results[node_id] = get_error(info, algo_name, unique_id)
+            results[node_id] = get_error(info, node_id, unique_id)
         else:
             json_dir = "/".join(request_path.split("/")[:-1])
-            results[node_id] = get_success(info, algo_name, json_dir, unique_id)
+            results[node_id] = get_success(info, node_id, algo_name, json_dir, unique_id)
 
     return results
 
 
-def get_error(info, algo_name, unique_id):
+def get_error(info, node_id, unique_id):
     with open(join_file_path([BASE_DIR, unique_id, "experiment.yaml"]), "r") as f:
         config = yaml.safe_load(f)
 
-    config["function"][algo_name]["success"] = "error"
+    config["function"][node_id]["success"] = "error"
 
     with open(join_file_path([BASE_DIR, unique_id, "experiment.yaml"]), "w") as f:
         yaml.dump(config, f)
@@ -61,18 +61,18 @@ def get_error(info, algo_name, unique_id):
     return message
 
 
-def get_success(info, algo_name, json_dir, unique_id):
+def get_success(info, node_id, algo_name, json_dir, unique_id):
     with open(join_file_path([BASE_DIR, unique_id, "experiment.yaml"]), "r") as f:
         config = yaml.safe_load(f)
 
-    config["function"][algo_name]["success"] = "success"
+    config["function"][node_id]["success"] = "success"
 
     with open(join_file_path([BASE_DIR, unique_id, "experiment.yaml"]), "w") as f:
         yaml.dump(config, f)
 
     message = {
         "status": "success",
-        "message": algo_name + " success",
+        "message": f"{algo_name} success",
         "outputPaths": get_outputPaths(info, json_dir)
     }
 
