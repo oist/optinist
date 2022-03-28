@@ -50,8 +50,9 @@ def write_experiment_config(unique_id, rule_config, runItem):
         else:
             success = "running"
 
-        experiment_config["function"][name] = {
+        experiment_config["function"][node["id"]] = {
             "unique_id": node["id"],
+            "name": name,
             "success": success,
         }
 
