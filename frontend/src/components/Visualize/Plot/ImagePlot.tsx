@@ -305,7 +305,7 @@ const ImagePlotChart = React.memo<{
     if (activeIndex >= maxSize) {
       dispatch(setImageActiveIndex({ itemId, activeIndex: 0 }))
     }
-    if (intervalRef.current === null) {
+    if (maxSize > 1 && intervalRef.current === null) {
       intervalRef.current = setInterval(() => {
         dispatch(incrementImageActiveIndex({ itemId }))
       }, duration)
@@ -371,7 +371,7 @@ const ImagePlotChart = React.memo<{
           step={1}
           marks
           min={1}
-          max={maxSize + 1}
+          max={maxSize === 1 ? 1 : maxSize + 1}
           onChange={onSliderChange}
         />
       </Box>

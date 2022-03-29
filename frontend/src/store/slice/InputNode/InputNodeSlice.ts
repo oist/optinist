@@ -70,7 +70,7 @@ export const inputNodeSlice = createSlice({
               state[node.id] = {
                 fileType,
                 param: {
-                  setColumn: null,
+                  setHeader: null,
                   setIndex: false,
                   transpose: false,
                 },

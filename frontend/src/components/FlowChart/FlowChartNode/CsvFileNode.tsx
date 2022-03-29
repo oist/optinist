@@ -20,7 +20,7 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
 
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import {
-  selectCsvInputNodeParamSetColumn,
+  selectCsvInputNodeParamSetHeader,
   selectCsvInputNodeParamSetIndex,
   selectCsvInputNodeParamTranspose,
   selectCsvInputNodeSelectedFilePath,
@@ -113,8 +113,8 @@ const ParamSettingDialog = React.memo<{ nodeId: string; filePath: string }>(
     const [open, setOpen] = React.useState(false)
     // OK時のみStoreに反映させるため一時的な値をuseStateで保持しておく。
     // useStateの初期値はselectorで取得。
-    const [setColumn, setSetColumn] = React.useState(
-      useSelector(selectCsvInputNodeParamSetColumn(nodeId)),
+    const [setHeader, setSetHeader] = React.useState(
+      useSelector(selectCsvInputNodeParamSetHeader(nodeId)),
     )
     const [setIndex, setSetIndex] = React.useState(
       useSelector(selectCsvInputNodeParamSetIndex(nodeId)),
@@ -131,7 +131,7 @@ const ParamSettingDialog = React.memo<{ nodeId: string; filePath: string }>(
       dispatch(
         setCsvInputNodeParam({
           nodeId,
-          param: { setColumn, setIndex, transpose },
+          param: { setHeader, setIndex, transpose },
         }),
       )
     }
@@ -154,7 +154,7 @@ const ParamSettingDialog = React.memo<{ nodeId: string; filePath: string }>(
                 label="Transpose"
               />
               <TextField
-                label="Column"
+                label="header"
                 sx={{
                   width: 100,
                   margin: (theme) => theme.spacing(0, 1, 0, 1),
@@ -166,10 +166,10 @@ const ParamSettingDialog = React.memo<{ nodeId: string; filePath: string }>(
                 onChange={(event) => {
                   const value = Number(event.target.value)
                   if (value >= 0) {
-                    setSetColumn(Number(event.target.value))
+                    setSetHeader(Number(event.target.value))
                   }
                 }}
-                value={setColumn}
+                value={setHeader}
               />
               <FormControlLabel
                 sx={{ margin: (theme) => theme.spacing(0, 1, 0, 1) }}
@@ -186,7 +186,7 @@ const ParamSettingDialog = React.memo<{ nodeId: string; filePath: string }>(
             <CsvPreview
               filePath={filePath}
               transpose={transpose}
-              setColumn={setColumn}
+              setHeader={setHeader}
               setIndex={setIndex}
             />
           </DialogContent>
@@ -207,7 +207,7 @@ const ParamSettingDialog = React.memo<{ nodeId: string; filePath: string }>(
 const CsvPreview = React.memo<{
   filePath: string
   transpose: boolean
-  setColumn: number | null
+  setHeader: number | null
   setIndex: boolean
 }>(({ filePath: path, ...otherProps }) => {
   const isInitialized = useSelector(selectCsvDataIsInitialized(path))

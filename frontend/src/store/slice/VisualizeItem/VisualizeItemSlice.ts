@@ -83,7 +83,7 @@ const heatMapItemInitialValue: HeatMapItem = {
 const csvItemInitialValue: CsvItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.CSV,
-  setColumn: null,
+  setHeader: null,
   setIndex: false,
   transpose: false,
 }
@@ -729,16 +729,16 @@ export const visualaizeItemSlice = createSlice({
         targetItem.transpose = action.payload.transpose
       }
     },
-    setCsvItemSetColumn: (
+    setCsvItemSetHeader: (
       state,
       action: PayloadAction<{
         itemId: number
-        setColumn: number | null
+        setHeader: number | null
       }>,
     ) => {
       const targetItem = state.items[action.payload.itemId]
       if (isCsvItem(targetItem)) {
-        targetItem.setColumn = action.payload.setColumn
+        targetItem.setHeader = action.payload.setHeader
       }
     },
     setCsvItemSetIndex: (
@@ -849,7 +849,7 @@ export const {
   setHeatMapItemShowScale,
   setHeatMapItemColors,
   setCsvItemTranspose,
-  setCsvItemSetColumn,
+  setCsvItemSetHeader,
   setCsvItemSetIndex,
   setScatterItemXIndex,
   setScatterItemYIndex,

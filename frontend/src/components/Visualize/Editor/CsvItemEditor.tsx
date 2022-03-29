@@ -3,13 +3,13 @@ import { useSelector, useDispatch } from 'react-redux'
 import { FileSelectImple } from 'components/FlowChart/FlowChartNode/FileSelect'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 import {
-  selectCsvItemSetColumn,
+  selectCsvItemSetHeader,
   selectCsvItemSetIndex,
   selectCsvItemTranspose,
   selectVisualizeDataFilePath,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
-  setCsvItemSetColumn,
+  setCsvItemSetHeader,
   setCsvItemSetIndex,
   setCsvItemTranspose,
   setDisplayDataPath,
@@ -41,7 +41,7 @@ export const CsvItemEditor: React.FC = () => {
         selectButtonLabel="Select CSV"
       />
       <Transpose />
-      <SetColumn />
+      <SetHeader />
       <SetIndex />
     </div>
   )
@@ -62,30 +62,30 @@ const Transpose: React.FC = () => {
   )
 }
 
-const SetColumn: React.FC = () => {
+const SetHeader: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
-  const setColumn = useSelector(selectCsvItemSetColumn(itemId))
+  const setHeader = useSelector(selectCsvItemSetHeader(itemId))
 
   const dispatch = useDispatch()
-  const onChangeSetColumn = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeSetHeader = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue =
       event.target.value === '' ? null : Number(event.target.value)
     if (newValue === null || newValue >= 0) {
-      dispatch(setCsvItemSetColumn({ itemId, setColumn: newValue }))
+      dispatch(setCsvItemSetHeader({ itemId, setHeader: newValue }))
     }
   }
 
   return (
     <div>
       <TextField
-        label="column"
+        label="header"
         style={{ width: 50 }}
         type="number"
         InputLabelProps={{
           shrink: true,
         }}
-        onChange={onChangeSetColumn}
-        value={setColumn}
+        onChange={onChangeSetHeader}
+        value={setHeader}
       />
     </div>
   )

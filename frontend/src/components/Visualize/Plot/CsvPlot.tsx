@@ -15,7 +15,7 @@ import { getCsvData } from 'store/slice/DisplayData/DisplayDataActions'
 import { CsvData } from 'store/slice/DisplayData/DisplayDataType'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import {
-  selectCsvItemSetColumn,
+  selectCsvItemSetHeader,
   selectCsvItemSetIndex,
   selectCsvItemTranspose,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
@@ -46,13 +46,13 @@ export const CsvPlot = React.memo(() => {
 const CsvPlotImple = React.memo(() => {
   const { itemId, filePath: path } = React.useContext(DisplayDataContext)
   const transpose = useSelector(selectCsvItemTranspose(itemId))
-  const setColumn = useSelector(selectCsvItemSetColumn(itemId))
+  const setHeader = useSelector(selectCsvItemSetHeader(itemId))
   const setIndex = useSelector(selectCsvItemSetIndex(itemId))
   return (
     <PresentationalCsvPlot
       path={path}
       transpose={transpose}
-      setColumn={setColumn}
+      setHeader={setHeader}
       setIndex={setIndex}
     />
   )
@@ -66,9 +66,9 @@ const CsvPlotImple = React.memo(() => {
 export const PresentationalCsvPlot = React.memo<{
   path: string
   transpose: boolean
-  setColumn: number | null
+  setHeader: number | null
   setIndex: boolean
-}>(({ path, transpose, setIndex, setColumn }) => {
+}>(({ path, transpose, setIndex, setHeader }) => {
   const data = useSelector(
     selectCsvData(path),
     (a: CsvData | undefined, b: CsvData | undefined) => {
@@ -87,15 +87,15 @@ export const PresentationalCsvPlot = React.memo<{
     return data
   }, [data, transpose])
 
-  const columns: GridColDef[] = React.useMemo(() => {
-    const columnData = () => {
-      if (setColumn === null) {
+  const header: GridColDef[] = React.useMemo(() => {
+    const headerData = () => {
+      if (setHeader === null) {
         return csvData[0]
       } else {
-        if (setColumn >= csvData.length) {
+        if (setHeader >= csvData.length) {
           return csvData[csvData.length - 1]
         } else {
-          return csvData[setColumn]
+          return csvData[setHeader]
         }
       }
     }
@@ -103,24 +103,24 @@ export const PresentationalCsvPlot = React.memo<{
     if (setIndex) {
       return [
         { field: 'col0', headerName: 'index', width: 150 },
-        ...columnData().map((value, idx) => {
+        ...headerData().map((value, idx) => {
           return {
             field: `col${idx + 1}`,
-            headerName: `${setColumn === null ? idx : value}`,
+            headerName: `${setHeader === null ? idx : value}`,
             width: 150,
           }
         }),
       ]
     } else {
-      return columnData().map((value, idx) => {
+      return headerData().map((value, idx) => {
         return {
           field: `col${idx + 1}`,
-          headerName: `${setColumn === null ? idx : value}`,
+          headerName: `${setHeader === null ? idx : value}`,
           width: 150,
         }
       })
     }
-  }, [csvData, setColumn, setIndex])
+  }, [csvData, setHeader, setIndex])
   const rows = csvData
     .map((row, row_id) => {
       let rowObj = Object.fromEntries(
@@ -133,12 +133,12 @@ export const PresentationalCsvPlot = React.memo<{
     })
     .filter(
       (value, idx) =>
-        setColumn === null || (setColumn !== null && idx > setColumn),
+        setHeader === null || (setHeader !== null && idx > setHeader),
     )
 
   return (
     <div style={{ height: 300, width: '100%' }}>
-      <DataGrid rows={rows} columns={columns} />
+      <DataGrid rows={rows} columns={header} />
     </div>
   )
 })

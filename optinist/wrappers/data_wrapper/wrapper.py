@@ -113,8 +113,8 @@ class CsvData(BaseData):
             if params["transpose"]:
                 self.data = self.data.T
 
-            if params["setColumn"] is not None:
-                header = params["setColumn"]
+            if params["setHeader"] is not None:
+                header = params["setHeader"]
                 self.data = self.data[header:]
         else:
             self.data = data
