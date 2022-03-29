@@ -127,6 +127,7 @@ Done!
 ### Install gcc, g++
 - For install CaImAn, you need to install gcc and g++.
 ```
+sudo apt update
 sudo apt install gcc g++
 ```
 ### Install Anaconda
