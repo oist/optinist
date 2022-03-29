@@ -5,10 +5,10 @@ standard_std: True
 transpose: False
 
 PCA:
-  n_components:
+  n_components: 2
   copy: True
   whiten: False
   svd_solver: 'auto'
   tol: 0.0
   iterated_power: 'auto'
-  random_state:
+  random_state: 0

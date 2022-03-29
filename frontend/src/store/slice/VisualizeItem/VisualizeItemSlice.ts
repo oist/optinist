@@ -56,7 +56,7 @@ const imageItemInitialValue: ImageItem = {
 const timeSeriesItemInitialValue: TimeSeriesItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.TIME_SERIES,
-  offset: false,
+  offset: true,
   span: 3,
   showgrid: true,
   showline: true,

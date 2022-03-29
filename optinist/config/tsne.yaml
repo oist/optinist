@@ -15,8 +15,8 @@ TSNE:
   min_grad_norm: 0.0000001
   metric: 'euclidean'
   init: 'warn'
-  random_state: null
+  random_state: 0
   method: 'barnes_hut'
   angle: 0.5
-  n_jobs: null
+  n_jobs: 1
   square_distances: 'legacy'

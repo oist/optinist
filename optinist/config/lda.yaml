@@ -7,8 +7,6 @@ transpose_y: False
 
 target_index: 1
 
-behavior: 'd'
-
 ##############################
 #  StratifiedKFold  parameters
 ##############################
@@ -17,7 +15,7 @@ behavior: 'd'
 CV:
   n_splits: 5
   shuffle: False
-  random_state:
+  random_state: 0
 
 
 ##############################
@@ -27,7 +25,7 @@ LDA:
   solver: 'svd'
   shrinkage:
   priors:
-  n_components:
-  store_covariance:
+  n_components: 2
+  store_covariance: False
   tol: 0.0001
   covariance_estimator:
