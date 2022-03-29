@@ -27,7 +27,6 @@ import {
   DATA_TYPE_SET,
 } from 'store/slice/DisplayData/DisplayDataType'
 import {
-  resetImageActiveIndex,
   setDisplayDataPath,
   toggleItemTypeMultiPlot,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
@@ -156,7 +155,6 @@ const DisplayDataItemEditor: React.FC = () => {
   const dispatch = useDispatch()
   const onSelect = (nodeId: string, filePath: string, dataType: DATA_TYPE) => {
     dispatch(setDisplayDataPath({ itemId, nodeId, filePath, dataType }))
-    dispatch(resetImageActiveIndex({ itemId }))
     dispatch(deleteDisplayItem(prevItem))
   }
 

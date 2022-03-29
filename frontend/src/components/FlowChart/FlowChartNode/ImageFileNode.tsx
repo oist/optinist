@@ -6,8 +6,8 @@ import { IconButton } from '@mui/material'
 import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
 
 import {
+  selectImageInputNodeSelectedFilePath,
   selectInputNodeDefined,
-  selectInputNodeSelectedFilePath,
 } from 'store/slice/InputNode/InputNodeSelectors'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 
@@ -16,6 +16,7 @@ import { FileSelect } from './FileSelect'
 import { toHandleId, isValidConnection } from './FlowChartUtils'
 import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
 import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
+import { arrayEqualityFn } from 'utils/EqualityUtils'
 
 // Connection部分のレイアウト
 const sourceHandleStyle: CSSProperties = {
@@ -39,8 +40,11 @@ export const ImageFileNode = React.memo<NodeProps>((element) => {
 const ImageFileNodeImple = React.memo<NodeProps>(
   ({ id: nodeId, selected: elementSelected }) => {
     const dispatch = useDispatch()
-    const filePath = useSelector(selectInputNodeSelectedFilePath(nodeId))
-    const onChangeFilePath = (path: string) => {
+    const filePath = useSelector(
+      selectImageInputNodeSelectedFilePath(nodeId),
+      (a, b) => (a != null && b != null ? arrayEqualityFn(a, b) : a === b),
+    )
+    const onChangeFilePath = (path: string[]) => {
       dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
     }
 
@@ -71,9 +75,14 @@ const ImageFileNodeImple = React.memo<NodeProps>(
           <CloseOutlinedIcon />
         </IconButton>
         <FileSelect
-          onChangeFilePath={onChangeFilePath}
+          multiSelect
+          onChangeFilePath={(path) => {
+            if (Array.isArray(path)) {
+              onChangeFilePath(path)
+            }
+          }}
           fileType={FILE_TYPE_SET.IMAGE}
-          filePath={filePath ?? ''}
+          filePath={filePath ?? []}
         />
         <Handle
           type="source"

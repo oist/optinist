@@ -23,3 +23,21 @@ export function isInputNodeData(
 ): node is Node<InputNodeData> {
   return isNodeData(node) && node.data?.type === NODE_TYPE_SET.INPUT
 }
+
+export function getLabelByPath(filePath: string | string[]) {
+  if (Array.isArray(filePath)) {
+    if (filePath.length === 0) {
+      return ''
+    } else if (filePath.length === 1) {
+      return getFileName(filePath[0])
+    } else {
+      return getFileName(filePath[0]) + ` ... and ${filePath.length - 1} files`
+    }
+  } else {
+    return getFileName(filePath)
+  }
+}
+
+export function getFileName(filePath: string) {
+  return filePath.split('/').reverse()[0]
+}

@@ -14,6 +14,7 @@ import { LinearProgress, Typography } from '@mui/material'
 import { getRoiData } from 'store/slice/DisplayData/DisplayDataActions'
 import createColormap from 'colormap'
 import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
+import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
 
 export const RoiPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -83,7 +84,7 @@ const RoiPlotImple = React.memo<{}>(() => {
 
   const layout = React.useMemo(
     () => ({
-      title: path.split('/').reverse()[0],
+      title: getFileName(path),
       margin: {
         t: 30, // top
         l: 120, // left

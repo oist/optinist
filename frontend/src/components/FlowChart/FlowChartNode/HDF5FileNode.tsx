@@ -18,9 +18,9 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
 
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import {
+  selectHDF5InputNodeSelectedFilePath,
   selectInputNodeDefined,
   selectInputNodeHDF5Path,
-  selectInputNodeSelectedFilePath,
 } from 'store/slice/InputNode/InputNodeSelectors'
 import { setInputNodeHDF5Path } from 'store/slice/InputNode/InputNodeSlice'
 import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
@@ -55,7 +55,7 @@ export const HDF5FileNode = React.memo<NodeProps>((element) => {
 
 const HDF5FileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   const dispatch = useDispatch()
-  const filePath = useSelector(selectInputNodeSelectedFilePath(nodeId))
+  const filePath = useSelector(selectHDF5InputNodeSelectedFilePath(nodeId))
   const onChangeFilePath = (path: string) => {
     dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
   }
@@ -83,9 +83,13 @@ const HDF5FileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
         <CloseOutlinedIcon />
       </IconButton>
       <FileSelect
-        onChangeFilePath={onChangeFilePath}
+        onChangeFilePath={(path) => {
+          if (!Array.isArray(path)) {
+            onChangeFilePath(path)
+          }
+        }}
         fileType={FILE_TYPE_SET.HDF5}
-        filePath={filePath ? filePath.split('/').reverse()[0] : ''}
+        filePath={filePath ?? ''}
       />
       {filePath !== undefined && <ItemSelect nodeId={nodeId} />}
       <Handle
@@ -213,7 +217,7 @@ function useHDF5Tree(nodeId: string): [HDF5TreeDTO[] | undefined, boolean] {
   const dispatch = useDispatch()
   const tree = useSelector(selectHDF5Nodes())
   const isLoading = useSelector(selectHDF5IsLoading())
-  const filePath = useSelector(selectInputNodeSelectedFilePath(nodeId))
+  const filePath = useSelector(selectHDF5InputNodeSelectedFilePath(nodeId))
   React.useEffect(() => {
     if (!isLoading && filePath) {
       dispatch(getHDF5Tree({ path: filePath }))

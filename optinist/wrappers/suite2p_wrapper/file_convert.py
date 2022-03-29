@@ -15,16 +15,18 @@ def suite2p_file_convert(
     from suite2p import io, default_ops
     print('start suite2_file_convert')
 
-    file_path = image.path
-    data_path = '/'.join(file_path.split('/')[:-1])
-    data_name = file_path.split('/')[-1]
-    print(file_path)
-    print(data_path)
-    print(data_name)
+    data_path_list = []
+    data_name_list = []
+    for file_path in image.path:
+        data_path_list.append('/'.join(file_path.split('/')[:-1]))
+        data_name_list.append(file_path.split('/')[-1])
+
+    print(data_path_list)
+    print(data_name_list)
     ### data pathと保存pathを指定
     db = {
-        'data_path': [data_path],
-        'tiff_list': [data_name],
+        'data_path': data_path_list,
+        'tiff_list': data_name_list,
         'save_path0': BASE_DIR,
         'save_folder': 'suite2p'
     }

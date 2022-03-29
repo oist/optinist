@@ -19,7 +19,7 @@ def caiman_cnmf(
     from skimage.measure import find_contours
     from scipy.ndimage import binary_fill_holes
 
-    file_path = images.path
+    file_path_list = images.path
     images = images.data
 
     # np.arrayをmmapへ変換
@@ -28,8 +28,8 @@ def caiman_cnmf(
     T = images.shape[0]
     shape_mov = (np.prod(dims), T)
 
-    dir_path = os.path.dirname(file_path)
-    basename = os.path.splitext(os.path.basename(file_path))[0]
+    dir_path = os.path.dirname(file_path_list[0])
+    basename = os.path.splitext(os.path.basename(file_path_list[0]))[0]
     fname_tot = memmap_frames_filename(basename, dims, T, order)
     mmap_images = np.memmap(
         join_file_path([dir_path, fname_tot]),

@@ -22,7 +22,7 @@ export type RunPostData = {
 export type NodePostDataType = AlgorithmNodePostData | InputNodePostData
 
 export interface InputNodePostData extends InputNodeData {
-  path: string
+  path: string | string[]
   fileType: FILE_TYPE
   param?: {
     [key: string]: unknown

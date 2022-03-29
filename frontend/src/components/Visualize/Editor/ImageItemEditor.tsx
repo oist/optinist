@@ -56,7 +56,6 @@ export const ImageItemEditor: React.FC = () => {
   const dispatch = useDispatch()
   const onSelectImageFile = (path: string) => {
     dispatch(setDisplayDataPath({ nodeId: null, filePath: path, itemId }))
-    dispatch(resetImageActiveIndex({ itemId }))
   }
   const filePath = useSelector(selectImageItemFilePath(itemId))
 
@@ -79,7 +78,7 @@ export const ImageItemEditor: React.FC = () => {
     <div style={{ margin: '10px', padding: 10 }}>
       <FileSelectImple
         filePath={filePath ?? ''}
-        onSelectFile={onSelectImageFile}
+        onSelectFile={(path) => !Array.isArray(path) && onSelectImageFile(path)}
         onUploadFile={onUploadFileHandle}
         fileTreeType={FILE_TREE_TYPE_SET.IMAGE}
         selectButtonLabel="Select Image"

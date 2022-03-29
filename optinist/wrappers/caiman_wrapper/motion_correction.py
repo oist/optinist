@@ -7,7 +7,6 @@ from wrappers.nwb_wrapper.const import NWBDATASET
 def caiman_mc(
         image: ImageData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'mc_images': ImageData, 'iscell': IscellData}:
-    file_path = image.path
     import numpy as np
     from caiman import load, save_memmap, load_memmap, stop_server
     from caiman.source_extraction.cnmf.params import CNMFParams
@@ -26,7 +25,7 @@ def caiman_mc(
         backend='local', n_processes=None, single_thread=False)
 
     mc = MotionCorrect(
-        file_path, dview=dview, **opts.get_group('motion'))
+        image.path, dview=dview, **opts.get_group('motion'))
 
     mc.motion_correct(save_movie=True)
     border_to_0 = 0 if mc.border_nan == 'copy' else mc.border_to_0
@@ -66,14 +65,3 @@ def caiman_mc(
     info['nwbfile'] = nwbfile
 
     return info
-
-
-if __name__ == '__main__':
-    import os
-    from cui_api.utils import join_file_path
-    info = {}
-    file_path = join_file_path([
-        '/Users', 'shogoakiyama', 'caiman_data', 
-        'example_movies', 'Sue_2x_3000_40_-46.tif'])
-    info['caiman_mc'] = caiman_mc(file_path)
-    print(info)
