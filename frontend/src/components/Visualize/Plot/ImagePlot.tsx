@@ -192,9 +192,6 @@ const ImagePlotChart = React.memo<{
   const layout = React.useMemo(
     () => ({
       title: getFileName(path),
-      // modebar: {
-      //   add: "select",
-      // },
       // width: 600,
       // height: 600,
       margin: {
@@ -280,22 +277,6 @@ const ImagePlotChart = React.memo<{
     }
   }
 
-  const onSelecting = (event: any) => {
-    // if (event.range) {
-    //   const x1 = event.range.x[0]
-    //   const x2 = event.range.x[1]
-    //   const y1 = event.range.y[0]
-    //   const y2 = event.range.y[1]
-    //   const newArray = roiData
-    //     .slice(y1, y2)
-    //     .map((arr) => arr.slice(x1, x2).filter((v) => v))
-    //     .flat()
-    //     .filter((v, idx, self) => {
-    //       return self.indexOf(v) === idx
-    //     })
-    // }
-  }
-
   const onSliderChange = (
     event: Event,
     value: number | number[],
@@ -356,7 +337,6 @@ const ImagePlotChart = React.memo<{
         layout={layout}
         config={config}
         onClick={onClick}
-        onSelecting={onSelecting}
       />
       <Box sx={{ width: '50%' }}>
         <Button variant="outlined" onClick={onPlayClick}>
