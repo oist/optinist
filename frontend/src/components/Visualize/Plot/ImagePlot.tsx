@@ -1,15 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { useSelector, useDispatch } from 'react-redux'
-import {
-  Button,
-  LinearProgress,
-  MobileStepper,
-  Typography,
-  useTheme,
-} from '@mui/material'
-import KeyboardArrowLeft from '@mui/icons-material/KeyboardArrowLeft'
-import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight'
+import { Button, LinearProgress, TextField, Typography } from '@mui/material'
 
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 import { DisplayDataContext } from '../DataContext'
@@ -43,16 +35,20 @@ import {
   selectMultiPlotTimeSeriesItemDisplayNumbers,
   selectRoiItemIndex,
   selectImageItemRoiAlpha,
+  selectImageItemDuration,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
-  decrementImageActiveIndex,
   incrementImageActiveIndex,
+  setImageActiveIndex,
+  setImageItemDuration,
   setTimeSeriesItemDisplayNumbers,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { RootState } from 'store/store'
 import { Datum, LayoutAxis, PlotData } from 'plotly.js'
 import createColormap from 'colormap'
 import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
+import Slider from '@mui/material/Slider'
+import Box from '@mui/material/Box'
 
 export const ImagePlot = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
@@ -93,55 +89,11 @@ export const ImagePlot = React.memo(() => {
 })
 
 const ImagePlotImple = React.memo(() => {
-  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
-  const itemStartIndex = useSelector(selectImageItemStartIndex(itemId))
-  const itemEndIndex = useSelector(selectImageItemEndIndex(itemId))
-  const itemSize = itemEndIndex - itemStartIndex
-  const maxSize = useSelector(selectImageDataEndIndex(path))
+  const { itemId } = React.useContext(DisplayDataContext)
   const activeIndex = useSelector(selectImageItemActiveIndex(itemId))
-  const dispatch = useDispatch()
-  const handleNext = () => dispatch(incrementImageActiveIndex({ itemId }))
-  const handleBack = () => dispatch(decrementImageActiveIndex({ itemId }))
-  const theme = useTheme()
   return (
     <>
-      <MobileStepper
-        steps={itemSize - maxSize ? maxSize + 1 : itemEndIndex}
-        position="static"
-        variant="text"
-        activeStep={activeIndex + itemStartIndex - 1}
-        nextButton={
-          <Button
-            size="small"
-            onClick={handleNext}
-            disabled={activeIndex === (maxSize ?? 0)}
-          >
-            <Typography>Next</Typography>
-            {theme.direction === 'rtl' ? (
-              <KeyboardArrowLeft />
-            ) : (
-              <KeyboardArrowRight />
-            )}
-          </Button>
-        }
-        backButton={
-          <Button
-            size="small"
-            onClick={handleBack}
-            disabled={activeIndex === 0}
-          >
-            {theme.direction === 'rtl' ? (
-              <KeyboardArrowRight />
-            ) : (
-              <KeyboardArrowLeft />
-            )}
-            <Typography>Back</Typography>
-          </Button>
-        }
-      />
-      {/* <div style={{ display: "flex", justifyContent: "center" }}> */}
       <ImagePlotChart activeIndex={activeIndex} />
-      {/* </div> */}
     </>
   )
 })
@@ -161,12 +113,14 @@ const ImagePlotChart = React.memo<{
     imageDataEqualtyFn,
   )
 
+  const maxSize = useSelector(selectImageDataEndIndex(path))
   const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
   const showline = useSelector(selectImageItemShowLine(itemId))
   const zsmooth = useSelector(selectImageItemZsmooth(itemId))
   const showgrid = useSelector(selectImageItemShowGrid(itemId))
   const showscale = useSelector(selectImageItemShowScale(itemId))
   const colorscale = useSelector(selectImageItemColors(itemId))
+  const duration = useSelector(selectImageItemDuration(itemId))
 
   const timeDataMaxIndex = useSelector(selectRoiItemIndex(itemId, roiFilePath))
 
@@ -238,9 +192,6 @@ const ImagePlotChart = React.memo<{
   const layout = React.useMemo(
     () => ({
       title: getFileName(path),
-      // modebar: {
-      //   add: "select",
-      // },
       // width: 600,
       // height: 600,
       margin: {
@@ -326,22 +277,58 @@ const ImagePlotChart = React.memo<{
     }
   }
 
-  const onSelecting = (event: any) => {
-    if (event.range) {
-      const x1 = event.range.x[0]
-      const x2 = event.range.x[1]
-      const y1 = event.range.y[0]
-      const y2 = event.range.y[1]
-
-      const newArray = roiData
-        .slice(y1, y2)
-        .map((arr) => arr.slice(x1, x2).filter((v) => v))
-        .flat()
-        .filter((v, idx, self) => {
-          return self.indexOf(v) === idx
-        })
+  const onSliderChange = (
+    event: Event,
+    value: number | number[],
+    activeThumb: number,
+  ) => {
+    if (typeof value === 'number') {
+      const newIndex = value - 1
+      if (newIndex !== activeIndex) {
+        dispatch(setImageActiveIndex({ itemId, activeIndex: newIndex }))
+      }
     }
   }
+
+  const intervalRef = React.useRef<null | NodeJS.Timeout>(null)
+
+  useEffect(() => {
+    if (intervalRef.current !== null) {
+      if (activeIndex >= maxSize) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+    }
+  }, [activeIndex, maxSize])
+
+  const onPlayClick = useCallback(() => {
+    if (activeIndex >= maxSize) {
+      dispatch(setImageActiveIndex({ itemId, activeIndex: 0 }))
+    }
+    if (intervalRef.current === null) {
+      intervalRef.current = setInterval(() => {
+        dispatch(incrementImageActiveIndex({ itemId }))
+      }, duration)
+    }
+  }, [activeIndex, maxSize, dispatch, duration, itemId])
+
+  const onPauseClick = () => {
+    if (intervalRef.current !== null) {
+      clearInterval(intervalRef.current)
+      intervalRef.current = null
+    }
+  }
+
+  const onDurationChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue =
+        event.target.value === '' ? '' : Number(event.target.value)
+      if (typeof newValue === 'number') {
+        dispatch(setImageItemDuration({ itemId, duration: newValue }))
+      }
+    },
+    [dispatch, itemId],
+  )
 
   return (
     <div ref={ref}>
@@ -350,8 +337,44 @@ const ImagePlotChart = React.memo<{
         layout={layout}
         config={config}
         onClick={onClick}
-        onSelecting={onSelecting}
       />
+      <Box sx={{ width: '50%' }}>
+        <Button variant="outlined" onClick={onPlayClick}>
+          Play
+        </Button>
+        <Button variant="outlined" onClick={onPauseClick}>
+          Pause
+        </Button>
+        duration:
+        <TextField
+          // error={inputError}
+          type="number"
+          inputProps={{
+            step: 100,
+            min: 0,
+            max: 1000,
+          }}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          onChange={onDurationChange}
+          value={duration}
+          // helperText={inputError ? 'index > 0' : undefined}
+        />
+        msec
+        <Typography>Index: {activeIndex + 1}</Typography>
+        <Slider
+          aria-label="Index"
+          defaultValue={1}
+          value={activeIndex + 1}
+          valueLabelDisplay="auto"
+          step={1}
+          marks
+          min={1}
+          max={maxSize + 1}
+          onChange={onSliderChange}
+        />
+      </Box>
     </div>
   )
 })

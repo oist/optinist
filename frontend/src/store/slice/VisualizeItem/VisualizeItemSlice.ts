@@ -51,6 +51,7 @@ const imageItemInitialValue: ImageItem = {
   activeIndex: 0,
   roiItem: null,
   roiAlpha: 1.0,
+  duration: 500,
 }
 const timeSeriesItemInitialValue: TimeSeriesItem = {
   ...displayDataCommonInitialValue,
@@ -370,6 +371,21 @@ export const visualaizeItemSlice = createSlice({
         targetItem.imageItem.activeIndex--
       }
     },
+    setImageActiveIndex: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        activeIndex: number
+      }>,
+    ) => {
+      const { itemId, activeIndex } = action.payload
+      const targetItem = state.items[itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.activeIndex = activeIndex
+      } else if (isMultiPlotItem(targetItem)) {
+        targetItem.imageItem.activeIndex = activeIndex
+      }
+    },
     setImageItemShowticklabels: (
       state,
       action: PayloadAction<{
@@ -497,6 +513,20 @@ export const visualaizeItemSlice = createSlice({
         targetItem.roiAlpha = action.payload.roiAlpha
       } else if (isMultiPlotItem(targetItem)) {
         targetItem.imageItem.roiAlpha = action.payload.roiAlpha
+      }
+    },
+    setImageItemDuration: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        duration: number
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.duration = action.payload.duration
+      } else if (isMultiPlotItem(targetItem)) {
+        targetItem.imageItem.duration = action.payload.duration
       }
     },
     setTimeSeriesItemOffset: (
@@ -794,6 +824,7 @@ export const {
   resetImageActiveIndex,
   incrementImageActiveIndex,
   decrementImageActiveIndex,
+  setImageActiveIndex,
   setImageItemShowticklabels,
   setImageItemZsmooth,
   setImageItemShowLine,
@@ -803,6 +834,7 @@ export const {
   setImageItemStartIndex,
   setImageItemEndIndex,
   setImageItemRoiAlpha,
+  setImageItemDuration,
   setTimeSeriesItemOffset,
   setTimeSeriesItemSpan,
   setTimeSeriesItemShowGrid,
