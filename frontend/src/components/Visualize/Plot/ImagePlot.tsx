@@ -210,7 +210,7 @@ const ImagePlotChart = React.memo<{
         name: 'roi',
         hovertemplate: 'cell id: %{z}',
         colorscale: [...Array(timeDataMaxIndex)].map((_, i) => {
-          const new_i = Math.floor((i % 10) * 10 + i / 10)
+          const new_i = Math.floor(((i % 10) * 10 + i / 10) % 100)
           const offset = i / (timeDataMaxIndex - 1)
           const rgba = colorscaleRoi[new_i]
           const hex = rgba2hex(rgba, roiAlpha)
