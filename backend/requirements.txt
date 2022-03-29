@@ -12,3 +12,4 @@ pynwb
 psutil
 nbstripout
 snakemake
+jinja2==3.0.3
