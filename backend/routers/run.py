@@ -52,6 +52,7 @@ async def params(runItem: RunItem, background_tasks: BackgroundTasks):
 async def params(uid: str, runItem: RunItem, background_tasks: BackgroundTasks):
     run_workflow(uid, background_tasks, runItem)
     print("run snakemake")
+    print("forcerun list: ", runItem.forceRunList)
 
     return uid
 

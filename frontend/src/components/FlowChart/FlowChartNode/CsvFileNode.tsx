@@ -166,7 +166,7 @@ const ParamSettingDialog = React.memo<{ nodeId: string; filePath: string }>(
                 onChange={(event) => {
                   const value = Number(event.target.value)
                   if (value >= 0) {
-                    setSetHeader(Number(event.target.value))
+                    setSetHeader(value)
                   }
                 }}
                 value={setHeader}

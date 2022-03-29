@@ -76,10 +76,13 @@ const SetHeader: React.FC = () => {
   }
 
   return (
-    <div>
+    <>
       <TextField
         label="header"
-        style={{ width: 50 }}
+        sx={{
+          width: 100,
+          margin: (theme) => theme.spacing(0, 1, 0, 1),
+        }}
         type="number"
         InputLabelProps={{
           shrink: true,
@@ -87,7 +90,7 @@ const SetHeader: React.FC = () => {
         onChange={onChangeSetHeader}
         value={setHeader}
       />
-    </div>
+    </>
   )
 }
 
