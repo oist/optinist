@@ -23,7 +23,9 @@ class ImageData(BaseData):
 
         if data is None:
             self.path = None
-        elif type(data) == str:
+        elif isinstance(data, str):
+            self.path = data
+        elif isinstance(data, list) and isinstance(data[0], str):
             self.path = data
         else:
             _dir = join_file_path([BASE_DIR, "tiff", func_name])
@@ -39,7 +41,10 @@ class ImageData(BaseData):
 
     @property
     def data(self):
-        return np.array(imageio.volread(self.path))
+        if isinstance(self.path, list):
+            return np.concatenate([imageio.volread(p) for p in self.path])
+        else:
+            return np.array(imageio.volread(self.path))
 
     def save_json(self, json_dir):
         self.json_path = get_json_file_path(json_dir, self.file_name)
