@@ -5,6 +5,8 @@ import {
   Button,
   LinearProgress,
   MobileStepper,
+  SelectChangeEvent,
+  TextField,
   Typography,
   useTheme,
 } from '@mui/material'
@@ -356,33 +358,32 @@ const ImagePlotChart = React.memo<{
       const newIndex = value - 1
       if (newIndex !== activeIndex) {
         dispatch(setImageActiveIndex({ itemId, activeIndex: newIndex }))
-        setPlayActiveIndex(activeIndex)
       }
     }
   }
 
-  const [playActiveIndex, setPlayActiveIndex] = React.useState<number>(0)
   const intervalRef = React.useRef<null | NodeJS.Timeout>(null)
+  const [duration, setDuration] = React.useState<number>(500)
 
   useEffect(() => {
     if (intervalRef.current !== null) {
-      dispatch(setImageActiveIndex({ itemId, activeIndex: playActiveIndex }))
-      if (playActiveIndex >= maxSize) {
+      if (activeIndex >= maxSize) {
         clearInterval(intervalRef.current)
         intervalRef.current = null
-        setPlayActiveIndex(0)
       }
     }
-  }, [playActiveIndex])
+  }, [activeIndex])
 
   const onPlayClick = useCallback(() => {
-    if (intervalRef.current === null) {
-      setPlayActiveIndex(activeIndex)
-      intervalRef.current = setInterval(() => {
-        setPlayActiveIndex((v) => v + 1)
-      }, 500)
+    if (activeIndex >= maxSize) {
+      dispatch(setImageActiveIndex({ itemId, activeIndex: 0 }))
     }
-  }, [])
+    if (intervalRef.current === null) {
+      intervalRef.current = setInterval(() => {
+        dispatch(incrementImageActiveIndex({ itemId }))
+      }, duration)
+    }
+  }, [activeIndex])
 
   const onPauseClick = () => {
     if (intervalRef.current !== null) {
@@ -390,6 +391,17 @@ const ImagePlotChart = React.memo<{
       intervalRef.current = null
     }
   }
+
+  const onDurationChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const newValue =
+        event.target.value === '' ? '' : Number(event.target.value)
+      if (typeof newValue === 'number') {
+        setDuration(newValue)
+      }
+    },
+    [duration, setDuration],
+  )
 
   return (
     <div ref={ref}>
@@ -407,6 +419,23 @@ const ImagePlotChart = React.memo<{
         <Button variant="outlined" onClick={onPauseClick}>
           Pause
         </Button>
+        duration:
+        <TextField
+          // error={inputError}
+          type="number"
+          inputProps={{
+            step: 100,
+            min: 0,
+            max: 1000,
+          }}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          onChange={onDurationChange}
+          value={duration}
+          // helperText={inputError ? 'index > 0' : undefined}
+        />
+        msec
         <Typography>Index: {activeIndex + 1}</Typography>
         <Slider
           aria-label="Index"
