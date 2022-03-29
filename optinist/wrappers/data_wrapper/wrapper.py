@@ -61,7 +61,7 @@ class TimeSeriesData(BaseData):
     def __init__(self, data, std=None, index=None, func_name='timeseries', file_name='timeseries'):
         super().__init__(file_name)
 
-        if type(data) == str:
+        if isinstance(data, str):
             self.data = pd.read_csv(data, header=None).values
         else:
             self.data = data
@@ -107,14 +107,14 @@ class CsvData(BaseData):
     def __init__(self, data, params, func_name='csv', file_name='csv'):
         super().__init__(file_name)
 
-        if type(data) == str:
+        if isinstance(data, str):
             self.data = pd.read_csv(data, header=None).values
 
             if params["transpose"]:
                 self.data = self.data.T
 
-            if params["setColumn"] is not None:
-                header = params["setColumn"]
+            if params["setHeader"] is not None:
+                header = params["setHeader"]
                 self.data = self.data[header:]
         else:
             self.data = data

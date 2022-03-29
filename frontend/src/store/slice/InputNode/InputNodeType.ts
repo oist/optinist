@@ -27,7 +27,7 @@ interface InputNodeBaseType<
 }
 
 export type CsvInputParamType = {
-  setColumn: number | null
+  setHeader: number | null
   setIndex: boolean
   transpose: boolean
 }

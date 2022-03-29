@@ -66,9 +66,9 @@ const selectCsvInputNodeParam = (nodeId: string) => (state: RootState) => {
   }
 }
 
-export const selectCsvInputNodeParamSetColumn =
+export const selectCsvInputNodeParamSetHeader =
   (nodeId: string) => (state: RootState) =>
-    selectCsvInputNodeParam(nodeId)(state).setColumn
+    selectCsvInputNodeParam(nodeId)(state).setHeader
 
 export const selectCsvInputNodeParamSetIndex =
   (nodeId: string) => (state: RootState) =>

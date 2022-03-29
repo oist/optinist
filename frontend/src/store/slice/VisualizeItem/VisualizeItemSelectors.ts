@@ -473,11 +473,11 @@ export const selectCsvItemTranspose =
     }
   }
 
-export const selectCsvItemSetColumn =
+export const selectCsvItemSetHeader =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
     if (isCsvItem(item)) {
-      return item.setColumn
+      return item.setHeader
     } else {
       throw new Error('invalid VisualaizeItemType')
     }
