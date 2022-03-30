@@ -6,7 +6,7 @@ from wrappers.nwb_wrapper.const import NWBDATASET
 
 def caiman_mc(
         image: ImageData, nwbfile: NWBFile=None, params: dict=None
-    ) -> {'mc_images': ImageData, 'iscell': IscellData}:
+    ) -> {'mc_images': ImageData}:
     import numpy as np
     from caiman import load, save_memmap, load_memmap, stop_server
     from caiman.source_extraction.cnmf.params import CNMFParams
@@ -15,10 +15,9 @@ def caiman_mc(
     from caiman.base.rois import extract_binary_masks_from_structural_channel
     info = {}
 
-    if params is None:
-        opts = CNMFParams()
-    else:
-        opts = CNMFParams()
+    opts = CNMFParams()
+
+    if params is not None:
         opts.change_params(params_dict=params)
 
     c, dview, n_processes = setup_cluster(
@@ -43,13 +42,21 @@ def caiman_mc(
         Yr.T.reshape((T,) + dims, order='F'))
 
     meanImg = images.mean(axis=0)
-    iscell = extract_binary_masks_from_structural_channel(
+    rois = extract_binary_masks_from_structural_channel(
         meanImg, gSig=7, expand_method='dilation')[0].reshape(
             meanImg.shape[0], meanImg.shape[1], -1).transpose(2, 0, 1)
 
-    info['images'] = ImageData(images, func_name='caiman_mc', file_name='mc_images')
+    rois = rois.astype(np.float)
+
+    for i, _ in enumerate(rois):
+        rois[i] *= i+1
+
+    rois = np.nanmax(rois, axis=0)
+    rois[rois == 0] = np.nan
+
+    info['mc_images'] = ImageData(images, func_name='caiman_mc', file_name='mc_images')
     info['meanImg'] = ImageData(meanImg, func_name='caiman_mc', file_name='meanImg')
-    info['iscell'] = IscellData(meanImg, func_name='caiman_mc', file_name='iscell')
+    info['rois'] = RoiData(rois, func_name='caiman_mc', file_name='rois')
 
     xy_trans_data = (np.array(mc.x_shifts_els), np.array(mc.y_shifts_els)) \
                     if params['pw_rigid'] else np.array(mc.shifts_rig)
@@ -57,7 +64,7 @@ def caiman_mc(
     if nwbfile is not None:
         nwbfile[NWBDATASET.MOTION_CORRECTION] = {
             'caiman_mc': {
-                'mc_data': info['images'],
+                'mc_data': info['mc_images'],
                 'xy_trans_data': xy_trans_data,
             }
         }
