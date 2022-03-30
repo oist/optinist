@@ -126,7 +126,7 @@ const TimeSeriesPlotImple = React.memo(() => {
           return {
             name: `(${String(parseInt(key) + 1)})`,
             x: dataXrange,
-            y: y.map((value) => (value - mean) / std + activeIdx),
+            y: y.map((value) => (value - mean) / (std + 1e-10) + activeIdx),
             visible: true,
             line: { color: colorScale[new_i] },
             error_y: {
