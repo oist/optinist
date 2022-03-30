@@ -1,13 +1,14 @@
 Table of Contents
 =================
 
+* [Table of Contents](#table-of-contents)
 * [Installation](#installation)
-* [0. GitHub SSH access settings](#0-github-ssh-access-settings)
-* [1. Clone optinist repository](#1-clone-optinist-repository)
-* [2. Make docker image container](#2-Make-docker-image-container)
+* [1. Make docker image container](#1-make-docker-image-container)
    * [Make docker image](#make-docker-image)
-   * [run backend](#run-backend)
+   * [Set saving directory](#set-saving-directory)
+   * [Run backend](#run-backend)
    * [Launch browser.  <a href="http://localhost:8000" rel="nofollow">http://localhost:8000</a>](#launch-browser--httplocalhost8000)
+
 # Installation
 We introduce how to install optinist.
 We have developed optinist python(backend) and typescript(frontend), so you need to make both environment.
@@ -15,40 +16,16 @@ Please follow instructions below.
 
 <br />
 
-# 0. GitHub SSH access settings
-**You only need to do the following once.**
-
-Follow this [link](installation_github_settings.md).
-
-<br />
-
-# 1. Clone optinist repository
-
-First, you get optinist code from github repository.
-```
-cd "your working repository"
-git clone git@github.com:oist/optinist.git
-```
-<br />
-
-# 2. Make docker image container
+# 1. Make docker image container
 
 ## Make docker image
-Buid docker
+Pull the latest docker image from docker hub.
 ```
-docker build --rm -t optinist:latest .
+docker pull oistncu/optinist
 ```
-
-**CAUTION for M1 Mac User**
-
-For M1 mac user, please add option `--platform=linux/amd64`
+Start docker container.
 ```
-docker build --rm -t optinist:latest . --platform=linux/amd64
-```
-
-Start docker container
-```
-docker run -it --shm-size=2G --name optinist_container -d -p 8000:8000 --restart=unless-stopped optinist:latest
+docker run -it --shm-size=2G --name optinist_container -d -p 8000:8000 --restart=unless-stopped oistncu/optinist:latest
 ```
 
 Execute in terminal
