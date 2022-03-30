@@ -9,8 +9,6 @@ transpose_y: False
 
 target_index: 1
 
-behavior: 'b'
-
 ##############################
 #  grid search  parameters
 ##############################
@@ -32,7 +30,7 @@ grid_search:
 
   CV:
     scoring: 'accuracy'
-    n_jobs:
+    n_jobs: 1
     refit: True
     cv:
     verbose: 3
@@ -46,8 +44,8 @@ grid_search:
 ##############################
 CV: 
   n_splits: 5
-  shuffle: False
-  random_state:
+  shuffle: True
+  random_state: 0
 
 ##############################
 #  SVC parameters
@@ -59,7 +57,7 @@ SVC:
   C: 1.0
   kernel: 'rbf'
   degree: 3
-  gamma:  'scale'
+  gamma: 'scale'
   coef0: 0.0
   shrinking: True
   probability: False
@@ -69,4 +67,4 @@ SVC:
   max_iter: -1
   decision_function_shape: 'ovr'
   break_ties: False
-  random_state:
+  random_state: 0
