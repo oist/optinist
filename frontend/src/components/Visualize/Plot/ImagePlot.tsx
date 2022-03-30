@@ -13,7 +13,7 @@ import {
   selectImageDataIsFulfilled,
   selectActiveImageData,
   selectRoiData,
-  selectImageDataEndIndex,
+  selectImageDataMaxSize,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import {
   getImageData,
@@ -113,7 +113,9 @@ const ImagePlotChart = React.memo<{
     imageDataEqualtyFn,
   )
 
-  const maxSize = useSelector(selectImageDataEndIndex(path))
+  const maxSize = useSelector(selectImageDataMaxSize(path))
+  const startIndex = useSelector(selectImageItemStartIndex(itemId))
+  const endIndex = useSelector(selectImageItemEndIndex(itemId))
   const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
   const showline = useSelector(selectImageItemShowLine(itemId))
   const zsmooth = useSelector(selectImageItemZsmooth(itemId))
@@ -283,8 +285,8 @@ const ImagePlotChart = React.memo<{
     activeThumb: number,
   ) => {
     if (typeof value === 'number') {
-      const newIndex = value - 1
-      if (newIndex !== activeIndex) {
+      const newIndex = value - startIndex
+      if (newIndex >= 0 && newIndex !== activeIndex) {
         dispatch(setImageActiveIndex({ itemId, activeIndex: newIndex }))
       }
     }
@@ -362,16 +364,16 @@ const ImagePlotChart = React.memo<{
           // helperText={inputError ? 'index > 0' : undefined}
         />
         msec
-        <Typography>Index: {activeIndex + 1}</Typography>
+        <Typography>Index: {startIndex + activeIndex}</Typography>
         <Slider
           aria-label="Index"
           defaultValue={1}
-          value={activeIndex + 1}
+          value={startIndex + activeIndex}
           valueLabelDisplay="auto"
           step={1}
           marks
-          min={1}
-          max={maxSize === 1 ? 1 : maxSize + 1}
+          min={startIndex}
+          max={maxSize === 0 ? 0 : endIndex}
           onChange={onSliderChange}
         />
       </Box>
