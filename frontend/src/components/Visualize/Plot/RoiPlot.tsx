@@ -84,7 +84,6 @@ const RoiPlotImple = React.memo<{}>(() => {
 
   const layout = React.useMemo(
     () => ({
-      // title: getFileName(path),
       margin: {
         t: 30, // top
         l: 120, // left

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
@@ -19,9 +19,6 @@ import { CsvPlot } from './Plot/CsvPlot'
 import { TimeSeriesPlot } from './Plot/TimeSeriesPlot'
 import { BarPlot } from './Plot/BarPlot'
 import { HTMLPlot } from './Plot/HTMLPlot'
-import { FilePathSelect } from './FilePathSelect'
-import { setDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { deleteDisplayItem } from 'store/slice/DisplayData/DisplayDataSlice'
 
 export const DisplayDataItem = React.memo<{
   itemId: number
@@ -29,24 +26,6 @@ export const DisplayDataItem = React.memo<{
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
   const nodeId = useSelector(selectVisualizeDataNodeId(itemId))
   const dataType = useSelector(selectVisualizeDataType(itemId))
-
-  const [prevItem, setPrevItem] = useState<{
-    dataType: DATA_TYPE
-    filePath: string | null
-  }>({
-    dataType: 'image',
-    filePath: null,
-  })
-
-  useEffect(() => {
-    setPrevItem({ dataType, filePath })
-  }, [filePath, dataType])
-
-  const dispatch = useDispatch()
-  const onSelect = (nodeId: string, filePath: string, dataType: DATA_TYPE) => {
-    dispatch(setDisplayDataPath({ itemId, nodeId, filePath, dataType }))
-    dispatch(deleteDisplayItem(prevItem))
-  }
 
   if (filePath != null && dataType != null) {
     return (
