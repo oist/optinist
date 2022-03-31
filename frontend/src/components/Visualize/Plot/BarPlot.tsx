@@ -56,7 +56,7 @@ const BarPlotImple = React.memo(() => {
 
   const layout = React.useMemo(
     () => ({
-      title: getFileName(path),
+      // title: getFileName(path),
       margin: {
         t: 60, // top
         l: 50, // left

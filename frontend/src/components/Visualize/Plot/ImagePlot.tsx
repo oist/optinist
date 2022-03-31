@@ -191,7 +191,7 @@ const ImagePlotChart = React.memo<{
 
   const layout = React.useMemo(
     () => ({
-      title: getFileName(path),
+      // title: getFileName(path),
       // width: 600,
       // height: 600,
       margin: {
