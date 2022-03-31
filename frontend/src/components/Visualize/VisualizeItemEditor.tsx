@@ -137,38 +137,10 @@ const MultiPlotItemEditor: React.FC = () => {
 const DisplayDataItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const dataType = useSelector(selectVisualizeDataType(itemId))
-  const selectedNodeId = useSelector(selectVisualizeDataNodeId(itemId))
-  const selectedFilePath = useSelector(selectImageItemFilePath(itemId))
-
-  const [prevItem, setPrevItem] = useState<{
-    dataType: DATA_TYPE
-    filePath: string | null
-  }>({
-    dataType: 'image',
-    filePath: null,
-  })
-
-  useEffect(() => {
-    setPrevItem({ dataType, filePath: selectedFilePath })
-  }, [selectedFilePath, dataType])
-
-  const dispatch = useDispatch()
-  const onSelect = (nodeId: string, filePath: string, dataType: DATA_TYPE) => {
-    dispatch(setDisplayDataPath({ itemId, nodeId, filePath, dataType }))
-    dispatch(deleteDisplayItem(prevItem))
-  }
-
   return (
-    <>
-      <FilePathSelect
-        selectedNodeId={selectedNodeId}
-        selectedFilePath={selectedFilePath}
-        onSelect={onSelect}
-      />
-      <div style={{ marginTop: 8 }}>
-        <DisplayEditor dataType={dataType} />
-      </div>
-    </>
+    <div style={{ marginTop: 8 }}>
+      <DisplayEditor dataType={dataType} />
+    </div>
   )
 }
 
