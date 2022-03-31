@@ -27,9 +27,13 @@ import {
 import { RootState } from 'store/store'
 import { MultiPlotDeleteButton } from './MultiPlotDeleteButton'
 import { deleteDisplayItem } from 'store/slice/DisplayData/DisplayDataSlice'
-import { DATA_TYPE } from 'store/slice/DisplayData/DisplayDataType'
+import {
+  DATA_TYPE,
+  DATA_TYPE_SET,
+} from 'store/slice/DisplayData/DisplayDataType'
 import { FilePathSelect } from './FilePathSelect'
 import { Grid } from '@mui/material'
+import { VISUALIZE_ITEM_TYPE_SET } from 'store/slice/VisualizeItem/VisualizeItemType'
 
 export const VisualizeItems: React.FC = () => {
   return <FlexItemList />
@@ -47,11 +51,15 @@ const FlexItemList: React.FC = () => {
   )
 }
 
-const RowItem = React.memo<{ itemId: number }>(({ itemId }) => {
+const RowItem = React.memo<{
+  itemId: number
+}>(({ itemId }) => {
   const dispatch = useDispatch()
   const onClick = () => {
     dispatch(selectItem(itemId))
   }
+  const itemType = useSelector(selectVisualizeItemType(itemId))
+
   const isSelected = useSelector(
     (state: RootState) => selectSelectedVisualizeItemId(state) === itemId,
   )
@@ -70,12 +78,42 @@ const RowItem = React.memo<{ itemId: number }>(({ itemId }) => {
       }}
       onClick={onClick}
     >
-      <Item itemId={itemId} />
+      <ItemByType itemType={itemType} itemId={itemId} />
     </Paper>
   )
 })
 
-const Item = React.memo<{ itemId: number }>(({ itemId }) => {
+const DeleteButton: React.FC<{
+  itemType: string
+  itemId: number
+}> = ({ itemType, itemId }) => {
+  switch (itemType) {
+    case VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT:
+      return <MultiPlotDeleteButton itemId={itemId} />
+    case VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA:
+      return <DisplayItemDeleteButton itemId={itemId} />
+    default:
+      throw new Error('itemType Error')
+  }
+}
+
+const ItemByType = React.memo<{
+  itemType: string
+  itemId: number
+}>(({ itemType, itemId }) => {
+  switch (itemType) {
+    case VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT:
+      return <MultiPlotItem itemId={itemId} />
+    case VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA:
+      return <DisplayPlot itemId={itemId} />
+    default:
+      throw new Error('itemType Error')
+  }
+})
+
+const DisplayPlot = React.memo<{
+  itemId: number
+}>(({ itemId }) => {
   const dispatch = useDispatch()
   const itemType = useSelector(selectVisualizeItemType(itemId))
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
@@ -86,7 +124,7 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
     dataType: DATA_TYPE
     filePath: string | null
   }>({
-    dataType: 'image',
+    dataType: DATA_TYPE_SET.IMAGE,
     filePath: null,
   })
 
@@ -113,35 +151,7 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
           <DeleteButton itemType={itemType} itemId={itemId} />
         </Grid>
       </Grid>
-      <ItemByType itemType={itemType} itemId={itemId} />
+      <DisplayDataItem itemId={itemId} />
     </Box>
   )
-})
-
-const DeleteButton: React.FC<{
-  itemType: string
-  itemId: number
-}> = ({ itemType, itemId }) => {
-  switch (itemType) {
-    case 'displayData':
-      return <DisplayItemDeleteButton itemId={itemId} />
-    case 'MultiPlot':
-      return <MultiPlotDeleteButton itemId={itemId} />
-    default:
-      throw new Error('itemType Error')
-  }
-}
-
-const ItemByType = React.memo<{
-  itemType: string
-  itemId: number
-}>(({ itemType, itemId }) => {
-  switch (itemType) {
-    case 'MultiPlot':
-      return <MultiPlotItem itemId={itemId} />
-    case 'displayData':
-      return <DisplayDataItem itemId={itemId} />
-    default:
-      throw new Error('itemType Error')
-  }
 })
