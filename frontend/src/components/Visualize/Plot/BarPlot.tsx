@@ -13,7 +13,6 @@ import {
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getBarData } from 'store/slice/DisplayData/DisplayDataActions'
 import { BarData } from 'store/slice/DisplayData/DisplayDataType'
-import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
 
 export const BarPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -64,7 +63,7 @@ const BarPlotImple = React.memo(() => {
       dragmode: 'pan',
       autosize: true,
     }),
-    [path],
+    [],
   )
 
   const config = {

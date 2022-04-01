@@ -17,7 +17,6 @@ import {
   selectHeatMapItemColors,
   selectHeatMapItemShowScale,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
 
 export const HeatMapPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)

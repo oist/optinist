@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import FormControl from '@mui/material/FormControl'
@@ -15,8 +15,6 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 import {
   selectSelectedVisualizeItemId,
-  selectImageItemFilePath,
-  selectVisualizeDataNodeId,
   selectVisualizeDataType,
   selectVisualizeItemType,
   selectVisualizeItemTypeIsMultiPlot,
@@ -26,19 +24,14 @@ import {
   DATA_TYPE,
   DATA_TYPE_SET,
 } from 'store/slice/DisplayData/DisplayDataType'
-import {
-  setDisplayDataPath,
-  toggleItemTypeMultiPlot,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { toggleItemTypeMultiPlot } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { ImageItemEditor } from './Editor/ImageItemEditor'
 import { CsvItemEditor } from './Editor/CsvItemEditor'
 import { HeatmapItemEditor } from './Editor/HeatmapItemEditor'
 import { TimeSeriesItemEditor } from './Editor/TimeSeriesItemEditor'
 import { RoiItemEditor } from './Editor/RoiItemEditor'
-import { FilePathSelect } from './FilePathSelect'
 import { ScatterItemEditor } from './Editor/ScatterItemEditor'
 import { BarItemEditor } from './Editor/BarItemEditor'
-import { deleteDisplayItem } from 'store/slice/DisplayData/DisplayDataSlice'
 
 export const VisualizeItemEditor = () => {
   const selectedItemId = useSelector(selectSelectedVisualizeItemId)

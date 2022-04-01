@@ -17,7 +17,6 @@ import {
   selectScatterItemXIndex,
   selectScatterItemYIndex,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
 
 export const ScatterPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -115,7 +114,7 @@ const ScatterPlotImple = React.memo(() => {
         },
       },
     }),
-    [xIndex, yIndex, maxIndex, path, scatterData],
+    [xIndex, yIndex, maxIndex, scatterData],
   )
 
   const config = {
