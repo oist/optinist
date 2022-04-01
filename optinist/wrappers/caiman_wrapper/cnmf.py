@@ -49,9 +49,9 @@ def caiman_cnmf(
     gc.collect()
 
     if params is None:
-        params = CNMFParams()
+        ops = CNMFParams()
     else:
-        params = CNMFParams(params_dict=params)
+        ops = CNMFParams(params_dict=params)
 
     if 'dview' in locals():
         cm.stop_server(dview=dview)
@@ -59,7 +59,7 @@ def caiman_cnmf(
     c, dview, n_processes = setup_cluster(
         backend='local', n_processes=None, single_thread=False)
 
-    cnm = cnmf.CNMF(n_processes=n_processes, dview=dview, Ain=None, params=params)
+    cnm = cnmf.CNMF(n_processes=n_processes, dview=dview, Ain=None, params=ops)
     cnm = cnm.fit(mmap_images)
 
     stop_server(dview=dview)
@@ -72,7 +72,7 @@ def caiman_cnmf(
     del mmap_images
     gc.collect()
 
-    thr = 0.9
+    thr = params['thr']
     thr_method = 'nrg'
     swap_dim = False
     cont = visualization.get_contours(
@@ -83,8 +83,10 @@ def caiman_cnmf(
         cont_cent[i, :] = np.nanmean(cont[i]['coordinates'], axis=0)
         sparse_rois.append(cont[i]['coordinates'].T)
 
-    iscell = np.zeros(cont_cent.shape[0])
-    iscell[cnm.estimates.idx_components] = 1
+    iscell = np.concatenate([
+        np.ones(cnm.estimates.A.shape[-1]),
+        np.zeros(len(cnm.estimates.b.T))
+    ])
 
     A = cnm.estimates.A
     d, nr = np.shape(A)
@@ -169,6 +171,16 @@ def caiman_cnmf(
         # ### iscellを追加
         # nwbfile = nwb_add_column(
         #     nwbfile, 'iscell', 'two columns - iscell & probcell', iscell)
+        ### iscellを追加
+        # import pdb; pdb.set_trace()
+        nwbfile[NWBDATASET.COLUMN] = {
+            'roi_column': {
+                'name': 'iscell',
+                'discription': 'two columns - iscell & probcell',
+                'data': iscell,
+            }
+        }
+
 
         ### Fluorescence
         n_rois = cnm.estimates.A.shape[-1]
