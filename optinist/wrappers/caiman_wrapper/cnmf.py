@@ -75,17 +75,10 @@ def caiman_cnmf(
     thr = params['thr']
     thr_method = 'nrg'
     swap_dim = False
-    cont = visualization.get_contours(
-        cnm.estimates.A, cnm.dims, thr=thr, thr_method=thr_method, swap_dim=swap_dim)
-    cont_cent = np.zeros([len(cont), 2])
-    sparse_rois = []
-    for i in range(len(cont)):
-        cont_cent[i, :] = np.nanmean(cont[i]['coordinates'], axis=0)
-        sparse_rois.append(cont[i]['coordinates'].T)
 
     iscell = np.concatenate([
         np.ones(cnm.estimates.A.shape[-1]),
-        np.zeros(len(cnm.estimates.b.T))
+        np.zeros(cnm.estimates.b.shape[-1])
     ])
 
     A = cnm.estimates.A
@@ -162,17 +155,12 @@ def caiman_cnmf(
                 kargs['rejected'] = False
             bg_list.append(kargs)
 
-        # nwbfile = nwb_add_roi(nwbfile, bg_list)
         nwbfile[NWBDATASET.ROI] = {
             'roi_list': roi_list,
             'bg_list': bg_list,
         }
 
-        # ### iscellを追加
-        # nwbfile = nwb_add_column(
-        #     nwbfile, 'iscell', 'two columns - iscell & probcell', iscell)
         ### iscellを追加
-        # import pdb; pdb.set_trace()
         nwbfile[NWBDATASET.COLUMN] = {
             'roi_column': {
                 'name': 'iscell',
@@ -180,7 +168,6 @@ def caiman_cnmf(
                 'data': iscell,
             }
         }
-
 
         ### Fluorescence
         n_rois = cnm.estimates.A.shape[-1]
@@ -203,9 +190,14 @@ def caiman_cnmf(
             }
         }
 
+    fluorescence = np.concatenate([
+        cnm.estimates.C,
+        cnm.estimates.f,
+    ])
+
     info = {}
     info['images'] = ImageData(np.array(Cn * 255, dtype=np.uint8), file_name='images')
-    info['fluorescence'] = TimeSeriesData(cnm.estimates.C, file_name='fluorescence')
+    info['fluorescence'] = TimeSeriesData(fluorescence, file_name='fluorescence')
     info['iscell'] = IscellData(iscell, file_name='iscell')
     info['roi'] = RoiData(roi_image)
     info['nwbfile'] = nwbfile
