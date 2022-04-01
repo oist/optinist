@@ -186,3 +186,31 @@ LDA:
   tol: 0.0001
   covariance_estimator:
 ```
+
+
+## 4. Snakemakeの登録
+Snakemakeへの登録は上で追加した関数と同じディレクトリ構造になるようにファイルを作成する。
+https://github.com/oist/optinist/blob/develop/optinist/rules/smk/optinist/neural_population_analysis/correlation.py
+
+- ファイルの中身は下のテンプレをコピーして、`name`を関数名にする。
+- conda環境を作成する場合は、`conda:`にinstallパッケージを書く。
+
+```
+from cui_api.const import OPTINIST_DIR
+
+name = "correlation"
+
+rule:
+    input:
+        [x["input"] for x in config["rules"].values() if x["type"] == name]
+    output:
+        [x["output"] for x in config["rules"].values() if x["type"] == name]
+    conda:
+        f'{OPTINIST_DIR}/rules/envs/optinist_env.yaml'
+    params:
+        name = name
+    conda:
+        f'{OPTINIST_DIR}/rules/envs/optinist_env.yaml'
+    script:
+        f'{OPTINIST_DIR}/rules/scripts/func.py'
+```

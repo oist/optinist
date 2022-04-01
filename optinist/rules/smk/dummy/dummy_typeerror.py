@@ -1,3 +1,5 @@
+from cui_api.const import OPTINIST_DIR
+
 name = "dummy_typeerror"
 
 rule:
@@ -8,4 +10,4 @@ rule:
     params:
         name = name
     script:
-        '../../scripts/func.py'
+        f'{OPTINIST_DIR}/rules/scripts/func.py'

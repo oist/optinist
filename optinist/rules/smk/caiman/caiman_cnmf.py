@@ -1,3 +1,5 @@
+from cui_api.const import OPTINIST_DIR
+
 name = "caiman_cnmf"
 
 rule:
@@ -10,4 +12,4 @@ rule:
     # conda:
     #     "../../envs/caiman_env.yaml"
     script:
-        '../../scripts/func.py'
+        f'{OPTINIST_DIR}/rules/scripts/func.py'

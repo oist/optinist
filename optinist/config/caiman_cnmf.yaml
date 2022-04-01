@@ -8,3 +8,4 @@ gSig: [4, 4]
 method_init: 'greedy_roi'
 ssub: 1
 tsub: 1
+thr: 0.9

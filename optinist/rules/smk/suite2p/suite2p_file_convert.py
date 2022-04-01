@@ -1,3 +1,5 @@
+from cui_api.const import OPTINIST_DIR
+
 name = "suite2p_file_convert"
 
 rule:
@@ -8,6 +10,6 @@ rule:
     params:
         name = name
     conda:
-        "../../envs/suite2p_env.yaml"
+        f'{OPTINIST_DIR}/rules/envs/suite2p_env.yaml'
     script:
-        '../../scripts/func.py'
+        f'{OPTINIST_DIR}/rules/scripts/func.py'
