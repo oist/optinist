@@ -4,6 +4,57 @@ import gc
 from wrappers.nwb_wrapper.const import NWBDATASET
 
 
+def get_roi(A, thr, thr_method, swap_dim, dims):
+    from skimage.measure import find_contours
+    from scipy.ndimage import binary_fill_holes
+
+    d, nr = np.shape(A)
+
+    # for each patches
+    ims = []
+    for i in range(nr):
+        pars = dict()
+        # we compute the cumulative sum of the energy of the Ath component that has been ordered from least to highest
+        patch_data = A.data[A.indptr[i]:A.indptr[i + 1]]
+        indx = np.argsort(patch_data)[::-1]
+
+        if thr_method == 'nrg':
+            cumEn = np.cumsum(patch_data[indx]**2)
+            if len(cumEn) == 0:
+                pars = dict(
+                    coordinates=np.array([]),
+                    CoM=np.array([np.NaN, np.NaN]),
+                    neuron_id=i + 1,
+                )
+                coordinates.append(pars)
+                continue
+            else:
+                # we work with normalized values
+                cumEn /= cumEn[-1]
+                Bvec = np.ones(d)
+                # we put it in a similar matrix
+                Bvec[A.indices[A.indptr[i]:A.indptr[i + 1]][indx]] = cumEn
+        else:
+            Bvec = np.zeros(d)
+            Bvec[A.indices[A.indptr[i]:A.indptr[i + 1]]] = patch_data / patch_data.max()
+
+        if swap_dim:
+            Bmat = np.reshape(Bvec, dims, order='C')
+        else:
+            Bmat = np.reshape(Bvec, dims, order='F')
+
+        r_mask = np.zeros_like(Bmat, dtype='bool')
+        contour = find_contours(Bmat, thr)
+        for c in contour:
+            r_mask[np.round(c[:, 0]).astype('int'), np.round(c[:, 1]).astype('int')] = 1
+        
+        # Fill in the hole created by the contour boundary
+        r_mask = binary_fill_holes(r_mask)
+        ims.append(r_mask + (i * r_mask))
+
+    return ims
+
+
 def caiman_cnmf(
         images: ImageData, nwbfile: NWBFile=None, params: dict=None
     ) -> {'fluorescence': TimeSeriesData, 'iscell': IscellData}:
@@ -16,8 +67,7 @@ def caiman_cnmf(
     from caiman.source_extraction.cnmf.params import CNMFParams
     import caiman.utils.visualization as visualization
     import numpy as np
-    from skimage.measure import find_contours
-    from scipy.ndimage import binary_fill_holes
+    import scipy
 
     file_path = images.path
     if isinstance(file_path, list):
@@ -75,67 +125,23 @@ def caiman_cnmf(
     thr = params['thr']
     thr_method = 'nrg'
     swap_dim = False
-    cont = visualization.get_contours(
-        cnm.estimates.A, cnm.dims, thr=thr, thr_method=thr_method, swap_dim=swap_dim)
-    cont_cent = np.zeros([len(cont), 2])
-    sparse_rois = []
-    for i in range(len(cont)):
-        cont_cent[i, :] = np.nanmean(cont[i]['coordinates'], axis=0)
-        sparse_rois.append(cont[i]['coordinates'].T)
 
     iscell = np.concatenate([
         np.ones(cnm.estimates.A.shape[-1]),
-        np.zeros(len(cnm.estimates.b.T))
+        np.zeros(cnm.estimates.b.shape[-1])
     ])
 
-    A = cnm.estimates.A
-    d, nr = np.shape(A)
+    cell_roi = get_roi(cnm.estimates.A, thr, thr_method, swap_dim, dims)
+    cell_roi = np.stack(cell_roi)
+    cell_roi = np.nanmax(cell_roi, axis=0).astype(float)
+    cell_roi[cell_roi == 0] = np.nan
 
-    # for each patches
-    ims = []
-    for i in range(nr):
-        pars = dict()
-        # we compute the cumulative sum of the energy of the Ath component that has been ordered from least to highest
-        patch_data = A.data[A.indptr[i]:A.indptr[i + 1]]
-        indx = np.argsort(patch_data)[::-1]
+    non_cell_roi = get_roi(scipy.sparse.csc_matrix(cnm.estimates.b), thr, thr_method, swap_dim, dims)
+    non_cell_roi = np.stack(non_cell_roi)
+    non_cell_roi = np.nanmax(non_cell_roi, axis=0).astype(float)
+    non_cell_roi[non_cell_roi == 0] = np.nan
 
-        if thr_method == 'nrg':
-            cumEn = np.cumsum(patch_data[indx]**2)
-            if len(cumEn) == 0:
-                pars = dict(
-                    coordinates=np.array([]),
-                    CoM=np.array([np.NaN, np.NaN]),
-                    neuron_id=i + 1,
-                )
-                coordinates.append(pars)
-                continue
-            else:
-                # we work with normalized values
-                cumEn /= cumEn[-1]
-                Bvec = np.ones(d)
-                # we put it in a similar matrix
-                Bvec[A.indices[A.indptr[i]:A.indptr[i + 1]][indx]] = cumEn
-        else:
-            Bvec = np.zeros(d)
-            Bvec[A.indices[A.indptr[i]:A.indptr[i + 1]]] = patch_data / patch_data.max()
-
-        if swap_dim:
-            Bmat = np.reshape(Bvec, dims, order='C')
-        else:
-            Bmat = np.reshape(Bvec, dims, order='F')
-
-        r_mask = np.zeros_like(Bmat, dtype='bool')
-        contour = find_contours(Bmat, thr)
-        for c in contour:
-            r_mask[np.round(c[:, 0]).astype('int'), np.round(c[:, 1]).astype('int')] = 1
-        
-        # Fill in the hole created by the contour boundary
-        r_mask = binary_fill_holes(r_mask)
-        ims.append(r_mask + (i * r_mask))
-
-    ims = np.stack(ims)
-    roi_image = np.nanmax(ims, axis=0).astype(float)
-    roi_image[roi_image == 0] = np.nan
+    all_roi = np.nanmax(np.stack([cell_roi, non_cell_roi]), axis=0)
 
     # NWBの追加
     if nwbfile is not None:
@@ -162,17 +168,12 @@ def caiman_cnmf(
                 kargs['rejected'] = False
             bg_list.append(kargs)
 
-        # nwbfile = nwb_add_roi(nwbfile, bg_list)
         nwbfile[NWBDATASET.ROI] = {
             'roi_list': roi_list,
             'bg_list': bg_list,
         }
 
-        # ### iscellを追加
-        # nwbfile = nwb_add_column(
-        #     nwbfile, 'iscell', 'two columns - iscell & probcell', iscell)
         ### iscellを追加
-        # import pdb; pdb.set_trace()
         nwbfile[NWBDATASET.COLUMN] = {
             'roi_column': {
                 'name': 'iscell',
@@ -180,7 +181,6 @@ def caiman_cnmf(
                 'data': iscell,
             }
         }
-
 
         ### Fluorescence
         n_rois = cnm.estimates.A.shape[-1]
@@ -203,11 +203,18 @@ def caiman_cnmf(
             }
         }
 
+    fluorescence = np.concatenate([
+        cnm.estimates.C,
+        cnm.estimates.f,
+    ])
+
     info = {}
     info['images'] = ImageData(np.array(Cn * 255, dtype=np.uint8), file_name='images')
-    info['fluorescence'] = TimeSeriesData(cnm.estimates.C, file_name='fluorescence')
+    info['fluorescence'] = TimeSeriesData(fluorescence, file_name='fluorescence')
     info['iscell'] = IscellData(iscell, file_name='iscell')
-    info['roi'] = RoiData(roi_image)
+    info['cell_roi'] = RoiData(cell_roi, file_name='cell_roi')
+    info['non_cell_roi'] = RoiData(non_cell_roi, file_name='non_cell_roi')
+    info['all_roi'] = RoiData(all_roi, file_name='all_roi')
     info['nwbfile'] = nwbfile
 
     return info
