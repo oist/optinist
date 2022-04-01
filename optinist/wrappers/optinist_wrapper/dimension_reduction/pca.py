@@ -35,12 +35,10 @@ def PCA(
     info = {}
     info['explained_variance'] = BarData(
         pca.explained_variance_ratio_,
-        func_name='pca',
         file_name='evr'
     )
     info['projectedNd'] = ScatterData(
         proj_X,
-        func_name='pca',
         file_name='projectedNd'
     )  # change to 2D scatter plots
 

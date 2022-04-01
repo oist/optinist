@@ -74,17 +74,14 @@ def GLM(
     #info['params'] = BarSeriesData(Res.params.values)  # add something 1d but not timesereies
     info['actual_predicted'] = ScatterData(
         np.array([Res._endog, Res.mu]).transpose(),
-        func_name='glm',
         file_name='actual_predicted'
     )
     info['params'] = BarData(
         Res.params.values,
-        func_name='glm',
         file_name='params'
     )
     info['summary'] = HTMLData(
         Res.summary().as_html(),
-        func_name='glm',
         file_name='summary',
     )
 

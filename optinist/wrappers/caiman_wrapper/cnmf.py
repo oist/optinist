@@ -192,9 +192,9 @@ def caiman_cnmf(
         }
 
     info = {}
-    info['images'] = ImageData(np.array(Cn * 255, dtype=np.uint8), func_name='caiman_cnmf', file_name='images')
-    info['fluorescence'] = TimeSeriesData(cnm.estimates.C, func_name='caiman_cnmf', file_name='fluorescence')
-    info['iscell'] = IscellData(iscell, func_name='caiman_cnmf', file_name='iscell')
+    info['images'] = ImageData(np.array(Cn * 255, dtype=np.uint8), file_name='images')
+    info['fluorescence'] = TimeSeriesData(cnm.estimates.C, file_name='fluorescence')
+    info['iscell'] = IscellData(iscell, file_name='iscell')
     info['roi'] = RoiData(roi_image)
     info['nwbfile'] = nwbfile
 

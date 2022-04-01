@@ -51,7 +51,6 @@ def CCA(
     info = {}
     info['projectedNd'] = ScatterData(
         proj,
-        func_name='cca',
         file_name='projectedNd'
     )
 

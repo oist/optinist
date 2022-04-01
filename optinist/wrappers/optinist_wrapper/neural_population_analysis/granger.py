@@ -131,7 +131,6 @@ def Granger(
     info = {}
     info['Granger_fval_mat'] = ScatterData(
         GC['Granger_fval_mat'][0],
-        func_name='granger',
         file_name='gfm'
     )
 

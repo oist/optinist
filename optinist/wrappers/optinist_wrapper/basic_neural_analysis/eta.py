@@ -85,13 +85,11 @@ def ETA(
         mean,
         std=sem,
         index=list(np.arange(params['start_time'], params['end_time'])),
-        func_name='eta',
         file_name='mean'
     )
 
     info['mean_heatmap'] = CorrelationData(
         mean,
-        func_name='eta',
         file_name='mean_heatmap'
     )
 

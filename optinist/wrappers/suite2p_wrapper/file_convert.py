@@ -56,7 +56,7 @@ def suite2p_file_convert(
     ops = convert_funs[ops['input_format']](ops.copy())
 
     info = {}
-    info['meanImg'] = ImageData(ops['meanImg'], func_name='suite2p_convert', file_name='meanImg')
-    info['ops'] = Suite2pData(ops, func_name='suite2p_convert', file_name='ops')
+    info['meanImg'] = ImageData(ops['meanImg'], file_name='meanImg')
+    info['ops'] = Suite2pData(ops, file_name='ops')
 
     return info

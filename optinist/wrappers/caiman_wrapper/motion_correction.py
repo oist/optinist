@@ -52,9 +52,9 @@ def caiman_mc(
     rois = np.nanmax(rois, axis=0)
     rois[rois == 0] = np.nan
 
-    info['mc_images'] = ImageData(images, func_name='caiman_mc', file_name='mc_images')
-    info['meanImg'] = ImageData(meanImg, func_name='caiman_mc', file_name='meanImg')
-    info['rois'] = RoiData(rois, func_name='caiman_mc', file_name='rois')
+    info['mc_images'] = ImageData(images, file_name='mc_images')
+    info['meanImg'] = ImageData(meanImg, file_name='meanImg')
+    info['rois'] = RoiData(rois, file_name='rois')
 
     xy_trans_data = (np.array(mc.x_shifts_els), np.array(mc.y_shifts_els)) \
                     if params['pw_rigid'] else np.array(mc.shifts_rig)

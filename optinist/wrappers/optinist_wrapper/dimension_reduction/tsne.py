@@ -35,7 +35,6 @@ def TSNE(
     info = {}
     info['projectedNd'] = ScatterData(
         proj_X,
-        func_name='tsne',
         file_name='projectedNd'
     )
 

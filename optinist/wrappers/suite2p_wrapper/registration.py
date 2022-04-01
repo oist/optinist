@@ -24,10 +24,8 @@ def suite2p_registration(
         ops = registration.get_pc_metrics(ops)
 
     info = {}
-    # images = io.BinaryFile(read_filename=ops['reg_file'], Ly=ops['Ly'], Lx=ops['Lx']).data
-    # info['images'] = ImageData(images, func_name='suite2p_registration', file_name='images')
-    info['refImg'] = ImageData(ops['refImg'], func_name='suite2p_registration', file_name='refImg')
-    info['meanImgE'] = ImageData(ops['meanImgE'], func_name='suite2p_registration', file_name='meanImgE')
-    info['ops'] = Suite2pData(ops, func_name='suite2p_registration', file_name='ops')
+    info['refImg'] = ImageData(ops['refImg'], file_name='refImg')
+    info['meanImgE'] = ImageData(ops['meanImgE'], file_name='meanImgE')
+    info['ops'] = Suite2pData(ops, file_name='ops')
 
     return info

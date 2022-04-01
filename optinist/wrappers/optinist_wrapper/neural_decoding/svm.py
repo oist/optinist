@@ -83,7 +83,6 @@ def SVM(
     info = {}
     info['score'] = BarData(
         score,
-        func_name='svm',
         file_name='score'
     )
 

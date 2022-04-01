@@ -16,7 +16,7 @@ class BaseData:
 
 
 class ImageData(BaseData):
-    def __init__(self, data, func_name='image', file_name='image'):
+    def __init__(self, data, file_name='image'):
         super().__init__(file_name)
 
         self.json_path = None
@@ -28,7 +28,7 @@ class ImageData(BaseData):
         elif isinstance(data, list) and isinstance(data[0], str):
             self.path = data
         else:
-            _dir = join_file_path([BASE_DIR, "tiff", func_name])
+            _dir = join_file_path([BASE_DIR, "tiff", file_name])
             if not os.path.exists(_dir):
                 os.makedirs(_dir, exist_ok=True)
 
@@ -58,7 +58,7 @@ class ImageData(BaseData):
 
 
 class TimeSeriesData(BaseData):
-    def __init__(self, data, std=None, index=None, func_name='timeseries', file_name='timeseries'):
+    def __init__(self, data, std=None, index=None, file_name='timeseries'):
         super().__init__(file_name)
 
         if isinstance(data, str):
@@ -104,7 +104,7 @@ class TimeSeriesData(BaseData):
 
 
 class CsvData(BaseData):
-    def __init__(self, data, params, func_name='csv', file_name='csv'):
+    def __init__(self, data, params, file_name='csv'):
         super().__init__(file_name)
 
         if isinstance(data, str):
@@ -138,7 +138,7 @@ class CsvData(BaseData):
 
 
 class CorrelationData(BaseData):
-    def __init__(self, data, func_name='heatmap', file_name='heatmap'):
+    def __init__(self, data, file_name='heatmap'):
         super().__init__(file_name)
 
         self.data = data
@@ -153,12 +153,12 @@ class CorrelationData(BaseData):
 
 
 class RoiData(BaseData):
-    def __init__(self, data, func_name='roi', file_name='roi'):
+    def __init__(self, data, file_name='roi'):
         super().__init__(file_name)
 
         images = get_images_list(data)
 
-        _dir = join_file_path([BASE_DIR, "tiff", func_name])
+        _dir = join_file_path([BASE_DIR, "tiff", file_name])
         if not os.path.exists(_dir):
             os.makedirs(_dir, exist_ok=True)
         self.path = join_file_path([_dir, f'{file_name}.tif'])
@@ -186,12 +186,9 @@ class RoiData(BaseData):
 
 
 class Suite2pData(BaseData):
-    def __init__(self, data, func_name='suite2p', file_name='suite2p'):
+    def __init__(self, data, file_name='suite2p'):
         super().__init__(file_name)
-
         self.data = data
-        # _dir = join_file_path([BASE_DIR, func_name])
-        # self.path = get_json_file_path(_dir, file_name)
 
     def __del__(self):
         del self
@@ -199,12 +196,9 @@ class Suite2pData(BaseData):
 
 
 class IscellData(BaseData):
-    def __init__(self, data, func_name='iscell', file_name='iscell'):
+    def __init__(self, data, file_name='iscell'):
         super().__init__(file_name)
-
         self.data = data
-        # _dir = join_file_path([BASE_DIR, func_name])
-        # self.path = get_json_file_path(_dir, file_name)
 
     def __del__(self):
         del self
@@ -212,12 +206,10 @@ class IscellData(BaseData):
 
 
 class ScatterData(BaseData):
-    def __init__(self, data, func_name='scatter', file_name='scatter'):
+    def __init__(self, data, file_name='scatter'):
         super().__init__(file_name)
-
         if not data.ndim == 2:
             raise 'Scatter Dimension Error'
-
         self.data = data
 
     def save_json(self, json_dir):
@@ -230,11 +222,9 @@ class ScatterData(BaseData):
 
 
 class BarData(BaseData):
-    def __init__(self, data, func_name='bar', file_name='bar'):
+    def __init__(self, data, file_name='bar'):
         super().__init__(file_name)
-
         data = np.array(data)
-
         if not data.ndim == 1:
             raise 'Bar Dimension Error'
 
@@ -250,7 +240,7 @@ class BarData(BaseData):
 
 
 class HTMLData(BaseData):
-    def __init__(self, data, func_name='html', file_name='html'):
+    def __init__(self, data, file_name='html'):
         super().__init__(file_name)
         self.data = data
 

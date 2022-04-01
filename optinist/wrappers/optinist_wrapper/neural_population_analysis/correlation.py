@@ -32,7 +32,6 @@ def correlation(
     info = {}
     info['corr'] = CorrelationData(
         corr,
-        func_name='correlation',
         file_name='corr'
     )
 

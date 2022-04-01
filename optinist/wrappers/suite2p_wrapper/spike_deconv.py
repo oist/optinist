@@ -41,7 +41,7 @@ def suite2p_spike_deconv(
 
     info = {}
     info['ops'] = Suite2pData(ops)
-    info['spks'] = TimeSeriesData(spks, func_name='sute2p_spike_deconv', file_name='spks')
+    info['spks'] = TimeSeriesData(spks, file_name='spks')
     info['nwbfile'] = nwbfile
 
     return info
