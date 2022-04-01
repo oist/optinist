@@ -8,7 +8,8 @@ if TMP_DIR is None:
 else:
     BASE_DIR = TMP_DIR
 
-OPTINIST_DIR = join_file_path([os.path.dirname(__file__), ".."])
+# OPTINIST_DIR = join_file_path([os.path.dirname(__file__), ".."])
+OPTINIST_DIR = os.path.dirname(os.path.dirname(__file__))
 
 if not os.path.exists(BASE_DIR):
     os.makedirs(BASE_DIR, exist_ok=True)

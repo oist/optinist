@@ -1,3 +1,5 @@
+from cui_api.const import OPTINIST_DIR
+
 name = "lda"
 
 rule:
@@ -6,8 +8,8 @@ rule:
     output:
         [x["output"] for x in config["rules"].values() if x["type"] == name]
     conda:
-        "../../../envs/optinist_env.yaml"
+        f'{OPTINIST_DIR}/rules/envs/optinist_env.yaml'
     params:
         name = name
     script:
-        '../../../scripts/func.py'
+        f'{OPTINIST_DIR}/rules/scripts/func.py'
