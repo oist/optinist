@@ -1,8 +1,8 @@
 from wrappers.data_wrapper import *
-from wrappers.args_check import args_check
 from cui_api.utils import join_file_path
 import gc
 from wrappers.nwb_wrapper.const import NWBDATASET
+
 
 def caiman_cnmf(
         images: ImageData, nwbfile: NWBFile=None, params: dict=None

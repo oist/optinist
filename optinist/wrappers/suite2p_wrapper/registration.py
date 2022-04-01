@@ -1,5 +1,4 @@
 from wrappers.data_wrapper import *
-from wrappers.args_check import args_check
 
 
 def suite2p_registration(

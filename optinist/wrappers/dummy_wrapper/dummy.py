@@ -3,7 +3,6 @@ import sys
 from pynwb import NWBFile
 
 from wrappers.data_wrapper import *
-from wrappers.args_check import args_check
 
 
 def dummy_image2image(

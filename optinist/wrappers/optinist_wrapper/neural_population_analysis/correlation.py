@@ -1,6 +1,6 @@
 from wrappers.data_wrapper import *
-from wrappers.args_check import args_check
 from wrappers.nwb_wrapper.const import NWBDATASET
+
 
 def correlation(
         neural_data: TimeSeriesData,
