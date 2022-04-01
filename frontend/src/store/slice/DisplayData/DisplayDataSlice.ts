@@ -105,7 +105,6 @@ export const displayDataSlice = createSlice({
           state.timeSeries[path].std = action.payload.std
         } else {
           state.timeSeries[path].data[index] = action.payload.data[index]
-          console.log(action.payload.std)
           if (action.payload.std[index] !== undefined) {
             state.timeSeries[path].std[index] = action.payload.std[index]
           }
