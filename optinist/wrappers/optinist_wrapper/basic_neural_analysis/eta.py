@@ -67,11 +67,12 @@ def ETA(
         you need to transpose dimenstion.
     """
 
-    # calculate Triggers ##################
+    # calculate Triggers
     trigger_idx = calc_trigger(behavior_data, params['trigger_type'], params['trigger_threshold'])
 
-    # calculate Triggered average ##################
-    event_trigger_data = calc_trigger_average(neural_data, trigger_idx, params['start_time'], params['end_time'])
+    # calculate Triggered average
+    event_trigger_data = calc_trigger_average(
+        neural_data, trigger_idx, params['start_time'], params['end_time'])
 
     # (cell_number, event_time_lambda)
     if len(event_trigger_data) > 0:
@@ -88,8 +89,12 @@ def ETA(
         file_name='mean'
     )
 
+    min_value = np.min(mean, axis=1, keepdims=True)
+    max_value = np.max(mean, axis=1, keepdims=True)
+    norm_mean = (mean - min_value) / (max_value - min_value)
+
     info['mean_heatmap'] = CorrelationData(
-        mean,
+        norm_mean,
         file_name='mean_heatmap'
     )
 
