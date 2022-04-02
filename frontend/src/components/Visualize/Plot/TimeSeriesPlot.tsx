@@ -182,7 +182,7 @@ const TimeSeriesPlotImple = React.memo(() => {
     if (data.length !== 0) {
       return displayNumbers.map((i) => {
         return {
-          x: Number(dataXrange[dataXrange.length - 1]) + 50,
+          x: Number(dataXrange[dataXrange.length - 1]) + dataXrange.length / 10,
           y: data[i].y[dataXrange.length - 1],
           xref: 'x',
           yref: 'y',
