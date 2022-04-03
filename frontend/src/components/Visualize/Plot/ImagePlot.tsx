@@ -36,6 +36,8 @@ import {
   selectRoiItemIndex,
   selectImageItemRoiAlpha,
   selectImageItemDuration,
+  selectVisualizeItemWidth,
+  selectVisualizeItemHeight,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
   incrementImageActiveIndex,
@@ -123,10 +125,10 @@ const ImagePlotChart = React.memo<{
   const showscale = useSelector(selectImageItemShowScale(itemId))
   const colorscale = useSelector(selectImageItemColors(itemId))
   const duration = useSelector(selectImageItemDuration(itemId))
-
   const timeDataMaxIndex = useSelector(selectRoiItemIndex(itemId, roiFilePath))
-
   const roiAlpha = useSelector(selectImageItemRoiAlpha(itemId))
+  const width = useSelector(selectVisualizeItemWidth(itemId))
+  const height = useSelector(selectVisualizeItemHeight(itemId))
 
   const colorscaleRoi = createColormap({
     colormap: 'jet',
@@ -194,8 +196,8 @@ const ImagePlotChart = React.memo<{
   const layout = React.useMemo(
     () => ({
       title: getFileName(path),
-      // width: 600,
-      // height: 600,
+      width: width,
+      height: height - 150,
       margin: {
         t: 30, // top
         l: 120, // left
@@ -222,7 +224,7 @@ const ImagePlotChart = React.memo<{
         showticklabels: showticklabels, // todo
       },
     }),
-    [path, showgrid, showline, showticklabels],
+    [path, showgrid, showline, showticklabels, width, height],
   )
 
   const config = {
@@ -347,7 +349,6 @@ const ImagePlotChart = React.memo<{
         <Button variant="outlined" onClick={onPauseClick}>
           Pause
         </Button>
-        duration:
         <TextField
           // error={inputError}
           type="number"
@@ -364,7 +365,7 @@ const ImagePlotChart = React.memo<{
           // helperText={inputError ? 'index > 0' : undefined}
         />
         msec
-        <Typography>Index: {startIndex + activeIndex}</Typography>
+        <div>Index: {startIndex + activeIndex}</div>
         <Slider
           aria-label="Index"
           defaultValue={1}

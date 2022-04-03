@@ -5,12 +5,17 @@ export type VisualaizeItem = {
   items: {
     [itemId: number]: VisualaizeItemType
   }
+  layout: ItemLayout
 }
+
+export type ItemLayout = number[][] // itemIdをrow,columnで並べる
 
 export type VisualaizeItemType = MultiPlotItem | DisplayDataItem
 
 export interface ItemBaseType<T extends VISUALIZE_ITEM_TYPE> {
   itemType: T
+  width: number
+  height: number
 }
 
 export type ColorType = {

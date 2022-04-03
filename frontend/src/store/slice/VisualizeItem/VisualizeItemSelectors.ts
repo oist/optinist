@@ -16,6 +16,19 @@ export const selectSelectedVisualizeItemId = (state: RootState) =>
 
 const selectVisualizeItems = (state: RootState) => state.visualaizeItem.items
 
+export const selectVisualizeItemLayout = (state: RootState) =>
+  state.visualaizeItem.layout
+
+export const selectVisualizeItemWidth =
+  (itemId: number) => (state: RootState) => {
+    return selectVisualizeItems(state)[itemId].width
+  }
+
+export const selectVisualizeItemHeight =
+  (itemId: number) => (state: RootState) => {
+    return selectVisualizeItems(state)[itemId].height
+  }
+
 export const selectVisualizeItemIdList = (state: RootState) =>
   Object.keys(selectVisualizeItems(state)).map((key) => Number(key))
 

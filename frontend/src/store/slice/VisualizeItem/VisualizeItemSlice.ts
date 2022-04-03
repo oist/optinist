@@ -28,11 +28,14 @@ import {
 export const initialState: VisualaizeItem = {
   items: {},
   selectedItemId: null,
+  layout: [],
 }
 const displayDataCommonInitialValue = {
   itemType: VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA,
   filePath: null,
   nodeId: null,
+  width: 500,
+  height: 500,
 }
 const imageItemInitialValue: ImageItem = {
   ...displayDataCommonInitialValue,
@@ -138,6 +141,8 @@ const MultiPlotItemInitialValue: MultiPlotItem = {
   imageItem: imageItemInitialValue,
   timeSeriesItem: timeSeriesItemInitialValue,
   heatMapItem: heatMapItemInitialValue,
+  width: 800,
+  height: 300,
 }
 export const visualaizeItemSlice = createSlice({
   name: 'visualaizeItem',
@@ -149,11 +154,45 @@ export const visualaizeItemSlice = createSlice({
       if (itemId === state.selectedItemId) {
         state.selectedItemId = null
       }
+      state.layout.forEach((row, i) => {
+        const index = row.indexOf(itemId)
+        if (index !== -1) {
+          row.splice(index, 1)
+        }
+        if (row.length === 0) {
+          state.layout.splice(i, 1)
+        }
+      })
     },
-    addInitialItem: (state) => {
-      const nextId = getMaxItemId(state) + 1
-      state.items[nextId] = getDisplayDataItemInitialValue(DATA_TYPE_SET.IMAGE)
-      state.selectedItemId = nextId
+    pushInitialItemToNewRow: (state) => {
+      const newItemId = addInitialItemFn(state)
+      state.layout.push([newItemId])
+    },
+    insertInitialItemToNextColumn: (state, action: PayloadAction<number>) => {
+      const newItemId = addInitialItemFn(state)
+      const targetItemId = action.payload
+      const targetRowIndex = state.layout.findIndex((row) =>
+        row.includes(targetItemId),
+      )
+      const targetColumnIndex =
+        state.layout[targetRowIndex].indexOf(targetItemId)
+      state.layout[targetRowIndex].splice(targetColumnIndex + 1, 0, newItemId)
+    },
+    setItemWidth: (
+      state,
+      action: PayloadAction<{ itemId: number; width: number }>,
+    ) => {
+      const { itemId, width } = action.payload
+      const targetItem = state.items[itemId]
+      targetItem.width = width
+    },
+    setItemHeight: (
+      state,
+      action: PayloadAction<{ itemId: number; height: number }>,
+    ) => {
+      const { itemId, height } = action.payload
+      const targetItem = state.items[itemId]
+      targetItem.height = height
     },
     selectItem: (state, action: PayloadAction<number>) => {
       state.selectedItemId = action.payload
@@ -786,6 +825,13 @@ function getMaxItemId(state: VisualaizeItem) {
   return maxId
 }
 
+function addInitialItemFn(state: VisualaizeItem) {
+  const nextId = getMaxItemId(state) + 1
+  state.items[nextId] = getDisplayDataItemInitialValue(DATA_TYPE_SET.IMAGE)
+  state.selectedItemId = nextId
+  return nextId
+}
+
 function resetImageActiveIndexFn(
   state: VisualaizeItem,
   args: {
@@ -810,8 +856,11 @@ function resetImageActiveIndexFn(
 }
 
 export const {
-  addInitialItem,
   deleteVisualizeItem,
+  pushInitialItemToNewRow,
+  insertInitialItemToNextColumn,
+  setItemWidth,
+  setItemHeight,
   selectItem,
   setItemType,
   toggleItemTypeMultiPlot,

@@ -4,22 +4,29 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
+import TextField from '@mui/material/TextField'
+import InputAdornment from '@mui/material/InputAdornment'
 
-import { arrayEqualityFn } from 'utils/EqualityUtils'
+import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 
 import {
   selectSelectedVisualizeItemId,
-  selectVisualizeItemIdList,
+  selectVisualizeItemHeight,
+  selectVisualizeItemLayout,
   selectVisualizeItemType,
+  selectVisualizeItemWidth,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 import { VisualizeItemAddButton } from './VisualizeItemAddButton'
-import { DisplayItemDeleteButton } from './DisplayItemDeleteButton'
+import { VisualizeItemLayoutMenuIcon } from './VisualizeItemLayoutMenuIcon'
 import { MultiPlotItem } from './MultiPlotItem'
 import { DisplayDataItem } from './DisplayDataItem'
-import { selectItem } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import {
+  selectItem,
+  setItemHeight,
+  setItemWidth,
+} from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { RootState } from 'store/store'
-import { MultiPlotDeleteButton } from './MultiPlotDeleteButton'
 
 export const VisualizeItems: React.FC = () => {
   return (
@@ -30,11 +37,15 @@ export const VisualizeItems: React.FC = () => {
 }
 
 const FlexItemList: React.FC = () => {
-  const itemIdList = useSelector(selectVisualizeItemIdList, arrayEqualityFn)
+  const layout = useSelector(selectVisualizeItemLayout, twoDimarrayEqualityFn)
   return (
-    <Box display="flex" flexWrap="wrap" p={1} m={1}>
-      {itemIdList.map((itemId) => (
-        <Item itemId={itemId} key={itemId} />
+    <Box display="flex" flexWrap="wrap" flexDirection="column" p={1} m={1}>
+      {layout.map((row) => (
+        <Box display="flex" flexDirection="row">
+          {row.map((itemId) => (
+            <Item itemId={itemId} key={itemId} />
+          ))}
+        </Box>
       ))}
       <VisualizeItemAddButton />
     </Box>
@@ -53,12 +64,47 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
   )
   const theme = useTheme()
 
+  const width = useSelector(selectVisualizeItemWidth(itemId))
+  const height = useSelector(selectVisualizeItemHeight(itemId))
+  const [inputWidth, setInputWidth] = React.useState(width)
+  const onBlurWidth = () => {
+    const value = inputWidth >= 150 ? inputWidth : 150
+    dispatch(
+      setItemWidth({
+        itemId,
+        width: value,
+      }),
+    )
+    setInputWidth(value)
+  }
+  const onChangeWidth = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(event.target.value)
+    setInputWidth(value)
+  }
+
+  const [inputHeight, setInputHeight] = React.useState(height)
+  const onBlurHeight = () => {
+    const value = inputHeight >= 300 ? inputHeight : 300
+    dispatch(
+      setItemHeight({
+        itemId,
+        height: value,
+      }),
+    )
+    setInputHeight(value)
+  }
+  const onChangeHeight = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(event.target.value)
+    setInputHeight(value)
+  }
+
   return (
     <Paper
       variant="outlined"
       key={itemId}
       style={{
-        width: '100%',
+        width: `${width}px`,
+        height: `${height}px`,
         margin: theme.spacing(1),
         padding: theme.spacing(1),
         cursor: 'pointer',
@@ -67,28 +113,46 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
       onClick={onSelect}
     >
       <Box display="flex" justifyContent="flex-end">
+        <Box flexGrow={1}>
+          <TextField
+            type="number"
+            size="small"
+            label="width"
+            sx={{ marginRight: 1, marginBottom: 1, width: '100px' }}
+            InputProps={{
+              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+            }}
+            inputProps={{
+              min: 150,
+            }}
+            value={inputWidth}
+            onBlur={onBlurWidth}
+            onChange={onChangeWidth}
+          />
+          <TextField
+            type="number"
+            size="small"
+            label="height"
+            sx={{ marginRight: 1, marginBottom: 1, width: '100px' }}
+            InputProps={{
+              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+            }}
+            inputProps={{
+              min: 150,
+            }}
+            value={inputHeight}
+            onBlur={onBlurHeight}
+            onChange={onChangeHeight}
+          />
+        </Box>
         <Box>
-          <DeleteButton itemType={itemType} itemId={itemId} />
+          <VisualizeItemLayoutMenuIcon itemId={itemId} />
         </Box>
       </Box>
       <ItemByType itemType={itemType} itemId={itemId} />
     </Paper>
   )
 })
-
-const DeleteButton: React.FC<{
-  itemType: string
-  itemId: number
-}> = ({ itemType, itemId }) => {
-  switch (itemType) {
-    case 'displayData':
-      return <DisplayItemDeleteButton itemId={itemId} />
-    case 'MultiPlot':
-      return <MultiPlotDeleteButton itemId={itemId} />
-    default:
-      throw new Error('itemType Error')
-  }
-}
 
 const ItemByType = React.memo<{
   itemType: string

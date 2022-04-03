@@ -5,12 +5,12 @@ import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
 import AddIcon from '@mui/icons-material/Add'
 import Button from '@mui/material/Button'
-import { addInitialItem } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { pushInitialItemToNewRow } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 export const VisualizeItemAddButton: React.FC = () => {
   const dispatch = useDispatch()
   const onClick = () => {
-    dispatch(addInitialItem())
+    dispatch(pushInitialItemToNewRow())
   }
   return (
     <StyledPaper elevation={1} variant="outlined">
