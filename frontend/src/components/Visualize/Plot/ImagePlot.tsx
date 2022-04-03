@@ -48,7 +48,6 @@ import {
 import { RootState } from 'store/store'
 import { Datum, LayoutAxis, PlotData } from 'plotly.js'
 import createColormap from 'colormap'
-import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
 import Slider from '@mui/material/Slider'
 import Box from '@mui/material/Box'
 
@@ -195,7 +194,6 @@ const ImagePlotChart = React.memo<{
 
   const layout = React.useMemo(
     () => ({
-      title: getFileName(path),
       width: width,
       height: height - 150,
       margin: {
@@ -224,7 +222,7 @@ const ImagePlotChart = React.memo<{
         showticklabels: showticklabels, // todo
       },
     }),
-    [path, showgrid, showline, showticklabels, width, height],
+    [showgrid, showline, showticklabels, width, height],
   )
 
   const config = {

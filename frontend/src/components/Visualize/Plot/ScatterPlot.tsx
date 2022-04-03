@@ -19,7 +19,6 @@ import {
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
 
 export const ScatterPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -87,7 +86,6 @@ const ScatterPlotImple = React.memo(() => {
 
   const layout = React.useMemo(
     () => ({
-      title: getFileName(path),
       width: width,
       height: height - 50,
       margin: {
@@ -122,7 +120,7 @@ const ScatterPlotImple = React.memo(() => {
         },
       },
     }),
-    [xIndex, yIndex, maxIndex, path, scatterData, width, height],
+    [xIndex, yIndex, maxIndex, scatterData, width, height],
   )
 
   const config = {

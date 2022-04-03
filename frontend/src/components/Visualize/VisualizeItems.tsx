@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useTheme } from '@mui/material/styles'
@@ -10,7 +10,10 @@ import InputAdornment from '@mui/material/InputAdornment'
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 
 import {
+  selectImageItemFilePath,
   selectSelectedVisualizeItemId,
+  selectVisualizeDataNodeId,
+  selectVisualizeDataType,
   selectVisualizeItemHeight,
   selectVisualizeItemLayout,
   selectVisualizeItemType,
@@ -23,10 +26,15 @@ import { MultiPlotItem } from './MultiPlotItem'
 import { DisplayDataItem } from './DisplayDataItem'
 import {
   selectItem,
+  setDisplayDataPath,
   setItemHeight,
   setItemWidth,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { RootState } from 'store/store'
+import { FilePathSelect } from './FilePathSelect'
+import { DATA_TYPE } from 'store/slice/DisplayData/DisplayDataType'
+import { deleteDisplayItem } from 'store/slice/DisplayData/DisplayDataSlice'
+import { VISUALIZE_ITEM_TYPE_SET } from 'store/slice/VisualizeItem/VisualizeItemType'
 
 export const VisualizeItems: React.FC = () => {
   return (
@@ -56,7 +64,7 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
   const itemType = useSelector(selectVisualizeItemType(itemId))
 
   const dispatch = useDispatch()
-  const onSelect = () => {
+  const onClick = () => {
     dispatch(selectItem(itemId))
   }
   const isSelected = useSelector(
@@ -110,10 +118,13 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
         cursor: 'pointer',
         borderColor: isSelected ? theme.palette.primary.light : undefined,
       }}
-      onClick={onSelect}
+      onClick={onClick}
     >
       <Box display="flex" justifyContent="flex-end">
         <Box flexGrow={1}>
+          {itemType === VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA && (
+            <FilePathSelectItem itemId={itemId} />
+          )}
           <TextField
             type="number"
             size="small"
@@ -125,6 +136,7 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
             inputProps={{
               min: 150,
             }}
+            style={{ marginLeft: 10 }}
             value={inputWidth}
             onBlur={onBlurWidth}
             onChange={onChangeWidth}
@@ -159,11 +171,49 @@ const ItemByType = React.memo<{
   itemId: number
 }>(({ itemType, itemId }) => {
   switch (itemType) {
-    case 'MultiPlot':
+    case VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT:
       return <MultiPlotItem itemId={itemId} />
-    case 'displayData':
+    case VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA:
       return <DisplayDataItem itemId={itemId} />
     default:
       throw new Error('itemType Error')
   }
+})
+
+const FilePathSelectItem = React.memo<{
+  itemId: number
+}>(({ itemId }) => {
+  const dispatch = useDispatch()
+  const dataType = useSelector(selectVisualizeDataType(itemId))
+  const selectedNodeId = useSelector(selectVisualizeDataNodeId(itemId))
+  const selectedFilePath = useSelector(selectImageItemFilePath(itemId))
+
+  const [prevItem, setPrevItem] = useState<{
+    dataType: DATA_TYPE
+    filePath: string | null
+  }>({
+    dataType: 'image',
+    filePath: null,
+  })
+
+  useEffect(() => {
+    setPrevItem({ dataType, filePath: selectedFilePath })
+  }, [selectedFilePath, dataType])
+
+  const onSelectFilePath = (
+    nodeId: string,
+    filePath: string,
+    dataType: DATA_TYPE,
+  ) => {
+    dispatch(setDisplayDataPath({ itemId, nodeId, filePath, dataType }))
+    dispatch(deleteDisplayItem(prevItem))
+  }
+
+  return (
+    <FilePathSelect
+      selectedNodeId={selectedNodeId}
+      selectedFilePath={selectedFilePath}
+      onSelect={onSelectFilePath}
+    />
+  )
 })
