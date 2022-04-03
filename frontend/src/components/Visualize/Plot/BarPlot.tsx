@@ -13,7 +13,6 @@ import {
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getBarData } from 'store/slice/DisplayData/DisplayDataActions'
 import { BarData } from 'store/slice/DisplayData/DisplayDataType'
-import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
 import {
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
@@ -61,7 +60,6 @@ const BarPlotImple = React.memo(() => {
 
   const layout = React.useMemo(
     () => ({
-      title: getFileName(path),
       width: width,
       height: height - 50,
       margin: {
@@ -72,7 +70,7 @@ const BarPlotImple = React.memo(() => {
       dragmode: 'pan',
       autosize: true,
     }),
-    [path, width, height],
+    [width, height],
   )
 
   const config = {

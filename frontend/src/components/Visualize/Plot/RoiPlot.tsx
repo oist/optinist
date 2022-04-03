@@ -14,7 +14,6 @@ import { LinearProgress, Typography } from '@mui/material'
 import { getRoiData } from 'store/slice/DisplayData/DisplayDataActions'
 import createColormap from 'colormap'
 import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
-import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
 import {
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
@@ -90,7 +89,6 @@ const RoiPlotImple = React.memo<{}>(() => {
 
   const layout = React.useMemo(
     () => ({
-      title: getFileName(path),
       width: width,
       height: height - 50,
       margin: {
@@ -112,7 +110,7 @@ const RoiPlotImple = React.memo<{}>(() => {
         ticks: '',
       },
     }),
-    [path, width, height],
+    [width, height],
   )
   const config = {
     displayModeBar: true,
