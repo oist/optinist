@@ -334,12 +334,6 @@ const ImagePlotChart = React.memo<{
 
   return (
     <div ref={ref}>
-      <PlotlyChart
-        data={data}
-        layout={layout}
-        config={config}
-        onClick={onClick}
-      />
       <Box sx={{ width: '50%' }}>
         <Button variant="outlined" onClick={onPlayClick}>
           Play
@@ -376,6 +370,12 @@ const ImagePlotChart = React.memo<{
           onChange={onSliderChange}
         />
       </Box>
+      <PlotlyChart
+        data={data}
+        layout={layout}
+        config={config}
+        onClick={onClick}
+      />
     </div>
   )
 })
