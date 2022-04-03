@@ -26,6 +26,7 @@ import {
   selectTimeSeriesItemSpan,
   selectTimeSeriesItemXrange,
   selectTimeSeriesItemZeroLine,
+  selectVisualizeItemHeight,
   selectVisualizeItemWidth,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { setTimeSeriesItemCheckedList } from 'store/slice/VisualizeItem/VisualizeItemSlice'
@@ -82,6 +83,7 @@ const TimeSeriesPlotImple = React.memo(() => {
   const displayNumbers = useSelector(selectTimeSeriesItemDisplayNumbers(itemId))
   const checkedList = useSelector(selectTimeSeriesItemCheckedList(itemId))
   const width = useSelector(selectVisualizeItemWidth(itemId))
+  const height = useSelector(selectVisualizeItemHeight(itemId))
 
   const colorScale = createColormap({
     colormap: 'jet',
@@ -210,7 +212,7 @@ const TimeSeriesPlotImple = React.memo(() => {
       dragmode: 'pan',
       autosize: true,
       width: width,
-      height: 300,
+      height: height - 200,
       xaxis: {
         range: [xrange.left, xrange.right],
         showgrid: showgrid,
@@ -235,6 +237,7 @@ const TimeSeriesPlotImple = React.memo(() => {
       zeroline,
       annotations,
       width,
+      height,
     ],
   )
 

@@ -16,6 +16,7 @@ import { getHeatMapData } from 'store/slice/DisplayData/DisplayDataActions'
 import {
   selectHeatMapItemColors,
   selectHeatMapItemShowScale,
+  selectVisualizeItemHeight,
   selectVisualizeItemWidth,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
@@ -49,6 +50,7 @@ const HeatMapImple = React.memo(() => {
   const showscale = useSelector(selectHeatMapItemShowScale(itemId))
   const colorscale = useSelector(selectHeatMapItemColors(itemId))
   const width = useSelector(selectVisualizeItemWidth(itemId))
+  const height = useSelector(selectVisualizeItemHeight(itemId))
 
   const data = React.useMemo(
     () =>
@@ -87,6 +89,7 @@ const HeatMapImple = React.memo(() => {
     () => ({
       title: getFileName(path),
       width: width,
+      height: height,
       dragmode: 'pan',
       margin: {
         t: 60, // top
@@ -94,9 +97,8 @@ const HeatMapImple = React.memo(() => {
         b: 30, // bottom
       },
       autosize: true,
-      height: 350,
     }),
-    [width],
+    [width, height],
   )
 
   const config = {

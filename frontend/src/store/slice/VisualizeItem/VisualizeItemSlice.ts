@@ -35,7 +35,7 @@ const displayDataCommonInitialValue = {
   filePath: null,
   nodeId: null,
   width: 500,
-  height: 300,
+  height: 500,
 }
 const imageItemInitialValue: ImageItem = {
   ...displayDataCommonInitialValue,

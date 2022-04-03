@@ -11,6 +11,7 @@ import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 
 import {
   selectSelectedVisualizeItemId,
+  selectVisualizeItemHeight,
   selectVisualizeItemLayout,
   selectVisualizeItemType,
   selectVisualizeItemWidth,
@@ -22,6 +23,7 @@ import { MultiPlotItem } from './MultiPlotItem'
 import { DisplayDataItem } from './DisplayDataItem'
 import {
   selectItem,
+  setItemHeight,
   setItemWidth,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { RootState } from 'store/store'
@@ -63,6 +65,7 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
   const theme = useTheme()
 
   const width = useSelector(selectVisualizeItemWidth(itemId))
+  const height = useSelector(selectVisualizeItemHeight(itemId))
   const [inputWidth, setInputWidth] = React.useState(width)
   const onBlurWidth = () => {
     const value = inputWidth >= 150 ? inputWidth : 150
@@ -78,12 +81,30 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
     const value = Number(event.target.value)
     setInputWidth(value)
   }
+
+  const [inputHeight, setInputHeight] = React.useState(height)
+  const onBlurHeight = () => {
+    const value = inputHeight >= 300 ? inputHeight : 300
+    dispatch(
+      setItemHeight({
+        itemId,
+        height: value,
+      }),
+    )
+    setInputHeight(value)
+  }
+  const onChangeHeight = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = Number(event.target.value)
+    setInputHeight(value)
+  }
+
   return (
     <Paper
       variant="outlined"
       key={itemId}
       style={{
         width: `${width}px`,
+        height: `${height}px`,
         margin: theme.spacing(1),
         padding: theme.spacing(1),
         cursor: 'pointer',
@@ -107,6 +128,21 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
             value={inputWidth}
             onBlur={onBlurWidth}
             onChange={onChangeWidth}
+          />
+          <TextField
+            type="number"
+            size="small"
+            label="height"
+            sx={{ marginRight: 1, marginBottom: 1, width: '100px' }}
+            InputProps={{
+              endAdornment: <InputAdornment position="end">px</InputAdornment>,
+            }}
+            inputProps={{
+              min: 150,
+            }}
+            value={inputHeight}
+            onBlur={onBlurHeight}
+            onChange={onChangeHeight}
           />
         </Box>
         <Box>
