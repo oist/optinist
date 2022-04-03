@@ -349,7 +349,6 @@ const ImagePlotChart = React.memo<{
         <Button variant="outlined" onClick={onPauseClick}>
           Pause
         </Button>
-        duration:
         <TextField
           // error={inputError}
           type="number"
@@ -366,7 +365,7 @@ const ImagePlotChart = React.memo<{
           // helperText={inputError ? 'index > 0' : undefined}
         />
         msec
-        <Typography>Index: {startIndex + activeIndex}</Typography>
+        <div>Index: {startIndex + activeIndex}</div>
         <Slider
           aria-label="Index"
           defaultValue={1}

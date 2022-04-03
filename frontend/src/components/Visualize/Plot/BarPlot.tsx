@@ -63,7 +63,7 @@ const BarPlotImple = React.memo(() => {
     () => ({
       title: getFileName(path),
       width: width,
-      height: height,
+      height: height - 50,
       margin: {
         t: 60, // top
         l: 50, // left

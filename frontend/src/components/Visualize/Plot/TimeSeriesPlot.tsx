@@ -212,7 +212,7 @@ const TimeSeriesPlotImple = React.memo(() => {
       dragmode: 'pan',
       autosize: true,
       width: width,
-      height: height - 200,
+      height: height - 50,
       xaxis: {
         range: [xrange.left, xrange.right],
         showgrid: showgrid,

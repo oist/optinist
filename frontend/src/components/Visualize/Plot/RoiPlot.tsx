@@ -92,7 +92,7 @@ const RoiPlotImple = React.memo<{}>(() => {
     () => ({
       title: getFileName(path),
       width: width,
-      height: height,
+      height: height - 50,
       margin: {
         t: 30, // top
         l: 120, // left

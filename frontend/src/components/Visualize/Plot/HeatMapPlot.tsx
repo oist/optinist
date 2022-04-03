@@ -89,7 +89,7 @@ const HeatMapImple = React.memo(() => {
     () => ({
       title: getFileName(path),
       width: width,
-      height: height,
+      height: height - 50,
       dragmode: 'pan',
       margin: {
         t: 60, // top
