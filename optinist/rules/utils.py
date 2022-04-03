@@ -1,12 +1,14 @@
-from wrappers import wrapper_dict
-from wrappers.data_wrapper import ImageData
-from wrappers.nwb_wrapper import save_nwb
+
 import traceback
 import os
 import pickle
 from cui_api.utils import join_file_path
 import gc
 import copy
+
+from wrappers import wrapper_dict
+from wrappers.data_wrapper import ImageData
+from wrappers.nwb_wrapper import save_nwb, NWBDATASET
 
 
 def dict2leaf(root_dict: dict, path_list):
@@ -22,14 +24,32 @@ def change_dict_key_exist(d, old_key, new_key):
         d[new_key] = d.pop(old_key)
 
 
+def merge_nwbfile(old_nwbfile, new_nwbfile):
+    for pattern in [
+        NWBDATASET.POSTPROCESS,
+        NWBDATASET.TIMESERIES,
+        NWBDATASET.MOTION_CORRECTION,
+        NWBDATASET.ROI,
+        NWBDATASET.COLUMN,
+        NWBDATASET.FLUORESCENCE,
+    ]:
+        if pattern in new_nwbfile:
+            if pattern in old_nwbfile:
+                old_nwbfile[pattern].update(new_nwbfile[pattern])
+            else:
+                old_nwbfile[pattern] = new_nwbfile[pattern]
+    return old_nwbfile
+
+
 def get_input_info(input_files):
     input_info = {}
     nwbfile = {}
     for path in input_files:
         with open(path, 'rb') as f:
             data = pickle.load(f)
-            # nwbfile = merge_nwbfile(input_info, data)
-            input_info.update(data)
+            input_info = dict(list(data.items()) + list(input_info.items()))
+            if 'nwbfile' in input_info:
+                input_info['nwbfile'] = merge_nwbfile(input_info['nwbfile'], data['nwbfile'])
     return input_info
 
 

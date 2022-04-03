@@ -51,7 +51,7 @@ def get_error(info, node_id, unique_id):
     if isinstance(info, str):
         error_message = info
     else:
-        error_message = "¥n".join(info)
+        error_message = "\n".join(info)
 
     message = {
         "status": "error",
