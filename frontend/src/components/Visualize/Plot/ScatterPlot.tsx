@@ -16,6 +16,7 @@ import { ScatterData } from 'store/slice/DisplayData/DisplayDataType'
 import {
   selectScatterItemXIndex,
   selectScatterItemYIndex,
+  selectVisualizeItemWidth,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
 
@@ -53,6 +54,7 @@ const ScatterPlotImple = React.memo(() => {
   const xIndex = useSelector(selectScatterItemXIndex(itemId))
   const yIndex = useSelector(selectScatterItemYIndex(itemId))
   const maxIndex = Object.keys(scatterData).length - 1
+  const width = useSelector(selectVisualizeItemWidth(itemId))
 
   const data = React.useMemo(
     () => [
@@ -84,6 +86,7 @@ const ScatterPlotImple = React.memo(() => {
   const layout = React.useMemo(
     () => ({
       title: getFileName(path),
+      width: width,
       margin: {
         t: 60, // top
         l: 50, // left
@@ -116,7 +119,7 @@ const ScatterPlotImple = React.memo(() => {
         },
       },
     }),
-    [xIndex, yIndex, maxIndex, path, scatterData],
+    [xIndex, yIndex, maxIndex, path, scatterData, width],
   )
 
   const config = {

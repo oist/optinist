@@ -14,6 +14,7 @@ import {
 import { getBarData } from 'store/slice/DisplayData/DisplayDataActions'
 import { BarData } from 'store/slice/DisplayData/DisplayDataType'
 import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
+import { selectVisualizeItemWidth } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 export const BarPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -39,7 +40,8 @@ export const BarPlot = React.memo(() => {
 })
 
 const BarPlotImple = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataContext)
+  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+  const width = useSelector(selectVisualizeItemWidth(itemId))
 
   const barData = useSelector(selectBarData(path), barDataEqualityFn)
 
@@ -57,6 +59,7 @@ const BarPlotImple = React.memo(() => {
   const layout = React.useMemo(
     () => ({
       title: getFileName(path),
+      width: width,
       margin: {
         t: 60, // top
         l: 50, // left
@@ -65,7 +68,7 @@ const BarPlotImple = React.memo(() => {
       dragmode: 'pan',
       autosize: true,
     }),
-    [path],
+    [path, width],
   )
 
   const config = {

@@ -36,6 +36,7 @@ import {
   selectRoiItemIndex,
   selectImageItemRoiAlpha,
   selectImageItemDuration,
+  selectVisualizeItemWidth,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
   incrementImageActiveIndex,
@@ -123,10 +124,9 @@ const ImagePlotChart = React.memo<{
   const showscale = useSelector(selectImageItemShowScale(itemId))
   const colorscale = useSelector(selectImageItemColors(itemId))
   const duration = useSelector(selectImageItemDuration(itemId))
-
   const timeDataMaxIndex = useSelector(selectRoiItemIndex(itemId, roiFilePath))
-
   const roiAlpha = useSelector(selectImageItemRoiAlpha(itemId))
+  const width = useSelector(selectVisualizeItemWidth(itemId))
 
   const colorscaleRoi = createColormap({
     colormap: 'jet',
@@ -194,7 +194,7 @@ const ImagePlotChart = React.memo<{
   const layout = React.useMemo(
     () => ({
       title: getFileName(path),
-      // width: 600,
+      width: width,
       // height: 600,
       margin: {
         t: 30, // top
@@ -222,7 +222,7 @@ const ImagePlotChart = React.memo<{
         showticklabels: showticklabels, // todo
       },
     }),
-    [path, showgrid, showline, showticklabels],
+    [path, showgrid, showline, showticklabels, width],
   )
 
   const config = {

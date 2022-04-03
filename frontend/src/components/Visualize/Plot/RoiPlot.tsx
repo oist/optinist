@@ -15,6 +15,7 @@ import { getRoiData } from 'store/slice/DisplayData/DisplayDataActions'
 import createColormap from 'colormap'
 import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
 import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
+import { selectVisualizeItemWidth } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 export const RoiPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -41,8 +42,9 @@ export const RoiPlot = React.memo(() => {
 })
 
 const RoiPlotImple = React.memo<{}>(() => {
-  const { filePath: path } = React.useContext(DisplayDataContext)
+  const { itemId, filePath: path } = React.useContext(DisplayDataContext)
   const imageData = useSelector(selectRoiData(path), imageDataEqualtyFn)
+  const width = useSelector(selectVisualizeItemWidth(itemId))
 
   const colorscale: ColorType[] = createColormap({
     colormap: 'jet',
@@ -85,6 +87,7 @@ const RoiPlotImple = React.memo<{}>(() => {
   const layout = React.useMemo(
     () => ({
       title: getFileName(path),
+      width: width,
       margin: {
         t: 30, // top
         l: 120, // left
@@ -104,7 +107,7 @@ const RoiPlotImple = React.memo<{}>(() => {
         ticks: '',
       },
     }),
-    [path],
+    [path, width],
   )
   const config = {
     displayModeBar: true,
