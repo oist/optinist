@@ -171,23 +171,3 @@ function scatterDataEqualityFn(
     return a === undefined && b === undefined
   }
 }
-
-// function nestEqualityFun(
-//   a: {
-//     [key: number]: number
-//   },
-//   b: {
-//     [key: number]: number
-//   },
-// ) {
-//   const aArray = Object.entries(a)
-//   const bArray = Object.entries(b)
-//   return (
-//     a === b ||
-//     (aArray.length === bArray.length &&
-//       aArray.every(([aKey, aValue], i) => {
-//         const [bKey, bValue] = bArray[i]
-//         return bKey === aKey && bValue === aValue
-//       }))
-//   )
-// }
