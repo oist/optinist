@@ -39,7 +39,6 @@ def SVM(
         iscell = iscell.data
         ind  = np.where(iscell > 0)[0]
         X = X[:, ind]
-        Y = Y[:, ind]
 
     Y = Y[:, params['target_index']].reshape(-1, 1)
 
