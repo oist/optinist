@@ -17,7 +17,7 @@ def calc_trigger(behavior_data, trigger_type, trigger_threshold):
 
 
 def calc_trigger_average(neural_data, trigger_idx, start_time, end_time):
-    num_frame = neural_data.shape[1]
+    num_frame = neural_data.shape[0]
 
     ind = np.array(range(start_time, end_time), dtype = int)
 
@@ -26,7 +26,7 @@ def calc_trigger_average(neural_data, trigger_idx, start_time, end_time):
         target_idx = ind + trigger
 
         if np.min(target_idx) >= 0 and np.max(target_idx) < num_frame:
-            event_trigger_data.append(neural_data[:, target_idx])
+            event_trigger_data.append(neural_data[target_idx])
 
     # (num_event, cell_number, event_time_lambda)
     event_trigger_data = np.array(event_trigger_data)
@@ -36,48 +36,50 @@ def calc_trigger_average(neural_data, trigger_idx, start_time, end_time):
 
 def ETA(
         neural_data: TimeSeriesData,
-        behavior_data: TimeSeriesData,
+        behaviors_data: TimeSeriesData,
         iscell: IscellData=None,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {}:
+    ) -> {'mean': TimeSeriesData}:
     import numpy as np
 
     neural_data = neural_data.data
-    behavior_data = behavior_data.data
+    behaviors_data = behaviors_data.data
 
-    # data shold be time x component matrix
     if params['transpose_x']:
-        neural_data = neural_data.transpose()
+        X = neural_data.transpose()
+    else:
+        X = neural_data
 
     if params['transpose_y']:
-        behavior_data = behavior_data.transpose()
+        Y = behaviors_data.transpose()
+    else:
+        Y = behaviors_data
+
+    assert X.shape[0] == Y.shape[0], f"""
+        neural_data and behaviors_data is not same dimension,
+        neural.shape{X.shape}, behavior.shape{Y.shape}"""
 
     if iscell is not None:
         iscell = iscell.data
-        ind  = np.where(iscell > 0)[0]
-        neural_data = neural_data[ind, :]
-        behavior_data = behavior_data[ind, :]
+        ind = np.where(iscell > 0)[0]
+        X = X[:, ind]
 
-    behavior_data = behavior_data[:, params['target_index']]
-
-    assert neural_data.shape[1] == behavior_data.shape[0], f"""
-        neural_data.shape[1] == behavior_data.shape[0] is not same dimension,
-        neural.shape{neural_data.shape}, behavior.shape{behavior_data.shape},
-        you need to transpose dimenstion.
-    """
+    Y = Y[:, params['target_index']]
 
     # calculate Triggers
-    trigger_idx = calc_trigger(behavior_data, params['trigger_type'], params['trigger_threshold'])
+    trigger_idx = calc_trigger(Y, params['trigger_type'], params['trigger_threshold'])
 
     # calculate Triggered average
     event_trigger_data = calc_trigger_average(
-        neural_data, trigger_idx, params['start_time'], params['end_time'])
+        X, trigger_idx, params['start_time'], params['end_time'])
 
     # (cell_number, event_time_lambda)
     if len(event_trigger_data) > 0:
         mean = np.mean(event_trigger_data, axis=0)
         sem = np.std(event_trigger_data, axis=0) / np.sqrt(len(event_trigger_data))
+        mean = mean.transpose()
+        sem = sem.transpose()
     else:
         assert False, "Output data size is 0"
 

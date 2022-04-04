@@ -2,7 +2,7 @@
 standard_x_mean: True
 standard_x_std: True
 
-transpose_x: False
+transpose_x: True
 transpose_y: False
 
 target_index: 1
@@ -15,7 +15,7 @@ target_index: 1
 CV:
   n_splits: 5
   shuffle: False
-  random_state: 0
+  # random_state: 0
 
 
 ##############################
@@ -25,7 +25,7 @@ LDA:
   solver: 'svd'
   shrinkage:
   priors:
-  n_components: 2
+  n_components: null
   store_covariance: False
   tol: 0.0001
   covariance_estimator:

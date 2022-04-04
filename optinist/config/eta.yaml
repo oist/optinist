@@ -1,4 +1,4 @@
-transpose_x: False
+transpose_x: True
 transpose_y: False
 
 target_index: 1

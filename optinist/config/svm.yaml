@@ -4,7 +4,7 @@
 standard_x_mean: True
 standard_x_std: True
 
-transpose_x: False
+transpose_x: True
 transpose_y: False
 
 target_index: 1
@@ -45,7 +45,7 @@ grid_search:
 CV: 
   n_splits: 5
   shuffle: True
-  random_state: 0
+  # random_state: 0
 
 ##############################
 #  SVC parameters
