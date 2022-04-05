@@ -35,9 +35,8 @@ def LDA(
 
     if iscell is not None:
         iscell = iscell.data
-        ind  = np.where(iscell > 0)[0]
-        X = X[ind, :]
-        Y = Y[ind, :]
+        ind = np.where(iscell > 0)[0]
+        X = X[:, ind]
 
     Y = Y[:, params['target_index']].reshape(-1, 1)
 

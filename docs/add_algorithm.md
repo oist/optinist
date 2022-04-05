@@ -175,7 +175,6 @@ target_index: 1
 CV:
   n_splits: 5
   shuffle: False
-  random_state: 0
 
 LDA:
   solver: 'svd'

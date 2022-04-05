@@ -43,7 +43,6 @@ def merge_nwbfile(old_nwbfile, new_nwbfile):
 
 def get_input_info(input_files):
     input_info = {}
-    nwbfile = {}
     for path in input_files:
         with open(path, 'rb') as f:
             data = pickle.load(f)

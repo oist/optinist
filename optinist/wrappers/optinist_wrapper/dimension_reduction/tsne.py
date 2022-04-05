@@ -22,7 +22,7 @@ def TSNE(
     if iscell is not None:
         iscell = iscell.data
         ind  = np.where(iscell > 0)[0]
-        X = X[ind, :]
+        X = X[:, ind]
 
     # preprocessing  ##################
     tX = standard_norm(X, params['standard_mean'], params['standard_std'])
