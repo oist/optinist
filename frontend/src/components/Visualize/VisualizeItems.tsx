@@ -16,13 +16,11 @@ import {
   selectVisualizeDataType,
   selectVisualizeItemHeight,
   selectVisualizeItemLayout,
-  selectVisualizeItemType,
   selectVisualizeItemWidth,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 import { VisualizeItemAddButton } from './VisualizeItemAddButton'
 import { VisualizeItemLayoutMenuIcon } from './VisualizeItemLayoutMenuIcon'
-import { MultiPlotItem } from './MultiPlotItem'
 import { DisplayDataItem } from './DisplayDataItem'
 import {
   selectItem,
@@ -34,7 +32,6 @@ import { RootState } from 'store/store'
 import { FilePathSelect } from './FilePathSelect'
 import { DATA_TYPE } from 'store/slice/DisplayData/DisplayDataType'
 import { deleteDisplayItem } from 'store/slice/DisplayData/DisplayDataSlice'
-import { VISUALIZE_ITEM_TYPE_SET } from 'store/slice/VisualizeItem/VisualizeItemType'
 
 export const VisualizeItems: React.FC = () => {
   return (
@@ -61,8 +58,6 @@ const FlexItemList: React.FC = () => {
 }
 
 const Item = React.memo<{ itemId: number }>(({ itemId }) => {
-  const itemType = useSelector(selectVisualizeItemType(itemId))
-
   const dispatch = useDispatch()
   const onClick = () => {
     dispatch(selectItem(itemId))
@@ -122,9 +117,7 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
     >
       <Box display="flex" justifyContent="flex-end">
         <Box flexGrow={1}>
-          {itemType === VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA && (
-            <FilePathSelectItem itemId={itemId} />
-          )}
+          <FilePathSelectItem itemId={itemId} />
           <TextField
             type="number"
             size="small"
@@ -161,23 +154,15 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
           <VisualizeItemLayoutMenuIcon itemId={itemId} />
         </Box>
       </Box>
-      <ItemByType itemType={itemType} itemId={itemId} />
+      <ItemByType itemId={itemId} />
     </Paper>
   )
 })
 
 const ItemByType = React.memo<{
-  itemType: string
   itemId: number
-}>(({ itemType, itemId }) => {
-  switch (itemType) {
-    case VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT:
-      return <MultiPlotItem itemId={itemId} />
-    case VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA:
-      return <DisplayDataItem itemId={itemId} />
-    default:
-      throw new Error('itemType Error')
-  }
+}>(({ itemId }) => {
+  return <DisplayDataItem itemId={itemId} />
 })
 
 const FilePathSelectItem = React.memo<{

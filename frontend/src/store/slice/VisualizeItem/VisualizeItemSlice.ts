@@ -2,7 +2,6 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 
 import {
-  MultiPlotItem,
   HeatMapItem,
   ImageItem,
   CsvItem,
@@ -16,7 +15,6 @@ import {
   HTMLItem,
 } from './VisualizeItemType'
 import {
-  isMultiPlotItem,
   isDisplayDataItem,
   isHeatMapItem,
   isImageItem,
@@ -136,14 +134,6 @@ function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
   }
 }
 
-const MultiPlotItemInitialValue: MultiPlotItem = {
-  itemType: VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT,
-  imageItem: imageItemInitialValue,
-  timeSeriesItem: timeSeriesItemInitialValue,
-  heatMapItem: heatMapItemInitialValue,
-  width: 800,
-  height: 300,
-}
 export const visualaizeItemSlice = createSlice({
   name: 'visualaizeItem',
   initialState,
@@ -207,18 +197,7 @@ export const visualaizeItemSlice = createSlice({
     ) => {
       const { itemId, filePath, nodeId } = action.payload
       const targetItem = state.items[itemId]
-      if (isMultiPlotItem(targetItem)) {
-        if (targetItem.imageItem.roiItem != null) {
-          targetItem.imageItem.roiItem.filePath = filePath
-          targetItem.imageItem.roiItem.nodeId = nodeId
-        } else {
-          targetItem.imageItem.roiItem = {
-            ...roiItemInitialValue,
-            filePath,
-            nodeId,
-          }
-        }
-      } else if (isImageItem(targetItem)) {
+      if (isImageItem(targetItem)) {
         if (targetItem.roiItem != null) {
           targetItem.roiItem.filePath = filePath
           targetItem.roiItem.nodeId = nodeId
@@ -242,18 +221,7 @@ export const visualaizeItemSlice = createSlice({
     ) => {
       const { itemId, filePath, nodeId, dataType } = action.payload
       const targetItem = state.items[itemId]
-      if (isMultiPlotItem(targetItem)) {
-        if (dataType === DATA_TYPE_SET.IMAGE) {
-          targetItem.imageItem.filePath = filePath
-          targetItem.imageItem.nodeId = nodeId
-        } else if (dataType === DATA_TYPE_SET.TIME_SERIES) {
-          targetItem.timeSeriesItem.filePath = filePath
-          targetItem.timeSeriesItem.nodeId = nodeId
-        } else if (dataType === DATA_TYPE_SET.HEAT_MAP) {
-          targetItem.heatMapItem.filePath = filePath
-          targetItem.heatMapItem.nodeId = nodeId
-        }
-      } else if (isDisplayDataItem(targetItem)) {
+      if (isDisplayDataItem(targetItem)) {
         targetItem.filePath = filePath
         targetItem.nodeId = nodeId
       } else {
@@ -270,10 +238,7 @@ export const visualaizeItemSlice = createSlice({
     ) => {
       const { itemId, filePath, nodeId } = action.payload
       const targetItem = state.items[itemId]
-      if (isMultiPlotItem(targetItem)) {
-        targetItem.imageItem.filePath = filePath
-        targetItem.imageItem.nodeId = nodeId
-      } else if (isImageItem(targetItem)) {
+      if (isImageItem(targetItem)) {
         targetItem.filePath = filePath
         targetItem.nodeId = nodeId
       }
@@ -288,10 +253,7 @@ export const visualaizeItemSlice = createSlice({
     ) => {
       const { itemId, filePath, nodeId } = action.payload
       const targetItem = state.items[itemId]
-      if (isMultiPlotItem(targetItem)) {
-        targetItem.timeSeriesItem.filePath = filePath
-        targetItem.timeSeriesItem.nodeId = nodeId
-      } else if (isTimeSeriesItem(targetItem)) {
+      if (isTimeSeriesItem(targetItem)) {
         targetItem.filePath = filePath
         targetItem.nodeId = nodeId
       }
@@ -306,10 +268,7 @@ export const visualaizeItemSlice = createSlice({
     ) => {
       const { itemId, filePath, nodeId } = action.payload
       const targetItem = state.items[itemId]
-      if (isMultiPlotItem(targetItem)) {
-        targetItem.heatMapItem.filePath = filePath
-        targetItem.heatMapItem.nodeId = nodeId
-      } else if (isHeatMapItem(targetItem)) {
+      if (isHeatMapItem(targetItem)) {
         targetItem.filePath = filePath
         targetItem.nodeId = nodeId
       }
@@ -325,18 +284,7 @@ export const visualaizeItemSlice = createSlice({
     ) => {
       const { itemId, filePath, nodeId, dataType } = action.payload
       const targetItem = state.items[itemId]
-      if (isMultiPlotItem(targetItem)) {
-        if (dataType != null && targetItem.imageItem.dataType !== dataType) {
-          state.items[itemId] = {
-            ...getDisplayDataItemInitialValue(dataType),
-            filePath,
-            nodeId,
-          }
-        } else {
-          targetItem.imageItem.filePath = filePath
-          targetItem.imageItem.nodeId = nodeId
-        }
-      } else if (isDisplayDataItem(targetItem)) {
+      if (isDisplayDataItem(targetItem)) {
         if (dataType != null && targetItem.dataType !== dataType) {
           state.items[itemId] = {
             ...getDisplayDataItemInitialValue(dataType),
@@ -356,25 +304,11 @@ export const visualaizeItemSlice = createSlice({
       state,
       action: PayloadAction<{
         itemId: number
-        type: typeof VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT | DATA_TYPE
+        type: DATA_TYPE
       }>,
     ) => {
       const { itemId, type } = action.payload
-      if (type === VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT) {
-        state.items[itemId] = MultiPlotItemInitialValue
-      } else {
-        state.items[itemId] = getDisplayDataItemInitialValue(type)
-      }
-    },
-    toggleItemTypeMultiPlot: (state, action: PayloadAction<number>) => {
-      const itemId = action.payload
-      if (state.items[itemId].itemType === VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT) {
-        state.items[itemId] = {
-          ...getDisplayDataItemInitialValue(DATA_TYPE_SET.IMAGE), // FIXME dataTypeの型をNullableに変更して影響箇所も修正する
-        }
-      } else {
-        state.items[itemId] = MultiPlotItemInitialValue
-      }
+      state.items[itemId] = getDisplayDataItemInitialValue(type)
     },
     resetImageActiveIndex: (
       state,
@@ -394,8 +328,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[itemId]
       if (isImageItem(targetItem)) {
         targetItem.activeIndex++
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.imageItem.activeIndex++
       }
     },
     decrementImageActiveIndex: (
@@ -406,8 +338,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[itemId]
       if (isImageItem(targetItem)) {
         targetItem.activeIndex--
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.imageItem.activeIndex--
       }
     },
     setImageActiveIndex: (
@@ -421,8 +351,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[itemId]
       if (isImageItem(targetItem)) {
         targetItem.activeIndex = activeIndex
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.imageItem.activeIndex = activeIndex
       }
     },
     setImageItemShowticklabels: (
@@ -435,8 +363,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.showticklabels = action.payload.showticklabels
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.imageItem.showticklabels = action.payload.showticklabels
       }
     },
     setImageItemZsmooth: (
@@ -449,8 +375,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.zsmooth = action.payload.zsmooth
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.imageItem.zsmooth = action.payload.zsmooth
       }
     },
     setImageItemShowLine: (
@@ -463,8 +387,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.showline = action.payload.showline
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.imageItem.showline = action.payload.showline
       }
     },
     setImageItemShowGrid: (
@@ -477,8 +399,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.showgrid = action.payload.showgrid
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.imageItem.showgrid = action.payload.showgrid
       }
     },
     setImageItemShowScale: (
@@ -491,8 +411,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.showscale = action.payload.showscale
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.imageItem.showscale = action.payload.showscale
       }
     },
     setImageItemColors: (
@@ -508,8 +426,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.colors = action.payload.colors
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.imageItem.colors = action.payload.colors
       }
     },
     setImageItemStartIndex: (
@@ -522,8 +438,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.startIndex = action.payload.startIndex
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.imageItem.startIndex = action.payload.startIndex
       }
     },
     setImageItemEndIndex: (
@@ -536,8 +450,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.endIndex = action.payload.endIndex
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.imageItem.endIndex = action.payload.endIndex
       }
     },
     setImageItemRoiAlpha: (
@@ -550,8 +462,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.roiAlpha = action.payload.roiAlpha
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.imageItem.roiAlpha = action.payload.roiAlpha
       }
     },
     setImageItemDuration: (
@@ -564,8 +474,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.duration = action.payload.duration
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.imageItem.duration = action.payload.duration
       }
     },
     setTimeSeriesItemOffset: (
@@ -578,8 +486,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.offset = action.payload.offset
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.timeSeriesItem.offset = action.payload.offset
       }
     },
     setTimeSeriesItemSpan: (
@@ -592,8 +498,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.span = action.payload.span
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.timeSeriesItem.span = action.payload.span
       }
     },
     setTimeSeriesItemShowGrid: (
@@ -606,8 +510,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.showgrid = action.payload.showgrid
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.timeSeriesItem.showgrid = action.payload.showgrid
       }
     },
     setTimeSeriesItemShowLine: (
@@ -620,8 +522,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.showline = action.payload.showline
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.timeSeriesItem.showline = action.payload.showline
       }
     },
     setTimeSeriesItemShowTickLabels: (
@@ -634,8 +534,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.showticklabels = action.payload.showticklabels
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.timeSeriesItem.showticklabels = action.payload.showticklabels
       }
     },
     setTimeSeriesItemZeroLine: (
@@ -648,8 +546,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.zeroline = action.payload.zeroline
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.timeSeriesItem.zeroline = action.payload.zeroline
       }
     },
     setTimeSeriesItemXrangeLeft: (
@@ -662,8 +558,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.xrange.left = action.payload.left
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.timeSeriesItem.xrange.left = action.payload.left
       }
     },
     setTimeSeriesItemXrangeRight: (
@@ -676,8 +570,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.xrange.right = action.payload.right
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.timeSeriesItem.xrange.right = action.payload.right
       }
     },
     setTimeSeriesItemDisplayNumbers: (
@@ -689,9 +581,7 @@ export const visualaizeItemSlice = createSlice({
     ) => {
       const { itemId, displayNumbers } = action.payload
       const targetItem = state.items[itemId]
-      if (isMultiPlotItem(targetItem)) {
-        targetItem.timeSeriesItem.displayNumbers = displayNumbers
-      } else if (isTimeSeriesItem(targetItem)) {
+      if (isTimeSeriesItem(targetItem)) {
         targetItem.displayNumbers = displayNumbers
       }
     },
@@ -704,9 +594,7 @@ export const visualaizeItemSlice = createSlice({
     ) => {
       const { itemId, checkedList } = action.payload
       const targetItem = state.items[itemId]
-      if (isMultiPlotItem(targetItem)) {
-        targetItem.timeSeriesItem.checkedList = checkedList
-      } else if (isTimeSeriesItem(targetItem)) {
+      if (isTimeSeriesItem(targetItem)) {
         targetItem.checkedList = checkedList
       }
     },
@@ -719,9 +607,7 @@ export const visualaizeItemSlice = createSlice({
     ) => {
       const { itemId, maxIndex } = action.payload
       const targetItem = state.items[itemId]
-      if (isMultiPlotItem(targetItem)) {
-        targetItem.timeSeriesItem.maxIndex = maxIndex
-      } else if (isTimeSeriesItem(targetItem)) {
+      if (isTimeSeriesItem(targetItem)) {
         targetItem.maxIndex = maxIndex
       }
     },
@@ -735,8 +621,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isHeatMapItem(targetItem)) {
         targetItem.showscale = action.payload.showscale
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.heatMapItem.showscale = action.payload.showscale
       }
     },
     setHeatMapItemColors: (
@@ -752,8 +636,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isHeatMapItem(targetItem)) {
         targetItem.colors = action.payload.colors
-      } else if (isMultiPlotItem(targetItem)) {
-        targetItem.heatMapItem.colors = action.payload.colors
       }
     },
     setCsvItemTranspose: (
@@ -844,14 +726,6 @@ function resetImageActiveIndexFn(
   const targetItem = state.items[itemId]
   if (isImageItem(targetItem)) {
     targetItem.activeIndex = 0
-  } else if (isMultiPlotItem(targetItem)) {
-    targetItem.imageItem.activeIndex = 0
-    if (startIndex != null) {
-      targetItem.imageItem.startIndex = startIndex
-    }
-    if (endIndex != null) {
-      targetItem.imageItem.endIndex = endIndex
-    }
   }
 }
 
@@ -863,7 +737,6 @@ export const {
   setItemHeight,
   selectItem,
   setItemType,
-  toggleItemTypeMultiPlot,
   setFilePath,
   setHeatMapItemFilePath,
   setImageItemFilePath,

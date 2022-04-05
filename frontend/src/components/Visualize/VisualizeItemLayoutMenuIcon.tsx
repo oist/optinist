@@ -11,9 +11,7 @@ import AddIcon from '@mui/icons-material/Add'
 import {
   selectVisualizeDataFilePath,
   selectVisualizeDataType,
-  selectVisualizeItemType,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { VISUALIZE_ITEM_TYPE_SET } from 'store/slice/VisualizeItem/VisualizeItemType'
 import {
   deleteVisualizeItem,
   insertInitialItemToNextColumn,
@@ -22,13 +20,7 @@ import { deleteDisplayItem } from 'store/slice/DisplayData/DisplayDataSlice'
 
 export const VisualizeItemLayoutMenuIcon = React.memo<{ itemId: number }>(
   ({ itemId }) => {
-    const itemType = useSelector(selectVisualizeItemType(itemId))
-    switch (itemType) {
-      case VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA:
-        return <DisplayDataItemLayoutMenuIcon itemId={itemId} />
-      case VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT:
-        return <MultiPlotItemLayoutMenuIcon itemId={itemId} />
-    }
+    return <DisplayDataItemLayoutMenuIcon itemId={itemId} />
   },
 )
 
@@ -42,24 +34,6 @@ const DisplayDataItemLayoutMenuIcon = React.memo<{
     dispatch(deleteVisualizeItem(itemId))
     // visualize Itemで同じpathのデータ個数を調べて、1だったら、displayも削除
     dispatch(deleteDisplayItem({ dataType, filePath }))
-  }
-  const onClickInsertMenu = () => {
-    dispatch(insertInitialItemToNextColumn(itemId))
-  }
-  return (
-    <PresentationalLayoutMenuIcon
-      onClickDeleteMenu={onClickDeleteMenu}
-      onClickInsertMenu={onClickInsertMenu}
-    />
-  )
-})
-
-const MultiPlotItemLayoutMenuIcon = React.memo<{
-  itemId: number
-}>(({ itemId }) => {
-  const dispatch = useDispatch()
-  const onClickDeleteMenu = () => {
-    dispatch(deleteVisualizeItem(itemId))
   }
   const onClickInsertMenu = () => {
     dispatch(insertInitialItemToNextColumn(itemId))
