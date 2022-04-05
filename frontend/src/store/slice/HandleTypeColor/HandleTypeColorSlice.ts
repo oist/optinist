@@ -15,6 +15,7 @@ const initialState: HandleTypeColor = {
     IscellData: MuiColors.indigo[500],
     TimeSeriesData: MuiColors.yellow[500],
     Suite2pData: MuiColors.green[500],
+    FluoData: MuiColors.orange[500],
   },
   nextKey: 0,
 }

@@ -3,6 +3,7 @@ import {
   isHDF5InputNode,
   isCsvInputNode,
   isImageInputNode,
+  isFluoInputNode,
 } from './InputNodeUtils'
 
 export const selectInputNode = (state: RootState) => state.inputNode
@@ -12,6 +13,7 @@ export const selectInputNodeById = (nodeId: string) => (state: RootState) =>
 
 export const selectInputNodeDefined = (nodeId: string) => (state: RootState) =>
   Object.keys(state.inputNode).includes(nodeId)
+
 export const selectInputNodeFileType = (nodeId: string) => (state: RootState) =>
   selectInputNodeById(nodeId)(state).fileType
 
@@ -85,5 +87,15 @@ export const selectInputNodeHDF5Path =
       return item.hdf5Path
     } else {
       return undefined
+    }
+  }
+
+export const selectFluoInputNodeSelectedFilePath =
+  (nodeId: string) => (state: RootState) => {
+    const node = selectInputNodeById(nodeId)(state)
+    if (isFluoInputNode(node)) {
+      return node.selectedFilePath
+    } else {
+      throw new Error('invaid input node type')
     }
   }

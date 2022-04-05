@@ -154,7 +154,6 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
           </Select>
         </Box>
         <Box>
-          {/* <VisualizeItemLayoutMenuIcon itemId={itemId} /> */}
           <DisplayDataItemLayoutMenuIcon itemId={itemId} />
         </Box>
       </Box>
