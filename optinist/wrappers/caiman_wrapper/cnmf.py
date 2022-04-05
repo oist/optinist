@@ -56,8 +56,10 @@ def get_roi(A, thr, thr_method, swap_dim, dims):
 
 
 def caiman_cnmf(
-        images: ImageData, nwbfile: NWBFile=None, params: dict=None
-    ) -> {'fluorescence': TimeSeriesData, 'iscell': IscellData}:
+        images: ImageData,
+        nwbfile: NWBFile=None,
+        params: dict=None
+    ) -> {'fluorescence': FluoData, 'iscell': IscellData}:
     import caiman
     from caiman import local_correlations, stop_server
     from caiman.paths import memmap_frames_filename
@@ -210,7 +212,7 @@ def caiman_cnmf(
 
     info = {}
     info['images'] = ImageData(np.array(Cn * 255, dtype=np.uint8), file_name='images')
-    info['fluorescence'] = TimeSeriesData(fluorescence, file_name='fluorescence')
+    info['fluorescence'] = FluoData(fluorescence, file_name='fluorescence')
     info['iscell'] = IscellData(iscell, file_name='iscell')
     info['cell_roi'] = RoiData(cell_roi, file_name='cell_roi')
     info['non_cell_roi'] = RoiData(non_cell_roi, file_name='non_cell_roi')

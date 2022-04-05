@@ -3,7 +3,9 @@ from wrappers.nwb_wrapper.const import NWBDATASET
 
 
 def caiman_mc(
-        image: ImageData, nwbfile: NWBFile=None, params: dict=None
+        image: ImageData,
+        nwbfile: NWBFile=None,
+        params: dict=None
     ) -> {'mc_images': ImageData}:
     import numpy as np
     from caiman import load, save_memmap, load_memmap, stop_server

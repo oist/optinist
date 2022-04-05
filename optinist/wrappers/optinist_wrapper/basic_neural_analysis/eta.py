@@ -35,8 +35,8 @@ def calc_trigger_average(neural_data, trigger_idx, start_time, end_time):
 
 
 def ETA(
-        neural_data: TimeSeriesData,
-        behaviors_data: TimeSeriesData,
+        neural_data: FluoData,
+        behaviors_data: BehaviorData,
         iscell: IscellData=None,
         nwbfile: NWBFile=None,
         params: dict=None

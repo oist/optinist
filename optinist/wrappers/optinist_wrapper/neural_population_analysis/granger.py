@@ -4,7 +4,7 @@ from wrappers.nwb_wrapper.const import NWBDATASET
 
 
 def Granger(
-        neural_data: TimeSeriesData,
+        neural_data: FluoData,
         iscell: IscellData=None,
         nwbfile: NWBFile=None,
         params: dict=None
