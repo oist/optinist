@@ -12,6 +12,9 @@ import {
 export const selectSelectedVisualizeItemId = (state: RootState) =>
   state.visualaizeItem.selectedItemId
 
+export const selectVisualizeIdList = (state: RootState) =>
+  Object.keys(state.visualaizeItem.items)
+
 const selectVisualizeItems = (state: RootState) => state.visualaizeItem.items
 
 export const selectVisualizeItemLayout = (state: RootState) =>

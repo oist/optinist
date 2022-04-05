@@ -6,6 +6,7 @@ import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
 import TextField from '@mui/material/TextField'
 import InputAdornment from '@mui/material/InputAdornment'
+import { MenuItem, Select } from '@mui/material'
 
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 
@@ -14,13 +15,14 @@ import {
   selectSelectedVisualizeItemId,
   selectVisualizeDataNodeId,
   selectVisualizeDataType,
+  selectVisualizeIdList,
   selectVisualizeItemHeight,
   selectVisualizeItemLayout,
   selectVisualizeItemWidth,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 import { VisualizeItemAddButton } from './VisualizeItemAddButton'
-import { VisualizeItemLayoutMenuIcon } from './VisualizeItemLayoutMenuIcon'
+import { DisplayDataItemLayoutMenuIcon } from './VisualizeItemLayoutMenuIcon'
 import { DisplayDataItem } from './DisplayDataItem'
 import {
   selectItem,
@@ -33,15 +35,7 @@ import { FilePathSelect } from './FilePathSelect'
 import { DATA_TYPE } from 'store/slice/DisplayData/DisplayDataType'
 import { deleteDisplayItem } from 'store/slice/DisplayData/DisplayDataSlice'
 
-export const VisualizeItems: React.FC = () => {
-  return (
-    <>
-      <FlexItemList />
-    </>
-  )
-}
-
-const FlexItemList: React.FC = () => {
+export const FlexItemList: React.FC = () => {
   const layout = useSelector(selectVisualizeItemLayout, twoDimarrayEqualityFn)
   return (
     <Box display="flex" flexWrap="wrap" flexDirection="column" p={1} m={1}>
@@ -101,6 +95,8 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
     setInputHeight(value)
   }
 
+  const itemIdList = useSelector(selectVisualizeIdList)
+
   return (
     <Paper
       variant="outlined"
@@ -117,28 +113,28 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
     >
       <Box display="flex" justifyContent="flex-end">
         <Box flexGrow={1}>
+          <>ID: {itemId}</>
           <FilePathSelectItem itemId={itemId} />
           <TextField
             type="number"
             size="small"
             label="width"
-            sx={{ marginRight: 1, marginBottom: 1, width: '100px' }}
+            sx={{ marginRight: 1, marginBottom: 1 }}
             InputProps={{
               endAdornment: <InputAdornment position="end">px</InputAdornment>,
             }}
             inputProps={{
               min: 150,
             }}
-            style={{ marginLeft: 10 }}
+            style={{ width: 80, marginLeft: 10 }}
             value={inputWidth}
             onBlur={onBlurWidth}
             onChange={onChangeWidth}
           />
           <TextField
             type="number"
-            size="small"
             label="height"
-            sx={{ marginRight: 1, marginBottom: 1, width: '100px' }}
+            sx={{ width: 80, marginRight: 1, marginBottom: 1 }}
             InputProps={{
               endAdornment: <InputAdornment position="end">px</InputAdornment>,
             }}
@@ -150,19 +146,21 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
             onChange={onChangeHeight}
           />
         </Box>
+        <Box flexGrow={1}>
+          <Select label="smooth">
+            {itemIdList.map((value) => (
+              <MenuItem value={value}>{value}</MenuItem>
+            ))}
+          </Select>
+        </Box>
         <Box>
-          <VisualizeItemLayoutMenuIcon itemId={itemId} />
+          {/* <VisualizeItemLayoutMenuIcon itemId={itemId} /> */}
+          <DisplayDataItemLayoutMenuIcon itemId={itemId} />
         </Box>
       </Box>
-      <ItemByType itemId={itemId} />
+      <DisplayDataItem itemId={itemId} />
     </Paper>
   )
-})
-
-const ItemByType = React.memo<{
-  itemId: number
-}>(({ itemId }) => {
-  return <DisplayDataItem itemId={itemId} />
 })
 
 const FilePathSelectItem = React.memo<{

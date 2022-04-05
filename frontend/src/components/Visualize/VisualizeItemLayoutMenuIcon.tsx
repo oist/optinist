@@ -18,13 +18,7 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { deleteDisplayItem } from 'store/slice/DisplayData/DisplayDataSlice'
 
-export const VisualizeItemLayoutMenuIcon = React.memo<{ itemId: number }>(
-  ({ itemId }) => {
-    return <DisplayDataItemLayoutMenuIcon itemId={itemId} />
-  },
-)
-
-const DisplayDataItemLayoutMenuIcon = React.memo<{
+export const DisplayDataItemLayoutMenuIcon = React.memo<{
   itemId: number
 }>(({ itemId }) => {
   const dispatch = useDispatch()
@@ -75,17 +69,17 @@ const PresentationalLayoutMenuIcon = React.memo<{
         <MoreVertIcon />
       </IconButton>
       <Menu anchorEl={anchorRef.current} open={open} onClose={onClose}>
-        <MenuItem onClick={onClickDeleteMenuFn}>
-          <ListItemIcon>
-            <DeleteIcon />
-          </ListItemIcon>
-          <ListItemText>Delete</ListItemText>
-        </MenuItem>
         <MenuItem onClick={onClickInsertMenuFn}>
           <ListItemIcon>
             <AddIcon />
           </ListItemIcon>
           <ListItemText>Insert into next column</ListItemText>
+        </MenuItem>
+        <MenuItem onClick={onClickDeleteMenuFn}>
+          <ListItemIcon>
+            <DeleteIcon />
+          </ListItemIcon>
+          <ListItemText>Delete</ListItemText>
         </MenuItem>
       </Menu>
     </>

@@ -3,7 +3,7 @@ import Drawer, { drawerClasses } from '@mui/material/Drawer'
 import { default as MuiToolbar } from '@mui/material/Toolbar'
 import { styled } from '@mui/material/styles'
 import { drawerWidth } from 'components/FlowChart/FlowChart'
-import { VisualizeItems } from './VisualizeItems'
+import { FlexItemList } from './VisualizeItems'
 import { VisualizeItemEditor } from './VisualizeItemEditor'
 
 const Visualize: React.FC = () => {
@@ -17,7 +17,7 @@ const Visualize: React.FC = () => {
       </StyledDrawer>
       <MainContents>
         <MuiToolbar />
-        <VisualizeItems />
+        <FlexItemList />
       </MainContents>
     </RootDiv>
   )
