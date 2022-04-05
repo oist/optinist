@@ -1,7 +1,6 @@
 import { DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 import {
   VisualaizeItemType,
-  MultiPlotItem,
   DisplayDataItem,
   VISUALIZE_ITEM_TYPE_SET,
   ImageItem,
@@ -11,12 +10,6 @@ import {
   ScatterItem,
   CsvItem,
 } from './VisualizeItemType'
-
-export function isMultiPlotItem(
-  item: VisualaizeItemType,
-): item is MultiPlotItem {
-  return item.itemType === VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT
-}
 
 export function isDisplayDataItem(
   item: VisualaizeItemType,

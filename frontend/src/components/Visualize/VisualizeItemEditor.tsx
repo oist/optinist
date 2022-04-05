@@ -1,44 +1,21 @@
-import React, { useState, useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-
-import FormControl from '@mui/material/FormControl'
+import React from 'react'
+import { useSelector } from 'react-redux'
 import Box from '@mui/material/Box'
 import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  FormControlLabel,
-  Switch,
-  Typography,
-} from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-
-import {
   selectSelectedVisualizeItemId,
-  selectImageItemFilePath,
-  selectVisualizeDataNodeId,
   selectVisualizeDataType,
-  selectVisualizeItemType,
-  selectVisualizeItemTypeIsMultiPlot,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { VISUALIZE_ITEM_TYPE_SET } from 'store/slice/VisualizeItem/VisualizeItemType'
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
 } from 'store/slice/DisplayData/DisplayDataType'
-import {
-  setDisplayDataPath,
-  toggleItemTypeMultiPlot,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { ImageItemEditor } from './Editor/ImageItemEditor'
 import { CsvItemEditor } from './Editor/CsvItemEditor'
 import { HeatmapItemEditor } from './Editor/HeatmapItemEditor'
 import { TimeSeriesItemEditor } from './Editor/TimeSeriesItemEditor'
 import { RoiItemEditor } from './Editor/RoiItemEditor'
-import { FilePathSelect } from './FilePathSelect'
 import { ScatterItemEditor } from './Editor/ScatterItemEditor'
 import { BarItemEditor } from './Editor/BarItemEditor'
-import { deleteDisplayItem } from 'store/slice/DisplayData/DisplayDataSlice'
 
 export const VisualizeItemEditor = () => {
   const selectedItemId = useSelector(selectSelectedVisualizeItemId)
@@ -47,92 +24,17 @@ export const VisualizeItemEditor = () => {
       {selectedItemId != null ? (
         <SelectedItemIdContext.Provider value={selectedItemId}>
           <Box m={1}>
-            <ItemTypeSelect />
-            <Editor />
+            <DisplayDataItemEditor />
           </Box>
         </SelectedItemIdContext.Provider>
       ) : (
         'Please select item...'
       )}
-      <br />
     </>
   )
 }
 
 export const SelectedItemIdContext = React.createContext<number>(NaN)
-
-const ItemTypeSelect: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
-  const dispatch = useDispatch()
-  const isMultiPlot = useSelector(selectVisualizeItemTypeIsMultiPlot(itemId))
-  const onChageToggle = () => {
-    dispatch(toggleItemTypeMultiPlot(itemId))
-  }
-  return (
-    <FormControl style={{ minWidth: 120, marginBottom: 12 }}>
-      <FormControlLabel
-        control={<Switch checked={isMultiPlot} onChange={onChageToggle} />}
-        label="Multi plot"
-      />
-    </FormControl>
-  )
-}
-
-const Editor: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
-  const itemType = useSelector(selectVisualizeItemType(itemId))
-  switch (itemType) {
-    case VISUALIZE_ITEM_TYPE_SET.MULTI_PLOT:
-      return <MultiPlotItemEditor />
-    case VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA:
-      return <DisplayDataItemEditor />
-  }
-}
-
-const MultiPlotItemEditor: React.FC = () => {
-  return (
-    <div>
-      <Accordion>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel1a-content"
-          id="panel1a-header"
-        >
-          <Typography>ImageEditor</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <ImageItemEditor />
-        </AccordionDetails>
-      </Accordion>
-
-      <Accordion>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel2a-content"
-          id="panel2a-header"
-        >
-          <Typography>TimeSeriesEditor</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <TimeSeriesItemEditor />
-        </AccordionDetails>
-      </Accordion>
-
-      <Accordion>
-        <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
-          aria-controls="panel3a-content"
-          id="panel3a-header"
-        >
-          <Typography>HeatmapEditor</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <HeatmapItemEditor />
-        </AccordionDetails>
-      </Accordion>
-    </div>
-  )
-}
 
 const DisplayDataItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)

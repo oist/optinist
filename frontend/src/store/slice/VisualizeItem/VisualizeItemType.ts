@@ -10,7 +10,7 @@ export type VisualaizeItem = {
 
 export type ItemLayout = number[][] // itemIdをrow,columnで並べる
 
-export type VisualaizeItemType = MultiPlotItem | DisplayDataItem
+export type VisualaizeItemType = DisplayDataItem
 
 export interface ItemBaseType<T extends VISUALIZE_ITEM_TYPE> {
   itemType: T
@@ -24,7 +24,6 @@ export type ColorType = {
 }
 
 export const VISUALIZE_ITEM_TYPE_SET = {
-  MULTI_PLOT: 'MultiPlot',
   DISPLAY_DATA: 'displayData',
 } as const
 
@@ -46,13 +45,6 @@ export interface DisplayDataItemBaseType extends ItemBaseType<'displayData'> {
   filePath: string | null
   nodeId: string | null
   dataType: DATA_TYPE | null
-}
-
-export interface MultiPlotItem extends ItemBaseType<'MultiPlot'> {
-  imageItem: ImageItem
-  timeSeriesItem: TimeSeriesItem
-  heatMapItem: HeatMapItem
-  otherItem?: DisplayDataItem
 }
 
 export interface ImageItem extends DisplayDataItemBaseType {

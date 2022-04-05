@@ -31,8 +31,6 @@ import {
   selectImageItemStartIndex,
   selectImageItemEndIndex,
   selectRoiItemFilePath,
-  selectMultiPlotTimeSeriesItemFilepath,
-  selectMultiPlotTimeSeriesItemDisplayNumbers,
   selectRoiItemIndex,
   selectImageItemRoiAlpha,
   selectImageItemDuration,
@@ -248,35 +246,29 @@ const ImagePlotChart = React.memo<{
   }, [plotlyHeight, activeIndex])
 
   const dispatch = useDispatch()
-  const timeSeriesFilePath = useSelector(
-    selectMultiPlotTimeSeriesItemFilepath(itemId),
-  )
-  const displayNumbers = useSelector(
-    selectMultiPlotTimeSeriesItemDisplayNumbers(itemId),
-  )
 
   const onClick = (event: any) => {
-    const points: PlotDatum = event.points[0]
-    if (
-      timeSeriesFilePath !== null &&
-      displayNumbers !== null &&
-      points.curveNumber >= 1 &&
-      !displayNumbers.includes(points.z - 1)
-    ) {
-      const newValue = [...displayNumbers, points.z - 1]
-      dispatch(
-        setTimeSeriesItemDisplayNumbers({
-          itemId,
-          displayNumbers: newValue,
-        }),
-      )
-      dispatch(
-        getTimeSeriesDataById({
-          path: timeSeriesFilePath,
-          index: points.z - 1,
-        }),
-      )
-    }
+    // const points: PlotDatum = event.points[0]
+    // if (
+    //   timeSeriesFilePath !== null &&
+    //   displayNumbers !== null &&
+    //   points.curveNumber >= 1 &&
+    //   !displayNumbers.includes(points.z - 1)
+    // ) {
+    //   const newValue = [...displayNumbers, points.z - 1]
+    //   dispatch(
+    //     setTimeSeriesItemDisplayNumbers({
+    //       itemId,
+    //       displayNumbers: newValue,
+    //     }),
+    //   )
+    //   dispatch(
+    //     getTimeSeriesDataById({
+    //       path: timeSeriesFilePath,
+    //       index: points.z - 1,
+    //     }),
+    //   )
+    // }
   }
 
   const onSliderChange = (
