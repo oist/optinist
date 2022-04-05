@@ -15,6 +15,8 @@ def save_csv(rule):
         nwbfile[NWBDATASET.TIMESERIES] = {}
 
     nwbfile[NWBDATASET.TIMESERIES][rule["return_arg"]] = info[rule["return_arg"]]
+    nwbfile.pop('image_series', None)
+
     info['nwbfile'] = nwbfile
 
     save_pickle(rule["output"], info)
@@ -46,6 +48,7 @@ def save_hdf5(rule):
         if NWBDATASET.TIMESERIES not in nwbfile.keys():
             nwbfile[NWBDATASET.TIMESERIES] = {}
         nwbfile[NWBDATASET.TIMESERIES][rule["return_arg"]] = info[rule["return_arg"]]
+        nwbfile.pop('image_series', None)
 
     if NWBDATASET.TIMESERIES not in nwbfile:
         nwbfile[NWBDATASET.TIMESERIES] = {}
