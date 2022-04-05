@@ -174,5 +174,7 @@ function toDataTypeFromFileType(fileType: FILE_TYPE) {
       return DATA_TYPE_SET.HDF5
     case FILE_TYPE_SET.FLUO:
       return DATA_TYPE_SET.FLUO
+    case FILE_TYPE_SET.BEHAVIOR:
+      return DATA_TYPE_SET.BEHAVIOR
   }
 }

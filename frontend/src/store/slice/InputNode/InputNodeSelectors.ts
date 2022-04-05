@@ -4,6 +4,7 @@ import {
   isCsvInputNode,
   isImageInputNode,
   isFluoInputNode,
+  isBehaviorInputNode,
 } from './InputNodeUtils'
 
 export const selectInputNode = (state: RootState) => state.inputNode
@@ -94,6 +95,16 @@ export const selectFluoInputNodeSelectedFilePath =
   (nodeId: string) => (state: RootState) => {
     const node = selectInputNodeById(nodeId)(state)
     if (isFluoInputNode(node)) {
+      return node.selectedFilePath
+    } else {
+      throw new Error('invaid input node type')
+    }
+  }
+
+export const selectBehaviorInputNodeSelectedFilePath =
+  (nodeId: string) => (state: RootState) => {
+    const node = selectInputNodeById(nodeId)(state)
+    if (isBehaviorInputNode(node)) {
       return node.selectedFilePath
     } else {
       throw new Error('invaid input node type')

@@ -94,6 +94,12 @@ export const inputNodeSlice = createSlice({
                 param: {},
               }
               break
+            case FILE_TYPE_SET.BEHAVIOR:
+              state[node.id] = {
+                fileType,
+                param: {},
+              }
+              break
           }
         }
       })

@@ -41,6 +41,7 @@ export const DATA_TYPE_SET = {
   HDF5: 'hdf5',
   HTML: 'html',
   FLUO: 'fluo',
+  BEHAVIOR: 'behavior',
 } as const
 
 export type DATA_TYPE = typeof DATA_TYPE_SET[keyof typeof DATA_TYPE_SET]

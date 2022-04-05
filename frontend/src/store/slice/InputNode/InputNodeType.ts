@@ -5,6 +5,7 @@ export const FILE_TYPE_SET = {
   IMAGE: 'image',
   HDF5: 'hdf5',
   FLUO: 'fluo',
+  BEHAVIOR: 'behavior',
 } as const
 
 export type FILE_TYPE = typeof FILE_TYPE_SET[keyof typeof FILE_TYPE_SET]
@@ -18,6 +19,7 @@ export type InputNodeType =
   | ImageInputNode
   | HDF5InputNode
   | FluoInputNode
+  | BehaviorInputNode
 
 interface InputNodeBaseType<
   T extends FILE_TYPE,
@@ -50,5 +52,9 @@ export interface HDF5InputNode extends InputNodeBaseType<'hdf5', {}> {
 }
 
 export interface FluoInputNode extends InputNodeBaseType<'fluo', {}> {
+  selectedFilePath?: string
+}
+
+export interface BehaviorInputNode extends InputNodeBaseType<'behavior', {}> {
   selectedFilePath?: string
 }

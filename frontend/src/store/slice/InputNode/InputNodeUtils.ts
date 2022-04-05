@@ -5,6 +5,7 @@ import {
   InputNodeType,
   FILE_TYPE_SET,
   FluoInputNode,
+  BehaviorInputNode,
 } from './InputNodeType'
 
 export function isImageInputNode(
@@ -29,4 +30,10 @@ export function isFluoInputNode(
   inputNode: InputNodeType,
 ): inputNode is FluoInputNode {
   return inputNode.fileType === FILE_TYPE_SET.FLUO
+}
+
+export function isBehaviorInputNode(
+  inputNode: InputNodeType,
+): inputNode is BehaviorInputNode {
+  return inputNode.fileType === FILE_TYPE_SET.BEHAVIOR
 }

@@ -13,7 +13,8 @@ import {
   BarItem,
   HDF5Item,
   HTMLItem,
-  FLUOItem,
+  FluoItem,
+  BehaviorItem,
 } from './VisualizeItemType'
 import {
   isDisplayDataItem,
@@ -111,9 +112,13 @@ const htmlItemInitialValue: HTMLItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.HTML,
 }
-const fluoItemInitialValue: FLUOItem = {
+const fluoItemInitialValue: FluoItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.FLUO,
+}
+const behaviorItemInitialValue: BehaviorItem = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.BEHAVIOR,
 }
 
 function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
@@ -138,6 +143,8 @@ function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
       return htmlItemInitialValue
     case DATA_TYPE_SET.FLUO:
       return fluoItemInitialValue
+    case DATA_TYPE_SET.BEHAVIOR:
+      return behaviorItemInitialValue
   }
 }
 
