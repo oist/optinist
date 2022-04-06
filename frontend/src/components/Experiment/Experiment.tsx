@@ -15,7 +15,6 @@ const Experiment = React.memo(() => {
         }}
       >
         <MuiToolbar />
-        {/* <VisualizeItems /> */}
         <ExperimentTable />
       </main>
     </div>

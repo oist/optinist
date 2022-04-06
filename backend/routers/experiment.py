@@ -2,6 +2,8 @@ from fastapi import APIRouter
 from glob import glob
 import yaml
 import shutil
+from pydantic import BaseModel
+from typing import List
 
 from cui_api.const import BASE_DIR
 from cui_api.utils import join_file_path
@@ -40,3 +42,19 @@ async def delete_experiment(unique_id: str):
         return True
     except Exception as e:
         return False
+
+
+@router.post("/experiments/delete")
+async def delete_experiment_list(uidList: List[str]):
+    print(uidList)
+    try:
+        # shutil.rmtree(join_file_path([BASE_DIR, unique_id]))
+        print(uidList)
+        return True
+    except Exception as e:
+        return False
+    # try:
+    #     shutil.rmtree(join_file_path([BASE_DIR, unique_id]))
+    #     return True
+    # except Exception as e:
+    #     return False

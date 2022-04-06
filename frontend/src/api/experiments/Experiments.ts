@@ -42,6 +42,16 @@ export async function deleteExperimentByUidApi(uid: string): Promise<boolean> {
   return response.data
 }
 
+export async function deleteExperimentByListApi(
+  uidList: string[],
+): Promise<boolean> {
+  console.log(uidList)
+  const response = await axios.post(`${BASE_URL}/experimens/delete`, {
+    uidList: uidList,
+  })
+  return response.data
+}
+
 export async function importExperimentByUidApi(
   uid: string,
 ): Promise<RunPostData> {
