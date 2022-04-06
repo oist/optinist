@@ -1,5 +1,6 @@
 from wrappers.data_wrapper import *
 from wrappers.optinist_wrapper.utils import standard_norm
+from wrappers.nwb_wrapper.const import NWBDATASET
 
 
 def calc_trigger(behavior_data, trigger_type, trigger_threshold):
@@ -99,5 +100,12 @@ def ETA(
         norm_mean,
         file_name='mean_heatmap'
     )
+
+    # NWB追加
+    if nwbfile is not None:
+        nwbfile[NWBDATASET.POSTPROCESS] = {
+            'mean': mean,
+            'sem': sem,
+        }
 
     return info
