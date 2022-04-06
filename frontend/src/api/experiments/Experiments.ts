@@ -43,11 +43,10 @@ export async function deleteExperimentByUidApi(uid: string): Promise<boolean> {
 }
 
 export async function deleteExperimentByListApi(
-  uidList: string[],
+  uidList: Array<string>,
 ): Promise<boolean> {
-  console.log(uidList)
-  const response = await axios.post(`${BASE_URL}/experimens/delete`, {
-    uidList: uidList,
+  const response = await axios.post(`${BASE_URL}/experiments/delete`, {
+    uidList,
   })
   return response.data
 }

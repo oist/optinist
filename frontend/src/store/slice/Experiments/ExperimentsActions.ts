@@ -33,7 +33,7 @@ export const deleteExperimentByUid = createAsyncThunk<boolean, string>(
   },
 )
 
-export const deleteExperimentByList = createAsyncThunk<boolean, Array<string>>(
+export const deleteExperimentByList = createAsyncThunk<boolean, string[]>(
   `${EXPERIMENTS_SLICE_NAME}/deleteExperimentByList`,
   async (uid, thunkAPI) => {
     try {

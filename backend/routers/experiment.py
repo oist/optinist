@@ -44,17 +44,13 @@ async def delete_experiment(unique_id: str):
         return False
 
 
+class DeleteItem(BaseModel):
+    uidList: list
+
 @router.post("/experiments/delete")
-async def delete_experiment_list(uidList: List[str]):
-    print(uidList)
+async def delete_experiment_list(deleteItem: DeleteItem):
     try:
-        # shutil.rmtree(join_file_path([BASE_DIR, unique_id]))
-        print(uidList)
+        [shutil.rmtree(join_file_path([BASE_DIR, uid])) for uid in deleteItem.uidList]
         return True
     except Exception as e:
         return False
-    # try:
-    #     shutil.rmtree(join_file_path([BASE_DIR, unique_id]))
-    #     return True
-    # except Exception as e:
-    #     return False

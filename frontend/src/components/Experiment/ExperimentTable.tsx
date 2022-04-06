@@ -34,7 +34,13 @@ import {
 } from 'store/slice/Experiments/ExperimentsActions'
 import { ExperimentStatusIcon } from './ExperimentStatusIcon'
 import { Experiment } from 'store/slice/Experiments/ExperimentsType'
-import { Checkbox, TableSortLabel } from '@mui/material'
+import {
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  TableSortLabel,
+} from '@mui/material'
 import { DeleteButton, ImportButton } from './ExperimentItems'
 
 export const ExperimentUidContext = React.createContext<string>('')
@@ -70,23 +76,10 @@ const ExperimentsErrorView: React.FC = () => {
 
 const TableImple = React.memo(() => {
   const experimentList = useSelector(selectExperimentList)
-  const [checkedList, setCheckedList] = useState<string[]>([])
   const dispatch = useDispatch()
   const onClickReload = () => {
     dispatch(getExperiments())
   }
-  const onCheckBoxClick = (uid: string) => {
-    if (checkedList.includes(uid)) {
-      setCheckedList(checkedList.filter((v) => v !== uid))
-    } else {
-      setCheckedList([...checkedList, uid])
-    }
-  }
-
-  const onClickDelete = () => {
-    dispatch(deleteExperimentByList(checkedList))
-  }
-
   const [order, setOrder] = React.useState<Order>('asc')
   const [sortTarget, setSortTarget] =
     React.useState<keyof Experiment>('timestamp')
@@ -96,6 +89,28 @@ const TableImple = React.memo(() => {
       setOrder(isAsc ? 'desc' : 'asc')
       setSortTarget(property)
     }
+
+  const [checkedList, setCheckedList] = useState<string[]>([])
+  const [open, setOpen] = React.useState(false)
+
+  const onCheckBoxClick = (uid: string) => {
+    if (checkedList.includes(uid)) {
+      setCheckedList(checkedList.filter((v) => v !== uid))
+    } else {
+      setCheckedList([...checkedList, uid])
+    }
+  }
+  const onClickDelete = () => {
+    setOpen(true)
+  }
+  const onClickCancel = () => {
+    setOpen(false)
+  }
+  const onClickOk = () => {
+    dispatch(deleteExperimentByList(checkedList))
+    setCheckedList([])
+    setOpen(false)
+  }
 
   return (
     <Box>
@@ -123,10 +138,22 @@ const TableImple = React.memo(() => {
           color="error"
           endIcon={<DeleteIcon />}
           onClick={onClickDelete}
+          disabled={checkedList.length === 0}
         >
           Delete
         </Button>
       </Box>
+      <Dialog open={open}>
+        <DialogTitle>Are you sure you want to delete?</DialogTitle>
+        <DialogActions>
+          <Button onClick={onClickCancel} variant="outlined" color="inherit">
+            Cancel
+          </Button>
+          <Button onClick={onClickOk} variant="outlined" autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
       <TableContainer component={Paper} elevation={0} variant="outlined">
         <Table aria-label="collapsible table">
           <HeadItem order={order} sortHandler={sortHandler} />
@@ -155,9 +182,8 @@ const HeadItem = React.memo<{
   return (
     <TableHead>
       <TableRow>
-        <TableCell>
-          <Checkbox />
-        </TableCell>
+        {/* <TableCell><Checkbox /></TableCell> */}
+        <TableCell />
         <TableCell />
         <TableCell>
           <TableSortLabel
