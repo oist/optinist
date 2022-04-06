@@ -76,7 +76,7 @@ const ExperimentsErrorView: React.FC = () => {
 
 export const ExperimentUidContext = React.createContext<string>('')
 
-const TableImple: React.FC = () => {
+const TableImple = React.memo(() => {
   const experimentList = useSelector(selectExperimentList)
   const dispatch = useDispatch()
   const onClickReload = () => {
@@ -133,12 +133,12 @@ const TableImple: React.FC = () => {
       </TableContainer>
     </Box>
   )
-}
+})
 
-const Head: React.FC<{
+const Head = React.memo<{
   order: Order
   sortHandler: any
-}> = ({ order, sortHandler }) => {
+}>(({ order, sortHandler }) => {
   return (
     <TableRow>
       <TableCell />
@@ -166,9 +166,9 @@ const Head: React.FC<{
       <TableCell>Delete</TableCell>
     </TableRow>
   )
-}
+})
 
-const Row: React.FC = () => {
+const Row = React.memo(() => {
   const uid = React.useContext(ExperimentUidContext)
   const timestamp = useSelector(selectExperimentTimeStamp(uid))
   const status = useSelector(selectExperimentStatus(uid))
@@ -213,9 +213,9 @@ const Row: React.FC = () => {
       <CollapsibleTable open={open} />
     </React.Fragment>
   )
-}
+})
 
-const ImportExperimentButton: React.FC = () => {
+const ImportExperimentButton = React.memo(() => {
   const dispatch: AppDispatch = useDispatch()
   const uid = React.useContext(ExperimentUidContext)
   const { enqueueSnackbar } = useSnackbar()
@@ -233,9 +233,9 @@ const ImportExperimentButton: React.FC = () => {
       <GetAppIcon color="primary" />
     </IconButton>
   )
-}
+})
 
-const DeleteExperimentButton: React.FC = () => {
+const DeleteExperimentButton = React.memo(() => {
   const dispatch = useDispatch()
   const uid = React.useContext(ExperimentUidContext)
 
@@ -270,7 +270,7 @@ const DeleteExperimentButton: React.FC = () => {
       </Dialog>
     </>
   )
-}
+})
 
 type Order = 'asc' | 'desc'
 
