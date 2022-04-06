@@ -90,14 +90,22 @@ export const inputNodeSlice = createSlice({
               break
             case FILE_TYPE_SET.FLUO:
               state[node.id] = {
-                fileType,
-                param: {},
+                fileType: FILE_TYPE_SET.CSV,
+                param: {
+                  setHeader: null,
+                  setIndex: false,
+                  transpose: false,
+                },
               }
               break
             case FILE_TYPE_SET.BEHAVIOR:
               state[node.id] = {
-                fileType,
-                param: {},
+                fileType: FILE_TYPE_SET.CSV,
+                param: {
+                  setHeader: null,
+                  setIndex: false,
+                  transpose: false,
+                },
               }
               break
           }

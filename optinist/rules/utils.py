@@ -31,6 +31,7 @@ def merge_nwbfile(old_nwbfile, new_nwbfile):
         NWBDATASET.ROI,
         NWBDATASET.COLUMN,
         NWBDATASET.FLUORESCENCE,
+        NWBDATASET.BEHAVIOR,
     ]:
         if pattern in new_nwbfile:
             if pattern in old_nwbfile:

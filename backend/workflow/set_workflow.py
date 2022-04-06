@@ -31,12 +31,17 @@ def get_workflow(unique_id, runItem):
     for node in nodeDict.values():
         algo_label = node['data']['label']
         algo_path = node['data']['path']
-
-        if node["type"] == 'ImageFileNode':
+        if node["type"] == "ImageFileNode":
             rule = set_imagefile(unique_id, node, edgeList, nwbfile)
             rules_to_execute[node["id"]] = rule
         elif node["type"] == "CsvFileNode":
             rule = set_csvfile(unique_id, node, edgeList, nwbfile)
+            rules_to_execute[node["id"]] = rule
+        elif node["type"] == "FluoFileNode":
+            rule = set_csvfile(unique_id, node, edgeList, nwbfile)
+            rules_to_execute[node["id"]] = rule
+        elif node["type"] == "BehaviorFileNode":
+            rule = set_csvfile(unique_id, node, edgeList, nwbfile, "behavior")
             rules_to_execute[node["id"]] = rule
         elif node["type"] == "HDF5FileNode":
             rule = set_hdf5file(unique_id, node, edgeList, nwbfile)
@@ -52,5 +57,7 @@ def get_workflow(unique_id, runItem):
                 "label": algo_label,
                 "path": algo_path,
             }
+        else:
+            assert False, "NodeType doesn't exists"
 
     return rules_to_execute, last_outputs, all_outputs

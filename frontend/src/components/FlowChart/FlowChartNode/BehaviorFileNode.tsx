@@ -7,7 +7,7 @@ import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
 
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import {
-  selectBehaviorInputNodeSelectedFilePath,
+  selectCsvInputNodeSelectedFilePath,
   selectInputNodeDefined,
 } from 'store/slice/InputNode/InputNodeSelectors'
 import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
@@ -15,6 +15,7 @@ import { toHandleId } from './FlowChartUtils'
 import { FileSelect } from './FileSelect'
 import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
 import { useHandleColor } from './HandleColorHook'
+import { ParamSettingDialog } from './CsvFileNode'
 
 const sourceHandleStyle: CSSProperties = {
   width: 8,
@@ -37,9 +38,7 @@ export const BehaviorFileNode = React.memo<NodeProps>((element) => {
 const BehaviorFileNodeImple = React.memo<NodeProps>(
   ({ id: nodeId, selected }) => {
     const dispatch = useDispatch()
-    const filePath = useSelector(
-      selectBehaviorInputNodeSelectedFilePath(nodeId),
-    )
+    const filePath = useSelector(selectCsvInputNodeSelectedFilePath(nodeId))
     const onChangeFilePath = (path: string) => {
       dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
     }
@@ -75,10 +74,12 @@ const BehaviorFileNodeImple = React.memo<NodeProps>(
               onChangeFilePath(path)
             }
           }}
-          fileType={FILE_TYPE_SET.BEHAVIOR}
+          fileType={FILE_TYPE_SET.CSV}
           filePath={filePath ?? ''}
         />
-        {/* {!!filePath && <ParamSettingDialog nodeId={nodeId} filePath={filePath} />} */}
+        {!!filePath && (
+          <ParamSettingDialog nodeId={nodeId} filePath={filePath} />
+        )}
         <Handle
           type="source"
           position={Position.Right}

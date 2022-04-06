@@ -14,12 +14,7 @@ export type InputNode = {
   [nodeId: string]: InputNodeType
 }
 
-export type InputNodeType =
-  | CsvInputNode
-  | ImageInputNode
-  | HDF5InputNode
-  | FluoInputNode
-  | BehaviorInputNode
+export type InputNodeType = CsvInputNode | ImageInputNode | HDF5InputNode
 
 interface InputNodeBaseType<
   T extends FILE_TYPE,
@@ -49,12 +44,4 @@ export interface ImageInputNode extends InputNodeBaseType<'image', {}> {
 export interface HDF5InputNode extends InputNodeBaseType<'hdf5', {}> {
   selectedFilePath?: string
   hdf5Path?: string
-}
-
-export interface FluoInputNode extends InputNodeBaseType<'fluo', {}> {
-  selectedFilePath?: string
-}
-
-export interface BehaviorInputNode extends InputNodeBaseType<'behavior', {}> {
-  selectedFilePath?: string
 }

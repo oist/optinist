@@ -7,23 +7,29 @@ from wrappers.data_wrapper import ImageData, CsvData, TimeSeriesData
 from wrappers.nwb_wrapper.const import NWBDATASET
 
 
-def save_csv(rule):
+def save_csv(rule, nodeType):
     info = {rule["return_arg"]: CsvData(rule["input"], rule["params"], '')}
     nwbfile = rule["nwbfile"]
 
-    if NWBDATASET.TIMESERIES not in nwbfile:
-        nwbfile[NWBDATASET.TIMESERIES] = {}
+    if nodeType == "csv":
+        if NWBDATASET.TIMESERIES not in nwbfile:
+            nwbfile[NWBDATASET.TIMESERIES] = {}
+        nwbfile[NWBDATASET.TIMESERIES][rule["return_arg"]] = info[rule["return_arg"]]
+    elif nodeType == "behavior":
+        if NWBDATASET.BEHAVIOR not in nwbfile:
+            nwbfile[NWBDATASET.BEHAVIOR] = {}
+        nwbfile[NWBDATASET.BEHAVIOR][rule["return_arg"]] = info[rule["return_arg"]]
+    else:
+        assert False, "NodeType doesn't exsits"
 
-    nwbfile[NWBDATASET.TIMESERIES][rule["return_arg"]] = info[rule["return_arg"]]
     nwbfile.pop('image_series', None)
-
     info['nwbfile'] = nwbfile
 
     save_pickle(rule["output"], info)
 
 
 def save_image(rule):
-    info = {rule["return_arg"]: ImageData(rule["input"], '')}
+    info = {rule["return_arg"]: ImageData(rule["input"], "")}
     nwbfile = rule["nwbfile"]
 
     # NWB file
@@ -69,8 +75,8 @@ if __name__ == '__main__':
     last_output = snakemake.config["last_output"]
 
     for rule in snakemake.config["rules"].values():
-        if rule["type"] == "csv":
-            save_csv(rule)
+        if rule["type"] in ["csv", "behavior"]:
+            save_csv(rule, rule["type"])
         elif rule["type"] == "image":
             save_image(rule)
         elif rule["type"] == "hdf5":
