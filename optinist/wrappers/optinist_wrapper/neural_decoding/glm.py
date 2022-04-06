@@ -9,8 +9,8 @@ from wrappers.optinist_wrapper.utils import standard_norm
 from wrappers.nwb_wrapper.const import NWBDATASET
 
 def GLM(
-        neural_data: TimeSeriesData,
-        behaviors_data: TimeSeriesData, 
+        neural_data: FluoData,
+        behaviors_data: BehaviorData,
         iscell: IscellData=None,
         nwbfile: NWBFile=None,
         params: dict=None

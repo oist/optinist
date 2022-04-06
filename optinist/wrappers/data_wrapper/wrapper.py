@@ -4,7 +4,12 @@ import pandas as pd
 import imageio
 import tifffile
 import gc
-from cui_api.utils import get_json_file_path, get_html_file_path, get_images_list, join_file_path
+from cui_api.utils import (
+    get_json_file_path,
+    get_html_file_path,
+    get_images_list,
+    join_file_path
+)
 from cui_api.const import BASE_DIR
 
 class BaseData:
@@ -103,6 +108,16 @@ class TimeSeriesData(BaseData):
         gc.collect()
 
 
+class FluoData(TimeSeriesData):
+    def __init__(self, data, std=None, index=None, file_name='fluo'):
+        super().__init__(data, std, index, file_name)
+
+
+class BehaviorData(TimeSeriesData):
+    def __init__(self, data, std=None, index=None, file_name='behavior'):
+        super().__init__(data, std, index, file_name)
+
+
 class CsvData(BaseData):
     def __init__(self, data, params, file_name='csv'):
         super().__init__(file_name)
@@ -140,7 +155,6 @@ class CsvData(BaseData):
 class CorrelationData(BaseData):
     def __init__(self, data, file_name='heatmap'):
         super().__init__(file_name)
-
         self.data = data
 
     def save_json(self, json_dir):

@@ -88,6 +88,26 @@ export const inputNodeSlice = createSlice({
                 param: {},
               }
               break
+            case FILE_TYPE_SET.FLUO:
+              state[node.id] = {
+                fileType: FILE_TYPE_SET.CSV,
+                param: {
+                  setHeader: null,
+                  setIndex: false,
+                  transpose: false,
+                },
+              }
+              break
+            case FILE_TYPE_SET.BEHAVIOR:
+              state[node.id] = {
+                fileType: FILE_TYPE_SET.CSV,
+                param: {
+                  setHeader: null,
+                  setIndex: false,
+                  transpose: false,
+                },
+              }
+              break
           }
         }
       })
@@ -109,7 +129,13 @@ export const inputNodeSlice = createSlice({
         const newState: InputNode = {}
         action.payload.nodeList.filter(isInputNodePostData).forEach((node) => {
           if (node.data != null) {
-            if (node.data.fileType === FILE_TYPE_SET.CSV) {
+            if (node.data.fileType === FILE_TYPE_SET.IMAGE) {
+              newState[node.id] = {
+                fileType: FILE_TYPE_SET.IMAGE,
+                selectedFilePath: node.data.path as string[],
+                param: {},
+              }
+            } else if (node.data.fileType === FILE_TYPE_SET.CSV) {
               newState[node.id] = {
                 fileType: FILE_TYPE_SET.CSV,
                 selectedFilePath: node.data.path as string,
@@ -120,12 +146,6 @@ export const inputNodeSlice = createSlice({
                 fileType: FILE_TYPE_SET.HDF5,
                 hdf5Path: node.data.hdf5Path,
                 selectedFilePath: node.data.path as string,
-                param: {},
-              }
-            } else {
-              newState[node.id] = {
-                fileType: node.data.fileType,
-                selectedFilePath: node.data.path as string[],
                 param: {},
               }
             }

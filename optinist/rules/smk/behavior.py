@@ -1,5 +1,5 @@
 from cui_api.const import OPTINIST_DIR
-name="image"
+name="behavior"
 
 rule:
     input:

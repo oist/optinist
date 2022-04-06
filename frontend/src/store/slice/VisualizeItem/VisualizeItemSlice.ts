@@ -13,6 +13,8 @@ import {
   BarItem,
   HDF5Item,
   HTMLItem,
+  FluoItem,
+  BehaviorItem,
 } from './VisualizeItemType'
 import {
   isDisplayDataItem,
@@ -110,6 +112,14 @@ const htmlItemInitialValue: HTMLItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.HTML,
 }
+const fluoItemInitialValue: FluoItem = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.FLUO,
+}
+const behaviorItemInitialValue: BehaviorItem = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.BEHAVIOR,
+}
 
 function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
   switch (dataType) {
@@ -131,6 +141,10 @@ function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
       return hdf5ItemInitialValue
     case DATA_TYPE_SET.HTML:
       return htmlItemInitialValue
+    case DATA_TYPE_SET.FLUO:
+      return fluoItemInitialValue
+    case DATA_TYPE_SET.BEHAVIOR:
+      return behaviorItemInitialValue
   }
 }
 
@@ -216,10 +230,9 @@ export const visualaizeItemSlice = createSlice({
         itemId: number
         filePath: string
         nodeId: string | null
-        dataType?: string
       }>,
     ) => {
-      const { itemId, filePath, nodeId, dataType } = action.payload
+      const { itemId, filePath, nodeId } = action.payload
       const targetItem = state.items[itemId]
       if (isDisplayDataItem(targetItem)) {
         targetItem.filePath = filePath
@@ -718,11 +731,9 @@ function resetImageActiveIndexFn(
   state: VisualaizeItem,
   args: {
     itemId: number
-    startIndex?: number
-    endIndex?: number
   },
 ) {
-  const { itemId, startIndex, endIndex } = args
+  const { itemId } = args
   const targetItem = state.items[itemId]
   if (isImageItem(targetItem)) {
     targetItem.activeIndex = 0

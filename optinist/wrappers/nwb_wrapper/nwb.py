@@ -5,7 +5,7 @@ from pynwb.ophys import (
     RoiResponseSeries, Fluorescence, ImageSeries, TimeSeries,
     CorrectedImageStack, MotionCorrection,
 )
-
+from pynwb.behavior import BehavioralEvents
 from pynwb.core import NWBDataInterface
 
 from datetime import datetime
@@ -165,7 +165,6 @@ def nwb_add_fluorescence(
 
 
 def nwb_add_timeseries(nwbfile, key, value):
-
     timeseries_data = TimeSeries(
         name=key,
         data=value.data,
@@ -175,6 +174,20 @@ def nwb_add_timeseries(nwbfile, key, value):
     )
 
     nwbfile.processing['ophys'].add(timeseries_data)
+
+    return nwbfile
+
+
+def nwb_add_behavior(nwbfile, key, value):
+    timeseries_data = TimeSeries(
+        name=key,
+        data=value.data,
+        unit='second',
+        starting_time=0.0,
+        rate=1.0,
+    )
+
+    nwbfile.processing['optinist'].add(timeseries_data)
 
     return nwbfile
 
@@ -210,6 +223,10 @@ def save_nwb(nwb_dict, save_path):
     if NWBDATASET.TIMESERIES in nwb_dict:
         for key, value in nwb_dict[NWBDATASET.TIMESERIES].items():
             nwb_add_timeseries(nwbfile, key, value)
+
+    if NWBDATASET.BEHAVIOR in nwb_dict:
+        for key, value in nwb_dict[NWBDATASET.BEHAVIOR].items():
+            nwb_add_behavior(nwbfile, key, value)
 
     if NWBDATASET.MOTION_CORRECTION in nwb_dict:
         for mc in nwb_dict[NWBDATASET.MOTION_CORRECTION].values():

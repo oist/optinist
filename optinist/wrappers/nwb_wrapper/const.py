@@ -8,3 +8,4 @@ class NWBDATASET:
     ROI: str = 'ROI'
     COLUMN: str = 'COLUMN'
     FLUORESCENCE: str = 'FLUORESCENCE'
+    BEHAVIOR: str = 'BEHAVIOR'

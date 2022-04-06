@@ -29,7 +29,7 @@ def set_imagefile(unique_id, node, edgeList, nwbfile):
     return rule
 
 
-def set_csvfile(unique_id, node, edgeList, nwbfile):
+def set_csvfile(unique_id, node, edgeList, nwbfile, nodeType="csv"):
     for edge in edgeList:
         if node["id"] == edge["source"]:
             return_name = edge["sourceHandle"].split("--")[0]
@@ -38,12 +38,12 @@ def set_csvfile(unique_id, node, edgeList, nwbfile):
         unique_id, node["id"], node["data"]["label"].split(".")[0])
 
     rule = {
-        "rule_file": f"rules/smk/csv.py",
+        "rule_file": f"rules/smk/{nodeType}.py",
         "input": node['data']['path'],
         "return_arg": return_name,
         "params": node["data"]["param"],
         "output": output_file,
-        "type": "csv",
+        "type": nodeType,
         "nwbfile": nwbfile,
     }
 

@@ -3,7 +3,7 @@ from wrappers.nwb_wrapper.const import NWBDATASET
 
 
 def correlation(
-        neural_data: TimeSeriesData,
+        neural_data: FluoData,
         iscell: IscellData=None,
         nwbfile: NWBFile=None,
         params: dict=None

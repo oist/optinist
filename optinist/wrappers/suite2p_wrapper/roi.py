@@ -3,8 +3,10 @@ from wrappers.nwb_wrapper.const import NWBDATASET
 
 
 def suite2p_roi(
-        ops: Suite2pData, nwbfile: NWBFile=None, params: dict=None
-    ) -> {'ops': Suite2pData, 'fluorescence': TimeSeriesData, 'iscell': IscellData}:
+        ops: Suite2pData,
+        nwbfile: NWBFile=None,
+        params: dict=None
+    ) -> {'ops': Suite2pData, 'fluorescence': FluoData, 'iscell': IscellData}:
     import numpy as np
     from suite2p import extraction, classification, detection, ROI, default_ops
     print('start suite2p_roi')
@@ -93,7 +95,7 @@ def suite2p_roi(
     info['ops'] = Suite2pData(ops)
     info['max_proj'] = ImageData(ops['max_proj'], file_name='max_proj')
     info['Vcorr'] = ImageData(ops['Vcorr'], file_name='Vcorr')    
-    info['fluorescence'] = TimeSeriesData(F, file_name='fluorescence')
+    info['fluorescence'] = FluoData(F, file_name='fluorescence')
     info['iscell'] = IscellData(iscell, file_name='iscell')
     info['all_roi'] = RoiData(np.nanmax(im, axis=0), file_name='all_roi')
     info['non_cell_roi'] = RoiData(np.nanmax(im[~iscell], axis=0), file_name='noncell_roi')

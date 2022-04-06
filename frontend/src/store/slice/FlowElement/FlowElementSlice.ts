@@ -172,13 +172,18 @@ export const flowElementSlice = createSlice({
       }),
 })
 
+function getRandomArbitrary(min: number, max: number) {
+  return Math.random() * (max - min) + min
+}
+
 function updateElementCoord(state: FlowElement) {
   const { x, y } = state.elementCoord
-  if (x > 800 || y > 200) {
+  if (x > 800) {
     state.elementCoord.x = 300
-    state.elementCoord.y = 100
+    state.elementCoord.y += 100
   } else {
     state.elementCoord.x += 250
+    state.elementCoord.y += getRandomArbitrary(-20, 20)
   }
 }
 

@@ -1,5 +1,6 @@
 from cui_api.const import OPTINIST_DIR
-name="image"
+
+name = "cell_grouping"
 
 rule:
     input:
@@ -7,6 +8,6 @@ rule:
     output:
         [x["output"] for x in config["rules"].values() if x["type"] == name]
     params:
-        name=name
+        name = name
     script:
-        f'{OPTINIST_DIR}/rules/scripts/data.py'
+        f'{OPTINIST_DIR}/rules/scripts/func.py'

@@ -40,6 +40,8 @@ export type DisplayDataItem =
   | BarItem
   | HDF5Item
   | HTMLItem
+  | FluoItem
+  | BehaviorItem
 
 export interface DisplayDataItemBaseType extends ItemBaseType<'displayData'> {
   filePath: string | null
@@ -112,4 +114,12 @@ export interface HDF5Item extends DisplayDataItemBaseType {
 
 export interface HTMLItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.HTML
+}
+
+export interface FluoItem extends DisplayDataItemBaseType {
+  dataType: typeof DATA_TYPE_SET.FLUO
+}
+
+export interface BehaviorItem extends DisplayDataItemBaseType {
+  dataType: typeof DATA_TYPE_SET.BEHAVIOR
 }

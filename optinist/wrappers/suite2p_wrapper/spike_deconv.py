@@ -3,8 +3,10 @@ from wrappers.nwb_wrapper.const import NWBDATASET
 
 
 def suite2p_spike_deconv(
-        ops: Suite2pData, nwbfile: NWBFile=None, params: dict=None
-    ) -> {'ops': Suite2pData, 'spks': TimeSeriesData}:
+        ops: Suite2pData,
+        nwbfile: NWBFile=None,
+        params: dict=None
+    ) -> {'ops': Suite2pData, 'spks': FluoData}:
     from suite2p import extraction, default_ops
     print('start suite2_spike_deconv')
     ops = ops.data
@@ -41,7 +43,7 @@ def suite2p_spike_deconv(
 
     info = {}
     info['ops'] = Suite2pData(ops)
-    info['spks'] = TimeSeriesData(spks, file_name='spks')
+    info['spks'] = FluoData(spks, file_name='spks')
     info['nwbfile'] = nwbfile
 
     return info

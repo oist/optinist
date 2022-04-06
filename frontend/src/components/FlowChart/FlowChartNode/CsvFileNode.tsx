@@ -108,101 +108,102 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   )
 })
 
-const ParamSettingDialog = React.memo<{ nodeId: string; filePath: string }>(
-  ({ nodeId, filePath }) => {
-    const [open, setOpen] = React.useState(false)
-    // OK時のみStoreに反映させるため一時的な値をuseStateで保持しておく。
-    // useStateの初期値はselectorで取得。
-    const [setHeader, setSetHeader] = React.useState(
-      useSelector(selectCsvInputNodeParamSetHeader(nodeId)),
+export const ParamSettingDialog = React.memo<{
+  nodeId: string
+  filePath: string
+}>(({ nodeId, filePath }) => {
+  const [open, setOpen] = React.useState(false)
+  // OK時のみStoreに反映させるため一時的な値をuseStateで保持しておく。
+  // useStateの初期値はselectorで取得。
+  const [setHeader, setSetHeader] = React.useState(
+    useSelector(selectCsvInputNodeParamSetHeader(nodeId)),
+  )
+  const [setIndex, setSetIndex] = React.useState(
+    useSelector(selectCsvInputNodeParamSetIndex(nodeId)),
+  )
+  const [transpose, setTranspose] = React.useState(
+    useSelector(selectCsvInputNodeParamTranspose(nodeId)),
+  )
+  const dispatch = useDispatch()
+  const onClickCancel = () => {
+    setOpen(false)
+  }
+  const onClickOk = () => {
+    setOpen(false)
+    dispatch(
+      setCsvInputNodeParam({
+        nodeId,
+        param: { setHeader, setIndex, transpose },
+      }),
     )
-    const [setIndex, setSetIndex] = React.useState(
-      useSelector(selectCsvInputNodeParamSetIndex(nodeId)),
-    )
-    const [transpose, setTranspose] = React.useState(
-      useSelector(selectCsvInputNodeParamTranspose(nodeId)),
-    )
-    const dispatch = useDispatch()
-    const onClickCancel = () => {
-      setOpen(false)
-    }
-    const onClickOk = () => {
-      setOpen(false)
-      dispatch(
-        setCsvInputNodeParam({
-          nodeId,
-          param: { setHeader, setIndex, transpose },
-        }),
-      )
-    }
+  }
 
-    return (
-      <>
-        <Button onClick={() => setOpen(true)}>Settings</Button>
-        <Dialog open={open}>
-          <DialogTitle>Csv Setting</DialogTitle>
-          <DialogContent dividers>
-            <Box sx={{ display: 'flex', p: 1, m: 1, alignItems: 'flex-start' }}>
-              <FormControlLabel
-                sx={{ margin: (theme) => theme.spacing(0, 1, 0, 1) }}
-                control={
-                  <Switch
-                    checked={transpose}
-                    onChange={(event) => setTranspose(event.target.checked)}
-                  />
-                }
-                label="Transpose"
-              />
-              <TextField
-                label="header"
-                sx={{
-                  width: 100,
-                  margin: (theme) => theme.spacing(0, 1, 0, 1),
-                }}
-                type="number"
-                InputLabelProps={{
-                  shrink: true,
-                }}
-                onChange={(event) => {
-                  const value = Number(event.target.value)
-                  if (value >= 0) {
-                    setSetHeader(value)
-                  }
-                }}
-                value={setHeader}
-              />
-              <FormControlLabel
-                sx={{ margin: (theme) => theme.spacing(0, 1, 0, 1) }}
-                control={
-                  <Switch
-                    checked={setIndex}
-                    onChange={(event) => setSetIndex(event.target.checked)}
-                  />
-                }
-                label="Set Index"
-              />
-            </Box>
-            <Typography variant="h6">Preview</Typography>
-            <CsvPreview
-              filePath={filePath}
-              transpose={transpose}
-              setHeader={setHeader}
-              setIndex={setIndex}
+  return (
+    <>
+      <Button onClick={() => setOpen(true)}>Settings</Button>
+      <Dialog open={open}>
+        <DialogTitle>Csv Setting</DialogTitle>
+        <DialogContent dividers>
+          <Box sx={{ display: 'flex', p: 1, m: 1, alignItems: 'flex-start' }}>
+            <FormControlLabel
+              sx={{ margin: (theme) => theme.spacing(0, 1, 0, 1) }}
+              control={
+                <Switch
+                  checked={transpose}
+                  onChange={(event) => setTranspose(event.target.checked)}
+                />
+              }
+              label="Transpose"
             />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={onClickCancel} variant="outlined" color="inherit">
-              cancel
-            </Button>
-            <Button onClick={onClickOk} color="primary" variant="outlined">
-              OK
-            </Button>
-          </DialogActions>
-        </Dialog>
-      </>
-    )
-  },
-)
+            <TextField
+              label="header"
+              sx={{
+                width: 100,
+                margin: (theme) => theme.spacing(0, 1, 0, 1),
+              }}
+              type="number"
+              InputLabelProps={{
+                shrink: true,
+              }}
+              onChange={(event) => {
+                const value = Number(event.target.value)
+                if (value >= 0) {
+                  setSetHeader(value)
+                }
+              }}
+              value={setHeader}
+            />
+            <FormControlLabel
+              sx={{ margin: (theme) => theme.spacing(0, 1, 0, 1) }}
+              control={
+                <Switch
+                  checked={setIndex}
+                  onChange={(event) => setSetIndex(event.target.checked)}
+                />
+              }
+              label="Set Index"
+            />
+          </Box>
+          <Typography variant="h6">Preview</Typography>
+          <CsvPreview
+            filePath={filePath}
+            transpose={transpose}
+            setHeader={setHeader}
+            setIndex={setIndex}
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClickCancel} variant="outlined" color="inherit">
+            cancel
+          </Button>
+          <Button onClick={onClickOk} color="primary" variant="outlined">
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
+    </>
+  )
+})
 
 const CsvPreview = React.memo<{
   filePath: string

@@ -18,7 +18,6 @@ import {
 import {
   getImageData,
   getRoiData,
-  getTimeSeriesDataById,
 } from 'store/slice/DisplayData/DisplayDataActions'
 import {
   selectImageItemShowticklabels,
@@ -41,7 +40,6 @@ import {
   incrementImageActiveIndex,
   setImageActiveIndex,
   setImageItemDuration,
-  setTimeSeriesItemDisplayNumbers,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { RootState } from 'store/store'
 import { Datum, LayoutAxis, PlotData } from 'plotly.js'

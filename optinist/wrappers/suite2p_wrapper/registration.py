@@ -2,7 +2,9 @@ from wrappers.data_wrapper import *
 
 
 def suite2p_registration(
-        ops: Suite2pData, nwbfile: NWBFile=None, params: dict=None
+        ops: Suite2pData,
+        nwbfile: NWBFile=None,
+        params: dict=None
     ) -> {'ops': Suite2pData}:
     import numpy as np
     from suite2p import registration, io, default_ops, io

@@ -3,6 +3,8 @@ import {
   isHDF5InputNode,
   isCsvInputNode,
   isImageInputNode,
+  // isFluoInputNode,
+  // isBehaviorInputNode,
 } from './InputNodeUtils'
 
 export const selectInputNode = (state: RootState) => state.inputNode
@@ -12,6 +14,7 @@ export const selectInputNodeById = (nodeId: string) => (state: RootState) =>
 
 export const selectInputNodeDefined = (nodeId: string) => (state: RootState) =>
   Object.keys(state.inputNode).includes(nodeId)
+
 export const selectInputNodeFileType = (nodeId: string) => (state: RootState) =>
   selectInputNodeById(nodeId)(state).fileType
 

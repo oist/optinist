@@ -4,8 +4,8 @@ export const FILE_TYPE_SET = {
   CSV: 'csv',
   IMAGE: 'image',
   HDF5: 'hdf5',
-  // NWB:"nwb"
-  // JSON:"json"
+  FLUO: 'fluo',
+  BEHAVIOR: 'behavior',
 } as const
 
 export type FILE_TYPE = typeof FILE_TYPE_SET[keyof typeof FILE_TYPE_SET]

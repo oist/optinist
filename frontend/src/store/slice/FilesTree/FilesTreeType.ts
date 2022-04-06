@@ -46,6 +46,8 @@ export const FILE_TREE_TYPE_SET = {
   IMAGE: 'image',
   CSV: 'csv',
   HDF5: 'hdf5',
+  FLUO: 'fluo',
+  BEHAVIOR: 'behavior',
   ALL: 'all',
 } as const
 

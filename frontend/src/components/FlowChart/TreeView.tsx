@@ -78,6 +78,16 @@ export const AlgorithmTreeView = React.memo(() => {
           nodeName={'hdf5Data'}
           fileType={FILE_TYPE_SET.HDF5}
         />
+        <InputNodeComponent
+          fileName={'fluo'}
+          nodeName={'fluoData'}
+          fileType={FILE_TYPE_SET.FLUO}
+        />
+        <InputNodeComponent
+          fileName={'behavior'}
+          nodeName={'behaviorData'}
+          fileType={FILE_TYPE_SET.BEHAVIOR}
+        />
       </TreeItem>
       <TreeItem nodeId="Algorithm" label="Algorithm">
         {Object.entries(algoList).map(([name, node], i) => (
@@ -119,6 +129,14 @@ const InputNodeComponent = React.memo<{
       case FILE_TYPE_SET.HDF5:
         componentType = 'HDF5FileNode'
         fileType = FILE_TYPE_SET.HDF5
+        break
+      case FILE_TYPE_SET.FLUO:
+        componentType = 'FluoFileNode'
+        fileType = FILE_TYPE_SET.FLUO
+        break
+      case FILE_TYPE_SET.BEHAVIOR:
+        componentType = 'BehaviorFileNode'
+        fileType = FILE_TYPE_SET.BEHAVIOR
         break
     }
     const newNode = {

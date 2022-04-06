@@ -1,3 +1,4 @@
+from cui_api.const import OPTINIST_DIR
 name="hdf5"
 
 rule:
@@ -8,4 +9,4 @@ rule:
     params:
         name=name
     script:
-        "../scripts/data.py"
+        f'{OPTINIST_DIR}/rules/scripts/data.py'
