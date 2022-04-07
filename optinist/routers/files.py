@@ -10,8 +10,8 @@ else:
     from typing_extensions import TypedDict
 
 from fastapi import APIRouter, File, Response, UploadFile, Form
-from cui_api.const import BASE_DIR
-from cui_api.utils import join_file_path
+from optinist.cui_api.const import BASE_DIR
+from optinist.cui_api.utils import join_file_path
 
 router = APIRouter()
 

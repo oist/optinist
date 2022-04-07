@@ -2,7 +2,7 @@ import numpy as np
 import sys
 from pynwb import NWBFile
 
-from wrappers.data_wrapper import *
+from optinist.wrappers.data_wrapper import *
 
 
 def dummy_image2image(

@@ -1,4 +1,4 @@
-configfile: "../optinist/config.yaml"
+configfile: "./optinist/config.yaml"
 
 for rule, details in config["rules"].items():
     include: details.get("rule_file")

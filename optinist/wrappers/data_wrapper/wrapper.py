@@ -4,13 +4,13 @@ import pandas as pd
 import imageio
 import tifffile
 import gc
-from cui_api.utils import (
+from optinist.cui_api.utils import (
     get_json_file_path,
     get_html_file_path,
     get_images_list,
     join_file_path
 )
-from cui_api.const import BASE_DIR
+from optinist.cui_api.const import BASE_DIR
 
 class BaseData:
     def __init__(self, file_name):

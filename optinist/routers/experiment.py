@@ -3,8 +3,8 @@ from glob import glob
 import yaml
 import shutil
 
-from cui_api.const import BASE_DIR
-from cui_api.utils import join_file_path
+from optinist.cui_api.const import BASE_DIR
+from optinist.cui_api.utils import join_file_path
 
 router = APIRouter()
 

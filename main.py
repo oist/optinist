@@ -5,8 +5,7 @@ from fastapi.templating import Jinja2Templates
 import uvicorn
 from starlette.middleware.cors import CORSMiddleware
 import sys
-sys.path.append('../optinist')
-from routers import (
+from optinist.routers import (
     files,
     run,
     params,
@@ -40,11 +39,11 @@ app.add_middleware(
 
 app.mount(
     "/static",
-    StaticFiles(directory="../frontend/build/static"),
+    StaticFiles(directory="./frontend/build/static"),
     name="static"
 )
 
-templates = Jinja2Templates(directory="../frontend/build")
+templates = Jinja2Templates(directory="./frontend/build")
 
 @app.get("/")
 async def root(request: Request):

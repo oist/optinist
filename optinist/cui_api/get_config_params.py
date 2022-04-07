@@ -1,7 +1,7 @@
 import os
 import yaml
-from cui_api.const import OPTINIST_DIR
-from cui_api.utils import join_file_path
+from optinist.cui_api.const import OPTINIST_DIR
+from optinist.cui_api.utils import join_file_path
 
 
 def get_config_params(filename):

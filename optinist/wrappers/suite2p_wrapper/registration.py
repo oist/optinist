@@ -1,4 +1,4 @@
-from wrappers.data_wrapper import *
+from optinist.wrappers.data_wrapper import *
 
 
 def suite2p_registration(

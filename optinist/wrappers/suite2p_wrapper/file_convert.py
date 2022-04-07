@@ -1,7 +1,7 @@
-from wrappers.data_wrapper import *
+from optinist.wrappers.data_wrapper import *
 
-from cui_api.const import BASE_DIR
-from cui_api.utils import join_file_path
+from optinist.cui_api.const import BASE_DIR
+from optinist.cui_api.utils import join_file_path
 
 
 def suite2p_file_convert(

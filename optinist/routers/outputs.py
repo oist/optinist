@@ -4,8 +4,8 @@ import os
 import json
 from glob import glob
 from .utils.save import save_tiff2json, save_csv2json
-from cui_api.const import BASE_DIR
-from cui_api.utils import join_file_path
+from optinist.cui_api.const import BASE_DIR
+from optinist.cui_api.utils import join_file_path
 
 router = APIRouter()
 
