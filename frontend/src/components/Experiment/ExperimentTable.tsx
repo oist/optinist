@@ -41,7 +41,7 @@ import {
   DialogTitle,
   TableSortLabel,
 } from '@mui/material'
-import { DeleteButton, ImportButton } from './ExperimentItems'
+import { DeleteButton, DownloadButton, ImportButton } from './ExperimentItems'
 
 export const ExperimentUidContext = React.createContext<string>('')
 
@@ -210,6 +210,7 @@ const HeadItem = React.memo<{
         </TableCell>
         <TableCell>Success</TableCell>
         <TableCell>Import</TableCell>
+        <TableCell>Download</TableCell>
         <TableCell>Delete</TableCell>
       </TableRow>
     </TableHead>
@@ -259,6 +260,9 @@ const RowItem = React.memo<{
         </TableCell>
         <TableCell>
           <ImportButton />
+        </TableCell>
+        <TableCell>
+          <DownloadButton />
         </TableCell>
         <TableCell>
           <DeleteButton />

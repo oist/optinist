@@ -7,6 +7,7 @@ import DialogActions from '@mui/material/DialogActions'
 import DialogTitle from '@mui/material/DialogTitle'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import GetAppIcon from '@mui/icons-material/GetApp'
+import SimCardDownloadIcon from '@mui/icons-material/SimCardDownload'
 import { useSnackbar } from 'notistack'
 import { selectExperimentName } from 'store/slice/Experiments/ExperimentsSelectors'
 import {
@@ -17,6 +18,7 @@ import { AppDispatch } from 'store/store'
 import { setRunBtnOption } from 'store/slice/Pipeline/PipelineSlice'
 import { RUN_BTN_OPTIONS } from 'store/slice/Pipeline/PipelineType'
 import { ExperimentUidContext } from './ExperimentTable'
+import { downloadExperimentByUidApi } from 'api/experiments/Experiments'
 
 export const ImportButton = React.memo(() => {
   const dispatch: AppDispatch = useDispatch()
@@ -72,5 +74,18 @@ export const DeleteButton = React.memo(() => {
         </DialogActions>
       </Dialog>
     </>
+  )
+})
+
+export const DownloadButton = React.memo(() => {
+  const dispatch = useDispatch()
+  const uid = React.useContext(ExperimentUidContext)
+  const onClick = () => {
+    dispatch(downloadExperimentByUidApi(uid))
+  }
+  return (
+    <IconButton onClick={onClick}>
+      <SimCardDownloadIcon color="primary" />
+    </IconButton>
   )
 })

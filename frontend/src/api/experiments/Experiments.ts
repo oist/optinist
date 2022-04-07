@@ -57,3 +57,8 @@ export async function importExperimentByUidApi(
   const response = await axios.get(`${BASE_URL}/experiments/import/${uid}`)
   return response.data
 }
+
+export async function downloadExperimentByUidApi(uid: string): Promise<Blob> {
+  const response = await axios.get(`${BASE_URL}/experiments/download/${uid}`)
+  return response.data
+}

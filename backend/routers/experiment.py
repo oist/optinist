@@ -4,6 +4,7 @@ import yaml
 import shutil
 from pydantic import BaseModel
 from typing import List
+from fastapi.responses import FileResponse
 
 from cui_api.const import BASE_DIR
 from cui_api.utils import join_file_path
@@ -54,3 +55,9 @@ async def delete_experiment_list(deleteItem: DeleteItem):
         return True
     except Exception as e:
         return False
+
+
+@router.get("/experiments/download/{unique_id}")
+async def download_experiment(unique_id: str):
+    file_path = "/Users/shogoakiyama/Desktop/ann_0.json"
+    return FileResponse(file_path)
