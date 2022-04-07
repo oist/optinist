@@ -19,7 +19,7 @@ import { setRunBtnOption } from 'store/slice/Pipeline/PipelineSlice'
 import { RUN_BTN_OPTIONS } from 'store/slice/Pipeline/PipelineType'
 import { ExperimentUidContext } from './ExperimentTable'
 import { BASE_URL } from 'const/API'
-import axios, { AxiosResponse } from 'axios'
+import axios from 'axios'
 
 export const ImportButton = React.memo(() => {
   const dispatch: AppDispatch = useDispatch()
@@ -91,9 +91,7 @@ export const DownloadButton = React.memo(() => {
           responseType: 'blob',
         },
       )
-      const url = URL.createObjectURL(
-        new Blob([response.data], { type: 'application/json' }),
-      )
+      const url = URL.createObjectURL(new Blob([response.data]))
       setFileUrl(url)
       ref.current?.click()
       URL.revokeObjectURL(url)
@@ -108,7 +106,7 @@ export const DownloadButton = React.memo(() => {
       <IconButton onClick={onClick}>
         <SimCardDownloadIcon color="primary" />
       </IconButton>
-      <a href={url} download={'aa.json'} className="hidden" ref={ref} />
+      <a href={url} download={`${uid}.nwb`} className="hidden" ref={ref} />
     </>
   )
 })
