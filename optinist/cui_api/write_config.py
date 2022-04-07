@@ -2,8 +2,8 @@ import os
 import yaml
 from datetime import datetime
 
-from cui_api.const import BASE_DIR, OPTINIST_DIR
-from cui_api.utils import join_file_path
+from optinist.cui_api.const import BASE_DIR, OPTINIST_DIR
+from optinist.cui_api.utils import join_file_path
 
 
 def write_snakemake_config(unique_id, flow_config):

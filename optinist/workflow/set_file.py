@@ -1,11 +1,11 @@
 import pickle
 import h5py
 
-from wrappers.data_wrapper import *
-from workflow.params import get_typecheck_params
-from cui_api.const import BASE_DIR
-from cui_api.utils import join_file_path
-from wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.wrappers.data_wrapper import *
+from optinist.wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.workflow.params import get_typecheck_params
+from optinist.cui_api.const import BASE_DIR
+from optinist.cui_api.utils import join_file_path
 
 
 def set_imagefile(unique_id, node, edgeList, nwbfile):

@@ -2,10 +2,10 @@ import pickle
 import yaml
 from collections import OrderedDict
 from glob import glob
-from wrappers.data_wrapper import *
+from optinist.wrappers.data_wrapper import *
 
-from cui_api.utils import join_file_path
-from cui_api.const import BASE_DIR
+from optinist.cui_api.utils import join_file_path
+from optinist.cui_api.const import BASE_DIR
 
 
 def get_results(unique_id, nodeIdList):

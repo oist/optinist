@@ -3,8 +3,9 @@ sys.path.append('../optinist')
 
 import pickle
 import h5py
-from wrappers.data_wrapper import ImageData, CsvData, TimeSeriesData
-from wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.wrappers.data_wrapper import ImageData, CsvData, TimeSeriesData
+from optinist.wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.rules.utils import run_script
 
 
 def save_csv(rule, nodeType):
@@ -71,7 +72,6 @@ def save_pickle(pickle_path, info):
 
 
 if __name__ == '__main__':
-    from rules.utils import run_script
     last_output = snakemake.config["last_output"]
 
     for rule in snakemake.config["rules"].values():

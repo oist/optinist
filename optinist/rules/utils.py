@@ -2,12 +2,12 @@
 import traceback
 import os
 import pickle
-from cui_api.utils import join_file_path
 import gc
 import copy
 
-from wrappers import wrapper_dict
-from wrappers.nwb_wrapper import save_nwb, NWBDATASET
+from optinist.cui_api.utils import join_file_path
+from optinist.wrappers import wrapper_dict
+from optinist.wrappers.nwb_wrapper import save_nwb, NWBDATASET
 
 
 def dict2leaf(root_dict: dict, path_list):

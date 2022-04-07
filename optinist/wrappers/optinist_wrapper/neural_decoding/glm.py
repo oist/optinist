@@ -4,9 +4,9 @@
 #
 #　https://www.statsmodels.org/stable/glm.html
 
-from wrappers.data_wrapper import *
-from wrappers.optinist_wrapper.utils import standard_norm
-from wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.wrappers.data_wrapper import *
+from optinist.wrappers.optinist_wrapper.utils import standard_norm
+from optinist.wrappers.nwb_wrapper.const import NWBDATASET
 
 def GLM(
         neural_data: FluoData,

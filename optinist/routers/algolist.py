@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from typing import List
 import inspect
 
-from wrappers import wrapper_dict
+from optinist.wrappers import wrapper_dict
 
 router = APIRouter()
 

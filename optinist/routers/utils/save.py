@@ -5,7 +5,7 @@ from datetime import datetime
 from pynwb import NWBHDF5IO
 from PIL import Image, ImageSequence
 import tifffile
-from cui_api.utils import join_file_path
+from optinist.cui_api.utils import join_file_path
 
 
 def save_tiff2json(tiff_file_path, start_index=None, end_index=None):

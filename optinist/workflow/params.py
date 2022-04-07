@@ -1,7 +1,7 @@
 import os
 import copy
 import yaml
-from cui_api.get_config_params import get_config_params
+from optinist.cui_api.get_config_params import get_config_params
 
 
 def get_typecheck_params(message_params, name):

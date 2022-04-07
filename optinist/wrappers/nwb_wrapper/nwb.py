@@ -12,7 +12,7 @@ from datetime import datetime
 from dateutil.tz import tzlocal
 
 from .optinist_data import PostProcess
-from wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.wrappers.nwb_wrapper.const import NWBDATASET
 
 
 def nwb_add_acquisition(nwb_dict):

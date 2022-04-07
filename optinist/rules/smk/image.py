@@ -1,4 +1,4 @@
-from cui_api.const import OPTINIST_DIR
+from optinist.cui_api.const import OPTINIST_DIR
 name="image"
 
 rule:

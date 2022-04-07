@@ -6,13 +6,13 @@ from fastapi import APIRouter, BackgroundTasks
 from pydantic import BaseModel
 from typing import List
 
-from workflow.set_file import get_forcerun_list
-from workflow.params import get_typecheck_params
-from workflow.set_workflow import set_workflow
-from workflow.results import get_results
+from optinist.workflow.set_file import get_forcerun_list
+from optinist.workflow.params import get_typecheck_params
+from optinist.workflow.set_workflow import set_workflow
+from optinist.workflow.results import get_results
 
-from cui_api.run import run_snakemake
-from cui_api.const import BASE_DIR
+from optinist.cui_api.run import run_snakemake
+from optinist.cui_api.const import BASE_DIR
 
 
 router = APIRouter()
