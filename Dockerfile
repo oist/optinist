@@ -7,7 +7,7 @@ RUN apt-get --allow-releaseinfo-change update
 RUN apt-get install -y git gcc g++ libgl1
 
 RUN /usr/local/bin/python -m pip install --upgrade pip
-COPY backend/requirements.txt ./
+COPY requirements.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 # # caiman install
@@ -29,4 +29,4 @@ RUN apt update && apt-get install -y libgl1-mesa-dev
 
 COPY . .
 
-# ENTRYPOINT ["cd /app/backend & python main.py"]
+ENTRYPOINT ["python", "main.py"]

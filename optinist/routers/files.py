@@ -9,7 +9,7 @@ else:
     from typing import List, Optional
     from typing_extensions import TypedDict
 
-from fastapi import APIRouter, File, Response, UploadFile, Form
+from fastapi import APIRouter, File, Response, UploadFile
 from optinist.cui_api.const import BASE_DIR
 from optinist.cui_api.utils import join_file_path
 
