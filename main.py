@@ -4,7 +4,6 @@ from fastapi.templating import Jinja2Templates
 
 import uvicorn
 from starlette.middleware.cors import CORSMiddleware
-import sys
 from optinist.routers import (
     files,
     run,
