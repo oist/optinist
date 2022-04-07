@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useRef } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Button from '@mui/material/Button'
 import IconButton from '@mui/material/IconButton'
@@ -18,7 +18,8 @@ import { AppDispatch } from 'store/store'
 import { setRunBtnOption } from 'store/slice/Pipeline/PipelineSlice'
 import { RUN_BTN_OPTIONS } from 'store/slice/Pipeline/PipelineType'
 import { ExperimentUidContext } from './ExperimentTable'
-import { downloadExperimentByUidApi } from 'api/experiments/Experiments'
+import { BASE_URL } from 'const/API'
+import axios, { AxiosResponse } from 'axios'
 
 export const ImportButton = React.memo(() => {
   const dispatch: AppDispatch = useDispatch()
@@ -78,14 +79,36 @@ export const DeleteButton = React.memo(() => {
 })
 
 export const DownloadButton = React.memo(() => {
-  const dispatch = useDispatch()
   const uid = React.useContext(ExperimentUidContext)
-  const onClick = () => {
-    dispatch(downloadExperimentByUidApi(uid))
+  const ref = useRef<HTMLAnchorElement | null>(null)
+  const [url, setFileUrl] = useState<string>()
+
+  const onClick = async () => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/experiments/download/${uid}`,
+        {
+          responseType: 'blob',
+        },
+      )
+      const url = URL.createObjectURL(
+        new Blob([response.data], { type: 'application/json' }),
+      )
+      setFileUrl(url)
+      ref.current?.click()
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      throw new Error('Download Error')
+    }
   }
+  console.log(ref)
+
   return (
-    <IconButton onClick={onClick}>
-      <SimCardDownloadIcon color="primary" />
-    </IconButton>
+    <>
+      <IconButton onClick={onClick}>
+        <SimCardDownloadIcon color="primary" />
+      </IconButton>
+      <a href={url} download={'aa.json'} className="hidden" ref={ref} />
+    </>
   )
 })
