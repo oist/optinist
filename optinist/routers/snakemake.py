@@ -1,11 +1,10 @@
 
 from fastapi import APIRouter
-from optinist.cui_api.get_config_params import get_config_params
+from optinist.cui_api.config_reader import ConfigReader
 
 router = APIRouter()
 
 
 @router.get("/snakemake")
 async def params():
-    config = get_config_params("snakemake")
-    return config
+    return ConfigReader.read("snakemake")

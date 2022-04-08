@@ -4,8 +4,8 @@ import os
 import json
 from glob import glob
 from .save import save_tiff2json, save_csv2json
-from optinist.cui_api.const import BASE_DIR
-from optinist.cui_api.utils import join_file_path
+from optinist.cui_api.dir_path import DIRPATH
+from optinist.cui_api.filepath_creater import join_filepath
 
 router = APIRouter()
 
@@ -14,7 +14,7 @@ router = APIRouter()
 async def read_file(file_path: str, index: Optional[int] = None):
     _dir = file_path
     
-    with open(join_file_path([_dir, f'{str(index)}.json']), 'r') as f:
+    with open(join_filepath([_dir, f'{str(index)}.json']), 'r') as f:
         json_dict = json.load(f)
 
     xrange_list = list(json_dict["data"].keys())
@@ -22,7 +22,7 @@ async def read_file(file_path: str, index: Optional[int] = None):
     return_dict = {}
     std_dict = {}
     if index == 0:
-        num_files = len(glob(join_file_path([_dir, '*.json'])))
+        num_files = len(glob(join_filepath([_dir, '*.json'])))
         return_dict = {str(i): {list(json_dict["data"].keys())[0]: json_dict["data"]["0"]} for i in range(num_files)}
         if "std" in json_dict.keys():
             std_dict = {str(i): {list(json_dict["std"].keys())[0]: json_dict["std"]["0"]} for i in range(num_files)}
@@ -41,7 +41,7 @@ async def read_file(file_path: str):
 
     return_dict = {}
     std_dict = {}
-    for index, path in enumerate(glob(join_file_path([_dir, '*.json']))):
+    for index, path in enumerate(glob(join_filepath([_dir, '*.json']))):
         with open(path, 'r') as f:
             json_dict = json.load(f)
             return_dict[str(index)] = json_dict["data"]
@@ -75,12 +75,11 @@ async def read_image(
         start_index: Optional[int] = None,
         end_index: Optional[int] = None
     ):
-    # file_path = join_file_path([BASE_DIR, file_path])
     file_name, ext = os.path.splitext(os.path.basename(file_path))
     if ext in ['.tif', '.tiff', '.TIF', '.TIFF']:
         folder_path = os.path.dirname(file_path)
         tiff_file_path = file_path
-        file_path = join_file_path(
+        file_path = join_filepath(
             [folder_path, f'{file_name}_{str(start_index)}_{str(end_index)}.json'])
         if not os.path.exists(file_path):
             save_tiff2json(tiff_file_path, start_index, end_index)
@@ -97,15 +96,13 @@ async def read_image(
 
 @router.get("/outputs/csv/{file_path:path}")
 async def read_csv(file_path: str):
-    # file_path = join_file_path([BASE_DIR, file_path])
     file_name, ext = os.path.splitext(os.path.basename(file_path))
 
     if ext == '.csv':
         folder_path = os.path.dirname(file_path)
         csv_file_path = file_path
-        file_path = join_file_path([folder_path, f'{file_name}.json'])
+        file_path = join_filepath([folder_path, f'{file_name}.json'])
 
-        # if not os.path.exists(file_path):
         save_csv2json(csv_file_path)
 
     with open(file_path, 'r') as f:

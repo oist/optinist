@@ -4,15 +4,15 @@ from collections import OrderedDict
 from glob import glob
 from optinist.wrappers.data_wrapper import *
 
-from optinist.cui_api.utils import join_file_path
-from optinist.cui_api.const import BASE_DIR
+from optinist.cui_api.filepath_creater import join_filepath
+from optinist.cui_api.dir_path import DIRPATH
 
 
 def get_results(unique_id, nodeIdList):
     runPaths = []
     for node_id in nodeIdList:
-        print(join_file_path([BASE_DIR, unique_id, node_id, "*.pkl"]))
-        for path in glob(join_file_path([BASE_DIR, unique_id, node_id, "*.pkl"])):
+        print(join_filepath([DIRPATH.BASE_DIR, unique_id, node_id, "*.pkl"]))
+        for path in glob(join_filepath([DIRPATH.BASE_DIR, unique_id, node_id, "*.pkl"])):
             runPaths.append(path)
 
     for i, path in enumerate(runPaths):
@@ -40,12 +40,12 @@ def get_results(unique_id, nodeIdList):
 
 
 def get_error(info, node_id, unique_id):
-    with open(join_file_path([BASE_DIR, unique_id, "experiment.yaml"]), "r") as f:
+    with open(join_filepath([DIRPATH.BASE_DIR, unique_id, "experiment.yaml"]), "r") as f:
         config = yaml.safe_load(f)
 
     config["function"][node_id]["success"] = "error"
 
-    with open(join_file_path([BASE_DIR, unique_id, "experiment.yaml"]), "w") as f:
+    with open(join_filepath([DIRPATH.BASE_DIR, unique_id, "experiment.yaml"]), "w") as f:
         yaml.dump(config, f)
 
     if isinstance(info, str):
@@ -62,12 +62,12 @@ def get_error(info, node_id, unique_id):
 
 
 def get_success(info, node_id, algo_name, json_dir, unique_id):
-    with open(join_file_path([BASE_DIR, unique_id, "experiment.yaml"]), "r") as f:
+    with open(join_filepath([DIRPATH.BASE_DIR, unique_id, "experiment.yaml"]), "r") as f:
         config = yaml.safe_load(f)
 
     config["function"][node_id]["success"] = "success"
 
-    with open(join_file_path([BASE_DIR, unique_id, "experiment.yaml"]), "w") as f:
+    with open(join_filepath([DIRPATH.BASE_DIR, unique_id, "experiment.yaml"]), "w") as f:
         yaml.dump(config, f)
 
     message = {

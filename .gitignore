@@ -12,3 +12,5 @@ Pipfile.lock
 optinist.egg-info
 .tox
 .snakemake
+.pytest_cache
+optinist/test_data

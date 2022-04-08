@@ -195,7 +195,7 @@ https://github.com/oist/optinist/blob/develop/optinist/rules/smk/optinist/neural
 - conda環境を作成する場合は、`conda:`にinstallパッケージを書く。
 
 ```
-from cui_api.const import OPTINIST_DIR
+from cui_api.const import ROOT_DIR
 
 name = "correlation"
 
@@ -205,11 +205,11 @@ rule:
     output:
         [x["output"] for x in config["rules"].values() if x["type"] == name]
     conda:
-        f'{OPTINIST_DIR}/rules/envs/optinist_env.yaml'
+        f'{DIRPATH.ROOT_DIR}/rules/envs/optinist_env.yaml'
     params:
         name = name
     conda:
-        f'{OPTINIST_DIR}/rules/envs/optinist_env.yaml'
+        f'{DIRPATH.ROOT_DIR}/rules/envs/optinist_env.yaml'
     script:
-        f'{OPTINIST_DIR}/rules/scripts/func.py'
+        f'{DIRPATH.ROOT_DIR}/rules/scripts/func.py'
 ```

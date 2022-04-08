@@ -4,8 +4,8 @@ import h5py
 from optinist.wrappers.data_wrapper import *
 from optinist.wrappers.nwb_wrapper.const import NWBDATASET
 from optinist.workflow.params import get_typecheck_params
-from optinist.cui_api.const import BASE_DIR
-from optinist.cui_api.utils import join_file_path
+from optinist.cui_api.dir_path import DIRPATH
+from optinist.cui_api.filepath_creater import join_filepath
 
 
 def set_imagefile(unique_id, node, edgeList, nwbfile):
@@ -116,7 +116,7 @@ def set_algofile(unique_id, node, edgeList, nodeDict):
 
 
 def get_pickle_file(unique_id, node_id, algo_name):
-    return join_file_path([BASE_DIR, unique_id, node_id, f"{algo_name}.pkl"])
+    return join_filepath([DIRPATH.BASE_DIR, unique_id, node_id, f"{algo_name}.pkl"])
 
 
 def save_pickle(filepath, info):

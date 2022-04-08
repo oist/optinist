@@ -1,4 +1,4 @@
-from optinist.cui_api.const import OPTINIST_DIR
+from optinist.cui_api.dir_path import DIRPATH
 name="csv"
 
 rule:
@@ -9,4 +9,4 @@ rule:
     params:
         name=name
     script:
-        f'{OPTINIST_DIR}/rules/scripts/data.py'
+        f'{ROOT_DIR/rules/scripts/data.py'

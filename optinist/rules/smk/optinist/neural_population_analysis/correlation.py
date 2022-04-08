@@ -1,4 +1,4 @@
-from optinist.cui_api.const import OPTINIST_DIR
+from optinist.cui_api.dir_path import DIRPATH
 
 name = "correlation"
 
@@ -8,8 +8,8 @@ rule:
     output:
         [x["output"] for x in config["rules"].values() if x["type"] == name]
     conda:
-        f'{OPTINIST_DIR}/rules/envs/optinist_env.yaml'
+        f'{DIRPATH.ROOT_DIR}/rules/envs/optinist_env.yaml'
     params:
         name = name
     script:
-        f'{OPTINIST_DIR}/rules/scripts/func.py'
+        f'{DIRPATH.ROOT_DIR}/rules/scripts/func.py'
