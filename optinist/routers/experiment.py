@@ -3,13 +3,15 @@ from glob import glob
 import yaml
 import shutil
 from pydantic import BaseModel
-from typing import List
-from fastapi.responses import FileResponse
 
 from optinist.cui_api.dir_path import DIRPATH
 from optinist.cui_api.filepath_creater import join_filepath
 
 router = APIRouter()
+
+
+class DeleteItem(BaseModel):
+    uidList: list
 
 
 @router.get("/experiments")
@@ -44,14 +46,10 @@ async def delete_experiment(unique_id: str):
     except Exception as e:
         return False
 
-
-class DeleteItem(BaseModel):
-    uidList: list
-
 @router.post("/experiments/delete")
 async def delete_experiment_list(deleteItem: DeleteItem):
     try:
-        [shutil.rmtree(join_file_path([BASE_DIR, uid])) for uid in deleteItem.uidList]
+        [shutil.rmtree(join_filepath([DIRPATH.BASE_DIR, uid])) for uid in deleteItem.uidList]
         return True
     except Exception as e:
         return False
@@ -59,6 +57,5 @@ async def delete_experiment_list(deleteItem: DeleteItem):
 
 @router.get("/experiments/download/{unique_id}")
 async def download_experiment(unique_id: str):
-    # file_path = "/Users/shogoakiyama/Desktop/ann_0.json"
-    nwb_file = glob(join_file_path([BASE_DIR, unique_id, "*", "*.nwb"]))[0]
+    nwb_file = glob(join_filepath([DIRPATH.BASE_DIR, unique_id, "*", "*.nwb"]))[0]
     return FileResponse(nwb_file)
