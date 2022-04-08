@@ -177,7 +177,7 @@ function getRandomArbitrary(min: number, max: number) {
 }
 
 function updateElementCoord(state: FlowElement) {
-  const { x, y } = state.elementCoord
+  const { x } = state.elementCoord
   if (x > 800) {
     state.elementCoord.x = 300
     state.elementCoord.y += 100

@@ -47,9 +47,7 @@ export const experimentsSlice = createSlice({
       })
       .addCase(deleteExperimentByList.fulfilled, (state, action) => {
         if (action.payload && state.status === 'fulfilled') {
-          action.meta.arg.map((v) => {
-            delete state.experimentList[v]
-          })
+          action.meta.arg.map((v) => delete state.experimentList[v])
         }
       })
       .addCase(pollRunResult.fulfilled, (state, action) => {

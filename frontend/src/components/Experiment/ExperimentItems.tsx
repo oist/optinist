@@ -99,7 +99,6 @@ export const DownloadButton = React.memo(() => {
       throw new Error('Download Error')
     }
   }
-  console.log(ref)
 
   return (
     <>
