@@ -4,6 +4,7 @@ import {
   getExperimentsApi,
   deleteExperimentByUidApi,
   importExperimentByUidApi,
+  deleteExperimentByListApi,
 } from 'api/experiments/Experiments'
 import { RunPostData } from 'api/run/Run'
 import { EXPERIMENTS_SLICE_NAME } from './ExperimentsType'
@@ -32,6 +33,18 @@ export const deleteExperimentByUid = createAsyncThunk<boolean, string>(
   },
 )
 
+export const deleteExperimentByList = createAsyncThunk<boolean, string[]>(
+  `${EXPERIMENTS_SLICE_NAME}/deleteExperimentByList`,
+  async (uid, thunkAPI) => {
+    try {
+      const response = await deleteExperimentByListApi(uid)
+      return response
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
+
 export const importExperimentByUid = createAsyncThunk<RunPostData, string>(
   `${EXPERIMENTS_SLICE_NAME}/importExperimentByUid`,
   async (uid, thunkAPI) => {
@@ -43,3 +56,15 @@ export const importExperimentByUid = createAsyncThunk<RunPostData, string>(
     }
   },
 )
+
+// export const downloadExperimentByUid = createAsyncThunk<void, string>(
+//   `${EXPERIMENTS_SLICE_NAME}/downloadExperimentByUid`,
+//   async (uid, thunkAPI) => {
+//     try {
+//       const response = await downloadExperimentByUidApi(uid)
+//       return response
+//     } catch (e) {
+//       return thunkAPI.rejectWithValue(e)
+//     }
+//   },
+// )

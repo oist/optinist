@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
@@ -12,15 +12,10 @@ import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
 import Paper from '@mui/material/Paper'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogTitle from '@mui/material/DialogTitle'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
-import GetAppIcon from '@mui/icons-material/GetApp'
 import ReplayIcon from '@mui/icons-material/Replay'
-import { useSnackbar } from 'notistack'
+import DeleteIcon from '@mui/icons-material/Delete'
 
 import { CollapsibleTable } from './CollapsibleTable'
 import {
@@ -34,16 +29,21 @@ import {
   selectExperimentList,
 } from 'store/slice/Experiments/ExperimentsSelectors'
 import {
-  deleteExperimentByUid,
-  importExperimentByUid,
+  deleteExperimentByList,
+  getExperiments,
 } from 'store/slice/Experiments/ExperimentsActions'
-import { getExperiments } from 'store/slice/Experiments/ExperimentsActions'
 import { ExperimentStatusIcon } from './ExperimentStatusIcon'
-import { AppDispatch } from 'store/store'
-import { setRunBtnOption } from 'store/slice/Pipeline/PipelineSlice'
-import { RUN_BTN_OPTIONS } from 'store/slice/Pipeline/PipelineType'
 import { Experiment } from 'store/slice/Experiments/ExperimentsType'
-import { TableSortLabel } from '@mui/material'
+import {
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  TableSortLabel,
+} from '@mui/material'
+import { DeleteButton, DownloadButton, ImportButton } from './ExperimentItems'
+
+export const ExperimentUidContext = React.createContext<string>('')
 
 export const ExperimentTable: React.FC = () => {
   const isUninitialized = useSelector(selectExperimentsSatusIsUninitialized)
@@ -74,15 +74,12 @@ const ExperimentsErrorView: React.FC = () => {
   )
 }
 
-export const ExperimentUidContext = React.createContext<string>('')
-
-const TableImple: React.FC = () => {
+const TableImple = React.memo(() => {
   const experimentList = useSelector(selectExperimentList)
   const dispatch = useDispatch()
   const onClickReload = () => {
     dispatch(getExperiments())
   }
-
   const [order, setOrder] = React.useState<Order>('asc')
   const [sortTarget, setSortTarget] =
     React.useState<keyof Experiment>('timestamp')
@@ -92,6 +89,28 @@ const TableImple: React.FC = () => {
       setOrder(isAsc ? 'desc' : 'asc')
       setSortTarget(property)
     }
+
+  const [checkedList, setCheckedList] = useState<string[]>([])
+  const [open, setOpen] = React.useState(false)
+
+  const onCheckBoxClick = (uid: string) => {
+    if (checkedList.includes(uid)) {
+      setCheckedList(checkedList.filter((v) => v !== uid))
+    } else {
+      setCheckedList([...checkedList, uid])
+    }
+  }
+  const onClickDelete = () => {
+    setOpen(true)
+  }
+  const onClickCancel = () => {
+    setOpen(false)
+  }
+  const onClickOk = () => {
+    dispatch(deleteExperimentByList(checkedList))
+    setCheckedList([])
+    setOpen(false)
+  }
 
   return (
     <Box>
@@ -111,12 +130,33 @@ const TableImple: React.FC = () => {
         >
           Reload
         </Button>
+        <Button
+          sx={{
+            marginBottom: (theme) => theme.spacing(1),
+          }}
+          variant="outlined"
+          color="error"
+          endIcon={<DeleteIcon />}
+          onClick={onClickDelete}
+          disabled={checkedList.length === 0}
+        >
+          Delete
+        </Button>
       </Box>
+      <Dialog open={open}>
+        <DialogTitle>Are you sure you want to delete?</DialogTitle>
+        <DialogActions>
+          <Button onClick={onClickCancel} variant="outlined" color="inherit">
+            Cancel
+          </Button>
+          <Button onClick={onClickOk} variant="outlined" autoFocus>
+            OK
+          </Button>
+        </DialogActions>
+      </Dialog>
       <TableContainer component={Paper} elevation={0} variant="outlined">
         <Table aria-label="collapsible table">
-          <TableHead>
-            <Head order={order} sortHandler={sortHandler} />
-          </TableHead>
+          <HeadItem order={order} sortHandler={sortHandler} />
           <TableBody>
             {Object.values(experimentList)
               .sort(getComparator(order, sortTarget))
@@ -125,7 +165,7 @@ const TableImple: React.FC = () => {
                   value={expData.uid}
                   key={expData.uid}
                 >
-                  <Row />
+                  <RowItem onCheckBoxClick={onCheckBoxClick} />
                 </ExperimentUidContext.Provider>
               ))}
           </TableBody>
@@ -133,47 +173,59 @@ const TableImple: React.FC = () => {
       </TableContainer>
     </Box>
   )
-}
+})
 
-const Head: React.FC<{
+const HeadItem = React.memo<{
   order: Order
   sortHandler: any
-}> = ({ order, sortHandler }) => {
+}>(({ order, sortHandler }) => {
   return (
-    <TableRow>
-      <TableCell />
-      <TableCell>
-        <TableSortLabel
-          active
-          direction={order}
-          onClick={sortHandler('timestamp')}
-        >
-          Timestamp
-        </TableSortLabel>
-      </TableCell>
-      <TableCell>
-        <TableSortLabel active direction={order} onClick={sortHandler('uid')}>
-          ID
-        </TableSortLabel>
-      </TableCell>
-      <TableCell>
-        <TableSortLabel active direction={order} onClick={sortHandler('name')}>
-          Name
-        </TableSortLabel>
-      </TableCell>
-      <TableCell>Success</TableCell>
-      <TableCell>Import</TableCell>
-      <TableCell>Delete</TableCell>
-    </TableRow>
+    <TableHead>
+      <TableRow>
+        {/* <TableCell><Checkbox /></TableCell> */}
+        <TableCell />
+        <TableCell />
+        <TableCell>
+          <TableSortLabel
+            active
+            direction={order}
+            onClick={sortHandler('timestamp')}
+          >
+            Timestamp
+          </TableSortLabel>
+        </TableCell>
+        <TableCell>
+          <TableSortLabel active direction={order} onClick={sortHandler('uid')}>
+            ID
+          </TableSortLabel>
+        </TableCell>
+        <TableCell>
+          <TableSortLabel
+            active
+            direction={order}
+            onClick={sortHandler('name')}
+          >
+            Name
+          </TableSortLabel>
+        </TableCell>
+        <TableCell>Success</TableCell>
+        <TableCell>Import</TableCell>
+        <TableCell>Download</TableCell>
+        <TableCell>Delete</TableCell>
+      </TableRow>
+    </TableHead>
   )
-}
+})
 
-const Row: React.FC = () => {
+const RowItem = React.memo<{
+  onCheckBoxClick: (uid: string) => void
+}>(({ onCheckBoxClick }) => {
   const uid = React.useContext(ExperimentUidContext)
   const timestamp = useSelector(selectExperimentTimeStamp(uid))
   const status = useSelector(selectExperimentStatus(uid))
   const name = useSelector(selectExperimentName(uid))
   const [open, setOpen] = React.useState(false)
+
   return (
     <React.Fragment>
       <TableRow
@@ -186,6 +238,9 @@ const Row: React.FC = () => {
           },
         }}
       >
+        <TableCell>
+          <Checkbox onChange={() => onCheckBoxClick(uid)} />
+        </TableCell>
         <TableCell>
           <IconButton
             aria-label="expand row"
@@ -204,73 +259,19 @@ const Row: React.FC = () => {
           <ExperimentStatusIcon status={status} />
         </TableCell>
         <TableCell>
-          <ImportExperimentButton />
+          <ImportButton />
         </TableCell>
         <TableCell>
-          <DeleteExperimentButton />
+          <DownloadButton />
+        </TableCell>
+        <TableCell>
+          <DeleteButton />
         </TableCell>
       </TableRow>
       <CollapsibleTable open={open} />
     </React.Fragment>
   )
-}
-
-const ImportExperimentButton: React.FC = () => {
-  const dispatch: AppDispatch = useDispatch()
-  const uid = React.useContext(ExperimentUidContext)
-  const { enqueueSnackbar } = useSnackbar()
-
-  const onClick = () => {
-    dispatch(importExperimentByUid(uid))
-      .unwrap()
-      .then(() =>
-        enqueueSnackbar('Successfully imported.', { variant: 'success' }),
-      )
-    dispatch(setRunBtnOption({ runBtnOption: RUN_BTN_OPTIONS.RUN_ALREADY }))
-  }
-  return (
-    <IconButton onClick={onClick}>
-      <GetAppIcon color="primary" />
-    </IconButton>
-  )
-}
-
-const DeleteExperimentButton: React.FC = () => {
-  const dispatch = useDispatch()
-  const uid = React.useContext(ExperimentUidContext)
-
-  const name = useSelector(selectExperimentName(uid))
-  const [open, setOpen] = React.useState(false)
-
-  const onClickOpen = () => {
-    setOpen(true)
-  }
-  const onClickCancel = () => {
-    setOpen(false)
-  }
-  const onClickOk = () => {
-    setOpen(false)
-    dispatch(deleteExperimentByUid(uid))
-  }
-  return (
-    <>
-      <IconButton onClick={onClickOpen}>
-        <DeleteOutlineIcon color="error" />
-      </IconButton>
-      <Dialog open={open}>
-        <DialogTitle>Are you sure you want to delete {name}?</DialogTitle>
-        <DialogActions>
-          <Button onClick={onClickCancel} variant="outlined" color="inherit">
-            Cancel
-          </Button>
-          <Button onClick={onClickOk} variant="outlined" autoFocus>
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </>
-  )
-}
+})
 
 type Order = 'asc' | 'desc'
 

@@ -1,6 +1,10 @@
 import { createSlice, isAnyOf } from '@reduxjs/toolkit'
 import { EXPERIMENTS_SLICE_NAME, Experiments } from './ExperimentsType'
-import { getExperiments, deleteExperimentByUid } from './ExperimentsActions'
+import {
+  getExperiments,
+  deleteExperimentByUid,
+  deleteExperimentByList,
+} from './ExperimentsActions'
 import { convertToExperimentListType } from './ExperimentsUtils'
 import {
   pollRunResult,
@@ -39,6 +43,11 @@ export const experimentsSlice = createSlice({
       .addCase(deleteExperimentByUid.fulfilled, (state, action) => {
         if (action.payload && state.status === 'fulfilled') {
           delete state.experimentList[action.meta.arg]
+        }
+      })
+      .addCase(deleteExperimentByList.fulfilled, (state, action) => {
+        if (action.payload && state.status === 'fulfilled') {
+          action.meta.arg.map((v) => delete state.experimentList[v])
         }
       })
       .addCase(pollRunResult.fulfilled, (state, action) => {

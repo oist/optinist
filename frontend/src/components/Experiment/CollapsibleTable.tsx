@@ -18,9 +18,9 @@ import {
 import { ExperimentStatusIcon } from './ExperimentStatusIcon'
 import { arrayEqualityFn } from 'utils/EqualityUtils'
 
-export const CollapsibleTable: React.FC<{
+export const CollapsibleTable = React.memo<{
   open: boolean
-}> = ({ open }) => {
+}>(({ open }) => {
   return (
     <TableRow>
       <TableCell sx={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -38,9 +38,9 @@ export const CollapsibleTable: React.FC<{
       </TableCell>
     </TableRow>
   )
-}
+})
 
-const Head: React.FC = () => {
+const Head = React.memo(() => {
   return (
     <TableHead>
       <TableRow>
@@ -50,9 +50,9 @@ const Head: React.FC = () => {
       </TableRow>
     </TableHead>
   )
-}
+})
 
-const Body: React.FC = () => {
+const Body = React.memo(() => {
   const uid = React.useContext(ExperimentUidContext)
   const nodeIdList = useSelector(
     selectExperimentFunctionNodeIdList(uid),
@@ -65,9 +65,11 @@ const Body: React.FC = () => {
       ))}
     </TableBody>
   )
-}
+})
 
-const TableRowOfFunction = React.memo<{ nodeId: string }>(({ nodeId }) => {
+const TableRowOfFunction = React.memo<{
+  nodeId: string
+}>(({ nodeId }) => {
   const uid = React.useContext(ExperimentUidContext)
   const name = useSelector(selectExperimentFunctionName(uid, nodeId))
   const status = useSelector(selectExperimentFunctionStatus(uid, nodeId))

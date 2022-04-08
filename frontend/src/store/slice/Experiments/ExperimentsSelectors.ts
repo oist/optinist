@@ -59,6 +59,10 @@ export const selectExperimentStatus =
     }
   }
 
+export const selectExperimentCheckList =
+  (uid: string, nodeId: string) => (state: RootState) =>
+    selectExperimentFunction(uid, nodeId)(state).status
+
 export const selectExperimentFunctionNodeIdList =
   (uid: string) => (state: RootState) =>
     Object.keys(selectExperimentList(state)[uid].functions)

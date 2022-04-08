@@ -2,7 +2,7 @@ import React from 'react'
 import { default as MuiToolbar } from '@mui/material/Toolbar'
 import { ExperimentTable } from './ExperimentTable'
 
-const Experiment: React.FC = () => {
+const Experiment = React.memo(() => {
   return (
     <div style={{ display: 'flex' }}>
       <main
@@ -15,11 +15,10 @@ const Experiment: React.FC = () => {
         }}
       >
         <MuiToolbar />
-        {/* <VisualizeItems /> */}
         <ExperimentTable />
       </main>
     </div>
   )
-}
+})
 
 export default Experiment

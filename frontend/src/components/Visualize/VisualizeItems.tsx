@@ -65,7 +65,7 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
   const height = useSelector(selectVisualizeItemHeight(itemId))
   const [inputWidth, setInputWidth] = React.useState(width)
   const onBlurWidth = () => {
-    const value = inputWidth >= 150 ? inputWidth : 150
+    const value = inputWidth >= 300 ? inputWidth : 300
     dispatch(
       setItemWidth({
         itemId,
