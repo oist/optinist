@@ -1,11 +1,11 @@
 import os
 import copy
 import yaml
-from optinist.cui_api.get_config_params import get_config_params
+from optinist.cui_api.config_reader import ConfigReader
 
 
 def get_typecheck_params(message_params, name):
-    params = get_config_params(name)
+    params = ConfigReader.read(name)
     if message_params != {} and message_params is not None:
         params = check_types(nest2dict(message_params), params)
     return params

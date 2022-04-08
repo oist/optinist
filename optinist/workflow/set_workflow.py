@@ -3,7 +3,8 @@ import yaml
 from optinist.workflow.get_network import get_network
 from optinist.workflow.params import get_typecheck_params
 from optinist.workflow.set_file import set_imagefile, set_csvfile, set_algofile, set_hdf5file
-from optinist.cui_api.write_config import write_snakemake_config, write_experiment_config
+from optinist.cui_api.experiment_config import exp_config_writer
+from optinist.cui_api.snakemake_config import snakemake_config_writer
 
 
 def set_workflow(unique_id, runItem):
@@ -14,8 +15,8 @@ def set_workflow(unique_id, runItem):
         "last_output": last_outputs,
     }
 
-    write_snakemake_config(unique_id, flow_config)
-    write_experiment_config(unique_id, rules_to_execute, runItem)
+    snakemake_config_writer(unique_id, flow_config)
+    exp_config_writer(unique_id, rules_to_execute, runItem)
 
 
 def get_workflow(unique_id, runItem):

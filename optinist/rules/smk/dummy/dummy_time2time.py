@@ -1,4 +1,4 @@
-from cui_api.const import OPTINIST_DIR
+from cui_api.const import ROOT_DIR
 
 name = "dummy_time2time"
 
@@ -10,4 +10,4 @@ rule:
     params:
         name = name
     script:
-        f'{OPTINIST_DIR}/rules/scripts/func.py'
+        f'{DIRPATH.ROOT_DIR}/rules/scripts/func.py'

@@ -11,7 +11,6 @@ from optinist.workflow.set_workflow import set_workflow
 from optinist.workflow.results import get_results
 
 from optinist.cui_api.run import run_snakemake
-from optinist.cui_api.const import BASE_DIR
 
 
 router = APIRouter()

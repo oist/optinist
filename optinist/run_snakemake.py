@@ -4,11 +4,11 @@ from snakemake.rules import Rule
 from snakemake.dag import DAG
 from snakemake.persistence import Persistence
 
-from cui_api.const import OPTINIST_DIR
+from cui_api.const import ROOT_DIR
 from cui_api.utils import join_file_path
 
 if __name__ == '__main__':
-    snakefile = join_file_path([OPTINIST_DIR, 'Snakefile'])
+    snakefile = join_file_path([ROOT_DIR, 'Snakefile'])
     workflow = Workflow(
         snakefile=snakefile,
         
@@ -38,6 +38,6 @@ if __name__ == '__main__':
     dag.check_dynamic()
     workflow.persistence.lock()
     # # snakemake(
-    # #     join_file_path([OPTINIST_DIR, 'Snakefile']),
+    # #     join_file_path([ROOT_DIR, 'Snakefile']),
     # # )
     # import pdb; pdb.set_trace()

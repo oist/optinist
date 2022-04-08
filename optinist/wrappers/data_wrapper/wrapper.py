@@ -4,13 +4,12 @@ import pandas as pd
 import imageio
 import tifffile
 import gc
-from optinist.cui_api.utils import (
-    get_json_file_path,
-    get_html_file_path,
-    get_images_list,
-    join_file_path
+from optinist.cui_api.filepath_creater import (
+    join_filepath
 )
-from optinist.cui_api.const import BASE_DIR
+from optinist.cui_api.dir_path import DIRPATH
+
+from optinist.wrappers.data_wrapper.utils import get_images_list
 
 class BaseData:
     def __init__(self, file_name):
@@ -33,11 +32,11 @@ class ImageData(BaseData):
         elif isinstance(data, list) and isinstance(data[0], str):
             self.path = data
         else:
-            _dir = join_file_path([BASE_DIR, "tiff", file_name])
+            _dir = join_filepath([DIRPATH.BASE_DIR, "tiff", file_name])
             if not os.path.exists(_dir):
                 os.makedirs(_dir, exist_ok=True)
 
-            self.path = join_file_path([_dir, f'{file_name}.tif'])
+            self.path = join_filepath([_dir, f'{file_name}.tif'])
 
             tifffile.imsave(self.path, data)
 
@@ -52,7 +51,7 @@ class ImageData(BaseData):
             return np.array(imageio.volread(self.path))
 
     def save_json(self, json_dir):
-        self.json_path = get_json_file_path(json_dir, self.file_name)
+        self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
         images = get_images_list(self.data)
         pd.DataFrame(images).to_json(self.json_path, indent=4, orient="values")
         del images
@@ -84,7 +83,7 @@ class TimeSeriesData(BaseData):
 
     def save_json(self, json_dir):
         # timeseriesだけはdirを返す
-        self.json_path = join_file_path([json_dir, self.file_name])
+        self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
         if not os.path.exists(self.json_path):
             os.makedirs(self.json_path, exist_ok=True)
 
@@ -101,7 +100,7 @@ class TimeSeriesData(BaseData):
                 df = pd.DataFrame(data, index=self.index, columns=["data"])
 
             df.to_json(
-                join_file_path([self.json_path, f'{str(i)}.json']), indent=4)
+                join_filepath([self.json_path, f'{str(i)}.json']), indent=4)
 
     def __del__(self):
         del self
@@ -139,13 +138,13 @@ class CsvData(BaseData):
 
     def save_json(self, json_dir):
         # timeseriesだけはdirを返す
-        self.json_path = join_file_path([json_dir, self.file_name])
+        self.json_path = join_filepath([json_dir, self.file_name])
         if not os.path.exists(self.json_path):
             os.makedirs(self.json_path, exist_ok=True)
 
         for i, data in enumerate(self.data):
             pd.DataFrame(data).to_json(
-                join_file_path([self.json_path, f'{str(i)}.json']), indent=4)
+                join_filepath([self.json_path, f'{str(i)}.json']), indent=4)
 
     def __del__(self):
         del self
@@ -158,7 +157,7 @@ class CorrelationData(BaseData):
         self.data = data
 
     def save_json(self, json_dir):
-        self.json_path = get_json_file_path(json_dir, self.file_name)
+        self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
         pd.DataFrame(self.data).to_json(self.json_path, indent=4, orient="values")
 
     def __del__(self):
@@ -172,10 +171,10 @@ class RoiData(BaseData):
 
         images = get_images_list(data)
 
-        _dir = join_file_path([BASE_DIR, "tiff", file_name])
+        _dir = join_filepath([DIRPATH.BASE_DIR, "tiff", file_name])
         if not os.path.exists(_dir):
             os.makedirs(_dir, exist_ok=True)
-        self.path = join_file_path([_dir, f'{file_name}.tif'])
+        self.path = join_filepath([_dir, f'{file_name}.tif'])
         tifffile.imsave(self.path, images)
 
         del images, data
@@ -190,7 +189,7 @@ class RoiData(BaseData):
             return data
 
     def save_json(self, json_dir):
-        self.json_path = get_json_file_path(json_dir, self.file_name)
+        self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
         images = get_images_list(self.data)
         pd.DataFrame(images).to_json(self.json_path, indent=4, orient="values")
 
@@ -227,7 +226,7 @@ class ScatterData(BaseData):
         self.data = data
 
     def save_json(self, json_dir):
-        self.json_path = get_json_file_path(json_dir, self.file_name)
+        self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
         pd.DataFrame(self.data).to_json(self.json_path, indent=4)
 
     def __del__(self):
@@ -245,7 +244,7 @@ class BarData(BaseData):
         self.data = data
 
     def save_json(self, json_dir):
-        self.json_path = get_json_file_path(json_dir, self.file_name)
+        self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
         pd.DataFrame(self.data).to_json(self.json_path, indent=4)
 
     def __del__(self):

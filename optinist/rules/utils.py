@@ -5,7 +5,7 @@ import pickle
 import gc
 import copy
 
-from optinist.cui_api.utils import join_file_path
+from optinist.cui_api.filepath_creater import join_filepath
 from optinist.wrappers import wrapper_dict
 from optinist.wrappers.nwb_wrapper import save_nwb, NWBDATASET
 
@@ -81,7 +81,7 @@ def run_script(__func_config, last_output):
         output_info = run_function(wrapper, params, input_info)
 
         # ファイル保存先
-        output_dir = join_file_path(__func_config["output"].split("/")[:-1])
+        output_dir = join_filepath(__func_config["output"].split("/")[:-1])
         os.makedirs(output_dir, exist_ok=True)
 
         # nwbfileの設定

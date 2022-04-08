@@ -5,7 +5,7 @@ from datetime import datetime
 from pynwb import NWBHDF5IO
 from PIL import Image, ImageSequence
 import tifffile
-from optinist.cui_api.utils import join_file_path
+from optinist.cui_api.filepath_creater import join_filepath
 
 
 def save_tiff2json(tiff_file_path, start_index=None, end_index=None):
@@ -37,7 +37,7 @@ def save_tiff2json(tiff_file_path, start_index=None, end_index=None):
         images.append(_img.tolist())
 
     pd.DataFrame(images).to_json(
-        join_file_path([folder_path, f'{file_name}_{str(start_index)}_{str(end_index)}.json']),
+        join_filepath([folder_path, f'{file_name}_{str(start_index)}_{str(end_index)}.json']),
         indent=4,
         orient="values"
     )
@@ -47,9 +47,9 @@ def save_csv2json(csv_file_path):
     folder_path = os.path.dirname(csv_file_path)
     file_name, ext = os.path.splitext(os.path.basename(csv_file_path))
     # pd.read_csv(csv_file_path).to_json(
-    #     join_file_path(folder_path, f'{file_name}.json'), indent=4, orient="split")
+    #     join_filepath(folder_path, f'{file_name}.json'), indent=4, orient="split")
     pd.read_csv(csv_file_path, header=None).to_json(
-        join_file_path([folder_path, f'{file_name}.json']), indent=4, orient='values')
+        join_filepath([folder_path, f'{file_name}.json']), indent=4, orient='values')
 
 
 def save_nwb(nwbfile, save_path):
@@ -58,5 +58,5 @@ def save_nwb(nwbfile, save_path):
     if not os.path.exists(save_path):
         os.makedirs(save_path)
 
-    with NWBHDF5IO(join_file_path([save_path, f'{time}.nwb']), 'w') as f:
+    with NWBHDF5IO(join_filepath([save_path, f'{time}.nwb']), 'w') as f:
         f.write(nwbfile)
