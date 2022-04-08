@@ -9,3 +9,4 @@ class NWBDATASET:
     COLUMN: str = 'COLUMN'
     FLUORESCENCE: str = 'FLUORESCENCE'
     BEHAVIOR: str = 'BEHAVIOR'
+    IMAGE_SERIES: str = 'image_series'

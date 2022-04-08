@@ -32,12 +32,13 @@ def merge_nwbfile(old_nwbfile, new_nwbfile):
         NWBDATASET.COLUMN,
         NWBDATASET.FLUORESCENCE,
         NWBDATASET.BEHAVIOR,
+        NWBDATASET.IMAGE_SERIES,
     ]:
-        if pattern in new_nwbfile:
-            if pattern in old_nwbfile:
-                old_nwbfile[pattern].update(new_nwbfile[pattern])
-            else:
-                old_nwbfile[pattern] = new_nwbfile[pattern]
+        if pattern in old_nwbfile and pattern in new_nwbfile:
+            old_nwbfile[pattern].update(new_nwbfile[pattern])
+        elif pattern in new_nwbfile:
+            old_nwbfile[pattern] = new_nwbfile[pattern]
+
     return old_nwbfile
 
 

@@ -50,8 +50,8 @@ def nwb_add_acquisition(nwb_dict):
     )
 
     # using internal data. this data will be stored inside the NWB file
-    if 'external_file' in nwb_dict['image_series'].keys():
-        image_data = nwb_dict['image_series']['external_file'].data
+    if 'external_file' in nwb_dict[NWBDATASET.IMAGE_SERIES]:
+        image_data = nwb_dict[NWBDATASET.IMAGE_SERIES]['external_file'].data
         image_series = TwoPhotonSeries(
             name='TwoPhotonSeries',
             data=image_data,
@@ -125,7 +125,7 @@ def nwb_add_roi(nwbfile, roi_list):
     data_interfaces = nwbfile.processing['ophys'].data_interfaces
     plane_seg = data_interfaces['ImageSegmentation'].plane_segmentations['PlaneSegmentation']
 
-    for col in roi_list[0].keys():
+    for col in roi_list[0]:
         if col != 'pixel_mask' and col not in plane_seg.colnames:
             plane_seg.add_column(col, f'{col} list')
 
