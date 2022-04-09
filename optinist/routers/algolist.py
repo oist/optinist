@@ -1,5 +1,7 @@
 from fastapi import APIRouter
 from typing import List
+from dataclasses import dataclass
+
 import inspect
 
 from optinist.wrappers import wrapper_dict
@@ -9,74 +11,95 @@ router = APIRouter()
 NOT_DISPLAY_ARGS_LIST = ['params', 'nwbfile']
 
 
-def get_nest_dict(value, parent_k):
+@dataclass
+class Arg:
+    name: str
+    type: str
+    isNone: bool
+
+@dataclass
+class Return:
+    name: str
+    type: str
+
+@dataclass
+class Algo:
+    args: List[Arg]
+    returns: List[Return]
+    parameter: str = None
+    path: str = None
+
+
+def create_args_list(args_dict):
+    return [
+        Arg(
+            name=x.name,
+            type=x.annotation.__name__,
+            isNone=x.default is None,
+        )
+        for x in args_dict
+        if x.name not in NOT_DISPLAY_ARGS_LIST
+    ]
+
+
+def create_return_list(return_dict):
+    return [
+        Return(
+            name=k,
+            type=v.__name__
+        )
+        for k, v in return_dict
+    ]
+
+
+def create_parent_key(parent_key, key):
+    if parent_key == '':
+        return key
+    else:
+        return f'{parent_key}/{key}'
+
+
+def get_nest_dict(parent_value, parent_key):
     algo_dict = {}
-    for _k, _v in value.items():
-        algo_dict[_k] = {}
-        if type(_v) is dict and 'function' not in _v.keys():
-            algo_dict[_k]['children'] = get_nest_dict(
-                _v, parent_k+'/'+_k if parent_k != '' else _k)
+    for key, value in parent_value.items():
+        algo_dict[key] = {}
+        if isinstance(value, dict) and 'function' not in value:
+            algo_dict[key]['children'] = get_nest_dict(
+                value,
+                create_parent_key(parent_key, key)
+            )
         else:
-            # get args
-            sig = inspect.signature(_v['function'])
-            algo_dict[_k]['args'] = [
-                {
-                    'name': x.name, 
-                    'type': x.annotation.__name__,
-                    'isNone': x.default is None,
-                }
-                for x in sig.parameters.values()
-                if x.name not in NOT_DISPLAY_ARGS_LIST
-            ]
-
-            # get returns
+            sig = inspect.signature(value['function'])
+            returns_list = None
             if sig.return_annotation is not inspect._empty:
-                algo_dict[_k]['returns'] = [
-                    {
-                        'name': k,
-                        'type': v.__name__
-                    }
-                    for k, v in sig.return_annotation.items()
-                ]
+                returns_list = create_return_list(sig.return_annotation.items())
 
-            # parameter path
-            if 'parameter' in _v.keys():
-                algo_dict[_k]['parameter'] = _v['parameter']
-            else:
-                algo_dict[_k]['parameter'] = ''
-
-            # path
-            algo_dict[_k]['path'] = parent_k + '/' + _k
+            algo_dict[key] = Algo(
+                args=create_args_list(sig.parameters.values()),
+                returns=returns_list,
+                parameter=value['parameter'] if 'parameter' in value else None,
+                path=create_parent_key(parent_key, key),
+            )
 
     return algo_dict
 
 
 @router.get("/algolist")
 async def run() -> List:
-    # print(wrapper_dict.keys())
     {
         'caiman': {
             'children': {
                 'caiman_mc' : {
                     'args': ['images', 'timeseries'],
+                    'return': ['images'],
                     'path': 'caiman/caiman_mc'
                 },
                 'caiman_cnmf': {
                     'args': ['images', 'timeseries'],
+                    'return': ['images'],
                     'path': 'caiman/caiman_mc'
                 }
             }
         }
     }
-    {
-        'caiman.caiman_mc': {
-
-        },
-        'caiman.caiman_cnmf': {
-
-        },
-    }
-
-    algo_dict = get_nest_dict(wrapper_dict, '')
-
-    return algo_dict
+    return get_nest_dict(wrapper_dict, '')

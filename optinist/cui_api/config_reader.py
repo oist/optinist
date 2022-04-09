@@ -6,8 +6,7 @@ from optinist.cui_api.filepath_creater import join_filepath
 
 class ConfigReader:
     @classmethod
-    def read(cls, filename):
-        filepath = join_filepath([DIRPATH.CONFIG_DIR, f'{filename}.yaml'])
+    def read(cls, filepath):
         config = {}
         if os.path.exists(filepath):
             with open(filepath) as f:

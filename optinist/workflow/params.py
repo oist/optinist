@@ -1,11 +1,14 @@
 import os
 import copy
 import yaml
+
 from optinist.cui_api.config_reader import ConfigReader
+from optinist.cui_api.dir_path import DIRPATH
+from optinist.cui_api.filepath_creater import join_filepath
 
 
 def get_typecheck_params(message_params, name):
-    params = ConfigReader.read(name)
+    params = ConfigReader.read(join_filepath([DIRPATH.CONFIG_DIR, f'{name}.yaml']))
     if message_params != {} and message_params is not None:
         params = check_types(nest2dict(message_params), params)
     return params

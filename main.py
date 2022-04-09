@@ -10,8 +10,6 @@ from optinist.routers import (
     params,
     outputs,
     algolist,
-    nwb,
-    snakemake,
     hdf5,
     experiment,
 )
@@ -23,8 +21,6 @@ app.include_router(files.router)
 app.include_router(outputs.router)
 app.include_router(params.router)
 app.include_router(run.router)
-app.include_router(nwb.router)
-app.include_router(snakemake.router)
 app.include_router(hdf5.router)
 app.include_router(experiment.router)
 

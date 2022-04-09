@@ -103,7 +103,6 @@ class ExpConfigReader:
             )
             for value in config
         ]
-        
 
     @classmethod
     def edgeList_read(cls, config) -> Edge:

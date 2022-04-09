@@ -29,6 +29,10 @@ class RunItem(BaseModel):
     forceRunList: List[ForceRun]
 
 
+class NodeItem(BaseModel):
+    pendingNodeIdList: list = []
+
+
 def run_workflow(unique_id, background_tasks, runItem):
     set_workflow(unique_id, runItem)
 
@@ -53,10 +57,6 @@ async def params(uid: str, runItem: RunItem, background_tasks: BackgroundTasks):
     print("forcerun list: ", runItem.forceRunList)
 
     return uid
-
-
-class NodeItem(BaseModel):
-    pendingNodeIdList: list = []
 
 
 @router.post("/run/result/{uid}")
