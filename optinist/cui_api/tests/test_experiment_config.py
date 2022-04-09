@@ -19,7 +19,7 @@ from optinist.cui_api.experiment_config import (
 def test_filepath():
     exp_filepath = create_filepath(
         join_filepath([DIRPATH.ROOT_DIR, "test_data"]),
-        "experiment.yaml"
+        DIRPATH.EXPERIMENT_FILEANME
     )
     return exp_filepath
 

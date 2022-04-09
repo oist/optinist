@@ -4,10 +4,10 @@ from optinist.cui_api.filepath_creater import join_filepath
 
 
 def get_typecheck_params(message_params, name):
-    params = ConfigReader.read(join_filepath([DIRPATH.CONFIG_DIR, f'{name}.yaml']))
+    default_params = ConfigReader.read(join_filepath([DIRPATH.CONFIG_DIR, f'{name}.yaml']))
     if message_params != {} and message_params is not None:
-        params = check_types(nest2dict(message_params), params)
-    return params
+        return check_types(nest2dict(message_params), default_params)
+    return default_params
 
 
 def check_types(params, default_params):
@@ -18,11 +18,11 @@ def check_types(params, default_params):
             if type(params[key]) != type(default_params[key]):
                 data_type = type(default_params[key])
                 p = params[key]
-                if data_type == str:
+                if isinstance(data_type, str):
                     params[key] = str(p)
-                elif data_type == float:
+                elif isinstance(data_type, float):
                     params[key] = float(p)
-                elif data_type == int:
+                elif isinstance(data_type, int):
                     params[key] = int(p)
 
     return params

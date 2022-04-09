@@ -1,123 +1,133 @@
 import pickle
-import yaml
-from collections import OrderedDict
+from dataclasses import dataclass, asdict
 from glob import glob
+from typing import Dict
+from optinist.cui_api.config_writer import ConfigWriter
+from optinist.cui_api.experiment_config import ExpConfigReader
 from optinist.wrappers.data_wrapper import *
 
 from optinist.cui_api.filepath_creater import join_filepath
 from optinist.cui_api.dir_path import DIRPATH
 
 
+@dataclass
+class OutputPath:
+    path: str
+    type: str
+    max_index: int = None
+
+
+@dataclass
+class Message:
+    status: str
+    message: str
+    outputPaths: Dict[str, OutputPath]
+
+
 def get_results(unique_id, nodeIdList):
     runPaths = []
     for node_id in nodeIdList:
-        print(join_filepath([DIRPATH.BASE_DIR, unique_id, node_id, "*.pkl"]))
         for path in glob(join_filepath([DIRPATH.BASE_DIR, unique_id, node_id, "*.pkl"])):
-            runPaths.append(path)
-
-    for i, path in enumerate(runPaths):
-        runPaths[i] = path.replace("\\", "/")
+            runPaths.append(path.replace("\\", "/"))
 
     print(runPaths)
 
-    results = {}
-    for request_path in runPaths:
-        node_id = request_path.split("/")[-2]
-        algo_name = request_path.split("/")[-1].split(".")[0]
+    results: Dict[str, Message] = {}
+    for path in runPaths:
+        node_id = path.split("/")[-2]
+        algo_name = path.split("/")[-1].split(".")[0]
 
-        results[node_id] = {}
-
-        with open(request_path, "rb") as f:
+        with open(path, "rb") as f:
             info = pickle.load(f)
 
-        if isinstance(info, list) or isinstance(info, str):
+        results[node_id] = {}
+        if isinstance(info, (list, str)):
             results[node_id] = get_error(info, node_id, unique_id)
         else:
-            json_dir = "/".join(request_path.split("/")[:-1])
+            json_dir = "/".join(path.split("/")[:-1])
             results[node_id] = get_success(info, node_id, algo_name, json_dir, unique_id)
 
     return results
 
 
 def get_error(info, node_id, unique_id):
-    with open(join_filepath([DIRPATH.BASE_DIR, unique_id, "experiment.yaml"]), "r") as f:
-        config = yaml.safe_load(f)
+    config = ExpConfigReader.read(join_filepath([
+        DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_FILEANME]))
+    config.function[node_id].success = "error"
 
-    config["function"][node_id]["success"] = "error"
+    ConfigWriter.write(
+        dirname=join_filepath([DIRPATH.BASE_DIR, unique_id]),
+        filename=DIRPATH.EXPERIMENT_FILEANME,
+        config=asdict(config),
+    )
 
-    with open(join_filepath([DIRPATH.BASE_DIR, unique_id, "experiment.yaml"]), "w") as f:
-        yaml.dump(config, f)
-
-    if isinstance(info, str):
-        error_message = info
-    else:
-        error_message = "\n".join(info)
-
-    message = {
-        "status": "error",
-        "message": error_message,
-    }
-
-    return message
+    return Message(
+        status="error",
+        message=info if isinstance(info, str) else "\n".join(info),
+    )
 
 
 def get_success(info, node_id, algo_name, json_dir, unique_id):
-    with open(join_filepath([DIRPATH.BASE_DIR, unique_id, "experiment.yaml"]), "r") as f:
-        config = yaml.safe_load(f)
+    config = ExpConfigReader.read(join_filepath(
+        [DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_FILEANME]))
+    config.function[node_id].success = "success"
 
-    config["function"][node_id]["success"] = "success"
+    ConfigWriter.write(
+        dirname=join_filepath([DIRPATH.BASE_DIR, unique_id]),
+        filename=DIRPATH.EXPERIMENT_FILEANME,
+        config=asdict(config),
+    )
 
-    with open(join_filepath([DIRPATH.BASE_DIR, unique_id, "experiment.yaml"]), "w") as f:
-        yaml.dump(config, f)
-
-    message = {
-        "status": "success",
-        "message": f"{algo_name} success",
-        "outputPaths": get_outputPaths(info, json_dir)
-    }
-
-    return message
+    return Message(
+        status="success",
+        message=f"{algo_name} success",
+        outputPaths=get_outputPaths(info, json_dir)
+    )
 
 
 def get_outputPaths(info, json_dir):
-    outputPaths = {}
+    outputPaths: Dict[str, OutputPath] = {}
     for k, v in info.items():
         if isinstance(v, BaseData):
             v.save_json(json_dir)
 
         if isinstance(v, ImageData):
-            outputPaths[k] = {}
-            outputPaths[k]['path'] = v.json_path
-            outputPaths[k]['type'] = 'images'
-            if v.data.ndim == 3:
-                outputPaths[k]['max_index'] = len(v.data)
-            elif v.data.ndim == 2:
-                outputPaths[k]['max_index'] = 1
+            outputPaths[k] = OutputPath(
+                path=v.json_path,
+                type="images",
+                max_index=len(v.data) if v.data.ndim == 3 else 1
+            )
         elif isinstance(v, TimeSeriesData):
-            outputPaths[k] = {}
-            outputPaths[k]['path'] = v.json_path
-            outputPaths[k]['type'] = 'timeseries'
-            outputPaths[k]['max_index'] = len(v.data)
+            outputPaths[k] = OutputPath(
+                path=v.json_path,
+                type="timeseries",
+                max_index=len(v.data)
+            )
         elif isinstance(v, CorrelationData):
-            outputPaths[k] = {}
-            outputPaths[k]['path'] = v.json_path
-            outputPaths[k]['type'] = 'heatmap'
+            outputPaths[k] = OutputPath(
+                path=v.json_path,
+                type="heatmap",
+            )
         elif isinstance(v, RoiData):
-            outputPaths[k] = {}
-            outputPaths[k]['path'] = v.json_path
-            outputPaths[k]['type'] = 'roi'
+            outputPaths[k] = OutputPath(
+                path=v.json_path,
+                type="roi",
+            )
         elif isinstance(v, ScatterData):
-            outputPaths[k] = {}
-            outputPaths[k]['path'] = v.json_path
-            outputPaths[k]['type'] = 'scatter'
+            outputPaths[k] = OutputPath(
+                path=v.json_path,
+                type="scatter",
+            )
         elif isinstance(v, BarData):
-            outputPaths[k] = {}
-            outputPaths[k]['path'] = v.json_path
-            outputPaths[k]['type'] = 'bar'
+            outputPaths[k] = OutputPath(
+                path=v.json_path,
+                type="bar",
+            )
         elif isinstance(v, HTMLData):
-            outputPaths[k] = {}
-            outputPaths[k]['path'] = v.json_path
-            outputPaths[k]['type'] = 'html'
+            outputPaths[k] = OutputPath(
+                path=v.json_path,
+                type="html",
+            )
         else:
             pass
 

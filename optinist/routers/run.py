@@ -1,22 +1,16 @@
-import uuid
-
 from fastapi import APIRouter, BackgroundTasks
+
+import uuid
 from pydantic import BaseModel
 from typing import List
+from dataclasses import asdict
 
-from optinist.workflow.set_file import get_forcerun_list
-from optinist.workflow.params import get_typecheck_params
-from optinist.workflow.workflow import create_workflow
+from optinist.workflow.set_file import ForceRun
+from optinist.workflow.workflow import run_workflow
 from optinist.workflow.results import get_results
-
-from optinist.cui_api.run import run_snakemake
 
 
 router = APIRouter()
-
-class ForceRun(BaseModel):
-    nodeId: str
-    name: str
 
 
 class RunItem(BaseModel):
@@ -32,33 +26,22 @@ class NodeItem(BaseModel):
     pendingNodeIdList: list = []
 
 
-def run_workflow(unique_id, background_tasks, runItem):
-    create_workflow(unique_id)
-
-    snakemake_params = get_typecheck_params(runItem.snakemakeParam, "snakemake")
-    snakemake_params["forcerun"] = get_forcerun_list(unique_id, runItem.forceRunList)
-    background_tasks.add_task(run_snakemake, snakemake_params)
-
-
 @router.post("/run")
-async def params(runItem: RunItem, background_tasks: BackgroundTasks):
+async def run(runItem: RunItem, background_tasks: BackgroundTasks):
     unique_id = str(uuid.uuid4())
     run_workflow(unique_id, background_tasks, runItem)
     print("run snakemake")
-
     return unique_id
 
 
 @router.post("/run/{uid}")
-async def params(uid: str, runItem: RunItem, background_tasks: BackgroundTasks):
+async def run_id(uid: str, runItem: RunItem, background_tasks: BackgroundTasks):
     run_workflow(uid, background_tasks, runItem)
     print("run snakemake")
     print("forcerun list: ", runItem.forceRunList)
-
     return uid
 
 
 @router.post("/run/result/{uid}")
-async def params(uid: str, nodeList: NodeItem):
-    results = get_results(uid, nodeList.pendingNodeIdList)
-    return results
+async def run_result(uid: str, nodeList: NodeItem):
+    return get_results(uid, nodeList.pendingNodeIdList)

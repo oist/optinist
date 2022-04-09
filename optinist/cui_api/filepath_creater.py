@@ -1,5 +1,7 @@
 import os
 
+from optinist.cui_api.dir_path import DIRPATH
+
 
 def join_filepath(path_list):
     if isinstance(path_list, str):
@@ -14,3 +16,12 @@ def create_filepath(dirname, filename):
         os.makedirs(dirname, exist_ok=True)
 
     return join_filepath([dirname, filename])
+
+
+def get_pickle_file(unique_id, node_id, algo_name):
+    return join_filepath([
+        DIRPATH.BASE_DIR,
+        unique_id,
+        node_id,
+        f"{algo_name}.pkl"
+    ])

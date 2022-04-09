@@ -19,7 +19,7 @@ class DeleteItem(BaseModel):
 @router.get("/experiments")
 async def read_experiment():
     exp_config = {}
-    config_paths = glob(join_filepath([DIRPATH.BASE_DIR, "*", "experiment.yaml"]))
+    config_paths = glob(join_filepath([DIRPATH.BASE_DIR, "*", DIRPATH.EXPERIMENT_YML]))
     for path in config_paths:
         config = ExpConfigReader.read(path)
         config.nodeList = []
@@ -31,7 +31,8 @@ async def read_experiment():
 
 @router.get("/experiments/import/{unique_id}")
 async def read_experiment(unique_id: str):
-    config = ExpConfigReader.read(join_filepath([DIRPATH.BASE_DIR, unique_id, "experiment.yaml"]))
+    config = ExpConfigReader.read(join_filepath([
+        DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_YML]))
     return {
         "nodeList": config.nodeList,
         "edgeList": config.edgeList,

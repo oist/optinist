@@ -13,3 +13,5 @@ class DIRPATH:
     assert os.path.exists(BASE_DIR)
 
     SNAKEMAKE_FILEPATH = f"{ROOT_DIR}/Snakefile"
+    EXPERIMENT_YML = "experiment.yaml"
+    SNAKEMAKE_CONFIG_YML = "config.yaml"

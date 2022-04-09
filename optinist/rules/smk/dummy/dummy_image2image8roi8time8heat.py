@@ -1,4 +1,4 @@
-from cui_api.const import ROOT_DIR
+from optinist.cui_api.dir_path import DIRPATH
 
 name = "dummy_image2image8roi8time8heat"
 
