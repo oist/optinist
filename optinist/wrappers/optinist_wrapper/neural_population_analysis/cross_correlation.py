@@ -1,5 +1,5 @@
-from wrappers.data_wrapper import *
-from wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.wrappers.data_wrapper import *
+from optinist.wrappers.nwb_wrapper.const import NWBDATASET
 
 
 def cross_correlation(
@@ -7,7 +7,7 @@ def cross_correlation(
         iscell: IscellData=None,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {}:
+    ) -> dict():
 
     #from statsmodels.tsa.stattools import ccf
     import scipy.signal as ss

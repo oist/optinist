@@ -1,4 +1,4 @@
-from cui_api.const import OPTINIST_DIR
+from optinist.cui_api.dir_path import DIRPATH
 name="hdf5"
 
 rule:
@@ -9,4 +9,4 @@ rule:
     params:
         name=name
     script:
-        f'{OPTINIST_DIR}/rules/scripts/data.py'
+        f'{DIRPATH.ROOT_DIR}/rules/scripts/data.py'

@@ -2,12 +2,12 @@
 import traceback
 import os
 import pickle
-from cui_api.utils import join_file_path
 import gc
 import copy
 
-from wrappers import wrapper_dict
-from wrappers.nwb_wrapper import save_nwb, NWBDATASET
+from optinist.cui_api.filepath_creater import join_filepath
+from optinist.wrappers import wrapper_dict
+from optinist.wrappers.nwb_wrapper import save_nwb, NWBDATASET
 
 
 def dict2leaf(root_dict: dict, path_list):
@@ -32,12 +32,13 @@ def merge_nwbfile(old_nwbfile, new_nwbfile):
         NWBDATASET.COLUMN,
         NWBDATASET.FLUORESCENCE,
         NWBDATASET.BEHAVIOR,
+        NWBDATASET.IMAGE_SERIES,
     ]:
-        if pattern in new_nwbfile:
-            if pattern in old_nwbfile:
-                old_nwbfile[pattern].update(new_nwbfile[pattern])
-            else:
-                old_nwbfile[pattern] = new_nwbfile[pattern]
+        if pattern in old_nwbfile and pattern in new_nwbfile:
+            old_nwbfile[pattern].update(new_nwbfile[pattern])
+        elif pattern in new_nwbfile:
+            old_nwbfile[pattern] = new_nwbfile[pattern]
+
     return old_nwbfile
 
 
@@ -81,7 +82,7 @@ def run_script(__func_config, last_output):
         output_info = run_function(wrapper, params, input_info)
 
         # ファイル保存先
-        output_dir = join_file_path(__func_config["output"].split("/")[:-1])
+        output_dir = join_filepath(__func_config["output"].split("/")[:-1])
         os.makedirs(output_dir, exist_ok=True)
 
         # nwbfileの設定

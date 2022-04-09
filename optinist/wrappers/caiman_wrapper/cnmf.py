@@ -1,7 +1,7 @@
-from wrappers.data_wrapper import *
-from cui_api.utils import join_file_path
 import gc
-from wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.wrappers.data_wrapper import *
+from optinist.wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.cui_api.filepath_creater import join_filepath
 
 
 def get_roi(A, thr, thr_method, swap_dim, dims):
@@ -83,12 +83,12 @@ def caiman_cnmf(
     T = images.shape[0]
     shape_mov = (np.prod(dims), T)
 
-    dir_path = join_file_path(file_path.split("/")[:-1])
+    dir_path = join_filepath(file_path.split("/")[:-1])
     basename = file_path.split("/")[-1]
     fname_tot = memmap_frames_filename(basename, dims, T, order)
 
     mmap_images = np.memmap(
-        join_file_path([dir_path, fname_tot]),
+        join_filepath([dir_path, fname_tot]),
         mode='w+',
         dtype=np.float32,
         shape=prepare_shape(shape_mov),
@@ -229,7 +229,7 @@ if __name__ == '__main__':
     import caiman
 
     info = {}
-    file_path = join_file_path([
+    file_path = join_filepath([
         '/Users', 'shogoakiyama', 'caiman_data', 
         'example_movies', 'Sue_2x_3000_40_-46.tif'])
     info['caiman_mc'] = caiman_mc(file_path)

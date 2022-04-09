@@ -1,0 +1,88 @@
+timestamp: '2022-04-07 19:38:53'
+unique_id: 0038f773-1f59-493d-92d7-e6d6e8872eab
+name: New flow
+function:
+  '0':
+    name: data_endoscope.tif
+    success: success
+    unique_id: '0'
+  8_h8Lzj-3Ed1RrLrtmeTA:
+    name: suite2p_roi
+    success: running
+    unique_id: 8_h8Lzj-3Ed1RrLrtmeTA
+  CrgpTQKftNWTWfnrQ9lXe:
+    name: suite2p_file_convert
+    success: running
+    unique_id: CrgpTQKftNWTWfnrQ9lXe
+nodeList:
+- data:
+    fileType: image
+    label: data_endoscope.tif
+    param: {}
+    path:
+    - /tmp/optinist/data_endoscope/data_endoscope.tif
+    type: input
+  id: '0'
+  position:
+    x: 50
+    y: 150
+  style:
+    border: '1px solid #777'
+    height: 120
+  type: ImageFileNode
+- data:
+    label: suite2p_file_convert
+    param:
+      batch_size:
+        path: batch_size
+        type: child
+        value: 500
+      do_registration:
+        path: do_registration
+        type: child
+        value: 1
+      force_sktiff:
+        path: force_sktiff
+        type: child
+        value: false
+      nchannels:
+        path: nchannels
+        type: child
+        value: 1
+      nplanes:
+        path: nplanes
+        type: child
+        value: 1
+    path: suite2p/suite2p_file_convert
+    type: algorithm
+  id: CrgpTQKftNWTWfnrQ9lXe
+  position:
+    x: 350
+    y: 150
+  sourcePosition: right
+  style:
+    borderRadius: 0
+    height: 100
+    padding: 0
+    width: 180
+  targetPosition: left
+  type: AlgorithmNode
+edgeList:
+- animated: false
+  id: reactflow__edge-00--image--ImageData-CrgpTQKftNWTWfnrQ9lXeCrgpTQKftNWTWfnrQ9lXe--image--ImageData
+  source: '0'
+  sourceHandle: 0--image--ImageData
+  style:
+    width: 5
+  target: CrgpTQKftNWTWfnrQ9lXe
+  targetHandle: CrgpTQKftNWTWfnrQ9lXe--image--ImageData
+  type: buttonedge
+- animated: false
+  id: reactflow__edge-CrgpTQKftNWTWfnrQ9lXeCrgpTQKftNWTWfnrQ9lXe--ops--Suite2pData-8_h8Lzj-3Ed1RrLrtmeTA8_h8Lzj-3Ed1RrLrtmeTA--ops--Suite2pData
+  source: CrgpTQKftNWTWfnrQ9lXe
+  sourceHandle: CrgpTQKftNWTWfnrQ9lXe--ops--Suite2pData
+  style:
+    width: 5
+  target: 8_h8Lzj-3Ed1RrLrtmeTA
+  targetHandle: 8_h8Lzj-3Ed1RrLrtmeTA--ops--Suite2pData
+  type: buttonedge

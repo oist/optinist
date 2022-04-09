@@ -6,3 +6,10 @@ __pycache__
 
 optinist.extensions.yaml
 optinist.namespace.yaml
+
+files/*
+Pipfile.lock
+optinist.egg-info
+.tox
+.snakemake
+.pytest_cache

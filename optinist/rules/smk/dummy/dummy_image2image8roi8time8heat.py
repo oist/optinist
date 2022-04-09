@@ -1,4 +1,4 @@
-from cui_api.const import OPTINIST_DIR
+from optinist.cui_api.dir_path import DIRPATH
 
 name = "dummy_image2image8roi8time8heat"
 
@@ -10,4 +10,4 @@ rule:
     params:
         name = name
     script:
-        f'{OPTINIST_DIR}/rules/scripts/func.py'
+        f'{DIRPATH.ROOT_DIR}/rules/scripts/func.py'

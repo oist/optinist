@@ -1,4 +1,4 @@
-from cui_api.const import OPTINIST_DIR
+from optinist.cui_api.dir_path import DIRPATH
 
 name = "suite2p_file_convert"
 
@@ -10,6 +10,6 @@ rule:
     params:
         name = name
     conda:
-        f'{OPTINIST_DIR}/rules/envs/suite2p_env.yaml'
+        f'{DIRPATH.ROOT_DIR}/rules/envs/suite2p_env.yaml'
     script:
-        f'{OPTINIST_DIR}/rules/scripts/func.py'
+        f'{DIRPATH.ROOT_DIR}/rules/scripts/func.py'

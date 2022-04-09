@@ -1,7 +1,7 @@
-from wrappers.data_wrapper import *
+from optinist.wrappers.data_wrapper import *
 
-from cui_api.const import BASE_DIR
-from cui_api.utils import join_file_path
+from optinist.cui_api.dir_path import DIRPATH
+from optinist.cui_api.filepath_creater import join_filepath
 
 
 def suite2p_file_convert(
@@ -27,7 +27,7 @@ def suite2p_file_convert(
     db = {
         'data_path': data_path_list,
         'tiff_list': data_name_list,
-        'save_path0': BASE_DIR,
+        'save_path0': DIRPATH.BASE_DIR,
         'save_folder': 'suite2p'
     }
 
@@ -36,13 +36,13 @@ def suite2p_file_convert(
     ops['input_format'] = 'tif'
 
     # save folderを指定
-    save_folder = join_file_path([ops['save_path0'], ops['save_folder']])
+    save_folder = join_filepath([ops['save_path0'], ops['save_folder']])
     os.makedirs(save_folder, exist_ok=True)
     plane_folders = natsorted([
         f.path for f in os.scandir(save_folder) 
         if f.is_dir() and f.name[:5]=='plane'])
 
-    ops_path = [join_file_path([f, 'ops.npy']) for f in plane_folders]
+    ops_path = [join_filepath([f, 'ops.npy']) for f in plane_folders]
 
     # copy file format to a binary file
     convert_funs = {

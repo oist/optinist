@@ -1,12 +1,11 @@
 from snakemake import snakemake
 
-from cui_api.const import OPTINIST_DIR
-from cui_api.utils import join_file_path
+from optinist.cui_api.dir_path import DIRPATH
 
 
 def run_snakemake(snakemake_params):
     # run snakemake
     snakemake(
-        join_file_path([OPTINIST_DIR, 'Snakefile']),
+        DIRPATH.SNAKEMAKE_FILEPATH,
         **snakemake_params
     )

@@ -1,6 +1,6 @@
-from wrappers.data_wrapper import *
-from wrappers.optinist_wrapper.utils import standard_norm
-from wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.wrappers.data_wrapper import *
+from optinist.wrappers.optinist_wrapper.utils import standard_norm
+from optinist.wrappers.nwb_wrapper.const import NWBDATASET
 
 def LDA(
         neural_data: FluoData,
@@ -8,7 +8,7 @@ def LDA(
         iscell: IscellData=None,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {}:
+    ) -> dict():
 
     # modules specific to function
     from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA

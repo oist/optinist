@@ -1,11 +1,11 @@
-from wrappers.data_wrapper import *
+from optinist.wrappers.data_wrapper import *
 
 
 def cell_grouping(
         neural_data: TimeSeriesData,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {}:
+    ) -> dict():
     import numpy as np
 
     neural_data = neural_data.data
