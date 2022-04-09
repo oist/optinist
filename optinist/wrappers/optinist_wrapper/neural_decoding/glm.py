@@ -14,11 +14,10 @@ def GLM(
         iscell: IscellData=None,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {}:
+    ) -> dict():
 
     # modules specific to function
     import statsmodels.api as sm
-    from sklearn.preprocessing import StandardScaler
     import pandas as pd
 
     neural_data = neural_data.data

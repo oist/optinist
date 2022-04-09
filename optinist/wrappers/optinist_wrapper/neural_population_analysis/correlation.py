@@ -7,7 +7,7 @@ def correlation(
         iscell: IscellData=None,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {}:
+    ) -> dict():
 
     neural_data = neural_data.data
 

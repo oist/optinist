@@ -19,7 +19,6 @@ class HDF5Node:
 def get_hdf5_file(filepath):
     hdf5_list = []
     def get_ds_dictionaries(path, node):
-        fullname = node.name
         if isinstance(node, h5py.Dataset):
             if len(node.shape) != 0:
                 recursive_dir_tree(hdf5_list, path.split('/'), node, "")

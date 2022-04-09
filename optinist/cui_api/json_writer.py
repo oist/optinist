@@ -1,9 +1,6 @@
 import os
 import numpy as np
 import pandas as pd
-from datetime import datetime
-from pynwb import NWBHDF5IO
-from PIL import Image, ImageSequence
 import tifffile
 from optinist.cui_api.filepath_creater import join_filepath
 
@@ -41,8 +38,6 @@ def save_tiff2json(tiff_file_path, start_index=None, end_index=None):
     )
 
 
-def save_csv2json(csv_file_path):
-    folder_path = os.path.dirname(csv_file_path)
-    file_name, ext = os.path.splitext(os.path.basename(csv_file_path))
-    pd.read_csv(csv_file_path, header=None).to_json(
-        join_filepath([folder_path, f'{file_name}.json']), indent=4, orient='values')
+def save_csv2json(csv_filepath, json_filepath):
+    pd.read_csv(csv_filepath, header=None).to_json(
+        json_filepath, indent=4, orient='values')

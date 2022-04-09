@@ -7,9 +7,9 @@ def PCA(
         iscell: IscellData=None,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {}:
+    ) -> dict():
+
     # modules specific to function
-    from sklearn.preprocessing import StandardScaler
     from sklearn.decomposition import PCA
 
     neural_data = neural_data.data

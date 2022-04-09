@@ -1,3 +1,4 @@
+from typing import Dict
 from optinist.wrappers.data_wrapper import *
 from optinist.wrappers.optinist_wrapper.utils import standard_norm
 from optinist.wrappers.nwb_wrapper.const import NWBDATASET
@@ -41,7 +42,7 @@ def ETA(
         iscell: IscellData=None,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {'mean': TimeSeriesData}:
+    ) -> dict(mean=TimeSeriesData):
     import numpy as np
 
     neural_data = neural_data.data

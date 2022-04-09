@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
-import yaml
 import shutil
 from glob import glob
 from pydantic import BaseModel

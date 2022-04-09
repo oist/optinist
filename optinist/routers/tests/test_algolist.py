@@ -3,7 +3,6 @@ from fastapi.testclient import TestClient
 
 from optinist.routers.algolist import router
 
-
 client = TestClient(router)
 
 

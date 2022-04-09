@@ -7,7 +7,7 @@ def cross_correlation(
         iscell: IscellData=None,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {}:
+    ) -> dict():
 
     #from statsmodels.tsa.stattools import ccf
     import scipy.signal as ss

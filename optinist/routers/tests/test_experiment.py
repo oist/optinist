@@ -2,8 +2,7 @@ import pytest
 from fastapi.testclient import TestClient
 import os
 
-from optinist.routers.experiment import router, DeleteItem
-from optinist.cui_api.experiment_config import ExpConfig
+from optinist.routers.experiment import router
 from optinist.cui_api.filepath_creater import join_filepath
 from optinist.cui_api.dir_path import DIRPATH
 
@@ -23,7 +22,6 @@ def test_delete_experiment():
     os.makedirs(dirpath, exist_ok=True)
     assert os.path.exists(dirpath)
     response = client.delete("/experiments/aa")
-    data = response.json()
     assert response.status_code == 200
     assert not os.path.exists(dirpath)
 

@@ -7,7 +7,7 @@ def TSNE(
         iscell: IscellData=None,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {}:
+    ) -> dict():
 
     from sklearn.manifold import TSNE
 

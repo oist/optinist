@@ -8,7 +8,7 @@ def LDA(
         iscell: IscellData=None,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {}:
+    ) -> dict():
 
     # modules specific to function
     from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA

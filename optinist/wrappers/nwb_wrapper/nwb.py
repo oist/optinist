@@ -5,8 +5,6 @@ from pynwb.ophys import (
     RoiResponseSeries, Fluorescence, ImageSeries, TimeSeries,
     CorrectedImageStack, MotionCorrection,
 )
-from pynwb.behavior import BehavioralEvents
-from pynwb.core import NWBDataInterface
 
 from datetime import datetime
 from dateutil.tz import tzlocal
@@ -50,7 +48,7 @@ def nwb_add_acquisition(nwb_dict):
     )
 
     # using internal data. this data will be stored inside the NWB file
-    if 'external_file' in nwb_dict[NWBDATASET.IMAGE_SERIES]:
+    if NWBDATASET.IMAGE_SERIES in nwb_dict and 'external_file' in nwb_dict[NWBDATASET.IMAGE_SERIES]:
         image_data = nwb_dict[NWBDATASET.IMAGE_SERIES]['external_file'].data
         image_series = TwoPhotonSeries(
             name='TwoPhotonSeries',

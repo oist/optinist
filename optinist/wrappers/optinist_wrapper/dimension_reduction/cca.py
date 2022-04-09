@@ -8,7 +8,7 @@ def CCA(
         iscell: IscellData=None,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {}:
+    ) -> dict():
 
     from sklearn.cross_decomposition import CCA
 
