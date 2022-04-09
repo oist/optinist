@@ -738,7 +738,8 @@ export const visualaizeItemSlice = createSlice({
         if (isTimeSeriesItem(item)) {
           if (
             item.refImageItemId != null &&
-            imageItemId === item.refImageItemId
+            imageItemId === item.refImageItemId &&
+            !item.displayNumbers.includes(clickedDataId)
           ) {
             item.displayNumbers.push(clickedDataId)
           }

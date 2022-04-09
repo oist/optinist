@@ -17,7 +17,8 @@ export const setImageItemClikedDataId = createAsyncThunk<
       if (
         isTimeSeriesItem(item) &&
         item.filePath != null &&
-        item.refImageItemId === itemId
+        item.refImageItemId === itemId &&
+        !item.displayNumbers.includes(clickedDataId)
       ) {
         thunkAPI.dispatch(
           getTimeSeriesDataById({ path: item.filePath, index: clickedDataId }),
