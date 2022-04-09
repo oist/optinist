@@ -1,1 +1,0 @@
-from .dir_path import DIRPATH

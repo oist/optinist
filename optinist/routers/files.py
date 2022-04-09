@@ -4,6 +4,7 @@ from glob import glob
 from dataclasses import dataclass
 from typing import List
 from fastapi import APIRouter, File, UploadFile
+from dataclasses import dataclass
 
 from optinist.cui_api.dir_path import DIRPATH
 from optinist.cui_api.filepath_creater import join_filepath
@@ -54,13 +55,20 @@ def get_dir_tree(dirpath: str, file_types: List[str]) -> List[TreeNode]:
     return nodes
 
 
+@dataclass
+class FILETYPE:
+    IMAGE: str = "image"
+    CSV: str = "csv"
+    HDF5: str = "hdf5"
+
+
 @router.get("/files")
 async def get_files(file_type: str = None):
-    if file_type == "image":
+    if file_type == FILETYPE.IMAGE:
         return get_dir_tree(DIRPATH.BASE_DIR, ACCEPT_TIFF_EXT)
-    elif file_type == "csv":
+    elif file_type == FILETYPE.CSV:
         return get_dir_tree(DIRPATH.BASE_DIR, ACCEPT_CSV_EXT)
-    elif file_type == "hdf5":
+    elif file_type == FILETYPE.HDF5:
         return get_dir_tree(DIRPATH.BASE_DIR, ACCEPT_HDF5_EXT)
 
 

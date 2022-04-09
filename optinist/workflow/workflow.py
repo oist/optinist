@@ -1,14 +1,16 @@
-import yaml
-
-from optinist.workflow.get_network import get_network
 from optinist.workflow.params import get_typecheck_params
 from optinist.workflow.set_file import set_imagefile, set_csvfile, set_algofile, set_hdf5file
 from optinist.cui_api.experiment_config import exp_config_writer
 from optinist.cui_api.snakemake_config import snakemake_config_writer
 
 
-def set_workflow(unique_id, runItem):
-    rules_to_execute, last_outputs, all_outputs = get_workflow(unique_id, runItem)
+def create_workflow(unique_id, runItem):
+    rules_to_execute, last_outputs = create_rule_file(
+        unique_id,
+        runItem.nodeList,
+        runItem.edgeList,
+        runItem.nwbParam,
+    )
 
     flow_config = {
         "rules": rules_to_execute,
@@ -19,46 +21,58 @@ def set_workflow(unique_id, runItem):
     exp_config_writer(unique_id, rules_to_execute, runItem)
 
 
-def get_workflow(unique_id, runItem):
-    # graph networkの解析
-    nodeDict, edgeList, endNodeList = get_network(runItem)
+def create_rule_file(unique_id, nodeList, edgeList, nwbParam):
+    nodeDict, endNodeList = get_nodeDict(nodeList)
+    endNodeList = get_endNodeList(edgeList)
 
-    nwbfile = get_typecheck_params(runItem.nwbParam, "nwb")
+    nwbfile = get_typecheck_params(nwbParam, "nwb")
 
-    rules_to_execute = {}
+    rules_dict = {}
     last_outputs = []
-    all_outputs = {}
 
     for node in nodeDict.values():
-        algo_label = node['data']['label']
-        algo_path = node['data']['path']
         if node["type"] == "ImageFileNode":
             rule = set_imagefile(unique_id, node, edgeList, nwbfile)
-            rules_to_execute[node["id"]] = rule
+            rules_dict[node["id"]] = rule
         elif node["type"] == "CsvFileNode":
             rule = set_csvfile(unique_id, node, edgeList, nwbfile)
-            rules_to_execute[node["id"]] = rule
+            rules_dict[node["id"]] = rule
         elif node["type"] == "FluoFileNode":
             rule = set_csvfile(unique_id, node, edgeList, nwbfile)
-            rules_to_execute[node["id"]] = rule
+            rules_dict[node["id"]] = rule
         elif node["type"] == "BehaviorFileNode":
             rule = set_csvfile(unique_id, node, edgeList, nwbfile, "behavior")
-            rules_to_execute[node["id"]] = rule
+            rules_dict[node["id"]] = rule
         elif node["type"] == "HDF5FileNode":
             rule = set_hdf5file(unique_id, node, edgeList, nwbfile)
-            rules_to_execute[node["id"]] = rule
+            rules_dict[node["id"]] = rule
         elif node["type"] == "AlgorithmNode":
             rule = set_algofile(unique_id, node, edgeList, nodeDict)
-            rules_to_execute[node["id"]] = rule
+            rules_dict[node["id"]] = rule
 
             if node["id"] in endNodeList:
                 last_outputs.append(rule["output"])
-
-            all_outputs[rule["output"]] = {
-                "label": algo_label,
-                "path": algo_path,
-            }
         else:
             assert False, "NodeType doesn't exists"
 
-    return rules_to_execute, last_outputs, all_outputs
+    return rules_dict, last_outputs
+
+
+def get_nodeDict(nodeList):
+    # nodeを初期化
+    nodeDict = {}
+    for node in nodeList:
+        nodeDict[node['id']] = node
+    return nodeDict
+
+
+def get_endNodeList(edgeList, nodeDict):
+    returnCntDict = {key: 0 for key in nodeDict.keys()}
+    for edge in edgeList:
+        returnCntDict[edge["source"]] += 1
+
+    endNodeList = []
+    for key, value in returnCntDict.items():
+        if value == 0:
+            endNodeList.append(key)
+    return endNodeList

@@ -1,8 +1,6 @@
 import pickle
-import h5py
 
 from optinist.wrappers.data_wrapper import *
-from optinist.wrappers.nwb_wrapper.const import NWBDATASET
 from optinist.workflow.params import get_typecheck_params
 from optinist.cui_api.dir_path import DIRPATH
 from optinist.cui_api.filepath_creater import join_filepath

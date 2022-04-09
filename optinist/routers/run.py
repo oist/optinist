@@ -1,5 +1,4 @@
 import uuid
-from glob import glob
 
 from fastapi import APIRouter, BackgroundTasks
 from pydantic import BaseModel
@@ -7,7 +6,7 @@ from typing import List
 
 from optinist.workflow.set_file import get_forcerun_list
 from optinist.workflow.params import get_typecheck_params
-from optinist.workflow.set_workflow import set_workflow
+from optinist.workflow.workflow import create_workflow
 from optinist.workflow.results import get_results
 
 from optinist.cui_api.run import run_snakemake
@@ -34,7 +33,7 @@ class NodeItem(BaseModel):
 
 
 def run_workflow(unique_id, background_tasks, runItem):
-    set_workflow(unique_id, runItem)
+    create_workflow(unique_id)
 
     snakemake_params = get_typecheck_params(runItem.snakemakeParam, "snakemake")
     snakemake_params["forcerun"] = get_forcerun_list(unique_id, runItem.forceRunList)
