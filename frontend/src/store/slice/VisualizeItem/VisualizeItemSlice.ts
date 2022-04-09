@@ -742,6 +742,7 @@ export const visualaizeItemSlice = createSlice({
             !item.displayNumbers.includes(clickedDataId)
           ) {
             item.displayNumbers.push(clickedDataId)
+            item.checkedList[clickedDataId] = true
           }
         }
       })
