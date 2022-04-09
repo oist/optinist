@@ -26,12 +26,12 @@ class SnakemakeConfig:
 def snakemake_config_writer(unique_id, flow_config):
     ConfigWriter.write(
         dirname=DIRPATH.ROOT_DIR,
-        filename=DIRPATH.SNAKEMAKE_YML,
+        filename=DIRPATH.SNAKEMAKE_CONFIG_YML,
         config=flow_config
     )
 
     ConfigWriter.write(
         dirname=join_filepath([DIRPATH.BASE_DIR, unique_id]),
-        filename=DIRPATH.SNAKEMAKE_YML,
+        filename=DIRPATH.SNAKEMAKE_CONFIG_YML,
         config=flow_config
     )

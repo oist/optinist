@@ -5,7 +5,6 @@ import pickle
 import h5py
 from optinist.wrappers.data_wrapper import ImageData, CsvData, TimeSeriesData
 from optinist.wrappers.nwb_wrapper.const import NWBDATASET
-from optinist.rules.utils import run_script
 
 
 def save_csv(rule, nodeType):

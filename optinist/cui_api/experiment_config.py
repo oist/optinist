@@ -160,7 +160,7 @@ def create_function_from_nodeList(nodeList: List[Node]):
 
 
 def exp_config_writer(unique_id, name, nodeList, edgeList):
-    exp_filepath = join_filepath([DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_FILEANME])
+    exp_filepath = join_filepath([DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_YML])
     if os.path.exists(exp_filepath):
         exp_config = ExpConfigReader.read(exp_filepath)
         exp_config = add_run_info(exp_config, nodeList, edgeList)
@@ -171,6 +171,6 @@ def exp_config_writer(unique_id, name, nodeList, edgeList):
 
     ConfigWriter.write(
         dirname=join_filepath([DIRPATH.BASE_DIR, unique_id]),
-        filename=DIRPATH.EXPERIMENT_FILEANME,
+        filename=DIRPATH.EXPERIMENT_YML,
         config=asdict(exp_config),
     )

@@ -52,12 +52,12 @@ def get_results(unique_id, nodeIdList):
 
 def get_error(info, node_id, unique_id):
     config = ExpConfigReader.read(join_filepath([
-        DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_FILEANME]))
+        DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_YML]))
     config.function[node_id].success = "error"
 
     ConfigWriter.write(
         dirname=join_filepath([DIRPATH.BASE_DIR, unique_id]),
-        filename=DIRPATH.EXPERIMENT_FILEANME,
+        filename=DIRPATH.EXPERIMENT_YML,
         config=asdict(config),
     )
 
@@ -69,12 +69,12 @@ def get_error(info, node_id, unique_id):
 
 def get_success(info, node_id, algo_name, json_dir, unique_id):
     config = ExpConfigReader.read(join_filepath(
-        [DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_FILEANME]))
+        [DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_YML]))
     config.function[node_id].success = "success"
 
     ConfigWriter.write(
         dirname=join_filepath([DIRPATH.BASE_DIR, unique_id]),
-        filename=DIRPATH.EXPERIMENT_FILEANME,
+        filename=DIRPATH.EXPERIMENT_YML,
         config=asdict(config),
     )
 
