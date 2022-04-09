@@ -59,5 +59,8 @@ async def delete_experiment_list(deleteItem: DeleteItem):
 
 @router.get("/experiments/download/{unique_id}")
 async def download_experiment(unique_id: str):
-    nwb_file = glob(join_filepath([DIRPATH.BASE_DIR, unique_id, "*", "*.nwb"]))[0]
-    return FileResponse(nwb_file)
+    nwb_path_list = glob(join_filepath([DIRPATH.BASE_DIR, unique_id, "*", "*.nwb"]))
+    if len(nwb_path_list) > 0:
+        return FileResponse(nwb_path_list[0])
+    else:
+        return False
