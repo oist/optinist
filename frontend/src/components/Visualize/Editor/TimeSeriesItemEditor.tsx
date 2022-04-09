@@ -32,6 +32,7 @@ import {
   getTimeSeriesAllData,
   getTimeSeriesDataById,
 } from 'store/slice/DisplayData/DisplayDataActions'
+import { arrayEqualityFn } from 'utils/EqualityUtils'
 
 export const TimeSeriesItemEditor: React.FC = () => {
   return (
@@ -218,7 +219,10 @@ const Xrange: React.FC = () => {
 const LegendSelect: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
-  const checkedList = useSelector(selectTimeSeriesItemCheckedList(itemId))
+  const checkedList = useSelector(
+    selectTimeSeriesItemCheckedList(itemId),
+    arrayEqualityFn,
+  )
   const displayNumbers = useSelector(selectTimeSeriesItemDisplayNumbers(itemId))
   const filePath = useSelector(selectTimeSeriesItemFilePath(itemId))
 

@@ -12,10 +12,16 @@ import {
 export const selectSelectedVisualizeItemId = (state: RootState) =>
   state.visualaizeItem.selectedItemId
 
-export const selectVisualizeIdList = (state: RootState) =>
+export const selectVisualizeImageItemIdList = (state: RootState) =>
   Object.keys(state.visualaizeItem.items)
+    .map(Number)
+    .filter((itemId) => {
+      const item = selectVisualizeItems(state)[itemId]
+      return isImageItem(item)
+    })
 
-const selectVisualizeItems = (state: RootState) => state.visualaizeItem.items
+export const selectVisualizeItems = (state: RootState) =>
+  state.visualaizeItem.items
 
 export const selectVisualizeItemLayout = (state: RootState) =>
   state.visualaizeItem.layout
@@ -284,10 +290,25 @@ export const selectTimeSeriesItemXrange =
   }
 
 export const selectTimeSeriesItemDisplayNumbers =
+  (itemId: number, refImageItemId?: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isTimeSeriesItem(item)) {
+      // if (refImageItemId != null) {
+      //   const refItem = selectVisualizeItems(state)[refImageItemId]
+      //   if (isImageItem(refItem) && refItem.clickedDataId != null) {
+      //     return [...item.displayNumbers, refItem.clickedDataId]
+      //   }
+      // }
+      return item.displayNumbers
+    }
+    throw new Error('invalid VisualaizeItemType')
+  }
+
+export const selectTimeSeriesItemRefImageItemId =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
-      return item.displayNumbers
+      return item.refImageItemId
     } else {
       throw new Error('invalid VisualaizeItemType')
     }

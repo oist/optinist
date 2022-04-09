@@ -1,5 +1,7 @@
 import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 
+export const VISUALIZE_ITEM_SLICE_NAME = 'visualaizeItem'
+
 export type VisualaizeItem = {
   selectedItemId: number | null
   items: {
@@ -63,6 +65,7 @@ export interface ImageItem extends DisplayDataItemBaseType {
   roiItem: RoiItem | null
   roiAlpha: number
   duration: number
+  clickedDataId?: number
 }
 
 export interface TimeSeriesItem extends DisplayDataItemBaseType {
@@ -79,6 +82,7 @@ export interface TimeSeriesItem extends DisplayDataItemBaseType {
   }
   maxIndex: number
   displayNumbers: number[]
+  refImageItemId?: number
   checkedList: boolean[]
 }
 

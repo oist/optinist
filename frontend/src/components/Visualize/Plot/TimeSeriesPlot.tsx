@@ -20,6 +20,7 @@ import {
   selectTimeSeriesItemCheckedList,
   selectTimeSeriesItemDisplayNumbers,
   selectTimeSeriesItemOffset,
+  selectTimeSeriesItemRefImageItemId,
   selectTimeSeriesItemShowGrid,
   selectTimeSeriesItemShowLine,
   selectTimeSeriesItemShowTickLabels,
@@ -79,7 +80,10 @@ const TimeSeriesPlotImple = React.memo(() => {
   const showticklabels = useSelector(selectTimeSeriesItemShowTickLabels(itemId))
   const zeroline = useSelector(selectTimeSeriesItemZeroLine(itemId))
   const xrange = useSelector(selectTimeSeriesItemXrange(itemId))
-  const displayNumbers = useSelector(selectTimeSeriesItemDisplayNumbers(itemId))
+  const refImageItemId = useSelector(selectTimeSeriesItemRefImageItemId(itemId))
+  const displayNumbers = useSelector(
+    selectTimeSeriesItemDisplayNumbers(itemId, refImageItemId),
+  )
   const checkedList = useSelector(selectTimeSeriesItemCheckedList(itemId))
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))

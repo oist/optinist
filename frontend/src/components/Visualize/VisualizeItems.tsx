@@ -6,16 +6,20 @@ import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
 import TextField from '@mui/material/TextField'
 import InputAdornment from '@mui/material/InputAdornment'
-import { MenuItem, Select } from '@mui/material'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
+import FormControl from '@mui/material/FormControl'
 
-import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
+import { arrayEqualityFn, twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 
 import {
   selectImageItemFilePath,
   selectSelectedVisualizeItemId,
+  selectTimeSeriesItemRefImageItemId,
   selectVisualizeDataNodeId,
   selectVisualizeDataType,
-  selectVisualizeIdList,
+  selectVisualizeImageItemIdList,
   selectVisualizeItemHeight,
   selectVisualizeItemLayout,
   selectVisualizeItemWidth,
@@ -29,10 +33,14 @@ import {
   setDisplayDataPath,
   setItemHeight,
   setItemWidth,
+  setTimeSeriesRefImageItemId,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { RootState } from 'store/store'
 import { FilePathSelect } from './FilePathSelect'
-import { DATA_TYPE } from 'store/slice/DisplayData/DisplayDataType'
+import {
+  DATA_TYPE,
+  DATA_TYPE_SET,
+} from 'store/slice/DisplayData/DisplayDataType'
 import { deleteDisplayItem } from 'store/slice/DisplayData/DisplayDataSlice'
 
 export const FlexItemList: React.FC = () => {
@@ -95,7 +103,7 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
     setInputHeight(value)
   }
 
-  const itemIdList = useSelector(selectVisualizeIdList)
+  const itemDataType = useSelector(selectVisualizeDataType(itemId))
 
   return (
     <Paper
@@ -146,13 +154,11 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
             onChange={onChangeHeight}
           />
         </Box>
-        <Box flexGrow={1}>
-          <Select label="smooth">
-            {itemIdList.map((value) => (
-              <MenuItem value={value}>{value}</MenuItem>
-            ))}
-          </Select>
-        </Box>
+        {itemDataType === DATA_TYPE_SET.TIME_SERIES && (
+          <Box flexGrow={1}>
+            <RefImageItemIdSelect itemId={itemId} />
+          </Box>
+        )}
         <Box>
           <DisplayDataItemLayoutMenuIcon itemId={itemId} />
         </Box>
@@ -197,5 +203,39 @@ const FilePathSelectItem = React.memo<{
       selectedFilePath={selectedFilePath}
       onSelect={onSelectFilePath}
     />
+  )
+})
+
+const RefImageItemIdSelect = React.memo<{ itemId: number }>(({ itemId }) => {
+  const dispatch = useDispatch()
+  const itemIdList = useSelector(
+    selectVisualizeImageItemIdList,
+    arrayEqualityFn,
+  )
+  const onChangeRefImageItemId = (event: SelectChangeEvent) => {
+    const value = Number(event.target.value)
+    dispatch(
+      setTimeSeriesRefImageItemId({
+        itemId,
+        refImageItemId: isNaN(value) ? null : value,
+      }),
+    )
+  }
+  const selectedRefImageItemId = useSelector(
+    selectTimeSeriesItemRefImageItemId(itemId),
+  )
+  return (
+    <FormControl fullWidth variant="standard">
+      <InputLabel>ref image</InputLabel>
+      <Select
+        value={String(selectedRefImageItemId)}
+        onChange={onChangeRefImageItemId}
+      >
+        <MenuItem value={undefined}>{'None'}</MenuItem>
+        {itemIdList.map((value) => (
+          <MenuItem value={value}>{value}</MenuItem>
+        ))}
+      </Select>
+    </FormControl>
   )
 })

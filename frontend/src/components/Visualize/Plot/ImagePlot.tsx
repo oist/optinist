@@ -46,6 +46,7 @@ import { Datum, LayoutAxis, PlotData } from 'plotly.js'
 import createColormap from 'colormap'
 import Slider from '@mui/material/Slider'
 import Box from '@mui/material/Box'
+import { setImageItemClikedDataId } from 'store/slice/VisualizeItem/VisualizeItemActions'
 
 export const ImagePlot = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
@@ -246,27 +247,12 @@ const ImagePlotChart = React.memo<{
   const dispatch = useDispatch()
 
   const onClick = (event: any) => {
-    // const points: PlotDatum = event.points[0]
-    // if (
-    //   timeSeriesFilePath !== null &&
-    //   displayNumbers !== null &&
-    //   points.curveNumber >= 1 &&
-    //   !displayNumbers.includes(points.z - 1)
-    // ) {
-    //   const newValue = [...displayNumbers, points.z - 1]
-    //   dispatch(
-    //     setTimeSeriesItemDisplayNumbers({
-    //       itemId,
-    //       displayNumbers: newValue,
-    //     }),
-    //   )
-    //   dispatch(
-    //     getTimeSeriesDataById({
-    //       path: timeSeriesFilePath,
-    //       index: points.z - 1,
-    //     }),
-    //   )
-    // }
+    const points: PlotDatum = event.points[0]
+    if (points.curveNumber >= 1) {
+      dispatch(
+        setImageItemClikedDataId({ itemId, clickedDataId: points.z - 1 }),
+      )
+    }
   }
 
   const onSliderChange = (
