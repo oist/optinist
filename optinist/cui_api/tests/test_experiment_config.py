@@ -7,7 +7,6 @@ from optinist.cui_api.filepath_creater import (
     join_filepath
 )
 from optinist.cui_api.experiment_config import (
-    ExpFunction,
     ExpConfig,
     ExpConfigReader,
     NodeData,
@@ -16,10 +15,21 @@ from optinist.cui_api.experiment_config import (
     create_exp_config
 )
 
+
+from dataclasses import dataclass
+
+@dataclass
+class RunItem:
+    name: str
+    nodeList: list
+    edgeList: list
+    snakemakeParam: dict
+    nwbParam: dict
+
 def test_filepath():
     exp_filepath = create_filepath(
         join_filepath([DIRPATH.ROOT_DIR, "test_data"]),
-        DIRPATH.EXPERIMENT_FILEANME
+        DIRPATH.EXPERIMENT_YML
     )
     return exp_filepath
 
@@ -54,18 +64,7 @@ def test_exp_config_reader():
     assert isinstance(exp_config.edgeList[0].target, str)
     assert isinstance(exp_config.edgeList[0].targetHandle, str)
     assert isinstance(exp_config.edgeList[0].style, Style)
-
-
-
-from dataclasses import dataclass
-
-@dataclass
-class RunItem:
-    name: str
-    nodeList: list
-    edgeList: list
-    snakemakeParam: dict
-    nwbParam: dict
+    
 
 def test_create_exp_config():
     exp_filepath = test_filepath()
@@ -78,7 +77,12 @@ def test_create_exp_config():
         nwbParam={},
     )
 
-    exp_config = create_exp_config(exp_filepath, runItem)
+    exp_config = create_exp_config(
+        exp_filepath,
+        runItem.name,
+        runItem.nodeList,
+        runItem.edgeList,
+    )
 
     assert isinstance(exp_config, ExpConfig)
     assert isinstance(exp_config.function, dict)
