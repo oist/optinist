@@ -50,8 +50,8 @@ export const displayDataSlice = createSlice({
           delete state.csv[filePath]
         } else if (dataType === DATA_TYPE_SET.HEAT_MAP) {
           delete state.heatMap[filePath]
-        } else if (dataType === DATA_TYPE_SET.ROI) {
-          delete state.roi[filePath]
+          // } else if (dataType === DATA_TYPE_SET.ROI) {
+          //   delete state.roi[filePath]
         } else if (dataType === DATA_TYPE_SET.SCATTER) {
           delete state.scatter[filePath]
         } else if (dataType === DATA_TYPE_SET.BAR) {
