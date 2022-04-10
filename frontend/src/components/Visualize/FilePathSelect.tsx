@@ -147,7 +147,7 @@ export const FilePathSelect: React.FC<{
   })
 
   return (
-    <FormControl style={{ minWidth: 150, maxWidth: 220 }}>
+    <FormControl style={{ minWidth: 150, maxWidth: 220 }} variant="standard">
       <InputLabel>{!!label ? label : 'Select Item'}</InputLabel>
       <Select
         value={`${selectedNodeId}/${selectedFilePath}`}

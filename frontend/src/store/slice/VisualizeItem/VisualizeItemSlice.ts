@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
+import { setImageItemClikedDataId } from './VisualizeItemActions'
 
 import {
   HeatMapItem,
@@ -15,6 +16,7 @@ import {
   HTMLItem,
   FluoItem,
   BehaviorItem,
+  VISUALIZE_ITEM_SLICE_NAME,
 } from './VisualizeItemType'
 import {
   isDisplayDataItem,
@@ -149,7 +151,7 @@ function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
 }
 
 export const visualaizeItemSlice = createSlice({
-  name: 'visualaizeItem',
+  name: VISUALIZE_ITEM_SLICE_NAME,
   initialState,
   reducers: {
     deleteVisualizeItem: (state, action: PayloadAction<number>) => {
@@ -624,6 +626,19 @@ export const visualaizeItemSlice = createSlice({
         targetItem.maxIndex = maxIndex
       }
     },
+    setTimeSeriesRefImageItemId: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        refImageItemId: number | null
+      }>,
+    ) => {
+      const { itemId, refImageItemId } = action.payload
+      const targetItem = state.items[itemId]
+      if (isTimeSeriesItem(targetItem)) {
+        targetItem.refImageItemId = refImageItemId ?? undefined
+      }
+    },
     setHeatMapItemShowScale: (
       state,
       action: PayloadAction<{
@@ -712,6 +727,27 @@ export const visualaizeItemSlice = createSlice({
       }
     },
   },
+  extraReducers: (builder) => {
+    builder.addCase(setImageItemClikedDataId.fulfilled, (state, action) => {
+      const { itemId: imageItemId, clickedDataId } = action.meta.arg
+      const targetItem = state.items[imageItemId]
+      if (isImageItem(targetItem)) {
+        targetItem.clickedDataId = clickedDataId
+      }
+      Object.values(state.items).forEach((item) => {
+        if (isTimeSeriesItem(item)) {
+          if (
+            item.refImageItemId != null &&
+            imageItemId === item.refImageItemId &&
+            !item.displayNumbers.includes(clickedDataId)
+          ) {
+            item.displayNumbers.push(clickedDataId)
+            item.checkedList[clickedDataId] = true
+          }
+        }
+      })
+    })
+  },
 })
 
 function getMaxItemId(state: VisualaizeItem) {
@@ -779,6 +815,7 @@ export const {
   setTimeSeriesItemDisplayNumbers,
   setTimeSeriesItemCheckedList,
   setTimeSeriesItemMaxIndex,
+  setTimeSeriesRefImageItemId,
   setHeatMapItemShowScale,
   setHeatMapItemColors,
   setCsvItemTranspose,
