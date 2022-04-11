@@ -41,7 +41,12 @@ import {
   DialogTitle,
   TableSortLabel,
 } from '@mui/material'
-import { DeleteButton, DownloadButton, ImportButton } from './ExperimentItems'
+import { DeleteButton } from './Button/DeleteButton'
+import {
+  NWBDownloadButton,
+  ConfigDownloadButton,
+} from './Button/DownloadButton'
+import { ImportButton } from './Button/ImportButton'
 
 export const ExperimentUidContext = React.createContext<string>('')
 
@@ -182,7 +187,6 @@ const HeadItem = React.memo<{
   return (
     <TableHead>
       <TableRow>
-        {/* <TableCell><Checkbox /></TableCell> */}
         <TableCell />
         <TableCell />
         <TableCell>
@@ -209,8 +213,9 @@ const HeadItem = React.memo<{
           </TableSortLabel>
         </TableCell>
         <TableCell>Success</TableCell>
-        <TableCell>Import</TableCell>
-        <TableCell>Download</TableCell>
+        <TableCell>Reproduce</TableCell>
+        <TableCell>workflow</TableCell>
+        <TableCell>NWB</TableCell>
         <TableCell>Delete</TableCell>
       </TableRow>
     </TableHead>
@@ -262,7 +267,10 @@ const RowItem = React.memo<{
           <ImportButton />
         </TableCell>
         <TableCell>
-          <DownloadButton />
+          <ConfigDownloadButton />
+        </TableCell>
+        <TableCell>
+          <NWBDownloadButton name={uid} />
         </TableCell>
         <TableCell>
           <DeleteButton />

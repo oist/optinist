@@ -22,6 +22,7 @@ class NodeData:
     path: list or str
     type: str
     fileType: str = None
+    hdf5Path: str = None
 
 @dataclass
 class NodePosition:
@@ -136,8 +137,8 @@ def add_run_info(exp_config: ExpConfig, nodeList: List[Node], edgeList: List[Edg
     exp_config.timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
     # # 関数を追加の可能性
-    exp_config.nodeList += nodeList
-    exp_config.edgeList += edgeList
+    exp_config.nodeList = nodeList
+    exp_config.edgeList = edgeList
 
     for node in nodeList:
         exp_config.function[node.id] = ExpFunction(

@@ -36,9 +36,9 @@ class ImageData(BaseData):
             if not os.path.exists(_dir):
                 os.makedirs(_dir, exist_ok=True)
 
-            self.path = join_filepath([_dir, f'{file_name}.tif'])
-
-            tifffile.imsave(self.path, data)
+            _path = join_filepath([_dir, f'{file_name}.tif'])
+            tifffile.imsave(_path, data)
+            self.path = [_path]
 
             del data
             gc.collect()

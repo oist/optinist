@@ -65,7 +65,6 @@ def run_script(__func_config, last_output):
     try:
         input_files = __func_config["input"]
         return_arg = __func_config["return_arg"]
-        node_type = __func_config["type"]
         params = __func_config["params"]
         wrapper = dict2leaf(wrapper_dict, __func_config["path"].split('/'))
         print(wrapper)
@@ -86,7 +85,7 @@ def run_script(__func_config, last_output):
         os.makedirs(output_dir, exist_ok=True)
 
         # nwbfileの設定
-        if "nwbfile" not in output_info.keys():
+        if "nwbfile" not in output_info:
             output_info["nwbfile"] = input_info["nwbfile"]
 
         # NWB保存

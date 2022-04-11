@@ -66,7 +66,7 @@ def set_csvfile(unique_id, node: Node, edgeList: List[Edge], nwbfile, nodeType="
     )
 
 
-def set_hdf5file(unique_id, node, edgeList, nwbfile):
+def set_hdf5file(unique_id, node: Node, edgeList: List[Edge], nwbfile):
     for edge in edgeList:
         if node.id == edge.source:
             return_name = edge.sourceHandle.split("--")[0]

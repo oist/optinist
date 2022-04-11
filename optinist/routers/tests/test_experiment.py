@@ -49,6 +49,6 @@ def test_download_experiment():
     with open(join_filepath([dirpath, "aa.nwb"]), "w") as f:
         f.write("aa")
 
-    response = client.get("/experiments/download/aa")
+    response = client.get("/experiments/download/nwb/aa")
 
     assert response.status_code == 200
