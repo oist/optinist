@@ -1,8 +1,8 @@
 import yaml
 
 from optinist.api.experiment.experiment import (
-    ExpConfig,
-    ExpFunction,
+    ExptConfig,
+    ExptFunction,
 )
 from optinist.api.workflow.workflow import (
     Edge,
@@ -13,13 +13,13 @@ from optinist.api.workflow.workflow import (
 )
 
 
-class ExpConfigReader:
+class ExptConfigReader:
     @classmethod
-    def read(cls, filepath) -> ExpConfig:
+    def read(cls, filepath) -> ExptConfig:
         with open(filepath, "r") as f:
             config = yaml.safe_load(f)
 
-        return ExpConfig(
+        return ExptConfig(
             unique_id=config["unique_id"],
             name=config["name"],
             timestamp=config["timestamp"],
@@ -29,9 +29,9 @@ class ExpConfigReader:
         )
 
     @classmethod
-    def function_read(cls, config) -> ExpFunction:
+    def function_read(cls, config) -> ExptFunction:
         return {
-            key: ExpFunction(
+            key: ExptFunction(
                 unique_id=value["unique_id"],
                 name=value["name"],
                 success=value["success"],

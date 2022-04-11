@@ -1,5 +1,4 @@
 import pytest
-import shutil
 from fastapi.testclient import TestClient
 
 from optinist.routers.hdf5 import router

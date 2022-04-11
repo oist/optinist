@@ -1,14 +1,21 @@
 from dataclasses import dataclass
 from typing import Dict, List
-from pydantic import BaseModel
 
-from optinist.api.workflow.workflow import Edge, ExpFunction, Node
+from optinist.api.workflow.workflow import Edge, Node
+
 
 @dataclass
-class ExpConfig:
+class ExptFunction:
+    unique_id: str
+    name: str
+    success: str
+
+
+@dataclass
+class ExptConfig:
     timestamp: str
     name: str
     unique_id: str
-    function: Dict[str, ExpFunction]
+    function: Dict[str, ExptFunction]
     nodeList: List[Node]
     edgeList: List[Edge]

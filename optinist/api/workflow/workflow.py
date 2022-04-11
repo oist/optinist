@@ -1,6 +1,5 @@
 from dataclasses import dataclass
 from typing import Dict, List
-
 from pydantic import BaseModel
 
 from optinist.api.snakemake.snakemake import ForceRun
@@ -42,12 +41,6 @@ class Message:
     message: str
     outputPaths: Dict[str, OutputPath] = None
 
-
-@dataclass
-class ExpFunction:
-    unique_id: str
-    name: str
-    success: str
 
 
 @dataclass

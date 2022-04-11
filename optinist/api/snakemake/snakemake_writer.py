@@ -3,7 +3,7 @@ from optinist.api.utils.filepath_creater import join_filepath
 from optinist.api.config.config_writer import ConfigWriter
 
 
-class SnakemakeConfigWriter:
+class SmkConfigWriter:
     @classmethod
     def write(cls, unique_id, flow_config):
         ConfigWriter.write(

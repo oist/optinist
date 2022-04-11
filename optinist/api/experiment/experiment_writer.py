@@ -1,20 +1,20 @@
 import os
 from datetime import datetime
 from dataclasses import asdict
-from typing import List
+from typing import Dict, List
 
 from optinist.api.dir_path import DIRPATH
-from optinist.api.experiment.experiment import ExpConfig, ExpFunction
-from optinist.api.experiment.experiment_config_reader import ExpConfigReader
+from optinist.api.experiment.experiment import ExptConfig, ExptFunction
+from optinist.api.experiment.experiment_reader import ExptConfigReader
 from optinist.api.utils.filepath_creater import join_filepath
 from optinist.api.config.config_writer import ConfigWriter
 from optinist.api.workflow.workflow import Edge, Node
 
 
-class ExpConfigWriter:
+class ExptConfigWriter:
     @classmethod
-    def exp_config_create(cls, unique_id, name, nodeList, edgeList):
-        return ExpConfig(
+    def create(cls, unique_id, name, nodeList, edgeList) -> ExptConfig:
+        return ExptConfig(
             unique_id=unique_id,
             name=name,
             timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
@@ -24,13 +24,13 @@ class ExpConfigWriter:
         )
 
     @classmethod
-    def exp_config_write(cls, unique_id, name, nodeList, edgeList):
+    def write(cls, unique_id, name, nodeList, edgeList):
         exp_filepath = join_filepath([DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_YML])
         if os.path.exists(exp_filepath):
-            exp_config = ExpConfigReader.read(exp_filepath)
+            exp_config = ExptConfigReader.read(exp_filepath)
             exp_config = cls.add_run_info(exp_config, nodeList, edgeList)
         else:
-            exp_config = cls.exp_config_create(unique_id, name, nodeList, edgeList)
+            exp_config = cls.create(unique_id, name, nodeList, edgeList)
 
         exp_config.function = cls.create_function_from_nodeList(nodeList)
 
@@ -41,25 +41,25 @@ class ExpConfigWriter:
         )
 
     @classmethod
-    def add_run_info(cls, exp_config: ExpConfig, nodeList: List[Node], edgeList: List[Edge]):
-        exp_config.timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    def add_run_info(cls, expt_config: ExptConfig, nodeList: List[Node], edgeList: List[Edge]) -> ExptConfig:
+        expt_config.timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
         # # 関数を追加の可能性
-        exp_config.nodeList = nodeList
-        exp_config.edgeList = edgeList
+        expt_config.nodeList = nodeList
+        expt_config.edgeList = edgeList
 
         for node in nodeList:
-            exp_config.function[node.id] = ExpFunction(
+            expt_config.function[node.id] = ExptFunction(
                 unique_id=node.id,
                 name=node.data.label,
                 success="success" if node.data.type == "input" else "running",
             )
-        return exp_config
+        return expt_config
 
     @classmethod
-    def create_function_from_nodeList(cls, nodeList: List[Node]):
+    def create_function_from_nodeList(cls, nodeList: List[Node]) -> Dict[str, ExptFunction]:
         return {
-            node.id: ExpFunction(
+            node.id: ExptFunction(
                 unique_id=node.id,
                 name=node.data.label,
                 success="success" if node.data.type == "input" else "running",
