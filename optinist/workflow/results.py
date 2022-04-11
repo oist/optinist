@@ -21,7 +21,7 @@ class OutputPath:
 class Message:
     status: str
     message: str
-    outputPaths: Dict[str, OutputPath]
+    outputPaths: Dict[str, OutputPath] = None
 
 
 def get_results(unique_id, nodeIdList):

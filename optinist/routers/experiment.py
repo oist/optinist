@@ -57,10 +57,15 @@ async def delete_experiment_list(deleteItem: DeleteItem):
         return False
 
 
-@router.get("/experiments/download/{unique_id}")
+@router.get("/experiments/download/nwb/{unique_id}")
 async def download_experiment(unique_id: str):
     nwb_path_list = glob(join_filepath([DIRPATH.BASE_DIR, unique_id, "*", "*.nwb"]))
     if len(nwb_path_list) > 0:
         return FileResponse(nwb_path_list[0])
     else:
         return False
+
+@router.get("/experiments/download/config/{unique_id}")
+async def download_experiment(unique_id: str):
+    config_filepath = join_filepath([DIRPATH.BASE_DIR, unique_id, "config.yaml"])
+    return FileResponse(config_filepath)

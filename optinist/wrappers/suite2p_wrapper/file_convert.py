@@ -8,9 +8,8 @@ def suite2p_file_convert(
         image: ImageData,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {'ops': Suite2pData}:
+    ) -> dict(ops=Suite2pData):
     import os
-    import numpy as np
     from natsort import natsorted
     from suite2p import io, default_ops
     print('start suite2_file_convert')

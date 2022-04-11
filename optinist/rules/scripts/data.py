@@ -51,8 +51,9 @@ def save_hdf5(rule):
     elif data.ndim == 2:
         info = {rule["return_arg"]: TimeSeriesData(data, '')}
 
-        if NWBDATASET.TIMESERIES not in nwbfile.keys():
+        if NWBDATASET.TIMESERIES not in nwbfile:
             nwbfile[NWBDATASET.TIMESERIES] = {}
+
         nwbfile[NWBDATASET.TIMESERIES][rule["return_arg"]] = info[rule["return_arg"]]
         nwbfile.pop('image_series', None)
 

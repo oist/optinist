@@ -17,6 +17,7 @@ import {
 } from 'store/slice/Experiments/ExperimentsSelectors'
 import { ExperimentStatusIcon } from './ExperimentStatusIcon'
 import { arrayEqualityFn } from 'utils/EqualityUtils'
+import { NWBDownloadButton } from './Button/DownloadButton'
 
 export const CollapsibleTable = React.memo<{
   open: boolean
@@ -47,6 +48,7 @@ const Head = React.memo(() => {
         <TableCell>Function</TableCell>
         <TableCell>nodeID</TableCell>
         <TableCell>Success</TableCell>
+        <TableCell>NWB</TableCell>
       </TableRow>
     </TableHead>
   )
@@ -81,6 +83,9 @@ const TableRowOfFunction = React.memo<{
       <TableCell>{nodeId}</TableCell>
       <TableCell>
         <ExperimentStatusIcon status={status} />
+      </TableCell>
+      <TableCell>
+        <NWBDownloadButton name={name} />
       </TableCell>
     </TableRow>
   )
