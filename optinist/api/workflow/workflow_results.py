@@ -5,7 +5,7 @@ from typing import Dict
 
 from optinist.api.workflow.workflow import Message
 from optinist.api.config.config_writer import ConfigWriter
-from optinist.api.experiment.experiment_config import ExpConfigReader
+from optinist.api.experiment.experiment_config_reader import ExpConfigReader
 from optinist.api.workflow.workflow import OutputPath
 from optinist.wrappers.data_wrapper import *
 

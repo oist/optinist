@@ -1,10 +1,9 @@
-from typing import Optional
+from typing import Optional, Dict
 from fastapi import APIRouter
 from glob import glob
 import os
 import json
 from dataclasses import dataclass
-from typing import Dict
 
 from optinist.api.utils.json_writer import save_tiff2json, save_csv2json
 from optinist.api.utils.filepath_creater import join_filepath

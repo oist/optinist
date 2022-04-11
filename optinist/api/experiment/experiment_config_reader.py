@@ -4,7 +4,13 @@ from optinist.api.experiment.experiment import (
     ExpConfig,
     ExpFunction,
 )
-from optinist.api.workflow.workflow import Edge, Node, NodeData, NodePosition, Style
+from optinist.api.workflow.workflow import (
+    Edge,
+    Node,
+    NodeData,
+    NodePosition,
+    Style
+)
 
 
 class ExpConfigReader:
@@ -14,9 +20,9 @@ class ExpConfigReader:
             config = yaml.safe_load(f)
 
         return ExpConfig(
-            timestamp=config["timestamp"],
-            name=config["name"],
             unique_id=config["unique_id"],
+            name=config["name"],
+            timestamp=config["timestamp"],
             function=cls.function_read(config["function"]),
             nodeList=cls.nodeList_read(config["nodeList"]),
             edgeList=cls.edgeList_read(config["edgeList"]),

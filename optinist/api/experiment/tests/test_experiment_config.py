@@ -2,15 +2,13 @@ import pytest
 from dataclasses import dataclass
 
 from optinist.api.dir_path import DIRPATH
+from optinist.api.experiment.experiment_config_reader import ExpConfigReader
 from optinist.api.utils.filepath_creater import (
     create_filepath,
     join_filepath
 )
 from optinist.api.experiment.experiment import ExpConfig
-from optinist.api.experiment.experiment_config import (
-    ExpConfigReader,
-    create_exp_config
-)
+from optinist.api.experiment.experiment_config_writer import ExpConfigWriter
 from optinist.api.workflow.workflow import NodeData, NodePosition, Style
 
 @dataclass
@@ -72,7 +70,7 @@ def test_create_exp_config():
         nwbParam={},
     )
 
-    exp_config = create_exp_config(
+    exp_config = ExpConfigWriter.exp_config_creater(
         exp_filepath,
         runItem.name,
         runItem.nodeList,

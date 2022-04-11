@@ -7,7 +7,7 @@ from pydantic import BaseModel
 
 from optinist.api.dir_path import DIRPATH
 from optinist.api.utils.filepath_creater import join_filepath
-from optinist.api.experiment.experiment_config import ExpConfigReader
+from optinist.api.experiment.experiment_config_reader import ExpConfigReader
 
 router = APIRouter()
 

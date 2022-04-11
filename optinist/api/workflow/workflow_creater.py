@@ -12,7 +12,8 @@ from optinist.api.snakemake.snakemake_setfile import (
     set_algofile,
     set_hdf5file
 )
-from optinist.api.experiment.experiment_config import ExpConfigReader, exp_config_writer
+from optinist.api.experiment.experiment_config_reader import ExpConfigReader
+from optinist.api.experiment.experiment_config_writer import ExpConfigWriter
 from optinist.api.snakemake.snakemake_config import snakemake_config_writer
 
 
@@ -30,7 +31,7 @@ def create_workflow(unique_id, name, nodeList, edgeList, nwbParam):
     )
 
     snakemake_config_writer(unique_id, asdict(flow_config))
-    exp_config_writer(unique_id, name, nodeList, edgeList)
+    ExpConfigWriter.exp_config_writer(unique_id, name, nodeList, edgeList)
 
 
 def create_rule_file(unique_id, nodeList, edgeList, nwbParam):
