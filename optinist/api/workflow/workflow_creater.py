@@ -1,18 +1,19 @@
 from typing import Dict, List
-from dataclasses import asdict, dataclass
-from optinist.cui_api.run import run_snakemake
+from dataclasses import asdict
+from optinist.api.snakemake.snakemake import FlowConfig, Rule
+from optinist.api.snakemake.snakemake_run import run_snakemake
+from optinist.api.workflow.workflow import Node, NodeType
 
-from optinist.workflow.data_type import NodeType
-from optinist.workflow.params import get_typecheck_params
-from optinist.workflow.set_file import Rule, get_forcerun_list, set_imagefile, set_csvfile, set_algofile, set_hdf5file
-from optinist.cui_api.experiment_config import ExpConfigReader, Node, exp_config_writer
-from optinist.cui_api.snakemake_config import snakemake_config_writer
-
-
-@dataclass
-class FlowConfig:
-    rules: Dict[str, Rule]
-    last_output: list
+from optinist.api.workflow.workflow_params import get_typecheck_params
+from optinist.api.snakemake.snakemake_setfile import (
+    get_forcerun_list,
+    set_imagefile,
+    set_csvfile,
+    set_algofile,
+    set_hdf5file
+)
+from optinist.api.experiment.experiment_config import ExpConfigReader, exp_config_writer
+from optinist.api.snakemake.snakemake_config import snakemake_config_writer
 
 
 def create_workflow(unique_id, name, nodeList, edgeList, nwbParam):
@@ -23,12 +24,12 @@ def create_workflow(unique_id, name, nodeList, edgeList, nwbParam):
         nwbParam,
     )
 
-    flow_config = asdict(FlowConfig(
+    flow_config = FlowConfig(
         rules=rules,
         last_output=last_output,
-    ))
+    )
 
-    snakemake_config_writer(unique_id, flow_config)
+    snakemake_config_writer(unique_id, asdict(flow_config))
     exp_config_writer(unique_id, name, nodeList, edgeList)
 
 

@@ -4,10 +4,10 @@ import pandas as pd
 import imageio
 import tifffile
 import gc
-from optinist.cui_api.filepath_creater import (
+from optinist.api.utils.filepath_creater import (
     join_filepath
 )
-from optinist.cui_api.dir_path import DIRPATH
+from optinist.api.dir_path import DIRPATH
 
 from optinist.wrappers.data_wrapper.utils import get_images_list
 

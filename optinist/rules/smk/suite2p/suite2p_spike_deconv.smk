@@ -1,4 +1,4 @@
-from optinist.cui_api.dir_path import DIRPATH
+from optinist.api.dir_path import DIRPATH
 
 name = "suite2p_spike_deconv"
 

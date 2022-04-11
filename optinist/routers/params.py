@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 
-from optinist.cui_api.config_reader import ConfigReader
-from optinist.cui_api.dir_path import DIRPATH
-from optinist.cui_api.filepath_creater import join_filepath
+from optinist.api.config.config_reader import ConfigReader
+from optinist.api.dir_path import DIRPATH
+from optinist.api.utils.filepath_creater import join_filepath
 
 router = APIRouter()
 

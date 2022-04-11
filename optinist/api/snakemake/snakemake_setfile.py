@@ -1,31 +1,10 @@
-
-from dataclasses import dataclass
 from typing import Dict, List
-from pydantic import BaseModel
-from optinist.cui_api.experiment_config import Edge, Node
-from optinist.workflow.data_type import NodeType
+from optinist.api.snakemake.snakemake import ForceRun, Rule
+from optinist.api.workflow.workflow import Edge, Node, NodeType
 
 from optinist.wrappers.data_wrapper import *
-from optinist.workflow.params import get_typecheck_params
-from optinist.cui_api.filepath_creater import get_pickle_file
-
-
-class ForceRun(BaseModel):
-    nodeId: str
-    name: str
-
-
-@dataclass
-class Rule:
-    rule_file: str
-    input: str
-    return_arg: str
-    params: dict
-    output: str
-    type: str
-    nwbfile: dict = None
-    hdf5Path: str = None
-    path: str = None
+from optinist.api.workflow.workflow_params import get_typecheck_params
+from optinist.api.utils.filepath_creater import get_pickle_file
 
 
 def set_imagefile(unique_id: str, node: Node, edgeList: List[Edge], nwbfile):

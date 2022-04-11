@@ -5,9 +5,9 @@ import shutil
 from glob import glob
 from pydantic import BaseModel
 
-from optinist.cui_api.dir_path import DIRPATH
-from optinist.cui_api.filepath_creater import join_filepath
-from optinist.cui_api.experiment_config import ExpConfigReader
+from optinist.api.dir_path import DIRPATH
+from optinist.api.utils.filepath_creater import join_filepath
+from optinist.api.experiment.experiment_config import ExpConfigReader
 
 router = APIRouter()
 

@@ -1,6 +1,6 @@
 import os
 
-from optinist.cui_api.dir_path import DIRPATH
+from optinist.api.dir_path import DIRPATH
 
 
 def join_filepath(path_list):

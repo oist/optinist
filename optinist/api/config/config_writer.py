@@ -1,6 +1,6 @@
 import os
 import yaml
-from optinist.cui_api.filepath_creater import join_filepath
+from optinist.api.utils.filepath_creater import join_filepath
 
 
 class ConfigWriter:

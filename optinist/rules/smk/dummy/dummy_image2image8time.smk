@@ -1,4 +1,4 @@
-from optinist.cui_api.dir_path import DIRPATH
+from optinist.api.dir_path import DIRPATH
 
 name = "dummy_image2image8time"
 

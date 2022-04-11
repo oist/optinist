@@ -1,7 +1,7 @@
 import gc
 from optinist.wrappers.data_wrapper import *
 from optinist.wrappers.nwb_wrapper.const import NWBDATASET
-from optinist.cui_api.filepath_creater import join_filepath
+from optinist.api.utils.filepath_creater import join_filepath
 
 
 def get_roi(A, thr, thr_method, swap_dim, dims):

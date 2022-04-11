@@ -6,8 +6,8 @@ from typing import List
 from fastapi import APIRouter, File, UploadFile
 from dataclasses import dataclass
 
-from optinist.cui_api.dir_path import DIRPATH
-from optinist.cui_api.filepath_creater import join_filepath
+from optinist.api.dir_path import DIRPATH
+from optinist.api.utils.filepath_creater import join_filepath
 
 router = APIRouter()
 

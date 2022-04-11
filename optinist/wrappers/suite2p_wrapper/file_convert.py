@@ -1,7 +1,7 @@
 from optinist.wrappers.data_wrapper import *
 
-from optinist.cui_api.dir_path import DIRPATH
-from optinist.cui_api.filepath_creater import join_filepath
+from optinist.api.dir_path import DIRPATH
+from optinist.api.utils.filepath_creater import join_filepath
 
 
 def suite2p_file_convert(
@@ -10,7 +10,6 @@ def suite2p_file_convert(
         params: dict=None
     ) -> dict(ops=Suite2pData):
     import os
-    from natsort import natsorted
     from suite2p import io, default_ops
     print('start suite2_file_convert')
 
@@ -37,11 +36,6 @@ def suite2p_file_convert(
     # save folderを指定
     save_folder = join_filepath([ops['save_path0'], ops['save_folder']])
     os.makedirs(save_folder, exist_ok=True)
-    plane_folders = natsorted([
-        f.path for f in os.scandir(save_folder) 
-        if f.is_dir() and f.name[:5]=='plane'])
-
-    ops_path = [join_filepath([f, 'ops.npy']) for f in plane_folders]
 
     # copy file format to a binary file
     convert_funs = {

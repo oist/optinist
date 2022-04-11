@@ -6,7 +6,7 @@ from snakemake.workflow import Workflow
 from snakemake.dag import DAG
 from snakemake.persistence import Persistence
 
-from optinist.cui_api.dir_path import DIRPATH
+from optinist.api.dir_path import DIRPATH
 
 
 def snakemake(

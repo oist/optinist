@@ -2,12 +2,12 @@ import os
 import numpy as np
 import pandas as pd
 import tifffile
-from optinist.cui_api.filepath_creater import join_filepath
+from optinist.api.utils.filepath_creater import join_filepath
 
 
 def save_tiff2json(tiff_file_path, start_index=None, end_index=None):
     folder_path = os.path.dirname(tiff_file_path)
-    file_name, ext = os.path.splitext(os.path.basename(tiff_file_path))
+    file_name, _ = os.path.splitext(os.path.basename(tiff_file_path))
 
     # Tiff画像を読み込む
     tiffs = []

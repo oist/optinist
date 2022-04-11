@@ -1,22 +1,17 @@
 import pytest
+from dataclasses import dataclass
 
-from typing import List
-from optinist.cui_api.dir_path import DIRPATH
-from optinist.cui_api.filepath_creater import (
+from optinist.api.dir_path import DIRPATH
+from optinist.api.utils.filepath_creater import (
     create_filepath,
     join_filepath
 )
-from optinist.cui_api.experiment_config import (
-    ExpConfig,
+from optinist.api.experiment.experiment import ExpConfig
+from optinist.api.experiment.experiment_config import (
     ExpConfigReader,
-    NodeData,
-    NodePosition,
-    Style,
     create_exp_config
 )
-
-
-from dataclasses import dataclass
+from optinist.api.workflow.workflow import NodeData, NodePosition, Style
 
 @dataclass
 class RunItem:

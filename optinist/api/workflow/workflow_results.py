@@ -1,27 +1,16 @@
 import pickle
-from dataclasses import dataclass, asdict
+from dataclasses import asdict
 from glob import glob
 from typing import Dict
-from optinist.cui_api.config_writer import ConfigWriter
-from optinist.cui_api.experiment_config import ExpConfigReader
+
+from optinist.api.workflow.workflow import Message
+from optinist.api.config.config_writer import ConfigWriter
+from optinist.api.experiment.experiment_config import ExpConfigReader
+from optinist.api.workflow.workflow import OutputPath
 from optinist.wrappers.data_wrapper import *
 
-from optinist.cui_api.filepath_creater import join_filepath
-from optinist.cui_api.dir_path import DIRPATH
-
-
-@dataclass
-class OutputPath:
-    path: str
-    type: str
-    max_index: int = None
-
-
-@dataclass
-class Message:
-    status: str
-    message: str
-    outputPaths: Dict[str, OutputPath] = None
+from optinist.api.utils.filepath_creater import join_filepath
+from optinist.api.dir_path import DIRPATH
 
 
 def get_results(unique_id, nodeIdList):

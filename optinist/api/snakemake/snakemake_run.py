@@ -1,6 +1,6 @@
 from snakemake import snakemake
 
-from optinist.cui_api.dir_path import DIRPATH
+from optinist.api.dir_path import DIRPATH
 
 
 def run_snakemake(snakemake_params):

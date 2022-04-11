@@ -1,7 +1,5 @@
 import os
 import yaml
-from optinist.cui_api.dir_path import DIRPATH
-from optinist.cui_api.filepath_creater import join_filepath
 
 
 class ConfigReader:

@@ -3,11 +3,10 @@ from fastapi import APIRouter, BackgroundTasks
 import uuid
 from pydantic import BaseModel
 from typing import List
-from dataclasses import asdict
 
-from optinist.workflow.set_file import ForceRun
-from optinist.workflow.workflow import run_workflow
-from optinist.workflow.results import get_results
+from optinist.api.snakemake.snakemake_setfile import ForceRun
+from optinist.api.workflow.workflow_creater import run_workflow
+from optinist.api.workflow.workflow_results import get_results
 
 
 router = APIRouter()

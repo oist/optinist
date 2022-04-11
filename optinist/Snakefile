@@ -1,5 +1,5 @@
 import os
-from optinist.cui_api.dir_path import DIRPATH
+from optinist.api.dir_path import DIRPATH
 configfile: os.path.join(DIRPATH.ROOT_DIR, 'config.yaml')
 
 for rule, details in config["rules"].items():

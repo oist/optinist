@@ -3,8 +3,8 @@ from fastapi.testclient import TestClient
 import os
 
 from optinist.routers.experiment import router
-from optinist.cui_api.filepath_creater import join_filepath
-from optinist.cui_api.dir_path import DIRPATH
+from optinist.api.utils.filepath_creater import join_filepath
+from optinist.api.dir_path import DIRPATH
 
 client = TestClient(router)
 

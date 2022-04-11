@@ -6,8 +6,8 @@ import json
 from dataclasses import dataclass
 from typing import Dict
 
-from optinist.cui_api.json_writer import save_tiff2json, save_csv2json
-from optinist.cui_api.filepath_creater import join_filepath
+from optinist.api.utils.json_writer import save_tiff2json, save_csv2json
+from optinist.api.utils.filepath_creater import join_filepath
 
 router = APIRouter()
 

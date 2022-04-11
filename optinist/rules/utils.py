@@ -5,7 +5,7 @@ import pickle
 import gc
 import copy
 
-from optinist.cui_api.filepath_creater import join_filepath
+from optinist.api.utils.filepath_creater import join_filepath
 from optinist.wrappers import wrapper_dict
 from optinist.wrappers.nwb_wrapper import save_nwb, NWBDATASET
 
