@@ -1,28 +1,11 @@
 from fastapi import APIRouter, BackgroundTasks
-
 import uuid
-from pydantic import BaseModel
-from typing import List
 
-from optinist.api.snakemake.snakemake_setfile import ForceRun
+from optinist.api.workflow.workflow import NodeItem, RunItem
 from optinist.api.workflow.workflow_creater import run_workflow
 from optinist.api.workflow.workflow_results import get_results
 
-
 router = APIRouter()
-
-
-class RunItem(BaseModel):
-    name: str = None
-    nodeList: list = []
-    edgeList: list = []
-    snakemakeParam: dict = {}
-    nwbParam: dict = {}
-    forceRunList: List[ForceRun]
-
-
-class NodeItem(BaseModel):
-    pendingNodeIdList: list = []
 
 
 @router.post("/run")

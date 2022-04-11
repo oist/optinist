@@ -28,7 +28,6 @@ class FlowConfig:
     last_output: list
 
 
-
 class ForceRun(BaseModel):
     nodeId: str
     name: str

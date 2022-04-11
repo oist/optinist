@@ -3,17 +3,13 @@ from fastapi.responses import FileResponse
 
 import shutil
 from glob import glob
-from pydantic import BaseModel
 
 from optinist.api.dir_path import DIRPATH
 from optinist.api.utils.filepath_creater import join_filepath
 from optinist.api.experiment.experiment_config_reader import ExpConfigReader
+from optinist.routers.model import DeleteItem
 
 router = APIRouter()
-
-
-class DeleteItem(BaseModel):
-    uidList: list
 
 
 @router.get("/experiments")

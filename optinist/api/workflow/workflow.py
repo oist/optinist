@@ -1,5 +1,9 @@
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, List
+
+from pydantic import BaseModel
+
+from optinist.api.snakemake.snakemake import ForceRun
 
 
 @dataclass
@@ -10,6 +14,19 @@ class NodeType:
     BEHAVIOR: str = "BehaviorFileNode"
     HDF5: str = "HDF5FileNode"
     ALGO: str = "AlgorithmNode"
+
+
+class RunItem(BaseModel):
+    name: str = None
+    nodeList: list = []
+    edgeList: list = []
+    snakemakeParam: dict = {}
+    nwbParam: dict = {}
+    forceRunList: List[ForceRun]
+
+
+class NodeItem(BaseModel):
+    pendingNodeIdList: list = []
 
 
 @dataclass
@@ -32,6 +49,7 @@ class ExpFunction:
     name: str
     success: str
 
+
 @dataclass
 class NodeData:
     label: str
@@ -41,10 +59,12 @@ class NodeData:
     fileType: str = None
     hdf5Path: str = None
 
+
 @dataclass
 class NodePosition:
     x: int
     y: int
+
 
 @dataclass
 class Style:
@@ -54,6 +74,7 @@ class Style:
     width: int = None
     borderRadius: int = None
 
+
 @dataclass
 class Node:
     id: str
@@ -61,6 +82,7 @@ class Node:
     data: NodeData
     position: NodePosition
     style: Style
+
 
 @dataclass
 class Edge:

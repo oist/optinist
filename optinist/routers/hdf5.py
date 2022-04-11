@@ -1,19 +1,9 @@
 import h5py
 from fastapi import APIRouter
-from dataclasses import dataclass
-from typing import List
+
+from optinist.routers.model import HDF5Node
 
 router = APIRouter()
-
-
-@dataclass
-class HDF5Node:
-    isDir: bool
-    name: str
-    path: str
-    nodes: List['HDF5Node'] = None
-    shape: tuple = None
-    nbytes: str = None
 
 
 def get_hdf5_file(filepath):

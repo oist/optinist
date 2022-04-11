@@ -13,7 +13,7 @@ from optinist.api.workflow.workflow import Edge, Node
 
 class ExpConfigWriter:
     @classmethod
-    def exp_config_creater(cls, unique_id, name, nodeList, edgeList):
+    def exp_config_create(cls, unique_id, name, nodeList, edgeList):
         return ExpConfig(
             unique_id=unique_id,
             name=name,
@@ -21,6 +21,23 @@ class ExpConfigWriter:
             nodeList=nodeList,
             edgeList=edgeList,
             function={},
+        )
+
+    @classmethod
+    def exp_config_write(cls, unique_id, name, nodeList, edgeList):
+        exp_filepath = join_filepath([DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_YML])
+        if os.path.exists(exp_filepath):
+            exp_config = ExpConfigReader.read(exp_filepath)
+            exp_config = cls.add_run_info(exp_config, nodeList, edgeList)
+        else:
+            exp_config = cls.exp_config_create(unique_id, name, nodeList, edgeList)
+
+        exp_config.function = cls.create_function_from_nodeList(nodeList)
+
+        ConfigWriter.write(
+            dirname=join_filepath([DIRPATH.BASE_DIR, unique_id]),
+            filename=DIRPATH.EXPERIMENT_YML,
+            config=asdict(exp_config),
         )
 
     @classmethod
@@ -49,20 +66,3 @@ class ExpConfigWriter:
             )
             for node in nodeList
         }
-
-    @classmethod
-    def exp_config_writer(cls, unique_id, name, nodeList, edgeList):
-        exp_filepath = join_filepath([DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_YML])
-        if os.path.exists(exp_filepath):
-            exp_config = ExpConfigReader.read(exp_filepath)
-            exp_config = cls.add_run_info(exp_config, nodeList, edgeList)
-        else:
-            exp_config = cls.exp_config_creater(unique_id, name, nodeList, edgeList)
-
-        exp_config.function = cls.create_function_from_nodeList(nodeList)
-
-        ConfigWriter.write(
-            dirname=join_filepath([DIRPATH.BASE_DIR, unique_id]),
-            filename=DIRPATH.EXPERIMENT_YML,
-            config=asdict(exp_config),
-        )

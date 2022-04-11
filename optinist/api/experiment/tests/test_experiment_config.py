@@ -1,5 +1,4 @@
 import pytest
-from dataclasses import dataclass
 
 from optinist.api.dir_path import DIRPATH
 from optinist.api.experiment.experiment_config_reader import ExpConfigReader
@@ -9,15 +8,8 @@ from optinist.api.utils.filepath_creater import (
 )
 from optinist.api.experiment.experiment import ExpConfig
 from optinist.api.experiment.experiment_config_writer import ExpConfigWriter
-from optinist.api.workflow.workflow import NodeData, NodePosition, Style
+from optinist.api.workflow.workflow import NodeData, NodePosition, RunItem, Style
 
-@dataclass
-class RunItem:
-    name: str
-    nodeList: list
-    edgeList: list
-    snakemakeParam: dict
-    nwbParam: dict
 
 def test_filepath():
     exp_filepath = create_filepath(
@@ -57,7 +49,7 @@ def test_exp_config_reader():
     assert isinstance(exp_config.edgeList[0].target, str)
     assert isinstance(exp_config.edgeList[0].targetHandle, str)
     assert isinstance(exp_config.edgeList[0].style, Style)
-    
+
 
 def test_create_exp_config():
     exp_filepath = test_filepath()
@@ -68,9 +60,10 @@ def test_create_exp_config():
         edgeList=[],
         snakemakeParam={},
         nwbParam={},
+        forceRunList=[],
     )
 
-    exp_config = ExpConfigWriter.exp_config_creater(
+    exp_config = ExpConfigWriter.exp_config_create(
         exp_filepath,
         runItem.name,
         runItem.nodeList,

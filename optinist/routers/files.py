@@ -1,13 +1,12 @@
 import os
 import shutil
 from glob import glob
-from dataclasses import dataclass
 from typing import List
 from fastapi import APIRouter, File, UploadFile
-from dataclasses import dataclass
 
 from optinist.api.dir_path import DIRPATH
 from optinist.api.utils.filepath_creater import join_filepath
+from optinist.routers.model import FILETYPE, TreeNode
 
 router = APIRouter()
 
@@ -15,13 +14,6 @@ router = APIRouter()
 ACCEPT_TIFF_EXT = ["tif", "tiff", "TIF", "TIFF"]
 ACCEPT_CSV_EXT = ["csv"]
 ACCEPT_HDF5_EXT = ["hdf5", "nwb", "HDF5", "NWB"]
-
-@dataclass
-class TreeNode:
-    path: str
-    name: str
-    isdir: bool
-    nodes: List["TreeNode"]
 
 
 def get_accept_files(path: str, file_types: List[str]):
@@ -53,13 +45,6 @@ def get_dir_tree(dirpath: str, file_types: List[str]) -> List[TreeNode]:
             ))
 
     return nodes
-
-
-@dataclass
-class FILETYPE:
-    IMAGE: str = "image"
-    CSV: str = "csv"
-    HDF5: str = "hdf5"
 
 
 @router.get("/files")
