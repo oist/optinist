@@ -37,7 +37,7 @@ def set_imagefile(unique_id: str, node: Node, edgeList: List[Edge], nwbfile):
         unique_id, node.id, node.data.label.split(".")[0])
 
     return Rule(
-        rule_file=f"rules/smk/image.py",
+        rule_file=f"rules/smk/image.smk",
         input=node.data.path,
         return_arg=return_name,
         params=node.data.param,
@@ -56,7 +56,7 @@ def set_csvfile(unique_id, node: Node, edgeList: List[Edge], nwbfile, nodeType="
         unique_id, node.id, node.data.label.split(".")[0])
 
     return Rule(
-        rule_file=f"rules/smk/{nodeType}.py",
+        rule_file=f"rules/smk/{nodeType}.smk",
         input=node.data.path,
         return_arg=return_name,
         params=node.data.param,
@@ -75,7 +75,7 @@ def set_hdf5file(unique_id, node, edgeList, nwbfile):
         unique_id, node.id, node.data.label.split(".")[0])
 
     return Rule(
-        rule_file=f"rules/smk/hdf5.py",
+        rule_file=f"rules/smk/hdf5.smk",
         input=node.data.path,
         return_arg=return_name,
         params=node.data.param,
@@ -115,7 +115,7 @@ def set_algofile(unique_id, node: Node, edgeList: List[Edge], nodeDict: Dict[str
     algo_output = get_pickle_file(unique_id, node.id, node.data.label)
 
     return Rule(
-        rule_file=f"rules/smk/{node.data.path}.py",
+        rule_file=f"rules/smk/{node.data.path}.smk",
         input=algo_input,
         return_arg=return_arg_names,
         params=params,
