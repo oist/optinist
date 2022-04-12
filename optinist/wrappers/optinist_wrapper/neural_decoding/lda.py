@@ -1,6 +1,6 @@
 from optinist.wrappers.data_wrapper import *
 from optinist.wrappers.optinist_wrapper.utils import standard_norm
-from optinist.api.nwb.const import NWBDATASET
+from optinist.api.nwb.nwb import NWBDATASET
 
 def LDA(
         neural_data: FluoData,

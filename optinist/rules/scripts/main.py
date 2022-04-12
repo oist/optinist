@@ -5,7 +5,7 @@ from optinist.api.pickle.pickle_writer import PickleWriter
 from optinist.rules.scripts.file_writer import FileWriter
 from optinist.api.snakemake.snakemake_reader import SmkConfigReader
 from optinist.routers.model import FILETYPE
-from optinist.rules.scripts.runner import run_script
+from optinist.rules.scripts.runner import Runner
 
 if __name__ == '__main__':
     last_output = snakemake.config["last_output"]
@@ -23,4 +23,4 @@ if __name__ == '__main__':
             outputfile = FileWriter.hdf5(rule_config)
             PickleWriter.write(rule_config.output, outputfile)
         elif rule_config.type == snakemake.params.name:  
-            run_script(rule_config, last_output)
+            Runner.run(rule_config, last_output)

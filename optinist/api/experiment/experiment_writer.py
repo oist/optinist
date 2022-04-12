@@ -13,26 +13,15 @@ from optinist.api.workflow.workflow import Edge, Node
 
 class ExptConfigWriter:
     @classmethod
-    def create(cls, unique_id, name, nodeList, edgeList) -> ExptConfig:
-        return ExptConfig(
-            unique_id=unique_id,
-            name=name,
-            timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-            nodeList=nodeList,
-            edgeList=edgeList,
-            function={},
-        )
-
-    @classmethod
     def write(cls, unique_id, name, nodeList, edgeList):
         exp_filepath = join_filepath([DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_YML])
         if os.path.exists(exp_filepath):
             exp_config = ExptConfigReader.read(exp_filepath)
-            exp_config = cls.add_run_info(exp_config, nodeList, edgeList)
+            exp_config = _add_run_info(exp_config, nodeList, edgeList)
         else:
-            exp_config = cls.create(unique_id, name, nodeList, edgeList)
+            exp_config = _create(unique_id, name, nodeList, edgeList)
 
-        exp_config.function = cls.create_function_from_nodeList(nodeList)
+        exp_config.function = _create_function_from_nodeList(nodeList)
 
         ConfigWriter.write(
             dirname=join_filepath([DIRPATH.BASE_DIR, unique_id]),
@@ -40,29 +29,40 @@ class ExptConfigWriter:
             config=asdict(exp_config),
         )
 
-    @classmethod
-    def add_run_info(cls, expt_config: ExptConfig, nodeList: List[Node], edgeList: List[Edge]) -> ExptConfig:
-        expt_config.timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-        # # 関数を追加の可能性
-        expt_config.nodeList = nodeList
-        expt_config.edgeList = edgeList
+def _create(unique_id, name, nodeList, edgeList) -> ExptConfig:
+    return ExptConfig(
+        unique_id=unique_id,
+        name=name,
+        timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        nodeList=nodeList,
+        edgeList=edgeList,
+        function={},
+    )
 
-        for node in nodeList:
-            expt_config.function[node.id] = ExptFunction(
-                unique_id=node.id,
-                name=node.data.label,
-                success="success" if node.data.type == "input" else "running",
-            )
-        return expt_config
 
-    @classmethod
-    def create_function_from_nodeList(cls, nodeList: List[Node]) -> Dict[str, ExptFunction]:
-        return {
-            node.id: ExptFunction(
-                unique_id=node.id,
-                name=node.data.label,
-                success="success" if node.data.type == "input" else "running",
-            )
-            for node in nodeList
-        }
+def _add_run_info(expt_config: ExptConfig, nodeList: List[Node], edgeList: List[Edge]) -> ExptConfig:
+    expt_config.timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    # # 関数を追加の可能性
+    expt_config.nodeList = nodeList
+    expt_config.edgeList = edgeList
+
+    for node in nodeList:
+        expt_config.function[node.id] = ExptFunction(
+            unique_id=node.id,
+            name=node.data.label,
+            success="success" if node.data.type == "input" else "running",
+        )
+    return expt_config
+
+
+def _create_function_from_nodeList(nodeList: List[Node]) -> Dict[str, ExptFunction]:
+    return {
+        node.id: ExptFunction(
+            unique_id=node.id,
+            name=node.data.label,
+            success="success" if node.data.type == "input" else "running",
+        )
+        for node in nodeList
+    }

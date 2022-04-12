@@ -1,5 +1,5 @@
 from optinist.wrappers.data_wrapper import *
-from optinist.api.nwb.const import NWBDATASET
+from optinist.api.nwb.nwb import NWBDATASET
 
 
 def suite2p_spike_deconv(

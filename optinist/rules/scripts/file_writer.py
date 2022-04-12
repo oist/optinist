@@ -2,7 +2,7 @@ import h5py
 
 from optinist.api.snakemake.snakemake import Rule
 from optinist.wrappers.data_wrapper import ImageData, CsvData, TimeSeriesData
-from optinist.api.nwb.const import NWBDATASET
+from optinist.api.nwb.nwb import NWBDATASET
 
 
 class FileWriter:

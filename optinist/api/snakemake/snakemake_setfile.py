@@ -9,7 +9,7 @@ from optinist.api.utils.filepath_creater import get_pickle_file
 
 class SmkSetfile:
     @classmethod
-    def imagefile(cls, unique_id: str, node: Node, edgeList: List[Edge], nwbfile):
+    def image(cls, unique_id: str, node: Node, edgeList: List[Edge], nwbfile):
         for edge in edgeList:
             if node.id == edge.source:
                 return_name = edge.sourceHandle.split("--")[0]
@@ -28,7 +28,7 @@ class SmkSetfile:
         )
 
     @classmethod
-    def csvfile(cls, unique_id, node: Node, edgeList: List[Edge], nwbfile, nodeType="csv"):
+    def csv(cls, unique_id, node: Node, edgeList: List[Edge], nwbfile, nodeType="csv"):
         for edge in edgeList:
             if node.id == edge.source:
                 return_name = edge.sourceHandle.split("--")[0]
@@ -47,7 +47,7 @@ class SmkSetfile:
         )
 
     @classmethod
-    def hdf5file(cls, unique_id, node: Node, edgeList: List[Edge], nwbfile):
+    def hdf5(cls, unique_id, node: Node, edgeList: List[Edge], nwbfile):
         for edge in edgeList:
             if node.id == edge.source:
                 return_name = edge.sourceHandle.split("--")[0]
@@ -67,7 +67,7 @@ class SmkSetfile:
         )
 
     @classmethod
-    def algofile(cls, unique_id, node: Node, edgeList: List[Edge], nodeDict: Dict[str, Node]):
+    def algo(cls, unique_id, node: Node, edgeList: List[Edge], nodeDict: Dict[str, Node]):
         algo_input = []
         return_arg_names = {}
         for edge in edgeList:

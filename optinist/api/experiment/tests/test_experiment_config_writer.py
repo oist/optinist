@@ -1,6 +1,6 @@
 from optinist.api.dir_path import DIRPATH
 from optinist.api.experiment.experiment import ExptConfig
-from optinist.api.experiment.experiment_writer import ExptConfigWriter
+from optinist.api.experiment.experiment_writer import ExptConfigWriter, _create
 from optinist.api.utils.filepath_creater import create_filepath, join_filepath
 from optinist.api.workflow.workflow import RunItem
 
@@ -25,7 +25,7 @@ def test_create():
         forceRunList=[],
     )
 
-    exp_config = ExptConfigWriter.create(
+    exp_config = _create(
         exp_filepath,
         runItem.name,
         runItem.nodeList,

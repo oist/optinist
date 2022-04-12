@@ -1,5 +1,5 @@
 from optinist.wrappers.data_wrapper import *
-from optinist.api.nwb.const import NWBDATASET
+from optinist.api.nwb.nwb import NWBDATASET
 
 
 def caiman_mc(

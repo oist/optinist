@@ -1,6 +1,6 @@
 import gc
 from optinist.wrappers.data_wrapper import *
-from optinist.api.nwb.const import NWBDATASET
+from optinist.api.nwb.nwb import NWBDATASET
 from optinist.api.utils.filepath_creater import join_filepath
 
 

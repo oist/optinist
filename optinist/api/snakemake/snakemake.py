@@ -1,6 +1,6 @@
 
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, Union
 
 from pydantic import BaseModel
 
@@ -37,7 +37,7 @@ class ForceRun(BaseModel):
 class Rule:
     rule_file: str
     input: str
-    return_arg: str
+    return_arg: Union[str, Dict[str, str]]
     params: dict
     output: str
     type: str
