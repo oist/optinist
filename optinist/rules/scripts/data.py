@@ -12,7 +12,7 @@ if __name__ == '__main__':
 
     for rule_config in snakemake.config["rules"].values():
         rule_config = SmkConfigReader.read(rule_config)
-
+        
         if rule_config.type in [FILETYPE.CSV, FILETYPE.BEHAVIOR]:
             outputfile = FileWriter.csv(rule_config, rule_config.type)
             PickleWriter.write(rule_config.output, outputfile)
@@ -22,5 +22,3 @@ if __name__ == '__main__':
         elif rule_config.type == FILETYPE.HDF5:
             outputfile = FileWriter.hdf5(rule_config)
             PickleWriter.write(rule_config.output, outputfile)
-        elif rule_config.type == snakemake.params.name:  
-            Runner.run(rule_config, last_output)

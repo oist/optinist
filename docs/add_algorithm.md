@@ -211,5 +211,5 @@ rule:
     conda:
         f'{DIRPATH.ROOT_DIR}/rules/envs/optinist_env.yaml'
     script:
-        f'{DIRPATH.ROOT_DIR}/rules/scripts/main.py'
+        f'{DIRPATH.ROOT_DIR}/rules/scripts/func.py'
 ```
