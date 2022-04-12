@@ -1,12 +1,12 @@
 from optinist.wrappers.data_wrapper import *
-from optinist.wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.api.nwb.nwb import NWBDATASET
 
 
 def suite2p_roi(
         ops: Suite2pData,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {'ops': Suite2pData, 'fluorescence': FluoData, 'iscell': IscellData}:
+    ) -> dict(ops=Suite2pData, fluorescence=FluoData, iscell=IscellData):
     import numpy as np
     from suite2p import extraction, classification, detection, ROI, default_ops
     print('start suite2p_roi')
@@ -91,16 +91,16 @@ def suite2p_roi(
     ops['F'] = F
     ops['Fneu'] = Fneu
 
-    info = {}
-    info['ops'] = Suite2pData(ops)
-    info['max_proj'] = ImageData(ops['max_proj'], file_name='max_proj')
-    info['Vcorr'] = ImageData(ops['Vcorr'], file_name='Vcorr')    
-    info['fluorescence'] = FluoData(F, file_name='fluorescence')
-    info['iscell'] = IscellData(iscell, file_name='iscell')
-    info['all_roi'] = RoiData(np.nanmax(im, axis=0), file_name='all_roi')
-    info['non_cell_roi'] = RoiData(np.nanmax(im[~iscell], axis=0), file_name='noncell_roi')
-    info['cell_roi'] = RoiData(np.nanmax(im[iscell], axis=0), file_name='cell_roi')
-
-    info['nwbfile'] = nwbfile
+    info = {
+        'ops': Suite2pData(ops),
+        'max_proj': ImageData(ops['max_proj'], file_name='max_proj'),
+        'Vcorr': ImageData(ops['Vcorr'], file_name='Vcorr'),
+        'fluorescence': FluoData(F, file_name='fluorescence'),
+        'iscell': IscellData(iscell, file_name='iscell'),
+        'all_roi': RoiData(np.nanmax(im, axis=0), file_name='all_roi'),
+        'non_cell_roi': RoiData(np.nanmax(im[~iscell], axis=0), file_name='noncell_roi'),
+        'cell_roi': RoiData(np.nanmax(im[iscell], axis=0), file_name='cell_roi'),
+        'nwbfile': nwbfile,
+    }
 
     return info

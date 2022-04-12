@@ -1,5 +1,5 @@
 from optinist.wrappers.data_wrapper import *
-from optinist.wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.api.nwb.nwb import NWBDATASET
 
 
 def correlation(
@@ -29,18 +29,16 @@ def correlation(
     for i in range(num_cell):
         corr[i, i] = np.nan
 
-    info = {}
-    info['corr'] = CorrelationData(
-        corr,
-        file_name='corr'
-    )
-
     # NWB追加
     if nwbfile is not None:
         nwbfile[NWBDATASET.POSTPROCESS] = {
             'corr': corr,
         }
 
-    info['nwbfile'] = nwbfile
+
+    info = {
+        'corr': CorrelationData(corr, file_name='corr'),
+        'nwbfile': nwbfile,
+    }
 
     return info

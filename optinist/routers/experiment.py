@@ -3,17 +3,13 @@ from fastapi.responses import FileResponse
 
 import shutil
 from glob import glob
-from pydantic import BaseModel
 
-from optinist.cui_api.dir_path import DIRPATH
-from optinist.cui_api.filepath_creater import join_filepath
-from optinist.cui_api.experiment_config import ExpConfigReader
+from optinist.api.dir_path import DIRPATH
+from optinist.api.utils.filepath_creater import join_filepath
+from optinist.api.experiment.experiment_reader import ExptConfigReader
+from optinist.routers.model import DeleteItem
 
 router = APIRouter()
-
-
-class DeleteItem(BaseModel):
-    uidList: list
 
 
 @router.get("/experiments")
@@ -21,7 +17,7 @@ async def read_experiment():
     exp_config = {}
     config_paths = glob(join_filepath([DIRPATH.BASE_DIR, "*", DIRPATH.EXPERIMENT_YML]))
     for path in config_paths:
-        config = ExpConfigReader.read(path)
+        config = ExptConfigReader.read(path)
         config.nodeList = []
         config.edgeList = []
         exp_config[config.unique_id] = config
@@ -31,7 +27,7 @@ async def read_experiment():
 
 @router.get("/experiments/import/{unique_id}")
 async def read_experiment(unique_id: str):
-    config = ExpConfigReader.read(join_filepath([
+    config = ExptConfigReader.read(join_filepath([
         DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_YML]))
     return {
         "nodeList": config.nodeList,

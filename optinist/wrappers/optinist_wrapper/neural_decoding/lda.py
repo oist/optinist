@@ -1,6 +1,6 @@
 from optinist.wrappers.data_wrapper import *
 from optinist.wrappers.optinist_wrapper.utils import standard_norm
-from optinist.wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.api.nwb.nwb import NWBDATASET
 
 def LDA(
         neural_data: FluoData,
@@ -60,18 +60,15 @@ def LDA(
             score.append(clf.score(tX[test_index, :], Y[test_index]))
             classifier.append(clf)
 
-    info = {}
-    info['score'] = BarData(
-        score,
-        file_name='score'
-    )
-
     # NWB追加
     if nwbfile is not None:
         nwbfile[NWBDATASET.POSTPROCESS] = {
             'score': score,
         }
 
-    info['nwbfile'] = nwbfile
+    info = {
+        'score': BarData(score, file_name='score'),
+        'nwbfile': nwbfile
+    }
 
     return info

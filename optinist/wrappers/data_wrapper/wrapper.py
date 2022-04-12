@@ -4,12 +4,10 @@ import pandas as pd
 import imageio
 import tifffile
 import gc
-from optinist.cui_api.filepath_creater import (
-    join_filepath
-)
-from optinist.cui_api.dir_path import DIRPATH
 
-from optinist.wrappers.data_wrapper.utils import get_images_list
+from optinist.api.utils.filepath_creater import join_filepath
+from optinist.api.dir_path import DIRPATH
+from optinist.wrappers.data_wrapper.utils import create_images_list
 
 class BaseData:
     def __init__(self, file_name):
@@ -52,7 +50,7 @@ class ImageData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        images = get_images_list(self.data)
+        images = create_images_list(self.data)
         pd.DataFrame(images).to_json(self.json_path, indent=4, orient="values")
         del images
 
@@ -169,7 +167,7 @@ class RoiData(BaseData):
     def __init__(self, data, file_name='roi'):
         super().__init__(file_name)
 
-        images = get_images_list(data)
+        images = create_images_list(data)
 
         _dir = join_filepath([DIRPATH.BASE_DIR, "tiff", file_name])
         if not os.path.exists(_dir):
@@ -190,7 +188,7 @@ class RoiData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        images = get_images_list(self.data)
+        images = create_images_list(self.data)
         pd.DataFrame(images).to_json(self.json_path, indent=4, orient="values")
 
     def __del__(self):
@@ -258,7 +256,7 @@ class HTMLData(BaseData):
         self.data = data
 
     def save_json(self, json_dir):
-        self.json_path = get_html_file_path(json_dir, self.file_name)
+        self.json_path = join_filepath(json_dir, f"{self.file_name}.html")
 
         with open(self.json_path, "w") as f:
             f.write(self.data)

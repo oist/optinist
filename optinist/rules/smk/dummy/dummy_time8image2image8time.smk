@@ -1,4 +1,4 @@
-from optinist.cui_api.dir_path import DIRPATH
+from optinist.api.dir_path import DIRPATH
 
 name = "dummy_time8image2image8time"
 
@@ -10,4 +10,4 @@ rule:
     params:
         name = name
     script:
-        f'{DIRPATH.ROOT_DIR}/rules/scripts/func.py'
+        f'{DIRPATH.ROOT_DIR}/rules/scripts/main.py'

@@ -1,10 +1,9 @@
 import pytest
-import shutil
 from fastapi.testclient import TestClient
 
 from optinist.routers.hdf5 import router
-from optinist.cui_api.dir_path import DIRPATH
-from optinist.cui_api.filepath_creater import join_filepath
+from optinist.api.dir_path import DIRPATH
+from optinist.api.utils.filepath_creater import join_filepath
 
 client = TestClient(router)
 

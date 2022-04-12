@@ -3,24 +3,12 @@ from fastapi import APIRouter
 from glob import glob
 import os
 import json
-from dataclasses import dataclass
-from typing import Dict
 
-from optinist.cui_api.json_writer import save_tiff2json, save_csv2json
-from optinist.cui_api.filepath_creater import join_filepath
+from optinist.api.utils.json_writer import save_tiff2json, save_csv2json
+from optinist.api.utils.filepath_creater import join_filepath
+from optinist.routers.model import JsonTimeSeriesData, OutputData
 
 router = APIRouter()
-
-
-@dataclass
-class Data:
-    data: Dict[str, dict]
-
-
-@dataclass
-class JsonTimeSeriesData(Data):
-    xrange: list
-    std: Dict[str, dict]
 
 
 class Reader:
@@ -28,7 +16,7 @@ class Reader:
     def read(cls, filepath):
         with open(filepath, 'r') as f:
             data = f.read()
-        return Data(data=data)
+        return OutputData(data=data)
 
 
 class JsonReader:
@@ -111,12 +99,12 @@ async def read_file(dirpath: str):
 
 @router.get("/outputs/data/{filepath:path}")
 async def read_file(filepath: str):
-    return Data(JsonReader.read(filepath))
+    return OutputData(JsonReader.read(filepath))
 
 
 @router.get("/outputs/html/{filepath:path}")
 async def read_html_file(filepath: str):
-    return Data(Reader.read(filepath))
+    return OutputData(Reader.read(filepath))
 
 
 @router.get("/outputs/image/{filepath:path}")
@@ -134,7 +122,7 @@ async def read_image(
     else:
         json_filepath = filepath
 
-    return Data(JsonReader.read(json_filepath))
+    return OutputData(JsonReader.read(json_filepath))
 
 
 @router.get("/outputs/csv/{filepath:path}")
@@ -143,4 +131,4 @@ async def read_csv(filepath: str):
     filename, _ = os.path.splitext(os.path.basename(filepath))
     json_filepath = join_filepath([dirpath, f'{filename}.json'])
     save_csv2json(filepath, json_filepath)
-    return Data(JsonReader.read(json_filepath))
+    return OutputData(JsonReader.read(json_filepath))

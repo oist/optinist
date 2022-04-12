@@ -1,7 +1,7 @@
 from optinist.wrappers.data_wrapper import *
 
-from optinist.cui_api.dir_path import DIRPATH
-from optinist.cui_api.filepath_creater import join_filepath
+from optinist.api.dir_path import DIRPATH
+from optinist.api.utils.filepath_creater import join_filepath
 
 
 def suite2p_file_convert(
@@ -10,7 +10,6 @@ def suite2p_file_convert(
         params: dict=None
     ) -> dict(ops=Suite2pData):
     import os
-    from natsort import natsorted
     from suite2p import io, default_ops
     print('start suite2_file_convert')
 
@@ -32,32 +31,28 @@ def suite2p_file_convert(
 
     ops = {**default_ops(), **params, **db}
 
-    ops['input_format'] = 'tif'
+    # ops['input_format'] = 'tif'
 
     # save folderを指定
     save_folder = join_filepath([ops['save_path0'], ops['save_folder']])
     os.makedirs(save_folder, exist_ok=True)
-    plane_folders = natsorted([
-        f.path for f in os.scandir(save_folder) 
-        if f.is_dir() and f.name[:5]=='plane'])
-
-    ops_path = [join_filepath([f, 'ops.npy']) for f in plane_folders]
 
     # copy file format to a binary file
-    convert_funs = {
-        'h5': io.h5py_to_binary,
-        'sbx': io.sbx_to_binary,
-        'mesoscan': io.mesoscan_to_binary,
-        'haus': lambda ops: haussio.load_haussio(ops['data_path'][0]).tosuite2p(ops.copy()),
-        'bruker': io.ome_to_binary,
-        'tif': io.tiff_to_binary
-    }
+    # convert_funs = {
+    #     'h5': io.h5py_to_binary,
+    #     'sbx': io.sbx_to_binary,
+    #     'mesoscan': io.mesoscan_to_binary,
+    #     'haus': lambda ops: haussio.load_haussio(ops['data_path'][0]).tosuite2p(ops.copy()),
+    #     'bruker': io.ome_to_binary,
+    #     'tif': io.tiff_to_binary
+    # }
 
     # save ops.npy(parameter) and data.bin
-    ops = convert_funs[ops['input_format']](ops.copy())
+    ops = io.tiff_to_binary(ops.copy())
 
-    info = {}
-    info['meanImg'] = ImageData(ops['meanImg'], file_name='meanImg')
-    info['ops'] = Suite2pData(ops, file_name='ops')
+    info = {
+        'meanImg': ImageData(ops['meanImg'], file_name='meanImg'),
+        'ops': Suite2pData(ops, file_name='ops')
+    }
 
     return info

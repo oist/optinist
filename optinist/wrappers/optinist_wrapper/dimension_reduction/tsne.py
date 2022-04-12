@@ -1,6 +1,6 @@
 from optinist.wrappers.data_wrapper import *
 from optinist.wrappers.optinist_wrapper.utils import standard_norm
-from optinist.wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.api.nwb.nwb import NWBDATASET
 
 def TSNE(
         neural_data: FluoData,
@@ -32,18 +32,15 @@ def TSNE(
 
     proj_X = tsne.fit_transform(tX)
 
-    info = {}
-    info['projectedNd'] = ScatterData(
-        proj_X,
-        file_name='projectedNd'
-    )
-
     # NWB追加
     if nwbfile is not None:
         nwbfile[NWBDATASET.POSTPROCESS] = {
             'projectedNd': proj_X
         }
 
-    info['nwbfile'] = nwbfile
+    info = {
+        'projectedNd': ScatterData(proj_X, file_name='projectedNd'),
+        'nwbfile': nwbfile,
+    }
 
     return info

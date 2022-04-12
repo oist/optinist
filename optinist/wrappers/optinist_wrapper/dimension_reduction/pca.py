@@ -1,6 +1,6 @@
 from optinist.wrappers.data_wrapper import *
 from optinist.wrappers.optinist_wrapper.utils import standard_norm
-from optinist.wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.api.nwb.nwb import NWBDATASET
 
 def PCA(
         neural_data: FluoData,
@@ -32,16 +32,6 @@ def PCA(
     pca = PCA(**params['PCA'])
     proj_X = pca.fit_transform(tX)
 
-    info = {}
-    info['explained_variance'] = BarData(
-        pca.explained_variance_ratio_,
-        file_name='evr'
-    )
-    info['projectedNd'] = ScatterData(
-        proj_X,
-        file_name='projectedNd'
-    )  # change to 2D scatter plots
-
     # NWB追加
     if nwbfile is not None:
         nwbfile[NWBDATASET.POSTPROCESS] = {
@@ -49,6 +39,10 @@ def PCA(
             'explained_variance': pca.explained_variance_ratio_,
         }
 
-    info['nwbfile'] = nwbfile
+    info = {
+        'explained_variance': BarData(pca.explained_variance_ratio_, file_name='evr'),
+        'projectedNd': ScatterData(proj_X, file_name='projectedNd'),
+        'nwbfile': nwbfile,
+    }
 
     return info

@@ -1,12 +1,12 @@
 from optinist.wrappers.data_wrapper import *
-from optinist.wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.api.nwb.nwb import NWBDATASET
 
 
 def suite2p_spike_deconv(
         ops: Suite2pData,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {'ops': Suite2pData, 'spks': FluoData}:
+    ) -> dict(ops=Suite2pData, spks=FluoData):
     from suite2p import extraction, default_ops
     print('start suite2_spike_deconv')
     ops = ops.data
@@ -41,9 +41,10 @@ def suite2p_spike_deconv(
             'rate': ops['fs'],
         }
 
-    info = {}
-    info['ops'] = Suite2pData(ops)
-    info['spks'] = FluoData(spks, file_name='spks')
-    info['nwbfile'] = nwbfile
+    info = {
+        'ops': Suite2pData(ops),
+        'spks': FluoData(spks, file_name='spks'),
+        'nwbfile': nwbfile
+    }
 
     return info

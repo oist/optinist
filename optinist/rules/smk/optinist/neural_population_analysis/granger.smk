@@ -1,4 +1,4 @@
-from optinist.cui_api.dir_path import DIRPATH
+from optinist.api.dir_path import DIRPATH
 
 name = "granger"
 
@@ -12,4 +12,4 @@ rule:
     params:
         name = name
     script:
-        f'{DIRPATH.ROOT_DIR}/rules/scripts/func.py'
+        f'{DIRPATH.ROOT_DIR}/rules/scripts/main.py'

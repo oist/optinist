@@ -1,7 +1,7 @@
 import gc
 from optinist.wrappers.data_wrapper import *
-from optinist.wrappers.nwb_wrapper.const import NWBDATASET
-from optinist.cui_api.filepath_creater import join_filepath
+from optinist.api.nwb.nwb import NWBDATASET
+from optinist.api.utils.filepath_creater import join_filepath
 
 
 def get_roi(A, thr, thr_method, swap_dim, dims):
@@ -12,6 +12,7 @@ def get_roi(A, thr, thr_method, swap_dim, dims):
 
     # for each patches
     ims = []
+    coordinates = []
     for i in range(nr):
         pars = dict()
         # we compute the cumulative sum of the energy of the Ath component that has been ordered from least to highest
@@ -59,15 +60,13 @@ def caiman_cnmf(
         images: ImageData,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {'fluorescence': FluoData, 'iscell': IscellData}:
-    import caiman
+    ) -> dict(fluorescence=FluoData, iscell=IscellData):
     from caiman import local_correlations, stop_server
     from caiman.paths import memmap_frames_filename
     from caiman.mmapping import prepare_shape
     from caiman.cluster import setup_cluster
     from caiman.source_extraction.cnmf import cnmf
     from caiman.source_extraction.cnmf.params import CNMFParams
-    import caiman.utils.visualization as visualization
     import numpy as np
     import scipy
 
@@ -210,27 +209,14 @@ def caiman_cnmf(
         cnm.estimates.f,
     ])
 
-    info = {}
-    info['images'] = ImageData(np.array(Cn * 255, dtype=np.uint8), file_name='images')
-    info['fluorescence'] = FluoData(fluorescence, file_name='fluorescence')
-    info['iscell'] = IscellData(iscell, file_name='iscell')
-    info['cell_roi'] = RoiData(cell_roi, file_name='cell_roi')
-    info['non_cell_roi'] = RoiData(non_cell_roi, file_name='non_cell_roi')
-    info['all_roi'] = RoiData(all_roi, file_name='all_roi')
-    info['nwbfile'] = nwbfile
+    info = {
+        'images': ImageData(np.array(Cn * 255, dtype=np.uint8), file_name='images'),
+        'fluorescence': FluoData(fluorescence, file_name='fluorescence'),
+        'iscell': IscellData(iscell, file_name='iscell'),
+        'all_roi': RoiData(all_roi, file_name='all_roi'),
+        'cell_roi': RoiData(cell_roi, file_name='cell_roi'),
+        'non_cell_roi': RoiData(non_cell_roi, file_name='non_cell_roi'),
+        'nwbfile': nwbfile
+    }
 
     return info
-
-
-if __name__ == '__main__':
-    import os
-    import numpy as np
-    from motion_correction import caiman_mc
-    import caiman
-
-    info = {}
-    file_path = join_filepath([
-        '/Users', 'shogoakiyama', 'caiman_data', 
-        'example_movies', 'Sue_2x_3000_40_-46.tif'])
-    info['caiman_mc'] = caiman_mc(file_path)
-    info['caiman_cnmf'] = caiman_cnmf(info['caiman_mc']['images'])

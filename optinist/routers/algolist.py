@@ -1,33 +1,13 @@
 from fastapi import APIRouter
 from typing import List
-from dataclasses import dataclass
-
 import inspect
 
+from optinist.routers.model import Algo, Arg, Return
 from optinist.wrappers import wrapper_dict
 
 router = APIRouter()
 
 NOT_DISPLAY_ARGS_LIST = ['params', 'nwbfile']
-
-
-@dataclass
-class Arg:
-    name: str
-    type: str
-    isNone: bool
-
-@dataclass
-class Return:
-    name: str
-    type: str
-
-@dataclass
-class Algo:
-    args: List[Arg]
-    returns: List[Return]
-    parameter: str = None
-    path: str = None
 
 
 def create_args_list(args_dict):

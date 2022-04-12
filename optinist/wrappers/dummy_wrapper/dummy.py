@@ -1,5 +1,4 @@
 import numpy as np
-import sys
 from pynwb import NWBFile
 
 from optinist.wrappers.data_wrapper import *
@@ -7,7 +6,7 @@ from optinist.wrappers.data_wrapper import *
 
 def dummy_image2image(
     image: ImageData, nwbfile: NWBFile=None, params: dict=None
-    ) -> {'image2image': ImageData}:
+    ) -> dict(image2image=ImageData):
 
     """
         get image
@@ -21,7 +20,7 @@ def dummy_image2image(
 
 def dummy_image2time(
     image: ImageData, nwbfile: NWBFile=None, params: dict=None
-    ) -> {'image2time': TimeSeriesData}:
+    ) -> dict(image2time=TimeSeriesData):
 
     """
         get image
@@ -35,7 +34,7 @@ def dummy_image2time(
 
 def dummy_image2heat(
     image: ImageData, nwbfile: NWBFile=None, params: dict=None
-    ) -> {'image2heat': CorrelationData}:
+    ) -> dict(image2heat=CorrelationData):
 
     """
         get image
@@ -49,7 +48,7 @@ def dummy_image2heat(
 
 def dummy_time2time(
     timeseries: TimeSeriesData, nwbfile: NWBFile=None, params: dict=None
-    ) -> {'time2time': TimeSeriesData}:
+    ) -> dict(time2time=TimeSeriesData):
 
     """
         get image
@@ -63,7 +62,7 @@ def dummy_time2time(
 
 def dummy_image2image8time(
     image1: ImageData, nwbfile: NWBFile=None, params: dict=None
-    ) -> {'image': ImageData, 'timeseries': TimeSeriesData}:
+    ) -> dict(image=ImageData, timeseries=TimeSeriesData):
 
     """
         get image
@@ -79,7 +78,7 @@ def dummy_image2image8time(
 
 def dummy_image8image2image8time(
     image1: ImageData, image2: ImageData, nwbfile: NWBFile=None, params: dict=None
-    ) -> {'image': ImageData, 'timeseries': TimeSeriesData}:
+    ) -> dict(image=ImageData, timeseries=TimeSeriesData):
 
     """
         get image
@@ -97,7 +96,7 @@ def dummy_image8image2image8time(
 
 def dummy_time8image2image8time(
     timeseries: TimeSeriesData, image: ImageData, nwbfile: NWBFile=None, params: dict=None
-    ):
+    ) -> dict():
 
     """
         get image
@@ -113,7 +112,7 @@ def dummy_time8image2image8time(
     return info
 
 
-def dummy_keyerror(image: ImageData, nwbfile: NWBFile=None, params: dict=None) -> {}:
+def dummy_keyerror(image: ImageData, nwbfile: NWBFile=None, params: dict=None) -> dict():
 
     """
         get image
@@ -124,7 +123,7 @@ def dummy_keyerror(image: ImageData, nwbfile: NWBFile=None, params: dict=None) -
     return info
 
 
-def dummy_typeerror(image: str, nwbfile: NWBFile=None, params: dict=None) -> {}:
+def dummy_typeerror(image: str, nwbfile: NWBFile=None, params: dict=None) -> dict():
 
     """
         get image
@@ -136,7 +135,7 @@ def dummy_typeerror(image: str, nwbfile: NWBFile=None, params: dict=None) -> {}:
 
 def dummy_image2time8iscell(
     image1: ImageData, nwbfile: NWBFile=None,  params: dict=None
-    ) -> {'timeseries': TimeSeriesData, 'iscell': IscellData}:
+    ) -> dict(timeseries=TimeSeriesData, iscell=IscellData):
 
     """
         get image
@@ -154,7 +153,7 @@ def dummy_image2time8iscell(
 
 def dummy_image2roi(
     image1: ImageData, nwbfile: NWBFile=None,  params: dict=None
-    ) -> {'roi': RoiData}:
+    ) -> dict(roi=RoiData):
 
     """
         get image
@@ -171,7 +170,7 @@ def dummy_image2roi(
 
 def dummy_image2image8roi(
     image1: ImageData, nwbfile: NWBFile=None,  params: dict=None
-    ) -> {'image': ImageData, 'roi': RoiData}:
+    ) -> dict(image=ImageData, roi=RoiData):
 
     """
         get image
@@ -191,7 +190,7 @@ def dummy_image2image8roi(
 
 def dummy_image2image8roi8time8heat(
     image1: ImageData, nwbfile: NWBFile=None,  params: dict=None
-    ) -> {'image': ImageData, 'roi': RoiData, 'timeseries': TimeSeriesData, 'heat': CorrelationData}:
+    ) -> dict(image=ImageData, roi=RoiData, timeseries=TimeSeriesData, heat=CorrelationData):
 
     """
         get image
@@ -215,7 +214,7 @@ def dummy_image2image8roi8time8heat(
 
 def dummy_image2scatter(
     image: ImageData, nwbfile: NWBFile=None,  params: dict=None
-    ) -> {'scatter': ScatterData}:
+    ) -> dict(scatter=ScatterData):
 
     """
         get image

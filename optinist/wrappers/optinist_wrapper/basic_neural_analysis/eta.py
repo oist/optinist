@@ -1,7 +1,5 @@
-from typing import Dict
 from optinist.wrappers.data_wrapper import *
-from optinist.wrappers.optinist_wrapper.utils import standard_norm
-from optinist.wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.api.nwb.nwb import NWBDATASET
 
 
 def calc_trigger(behavior_data, trigger_type, trigger_threshold):
@@ -85,6 +83,17 @@ def ETA(
     else:
         assert False, "Output data size is 0"
 
+    # NWB追加
+    if nwbfile is not None:
+        nwbfile[NWBDATASET.POSTPROCESS] = {
+            'mean': mean,
+            'sem': sem,
+        }
+
+    min_value = np.min(mean, axis=1, keepdims=True)
+    max_value = np.max(mean, axis=1, keepdims=True)
+    norm_mean = (mean - min_value) / (max_value - min_value)
+
     info = {}
     info['mean'] = TimeSeriesData(
         mean,
@@ -92,21 +101,10 @@ def ETA(
         index=list(np.arange(params['start_time'], params['end_time'])),
         file_name='mean'
     )
-
-    min_value = np.min(mean, axis=1, keepdims=True)
-    max_value = np.max(mean, axis=1, keepdims=True)
-    norm_mean = (mean - min_value) / (max_value - min_value)
-
     info['mean_heatmap'] = CorrelationData(
         norm_mean,
         file_name='mean_heatmap'
     )
-
-    # NWB追加
-    if nwbfile is not None:
-        nwbfile[NWBDATASET.POSTPROCESS] = {
-            'mean': mean,
-            'sem': sem,
-        }
+    info['nwbfile'] = nwbfile
 
     return info
