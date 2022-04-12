@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useTheme } from '@mui/material/styles'
@@ -105,6 +105,50 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
 
   const itemDataType = useSelector(selectVisualizeDataType(itemId))
 
+  const [resizeTrigger, setResizeTrigger] = React.useState(false)
+  const [resizeCoord, setResizeCoord] = React.useState<{
+    x: number
+    y: number
+  }>({ x: 0, y: 0 })
+
+  const onMouseDown = (event: any) => {
+    console.log(event)
+    setResizeTrigger(true)
+    setResizeCoord({ x: event.screenX, y: event.screenY })
+    console.log(event.screenX, ' ', event.screenY)
+  }
+
+  const onMouseUp = (event: any) => {
+    setResizeTrigger(false)
+  }
+
+  const onMouseLeave = (event: any) => {
+    setResizeTrigger(false)
+  }
+
+  const onMouseMove = (event: any) => {
+    if (resizeTrigger) {
+      const newWidth = width + (event.screenX - resizeCoord.x)
+      dispatch(
+        setItemWidth({
+          itemId,
+          width: newWidth,
+        }),
+      )
+      setInputWidth(newWidth)
+      setResizeCoord({ x: event.screenX, y: event.screenY })
+
+      const newHeight = height + (event.screenY - resizeCoord.y)
+      dispatch(
+        setItemHeight({
+          itemId,
+          height: newHeight,
+        }),
+      )
+      setInputHeight(newHeight)
+    }
+  }
+
   return (
     <Paper
       variant="outlined"
@@ -118,6 +162,10 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
         borderColor: isSelected ? theme.palette.primary.light : undefined,
       }}
       onClick={onClick}
+      onMouseDown={onMouseDown}
+      onMouseLeave={onMouseLeave}
+      onMouseUp={onMouseUp}
+      onMouseMove={onMouseMove}
     >
       <Box display="flex" justifyContent="flex-end">
         <Box flexGrow={1}>
@@ -133,6 +181,7 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
             }}
             inputProps={{
               min: 150,
+              step: 50,
             }}
             style={{ width: 80, marginLeft: 10 }}
             value={inputWidth}
@@ -148,6 +197,7 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
             }}
             inputProps={{
               min: 150,
+              step: 50,
             }}
             value={inputHeight}
             onBlur={onBlurHeight}
@@ -176,7 +226,7 @@ const FilePathSelectItem = React.memo<{
   const selectedNodeId = useSelector(selectVisualizeDataNodeId(itemId))
   const selectedFilePath = useSelector(selectImageItemFilePath(itemId))
 
-  const [prevItem, setPrevItem] = useState<{
+  const [prevItem, setPrevItem] = React.useState<{
     dataType: DATA_TYPE
     filePath: string | null
   }>({

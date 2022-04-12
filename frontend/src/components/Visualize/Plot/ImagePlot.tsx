@@ -192,7 +192,7 @@ const ImagePlotChart = React.memo<{
   const layout = React.useMemo(
     () => ({
       width: width,
-      height: height - 150,
+      height: height - 170,
       margin: {
         t: 30, // top
         l: 120, // left
