@@ -67,7 +67,6 @@ def snakemake(
             workflow._rules.__getitem__,
             filter(workflow.is_rule, ["all"])
         )
-        import pdb; pdb.set_trace()
 
         dag = DAG(
             workflow,
@@ -117,7 +116,6 @@ def snakemake(
             keep_target_files=keep_target_files,
             updated_files=[],
             unlock=not lock,
-            # printrulegraph=True,
         )
     except BrokenPipeError:
         success = False

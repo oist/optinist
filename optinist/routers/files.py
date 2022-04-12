@@ -61,7 +61,7 @@ async def get_files(file_type: str = None):
 async def create_file(filename: str, file: UploadFile = File(...)):
     dirpath = os.path.splitext(join_filepath([DIRPATH.BASE_DIR, filename]))[0]
     if not os.path.exists(dirpath):
-        os.makedirs(dirpath, exist_ok=True)
+        os.makedirs(dirpath)
 
     filepath = join_filepath([dirpath, filename])
 

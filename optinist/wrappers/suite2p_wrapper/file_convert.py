@@ -31,21 +31,10 @@ def suite2p_file_convert(
 
     ops = {**default_ops(), **params, **db}
 
-    # ops['input_format'] = 'tif'
-
     # save folderを指定
-    save_folder = join_filepath([ops['save_path0'], ops['save_folder']])
-    os.makedirs(save_folder, exist_ok=True)
-
-    # copy file format to a binary file
-    # convert_funs = {
-    #     'h5': io.h5py_to_binary,
-    #     'sbx': io.sbx_to_binary,
-    #     'mesoscan': io.mesoscan_to_binary,
-    #     'haus': lambda ops: haussio.load_haussio(ops['data_path'][0]).tosuite2p(ops.copy()),
-    #     'bruker': io.ome_to_binary,
-    #     'tif': io.tiff_to_binary
-    # }
+    savedir = join_filepath([ops['save_path0'], ops['save_folder']])
+    if not os.path.exists(savedir):
+        os.makedirs(savedir)
 
     # save ops.npy(parameter) and data.bin
     ops = io.tiff_to_binary(ops.copy())

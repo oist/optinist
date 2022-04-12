@@ -9,7 +9,7 @@ class DIRPATH:
     CONFIG_DIR = f"{ROOT_DIR}/config"
 
     if not os.path.exists(BASE_DIR):
-        os.makedirs(BASE_DIR, exist_ok=True)
+        os.makedirs(BASE_DIR)
     assert os.path.exists(BASE_DIR)
 
     SNAKEMAKE_FILEPATH = f"{ROOT_DIR}/Snakefile"

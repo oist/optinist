@@ -32,7 +32,7 @@ class ImageData(BaseData):
         else:
             _dir = join_filepath([DIRPATH.BASE_DIR, "tiff", file_name])
             if not os.path.exists(_dir):
-                os.makedirs(_dir, exist_ok=True)
+                os.makedirs(_dir)
 
             _path = join_filepath([_dir, f'{file_name}.tif'])
             tifffile.imsave(_path, data)
@@ -83,7 +83,7 @@ class TimeSeriesData(BaseData):
         # timeseriesだけはdirを返す
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
         if not os.path.exists(self.json_path):
-            os.makedirs(self.json_path, exist_ok=True)
+            os.makedirs(self.json_path)
 
         for i, _ in enumerate(self.data):
             data = self.data[i]
@@ -138,7 +138,7 @@ class CsvData(BaseData):
         # timeseriesだけはdirを返す
         self.json_path = join_filepath([json_dir, self.file_name])
         if not os.path.exists(self.json_path):
-            os.makedirs(self.json_path, exist_ok=True)
+            os.makedirs(self.json_path)
 
         for i, data in enumerate(self.data):
             pd.DataFrame(data).to_json(
@@ -171,7 +171,7 @@ class RoiData(BaseData):
 
         _dir = join_filepath([DIRPATH.BASE_DIR, "tiff", file_name])
         if not os.path.exists(_dir):
-            os.makedirs(_dir, exist_ok=True)
+            os.makedirs(_dir)
         self.path = join_filepath([_dir, f'{file_name}.tif'])
         tifffile.imsave(self.path, images)
 

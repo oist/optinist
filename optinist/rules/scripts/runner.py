@@ -30,10 +30,9 @@ class Runner:
             )
 
             # ファイル保存先
-            os.makedirs(
-                join_filepath(__rule_config.output.split("/")[:-1]),
-                exist_ok=True
-            )
+            outputdir = join_filepath(__rule_config.output.split("/")[:-1])
+            if not os.path.exists(outputdir):
+                os.makedirs(outputdir)
 
             # nwbfileの設定
             if "nwbfile" not in output_info:
