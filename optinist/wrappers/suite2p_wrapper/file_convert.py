@@ -1,4 +1,4 @@
-from optinist.wrappers.data_wrapper import *
+from optinist.api.dataclass.dataclass import *
 
 from optinist.api.dir_path import DIRPATH
 from optinist.api.utils.filepath_creater import join_filepath

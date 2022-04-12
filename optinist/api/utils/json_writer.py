@@ -5,6 +5,15 @@ import tifffile
 from optinist.api.utils.filepath_creater import join_filepath
 
 
+class JsonWriter:
+    @classmethod
+    def write(cls, filepath, data):
+        pd.DataFrame(data).to_json(filepath, indent=4)
+
+    @classmethod
+    def write_as_values(cls, filepath, data):
+        pd.DataFrame(data).to_json(filepath, indent=4, orient="values")
+
 def save_tiff2json(tiff_file_path, start_index=None, end_index=None):
     folder_path = os.path.dirname(tiff_file_path)
     file_name, _ = os.path.splitext(os.path.basename(tiff_file_path))
@@ -31,10 +40,12 @@ def save_tiff2json(tiff_file_path, start_index=None, end_index=None):
     for i, _img in enumerate(tiffs):
         images.append(_img.tolist())
 
-    pd.DataFrame(images).to_json(
-        join_filepath([folder_path, f'{file_name}_{str(start_index)}_{str(end_index)}.json']),
-        indent=4,
-        orient="values"
+    JsonWriter.write_as_values(
+        join_filepath([
+            folder_path,
+            f'{file_name}_{str(start_index)}_{str(end_index)}.json'
+        ]),
+        images
     )
 
 

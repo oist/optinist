@@ -3,7 +3,7 @@ from glob import glob
 from typing import Dict
 
 from optinist.api.pickle.pickle_reader import PickleReader
-from optinist.wrappers.data_wrapper import *
+from optinist.api.dataclass.dataclass import *
 from optinist.api.workflow.workflow import Message, OutputPath, OutputType
 from optinist.api.config.config_writer import ConfigWriter
 from optinist.api.experiment.experiment_reader import ExptConfigReader

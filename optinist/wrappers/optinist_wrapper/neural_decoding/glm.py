@@ -4,7 +4,7 @@
 #
 #　https://www.statsmodels.org/stable/glm.html
 
-from optinist.wrappers.data_wrapper import *
+from optinist.api.dataclass.dataclass import *
 from optinist.wrappers.optinist_wrapper.utils import standard_norm
 from optinist.api.nwb.nwb import NWBDATASET
 

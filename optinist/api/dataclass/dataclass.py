@@ -4,17 +4,22 @@ import pandas as pd
 import imageio
 import tifffile
 import gc
+from pynwb import NWBFile
+
 
 from optinist.api.utils.filepath_creater import join_filepath
 from optinist.api.dir_path import DIRPATH
-from optinist.wrappers.data_wrapper.utils import create_images_list
+from optinist.api.dataclass.utils import create_images_list
+from optinist.api.utils.json_writer import JsonWriter
+
+
+class NWBFile(NWBFile):
+    pass
+
 
 class BaseData:
     def __init__(self, file_name):
         self.file_name = file_name
-
-    def save_json(self, json_dir):
-        pass
 
 
 class ImageData(BaseData):
@@ -50,9 +55,10 @@ class ImageData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        images = create_images_list(self.data)
-        pd.DataFrame(images).to_json(self.json_path, indent=4, orient="values")
-        del images
+        JsonWriter.write_as_values(
+            self.json_path,
+            create_images_list(self.data)
+        )
 
     def __del__(self):
         del self
@@ -97,8 +103,11 @@ class TimeSeriesData(BaseData):
             else:
                 df = pd.DataFrame(data, index=self.index, columns=["data"])
 
-            df.to_json(
-                join_filepath([self.json_path, f'{str(i)}.json']), indent=4)
+            # df.to_json(join_filepath([self.json_path, f'{str(i)}.json']), indent=4)
+            JsonWriter.write(
+                join_filepath([self.json_path, f'{str(i)}.json']),
+                df
+            )
 
     def __del__(self):
         del self
@@ -141,8 +150,10 @@ class CsvData(BaseData):
             os.makedirs(self.json_path)
 
         for i, data in enumerate(self.data):
-            pd.DataFrame(data).to_json(
-                join_filepath([self.json_path, f'{str(i)}.json']), indent=4)
+            JsonWriter.write(
+                join_filepath([self.json_path, f'{str(i)}.json']),
+                data
+            )
 
     def __del__(self):
         del self
@@ -156,7 +167,7 @@ class CorrelationData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        pd.DataFrame(self.data).to_json(self.json_path, indent=4, orient="values")
+        JsonWriter.write(self.json_path, self.data)
 
     def __del__(self):
         del self
@@ -188,8 +199,7 @@ class RoiData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        images = create_images_list(self.data)
-        pd.DataFrame(images).to_json(self.json_path, indent=4, orient="values")
+        JsonWriter.write_as_values(self.json_path, create_images_list(self.data))
 
     def __del__(self):
         del self
@@ -225,7 +235,7 @@ class ScatterData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        pd.DataFrame(self.data).to_json(self.json_path, indent=4)
+        JsonWriter.write(self.json_path, self.data)
 
     def __del__(self):
         del self
@@ -243,7 +253,7 @@ class BarData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        pd.DataFrame(self.data).to_json(self.json_path, indent=4)
+        JsonWriter.write(self.json_path, self.data)
 
     def __del__(self):
         del self
