@@ -3,7 +3,7 @@ import os
 import gc
 import copy
 
-from optinist.api.snakemake.snakemake import Rule
+from optinist.api.snakemake.smk import Rule
 from optinist.api.utils.filepath_creater import join_filepath
 from optinist.api.pickle.pickle_reader import PickleReader
 from optinist.api.pickle.pickle_writer import PickleWriter

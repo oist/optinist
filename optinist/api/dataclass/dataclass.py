@@ -1,4 +1,5 @@
 import os
+from typing import overload
 import numpy as np
 import pandas as pd
 import imageio
@@ -20,6 +21,9 @@ class NWBFile(NWBFile):
 class BaseData:
     def __init__(self, file_name):
         self.file_name = file_name
+
+    def save_json(self, json_dir):
+        pass
 
 
 class ImageData(BaseData):

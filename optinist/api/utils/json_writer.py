@@ -14,10 +14,8 @@ class JsonWriter:
     def write_as_values(cls, filepath, data):
         pd.DataFrame(data).to_json(filepath, indent=4, orient="values")
 
-def save_tiff2json(tiff_file_path, start_index=None, end_index=None):
-    folder_path = os.path.dirname(tiff_file_path)
-    file_name, _ = os.path.splitext(os.path.basename(tiff_file_path))
 
+def save_tiff2json(tiff_file_path, start_index=None, end_index=None):
     # Tiff画像を読み込む
     tiffs = []
     image = tifffile.imread(tiff_file_path)
@@ -31,24 +29,15 @@ def save_tiff2json(tiff_file_path, start_index=None, end_index=None):
         if i >= end_index:
             break
 
-        page = np.array(page)
-        tiffs.append(page)
+        tiffs.append(page.tolist())
 
-    tiffs = np.array(tiffs)
-
-    images = []
-    for i, _img in enumerate(tiffs):
-        images.append(_img.tolist())
+    folder_path = os.path.dirname(tiff_file_path)
+    filename, _ = os.path.splitext(os.path.basename(tiff_file_path))
 
     JsonWriter.write_as_values(
         join_filepath([
             folder_path,
-            f'{file_name}_{str(start_index)}_{str(end_index)}.json'
+            f'{filename}_{str(start_index)}_{str(end_index)}.json'
         ]),
-        images
+        pd.DataFrame(tiffs)
     )
-
-
-def save_csv2json(csv_filepath, json_filepath):
-    pd.read_csv(csv_filepath, header=None).to_json(
-        json_filepath, indent=4, orient='values')

@@ -2,10 +2,12 @@ from typing import Optional
 from fastapi import APIRouter
 from glob import glob
 import os
+import pandas as pd
 import json
 
-from optinist.api.utils.json_writer import save_tiff2json, save_csv2json
+from optinist.api.utils.json_writer import JsonWriter, save_tiff2json
 from optinist.api.utils.filepath_creater import join_filepath
+from optinist.routers.files import ACCEPT_TIFF_EXT
 from optinist.routers.model import JsonTimeSeriesData, OutputData
 
 router = APIRouter()
@@ -114,7 +116,7 @@ async def read_image(
         end_index: Optional[int] = None
     ):
     filename, ext = os.path.splitext(os.path.basename(filepath))
-    if ext in ['.tif', '.tiff', '.TIF', '.TIFF']:
+    if ext in ACCEPT_TIFF_EXT:
         json_filepath = join_filepath(
             [os.path.dirname(filepath), f'{filename}_{str(start_index)}_{str(end_index)}.json'])
         if not os.path.exists(json_filepath):
@@ -130,5 +132,5 @@ async def read_csv(filepath: str):
     dirpath = os.path.dirname(filepath)
     filename, _ = os.path.splitext(os.path.basename(filepath))
     json_filepath = join_filepath([dirpath, f'{filename}.json'])
-    save_csv2json(filepath, json_filepath)
+    JsonWriter.write_as_values(json_filepath, pd.read_csv(filepath, header=None))
     return OutputData(JsonReader.read(json_filepath))

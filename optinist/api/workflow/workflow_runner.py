@@ -1,7 +1,7 @@
 from typing import Dict, List
 from dataclasses import asdict
 
-from optinist.api.snakemake.snakemake import FlowConfig, ForceRun, Rule
+from optinist.api.snakemake.smk import FlowConfig, ForceRun, Rule
 from optinist.api.snakemake.snakemake_writer import SmkConfigWriter
 from optinist.api.snakemake.snakemake_setfile import SmkSetfile
 from optinist.api.snakemake.snakemake_run import run_snakemake

@@ -11,16 +11,16 @@ from optinist.routers.model import FILETYPE, TreeNode
 router = APIRouter()
 
 
-ACCEPT_TIFF_EXT = ["tif", "tiff", "TIF", "TIFF"]
-ACCEPT_CSV_EXT = ["csv"]
-ACCEPT_HDF5_EXT = ["hdf5", "nwb", "HDF5", "NWB"]
+ACCEPT_TIFF_EXT = [".tif", ".tiff", ".TIF", ".TIFF"]
+ACCEPT_CSV_EXT = [".csv"]
+ACCEPT_HDF5_EXT = [".hdf5", ".nwb", ".HDF5", ".NWB"]
 
 
 def get_accept_files(path: str, file_types: List[str]):
     files_list = []
     for file_type in file_types:
         files_list.extend(glob(
-            join_filepath([path, "**", f"*.{file_type}"]), recursive=True))
+            join_filepath([path, "**", f"*{file_type}"]), recursive=True))
 
     return files_list
 

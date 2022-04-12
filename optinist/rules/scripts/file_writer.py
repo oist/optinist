@@ -1,6 +1,6 @@
 import h5py
 
-from optinist.api.snakemake.snakemake import Rule
+from optinist.api.snakemake.smk import Rule
 from optinist.api.dataclass.dataclass import ImageData, CsvData, TimeSeriesData
 from optinist.api.nwb.nwb import NWBDATASET
 
