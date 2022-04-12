@@ -1,12 +1,12 @@
 from optinist.wrappers.data_wrapper import *
-from optinist.wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.api.nwb.const import NWBDATASET
 
 
 def caiman_mc(
         image: ImageData,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {'mc_images': ImageData}:
+    ) -> dict(mc_images=ImageData):
     import numpy as np
     from caiman import load, save_memmap, load_memmap, stop_server
     from caiman.source_extraction.cnmf.params import CNMFParams

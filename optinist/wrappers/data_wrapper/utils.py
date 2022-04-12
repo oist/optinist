@@ -1,9 +1,8 @@
-import os
 import copy
 import numpy as np
 
 
-def get_images_list(data):
+def create_images_list(data):
     if len(data.shape) == 2:
         save_data = copy.deepcopy(data)
     elif len(data.shape) == 3:

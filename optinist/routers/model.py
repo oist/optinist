@@ -33,6 +33,7 @@ class FILETYPE:
     IMAGE: str = "image"
     CSV: str = "csv"
     HDF5: str = "hdf5"
+    BEHAVIOR: str = "behavior"
 
 class DeleteItem(BaseModel):
     uidList: list

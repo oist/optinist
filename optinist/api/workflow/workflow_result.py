@@ -1,10 +1,10 @@
-import pickle
 from dataclasses import asdict
 from glob import glob
 from typing import Dict
 
+from optinist.api.pickle.pickle_reader import PickleReader
 from optinist.wrappers.data_wrapper import *
-from optinist.api.workflow.workflow import Message, OutputPath
+from optinist.api.workflow.workflow import Message, OutputPath, OutputType
 from optinist.api.config.config_writer import ConfigWriter
 from optinist.api.experiment.experiment_reader import ExptConfigReader
 from optinist.api.utils.filepath_creater import join_filepath
@@ -26,8 +26,7 @@ class WorkflowResult:
             node_id = path.split("/")[-2]
             algo_name = path.split("/")[-1].split(".")[0]
 
-            with open(path, "rb") as f:
-                info = pickle.load(f)
+            info = PickleReader.read(path)
 
             results[node_id] = {}
             if isinstance(info, (list, str)):
@@ -83,39 +82,39 @@ class WorkflowResult:
             if isinstance(v, ImageData):
                 outputPaths[k] = OutputPath(
                     path=v.json_path,
-                    type="images",
+                    type=OutputType.IMAGE,
                     max_index=len(v.data) if v.data.ndim == 3 else 1
                 )
             elif isinstance(v, TimeSeriesData):
                 outputPaths[k] = OutputPath(
                     path=v.json_path,
-                    type="timeseries",
+                    type=OutputType.TIMESERIES,
                     max_index=len(v.data)
                 )
             elif isinstance(v, CorrelationData):
                 outputPaths[k] = OutputPath(
                     path=v.json_path,
-                    type="heatmap",
+                    type=OutputType.HEATMAP,
                 )
             elif isinstance(v, RoiData):
                 outputPaths[k] = OutputPath(
                     path=v.json_path,
-                    type="roi",
+                    type=OutputType.ROI,
                 )
             elif isinstance(v, ScatterData):
                 outputPaths[k] = OutputPath(
                     path=v.json_path,
-                    type="scatter",
+                    type=OutputType.SCATTER,
                 )
             elif isinstance(v, BarData):
                 outputPaths[k] = OutputPath(
                     path=v.json_path,
-                    type="bar",
+                    type=OutputType.BAR,
                 )
             elif isinstance(v, HTMLData):
                 outputPaths[k] = OutputPath(
                     path=v.json_path,
-                    type="html",
+                    type=OutputType.HTML,
                 )
             else:
                 pass

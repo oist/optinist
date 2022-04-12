@@ -14,6 +14,16 @@ class NodeType:
     HDF5: str = "HDF5FileNode"
     ALGO: str = "AlgorithmNode"
 
+@dataclass
+class OutputType:
+    IMAGE: str = "images"
+    TIMESERIES: str = "timeseries"
+    HEATMAP: str = "heatmap"
+    ROI: str = "roi"
+    SCATTER: str = "scatter"
+    BAR: str = "bar"
+    HTML: str = "html"
+
 
 class RunItem(BaseModel):
     name: str = None
@@ -40,7 +50,6 @@ class Message:
     status: str
     message: str
     outputPaths: Dict[str, OutputPath] = None
-
 
 
 @dataclass

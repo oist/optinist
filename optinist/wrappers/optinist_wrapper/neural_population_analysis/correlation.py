@@ -1,5 +1,5 @@
 from optinist.wrappers.data_wrapper import *
-from optinist.wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.api.nwb.const import NWBDATASET
 
 
 def correlation(

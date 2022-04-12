@@ -1,6 +1,6 @@
 import gc
 from optinist.wrappers.data_wrapper import *
-from optinist.wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.api.nwb.const import NWBDATASET
 from optinist.api.utils.filepath_creater import join_filepath
 
 
@@ -12,6 +12,7 @@ def get_roi(A, thr, thr_method, swap_dim, dims):
 
     # for each patches
     ims = []
+    coordinates = []
     for i in range(nr):
         pars = dict()
         # we compute the cumulative sum of the energy of the Ath component that has been ordered from least to highest
@@ -59,15 +60,13 @@ def caiman_cnmf(
         images: ImageData,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {'fluorescence': FluoData, 'iscell': IscellData}:
-    import caiman
+    ) -> dict(fluorescence=FluoData, iscell=IscellData):
     from caiman import local_correlations, stop_server
     from caiman.paths import memmap_frames_filename
     from caiman.mmapping import prepare_shape
     from caiman.cluster import setup_cluster
     from caiman.source_extraction.cnmf import cnmf
     from caiman.source_extraction.cnmf.params import CNMFParams
-    import caiman.utils.visualization as visualization
     import numpy as np
     import scipy
 
@@ -220,17 +219,3 @@ def caiman_cnmf(
     info['nwbfile'] = nwbfile
 
     return info
-
-
-if __name__ == '__main__':
-    import os
-    import numpy as np
-    from motion_correction import caiman_mc
-    import caiman
-
-    info = {}
-    file_path = join_filepath([
-        '/Users', 'shogoakiyama', 'caiman_data', 
-        'example_movies', 'Sue_2x_3000_40_-46.tif'])
-    info['caiman_mc'] = caiman_mc(file_path)
-    info['caiman_cnmf'] = caiman_cnmf(info['caiman_mc']['images'])

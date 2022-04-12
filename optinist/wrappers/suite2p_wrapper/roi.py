@@ -1,12 +1,12 @@
 from optinist.wrappers.data_wrapper import *
-from optinist.wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.api.nwb.const import NWBDATASET
 
 
 def suite2p_roi(
         ops: Suite2pData,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {'ops': Suite2pData, 'fluorescence': FluoData, 'iscell': IscellData}:
+    ) -> dict(ops=Suite2pData, fluorescence=FluoData, iscell=IscellData):
     import numpy as np
     from suite2p import extraction, classification, detection, ROI, default_ops
     print('start suite2p_roi')

@@ -12,4 +12,4 @@ rule:
     conda:
         f'{DIRPATH.ROOT_DIR}/rules/envs/suite2p_env.yaml'
     script:
-        f'{DIRPATH.ROOT_DIR}/rules/scripts/func.py'
+        f'{DIRPATH.ROOT_DIR}/rules/scripts/main.py'

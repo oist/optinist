@@ -1,4 +1,3 @@
-import os
 from pynwb import NWBFile, NWBHDF5IO
 from pynwb.ophys import (
     OpticalChannel, TwoPhotonSeries, ImageSegmentation,
@@ -9,8 +8,8 @@ from pynwb.ophys import (
 from datetime import datetime
 from dateutil.tz import tzlocal
 
-from .optinist_data import PostProcess
-from optinist.wrappers.nwb_wrapper.const import NWBDATASET
+from optinist.api.nwb.optinist_data import PostProcess
+from optinist.api.nwb.const import NWBDATASET
 
 
 def nwb_add_acquisition(nwb_dict):
