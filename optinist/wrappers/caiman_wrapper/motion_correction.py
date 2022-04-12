@@ -13,7 +13,6 @@ def caiman_mc(
     from caiman.motion_correction import MotionCorrect
     from caiman.cluster import setup_cluster
     from caiman.base.rois import extract_binary_masks_from_structural_channel
-    info = {}
 
     opts = CNMFParams()
 
@@ -54,21 +53,24 @@ def caiman_mc(
     rois = np.nanmax(rois, axis=0)
     rois[rois == 0] = np.nan
 
-    info['mc_images'] = ImageData(images, file_name='mc_images')
-    info['meanImg'] = ImageData(meanImg, file_name='meanImg')
-    info['rois'] = RoiData(rois, file_name='rois')
-
     xy_trans_data = (np.array(mc.x_shifts_els), np.array(mc.y_shifts_els)) \
                     if params['pw_rigid'] else np.array(mc.shifts_rig)
+
+    mc_images = ImageData(images, file_name='mc_images')
 
     if nwbfile is not None:
         nwbfile[NWBDATASET.MOTION_CORRECTION] = {
             'caiman_mc': {
-                'mc_data': info['mc_images'],
+                'mc_data': mc_images,
                 'xy_trans_data': xy_trans_data,
             }
         }
 
-    info['nwbfile'] = nwbfile
+    info = {
+        'mc_images': mc_images,
+        'meanImg': ImageData(meanImg, file_name='meanImg'),
+        'rois': RoiData(rois, file_name='rois'),
+        'nwbfile': nwbfile,
+    }
 
     return info

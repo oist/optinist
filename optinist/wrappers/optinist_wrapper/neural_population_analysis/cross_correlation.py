@@ -98,17 +98,16 @@ def cross_correlation(
                 s_mean[cb[i][0], cb[i][1], :],
                 s_confint[cb[i][0], cb[i][1], :, 0],
                 s_confint[cb[i][0], cb[i][1], :, 1]
-            ], axis=1)
+            ], 
+            axis=1
+        )
 
-        name1 = str(cb[i][0]) + '-' + str(cb[i][1])
-        name2 = 'shuffle '+ str(cb[i][0]) + '-' + str(cb[i][1])
+        name1 = f'{str(cb[i][0])}-{str(cb[i][1])}'
+        name2 = f'shuffle {str(cb[i][0])}-{str(cb[i][1])}'
         forfigure[name1] = arr1
         forfigure[name2] = arr2
 
         Out_forfigure.append(forfigure)
-
-    info = {}
-    info['cross_correlation'] = mat
 
     # NWB追加
     if nwbfile is not None:
@@ -116,6 +115,9 @@ def cross_correlation(
             'mat': mat,
         }
 
-    info['nwbfile'] = nwbfile
+    info = {
+        'cross_correlation': mat,
+        'nwbfile': nwbfile
+    }
 
     return info

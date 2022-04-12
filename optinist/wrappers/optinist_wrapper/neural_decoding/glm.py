@@ -57,32 +57,12 @@ def GLM(
     if(params['add_constant']):
         tX = sm.add_constant(tX, prepend=False)
 
-    # set link function
-    link = getattr(sm.genmod.families.links, params['link'])()
-
     # set family
     family = eval('sm.families.' + params['family'] + '(link=link)')
 
     # model fit
     model = sm.GLM(tY, tX, family=family, **params['GLM'])
     Res = model.fit()
-
-    # main results for plot
-    # plot should be reconsidered --- what they should be!
-    info = {}
-    #info['params'] = BarSeriesData(Res.params.values)  # add something 1d but not timesereies
-    info['actual_predicted'] = ScatterData(
-        np.array([Res._endog, Res.mu]).transpose(),
-        file_name='actual_predicted'
-    )
-    info['params'] = BarData(
-        Res.params.values,
-        file_name='params'
-    )
-    info['summary'] = HTMLData(
-        Res.summary().as_html(),
-        file_name='summary',
-    )
 
     # NWB追加
     if nwbfile is not None:
@@ -91,6 +71,15 @@ def GLM(
             'params': Res.params.values,
         }
 
-    info['nwbfile'] = nwbfile
+    # main results for plot
+    # plot should be reconsidered --- what they should be!
+    info = {
+        'actual_predicted': ScatterData(
+            np.array([Res._endog, Res.mu]).transpose(),
+            file_name='actual_predicted'
+        ),
+        'params': BarData(Res.params.values, file_name='params'),
+        'nwbfile': nwbfile,
+    }
 
     return info

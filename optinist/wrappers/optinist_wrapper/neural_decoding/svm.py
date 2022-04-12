@@ -79,18 +79,15 @@ def SVM(
 
         classifier.append(clf)
 
-    info = {}
-    info['score'] = BarData(
-        score,
-        file_name='score'
-    )
-
     # NWB追加
     if nwbfile is not None:
         nwbfile[NWBDATASET.POSTPROCESS] = {
             'score': score,
         }
 
-    info['nwbfile'] = nwbfile
+    info = {
+        'score': BarData(score, file_name='score'),
+        'nwbfile': nwbfile
+    }
 
     return info

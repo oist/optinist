@@ -50,8 +50,9 @@ def suite2p_file_convert(
     # save ops.npy(parameter) and data.bin
     ops = io.tiff_to_binary(ops.copy())
 
-    info = {}
-    info['meanImg'] = ImageData(ops['meanImg'], file_name='meanImg')
-    info['ops'] = Suite2pData(ops, file_name='ops')
+    info = {
+        'meanImg': ImageData(ops['meanImg'], file_name='meanImg'),
+        'ops': Suite2pData(ops, file_name='ops')
+    }
 
     return info

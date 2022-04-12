@@ -83,6 +83,17 @@ def ETA(
     else:
         assert False, "Output data size is 0"
 
+    # NWB追加
+    if nwbfile is not None:
+        nwbfile[NWBDATASET.POSTPROCESS] = {
+            'mean': mean,
+            'sem': sem,
+        }
+
+    min_value = np.min(mean, axis=1, keepdims=True)
+    max_value = np.max(mean, axis=1, keepdims=True)
+    norm_mean = (mean - min_value) / (max_value - min_value)
+
     info = {}
     info['mean'] = TimeSeriesData(
         mean,
@@ -90,21 +101,10 @@ def ETA(
         index=list(np.arange(params['start_time'], params['end_time'])),
         file_name='mean'
     )
-
-    min_value = np.min(mean, axis=1, keepdims=True)
-    max_value = np.max(mean, axis=1, keepdims=True)
-    norm_mean = (mean - min_value) / (max_value - min_value)
-
     info['mean_heatmap'] = CorrelationData(
         norm_mean,
         file_name='mean_heatmap'
     )
-
-    # NWB追加
-    if nwbfile is not None:
-        nwbfile[NWBDATASET.POSTPROCESS] = {
-            'mean': mean,
-            'sem': sem,
-        }
+    info['nwbfile'] = nwbfile
 
     return info

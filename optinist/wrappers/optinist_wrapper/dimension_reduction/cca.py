@@ -47,18 +47,15 @@ def CCA(
 
     proj = np.concatenate([projX, projY], axis=1)
 
-    info = {}
-    info['projectedNd'] = ScatterData(
-        proj,
-        file_name='projectedNd'
-    )
-
     # NWB追加
     if nwbfile is not None:
         nwbfile[NWBDATASET.POSTPROCESS] = {
             'projectedNd': proj
         }
 
-    info['nwbfile'] = nwbfile
+    info = {
+        'projectedNd': ScatterData(proj, file_name='projectedNd'),
+        'nwbfile': nwbfile,
+    }
 
     return info

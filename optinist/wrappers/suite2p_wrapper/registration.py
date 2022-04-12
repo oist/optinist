@@ -25,9 +25,10 @@ def suite2p_registration(
     if ops.get('do_regmetrics', True) and ops['nframes']>=1500:
         ops = registration.get_pc_metrics(ops)
 
-    info = {}
-    info['refImg'] = ImageData(ops['refImg'], file_name='refImg')
-    info['meanImgE'] = ImageData(ops['meanImgE'], file_name='meanImgE')
-    info['ops'] = Suite2pData(ops, file_name='ops')
+    info = {
+        'refImg': ImageData(ops['refImg'], file_name='refImg'),
+        'meanImgE': ImageData(ops['meanImgE'], file_name='meanImgE'),
+        'ops': Suite2pData(ops, file_name='ops'),
+    }
 
     return info

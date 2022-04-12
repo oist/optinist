@@ -41,9 +41,10 @@ def suite2p_spike_deconv(
             'rate': ops['fs'],
         }
 
-    info = {}
-    info['ops'] = Suite2pData(ops)
-    info['spks'] = FluoData(spks, file_name='spks')
-    info['nwbfile'] = nwbfile
+    info = {
+        'ops': Suite2pData(ops),
+        'spks': FluoData(spks, file_name='spks'),
+        'nwbfile': nwbfile
+    }
 
     return info

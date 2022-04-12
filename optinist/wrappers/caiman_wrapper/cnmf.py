@@ -209,13 +209,14 @@ def caiman_cnmf(
         cnm.estimates.f,
     ])
 
-    info = {}
-    info['images'] = ImageData(np.array(Cn * 255, dtype=np.uint8), file_name='images')
-    info['fluorescence'] = FluoData(fluorescence, file_name='fluorescence')
-    info['iscell'] = IscellData(iscell, file_name='iscell')
-    info['cell_roi'] = RoiData(cell_roi, file_name='cell_roi')
-    info['non_cell_roi'] = RoiData(non_cell_roi, file_name='non_cell_roi')
-    info['all_roi'] = RoiData(all_roi, file_name='all_roi')
-    info['nwbfile'] = nwbfile
+    info = {
+        'images': ImageData(np.array(Cn * 255, dtype=np.uint8), file_name='images'),
+        'fluorescence': FluoData(fluorescence, file_name='fluorescence'),
+        'iscell': IscellData(iscell, file_name='iscell'),
+        'all_roi': RoiData(all_roi, file_name='all_roi'),
+        'cell_roi': RoiData(cell_roi, file_name='cell_roi'),
+        'non_cell_roi': RoiData(non_cell_roi, file_name='non_cell_roi'),
+        'nwbfile': nwbfile
+    }
 
     return info
