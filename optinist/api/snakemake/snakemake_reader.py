@@ -1,8 +1,7 @@
-from optinist.api.dir_path import DIRPATH
-from optinist.api.snakemake.smk import Rule
+from optinist.api.snakemake.smk import Rule, SmkParam
 
 
-class SmkConfigReader:
+class RuleConfigReader:
     @classmethod
     def read(cls, rule):
         return Rule(
@@ -15,4 +14,17 @@ class SmkConfigReader:
             nwbfile=rule["nwbfile"],
             hdf5Path=rule["hdf5Path"],
             path=rule["path"],
+        )
+
+
+class SmkParamReader:
+    @classmethod
+    def read(cls, params):
+        return SmkParam(
+            use_conda=params["use_conda"],
+            cores=params["cores"],
+            forceall=params["forceall"],
+            forcetargets=params["forcetargets"],
+            lock=params["lock"],
+            forcerun=params["forcerun"] if "forcerun" in params else [],
         )
