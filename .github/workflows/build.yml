@@ -18,14 +18,16 @@ jobs:
   build:
     # if: github.event.pull_request.merged == true
     runs-on: self-hosted
+    env:
+      REPO: https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git
     steps:
       - uses: actions/checkout@v2
-      - name: push
         with:
           github-token: ${{secrets.GITHUB_TOKEN}}
-          run: |
-            cd frontend
-            yarn build
-            git add build
-            git commit -m"build frontend"
-            git push origin develop
+      - name: push
+        run: |
+          cd frontend
+          yarn build
+          git add build
+          git commit -m"build frontend"
+          git push origin develop
