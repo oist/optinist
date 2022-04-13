@@ -18,8 +18,8 @@ jobs:
   build:
     # if: github.event.pull_request.merged == true
     runs-on: self-hosted
-    env:
-      REPO: https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git
+#     env:
+#       REPO: https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git
     steps:
       - uses: actions/checkout@v2
         with:
@@ -27,6 +27,7 @@ jobs:
       - name: push
         run: |
           cd frontend
+          rm -rf node_modules
           yarn build
           git add build
           git commit -m"build frontend"
