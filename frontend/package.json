@@ -38,7 +38,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "BUILD_PATH='./build' react-scripts build",
-    "test": "react-scripts test",
+    "test": "jest",
     "eject": "react-scripts eject",
     "prepare": "cd .. && husky install frontend/.husky",
     "lint-staged": "lint-staged"
@@ -64,8 +64,10 @@
   "devDependencies": {
     "@types/plotly.js": "^1.54.16",
     "husky": "^7.0.1",
+    "jest": "^27.5.1",
     "lint-staged": "^11.1.2",
-    "prettier": "^2.3.2"
+    "prettier": "^2.3.2",
+    "ts-jest": "^27.1.4"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
