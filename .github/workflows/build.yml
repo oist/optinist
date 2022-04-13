@@ -1,25 +1,17 @@
-# on:
-#   pull_request:
-#     branches:
-#       - develop
-#     types: [closed]
-
 name: Build
 
 on:
-  push:
-    branches: [ develop ]
   pull_request:
-    branches: [ develop ]
+    branches:
+      - develop
+    types: [closed]
 
   workflow_dispatch:
 
 jobs:
   build:
-    # if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     runs-on: self-hosted
-#     env:
-#       REPO: https://${{github.actor}}:${{secrets.GITHUB_TOKEN}}@github.com/${{github.repository}}.git
     steps:
       - uses: actions/checkout@v2
         with:
