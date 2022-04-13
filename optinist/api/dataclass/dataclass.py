@@ -1,13 +1,22 @@
 import os
+from typing import overload
 import numpy as np
 import pandas as pd
 import imageio
 import tifffile
 import gc
+from pynwb import NWBFile
+
 
 from optinist.api.utils.filepath_creater import join_filepath
 from optinist.api.dir_path import DIRPATH
-from optinist.wrappers.data_wrapper.utils import create_images_list
+from optinist.api.dataclass.utils import create_images_list
+from optinist.api.utils.json_writer import JsonWriter
+
+
+class NWBFile(NWBFile):
+    pass
+
 
 class BaseData:
     def __init__(self, file_name):
@@ -32,7 +41,7 @@ class ImageData(BaseData):
         else:
             _dir = join_filepath([DIRPATH.BASE_DIR, "tiff", file_name])
             if not os.path.exists(_dir):
-                os.makedirs(_dir, exist_ok=True)
+                os.makedirs(_dir)
 
             _path = join_filepath([_dir, f'{file_name}.tif'])
             tifffile.imsave(_path, data)
@@ -50,9 +59,10 @@ class ImageData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        images = create_images_list(self.data)
-        pd.DataFrame(images).to_json(self.json_path, indent=4, orient="values")
-        del images
+        JsonWriter.write_as_values(
+            self.json_path,
+            create_images_list(self.data)
+        )
 
     def __del__(self):
         del self
@@ -83,7 +93,7 @@ class TimeSeriesData(BaseData):
         # timeseriesだけはdirを返す
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
         if not os.path.exists(self.json_path):
-            os.makedirs(self.json_path, exist_ok=True)
+            os.makedirs(self.json_path)
 
         for i, _ in enumerate(self.data):
             data = self.data[i]
@@ -97,8 +107,11 @@ class TimeSeriesData(BaseData):
             else:
                 df = pd.DataFrame(data, index=self.index, columns=["data"])
 
-            df.to_json(
-                join_filepath([self.json_path, f'{str(i)}.json']), indent=4)
+            # df.to_json(join_filepath([self.json_path, f'{str(i)}.json']), indent=4)
+            JsonWriter.write(
+                join_filepath([self.json_path, f'{str(i)}.json']),
+                df
+            )
 
     def __del__(self):
         del self
@@ -138,11 +151,13 @@ class CsvData(BaseData):
         # timeseriesだけはdirを返す
         self.json_path = join_filepath([json_dir, self.file_name])
         if not os.path.exists(self.json_path):
-            os.makedirs(self.json_path, exist_ok=True)
+            os.makedirs(self.json_path)
 
         for i, data in enumerate(self.data):
-            pd.DataFrame(data).to_json(
-                join_filepath([self.json_path, f'{str(i)}.json']), indent=4)
+            JsonWriter.write(
+                join_filepath([self.json_path, f'{str(i)}.json']),
+                data
+            )
 
     def __del__(self):
         del self
@@ -156,7 +171,7 @@ class CorrelationData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        pd.DataFrame(self.data).to_json(self.json_path, indent=4, orient="values")
+        JsonWriter.write(self.json_path, self.data)
 
     def __del__(self):
         del self
@@ -171,7 +186,7 @@ class RoiData(BaseData):
 
         _dir = join_filepath([DIRPATH.BASE_DIR, "tiff", file_name])
         if not os.path.exists(_dir):
-            os.makedirs(_dir, exist_ok=True)
+            os.makedirs(_dir)
         self.path = join_filepath([_dir, f'{file_name}.tif'])
         tifffile.imsave(self.path, images)
 
@@ -188,8 +203,7 @@ class RoiData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        images = create_images_list(self.data)
-        pd.DataFrame(images).to_json(self.json_path, indent=4, orient="values")
+        JsonWriter.write_as_values(self.json_path, create_images_list(self.data))
 
     def __del__(self):
         del self
@@ -225,7 +239,7 @@ class ScatterData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        pd.DataFrame(self.data).to_json(self.json_path, indent=4)
+        JsonWriter.write(self.json_path, self.data)
 
     def __del__(self):
         del self
@@ -243,7 +257,7 @@ class BarData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        pd.DataFrame(self.data).to_json(self.json_path, indent=4)
+        JsonWriter.write(self.json_path, self.data)
 
     def __del__(self):
         del self

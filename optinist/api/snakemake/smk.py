@@ -17,12 +17,6 @@ class Rule:
 
 
 @dataclass
-class SnakemakeConfig:
-    last_output: list
-    rules: Rule
-
-
-@dataclass
 class FlowConfig:
     rules: Dict[str, Rule]
     last_output: list

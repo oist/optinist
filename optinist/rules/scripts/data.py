@@ -22,5 +22,3 @@ if __name__ == '__main__':
         elif rule_config.type == FILETYPE.HDF5:
             outputfile = FileWriter.hdf5(rule_config)
             PickleWriter.write(rule_config.output, outputfile)
-        elif rule_config.type == snakemake.params.name:  
-            Runner.run(rule_config, last_output)

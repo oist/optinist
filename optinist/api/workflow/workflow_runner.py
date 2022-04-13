@@ -1,7 +1,7 @@
 from typing import Dict, List
 from dataclasses import asdict
 
-from optinist.api.snakemake.snakemake import FlowConfig, ForceRun, Rule
+from optinist.api.snakemake.smk import FlowConfig, ForceRun, Rule
 from optinist.api.snakemake.snakemake_writer import SmkConfigWriter
 from optinist.api.snakemake.snakemake_setfile import SmkSetfile
 from optinist.api.snakemake.snakemake_run import run_snakemake
@@ -24,7 +24,7 @@ class WorkflowRunner:
         )
 
         snakemake_params = get_typecheck_params(runItem.snakemakeParam, "snakemake")
-        snakemake_params["forcerun"] = get_forcerun_list(unique_id, runItem.forceRunList)
+        snakemake_params["forcerun"] = _get_forcerun_list(unique_id, runItem.forceRunList)
         background_tasks.add_task(run_snakemake, snakemake_params)
 
 
@@ -46,8 +46,8 @@ def _create_workflow(unique_id, name, nodeList, edgeList, nwbParam):
 
 
 def _rulefile(unique_id, nodeList, edgeList, nwbParam):
-    nodeDict = get_nodeDict(nodeList)
-    endNodeList = get_endNodeList(edgeList, nodeDict)
+    nodeDict = _get_nodeDict(nodeList)
+    endNodeList = _get_endNodeList(edgeList, nodeDict)
 
     nwbfile = get_typecheck_params(nwbParam, "nwb")
 
@@ -77,7 +77,7 @@ def _rulefile(unique_id, nodeList, edgeList, nwbParam):
     return rule_dict, last_outputs
 
 
-def get_nodeDict(nodeList: List[Node]) -> Dict[str, Node]:
+def _get_nodeDict(nodeList: List[Node]) -> Dict[str, Node]:
     # nodeを初期化
     nodeDict = {}
     for node in nodeList:
@@ -85,7 +85,7 @@ def get_nodeDict(nodeList: List[Node]) -> Dict[str, Node]:
     return nodeDict
 
 
-def get_endNodeList(edgeList: List[Edge], nodeDict):
+def _get_endNodeList(edgeList: List[Edge], nodeDict):
     returnCntDict = {key: 0 for key in nodeDict.keys()}
     for edge in edgeList:
         returnCntDict[edge.source] += 1
@@ -97,7 +97,7 @@ def get_endNodeList(edgeList: List[Edge], nodeDict):
     return endNodeList
 
 
-def get_forcerun_list(unique_id, forceRunList: List[ForceRun]):
+def _get_forcerun_list(unique_id, forceRunList: List[ForceRun]):
     target_list = []
     for x in forceRunList:
         target_list.append(get_pickle_file(unique_id, x.nodeId, x.name))

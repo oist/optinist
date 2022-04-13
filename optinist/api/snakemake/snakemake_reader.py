@@ -1,5 +1,5 @@
 from optinist.api.dir_path import DIRPATH
-from optinist.api.snakemake.snakemake import Rule
+from optinist.api.snakemake.smk import Rule
 
 
 class SmkConfigReader:

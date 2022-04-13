@@ -9,4 +9,4 @@ rule:
     params:
         name=name
     script:
-        f'{DIRPATH.ROOT_DIR}/rules/scripts/main.py'
+        f'{DIRPATH.ROOT_DIR}/rules/scripts/data.py'

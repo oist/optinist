@@ -1,7 +1,7 @@
 from typing import Dict, List
 
-from optinist.wrappers.data_wrapper import *
-from optinist.api.snakemake.snakemake import Rule
+from optinist.api.dataclass.dataclass import *
+from optinist.api.snakemake.smk import Rule
 from optinist.api.workflow.workflow import Edge, Node, NodeType
 from optinist.api.workflow.workflow_params import get_typecheck_params
 from optinist.api.utils.filepath_creater import get_pickle_file

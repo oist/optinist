@@ -1,4 +1,4 @@
-from optinist.wrappers.data_wrapper import *
+from optinist.api.dataclass.dataclass import *
 from optinist.api.nwb.nwb import NWBDATASET
 
 

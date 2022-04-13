@@ -13,7 +13,7 @@ def join_filepath(path_list):
 
 def create_filepath(dirname, filename):
     if not os.path.exists(dirname):
-        os.makedirs(dirname, exist_ok=True)
+        os.makedirs(dirname)
 
     return join_filepath([dirname, filename])
 

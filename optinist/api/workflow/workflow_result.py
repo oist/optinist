@@ -3,7 +3,7 @@ from glob import glob
 from typing import Dict
 
 from optinist.api.pickle.pickle_reader import PickleReader
-from optinist.wrappers.data_wrapper import *
+from optinist.api.dataclass.dataclass import *
 from optinist.api.workflow.workflow import Message, OutputPath, OutputType
 from optinist.api.config.config_writer import ConfigWriter
 from optinist.api.experiment.experiment_reader import ExptConfigReader
@@ -32,13 +32,18 @@ class WorkflowResult:
             if isinstance(info, (list, str)):
                 results[node_id] = _error(info, node_id, unique_id)
             else:
-                json_dir = "/".join(path.split("/")[:-1])
-                results[node_id] = _success(info, node_id, algo_name, json_dir, unique_id)
+                results[node_id] = _success(
+                    info,
+                    node_id,
+                    algo_name,
+                    unique_id,
+                    join_filepath(path.split("/")[:-1])
+                )
 
         return results
 
 
-def _success(info, node_id, algo_name, json_dir, unique_id):
+def _success(info, node_id, algo_name, unique_id, dirpath):
     config = ExptConfigReader.read(join_filepath(
         [DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_YML]))
     config.function[node_id].success = "success"
@@ -52,7 +57,7 @@ def _success(info, node_id, algo_name, json_dir, unique_id):
     return Message(
         status="success",
         message=f"{algo_name} success",
-        outputPaths=_outputPaths(info, json_dir)
+        outputPaths=_outputPaths(info, dirpath)
     )
 
 
@@ -73,11 +78,11 @@ def _error(info, node_id, unique_id):
     )
 
 
-def _outputPaths(info, json_dir):
+def _outputPaths(info, dirpath):
     outputPaths: Dict[str, OutputPath] = {}
     for k, v in info.items():
         if isinstance(v, BaseData):
-            v.save_json(json_dir)
+            v.save_json(dirpath)
 
         if isinstance(v, ImageData):
             outputPaths[k] = OutputPath(

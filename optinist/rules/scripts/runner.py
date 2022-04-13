@@ -3,7 +3,7 @@ import os
 import gc
 import copy
 
-from optinist.api.snakemake.snakemake import Rule
+from optinist.api.snakemake.smk import Rule
 from optinist.api.utils.filepath_creater import join_filepath
 from optinist.api.pickle.pickle_reader import PickleReader
 from optinist.api.pickle.pickle_writer import PickleWriter
@@ -30,10 +30,9 @@ class Runner:
             )
 
             # ファイル保存先
-            os.makedirs(
-                join_filepath(__rule_config.output.split("/")[:-1]),
-                exist_ok=True
-            )
+            outputdir = join_filepath(__rule_config.output.split("/")[:-1])
+            if not os.path.exists(outputdir):
+                os.makedirs(outputdir)
 
             # nwbfileの設定
             if "nwbfile" not in output_info:
