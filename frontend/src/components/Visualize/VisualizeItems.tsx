@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
-import TextField from '@mui/material/TextField'
-import InputAdornment from '@mui/material/InputAdornment'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
@@ -31,8 +29,7 @@ import { DisplayDataItem } from './DisplayDataItem'
 import {
   selectItem,
   setDisplayDataPath,
-  setItemHeight,
-  setItemWidth,
+  setItemSize,
   setTimeSeriesRefImageItemId,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { RootState } from 'store/store'
@@ -71,37 +68,6 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
 
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
-  const [inputWidth, setInputWidth] = React.useState(width)
-  const onBlurWidth = () => {
-    const value = inputWidth >= 300 ? inputWidth : 300
-    dispatch(
-      setItemWidth({
-        itemId,
-        width: value,
-      }),
-    )
-    setInputWidth(value)
-  }
-  const onChangeWidth = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(event.target.value)
-    setInputWidth(value)
-  }
-
-  const [inputHeight, setInputHeight] = React.useState(height)
-  const onBlurHeight = () => {
-    const value = inputHeight >= 300 ? inputHeight : 300
-    dispatch(
-      setItemHeight({
-        itemId,
-        height: value,
-      }),
-    )
-    setInputHeight(value)
-  }
-  const onChangeHeight = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(event.target.value)
-    setInputHeight(value)
-  }
 
   const itemDataType = useSelector(selectVisualizeDataType(itemId))
 
@@ -112,10 +78,8 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
   }>({ x: 0, y: 0 })
 
   const onMouseDown = (event: React.MouseEvent<HTMLInputElement>) => {
-    console.log(event)
     setResizeTrigger(true)
     setResizeCoord({ x: event.screenX, y: event.screenY })
-    console.log(event.screenX, ' ', event.screenY)
   }
 
   const onMouseUp = () => {
@@ -129,23 +93,15 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
   const onMouseMove = (event: React.MouseEvent<HTMLInputElement>) => {
     if (resizeTrigger) {
       const newWidth = width + (event.screenX - resizeCoord.x)
-      dispatch(
-        setItemWidth({
-          itemId,
-          width: newWidth,
-        }),
-      )
-      setInputWidth(newWidth)
-      setResizeCoord({ x: event.screenX, y: event.screenY })
-
       const newHeight = height + (event.screenY - resizeCoord.y)
       dispatch(
-        setItemHeight({
+        setItemSize({
           itemId,
+          width: newWidth,
           height: newHeight,
         }),
       )
-      setInputHeight(newHeight)
+      setResizeCoord({ x: event.screenX, y: event.screenY })
     }
   }
 
@@ -158,7 +114,7 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
         height: `${height}px`,
         margin: theme.spacing(1),
         padding: theme.spacing(1),
-        cursor: 'pointer',
+        cursor: resizeTrigger ? 'nwse-resize' : 'pointer',
         borderColor: isSelected ? theme.palette.primary.light : undefined,
       }}
       onClick={onClick}
@@ -171,38 +127,6 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
         <Box flexGrow={1}>
           <>ID: {itemId}</>
           <FilePathSelectItem itemId={itemId} />
-          <TextField
-            type="number"
-            size="small"
-            label="width"
-            sx={{ marginRight: 1, marginBottom: 1 }}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">px</InputAdornment>,
-            }}
-            inputProps={{
-              min: 150,
-              step: 50,
-            }}
-            style={{ width: 80, marginLeft: 10 }}
-            value={inputWidth}
-            onBlur={onBlurWidth}
-            onChange={onChangeWidth}
-          />
-          <TextField
-            type="number"
-            label="height"
-            sx={{ width: 80, marginRight: 1, marginBottom: 1 }}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">px</InputAdornment>,
-            }}
-            inputProps={{
-              min: 150,
-              step: 50,
-            }}
-            value={inputHeight}
-            onBlur={onBlurHeight}
-            onChange={onChangeHeight}
-          />
         </Box>
         {itemDataType === DATA_TYPE_SET.TIME_SERIES && (
           <Box flexGrow={1}>
