@@ -10,10 +10,10 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v3
-      - name: Run a one-line script
       with:
         ref: ${{ github.head_ref }}
         token: ${{ secret.GITHUB_TOKEN }}
+      - name: Run a one-line script
         run: |
           cd frontend
           yarn build
