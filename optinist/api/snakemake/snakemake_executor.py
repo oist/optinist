@@ -7,16 +7,17 @@ from snakemake.dag import DAG
 from snakemake.persistence import Persistence
 
 from optinist.api.dir_path import DIRPATH
+from optinist.api.snakemake.smk import SmkParam
 
 
 class SmkExecutor:
-    def __init__(self, snakefile):
+    def __init__(self, snakefile, forceall=False):
         self.snakefile = os.path.abspath(snakefile)
         self.logger = logger
         self.logger.setup_logfile()
-        self.forceall = True
+        self.forceall = forceall
 
-    def create_workflow(self, cores):
+    def init_workflow(self, cores):
         self.workflow = Workflow(
             snakefile=self.snakefile,
             cores=cores,
@@ -29,7 +30,7 @@ class SmkExecutor:
         )
         self.workflow.check()
 
-    def create_dag(self):
+    def init_dag(self):
         targetrules = map(
             self.workflow._rules.__getitem__,
             filter(self.workflow.is_rule, ["all"])
@@ -52,7 +53,7 @@ class SmkExecutor:
         )
         self.dag.init()
 
-    def create_graph(self):
+    def init_graph(self):
         graph = {}
         for job in self.dag.jobs:
             graph[job.rule] = [
@@ -79,15 +80,15 @@ class SmkExecutor:
             print(x[0], " → ", x[1])
             print(file_graph[x[0]], " → ", file_graph[x[1]])
 
-    def execute(self, targets=None, forcetargets=False, keep_logger=False):
+    def execute(self, forcerun):
         try:
             success = self.workflow.execute(
-                targets=targets,
-                forcetargets=forcetargets,
                 forceall=self.forceall,
+                forcerun=forcerun,
                 nolock=True,
                 unlock=False,
                 updated_files=[],
+                
             )
         except BrokenPipeError:
             success = False
@@ -101,16 +102,28 @@ class SmkExecutor:
 
         if "workflow" in locals() and self.workflow.persistence:
             self.workflow.persistence.unlock()
-        if not keep_logger:
-            self.logger.cleanup()
+
+        self.logger.cleanup()
 
         return success
 
 
+def get_dependencies_graph(params: SmkParam):
+    smk_executor = SmkExecutor(
+        DIRPATH.SNAKEMAKE_FILEPATH,
+        forceall=params.forceall,
+    )
+    smk_executor.init_workflow(cores=params.cores)
+    smk_executor.init_dag()
+    smk_executor.init_graph()
+    return smk_executor
+
+
+def snakemake_execute(params: SmkParam):
+    smk_executor = get_dependencies_graph(params)
+    success = smk_executor.execute(params.forcerun)
+    print("success: ", success)
+
+
 if __name__ == '__main__':
-    smk_executor = SmkExecutor(DIRPATH.SNAKEMAKE_FILEPATH)
-    smk_executor.create_workflow(cores=2)
-    smk_executor.create_dag()
-    smk_executor.create_graph()
-    # success = smk_executor.execute()
-    # print("success: ", success)
+    get_dependencies_graph()
