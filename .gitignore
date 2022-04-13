@@ -13,3 +13,5 @@ optinist.egg-info
 .tox
 .snakemake
 .pytest_cache
+
+optinist/config.yaml
