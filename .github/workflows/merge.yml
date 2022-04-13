@@ -11,6 +11,9 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Run a one-line script
+      with:
+        ref: ${{ github.head_ref }}
+        token: ${{ secret.GITHUB_TOKEN }}
         run: |
           cd frontend
           yarn build
