@@ -111,22 +111,22 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
     y: number
   }>({ x: 0, y: 0 })
 
-  const onMouseDown = (event: any) => {
+  const onMouseDown = (event: React.MouseEvent<HTMLInputElement>) => {
     console.log(event)
     setResizeTrigger(true)
     setResizeCoord({ x: event.screenX, y: event.screenY })
     console.log(event.screenX, ' ', event.screenY)
   }
 
-  const onMouseUp = (event: any) => {
+  const onMouseUp = () => {
     setResizeTrigger(false)
   }
 
-  const onMouseLeave = (event: any) => {
+  const onMouseLeave = () => {
     setResizeTrigger(false)
   }
 
-  const onMouseMove = (event: any) => {
+  const onMouseMove = (event: React.MouseEvent<HTMLInputElement>) => {
     if (resizeTrigger) {
       const newWidth = width + (event.screenX - resizeCoord.x)
       dispatch(
