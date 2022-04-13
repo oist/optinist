@@ -25,6 +25,8 @@ jobs:
         with:
           token: ${{secrets.GITHUB_TOKEN}}
       - name: push
+        env:
+          CI: false
         run: |
           cd frontend
           rm -rf node_modules
