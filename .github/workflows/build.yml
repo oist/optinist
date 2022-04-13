@@ -1,8 +1,18 @@
+# on:
+#   pull_request:
+#     branches:
+#       - develop
+#     types: [closed]
+
+name: Build
+
 on:
+  push:
+    branches: [ develop ]
   pull_request:
-    branches:
-      - develop
-    types: [closed]
+    branches: [ develop ]
+
+  workflow_dispatch:
 
 jobs:
   build:
