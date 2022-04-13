@@ -20,13 +20,12 @@ jobs:
     runs-on: self-hosted
     steps:
       - uses: actions/checkout@v2
-        with:
-          ref: ${{github.event.pull_request.head.ref}}
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
       - name: push
-        run: |
-          cd frontend
-          yarn build
-          git add build
-          git commit -m"build frontend"
-          git push origin develop
+        with:
+          github-token: ${{secrets.GITHUB_TOKEN}}
+          run: |
+            cd frontend
+            yarn build
+            git add build
+            git commit -m"build frontend"
+            git push origin develop
