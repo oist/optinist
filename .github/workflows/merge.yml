@@ -9,9 +9,10 @@ jobs:
     if: github.event.pull_request.merged == true
     runs-on: self-hosted
     steps:
-      - uses: actions/labeler@v4
+      - uses: github/login-action@v1
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: push
         run: |
           cd frontend
           yarn build
