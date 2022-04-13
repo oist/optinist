@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useTheme } from '@mui/material/styles'
 import Box from '@mui/material/Box'
 import Paper from '@mui/material/Paper'
-import TextField from '@mui/material/TextField'
-import InputAdornment from '@mui/material/InputAdornment'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
@@ -31,8 +29,7 @@ import { DisplayDataItem } from './DisplayDataItem'
 import {
   selectItem,
   setDisplayDataPath,
-  setItemHeight,
-  setItemWidth,
+  setItemSize,
   setTimeSeriesRefImageItemId,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { RootState } from 'store/store'
@@ -71,39 +68,42 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
 
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
-  const [inputWidth, setInputWidth] = React.useState(width)
-  const onBlurWidth = () => {
-    const value = inputWidth >= 300 ? inputWidth : 300
-    dispatch(
-      setItemWidth({
-        itemId,
-        width: value,
-      }),
-    )
-    setInputWidth(value)
-  }
-  const onChangeWidth = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(event.target.value)
-    setInputWidth(value)
-  }
-
-  const [inputHeight, setInputHeight] = React.useState(height)
-  const onBlurHeight = () => {
-    const value = inputHeight >= 300 ? inputHeight : 300
-    dispatch(
-      setItemHeight({
-        itemId,
-        height: value,
-      }),
-    )
-    setInputHeight(value)
-  }
-  const onChangeHeight = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = Number(event.target.value)
-    setInputHeight(value)
-  }
 
   const itemDataType = useSelector(selectVisualizeDataType(itemId))
+
+  const [resizeTrigger, setResizeTrigger] = React.useState(false)
+  const [resizeCoord, setResizeCoord] = React.useState<{
+    x: number
+    y: number
+  }>({ x: 0, y: 0 })
+
+  const onMouseDown = (event: React.MouseEvent<HTMLInputElement>) => {
+    setResizeTrigger(true)
+    setResizeCoord({ x: event.screenX, y: event.screenY })
+  }
+
+  const onMouseUp = () => {
+    setResizeTrigger(false)
+  }
+
+  const onMouseLeave = () => {
+    setResizeTrigger(false)
+  }
+
+  const onMouseMove = (event: React.MouseEvent<HTMLInputElement>) => {
+    if (resizeTrigger) {
+      const newWidth = width + (event.screenX - resizeCoord.x)
+      const newHeight = height + (event.screenY - resizeCoord.y)
+      dispatch(
+        setItemSize({
+          itemId,
+          width: newWidth,
+          height: newHeight,
+        }),
+      )
+      setResizeCoord({ x: event.screenX, y: event.screenY })
+    }
+  }
 
   return (
     <Paper
@@ -114,45 +114,19 @@ const Item = React.memo<{ itemId: number }>(({ itemId }) => {
         height: `${height}px`,
         margin: theme.spacing(1),
         padding: theme.spacing(1),
-        cursor: 'pointer',
+        cursor: resizeTrigger ? 'nwse-resize' : 'pointer',
         borderColor: isSelected ? theme.palette.primary.light : undefined,
       }}
       onClick={onClick}
+      onMouseDown={onMouseDown}
+      onMouseLeave={onMouseLeave}
+      onMouseUp={onMouseUp}
+      onMouseMove={onMouseMove}
     >
       <Box display="flex" justifyContent="flex-end">
         <Box flexGrow={1}>
           <>ID: {itemId}</>
           <FilePathSelectItem itemId={itemId} />
-          <TextField
-            type="number"
-            size="small"
-            label="width"
-            sx={{ marginRight: 1, marginBottom: 1 }}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">px</InputAdornment>,
-            }}
-            inputProps={{
-              min: 150,
-            }}
-            style={{ width: 80, marginLeft: 10 }}
-            value={inputWidth}
-            onBlur={onBlurWidth}
-            onChange={onChangeWidth}
-          />
-          <TextField
-            type="number"
-            label="height"
-            sx={{ width: 80, marginRight: 1, marginBottom: 1 }}
-            InputProps={{
-              endAdornment: <InputAdornment position="end">px</InputAdornment>,
-            }}
-            inputProps={{
-              min: 150,
-            }}
-            value={inputHeight}
-            onBlur={onBlurHeight}
-            onChange={onChangeHeight}
-          />
         </Box>
         {itemDataType === DATA_TYPE_SET.TIME_SERIES && (
           <Box flexGrow={1}>
@@ -176,7 +150,7 @@ const FilePathSelectItem = React.memo<{
   const selectedNodeId = useSelector(selectVisualizeDataNodeId(itemId))
   const selectedFilePath = useSelector(selectImageItemFilePath(itemId))
 
-  const [prevItem, setPrevItem] = useState<{
+  const [prevItem, setPrevItem] = React.useState<{
     dataType: DATA_TYPE
     filePath: string | null
   }>({

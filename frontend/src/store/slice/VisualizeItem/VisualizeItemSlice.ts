@@ -184,20 +184,17 @@ export const visualaizeItemSlice = createSlice({
         state.layout[targetRowIndex].indexOf(targetItemId)
       state.layout[targetRowIndex].splice(targetColumnIndex + 1, 0, newItemId)
     },
-    setItemWidth: (
+    setItemSize: (
       state,
-      action: PayloadAction<{ itemId: number; width: number }>,
+      action: PayloadAction<{
+        itemId: number
+        width: number
+        height: number
+      }>,
     ) => {
-      const { itemId, width } = action.payload
+      const { itemId, width, height } = action.payload
       const targetItem = state.items[itemId]
       targetItem.width = width
-    },
-    setItemHeight: (
-      state,
-      action: PayloadAction<{ itemId: number; height: number }>,
-    ) => {
-      const { itemId, height } = action.payload
-      const targetItem = state.items[itemId]
       targetItem.height = height
     },
     selectItem: (state, action: PayloadAction<number>) => {
@@ -780,8 +777,7 @@ export const {
   deleteVisualizeItem,
   pushInitialItemToNewRow,
   insertInitialItemToNextColumn,
-  setItemWidth,
-  setItemHeight,
+  setItemSize,
   selectItem,
   setItemType,
   setFilePath,
