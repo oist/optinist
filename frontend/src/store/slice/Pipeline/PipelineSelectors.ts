@@ -252,3 +252,38 @@ export const selectPipelineNodeResultOutputKeyList =
     }
     return []
   }
+
+const selectPipelineNodeResultOutputPaths =
+  (nodeId: string) => (state: RootState) => {
+    const pipeline = selectStartedPipeline(state)
+    if (isStartedPipeline(pipeline)) {
+      const nodeResult = pipeline.runResult[nodeId]
+      if (
+        Object.keys(pipeline.runResult).includes(nodeId) &&
+        isNodeResultSuccess(nodeResult)
+      ) {
+        return nodeResult.outputPaths
+      }
+    }
+    throw new Error(`key error. nodeId:${nodeId}`)
+  }
+
+export const selectPipelineNodeResultOutputFilePath =
+  (nodeId: string, outputKey: string) => (state: RootState) => {
+    const outputPaths = selectPipelineNodeResultOutputPaths(nodeId)(state)
+    if (Object.keys(outputPaths).includes(outputKey)) {
+      return outputPaths[outputKey].path
+    } else {
+      throw new Error(`key error. outputKey:${outputKey}`)
+    }
+  }
+
+export const selectPipelineNodeResultOutputFileDataType =
+  (nodeId: string, outputKey: string) => (state: RootState) => {
+    const outputPaths = selectPipelineNodeResultOutputPaths(nodeId)(state)
+    if (Object.keys(outputPaths).includes(outputKey)) {
+      return outputPaths[outputKey].type
+    } else {
+      throw new Error(`key error. outputKey:${outputKey}`)
+    }
+  }

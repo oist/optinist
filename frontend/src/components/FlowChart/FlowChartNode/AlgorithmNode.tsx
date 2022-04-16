@@ -10,6 +10,7 @@ import {
   IconButton,
   Button,
   LinearProgress,
+  ButtonGroup,
 } from '@mui/material'
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import ErrorIcon from '@mui/icons-material/Error'
@@ -35,6 +36,7 @@ import {
 } from 'store/slice/Pipeline/PipelineSelectors'
 import { RootState } from 'store/store'
 import { NODE_RESULT_STATUS } from 'store/slice/Pipeline/PipelineType'
+import { AlgorithmOutputDialog } from './AlgorithmOutputDialog'
 
 const leftHandleStyle: CSSProperties = {
   width: '4%',
@@ -71,6 +73,16 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
       dispatch(deleteFlowElementsById(nodeId))
     }
 
+    const [open, setOpen] = React.useState(false)
+    const onCloseOutputDialog = () => {
+      setOpen(false)
+    }
+    const onClickOutputButton = () => {
+      setOpen(true)
+    }
+
+    const status = useStatus(nodeId)
+
     return (
       <div
         style={{
@@ -91,12 +103,23 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
           <CloseOutlinedIcon />
         </IconButton>
         <AlgoName nodeId={nodeId} data={data} />
-        <div>
-          <Button size="small" variant="outlined" onClick={onClickParamButton}>
+        <ButtonGroup sx={{ mx: 1 }}>
+          <Button size="small" onClick={onClickParamButton}>
             Param
-            {/* <DehazeIcon fontSize='small'/> */}
           </Button>
-        </div>
+          <Button
+            size="small"
+            onClick={onClickOutputButton}
+            disabled={status !== NODE_RESULT_STATUS.SUCCESS}
+          >
+            Output
+          </Button>
+          <AlgorithmOutputDialog
+            nodeId={nodeId}
+            open={open}
+            onClose={onCloseOutputDialog}
+          />
+        </ButtonGroup>
         <AlgoArgs nodeId={nodeId} />
         <AlgoReturns nodeId={nodeId} isConnectable={isConnectable} />
         <Message nodeId={nodeId} />
@@ -110,13 +133,7 @@ const AlgoName = React.memo<{
   data: NodeData
 }>(({ nodeId, data }) => {
   const theme = useTheme()
-  const latestUid = useSelector(selectPipelineLatestUid)
-
-  const status = useSelector((state: RootState) =>
-    latestUid != null
-      ? selectPipelineNodeResultStatus(nodeId)(state)
-      : 'uninitialized',
-  )
+  const status = useStatus(nodeId)
   return (
     <div
       style={{
@@ -299,13 +316,8 @@ const ReturnHandle = React.memo<HandleProps>(
 const Message = React.memo<{
   nodeId: string
 }>(({ nodeId }) => {
+  const status = useStatus(nodeId)
   const latestUid = useSelector(selectPipelineLatestUid)
-  const status = useSelector((state: RootState) =>
-    latestUid != null
-      ? selectPipelineNodeResultStatus(nodeId)(state)
-      : 'uninitialized',
-  )
-
   const errorMsg = useSelector((state: RootState) =>
     latestUid != null
       ? selectPipelineNodeResultMessage(nodeId)(state) ?? null
@@ -347,16 +359,7 @@ const Message = React.memo<{
       </>
     )
   } else if (status === NODE_RESULT_STATUS.SUCCESS) {
-    return (
-      <IconButton
-        ref={anchorElRef}
-        onClick={() => setOpen((prevOpen) => !prevOpen)}
-        size="small"
-        style={{ color: theme.palette.success.main, float: 'right' }}
-      >
-        <CheckCircleRoundedIcon />
-      </IconButton>
-    )
+    return <CheckCircleRoundedIcon color="success" sx={{ float: 'right' }} />
   } else {
     return null
   }
@@ -375,4 +378,14 @@ function algoInfoListEqualtyFn(
   } else {
     return a === undefined && b === undefined
   }
+}
+
+function useStatus(nodeId: string) {
+  const latestUid = useSelector(selectPipelineLatestUid)
+  const status = useSelector((state: RootState) =>
+    latestUid != null
+      ? selectPipelineNodeResultStatus(nodeId)(state)
+      : 'uninitialized',
+  )
+  return status
 }

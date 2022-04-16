@@ -49,6 +49,7 @@ export interface DisplayDataItemBaseType extends ItemBaseType<'displayData'> {
   filePath: string | null
   nodeId: string | null
   dataType: DATA_TYPE | null
+  isWorkflowDialog: boolean
 }
 
 export interface ImageItem extends DisplayDataItemBaseType {
