@@ -1,5 +1,6 @@
 import { RootState } from 'store/store'
 import { selectRoiData } from '../DisplayData/DisplayDataSelectors'
+import { DATA_TYPE } from '../DisplayData/DisplayDataType'
 import {
   isDisplayDataItem,
   isImageItem,
@@ -17,7 +18,7 @@ export const selectVisualizeImageItemIdList = (state: RootState) =>
     .map(Number)
     .filter((itemId) => {
       const item = selectVisualizeItems(state)[itemId]
-      return isImageItem(item)
+      return isImageItem(item) && !item.isWorkflowDialog
     })
 
 export const selectVisualizeItems = (state: RootState) =>
@@ -25,6 +26,29 @@ export const selectVisualizeItems = (state: RootState) =>
 
 export const selectVisualizeItemLayout = (state: RootState) =>
   state.visualaizeItem.layout
+
+export const selectVisualizeItemIsWorkflowDialog =
+  (itemId: number) => (state: RootState) => {
+    return selectVisualizeItems(state)[itemId].isWorkflowDialog
+  }
+
+export const selectVisualizeItemIdForWorkflowDialog =
+  (nodeId: string, filePath: string, dataType: DATA_TYPE) =>
+  (state: RootState) => {
+    const items = selectVisualizeItems(state)
+    let targetItemId: null | number = null
+    for (const [itemId, value] of Object.entries(items)) {
+      if (
+        value.nodeId === nodeId &&
+        value.filePath === filePath &&
+        value.dataType === dataType &&
+        value.isWorkflowDialog
+      ) {
+        targetItemId = Number(itemId)
+      }
+    }
+    return targetItemId
+  }
 
 export const selectVisualizeItemWidth =
   (itemId: number) => (state: RootState) => {
@@ -35,9 +59,6 @@ export const selectVisualizeItemHeight =
   (itemId: number) => (state: RootState) => {
     return selectVisualizeItems(state)[itemId].height
   }
-
-export const selectVisualizeItemIdList = (state: RootState) =>
-  Object.keys(selectVisualizeItems(state)).map((key) => Number(key))
 
 export const selectVisualizeItemType = (itemId: number) => (state: RootState) =>
   selectVisualizeItems(state)[itemId].itemType

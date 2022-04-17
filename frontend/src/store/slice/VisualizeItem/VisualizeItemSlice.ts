@@ -38,6 +38,7 @@ const displayDataCommonInitialValue = {
   nodeId: null,
   width: 500,
   height: 500,
+  isWorkflowDialog: false,
 }
 const imageItemInitialValue: ImageItem = {
   ...displayDataCommonInitialValue,
@@ -183,6 +184,31 @@ export const visualaizeItemSlice = createSlice({
       const targetColumnIndex =
         state.layout[targetRowIndex].indexOf(targetItemId)
       state.layout[targetRowIndex].splice(targetColumnIndex + 1, 0, newItemId)
+    },
+    addItemForWorkflowDialog: (
+      state,
+      action: PayloadAction<{
+        nodeId: string
+        filePath: string
+        dataType: DATA_TYPE
+      }>,
+    ) => {
+      const { nodeId, filePath, dataType } = action.payload
+      const newItemId = getMaxItemId(state) + 1
+      state.items[newItemId] = {
+        ...getDisplayDataItemInitialValue(dataType),
+        isWorkflowDialog: true,
+        nodeId,
+        filePath,
+      }
+    },
+    deleteAllItemForWorkflowDialog: (state) => {
+      const targetItemIdList = Object.entries(state.items)
+        .filter(([itemId, value]) => value.isWorkflowDialog)
+        .map(([itemId, value]) => Number(itemId))
+      targetItemIdList.forEach(
+        (targetItemId) => delete state.items[targetItemId],
+      )
     },
     setItemSize: (
       state,
@@ -777,6 +803,8 @@ export const {
   deleteVisualizeItem,
   pushInitialItemToNewRow,
   insertInitialItemToNextColumn,
+  addItemForWorkflowDialog,
+  deleteAllItemForWorkflowDialog,
   setItemSize,
   selectItem,
   setItemType,
