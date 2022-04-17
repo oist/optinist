@@ -130,6 +130,14 @@ def snakemake_execute(params: SmkParam):
         forceall=params.forceall,
         cores=params.cores,
     )
+    smk_executor.init_workflow(cores=params.cores)
+    smk_executor.init_dag()
+    smk_executor.init_graph()
+    return smk_executor
+
+
+def snakemake_execute(params: SmkParam):
+    smk_executor = get_dependencies_graph(params)
     success = smk_executor.execute(params.forcerun)
     print("success: ", success)
 

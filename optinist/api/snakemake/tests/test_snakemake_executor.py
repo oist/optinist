@@ -71,3 +71,4 @@ def test_get_dependencies_graph():
 def test_delete_dependencies():
     edges, file_graph = test_get_dependencies_graph()
     assert edges
+    get_dependencies_graph(params)
