@@ -6,25 +6,47 @@ import {
   selectCsvItemSetHeader,
   selectCsvItemSetIndex,
   selectCsvItemTranspose,
+  selectDisplayDataIsSingle,
   selectVisualizeDataFilePath,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
   setCsvItemSetHeader,
   setCsvItemSetIndex,
   setCsvItemTranspose,
-  setDisplayDataPath,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
 import { FormControlLabel, Switch, TextField } from '@mui/material'
+import { setNewDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemActions'
+import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
 
 export const CsvItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
   const dispatch = useDispatch()
-  const onSelectFile = (path: string) => {
-    dispatch(setDisplayDataPath({ nodeId: null, filePath: path, itemId }))
+  const isSingleData = useSelector(selectDisplayDataIsSingle(itemId))
+  const onSelectFile = (newPath: string) => {
+    const basePayload = {
+      itemId,
+      nodeId: null,
+      filePath: newPath,
+    }
+    dispatch(
+      setNewDisplayDataPath(
+        isSingleData && filePath != null
+          ? {
+              ...basePayload,
+              deleteData: true,
+              prevDataType: DATA_TYPE_SET.CSV,
+              prevFilePath: filePath,
+            }
+          : {
+              ...basePayload,
+              deleteData: false,
+            },
+      ),
+    )
   }
   const { onUploadFile } = useFileUploader(FILE_TYPE_SET.CSV)
   const onUploadFileHandle = (formData: FormData, fileName: string) => {
