@@ -9,7 +9,7 @@ import MenuItem from '@mui/material/MenuItem'
 import Select, { SelectChangeEvent } from '@mui/material/Select'
 import FormControl from '@mui/material/FormControl'
 
-import { arrayEqualityFn, twoDimarrayEqualityFn } from 'utils/EqualityUtils'
+import { arrayEqualityFn } from 'utils/EqualityUtils'
 
 import {
   selectDisplayDataIsSingle,
@@ -20,11 +20,9 @@ import {
   selectVisualizeDataType,
   selectVisualizeImageItemIdList,
   selectVisualizeItemHeight,
-  selectVisualizeItemLayout,
   selectVisualizeItemWidth,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
-import { VisualizeItemAddButton } from './VisualizeItemAddButton'
 import { DisplayDataItemLayoutMenuIcon } from './VisualizeItemLayoutMenuIcon'
 import { DisplayDataItem } from './DisplayDataItem'
 import {
@@ -40,23 +38,7 @@ import {
 } from 'store/slice/DisplayData/DisplayDataType'
 import { setNewDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemActions'
 
-export const FlexItemList: React.FC = () => {
-  const layout = useSelector(selectVisualizeItemLayout, twoDimarrayEqualityFn)
-  return (
-    <Box display="flex" flexWrap="wrap" flexDirection="column" p={1} m={1}>
-      {layout.map((row) => (
-        <Box display="flex" flexDirection="row">
-          {row.map((itemId) => (
-            <Item itemId={itemId} key={itemId} />
-          ))}
-        </Box>
-      ))}
-      <VisualizeItemAddButton />
-    </Box>
-  )
-}
-
-const Item = React.memo<{ itemId: number }>(({ itemId }) => {
+export const VisualizeItem = React.memo<{ itemId: number }>(({ itemId }) => {
   const dispatch = useDispatch()
   const onClick = () => {
     dispatch(selectItem(itemId))
