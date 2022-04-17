@@ -11,16 +11,17 @@ from optinist.api.snakemake.smk import SmkParam
 
 
 class SmkExecutor:
-    def __init__(self, snakefile, forceall=False):
+    def __init__(self, snakefile, forceall=False, cores=2):
         self.snakefile = os.path.abspath(snakefile)
         self.logger = logger
         self.logger.setup_logfile()
         self.forceall = forceall
+        self.cores = cores
 
-    def init_workflow(self, cores):
+    def init_workflow(self):
         self.workflow = Workflow(
             snakefile=self.snakefile,
-            cores=cores,
+            cores=self.cores,
         )
 
         self.workflow.include(
@@ -31,6 +32,7 @@ class SmkExecutor:
         self.workflow.check()
 
     def init_dag(self):
+        self.init_workflow()
         targetrules = map(
             self.workflow._rules.__getitem__,
             filter(self.workflow.is_rule, ["all"])
@@ -54,6 +56,7 @@ class SmkExecutor:
         self.dag.init()
 
     def init_graph(self):
+        self.init_dag()
         graph = {}
         for job in self.dag.jobs:
             graph[job.rule] = [
@@ -80,7 +83,10 @@ class SmkExecutor:
             print(x[0], " → ", x[1])
             print(file_graph[x[0]], " → ", file_graph[x[1]])
 
+        return edges, file_graph
+
     def execute(self, forcerun):
+        self.init_graph()
         try:
             success = self.workflow.execute(
                 forceall=self.forceall,
@@ -97,8 +103,8 @@ class SmkExecutor:
                 print_exception(ex, self.workflow.linemaps)
             else:
                 print_exception(ex, dict())
-
             success = False
+            assert False, "Snakemake execute error"
 
         if "workflow" in locals() and self.workflow.persistence:
             self.workflow.persistence.unlock()
@@ -112,17 +118,35 @@ def get_dependencies_graph(params: SmkParam):
     smk_executor = SmkExecutor(
         DIRPATH.SNAKEMAKE_FILEPATH,
         forceall=params.forceall,
+        cores=params.cores,
     )
-    smk_executor.init_workflow(cores=params.cores)
-    smk_executor.init_dag()
-    smk_executor.init_graph()
-    return smk_executor
+    edges, file_graph = smk_executor.init_graph()
+    return edges, file_graph
 
 
 def snakemake_execute(params: SmkParam):
-    smk_executor = get_dependencies_graph(params)
+    smk_executor = SmkExecutor(
+        DIRPATH.SNAKEMAKE_FILEPATH,
+        forceall=params.forceall,
+        cores=params.cores,
+    )
     success = smk_executor.execute(params.forcerun)
     print("success: ", success)
+
+
+def delete_dependencies(edges, file_graph):
+    """
+        [[1, 0], [2, 1], [3, 2]]
+        1  →  0
+        [{'/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/1/suite2p_file_convert.pkl'}]
+        →  [{'/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/2/suite2p_roi.pkl'}]
+        2  →  1
+        [{'/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/0/data_endoscope.pkl'}]
+        →  [{'/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/1/suite2p_file_convert.pkl'}]
+        3  →  2
+        []  →  [{'/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/0/data_endoscope.pkl'}]
+    """
+    pass
 
 
 if __name__ == '__main__':
