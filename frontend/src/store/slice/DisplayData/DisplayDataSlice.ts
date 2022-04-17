@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice } from '@reduxjs/toolkit'
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
@@ -16,6 +16,10 @@ import {
   getBarData,
   getHTMLData,
 } from './DisplayDataActions'
+import {
+  deleteDisplayItem,
+  setNewDisplayDataPath,
+} from '../VisualizeItem/VisualizeItemActions'
 
 const initialState: DisplayData = {
   timeSeries: {},
@@ -32,38 +36,22 @@ const initialState: DisplayData = {
 export const displayDataSlice = createSlice({
   name: DISPLAY_DATA_SLICE_NAME,
   initialState,
-  reducers: {
-    deleteDisplayItem: (
-      state,
-      action: PayloadAction<{
-        dataType: DATA_TYPE
-        filePath: string | null
-      }>,
-    ) => {
-      const { dataType, filePath } = action.payload
-      if (filePath !== null) {
-        if (dataType === DATA_TYPE_SET.IMAGE) {
-          delete state.image[filePath]
-        } else if (dataType === DATA_TYPE_SET.TIME_SERIES) {
-          delete state.timeSeries[filePath]
-        } else if (dataType === DATA_TYPE_SET.CSV) {
-          delete state.csv[filePath]
-        } else if (dataType === DATA_TYPE_SET.HEAT_MAP) {
-          delete state.heatMap[filePath]
-          // } else if (dataType === DATA_TYPE_SET.ROI) {
-          //   delete state.roi[filePath]
-        } else if (dataType === DATA_TYPE_SET.SCATTER) {
-          delete state.scatter[filePath]
-        } else if (dataType === DATA_TYPE_SET.BAR) {
-          delete state.bar[filePath]
-        } else if (dataType === DATA_TYPE_SET.HTML) {
-          delete state.html[filePath]
-        }
-      }
-    },
-  },
+  reducers: {},
   extraReducers: (builder) => {
     builder
+      .addCase(deleteDisplayItem, (state, action) => {
+        if (action.payload.deleteData) {
+          const { filePath, dataType } = action.payload
+          deleteDisplayDataFn(state, filePath, dataType)
+        }
+      })
+      .addCase(setNewDisplayDataPath, (state, action) => {
+        if (action.payload.deleteData) {
+          const { prevDataType: dataType, prevFilePath: filePath } =
+            action.payload
+          deleteDisplayDataFn(state, filePath, dataType)
+        }
+      })
       .addCase(getTimeSeriesDataById.pending, (state, action) => {
         const { path } = action.meta.arg
         if (!state.timeSeries.hasOwnProperty(path)) {
@@ -364,6 +352,30 @@ export const displayDataSlice = createSlice({
   },
 })
 
-export const { deleteDisplayItem } = displayDataSlice.actions
+function deleteDisplayDataFn(
+  state: DisplayData,
+  filePath: string,
+  dataType: DATA_TYPE,
+) {
+  if (dataType === DATA_TYPE_SET.IMAGE) {
+    delete state.image[filePath]
+  } else if (dataType === DATA_TYPE_SET.TIME_SERIES) {
+    delete state.timeSeries[filePath]
+  } else if (dataType === DATA_TYPE_SET.CSV) {
+    delete state.csv[filePath]
+  } else if (dataType === DATA_TYPE_SET.HEAT_MAP) {
+    delete state.heatMap[filePath]
+    // } else if (dataType === DATA_TYPE_SET.ROI) {
+    //   delete state.roi[filePath]
+  } else if (dataType === DATA_TYPE_SET.SCATTER) {
+    delete state.scatter[filePath]
+  } else if (dataType === DATA_TYPE_SET.BAR) {
+    delete state.bar[filePath]
+  } else if (dataType === DATA_TYPE_SET.HTML) {
+    delete state.html[filePath]
+  }
+}
+
+// export const { } = displayDataSlice.actions
 
 export default displayDataSlice.reducer

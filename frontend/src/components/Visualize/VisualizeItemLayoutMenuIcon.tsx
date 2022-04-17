@@ -9,14 +9,12 @@ import MoreVertIcon from '@mui/icons-material/MoreVert'
 import DeleteIcon from '@mui/icons-material/Delete'
 import AddIcon from '@mui/icons-material/Add'
 import {
+  selectDisplayDataIsSingle,
   selectVisualizeDataFilePath,
   selectVisualizeDataType,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import {
-  deleteVisualizeItem,
-  insertInitialItemToNextColumn,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { deleteDisplayItem } from 'store/slice/DisplayData/DisplayDataSlice'
+import { insertInitialItemToNextColumn } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { deleteDisplayItem } from 'store/slice/VisualizeItem/VisualizeItemActions'
 
 export const DisplayDataItemLayoutMenuIcon = React.memo<{
   itemId: number
@@ -24,10 +22,16 @@ export const DisplayDataItemLayoutMenuIcon = React.memo<{
   const dispatch = useDispatch()
   const dataType = useSelector(selectVisualizeDataType(itemId))
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
+  const isSingleData = useSelector(selectDisplayDataIsSingle(itemId))
   const onClickDeleteMenu = () => {
-    dispatch(deleteVisualizeItem(itemId))
     // visualize Itemで同じpathのデータ個数を調べて、1だったら、displayも削除
-    dispatch(deleteDisplayItem({ dataType, filePath }))
+    dispatch(
+      deleteDisplayItem(
+        isSingleData && filePath != null && dataType != null
+          ? { itemId, deleteData: true, filePath, dataType }
+          : { itemId, deleteData: false },
+      ),
+    )
   }
   const onClickInsertMenu = () => {
     dispatch(insertInitialItemToNextColumn(itemId))

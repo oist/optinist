@@ -20,6 +20,7 @@ import {
   selectImageItemEndIndex,
   selectImageItemRoiAlpha,
   selectImageItemFilePath,
+  selectDisplayDataIsSingle,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 
@@ -29,7 +30,6 @@ import {
   setImageItemShowticklabels,
   setImageItemZsmooth,
   setImageItemShowScale,
-  setDisplayDataPath,
   setImageItemStartIndex,
   setImageItemEndIndex,
   setImageItemColors,
@@ -50,14 +50,36 @@ import { FilePathSelect } from '../FilePathSelect'
 import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
 import Button from '@mui/material/Button'
 import { getImageData } from 'store/slice/DisplayData/DisplayDataActions'
+import { setNewDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemActions'
 
 export const ImageItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
-  const onSelectImageFile = (path: string) => {
-    dispatch(setDisplayDataPath({ nodeId: null, filePath: path, itemId }))
-  }
   const filePath = useSelector(selectImageItemFilePath(itemId))
+
+  const isSingleData = useSelector(selectDisplayDataIsSingle(itemId))
+  const onSelectImageFile = (newPath: string) => {
+    const basePayload = {
+      itemId,
+      nodeId: null,
+      filePath: newPath,
+    }
+    dispatch(
+      setNewDisplayDataPath(
+        isSingleData && filePath != null
+          ? {
+              ...basePayload,
+              deleteData: true,
+              prevDataType: DATA_TYPE_SET.IMAGE,
+              prevFilePath: filePath,
+            }
+          : {
+              ...basePayload,
+              deleteData: false,
+            },
+      ),
+    )
+  }
 
   const { onUploadFile } = useFileUploader(FILE_TYPE_SET.IMAGE)
   const onUploadFileHandle = (formData: FormData, fileName: string) => {

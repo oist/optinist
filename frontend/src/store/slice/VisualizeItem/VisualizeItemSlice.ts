@@ -1,6 +1,10 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
-import { setImageItemClikedDataId } from './VisualizeItemActions'
+import {
+  deleteDisplayItem,
+  setImageItemClikedDataId,
+  setNewDisplayDataPath,
+} from './VisualizeItemActions'
 
 import {
   HeatMapItem,
@@ -155,22 +159,6 @@ export const visualaizeItemSlice = createSlice({
   name: VISUALIZE_ITEM_SLICE_NAME,
   initialState,
   reducers: {
-    deleteVisualizeItem: (state, action: PayloadAction<number>) => {
-      const itemId = action.payload
-      delete state.items[itemId]
-      if (itemId === state.selectedItemId) {
-        state.selectedItemId = null
-      }
-      state.layout.forEach((row, i) => {
-        const index = row.indexOf(itemId)
-        if (index !== -1) {
-          row.splice(index, 1)
-        }
-        if (row.length === 0) {
-          state.layout.splice(i, 1)
-        }
-      })
-    },
     pushInitialItemToNewRow: (state) => {
       const newItemId = addInitialItemFn(state)
       state.layout.push([newItemId])
@@ -310,33 +298,6 @@ export const visualaizeItemSlice = createSlice({
         targetItem.filePath = filePath
         targetItem.nodeId = nodeId
       }
-    },
-    setDisplayDataPath: (
-      state,
-      action: PayloadAction<{
-        itemId: number
-        filePath: string
-        nodeId: string | null
-        dataType?: DATA_TYPE
-      }>,
-    ) => {
-      const { itemId, filePath, nodeId, dataType } = action.payload
-      const targetItem = state.items[itemId]
-      if (isDisplayDataItem(targetItem)) {
-        if (dataType != null && targetItem.dataType !== dataType) {
-          state.items[itemId] = {
-            ...getDisplayDataItemInitialValue(dataType),
-            filePath,
-            nodeId,
-          }
-        } else {
-          targetItem.filePath = filePath
-          targetItem.nodeId = nodeId
-        }
-      } else {
-        throw new Error('invalid VisualaizeItemType')
-      }
-      resetImageActiveIndexFn(state, { itemId })
     },
     setItemType: (
       state,
@@ -751,25 +712,61 @@ export const visualaizeItemSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(setImageItemClikedDataId.fulfilled, (state, action) => {
-      const { itemId: imageItemId, clickedDataId } = action.meta.arg
-      const targetItem = state.items[imageItemId]
-      if (isImageItem(targetItem)) {
-        targetItem.clickedDataId = clickedDataId
-      }
-      Object.values(state.items).forEach((item) => {
-        if (isTimeSeriesItem(item)) {
-          if (
-            item.refImageItemId != null &&
-            imageItemId === item.refImageItemId &&
-            !item.displayNumbers.includes(clickedDataId)
-          ) {
-            item.displayNumbers.push(clickedDataId)
-            item.checkedList[clickedDataId] = true
-          }
+    builder
+      .addCase(deleteDisplayItem, (state, action) => {
+        const itemId = action.payload.itemId
+        delete state.items[itemId]
+        if (itemId === state.selectedItemId) {
+          state.selectedItemId = null
         }
+        state.layout.forEach((row, i) => {
+          const index = row.indexOf(itemId)
+          if (index !== -1) {
+            row.splice(index, 1)
+          }
+          if (row.length === 0) {
+            state.layout.splice(i, 1)
+          }
+        })
       })
-    })
+      .addCase(setNewDisplayDataPath, (state, action) => {
+        const { itemId, filePath, nodeId, dataType } = action.payload
+        const targetItem = state.items[itemId]
+        if (isDisplayDataItem(targetItem)) {
+          if (dataType != null && targetItem.dataType !== dataType) {
+            state.items[itemId] = {
+              ...getDisplayDataItemInitialValue(dataType),
+              filePath,
+              nodeId,
+            }
+          } else {
+            targetItem.filePath = filePath
+            targetItem.nodeId = nodeId
+          }
+        } else {
+          throw new Error('invalid VisualaizeItemType')
+        }
+        resetImageActiveIndexFn(state, { itemId })
+      })
+      .addCase(setImageItemClikedDataId.fulfilled, (state, action) => {
+        const { itemId: imageItemId, clickedDataId } = action.meta.arg
+        const targetItem = state.items[imageItemId]
+        if (isImageItem(targetItem)) {
+          targetItem.clickedDataId = clickedDataId
+        }
+        Object.values(state.items).forEach((item) => {
+          if (isTimeSeriesItem(item)) {
+            if (
+              item.refImageItemId != null &&
+              imageItemId === item.refImageItemId &&
+              !item.displayNumbers.includes(clickedDataId)
+            ) {
+              item.displayNumbers.push(clickedDataId)
+              item.checkedList[clickedDataId] = true
+            }
+          }
+        })
+      })
   },
 })
 
@@ -800,7 +797,6 @@ function resetImageActiveIndexFn(
 }
 
 export const {
-  deleteVisualizeItem,
   pushInitialItemToNewRow,
   insertInitialItemToNextColumn,
   addItemForWorkflowDialog,
@@ -813,7 +809,6 @@ export const {
   setImageItemFilePath,
   setTimeSeriesItemFilePath,
   setRoiItemFilePath,
-  setDisplayDataPath,
   resetImageActiveIndex,
   incrementImageActiveIndex,
   decrementImageActiveIndex,

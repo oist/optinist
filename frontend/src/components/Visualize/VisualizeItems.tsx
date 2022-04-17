@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 import { useTheme } from '@mui/material/styles'
@@ -12,6 +12,7 @@ import FormControl from '@mui/material/FormControl'
 import { arrayEqualityFn, twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 
 import {
+  selectDisplayDataIsSingle,
   selectImageItemFilePath,
   selectSelectedVisualizeItemId,
   selectTimeSeriesItemRefImageItemId,
@@ -28,7 +29,6 @@ import { DisplayDataItemLayoutMenuIcon } from './VisualizeItemLayoutMenuIcon'
 import { DisplayDataItem } from './DisplayDataItem'
 import {
   selectItem,
-  setDisplayDataPath,
   setItemSize,
   setTimeSeriesRefImageItemId,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
@@ -38,7 +38,7 @@ import {
   DATA_TYPE,
   DATA_TYPE_SET,
 } from 'store/slice/DisplayData/DisplayDataType'
-import { deleteDisplayItem } from 'store/slice/DisplayData/DisplayDataSlice'
+import { setNewDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemActions'
 
 export const FlexItemList: React.FC = () => {
   const layout = useSelector(selectVisualizeItemLayout, twoDimarrayEqualityFn)
@@ -150,25 +150,33 @@ const FilePathSelectItem = React.memo<{
   const selectedNodeId = useSelector(selectVisualizeDataNodeId(itemId))
   const selectedFilePath = useSelector(selectImageItemFilePath(itemId))
 
-  const [prevItem, setPrevItem] = React.useState<{
-    dataType: DATA_TYPE
-    filePath: string | null
-  }>({
-    dataType: 'image',
-    filePath: null,
-  })
-
-  useEffect(() => {
-    setPrevItem({ dataType, filePath: selectedFilePath })
-  }, [selectedFilePath, dataType])
-
+  const isSingleData = useSelector(selectDisplayDataIsSingle(itemId))
   const onSelectFilePath = (
     nodeId: string,
-    filePath: string,
-    dataType: DATA_TYPE,
+    newFilePath: string,
+    newDataType: DATA_TYPE,
   ) => {
-    dispatch(setDisplayDataPath({ itemId, nodeId, filePath, dataType }))
-    dispatch(deleteDisplayItem(prevItem))
+    const basePayload = {
+      itemId,
+      nodeId,
+      filePath: newFilePath,
+      dataType: newDataType,
+    }
+    dispatch(
+      setNewDisplayDataPath(
+        isSingleData && selectedFilePath != null
+          ? {
+              ...basePayload,
+              deleteData: true,
+              prevDataType: dataType,
+              prevFilePath: selectedFilePath,
+            }
+          : {
+              ...basePayload,
+              deleteData: false,
+            },
+      ),
+    )
   }
 
   return (

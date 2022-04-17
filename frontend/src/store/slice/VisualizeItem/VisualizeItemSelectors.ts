@@ -440,3 +440,14 @@ export const selectScatterItemYIndex =
       throw new Error('invalid VisualaizeItemType')
     }
   }
+
+export const selectDisplayDataIsSingle =
+  (itemId: number) => (state: RootState) => {
+    const items = selectVisualizeItems(state)
+    const item = items[itemId]
+    const targetFilePath = item.filePath
+    return (
+      Object.values(items).filter((value) => value.filePath === targetFilePath)
+        .length === 1
+    )
+  }
