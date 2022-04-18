@@ -1,4 +1,5 @@
 import os
+from collections import deque
 
 from snakemake.exceptions import print_exception
 from snakemake.logging import logger
@@ -69,7 +70,7 @@ class SmkExecutor:
         file_graph = {}
         for job in self.dag.jobs:
             file_graph[ids[job.rule]] = [
-                files for files in self.dag.dependencies[job].values()
+                "".join(files) for files in self.dag.dependencies[job].values()
             ]
 
         # calculate edges
@@ -78,10 +79,6 @@ class SmkExecutor:
             for node, deps in graph.items()
             for dep in deps
         ]
-        print(edges)
-        for x in edges:
-            print(x[0], " → ", x[1])
-            print(file_graph[x[0]], " → ", file_graph[x[1]])
 
         return edges, file_graph
 
@@ -142,7 +139,7 @@ def snakemake_execute(params: SmkParam):
     print("success: ", success)
 
 
-def delete_dependencies(edges, file_graph):
+def delete_depemdemcies(edge_dict, file_graph, del_filepath):
     """
         [[1, 0], [2, 1], [3, 2]]
         1  →  0
@@ -154,7 +151,40 @@ def delete_dependencies(edges, file_graph):
         3  →  2
         []  →  [{'/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/0/data_endoscope.pkl'}]
     """
-    pass
+
+    queue = deque()
+
+    for key, value_list in file_graph.items():
+        if len(value_list) == 1 and del_filepath in value_list:
+            queue.append(key)
+
+    while True:
+        # terminate condition
+        if len(queue) == 0:
+            break
+        
+        # delete item path
+        del_key = queue.pop()
+        del_filepath = file_graph[del_key]
+
+        for filepath in del_filepath:
+            print(filepath)
+            if os.path.exists(filepath):
+                os.remove(filepath)
+
+        # push
+        if del_key in edge_dict:
+            for push_key in edge_dict[del_key]:
+                queue.append(push_key)
+
+
+def create_edge_dict(edges):
+    edge_dict = {}
+    for e in edges:
+        if e[0] not in edge_dict:
+            edge_dict[e[0]] = []
+        edge_dict[e[0]].append(e[1])
+    return edge_dict
 
 
 if __name__ == '__main__':
