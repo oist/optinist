@@ -96,11 +96,7 @@ const BarPlotImple = React.memo(() => {
     }
   }, [plotlyHeight])
 
-  return (
-    <div ref={ref}>
-      <PlotlyChart data={data} layout={layout} config={config} />
-    </div>
-  )
+  return <PlotlyChart data={data} layout={layout} config={config} />
 })
 
 function barDataEqualityFn(a: BarData | undefined, b: BarData | undefined) {

@@ -227,23 +227,6 @@ const ImagePlotChart = React.memo<{
     responsive: true,
   }
 
-  const ref = React.useRef<HTMLDivElement>(null)
-  const plotlyHeight = ref.current?.getBoundingClientRect().height
-
-  useEffect(() => {
-    const height =
-      ref.current?.getElementsByClassName('main-svg')[0].clientHeight
-    const plotContainer = (
-      ref.current?.getElementsByClassName(
-        'plot-container',
-      ) as HTMLCollectionOf<HTMLElement>
-    )[0]
-
-    if (height !== undefined && plotContainer !== undefined) {
-      plotContainer.style.height = `${height}px`
-    }
-  }, [plotlyHeight, activeIndex])
-
   const dispatch = useDispatch()
 
   const onClick = (event: any) => {
@@ -309,7 +292,7 @@ const ImagePlotChart = React.memo<{
   )
 
   return (
-    <div ref={ref}>
+    <div>
       <Box sx={{ width: '50%' }}>
         <Button variant="outlined" onClick={onPlayClick}>
           Play
