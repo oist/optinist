@@ -299,16 +299,6 @@ export const visualaizeItemSlice = createSlice({
         targetItem.nodeId = nodeId
       }
     },
-    setItemType: (
-      state,
-      action: PayloadAction<{
-        itemId: number
-        type: DATA_TYPE
-      }>,
-    ) => {
-      const { itemId, type } = action.payload
-      state.items[itemId] = getDisplayDataItemInitialValue(type)
-    },
     resetImageActiveIndex: (
       state,
       action: PayloadAction<{
@@ -736,6 +726,8 @@ export const visualaizeItemSlice = createSlice({
           if (dataType != null && targetItem.dataType !== dataType) {
             state.items[itemId] = {
               ...getDisplayDataItemInitialValue(dataType),
+              width: targetItem.width,
+              height: targetItem.height,
               filePath,
               nodeId,
             }
@@ -803,7 +795,6 @@ export const {
   deleteAllItemForWorkflowDialog,
   setItemSize,
   selectItem,
-  setItemType,
   setFilePath,
   setHeatMapItemFilePath,
   setImageItemFilePath,

@@ -117,11 +117,7 @@ const RoiPlotImple = React.memo<{}>(() => {
     // scrollZoom: true,
     responsive: true,
   }
-  return (
-    <div className="imagePlotChart">
-      <PlotlyChart data={data} layout={layout} config={config} />
-    </div>
-  )
+  return <PlotlyChart data={data} layout={layout} config={config} />
 })
 
 function imageDataEqualtyFn(

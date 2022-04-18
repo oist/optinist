@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { LinearProgress, Typography } from '@mui/material'
@@ -128,25 +128,8 @@ const ScatterPlotImple = React.memo(() => {
     responsive: true,
   }
 
-  const ref = React.useRef<HTMLDivElement>(null)
-  const plotlyHeight = ref.current?.getBoundingClientRect().height
-
-  useEffect(() => {
-    const height =
-      ref.current?.getElementsByClassName('main-svg')[0].clientHeight
-    const plotContainer = (
-      ref.current?.getElementsByClassName(
-        'plot-container',
-      ) as HTMLCollectionOf<HTMLElement>
-    )[0]
-
-    if (height !== undefined && plotContainer !== undefined) {
-      plotContainer.style.height = `${height}px`
-    }
-  }, [plotlyHeight])
-
   return (
-    <div ref={ref}>
+    <div>
       <PlotlyChart data={data} layout={layout} config={config} />
     </div>
   )
