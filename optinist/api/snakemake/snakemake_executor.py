@@ -1,4 +1,5 @@
 import os
+from collections import deque
 
 from snakemake.exceptions import print_exception
 from snakemake.logging import logger
@@ -7,19 +8,21 @@ from snakemake.dag import DAG
 from snakemake.persistence import Persistence
 
 from optinist.api.dir_path import DIRPATH
+from optinist.api.snakemake.smk import SmkParam
 
 
 class SmkExecutor:
-    def __init__(self, snakefile):
+    def __init__(self, snakefile, forceall=False, cores=2):
         self.snakefile = os.path.abspath(snakefile)
         self.logger = logger
         self.logger.setup_logfile()
-        self.forceall = True
+        self.forceall = forceall
+        self.cores = cores
 
-    def create_workflow(self, cores):
+    def init_workflow(self):
         self.workflow = Workflow(
             snakefile=self.snakefile,
-            cores=cores,
+            cores=self.cores,
         )
 
         self.workflow.include(
@@ -29,7 +32,8 @@ class SmkExecutor:
         )
         self.workflow.check()
 
-    def create_dag(self):
+    def init_dag(self):
+        self.init_workflow()
         targetrules = map(
             self.workflow._rules.__getitem__,
             filter(self.workflow.is_rule, ["all"])
@@ -52,7 +56,8 @@ class SmkExecutor:
         )
         self.dag.init()
 
-    def create_graph(self):
+    def init_graph(self):
+        self.init_dag()
         graph = {}
         for job in self.dag.jobs:
             graph[job.rule] = [
@@ -65,29 +70,29 @@ class SmkExecutor:
         file_graph = {}
         for job in self.dag.jobs:
             file_graph[ids[job.rule]] = [
-                files for files in self.dag.dependencies[job].values()
+                "".join(files) for files in self.dag.dependencies[job].values()
             ]
 
         # calculate edges
-        edges = [
+        edge_list = [
             [ids[dep], ids[node]]
             for node, deps in graph.items()
             for dep in deps
         ]
-        print(edges)
-        for x in edges:
-            print(x[0], " → ", x[1])
-            print(file_graph[x[0]], " → ", file_graph[x[1]])
 
-    def execute(self, targets=None, forcetargets=False, keep_logger=False):
+        edge_dict = create_edge_dict(edge_list)
+        return edge_dict, file_graph
+
+    def execute(self, forcerun):
+        self.init_graph()
         try:
             success = self.workflow.execute(
-                targets=targets,
-                forcetargets=forcetargets,
                 forceall=self.forceall,
+                forcerun=forcerun,
                 nolock=True,
                 unlock=False,
                 updated_files=[],
+                
             )
         except BrokenPipeError:
             success = False
@@ -96,21 +101,79 @@ class SmkExecutor:
                 print_exception(ex, self.workflow.linemaps)
             else:
                 print_exception(ex, dict())
-
             success = False
+            assert False, "Snakemake execute error"
 
         if "workflow" in locals() and self.workflow.persistence:
             self.workflow.persistence.unlock()
-        if not keep_logger:
-            self.logger.cleanup()
+
+        self.logger.cleanup()
 
         return success
 
 
-if __name__ == '__main__':
-    smk_executor = SmkExecutor(DIRPATH.SNAKEMAKE_FILEPATH)
-    smk_executor.create_workflow(cores=2)
-    smk_executor.create_dag()
-    smk_executor.create_graph()
-    # success = smk_executor.execute()
-    # print("success: ", success)
+def snakemake_execute(params: SmkParam):
+    smk_executor = SmkExecutor(
+        DIRPATH.SNAKEMAKE_FILEPATH,
+        forceall=params.forceall,
+        cores=params.cores,
+    )
+    success = smk_executor.execute(params.forcerun)
+    print("success: ", success)
+
+
+def delete_dependencies(params):
+    """
+        [[1, 0], [2, 1], [3, 2]]
+        1  →  0
+        ['/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/1/suite2p_file_convert.pkl']
+        →  ['/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/2/suite2p_roi.pkl']
+        2  →  1
+        ['/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/0/data_endoscope.pkl']
+        →  ['/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/1/suite2p_file_convert.pkl']
+        3  →  2
+        []  →  ['/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/0/data_endoscope.pkl']
+    """
+
+    del_filepath_list = params.forcerun
+
+    smk_executor = SmkExecutor(
+        DIRPATH.SNAKEMAKE_FILEPATH,
+        forceall=params.forceall,
+        cores=params.cores,
+    )
+    edge_dict, file_graph = smk_executor.init_graph()
+
+    queue = deque()
+    for key, value_list in file_graph.items():
+        for value in value_list:
+            if value in del_filepath_list:
+                queue.append(key)
+
+    while True:
+        # terminate condition
+        if len(queue) == 0:
+            break
+        
+        # delete item path
+        del_key = queue.pop()
+        del_filepath = file_graph[del_key]
+
+        for filepath in del_filepath:
+            print(filepath)
+            if os.path.exists(filepath):
+                os.remove(filepath)
+
+        # push
+        if del_key in edge_dict:
+            for push_key in edge_dict[del_key]:
+                queue.append(push_key)
+
+
+def create_edge_dict(edges):
+    edge_dict = {}
+    for e in edges:
+        if e[0] not in edge_dict:
+            edge_dict[e[0]] = []
+        edge_dict[e[0]].append(e[1])
+    return edge_dict
