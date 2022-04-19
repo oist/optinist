@@ -19,6 +19,7 @@ postprocess = NWBGroupSpec(
                 (None,),
                 (None, None),
                 (None, None, None),
+                (None, None, None, None),
             ],
             name='data',
             dtype='float',

@@ -22,7 +22,7 @@ def cell_grouping(
     info = {}
     info['grouped_cells'] = TimeSeriesData(
         neural_data[grouped_cells],
-        std=sem,
+        std=std,
         file_name='grouped_cells_mean'
     )
 

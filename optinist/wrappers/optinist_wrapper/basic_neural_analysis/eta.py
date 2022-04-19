@@ -88,6 +88,7 @@ def ETA(
         nwbfile[NWBDATASET.POSTPROCESS] = {
             'mean': mean,
             'sem': sem,
+            'num_sample': [len(mean)],
         }
 
     min_value = np.min(mean, axis=1, keepdims=True)

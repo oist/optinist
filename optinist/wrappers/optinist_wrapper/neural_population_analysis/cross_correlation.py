@@ -85,7 +85,6 @@ def cross_correlation(
             s_mean[i, j, :] = b_mean
 
     # output structures ###################
-    Out_forfigure = []
     cb = list(itertools.combinations(range(num_cell), 2))
 
     #for i in range(len(cb)):
@@ -107,12 +106,12 @@ def cross_correlation(
         forfigure[name1] = arr1
         forfigure[name2] = arr2
 
-        Out_forfigure.append(forfigure)
-
     # NWB追加
     if nwbfile is not None:
         nwbfile[NWBDATASET.POSTPROCESS] = {
             'mat': mat,
+            'baseline': s_mean,
+            'base_confint': s_confint,
         }
 
     info = {

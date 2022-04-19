@@ -59,7 +59,6 @@ def SVM(
         keys = list(gs_clf.best_params_.keys())
         for i in range(len(keys)):
             hp[keys[i]] = gs_clf.best_params_[keys[i]]
-        gs_best_params = gs_clf.best_params_
 
     # cross validation of SVM using best grid search paraneters ##################
     skf = StratifiedKFold(**params['CV'])
@@ -81,6 +80,7 @@ def SVM(
 
     # NWB追加
     if nwbfile is not None:
+        import pdb; pdb.set_trace()
         nwbfile[NWBDATASET.POSTPROCESS] = {
             'score': score,
         }

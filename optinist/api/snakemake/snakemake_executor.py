@@ -12,17 +12,19 @@ from optinist.api.snakemake.smk import SmkParam
 
 
 class SmkExecutor:
-    def __init__(self, snakefile, forceall=False, cores=2):
+    def __init__(self, snakefile, forceall=False, cores=2, use_conda=False):
         self.snakefile = os.path.abspath(snakefile)
         self.logger = logger
         self.logger.setup_logfile()
         self.forceall = forceall
         self.cores = cores
+        self.use_conda = use_conda
 
     def init_workflow(self):
         self.workflow = Workflow(
             snakefile=self.snakefile,
             cores=self.cores,
+            use_conda=self.use_conda,
         )
 
         self.workflow.include(
@@ -117,6 +119,7 @@ def snakemake_execute(params: SmkParam):
         DIRPATH.SNAKEMAKE_FILEPATH,
         forceall=params.forceall,
         cores=params.cores,
+        use_conda=params.use_conda,
     )
     success = smk_executor.execute(params.forcerun)
     print("success: ", success)

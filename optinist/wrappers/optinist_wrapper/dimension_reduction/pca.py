@@ -36,7 +36,15 @@ def PCA(
     if nwbfile is not None:
         nwbfile[NWBDATASET.POSTPROCESS] = {
             'pca_projectedNd': proj_X,
-            'explained_variance': pca.explained_variance_ratio_,
+            'components': pca.components_,
+            'explained_variance': pca.explained_variance_,
+            'explained_variance_ratio': pca.explained_variance_ratio_,
+            'singular_values': pca.singular_values_,
+            'mean': pca.mean_,
+            'n_components': [pca.n_components_],
+            'n_samples': [pca.n_samples_],
+            'noise_variance': [pca.noise_variance_],
+            'n_features_in': [pca.n_features_in_],
         }
 
     info = {
