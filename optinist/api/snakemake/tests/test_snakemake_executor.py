@@ -2,15 +2,31 @@ import pytest
 import os
 from dataclasses import asdict
 
+from optinist.api.dir_path import DIRPATH
 from optinist.api.config.config_reader import ConfigReader
 from optinist.api.config.config_writer import ConfigWriter
-from optinist.api.dir_path import DIRPATH
 from optinist.api.snakemake.smk import FlowConfig, SmkParam
-from optinist.api.snakemake.snakemake_executor import create_edge_dict, delete_depemdemcies, get_dependencies_graph
+from optinist.api.snakemake.snakemake_executor import (
+    SmkExecutor,
+    delete_dependencies,
+)
 from optinist.api.snakemake.snakemake_reader import RuleConfigReader
 
 
-def test_get_params():
+def create_dummy_file(dirname, del_item):
+    test_dirpath = os.path.join(DIRPATH.ROOT_DIR, 'test_data')
+    smk_dirpath = os.path.join(test_dirpath, 'snakemake')
+    dir_filepath = os.path.join(smk_dirpath, dirname)
+    os.makedirs(dir_filepath, exist_ok=True)
+
+    del_filepath = os.path.join(dir_filepath, del_item)
+    with open(del_filepath, "w") as f:
+        f.write("")
+
+    return del_filepath
+
+
+def create_dummy_params():
     return SmkParam(
         use_conda=True,
         cores=2,
@@ -64,61 +80,55 @@ def test_get_dependencies_graph():
 
     assert os.path.exists(test_config_filepath)
 
-    params = test_get_params()
+    params = create_dummy_params()
 
-    edges, file_graph = get_dependencies_graph(params)
+    smk_executor = SmkExecutor(
+        DIRPATH.SNAKEMAKE_FILEPATH,
+        forceall=params.forceall,
+        cores=params.cores,
+    )
+    edge_dict, file_graph = smk_executor.init_graph()
 
     # print(edges)
     # for x in edges:
     #     print(x[0], " → ", x[1])
     #     print(file_graph[x[0]], " → ", file_graph[x[1]])
 
-    assert edges
+    assert edge_dict
     assert file_graph
 
-    return edges, file_graph
+    return edge_dict, file_graph
 
 
 def test_create_edges_dict():
-    edges, _ = test_get_dependencies_graph()
-    edge_dict = create_edge_dict(edges)
+    edge_dict, _ = test_get_dependencies_graph()
 
     assert isinstance(edge_dict, dict)
     assert isinstance(edge_dict[1], list)
 
 
-def test_create_dummy_file(dirname, del_item):
-    test_dirpath = os.path.join(DIRPATH.ROOT_DIR, 'test_data')
-    smk_dirpath = os.path.join(test_dirpath, 'snakemake')
-    dir_filepath = os.path.join(smk_dirpath, dirname)
-    os.makedirs(dir_filepath, exist_ok=True)
-
-    del_filepath = os.path.join(dir_filepath, del_item)
-    with open(del_filepath, "w") as f:
-        f.write("")
-
-    return del_filepath
-
-
 def test_delete_dependencies():
     "{1: [0], 2: [1], 3: [2]}"
-    edges, file_graph = test_get_dependencies_graph()
-    edge_dict = create_edge_dict(edges)
 
-    del_filepath = test_create_dummy_file("2", "suite2p_roi.pkl")
+    del_filepath = create_dummy_file("2", "suite2p_roi.pkl")
     assert os.path.exists(del_filepath)
 
-    delete_depemdemcies(edge_dict, file_graph, del_filepath)
+    params = create_dummy_params()
+    params.forcerun = del_filepath
+    delete_dependencies(params)
     assert not os.path.exists(del_filepath)
 
     del_list = []
-    del_filepath = test_create_dummy_file("2", "suite2p_roi.pkl")
+    del_filepath = create_dummy_file("2", "suite2p_roi.pkl")
     del_list.append(del_filepath)
     assert os.path.exists(del_filepath)
-    del_filepath = test_create_dummy_file("0", "data_endoscope.pkl")
+    del_filepath = create_dummy_file("0", "data_endoscope.pkl")
     del_list.append(del_filepath)
+
     assert os.path.exists(del_filepath)
-    delete_depemdemcies(edge_dict, file_graph, del_filepath)
+    params = create_dummy_params()
+    params.forcerun = del_filepath
+    delete_dependencies(params)
 
     for item in del_list:
         assert not os.path.exists(item)

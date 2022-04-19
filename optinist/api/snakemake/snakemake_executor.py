@@ -74,13 +74,14 @@ class SmkExecutor:
             ]
 
         # calculate edges
-        edges = [
+        edge_list = [
             [ids[dep], ids[node]]
             for node, deps in graph.items()
             for dep in deps
         ]
 
-        return edges, file_graph
+        edge_dict = create_edge_dict(edge_list)
+        return edge_dict, file_graph
 
     def execute(self, forcerun):
         self.init_graph()
@@ -111,52 +112,43 @@ class SmkExecutor:
         return success
 
 
-def get_dependencies_graph(params: SmkParam):
-    smk_executor = SmkExecutor(
-        DIRPATH.SNAKEMAKE_FILEPATH,
-        forceall=params.forceall,
-        cores=params.cores,
-    )
-    edges, file_graph = smk_executor.init_graph()
-    return edges, file_graph
-
-
 def snakemake_execute(params: SmkParam):
     smk_executor = SmkExecutor(
         DIRPATH.SNAKEMAKE_FILEPATH,
         forceall=params.forceall,
         cores=params.cores,
     )
-    smk_executor.init_workflow(cores=params.cores)
-    smk_executor.init_dag()
-    smk_executor.init_graph()
-    return smk_executor
-
-
-def snakemake_execute(params: SmkParam):
-    smk_executor = get_dependencies_graph(params)
     success = smk_executor.execute(params.forcerun)
     print("success: ", success)
 
 
-def delete_depemdemcies(edge_dict, file_graph, del_filepath):
+def delete_dependencies(params):
     """
         [[1, 0], [2, 1], [3, 2]]
         1  →  0
-        [{'/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/1/suite2p_file_convert.pkl'}]
-        →  [{'/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/2/suite2p_roi.pkl'}]
+        ['/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/1/suite2p_file_convert.pkl']
+        →  ['/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/2/suite2p_roi.pkl']
         2  →  1
-        [{'/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/0/data_endoscope.pkl'}]
-        →  [{'/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/1/suite2p_file_convert.pkl'}]
+        ['/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/0/data_endoscope.pkl']
+        →  ['/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/1/suite2p_file_convert.pkl']
         3  →  2
-        []  →  [{'/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/0/data_endoscope.pkl'}]
+        []  →  ['/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/0/data_endoscope.pkl']
     """
 
-    queue = deque()
+    del_filepath_list = params.forcerun
 
+    smk_executor = SmkExecutor(
+        DIRPATH.SNAKEMAKE_FILEPATH,
+        forceall=params.forceall,
+        cores=params.cores,
+    )
+    edge_dict, file_graph = smk_executor.init_graph()
+
+    queue = deque()
     for key, value_list in file_graph.items():
-        if len(value_list) == 1 and del_filepath in value_list:
-            queue.append(key)
+        for value in value_list:
+            if value in del_filepath_list:
+                queue.append(key)
 
     while True:
         # terminate condition
@@ -185,7 +177,3 @@ def create_edge_dict(edges):
             edge_dict[e[0]] = []
         edge_dict[e[0]].append(e[1])
     return edge_dict
-
-
-if __name__ == '__main__':
-    get_dependencies_graph()
