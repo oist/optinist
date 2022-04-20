@@ -138,6 +138,13 @@ def Granger(
     if nwbfile is not None:
         nwbfile[NWBDATASET.POSTPROCESS] = {
             'Granger_fval_mat': GC['Granger_fval_mat'][0],
+            'gc_combinations': GC['gc_combinations'],
+            'gc_ssr_ftest': GC['gc_ssr_ftest'],
+            'gc_ssr_chi2test': GC['gc_ssr_chi2test'],
+            'gc_lrtest': GC['gc_lrtest'],
+            'gc_params_ftest': GC['gc_params_ftest'],
+            'cit_pvalue': cit['cit_pvalue'],
+            'adf_pvalue': adf['adf_pvalue'],
         }
 
     info['nwbfile'] = nwbfile

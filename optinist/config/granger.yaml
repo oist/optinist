@@ -1,7 +1,7 @@
 standard_mean: True
 standard_std: True
 
-transpose: True
+transpose: False
 
 # Granger_maxlag(int, Iterable[int]): If an integer, computes the test for all lags up to maxlag. If an iterable, computes the tests only for the lags in maxlag.
 # no default value

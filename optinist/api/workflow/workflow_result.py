@@ -96,7 +96,7 @@ def _outputPaths(info, dirpath):
                 type=OutputType.TIMESERIES,
                 max_index=len(v.data)
             )
-        elif isinstance(v, CorrelationData):
+        elif isinstance(v, HeatMapData):
             outputPaths[k] = OutputPath(
                 path=v.json_path,
                 type=OutputType.HEATMAP,

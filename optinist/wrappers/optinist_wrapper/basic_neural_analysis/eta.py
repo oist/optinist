@@ -88,6 +88,7 @@ def ETA(
         nwbfile[NWBDATASET.POSTPROCESS] = {
             'mean': mean,
             'sem': sem,
+            'num_sample': [len(mean)],
         }
 
     min_value = np.min(mean, axis=1, keepdims=True)
@@ -101,7 +102,7 @@ def ETA(
         index=list(np.arange(params['start_time'], params['end_time'])),
         file_name='mean'
     )
-    info['mean_heatmap'] = CorrelationData(
+    info['mean_heatmap'] = HeatMapData(
         norm_mean,
         file_name='mean_heatmap'
     )

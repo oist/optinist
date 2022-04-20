@@ -58,7 +58,8 @@ def GLM(
         tX = sm.add_constant(tX, prepend=False)
 
     # set family
-    family = eval('sm.families.' + params['family'] + '(link=link)')
+    link = getattr(sm.genmod.families.links, params['link'])()
+    family = eval(f"sm.families.{params['family']}(link=link)")
 
     # model fit
     model = sm.GLM(tY, tX, family=family, **params['GLM'])
@@ -66,9 +67,21 @@ def GLM(
 
     # NWB追加
     if nwbfile is not None:
+        # import pdb; pdb.set_trace()
         nwbfile[NWBDATASET.POSTPROCESS] = {
             'actual_predicted': np.array([Res._endog, Res.mu]).transpose(),
             'params': Res.params.values,
+            'pvalues': Res.pvalues.values,
+            'tvalues': Res.tvalues.values, # z
+            'aic': [Res.aic],
+            'bic_llf': [Res.bic_llf],
+            'llf': [Res.llf], # log-Likelihood
+            'pearson_chi2': [Res.pearson_chi2],
+            'df_model': [Res.df_model],
+            'df_resid': [Res.df_resid],
+            'scale': [Res.scale],
+            'mu': Res.mu,
+            'endog': Res._endog,
         }
 
     # main results for plot

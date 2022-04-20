@@ -34,14 +34,14 @@ def dummy_image2time(
 
 def dummy_image2heat(
     image: ImageData, nwbfile: NWBFile=None, params: dict=None
-    ) -> dict(image2heat=CorrelationData):
+    ) -> dict(image2heat=HeatMapData):
 
     """
         get image
         return image
     """
     info = {}
-    info['image2heat'] = CorrelationData(
+    info['image2heat'] = HeatMapData(
         np.random.rand((10000)).reshape(100, 100))
     return info
 
@@ -190,7 +190,7 @@ def dummy_image2image8roi(
 
 def dummy_image2image8roi8time8heat(
     image1: ImageData, nwbfile: NWBFile=None,  params: dict=None
-    ) -> dict(image=ImageData, roi=RoiData, timeseries=TimeSeriesData, heat=CorrelationData):
+    ) -> dict(image=ImageData, roi=RoiData, timeseries=TimeSeriesData, heat=HeatMapData):
 
     """
         get image
@@ -208,7 +208,7 @@ def dummy_image2image8roi8time8heat(
     info['timeseries'] = TimeSeriesData(
         np.random.rand((100)).reshape(10, 10),
         file_name='image')
-    info['heat'] = CorrelationData(
+    info['heat'] = HeatMapData(
         np.random.rand((10000)).reshape(100, 100))
     return info
 

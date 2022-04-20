@@ -1,4 +1,4 @@
-transpose: True
+transpose: False
 
 method:  'direct'
 

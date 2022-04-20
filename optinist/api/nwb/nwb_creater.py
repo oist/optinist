@@ -50,10 +50,12 @@ class NWBCreater:
 
         # using internal data. this data will be stored inside the NWB file
         if NWBDATASET.IMAGE_SERIES in config and 'external_file' in config[NWBDATASET.IMAGE_SERIES]:
-            image_data = config[NWBDATASET.IMAGE_SERIES]['external_file'].data
+            # image_data = config[NWBDATASET.IMAGE_SERIES]['external_file'].data
+            image_path = config[NWBDATASET.IMAGE_SERIES]['external_file'].path
             image_series = TwoPhotonSeries(
                 name='TwoPhotonSeries',
-                data=image_data,
+                # data=image_data,
+                external_file=image_path,
                 imaging_plane=imaging_plane,
                 rate=1.0,
                 unit='normalized amplitude'

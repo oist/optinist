@@ -37,7 +37,7 @@ def correlation(
 
 
     info = {
-        'corr': CorrelationData(corr, file_name='corr'),
+        'corr': HeatMapData(corr, file_name='corr'),
         'nwbfile': nwbfile,
     }
 
