@@ -42,7 +42,7 @@ def correlation(
 
 ### 1.3 返り値の設定
 - optinistで定義されている関数の返り値は辞書型で返す。nfoという辞書型の変数を返り値とする。
-- correlation関数で出力した変数をheatmapで描画したい場合には、CorrelationDataクラスとして、Wrapする。
+- correlation関数で出力した変数をheatmapで描画したい場合には、HeatMapDataクラスとして、Wrapする。
 - GUI上で引数ハンドルを作成したい場合には `->{'corr': Correlation}`と記述すれば、GUI上での返り値に加えられる。
 
 ```python
@@ -51,10 +51,10 @@ def correlation(
         iscell: IscellData=None,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {'corr': CorrelationData}:
+    ) -> {'corr': HeatMapData}:
 　　　　　　 　・・・・・・
     info = {}
-    info['corr'] = CorrelationData(
+    info['corr'] = HeatMapData(
         corr,
         file_name='corr'
     )
@@ -70,7 +70,7 @@ def correlation(
         iscell: IscellData=None,
         nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {'corr': CorrelationData}:
+    ) -> {'corr': HeatMapData}:
 　　　　　　 　・・・・・・
     # NWB追加
     if nwbfile is not None:
@@ -118,7 +118,7 @@ def correlation(
         corr[i, i] = np.nan
 
     info = {}
-    info['corr'] = CorrelationData(
+    info['corr'] = HeatMapData(
         corr,
         file_name='corr'
     )

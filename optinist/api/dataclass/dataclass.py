@@ -164,7 +164,7 @@ class CsvData(BaseData):
         gc.collect()
 
 
-class CorrelationData(BaseData):
+class HeatMapData(BaseData):
     def __init__(self, data, file_name='heatmap'):
         super().__init__(file_name)
         self.data = data
