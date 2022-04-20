@@ -171,7 +171,7 @@ class CorrelationData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        JsonWriter.write(self.json_path, self.data)
+        JsonWriter.write_as_values(self.json_path, self.data)
 
     def __del__(self):
         del self
