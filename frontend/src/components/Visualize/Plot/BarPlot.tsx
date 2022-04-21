@@ -79,23 +79,6 @@ const BarPlotImple = React.memo(() => {
     responsive: true,
   }
 
-  const ref = React.useRef<HTMLDivElement>(null)
-  const plotlyHeight = ref.current?.getBoundingClientRect().height
-
-  useEffect(() => {
-    const height =
-      ref.current?.getElementsByClassName('main-svg')[0].clientHeight
-    const plotContainer = (
-      ref.current?.getElementsByClassName(
-        'plot-container',
-      ) as HTMLCollectionOf<HTMLElement>
-    )[0]
-
-    if (height !== undefined && plotContainer !== undefined) {
-      plotContainer.style.height = `${height}px`
-    }
-  }, [plotlyHeight])
-
   return <PlotlyChart data={data} layout={layout} config={config} />
 })
 
