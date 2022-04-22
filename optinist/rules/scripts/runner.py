@@ -38,10 +38,15 @@ class Runner:
 
             # NWB保存
             if __rule_config.output in last_output:
-                output_dir = __rule_config.output.split(".")[0]
-                save_nwb(output_info['nwbfile'], output_dir)
+                # 全体の結果を保存する
+                pass
 
-            # 結果を保存
+            save_nwb(
+                output_info['nwbfile'],
+                __rule_config.output.split(".")[0],
+            )
+
+            # 各関数での結果を保存
             PickleWriter.write(__rule_config.output, output_info)
 
             print("output: ", __rule_config.output)

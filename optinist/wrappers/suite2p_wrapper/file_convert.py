@@ -25,7 +25,7 @@ def suite2p_file_convert(
     db = {
         'data_path': data_path_list,
         'tiff_list': data_name_list,
-        'save_path0': DIRPATH.BASE_DIR,
+        'save_path0': DIRPATH.OPTINIST_DIR,
         'save_folder': 'suite2p'
     }
 

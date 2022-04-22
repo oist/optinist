@@ -15,7 +15,7 @@ router = APIRouter()
 @router.get("/experiments")
 async def read_experiment():
     exp_config = {}
-    config_paths = glob(join_filepath([DIRPATH.BASE_DIR, "*", DIRPATH.EXPERIMENT_YML]))
+    config_paths = glob(join_filepath([DIRPATH.OUTPUT_DIR, "*", DIRPATH.EXPERIMENT_YML]))
     for path in config_paths:
         config = ExptConfigReader.read(path)
         config.nodeList = []
@@ -28,7 +28,7 @@ async def read_experiment():
 @router.get("/experiments/import/{unique_id}")
 async def read_experiment(unique_id: str):
     config = ExptConfigReader.read(join_filepath([
-        DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_YML]))
+        DIRPATH.OUTPUT_DIR, unique_id, DIRPATH.EXPERIMENT_YML]))
     return {
         "nodeList": config.nodeList,
         "edgeList": config.edgeList,
@@ -38,7 +38,7 @@ async def read_experiment(unique_id: str):
 @router.delete("/experiments/{unique_id}")
 async def delete_experiment(unique_id: str):
     try:
-        shutil.rmtree(join_filepath([DIRPATH.BASE_DIR, unique_id]))
+        shutil.rmtree(join_filepath([DIRPATH.OUTPUT_DIR, unique_id]))
         return True
     except Exception as e:
         return False
@@ -47,7 +47,7 @@ async def delete_experiment(unique_id: str):
 @router.post("/experiments/delete")
 async def delete_experiment_list(deleteItem: DeleteItem):
     try:
-        [shutil.rmtree(join_filepath([DIRPATH.BASE_DIR, uid])) for uid in deleteItem.uidList]
+        [shutil.rmtree(join_filepath([DIRPATH.OUTPUT_DIR, uid])) for uid in deleteItem.uidList]
         return True
     except Exception as e:
         return False
@@ -55,7 +55,7 @@ async def delete_experiment_list(deleteItem: DeleteItem):
 
 @router.get("/experiments/download/nwb/{unique_id}")
 async def download_experiment(unique_id: str):
-    nwb_path_list = glob(join_filepath([DIRPATH.BASE_DIR, unique_id, "*", "*.nwb"]))
+    nwb_path_list = glob(join_filepath([DIRPATH.OUTPUT_DIR, unique_id, "*", "*.nwb"]))
     if len(nwb_path_list) > 0:
         return FileResponse(nwb_path_list[0])
     else:
@@ -63,5 +63,5 @@ async def download_experiment(unique_id: str):
 
 @router.get("/experiments/download/config/{unique_id}")
 async def download_experiment(unique_id: str):
-    config_filepath = join_filepath([DIRPATH.BASE_DIR, unique_id, "config.yaml"])
+    config_filepath = join_filepath([DIRPATH.OUTPUT_DIR, unique_id, "config.yaml"])
     return FileResponse(config_filepath)

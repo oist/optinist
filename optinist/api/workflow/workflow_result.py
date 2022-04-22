@@ -16,7 +16,7 @@ class WorkflowResult:
     def get(cls, unique_id, nodeIdList):
         runPaths = []
         for node_id in nodeIdList:
-            for path in glob(join_filepath([DIRPATH.BASE_DIR, unique_id, node_id, "*.pkl"])):
+            for path in glob(join_filepath([DIRPATH.OUTPUT_DIR, unique_id, node_id, "*.pkl"])):
                 runPaths.append(path.replace("\\", "/"))
 
         print(runPaths)
@@ -45,11 +45,11 @@ class WorkflowResult:
 
 def _success(info, node_id, algo_name, unique_id, dirpath):
     config = ExptConfigReader.read(join_filepath(
-        [DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_YML]))
+        [DIRPATH.OUTPUT_DIR, unique_id, DIRPATH.EXPERIMENT_YML]))
     config.function[node_id].success = "success"
 
     ConfigWriter.write(
-        dirname=join_filepath([DIRPATH.BASE_DIR, unique_id]),
+        dirname=join_filepath([DIRPATH.OUTPUT_DIR, unique_id]),
         filename=DIRPATH.EXPERIMENT_YML,
         config=asdict(config),
     )
@@ -63,11 +63,11 @@ def _success(info, node_id, algo_name, unique_id, dirpath):
 
 def _error(info, node_id, unique_id):
     config = ExptConfigReader.read(join_filepath([
-        DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_YML]))
+        DIRPATH.OUTPUT_DIR, unique_id, DIRPATH.EXPERIMENT_YML]))
     config.function[node_id].success = "error"
 
     ConfigWriter.write(
-        dirname=join_filepath([DIRPATH.BASE_DIR, unique_id]),
+        dirname=join_filepath([DIRPATH.OUTPUT_DIR, unique_id]),
         filename=DIRPATH.EXPERIMENT_YML,
         config=asdict(config),
     )

@@ -38,7 +38,7 @@ class ImageData(BaseData):
         elif isinstance(data, list) and isinstance(data[0], str):
             self.path = data
         else:
-            _dir = join_filepath([DIRPATH.BASE_DIR, "tiff", file_name])
+            _dir = join_filepath([DIRPATH.INPUT_DIR, "tiff", file_name])
             create_directory(_dir)
 
             _path = join_filepath([_dir, f'{file_name}.tif'])
@@ -180,7 +180,7 @@ class RoiData(BaseData):
 
         images = create_images_list(data)
 
-        _dir = join_filepath([DIRPATH.BASE_DIR, "tiff", file_name])
+        _dir = join_filepath([DIRPATH.OPTINIST_DIR, "tiff", file_name])
         create_directory(_dir)
         self.path = join_filepath([_dir, f'{file_name}.tif'])
         tifffile.imsave(self.path, images)
