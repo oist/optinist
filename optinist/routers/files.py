@@ -5,7 +5,7 @@ from typing import List
 from fastapi import APIRouter, File, UploadFile
 
 from optinist.api.dir_path import DIRPATH
-from optinist.api.utils.filepath_creater import join_filepath
+from optinist.api.utils.filepath_creater import create_directory, join_filepath
 from optinist.routers.model import FILETYPE, TreeNode
 
 router = APIRouter()
@@ -60,8 +60,7 @@ async def get_files(file_type: str = None):
 @router.post("/files/upload/{filename}")
 async def create_file(filename: str, file: UploadFile = File(...)):
     dirpath = os.path.splitext(join_filepath([DIRPATH.BASE_DIR, filename]))[0]
-    if not os.path.exists(dirpath):
-        os.makedirs(dirpath)
+    create_directory(dirpath)
 
     filepath = join_filepath([dirpath, filename])
 

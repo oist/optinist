@@ -32,9 +32,9 @@ def suite2p_file_convert(
     ops = {**default_ops(), **params, **db}
 
     # save folderを指定
-    savedir = join_filepath([ops['save_path0'], ops['save_folder']])
-    if not os.path.exists(savedir):
-        os.makedirs(savedir)
+    create_directory(
+        join_filepath([ops['save_path0'], ops['save_folder']])
+    )
 
     # save ops.npy(parameter) and data.bin
     ops = io.tiff_to_binary(ops.copy())

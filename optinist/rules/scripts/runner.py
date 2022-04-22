@@ -1,10 +1,9 @@
 import traceback
-import os
 import gc
 import copy
 
 from optinist.api.snakemake.smk import Rule
-from optinist.api.utils.filepath_creater import join_filepath
+from optinist.api.utils.filepath_creater import create_directory, join_filepath
 from optinist.api.pickle.pickle_reader import PickleReader
 from optinist.api.pickle.pickle_writer import PickleWriter
 from optinist.api.nwb.nwb_creater import merge_nwbfile, save_nwb
@@ -30,9 +29,8 @@ class Runner:
             )
 
             # ファイル保存先
-            outputdir = join_filepath(__rule_config.output.split("/")[:-1])
-            if not os.path.exists(outputdir):
-                os.makedirs(outputdir)
+            output_dir = join_filepath(__rule_config.output.split("/")[:-1])
+            create_directory(output_dir)
 
             # nwbfileの設定
             if "nwbfile" not in output_info:

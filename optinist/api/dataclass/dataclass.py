@@ -1,5 +1,4 @@
 import os
-from typing import overload
 import numpy as np
 import pandas as pd
 import imageio
@@ -8,7 +7,7 @@ import gc
 from pynwb import NWBFile
 
 
-from optinist.api.utils.filepath_creater import join_filepath
+from optinist.api.utils.filepath_creater import create_directory, join_filepath
 from optinist.api.dir_path import DIRPATH
 from optinist.api.dataclass.utils import create_images_list
 from optinist.api.utils.json_writer import JsonWriter
@@ -40,8 +39,7 @@ class ImageData(BaseData):
             self.path = data
         else:
             _dir = join_filepath([DIRPATH.BASE_DIR, "tiff", file_name])
-            if not os.path.exists(_dir):
-                os.makedirs(_dir)
+            create_directory(_dir)
 
             _path = join_filepath([_dir, f'{file_name}.tif'])
             tifffile.imsave(_path, data)
@@ -92,8 +90,7 @@ class TimeSeriesData(BaseData):
     def save_json(self, json_dir):
         # timeseriesだけはdirを返す
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        if not os.path.exists(self.json_path):
-            os.makedirs(self.json_path)
+        create_directory(self.json_path)
 
         for i, _ in enumerate(self.data):
             data = self.data[i]
@@ -107,7 +104,6 @@ class TimeSeriesData(BaseData):
             else:
                 df = pd.DataFrame(data, index=self.index, columns=["data"])
 
-            # df.to_json(join_filepath([self.json_path, f'{str(i)}.json']), indent=4)
             JsonWriter.write(
                 join_filepath([self.json_path, f'{str(i)}.json']),
                 df
@@ -185,8 +181,7 @@ class RoiData(BaseData):
         images = create_images_list(data)
 
         _dir = join_filepath([DIRPATH.BASE_DIR, "tiff", file_name])
-        if not os.path.exists(_dir):
-            os.makedirs(_dir)
+        create_directory(_dir)
         self.path = join_filepath([_dir, f'{file_name}.tif'])
         tifffile.imsave(self.path, images)
 
