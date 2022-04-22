@@ -56,15 +56,3 @@ export const importExperimentByUid = createAsyncThunk<RunPostData, string>(
     }
   },
 )
-
-// export const downloadExperimentByUid = createAsyncThunk<void, string>(
-//   `${EXPERIMENTS_SLICE_NAME}/downloadExperimentByUid`,
-//   async (uid, thunkAPI) => {
-//     try {
-//       const response = await downloadExperimentByUidApi(uid)
-//       return response
-//     } catch (e) {
-//       return thunkAPI.rejectWithValue(e)
-//     }
-//   },
-// )

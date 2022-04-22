@@ -192,7 +192,7 @@ const ImagePlotChart = React.memo<{
   const layout = React.useMemo(
     () => ({
       width: width,
-      height: height - 170,
+      height: height - 120 - 9000 / width,
       margin: {
         t: 30, // top
         l: 120, // left
@@ -291,6 +291,8 @@ const ImagePlotChart = React.memo<{
     [dispatch, itemId],
   )
 
+  // const marks = startIndex + activeIndex
+
   return (
     <div>
       <Box sx={{ width: '50%' }}>
@@ -301,7 +303,6 @@ const ImagePlotChart = React.memo<{
           Pause
         </Button>
         <TextField
-          // error={inputError}
           type="number"
           inputProps={{
             step: 100,
@@ -313,13 +314,10 @@ const ImagePlotChart = React.memo<{
           }}
           onChange={onDurationChange}
           value={duration}
-          // helperText={inputError ? 'index > 0' : undefined}
         />
-        msec
-        <div>Index: {startIndex + activeIndex}</div>
         <Slider
-          aria-label="Index"
-          defaultValue={1}
+          aria-label="Custom marks"
+          defaultValue={20}
           value={startIndex + activeIndex}
           valueLabelDisplay="auto"
           step={1}

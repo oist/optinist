@@ -40,7 +40,7 @@ export const AlgorithmTreeView = React.memo(() => {
   const onAlgoNodeClick = (nodeName: string, functionPath: string) => {
     const name = nodeName
     const newNode = {
-      id: nanoid(),
+      id: `${name}_${nanoid().slice(0, 10)}`,
       type: 'AlgorithmNode',
       data: { label: name, type: NODE_TYPE_SET.ALGORITHM },
     }
@@ -140,7 +140,7 @@ const InputNodeComponent = React.memo<{
         break
     }
     const newNode = {
-      id: nanoid(),
+      id: `input_${nanoid().slice(0, 10)}`,
       type: componentType,
       data: { label: nodeName, type: nodeType },
     }
