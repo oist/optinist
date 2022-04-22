@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { nanoid } from '@reduxjs/toolkit'
 import TreeView from '@mui/lab/TreeView'
 import TreeItem, { treeItemClasses } from '@mui/lab/TreeItem'
 import { styled, Typography } from '@mui/material'
@@ -25,6 +24,7 @@ import {
   addAlgorithmNode,
   addInputNode,
 } from 'store/slice/FlowElement/FlowElementActions'
+import { getNanoId } from 'store/utils/nanoid/NanoIdUtils'
 
 export const AlgorithmTreeView = React.memo(() => {
   const dispatch = useDispatch()
@@ -40,7 +40,7 @@ export const AlgorithmTreeView = React.memo(() => {
   const onAlgoNodeClick = (nodeName: string, functionPath: string) => {
     const name = nodeName
     const newNode = {
-      id: `${name}_${nanoid().slice(0, 10)}`,
+      id: `${name}_${getNanoId()}`,
       type: 'AlgorithmNode',
       data: { label: name, type: NODE_TYPE_SET.ALGORITHM },
     }
@@ -140,7 +140,7 @@ const InputNodeComponent = React.memo<{
         break
     }
     const newNode = {
-      id: `input_${nanoid().slice(0, 10)}`,
+      id: `input_${getNanoId()}`,
       type: componentType,
       data: { label: nodeName, type: nodeType },
     }

@@ -83,9 +83,12 @@ class NWBCreater:
 
     @classmethod
     def motion_correction(cls, nwbfile, mc_data, xy_trans_data):
+        # image_data = mc_data.data
+        image_path = mc_data.path
         corrected = ImageSeries(
             name='corrected',  # this must be named "corrected"
-            data=mc_data.data,
+            # data=image_data,
+            external_file=image_path,
             unit='na',
             format='raw',
             starting_time=0.0,
