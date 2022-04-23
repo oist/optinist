@@ -3,8 +3,6 @@ import {
   isHDF5InputNode,
   isCsvInputNode,
   isImageInputNode,
-  // isFluoInputNode,
-  // isBehaviorInputNode,
 } from './InputNodeUtils'
 
 export const selectInputNode = (state: RootState) => state.inputNode

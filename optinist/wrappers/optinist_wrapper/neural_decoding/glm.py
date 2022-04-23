@@ -12,7 +12,6 @@ def GLM(
         neural_data: FluoData,
         behaviors_data: BehaviorData,
         iscell: IscellData=None,
-        nwbfile: NWBFile=None,
         params: dict=None
     ) -> dict():
 
@@ -66,23 +65,22 @@ def GLM(
     Res = model.fit()
 
     # NWB追加
-    if nwbfile is not None:
-        # import pdb; pdb.set_trace()
-        nwbfile[NWBDATASET.POSTPROCESS] = {
-            'actual_predicted': np.array([Res._endog, Res.mu]).transpose(),
-            'params': Res.params.values,
-            'pvalues': Res.pvalues.values,
-            'tvalues': Res.tvalues.values, # z
-            'aic': [Res.aic],
-            'bic_llf': [Res.bic_llf],
-            'llf': [Res.llf], # log-Likelihood
-            'pearson_chi2': [Res.pearson_chi2],
-            'df_model': [Res.df_model],
-            'df_resid': [Res.df_resid],
-            'scale': [Res.scale],
-            'mu': Res.mu,
-            'endog': Res._endog,
-        }
+    nwbfile = {}
+    nwbfile[NWBDATASET.POSTPROCESS] = {
+        'actual_predicted': np.array([Res._endog, Res.mu]).transpose(),
+        'params': Res.params.values,
+        'pvalues': Res.pvalues.values,
+        'tvalues': Res.tvalues.values, # z
+        'aic': [Res.aic],
+        'bic_llf': [Res.bic_llf],
+        'llf': [Res.llf], # log-Likelihood
+        'pearson_chi2': [Res.pearson_chi2],
+        'df_model': [Res.df_model],
+        'df_resid': [Res.df_resid],
+        'scale': [Res.scale],
+        'mu': Res.mu,
+        'endog': Res._endog,
+    }
 
     # main results for plot
     # plot should be reconsidered --- what they should be!

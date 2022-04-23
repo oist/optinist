@@ -6,10 +6,8 @@ from optinist.api.utils.filepath_creater import join_filepath
 
 def suite2p_file_convert(
         image: ImageData,
-        nwbfile: NWBFile=None,
         params: dict=None
     ) -> dict(ops=Suite2pData):
-    import os
     from suite2p import io, default_ops
     print('start suite2_file_convert')
 
@@ -25,16 +23,16 @@ def suite2p_file_convert(
     db = {
         'data_path': data_path_list,
         'tiff_list': data_name_list,
-        'save_path0': DIRPATH.BASE_DIR,
+        'save_path0': DIRPATH.OPTINIST_DIR,
         'save_folder': 'suite2p'
     }
 
     ops = {**default_ops(), **params, **db}
 
     # save folderを指定
-    savedir = join_filepath([ops['save_path0'], ops['save_folder']])
-    if not os.path.exists(savedir):
-        os.makedirs(savedir)
+    create_directory(
+        join_filepath([ops['save_path0'], ops['save_folder']])
+    )
 
     # save ops.npy(parameter) and data.bin
     ops = io.tiff_to_binary(ops.copy())

@@ -10,7 +10,7 @@ router = APIRouter()
 
 @router.post("/run")
 async def run(runItem: RunItem, background_tasks: BackgroundTasks):
-    unique_id = str(uuid.uuid4())
+    unique_id = str(uuid.uuid4())[:8]
     WorkflowRunner.run_workflow(unique_id, background_tasks, runItem)
     print("run snakemake")
     return unique_id

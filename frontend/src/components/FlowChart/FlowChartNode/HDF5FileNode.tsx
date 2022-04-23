@@ -11,10 +11,8 @@ import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutl
 import DialogActions from '@mui/material/DialogActions'
 import DialogContent from '@mui/material/DialogContent'
 import DialogTitle from '@mui/material/DialogTitle'
-import IconButton from '@mui/material/IconButton'
 import LinearProgress from '@mui/material/LinearProgress'
 import Button from '@mui/material/Button'
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
 
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import {
@@ -75,13 +73,13 @@ const HDF5FileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
           : undefined,
       }}
     >
-      <IconButton
-        aria-label="delete"
-        style={{ color: 'black', position: 'absolute', top: -20, right: -5 }}
+      <button
+        className="flowbutton"
         onClick={onClickDeleteIcon}
+        style={{ color: 'black', position: 'absolute', top: -10, right: 10 }}
       >
-        <CloseOutlinedIcon />
-      </IconButton>
+        ×
+      </button>
       <FileSelect
         onChangeFilePath={(path) => {
           if (!Array.isArray(path)) {

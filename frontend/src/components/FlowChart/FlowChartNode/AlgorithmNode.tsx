@@ -15,7 +15,6 @@ import {
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import ErrorIcon from '@mui/icons-material/Error'
 import Popover from '@mui/material/Popover'
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
 
 import { AlgorithmInfo } from 'store/slice/AlgorithmList/AlgorithmListType'
 import {
@@ -94,14 +93,13 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
           border: '1px solid',
         }}
       >
-        <IconButton
-          aria-label="delete"
-          style={{ color: 'black', position: 'absolute', top: -20, right: -5 }}
+        <button
+          className="flowbutton"
           onClick={onClickDeleteIcon}
-          size="large"
+          style={{ color: 'black', position: 'absolute', top: -10, right: 10 }}
         >
-          <CloseOutlinedIcon />
-        </IconButton>
+          ×
+        </button>
         <AlgoName nodeId={nodeId} data={data} />
         <ButtonGroup sx={{ mx: 1 }}>
           <Button size="small" onClick={onClickParamButton}>

@@ -13,7 +13,7 @@ class SmkConfigWriter:
         )
 
         ConfigWriter.write(
-            dirname=join_filepath([DIRPATH.BASE_DIR, unique_id]),
+            dirname=join_filepath([DIRPATH.OUTPUT_DIR, unique_id]),
             filename=DIRPATH.SNAKEMAKE_CONFIG_YML,
             config=flow_config
         )

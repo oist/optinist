@@ -1,7 +1,12 @@
 import React, { useCallback, useEffect } from 'react'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { useSelector, useDispatch } from 'react-redux'
+import { RootState } from 'store/store'
+import { Datum, LayoutAxis, PlotData } from 'plotly.js'
+import createColormap from 'colormap'
 import { Button, LinearProgress, TextField, Typography } from '@mui/material'
+import Slider from '@mui/material/Slider'
+import Box from '@mui/material/Box'
 
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 import { DisplayDataContext } from '../DataContext'
@@ -41,11 +46,6 @@ import {
   setImageActiveIndex,
   setImageItemDuration,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { RootState } from 'store/store'
-import { Datum, LayoutAxis, PlotData } from 'plotly.js'
-import createColormap from 'colormap'
-import Slider from '@mui/material/Slider'
-import Box from '@mui/material/Box'
 import { setImageItemClikedDataId } from 'store/slice/VisualizeItem/VisualizeItemActions'
 
 export const ImagePlot = React.memo(() => {
@@ -192,7 +192,7 @@ const ImagePlotChart = React.memo<{
   const layout = React.useMemo(
     () => ({
       width: width,
-      height: height - 170,
+      height: height - 120 - 9000 / width,
       margin: {
         t: 30, // top
         l: 120, // left
@@ -301,7 +301,6 @@ const ImagePlotChart = React.memo<{
           Pause
         </Button>
         <TextField
-          // error={inputError}
           type="number"
           inputProps={{
             step: 100,
@@ -313,13 +312,10 @@ const ImagePlotChart = React.memo<{
           }}
           onChange={onDurationChange}
           value={duration}
-          // helperText={inputError ? 'index > 0' : undefined}
         />
-        msec
-        <div>Index: {startIndex + activeIndex}</div>
         <Slider
-          aria-label="Index"
-          defaultValue={1}
+          aria-label="Custom marks"
+          defaultValue={20}
           value={startIndex + activeIndex}
           valueLabelDisplay="auto"
           step={1}

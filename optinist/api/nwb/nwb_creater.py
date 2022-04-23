@@ -83,9 +83,12 @@ class NWBCreater:
 
     @classmethod
     def motion_correction(cls, nwbfile, mc_data, xy_trans_data):
+        # image_data = mc_data.data
+        image_path = mc_data.path
         corrected = ImageSeries(
             name='corrected',  # this must be named "corrected"
-            data=mc_data.data,
+            # data=image_data,
+            external_file=image_path,
             unit='na',
             format='raw',
             starting_time=0.0,
@@ -205,8 +208,8 @@ class NWBCreater:
         return nwbfile
 
 
-def save_nwb(config, save_path):
-    nwbfile = NWBCreater.acquisition(config)
+def save_nwb(save_path, input_config, config):
+    nwbfile = NWBCreater.acquisition(input_config)
     nwbfile.create_processing_module(
         name='ophys',
         description='optical physiology processed data'
@@ -232,8 +235,7 @@ def save_nwb(config, save_path):
 
     if NWBDATASET.MOTION_CORRECTION in config:
         for mc in config[NWBDATASET.MOTION_CORRECTION].values():
-            nwbfile = NWBCreater.motion_correction(
-                nwbfile, **mc)
+            nwbfile = NWBCreater.motion_correction(nwbfile, **mc)
 
     if NWBDATASET.ROI in config:
         for roi_list in config[NWBDATASET.ROI].values():
@@ -247,7 +249,7 @@ def save_nwb(config, save_path):
         for value in config[NWBDATASET.FLUORESCENCE].values():
             nwbfile = NWBCreater.fluorescence(nwbfile, **value)
 
-    with NWBHDF5IO(f'{save_path}.nwb', 'w') as f:
+    with NWBHDF5IO(save_path, 'w') as f:
         f.write(nwbfile)
 
 

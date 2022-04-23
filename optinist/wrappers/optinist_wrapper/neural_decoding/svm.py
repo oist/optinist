@@ -6,7 +6,6 @@ def SVM(
         neural_data: FluoData,
         behaviors_data: BehaviorData,
         iscell: IscellData=None,
-        nwbfile: NWBFile=None,
         params: dict=None
     ) -> dict():
 
@@ -79,11 +78,10 @@ def SVM(
         classifier.append(clf)
 
     # NWB追加
-    if nwbfile is not None:
-        import pdb; pdb.set_trace()
-        nwbfile[NWBDATASET.POSTPROCESS] = {
-            'score': score,
-        }
+    nwbfile = {}
+    nwbfile[NWBDATASET.POSTPROCESS] = {
+        'score': score,
+    }
 
     info = {
         'score': BarData(score, file_name='score'),

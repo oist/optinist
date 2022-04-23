@@ -6,7 +6,6 @@ def CCA(
         neural_data: FluoData,
         behaviors_data: BehaviorData,
         iscell: IscellData=None,
-        nwbfile: NWBFile=None,
         params: dict=None
     ) -> dict():
 
@@ -48,18 +47,17 @@ def CCA(
     proj = np.concatenate([projX, projY], axis=1)
 
     # NWB追加
-    if nwbfile is not None:
-        # import pdb; pdb.set_trace()
-        nwbfile[NWBDATASET.POSTPROCESS] = {
-            'projectedNd': proj,
-            'x_weights': cca.x_weights_,  # singular vectors
-            'y_weights': cca.y_weights_,
-            'x_loadings_': cca.x_rotations_,
-            'y_loadings_': cca.x_rotations_,
-            'coef': cca.coef_,
-            'n_iter_': cca.n_iter_,
-            # 'n_features_in_': [cca.n_features_in_],
-        }
+    nwbfile = {}
+    nwbfile[NWBDATASET.POSTPROCESS] = {
+        'projectedNd': proj,
+        'x_weights': cca.x_weights_,  # singular vectors
+        'y_weights': cca.y_weights_,
+        'x_loadings_': cca.x_rotations_,
+        'y_loadings_': cca.x_rotations_,
+        'coef': cca.coef_,
+        'n_iter_': cca.n_iter_,
+        # 'n_features_in_': [cca.n_features_in_],
+    }
 
     info = {
         'projectedNd': ScatterData(proj, file_name='projectedNd'),

@@ -5,7 +5,6 @@ from optinist.api.nwb.nwb import NWBDATASET
 def TSNE(
         neural_data: FluoData,
         iscell: IscellData=None,
-        nwbfile: NWBFile=None,
         params: dict=None
     ) -> dict():
 
@@ -33,10 +32,10 @@ def TSNE(
     proj_X = tsne.fit_transform(tX)
 
     # NWB追加
-    if nwbfile is not None:
-        nwbfile[NWBDATASET.POSTPROCESS] = {
-            'projectedNd': proj_X
-        }
+    nwbfile = {}
+    nwbfile[NWBDATASET.POSTPROCESS] = {
+        'projectedNd': proj_X
+    }
 
     info = {
         'projectedNd': ScatterData(proj_X, file_name='projectedNd'),

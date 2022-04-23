@@ -187,13 +187,13 @@ const TimeSeriesPlotImple = React.memo(() => {
 
   const annotations = React.useMemo(() => {
     if (data.length !== 0) {
-      return displayNumbers.map((i) => {
+      return displayNumbers.map((v) => {
         return {
           x: Number(dataXrange[dataXrange.length - 1]) + dataXrange.length / 10,
-          y: data[i].y[dataXrange.length - 1],
+          y: data[v].y[dataXrange.length - 1],
           xref: 'x',
           yref: 'y',
-          text: `cell: ${i + 1}`,
+          text: `cell: ${v + 1}`,
           arrowhead: 1,
           ax: 0,
           ay: -10,
@@ -299,14 +299,12 @@ const TimeSeriesPlotImple = React.memo(() => {
   }
 
   return (
-    <div>
-      <PlotlyChart
-        data={data}
-        layout={layout}
-        config={config}
-        onLegendClick={onLegendClick}
-      />
-    </div>
+    <PlotlyChart
+      data={data}
+      layout={layout}
+      config={config}
+      onLegendClick={onLegendClick}
+    />
   )
 })
 

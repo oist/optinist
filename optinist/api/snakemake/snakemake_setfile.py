@@ -15,7 +15,10 @@ class SmkSetfile:
                 return_name = edge.sourceHandle.split("--")[0]
 
         output_file = get_pickle_file(
-            unique_id, node.id, node.data.label.split(".")[0])
+            unique_id,
+            node.id,
+            node.data.label.split(".")[0]
+        )
 
         return Rule(
             rule_file=f"rules/smk/image.smk",
@@ -34,7 +37,10 @@ class SmkSetfile:
                 return_name = edge.sourceHandle.split("--")[0]
 
         output_file = get_pickle_file(
-            unique_id, node.id, node.data.label.split(".")[0])
+            unique_id,
+            node.id,
+            node.data.label.split(".")[0]
+        )
 
         return Rule(
             rule_file=f"rules/smk/{nodeType}.smk",
@@ -53,7 +59,10 @@ class SmkSetfile:
                 return_name = edge.sourceHandle.split("--")[0]
 
         output_file = get_pickle_file(
-            unique_id, node.id, node.data.label.split(".")[0])
+            unique_id,
+            node.id,
+            node.data.label.split(".")[0]
+        )
 
         return Rule(
             rule_file=f"rules/smk/hdf5.smk",

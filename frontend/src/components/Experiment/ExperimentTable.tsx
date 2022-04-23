@@ -16,6 +16,13 @@ import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import ReplayIcon from '@mui/icons-material/Replay'
 import DeleteIcon from '@mui/icons-material/Delete'
+import {
+  Checkbox,
+  Dialog,
+  DialogActions,
+  DialogTitle,
+  TableSortLabel,
+} from '@mui/material'
 
 import { CollapsibleTable } from './CollapsibleTable'
 import {
@@ -34,13 +41,6 @@ import {
 } from 'store/slice/Experiments/ExperimentsActions'
 import { ExperimentStatusIcon } from './ExperimentStatusIcon'
 import { Experiment } from 'store/slice/Experiments/ExperimentsType'
-import {
-  Checkbox,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  TableSortLabel,
-} from '@mui/material'
 import { DeleteButton } from './Button/DeleteButton'
 import {
   NWBDownloadButton,

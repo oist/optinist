@@ -12,16 +12,20 @@ def join_filepath(path_list):
 
 
 def create_filepath(dirname, filename):
-    if not os.path.exists(dirname):
-        os.makedirs(dirname)
+    create_directory(dirname)
 
     return join_filepath([dirname, filename])
 
 
 def get_pickle_file(unique_id, node_id, algo_name):
     return join_filepath([
-        DIRPATH.BASE_DIR,
+        DIRPATH.OUTPUT_DIR,
         unique_id,
         node_id,
         f"{algo_name}.pkl"
     ])
+
+
+def create_directory(dirpath):
+    if not os.path.exists(dirpath):
+        os.makedirs(dirpath)

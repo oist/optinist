@@ -4,7 +4,6 @@ from optinist.api.nwb.nwb import NWBDATASET
 
 def suite2p_roi(
         ops: Suite2pData,
-        nwbfile: NWBFile=None,
         params: dict=None
     ) -> dict(ops=Suite2pData, fluorescence=FluoData, iscell=IscellData):
     import numpy as np
@@ -31,7 +30,7 @@ def suite2p_roi(
     ops, stat = detection.detect(ops=ops, classfile=classfile)
 
     ######## ROI EXTRACTION ##############
-    ops, stat, F, Fneu, F_chan2, Fneu_chan2 = extraction.create_masks_and_extract(ops, stat)
+    ops, stat, F, Fneu, _, _ = extraction.create_masks_and_extract(ops, stat)
 
     ######## ROI CLASSIFICATION ##############
     iscell = classification.classify(stat=stat, classfile=classfile)
@@ -51,6 +50,7 @@ def suite2p_roi(
     im[im == 0] = np.nan
 
     # NWBを追加
+    nwbfile = {}
 
     ### roiを追加
     roi_list = []
@@ -60,36 +60,32 @@ def suite2p_roi(
             stat[i]['ypix'], stat[i]['xpix'], stat[i]['lam']]).T
         roi_list.append(kargs)
 
-    if nwbfile is not None:
-        nwbfile[NWBDATASET.ROI] = {
-            'roi_list': roi_list
-        }
-        ### iscellを追加
-        nwbfile[NWBDATASET.COLUMN] = {
-            'roi_column': {
-                'name': 'iscell',
-                'discription': 'two columns - iscell & probcell',
-                'data': iscell,
-            }
-        }
+    nwbfile[NWBDATASET.ROI] = {
+        'roi_list': roi_list
+    }
 
-    # NWBを追加
+    ### iscellを追加
+    nwbfile[NWBDATASET.COLUMN] = {
+        'roi_column': {
+            'name': 'iscell',
+            'discription': 'two columns - iscell & probcell',
+            'data': iscell,
+        }
+    }
+
     ### Fluorenceを追加
-    if nwbfile is not None:
-        if NWBDATASET.FLUORESCENCE not in nwbfile.keys():
-            nwbfile[NWBDATASET.FLUORESCENCE] = {}
-        for name, data in zip(['Fluorescence', 'Neuropil'], [F, Fneu]):
-            nwbfile[NWBDATASET.FLUORESCENCE][name] = {
-                'table_name': name,
-                'region': list(range(len(data))),
-                'name': name,
-                'data': data,
-                'unit': 'lumens',
-                'rate': ops['fs'],
-            }
+    nwbfile[NWBDATASET.FLUORESCENCE] = {}
+    for name, data in zip(['Fluorescence', 'Neuropil'], [F, Fneu]):
+        nwbfile[NWBDATASET.FLUORESCENCE][name] = {
+            'table_name': name,
+            'region': list(range(len(data))),
+            'name': name,
+            'data': data,
+            'unit': 'lumens',
+            'rate': ops['fs'],
+        }
 
-    ops['F'] = F
-    ops['Fneu'] = Fneu
+    ops['stat'] = stat
 
     info = {
         'ops': Suite2pData(ops),

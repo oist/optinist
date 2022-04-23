@@ -180,15 +180,6 @@ export const selectPipelineIsStartedSuccess = (state: RootState) => {
   return pipeline.status === RUN_STATUS.START_SUCCESS
 }
 
-// export const selectPipelineRunResult = (state: RootState) => {
-//   const pipeline = selectStartedPipeline(state)
-//   if (isStartedPipeline(pipeline)) {
-//     return pipeline.runResult
-//   } else {
-//     throw new Error("todo")
-//   }
-// }
-
 export const selectPipelineNodeResultSuccessList = (state: RootState) => {
   const pipeline = selectStartedPipeline(state)
   if (isStartedPipeline(pipeline)) {

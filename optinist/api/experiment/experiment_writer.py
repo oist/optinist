@@ -14,7 +14,7 @@ from optinist.api.workflow.workflow import Edge, Node
 class ExptConfigWriter:
     @classmethod
     def write(cls, unique_id, name, nodeList, edgeList):
-        exp_filepath = join_filepath([DIRPATH.BASE_DIR, unique_id, DIRPATH.EXPERIMENT_YML])
+        exp_filepath = join_filepath([DIRPATH.OUTPUT_DIR, unique_id, DIRPATH.EXPERIMENT_YML])
         if os.path.exists(exp_filepath):
             exp_config = ExptConfigReader.read(exp_filepath)
             exp_config = _add_run_info(exp_config, nodeList, edgeList)
@@ -24,7 +24,7 @@ class ExptConfigWriter:
         exp_config.function = _create_function_from_nodeList(nodeList)
 
         ConfigWriter.write(
-            dirname=join_filepath([DIRPATH.BASE_DIR, unique_id]),
+            dirname=join_filepath([DIRPATH.OUTPUT_DIR, unique_id]),
             filename=DIRPATH.EXPERIMENT_YML,
             config=asdict(exp_config),
         )

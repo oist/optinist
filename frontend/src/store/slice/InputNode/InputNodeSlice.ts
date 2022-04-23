@@ -34,7 +34,10 @@ export const inputNodeSlice = createSlice({
     },
     setCsvInputNodeParam(
       state,
-      action: PayloadAction<{ nodeId: string; param: CsvInputParamType }>,
+      action: PayloadAction<{
+        nodeId: string
+        param: CsvInputParamType
+      }>,
     ) {
       const { nodeId, param } = action.payload
       const inputNode = state[nodeId]

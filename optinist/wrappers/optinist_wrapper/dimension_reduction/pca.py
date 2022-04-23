@@ -5,7 +5,6 @@ from optinist.api.nwb.nwb import NWBDATASET
 def PCA(
         neural_data: FluoData,
         iscell: IscellData=None,
-        nwbfile: NWBFile=None,
         params: dict=None
     ) -> dict():
 
@@ -33,19 +32,19 @@ def PCA(
     proj_X = pca.fit_transform(tX)
 
     # NWB追加
-    if nwbfile is not None:
-        nwbfile[NWBDATASET.POSTPROCESS] = {
-            'pca_projectedNd': proj_X,
-            'components': pca.components_,
-            'explained_variance': pca.explained_variance_,
-            'explained_variance_ratio': pca.explained_variance_ratio_,
-            'singular_values': pca.singular_values_,
-            'mean': pca.mean_,
-            'n_components': [pca.n_components_],
-            'n_samples': [pca.n_samples_],
-            'noise_variance': [pca.noise_variance_],
-            'n_features_in': [pca.n_features_in_],
-        }
+    nwbfile = {}
+    nwbfile[NWBDATASET.POSTPROCESS] = {
+        'pca_projectedNd': proj_X,
+        'components': pca.components_,
+        'explained_variance': pca.explained_variance_,
+        'explained_variance_ratio': pca.explained_variance_ratio_,
+        'singular_values': pca.singular_values_,
+        'mean': pca.mean_,
+        'n_components': [pca.n_components_],
+        'n_samples': [pca.n_samples_],
+        'noise_variance': [pca.noise_variance_],
+        'n_features_in': [pca.n_features_in_],
+    }
 
     info = {
         'explained_variance': BarData(pca.explained_variance_ratio_, file_name='evr'),

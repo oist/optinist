@@ -24,7 +24,6 @@ export const algorithmNodeSlice = createSlice({
       state,
       action: PayloadAction<{
         nodeId: string
-        // paramKey: string
         path: string
         newValue: unknown
       }>,

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { LinearProgress, Typography } from '@mui/material'
