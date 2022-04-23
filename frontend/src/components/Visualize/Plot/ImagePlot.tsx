@@ -1,7 +1,12 @@
 import React, { useCallback, useEffect } from 'react'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { useSelector, useDispatch } from 'react-redux'
+import { RootState } from 'store/store'
+import { Datum, LayoutAxis, PlotData } from 'plotly.js'
+import createColormap from 'colormap'
 import { Button, LinearProgress, TextField, Typography } from '@mui/material'
+import Slider from '@mui/material/Slider'
+import Box from '@mui/material/Box'
 
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 import { DisplayDataContext } from '../DataContext'
@@ -41,11 +46,6 @@ import {
   setImageActiveIndex,
   setImageItemDuration,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { RootState } from 'store/store'
-import { Datum, LayoutAxis, PlotData } from 'plotly.js'
-import createColormap from 'colormap'
-import Slider from '@mui/material/Slider'
-import Box from '@mui/material/Box'
 import { setImageItemClikedDataId } from 'store/slice/VisualizeItem/VisualizeItemActions'
 
 export const ImagePlot = React.memo(() => {
@@ -290,8 +290,6 @@ const ImagePlotChart = React.memo<{
     },
     [dispatch, itemId],
   )
-
-  // const marks = startIndex + activeIndex
 
   return (
     <div>

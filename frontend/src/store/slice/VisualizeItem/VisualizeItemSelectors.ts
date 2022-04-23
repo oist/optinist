@@ -314,12 +314,6 @@ export const selectTimeSeriesItemDisplayNumbers =
   (itemId: number, refImageItemId?: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
-      // if (refImageItemId != null) {
-      //   const refItem = selectVisualizeItems(state)[refImageItemId]
-      //   if (isImageItem(refItem) && refItem.clickedDataId != null) {
-      //     return [...item.displayNumbers, refItem.clickedDataId]
-      //   }
-      // }
       return item.displayNumbers
     }
     throw new Error('invalid VisualaizeItemType')
