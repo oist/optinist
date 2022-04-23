@@ -3,11 +3,9 @@ from optinist.api.dataclass.dataclass import *
 
 def suite2p_registration(
         ops: Suite2pData,
-        nwbfile: NWBFile=None,
         params: dict=None
     ) -> dict(ops=Suite2pData):
-    import numpy as np
-    from suite2p import registration, io, default_ops, io
+    from suite2p import registration, default_ops
     ops = ops.data
     refImg = ops['meanImg']
     print('start suite2_registration')

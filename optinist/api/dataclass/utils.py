@@ -15,7 +15,7 @@ def create_images_list(data):
         save_data = save_data[np.newaxis, :, :]
 
     images = []
-    for i, _img in enumerate(save_data):
+    for _img in save_data:
         images.append(_img.tolist())
     
     return images

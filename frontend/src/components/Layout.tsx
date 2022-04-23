@@ -23,7 +23,7 @@ const Layout: React.FC = () => {
     <RootDiv>
       <StyledAppBar position="fixed" color="inherit">
         <Toolbar variant="dense">
-          <img src={optinistLogo} alt="optinist" width={120} />
+          <img src={optinistLogo} alt="optinist" width={85} height={50} />
           <Tabs
             sx={{ width: '100%' }}
             value={value}

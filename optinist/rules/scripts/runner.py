@@ -2,61 +2,91 @@ import traceback
 import gc
 import copy
 
+from optinist.wrappers import wrapper_dict
 from optinist.api.snakemake.smk import Rule
-from optinist.api.utils.filepath_creater import create_directory, join_filepath
 from optinist.api.pickle.pickle_reader import PickleReader
 from optinist.api.pickle.pickle_writer import PickleWriter
+from optinist.api.utils.filepath_creater import join_filepath
 from optinist.api.nwb.nwb_creater import merge_nwbfile, save_nwb
-from optinist.wrappers import wrapper_dict
 
 
 class Runner:
     @classmethod
-    def run(cls, __rule_config: Rule, last_output):
+    def run(cls, __rule: Rule, last_output):
         try:
-            input_info = _read_input_info(__rule_config.input)
+            input_info = _read_input_info(__rule.input)
 
-            _change_dict_key_exist(input_info, __rule_config)
+            _change_dict_key_exist(input_info, __rule)
 
+            nwbfile = input_info['nwbfile']
+
+            # input_info
             for key in list(input_info):
-                if key != "nwbfile" and key not in __rule_config.return_arg.values():
+                if key not in __rule.return_arg.values():
                     input_info.pop(key)
 
+            # output_info
             output_info = _execute_function(
-                __rule_config.path,
-                __rule_config.params,
+                __rule.path,
+                __rule.params,
                 input_info
             )
 
-            # ファイル保存先
-            output_dir = join_filepath(__rule_config.output.split("/")[:-1])
-            create_directory(output_dir)
-
-            # nwbfileの設定
-            if "nwbfile" not in output_info:
-                output_info["nwbfile"] = input_info["nwbfile"]
-
-            # NWB保存
-            if __rule_config.output in last_output:
-                # 全体の結果を保存する
-                pass
-
-            save_nwb(
-                output_info['nwbfile'],
-                __rule_config.output.split(".")[0],
+            # nwbfileの設定)
+            output_info['nwbfile'] = _save_output_nwb(
+                f"{__rule.output.split('.')[0]}.nwb",
+                __rule.type,
+                nwbfile,
+                output_info,
             )
 
-            # 各関数での結果を保存
-            PickleWriter.write(__rule_config.output, output_info)
+            # NWB保存
+            if __rule.output in last_output:
+                # 全体の結果を保存する
+                path = join_filepath(__rule.output.split('/')[:-2])
+                path = join_filepath([path, f"all_{__rule.type}.nwb"])
+                _save_all_nwb(
+                    path,
+                    output_info['nwbfile']
+                )
 
-            print("output: ", __rule_config.output)
+            # 各関数での結果を保存
+            PickleWriter.write(__rule.output, output_info)
+
+            print("output: ", __rule.output)
 
             del input_info, output_info
             gc.collect()
 
         except Exception as e:
-            error_message  = list(traceback.TracebackException.from_exception(e).format())[-2:]
-            PickleWriter.write(__rule_config.output, error_message)
+            PickleWriter.write(
+                __rule.output,
+                list(traceback.TracebackException.from_exception(e).format())[-2:]
+            )
+
+
+def _save_output_nwb(save_path, name, nwbfile, output_info):
+    if "nwbfile" in output_info:
+        nwbfile[name] = output_info["nwbfile"]
+        save_nwb(
+            save_path,
+            nwbfile["input"],
+            output_info["nwbfile"],
+        )
+    return nwbfile
+
+
+def _save_all_nwb(save_path, all_nwbfile):
+    input_nwbfile = all_nwbfile["input"]
+    all_nwbfile.pop("input")
+    nwbfile = {}
+    for x in all_nwbfile.values():
+        nwbfile = merge_nwbfile(nwbfile, x)
+    save_nwb(
+        save_path,
+        input_nwbfile,
+        nwbfile
+    )
 
 
 def _execute_function(path, params, input_info):
@@ -80,15 +110,8 @@ def _change_dict_key_exist(input_info, rule_config: Rule):
 def _read_input_info(input_files):
     input_info = {}
     for filepath in input_files:
-        data = PickleReader.read(filepath)
-
-        input_info = dict(list(data.items()) + list(input_info.items()))
-        if 'nwbfile' in input_info:
-            input_info['nwbfile'] = merge_nwbfile(
-                input_info['nwbfile'],
-                data['nwbfile']
-            )
-
+        load_data = PickleReader.read(filepath)
+        input_info = dict(list(load_data.items()) + list(input_info.items()))
     return input_info
 
 

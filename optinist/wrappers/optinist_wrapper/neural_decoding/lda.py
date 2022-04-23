@@ -6,7 +6,6 @@ def LDA(
         neural_data: FluoData,
         behaviors_data: BehaviorData,
         iscell: IscellData=None,
-        nwbfile: NWBFile=None,
         params: dict=None
     ) -> dict():
 
@@ -61,10 +60,10 @@ def LDA(
             classifier.append(clf)
 
     # NWB追加
-    if nwbfile is not None:
-        nwbfile[NWBDATASET.POSTPROCESS] = {
-            'score': score,
-        }
+    nwbfile = {}
+    nwbfile[NWBDATASET.POSTPROCESS] = {
+        'score': score,
+    }
 
     info = {
         'score': BarData(score, file_name='score'),

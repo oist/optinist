@@ -5,7 +5,6 @@ from optinist.api.nwb.nwb import NWBDATASET
 def correlation(
         neural_data: FluoData,
         iscell: IscellData=None,
-        nwbfile: NWBFile=None,
         params: dict=None
     ) -> dict():
 
@@ -30,11 +29,10 @@ def correlation(
         corr[i, i] = np.nan
 
     # NWB追加
-    if nwbfile is not None:
-        nwbfile[NWBDATASET.POSTPROCESS] = {
-            'corr': corr,
-        }
-
+    nwbfile = {}
+    nwbfile[NWBDATASET.POSTPROCESS] = {
+        'corr': corr,
+    }
 
     info = {
         'corr': HeatMapData(corr, file_name='corr'),

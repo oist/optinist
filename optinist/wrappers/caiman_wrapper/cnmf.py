@@ -58,7 +58,6 @@ def get_roi(A, thr, thr_method, swap_dim, dims):
 
 def caiman_cnmf(
         images: ImageData,
-        nwbfile: NWBFile=None,
         params: dict=None
     ) -> dict(fluorescence=FluoData, iscell=IscellData):
     from caiman import local_correlations, stop_server
@@ -145,64 +144,64 @@ def caiman_cnmf(
     all_roi = np.nanmax(np.stack([cell_roi, non_cell_roi]), axis=0)
 
     # NWBの追加
-    if nwbfile is not None:
-        ### NWBにROIを追加
-        roi_list = []
-        n_cells = cnm.estimates.A.shape[-1]
-        for i in range(n_cells):
-            kargs = {}
-            kargs['image_mask'] = cnm.estimates.A.T[i].T.toarray().reshape(dims)
-            if hasattr(cnm.estimates, 'accepted_list'):
-                kargs['accepted'] = i in cnm.estimates.accepted_list
-            if hasattr(cnm.estimates, 'rejected_list'):
-                kargs['rejected'] = i in cnm.estimates.rejected_list
-            roi_list.append(kargs)
+    nwbfile = {}
+    ### NWBにROIを追加
+    roi_list = []
+    n_cells = cnm.estimates.A.shape[-1]
+    for i in range(n_cells):
+        kargs = {}
+        kargs['image_mask'] = cnm.estimates.A.T[i].T.toarray().reshape(dims)
+        if hasattr(cnm.estimates, 'accepted_list'):
+            kargs['accepted'] = i in cnm.estimates.accepted_list
+        if hasattr(cnm.estimates, 'rejected_list'):
+            kargs['rejected'] = i in cnm.estimates.rejected_list
+        roi_list.append(kargs)
 
-        ### backgroundsを追加
-        bg_list = []
-        for bg in cnm.estimates.b.T:
-            kargs = {}
-            kargs['image_mask'] = bg.reshape(dims)
-            if hasattr(cnm.estimates, 'accepted_list'):
-                kargs['accepted'] = False
-            if hasattr(cnm.estimates, 'rejected_list'):
-                kargs['rejected'] = False
-            bg_list.append(kargs)
+    ### backgroundsを追加
+    bg_list = []
+    for bg in cnm.estimates.b.T:
+        kargs = {}
+        kargs['image_mask'] = bg.reshape(dims)
+        if hasattr(cnm.estimates, 'accepted_list'):
+            kargs['accepted'] = False
+        if hasattr(cnm.estimates, 'rejected_list'):
+            kargs['rejected'] = False
+        bg_list.append(kargs)
 
-        nwbfile[NWBDATASET.ROI] = {
-            'roi_list': roi_list,
-            'bg_list': bg_list,
+    nwbfile[NWBDATASET.ROI] = {
+        'roi_list': roi_list,
+        'bg_list': bg_list,
+    }
+
+    ### iscellを追加
+    nwbfile[NWBDATASET.COLUMN] = {
+        'roi_column': {
+            'name': 'iscell',
+            'discription': 'two columns - iscell & probcell',
+            'data': iscell,
         }
+    }
 
-        ### iscellを追加
-        nwbfile[NWBDATASET.COLUMN] = {
-            'roi_column': {
-                'name': 'iscell',
-                'discription': 'two columns - iscell & probcell',
-                'data': iscell,
-            }
+    ### Fluorescence
+    n_rois = cnm.estimates.A.shape[-1]
+    n_bg = len(cnm.estimates.f)
+
+    nwbfile[NWBDATASET.FLUORESCENCE] = {
+        'RoiResponseSeries': {
+            'table_name': 'ROIs',
+            'region': list(range(n_rois)),
+            'name': 'RoiResponseSeries',
+            'data': cnm.estimates.C.T,
+            'unit': 'lumens',
+        },
+        'Background_Fluorescence_Response': {
+            'table_name': 'Background',
+            'region': list(range(n_rois, n_rois+n_bg)),
+            'name': 'Background_Fluorescence_Response',
+            'data': cnm.estimates.f.T,
+            'unit': 'lumens',
         }
-
-        ### Fluorescence
-        n_rois = cnm.estimates.A.shape[-1]
-        n_bg = len(cnm.estimates.f)
-
-        nwbfile[NWBDATASET.FLUORESCENCE] = {
-            'RoiResponseSeries': {
-                'table_name': 'ROIs',
-                'region': list(range(n_rois)),
-                'name': 'RoiResponseSeries',
-                'data': cnm.estimates.C.T,
-                'unit': 'lumens',
-            },
-            'Background_Fluorescence_Response': {
-                'table_name': 'Background',
-                'region': list(range(n_rois, n_rois+n_bg)),
-                'name': 'Background_Fluorescence_Response',
-                'data': cnm.estimates.f.T,
-                'unit': 'lumens',
-            }
-        }
+    }
 
     fluorescence = np.concatenate([
         cnm.estimates.C,

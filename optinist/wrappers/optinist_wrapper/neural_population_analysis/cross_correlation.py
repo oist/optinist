@@ -5,11 +5,9 @@ from optinist.api.nwb.nwb import NWBDATASET
 def cross_correlation(
         neural_data: FluoData,
         iscell: IscellData=None,
-        nwbfile: NWBFile=None,
         params: dict=None
     ) -> dict():
 
-    #from statsmodels.tsa.stattools import ccf
     import scipy.signal as ss
     import itertools
     import scipy.stats as stats
@@ -107,12 +105,12 @@ def cross_correlation(
         forfigure[name2] = arr2
 
     # NWB追加
-    if nwbfile is not None:
-        nwbfile[NWBDATASET.POSTPROCESS] = {
-            'mat': mat,
-            'baseline': s_mean,
-            'base_confint': s_confint,
-        }
+    nwbfile = {}
+    nwbfile[NWBDATASET.POSTPROCESS] = {
+        'mat': mat,
+        'baseline': s_mean,
+        'base_confint': s_confint,
+    }
 
     info = {
         'cross_correlation': mat,

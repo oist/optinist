@@ -6,10 +6,8 @@ from optinist.api.utils.filepath_creater import join_filepath
 
 def suite2p_file_convert(
         image: ImageData,
-        nwbfile: NWBFile=None,
         params: dict=None
     ) -> dict(ops=Suite2pData):
-    import os
     from suite2p import io, default_ops
     print('start suite2_file_convert')
 

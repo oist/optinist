@@ -38,7 +38,6 @@ def ETA(
         neural_data: FluoData,
         behaviors_data: BehaviorData,
         iscell: IscellData=None,
-        nwbfile: NWBFile=None,
         params: dict=None
     ) -> dict(mean=TimeSeriesData):
     import numpy as np
@@ -84,12 +83,12 @@ def ETA(
         assert False, "Output data size is 0"
 
     # NWB追加
-    if nwbfile is not None:
-        nwbfile[NWBDATASET.POSTPROCESS] = {
-            'mean': mean,
-            'sem': sem,
-            'num_sample': [len(mean)],
-        }
+    nwbfile = {}
+    nwbfile[NWBDATASET.POSTPROCESS] = {
+        'mean': mean,
+        'sem': sem,
+        'num_sample': [len(mean)],
+    }
 
     min_value = np.min(mean, axis=1, keepdims=True)
     max_value = np.max(mean, axis=1, keepdims=True)

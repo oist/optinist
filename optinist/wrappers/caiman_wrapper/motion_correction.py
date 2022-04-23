@@ -4,7 +4,6 @@ from optinist.api.nwb.nwb import NWBDATASET
 
 def caiman_mc(
         image: ImageData,
-        nwbfile: NWBFile=None,
         params: dict=None
     ) -> dict(mc_images=ImageData):
     import numpy as np
@@ -58,13 +57,13 @@ def caiman_mc(
 
     mc_images = ImageData(images, file_name='mc_images')
 
-    if nwbfile is not None:
-        nwbfile[NWBDATASET.MOTION_CORRECTION] = {
-            'caiman_mc': {
-                'mc_data': mc_images,
-                'xy_trans_data': xy_trans_data,
-            }
+    nwbfile = {}
+    nwbfile[NWBDATASET.MOTION_CORRECTION] = {
+        'caiman_mc': {
+            'mc_data': mc_images,
+            'xy_trans_data': xy_trans_data,
         }
+    }
 
     info = {
         'mc_images': mc_images,

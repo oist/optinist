@@ -4,7 +4,6 @@ from optinist.api.nwb.nwb import NWBDATASET
 
 def suite2p_spike_deconv(
         ops: Suite2pData,
-        nwbfile: NWBFile=None,
         params: dict=None
     ) -> dict(ops=Suite2pData, spks=FluoData):
     from suite2p import extraction, default_ops
@@ -22,17 +21,35 @@ def suite2p_spike_deconv(
         fs=ops['fs'],
         prctile_baseline=ops['prctile_baseline']
     )
-    spks = extraction.oasis(F=dF, batch_size=ops['batch_size'], tau=ops['tau'], fs=ops['fs'])
+    spks = extraction.oasis(
+        F=dF,
+        batch_size=ops['batch_size'],
+        tau=ops['tau'],
+        fs=ops['fs']
+    )
 
     ops['spks'] = spks
 
     # NWBを追加
+    nwbfile = {}
+
+    ### roiを追加
+    stat = ops['stat']
+    roi_list = []
+    for i in range(len(stat)):
+        kargs = {}
+        kargs['pixel_mask'] = np.array([
+            stat[i]['ypix'], stat[i]['xpix'], stat[i]['lam']]).T
+        roi_list.append(kargs)
+
+    nwbfile[NWBDATASET.ROI] = {
+        'roi_list': roi_list
+    }
+
     ### Fluorenceを追加
-    if nwbfile is not None:
-        if NWBDATASET.FLUORESCENCE not in nwbfile.keys():
-            nwbfile[NWBDATASET.FLUORESCENCE] = {}
-        name = 'Deconvolved'
-        nwbfile[NWBDATASET.FLUORESCENCE][name] = {
+    name = 'Deconvolved'
+    nwbfile[NWBDATASET.FLUORESCENCE] = {
+        name: {
             'table_name': name,
             'region': list(range(len(spks))),
             'name': name,
@@ -40,6 +57,7 @@ def suite2p_spike_deconv(
             'unit': 'lumens',
             'rate': ops['fs'],
         }
+    }
 
     info = {
         'ops': Suite2pData(ops),
