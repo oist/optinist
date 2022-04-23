@@ -2,8 +2,6 @@ import React, { CSSProperties } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
 import { alpha, useTheme } from '@mui/material/styles'
-import { IconButton } from '@mui/material'
-import CloseOutlinedIcon from '@mui/icons-material/CloseOutlined'
 
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import {
@@ -60,14 +58,13 @@ const BehaviorFileNodeImple = React.memo<NodeProps>(
             : undefined,
         }}
       >
-        <IconButton
-          aria-label="delete"
-          style={{ color: 'black', position: 'absolute', top: -20, right: -5 }}
+        <button
+          className="flowbutton"
           onClick={onClickDeleteIcon}
-          size="large"
+          style={{ color: 'black', position: 'absolute', top: -10, right: 10 }}
         >
-          <CloseOutlinedIcon />
-        </IconButton>
+          ×
+        </button>
         <FileSelect
           onChangeFilePath={(path) => {
             if (!Array.isArray(path)) {
