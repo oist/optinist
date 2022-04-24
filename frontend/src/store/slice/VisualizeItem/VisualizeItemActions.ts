@@ -58,8 +58,11 @@ export const selectingImageArea = createAsyncThunk<
         for (let x = x1; x <= x2; x++) {
           for (let y = y1; y <= y2; y++) {
             const z = roiData[y][x]
-            if (z != null && !selectedZList.includes(z)) {
-              selectedZList.push(z - 1) // indexとidのずれを回避
+            if (z != null) {
+              const zNum = z - 1 // indexとidのずれを回避
+              if (!selectedZList.includes(zNum)) {
+                selectedZList.push(zNum)
+              }
             }
           }
         }
