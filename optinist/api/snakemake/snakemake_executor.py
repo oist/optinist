@@ -25,6 +25,7 @@ class SmkExecutor:
             snakefile=self.snakefile,
             cores=self.cores,
             use_conda=self.use_conda,
+            overwrite_configfiles=[],
         )
 
         self.workflow.include(

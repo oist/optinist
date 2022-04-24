@@ -159,7 +159,7 @@ def dummy_image2roi(
         get image
         return image
     """
-    roi_data = np.random.rand((100_00))
+    roi_data = np.random.randint(low=1, high=1000, size=100_00).astype(float)
     import random
     null_data = np.array(random.sample(list(np.arange(100_00)), 90_00))
     roi_data[null_data] = np.nan
