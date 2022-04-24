@@ -752,6 +752,7 @@ export const visualaizeItemSlice = createSlice({
             if (
               item.refImageItemId != null &&
               imageItemId === item.refImageItemId &&
+              clickedDataId < item.checkedList.length &&
               !item.displayNumbers.includes(clickedDataId)
             ) {
               item.displayNumbers.push(clickedDataId)
@@ -769,9 +770,12 @@ export const visualaizeItemSlice = createSlice({
               item.refImageItemId != null &&
               imageItemId === item.refImageItemId
             ) {
-              item.displayNumbers = selectedZList
+              const correctZList = selectedZList.filter(
+                (selectedZ) => selectedZ < item.checkedList.length,
+              )
+              item.displayNumbers = correctZList
               item.checkedList = item.checkedList.map((_, i) => {
-                return selectedZList.includes(i)
+                return correctZList.includes(i)
               })
             }
           }
