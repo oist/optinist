@@ -68,13 +68,27 @@ pip install --upgrade pip
 ```
 
 ## Install CaImAn
-**CAUTION for M1 Mac User**
-We use tensorflow in caiman code. We know that M1 mac doesn't install tensorflow easily, so if there is a problem, skip install caiman (Release in progress…). If you are M1 Mac user, skip this.
 
+### 1. Install tensorflow
+**M1 Mac User**
+1. [Downalod tensorflow.whl](
+https://drive.google.com/drive/folders/1oSipZLnoeQB0Awz8U68KYeCPsULy_dQ7)
+2. pip install
+```
+pip install tensorflow-2.4.1-py3-none-any.whl --no-dependencies --force-reinstall
+```
+
+**Not M1 Mac User**
+```
+pip install tensorflow
+```
+
+
+### 2. Install CaImAn library
 ```bash
 # for CaImAn
 git clone https://github.com/flatironinstitute/CaImAn -b v1.9.7
-pip install cython opencv-python matplotlib scikit-image==0.18.0 scikit-learn ipyparallel holoviews watershed tensorflow
+pip install cython opencv-python matplotlib scikit-image==0.18.0 scikit-learn ipyparallel holoviews watershed
 cd CaImAn
 pip install -e .
 cd ..

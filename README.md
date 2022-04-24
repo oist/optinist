@@ -9,7 +9,7 @@ It will help functional data analysis and pipeline building first by Brain/MINDS
 Availability of not only data but also the tool for analysis on Brian/MINDS Data Portal will facilitate wider usage of marmoset functional brain data.
 OptiNiSt will also help reproducibility of research, standardization of analysis protocols, and developments of novel analysis tools as plug-in.
 
-## Key Featueres
+## Key Features
 ### :beginner: Easy-To-Use Workflow
 - **zero-knowledge of coding**: OptiNiSt can make analysis pipeline through connecting node and run on GUI.
 
@@ -20,9 +20,9 @@ OptiNiSt will also help reproducibility of research, standardization of analysis
 - **reproduce past workflow**: OptiNiSt record and reproduce past workflow pipeline.
 
 ## Documentation
-- [Tutorial]()
-- [How to use gui flowchart](docs/gui_flowchart.md)
-- [How to use gui visualize](docs/gui_visualize.md)
+- [Tutorial](docs/utils/tutorial.md)
+- [How to use gui workflow](docs/gui/workflow.md)
+- [How to use gui visualize](docs/gui/visualize.md)
 
 
 ## Install
@@ -80,8 +80,8 @@ How to install and use optinist
 
 ## Contributors
 ### Proposer
-- [Kenji Doya]()
-- [Yukako Yamane]()
+- Kenji Doya, [OIST Neural Computation Unit](https://groups.oist.jp/ncu)
+- Yukako Yamane, [OIST Neural Computation Unit](https://groups.oist.jp/ncu)
 
 ### Main Developers
 - [Shogo Akiyama](https://github.com/ShogoAkiyama)
@@ -96,7 +96,7 @@ How to install and use optinist
 ## Citing the Project
 To cite this repository in publications:
 ```
-@misc{stable-baselines,
+@misc{OptiNiSt,
   author = {name},
   title = {title},
   year = {2022},
