@@ -86,6 +86,8 @@ def suite2p_roi(
         }
 
     ops['stat'] = stat
+    ops['F'] = F
+    ops['Fneu'] = Fneu
 
     info = {
         'ops': Suite2pData(ops),
