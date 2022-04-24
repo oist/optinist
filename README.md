@@ -1,4 +1,4 @@
-# optinist <img src="docs/images/icon.png" width="250" title="optinist" alt="optinist" align="right" vspace = "50">
+# optinist <img src="docs/images/optinist.png" width="250" title="optinist" alt="optinist" align="right" vspace = "50">
 
 
 OptiNiSt(Optical Neuroimage Studio) that helps researchers to try multiple data analysis methods, to visualize the results, and to construct data analysis pipelines. Data formats follow NWB standard.
@@ -13,7 +13,7 @@ OptiNiSt will also help reproducibility of research, standardization of analysis
 ### :beginner: Easy-To-Use Workflow
 - **zero-knowledge of coding**: OptiNiSt can make analysis pipeline through connecting node and run on GUI.
 
-### :zap: Easy visualize analysis result
+### :zap: Visualize analysis result
 - **visualize analysis result**: OptiNiSt also visualize neural data analysis result by plotly.
 
 ### :rocket: Record Workflow
@@ -27,10 +27,10 @@ OptiNiSt will also help reproducibility of research, standardization of analysis
 
 ## Install
 How to install and use optinist
-- [For Windows](docs/installation_for_windows.md)
-- [For Mac](docs/installation_for_mac.md)
-- [For Linux](docs/installation_for_linux.md)
-- [For Docker](docs/installation_for_docker.md)
+- [For Windows](docs/installation/windows.md)
+- [For Mac](docs/installation/mac.md)
+- [For Linux](docs/installation/linux.md)
+- [For Docker](docs/installation/docker.md)
 
 
 ## Implemented Analysis
