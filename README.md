@@ -9,7 +9,7 @@ It will help functional data analysis and pipeline building first by Brain/MINDS
 Availability of not only data but also the tool for analysis on Brian/MINDS Data Portal will facilitate wider usage of marmoset functional brain data.
 OptiNiSt will also help reproducibility of research, standardization of analysis protocols, and developments of novel analysis tools as plug-in.
 
-## Key Featueres
+## Key Features
 ### :beginner: Easy-To-Use Workflow
 - **zero-knowledge of coding**: OptiNiSt can make analysis pipeline through connecting node and run on GUI.
 
