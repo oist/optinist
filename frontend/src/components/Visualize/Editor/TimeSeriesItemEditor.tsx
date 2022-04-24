@@ -1,6 +1,12 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { FormControlLabel, Switch, TextField } from '@mui/material'
+import {
+  AccordionDetails,
+  AccordionSummary,
+  FormControlLabel,
+  Switch,
+  TextField,
+} from '@mui/material'
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
 import {
@@ -33,6 +39,8 @@ import {
   getTimeSeriesDataById,
 } from 'store/slice/DisplayData/DisplayDataActions'
 import { arrayEqualityFn } from 'utils/EqualityUtils'
+import { Accordion } from 'components/Accordion'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 
 export const TimeSeriesItemEditor: React.FC = () => {
   return (
@@ -309,19 +317,26 @@ const LegendSelect: React.FC = () => {
   )
 
   return (
-    <div>
-      <FormControlLabel
-        label="All Check"
-        control={
-          <Checkbox
-            checked={checkedList.every((v) => {
-              return v
-            })}
-            onChange={allHandleChange}
+    <Accordion sx={{ mt: 2 }} TransitionProps={{ unmountOnExit: true }}>
+      <AccordionSummary expandIcon={<ExpandMoreIcon />}>
+        Legend select
+      </AccordionSummary>
+      <AccordionDetails>
+        <>
+          <FormControlLabel
+            label="All Check"
+            control={
+              <Checkbox
+                checked={checkedList.every((v) => {
+                  return v
+                })}
+                onChange={allHandleChange}
+              />
+            }
           />
-        }
-      />
-      {children}
-    </div>
+          {children}
+        </>
+      </AccordionDetails>
+    </Accordion>
   )
 }
