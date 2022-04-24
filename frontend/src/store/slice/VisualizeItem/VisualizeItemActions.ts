@@ -1,10 +1,11 @@
 import { createAsyncThunk, createAction } from '@reduxjs/toolkit'
 import { ThunkApiConfig } from 'store/store'
 import { getTimeSeriesDataById } from '../DisplayData/DisplayDataActions'
+import { selectRoiData } from '../DisplayData/DisplayDataSelectors'
 import { DATA_TYPE } from '../DisplayData/DisplayDataType'
 import { selectVisualizeItems } from './VisualizeItemSelectors'
 import { VISUALIZE_ITEM_SLICE_NAME } from './VisualizeItemType'
-import { isTimeSeriesItem } from './VisualizeItemUtils'
+import { isImageItem, isTimeSeriesItem } from './VisualizeItemUtils'
 
 export const setImageItemClikedDataId = createAsyncThunk<
   void,
@@ -27,6 +28,60 @@ export const setImageItemClikedDataId = createAsyncThunk<
       }
     })
     return
+  },
+)
+
+export const selectingImageArea = createAsyncThunk<
+  number[],
+  {
+    itemId: number
+    range: {
+      x: number[]
+      y: number[]
+    }
+  },
+  ThunkApiConfig
+>(
+  `${VISUALIZE_ITEM_SLICE_NAME}/selectingImageArea`,
+  ({ itemId, range }, thunkAPI) => {
+    const { x, y } = range
+    const [x1, x2] = x.map(Math.round)
+    const [y1, y2] = y.map(Math.round)
+    const selectedZList: number[] = []
+    const items = selectVisualizeItems(thunkAPI.getState())
+    const imageItem = items[itemId]
+    if (isImageItem(imageItem) && imageItem.roiItem != null) {
+      const roiFilePath = imageItem.roiItem.filePath
+      if (roiFilePath != null) {
+        const roiData = selectRoiData(roiFilePath)(thunkAPI.getState())
+        for (let x = x1; x <= x2; x++) {
+          for (let y = y1; y <= y2; y++) {
+            const z = roiData[y][x]
+            if (z != null && !selectedZList.includes(z)) {
+              selectedZList.push(z - 1) // indexとidのずれを回避
+            }
+          }
+        }
+        Object.values(items).forEach((item) => {
+          if (
+            isTimeSeriesItem(item) &&
+            item.filePath != null &&
+            item.refImageItemId === itemId
+          ) {
+            const path = item.filePath
+            selectedZList.forEach((selectedZ) => {
+              thunkAPI.dispatch(
+                getTimeSeriesDataById({
+                  path,
+                  index: selectedZ,
+                }),
+              )
+            })
+          }
+        })
+      }
+    }
+    return selectedZList
   },
 )
 

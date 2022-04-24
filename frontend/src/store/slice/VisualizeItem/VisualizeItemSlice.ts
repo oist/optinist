@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 import {
   deleteDisplayItem,
+  selectingImageArea,
   setImageItemClikedDataId,
   setNewDisplayDataPath,
 } from './VisualizeItemActions'
@@ -755,6 +756,23 @@ export const visualaizeItemSlice = createSlice({
             ) {
               item.displayNumbers.push(clickedDataId)
               item.checkedList[clickedDataId] = true
+            }
+          }
+        })
+      })
+      .addCase(selectingImageArea.fulfilled, (state, action) => {
+        const { itemId: imageItemId } = action.meta.arg
+        const selectedZList = action.payload
+        Object.values(state.items).forEach((item) => {
+          if (isTimeSeriesItem(item)) {
+            if (
+              item.refImageItemId != null &&
+              imageItemId === item.refImageItemId
+            ) {
+              item.displayNumbers = selectedZList
+              item.checkedList = item.checkedList.map((_, i) => {
+                return selectedZList.includes(i)
+              })
             }
           }
         })

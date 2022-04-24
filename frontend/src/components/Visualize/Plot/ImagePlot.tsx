@@ -2,9 +2,11 @@ import React, { useCallback, useEffect } from 'react'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from 'store/store'
-import { Datum, LayoutAxis, PlotData } from 'plotly.js'
+import { Datum, LayoutAxis, PlotData, PlotSelectionEvent } from 'plotly.js'
 import createColormap from 'colormap'
 import { Button, LinearProgress, TextField, Typography } from '@mui/material'
+import FormControlLabel from '@mui/material/FormControlLabel'
+import Switch from '@mui/material/Switch'
 import Slider from '@mui/material/Slider'
 import Box from '@mui/material/Box'
 
@@ -46,7 +48,10 @@ import {
   setImageActiveIndex,
   setImageItemDuration,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { setImageItemClikedDataId } from 'store/slice/VisualizeItem/VisualizeItemActions'
+import {
+  selectingImageArea,
+  setImageItemClikedDataId,
+} from 'store/slice/VisualizeItem/VisualizeItemActions'
 
 export const ImagePlot = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
@@ -89,16 +94,13 @@ export const ImagePlot = React.memo(() => {
 const ImagePlotImple = React.memo(() => {
   const { itemId } = React.useContext(DisplayDataContext)
   const activeIndex = useSelector(selectImageItemActiveIndex(itemId))
-  return (
-    <>
-      <ImagePlotChart activeIndex={activeIndex} />
-    </>
-  )
+  return <ImagePlotChart activeIndex={activeIndex} />
 })
 
 const ImagePlotChart = React.memo<{
   activeIndex: number
 }>(({ activeIndex }) => {
+  const dispatch = useDispatch()
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
   const imageData = useSelector(
     selectActiveImageData(path, activeIndex),
@@ -111,16 +113,12 @@ const ImagePlotChart = React.memo<{
     imageDataEqualtyFn,
   )
 
-  const maxSize = useSelector(selectImageDataMaxSize(path))
-  const startIndex = useSelector(selectImageItemStartIndex(itemId))
-  const endIndex = useSelector(selectImageItemEndIndex(itemId))
   const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
   const showline = useSelector(selectImageItemShowLine(itemId))
   const zsmooth = useSelector(selectImageItemZsmooth(itemId))
   const showgrid = useSelector(selectImageItemShowGrid(itemId))
   const showscale = useSelector(selectImageItemShowScale(itemId))
   const colorscale = useSelector(selectImageItemColors(itemId))
-  const duration = useSelector(selectImageItemDuration(itemId))
   const timeDataMaxIndex = useSelector(selectRoiItemIndex(itemId, roiFilePath))
   const roiAlpha = useSelector(selectImageItemRoiAlpha(itemId))
   const width = useSelector(selectVisualizeItemWidth(itemId))
@@ -189,6 +187,17 @@ const ImagePlotChart = React.memo<{
     ],
   )
 
+  const [selectMode, setSelectMode] = React.useState(false)
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectMode(event.target.checked)
+  }
+  // debounceでイベントを間引きする。onSelectedはそれっぽい名前だが動かなかった。
+  const onSelecting = debounce((event: PlotSelectionEvent) => {
+    if (event.range != null) {
+      dispatch(selectingImageArea({ itemId, range: event.range }))
+    }
+  })
   const layout = React.useMemo(
     () => ({
       width: width,
@@ -198,7 +207,7 @@ const ImagePlotChart = React.memo<{
         l: 120, // left
         b: 30, // bottom
       },
-      dragmode: 'pan', //'select',
+      dragmode: selectMode ? 'select' : 'pan',
       xaxis: {
         autorange: true,
         showgrid: showgrid,
@@ -219,15 +228,13 @@ const ImagePlotChart = React.memo<{
         showticklabels: showticklabels, // todo
       },
     }),
-    [showgrid, showline, showticklabels, width, height],
+    [showgrid, showline, showticklabels, width, height, selectMode],
   )
 
   const config = {
     displayModeBar: true,
     responsive: true,
   }
-
-  const dispatch = useDispatch()
 
   const onClick = (event: any) => {
     const points: PlotDatum = event.points[0]
@@ -237,6 +244,38 @@ const ImagePlotChart = React.memo<{
       )
     }
   }
+
+  return (
+    <div>
+      <Box sx={{ display: 'flex' }}>
+        <Box sx={{ flexGrow: 1, ml: 1 }}>
+          <PlayBack activeIndex={activeIndex} />
+        </Box>
+        <FormControlLabel
+          sx={{ m: 1 }}
+          control={<Switch checked={selectMode} onChange={handleChange} />}
+          label="drag select"
+        />
+      </Box>
+      <PlotlyChart
+        data={data}
+        layout={layout}
+        config={config}
+        onClick={onClick}
+        onSelecting={onSelecting}
+      />
+    </div>
+  )
+})
+
+const PlayBack = React.memo<{ activeIndex: number }>(({ activeIndex }) => {
+  const dispatch = useDispatch()
+  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+
+  const maxSize = useSelector(selectImageDataMaxSize(path))
+  const startIndex = useSelector(selectImageItemStartIndex(itemId))
+  const endIndex = useSelector(selectImageItemEndIndex(itemId))
+  const duration = useSelector(selectImageItemDuration(itemId))
 
   const onSliderChange = (
     event: Event,
@@ -290,48 +329,39 @@ const ImagePlotChart = React.memo<{
     },
     [dispatch, itemId],
   )
-
   return (
-    <div>
-      <Box sx={{ width: '50%' }}>
-        <Button variant="outlined" onClick={onPlayClick}>
-          Play
-        </Button>
-        <Button variant="outlined" onClick={onPauseClick}>
-          Pause
-        </Button>
-        <TextField
-          type="number"
-          inputProps={{
-            step: 100,
-            min: 0,
-            max: 1000,
-          }}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          onChange={onDurationChange}
-          value={duration}
-        />
-        <Slider
-          aria-label="Custom marks"
-          defaultValue={20}
-          value={startIndex + activeIndex}
-          valueLabelDisplay="auto"
-          step={1}
-          marks
-          min={startIndex}
-          max={maxSize === 0 ? 0 : endIndex}
-          onChange={onSliderChange}
-        />
-      </Box>
-      <PlotlyChart
-        data={data}
-        layout={layout}
-        config={config}
-        onClick={onClick}
+    <>
+      <Button variant="outlined" onClick={onPlayClick}>
+        Play
+      </Button>
+      <Button variant="outlined" onClick={onPauseClick}>
+        Pause
+      </Button>
+      <TextField
+        type="number"
+        inputProps={{
+          step: 100,
+          min: 0,
+          max: 1000,
+        }}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        onChange={onDurationChange}
+        value={duration}
       />
-    </div>
+      <Slider
+        aria-label="Custom marks"
+        defaultValue={20}
+        value={startIndex + activeIndex}
+        valueLabelDisplay="auto"
+        step={1}
+        marks
+        min={startIndex}
+        max={maxSize === 0 ? 0 : endIndex}
+        onChange={onSliderChange}
+      />
+    </>
   )
 })
 
@@ -382,4 +412,15 @@ function rgba2hex(rgba: [number, number, number, number], alpha: number) {
   })
 
   return '#' + outParts.join('')
+}
+
+function debounce<T extends (...args: any[]) => unknown>(
+  callback: T,
+  delay = 500,
+): (...args: Parameters<T>) => void {
+  let timeoutId: NodeJS.Timeout
+  return (...args) => {
+    clearTimeout(timeoutId)
+    timeoutId = setTimeout(() => callback(...args), delay)
+  }
 }
