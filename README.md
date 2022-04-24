@@ -80,8 +80,8 @@ How to install and use optinist
 
 ## Contributors
 ### Proposer
-- [Kenji Doya]()
-- [Yukako Yamane]()
+- Kenji Doya, [OIST Neural Computation Unit](https://groups.oist.jp/ncu)
+- Yukako Yamane, [OIST Neural Computation Unit](https://groups.oist.jp/ncu)
 
 ### Main Developers
 - [Shogo Akiyama](https://github.com/ShogoAkiyama)
@@ -96,7 +96,7 @@ How to install and use optinist
 ## Citing the Project
 To cite this repository in publications:
 ```
-@misc{stable-baselines,
+@misc{OptiNiSt,
   author = {name},
   title = {title},
   year = {2022},
