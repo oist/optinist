@@ -20,9 +20,9 @@ OptiNiSt will also help reproducibility of research, standardization of analysis
 - **reproduce past workflow**: OptiNiSt record and reproduce past workflow pipeline.
 
 ## Documentation
-- [Tutorial]()
-- [How to use gui flowchart](docs/gui_flowchart.md)
-- [How to use gui visualize](docs/gui_visualize.md)
+- [Tutorial](docs/utils/tutorial.md)
+- [How to use gui workflow](docs/gui/workflow.md)
+- [How to use gui visualize](docs/gui/visualize.md)
 
 
 ## Install
