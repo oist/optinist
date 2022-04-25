@@ -23,6 +23,7 @@ import {
   selectDisplayDataIsSingle,
   selectImageItemSaveFilename,
   selectImageItemSaveFormat,
+  selectImageItemAlpha,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 
@@ -40,6 +41,7 @@ import {
   setImageItemRoiAlpha,
   setImageItemSaveFileName,
   setImageItemSaveFormat,
+  setImageItemAlpha,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 import 'react-linear-gradient-picker/dist/index.css'
@@ -116,6 +118,7 @@ export const ImageItemEditor: React.FC = () => {
       <ShowScale />
       <Zsmooth />
       <GradientColorPicker colors={colors} dispatchSetColor={dispathSetColor} />
+      <Alpha />
       <SaveFig />
       <div>
         <h3>Roi Setting</h3>
@@ -210,6 +213,39 @@ const Zsmooth: React.FC = () => {
         <MenuItem value={'false'}>False</MenuItem>
       </Select>
     </FormControl>
+  )
+}
+
+const Alpha: React.FC = () => {
+  const itemId = React.useContext(SelectedItemIdContext)
+  const dispatch = useDispatch()
+  const alpha = useSelector(selectImageItemAlpha(itemId))
+  const inputError = !(alpha > 0)
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value === '' ? '' : Number(event.target.value)
+    if (typeof newValue === 'number') {
+      dispatch(setImageItemAlpha({ itemId, alpha: newValue }))
+    }
+  }
+  return (
+    <>
+      <TextField
+        label={'alpha'}
+        error={inputError}
+        type="number"
+        inputProps={{
+          step: 0.1,
+          min: 0,
+          max: 1.0,
+        }}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        onChange={onChange}
+        value={alpha}
+        helperText={inputError ? 'index > 0' : undefined}
+      />
+    </>
   )
 }
 

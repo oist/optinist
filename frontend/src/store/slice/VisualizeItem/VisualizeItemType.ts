@@ -63,6 +63,7 @@ export interface ImageItem extends DisplayDataItemBaseType {
   showgrid: boolean
   showscale: boolean
   colors: ColorType[]
+  alpha: number
   roiItem: RoiItem | null
   roiAlpha: number
   duration: number

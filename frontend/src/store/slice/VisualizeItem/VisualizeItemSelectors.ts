@@ -220,6 +220,15 @@ export const selectImageItemActiveIndex =
     }
   }
 
+export const selectImageItemAlpha = (itemId: number) => (state: RootState) => {
+  const item = selectVisualizeItems(state)[itemId]
+  if (isImageItem(item)) {
+    return item.alpha
+  } else {
+    throw new Error('invalid VisualaizeItemType')
+  }
+}
+
 export const selectImageItemRoiAlpha =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
