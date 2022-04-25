@@ -42,6 +42,8 @@ import {
   selectImageItemDuration,
   selectVisualizeItemWidth,
   selectVisualizeItemHeight,
+  selectImageItemSaveFilename,
+  selectImageItemSaveFormat,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
   incrementImageActiveIndex,
@@ -201,7 +203,7 @@ const ImagePlotChart = React.memo<{
   const layout = React.useMemo(
     () => ({
       width: width,
-      height: height - 120 - 9000 / width,
+      height: height - 120 - 10000 / width,
       margin: {
         t: 30, // top
         l: 120, // left
@@ -231,9 +233,20 @@ const ImagePlotChart = React.memo<{
     [showgrid, showline, showticklabels, width, height, selectMode],
   )
 
+  const saveFileName = useSelector(selectImageItemSaveFilename(itemId))
+  const saveFormat = useSelector(selectImageItemSaveFormat(itemId))
+
   const config = {
     displayModeBar: true,
     responsive: true,
+    toImageButtonOptions: {
+      format: saveFormat,
+      filename: saveFileName,
+      // scale: number;
+      // format: 'png' | 'svg' | 'jpeg' | 'webp';
+      // height: number;
+      // width: number;
+    },
   }
 
   const onClick = (event: any) => {

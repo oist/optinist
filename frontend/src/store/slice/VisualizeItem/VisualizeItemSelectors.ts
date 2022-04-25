@@ -240,6 +240,26 @@ export const selectImageItemDuration =
     }
   }
 
+export const selectImageItemSaveFilename =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isImageItem(item)) {
+      return item.saveFileName
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectImageItemSaveFormat =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isImageItem(item)) {
+      return item.saveFormat
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
 export const selectTimeSeriesItemOffset =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]

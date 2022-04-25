@@ -67,6 +67,8 @@ export interface ImageItem extends DisplayDataItemBaseType {
   roiAlpha: number
   duration: number
   clickedDataId?: number
+  saveFileName: string
+  saveFormat: string
 }
 
 export interface TimeSeriesItem extends DisplayDataItemBaseType {

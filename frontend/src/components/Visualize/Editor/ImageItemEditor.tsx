@@ -21,6 +21,8 @@ import {
   selectImageItemRoiAlpha,
   selectImageItemFilePath,
   selectDisplayDataIsSingle,
+  selectImageItemSaveFilename,
+  selectImageItemSaveFormat,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 
@@ -36,6 +38,8 @@ import {
   setRoiItemFilePath,
   resetImageActiveIndex,
   setImageItemRoiAlpha,
+  setImageItemSaveFileName,
+  setImageItemSaveFormat,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 import 'react-linear-gradient-picker/dist/index.css'
@@ -112,6 +116,7 @@ export const ImageItemEditor: React.FC = () => {
       <ShowScale />
       <Zsmooth />
       <GradientColorPicker colors={colors} dispatchSetColor={dispathSetColor} />
+      <SaveFig />
       <div>
         <h3>Roi Setting</h3>
         <FilePathSelect
@@ -208,6 +213,44 @@ const Zsmooth: React.FC = () => {
   )
 }
 
+const SaveFig: React.FC = () => {
+  const itemId = React.useContext(SelectedItemIdContext)
+  const saveFileName = useSelector(selectImageItemSaveFilename(itemId))
+  const saveFormat = useSelector(selectImageItemSaveFormat(itemId))
+  const dispatch = useDispatch()
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    dispatch(setImageItemSaveFormat({ itemId, saveFormat: event.target.value }))
+  }
+  const onChangeFileName = (event: React.ChangeEvent<HTMLInputElement>) => {
+    dispatch(
+      setImageItemSaveFileName({ itemId, saveFileName: event.target.value }),
+    )
+  }
+
+  return (
+    <>
+      <h3>SaveFig</h3>
+      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+        <InputLabel>format</InputLabel>
+        <Select label="smooth" value={saveFormat} onChange={handleChange}>
+          <MenuItem value={'svg'}>svg</MenuItem>
+          <MenuItem value={'png'}>png</MenuItem>
+          <MenuItem value={'jpeg'}>jpeg</MenuItem>
+          <MenuItem value={'webp'}>webp</MenuItem>
+        </Select>
+      </FormControl>
+      <TextField
+        label={'Filename'}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        onChange={onChangeFileName}
+        value={saveFileName}
+      />
+    </>
+  )
+}
+
 const RoiAlpha: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
@@ -222,6 +265,7 @@ const RoiAlpha: React.FC = () => {
   return (
     <>
       <TextField
+        label={'alpha'}
         error={inputError}
         type="number"
         inputProps={{
@@ -236,7 +280,6 @@ const RoiAlpha: React.FC = () => {
         value={roiAlpha}
         helperText={inputError ? 'index > 0' : undefined}
       />
-      alpha
     </>
   )
 }
