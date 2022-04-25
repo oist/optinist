@@ -32,13 +32,16 @@ class Runner:
                 input_info
             )
 
-            # nwbfileの設定)
+            # nwbfileの設定
             output_info['nwbfile'] = _save_output_nwb(
                 f"{__rule.output.split('.')[0]}.nwb",
                 __rule.type,
                 nwbfile,
                 output_info,
             )
+
+            # 各関数での結果を保存
+            PickleWriter.write(__rule.output, output_info)
 
             # NWB保存
             if __rule.output in last_output:
@@ -49,9 +52,6 @@ class Runner:
                     path,
                     output_info['nwbfile']
                 )
-
-            # 各関数での結果を保存
-            PickleWriter.write(__rule.output, output_info)
 
             print("output: ", __rule.output)
 
