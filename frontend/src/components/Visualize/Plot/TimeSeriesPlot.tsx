@@ -125,25 +125,6 @@ const TimeSeriesPlotImple = React.memo(() => {
       Object.keys(timeSeriesData).map((key, i) => {
         let y = Object.values(timeSeriesData[key])
         const new_i = Math.floor((i % 10) * 10 + i / 10) % 100
-        const name = `(${String(parseInt(key) + 1)})`
-        var error_y = {
-          type: 'data',
-          array: Object.keys(dataStd).includes(key)
-            ? Object.values(dataStd[key])
-            : null,
-          visible: true,
-        }
-        if (offset) {
-          error_y = {
-            type: 'data',
-            array: null,
-            visible: true,
-          }
-        }
-        var visible: string | boolean = 'legendonly'
-        if (drawOrderList.includes(key)) {
-          visible = true
-        }
         if (drawOrderList.includes(key) && offset) {
           const activeIdx: number = drawOrderList.findIndex((v) => v === key)
           const mean: number = y.reduce((a, b) => a + b) / y.length
@@ -156,12 +137,19 @@ const TimeSeriesPlotImple = React.memo(() => {
         return [
           key,
           {
-            name: name,
+            name: `(${String(parseInt(key) + 1)})`,
             x: dataXrange,
             y: y,
-            visible: visible,
+            visible: drawOrderList.includes(key) ? true : 'legendonly',
             line: { color: colorScale[new_i] },
-            error_y: error_y,
+            error_y: {
+              type: 'data',
+              array:
+                offset && Object.keys(dataStd).includes(key)
+                  ? Object.values(dataStd[key])
+                  : null,
+              visible: true,
+            },
           },
         ]
       }),
