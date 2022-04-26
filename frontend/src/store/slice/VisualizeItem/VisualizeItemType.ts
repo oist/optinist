@@ -85,9 +85,13 @@ export interface TimeSeriesItem extends DisplayDataItemBaseType {
     right: number | undefined
   }
   maxIndex: number
-  displayNumbers: number[]
   refImageItemId?: number
-  checkedList: boolean[]
+  displayNumbers: number[]
+  checkedList: DisplayIndexMap
+}
+
+export interface DisplayIndexMap {
+  [index: number]: boolean
 }
 
 export interface HeatMapItem extends DisplayDataItemBaseType {

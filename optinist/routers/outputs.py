@@ -49,12 +49,15 @@ async def read_file(dirpath: str, index: int):
     )
 
     if index == 0:
-        num_files = len(glob(join_filepath([dirpath, '*.json'])))
+        file_numbers = [
+            os.path.splitext(os.path.basename(x))[0]
+            for x in glob(join_filepath([dirpath, '*.json']))
+        ]
         data = {
             str(i): {
                 json_data.xrange[0]: json_data.data[json_data.xrange[0]]
             }
-            for i in range(num_files)
+            for i in file_numbers
         }
 
         if json_data.std is not None:
@@ -62,7 +65,7 @@ async def read_file(dirpath: str, index: int):
                 str(i): {
                     json_data.xrange[0]: json_data.data[json_data.xrange[0]]
                 }
-                for i in range(num_files)
+                for i in file_numbers
             }
 
         return_data = JsonTimeSeriesData(

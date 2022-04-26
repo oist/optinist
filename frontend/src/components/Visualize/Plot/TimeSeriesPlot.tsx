@@ -33,6 +33,7 @@ import {
 import { setTimeSeriesItemCheckedList } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import createColormap from 'colormap'
 import { setTimeSeriesItemDisplayNumbers } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { DisplayIndexMap } from 'store/slice/VisualizeItem/VisualizeItemType'
 
 export const TimeSeriesPlot = React.memo(() => {
   const { itemId, filePath: path } = React.useContext(DisplayDataContext)
@@ -88,6 +89,8 @@ const TimeSeriesPlotImple = React.memo(() => {
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
 
+  const dataKeys = Object.keys(timeSeriesData)
+
   const colorScale = createColormap({
     colormap: 'jet',
     nshades: 100, //maxIndex >= 6 ? maxIndex : 6,
@@ -96,14 +99,15 @@ const TimeSeriesPlotImple = React.memo(() => {
   })
 
   React.useEffect(() => {
-    const keys = Object.keys(timeSeriesData)
-    if (checkedList.length === 0 && keys.length !== 0) {
-      const checkedList = keys.map((_, i) => {
-        if (i === 0) {
-          return true
-        }
-        return false
-      })
+    if (Object.keys(checkedList).length === 0 && dataKeys.length !== 0) {
+      const checkedList: DisplayIndexMap = Object.fromEntries(
+        dataKeys.map((v, i) => {
+          if (i === 0) {
+            return [v, true]
+          }
+          return [v, false]
+        }),
+      )
       dispatch(
         setTimeSeriesItemCheckedList({
           itemId,
@@ -111,70 +115,60 @@ const TimeSeriesPlotImple = React.memo(() => {
         }),
       )
     }
-  }, [timeSeriesData, dispatch, itemId, checkedList.length])
+  }, [timeSeriesData, dispatch, itemId, checkedList, dataKeys])
 
   const data = React.useMemo(() => {
     if (timeSeriesData === null) {
-      return []
+      return {}
     }
-    return Object.keys(timeSeriesData).map((key, i) => {
-      let y = Object.values(timeSeriesData[key])
-      const new_i = Math.floor((i % 10) * 10 + i / 10) % 100
-
-      if (displayNumbers.includes(i)) {
+    return Object.fromEntries(
+      Object.keys(timeSeriesData).map((key, i) => {
+        const num_key = parseInt(key)
+        let y = Object.values(timeSeriesData[key])
+        const new_i = Math.floor((i % 10) * 10 + i / 10) % 100
+        const name = `(${String(parseInt(key) + 1)})`
+        var error_y = {
+          type: 'data',
+          array: Object.keys(dataStd).includes(key)
+            ? Object.values(dataStd[key])
+            : null,
+          visible: true,
+        }
         if (offset) {
+          error_y = {
+            type: 'data',
+            array: null,
+            visible: true,
+          }
+        }
+        var visible: string | boolean = 'legendonly'
+        if (displayNumbers.includes(num_key)) {
+          visible = true
+        }
+        if (displayNumbers.includes(num_key) && offset) {
           const activeIdx: number = displayNumbers.findIndex(
-            (value) => value === i,
+            (v) => v === num_key,
           )
           const mean: number = y.reduce((a, b) => a + b) / y.length
           const std: number =
             span *
             Math.sqrt(y.reduce((a, b) => a + Math.pow(b - mean, 2)) / y.length)
-          return {
-            name: `(${String(parseInt(key) + 1)})`,
-            x: dataXrange,
-            y: y.map((value) => (value - mean) / (std + 1e-10) + activeIdx),
-            visible: true,
-            line: { color: colorScale[new_i] },
-            error_y: {
-              type: 'data',
-              array: null,
-              visible: true,
-            },
-          }
-        } else {
-          return {
-            name: `(${String(parseInt(key) + 1)})`,
+          y = y.map((value) => (value - mean) / (std + 1e-10) + activeIdx)
+        }
+
+        return [
+          key,
+          {
+            name: name,
             x: dataXrange,
             y: y,
-            visible: true,
+            visible: visible,
             line: { color: colorScale[new_i] },
-            error_y: {
-              type: 'data',
-              array: Object.keys(dataStd).includes(key)
-                ? Object.values(dataStd[key])
-                : null,
-              visible: true,
-            },
-          }
-        }
-      } else {
-        return {
-          name: `(${String(parseInt(key) + 1)})`,
-          x: dataXrange,
-          y: y,
-          visible: 'legendonly',
-          line: { color: colorScale[new_i] },
-          error_y: {
-            type: 'data',
-            array: Object.keys(dataStd).includes(key)
-              ? Object.values(dataStd[key])
-              : null,
-            visible: true,
+            error_y: error_y,
           },
-        }
-      }
-    })
+        ]
+      }),
+    )
   }, [
     timeSeriesData,
     displayNumbers,
@@ -186,14 +180,14 @@ const TimeSeriesPlotImple = React.memo(() => {
   ])
 
   const annotations = React.useMemo(() => {
-    if (data.length !== 0) {
-      return displayNumbers.map((v) => {
+    if (Object.keys(data).length !== 0) {
+      return displayNumbers.map((value) => {
         return {
           x: Number(dataXrange[dataXrange.length - 1]) + dataXrange.length / 10,
-          y: data[v].y[dataXrange.length - 1],
+          y: data[value.toString()].y[dataXrange.length - 1],
           xref: 'x',
           yref: 'y',
-          text: `cell: ${v + 1}`,
+          text: `cell: ${value + 1}`,
           arrowhead: 1,
           ax: 0,
           ay: -10,
@@ -248,50 +242,41 @@ const TimeSeriesPlotImple = React.memo(() => {
   }
 
   const onLegendClick = (event: LegendClickEvent) => {
-    const clickNumber = event.curveNumber
+    const clickNumber = parseInt(Object.keys(timeSeriesData)[event.curveNumber])
+
+    const newDisplayNumbers = displayNumbers.includes(clickNumber)
+      ? displayNumbers.filter((value) => value !== clickNumber)
+      : [...displayNumbers, clickNumber]
+
+    const newCheckedList = Object.fromEntries(
+      Object.entries(checkedList).map(([key, value]) => {
+        if (parseInt(key) === clickNumber) {
+          if (displayNumbers.includes(clickNumber)) {
+            return [key, false]
+          } else {
+            return [key, true]
+          }
+        }
+        return [key, value]
+      }),
+    )
+
+    dispatch(
+      setTimeSeriesItemDisplayNumbers({
+        itemId,
+        displayNumbers: newDisplayNumbers,
+      }),
+    )
+
+    dispatch(
+      setTimeSeriesItemCheckedList({
+        itemId,
+        checkedList: newCheckedList,
+      }),
+    )
 
     // set DisplayNumbers
-    if (displayNumbers.includes(clickNumber)) {
-      dispatch(
-        setTimeSeriesItemDisplayNumbers({
-          itemId,
-          displayNumbers: displayNumbers.filter(
-            (value) => value !== clickNumber,
-          ),
-        }),
-      )
-
-      dispatch(
-        setTimeSeriesItemCheckedList({
-          itemId,
-          checkedList: checkedList.map((v, i) => {
-            if (i === clickNumber) {
-              return false
-            }
-            return v
-          }),
-        }),
-      )
-    } else {
-      dispatch(
-        setTimeSeriesItemDisplayNumbers({
-          itemId,
-          displayNumbers: [...displayNumbers, clickNumber],
-        }),
-      )
-
-      dispatch(
-        setTimeSeriesItemCheckedList({
-          itemId,
-          checkedList: checkedList.map((v, i) => {
-            if (i === clickNumber) {
-              return true
-            }
-            return v
-          }),
-        }),
-      )
-
+    if (!displayNumbers.includes(clickNumber)) {
       dispatch(getTimeSeriesDataById({ path, index: clickNumber }))
     }
 
@@ -300,7 +285,7 @@ const TimeSeriesPlotImple = React.memo(() => {
 
   return (
     <PlotlyChart
-      data={data}
+      data={Object.values(data)}
       layout={layout}
       config={config}
       onLegendClick={onLegendClick}

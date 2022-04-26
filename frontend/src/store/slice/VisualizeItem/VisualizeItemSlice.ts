@@ -22,6 +22,7 @@ import {
   FluoItem,
   BehaviorItem,
   VISUALIZE_ITEM_SLICE_NAME,
+  DisplayIndexMap,
 } from './VisualizeItemType'
 import {
   isDisplayDataItem,
@@ -71,7 +72,7 @@ const timeSeriesItemInitialValue: TimeSeriesItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.TIME_SERIES,
   offset: true,
-  span: 3,
+  span: 5,
   showgrid: true,
   showline: true,
   showticklabels: true,
@@ -618,7 +619,7 @@ export const visualaizeItemSlice = createSlice({
       state,
       action: PayloadAction<{
         itemId: number
-        checkedList: boolean[]
+        checkedList: DisplayIndexMap
       }>,
     ) => {
       const { itemId, checkedList } = action.payload
@@ -791,7 +792,9 @@ export const visualaizeItemSlice = createSlice({
             if (
               item.refImageItemId != null &&
               imageItemId === item.refImageItemId &&
-              clickedDataId < item.checkedList.length &&
+              Object.keys(item.checkedList)
+                .map(Number)
+                .includes(clickedDataId) &&
               !item.displayNumbers.includes(clickedDataId)
             ) {
               item.displayNumbers.push(clickedDataId)
@@ -809,11 +812,11 @@ export const visualaizeItemSlice = createSlice({
               item.refImageItemId != null &&
               imageItemId === item.refImageItemId
             ) {
-              const correctZList = selectedZList.filter(
-                (selectedZ) => selectedZ < item.checkedList.length,
+              const correctZList = selectedZList.filter((selectedZ) =>
+                Object.keys(item.checkedList).map(Number).includes(selectedZ),
               )
               item.displayNumbers = correctZList
-              item.checkedList = item.checkedList.map((_, i) => {
+              item.checkedList = Object.keys(item.checkedList).map((_, i) => {
                 return correctZList.includes(i)
               })
             }

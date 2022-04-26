@@ -20,7 +20,7 @@ export const setImageItemClikedDataId = createAsyncThunk<
         isTimeSeriesItem(item) &&
         item.filePath != null &&
         item.refImageItemId === itemId &&
-        clickedDataId < item.checkedList.length &&
+        // clickedDataId < item.checkedList.length &&
         !item.displayNumbers.includes(clickedDataId)
       ) {
         thunkAPI.dispatch(
@@ -74,7 +74,9 @@ export const selectingImageArea = createAsyncThunk<
           ) {
             const path = item.filePath
             selectedZList.forEach((selectedZ) => {
-              if (selectedZ < item.checkedList.length) {
+              if (
+                Object.keys(item.checkedList).map(Number).includes(selectedZ)
+              ) {
                 thunkAPI.dispatch(
                   getTimeSeriesDataById({
                     path,

@@ -1,4 +1,5 @@
 import os
+import shutil
 import numpy as np
 import pandas as pd
 import imageio
@@ -68,7 +69,7 @@ class ImageData(BaseData):
 
 
 class TimeSeriesData(BaseData):
-    def __init__(self, data, std=None, index=None, file_name='timeseries'):
+    def __init__(self, data, std=None, index=None, cell_numbers=None, file_name='timeseries'):
         super().__init__(file_name)
 
         if isinstance(data, str):
@@ -87,12 +88,20 @@ class TimeSeriesData(BaseData):
         else:
             self.index = np.arange(len(self.data[0]))
 
+        # cell番号を表示
+        if cell_numbers is not None:
+            self.cell_numbers = cell_numbers
+        else:
+            self.cell_numbers = range(len(self.data))
+
     def save_json(self, json_dir):
         # timeseriesだけはdirを返す
-        self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
+        self.json_path = join_filepath([json_dir, self.file_name])
+        if os.path.exists(self.json_path):
+            shutil.rmtree(self.json_path)
         create_directory(self.json_path)
 
-        for i, _ in enumerate(self.data):
+        for i, cell_i in enumerate(self.cell_numbers):
             data = self.data[i]
             if self.std is not None:
                 std = self.std[i]
@@ -102,10 +111,14 @@ class TimeSeriesData(BaseData):
                     columns=["data", "std"]
                 )
             else:
-                df = pd.DataFrame(data, index=self.index, columns=["data"])
+                df = pd.DataFrame(
+                    data,
+                    index=self.index,
+                    columns=["data"]
+                )
 
             JsonWriter.write(
-                join_filepath([self.json_path, f'{str(i)}.json']),
+                join_filepath([self.json_path, f'{str(cell_i)}.json']),
                 df
             )
 
@@ -116,12 +129,22 @@ class TimeSeriesData(BaseData):
 
 class FluoData(TimeSeriesData):
     def __init__(self, data, std=None, index=None, file_name='fluo'):
-        super().__init__(data, std, index, file_name)
+        super().__init__(
+            data=data,
+            std=std,
+            index=index,
+            file_name=file_name,
+        )
 
 
 class BehaviorData(TimeSeriesData):
     def __init__(self, data, std=None, index=None, file_name='behavior'):
-        super().__init__(data, std, index, file_name)
+        super().__init__(
+            data=data,
+            std=std,
+            index=index,
+            file_name=file_name,
+        )
 
 
 class CsvData(BaseData):

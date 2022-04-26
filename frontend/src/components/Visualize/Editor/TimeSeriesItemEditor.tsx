@@ -229,7 +229,7 @@ const LegendSelect: React.FC = () => {
   const dispatch = useDispatch()
   const checkedList = useSelector(
     selectTimeSeriesItemCheckedList(itemId),
-    arrayEqualityFn,
+    // arrayEqualityFn,
   )
   const displayNumbers = useSelector(selectTimeSeriesItemDisplayNumbers(itemId))
   const filePath = useSelector(selectTimeSeriesItemFilePath(itemId))
@@ -238,7 +238,7 @@ const LegendSelect: React.FC = () => {
     dispatch(
       setTimeSeriesItemCheckedList({
         itemId,
-        checkedList: checkedList.map((_) => {
+        checkedList: Object.keys(checkedList).map((_) => {
           return event.target.checked
         }),
       }),
@@ -248,8 +248,8 @@ const LegendSelect: React.FC = () => {
       dispatch(
         setTimeSeriesItemDisplayNumbers({
           itemId,
-          displayNumbers: checkedList.map((_, i) => {
-            return i
+          displayNumbers: Object.keys(checkedList).map((i, v) => {
+            return v
           }),
         }),
       )
@@ -290,7 +290,7 @@ const LegendSelect: React.FC = () => {
     dispatch(
       setTimeSeriesItemCheckedList({
         itemId,
-        checkedList: checkedList.map((v, i) => {
+        checkedList: Object.values(checkedList).map((v, i) => {
           if (i === index) {
             return event.target.checked
           }
@@ -306,11 +306,13 @@ const LegendSelect: React.FC = () => {
 
   const children = (
     <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
-      {checkedList.map((v, i) => (
+      {Object.entries(checkedList).map(([key, value]) => (
         <FormControlLabel
-          key={`${i}`}
-          label={`Index ${i + 1}`}
-          control={<Checkbox checked={v} onChange={handleChange} value={i} />}
+          key={`${key}`}
+          label={`Index ${parseInt(key) + 1}`}
+          control={
+            <Checkbox checked={value} onChange={handleChange} value={key} />
+          }
         />
       ))}
     </Box>
@@ -327,7 +329,7 @@ const LegendSelect: React.FC = () => {
             label="All Check"
             control={
               <Checkbox
-                checked={checkedList.every((v) => {
+                checked={Object.values(checkedList).every((v) => {
                   return v
                 })}
                 onChange={allHandleChange}
