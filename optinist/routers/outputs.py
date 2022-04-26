@@ -89,15 +89,16 @@ async def read_file(dirpath: str):
         data={},
         std={},
     )
+
     for i, path in enumerate(glob(join_filepath([dirpath, '*.json']))):
-        str_i = str(i)
+        str_idx = str(os.path.splitext(os.path.basename(path))[0])
         json_data = JsonReader.timeseries_read(path)
         if i == 0:
             return_data.xrange = json_data.xrange
 
-        return_data.data[str_i] = json_data.data
+        return_data.data[str_idx] = json_data.data
         if json_data.std is not None:
-            return_data.std[str_i] = json_data.std
+            return_data.std[str_idx] = json_data.std
 
     return return_data
 
