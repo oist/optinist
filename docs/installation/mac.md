@@ -57,9 +57,7 @@ conda install -n base -c conda-forge mamba
 ```
 ## Install library
 ```bash
-cd backend
 pip install -r requirements.txt
-cd ..
 ```
 
 In case an error occuered when you install ``` requirements.txt ```, pip upgrade command below may solve the error.

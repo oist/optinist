@@ -82,7 +82,6 @@ conda install -n base -c conda-forge mamba
 ### Install library
 On the Anaconda PowerShell Prompt(anaconda3),
 ```bash
-cd backend
 pip install -r requirements.txt
 # for suite2p
 pip install PyQt5<=5.15.1 PyQt5-sip<=12.8.1 pyqtgraph<=0.11.0 pandas suite2p<=0.10.3
@@ -147,7 +146,6 @@ conda install -n base -c conda-forge mamba
 ```
 ### Install library
 ```bash
-cd backend
 pip install -r requirements.txt
 # for CaImAn
 git clone https://github.com/flatironinstitute/CaImAn -b v1.9.7

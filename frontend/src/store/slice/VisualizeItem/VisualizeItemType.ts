@@ -63,10 +63,13 @@ export interface ImageItem extends DisplayDataItemBaseType {
   showgrid: boolean
   showscale: boolean
   colors: ColorType[]
+  alpha: number
   roiItem: RoiItem | null
   roiAlpha: number
   duration: number
   clickedDataId?: number
+  saveFileName: string
+  saveFormat: string
 }
 
 export interface TimeSeriesItem extends DisplayDataItemBaseType {

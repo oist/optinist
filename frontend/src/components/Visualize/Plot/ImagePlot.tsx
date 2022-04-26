@@ -42,6 +42,9 @@ import {
   selectImageItemDuration,
   selectVisualizeItemWidth,
   selectVisualizeItemHeight,
+  selectImageItemSaveFilename,
+  selectImageItemSaveFormat,
+  selectImageItemAlpha,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
   incrementImageActiveIndex,
@@ -119,6 +122,7 @@ const ImagePlotChart = React.memo<{
   const showgrid = useSelector(selectImageItemShowGrid(itemId))
   const showscale = useSelector(selectImageItemShowScale(itemId))
   const colorscale = useSelector(selectImageItemColors(itemId))
+  const alpha = useSelector(selectImageItemAlpha(itemId))
   const timeDataMaxIndex = useSelector(selectRoiItemIndex(itemId, roiFilePath))
   const roiAlpha = useSelector(selectImageItemRoiAlpha(itemId))
   const width = useSelector(selectVisualizeItemWidth(itemId))
@@ -149,7 +153,12 @@ const ImagePlotChart = React.memo<{
           if (offset === Math.min(...offsets)) {
             offset = 0.0
           }
-          return [offset, value.rgb]
+          const rgb = value.rgb
+            .replace(/[^0-9,]/g, '')
+            .split(',')
+            .map((x) => Number(x))
+          const hex = rgba2hex(rgb, alpha)
+          return [offset, hex]
         }),
         hoverongaps: false,
         showscale: showscale,
@@ -184,6 +193,7 @@ const ImagePlotChart = React.memo<{
       colorscaleRoi,
       timeDataMaxIndex,
       roiAlpha,
+      alpha,
     ],
   )
 
@@ -201,7 +211,7 @@ const ImagePlotChart = React.memo<{
   const layout = React.useMemo(
     () => ({
       width: width,
-      height: height - 120 - 9000 / width,
+      height: height - 120 - 10000 / width,
       margin: {
         t: 30, // top
         l: 120, // left
@@ -231,9 +241,20 @@ const ImagePlotChart = React.memo<{
     [showgrid, showline, showticklabels, width, height, selectMode],
   )
 
+  const saveFileName = useSelector(selectImageItemSaveFilename(itemId))
+  const saveFormat = useSelector(selectImageItemSaveFormat(itemId))
+
   const config = {
     displayModeBar: true,
     responsive: true,
+    toImageButtonOptions: {
+      format: saveFormat,
+      filename: saveFileName,
+      // scale: number;
+      // format: 'png' | 'svg' | 'jpeg' | 'webp';
+      // height: number;
+      // width: number;
+    },
   }
 
   const onClick = (event: any) => {
@@ -389,7 +410,7 @@ interface PlotDatum {
   z: number
 }
 
-function rgba2hex(rgba: [number, number, number, number], alpha: number) {
+function rgba2hex(rgba: number[], alpha: number) {
   const r = rgba[0]
   const g = rgba[1]
   const b = rgba[2]
