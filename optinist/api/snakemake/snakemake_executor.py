@@ -9,6 +9,7 @@ from snakemake.persistence import Persistence
 
 from optinist.api.dir_path import DIRPATH
 from optinist.api.snakemake.smk import SmkParam
+from snakemake import snakemake
 
 
 class SmkExecutor:
@@ -115,15 +116,26 @@ class SmkExecutor:
         return success
 
 
+# def snakemake_execute(params: SmkParam):
+#     smk_executor = SmkExecutor(
+#         DIRPATH.SNAKEMAKE_FILEPATH,
+#         forceall=params.forceall,
+#         cores=params.cores,
+#         use_conda=params.use_conda,
+#     )
+#     success = smk_executor.execute(params.forcerun)
+#     print("success: ", success)
+
+
 def snakemake_execute(params: SmkParam):
-    smk_executor = SmkExecutor(
+    # run snakemake
+    snakemake(
         DIRPATH.SNAKEMAKE_FILEPATH,
         forceall=params.forceall,
         cores=params.cores,
         use_conda=params.use_conda,
     )
-    success = smk_executor.execute(params.forcerun)
-    print("success: ", success)
+
 
 
 def delete_dependencies(params):
