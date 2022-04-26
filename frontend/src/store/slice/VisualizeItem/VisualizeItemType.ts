@@ -67,7 +67,7 @@ export interface ImageItem extends DisplayDataItemBaseType {
   roiItem: RoiItem | null
   roiAlpha: number
   duration: number
-  clickedDataId?: number
+  clickedDataId?: string
   saveFileName: string
   saveFormat: string
 }
@@ -86,12 +86,12 @@ export interface TimeSeriesItem extends DisplayDataItemBaseType {
   }
   maxIndex: number
   refImageItemId?: number
-  displayNumbers: number[]
-  checkedList: DisplayIndexMap
+  drawOrderList: string[]
+  drawIndexMap: DrawIndexMap
 }
 
-export interface DisplayIndexMap {
-  [index: number]: boolean
+export interface DrawIndexMap {
+  [index: string]: boolean
 }
 
 export interface HeatMapItem extends DisplayDataItemBaseType {

@@ -22,7 +22,7 @@ import {
   FluoItem,
   BehaviorItem,
   VISUALIZE_ITEM_SLICE_NAME,
-  DisplayIndexMap,
+  DrawIndexMap,
 } from './VisualizeItemType'
 import {
   isDisplayDataItem,
@@ -82,8 +82,8 @@ const timeSeriesItemInitialValue: TimeSeriesItem = {
     right: undefined,
   },
   maxIndex: 0,
-  displayNumbers: [0],
-  checkedList: [],
+  drawOrderList: ['0'],
+  drawIndexMap: {},
 }
 const heatMapItemInitialValue: HeatMapItem = {
   ...displayDataCommonInitialValue,
@@ -602,30 +602,30 @@ export const visualaizeItemSlice = createSlice({
         targetItem.xrange.right = action.payload.right
       }
     },
-    setTimeSeriesItemDisplayNumbers: (
+    setTimeSeriesItemDrawOrderList: (
       state,
       action: PayloadAction<{
         itemId: number
-        displayNumbers: number[]
+        drawOrderList: string[]
       }>,
     ) => {
-      const { itemId, displayNumbers } = action.payload
+      const { itemId, drawOrderList } = action.payload
       const targetItem = state.items[itemId]
       if (isTimeSeriesItem(targetItem)) {
-        targetItem.displayNumbers = displayNumbers
+        targetItem.drawOrderList = drawOrderList
       }
     },
-    setTimeSeriesItemCheckedList: (
+    setTimeSeriesItemDrawIndexMap: (
       state,
       action: PayloadAction<{
         itemId: number
-        checkedList: DisplayIndexMap
+        drawIndexMap: DrawIndexMap
       }>,
     ) => {
-      const { itemId, checkedList } = action.payload
+      const { itemId, drawIndexMap } = action.payload
       const targetItem = state.items[itemId]
       if (isTimeSeriesItem(targetItem)) {
-        targetItem.checkedList = checkedList
+        targetItem.drawIndexMap = drawIndexMap
       }
     },
     setTimeSeriesItemMaxIndex: (
@@ -792,13 +792,11 @@ export const visualaizeItemSlice = createSlice({
             if (
               item.refImageItemId != null &&
               imageItemId === item.refImageItemId &&
-              Object.keys(item.checkedList)
-                .map(Number)
-                .includes(clickedDataId) &&
-              !item.displayNumbers.includes(clickedDataId)
+              Object.keys(item.drawIndexMap).includes(clickedDataId) &&
+              !item.drawOrderList.includes(clickedDataId)
             ) {
-              item.displayNumbers.push(clickedDataId)
-              item.checkedList[clickedDataId] = true
+              item.drawOrderList.push(clickedDataId)
+              item.drawIndexMap[clickedDataId] = true
             }
           }
         })
@@ -813,12 +811,14 @@ export const visualaizeItemSlice = createSlice({
               imageItemId === item.refImageItemId
             ) {
               const correctZList = selectedZList.filter((selectedZ) =>
-                Object.keys(item.checkedList).map(Number).includes(selectedZ),
+                Object.keys(item.drawIndexMap).includes(selectedZ),
               )
-              item.displayNumbers = correctZList
-              item.checkedList = Object.keys(item.checkedList).map((_, i) => {
-                return correctZList.includes(i)
-              })
+              item.drawOrderList = correctZList
+              item.drawIndexMap = Object.fromEntries(
+                Object.keys(item.drawIndexMap).map((key) => {
+                  return [key, correctZList.includes(key)]
+                }),
+              )
             }
           }
         })
@@ -889,8 +889,8 @@ export const {
   setTimeSeriesItemZeroLine,
   setTimeSeriesItemXrangeLeft,
   setTimeSeriesItemXrangeRight,
-  setTimeSeriesItemDisplayNumbers,
-  setTimeSeriesItemCheckedList,
+  setTimeSeriesItemDrawOrderList,
+  setTimeSeriesItemDrawIndexMap,
   setTimeSeriesItemMaxIndex,
   setTimeSeriesRefImageItemId,
   setHeatMapItemShowScale,

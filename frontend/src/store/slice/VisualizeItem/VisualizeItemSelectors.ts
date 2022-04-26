@@ -339,11 +339,11 @@ export const selectTimeSeriesItemXrange =
     }
   }
 
-export const selectTimeSeriesItemDisplayNumbers =
+export const selectTimeSeriesItemDrawOrderList =
   (itemId: number, refImageItemId?: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
-      return item.displayNumbers
+      return item.drawOrderList
     }
     throw new Error('invalid VisualaizeItemType')
   }
@@ -358,11 +358,11 @@ export const selectTimeSeriesItemRefImageItemId =
     }
   }
 
-export const selectTimeSeriesItemCheckedList =
+export const selectTimeSeriesItemDrawIndexMap =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
-      return item.checkedList
+      return item.drawIndexMap
     } else {
       throw new Error('invalid VisualaizeItemType')
     }

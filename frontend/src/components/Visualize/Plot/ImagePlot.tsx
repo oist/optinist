@@ -261,7 +261,10 @@ const ImagePlotChart = React.memo<{
     const points: PlotDatum = event.points[0]
     if (points.curveNumber >= 1) {
       dispatch(
-        setImageItemClikedDataId({ itemId, clickedDataId: points.z - 1 }),
+        setImageItemClikedDataId({
+          itemId,
+          clickedDataId: (points.z - 1).toString(),
+        }),
       )
     }
   }

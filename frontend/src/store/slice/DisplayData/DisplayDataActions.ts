@@ -15,7 +15,7 @@ import {
 
 export const getTimeSeriesDataById = createAsyncThunk<
   { data: TimeSeriesData; xrange: number[]; std: TimeSeriesData },
-  { path: string; index: number }
+  { path: string; index: string }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesDataById`,
   async ({ path, index }, thunkAPI) => {
