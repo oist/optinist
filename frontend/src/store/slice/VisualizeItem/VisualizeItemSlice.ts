@@ -60,9 +60,12 @@ const imageItemInitialValue: ImageItem = {
     { rgb: `rgb(255, 255, 255)`, offset: '1.0' },
   ],
   activeIndex: 0,
+  alpha: 1.0,
   roiItem: null,
   roiAlpha: 1.0,
   duration: 500,
+  saveFileName: 'newPlot',
+  saveFormat: 'png',
 }
 const timeSeriesItemInitialValue: TimeSeriesItem = {
   ...displayDataCommonInitialValue,
@@ -442,6 +445,18 @@ export const visualaizeItemSlice = createSlice({
         targetItem.endIndex = action.payload.endIndex
       }
     },
+    setImageItemAlpha: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        alpha: number
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.alpha = action.payload.alpha
+      }
+    },
     setImageItemRoiAlpha: (
       state,
       action: PayloadAction<{
@@ -464,6 +479,30 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.duration = action.payload.duration
+      }
+    },
+    setImageItemSaveFormat: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        saveFormat: string
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.saveFormat = action.payload.saveFormat
+      }
+    },
+    setImageItemSaveFileName: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        saveFileName: string
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isImageItem(targetItem)) {
+        targetItem.saveFileName = action.payload.saveFileName
       }
     },
     setTimeSeriesItemOffset: (
@@ -834,8 +873,11 @@ export const {
   setImageItemColors,
   setImageItemStartIndex,
   setImageItemEndIndex,
+  setImageItemAlpha,
   setImageItemRoiAlpha,
   setImageItemDuration,
+  setImageItemSaveFormat,
+  setImageItemSaveFileName,
   setTimeSeriesItemOffset,
   setTimeSeriesItemSpan,
   setTimeSeriesItemShowGrid,
