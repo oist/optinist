@@ -39,27 +39,4 @@ Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, thi
 export OPTINIST_DIR="your_saving_dir"
 ```
 
-## Run backend
-Change backend directory
-```
-cd /app/backend
-```
-
-
-```
-python main.py
-```
-- `python main.py` log is as blow:
-```
-$ python main.py
-INFO:   Will watch for changes in these directories: [‘/Users/oist/optinist/backend’]
-INFO:   Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
-INFO:   Started reloader process [5811] using statreload
-INFO:   Started server process [5820]
-INFO:   Waiting for application startup.
-INFO:   Application startup complete.
-```
-## Launch browser.  http://localhost:8000
-It opens correctly!
-
 Done!

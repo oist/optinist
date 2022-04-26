@@ -57,7 +57,6 @@ conda install -n base -c conda-forge mamba
 ```
 ## Install library
 ```bash
-cd backend
 pip install -r requirements.txt
 # for CaImAn
 git clone https://github.com/flatironinstitute/CaImAn -b v1.9.7
