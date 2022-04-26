@@ -6,6 +6,8 @@ from optinist.api.snakemake.snakemake_reader import SmkParamReader
 from optinist.api.snakemake.snakemake_writer import SmkConfigWriter
 from optinist.api.snakemake.snakemake_setfile import SmkSetfile
 from optinist.api.snakemake.snakemake_executor import delete_dependencies, snakemake_execute
+from optinist.api.snakemake.run_snakemake import run_snakemake
+
 from optinist.api.utils.filepath_creater import get_pickle_file
 from optinist.api.workflow.workflow import Edge, Node, NodeType, RunItem
 from optinist.api.workflow.workflow_params import get_typecheck_params
@@ -29,7 +31,8 @@ class WorkflowRunner:
         snakemake_params.forcerun = _get_forcerun_list(unique_id, runItem.forceRunList)
         if len(snakemake_params.forcerun) > 0:
             delete_dependencies(snakemake_params)
-        background_tasks.add_task(snakemake_execute, snakemake_params)
+        # background_tasks.add_task(snakemake_execute, snakemake_params)
+        background_tasks.add_task(run_snakemake, snakemake_params)
 
 
 def _create_workflow(unique_id, name, nodeList, edgeList, nwbParam):
