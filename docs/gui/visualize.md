@@ -1,13 +1,13 @@
 # Visualize Page
-You can create and check output and other result in this page.  
-First, click "+" button and add display box.
+You can create and check outputs and other results in this page.  
+First, click "+" button and add a display box.
 <p align="center">
 <img width="400px" src="../images/visualize/components/addbox.png" alt="Addbox" />
 </p>
 
 
 Select data type(image, timeSeries ...).
-In both of cases that you use flowchart page or not, image and table plot can be uploaded in .tiff and .csv file, respectively.
+With or without using flowchart pages, image and table plot can be uploaded in .tiff and .csv file, respectively.
 <p align="center">
 <img width="400px" src="../images/visualize/components/select_type.png" alt="SelectType" />
 </p>
@@ -53,7 +53,7 @@ Table plot displays csv data in table.
 </p>
 
 ## Multi Plot
-The multi plot compares images, timeseries and heatmap output.  
+The multiplot compares images, timeseries and heatmap output.  
 ("Synthronize cell number" and "customize parameter" are currently under development.)
 <p align="center">
 <img width="500px" src="../images/visualize/components/default_plot.png" alt="DefaultPlot" />
