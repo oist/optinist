@@ -11,13 +11,13 @@ OptiNiSt will also help reproducibility of research, standardization of analysis
 
 ## Key Features
 ### :beginner: Easy-To-Use Workflow
-- **zero-knowledge of coding**: OptiNiSt can make analysis pipeline through connecting node and run on GUI.
+- **zero-knowledge of coding**: OptiNiSt can make analysis pipelines through connecting nodes and run on GUI.
 
 ### :zap: Visualize analysis result
-- **visualize analysis result**: OptiNiSt also visualize neural data analysis result by plotly.
+- **visualize analysis result**: OptiNiSt also visualizes neural data analysis result by plotly.
 
 ### :rocket: Record Workflow
-- **reproduce past workflow**: OptiNiSt record and reproduce past workflow pipeline.
+- **reproduce past workflow**: OptiNiSt records and reproduces past workflow pipeline.
 
 ## Documentation
 - [Tutorial](docs/utils/tutorial.md)
@@ -57,7 +57,7 @@ How to install and use optinist
 
 ## Using GUI
 ### Workflow
-- OptiNiSt can make analysis pipeline through connecting node and run on GUI. There are many analysis flow combinations. It selects node and connect edges to create pipelne flow.
+- OptiNiSt can make analysis pipelines through connecting nodes and run on GUI. There are many analysis flow combinations. It selects nodes and connect edges to create pipelne flow.
 <p align="center">
   <img width="400px" src="docs/images/workflow/whole.png" alt="workflow" />
 </p>
@@ -65,13 +65,13 @@ How to install and use optinist
 
 
 ### Visualize
-- OptiNiSt also visualize neural data analysis result by plotly. It supports image, roi, timeseries, heatmap and so on.
+- OptiNiSt also visualizes neural data analysis results by plotly. It supports image, roi, timeseries, heatmap and so on.
 <p align="center">
   <img width="400px" src="docs/images/visualize/whole.png" alt="visualize" />
 </p>
 
 ### Record Workflow
-- OptiNiSt record and reproduce past workflow pipeline. It can download result as nwb format.
+- OptiNiSt records and reproduces past workflow pipelines. It can download results as nwb format.
 <p align="center">
   <img width="400px" src="docs/images/record/whole.png" alt="record" />
 </p>
@@ -79,7 +79,7 @@ How to install and use optinist
 
 
 ## Contributors
-### Proposer
+### Proposers
 - Kenji Doya, [OIST Neural Computation Unit](https://groups.oist.jp/ncu)
 - Yukako Yamane, [OIST Neural Computation Unit](https://groups.oist.jp/ncu)
 
