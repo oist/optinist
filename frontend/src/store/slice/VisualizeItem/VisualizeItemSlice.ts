@@ -764,7 +764,7 @@ export const visualaizeItemSlice = createSlice({
         const { itemId, filePath, nodeId, dataType } = action.payload
         const targetItem = state.items[itemId]
         if (isDisplayDataItem(targetItem)) {
-          if (dataType != null && targetItem.dataType !== dataType) {
+          if (dataType != null) {
             state.items[itemId] = {
               ...getDisplayDataItemInitialValue(dataType),
               width: targetItem.width,

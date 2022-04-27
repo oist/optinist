@@ -145,7 +145,7 @@ const TimeSeriesPlotImple = React.memo(() => {
             error_y: {
               type: 'data',
               array:
-                offset && Object.keys(dataStd).includes(key)
+                !offset && Object.keys(dataStd).includes(key)
                   ? Object.values(dataStd[key])
                   : null,
               visible: true,
