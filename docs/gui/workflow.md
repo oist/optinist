@@ -1,5 +1,5 @@
 # Workflow Page
-OptiNiSt can make analysis pipeline through connecting nodes and run on GUI. There are many analysis flow combinations. It selects nodes and connect edges to create a pipelne flow.
+OptiNiSt can make analysis pipeline through connecting nodes and run on GUI. There are many analysis flow combinations. It selects nodes and connects edges to create a pipelne flow.
 <br>
 <p align="center">
 <img width="400px" src="../images/workflow/whole.png" alt="workflow" />
