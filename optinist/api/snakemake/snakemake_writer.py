@@ -17,3 +17,15 @@ class SmkConfigWriter:
             filename=DIRPATH.SNAKEMAKE_CONFIG_YML,
             config=flow_config
         )
+
+
+class SmkClusterConfigWriter:
+    # クラスタ用のyamlファイルはクラスタマシンにコピーして使用するため、
+    # DIRPATH.OUT_DIR/unique_idディレクトリにはファイルを作成しない
+    @classmethod
+    def write(cls, unique_id, flow_config):
+        ConfigWriter.write(
+            dirname=DIRPATH.ROOT_DIR,
+            filename=DIRPATH.SNAKEMAKE_CLUSTER_CONFIG_YML,
+            config=flow_config
+        )
