@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { getTimeSeriesInitData } from '../DisplayData/DisplayDataActions'
 import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 import {
   deleteDisplayItem,
@@ -233,6 +234,19 @@ export const visualaizeItemSlice = createSlice({
         if (targetItem.roiItem != null) {
           targetItem.roiItem.filePath = filePath
           targetItem.roiItem.nodeId = nodeId
+
+          Object.values(state.items).forEach((item) => {
+            if (
+              isTimeSeriesItem(item) &&
+              item.filePath != null &&
+              item.refImageItemId === itemId
+            ) {
+              item.drawOrderList = []
+              item.drawIndexMap = Object.fromEntries(
+                Object.keys(item.drawIndexMap).map((key) => [key, false]),
+              )
+            }
+          })
         } else {
           targetItem.roiItem = {
             ...roiItemInitialValue,
@@ -823,6 +837,20 @@ export const visualaizeItemSlice = createSlice({
             }
           }
         })
+      })
+      .addCase(getTimeSeriesInitData.fulfilled, (state, action) => {
+        const { itemId } = action.meta.arg
+        const targetItem = state.items[itemId]
+        if (isTimeSeriesItem(targetItem)) {
+          targetItem.drawIndexMap = Object.fromEntries(
+            Object.keys(action.payload.data).map((key, i) => {
+              if (i === 0) {
+                return [key, true]
+              }
+              return [key, false]
+            }),
+          )
+        }
       })
   },
 })

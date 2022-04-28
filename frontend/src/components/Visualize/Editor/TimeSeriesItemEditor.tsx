@@ -20,6 +20,7 @@ import {
   selectTimeSeriesItemZeroLine,
   selectTimeSeriesItemFilePath,
   selectTimeSeriesItemDrawIndexMap,
+  selectTimeSeriesItemKeys,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 import {
@@ -227,10 +228,8 @@ const Xrange: React.FC = () => {
 const LegendSelect: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
-  const drawIndexMap = useSelector(
-    selectTimeSeriesItemDrawIndexMap(itemId),
-    // arrayEqualityFn,
-  )
+  const drawIndexMap = useSelector(selectTimeSeriesItemDrawIndexMap(itemId))
+  const dataKeys = useSelector(selectTimeSeriesItemKeys(itemId))
   const drawOrderList = useSelector(selectTimeSeriesItemDrawOrderList(itemId))
   const filePath = useSelector(selectTimeSeriesItemFilePath(itemId))
 
@@ -239,21 +238,17 @@ const LegendSelect: React.FC = () => {
       setTimeSeriesItemDrawIndexMap({
         itemId,
         drawIndexMap: Object.fromEntries(
-          Object.keys(drawIndexMap).map((key) => {
+          dataKeys.map((key) => {
             return [key, event.target.checked]
           }),
         ),
       }),
     )
 
-    const newDrawOrderList = event.target.checked
-      ? Object.keys(drawIndexMap)
-      : []
-
     dispatch(
       setTimeSeriesItemDrawOrderList({
         itemId,
-        drawOrderList: newDrawOrderList,
+        drawOrderList: event.target.checked ? dataKeys : [],
       }),
     )
 
@@ -280,11 +275,11 @@ const LegendSelect: React.FC = () => {
       setTimeSeriesItemDrawIndexMap({
         itemId,
         drawIndexMap: Object.fromEntries(
-          Object.entries(drawIndexMap).map(([key, value]) => {
+          dataKeys.map((key) => {
             if (key === index) {
               return [key, event.target.checked]
             }
-            return [key, value]
+            return [key, drawIndexMap[key]]
           }),
         ),
       }),
@@ -297,12 +292,16 @@ const LegendSelect: React.FC = () => {
 
   const children = (
     <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
-      {Object.entries(drawIndexMap).map(([key, value]) => (
+      {dataKeys.map((key) => (
         <FormControlLabel
           key={`${key}`}
           label={`Index ${key}`}
           control={
-            <Checkbox checked={value} onChange={handleChange} value={key} />
+            <Checkbox
+              checked={drawIndexMap[key]}
+              onChange={handleChange}
+              value={key}
+            />
           }
         />
       ))}

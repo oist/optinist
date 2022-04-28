@@ -375,7 +375,7 @@ export const selectTimeSeriesItemRefImageItemId =
     }
   }
 
-export const selectTimeSeriesItemRefRoiFilePath =
+export const selectTimeSeriesItemRefRoiUniqueList =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
@@ -396,6 +396,23 @@ export const selectTimeSeriesItemDrawIndexMap =
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.drawIndexMap
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectTimeSeriesItemKeys =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isTimeSeriesItem(item)) {
+      const roiUniqueList = selectTimeSeriesItemRefRoiUniqueList(itemId)(state)
+      if (roiUniqueList != null) {
+        return Object.keys(item.drawIndexMap).filter((key) =>
+          roiUniqueList.includes(key),
+        )
+      } else {
+        return Object.keys(item.drawIndexMap)
+      }
     } else {
       throw new Error('invalid VisualaizeItemType')
     }

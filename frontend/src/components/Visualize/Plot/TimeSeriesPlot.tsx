@@ -31,17 +31,15 @@ import {
   selectTimeSeriesItemZeroLine,
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
-  selectTimeSeriesItemRefRoiFilePath,
+  selectTimeSeriesItemKeys,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { setTimeSeriesItemDrawIndexMap } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import createColormap from 'colormap'
 import { setTimeSeriesItemDrawOrderList } from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { DrawIndexMap } from 'store/slice/VisualizeItem/VisualizeItemType'
 
 export const TimeSeriesPlot = React.memo(() => {
   const { itemId, filePath: path } = React.useContext(DisplayDataContext)
   const dispatch = useDispatch()
-  const drawOrderList = useSelector(selectTimeSeriesItemDrawOrderList(itemId))
   const isPending = useSelector(selectTimeSeriesDataIsPending(path))
   const isInitialized = useSelector(selectTimeSeriesDataIsInitialized(path))
   const error = useSelector(selectTimeSeriesDataError(path))
@@ -49,9 +47,9 @@ export const TimeSeriesPlot = React.memo(() => {
 
   React.useEffect(() => {
     if (!isInitialized) {
-      dispatch(getTimeSeriesInitData({ path }))
+      dispatch(getTimeSeriesInitData({ path, itemId }))
     }
-  }, [dispatch, isInitialized, path, drawOrderList])
+  }, [dispatch, isInitialized, path, itemId])
 
   if (!isInitialized) {
     return <LinearProgress />
@@ -88,13 +86,7 @@ const TimeSeriesPlotImple = React.memo(() => {
   const drawIndexMap = useSelector(selectTimeSeriesItemDrawIndexMap(itemId))
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
-
-  const roiUniqueList = useSelector(selectTimeSeriesItemRefRoiFilePath(itemId))
-
-  const dataKeys: string[] =
-    roiUniqueList != null && roiUniqueList.length !== 0
-      ? roiUniqueList
-      : Object.keys(timeSeriesData)
+  const dataKeys = useSelector(selectTimeSeriesItemKeys(itemId))
 
   const colorScale = createColormap({
     colormap: 'jet',
@@ -103,29 +95,7 @@ const TimeSeriesPlotImple = React.memo(() => {
     alpha: 1,
   })
 
-  React.useEffect(() => {
-    if (Object.keys(drawIndexMap).length === 0) {
-      const newDrawIndexMap: DrawIndexMap = Object.fromEntries(
-        Object.keys(timeSeriesData).map((key, i) => {
-          if (i === 0) {
-            return [key, true]
-          }
-          return [key, false]
-        }),
-      )
-      dispatch(
-        setTimeSeriesItemDrawIndexMap({
-          itemId,
-          drawIndexMap: newDrawIndexMap,
-        }),
-      )
-    }
-  }, [dispatch, itemId, drawIndexMap, timeSeriesData])
-
   const data = React.useMemo(() => {
-    if (timeSeriesData === null) {
-      return {}
-    }
     return Object.fromEntries(
       dataKeys.map((key) => {
         let y = Object.values(timeSeriesData[key])
@@ -172,22 +142,18 @@ const TimeSeriesPlotImple = React.memo(() => {
   ])
 
   const annotations = React.useMemo(() => {
-    if (Object.keys(data).length !== 0) {
-      return drawOrderList.map((value) => {
-        return {
-          x: Number(dataXrange[dataXrange.length - 1]) + dataXrange.length / 10,
-          y: data[value].y[dataXrange.length - 1],
-          xref: 'x',
-          yref: 'y',
-          text: `cell: ${value}`,
-          arrowhead: 1,
-          ax: 0,
-          ay: -10,
-        }
-      })
-    } else {
-      return []
-    }
+    return drawOrderList.map((value) => {
+      return {
+        x: Number(dataXrange[dataXrange.length - 1]) + dataXrange.length / 10,
+        y: data[value].y[dataXrange.length - 1],
+        xref: 'x',
+        yref: 'y',
+        text: `cell: ${value}`,
+        arrowhead: 1,
+        ax: 0,
+        ay: -10,
+      }
+    })
   }, [data, drawOrderList, dataXrange])
 
   const layout = React.useMemo(

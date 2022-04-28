@@ -136,7 +136,7 @@ export const selectRoiDataIsFulfilled =
     selectDisplayData(state).roi[filePath].fulfilled
 
 export const selectRoiUniqueList = (filePath: string) => (state: RootState) => {
-  if (selectRoiDataIsInitialized(filePath)(state)) {
+  if (selectRoiDataIsFulfilled(filePath)(state)) {
     return selectDisplayData(state).roi[filePath].roiUniqueList
   }
   return null
