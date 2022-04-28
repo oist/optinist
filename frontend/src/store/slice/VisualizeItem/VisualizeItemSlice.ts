@@ -231,22 +231,22 @@ export const visualaizeItemSlice = createSlice({
       const { itemId, filePath, nodeId } = action.payload
       const targetItem = state.items[itemId]
       if (isImageItem(targetItem)) {
+        Object.values(state.items).forEach((item) => {
+          if (
+            isTimeSeriesItem(item) &&
+            item.filePath != null &&
+            item.refImageItemId === itemId
+          ) {
+            item.drawOrderList = []
+            item.drawIndexMap = Object.fromEntries(
+              Object.keys(item.drawIndexMap).map((key) => [key, false]),
+            )
+          }
+        })
+
         if (targetItem.roiItem != null) {
           targetItem.roiItem.filePath = filePath
           targetItem.roiItem.nodeId = nodeId
-
-          Object.values(state.items).forEach((item) => {
-            if (
-              isTimeSeriesItem(item) &&
-              item.filePath != null &&
-              item.refImageItemId === itemId
-            ) {
-              item.drawOrderList = []
-              item.drawIndexMap = Object.fromEntries(
-                Object.keys(item.drawIndexMap).map((key) => [key, false]),
-              )
-            }
-          })
         } else {
           targetItem.roiItem = {
             ...roiItemInitialValue,
@@ -761,6 +761,15 @@ export const visualaizeItemSlice = createSlice({
     builder
       .addCase(deleteDisplayItem, (state, action) => {
         const itemId = action.payload.itemId
+
+        if (isImageItem(state.items[itemId])) {
+          Object.values(state.items).forEach((item) => {
+            if (isTimeSeriesItem(item) && item.refImageItemId === itemId) {
+              delete item.refImageItemId
+            }
+          })
+        }
+
         delete state.items[itemId]
         if (itemId === state.selectedItemId) {
           state.selectedItemId = null
