@@ -194,7 +194,9 @@ const FilePathSelectItem = React.memo<{
   )
 })
 
-const RefImageItemIdSelect = React.memo<{ itemId: number }>(({ itemId }) => {
+const RefImageItemIdSelect = React.memo<{
+  itemId: number
+}>(({ itemId }) => {
   const dispatch = useDispatch()
   const itemIdList = useSelector(
     selectVisualizeImageItemIdList,

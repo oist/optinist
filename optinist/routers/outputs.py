@@ -38,6 +38,54 @@ class JsonReader:
         )
 
 
+@router.get("/outputs/inittimedata/{dirpath:path}")
+async def read_file(dirpath: str):
+    file_numbers = sorted([
+        os.path.splitext(os.path.basename(x))[0]
+        for x in glob(join_filepath([dirpath, '*.json']))
+    ])
+
+    index = file_numbers[0]
+    str_index = str(index)
+
+    json_data = JsonReader.timeseries_read(
+        join_filepath([dirpath, f'{str(index)}.json'])
+    )
+
+    return_data = JsonTimeSeriesData(
+        xrange=[],
+        data={},
+        std={},
+    )
+
+    data = {
+        str(i): {
+            json_data.xrange[0]: json_data.data[json_data.xrange[0]]
+        }
+        for i in file_numbers
+    }
+
+    if json_data.std is not None:
+        std = {
+            str(i): {
+                json_data.xrange[0]: json_data.data[json_data.xrange[0]]
+            }
+            for i in file_numbers
+        }
+
+    return_data = JsonTimeSeriesData(
+        xrange=json_data.xrange,
+        data=data,
+        std=std if json_data.std is not None else {},
+    )
+
+    return_data.data[str_index] = json_data.data
+    if json_data.std is not None:
+        return_data.std[str_index] = json_data.std
+
+    return return_data
+
+
 @router.get("/outputs/timedata/{dirpath:path}")
 async def read_file(dirpath: str, index: int):
     json_data = JsonReader.timeseries_read(join_filepath([dirpath, f'{str(index)}.json']))
@@ -47,32 +95,6 @@ async def read_file(dirpath: str, index: int):
         data={},
         std={},
     )
-
-    if index == 0:
-        file_numbers = [
-            os.path.splitext(os.path.basename(x))[0]
-            for x in glob(join_filepath([dirpath, '*.json']))
-        ]
-        data = {
-            str(i): {
-                json_data.xrange[0]: json_data.data[json_data.xrange[0]]
-            }
-            for i in file_numbers
-        }
-
-        if json_data.std is not None:
-            std = {
-                str(i): {
-                    json_data.xrange[0]: json_data.data[json_data.xrange[0]]
-                }
-                for i in file_numbers
-            }
-
-        return_data = JsonTimeSeriesData(
-            xrange=json_data.xrange,
-            data=data,
-            std=std if json_data.std is not None else {},
-        )
 
     str_index = str(index)
     return_data.data[str_index] = json_data.data

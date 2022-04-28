@@ -1,5 +1,8 @@
 import { RootState } from 'store/store'
-import { selectRoiData } from '../DisplayData/DisplayDataSelectors'
+import {
+  selectRoiData,
+  selectRoiUniqueList,
+} from '../DisplayData/DisplayDataSelectors'
 import { DATA_TYPE } from '../DisplayData/DisplayDataType'
 import {
   isDisplayDataItem,
@@ -239,6 +242,20 @@ export const selectImageItemRoiAlpha =
     }
   }
 
+export const selectImageItemRoiFilePath =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isImageItem(item)) {
+      if (item.roiItem) {
+        return item.roiItem.filePath
+      } else {
+        return null
+      }
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
 export const selectImageItemDuration =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
@@ -340,7 +357,7 @@ export const selectTimeSeriesItemXrange =
   }
 
 export const selectTimeSeriesItemDrawOrderList =
-  (itemId: number, refImageItemId?: number) => (state: RootState) => {
+  (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.drawOrderList
@@ -353,6 +370,22 @@ export const selectTimeSeriesItemRefImageItemId =
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
       return item.refImageItemId
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectTimeSeriesItemRefRoiFilePath =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isTimeSeriesItem(item)) {
+      if (item.refImageItemId) {
+        const imageItem = selectVisualizeItems(state)[item.refImageItemId]
+        if (isImageItem(imageItem) && imageItem.roiItem?.filePath != null) {
+          return selectRoiUniqueList(imageItem.roiItem.filePath)(state)
+        }
+      }
+      return null
     } else {
       throw new Error('invalid VisualaizeItemType')
     }

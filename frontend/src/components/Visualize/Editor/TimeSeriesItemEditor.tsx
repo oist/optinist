@@ -247,7 +247,7 @@ const LegendSelect: React.FC = () => {
     )
 
     const newDrawOrderList = event.target.checked
-      ? Object.keys(drawIndexMap).map((v) => v)
+      ? Object.keys(drawIndexMap)
       : []
 
     dispatch(
@@ -300,7 +300,7 @@ const LegendSelect: React.FC = () => {
       {Object.entries(drawIndexMap).map(([key, value]) => (
         <FormControlLabel
           key={`${key}`}
-          label={`Index ${parseInt(key) + 1}`}
+          label={`Index ${key}`}
           control={
             <Checkbox checked={value} onChange={handleChange} value={key} />
           }

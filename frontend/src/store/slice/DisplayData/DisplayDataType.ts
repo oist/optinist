@@ -77,7 +77,9 @@ export interface CsvDisplayData extends BaseDisplay<'csv', CsvData> {
 }
 export type CsvData = number[][]
 
-export interface RoiDisplayData extends BaseDisplay<'roi', RoiData> {}
+export interface RoiDisplayData extends BaseDisplay<'roi', RoiData> {
+  roiUniqueList: string[]
+}
 export type RoiData = number[][][]
 
 export interface ScatterDisplayData

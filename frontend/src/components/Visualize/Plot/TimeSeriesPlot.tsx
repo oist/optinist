@@ -14,13 +14,15 @@ import {
   selectTimeSeriesStd,
   selectTimeSeriesXrange,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
-import { getTimeSeriesDataById } from 'store/slice/DisplayData/DisplayDataActions'
+import {
+  getTimeSeriesDataById,
+  getTimeSeriesInitData,
+} from 'store/slice/DisplayData/DisplayDataActions'
 import { TimeSeriesData } from 'store/slice/DisplayData/DisplayDataType'
 import {
   selectTimeSeriesItemDrawOrderList,
   selectTimeSeriesItemDrawIndexMap,
   selectTimeSeriesItemOffset,
-  selectTimeSeriesItemRefImageItemId,
   selectTimeSeriesItemShowGrid,
   selectTimeSeriesItemShowLine,
   selectTimeSeriesItemShowTickLabels,
@@ -29,6 +31,7 @@ import {
   selectTimeSeriesItemZeroLine,
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
+  selectTimeSeriesItemRefRoiFilePath,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { setTimeSeriesItemDrawIndexMap } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import createColormap from 'colormap'
@@ -46,7 +49,7 @@ export const TimeSeriesPlot = React.memo(() => {
 
   React.useEffect(() => {
     if (!isInitialized) {
-      dispatch(getTimeSeriesDataById({ path, index: '0' }))
+      dispatch(getTimeSeriesInitData({ path }))
     }
   }, [dispatch, isInitialized, path, drawOrderList])
 
@@ -81,15 +84,17 @@ const TimeSeriesPlotImple = React.memo(() => {
   const showticklabels = useSelector(selectTimeSeriesItemShowTickLabels(itemId))
   const zeroline = useSelector(selectTimeSeriesItemZeroLine(itemId))
   const xrange = useSelector(selectTimeSeriesItemXrange(itemId))
-  const refImageItemId = useSelector(selectTimeSeriesItemRefImageItemId(itemId))
-  const drawOrderList = useSelector(
-    selectTimeSeriesItemDrawOrderList(itemId, refImageItemId),
-  )
+  const drawOrderList = useSelector(selectTimeSeriesItemDrawOrderList(itemId))
   const drawIndexMap = useSelector(selectTimeSeriesItemDrawIndexMap(itemId))
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
 
-  const dataKeys = Object.keys(timeSeriesData)
+  const roiUniqueList = useSelector(selectTimeSeriesItemRefRoiFilePath(itemId))
+
+  const dataKeys: string[] =
+    roiUniqueList != null && roiUniqueList.length !== 0
+      ? roiUniqueList
+      : Object.keys(timeSeriesData)
 
   const colorScale = createColormap({
     colormap: 'jet',
@@ -99,13 +104,13 @@ const TimeSeriesPlotImple = React.memo(() => {
   })
 
   React.useEffect(() => {
-    if (Object.keys(drawIndexMap).length === 0 && dataKeys.length !== 0) {
+    if (Object.keys(drawIndexMap).length === 0) {
       const newDrawIndexMap: DrawIndexMap = Object.fromEntries(
-        dataKeys.map((v, i) => {
+        Object.keys(timeSeriesData).map((key, i) => {
           if (i === 0) {
-            return [v, true]
+            return [key, true]
           }
-          return [v, false]
+          return [key, false]
         }),
       )
       dispatch(
@@ -115,15 +120,16 @@ const TimeSeriesPlotImple = React.memo(() => {
         }),
       )
     }
-  }, [timeSeriesData, dispatch, itemId, drawIndexMap, dataKeys])
+  }, [dispatch, itemId, drawIndexMap, timeSeriesData])
 
   const data = React.useMemo(() => {
     if (timeSeriesData === null) {
       return {}
     }
     return Object.fromEntries(
-      Object.keys(timeSeriesData).map((key, i) => {
+      dataKeys.map((key) => {
         let y = Object.values(timeSeriesData[key])
+        const i = Number(key) - 1
         const new_i = Math.floor((i % 10) * 10 + i / 10) % 100
         if (drawOrderList.includes(key) && offset) {
           const activeIdx: number = drawOrderList.findIndex((v) => v === key)
@@ -137,7 +143,7 @@ const TimeSeriesPlotImple = React.memo(() => {
         return [
           key,
           {
-            name: `(${String(parseInt(key) + 1)})`,
+            name: key,
             x: dataXrange,
             y: y,
             visible: drawOrderList.includes(key) ? true : 'legendonly',
@@ -162,6 +168,7 @@ const TimeSeriesPlotImple = React.memo(() => {
     colorScale,
     dataStd,
     dataXrange,
+    dataKeys,
   ])
 
   const annotations = React.useMemo(() => {
@@ -172,7 +179,7 @@ const TimeSeriesPlotImple = React.memo(() => {
           y: data[value].y[dataXrange.length - 1],
           xref: 'x',
           yref: 'y',
-          text: `cell: ${parseInt(value) + 1}`,
+          text: `cell: ${value}`,
           arrowhead: 1,
           ax: 0,
           ay: -10,
@@ -227,7 +234,7 @@ const TimeSeriesPlotImple = React.memo(() => {
   }
 
   const onLegendClick = (event: LegendClickEvent) => {
-    const clickNumber = Object.keys(timeSeriesData)[event.curveNumber]
+    const clickNumber = dataKeys[event.curveNumber]
 
     const newDrawOrderList = drawOrderList.includes(clickNumber)
       ? drawOrderList.filter((value) => value !== clickNumber)

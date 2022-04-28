@@ -13,6 +13,23 @@ import {
   HTMLData,
 } from './DisplayDataType'
 
+export const getTimeSeriesInitData = createAsyncThunk<
+  { data: TimeSeriesData; xrange: number[]; std: TimeSeriesData },
+  { path: string }
+>(
+  `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesInitData`,
+  async ({ path }, thunkAPI) => {
+    try {
+      const response = await axios.get(
+        `${BASE_URL}/outputs/inittimedata/${path}`,
+      )
+      return response.data
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
+
 export const getTimeSeriesDataById = createAsyncThunk<
   { data: TimeSeriesData; xrange: number[]; std: TimeSeriesData },
   { path: string; index: string }

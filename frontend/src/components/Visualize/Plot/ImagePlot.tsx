@@ -211,7 +211,7 @@ const ImagePlotChart = React.memo<{
   const layout = React.useMemo(
     () => ({
       width: width,
-      height: height - 120 - 10000 / width,
+      height: height - 120,
       margin: {
         t: 30, // top
         l: 120, // left
@@ -263,7 +263,7 @@ const ImagePlotChart = React.memo<{
       dispatch(
         setImageItemClikedDataId({
           itemId,
-          clickedDataId: (points.z - 1).toString(),
+          clickedDataId: points.z.toString(),
         }),
       )
     }
@@ -435,7 +435,7 @@ function rgba2hex(rgba: number[], alpha: number) {
     }
   })
 
-  return '#' + outParts.join('')
+  return `#${outParts.join('')}`
 }
 
 function debounce<T extends (...args: any[]) => unknown>(

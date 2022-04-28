@@ -90,9 +90,9 @@ class TimeSeriesData(BaseData):
 
         # cell番号を表示
         if cell_numbers is not None:
-            self.cell_numbers = cell_numbers
+            self.cell_numbers = cell_numbers + 1
         else:
-            self.cell_numbers = range(len(self.data))
+            self.cell_numbers = range(1, len(self.data) + 1)
 
     def save_json(self, json_dir):
         # timeseriesだけはdirを返す

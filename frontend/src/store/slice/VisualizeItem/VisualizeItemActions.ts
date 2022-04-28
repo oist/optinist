@@ -27,7 +27,6 @@ export const setImageItemClikedDataId = createAsyncThunk<
         )
       }
     })
-    return
   },
 )
 
@@ -58,7 +57,7 @@ export const selectingImageArea = createAsyncThunk<
           for (let y = y1; y <= y2; y++) {
             const z = roiData[y][x]
             if (z != null) {
-              const zNum = (z - 1).toString() // indexとidのずれを回避
+              const zNum = String(z) // indexとidのずれを回避
               if (!selectedZList.includes(zNum)) {
                 selectedZList.push(zNum)
               }
@@ -77,7 +76,7 @@ export const selectingImageArea = createAsyncThunk<
                 thunkAPI.dispatch(
                   getTimeSeriesDataById({
                     path,
-                    index: selectedZ.toString(),
+                    index: String(selectedZ),
                   }),
                 )
               }

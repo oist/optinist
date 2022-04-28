@@ -82,7 +82,7 @@ const timeSeriesItemInitialValue: TimeSeriesItem = {
     right: undefined,
   },
   maxIndex: 0,
-  drawOrderList: ['0'],
+  drawOrderList: [],
   drawIndexMap: {},
 }
 const heatMapItemInitialValue: HeatMapItem = {
@@ -652,6 +652,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.refImageItemId = refImageItemId ?? undefined
+        targetItem.drawOrderList = []
       }
     },
     setHeatMapItemShowScale: (

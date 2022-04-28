@@ -119,7 +119,6 @@ export const ImageItemEditor: React.FC = () => {
       <Zsmooth />
       <GradientColorPicker colors={colors} dispatchSetColor={dispathSetColor} />
       <Alpha />
-      <SaveFig />
       <div>
         <h3>Roi Setting</h3>
         <FilePathSelect
@@ -131,6 +130,7 @@ export const ImageItemEditor: React.FC = () => {
         />
         <RoiAlpha />
       </div>
+      <SaveFig />
     </div>
   )
 }
