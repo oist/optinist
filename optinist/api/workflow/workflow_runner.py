@@ -3,7 +3,7 @@ from dataclasses import asdict
 
 from optinist.api.snakemake.smk import FlowConfig, ForceRun, Rule, SmkParam
 from optinist.api.snakemake.snakemake_reader import SmkParamReader
-from optinist.api.snakemake.snakemake_writer import SmkConfigWriter
+from optinist.api.snakemake.snakemake_writer import SmkClusterConfigWriter, SmkConfigWriter
 from optinist.api.snakemake.snakemake_setfile import SmkSetfile
 from optinist.api.snakemake.snakemake_executor import delete_dependencies, snakemake_execute
 
@@ -46,7 +46,13 @@ def _create_workflow(unique_id, name, nodeList, edgeList, nwbParam):
         last_output=last_output,
     )
 
+    cluster_flow_config = FlowConfig(
+        rules={key: rule.to_cluster_rule() for key, rule in rules.items()},
+        last_output=[Rule.replace_upper_directory(last_out) for last_out in last_output],
+    )
+
     SmkConfigWriter.write(unique_id, asdict(flow_config))
+    SmkClusterConfigWriter.write(unique_id, asdict(cluster_flow_config))
     ExptConfigWriter.write(unique_id, name, nodeList, edgeList)
 
 
