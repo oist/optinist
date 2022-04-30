@@ -14,8 +14,6 @@ import {
   selectImageItemZsmooth,
   selectImageItemShowScale,
   selectImageItemColors,
-  selectRoiItemNodeId,
-  selectRoiItemFilePath,
   selectImageItemStartIndex,
   selectImageItemEndIndex,
   selectImageItemRoiAlpha,
@@ -36,7 +34,6 @@ import {
   setImageItemStartIndex,
   setImageItemEndIndex,
   setImageItemColors,
-  setRoiItemFilePath,
   resetImageActiveIndex,
   setImageItemRoiAlpha,
   setImageItemSaveFileName,
@@ -52,7 +49,6 @@ import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
 import { Box, TextField } from '@mui/material'
 import { GradientColorPicker } from './GradientColorPicker'
 import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
-import { FilePathSelect } from '../FilePathSelect'
 import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
 import Button from '@mui/material/Button'
 import { getImageData } from 'store/slice/DisplayData/DisplayDataActions'
@@ -97,11 +93,6 @@ export const ImageItemEditor: React.FC = () => {
     dispatch(setImageItemColors({ itemId, colors: colorCode }))
   }
 
-  const roiItemNodeId = useSelector(selectRoiItemNodeId(itemId))
-  const roiItemFilePath = useSelector(selectRoiItemFilePath(itemId))
-  const onSelectRoiFilePath = (nodeId: string, filePath: string) => {
-    dispatch(setRoiItemFilePath({ itemId, nodeId, filePath }))
-  }
   return (
     <div style={{ margin: '10px', padding: 10 }}>
       <FileSelectImple
@@ -119,18 +110,8 @@ export const ImageItemEditor: React.FC = () => {
       <Zsmooth />
       <GradientColorPicker colors={colors} dispatchSetColor={dispathSetColor} />
       <Alpha />
+      <RoiAlpha />
       <SaveFig />
-      <div>
-        <h3>Roi Setting</h3>
-        <FilePathSelect
-          selectedFilePath={roiItemFilePath}
-          selectedNodeId={roiItemNodeId}
-          onSelect={onSelectRoiFilePath}
-          dataType={DATA_TYPE_SET.ROI}
-          label={'Select Roi'}
-        />
-        <RoiAlpha />
-      </div>
     </div>
   )
 }
@@ -230,7 +211,7 @@ const Alpha: React.FC = () => {
   return (
     <>
       <TextField
-        label={'alpha'}
+        label={'image alpha'}
         error={inputError}
         type="number"
         inputProps={{
@@ -243,6 +224,39 @@ const Alpha: React.FC = () => {
         }}
         onChange={onChange}
         value={alpha}
+        helperText={inputError ? 'index > 0' : undefined}
+      />
+    </>
+  )
+}
+
+const RoiAlpha: React.FC = () => {
+  const itemId = React.useContext(SelectedItemIdContext)
+  const dispatch = useDispatch()
+  const roiAlpha = useSelector(selectImageItemRoiAlpha(itemId))
+  const inputError = !(roiAlpha > 0)
+  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value === '' ? '' : Number(event.target.value)
+    if (typeof newValue === 'number') {
+      dispatch(setImageItemRoiAlpha({ itemId, roiAlpha: newValue }))
+    }
+  }
+  return (
+    <>
+      <TextField
+        label={'roi alpha'}
+        error={inputError}
+        type="number"
+        inputProps={{
+          step: 0.1,
+          min: 0,
+          max: 1.0,
+        }}
+        InputLabelProps={{
+          shrink: true,
+        }}
+        onChange={onChange}
+        value={roiAlpha}
         helperText={inputError ? 'index > 0' : undefined}
       />
     </>
@@ -282,39 +296,6 @@ const SaveFig: React.FC = () => {
         }}
         onChange={onChangeFileName}
         value={saveFileName}
-      />
-    </>
-  )
-}
-
-const RoiAlpha: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
-  const dispatch = useDispatch()
-  const roiAlpha = useSelector(selectImageItemRoiAlpha(itemId))
-  const inputError = !(roiAlpha > 0)
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value === '' ? '' : Number(event.target.value)
-    if (typeof newValue === 'number') {
-      dispatch(setImageItemRoiAlpha({ itemId, roiAlpha: newValue }))
-    }
-  }
-  return (
-    <>
-      <TextField
-        label={'alpha'}
-        error={inputError}
-        type="number"
-        inputProps={{
-          step: 0.1,
-          min: 0,
-          max: 1.0,
-        }}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        onChange={onChange}
-        value={roiAlpha}
-        helperText={inputError ? 'index > 0' : undefined}
       />
     </>
   )

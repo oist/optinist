@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { getTimeSeriesInitData } from '../DisplayData/DisplayDataActions'
 import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 import {
   deleteDisplayItem,
@@ -22,6 +23,7 @@ import {
   FluoItem,
   BehaviorItem,
   VISUALIZE_ITEM_SLICE_NAME,
+  DrawIndexMap,
 } from './VisualizeItemType'
 import {
   isDisplayDataItem,
@@ -71,7 +73,7 @@ const timeSeriesItemInitialValue: TimeSeriesItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.TIME_SERIES,
   offset: true,
-  span: 3,
+  span: 5,
   showgrid: true,
   showline: true,
   showticklabels: true,
@@ -81,8 +83,8 @@ const timeSeriesItemInitialValue: TimeSeriesItem = {
     right: undefined,
   },
   maxIndex: 0,
-  displayNumbers: [0],
-  checkedList: [],
+  drawOrderList: [],
+  drawIndexMap: {},
 }
 const heatMapItemInitialValue: HeatMapItem = {
   ...displayDataCommonInitialValue,
@@ -229,6 +231,19 @@ export const visualaizeItemSlice = createSlice({
       const { itemId, filePath, nodeId } = action.payload
       const targetItem = state.items[itemId]
       if (isImageItem(targetItem)) {
+        Object.values(state.items).forEach((item) => {
+          if (
+            isTimeSeriesItem(item) &&
+            item.filePath != null &&
+            item.refImageItemId === itemId
+          ) {
+            item.drawOrderList = []
+            item.drawIndexMap = Object.fromEntries(
+              Object.keys(item.drawIndexMap).map((key) => [key, false]),
+            )
+          }
+        })
+
         if (targetItem.roiItem != null) {
           targetItem.roiItem.filePath = filePath
           targetItem.roiItem.nodeId = nodeId
@@ -601,30 +616,30 @@ export const visualaizeItemSlice = createSlice({
         targetItem.xrange.right = action.payload.right
       }
     },
-    setTimeSeriesItemDisplayNumbers: (
+    setTimeSeriesItemDrawOrderList: (
       state,
       action: PayloadAction<{
         itemId: number
-        displayNumbers: number[]
+        drawOrderList: string[]
       }>,
     ) => {
-      const { itemId, displayNumbers } = action.payload
+      const { itemId, drawOrderList } = action.payload
       const targetItem = state.items[itemId]
       if (isTimeSeriesItem(targetItem)) {
-        targetItem.displayNumbers = displayNumbers
+        targetItem.drawOrderList = drawOrderList
       }
     },
-    setTimeSeriesItemCheckedList: (
+    setTimeSeriesItemDrawIndexMap: (
       state,
       action: PayloadAction<{
         itemId: number
-        checkedList: boolean[]
+        drawIndexMap: DrawIndexMap
       }>,
     ) => {
-      const { itemId, checkedList } = action.payload
+      const { itemId, drawIndexMap } = action.payload
       const targetItem = state.items[itemId]
       if (isTimeSeriesItem(targetItem)) {
-        targetItem.checkedList = checkedList
+        targetItem.drawIndexMap = drawIndexMap
       }
     },
     setTimeSeriesItemMaxIndex: (
@@ -651,6 +666,7 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[itemId]
       if (isTimeSeriesItem(targetItem)) {
         targetItem.refImageItemId = refImageItemId ?? undefined
+        targetItem.drawOrderList = []
       }
     },
     setHeatMapItemShowScale: (
@@ -745,6 +761,15 @@ export const visualaizeItemSlice = createSlice({
     builder
       .addCase(deleteDisplayItem, (state, action) => {
         const itemId = action.payload.itemId
+
+        if (isImageItem(state.items[itemId])) {
+          Object.values(state.items).forEach((item) => {
+            if (isTimeSeriesItem(item) && item.refImageItemId === itemId) {
+              delete item.refImageItemId
+            }
+          })
+        }
+
         delete state.items[itemId]
         if (itemId === state.selectedItemId) {
           state.selectedItemId = null
@@ -763,7 +788,7 @@ export const visualaizeItemSlice = createSlice({
         const { itemId, filePath, nodeId, dataType } = action.payload
         const targetItem = state.items[itemId]
         if (isDisplayDataItem(targetItem)) {
-          if (dataType != null && targetItem.dataType !== dataType) {
+          if (dataType != null) {
             state.items[itemId] = {
               ...getDisplayDataItemInitialValue(dataType),
               width: targetItem.width,
@@ -791,11 +816,11 @@ export const visualaizeItemSlice = createSlice({
             if (
               item.refImageItemId != null &&
               imageItemId === item.refImageItemId &&
-              clickedDataId < item.checkedList.length &&
-              !item.displayNumbers.includes(clickedDataId)
+              Object.keys(item.drawIndexMap).includes(clickedDataId) &&
+              !item.drawOrderList.includes(clickedDataId)
             ) {
-              item.displayNumbers.push(clickedDataId)
-              item.checkedList[clickedDataId] = true
+              item.drawOrderList.push(clickedDataId)
+              item.drawIndexMap[clickedDataId] = true
             }
           }
         })
@@ -809,16 +834,32 @@ export const visualaizeItemSlice = createSlice({
               item.refImageItemId != null &&
               imageItemId === item.refImageItemId
             ) {
-              const correctZList = selectedZList.filter(
-                (selectedZ) => selectedZ < item.checkedList.length,
+              const correctZList = selectedZList.filter((selectedZ) =>
+                Object.keys(item.drawIndexMap).includes(selectedZ),
               )
-              item.displayNumbers = correctZList
-              item.checkedList = item.checkedList.map((_, i) => {
-                return correctZList.includes(i)
-              })
+              item.drawOrderList = correctZList
+              item.drawIndexMap = Object.fromEntries(
+                Object.keys(item.drawIndexMap).map((key) => {
+                  return [key, correctZList.includes(key)]
+                }),
+              )
             }
           }
         })
+      })
+      .addCase(getTimeSeriesInitData.fulfilled, (state, action) => {
+        const { itemId } = action.meta.arg
+        const targetItem = state.items[itemId]
+        if (isTimeSeriesItem(targetItem)) {
+          targetItem.drawIndexMap = Object.fromEntries(
+            Object.keys(action.payload.data).map((key, i) => {
+              if (i === 0) {
+                return [key, true]
+              }
+              return [key, false]
+            }),
+          )
+        }
       })
   },
 })
@@ -886,8 +927,8 @@ export const {
   setTimeSeriesItemZeroLine,
   setTimeSeriesItemXrangeLeft,
   setTimeSeriesItemXrangeRight,
-  setTimeSeriesItemDisplayNumbers,
-  setTimeSeriesItemCheckedList,
+  setTimeSeriesItemDrawOrderList,
+  setTimeSeriesItemDrawIndexMap,
   setTimeSeriesItemMaxIndex,
   setTimeSeriesRefImageItemId,
   setHeatMapItemShowScale,

@@ -15,6 +15,7 @@ import {
   getScatterData,
   getBarData,
   getHTMLData,
+  getTimeSeriesInitData,
 } from './DisplayDataActions'
 import {
   deleteDisplayItem,
@@ -87,15 +88,10 @@ export const displayDataSlice = createSlice({
         state.timeSeries[path].pending = false
         state.timeSeries[path].fulfilled = true
         state.timeSeries[path].error = null
-        if (Object.keys(state.timeSeries[path].data).length === 0) {
-          state.timeSeries[path].xrange = action.payload.xrange
-          state.timeSeries[path].data = action.payload.data
-          state.timeSeries[path].std = action.payload.std
-        } else {
-          state.timeSeries[path].data[index] = action.payload.data[index]
-          if (action.payload.std[index] !== undefined) {
-            state.timeSeries[path].std[index] = action.payload.std[index]
-          }
+
+        state.timeSeries[path].data[index] = action.payload.data[index]
+        if (action.payload.std[index] !== undefined) {
+          state.timeSeries[path].std[index] = action.payload.std[index]
         }
       })
       .addCase(getTimeSeriesAllData.pending, (state, action) => {
@@ -138,6 +134,46 @@ export const displayDataSlice = createSlice({
         if (action.payload.std !== undefined) {
           state.timeSeries[path].std = action.payload.std
         }
+      })
+      .addCase(getTimeSeriesInitData.pending, (state, action) => {
+        const { path } = action.meta.arg
+        if (!state.timeSeries.hasOwnProperty(path)) {
+          state.timeSeries[path] = {
+            type: 'timeSeries',
+            xrange: [],
+            data: {},
+            std: {},
+            pending: true,
+            fulfilled: false,
+            error: null,
+          }
+        } else {
+          state.timeSeries[path].pending = true
+          state.timeSeries[path].fulfilled = false
+          state.timeSeries[path].error = null
+        }
+      })
+      .addCase(getTimeSeriesInitData.rejected, (state, action) => {
+        const { path } = action.meta.arg
+        state.timeSeries[path] = {
+          type: 'timeSeries',
+          xrange: [],
+          data: {},
+          std: {},
+          pending: false,
+          fulfilled: false,
+          error: action.error.message ?? 'rejected',
+        }
+      })
+      .addCase(getTimeSeriesInitData.fulfilled, (state, action) => {
+        const { path } = action.meta.arg
+        state.timeSeries[path].pending = false
+        state.timeSeries[path].fulfilled = true
+        state.timeSeries[path].error = null
+
+        state.timeSeries[path].xrange = action.payload.xrange
+        state.timeSeries[path].data = action.payload.data
+        state.timeSeries[path].std = action.payload.std
       })
       .addCase(getHeatMapData.pending, (state, action) => {
         const { path } = action.meta.arg
@@ -237,16 +273,30 @@ export const displayDataSlice = createSlice({
           pending: true,
           fulfilled: false,
           error: null,
+          roiUniqueList: [],
         }
       })
       .addCase(getRoiData.fulfilled, (state, action) => {
         const { path } = action.meta.arg
+        const { data } = action.payload
+
+        // 計算
+        const roi1Ddata: number[] = data[0]
+          .map((row) =>
+            Array.from(new Set(row.filter((value) => value != null))),
+          )
+          .flat()
+        const roiUniqueIdList = Array.from(new Set(roi1Ddata))
+          .sort((n1, n2) => n1 - n2)
+          .map(String)
+
         state.roi[path] = {
           type: 'roi',
-          data: action.payload.data,
+          data: data,
           pending: false,
           fulfilled: true,
           error: null,
+          roiUniqueList: roiUniqueIdList,
         }
       })
       .addCase(getRoiData.rejected, (state, action) => {
@@ -257,6 +307,7 @@ export const displayDataSlice = createSlice({
           pending: false,
           fulfilled: false,
           error: action.error.message ?? 'rejected',
+          roiUniqueList: [],
         }
       })
       .addCase(getScatterData.pending, (state, action) => {
@@ -375,7 +426,5 @@ function deleteDisplayDataFn(
     delete state.html[filePath]
   }
 }
-
-// export const { } = displayDataSlice.actions
 
 export default displayDataSlice.reducer

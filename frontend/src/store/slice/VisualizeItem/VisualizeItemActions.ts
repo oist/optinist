@@ -9,7 +9,7 @@ import { isImageItem, isTimeSeriesItem } from './VisualizeItemUtils'
 
 export const setImageItemClikedDataId = createAsyncThunk<
   void,
-  { itemId: number; clickedDataId: number },
+  { itemId: number; clickedDataId: string },
   ThunkApiConfig
 >(
   `${VISUALIZE_ITEM_SLICE_NAME}/setImageItemClikedDataId`,
@@ -20,20 +20,18 @@ export const setImageItemClikedDataId = createAsyncThunk<
         isTimeSeriesItem(item) &&
         item.filePath != null &&
         item.refImageItemId === itemId &&
-        clickedDataId < item.checkedList.length &&
-        !item.displayNumbers.includes(clickedDataId)
+        !item.drawOrderList.includes(clickedDataId)
       ) {
         thunkAPI.dispatch(
           getTimeSeriesDataById({ path: item.filePath, index: clickedDataId }),
         )
       }
     })
-    return
   },
 )
 
 export const selectingImageArea = createAsyncThunk<
-  number[],
+  string[],
   {
     itemId: number
     range: {
@@ -48,7 +46,7 @@ export const selectingImageArea = createAsyncThunk<
     const { x, y } = range
     const [x1, x2] = x.map(Math.round)
     const [y1, y2] = y.map(Math.round)
-    const selectedZList: number[] = []
+    const selectedZList: string[] = []
     const items = selectVisualizeItems(thunkAPI.getState())
     const imageItem = items[itemId]
     if (isImageItem(imageItem) && imageItem.roiItem != null) {
@@ -59,7 +57,7 @@ export const selectingImageArea = createAsyncThunk<
           for (let y = y1; y <= y2; y++) {
             const z = roiData[y][x]
             if (z != null) {
-              const zNum = z - 1 // indexとidのずれを回避
+              const zNum = String(z) // indexとidのずれを回避
               if (!selectedZList.includes(zNum)) {
                 selectedZList.push(zNum)
               }
@@ -74,11 +72,11 @@ export const selectingImageArea = createAsyncThunk<
           ) {
             const path = item.filePath
             selectedZList.forEach((selectedZ) => {
-              if (selectedZ < item.checkedList.length) {
+              if (Object.keys(item.drawIndexMap).includes(selectedZ)) {
                 thunkAPI.dispatch(
                   getTimeSeriesDataById({
                     path,
-                    index: selectedZ,
+                    index: String(selectedZ),
                   }),
                 )
               }

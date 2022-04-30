@@ -14,13 +14,15 @@ import {
   selectTimeSeriesStd,
   selectTimeSeriesXrange,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
-import { getTimeSeriesDataById } from 'store/slice/DisplayData/DisplayDataActions'
+import {
+  getTimeSeriesDataById,
+  getTimeSeriesInitData,
+} from 'store/slice/DisplayData/DisplayDataActions'
 import { TimeSeriesData } from 'store/slice/DisplayData/DisplayDataType'
 import {
-  selectTimeSeriesItemCheckedList,
-  selectTimeSeriesItemDisplayNumbers,
+  selectTimeSeriesItemDrawOrderList,
+  selectTimeSeriesItemDrawIndexMap,
   selectTimeSeriesItemOffset,
-  selectTimeSeriesItemRefImageItemId,
   selectTimeSeriesItemShowGrid,
   selectTimeSeriesItemShowLine,
   selectTimeSeriesItemShowTickLabels,
@@ -29,15 +31,15 @@ import {
   selectTimeSeriesItemZeroLine,
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
+  selectTimeSeriesItemKeys,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { setTimeSeriesItemCheckedList } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { setTimeSeriesItemDrawIndexMap } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import createColormap from 'colormap'
-import { setTimeSeriesItemDisplayNumbers } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { setTimeSeriesItemDrawOrderList } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 export const TimeSeriesPlot = React.memo(() => {
   const { itemId, filePath: path } = React.useContext(DisplayDataContext)
   const dispatch = useDispatch()
-  const displayNumbers = useSelector(selectTimeSeriesItemDisplayNumbers(itemId))
   const isPending = useSelector(selectTimeSeriesDataIsPending(path))
   const isInitialized = useSelector(selectTimeSeriesDataIsInitialized(path))
   const error = useSelector(selectTimeSeriesDataError(path))
@@ -45,9 +47,9 @@ export const TimeSeriesPlot = React.memo(() => {
 
   React.useEffect(() => {
     if (!isInitialized) {
-      dispatch(getTimeSeriesDataById({ path, index: 0 }))
+      dispatch(getTimeSeriesInitData({ path, itemId }))
     }
-  }, [dispatch, isInitialized, path, displayNumbers])
+  }, [dispatch, isInitialized, path, itemId])
 
   if (!isInitialized) {
     return <LinearProgress />
@@ -80,13 +82,11 @@ const TimeSeriesPlotImple = React.memo(() => {
   const showticklabels = useSelector(selectTimeSeriesItemShowTickLabels(itemId))
   const zeroline = useSelector(selectTimeSeriesItemZeroLine(itemId))
   const xrange = useSelector(selectTimeSeriesItemXrange(itemId))
-  const refImageItemId = useSelector(selectTimeSeriesItemRefImageItemId(itemId))
-  const displayNumbers = useSelector(
-    selectTimeSeriesItemDisplayNumbers(itemId, refImageItemId),
-  )
-  const checkedList = useSelector(selectTimeSeriesItemCheckedList(itemId))
+  const drawOrderList = useSelector(selectTimeSeriesItemDrawOrderList(itemId))
+  const drawIndexMap = useSelector(selectTimeSeriesItemDrawIndexMap(itemId))
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
+  const dataKeys = useSelector(selectTimeSeriesItemKeys(itemId))
 
   const colorScale = createColormap({
     colormap: 'jet',
@@ -95,114 +95,66 @@ const TimeSeriesPlotImple = React.memo(() => {
     alpha: 1,
   })
 
-  React.useEffect(() => {
-    const keys = Object.keys(timeSeriesData)
-    if (checkedList.length === 0 && keys.length !== 0) {
-      const checkedList = keys.map((_, i) => {
-        if (i === 0) {
-          return true
-        }
-        return false
-      })
-      dispatch(
-        setTimeSeriesItemCheckedList({
-          itemId,
-          checkedList,
-        }),
-      )
-    }
-  }, [timeSeriesData, dispatch, itemId, checkedList.length])
-
   const data = React.useMemo(() => {
-    if (timeSeriesData === null) {
-      return []
-    }
-    return Object.keys(timeSeriesData).map((key, i) => {
-      let y = Object.values(timeSeriesData[key])
-      const new_i = Math.floor((i % 10) * 10 + i / 10) % 100
-
-      if (displayNumbers.includes(i)) {
-        if (offset) {
-          const activeIdx: number = displayNumbers.findIndex(
-            (value) => value === i,
-          )
+    return Object.fromEntries(
+      dataKeys.map((key) => {
+        let y = Object.values(timeSeriesData[key])
+        const i = Number(key) - 1
+        const new_i = Math.floor((i % 10) * 10 + i / 10) % 100
+        if (drawOrderList.includes(key) && offset) {
+          const activeIdx: number = drawOrderList.findIndex((v) => v === key)
           const mean: number = y.reduce((a, b) => a + b) / y.length
           const std: number =
             span *
             Math.sqrt(y.reduce((a, b) => a + Math.pow(b - mean, 2)) / y.length)
-          return {
-            name: `(${String(parseInt(key) + 1)})`,
-            x: dataXrange,
-            y: y.map((value) => (value - mean) / (std + 1e-10) + activeIdx),
-            visible: true,
-            line: { color: colorScale[new_i] },
-            error_y: {
-              type: 'data',
-              array: null,
-              visible: true,
-            },
-          }
-        } else {
-          return {
-            name: `(${String(parseInt(key) + 1)})`,
+          y = y.map((value) => (value - mean) / (std + 1e-10) + activeIdx)
+        }
+
+        return [
+          key,
+          {
+            name: key,
             x: dataXrange,
             y: y,
-            visible: true,
+            visible: drawOrderList.includes(key) ? true : 'legendonly',
             line: { color: colorScale[new_i] },
             error_y: {
               type: 'data',
-              array: Object.keys(dataStd).includes(key)
-                ? Object.values(dataStd[key])
-                : null,
+              array:
+                !offset && Object.keys(dataStd).includes(key)
+                  ? Object.values(dataStd[key])
+                  : null,
               visible: true,
             },
-          }
-        }
-      } else {
-        return {
-          name: `(${String(parseInt(key) + 1)})`,
-          x: dataXrange,
-          y: y,
-          visible: 'legendonly',
-          line: { color: colorScale[new_i] },
-          error_y: {
-            type: 'data',
-            array: Object.keys(dataStd).includes(key)
-              ? Object.values(dataStd[key])
-              : null,
-            visible: true,
           },
-        }
-      }
-    })
+        ]
+      }),
+    )
   }, [
     timeSeriesData,
-    displayNumbers,
+    drawOrderList,
     offset,
     span,
     colorScale,
     dataStd,
     dataXrange,
+    dataKeys,
   ])
 
   const annotations = React.useMemo(() => {
-    if (data.length !== 0) {
-      return displayNumbers.map((v) => {
-        return {
-          x: Number(dataXrange[dataXrange.length - 1]) + dataXrange.length / 10,
-          y: data[v].y[dataXrange.length - 1],
-          xref: 'x',
-          yref: 'y',
-          text: `cell: ${v + 1}`,
-          arrowhead: 1,
-          ax: 0,
-          ay: -10,
-        }
-      })
-    } else {
-      return []
-    }
-  }, [data, displayNumbers, dataXrange])
+    return drawOrderList.map((value) => {
+      return {
+        x: Number(dataXrange[dataXrange.length - 1]) + dataXrange.length / 10,
+        y: data[value].y[dataXrange.length - 1],
+        xref: 'x',
+        yref: 'y',
+        text: `cell: ${value}`,
+        arrowhead: 1,
+        ax: 0,
+        ay: -10,
+      }
+    })
+  }, [data, drawOrderList, dataXrange])
 
   const layout = React.useMemo(
     () => ({
@@ -248,50 +200,41 @@ const TimeSeriesPlotImple = React.memo(() => {
   }
 
   const onLegendClick = (event: LegendClickEvent) => {
-    const clickNumber = event.curveNumber
+    const clickNumber = dataKeys[event.curveNumber]
+
+    const newDrawOrderList = drawOrderList.includes(clickNumber)
+      ? drawOrderList.filter((value) => value !== clickNumber)
+      : [...drawOrderList, clickNumber]
+
+    const newDrawIndexMap = Object.fromEntries(
+      Object.entries(drawIndexMap).map(([key, value]) => {
+        if (key === clickNumber) {
+          if (drawOrderList.includes(clickNumber)) {
+            return [key, false]
+          } else {
+            return [key, true]
+          }
+        }
+        return [key, value]
+      }),
+    )
+
+    dispatch(
+      setTimeSeriesItemDrawOrderList({
+        itemId,
+        drawOrderList: newDrawOrderList,
+      }),
+    )
+
+    dispatch(
+      setTimeSeriesItemDrawIndexMap({
+        itemId,
+        drawIndexMap: newDrawIndexMap,
+      }),
+    )
 
     // set DisplayNumbers
-    if (displayNumbers.includes(clickNumber)) {
-      dispatch(
-        setTimeSeriesItemDisplayNumbers({
-          itemId,
-          displayNumbers: displayNumbers.filter(
-            (value) => value !== clickNumber,
-          ),
-        }),
-      )
-
-      dispatch(
-        setTimeSeriesItemCheckedList({
-          itemId,
-          checkedList: checkedList.map((v, i) => {
-            if (i === clickNumber) {
-              return false
-            }
-            return v
-          }),
-        }),
-      )
-    } else {
-      dispatch(
-        setTimeSeriesItemDisplayNumbers({
-          itemId,
-          displayNumbers: [...displayNumbers, clickNumber],
-        }),
-      )
-
-      dispatch(
-        setTimeSeriesItemCheckedList({
-          itemId,
-          checkedList: checkedList.map((v, i) => {
-            if (i === clickNumber) {
-              return true
-            }
-            return v
-          }),
-        }),
-      )
-
+    if (!drawOrderList.includes(clickNumber)) {
       dispatch(getTimeSeriesDataById({ path, index: clickNumber }))
     }
 
@@ -300,7 +243,7 @@ const TimeSeriesPlotImple = React.memo(() => {
 
   return (
     <PlotlyChart
-      data={data}
+      data={Object.values(data)}
       layout={layout}
       config={config}
       onLegendClick={onLegendClick}
