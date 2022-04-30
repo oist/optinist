@@ -1,2 +1,15 @@
 from setuptools import setup
-setup()
+
+def _requires_from_file(filename):
+    return open(filename).read().splitlines()
+
+setup(
+    install_requires=_requires_from_file('requirements.txt'),
+    tests_require=["pytest"],
+    # package_dir={"": "src"},
+    entry_points = {
+        'console_scripts': [
+            'run_optinist=main:main',
+        ]
+    },
+)

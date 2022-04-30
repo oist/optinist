@@ -1,9 +1,11 @@
-from fastapi import FastAPI, Response, Request
+from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
+import os
 import uvicorn
 from starlette.middleware.cors import CORSMiddleware
+DIRPATH = os.path.dirname(os.path.abspath(__file__))
 from optinist.routers import (
     files,
     run,
@@ -13,7 +15,6 @@ from optinist.routers import (
     hdf5,
     experiment,
 )
-
 
 app = FastAPI(docs_url="/docs", openapi_url="/openapi")
 app.include_router(algolist.router)
@@ -34,15 +35,20 @@ app.add_middleware(
 
 app.mount(
     "/static",
-    StaticFiles(directory="./frontend/build/static"),
+    StaticFiles(directory=f"{DIRPATH}/frontend/build/static"),
     name="static"
 )
 
-templates = Jinja2Templates(directory="./frontend/build")
+templates = Jinja2Templates(directory=f"{DIRPATH}/frontend/build")
 
 @app.get("/")
 async def root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
-if __name__ == '__main__':
+
+def main():
     uvicorn.run('main:app', host='0.0.0.0', port=8000, reload=True)
+
+
+if __name__ == '__main__':
+    main()
