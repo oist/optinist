@@ -25,6 +25,7 @@ import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
 import { isInputNodePostData } from 'api/run/RunUtils'
 import { addAlgorithmNode, addInputNode } from './FlowElementActions'
 import { getLabelByPath } from './FlowElementUtils'
+import { uploadFile } from '../FileUploader/FileUploaderActions'
 
 const initialElements: Elements<NodeData> = [
   {
@@ -142,6 +143,18 @@ export const flowElementSlice = createSlice({
         const targetNode = state.flowElements[elementIdx]
         if (targetNode.data != null) {
           targetNode.data.label = label
+        }
+      })
+      .addCase(uploadFile.fulfilled, (state, action) => {
+        const { nodeId } = action.meta.arg
+        if (nodeId != null) {
+          const elementIdx = state.flowElements.findIndex(
+            (ele) => ele.id === nodeId,
+          )
+          const targetNode = state.flowElements[elementIdx]
+          if (targetNode.data != null) {
+            targetNode.data.label = getLabelByPath(action.payload.resultPath)
+          }
         }
       })
       .addCase(importExperimentByUid.fulfilled, (state, action) => {

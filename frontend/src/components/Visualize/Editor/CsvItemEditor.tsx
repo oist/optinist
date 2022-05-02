@@ -48,7 +48,7 @@ export const CsvItemEditor: React.FC = () => {
       ),
     )
   }
-  const { onUploadFile } = useFileUploader(FILE_TYPE_SET.CSV)
+  const { onUploadFile } = useFileUploader({ fileType: FILE_TYPE_SET.CSV })
   const onUploadFileHandle = (formData: FormData, fileName: string) => {
     onUploadFile(formData, fileName)
   }

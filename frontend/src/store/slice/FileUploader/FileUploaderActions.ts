@@ -17,6 +17,7 @@ export const uploadFile = createAsyncThunk<
   },
   {
     requestId: string
+    nodeId?: string
     fileName: string
     formData: FormData
     fileType?: FILE_TYPE

@@ -81,6 +81,7 @@ const HDF5FileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
         ×
       </button>
       <FileSelect
+        nodeId={nodeId}
         onChangeFilePath={(path) => {
           if (!Array.isArray(path)) {
             onChangeFilePath(path)

@@ -22,7 +22,6 @@ interface InputNodeBaseType<
 > {
   fileType: T
   selectedFilePath?: string | string[]
-  selectedFileName?: string
   param: P
 }
 

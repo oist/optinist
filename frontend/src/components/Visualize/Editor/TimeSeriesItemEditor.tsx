@@ -229,8 +229,14 @@ const LegendSelect: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
   const drawIndexMap = useSelector(selectTimeSeriesItemDrawIndexMap(itemId))
-  const dataKeys = useSelector(selectTimeSeriesItemKeys(itemId))
-  const drawOrderList = useSelector(selectTimeSeriesItemDrawOrderList(itemId))
+  const dataKeys = useSelector(
+    selectTimeSeriesItemKeys(itemId),
+    arrayEqualityFn,
+  )
+  const drawOrderList = useSelector(
+    selectTimeSeriesItemDrawOrderList(itemId),
+    arrayEqualityFn,
+  )
   const filePath = useSelector(selectTimeSeriesItemFilePath(itemId))
 
   const allHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
