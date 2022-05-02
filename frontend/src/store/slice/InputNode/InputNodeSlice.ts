@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { isInputNodePostData } from 'api/run/RunUtils'
 import { INITIAL_IMAGE_ELEMENT_ID } from 'const/flowchart'
 import { importExperimentByUid } from '../Experiments/ExperimentsActions'
+import { uploadFile } from '../FileUploader/FileUploaderActions'
 import { addInputNode } from '../FlowElement/FlowElementActions'
 import {
   deleteFlowElements,
@@ -155,6 +156,18 @@ export const inputNodeSlice = createSlice({
           }
         })
         return newState
+      })
+      .addCase(uploadFile.fulfilled, (state, action) => {
+        const { nodeId } = action.meta.arg
+        if (nodeId != null) {
+          const { resultPath } = action.payload
+          const target = state[nodeId]
+          if (target.fileType === FILE_TYPE_SET.IMAGE) {
+            target.selectedFilePath = [resultPath]
+          } else {
+            target.selectedFilePath = resultPath
+          }
+        }
       }),
 })
 

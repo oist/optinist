@@ -83,7 +83,7 @@ export const ImageItemEditor: React.FC = () => {
     )
   }
 
-  const { onUploadFile } = useFileUploader(FILE_TYPE_SET.IMAGE)
+  const { onUploadFile } = useFileUploader({ fileType: FILE_TYPE_SET.IMAGE })
   const onUploadFileHandle = (formData: FormData, fileName: string) => {
     onUploadFile(formData, fileName)
   }
