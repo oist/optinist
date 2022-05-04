@@ -56,7 +56,6 @@ export const selectRunPostData = (state: RootState) => {
  */
 const selectForceRunList = (state: RootState) => {
   const elements = selectFlowElements(state)
-  // todo
   return elements
     .filter(isAlgorithmNodeData)
     .filter((node) => {
