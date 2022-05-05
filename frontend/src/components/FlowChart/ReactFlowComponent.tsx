@@ -22,28 +22,12 @@ import {
   selectFlowElements,
   selectFlowPosition,
 } from 'store/slice/FlowElement/FlowElementSelectors'
-import { ImageFileNode } from './FlowChartNode/ImageFileNode'
-import { AlgorithmNode } from './FlowChartNode/AlgorithmNode'
-import { CsvFileNode } from './FlowChartNode/CsvFileNode'
-import { HDF5FileNode } from './FlowChartNode/HDF5FileNode'
-import { FluoFileNode } from './FlowChartNode/FluoFileNode'
-import { BehaviorFileNode } from './FlowChartNode/BehaviorFileNode'
-import { CustomEdge } from './CustomEdge'
 import { UseRunPipelineReturnType } from 'store/slice/Pipeline/PipelineHook'
 import { ToolBar } from 'components/ToolBar'
-
-const componentTypes = {
-  ImageFileNode,
-  CsvFileNode,
-  HDF5FileNode,
-  AlgorithmNode,
-  FluoFileNode,
-  BehaviorFileNode,
-} as const
-
-const edgeTypes = {
-  buttonedge: CustomEdge,
-} as const
+import {
+  reactFlowEdgeTypes,
+  reactFlowNodeTypes,
+} from './FlowChartNode/ReactFlowNodeTypesConst'
 
 export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
   (props) => {
@@ -102,8 +86,8 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
               onConnect={onConnect}
               onDragOver={onDragOver}
               onNodeDragStop={onNodeDragStop}
-              nodeTypes={componentTypes}
-              edgeTypes={edgeTypes}
+              nodeTypes={reactFlowNodeTypes}
+              edgeTypes={reactFlowEdgeTypes}
               defaultPosition={[flowPosition.x, flowPosition.y]}
               defaultZoom={flowPosition.zoom}
               onMoveEnd={onMoveEnd}

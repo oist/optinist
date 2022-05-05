@@ -4,31 +4,34 @@ import { getChildParam } from 'store/utils/param/ParamUtils'
 
 export const selectAlgorithmNode = (state: RootState) => state.algorithmNode
 
+export const selectAlgorithmNodeById = (nodeId: string) => (state: RootState) =>
+  state.algorithmNode[nodeId]
+
 export const selectAlgorithmNodeDefined =
   (nodeId: string) => (state: RootState) =>
     Object.keys(state.algorithmNode).includes(nodeId)
 
 export const selectAlgorithmFunctionPath =
   (nodeId: string) => (state: RootState) =>
-    selectAlgorithmNode(state)[nodeId].functionPath
+    selectAlgorithmNodeById(nodeId)(state).functionPath
 
 export const selectAlgorithmName = (nodeId: string) => (state: RootState) =>
-  selectAlgorithmNode(state)[nodeId].name
+  selectAlgorithmNodeById(nodeId)(state).name
 
 export const selectAlgorithmParams = (nodeId: string) => (state: RootState) =>
-  selectAlgorithmNode(state)[nodeId].params
+  selectAlgorithmNodeById(nodeId)(state).params
 
 export const selectAlgorithmIsUpdated =
   (nodeId: string) => (state: RootState) =>
-    selectAlgorithmNode(state)[nodeId].isUpdated
+    selectAlgorithmNodeById(nodeId)(state).isUpdated
 
 export const selectAlgorithmParamsExit =
   (nodeId: string) => (state: RootState) =>
-    selectAlgorithmNode(state)[nodeId].params !== null
+    selectAlgorithmNodeById(nodeId)(state).params !== null
 
 export const selectAlgorithmParamsKeyList =
   (nodeId: string) => (state: RootState) =>
-    Object.keys(selectAlgorithmNode(state)[nodeId]?.params ?? {})
+    Object.keys(selectAlgorithmNodeById(nodeId)(state)?.params ?? {})
 
 export const selectAlgorithmParamsValue =
   (nodeId: string, path: string) => (state: RootState) => {
