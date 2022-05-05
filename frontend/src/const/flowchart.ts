@@ -12,3 +12,15 @@ export const INITIAL_DATA_STYLE: React.CSSProperties = {
   border: '1px solid #777',
   height: 120,
 } as const
+
+export const REACT_FLOW_NODE_TYPE_KEY = {
+  ImageFileNode: 'ImageFileNode',
+  CsvFileNode: 'CsvFileNode',
+  HDF5FileNode: 'HDF5FileNode',
+  FluoFileNode: 'FluoFileNode',
+  AlgorithmNode: 'AlgorithmNode',
+  BehaviorFileNode: 'BehaviorFileNode',
+} as const
+
+export type REACT_FLOW_NODE_TYPE =
+  typeof REACT_FLOW_NODE_TYPE_KEY[keyof typeof REACT_FLOW_NODE_TYPE_KEY]

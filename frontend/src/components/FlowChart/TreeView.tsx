@@ -25,6 +25,7 @@ import {
   addInputNode,
 } from 'store/slice/FlowElement/FlowElementActions'
 import { getNanoId } from 'store/utils/nanoid/NanoIdUtils'
+import { REACT_FLOW_NODE_TYPE, REACT_FLOW_NODE_TYPE_KEY } from 'const/flowchart'
 
 export const AlgorithmTreeView = React.memo(() => {
   const dispatch = useDispatch()
@@ -117,31 +118,31 @@ const InputNodeComponent = React.memo<{
     nodeName: string,
     fileType: FILE_TYPE,
   ) => {
-    let componentType = ''
+    let reactFlowNodeType: REACT_FLOW_NODE_TYPE | '' = ''
     switch (fileType) {
       case FILE_TYPE_SET.CSV:
-        componentType = 'CsvFileNode'
+        reactFlowNodeType = REACT_FLOW_NODE_TYPE_KEY.CsvFileNode
         break
       case FILE_TYPE_SET.IMAGE:
-        componentType = 'ImageFileNode'
+        reactFlowNodeType = REACT_FLOW_NODE_TYPE_KEY.ImageFileNode
         fileType = FILE_TYPE_SET.IMAGE
         break
       case FILE_TYPE_SET.HDF5:
-        componentType = 'HDF5FileNode'
+        reactFlowNodeType = REACT_FLOW_NODE_TYPE_KEY.HDF5FileNode
         fileType = FILE_TYPE_SET.HDF5
         break
       case FILE_TYPE_SET.FLUO:
-        componentType = 'FluoFileNode'
+        reactFlowNodeType = REACT_FLOW_NODE_TYPE_KEY.FluoFileNode
         fileType = FILE_TYPE_SET.FLUO
         break
       case FILE_TYPE_SET.BEHAVIOR:
-        componentType = 'BehaviorFileNode'
+        reactFlowNodeType = REACT_FLOW_NODE_TYPE_KEY.BehaviorFileNode
         fileType = FILE_TYPE_SET.BEHAVIOR
         break
     }
     const newNode = {
       id: `input_${getNanoId()}`,
-      type: componentType,
+      type: reactFlowNodeType,
       data: { label: nodeName, type: nodeType },
     }
     dispatch(addInputNode({ node: newNode, fileType }))
