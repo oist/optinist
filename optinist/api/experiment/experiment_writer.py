@@ -19,7 +19,7 @@ class ExptConfigWriter:
             exp_config = ExptConfigReader.read(exp_filepath)
             exp_config = _add_run_info(exp_config, nodeList, edgeList)
         else:
-            exp_config = _create(unique_id, name, nodeList, edgeList)
+            exp_config = _create_exp_config(unique_id, name, nodeList, edgeList)
 
         exp_config.function = _create_function_from_nodeList(nodeList)
 
@@ -30,7 +30,7 @@ class ExptConfigWriter:
         )
 
 
-def _create(unique_id, name, nodeList, edgeList) -> ExptConfig:
+def _create_exp_config(unique_id, name, nodeList, edgeList) -> ExptConfig:
     return ExptConfig(
         unique_id=unique_id,
         name=name,

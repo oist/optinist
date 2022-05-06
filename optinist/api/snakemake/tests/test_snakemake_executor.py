@@ -89,11 +89,6 @@ def test_get_dependencies_graph():
     )
     edge_dict, file_graph = smk_executor.init_graph()
 
-    # print(edges)
-    # for x in edges:
-    #     print(x[0], " → ", x[1])
-    #     print(file_graph[x[0]], " → ", file_graph[x[1]])
-
     assert edge_dict
     assert file_graph
 

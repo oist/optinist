@@ -23,6 +23,8 @@ def test_read_experiment():
     assert isinstance(data, dict)
     assert isinstance(data[next(iter(data))], dict)
 
+    shutil.rmtree(output_dir)
+
 
 def test_delete_experiment():
     dirpath = join_filepath([DIRPATH.OUTPUT_DIR, "aa"])
