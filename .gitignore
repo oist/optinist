@@ -15,3 +15,5 @@ optinist.egg-info
 .pytest_cache
 
 optinist/config.yaml
+
+docs/_build

@@ -1,3 +1,6 @@
+Visualize
+=================
+
 # Visualize Page
 You can create and check outputs and other results in this page.  
 First, click "+" button and add a display box.

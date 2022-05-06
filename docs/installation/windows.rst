@@ -1,4 +1,4 @@
-Table of Contents
+Windows
 =================
 
 * [Installation](#installation)
@@ -23,6 +23,7 @@ Table of Contents
       * [Set saving directory](#set-saving-directory-1)
       * [Run backend](#run-backend-1)
       * [Launch browser.  <a href="http://localhost:8000" rel="nofollow">http://localhost:8000</a>](#launch-browser--httplocalhost8000-1)
+
 # Installation
 We introduce how to install optinist.
 We have developed optinist python(backend) and typescript(frontend), so you need to make both environment.
@@ -63,8 +64,9 @@ git clone https://github.com/flatironinstitute/CaImAn -b v1.9.7
 ## For Windows(PowerShell) Users
 ### Install Visutal Studio Build Tools
 - For install CaImAn, you need to install Visual Studio Build Tools.
-  - Download `Build Tools for Visual Studio 2022` from https://visualstudio.microsoft.com/ja/downloads/
-  - In insteraller, select `Desktop Application for C++`
+- Download `Build Tools for Visual Studio 2022` from https://visualstudio.microsoft.com/ja/downloads/
+- In insteraller, select `Desktop Application for C++`
+
 ### Install Anaconda
 Install [Anaconda for Windows](https://www.anaconda.com/products/individual)
 ### Create anaconda environment
