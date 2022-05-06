@@ -1,7 +1,6 @@
 Workflow
 =================
 
-# Workflow Page
 OptiNiSt can make analysis pipelines through connecting nodes and run on GUI. There are many analysis flow combinations. It selects nodes and connects edges to create a pipelne flow.
 <br>
 <p align="center">

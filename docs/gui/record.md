@@ -1,4 +1,2 @@
 Record
 =================
-
-# Record Page

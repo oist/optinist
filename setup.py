@@ -20,7 +20,8 @@ setup(
         'sphinx-prompt',
         'sphinx-autodoc-typehints', # Automatically adds types to docs
         'sphinx-copybutton==0.5.0',
-        'sphinx-autobuild==2021.3.14' # Live rebuilding and reloading of docs for developing locally.
+        'sphinx-autobuild==2021.3.14', # Live rebuilding and reloading of docs for developing locally.
+        'myst-parser',
         ],
     },
 )

@@ -43,7 +43,13 @@ extensions = [
     'sphinx-prompt',
     'sphinxcontrib.apidoc',
     'sphinx_autodoc_typehints',
+    'myst_parser',
 ]
+
+# Tell myst-parser to assign header anchors for h1-h3.
+myst_heading_anchors = 3
+
+suppress_warnings = ["myst.header"]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
