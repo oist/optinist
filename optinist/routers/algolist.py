@@ -2,12 +2,11 @@ from fastapi import APIRouter
 from typing import List
 import inspect
 
+from optinist.routers.const import NOT_DISPLAY_ARGS_LIST
 from optinist.routers.model import Algo, Arg, Return
 from optinist.wrappers import wrapper_dict
 
 router = APIRouter()
-
-NOT_DISPLAY_ARGS_LIST = ['params', 'nwbfile']
 
 
 def create_args_list(args_dict):
