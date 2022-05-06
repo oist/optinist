@@ -20,7 +20,6 @@ export const ImportButton = React.memo(() => {
       .then(() =>
         enqueueSnackbar('Successfully imported.', { variant: 'success' }),
       )
-    dispatch(setRunBtnOption({ runBtnOption: RUN_BTN_OPTIONS.RUN_ALREADY }))
   }
   return (
     <IconButton onClick={onClick}>
