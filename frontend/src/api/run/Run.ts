@@ -1,14 +1,13 @@
 import axios from 'axios'
+import type { Edge, Node } from 'react-flow-renderer'
 
 import { BASE_URL } from 'const/API'
-
-import type { Edge, Node } from 'react-flow-renderer'
 import type {
   AlgorithmNodeData,
   InputNodeData,
 } from 'store/slice/FlowElement/FlowElementType'
 import type { FILE_TYPE } from 'store/slice/InputNode/InputNodeType'
-import type { ParamMap } from 'store/utils/param/ParamType'
+import type { ParamMap } from 'utils/param/ParamType'
 
 export type RunPostData = {
   name: string

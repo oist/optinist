@@ -3,10 +3,7 @@ import { Button, Typography } from '@mui/material'
 import ButtonGroup from '@mui/material/ButtonGroup'
 
 import { FileSelectDialog } from 'components/FileSelectDialog'
-import {
-  FILE_TREE_TYPE,
-  FILE_TREE_TYPE_SET,
-} from 'store/slice/FilesTree/FilesTreeType'
+import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from 'api/files/Files'
 import { LinearProgressWithLabel } from './LinerProgressWithLabel'
 import { FILE_TYPE } from 'store/slice/InputNode/InputNodeType'
 import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'

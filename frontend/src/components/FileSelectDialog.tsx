@@ -22,11 +22,8 @@ import {
   selectFilesTreeNodes,
 } from 'store/slice/FilesTree/FilesTreeSelectors'
 import { getFilesTree } from 'store/slice/FilesTree/FilesTreeAction'
-import {
-  FILE_TREE_TYPE,
-  FILE_TREE_TYPE_SET,
-  TreeNodeType,
-} from 'store/slice/FilesTree/FilesTreeType'
+import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from 'api/files/Files'
+import { TreeNodeType } from 'store/slice/FilesTree/FilesTreeType'
 import {
   getNodeByPath,
   isDirNodeByPath,

@@ -12,7 +12,7 @@ import {
   selectCsvDataIsPending,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getCsvData } from 'store/slice/DisplayData/DisplayDataActions'
-import { CsvData } from 'store/slice/DisplayData/DisplayDataType'
+import { CsvData } from 'api/outputs/Outputs'
 import { DataGrid, GridColDef } from '@mui/x-data-grid'
 import {
   selectCsvItemSetHeader,

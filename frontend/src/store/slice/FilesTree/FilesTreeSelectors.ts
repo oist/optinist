@@ -1,5 +1,5 @@
+import { FILE_TREE_TYPE } from 'api/files/Files'
 import { RootState } from '../../store'
-import { FILE_TREE_TYPE } from './FilesTreeType'
 
 export const selectFilesTree =
   (fileType: FILE_TREE_TYPE) => (state: RootState) => {

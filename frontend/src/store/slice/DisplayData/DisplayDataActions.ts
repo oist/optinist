@@ -1,17 +1,25 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
-import { BASE_URL } from 'const/API'
 import {
-  ImageData,
   TimeSeriesData,
-  DISPLAY_DATA_SLICE_NAME,
-  HeatMapData,
   CsvData,
   RoiData,
   ScatterData,
   BarData,
   HTMLData,
-} from './DisplayDataType'
+  ImageData,
+  HeatMapData,
+  getTimeSeriesInitDataApi,
+  getTimeSeriesDataByIdApi,
+  getTimeSeriesAllDataApi,
+  getHeatMapDataApi,
+  getImageDataApi,
+  getCsvDataApi,
+  getRoiDataApi,
+  getScatterDataApi,
+  getBarDataApi,
+  getHTMLDataApi,
+} from 'api/outputs/Outputs'
+import { DISPLAY_DATA_SLICE_NAME } from './DisplayDataType'
 
 export const getTimeSeriesInitData = createAsyncThunk<
   { data: TimeSeriesData; xrange: number[]; std: TimeSeriesData },
@@ -20,10 +28,8 @@ export const getTimeSeriesInitData = createAsyncThunk<
   `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesInitData`,
   async ({ path }, thunkAPI) => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}/outputs/inittimedata/${path}`,
-      )
-      return response.data
+      const response = await getTimeSeriesInitDataApi(path)
+      return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)
     }
@@ -37,12 +43,8 @@ export const getTimeSeriesDataById = createAsyncThunk<
   `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesDataById`,
   async ({ path, index }, thunkAPI) => {
     try {
-      const response = await axios.get(`${BASE_URL}/outputs/timedata/${path}`, {
-        params: {
-          index: index,
-        },
-      })
-      return response.data
+      const response = await getTimeSeriesDataByIdApi(path, index)
+      return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)
     }
@@ -56,10 +58,8 @@ export const getTimeSeriesAllData = createAsyncThunk<
   `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesAllData`,
   async ({ path }, thunkAPI) => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}/outputs/alltimedata/${path}`,
-      )
-      return response.data
+      const response = await getTimeSeriesAllDataApi(path)
+      return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)
     }
@@ -71,8 +71,8 @@ export const getHeatMapData = createAsyncThunk<
   { path: string }
 >(`${DISPLAY_DATA_SLICE_NAME}/getHeatMapData`, async ({ path }, thunkAPI) => {
   try {
-    const response = await axios.get(`${BASE_URL}/outputs/data/${path}`)
-    return response.data
+    const response = await getHeatMapDataApi(path)
+    return response
   } catch (e) {
     return thunkAPI.rejectWithValue(e)
   }
@@ -85,13 +85,8 @@ export const getImageData = createAsyncThunk<
   `${DISPLAY_DATA_SLICE_NAME}/getImageData`,
   async ({ path, startIndex, endIndex }, thunkAPI) => {
     try {
-      const response = await axios.get(`${BASE_URL}/outputs/image/${path}`, {
-        params: {
-          start_index: startIndex,
-          end_index: endIndex,
-        },
-      })
-      return response.data
+      const response = await getImageDataApi(path, { startIndex, endIndex })
+      return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)
     }
@@ -105,8 +100,8 @@ export const getCsvData = createAsyncThunk<
   { path: string }
 >(`${DISPLAY_DATA_SLICE_NAME}/getCsvData`, async ({ path }, thunkAPI) => {
   try {
-    const response = await axios.get(`${BASE_URL}/outputs/csv/${path}`)
-    return response.data
+    const response = await getCsvDataApi(path)
+    return response
   } catch (e) {
     return thunkAPI.rejectWithValue(e)
   }
@@ -116,8 +111,8 @@ export const getRoiData = createAsyncThunk<{ data: RoiData }, { path: string }>(
   `${DISPLAY_DATA_SLICE_NAME}/getRoiData`,
   async ({ path }, thunkAPI) => {
     try {
-      const response = await axios.get(`${BASE_URL}/outputs/image/${path}`, {})
-      return response.data
+      const response = await getRoiDataApi(path)
+      return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)
     }
@@ -129,8 +124,8 @@ export const getScatterData = createAsyncThunk<
   { path: string }
 >(`${DISPLAY_DATA_SLICE_NAME}/getScatterData`, async ({ path }, thunkAPI) => {
   try {
-    const response = await axios.get(`${BASE_URL}/outputs/data/${path}`, {})
-    return response.data
+    const response = await getScatterDataApi(path)
+    return response
   } catch (e) {
     return thunkAPI.rejectWithValue(e)
   }
@@ -140,8 +135,8 @@ export const getBarData = createAsyncThunk<{ data: BarData }, { path: string }>(
   `${DISPLAY_DATA_SLICE_NAME}/getBarData`,
   async ({ path }, thunkAPI) => {
     try {
-      const response = await axios.get(`${BASE_URL}/outputs/data/${path}`, {})
-      return response.data
+      const response = await getBarDataApi(path)
+      return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)
     }
@@ -153,8 +148,8 @@ export const getHTMLData = createAsyncThunk<
   { path: string }
 >(`${DISPLAY_DATA_SLICE_NAME}/getHTMLData`, async ({ path }, thunkAPI) => {
   try {
-    const response = await axios.get(`${BASE_URL}/outputs/html/${path}`, {})
-    return response.data
+    const response = await getHTMLDataApi(path)
+    return response
   } catch (e) {
     return thunkAPI.rejectWithValue(e)
   }

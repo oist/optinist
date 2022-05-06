@@ -1,4 +1,4 @@
-import { ParamMap } from 'store/utils/param/ParamType'
+import { ParamMap } from 'utils/param/ParamType'
 
 export const ALGORITHM_NODE_SLICE_NAME = 'algorithmNode'
 

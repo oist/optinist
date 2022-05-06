@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { getNWBParams } from './NWBAction'
 import { NWBType, NWB_SLICE_NAME } from './NWBType'
-import { convertToParamMap, getChildParam } from 'store/utils/param/ParamUtils'
+import { convertToParamMap, getChildParam } from 'utils/param/ParamUtils'
 
 const initialState: NWBType = {
   params: {},

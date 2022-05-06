@@ -16,7 +16,7 @@ import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import ErrorIcon from '@mui/icons-material/Error'
 import Popover from '@mui/material/Popover'
 
-import { AlgorithmInfo } from 'store/slice/AlgorithmList/AlgorithmListType'
+import { AlgorithmInfo } from 'api/algolist/AlgoList'
 import {
   selectAlgoArgs,
   selectAlgoReturns,
