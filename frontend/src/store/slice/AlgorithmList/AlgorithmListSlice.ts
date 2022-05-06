@@ -6,7 +6,7 @@ import {
 import { getAlgoList } from './AlgorithmListActions'
 import { convertToAlgoListType } from './AlgorithmListUtils'
 
-const initialState: AlgorithmListType = {
+export const initialState: AlgorithmListType = {
   isLatest: false,
   tree: {},
 }

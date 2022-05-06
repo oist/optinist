@@ -72,6 +72,7 @@ const ImageFileNodeImple = React.memo<NodeProps>(
           ×
         </button>
         <FileSelect
+          nodeId={nodeId}
           multiSelect
           onChangeFilePath={(path) => {
             if (Array.isArray(path)) {

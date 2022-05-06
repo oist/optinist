@@ -62,6 +62,7 @@ def ETA(
     if iscell is not None:
         iscell = iscell.data
         ind = np.where(iscell > 0)[0]
+        cell_numbers = ind
         X = X[:, ind]
 
     Y = Y[:, params['target_index']]
@@ -99,6 +100,7 @@ def ETA(
         mean,
         std=sem,
         index=list(np.arange(params['start_time'], params['end_time'])),
+        cell_numbers=cell_numbers if iscell is not None else None,
         file_name='mean'
     )
     info['mean_heatmap'] = HeatMapData(

@@ -16,24 +16,20 @@ export const FileSelect = React.memo<{
   multiSelect?: boolean
   filePath: string | string[]
   fileType: FILE_TYPE
+  nodeId?: string
   onChangeFilePath: (path: string | string[]) => void
-}>(({ multiSelect = false, filePath, fileType, onChangeFilePath }) => {
+}>(({ multiSelect = false, filePath, nodeId, fileType, onChangeFilePath }) => {
   const {
-    filePath: uploadedFilePath,
+    // filePath: uploadedFilePath,
     onUploadFile,
     pending,
     uninitialized,
     progress,
     error,
-  } = useFileUploader(fileType)
-
+  } = useFileUploader({ fileType, nodeId })
   const onUploadFileHandle = (formData: FormData, fileName: string) => {
     onUploadFile(formData, fileName)
-    if (uploadedFilePath != null) {
-      onChangeFilePath(uploadedFilePath)
-    }
   }
-
   return (
     <>
       {!uninitialized && pending && progress != null && (

@@ -54,6 +54,9 @@ export const FileSelectDialog = React.memo<FileSelectDialogProps>(
     fileType = FILE_TREE_TYPE_SET.ALL,
     multiSelect,
   }) {
+    React.useEffect(() => {
+      setSelectedFilePath(initialFilePath)
+    }, [initialFilePath])
     const [selectedFilePath, setSelectedFilePath] =
       React.useState(initialFilePath)
     const onCancel = () => {

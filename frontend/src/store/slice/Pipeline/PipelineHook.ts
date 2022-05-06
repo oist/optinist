@@ -1,11 +1,12 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
+
+import { selectRunPostData } from 'store/selectors/run/RunSelectors'
 import {
   selectPipelineIsCanceled,
   selectPipelineIsStartedSuccess,
   selectPipelineLatestUid,
   selectPipelineStatus,
-  selectRunPostData,
 } from './PipelineSelectors'
 import { run, pollRunResult, runByCurrentUid } from './PipelineActions'
 import { cancelPipeline } from './PipelineSlice'

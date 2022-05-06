@@ -10,7 +10,7 @@ import {
 } from './FilesTreeType'
 import { convertToTreeNodeType } from './FilesTreeUtils'
 
-const initialState: FilesTree = {}
+export const initialState: FilesTree = {}
 export const filesTreeSlice = createSlice({
   name: FILES_TREE_SLICE_NAME,
   initialState,

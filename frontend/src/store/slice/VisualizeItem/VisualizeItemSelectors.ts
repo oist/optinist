@@ -1,5 +1,8 @@
 import { RootState } from 'store/store'
-import { selectRoiData } from '../DisplayData/DisplayDataSelectors'
+import {
+  selectRoiData,
+  selectRoiUniqueList,
+} from '../DisplayData/DisplayDataSelectors'
 import { DATA_TYPE } from '../DisplayData/DisplayDataType'
 import {
   isDisplayDataItem,
@@ -239,6 +242,20 @@ export const selectImageItemRoiAlpha =
     }
   }
 
+export const selectImageItemRoiFilePath =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isImageItem(item)) {
+      if (item.roiItem) {
+        return item.roiItem.filePath
+      } else {
+        return null
+      }
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
 export const selectImageItemDuration =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
@@ -339,11 +356,11 @@ export const selectTimeSeriesItemXrange =
     }
   }
 
-export const selectTimeSeriesItemDisplayNumbers =
-  (itemId: number, refImageItemId?: number) => (state: RootState) => {
+export const selectTimeSeriesItemDrawOrderList =
+  (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
-      return item.displayNumbers
+      return item.drawOrderList
     }
     throw new Error('invalid VisualaizeItemType')
   }
@@ -358,11 +375,44 @@ export const selectTimeSeriesItemRefImageItemId =
     }
   }
 
-export const selectTimeSeriesItemCheckedList =
+export const selectTimeSeriesItemRefRoiUniqueList =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItems(state)[itemId]
     if (isTimeSeriesItem(item)) {
-      return item.checkedList
+      if (item.refImageItemId) {
+        const imageItem = selectVisualizeItems(state)[item.refImageItemId]
+        if (isImageItem(imageItem) && imageItem.roiItem?.filePath != null) {
+          return selectRoiUniqueList(imageItem.roiItem.filePath)(state)
+        }
+      }
+      return null
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectTimeSeriesItemDrawIndexMap =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isTimeSeriesItem(item)) {
+      return item.drawIndexMap
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectTimeSeriesItemKeys =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItems(state)[itemId]
+    if (isTimeSeriesItem(item)) {
+      const roiUniqueList = selectTimeSeriesItemRefRoiUniqueList(itemId)(state)
+      if (roiUniqueList != null) {
+        return Object.keys(item.drawIndexMap).filter((key) =>
+          roiUniqueList.includes(key),
+        )
+      } else {
+        return Object.keys(item.drawIndexMap)
+      }
     } else {
       throw new Error('invalid VisualaizeItemType')
     }

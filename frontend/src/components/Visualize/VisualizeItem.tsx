@@ -13,6 +13,8 @@ import { arrayEqualityFn } from 'utils/EqualityUtils'
 import {
   selectDisplayDataIsSingle,
   selectImageItemFilePath,
+  selectRoiItemFilePath,
+  selectRoiItemNodeId,
   selectSelectedVisualizeItemId,
   selectTimeSeriesItemRefImageItemId,
   selectVisualizeDataNodeId,
@@ -27,6 +29,7 @@ import { DisplayDataItem } from './DisplayDataItem'
 import {
   selectItem,
   setItemSize,
+  setRoiItemFilePath,
   setTimeSeriesRefImageItemId,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { RootState } from 'store/store'
@@ -141,6 +144,11 @@ const ItemHeader = React.memo<{ itemId: number }>(({ itemId }) => {
           <RefImageItemIdSelect itemId={itemId} />
         </Box>
       )}
+      {itemDataType === DATA_TYPE_SET.IMAGE && (
+        <Box flexGrow={1}>
+          <RoiSelect itemId={itemId} />
+        </Box>
+      )}
       <Box>
         <DisplayDataItemLayoutMenuIcon itemId={itemId} />
       </Box>
@@ -194,7 +202,9 @@ const FilePathSelectItem = React.memo<{
   )
 })
 
-const RefImageItemIdSelect = React.memo<{ itemId: number }>(({ itemId }) => {
+const RefImageItemIdSelect = React.memo<{
+  itemId: number
+}>(({ itemId }) => {
   const dispatch = useDispatch()
   const itemIdList = useSelector(
     selectVisualizeImageItemIdList,
@@ -332,3 +342,23 @@ function useMouseDragHandler(
     [dependencies],
   )
 }
+
+const RoiSelect = React.memo<{
+  itemId: number
+}>(({ itemId }) => {
+  const dispatch = useDispatch()
+  const roiItemNodeId = useSelector(selectRoiItemNodeId(itemId))
+  const roiItemFilePath = useSelector(selectRoiItemFilePath(itemId))
+  const onSelectRoiFilePath = (nodeId: string, filePath: string) => {
+    dispatch(setRoiItemFilePath({ itemId, nodeId, filePath }))
+  }
+  return (
+    <FilePathSelect
+      selectedFilePath={roiItemFilePath}
+      selectedNodeId={roiItemNodeId}
+      onSelect={onSelectRoiFilePath}
+      dataType={DATA_TYPE_SET.ROI}
+      label={'Select Roi'}
+    />
+  )
+})

@@ -10,8 +10,7 @@ import {
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
 import {
-  selectTimeSeriesItemCheckedList,
-  selectTimeSeriesItemDisplayNumbers,
+  selectTimeSeriesItemDrawOrderList,
   selectTimeSeriesItemOffset,
   selectTimeSeriesItemShowGrid,
   selectTimeSeriesItemShowLine,
@@ -20,11 +19,12 @@ import {
   selectTimeSeriesItemXrange,
   selectTimeSeriesItemZeroLine,
   selectTimeSeriesItemFilePath,
+  selectTimeSeriesItemDrawIndexMap,
+  selectTimeSeriesItemKeys,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 import {
-  setTimeSeriesItemCheckedList,
-  setTimeSeriesItemDisplayNumbers,
+  setTimeSeriesItemDrawIndexMap,
   setTimeSeriesItemOffset,
   setTimeSeriesItemShowGrid,
   setTimeSeriesItemShowLine,
@@ -33,6 +33,7 @@ import {
   setTimeSeriesItemXrangeLeft,
   setTimeSeriesItemXrangeRight,
   setTimeSeriesItemZeroLine,
+  setTimeSeriesItemDrawOrderList,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import {
   getTimeSeriesAllData,
@@ -227,90 +228,87 @@ const Xrange: React.FC = () => {
 const LegendSelect: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
-  const checkedList = useSelector(
-    selectTimeSeriesItemCheckedList(itemId),
+  const drawIndexMap = useSelector(selectTimeSeriesItemDrawIndexMap(itemId))
+  const dataKeys = useSelector(
+    selectTimeSeriesItemKeys(itemId),
     arrayEqualityFn,
   )
-  const displayNumbers = useSelector(selectTimeSeriesItemDisplayNumbers(itemId))
+  const drawOrderList = useSelector(
+    selectTimeSeriesItemDrawOrderList(itemId),
+    arrayEqualityFn,
+  )
   const filePath = useSelector(selectTimeSeriesItemFilePath(itemId))
 
   const allHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     dispatch(
-      setTimeSeriesItemCheckedList({
+      setTimeSeriesItemDrawIndexMap({
         itemId,
-        checkedList: checkedList.map((_) => {
-          return event.target.checked
-        }),
+        drawIndexMap: Object.fromEntries(
+          dataKeys.map((key) => {
+            return [key, event.target.checked]
+          }),
+        ),
       }),
     )
 
-    if (event.target.checked) {
-      dispatch(
-        setTimeSeriesItemDisplayNumbers({
-          itemId,
-          displayNumbers: checkedList.map((_, i) => {
-            return i
-          }),
-        }),
-      )
-      if (filePath !== null) {
-        dispatch(getTimeSeriesAllData({ path: filePath }))
-      }
-    } else {
-      dispatch(
-        setTimeSeriesItemDisplayNumbers({
-          itemId,
-          displayNumbers: [],
-        }),
-      )
+    dispatch(
+      setTimeSeriesItemDrawOrderList({
+        itemId,
+        drawOrderList: event.target.checked ? dataKeys : [],
+      }),
+    )
+
+    if (event.target.checked && filePath !== null) {
+      dispatch(getTimeSeriesAllData({ path: filePath }))
     }
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const index = parseInt(event.target.value)
+    const index = event.target.value
+    const newDrawOrderList = event.target.checked
+      ? [...drawOrderList, index]
+      : drawOrderList.filter((value) => value !== index)
 
-    // displayNumbers
-    if (event.target.checked) {
-      dispatch(
-        setTimeSeriesItemDisplayNumbers({
-          itemId,
-          displayNumbers: [...displayNumbers, index],
-        }),
-      )
-    } else {
-      dispatch(
-        setTimeSeriesItemDisplayNumbers({
-          itemId,
-          displayNumbers: displayNumbers.filter((value) => value !== index),
-        }),
-      )
-    }
+    dispatch(
+      setTimeSeriesItemDrawOrderList({
+        itemId,
+        drawOrderList: newDrawOrderList,
+      }),
+    )
 
     // CheckList
     dispatch(
-      setTimeSeriesItemCheckedList({
+      setTimeSeriesItemDrawIndexMap({
         itemId,
-        checkedList: checkedList.map((v, i) => {
-          if (i === index) {
-            return event.target.checked
-          }
-          return v
-        }),
+        drawIndexMap: Object.fromEntries(
+          dataKeys.map((key) => {
+            if (key === index) {
+              return [key, event.target.checked]
+            }
+            return [key, drawIndexMap[key]]
+          }),
+        ),
       }),
     )
 
     if (filePath !== null) {
-      dispatch(getTimeSeriesDataById({ path: filePath, index }))
+      dispatch(getTimeSeriesDataById({ path: filePath, index: index }))
     }
   }
 
   const children = (
     <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
-      {checkedList.map((v, i) => (
+      {dataKeys.map((key) => (
         <FormControlLabel
-          key={`${i}`}
-          label={`Index ${i + 1}`}
-          control={<Checkbox checked={v} onChange={handleChange} value={i} />}
+          key={`${key}`}
+          label={`Index ${key}`}
+          control={
+            <Checkbox
+              checked={drawIndexMap[key]}
+              onChange={handleChange}
+              value={key}
+            />
+          }
         />
       ))}
     </Box>
@@ -327,7 +325,7 @@ const LegendSelect: React.FC = () => {
             label="All Check"
             control={
               <Checkbox
-                checked={checkedList.every((v) => {
+                checked={Object.values(drawIndexMap).every((v) => {
                   return v
                 })}
                 onChange={allHandleChange}

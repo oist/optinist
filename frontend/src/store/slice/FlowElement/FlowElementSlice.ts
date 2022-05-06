@@ -19,17 +19,19 @@ import {
   INITIAL_DATA_STYLE,
   INITIAL_IMAGE_ELEMENT_ID,
   INITIAL_IMAGE_ELEMENT_NAME,
+  REACT_FLOW_NODE_TYPE_KEY,
 } from 'const/flowchart'
 import { importExperimentByUid } from '../Experiments/ExperimentsActions'
 import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
 import { isInputNodePostData } from 'api/run/RunUtils'
 import { addAlgorithmNode, addInputNode } from './FlowElementActions'
 import { getLabelByPath } from './FlowElementUtils'
+import { uploadFile } from '../FileUploader/FileUploaderActions'
 
 const initialElements: Elements<NodeData> = [
   {
     id: INITIAL_IMAGE_ELEMENT_ID,
-    type: 'ImageFileNode',
+    type: REACT_FLOW_NODE_TYPE_KEY.ImageFileNode,
     data: {
       type: NODE_TYPE_SET.INPUT,
       label: INITIAL_IMAGE_ELEMENT_NAME,
@@ -142,6 +144,18 @@ export const flowElementSlice = createSlice({
         const targetNode = state.flowElements[elementIdx]
         if (targetNode.data != null) {
           targetNode.data.label = label
+        }
+      })
+      .addCase(uploadFile.fulfilled, (state, action) => {
+        const { nodeId } = action.meta.arg
+        if (nodeId != null) {
+          const elementIdx = state.flowElements.findIndex(
+            (ele) => ele.id === nodeId,
+          )
+          const targetNode = state.flowElements[elementIdx]
+          if (targetNode.data != null) {
+            targetNode.data.label = getLabelByPath(action.payload.resultPath)
+          }
         }
       })
       .addCase(importExperimentByUid.fulfilled, (state, action) => {

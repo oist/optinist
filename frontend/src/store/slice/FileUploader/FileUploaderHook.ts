@@ -12,16 +12,27 @@ import {
 } from './FileUploaderSelectors'
 import { FILE_TYPE } from '../InputNode/InputNodeType'
 
-export function useFileUploader(fileType?: FILE_TYPE) {
+type UseFileUploaderProps = {
+  fileType?: FILE_TYPE
+  nodeId?: string
+}
+
+export function useFileUploader({ fileType, nodeId }: UseFileUploaderProps) {
   const dispatch = useDispatch()
   const id = React.useRef(nanoid())
   const onUploadFile = React.useCallback(
     (formData: FormData, fileName: string) => {
       dispatch(
-        uploadFile({ requestId: id.current, fileName, formData, fileType }),
+        uploadFile({
+          requestId: id.current,
+          nodeId,
+          fileName,
+          formData,
+          fileType,
+        }),
       )
     },
-    [dispatch, fileType],
+    [dispatch, fileType, nodeId],
   )
   const uninitialized = useSelector(selectFileUploadIsUninitialized(id.current))
   const filePath = useSelector(selectUploadFilePath(id.current))

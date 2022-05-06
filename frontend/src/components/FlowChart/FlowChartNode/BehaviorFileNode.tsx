@@ -66,6 +66,7 @@ const BehaviorFileNodeImple = React.memo<NodeProps>(
           ×
         </button>
         <FileSelect
+          nodeId={nodeId}
           onChangeFilePath={(path) => {
             if (!Array.isArray(path)) {
               onChangeFilePath(path)

@@ -134,8 +134,8 @@ def snakemake_execute(params: SmkParam):
         forceall=params.forceall,
         cores=params.cores,
         use_conda=params.use_conda,
+        workdir=f"{os.path.dirname(DIRPATH.ROOT_DIR)}",
     )
-
 
 
 def delete_dependencies(params):
