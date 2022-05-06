@@ -188,7 +188,8 @@ export const visualaizeItemSlice = createSlice({
       }>,
     ) => {
       const { nodeId, filePath, dataType } = action.payload
-      const newItemId = getMaxItemId(state) + 1
+      const maxId = getMaxItemId(state)
+      const newItemId = maxId != null ? maxId + 1 : 0
       state.items[newItemId] = {
         ...getDisplayDataItemInitialValue(dataType),
         isWorkflowDialog: true,
@@ -866,12 +867,14 @@ export const visualaizeItemSlice = createSlice({
 
 function getMaxItemId(state: VisualaizeItem) {
   const idList = Object.keys(state.items).map((key) => Number(key))
-  const maxId = idList.length > 0 ? idList.reduce((a, b) => Math.max(a, b)) : 0
+  const maxId =
+    idList.length > 0 ? idList.reduce((a, b) => Math.max(a, b)) : null
   return maxId
 }
 
 function addInitialItemFn(state: VisualaizeItem) {
-  const nextId = getMaxItemId(state) + 1
+  const maxId = getMaxItemId(state)
+  const nextId = maxId != null ? maxId + 1 : 0
   state.items[nextId] = getDisplayDataItemInitialValue(DATA_TYPE_SET.IMAGE)
   state.selectedItemId = nextId
   return nextId
