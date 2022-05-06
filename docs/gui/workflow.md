@@ -1,5 +1,5 @@
 # Workflow Page
-OptiNiSt can make analysis pipeline through connecting node and run on GUI. There are many analysis flow combinations. It selects node and connect edges to create pipelne flow.
+OptiNiSt can make analysis pipelines through connecting nodes and run on GUI. There are many analysis flow combinations. It selects nodes and connects edges to create a pipelne flow.
 <br>
 <p align="center">
 <img width="400px" src="../images/workflow/whole.png" alt="workflow" />
@@ -10,7 +10,7 @@ OptiNiSt can make analysis pipeline through connecting node and run on GUI. Ther
 ### Set Image Input
 Set tiff image in your working directory and set as input.
 1. Click `UPLOAD` button and upload file to `OPTINIST_DIR`.  
-(An large data file takes long time tWWo upload, so it copy to `OPTINIST_DIR` directly and load file more quickly. )
+(An large data file takes long time tWWo upload, so it copies to `OPTINIST_DIR` directly and load file more quickly. )
 2. Click `SELECT IMAGE` button and set as input images. 
 
 ** Currentlly, input images need to have {.tif, .TIF, .tiff, .TIFF} extension. (developing other extension)
@@ -22,8 +22,8 @@ Set tiff image in your working directory and set as input.
 <br/>
 
 ### Add Algorithm
-Next, add algorithm from left treeview.
-1. Select algorithms from the treeview
+Next, add an algorithm from left treeview.
+1. Select an algorithm from the treeview
 2. click "+" button to flowchart.
 <br>
 <p align="center">
@@ -43,7 +43,7 @@ Click `PARAM` button and change parameters.
 
 ### Connect Algorithm Edge
 To make workflow, connect edges between node to node by drag&drop.  
-Can only connect the same color edges (correspond to arguments and returns type, imageType, timeSeries type, ...).  
+You can only connect the same color edges (correspond to arguments and returns type, imageType, timeSeries type, ...).  
 
 **DataType List**
 - <span style="color: red; ">ImageData</span>
@@ -83,7 +83,7 @@ Runninng...
 </p>
 
 ### Run workflow from checkpoint
-Add new algorithm and run from checkpoint.
+Add new algorithms and run from a checkpoint.
 <p align="center">
 <img width="300px" src="../images/workflow/components/run_checkpoint.png" alt="Run Checkpoint" />
 </p>
@@ -91,8 +91,8 @@ Add new algorithm and run from checkpoint.
 <br />
 
 ### Finish workflow
-If the node get select tab in algorithm node, it means that the node is finished running.  
-You can check result image, timseries or heatmap data at the visualize page.
+If the node earned a select tab in the algorithm node, it means that the node finished running.  
+You can check result image, timseries or heatmap data in the visualize page.
 <br>
 <p align="center">
 <img width="300px" src="../images/workflow/components/run_finish.png" alt="Finish Run" />

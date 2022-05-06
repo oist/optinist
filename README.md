@@ -11,13 +11,13 @@ OptiNiSt will also help reproducibility of research, standardization of analysis
 
 ## Key Features
 ### :beginner: Easy-To-Use Workflow
-- **zero-knowledge of coding**: OptiNiSt can make analysis pipeline through connecting node and run on GUI.
+- **zero-knowledge of coding**: OptiNiSt can make analysis pipelines through connecting nodes and run on GUI.
 
 ### :zap: Visualize analysis result
-- **visualize analysis result**: OptiNiSt also visualizes neural data analysis results by plotly.
+- **visualize analysis result**: OptiNiSt also visualizes neural data analysis result by plotly.
 
 ### :rocket: Record Workflow
-- **reproduce past workflow**: OptiNiSt records and reproduces past workflow pipelines.
+- **reproduce past workflow**: OptiNiSt records and reproduces past workflow pipeline.
 
 ## Documentation
 - [Tutorial](docs/utils/tutorial.md)
@@ -57,7 +57,7 @@ How to install and use optinist
 
 ## Using GUI
 ### Workflow
-- OptiNiSt can make a analysis pipeline through connecting nodes and run on GUI. There are many analysis flow combinations. It selects nodes and connects edges to create a pipelne flow.
+- OptiNiSt can make analysis pipelines through connecting nodes and run on GUI. There are many analysis flow combinations. It selects nodes and connect edges to create pipelne flow.
 <p align="center">
   <img width="400px" src="docs/images/workflow/whole.png" alt="workflow" />
 </p>
