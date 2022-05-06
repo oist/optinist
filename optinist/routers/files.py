@@ -6,21 +6,19 @@ from fastapi import APIRouter, File, UploadFile
 
 from optinist.api.dir_path import DIRPATH
 from optinist.api.utils.filepath_creater import create_directory, join_filepath
+from optinist.routers.const import ACCEPT_CSV_EXT, ACCEPT_HDF5_EXT, ACCEPT_TIFF_EXT
 from optinist.routers.model import FILETYPE, TreeNode
 
 router = APIRouter()
-
-
-ACCEPT_TIFF_EXT = [".tif", ".tiff", ".TIF", ".TIFF"]
-ACCEPT_CSV_EXT = [".csv"]
-ACCEPT_HDF5_EXT = [".hdf5", ".nwb", ".HDF5", ".NWB"]
 
 
 def get_accept_files(path: str, file_types: List[str]):
     files_list = []
     for file_type in file_types:
         files_list.extend(glob(
-            join_filepath([path, "**", f"*{file_type}"]), recursive=True))
+            join_filepath([path, "**", f"*{file_type}"]),
+            recursive=True
+        ))
 
     return files_list
 
