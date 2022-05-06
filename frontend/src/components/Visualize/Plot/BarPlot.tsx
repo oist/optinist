@@ -12,7 +12,7 @@ import {
   selectBarDataIsPending,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getBarData } from 'store/slice/DisplayData/DisplayDataActions'
-import { BarData } from 'store/slice/DisplayData/DisplayDataType'
+import { BarData } from 'api/outputs/Outputs'
 import {
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,

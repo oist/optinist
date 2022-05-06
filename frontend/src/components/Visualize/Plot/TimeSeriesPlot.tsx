@@ -18,7 +18,7 @@ import {
   getTimeSeriesDataById,
   getTimeSeriesInitData,
 } from 'store/slice/DisplayData/DisplayDataActions'
-import { TimeSeriesData } from 'store/slice/DisplayData/DisplayDataType'
+import { TimeSeriesData } from 'api/outputs/Outputs'
 import {
   selectTimeSeriesItemDrawOrderList,
   selectTimeSeriesItemDrawIndexMap,

@@ -1,7 +1,6 @@
+import { AlgoListDTO, AlgorithmInfo } from 'api/algolist/AlgoList'
 import {
   AlgorithmNodeType,
-  AlgoListDTO,
-  AlgorithmInfo,
   AlgorithmChild,
   AlgorithmParent,
   AlgorithmListTree,

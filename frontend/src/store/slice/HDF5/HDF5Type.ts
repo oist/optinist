@@ -1,26 +1,13 @@
+import { HDF5TreeDTO } from 'api/hdf5/HDF5'
+
 export const HDF5_SLICE_NAME = 'hdf5'
-
-export type HDF5TreeDTO = HDF5DirDTO | HDF5FileDTO
-
-export interface HDF5DirDTO {
-  isDir: true
-  name: string
-  nodes: HDF5TreeDTO[]
-  path: string
-}
-
-export interface HDF5FileDTO {
-  isDir: false
-  name: string
-  shape: [number]
-  path: string
-  nbytes: string
-}
 
 export interface HDF5Tree {
   isLoading: boolean
-  tree: HDF5TreeDTO[]
+  tree: HDF5TreeNodeType[]
 }
+
+export type HDF5TreeNodeType = HDF5TreeDTO
 
 export const HDF5_TYPE_SET = {
   ALL: 'all',

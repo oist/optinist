@@ -1,23 +1,18 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import axios from 'axios'
-import { BASE_URL } from 'const/API'
-
 import {
-  FILES_TREE_SLICE_NAME,
   FILE_TREE_TYPE,
+  getFilesTreeApi,
   TreeNodeTypeDTO,
-} from './FilesTreeType'
+} from 'api/files/Files'
+
+import { FILES_TREE_SLICE_NAME } from './FilesTreeType'
 
 export const getFilesTree = createAsyncThunk<TreeNodeTypeDTO[], FILE_TREE_TYPE>(
   `${FILES_TREE_SLICE_NAME}/getFilesTree`,
   async (fileType, thunkAPI) => {
     try {
-      const response = await axios.get(`${BASE_URL}/files`, {
-        params: {
-          file_type: fileType,
-        },
-      })
-      return response.data
+      const response = await getFilesTreeApi(fileType)
+      return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)
     }

@@ -12,7 +12,7 @@ import {
   selectScatterDataIsPending,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getScatterData } from 'store/slice/DisplayData/DisplayDataActions'
-import { ScatterData } from 'store/slice/DisplayData/DisplayDataType'
+import { ScatterData } from 'api/outputs/Outputs'
 import {
   selectScatterItemXIndex,
   selectScatterItemYIndex,

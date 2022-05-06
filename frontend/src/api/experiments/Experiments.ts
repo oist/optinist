@@ -1,7 +1,7 @@
-import { RunPostData } from 'api/run/Run'
 import axios from 'axios'
 
 import { BASE_URL } from 'const/API'
+import { RunPostData } from 'api/run/Run'
 
 export type ExperimentsDTO = {
   [uid: string]: ExperimentDTO
@@ -30,13 +30,6 @@ export async function getExperimentsApi(): Promise<ExperimentsDTO> {
   return response.data
 }
 
-// export async function getExperimentByUid(uid: string): Promise<{
-//   // todo
-// }> {
-//   const response = await axios.get(`${BASE_URL}/experiments/${uid}`)
-//   return response.data
-// }
-
 export async function deleteExperimentByUidApi(uid: string): Promise<boolean> {
   const response = await axios.delete(`${BASE_URL}/experiments/${uid}`)
   return response.data
@@ -58,8 +51,22 @@ export async function importExperimentByUidApi(
   return response.data
 }
 
-// export async function downloadExperimentByUidApi(uid: string): Promise<void> {
-//   const response = await axios.get(`${BASE_URL}/experiments/download/${uid}`)
-//   const url = URL.createObjectURL(new Blob([response.data]))
-//   URL.revokeObjectURL(url)
-// }
+export async function downloadExperimentNwbApi(uid: string) {
+  const response = await axios.get(
+    `${BASE_URL}/experiments/download/nwb/${uid}`,
+    {
+      responseType: 'blob',
+    },
+  )
+  return response.data
+}
+
+export async function downloadExperimentConfigApi(uid: string) {
+  const response = await axios.get(
+    `${BASE_URL}/experiments/download/config/${uid}`,
+    {
+      responseType: 'blob',
+    },
+  )
+  return response.data
+}

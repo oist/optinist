@@ -1,9 +1,13 @@
 import React, { useState, useRef } from 'react'
 import IconButton from '@mui/material/IconButton'
-import { ExperimentUidContext } from '../ExperimentTable'
-import { BASE_URL } from 'const/API'
-import axios from 'axios'
 import GetAppIcon from '@mui/icons-material/GetApp'
+
+import {
+  downloadExperimentConfigApi,
+  downloadExperimentNwbApi,
+} from 'api/experiments/Experiments'
+
+import { ExperimentUidContext } from '../ExperimentTable'
 
 export const NWBDownloadButton = React.memo<{
   name: string
@@ -14,13 +18,8 @@ export const NWBDownloadButton = React.memo<{
 
   const onClick = async () => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}/experiments/download/nwb/${uid}`,
-        {
-          responseType: 'blob',
-        },
-      )
-      const url = URL.createObjectURL(new Blob([response.data]))
+      const responseData = await downloadExperimentNwbApi(uid)
+      const url = URL.createObjectURL(new Blob([responseData]))
       setFileUrl(url)
       ref.current?.click()
       URL.revokeObjectURL(url)
@@ -48,13 +47,8 @@ export const ConfigDownloadButton = React.memo(() => {
 
   const onClick = async () => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}/experiments/download/config/${uid}`,
-        {
-          responseType: 'blob',
-        },
-      )
-      const url = URL.createObjectURL(new Blob([response.data]))
+      const responseData = await downloadExperimentConfigApi(uid)
+      const url = URL.createObjectURL(new Blob([responseData]))
       setFileUrl(url)
       ref.current?.click()
       URL.revokeObjectURL(url)

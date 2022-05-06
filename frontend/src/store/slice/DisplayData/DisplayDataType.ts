@@ -1,3 +1,14 @@
+import {
+  HeatMapData,
+  TimeSeriesData,
+  BarData,
+  CsvData,
+  RoiData,
+  ImageData,
+  ScatterData,
+  HTMLData,
+} from 'api/outputs/Outputs'
+
 export const DISPLAY_DATA_SLICE_NAME = 'displayData'
 
 export type DisplayData = {
@@ -22,9 +33,9 @@ export type DisplayData = {
   bar: {
     [filePath: string]: BarDisplayData
   }
-  hdf5: {
-    [filePath: string]: HDF5DisplayData
-  }
+  // hdf5: {
+  //   [filePath: string]: HDF5DisplayData
+  // }
   html: {
     [filePath: string]: HTMLDisplayData
   }
@@ -59,38 +70,23 @@ export interface TimeSeriesDisplayData
   xrange: number[]
   std: TimeSeriesData
 }
-export type TimeSeriesData = {
-  [key: string]: {
-    [key: number]: number
-  }
-}
 
 export interface HeatMapDisplayData
   extends BaseDisplay<'heatMap', HeatMapData> {}
-export type HeatMapData = number[][]
 
 export interface ImageDisplayData extends BaseDisplay<'image', ImageData> {}
-export type ImageData = number[][][]
 
 export interface CsvDisplayData extends BaseDisplay<'csv', CsvData> {
   // columns: string[]
 }
-export type CsvData = number[][]
 
 export interface RoiDisplayData extends BaseDisplay<'roi', RoiData> {
   roiUniqueList: string[]
 }
-export type RoiData = number[][][]
 
 export interface ScatterDisplayData
   extends BaseDisplay<'scatter', ScatterData> {}
-export type ScatterData = number[][][]
 
 export interface BarDisplayData extends BaseDisplay<'bar', BarData> {}
-export type BarData = number[][][]
-
-export interface HDF5DisplayData extends BaseDisplay<'hdf5', HDF5Data> {}
-export type HDF5Data = number[][][]
 
 export interface HTMLDisplayData extends BaseDisplay<'html', HTMLData> {}
-export type HTMLData = string

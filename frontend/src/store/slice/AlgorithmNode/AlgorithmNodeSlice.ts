@@ -1,6 +1,6 @@
 import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
 
-import { convertToParamMap, getChildParam } from 'store/utils/param/ParamUtils'
+import { convertToParamMap, getChildParam } from 'utils/param/ParamUtils'
 import {
   deleteFlowElements,
   deleteFlowElementsById,

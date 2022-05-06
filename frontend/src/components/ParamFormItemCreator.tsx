@@ -9,8 +9,8 @@ import AccordionDetails from '@mui/material/AccordionDetails'
 import AccordionSummary from '@mui/material/AccordionSummary'
 import Typography from '@mui/material/Typography'
 
-import { isParamChild } from 'store/utils/param/ParamUtils'
-import { ParamType } from 'store/utils/param/ParamType'
+import { isParamChild } from 'utils/param/ParamUtils'
+import { ParamType } from 'utils/param/ParamType'
 import { RootState } from 'store/store'
 import { Accordion } from 'components/Accordion'
 

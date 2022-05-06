@@ -1,9 +1,10 @@
 import reducer, { initialState } from './FilesTreeSlice'
 import { FilesTree } from './FilesTreeType'
 import { getFilesTree } from './FilesTreeAction'
+import { TreeNodeTypeDTO } from 'api/files/Files'
 
 describe('FilesTree', () => {
-  const mockPayload = [
+  const mockPayload: TreeNodeTypeDTO[] = [
     {
       path: '/tmp/optinist/input/hoge',
       name: 'hoge',
@@ -13,7 +14,6 @@ describe('FilesTree', () => {
           path: '/tmp/optinist/input/hoge/hoge.tif',
           name: 'hoge.tif',
           isdir: false,
-          nodes: [],
         },
       ],
     },
@@ -26,7 +26,6 @@ describe('FilesTree', () => {
           path: '/tmp/optinist/input/copy_image1/copy_image1.tif',
           name: 'copy_image1.tif',
           isdir: false,
-          nodes: [],
         },
       ],
     },

@@ -30,7 +30,7 @@ import {
   selectHDF5Nodes,
 } from 'store/slice/HDF5/HDF5Selectors'
 import { getHDF5Tree } from 'store/slice/HDF5/HDF5Action'
-import { HDF5TreeDTO } from 'store/slice/HDF5/HDF5Type'
+import { HDF5TreeNodeType } from 'store/slice/HDF5/HDF5Type'
 import { Typography } from '@mui/material'
 
 const sourceHandleStyle: CSSProperties = {
@@ -177,7 +177,7 @@ const FileTreeView = React.memo<{
 })
 
 const TreeNode = React.memo<{
-  node: HDF5TreeDTO
+  node: HDF5TreeNodeType
   nodeId: string
 }>(({ node, nodeId }) => {
   const dispatch = useDispatch()
@@ -212,7 +212,9 @@ const TreeNode = React.memo<{
   }
 })
 
-function useHDF5Tree(nodeId: string): [HDF5TreeDTO[] | undefined, boolean] {
+function useHDF5Tree(
+  nodeId: string,
+): [HDF5TreeNodeType[] | undefined, boolean] {
   const dispatch = useDispatch()
   const tree = useSelector(selectHDF5Nodes())
   const isLoading = useSelector(selectHDF5IsLoading())

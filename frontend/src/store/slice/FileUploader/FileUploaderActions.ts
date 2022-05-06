@@ -1,6 +1,5 @@
 import { createAsyncThunk, createAction } from '@reduxjs/toolkit'
-import axios from 'axios'
-import { BASE_URL } from 'const/API'
+import { uploadFileApi } from 'api/files/Files'
 import { FILE_TYPE } from '../InputNode/InputNodeType'
 
 import { FILE_UPLOADER_SLICE_NAME } from './FileUploaderType'
@@ -35,14 +34,9 @@ export const uploadFile = createAsyncThunk<
           }),
         )
       })
-      const response = await axios.post(
-        `${BASE_URL}/files/upload/${fileName}`,
-        formData,
-        config,
-      )
-      const data = response.data
+      const response = await uploadFileApi(fileName, config, formData)
       return {
-        resultPath: data.file_path,
+        resultPath: response.file_path,
       }
     } catch (e) {
       return thunkAPI.rejectWithValue(e)

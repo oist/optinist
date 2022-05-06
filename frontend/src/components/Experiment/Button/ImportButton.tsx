@@ -4,8 +4,6 @@ import IconButton from '@mui/material/IconButton'
 import { useSnackbar } from 'notistack'
 import { importExperimentByUid } from 'store/slice/Experiments/ExperimentsActions'
 import { AppDispatch } from 'store/store'
-import { setRunBtnOption } from 'store/slice/Pipeline/PipelineSlice'
-import { RUN_BTN_OPTIONS } from 'store/slice/Pipeline/PipelineType'
 import { ExperimentUidContext } from '../ExperimentTable'
 import ReplyIcon from '@mui/icons-material/Reply'
 
