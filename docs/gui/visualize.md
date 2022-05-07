@@ -1,63 +1,45 @@
 Visualize
 =================
 
-You can create and check outputs and other results in this page.  
-First, click "+" button and add a display box.
+
+OptiNiSt also visualizes neural data analysis results by plotly. It supports image, roi, timeseries, heatmap and so on.
+<br>
 <p align="center">
-<img width="400px" src="../images/visualize/components/addbox.png" alt="Addbox" />
+<img width="400px" src="../_static/visualize/whole.png" alt="Whole" />
 </p>
 
 
-Select data type(image, timeSeries ...).
-With or without using flowchart pages, image and table plot can be uploaded in .tiff and .csv file, respectively.
-<p align="center">
-<img width="400px" src="../images/visualize/components/select_type.png" alt="SelectType" />
-</p>
 
-Select output data.
+### Set a display box
+First, click "+" button and set a display box.
 <p align="center">
-<img width="400px" src="../images/visualize/components/select_data.png" alt="SelectData" />
-</p>
-
-<br/>
-
-## Image Plot
-Image plot displays .tiff data. 
-You can customize parameters such as line, axis and color.
-<p align="center">
-<img width="400px" src="../images/visualize/components/image_plot.png" alt="ImagePlot" />
-</p>
-
-If you get roi output, select and add roi plot.
-<p align="center">
-<img width="400px" src="../images/visualize/components/select_roi.png" alt="RoiData" />
+<img width="400px" src="../_static/visualize/components/set_display_box.png" alt="SetDisplayBox" />
 </p>
 
 
-<br/>
-
-## TimeSeries Plot
-TimeSeries plot displays timeseries output.
-Click legend number and add display data.
-Offset enables to compare data more easily.
+### Select a output item
+After execute workflow, please select a output to see the item.
 <p align="center">
-<img width="500px" src="../images/visualize/components/timeseries_plot.png" alt="TimeSeriesPlot" />
+<img width="400px" src="../_static/visualize/components/select_output_item.png" alt="SelectOutputItem" />
+</p>
+
+### Customize parameters
+Customize parameters, color gradient, xy-axis, transparent of plot.
+<p align="center">
+<img width="400px" src="../_static/visualize/components/customize_param.png" alt="CustomizeParam" />
 </p>
 
 
-<br/>
-
-## Table Plot
-Table plot displays csv data in table.  
-("Customize parameter" is currently under development.)
+### Add display box into columns right
+Click **︙** and `Insert into next columns` to add other display box.
 <p align="center">
-<img width="500px" src="../images/visualize/components/table_plot.png" alt="TablePlot" />
+<img width="400px" src="../_static/visualize/components/add_column.png" alt="AddColumn" />
 </p>
 
-## Multi Plot
-The multiplot compares images, timeseries and heatmap output.  
-("Synthronize cell number" and "customize parameter" are currently under development.)
+
+## Ref Image
+TimeSeries plot can refer image plot to synthronize cell number. Click or drag image plot and cell numbers are synthoronize at timeseries plot.
 <p align="center">
-<img width="500px" src="../images/visualize/components/default_plot.png" alt="DefaultPlot" />
+<img width="500px" src="../_static/visualize/components/ref_image.png" alt="RefImage" />
 </p>
 

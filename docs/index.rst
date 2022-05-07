@@ -6,20 +6,22 @@
 OptiNiSt - 
 ===================================
 
-OptiNiSt is an imaging processing pipeline written in Python 3 which
-includes the following modules:
+OptiNiSt(Optical Neuroimage Studio) that helps researchers to try multiple data analysis methods, to visualize the results, and to construct data analysis pipelines. Data formats follow NWB standard.
 
-We make pip installable releases of OptiNiSt, here is the `pypi`_.
-You can install it as ``pip install OptiNiSt``
+
+OpitNiSt will allow not only neural data experts but also non-experts to try advanced analysis methods by combining neuroimage and behavioral data.
+It will help functional data analysis and pipeline building first by Brain/MINDS researchers but also by neuroscientists and data scientists world wide.
+Availability of not only data but also the tool for analysis on Brian/MINDS Data Portal will facilitate wider usage of marmoset functional brain data.
+OptiNiSt will also help reproducibility of research, standardization of analysis protocols, and developments of novel analysis tools as plug-in.
 
 .. _issue: https://github.com/oist/optinist/issues
 .. _here: https://www.biorxiv.org/content/early/2017/07/20/061507
 .. _this paper: Comming Soon
 .. _pypi: https://pypi.org/project/optinist/
 
-* :ref:`modindex`
-* :ref:`search`
-* :ref:`genindex`
+.. * :ref:`modindex`
+.. * :ref:`search`
+.. * :ref:`genindex`
 
 .. toctree::
   :maxdepth: 3

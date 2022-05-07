@@ -47,7 +47,7 @@ extensions = [
 ]
 
 # Tell myst-parser to assign header anchors for h1-h3.
-myst_heading_anchors = 3
+myst_heading_anchors = 4
 
 suppress_warnings = ["myst.header"]
 
@@ -72,7 +72,7 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-html_logo = '_static/favicon.ico'
+html_logo = '_static/optinist.png'
 html_favicon = '_static/favicon.ico'
 
 # disable document page source link
@@ -86,7 +86,7 @@ html_theme_options = {
     'display_version': True,
     'prev_next_buttons_location': 'top',
     'style_external_links': False,
-    'style_nav_header_background': 'black',
+    'style_nav_header_background': '#C3EBE1',
     # Toc options
     'collapse_navigation': True,
     'sticky_navigation': True,

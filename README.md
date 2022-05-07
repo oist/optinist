@@ -1,4 +1,4 @@
-# optinist <img src="docs/images/optinist.png" width="250" title="optinist" alt="optinist" align="right" vspace = "50">
+# optinist <img src="docs/_static/optinist.png" width="250" title="optinist" alt="optinist" align="right" vspace = "50">
 
 
 OptiNiSt(Optical Neuroimage Studio) that helps researchers to try multiple data analysis methods, to visualize the results, and to construct data analysis pipelines. Data formats follow NWB standard.
@@ -59,7 +59,7 @@ How to install and use optinist
 ### Workflow
 - OptiNiSt can make analysis pipelines through connecting nodes and run on GUI. There are many analysis flow combinations. It selects nodes and connect edges to create pipelne flow.
 <p align="center">
-  <img width="400px" src="docs/images/workflow/whole.png" alt="workflow" />
+  <img width="400px" src="docs/_static/workflow/whole.png" alt="workflow" />
 </p>
 
 
@@ -67,13 +67,13 @@ How to install and use optinist
 ### Visualize
 - OptiNiSt also visualizes neural data analysis results by plotly. It supports image, roi, timeseries, heatmap and so on.
 <p align="center">
-  <img width="400px" src="docs/images/visualize/whole.png" alt="visualize" />
+  <img width="400px" src="docs/_static/visualize/whole.png" alt="visualize" />
 </p>
 
 ### Record Workflow
 - OptiNiSt records and reproduces past workflow pipelines. It can download results as nwb format.
 <p align="center">
-  <img width="400px" src="docs/images/record/whole.png" alt="record" />
+  <img width="400px" src="docs/_static/record/whole.png" alt="record" />
 </p>
 
 

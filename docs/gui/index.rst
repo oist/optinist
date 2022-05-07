@@ -1,3 +1,7 @@
+*********
+Using GUI
+*********
+
 .. toctree::
   :maxdepth: 2
   :caption: GUI:
