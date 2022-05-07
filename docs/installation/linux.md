@@ -1,4 +1,4 @@
-Table of Contents
+Linux
 =================
 
 * [Installation](#installation)
@@ -13,19 +13,20 @@ Table of Contents
    * [Set saving directory](#set-saving-directory)
    * [Run backend](#run-backend)
    * [Launch browser.  <a href="http://localhost:8000" rel="nofollow">http://localhost:8000</a>](#launch-browser--httplocalhost8000)
-# Installation
+
+## Installation
 We introduce how to install optinist.
 We have developed optinist python(backend) and typescript(frontend), so you need to make both environment.
 Please follow instructions below.
 
 **CAUTION**: We confirmed them on Ubuntu 18.04 or 20.04.
 
-# 0. GitHub SSH access settings
+## 0. GitHub SSH access settings
 **You only need to do the following once.**
 
 Follow this [link](installation_github_settings.md).
 
-# 1. Clone optinist repository
+## 1. Clone optinist repository
 
 First, you get optinist code from github repository.
 ```
@@ -34,28 +35,28 @@ git clone git@github.com:oist/optinist.git
 ```
 <br />
 
-# 2. Make backend environment
-## Install gcc, g++
+## 2. Make backend environment
+### Install gcc, g++
 - For install CaImAn, you need to install gcc and g++.
 ```
 sudo apt install gcc g++
 ```
-## Install Anaconda
+### Install Anaconda
 ```
 wget https://repo.anaconda.com/archive/Anaconda3-2021.11-Linux-x86_64.sh
 bash Anaconda3-2021.11-Linux-x86_64.sh
 ```
-## Create anaconda environment
+### Create anaconda environment
 ```
 conda create -n optinist python=3.8
 conda activate optinist
 ```
-## Install mamba
+### Install mamba
 We use snakemake library, and it requires mamba.
 ```
 conda install -n base -c conda-forge mamba
 ```
-## Install library
+### Install library
 ```bash
 pip install -r requirements.txt
 # for CaImAn
@@ -65,14 +66,13 @@ cd CaImAn
 pip install -e .
 cd ..
 ```
-
-## Set saving directory
+### Set saving directory
 Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
 ```bash
 export OPTINIST_DIR="your_saving_dir"
 ```
 
-## Run backend
+### Run backend
 ```
 python main.py
 ```
@@ -86,7 +86,7 @@ INFO:     Started server process [6557]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 ```
-## Launch browser.  http://localhost:8000
+### Launch browser.  http://localhost:8000
 It opens correctly!
 
 Done!

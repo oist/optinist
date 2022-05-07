@@ -1,4 +1,4 @@
-Table of Contents
+Mac
 =================
 
 * [Installation](#installation)
@@ -14,7 +14,8 @@ Table of Contents
    * [Run backend](#run-backend)
    * [Launch browser.  <a href="http://localhost:8000" rel="nofollow">http://localhost:8000</a>](#launch-browser--httplocalhost8000)
    * [FAQ](#faq)
-# Installation
+
+## Installation
 We introduce how to install optinist.
 We have developed optinist python(backend) and typescript(frontend), so you need to make both environment.
 Please follow instructions below.
@@ -24,12 +25,12 @@ Please follow instructions below.
 **CAUTION for M1 Mac User**
 We use tensorflow in caiman code. We know that M1 mac doesn't install tensorflow easily, so if there is a problem, skip install caiman. (Release in progress…)
 
-# 0. GitHub SSH access settings
+## 0. GitHub SSH access settings
 **You only need to do the following once.**
 
 Follow this [link](installation_github_settings.md).
 
-# 1. Clone optinist repository
+## 1. Clone optinist repository
 
 First, you get optinist code from github repository.
 ```
@@ -38,24 +39,24 @@ git clone git@github.com:oist/optinist.git
 ```
 <br />
 
-# 2. Make backend environment
+## 2. Make backend environment
 
-## Install Anaconda
+### Install Anaconda
 Download https://repo.anaconda.com/archive/Anaconda3-2021.11-MacOSX-x86_64.pkg
 
 Install it.
 
-## Create anaconda environment
+### Create anaconda environment
 ```
 conda create -n optinist python=3.8
 conda activate optinist
 ```
-## Install mamba
+### Install mamba
 We use snakemake library, and it requires mamba.
 ```
 conda install -n base -c conda-forge mamba
 ```
-## Install library
+### Install library
 ```bash
 pip install -r requirements.txt
 ```
@@ -65,9 +66,9 @@ In case an error occuered when you install ``` requirements.txt ```, pip upgrade
 pip install --upgrade pip
 ```
 
-## Install CaImAn
+### Install CaImAn
 
-### 1. Install tensorflow
+#### 1. Install tensorflow
 **M1 Mac User**
 1. [Downalod tensorflow.whl](
 https://drive.google.com/drive/folders/1oSipZLnoeQB0Awz8U68KYeCPsULy_dQ7)
@@ -82,7 +83,7 @@ pip install tensorflow
 ```
 
 
-### 2. Install CaImAn library
+#### 2. Install CaImAn library
 ```bash
 # for CaImAn
 git clone https://github.com/flatironinstitute/CaImAn -b v1.9.7
@@ -92,14 +93,14 @@ pip install -e .
 cd ..
 ```
 
-## Set saving directory
+### Set saving directory
 Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
 ```bash
 export OPTINIST_DIR="your_saving_dir"
 ```
 
 
-## Run backend
+## 3. Run backend
 ```
 python main.py
 ```
@@ -113,7 +114,7 @@ INFO:   Started server process [5820]
 INFO:   Waiting for application startup.
 INFO:   Application startup complete.
 ```
-## Launch browser.  http://localhost:8000
+### Launch browser.  http://localhost:8000
 It opens correctly!
 
 Done!
