@@ -19,12 +19,10 @@ import {
   selectTimeSeriesItemXrange,
   selectTimeSeriesItemZeroLine,
   selectTimeSeriesItemFilePath,
-  selectTimeSeriesItemDrawIndexMap,
   selectTimeSeriesItemKeys,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 import {
-  setTimeSeriesItemDrawIndexMap,
   setTimeSeriesItemOffset,
   setTimeSeriesItemShowGrid,
   setTimeSeriesItemShowLine,
@@ -228,7 +226,7 @@ const Xrange: React.FC = () => {
 const LegendSelect: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
-  const drawIndexMap = useSelector(selectTimeSeriesItemDrawIndexMap(itemId))
+  // const drawIndexMap = useSelector(selectTimeSeriesItemDrawIndexMap(itemId))
   const dataKeys = useSelector(
     selectTimeSeriesItemKeys(itemId),
     arrayEqualityFn,
@@ -240,17 +238,6 @@ const LegendSelect: React.FC = () => {
   const filePath = useSelector(selectTimeSeriesItemFilePath(itemId))
 
   const allHandleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(
-      setTimeSeriesItemDrawIndexMap({
-        itemId,
-        drawIndexMap: Object.fromEntries(
-          dataKeys.map((key) => {
-            return [key, event.target.checked]
-          }),
-        ),
-      }),
-    )
-
     dispatch(
       setTimeSeriesItemDrawOrderList({
         itemId,
@@ -276,25 +263,20 @@ const LegendSelect: React.FC = () => {
       }),
     )
 
-    // CheckList
-    dispatch(
-      setTimeSeriesItemDrawIndexMap({
-        itemId,
-        drawIndexMap: Object.fromEntries(
-          dataKeys.map((key) => {
-            if (key === index) {
-              return [key, event.target.checked]
-            }
-            return [key, drawIndexMap[key]]
-          }),
-        ),
-      }),
-    )
-
     if (filePath !== null) {
       dispatch(getTimeSeriesDataById({ path: filePath, index: index }))
     }
   }
+
+  const drawIndexMap = Object.fromEntries(
+    dataKeys.map((v) => {
+      if (drawOrderList.includes(v)) {
+        return [v, true]
+      } else {
+        return [v, false]
+      }
+    }),
+  )
 
   const children = (
     <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>

@@ -85,13 +85,8 @@ export interface TimeSeriesItem extends DisplayDataItemBaseType {
     right: number | undefined
   }
   maxIndex: number
-  refImageItemId?: number
+  refImageItemId: number | null
   drawOrderList: string[]
-  drawIndexMap: DrawIndexMap
-}
-
-export interface DrawIndexMap {
-  [index: string]: boolean
 }
 
 export interface HeatMapItem extends DisplayDataItemBaseType {
