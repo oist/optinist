@@ -101,6 +101,18 @@ export const selectVisualizeDataFilePath =
     }
   }
 
+export const selectVisualizeSaveFilename =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItemById(itemId)(state)
+    return item.saveFileName
+  }
+
+export const selectVisualizeSaveFormat =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItemById(itemId)(state)
+    return item.saveFormat
+  }
+
 export const selectImageItemFilePath =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItemById(itemId)(state)
@@ -266,26 +278,6 @@ export const selectImageItemDuration =
     const item = selectVisualizeItemById(itemId)(state)
     if (isImageItem(item)) {
       return item.duration
-    } else {
-      throw new Error('invalid VisualaizeItemType')
-    }
-  }
-
-export const selectImageItemSaveFilename =
-  (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItemById(itemId)(state)
-    if (isImageItem(item)) {
-      return item.saveFileName
-    } else {
-      throw new Error('invalid VisualaizeItemType')
-    }
-  }
-
-export const selectImageItemSaveFormat =
-  (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItemById(itemId)(state)
-    if (isImageItem(item)) {
-      return item.saveFormat
     } else {
       throw new Error('invalid VisualaizeItemType')
     }

@@ -19,8 +19,6 @@ import {
   selectImageItemRoiAlpha,
   selectImageItemFilePath,
   selectDisplayDataIsSingle,
-  selectImageItemSaveFilename,
-  selectImageItemSaveFormat,
   selectImageItemAlpha,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
@@ -36,8 +34,6 @@ import {
   setImageItemColors,
   resetImageActiveIndex,
   setImageItemRoiAlpha,
-  setImageItemSaveFileName,
-  setImageItemSaveFormat,
   setImageItemAlpha,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
@@ -53,6 +49,7 @@ import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
 import Button from '@mui/material/Button'
 import { getImageData } from 'store/slice/DisplayData/DisplayDataActions'
 import { setNewDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemActions'
+import { SaveFig } from './SaveFig'
 
 export const ImageItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
@@ -258,44 +255,6 @@ const RoiAlpha: React.FC = () => {
         onChange={onChange}
         value={roiAlpha}
         helperText={inputError ? 'index > 0' : undefined}
-      />
-    </>
-  )
-}
-
-const SaveFig: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
-  const saveFileName = useSelector(selectImageItemSaveFilename(itemId))
-  const saveFormat = useSelector(selectImageItemSaveFormat(itemId))
-  const dispatch = useDispatch()
-  const handleChange = (event: SelectChangeEvent<string>) => {
-    dispatch(setImageItemSaveFormat({ itemId, saveFormat: event.target.value }))
-  }
-  const onChangeFileName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    dispatch(
-      setImageItemSaveFileName({ itemId, saveFileName: event.target.value }),
-    )
-  }
-
-  return (
-    <>
-      <h3>SaveFig</h3>
-      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-        <InputLabel>format</InputLabel>
-        <Select label="smooth" value={saveFormat} onChange={handleChange}>
-          <MenuItem value={'svg'}>svg</MenuItem>
-          <MenuItem value={'png'}>png</MenuItem>
-          <MenuItem value={'jpeg'}>jpeg</MenuItem>
-          <MenuItem value={'webp'}>webp</MenuItem>
-        </Select>
-      </FormControl>
-      <TextField
-        label={'Filename'}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        onChange={onChangeFileName}
-        value={saveFileName}
       />
     </>
   )

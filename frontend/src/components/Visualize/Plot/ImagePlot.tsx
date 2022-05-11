@@ -42,8 +42,8 @@ import {
   selectImageItemDuration,
   selectVisualizeItemWidth,
   selectVisualizeItemHeight,
-  selectImageItemSaveFilename,
-  selectImageItemSaveFormat,
+  selectVisualizeSaveFilename,
+  selectVisualizeSaveFormat,
   selectImageItemAlpha,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
@@ -241,8 +241,8 @@ const ImagePlotChart = React.memo<{
     [showgrid, showline, showticklabels, width, height, selectMode],
   )
 
-  const saveFileName = useSelector(selectImageItemSaveFilename(itemId))
-  const saveFormat = useSelector(selectImageItemSaveFormat(itemId))
+  const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))
+  const saveFormat = useSelector(selectVisualizeSaveFormat(itemId))
 
   const config = {
     displayModeBar: true,

@@ -31,6 +31,8 @@ import {
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
   selectTimeSeriesItemKeys,
+  selectVisualizeSaveFilename,
+  selectVisualizeSaveFormat,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import createColormap from 'colormap'
 import { setTimeSeriesItemDrawOrderList } from 'store/slice/VisualizeItem/VisualizeItemSlice'
@@ -191,9 +193,16 @@ const TimeSeriesPlotImple = React.memo(() => {
     ],
   )
 
+  const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))
+  const saveFormat = useSelector(selectVisualizeSaveFormat(itemId))
+
   const config = {
     displayModeBar: true,
     responsive: true,
+    toImageButtonOptions: {
+      format: saveFormat,
+      filename: saveFileName,
+    },
   }
 
   const onLegendClick = (event: LegendClickEvent) => {
