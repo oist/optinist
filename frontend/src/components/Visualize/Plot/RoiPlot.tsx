@@ -17,6 +17,8 @@ import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
 import {
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
+  selectVisualizeSaveFilename,
+  selectVisualizeSaveFormat,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 export const RoiPlot = React.memo(() => {
@@ -112,10 +114,18 @@ const RoiPlotImple = React.memo<{}>(() => {
     }),
     [width, height],
   )
+
+  const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))
+  const saveFormat = useSelector(selectVisualizeSaveFormat(itemId))
+
   const config = {
     displayModeBar: true,
     // scrollZoom: true,
     responsive: true,
+    toImageButtonOptions: {
+      format: saveFormat,
+      filename: saveFileName,
+    },
   }
   return <PlotlyChart data={data} layout={layout} config={config} />
 })

@@ -50,6 +50,8 @@ export interface DisplayDataItemBaseType extends ItemBaseType<'displayData'> {
   nodeId: string | null
   dataType: DATA_TYPE | null
   isWorkflowDialog: boolean
+  saveFileName: string
+  saveFormat: string
 }
 
 export interface ImageItem extends DisplayDataItemBaseType {
@@ -68,8 +70,6 @@ export interface ImageItem extends DisplayDataItemBaseType {
   roiAlpha: number
   duration: number
   clickedDataId?: string
-  saveFileName: string
-  saveFormat: string
 }
 
 export interface TimeSeriesItem extends DisplayDataItemBaseType {

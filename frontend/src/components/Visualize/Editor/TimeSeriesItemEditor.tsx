@@ -40,6 +40,7 @@ import {
 import { arrayEqualityFn } from 'utils/EqualityUtils'
 import { Accordion } from 'components/Accordion'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { SaveFig } from './SaveFig'
 
 export const TimeSeriesItemEditor: React.FC = () => {
   return (
@@ -52,6 +53,7 @@ export const TimeSeriesItemEditor: React.FC = () => {
       <ZeroLine />
       <Xrange />
       <LegendSelect />
+      <SaveFig />
     </div>
   )
 }

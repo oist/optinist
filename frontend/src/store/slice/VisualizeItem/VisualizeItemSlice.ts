@@ -44,6 +44,8 @@ const displayDataCommonInitialValue = {
   width: 500,
   height: 500,
   isWorkflowDialog: false,
+  saveFileName: 'newPlot',
+  saveFormat: 'png',
 }
 const imageItemInitialValue: ImageItem = {
   ...displayDataCommonInitialValue,
@@ -64,8 +66,6 @@ const imageItemInitialValue: ImageItem = {
   roiItem: null,
   roiAlpha: 1.0,
   duration: 500,
-  saveFileName: 'newPlot',
-  saveFormat: 'png',
 }
 const timeSeriesItemInitialValue: TimeSeriesItem = {
   ...displayDataCommonInitialValue,
@@ -268,6 +268,26 @@ export const visualaizeItemSlice = createSlice({
       } else {
         throw new Error('error')
       }
+    },
+    setSaveFormat: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        saveFormat: string
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      targetItem.saveFormat = action.payload.saveFormat
+    },
+    setSaveFileName: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        saveFileName: string
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      targetItem.saveFileName = action.payload.saveFileName
     },
     setImageItemFilePath: (
       state,
@@ -490,30 +510,6 @@ export const visualaizeItemSlice = createSlice({
       const targetItem = state.items[action.payload.itemId]
       if (isImageItem(targetItem)) {
         targetItem.duration = action.payload.duration
-      }
-    },
-    setImageItemSaveFormat: (
-      state,
-      action: PayloadAction<{
-        itemId: number
-        saveFormat: string
-      }>,
-    ) => {
-      const targetItem = state.items[action.payload.itemId]
-      if (isImageItem(targetItem)) {
-        targetItem.saveFormat = action.payload.saveFormat
-      }
-    },
-    setImageItemSaveFileName: (
-      state,
-      action: PayloadAction<{
-        itemId: number
-        saveFileName: string
-      }>,
-    ) => {
-      const targetItem = state.items[action.payload.itemId]
-      if (isImageItem(targetItem)) {
-        targetItem.saveFileName = action.payload.saveFileName
       }
     },
     setTimeSeriesItemOffset: (
@@ -859,6 +855,8 @@ export const {
   setItemSize,
   selectItem,
   setFilePath,
+  setSaveFormat,
+  setSaveFileName,
   setHeatMapItemFilePath,
   setImageItemFilePath,
   setTimeSeriesItemFilePath,
@@ -878,8 +876,6 @@ export const {
   setImageItemAlpha,
   setImageItemRoiAlpha,
   setImageItemDuration,
-  setImageItemSaveFormat,
-  setImageItemSaveFileName,
   setTimeSeriesItemOffset,
   setTimeSeriesItemSpan,
   setTimeSeriesItemShowGrid,
