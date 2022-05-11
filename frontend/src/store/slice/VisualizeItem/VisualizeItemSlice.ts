@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { getTimeSeriesInitData } from '../DisplayData/DisplayDataActions'
 import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 import {
   deleteDisplayItem,
@@ -23,7 +22,6 @@ import {
   FluoItem,
   BehaviorItem,
   VISUALIZE_ITEM_SLICE_NAME,
-  DrawIndexMap,
 } from './VisualizeItemType'
 import {
   isDisplayDataItem,
@@ -84,7 +82,7 @@ const timeSeriesItemInitialValue: TimeSeriesItem = {
   },
   maxIndex: 0,
   drawOrderList: [],
-  drawIndexMap: {},
+  refImageItemId: null,
 }
 const heatMapItemInitialValue: HeatMapItem = {
   ...displayDataCommonInitialValue,
@@ -239,9 +237,6 @@ export const visualaizeItemSlice = createSlice({
             item.refImageItemId === itemId
           ) {
             item.drawOrderList = []
-            item.drawIndexMap = Object.fromEntries(
-              Object.keys(item.drawIndexMap).map((key) => [key, false]),
-            )
           }
         })
 
@@ -630,19 +625,6 @@ export const visualaizeItemSlice = createSlice({
         targetItem.drawOrderList = drawOrderList
       }
     },
-    setTimeSeriesItemDrawIndexMap: (
-      state,
-      action: PayloadAction<{
-        itemId: number
-        drawIndexMap: DrawIndexMap
-      }>,
-    ) => {
-      const { itemId, drawIndexMap } = action.payload
-      const targetItem = state.items[itemId]
-      if (isTimeSeriesItem(targetItem)) {
-        targetItem.drawIndexMap = drawIndexMap
-      }
-    },
     setTimeSeriesItemMaxIndex: (
       state,
       action: PayloadAction<{
@@ -666,7 +648,7 @@ export const visualaizeItemSlice = createSlice({
       const { itemId, refImageItemId } = action.payload
       const targetItem = state.items[itemId]
       if (isTimeSeriesItem(targetItem)) {
-        targetItem.refImageItemId = refImageItemId ?? undefined
+        targetItem.refImageItemId = refImageItemId ?? null
         targetItem.drawOrderList = []
       }
     },
@@ -766,7 +748,7 @@ export const visualaizeItemSlice = createSlice({
         if (isImageItem(state.items[itemId])) {
           Object.values(state.items).forEach((item) => {
             if (isTimeSeriesItem(item) && item.refImageItemId === itemId) {
-              delete item.refImageItemId
+              item.refImageItemId = null
             }
           })
         }
@@ -817,11 +799,9 @@ export const visualaizeItemSlice = createSlice({
             if (
               item.refImageItemId != null &&
               imageItemId === item.refImageItemId &&
-              Object.keys(item.drawIndexMap).includes(clickedDataId) &&
               !item.drawOrderList.includes(clickedDataId)
             ) {
               item.drawOrderList.push(clickedDataId)
-              item.drawIndexMap[clickedDataId] = true
             }
           }
         })
@@ -835,32 +815,10 @@ export const visualaizeItemSlice = createSlice({
               item.refImageItemId != null &&
               imageItemId === item.refImageItemId
             ) {
-              const correctZList = selectedZList.filter((selectedZ) =>
-                Object.keys(item.drawIndexMap).includes(selectedZ),
-              )
-              item.drawOrderList = correctZList
-              item.drawIndexMap = Object.fromEntries(
-                Object.keys(item.drawIndexMap).map((key) => {
-                  return [key, correctZList.includes(key)]
-                }),
-              )
+              item.drawOrderList = selectedZList
             }
           }
         })
-      })
-      .addCase(getTimeSeriesInitData.fulfilled, (state, action) => {
-        const { itemId } = action.meta.arg
-        const targetItem = state.items[itemId]
-        if (isTimeSeriesItem(targetItem)) {
-          targetItem.drawIndexMap = Object.fromEntries(
-            Object.keys(action.payload.data).map((key, i) => {
-              if (i === 0) {
-                return [key, true]
-              }
-              return [key, false]
-            }),
-          )
-        }
       })
   },
 })
@@ -931,7 +889,6 @@ export const {
   setTimeSeriesItemXrangeLeft,
   setTimeSeriesItemXrangeRight,
   setTimeSeriesItemDrawOrderList,
-  setTimeSeriesItemDrawIndexMap,
   setTimeSeriesItemMaxIndex,
   setTimeSeriesRefImageItemId,
   setHeatMapItemShowScale,

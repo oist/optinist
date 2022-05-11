@@ -2,6 +2,8 @@ import { RootState } from 'store/store'
 import {
   selectRoiData,
   selectRoiUniqueList,
+  selectTimeSeriesData,
+  selectTimeSeriesDataIsInitialized,
 } from '../DisplayData/DisplayDataSelectors'
 import { DATA_TYPE } from '../DisplayData/DisplayDataType'
 import {
@@ -382,7 +384,7 @@ export const selectTimeSeriesItemRefRoiUniqueList =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItemById(itemId)(state)
     if (isTimeSeriesItem(item)) {
-      if (item.refImageItemId) {
+      if (item.refImageItemId != null) {
         const imageItem = selectVisualizeItems(state)[item.refImageItemId]
         if (isImageItem(imageItem) && imageItem.roiItem?.filePath != null) {
           return selectRoiUniqueList(imageItem.roiItem.filePath)(state)
@@ -394,31 +396,25 @@ export const selectTimeSeriesItemRefRoiUniqueList =
     }
   }
 
-export const selectTimeSeriesItemDrawIndexMap =
-  (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItemById(itemId)(state)
-    if (isTimeSeriesItem(item)) {
-      return item.drawIndexMap
-    } else {
-      throw new Error('invalid VisualaizeItemType')
-    }
-  }
-
 export const selectTimeSeriesItemKeys =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItemById(itemId)(state)
     if (isTimeSeriesItem(item)) {
-      const roiUniqueList = selectTimeSeriesItemRefRoiUniqueList(itemId)(state)
-      if (roiUniqueList != null) {
-        return Object.keys(item.drawIndexMap).filter((key) =>
-          roiUniqueList.includes(key),
-        )
+      const path = selectTimeSeriesItemFilePath(itemId)(state)
+      if (path != null && selectTimeSeriesDataIsInitialized(path)(state)) {
+        const dataKeys = Object.keys(selectTimeSeriesData(path)(state))
+        const roiUniqueList =
+          selectTimeSeriesItemRefRoiUniqueList(itemId)(state)
+        if (roiUniqueList != null) {
+          return dataKeys.filter((key) => roiUniqueList.includes(key))
+        } else {
+          return dataKeys
+        }
       } else {
-        return Object.keys(item.drawIndexMap)
+        return []
       }
-    } else {
-      throw new Error('invalid VisualaizeItemType')
     }
+    throw new Error('invalid VisualaizeItemType')
   }
 
 export const selectRoiItemIndex =

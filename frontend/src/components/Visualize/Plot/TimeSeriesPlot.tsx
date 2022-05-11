@@ -21,7 +21,6 @@ import {
 import { TimeSeriesData } from 'api/outputs/Outputs'
 import {
   selectTimeSeriesItemDrawOrderList,
-  selectTimeSeriesItemDrawIndexMap,
   selectTimeSeriesItemOffset,
   selectTimeSeriesItemShowGrid,
   selectTimeSeriesItemShowLine,
@@ -33,7 +32,6 @@ import {
   selectVisualizeItemWidth,
   selectTimeSeriesItemKeys,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { setTimeSeriesItemDrawIndexMap } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import createColormap from 'colormap'
 import { setTimeSeriesItemDrawOrderList } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
@@ -83,7 +81,6 @@ const TimeSeriesPlotImple = React.memo(() => {
   const zeroline = useSelector(selectTimeSeriesItemZeroLine(itemId))
   const xrange = useSelector(selectTimeSeriesItemXrange(itemId))
   const drawOrderList = useSelector(selectTimeSeriesItemDrawOrderList(itemId))
-  const drawIndexMap = useSelector(selectTimeSeriesItemDrawIndexMap(itemId))
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
   const dataKeys = useSelector(selectTimeSeriesItemKeys(itemId))
@@ -206,30 +203,10 @@ const TimeSeriesPlotImple = React.memo(() => {
       ? drawOrderList.filter((value) => value !== clickNumber)
       : [...drawOrderList, clickNumber]
 
-    const newDrawIndexMap = Object.fromEntries(
-      Object.entries(drawIndexMap).map(([key, value]) => {
-        if (key === clickNumber) {
-          if (drawOrderList.includes(clickNumber)) {
-            return [key, false]
-          } else {
-            return [key, true]
-          }
-        }
-        return [key, value]
-      }),
-    )
-
     dispatch(
       setTimeSeriesItemDrawOrderList({
         itemId,
         drawOrderList: newDrawOrderList,
-      }),
-    )
-
-    dispatch(
-      setTimeSeriesItemDrawIndexMap({
-        itemId,
-        drawIndexMap: newDrawIndexMap,
       }),
     )
 
