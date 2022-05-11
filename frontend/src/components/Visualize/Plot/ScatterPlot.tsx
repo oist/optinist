@@ -18,6 +18,8 @@ import {
   selectScatterItemYIndex,
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
+  selectVisualizeSaveFilename,
+  selectVisualizeSaveFormat,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 export const ScatterPlot = React.memo(() => {
@@ -123,9 +125,16 @@ const ScatterPlotImple = React.memo(() => {
     [xIndex, yIndex, maxIndex, scatterData, width, height],
   )
 
+  const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))
+  const saveFormat = useSelector(selectVisualizeSaveFormat(itemId))
+
   const config = {
     displayModeBar: true,
     responsive: true,
+    toImageButtonOptions: {
+      format: saveFormat,
+      filename: saveFileName,
+    },
   }
 
   return (

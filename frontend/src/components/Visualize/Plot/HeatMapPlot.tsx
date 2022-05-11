@@ -18,6 +18,8 @@ import {
   selectHeatMapItemShowScale,
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
+  selectVisualizeSaveFilename,
+  selectVisualizeSaveFormat,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 export const HeatMapPlot = React.memo(() => {
@@ -99,9 +101,16 @@ const HeatMapImple = React.memo(() => {
     [width, height],
   )
 
+  const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))
+  const saveFormat = useSelector(selectVisualizeSaveFormat(itemId))
+
   const config = {
     displayModeBar: true,
     responsive: true,
+    toImageButtonOptions: {
+      format: saveFormat,
+      filename: saveFileName,
+    },
   }
 
   return <PlotlyChart data={data} layout={layout} config={config} />

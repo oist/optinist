@@ -10,12 +10,14 @@ import {
   setScatterItemYIndex,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
+import { SaveFig } from './SaveFig'
 
 export const ScatterItemEditor: React.FC = () => {
   return (
     <div style={{ margin: '10px', padding: 10 }}>
       <XIndex />
       <YIndex />
+      <SaveFig />
     </div>
   )
 }
