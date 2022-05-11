@@ -214,7 +214,7 @@ const HeadItem = React.memo<{
         </TableCell>
         <TableCell>Success</TableCell>
         <TableCell>Reproduce</TableCell>
-        <TableCell>workflow</TableCell>
+        <TableCell>SnakeFile</TableCell>
         <TableCell>NWB</TableCell>
         <TableCell>Delete</TableCell>
       </TableRow>
