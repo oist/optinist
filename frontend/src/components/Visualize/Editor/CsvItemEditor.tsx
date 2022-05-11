@@ -16,7 +16,7 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
-import { FILE_TREE_TYPE_SET } from 'store/slice/FilesTree/FilesTreeType'
+import { FILE_TREE_TYPE_SET } from 'api/files/Files'
 import { FormControlLabel, Switch, TextField } from '@mui/material'
 import { setNewDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemActions'
 import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'

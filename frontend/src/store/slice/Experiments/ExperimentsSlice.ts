@@ -12,7 +12,7 @@ import {
   runByCurrentUid,
 } from '../Pipeline/PipelineActions'
 
-const initialState: Experiments = {
+export const initialState: Experiments = {
   status: 'uninitialized',
 }
 

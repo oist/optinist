@@ -62,6 +62,7 @@ export const pipelineSlice = createSlice({
         state.currentPipeline = {
           uid: action.meta.arg,
         }
+        state.runBtn = RUN_BTN_OPTIONS.RUN_ALREADY
         state.run = {
           status: RUN_STATUS.START_UNINITIALIZED,
         }

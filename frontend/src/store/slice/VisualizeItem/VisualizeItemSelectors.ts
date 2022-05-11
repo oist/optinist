@@ -2,6 +2,8 @@ import { RootState } from 'store/store'
 import {
   selectRoiData,
   selectRoiUniqueList,
+  selectTimeSeriesData,
+  selectTimeSeriesDataIsInitialized,
 } from '../DisplayData/DisplayDataSelectors'
 import { DATA_TYPE } from '../DisplayData/DisplayDataType'
 import {
@@ -20,19 +22,22 @@ export const selectVisualizeImageItemIdList = (state: RootState) =>
   Object.keys(state.visualaizeItem.items)
     .map(Number)
     .filter((itemId) => {
-      const item = selectVisualizeItems(state)[itemId]
+      const item = selectVisualizeItemById(itemId)(state)
       return isImageItem(item) && !item.isWorkflowDialog
     })
 
 export const selectVisualizeItems = (state: RootState) =>
   state.visualaizeItem.items
 
+export const selectVisualizeItemById = (itemId: number) => (state: RootState) =>
+  state.visualaizeItem.items[itemId]
+
 export const selectVisualizeItemLayout = (state: RootState) =>
   state.visualaizeItem.layout
 
 export const selectVisualizeItemIsWorkflowDialog =
   (itemId: number) => (state: RootState) => {
-    return selectVisualizeItems(state)[itemId].isWorkflowDialog
+    return selectVisualizeItemById(itemId)(state).isWorkflowDialog
   }
 
 export const selectVisualizeItemIdForWorkflowDialog =
@@ -55,20 +60,20 @@ export const selectVisualizeItemIdForWorkflowDialog =
 
 export const selectVisualizeItemWidth =
   (itemId: number) => (state: RootState) => {
-    return selectVisualizeItems(state)[itemId].width
+    return selectVisualizeItemById(itemId)(state).width
   }
 
 export const selectVisualizeItemHeight =
   (itemId: number) => (state: RootState) => {
-    return selectVisualizeItems(state)[itemId].height
+    return selectVisualizeItemById(itemId)(state).height
   }
 
 export const selectVisualizeItemType = (itemId: number) => (state: RootState) =>
-  selectVisualizeItems(state)[itemId].itemType
+  selectVisualizeItemById(itemId)(state).itemType
 
 export const selectVisualizeDataType =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isDisplayDataItem(item)) {
       return item.dataType
     } else {
@@ -78,7 +83,7 @@ export const selectVisualizeDataType =
 
 export const selectVisualizeDataNodeId =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isDisplayDataItem(item)) {
       return item.nodeId
     } else {
@@ -88,7 +93,7 @@ export const selectVisualizeDataNodeId =
 
 export const selectVisualizeDataFilePath =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isDisplayDataItem(item)) {
       return item.filePath
     } else {
@@ -96,9 +101,21 @@ export const selectVisualizeDataFilePath =
     }
   }
 
+export const selectVisualizeSaveFilename =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItemById(itemId)(state)
+    return item.saveFileName
+  }
+
+export const selectVisualizeSaveFormat =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItemById(itemId)(state)
+    return item.saveFormat
+  }
+
 export const selectImageItemFilePath =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isDisplayDataItem(item)) {
       return item.filePath
     } else {
@@ -108,7 +125,7 @@ export const selectImageItemFilePath =
 
 export const selectTimeSeriesItemFilePath =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isDisplayDataItem(item)) {
       return item.filePath
     } else {
@@ -117,7 +134,7 @@ export const selectTimeSeriesItemFilePath =
   }
 
 export const selectRoiItemNodeId = (itemId: number) => (state: RootState) => {
-  const item = selectVisualizeItems(state)[itemId]
+  const item = selectVisualizeItemById(itemId)(state)
   if (isImageItem(item)) {
     return item.roiItem?.nodeId ?? null
   } else {
@@ -126,7 +143,7 @@ export const selectRoiItemNodeId = (itemId: number) => (state: RootState) => {
 }
 
 export const selectRoiItemFilePath = (itemId: number) => (state: RootState) => {
-  const item = selectVisualizeItems(state)[itemId]
+  const item = selectVisualizeItemById(itemId)(state)
   if (isImageItem(item)) {
     return item.roiItem?.filePath ?? null
   } else {
@@ -136,7 +153,7 @@ export const selectRoiItemFilePath = (itemId: number) => (state: RootState) => {
 
 export const selectImageItemShowticklabels =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isImageItem(item)) {
       return item.showticklabels
     } else {
@@ -146,7 +163,7 @@ export const selectImageItemShowticklabels =
 
 export const selectImageItemZsmooth =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isImageItem(item)) {
       return item.zsmooth
     } else {
@@ -156,7 +173,7 @@ export const selectImageItemZsmooth =
 
 export const selectImageItemStartIndex =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isImageItem(item)) {
       return item.startIndex
     } else {
@@ -166,7 +183,7 @@ export const selectImageItemStartIndex =
 
 export const selectImageItemEndIndex =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isImageItem(item)) {
       return item.endIndex
     } else {
@@ -176,7 +193,7 @@ export const selectImageItemEndIndex =
 
 export const selectImageItemShowLine =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isImageItem(item)) {
       return item.showline
     } else {
@@ -186,7 +203,7 @@ export const selectImageItemShowLine =
 
 export const selectImageItemShowGrid =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isImageItem(item)) {
       return item.showgrid
     } else {
@@ -196,7 +213,7 @@ export const selectImageItemShowGrid =
 
 export const selectImageItemShowScale =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isImageItem(item)) {
       return item.showscale
     } else {
@@ -205,7 +222,7 @@ export const selectImageItemShowScale =
   }
 
 export const selectImageItemColors = (itemId: number) => (state: RootState) => {
-  const item = selectVisualizeItems(state)[itemId]
+  const item = selectVisualizeItemById(itemId)(state)
   if (isImageItem(item)) {
     return item.colors
   } else {
@@ -215,7 +232,7 @@ export const selectImageItemColors = (itemId: number) => (state: RootState) => {
 
 export const selectImageItemActiveIndex =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isImageItem(item)) {
       return item.activeIndex
     } else {
@@ -224,7 +241,7 @@ export const selectImageItemActiveIndex =
   }
 
 export const selectImageItemAlpha = (itemId: number) => (state: RootState) => {
-  const item = selectVisualizeItems(state)[itemId]
+  const item = selectVisualizeItemById(itemId)(state)
   if (isImageItem(item)) {
     return item.alpha
   } else {
@@ -234,7 +251,7 @@ export const selectImageItemAlpha = (itemId: number) => (state: RootState) => {
 
 export const selectImageItemRoiAlpha =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isImageItem(item)) {
       return item.roiAlpha
     } else {
@@ -244,7 +261,7 @@ export const selectImageItemRoiAlpha =
 
 export const selectImageItemRoiFilePath =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isImageItem(item)) {
       if (item.roiItem) {
         return item.roiItem.filePath
@@ -258,7 +275,7 @@ export const selectImageItemRoiFilePath =
 
 export const selectImageItemDuration =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isImageItem(item)) {
       return item.duration
     } else {
@@ -266,29 +283,9 @@ export const selectImageItemDuration =
     }
   }
 
-export const selectImageItemSaveFilename =
-  (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
-    if (isImageItem(item)) {
-      return item.saveFileName
-    } else {
-      throw new Error('invalid VisualaizeItemType')
-    }
-  }
-
-export const selectImageItemSaveFormat =
-  (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
-    if (isImageItem(item)) {
-      return item.saveFormat
-    } else {
-      throw new Error('invalid VisualaizeItemType')
-    }
-  }
-
 export const selectTimeSeriesItemOffset =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isTimeSeriesItem(item)) {
       return item.offset
     } else {
@@ -298,7 +295,7 @@ export const selectTimeSeriesItemOffset =
 
 export const selectTimeSeriesItemSpan =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isTimeSeriesItem(item)) {
       return item.span
     } else {
@@ -308,7 +305,7 @@ export const selectTimeSeriesItemSpan =
 
 export const selectTimeSeriesItemShowGrid =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isTimeSeriesItem(item)) {
       return item.showgrid
     } else {
@@ -318,7 +315,7 @@ export const selectTimeSeriesItemShowGrid =
 
 export const selectTimeSeriesItemShowLine =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isTimeSeriesItem(item)) {
       return item.showline
     } else {
@@ -328,7 +325,7 @@ export const selectTimeSeriesItemShowLine =
 
 export const selectTimeSeriesItemShowTickLabels =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isTimeSeriesItem(item)) {
       return item.showticklabels
     } else {
@@ -338,7 +335,7 @@ export const selectTimeSeriesItemShowTickLabels =
 
 export const selectTimeSeriesItemZeroLine =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isTimeSeriesItem(item)) {
       return item.zeroline
     } else {
@@ -348,7 +345,7 @@ export const selectTimeSeriesItemZeroLine =
 
 export const selectTimeSeriesItemXrange =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isTimeSeriesItem(item)) {
       return item.xrange
     } else {
@@ -358,7 +355,7 @@ export const selectTimeSeriesItemXrange =
 
 export const selectTimeSeriesItemDrawOrderList =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isTimeSeriesItem(item)) {
       return item.drawOrderList
     }
@@ -367,7 +364,7 @@ export const selectTimeSeriesItemDrawOrderList =
 
 export const selectTimeSeriesItemRefImageItemId =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isTimeSeriesItem(item)) {
       return item.refImageItemId
     } else {
@@ -377,9 +374,9 @@ export const selectTimeSeriesItemRefImageItemId =
 
 export const selectTimeSeriesItemRefRoiUniqueList =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isTimeSeriesItem(item)) {
-      if (item.refImageItemId) {
+      if (item.refImageItemId != null) {
         const imageItem = selectVisualizeItems(state)[item.refImageItemId]
         if (isImageItem(imageItem) && imageItem.roiItem?.filePath != null) {
           return selectRoiUniqueList(imageItem.roiItem.filePath)(state)
@@ -391,36 +388,30 @@ export const selectTimeSeriesItemRefRoiUniqueList =
     }
   }
 
-export const selectTimeSeriesItemDrawIndexMap =
-  (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
-    if (isTimeSeriesItem(item)) {
-      return item.drawIndexMap
-    } else {
-      throw new Error('invalid VisualaizeItemType')
-    }
-  }
-
 export const selectTimeSeriesItemKeys =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isTimeSeriesItem(item)) {
-      const roiUniqueList = selectTimeSeriesItemRefRoiUniqueList(itemId)(state)
-      if (roiUniqueList != null) {
-        return Object.keys(item.drawIndexMap).filter((key) =>
-          roiUniqueList.includes(key),
-        )
+      const path = selectTimeSeriesItemFilePath(itemId)(state)
+      if (path != null && selectTimeSeriesDataIsInitialized(path)(state)) {
+        const dataKeys = Object.keys(selectTimeSeriesData(path)(state))
+        const roiUniqueList =
+          selectTimeSeriesItemRefRoiUniqueList(itemId)(state)
+        if (roiUniqueList != null) {
+          return dataKeys.filter((key) => roiUniqueList.includes(key))
+        } else {
+          return dataKeys
+        }
       } else {
-        return Object.keys(item.drawIndexMap)
+        return []
       }
-    } else {
-      throw new Error('invalid VisualaizeItemType')
     }
+    throw new Error('invalid VisualaizeItemType')
   }
 
 export const selectRoiItemIndex =
   (itemId: number, roiFilePath: string | null) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isTimeSeriesItem(item)) {
       const maxIdx = item.maxIndex
       if (maxIdx !== 0) {
@@ -447,7 +438,7 @@ export const selectRoiItemMaxNumber =
 
 export const selectHeatMapItemShowScale =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isHeatMapItem(item)) {
       return item.showscale
     } else {
@@ -457,7 +448,7 @@ export const selectHeatMapItemShowScale =
 
 export const selectHeatMapItemColors =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isHeatMapItem(item)) {
       return item.colors
     } else {
@@ -467,7 +458,7 @@ export const selectHeatMapItemColors =
 
 export const selectCsvItemTranspose =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isCsvItem(item)) {
       return item.transpose
     } else {
@@ -477,7 +468,7 @@ export const selectCsvItemTranspose =
 
 export const selectCsvItemSetHeader =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isCsvItem(item)) {
       return item.setHeader
     } else {
@@ -486,7 +477,7 @@ export const selectCsvItemSetHeader =
   }
 
 export const selectCsvItemSetIndex = (itemId: number) => (state: RootState) => {
-  const item = selectVisualizeItems(state)[itemId]
+  const item = selectVisualizeItemById(itemId)(state)
   if (isCsvItem(item)) {
     return item.setIndex
   } else {
@@ -496,7 +487,7 @@ export const selectCsvItemSetIndex = (itemId: number) => (state: RootState) => {
 
 export const selectScatterItemXIndex =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isScatterItem(item)) {
       return item.xIndex
     } else {
@@ -506,7 +497,7 @@ export const selectScatterItemXIndex =
 
 export const selectScatterItemYIndex =
   (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItems(state)[itemId]
+    const item = selectVisualizeItemById(itemId)(state)
     if (isScatterItem(item)) {
       return item.yIndex
     } else {

@@ -12,6 +12,7 @@ import {
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 import { GradientColorPicker } from './GradientColorPicker'
 import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
+import { SaveFig } from './SaveFig'
 
 export const HeatmapItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
@@ -24,6 +25,7 @@ export const HeatmapItemEditor: React.FC = () => {
     <>
       <ShowScale />
       <GradientColorPicker colors={colors} dispatchSetColor={dispathSetColor} />
+      <SaveFig />
     </>
   )
 }

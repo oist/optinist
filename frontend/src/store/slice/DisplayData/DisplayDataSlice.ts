@@ -30,7 +30,6 @@ const initialState: DisplayData = {
   roi: {},
   scatter: {},
   bar: {},
-  hdf5: {},
   html: {},
 }
 

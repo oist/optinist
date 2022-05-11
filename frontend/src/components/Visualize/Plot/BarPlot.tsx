@@ -12,10 +12,12 @@ import {
   selectBarDataIsPending,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getBarData } from 'store/slice/DisplayData/DisplayDataActions'
-import { BarData } from 'store/slice/DisplayData/DisplayDataType'
+import { BarData } from 'api/outputs/Outputs'
 import {
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
+  selectVisualizeSaveFilename,
+  selectVisualizeSaveFormat,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 export const BarPlot = React.memo(() => {
@@ -73,10 +75,17 @@ const BarPlotImple = React.memo(() => {
     [width, height],
   )
 
+  const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))
+  const saveFormat = useSelector(selectVisualizeSaveFormat(itemId))
+
   const config = {
     displayModeBar: true,
     // scrollZoom: true,
     responsive: true,
+    toImageButtonOptions: {
+      format: saveFormat,
+      filename: saveFileName,
+    },
   }
 
   return <PlotlyChart data={data} layout={layout} config={config} />

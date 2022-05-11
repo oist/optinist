@@ -50,6 +50,8 @@ export interface DisplayDataItemBaseType extends ItemBaseType<'displayData'> {
   nodeId: string | null
   dataType: DATA_TYPE | null
   isWorkflowDialog: boolean
+  saveFileName: string
+  saveFormat: string
 }
 
 export interface ImageItem extends DisplayDataItemBaseType {
@@ -68,8 +70,6 @@ export interface ImageItem extends DisplayDataItemBaseType {
   roiAlpha: number
   duration: number
   clickedDataId?: string
-  saveFileName: string
-  saveFormat: string
 }
 
 export interface TimeSeriesItem extends DisplayDataItemBaseType {
@@ -85,13 +85,8 @@ export interface TimeSeriesItem extends DisplayDataItemBaseType {
     right: number | undefined
   }
   maxIndex: number
-  refImageItemId?: number
+  refImageItemId: number | null
   drawOrderList: string[]
-  drawIndexMap: DrawIndexMap
-}
-
-export interface DrawIndexMap {
-  [index: string]: boolean
 }
 
 export interface HeatMapItem extends DisplayDataItemBaseType {

@@ -72,14 +72,12 @@ export const selectingImageArea = createAsyncThunk<
           ) {
             const path = item.filePath
             selectedZList.forEach((selectedZ) => {
-              if (Object.keys(item.drawIndexMap).includes(selectedZ)) {
-                thunkAPI.dispatch(
-                  getTimeSeriesDataById({
-                    path,
-                    index: String(selectedZ),
-                  }),
-                )
-              }
+              thunkAPI.dispatch(
+                getTimeSeriesDataById({
+                  path,
+                  index: String(selectedZ),
+                }),
+              )
             })
           }
         })

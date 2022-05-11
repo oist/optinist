@@ -1,4 +1,4 @@
-import { getChildParam } from 'store/utils/param/ParamUtils'
+import { getChildParam } from 'utils/param/ParamUtils'
 import { RootState } from '../../store'
 
 const selectSnakemake = (state: RootState) => state.snakemake

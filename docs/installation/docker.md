@@ -1,4 +1,4 @@
-Table of Contents
+Docker
 =================
 
 * [Table of Contents](#table-of-contents)
@@ -9,16 +9,16 @@ Table of Contents
    * [Run backend](#run-backend)
    * [Launch browser.  <a href="http://localhost:8000" rel="nofollow">http://localhost:8000</a>](#launch-browser--httplocalhost8000)
 
-# Installation
+## Installation
 We introduce how to install optinist.
 We have developed optinist python(backend) and typescript(frontend), so you need to make both environment.
 Please follow instructions below.
 
 <br />
 
-# 1. Make docker image container
+## 1. Make docker image container
 
-## Make docker image
+### Make docker image
 Pull the latest docker image from docker hub.
 ```
 docker pull oistncu/optinist
@@ -33,7 +33,7 @@ Execute in terminal
 docker exec -it optinist_container /bin/bash
 ```
 
-## Set saving directory
+### Set saving directory
 Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
 ```bash
 export OPTINIST_DIR="your_saving_dir"

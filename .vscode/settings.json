@@ -1,5 +1,6 @@
 {
   "search.exclude": {
     "frontend/build/**": true
-  }
+  },
+  "esbonio.sphinx.confDir": ""
 }

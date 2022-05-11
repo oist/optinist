@@ -1,6 +1,7 @@
-import { HDF5TreeDTO } from './HDF5Type'
+import { HDF5TreeDTO } from 'api/hdf5/HDF5'
+import { HDF5TreeNodeType } from './HDF5Type'
 
-export function convertToTreeNodeType(dto: HDF5TreeDTO[]): HDF5TreeDTO[] {
+export function convertToTreeNodeType(dto: HDF5TreeDTO[]): HDF5TreeNodeType[] {
   return dto.map((node) =>
     node.isDir
       ? {

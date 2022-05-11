@@ -12,12 +12,14 @@ import {
   selectScatterDataIsPending,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getScatterData } from 'store/slice/DisplayData/DisplayDataActions'
-import { ScatterData } from 'store/slice/DisplayData/DisplayDataType'
+import { ScatterData } from 'api/outputs/Outputs'
 import {
   selectScatterItemXIndex,
   selectScatterItemYIndex,
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
+  selectVisualizeSaveFilename,
+  selectVisualizeSaveFormat,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 
 export const ScatterPlot = React.memo(() => {
@@ -123,9 +125,16 @@ const ScatterPlotImple = React.memo(() => {
     [xIndex, yIndex, maxIndex, scatterData, width, height],
   )
 
+  const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))
+  const saveFormat = useSelector(selectVisualizeSaveFormat(itemId))
+
   const config = {
     displayModeBar: true,
     responsive: true,
+    toImageButtonOptions: {
+      format: saveFormat,
+      filename: saveFileName,
+    },
   }
 
   return (

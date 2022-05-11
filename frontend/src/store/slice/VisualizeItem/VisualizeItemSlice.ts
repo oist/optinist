@@ -1,5 +1,4 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { getTimeSeriesInitData } from '../DisplayData/DisplayDataActions'
 import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 import {
   deleteDisplayItem,
@@ -23,7 +22,6 @@ import {
   FluoItem,
   BehaviorItem,
   VISUALIZE_ITEM_SLICE_NAME,
-  DrawIndexMap,
 } from './VisualizeItemType'
 import {
   isDisplayDataItem,
@@ -46,6 +44,8 @@ const displayDataCommonInitialValue = {
   width: 500,
   height: 500,
   isWorkflowDialog: false,
+  saveFileName: 'newPlot',
+  saveFormat: 'png',
 }
 const imageItemInitialValue: ImageItem = {
   ...displayDataCommonInitialValue,
@@ -66,8 +66,6 @@ const imageItemInitialValue: ImageItem = {
   roiItem: null,
   roiAlpha: 1.0,
   duration: 500,
-  saveFileName: 'newPlot',
-  saveFormat: 'png',
 }
 const timeSeriesItemInitialValue: TimeSeriesItem = {
   ...displayDataCommonInitialValue,
@@ -84,7 +82,7 @@ const timeSeriesItemInitialValue: TimeSeriesItem = {
   },
   maxIndex: 0,
   drawOrderList: [],
-  drawIndexMap: {},
+  refImageItemId: null,
 }
 const heatMapItemInitialValue: HeatMapItem = {
   ...displayDataCommonInitialValue,
@@ -188,7 +186,8 @@ export const visualaizeItemSlice = createSlice({
       }>,
     ) => {
       const { nodeId, filePath, dataType } = action.payload
-      const newItemId = getMaxItemId(state) + 1
+      const maxId = getMaxItemId(state)
+      const newItemId = maxId != null ? maxId + 1 : 0
       state.items[newItemId] = {
         ...getDisplayDataItemInitialValue(dataType),
         isWorkflowDialog: true,
@@ -238,9 +237,6 @@ export const visualaizeItemSlice = createSlice({
             item.refImageItemId === itemId
           ) {
             item.drawOrderList = []
-            item.drawIndexMap = Object.fromEntries(
-              Object.keys(item.drawIndexMap).map((key) => [key, false]),
-            )
           }
         })
 
@@ -272,6 +268,26 @@ export const visualaizeItemSlice = createSlice({
       } else {
         throw new Error('error')
       }
+    },
+    setSaveFormat: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        saveFormat: string
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      targetItem.saveFormat = action.payload.saveFormat
+    },
+    setSaveFileName: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        saveFileName: string
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      targetItem.saveFileName = action.payload.saveFileName
     },
     setImageItemFilePath: (
       state,
@@ -496,30 +512,6 @@ export const visualaizeItemSlice = createSlice({
         targetItem.duration = action.payload.duration
       }
     },
-    setImageItemSaveFormat: (
-      state,
-      action: PayloadAction<{
-        itemId: number
-        saveFormat: string
-      }>,
-    ) => {
-      const targetItem = state.items[action.payload.itemId]
-      if (isImageItem(targetItem)) {
-        targetItem.saveFormat = action.payload.saveFormat
-      }
-    },
-    setImageItemSaveFileName: (
-      state,
-      action: PayloadAction<{
-        itemId: number
-        saveFileName: string
-      }>,
-    ) => {
-      const targetItem = state.items[action.payload.itemId]
-      if (isImageItem(targetItem)) {
-        targetItem.saveFileName = action.payload.saveFileName
-      }
-    },
     setTimeSeriesItemOffset: (
       state,
       action: PayloadAction<{
@@ -629,19 +621,6 @@ export const visualaizeItemSlice = createSlice({
         targetItem.drawOrderList = drawOrderList
       }
     },
-    setTimeSeriesItemDrawIndexMap: (
-      state,
-      action: PayloadAction<{
-        itemId: number
-        drawIndexMap: DrawIndexMap
-      }>,
-    ) => {
-      const { itemId, drawIndexMap } = action.payload
-      const targetItem = state.items[itemId]
-      if (isTimeSeriesItem(targetItem)) {
-        targetItem.drawIndexMap = drawIndexMap
-      }
-    },
     setTimeSeriesItemMaxIndex: (
       state,
       action: PayloadAction<{
@@ -665,7 +644,7 @@ export const visualaizeItemSlice = createSlice({
       const { itemId, refImageItemId } = action.payload
       const targetItem = state.items[itemId]
       if (isTimeSeriesItem(targetItem)) {
-        targetItem.refImageItemId = refImageItemId ?? undefined
+        targetItem.refImageItemId = refImageItemId ?? null
         targetItem.drawOrderList = []
       }
     },
@@ -765,7 +744,7 @@ export const visualaizeItemSlice = createSlice({
         if (isImageItem(state.items[itemId])) {
           Object.values(state.items).forEach((item) => {
             if (isTimeSeriesItem(item) && item.refImageItemId === itemId) {
-              delete item.refImageItemId
+              item.refImageItemId = null
             }
           })
         }
@@ -816,11 +795,9 @@ export const visualaizeItemSlice = createSlice({
             if (
               item.refImageItemId != null &&
               imageItemId === item.refImageItemId &&
-              Object.keys(item.drawIndexMap).includes(clickedDataId) &&
               !item.drawOrderList.includes(clickedDataId)
             ) {
               item.drawOrderList.push(clickedDataId)
-              item.drawIndexMap[clickedDataId] = true
             }
           }
         })
@@ -834,44 +811,24 @@ export const visualaizeItemSlice = createSlice({
               item.refImageItemId != null &&
               imageItemId === item.refImageItemId
             ) {
-              const correctZList = selectedZList.filter((selectedZ) =>
-                Object.keys(item.drawIndexMap).includes(selectedZ),
-              )
-              item.drawOrderList = correctZList
-              item.drawIndexMap = Object.fromEntries(
-                Object.keys(item.drawIndexMap).map((key) => {
-                  return [key, correctZList.includes(key)]
-                }),
-              )
+              item.drawOrderList = selectedZList
             }
           }
         })
-      })
-      .addCase(getTimeSeriesInitData.fulfilled, (state, action) => {
-        const { itemId } = action.meta.arg
-        const targetItem = state.items[itemId]
-        if (isTimeSeriesItem(targetItem)) {
-          targetItem.drawIndexMap = Object.fromEntries(
-            Object.keys(action.payload.data).map((key, i) => {
-              if (i === 0) {
-                return [key, true]
-              }
-              return [key, false]
-            }),
-          )
-        }
       })
   },
 })
 
 function getMaxItemId(state: VisualaizeItem) {
   const idList = Object.keys(state.items).map((key) => Number(key))
-  const maxId = idList.length > 0 ? idList.reduce((a, b) => Math.max(a, b)) : 0
+  const maxId =
+    idList.length > 0 ? idList.reduce((a, b) => Math.max(a, b)) : null
   return maxId
 }
 
 function addInitialItemFn(state: VisualaizeItem) {
-  const nextId = getMaxItemId(state) + 1
+  const maxId = getMaxItemId(state)
+  const nextId = maxId != null ? maxId + 1 : 0
   state.items[nextId] = getDisplayDataItemInitialValue(DATA_TYPE_SET.IMAGE)
   state.selectedItemId = nextId
   return nextId
@@ -898,6 +855,8 @@ export const {
   setItemSize,
   selectItem,
   setFilePath,
+  setSaveFormat,
+  setSaveFileName,
   setHeatMapItemFilePath,
   setImageItemFilePath,
   setTimeSeriesItemFilePath,
@@ -917,8 +876,6 @@ export const {
   setImageItemAlpha,
   setImageItemRoiAlpha,
   setImageItemDuration,
-  setImageItemSaveFormat,
-  setImageItemSaveFileName,
   setTimeSeriesItemOffset,
   setTimeSeriesItemSpan,
   setTimeSeriesItemShowGrid,
@@ -928,7 +885,6 @@ export const {
   setTimeSeriesItemXrangeLeft,
   setTimeSeriesItemXrangeRight,
   setTimeSeriesItemDrawOrderList,
-  setTimeSeriesItemDrawIndexMap,
   setTimeSeriesItemMaxIndex,
   setTimeSeriesRefImageItemId,
   setHeatMapItemShowScale,

@@ -24,7 +24,7 @@ import {
   addAlgorithmNode,
   addInputNode,
 } from 'store/slice/FlowElement/FlowElementActions'
-import { getNanoId } from 'store/utils/nanoid/NanoIdUtils'
+import { getNanoId } from 'utils/nanoid/NanoIdUtils'
 import { REACT_FLOW_NODE_TYPE, REACT_FLOW_NODE_TYPE_KEY } from 'const/flowchart'
 
 export const AlgorithmTreeView = React.memo(() => {
