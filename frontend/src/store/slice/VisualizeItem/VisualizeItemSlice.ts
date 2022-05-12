@@ -30,6 +30,7 @@ import {
   isTimeSeriesItem,
   isCsvItem,
   isScatterItem,
+  isBarItem,
 } from './VisualizeItemUtils'
 
 export const initialState: VisualaizeItem = {
@@ -114,6 +115,7 @@ const scatterItemInitialValue: ScatterItem = {
 const barItemInitialValue: BarItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.BAR,
+  index: 0,
 }
 const hdf5ItemInitialValue: HDF5Item = {
   ...displayDataCommonInitialValue,
@@ -735,6 +737,18 @@ export const visualaizeItemSlice = createSlice({
         targetItem.yIndex = action.payload.yIndex
       }
     },
+    setBarItemIndex: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        index: number
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isBarItem(targetItem)) {
+        targetItem.index = action.payload.index
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -894,6 +908,7 @@ export const {
   setCsvItemSetIndex,
   setScatterItemXIndex,
   setScatterItemYIndex,
+  setBarItemIndex,
 } = visualaizeItemSlice.actions
 
 export default visualaizeItemSlice.reducer

@@ -113,6 +113,7 @@ export interface ScatterItem extends DisplayDataItemBaseType {
 
 export interface BarItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.BAR
+  index: number
 }
 
 export interface HDF5Item extends DisplayDataItemBaseType {

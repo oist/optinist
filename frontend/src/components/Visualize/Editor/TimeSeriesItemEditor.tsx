@@ -194,8 +194,8 @@ const Xrange: React.FC = () => {
     <FormControlLabel
       control={
         <>
-          left:
           <TextField
+            label="left"
             style={{ width: 50 }}
             type="number"
             inputProps={{
@@ -208,8 +208,8 @@ const Xrange: React.FC = () => {
             onChange={onChangeLeft}
             defaultValue={xrange.left}
           />
-          right:
           <TextField
+            label="right"
             style={{ width: 50 }}
             type="number"
             InputLabelProps={{

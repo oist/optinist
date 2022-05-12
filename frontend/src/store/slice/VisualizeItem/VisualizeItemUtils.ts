@@ -9,6 +9,7 @@ import {
   RoiItem,
   ScatterItem,
   CsvItem,
+  BarItem,
 } from './VisualizeItemType'
 
 export function isDisplayDataItem(
@@ -58,5 +59,12 @@ export function isScatterItem(item: VisualaizeItemType): item is ScatterItem {
   return (
     item.itemType === VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA &&
     item.dataType === DATA_TYPE_SET.SCATTER
+  )
+}
+
+export function isBarItem(item: VisualaizeItemType): item is BarItem {
+  return (
+    item.itemType === VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA &&
+    item.dataType === DATA_TYPE_SET.BAR
   )
 }

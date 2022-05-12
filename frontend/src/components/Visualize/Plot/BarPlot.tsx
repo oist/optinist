@@ -2,6 +2,11 @@ import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { LinearProgress, Typography } from '@mui/material'
+import Box from '@mui/material/Box'
+import InputLabel from '@mui/material/InputLabel'
+import MenuItem from '@mui/material/MenuItem'
+import FormControl from '@mui/material/FormControl'
+import Select, { SelectChangeEvent } from '@mui/material/Select'
 
 import { DisplayDataContext } from '../DataContext'
 import {
@@ -14,11 +19,13 @@ import {
 import { getBarData } from 'store/slice/DisplayData/DisplayDataActions'
 import { BarData } from 'api/outputs/Outputs'
 import {
+  selectBarItemIndex,
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
   selectVisualizeSaveFilename,
   selectVisualizeSaveFormat,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import { setBarItemIndex } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 export const BarPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -48,22 +55,23 @@ const BarPlotImple = React.memo(() => {
   const barData = useSelector(selectBarData(path), barDataEqualityFn)
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
+  const index = useSelector(selectBarItemIndex(itemId))
 
   const data = React.useMemo(
     () => [
       {
-        x: Object.keys(barData[0]),
-        y: Object.values(barData[0]),
+        x: Object.keys(barData[index]),
+        y: Object.values(barData[index]),
         type: 'bar',
       },
     ],
-    [barData],
+    [barData, index],
   )
 
   const layout = React.useMemo(
     () => ({
       width: width,
-      height: height - 50,
+      height: height - 130,
       margin: {
         t: 60, // top
         l: 50, // left
@@ -88,7 +96,43 @@ const BarPlotImple = React.memo(() => {
     },
   }
 
-  return <PlotlyChart data={data} layout={layout} config={config} />
+  return (
+    <div>
+      <Box sx={{ display: 'flex' }}>
+        <Box sx={{ flexGrow: 1, ml: 1 }}>
+          <SelectIndex dataLength={barData.length} />
+        </Box>
+      </Box>
+      <PlotlyChart data={data} layout={layout} config={config} />
+    </div>
+  )
+})
+
+const SelectIndex = React.memo<{
+  dataLength: number
+}>(({ dataLength }) => {
+  const { itemId } = React.useContext(DisplayDataContext)
+  const dispatch = useDispatch()
+  const index = useSelector(selectBarItemIndex(itemId))
+
+  const handleChange = (event: SelectChangeEvent<string>) => {
+    dispatch(
+      setBarItemIndex({
+        itemId,
+        index: Number(event.target.value),
+      }),
+    )
+  }
+  return (
+    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+      <InputLabel>index</InputLabel>
+      <Select label="smooth" value={`${index}`} onChange={handleChange}>
+        {[...Array(dataLength)].map((_, i) => (
+          <MenuItem value={i}>{i}</MenuItem>
+        ))}
+      </Select>
+    </FormControl>
+  )
 })
 
 function barDataEqualityFn(a: BarData | undefined, b: BarData | undefined) {
