@@ -1,21 +1,24 @@
 Workflow
 =================
 
-OptiNiSt can make analysis pipelines through connecting nodes and run on GUI. There are many analysis flow combinations. It selects nodes and connects edges to create a pipelne flow.
+OptiNiSt can create your analysis pipelines easily on the GUI by connecting nodes and running them. Analysis flow combinations can be parallel or bifurcating. 
 <br>
 <p align="center">
 <img width="400px" src="../_static/workflow/whole.png" alt="workflow" />
 
 <br/>
 
-## Create workflow
-### Set Image Input
-Set tiff image in your working directory and set as input.
-1. Click `UPLOAD` button and upload file to `OPTINIST_DIR`.  
-(An large data file takes long time tWWo upload, so it copies to `OPTINIST_DIR` directly and load file more quickly. )
-2. Click `SELECT IMAGE` button and set as input _static. 
+## Creating workflow
+### Setting Input Images
 
-** Currentlly, input _static need to have {.tif, .TIF, .tiff, .TIFF} extension. (developing other extension)
+1. Click `UPLOAD` button to upload your image files to `OPTINIST_DIR`.  
+  この部分不明
+(Large data files take long time to upload, so it copies to `OPTINIST_DIR` directly and load file more quickly. )
+  If your files are in the remote place and your analysis computer is local, uploading (copying) input files to local directory saves time for accessing to them. 
+2. Click `SELECT IMAGE` button to set the path as the input _static. 
+ 
+
+** Currentlly, files with {.tif, .TIF, .tiff, .TIFF} extensions are accepted. Other extensions will be added on the list if requested.
 <br>
 <p align="center">
 <img width="200px" src="../_static/workflow/components/imageNode.png" alt="imageNode" />
@@ -23,10 +26,8 @@ Set tiff image in your working directory and set as input.
 </p>
 <br/>
 
-### Add Algorithm
-Next, add an algorithm from left treeview.
-1. Select an algorithm from the treeview
-2. click "+" button to flowchart.
+### Adding Algorithms
+Select an algorithm from the treeview on the left by clicking "+" button. Each of the BOX defines one step (node) of the analysis.
 <br>
 <p align="center">
   <img width="300px" src="../_static/workflow/components/add_algorithm.png" alt="Add Algorithm" />
@@ -34,8 +35,8 @@ Next, add an algorithm from left treeview.
 
 <br>
 
-### Set Parameter
-Click `PARAM` button and change parameters.
+### Setting Parameters
+Click `PARAM` button of the node to change parameters.
 <br>
 <p align="center">
 <img width="300px" src="../_static/workflow/components/setparam.png" alt="Set Parameter" />
@@ -43,8 +44,8 @@ Click `PARAM` button and change parameters.
 
 <br/>
 
-### Connect Algorithm Edge
-To make workflow, connect edges between node to node by drag&drop.  
+### Connecting BOX Edges
+To create workflow pipeline, connect edges between node to node by drag&drop.  
 You can only connect the same color edges (correspond to arguments and returns type, imageType, timeSeries type, ...).  
 
 **DataType List**
