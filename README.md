@@ -1,13 +1,12 @@
 # optinist <img src="docs/_static/optinist.png" width="250" title="optinist" alt="optinist" align="right" vspace = "50">
 
 
-OptiNiSt(Optical Neuroimage Studio) that helps researchers to try multiple data analysis methods, to visualize the results, and to construct data analysis pipelines. Data formats follow NWB standard.
+OptiNiSt(Optical Neuroimage Studio) helps researchers to try multiple data analysis methods, to visualize the results, and to construct the data analysis pipelines. OptiNiSt's data saving format follows NWB standard.
 
 
-OpitNiSt will allow not only neural data experts but also non-experts to try advanced analysis methods by combining neuroimage and behavioral data.
-It will help functional data analysis and pipeline building first by Brain/MINDS researchers but also by neuroscientists and data scientists world wide.
-Availability of not only data but also the tool for analysis on Brian/MINDS Data Portal will facilitate wider usage of marmoset functional brain data.
-OptiNiSt will also help reproducibility of research, standardization of analysis protocols, and developments of novel analysis tools as plug-in.
+OpitNiSt allows not only neural data analysis experts but also non-experts to try advanced analysis methods easily and quickly by GUI.
+
+OptiNiSt also supprts reproducibility of the scientific research, standardization of analysis protocols, and developments of novel analysis tools as plug-in.
 
 ## Key Features
 ### :beginner: Easy-To-Use Workflow
