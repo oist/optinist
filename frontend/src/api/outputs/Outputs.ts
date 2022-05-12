@@ -75,7 +75,11 @@ export async function getRoiDataApi(path: string): Promise<{ data: RoiData }> {
   return response.data
 }
 
-export type ScatterData = number[][][]
+export type ScatterData = {
+  [key: string]: {
+    [key: number]: number
+  }
+}
 
 export async function getScatterDataApi(
   path: string,
@@ -84,7 +88,11 @@ export async function getScatterDataApi(
   return response.data
 }
 
-export type BarData = number[][][]
+export type BarData = {
+  [key: string]: {
+    [key: number]: number
+  }
+}
 
 export async function getBarDataApi(path: string): Promise<{ data: BarData }> {
   const response = await axios.get(`${BASE_URL}/outputs/data/${path}`, {})

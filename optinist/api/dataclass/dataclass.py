@@ -251,8 +251,9 @@ class IscellData(BaseData):
 class ScatterData(BaseData):
     def __init__(self, data, file_name='scatter'):
         super().__init__(file_name)
-        if not data.ndim == 2:
-            raise 'Scatter Dimension Error'
+
+        assert data.ndim <= 2, 'Scatter Dimension Error'
+
         self.data = data
 
     def save_json(self, json_dir):
@@ -276,11 +277,11 @@ class BarData(BaseData):
 
         assert data.ndim == 2, 'Bar Dimesion is not 2'
 
-        self.data = data
+        self.data = data.T
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        JsonWriter.write_as_values(self.json_path, self.data)
+        JsonWriter.write(self.json_path, self.data)
 
     def __del__(self):
         del self

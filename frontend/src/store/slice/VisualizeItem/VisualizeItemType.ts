@@ -107,13 +107,13 @@ export interface RoiItem extends DisplayDataItemBaseType {
 
 export interface ScatterItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.SCATTER
-  xIndex: number
-  yIndex: number
+  xIndex: string
+  yIndex: string
 }
 
 export interface BarItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.BAR
-  index: number
+  index: string
 }
 
 export interface HDF5Item extends DisplayDataItemBaseType {

@@ -1,7 +1,8 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
-import { LinearProgress, Typography } from '@mui/material'
+import LinearProgress from '@mui/material/LinearProgress'
+import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
@@ -71,7 +72,7 @@ const BarPlotImple = React.memo(() => {
   const layout = React.useMemo(
     () => ({
       width: width,
-      height: height - 130,
+      height: height - 120,
       margin: {
         t: 60, // top
         l: 50, // left
@@ -100,7 +101,7 @@ const BarPlotImple = React.memo(() => {
     <div>
       <Box sx={{ display: 'flex' }}>
         <Box sx={{ flexGrow: 1, ml: 1 }}>
-          <SelectIndex dataLength={barData.length} />
+          <SelectIndex dataKeys={Object.keys(barData)} />
         </Box>
       </Box>
       <PlotlyChart data={data} layout={layout} config={config} />
@@ -109,8 +110,8 @@ const BarPlotImple = React.memo(() => {
 })
 
 const SelectIndex = React.memo<{
-  dataLength: number
-}>(({ dataLength }) => {
+  dataKeys: string[]
+}>(({ dataKeys }) => {
   const { itemId } = React.useContext(DisplayDataContext)
   const dispatch = useDispatch()
   const index = useSelector(selectBarItemIndex(itemId))
@@ -119,7 +120,7 @@ const SelectIndex = React.memo<{
     dispatch(
       setBarItemIndex({
         itemId,
-        index: Number(event.target.value),
+        index: event.target.value,
       }),
     )
   }
@@ -127,7 +128,7 @@ const SelectIndex = React.memo<{
     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
       <InputLabel>index</InputLabel>
       <Select label="smooth" value={`${index}`} onChange={handleChange}>
-        {[...Array(dataLength)].map((_, i) => (
+        {dataKeys.map((_, i) => (
           <MenuItem value={i}>{i}</MenuItem>
         ))}
       </Select>

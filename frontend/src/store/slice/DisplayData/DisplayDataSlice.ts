@@ -313,7 +313,7 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.scatter[path] = {
           type: 'scatter',
-          data: [],
+          data: {},
           pending: true,
           fulfilled: false,
           error: null,
@@ -333,7 +333,7 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.scatter[path] = {
           type: 'scatter',
-          data: [],
+          data: {},
           pending: false,
           fulfilled: false,
           error: action.error.message ?? 'rejected',
@@ -343,7 +343,7 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.bar[path] = {
           type: 'bar',
-          data: [],
+          data: {},
           pending: true,
           fulfilled: false,
           error: null,
@@ -363,7 +363,7 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.bar[path] = {
           type: 'bar',
-          data: [],
+          data: {},
           pending: false,
           fulfilled: false,
           error: action.error.message ?? 'rejected',

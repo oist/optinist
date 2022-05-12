@@ -109,13 +109,13 @@ const roiItemInitialValue: RoiItem = {
 const scatterItemInitialValue: ScatterItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.SCATTER,
-  xIndex: 0,
-  yIndex: 1,
+  xIndex: '0',
+  yIndex: '1',
 }
 const barItemInitialValue: BarItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.BAR,
-  index: 0,
+  index: '0',
 }
 const hdf5ItemInitialValue: HDF5Item = {
   ...displayDataCommonInitialValue,
@@ -717,7 +717,7 @@ export const visualaizeItemSlice = createSlice({
       state,
       action: PayloadAction<{
         itemId: number
-        xIndex: number
+        xIndex: string
       }>,
     ) => {
       const targetItem = state.items[action.payload.itemId]
@@ -729,7 +729,7 @@ export const visualaizeItemSlice = createSlice({
       state,
       action: PayloadAction<{
         itemId: number
-        yIndex: number
+        yIndex: string
       }>,
     ) => {
       const targetItem = state.items[action.payload.itemId]
@@ -741,7 +741,7 @@ export const visualaizeItemSlice = createSlice({
       state,
       action: PayloadAction<{
         itemId: number
-        index: number
+        index: string
       }>,
     ) => {
       const targetItem = state.items[action.payload.itemId]
