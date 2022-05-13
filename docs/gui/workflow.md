@@ -15,7 +15,7 @@ Set tiff image in your working directory and set as input.
 (An large data file takes long time tWWo upload, so it copies to `OPTINIST_DIR` directly and load file more quickly. )
 2. Click `SELECT IMAGE` button and set as input _static. 
 
-** Currentlly, input _static need to have {.tif, .TIF, .tiff, .TIFF} extension. (developing other extension)
+** Currentlly, input _static needs to have {.tif, .TIF, .tiff, .TIFF} extension. (developing other extension)
 <br>
 <p align="center">
 <img width="200px" src="../_static/workflow/components/imageNode.png" alt="imageNode" />
