@@ -1,4 +1,5 @@
 import os
+import shutil
 
 from optinist.api.dir_path import DIRPATH
 
@@ -26,6 +27,9 @@ def get_pickle_file(unique_id, node_id, algo_name):
     ])
 
 
-def create_directory(dirpath):
+def create_directory(dirpath, delete_dir=False):
+    if delete_dir and os.path.exists(dirpath):
+        shutil.rmtree(dirpath)
+
     if not os.path.exists(dirpath):
         os.makedirs(dirpath)

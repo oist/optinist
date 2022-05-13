@@ -58,7 +58,7 @@ class ImageData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        JsonWriter.write_as_values(
+        JsonWriter.write_as_split(
             self.json_path,
             create_images_list(self.data)
         )
@@ -97,9 +97,7 @@ class TimeSeriesData(BaseData):
     def save_json(self, json_dir):
         # timeseriesだけはdirを返す
         self.json_path = join_filepath([json_dir, self.file_name])
-        if os.path.exists(self.json_path):
-            shutil.rmtree(self.json_path)
-        create_directory(self.json_path)
+        create_directory(self.json_path, delete_dir=True)
 
         for i, cell_i in enumerate(self.cell_numbers):
             data = self.data[i]
@@ -169,11 +167,10 @@ class CsvData(BaseData):
     def save_json(self, json_dir):
         # timeseriesだけはdirを返す
         self.json_path = join_filepath([json_dir, self.file_name])
-        if not os.path.exists(self.json_path):
-            os.makedirs(self.json_path)
+        create_directory(self.json_path)
 
         for i, data in enumerate(self.data):
-            JsonWriter.write(
+            JsonWriter.write_as_split(
                 join_filepath([self.json_path, f'{str(i)}.json']),
                 data
             )
@@ -184,13 +181,23 @@ class CsvData(BaseData):
 
 
 class HeatMapData(BaseData):
-    def __init__(self, data, file_name='heatmap'):
+    def __init__(self, data, columns=None, file_name='heatmap'):
         super().__init__(file_name)
         self.data = data
 
+        # indexを指定
+        if columns is not None:
+            self.columns = columns
+        else:
+            self.columns = np.arange(len(self.data[0]))
+
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        JsonWriter.write_as_values(self.json_path, self.data)
+        df = pd.DataFrame(
+            self.data,
+            columns=self.columns,
+        )
+        JsonWriter.write_as_split(self.json_path, df)
 
     def __del__(self):
         del self
@@ -221,7 +228,7 @@ class RoiData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        JsonWriter.write_as_values(self.json_path, create_images_list(self.data))
+        JsonWriter.write_as_split(self.json_path, create_images_list(self.data))
 
     def __del__(self):
         del self
@@ -258,7 +265,7 @@ class ScatterData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        JsonWriter.write(self.json_path, self.data)
+        JsonWriter.write_as_split(self.json_path, self.data)
 
     def __del__(self):
         del self
@@ -281,7 +288,7 @@ class BarData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        JsonWriter.write(self.json_path, self.data)
+        JsonWriter.write_as_split(self.json_path, self.data)
 
     def __del__(self):
         del self

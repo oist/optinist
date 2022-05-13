@@ -133,5 +133,5 @@ async def read_csv(filepath: str):
     dirpath = os.path.dirname(filepath)
     filename, _ = os.path.splitext(os.path.basename(filepath))
     json_filepath = join_filepath([dirpath, f'{filename}.json'])
-    JsonWriter.write_as_values(json_filepath, pd.read_csv(filepath, header=None))
+    JsonWriter.write_as_split(json_filepath, pd.read_csv(filepath, header=None))
     return JsonReader.read_as_output(json_filepath)

@@ -50,8 +50,10 @@ class HDF5Node:
 @dataclass
 class OutputData:
     data: Dict[str, dict]
+    columns: List[str] = None
+    index: List[str] = None
 
 @dataclass
 class JsonTimeSeriesData(OutputData):
-    xrange: list
-    std: Dict[str, dict]
+    xrange: list = None
+    std: Dict[str, dict] = None
