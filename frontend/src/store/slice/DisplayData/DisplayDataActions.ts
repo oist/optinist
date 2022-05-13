@@ -67,7 +67,7 @@ export const getTimeSeriesAllData = createAsyncThunk<
 )
 
 export const getHeatMapData = createAsyncThunk<
-  { data: HeatMapData },
+  { data: HeatMapData; columns: string[]; index: string[] },
   { path: string }
 >(`${DISPLAY_DATA_SLICE_NAME}/getHeatMapData`, async ({ path }, thunkAPI) => {
   try {
@@ -131,17 +131,17 @@ export const getScatterData = createAsyncThunk<
   }
 })
 
-export const getBarData = createAsyncThunk<{ data: BarData }, { path: string }>(
-  `${DISPLAY_DATA_SLICE_NAME}/getBarData`,
-  async ({ path }, thunkAPI) => {
-    try {
-      const response = await getBarDataApi(path)
-      return response
-    } catch (e) {
-      return thunkAPI.rejectWithValue(e)
-    }
-  },
-)
+export const getBarData = createAsyncThunk<
+  { data: BarData; columns: string[]; index: string[] },
+  { path: string }
+>(`${DISPLAY_DATA_SLICE_NAME}/getBarData`, async ({ path }, thunkAPI) => {
+  try {
+    const response = await getBarDataApi(path)
+    return response
+  } catch (e) {
+    return thunkAPI.rejectWithValue(e)
+  }
+})
 
 export const getHTMLData = createAsyncThunk<
   { data: HTMLData },

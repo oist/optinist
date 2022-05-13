@@ -23,7 +23,7 @@ const Layout: React.FC = () => {
     <RootDiv>
       <StyledAppBar position="fixed" color="inherit">
         <Toolbar variant="dense">
-          <img src={optinistLogo} alt="optinist" width={85} height={50} />
+          <img src={optinistLogo} alt="optinist" width={75} height={50} />
           <Tabs
             sx={{ width: '100%' }}
             value={value}
@@ -57,7 +57,7 @@ const RootDiv = styled('div')(({ theme }) => ({
 
 const StyledAppBar = styled(AppBar)(({ theme }) => ({
   zIndex: theme.zIndex.drawer + 1,
-  backgroundColor: '#C3EBE1',
+  backgroundColor: '#E1DEDB',
 }))
 
 interface TabPanelProps {

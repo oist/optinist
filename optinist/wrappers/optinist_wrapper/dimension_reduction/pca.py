@@ -50,8 +50,16 @@ def PCA(
     info = {
         'explained_variance': BarData(pca.explained_variance_ratio_, file_name='evr'),
         'projectedNd': ScatterData(proj_X, file_name='projectedNd'),
-        'contribution': BarData(pca.components_, file_name='contribution'),
-        'cumsum_contribution': BarData(np.cumsum(pca.components_, axis=0), file_name='cumsum_contribution'),
+        'contribution': BarData(
+            pca.components_,
+            index=[f'pca: {i}' for i in range(len(pca.components_))],
+            file_name='contribution'
+        ),
+        'cumsum_contribution': BarData(
+            np.cumsum(pca.components_, axis=0),
+            index=[f'pca: {i}' for i in range(len(pca.components_))],
+            file_name='cumsum_contribution'
+        ),
         'nwbfile': nwbfile,
     }
 

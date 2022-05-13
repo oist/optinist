@@ -72,7 +72,10 @@ export interface TimeSeriesDisplayData
 }
 
 export interface HeatMapDisplayData
-  extends BaseDisplay<'heatMap', HeatMapData> {}
+  extends BaseDisplay<'heatMap', HeatMapData> {
+  columns: string[]
+  index: string[]
+}
 
 export interface ImageDisplayData extends BaseDisplay<'image', ImageData> {}
 
@@ -87,6 +90,9 @@ export interface RoiDisplayData extends BaseDisplay<'roi', RoiData> {
 export interface ScatterDisplayData
   extends BaseDisplay<'scatter', ScatterData> {}
 
-export interface BarDisplayData extends BaseDisplay<'bar', BarData> {}
+export interface BarDisplayData extends BaseDisplay<'bar', BarData> {
+  columns: string[]
+  index: string[]
+}
 
 export interface HTMLDisplayData extends BaseDisplay<'html', HTMLData> {}

@@ -16,6 +16,7 @@ import {
   selectBarDataIsFulfilled,
   selectBarDataIsInitialized,
   selectBarDataIsPending,
+  selectBarIndex,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getBarData } from 'store/slice/DisplayData/DisplayDataActions'
 import { BarData } from 'api/outputs/Outputs'
@@ -57,6 +58,7 @@ const BarPlotImple = React.memo(() => {
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
   const index = useSelector(selectBarItemIndex(itemId))
+  const dataKeys = useSelector(selectBarIndex(path))
 
   const data = React.useMemo(
     () => [
@@ -101,7 +103,7 @@ const BarPlotImple = React.memo(() => {
     <div>
       <Box sx={{ display: 'flex' }}>
         <Box sx={{ flexGrow: 1, ml: 1 }}>
-          <SelectIndex dataKeys={Object.keys(barData)} />
+          <SelectIndex dataKeys={dataKeys} />
         </Box>
       </Box>
       <PlotlyChart data={data} layout={layout} config={config} />
@@ -128,8 +130,8 @@ const SelectIndex = React.memo<{
     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
       <InputLabel>index</InputLabel>
       <Select label="smooth" value={`${index}`} onChange={handleChange}>
-        {dataKeys.map((_, i) => (
-          <MenuItem value={i}>{i}</MenuItem>
+        {dataKeys.map((v, i) => (
+          <MenuItem value={i}>{v}</MenuItem>
         ))}
       </Select>
     </FormControl>

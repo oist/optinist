@@ -261,7 +261,7 @@ class ScatterData(BaseData):
 
         assert data.ndim <= 2, 'Scatter Dimension Error'
 
-        self.data = data
+        self.data = data.T
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
@@ -273,7 +273,7 @@ class ScatterData(BaseData):
 
 
 class BarData(BaseData):
-    def __init__(self, data, file_name='bar'):
+    def __init__(self, data, index=None, file_name='bar'):
         super().__init__(file_name)
         data = np.array(data)
 
@@ -284,11 +284,21 @@ class BarData(BaseData):
 
         assert data.ndim == 2, 'Bar Dimesion is not 2'
 
-        self.data = data.T
+        self.data = data
+
+        # indexを指定
+        if index is not None:
+            self.index = index
+        else:
+            self.index = np.arange(len(self.data))
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        JsonWriter.write_as_split(self.json_path, self.data)
+        df = pd.DataFrame(
+            self.data,
+            index=self.index,
+        )
+        JsonWriter.write_as_split(self.json_path, df)
 
     def __del__(self):
         del self

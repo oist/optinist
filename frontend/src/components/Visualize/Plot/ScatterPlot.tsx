@@ -71,8 +71,8 @@ const ScatterPlotImple = React.memo(() => {
   const data = React.useMemo(
     () => [
       {
-        x: Object.values(scatterData[xIndex]),
-        y: Object.values(scatterData[yIndex]),
+        x: scatterData[xIndex],
+        y: scatterData[yIndex],
         type: 'scatter',
         mode: 'markers', //'markers+text',
         text: Object.keys(scatterData[xIndex]),

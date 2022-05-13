@@ -38,7 +38,7 @@ export type HeatMapData = number[][]
 
 export async function getHeatMapDataApi(
   path: string,
-): Promise<{ data: HeatMapData }> {
+): Promise<{ data: HeatMapData; columns: string[]; index: string[] }> {
   const response = await axios.get(`${BASE_URL}/outputs/data/${path}`)
   return response.data
 }
@@ -94,7 +94,9 @@ export type BarData = {
   }
 }
 
-export async function getBarDataApi(path: string): Promise<{ data: BarData }> {
+export async function getBarDataApi(
+  path: string,
+): Promise<{ data: BarData; columns: string[]; index: string[] }> {
   const response = await axios.get(`${BASE_URL}/outputs/data/${path}`, {})
   return response.data
 }
