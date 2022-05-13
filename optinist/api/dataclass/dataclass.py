@@ -72,6 +72,8 @@ class TimeSeriesData(BaseData):
     def __init__(self, data, std=None, index=None, cell_numbers=None, file_name='timeseries'):
         super().__init__(file_name)
 
+        assert data.ndim <= 2, 'TimeSeries Dimension Error'
+
         if isinstance(data, str):
             self.data = pd.read_csv(data, header=None).values
         else:
