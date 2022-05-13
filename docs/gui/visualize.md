@@ -31,14 +31,14 @@ Customize parameters, color gradient, xy-axis, transparent of plot.
 
 
 ### Add display box into columns right
-Click **︙** and `Insert into next columns` to add other display box.
+Click **︙** and `Insert into next columns` to add another display box.
 <p align="center">
 <img width="400px" src="../_static/visualize/components/add_column.png" alt="AddColumn" />
 </p>
 
 
 ## Ref Image
-TimeSeries plot can refer image plot to synthronize cell number. Click or drag image plot and cell numbers are synthoronize at timeseries plot.
+TimeSeries plot can refer to a image plot to synthronize cell number index. Click or drag image plot so that cell number indexes are synthoronized in corresponding timeseries plot.
 <p align="center">
 <img width="500px" src="../_static/visualize/components/ref_image.png" alt="RefImage" />
 </p>
