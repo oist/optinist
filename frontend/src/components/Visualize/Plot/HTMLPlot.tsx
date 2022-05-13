@@ -39,5 +39,14 @@ const HTMLPlotImple = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
   const htmlData = useSelector(selectHTMLData(path))
 
-  return <div dangerouslySetInnerHTML={{ __html: htmlData }} />
+  return (
+    <div
+      dangerouslySetInnerHTML={{ __html: htmlData }}
+      style={{
+        overflow: 'scroll',
+        display: 'flex',
+        height: '90%',
+      }}
+    />
+  )
 })

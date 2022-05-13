@@ -1,5 +1,3 @@
-import os
-import shutil
 import numpy as np
 import pandas as pd
 import imageio
@@ -313,7 +311,7 @@ class HTMLData(BaseData):
         self.data = data
 
     def save_json(self, json_dir):
-        self.json_path = join_filepath(json_dir, f"{self.file_name}.html")
+        self.json_path = join_filepath([json_dir, f"{self.file_name}.html"])
 
         with open(self.json_path, "w") as f:
             f.write(self.data)
