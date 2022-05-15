@@ -432,8 +432,8 @@ describe('RunSelectors', () => {
         id: 'reactflow__edge-suite2p_file_convert_m58owcejm0suite2p_file_convert_m58owcejm0--ops--Suite2pData-suite2p_roi_16ffq69kkcsuite2p_roi_16ffq69kkc--ops--Suite2pData',
       },
     ],
-    nodeList: [
-      {
+    nodeDict: {
+      input_0: {
         id: 'input_0',
         type: 'ImageFileNode',
         data: {
@@ -446,7 +446,7 @@ describe('RunSelectors', () => {
         style: { border: '1px solid #777', height: 120 },
         position: { x: 50, y: 150 },
       },
-      {
+      suite2p_roi_16ffq69kkc: {
         id: 'suite2p_roi_16ffq69kkc',
         type: 'AlgorithmNode',
         data: {
@@ -513,7 +513,7 @@ describe('RunSelectors', () => {
         sourcePosition: 'right',
         position: { x: 657, y: 170.0246319539301 },
       },
-      {
+      suite2p_file_convert_m58owcejm0: {
         id: 'suite2p_file_convert_m58owcejm0',
         type: 'AlgorithmNode',
         data: {
@@ -541,7 +541,7 @@ describe('RunSelectors', () => {
         sourcePosition: 'right',
         position: { x: 413, y: 169.6170204394443 },
       },
-    ],
+    },
     forceRunList: [],
   }
 
@@ -619,8 +619,8 @@ describe('RunSelectors', () => {
         id: 'reactflow__edge-input_0input_0--image--ImageData-suite2p_file_convert_6fn2k01zphsuite2p_file_convert_6fn2k01zph--image--ImageData',
       },
     ],
-    nodeList: [
-      {
+    nodeDict: {
+      input_0: {
         id: 'input_0',
         type: 'ImageFileNode',
         data: {
@@ -633,7 +633,7 @@ describe('RunSelectors', () => {
         style: { border: '1px solid #777', height: 120 },
         position: { x: 50, y: 152 },
       },
-      {
+      suite2p_file_convert_6fn2k01zph: {
         id: 'suite2p_file_convert_6fn2k01zph',
         type: 'AlgorithmNode',
         data: {
@@ -661,7 +661,7 @@ describe('RunSelectors', () => {
         sourcePosition: 'right',
         position: { x: 350, y: 153.52022229668373 },
       },
-    ],
+    },
     forceRunList: [
       {
         nodeId: 'suite2p_file_convert_6fn2k01zph',

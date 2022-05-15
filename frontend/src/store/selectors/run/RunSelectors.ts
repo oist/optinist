@@ -3,7 +3,7 @@ import { Node } from 'react-flow-renderer'
 import {
   AlgorithmNodePostData,
   InputNodePostData,
-  NodePostDataType,
+  NodeDict,
   RunPostData,
 } from 'api/run/Run'
 
@@ -39,13 +39,13 @@ export const selectRunPostData = (state: RootState) => {
   const nwbParam = selectNwbParams(state)
   const snakemakeParam = selectSnakemakeParams(state)
   const edgeListForRun = selectEdgeListForRun(state)
-  const nodePostDataList = selectNodePostDataListForRun(state)
+  const nodeDictForRun = selectNodeDictForRun(state)
   const forceRunList = selectForceRunList(state)
   const runPostData: Omit<RunPostData, 'name'> = {
     nwbParam,
     snakemakeParam,
     edgeList: edgeListForRun,
-    nodeList: nodePostDataList,
+    nodeDict: nodeDictForRun,
     forceRunList,
   }
   return runPostData
@@ -69,11 +69,10 @@ const selectForceRunList = (state: RootState) => {
     }))
 }
 
-const selectNodePostDataListForRun = (
-  state: RootState,
-): Node<NodePostDataType>[] => {
+const selectNodeDictForRun = (state: RootState): NodeDict => {
   const elements = selectFlowElements(state)
-  const nodeList = elements.filter(isNodeData).map((node) => {
+  const nodeDict: NodeDict = {}
+  elements.filter(isNodeData).forEach((node) => {
     if (isAlgorithmNodeData(node)) {
       const param = selectAlgorithmParams(node.id)(state) ?? {}
       const functionPath = selectAlgorithmFunctionPath(node.id)(state)
@@ -87,7 +86,7 @@ const selectNodePostDataListForRun = (
           param,
         },
       }
-      return algorithmNodePostData
+      nodeDict[node.id] = algorithmNodePostData
     } else {
       const filePath = selectInputNodeSelectedFilePath(node.id)(state)
       const fileType = selectInputNodeFileType(node.id)(state)
@@ -105,8 +104,8 @@ const selectNodePostDataListForRun = (
           fileType,
         },
       }
-      return inputNodePosyData
+      nodeDict[node.id] = inputNodePosyData
     }
   })
-  return nodeList
+  return nodeDict
 }

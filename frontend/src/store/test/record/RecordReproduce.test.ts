@@ -6,8 +6,8 @@ describe('RecordReproduce', () => {
   const initialState = store.getState()
 
   const importExperimentByUidPayload = {
-    nodeList: [
-      {
+    nodeDict: {
+      input_0: {
         id: 'input_0',
         type: 'ImageFileNode',
         data: {
@@ -27,7 +27,7 @@ describe('RecordReproduce', () => {
           borderRadius: null,
         },
       },
-      {
+      dummy_image2image_c8tqfxw0mq: {
         id: 'dummy_image2image_c8tqfxw0mq',
         type: 'AlgorithmNode',
         data: {
@@ -47,7 +47,7 @@ describe('RecordReproduce', () => {
           borderRadius: 0,
         },
       },
-      {
+      dummy_image2image8time_4mrz8h7hyk: {
         id: 'dummy_image2image8time_4mrz8h7hyk',
         type: 'AlgorithmNode',
         data: {
@@ -67,7 +67,7 @@ describe('RecordReproduce', () => {
           borderRadius: 0,
         },
       },
-    ],
+    },
     edgeList: [
       {
         id: 'reactflow__edge-dummy_image2image_c8tqfxw0mqdummy_image2image_c8tqfxw0mq--image2image--ImageData-dummy_image2image8time_4mrz8h7hykdummy_image2image8time_4mrz8h7hyk--image1--ImageData',

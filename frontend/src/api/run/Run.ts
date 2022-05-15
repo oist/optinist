@@ -11,11 +11,15 @@ import type { ParamMap } from 'utils/param/ParamType'
 
 export type RunPostData = {
   name: string
-  nodeList: Node<NodePostDataType>[]
+  nodeDict: NodeDict
   edgeList: Edge[]
   nwbParam: ParamMap
   snakemakeParam: ParamMap
   forceRunList: { nodeId: string; name: string }[]
+}
+
+export type NodeDict = {
+  [nodeId: string]: Node<NodePostDataType>
 }
 
 export type NodePostDataType = AlgorithmNodePostData | InputNodePostData

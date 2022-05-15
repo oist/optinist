@@ -73,7 +73,7 @@ export const algorithmNodeSlice = createSlice({
       })
       .addCase(importExperimentByUid.fulfilled, (_, action) => {
         const newState: AlgorithmNode = {}
-        action.payload.nodeList
+        Object.values(action.payload.nodeDict)
           .filter(isAlgorithmNodePostData)
           .forEach((node) => {
             if (node.data != null) {
@@ -91,7 +91,7 @@ export const algorithmNodeSlice = createSlice({
         isAnyOf(run.fulfilled, runByCurrentUid.fulfilled),
         (state, action) => {
           const runPostData = action.meta.arg.runPostData
-          runPostData.nodeList
+          Object.values(runPostData.nodeDict)
             .filter(isAlgorithmNodePostData)
             .forEach((node) => {
               state[node.id].isUpdated = false
