@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Dict
 
 from optinist.api.workflow.workflow import Edge, Node
 
@@ -17,5 +17,5 @@ class ExptConfig:
     name: str
     unique_id: str
     function: Dict[str, ExptFunction]
-    nodeList: List[Node]
-    edgeList: List[Edge]
+    nodeDict: Dict[str, Node]
+    edgeDict: Dict[str, Edge]

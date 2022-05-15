@@ -24,8 +24,8 @@ class ExptConfigReader:
             name=config["name"],
             timestamp=config["timestamp"],
             function=cls.function_read(config["function"]),
-            nodeList=cls.nodeList_read(config["nodeList"]),
-            edgeList=cls.edgeList_read(config["edgeList"]),
+            nodeDict=cls.nodeDict_read(config["nodeDict"]),
+            edgeDict=cls.edgeDict_read(config["edgeDict"]),
         )
 
     @classmethod
@@ -40,23 +40,25 @@ class ExptConfigReader:
         }
 
     @classmethod
-    def nodeList_read(cls, config) -> Node:
-        return [
+    def nodeDict_read(cls, config) -> Node:
+        return { 
+            key: 
             Node(
-                id=value["id"],
+                id=key,
                 type=value["type"],
                 data=NodeData(**value["data"]),
                 position=NodePosition(**value["position"]),
                 style=Style(**value["style"])
             )
-            for value in config
-        ]
+            for key, value in config.items()
+        }
 
     @classmethod
-    def edgeList_read(cls, config) -> Edge:
-        return [
+    def edgeDict_read(cls, config) -> Edge:
+        return {
+            key:
             Edge(
-                id=value["id"],
+                id=key,
                 type=value["type"],
                 animated=value["animated"],
                 source=value["source"],
@@ -65,6 +67,5 @@ class ExptConfigReader:
                 targetHandle=value["targetHandle"],
                 style=Style(**value["style"]),
             )
-            for value in config
-        ]
-
+            for key, value in config.items()
+        }
