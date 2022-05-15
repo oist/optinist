@@ -20,8 +20,8 @@ class WorkflowRunner:
         _create_workflow(
             unique_id,
             runItem.name,
-            ExptConfigReader.nodeList_read(runItem.nodeList),
-            ExptConfigReader.edgeList_read(runItem.edgeList),
+            ExptConfigReader.nodeDict_read(runItem.nodeDict),
+            ExptConfigReader.edgeDict_read(runItem.edgeDict),
             runItem.nwbParam
         )
 
@@ -33,11 +33,11 @@ class WorkflowRunner:
         background_tasks.add_task(snakemake_execute, snakemake_params)
 
 
-def _create_workflow(unique_id, name, nodeList, edgeList, nwbParam):
+def _create_workflow(unique_id, name, nodeDict, edgeDict, nwbParam):
     rules, last_output = _rulefile(
         unique_id,
-        nodeList,
-        edgeList,
+        nodeDict,
+        edgeDict,
         nwbParam,
     )
 
@@ -47,12 +47,12 @@ def _create_workflow(unique_id, name, nodeList, edgeList, nwbParam):
     )
 
     SmkConfigWriter.write(unique_id, asdict(flow_config))
-    ExptConfigWriter.write(unique_id, name, nodeList, edgeList)
+    ExptConfigWriter.write(unique_id, name, nodeDict, edgeDict)
 
 
-def _rulefile(unique_id, nodeList, edgeList, nwbParam):
-    nodeDict = _get_nodeDict(nodeList)
-    endNodeList = _get_endNodeList(edgeList, nodeDict)
+def _rulefile(unique_id: str, nodeDict: Dict[str, Node], edgeDict: Dict[str, Edge], nwbParam):
+    # nodeDict = _get_nodeDict(nodeList)
+    endNodeList = _get_endNodeList(edgeDict, nodeDict)
 
     nwbfile = get_typecheck_params(nwbParam, "nwb")
 
@@ -61,17 +61,17 @@ def _rulefile(unique_id, nodeList, edgeList, nwbParam):
 
     for node in nodeDict.values():
         if node.type == NodeType.IMAGE:
-            rule_dict[node.id] = SmkSetfile.image(unique_id, node, edgeList, nwbfile)
+            rule_dict[node.id] = SmkSetfile.image(unique_id, node, edgeDict, nwbfile)
         elif node.type == NodeType.CSV:
-            rule_dict[node.id] = SmkSetfile.csv(unique_id, node, edgeList, nwbfile)
+            rule_dict[node.id] = SmkSetfile.csv(unique_id, node, edgeDict, nwbfile)
         elif node.type == NodeType.FLUO:
-            rule_dict[node.id] = SmkSetfile.csv(unique_id, node, edgeList, nwbfile)
+            rule_dict[node.id] = SmkSetfile.csv(unique_id, node, edgeDict, nwbfile)
         elif node.type == NodeType.BEHAVIOR:
-            rule_dict[node.id] = SmkSetfile.csv(unique_id, node, edgeList, nwbfile, "behavior")
+            rule_dict[node.id] = SmkSetfile.csv(unique_id, node, edgeDict, nwbfile, "behavior")
         elif node.type == NodeType.HDF5:
-            rule_dict[node.id] = SmkSetfile.hdf5(unique_id, node, edgeList, nwbfile)
+            rule_dict[node.id] = SmkSetfile.hdf5(unique_id, node, edgeDict, nwbfile)
         elif node.type == NodeType.ALGO:
-            rule = SmkSetfile.algo(unique_id, node, edgeList, nodeDict)
+            rule = SmkSetfile.algo(unique_id, node, edgeDict, nodeDict)
             rule_dict[node.id] = rule
 
             if node.id in endNodeList:
@@ -82,17 +82,9 @@ def _rulefile(unique_id, nodeList, edgeList, nwbParam):
     return rule_dict, last_outputs
 
 
-def _get_nodeDict(nodeList: List[Node]) -> Dict[str, Node]:
-    # nodeを初期化
-    nodeDict = {}
-    for node in nodeList:
-        nodeDict[node.id] = node
-    return nodeDict
-
-
-def _get_endNodeList(edgeList: List[Edge], nodeDict):
+def _get_endNodeList(edgeDict: Dict[str, Edge], nodeDict: Dict[str, Node]):
     returnCntDict = {key: 0 for key in nodeDict.keys()}
-    for edge in edgeList:
+    for edge in edgeDict.values():
         returnCntDict[edge.source] += 1
 
     endNodeList = []

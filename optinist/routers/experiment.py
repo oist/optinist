@@ -18,8 +18,8 @@ async def read_experiment():
     config_paths = glob(join_filepath([DIRPATH.OUTPUT_DIR, "*", DIRPATH.EXPERIMENT_YML]))
     for path in config_paths:
         config = ExptConfigReader.read(path)
-        config.nodeList = []
-        config.edgeList = []
+        config.nodeDict = []
+        config.edgeDict = []
         exp_config[config.unique_id] = config
 
     return exp_config
@@ -30,8 +30,8 @@ async def read_experiment(unique_id: str):
     config = ExptConfigReader.read(join_filepath([
         DIRPATH.OUTPUT_DIR, unique_id, DIRPATH.EXPERIMENT_YML]))
     return {
-        "nodeList": config.nodeList,
-        "edgeList": config.edgeList,
+        "nodeDict": config.nodeDict,
+        "edgeDict": config.edgeDict,
     }
 
 

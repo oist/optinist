@@ -43,8 +43,8 @@ describe('Experiments', () => {
             success: 'success',
           },
         },
-        nodeList: [],
-        edgeList: [],
+        nodeDict: [],
+        edgeDict: [],
       },
       [uid2]: {
         timestamp: '2022-05-07 05:54:53',
@@ -67,8 +67,8 @@ describe('Experiments', () => {
             success: 'success',
           },
         },
-        nodeList: [],
-        edgeList: [],
+        nodeDict: [],
+        edgeDict: [],
       },
     },
   }

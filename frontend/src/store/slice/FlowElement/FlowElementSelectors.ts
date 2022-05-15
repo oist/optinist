@@ -1,4 +1,3 @@
-import { isEdge } from 'react-flow-renderer'
 import { RootState } from 'store/store'
 import { isNodeData } from './FlowElementUtils'
 
@@ -21,6 +20,3 @@ export const selectNodeTypeById = (nodeId: string) => (state: RootState) =>
 
 export const selectNodeLabelById = (nodeId: string) => (state: RootState) =>
   selectNodeById(nodeId)(state)?.data?.label
-
-export const selectEdgeListForRun = (state: RootState) =>
-  selectFlowElements(state).filter(isEdge)
