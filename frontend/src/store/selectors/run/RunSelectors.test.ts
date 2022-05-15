@@ -410,28 +410,30 @@ describe('RunSelectors', () => {
       forcetargets: { type: 'child', value: true, path: 'forcetargets' },
       lock: { type: 'child', value: false, path: 'lock' },
     },
-    edgeList: [
-      {
-        source: 'input_0',
-        sourceHandle: 'input_0--image--ImageData',
-        target: 'suite2p_file_convert_m58owcejm0',
-        targetHandle: 'suite2p_file_convert_m58owcejm0--image--ImageData',
-        animated: false,
-        style: { width: 5 },
-        type: 'buttonedge',
-        id: 'reactflow__edge-input_0input_0--image--ImageData-suite2p_file_convert_m58owcejm0suite2p_file_convert_m58owcejm0--image--ImageData',
-      },
-      {
-        source: 'suite2p_file_convert_m58owcejm0',
-        sourceHandle: 'suite2p_file_convert_m58owcejm0--ops--Suite2pData',
-        target: 'suite2p_roi_16ffq69kkc',
-        targetHandle: 'suite2p_roi_16ffq69kkc--ops--Suite2pData',
-        animated: false,
-        style: { width: 5 },
-        type: 'buttonedge',
-        id: 'reactflow__edge-suite2p_file_convert_m58owcejm0suite2p_file_convert_m58owcejm0--ops--Suite2pData-suite2p_roi_16ffq69kkcsuite2p_roi_16ffq69kkc--ops--Suite2pData',
-      },
-    ],
+    edgeDict: {
+      'reactflow__edge-input_0input_0--image--ImageData-suite2p_file_convert_m58owcejm0suite2p_file_convert_m58owcejm0--image--ImageData':
+        {
+          source: 'input_0',
+          sourceHandle: 'input_0--image--ImageData',
+          target: 'suite2p_file_convert_m58owcejm0',
+          targetHandle: 'suite2p_file_convert_m58owcejm0--image--ImageData',
+          animated: false,
+          style: { width: 5 },
+          type: 'buttonedge',
+          id: 'reactflow__edge-input_0input_0--image--ImageData-suite2p_file_convert_m58owcejm0suite2p_file_convert_m58owcejm0--image--ImageData',
+        },
+      'reactflow__edge-suite2p_file_convert_m58owcejm0suite2p_file_convert_m58owcejm0--ops--Suite2pData-suite2p_roi_16ffq69kkcsuite2p_roi_16ffq69kkc--ops--Suite2pData':
+        {
+          source: 'suite2p_file_convert_m58owcejm0',
+          sourceHandle: 'suite2p_file_convert_m58owcejm0--ops--Suite2pData',
+          target: 'suite2p_roi_16ffq69kkc',
+          targetHandle: 'suite2p_roi_16ffq69kkc--ops--Suite2pData',
+          animated: false,
+          style: { width: 5 },
+          type: 'buttonedge',
+          id: 'reactflow__edge-suite2p_file_convert_m58owcejm0suite2p_file_convert_m58owcejm0--ops--Suite2pData-suite2p_roi_16ffq69kkcsuite2p_roi_16ffq69kkc--ops--Suite2pData',
+        },
+    },
     nodeDict: {
       input_0: {
         id: 'input_0',
@@ -607,18 +609,19 @@ describe('RunSelectors', () => {
   const expectRunPostDataForceRunList = {
     nwbParam: {},
     snakemakeParam: {},
-    edgeList: [
-      {
-        source: 'input_0',
-        sourceHandle: 'input_0--image--ImageData',
-        target: 'suite2p_file_convert_6fn2k01zph',
-        targetHandle: 'suite2p_file_convert_6fn2k01zph--image--ImageData',
-        animated: false,
-        style: { width: 5 },
-        type: 'buttonedge',
-        id: 'reactflow__edge-input_0input_0--image--ImageData-suite2p_file_convert_6fn2k01zphsuite2p_file_convert_6fn2k01zph--image--ImageData',
-      },
-    ],
+    edgeDict: {
+      'reactflow__edge-input_0input_0--image--ImageData-suite2p_file_convert_6fn2k01zphsuite2p_file_convert_6fn2k01zph--image--ImageData':
+        {
+          source: 'input_0',
+          sourceHandle: 'input_0--image--ImageData',
+          target: 'suite2p_file_convert_6fn2k01zph',
+          targetHandle: 'suite2p_file_convert_6fn2k01zph--image--ImageData',
+          animated: false,
+          style: { width: 5 },
+          type: 'buttonedge',
+          id: 'reactflow__edge-input_0input_0--image--ImageData-suite2p_file_convert_6fn2k01zphsuite2p_file_convert_6fn2k01zph--image--ImageData',
+        },
+    },
     nodeDict: {
       input_0: {
         id: 'input_0',

@@ -182,7 +182,9 @@ export const flowElementSlice = createSlice({
             }
           }
         })
-        state.flowElements = newNodeList.concat(action.payload.edgeList)
+        state.flowElements = newNodeList.concat(
+          Object.values(action.payload.edgeDict),
+        )
       }),
 })
 

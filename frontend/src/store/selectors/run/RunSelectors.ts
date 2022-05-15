@@ -1,7 +1,8 @@
-import { Node } from 'react-flow-renderer'
+import { isEdge, Node } from 'react-flow-renderer'
 
 import {
   AlgorithmNodePostData,
+  EdgeDict,
   InputNodePostData,
   NodeDict,
   RunPostData,
@@ -15,10 +16,7 @@ import {
   selectAlgorithmName,
   selectAlgorithmParams,
 } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
-import {
-  selectEdgeListForRun,
-  selectFlowElements,
-} from 'store/slice/FlowElement/FlowElementSelectors'
+import { selectFlowElements } from 'store/slice/FlowElement/FlowElementSelectors'
 import {
   isAlgorithmNodeData,
   isNodeData,
@@ -38,13 +36,13 @@ import {
 export const selectRunPostData = (state: RootState) => {
   const nwbParam = selectNwbParams(state)
   const snakemakeParam = selectSnakemakeParams(state)
-  const edgeListForRun = selectEdgeListForRun(state)
+  const edgeDictForRun = selectEdgeDictForRun(state)
   const nodeDictForRun = selectNodeDictForRun(state)
   const forceRunList = selectForceRunList(state)
   const runPostData: Omit<RunPostData, 'name'> = {
     nwbParam,
     snakemakeParam,
-    edgeList: edgeListForRun,
+    edgeDict: edgeDictForRun,
     nodeDict: nodeDictForRun,
     forceRunList,
   }
@@ -108,4 +106,14 @@ const selectNodeDictForRun = (state: RootState): NodeDict => {
     }
   })
   return nodeDict
+}
+
+const selectEdgeDictForRun = (state: RootState) => {
+  const edgeDict: EdgeDict = {}
+  selectFlowElements(state)
+    .filter(isEdge)
+    .forEach((edge) => {
+      edgeDict[edge.id] = edge
+    })
+  return edgeDict
 }
