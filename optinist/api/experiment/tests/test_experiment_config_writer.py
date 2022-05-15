@@ -13,13 +13,13 @@ def test_filepath():
     return exp_filepath
 
 
-def test_create():
+def test_create_config():
     exp_filepath = test_filepath()
 
     runItem = RunItem(
         name="New Flow",
-        nodeDict=[],
-        edgeDict=[],
+        nodeDict={},
+        edgeDict={},
         snakemakeParam={},
         nwbParam={},
         forceRunList=[],
