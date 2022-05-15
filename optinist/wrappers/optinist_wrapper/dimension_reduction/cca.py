@@ -61,6 +61,7 @@ def CCA(
 
     info = {
         'projectedNd': ScatterData(proj, file_name='projectedNd'),
+        'coef': BarData(cca.coef_.flatten(), file_name='coef'),
         'nwbfile': nwbfile,
     }
 

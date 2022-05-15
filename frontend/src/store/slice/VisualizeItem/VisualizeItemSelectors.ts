@@ -13,6 +13,7 @@ import {
   isHeatMapItem,
   isCsvItem,
   isScatterItem,
+  isBarItem,
 } from './VisualizeItemUtils'
 
 export const selectSelectedVisualizeItemId = (state: RootState) =>
@@ -480,6 +481,15 @@ export const selectCsvItemSetIndex = (itemId: number) => (state: RootState) => {
   const item = selectVisualizeItemById(itemId)(state)
   if (isCsvItem(item)) {
     return item.setIndex
+  } else {
+    throw new Error('invalid VisualaizeItemType')
+  }
+}
+
+export const selectBarItemIndex = (itemId: number) => (state: RootState) => {
+  const item = selectVisualizeItemById(itemId)(state)
+  if (isBarItem(item)) {
+    return item.index
   } else {
     throw new Error('invalid VisualaizeItemType')
   }

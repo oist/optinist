@@ -6,11 +6,13 @@ import { LinearProgress, Typography } from '@mui/material'
 import { DisplayDataContext } from '../DataContext'
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 import {
+  selectHeatMapColumns,
   selectHeatMapData,
   selectHeatMapDataError,
   selectHeatMapDataIsFulfilled,
   selectHeatMapDataIsInitialized,
   selectHeatMapDataIsPending,
+  selectHeatMapIndex,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getHeatMapData } from 'store/slice/DisplayData/DisplayDataActions'
 import {
@@ -48,6 +50,8 @@ export const HeatMapPlot = React.memo(() => {
 const HeatMapImple = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
   const heatMapData = useSelector(selectHeatMapData(path), heatMapDataEqualtyFn)
+  const columns = useSelector(selectHeatMapColumns(path))
+  const index = useSelector(selectHeatMapIndex(path))
   const showscale = useSelector(selectHeatMapItemShowScale(itemId))
   const colorscale = useSelector(selectHeatMapItemColors(itemId))
   const width = useSelector(selectVisualizeItemWidth(itemId))
@@ -59,8 +63,8 @@ const HeatMapImple = React.memo(() => {
         ? [
             {
               z: heatMapData,
-              x: heatMapData.map((_, i) => i),
-              y: heatMapData[0].map((_, i) => i),
+              x: columns,
+              y: index,
               type: 'heatmap',
               name: 'heatmap',
               colorscale: colorscale.map((value) => {

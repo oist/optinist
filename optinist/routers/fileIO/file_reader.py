@@ -24,7 +24,12 @@ class JsonReader:
 
     @classmethod
     def read_as_output(cls, filepath) -> OutputData:
-        return OutputData(cls.read(filepath))
+        json_data = cls.read(filepath)
+        return OutputData(
+            data=json_data['data'],
+            columns=json_data['columns'],
+            index=json_data['index'],
+        )
 
     @classmethod
     def read_as_timeseries(cls, filepath) -> JsonTimeSeriesData:

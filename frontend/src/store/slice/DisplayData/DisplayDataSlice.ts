@@ -179,18 +179,10 @@ export const displayDataSlice = createSlice({
         state.heatMap[path] = {
           type: 'heatMap',
           data: [],
+          columns: [],
+          index: [],
           pending: true,
           fulfilled: false,
-          error: null,
-        }
-      })
-      .addCase(getHeatMapData.fulfilled, (state, action) => {
-        const { path } = action.meta.arg
-        state.heatMap[path] = {
-          type: 'heatMap',
-          data: action.payload.data,
-          pending: false,
-          fulfilled: true,
           error: null,
         }
       })
@@ -199,9 +191,23 @@ export const displayDataSlice = createSlice({
         state.heatMap[path] = {
           type: 'heatMap',
           data: [],
+          columns: [],
+          index: [],
           pending: false,
           fulfilled: false,
           error: action.error.message ?? 'rejected',
+        }
+      })
+      .addCase(getHeatMapData.fulfilled, (state, action) => {
+        const { path } = action.meta.arg
+        state.heatMap[path] = {
+          type: 'heatMap',
+          data: action.payload.data,
+          columns: action.payload.columns,
+          index: action.payload.index,
+          pending: false,
+          fulfilled: true,
+          error: null,
         }
       })
       .addCase(getImageData.pending, (state, action) => {
@@ -313,7 +319,7 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.scatter[path] = {
           type: 'scatter',
-          data: [],
+          data: {},
           pending: true,
           fulfilled: false,
           error: null,
@@ -333,7 +339,7 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.scatter[path] = {
           type: 'scatter',
-          data: [],
+          data: {},
           pending: false,
           fulfilled: false,
           error: action.error.message ?? 'rejected',
@@ -343,19 +349,11 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.bar[path] = {
           type: 'bar',
-          data: [],
+          data: {},
+          columns: [],
+          index: [],
           pending: true,
           fulfilled: false,
-          error: null,
-        }
-      })
-      .addCase(getBarData.fulfilled, (state, action) => {
-        const { path } = action.meta.arg
-        state.bar[path] = {
-          type: 'bar',
-          data: action.payload.data,
-          pending: false,
-          fulfilled: true,
           error: null,
         }
       })
@@ -363,10 +361,24 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.bar[path] = {
           type: 'bar',
-          data: [],
+          data: {},
+          columns: [],
+          index: [],
           pending: false,
           fulfilled: false,
           error: action.error.message ?? 'rejected',
+        }
+      })
+      .addCase(getBarData.fulfilled, (state, action) => {
+        const { path } = action.meta.arg
+        state.bar[path] = {
+          type: 'bar',
+          data: action.payload.data,
+          columns: action.payload.columns,
+          index: action.payload.index,
+          pending: false,
+          fulfilled: true,
+          error: null,
         }
       })
       .addCase(getHTMLData.pending, (state, action) => {

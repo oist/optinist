@@ -4,6 +4,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import InputLabel from '@mui/material/InputLabel'
 import MenuItem from '@mui/material/MenuItem'
 import FormControl from '@mui/material/FormControl'
+import TextField from '@mui/material/TextField'
 
 import {
   selectVisualizeSaveFilename,
@@ -17,7 +18,6 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 import 'react-linear-gradient-picker/dist/index.css'
-import { TextField } from '@mui/material'
 
 export const SaveFig: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)

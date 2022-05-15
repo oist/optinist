@@ -11,8 +11,8 @@ class JsonWriter:
         pd.DataFrame(data).to_json(filepath, indent=4)
 
     @classmethod
-    def write_as_values(cls, filepath, data):
-        pd.DataFrame(data).to_json(filepath, indent=4, orient="values")
+    def write_as_split(cls, filepath, data):
+        pd.DataFrame(data).to_json(filepath, indent=4, orient="split")
 
 
 def save_tiff2json(tiff_file_path, start_index=None, end_index=None):
@@ -34,7 +34,7 @@ def save_tiff2json(tiff_file_path, start_index=None, end_index=None):
     folder_path = os.path.dirname(tiff_file_path)
     filename, _ = os.path.splitext(os.path.basename(tiff_file_path))
 
-    JsonWriter.write_as_values(
+    JsonWriter.write_as_split(
         join_filepath([
             folder_path,
             f'{filename}_{str(start_index)}_{str(end_index)}.json'

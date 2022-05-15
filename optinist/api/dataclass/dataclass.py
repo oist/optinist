@@ -1,5 +1,3 @@
-import os
-import shutil
 import numpy as np
 import pandas as pd
 import imageio
@@ -58,7 +56,7 @@ class ImageData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        JsonWriter.write_as_values(
+        JsonWriter.write_as_split(
             self.json_path,
             create_images_list(self.data)
         )
@@ -71,6 +69,8 @@ class ImageData(BaseData):
 class TimeSeriesData(BaseData):
     def __init__(self, data, std=None, index=None, cell_numbers=None, file_name='timeseries'):
         super().__init__(file_name)
+
+        assert data.ndim <= 2, 'TimeSeries Dimension Error'
 
         if isinstance(data, str):
             self.data = pd.read_csv(data, header=None).values
@@ -97,9 +97,7 @@ class TimeSeriesData(BaseData):
     def save_json(self, json_dir):
         # timeseriesだけはdirを返す
         self.json_path = join_filepath([json_dir, self.file_name])
-        if os.path.exists(self.json_path):
-            shutil.rmtree(self.json_path)
-        create_directory(self.json_path)
+        create_directory(self.json_path, delete_dir=True)
 
         for i, cell_i in enumerate(self.cell_numbers):
             data = self.data[i]
@@ -169,11 +167,10 @@ class CsvData(BaseData):
     def save_json(self, json_dir):
         # timeseriesだけはdirを返す
         self.json_path = join_filepath([json_dir, self.file_name])
-        if not os.path.exists(self.json_path):
-            os.makedirs(self.json_path)
+        create_directory(self.json_path)
 
         for i, data in enumerate(self.data):
-            JsonWriter.write(
+            JsonWriter.write_as_split(
                 join_filepath([self.json_path, f'{str(i)}.json']),
                 data
             )
@@ -184,13 +181,23 @@ class CsvData(BaseData):
 
 
 class HeatMapData(BaseData):
-    def __init__(self, data, file_name='heatmap'):
+    def __init__(self, data, columns=None, file_name='heatmap'):
         super().__init__(file_name)
         self.data = data
 
+        # indexを指定
+        if columns is not None:
+            self.columns = columns
+        else:
+            self.columns = np.arange(len(self.data[0]))
+
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        JsonWriter.write_as_values(self.json_path, self.data)
+        df = pd.DataFrame(
+            self.data,
+            columns=self.columns,
+        )
+        JsonWriter.write_as_split(self.json_path, df)
 
     def __del__(self):
         del self
@@ -221,7 +228,7 @@ class RoiData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        JsonWriter.write_as_values(self.json_path, create_images_list(self.data))
+        JsonWriter.write_as_split(self.json_path, create_images_list(self.data))
 
     def __del__(self):
         del self
@@ -251,13 +258,14 @@ class IscellData(BaseData):
 class ScatterData(BaseData):
     def __init__(self, data, file_name='scatter'):
         super().__init__(file_name)
-        if not data.ndim == 2:
-            raise 'Scatter Dimension Error'
-        self.data = data
+
+        assert data.ndim <= 2, 'Scatter Dimension Error'
+
+        self.data = data.T
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        JsonWriter.write(self.json_path, self.data)
+        JsonWriter.write_as_split(self.json_path, self.data)
 
     def __del__(self):
         del self
@@ -265,17 +273,32 @@ class ScatterData(BaseData):
 
 
 class BarData(BaseData):
-    def __init__(self, data, file_name='bar'):
+    def __init__(self, data, index=None, file_name='bar'):
         super().__init__(file_name)
         data = np.array(data)
-        if not data.ndim == 1:
-            raise 'Bar Dimension Error'
+
+        assert data.ndim <= 2, 'Bar Dimension Error'
+
+        if data.ndim == 1:
+            data = data[np.newaxis]
+
+        assert data.ndim == 2, 'Bar Dimesion is not 2'
 
         self.data = data
 
+        # indexを指定
+        if index is not None:
+            self.index = index
+        else:
+            self.index = np.arange(len(self.data))
+
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        JsonWriter.write(self.json_path, self.data)
+        df = pd.DataFrame(
+            self.data,
+            index=self.index,
+        )
+        JsonWriter.write_as_split(self.json_path, df)
 
     def __del__(self):
         del self
@@ -288,7 +311,7 @@ class HTMLData(BaseData):
         self.data = data
 
     def save_json(self, json_dir):
-        self.json_path = join_filepath(json_dir, f"{self.file_name}.html")
+        self.json_path = join_filepath([json_dir, f"{self.file_name}.html"])
 
         with open(self.json_path, "w") as f:
             f.write(self.data)

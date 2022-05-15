@@ -38,11 +38,12 @@ def cross_correlation(
     )
     x = lags[ind]
 
-    mat = np.zeros([num_cell, num_cell,  len(x)])
-    s_confint = np.zeros([num_cell, num_cell,  len(x), 2])
+    mat = np.zeros([num_cell, num_cell, len(x)])
+    s_confint = np.zeros([num_cell, num_cell, len(x), 2])
     s_mean = np.zeros([num_cell, num_cell, len(x)])
 
     for i in tqdm(range(num_cell)):
+    # for i in tqdm(range(3)):
         for j in tqdm(range(num_cell)):
             ccvals = ss.correlate(
                 X[i, :],
@@ -82,12 +83,23 @@ def cross_correlation(
             s_confint[i, j, :, 1] = interval[:, 1]
             s_mean[i, j, :] = b_mean
 
+    # NWB追加
+    nwbfile = {}
+    nwbfile[NWBDATASET.POSTPROCESS] = {
+        'mat': mat,
+        'baseline': s_mean,
+        'base_confint': s_confint,
+    }
+
+    info = {
+        # 'cross_correlation': ScatterData(mat),
+        'nwbfile': nwbfile
+    }
+
     # output structures ###################
     cb = list(itertools.combinations(range(num_cell), 2))
 
-    #for i in range(len(cb)):
-    for i in range(3):
-        forfigure={}
+    for i in range(len(cb)):
         arr1 = np.stack([x, mat[cb[i][0], cb[i][1], :]], axis=1)
         arr2 = np.stack(
             [
@@ -99,22 +111,9 @@ def cross_correlation(
             axis=1
         )
 
-        name1 = f'{str(cb[i][0])}-{str(cb[i][1])}'
-        name2 = f'shuffle {str(cb[i][0])}-{str(cb[i][1])}'
-        forfigure[name1] = arr1
-        forfigure[name2] = arr2
-
-    # NWB追加
-    nwbfile = {}
-    nwbfile[NWBDATASET.POSTPROCESS] = {
-        'mat': mat,
-        'baseline': s_mean,
-        'base_confint': s_confint,
-    }
-
-    info = {
-        'cross_correlation': mat,
-        'nwbfile': nwbfile
-    }
+    name = f'{str(cb[i][0])}-{str(cb[i][1])}'
+    info[name] = TimeSeriesData(arr1.T, file_name=name)
+    name = f'shuffle {str(cb[i][0])}-{str(cb[i][1])}'
+    info[name] = TimeSeriesData(arr2.T, file_name=name)
 
     return info
