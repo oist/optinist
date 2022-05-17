@@ -10,7 +10,7 @@ The console shows the log once the startup is completed.
 
 <br>
 <p align="left">
-<img width="200px" src="../_static/tutorials/fig1_console.png" alt="Whole" />
+<img width="400px" src="../_static/tutorials/fig1_console.png" alt="Whole" />
 </p>
 
 Once you see this, open your web browser (Google Chrome is recommended) at localhost:8000.
@@ -19,7 +19,7 @@ You are ready to start if the OptiNiSt page appears.
 
 <br>
 <p align="left">
-<img width="200px" src="../_static/tutorials/fig2_open.png" alt="Whole" />
+<img width="600px" src="../_static/tutorials/fig2_open.png" alt="Whole" />
 </p>
 
 
@@ -32,7 +32,7 @@ As a default, it shows an image node. This node defines the path to the data to 
 
 <br>
 <p align="left">
-<img width="200px" src="../_static/tutorials/Fig3_imagenode.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig3_imagenode.png" alt="Whole" />
 </p>
 
 
@@ -43,7 +43,7 @@ You may not want to change anything in your original data folder, or you may wis
 1. Copy your original data file to OPTINIST_DIR and assign the data path to the copied data. See [uploading data to OPTNIST_DIR](#uploading-data-to-optinist_dir) This can be done from the GUI.  
 2. Set OPTINIST_DIR as the data path by changing the dir_path.py file. See [setting optinist directory](#setting-optinist_dir)
 
-Once the data is made accessible, the SELECT IMAGE button on the image node becomes possible to assign the file as the input to the pipeline. You can select a file or a folder. Choosing a folder makes all the tiff files in the shown sequence an input set of continuous frames. See the case input file is [other than tiff] (https://github.com/oist/optinist/blob/docs/docs/gui/workflow.md)
+Once the data is made accessible, the SELECT IMAGE button on the image node becomes possible to assign the file as the input to the pipeline. You can select a file or a folder. Choosing a folder makes all the tiff files in the shown sequence an input set of continuous frames. See the case input file is [other than tiff] (../gui/workflow.md)
 
 
 ### Selecting analysis methods
@@ -72,14 +72,14 @@ The color of the connector indicates the input and the output of the node. Color
 
 <br>
 <p align="left">
-<img width="200px" src="../_static/tutorials/fig6_suite2p.png" alt="Whole" />
+<img width="800px" src="../_static/tutorials/fig6_suite2p.png" alt="Whole" />
 </p>
 
 As for Suite2P, you might not use suite2P_registration (motion correction). In that case, you can connect the suite2p_file_convert to suite2p_roi directly. 
 
 <br>
 <p align="left">
-<img width="200px" src="../_static/tutorials/fig7_suite2p2.png" alt="Whole" />
+<img width="600px" src="../_static/tutorials/fig7_suite2p2.png" alt="Whole" />
 </p>
 
 
@@ -88,7 +88,7 @@ Also, you can perform motion correction of CaImAn (caiman_mc) and then perform s
 
 <br>
 <p align="left">
-<img width="200px" src="../_static/tutorials/fig8_suite2pcaiman.png" alt="Whole" />
+<img width="600px" src="../_static/tutorials/fig8_suite2pcaiman.png" alt="Whole" />
 </p>
 
 
@@ -97,7 +97,7 @@ Also, you can branch the flow. In the example, the two caiman_mc with different 
 
 <br>
 <p align="left">
-<img width="200px" src="../_static/tutorials/fig9_workflowbranch.png" alt="Whole" />
+<img width="600px" src="../_static/tutorials/fig9_workflowbranch.png" alt="Whole" />
 </p>
 
 ### parameter button and output button on the node
@@ -121,7 +121,7 @@ RUN button at the right top shows two pulldown choices. RUNALL runs all the proc
 <img width="200px" src="../_static/tutorials/fig11_runall.png" alt="Whole" />
 </p>
 
-When you click on the RUNALL, it shows the window to determine the folder name. This folder name is only for the user’s convenience. The actual folder name is long digit random letter+number. Further information about the structure of the saved results is [here](https://github.com/oist/optinist/blob/docs/docs/gui/record.md).
+When you click on the RUNALL, it shows the window to determine the folder name. This folder name is only for the user’s convenience. The actual folder name is long digit random letter+number. Further information about the structure of the saved results is [here](LINKTO /docs/gui/record.md #setting-input-images).
 
 
 Next to the RUN button, there is the CANCEL button. You can abort the running pipeline with this button. It immediately cancels the current execution.
@@ -136,7 +136,7 @@ The pipeline construction of Optinist is based on snakemake (ref), which is the 
 
 <br>
 <p align="left">
-<img width="200px" src="../_static/tutorials/fig13_nwbsnakemake.png" alt="Whole" />
+<img width="400px" src="../_static/tutorials/fig13_nwbsnakemake.png" alt="Whole" />
 </p>
 
 NWB SETTING defines the metadata for the NWB file as an output. The parameter you set here is only for your record and not used for the calculation inside Optinist. You can leave this as default.
