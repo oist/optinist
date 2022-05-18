@@ -3,6 +3,7 @@ import pandas as pd
 from glob import glob
 from typing import Optional
 from fastapi import APIRouter
+from optinist.api.dir_path import DIRPATH
 
 from optinist.api.utils.json_writer import JsonWriter, save_tiff2json
 from optinist.api.utils.filepath_creater import join_filepath
@@ -63,7 +64,12 @@ async def read_file(dirpath: str):
 
 @router.get("/outputs/timedata/{dirpath:path}")
 async def read_file(dirpath: str, index: int):
-    json_data = JsonReader.read_as_timeseries(join_filepath([dirpath, f'{str(index)}.json']))
+    json_data = JsonReader.read_as_timeseries(
+        join_filepath([
+            dirpath,
+            f'{str(index)}.json'
+        ])
+    )
 
     return_data = JsonTimeSeriesData(
         xrange=[],
@@ -116,10 +122,13 @@ async def read_image(
         start_index: Optional[int] = None,
         end_index: Optional[int] = None
     ):
+    filepath = join_filepath([DIRPATH.INPUT_DIR, filepath])
     filename, ext = os.path.splitext(os.path.basename(filepath))
     if ext in ACCEPT_TIFF_EXT:
-        json_filepath = join_filepath(
-            [os.path.dirname(filepath), f'{filename}_{str(start_index)}_{str(end_index)}.json'])
+        json_filepath = join_filepath([
+            os.path.dirname(filepath),
+            f'{filename}_{str(start_index)}_{str(end_index)}.json'
+        ])
         if not os.path.exists(json_filepath):
             save_tiff2json(filepath, start_index, end_index)
     else:
@@ -130,8 +139,13 @@ async def read_image(
 
 @router.get("/outputs/csv/{filepath:path}")
 async def read_csv(filepath: str):
+    filepath = join_filepath([DIRPATH.INPUT_DIR, filepath])
+
     dirpath = os.path.dirname(filepath)
     filename, _ = os.path.splitext(os.path.basename(filepath))
-    json_filepath = join_filepath([dirpath, f'{filename}.json'])
+    json_filepath = join_filepath([
+        dirpath,
+        f'{filename}.json'
+    ])
     JsonWriter.write_as_split(json_filepath, pd.read_csv(filepath, header=None))
     return JsonReader.read_as_output(json_filepath)

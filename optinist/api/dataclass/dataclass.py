@@ -159,9 +159,9 @@ class CsvData(BaseData):
                 header = params["setHeader"]
                 self.data = self.data[header:]
         else:
-            self.data = data
+            self.data = np.array(data)
 
-        if len(self.data.shape) == 1:
+        if self.data.ndim == 1:
             self.data = self.data[np.newaxis, :]
 
     def save_json(self, json_dir):

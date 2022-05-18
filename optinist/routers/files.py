@@ -29,14 +29,14 @@ def get_dir_tree(dirpath: str, file_types: List[str]) -> List[TreeNode]:
         node_path = join_filepath([dirpath, node_name])
         if os.path.isfile(node_path) and node_name.endswith(tuple(file_types)):
             nodes.append(TreeNode(
-                path=node_path,
+                path=node_path.replace(f"{DIRPATH.INPUT_DIR}/", ""),
                 name=node_name,
                 isdir=False,
                 nodes=[],
             ))
         elif os.path.isdir(node_path) and len(get_accept_files(node_path, file_types)) > 0:
             nodes.append(TreeNode(
-                path=node_path,
+                path=node_name,
                 name=node_name,
                 isdir=True,
                 nodes=get_dir_tree(node_path, file_types)

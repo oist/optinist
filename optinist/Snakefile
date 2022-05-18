@@ -1,9 +1,12 @@
 import os
 from optinist.api.dir_path import DIRPATH
-configfile: os.path.join(DIRPATH.ROOT_DIR, 'config.yaml')
+from optinist.api.utils.filepath_creater import join_filepath
+
+configfile: join_filepath([DIRPATH.ROOT_DIR, 'config.yaml'])
 
 for rule, details in config["rules"].items():
-    include: details.get("rule_file")
+    rule_file = details["rule_file"]
+    include: rule_file
 
 rule all:
-    input: config["last_output"]
+    input: [join_filepath([DIRPATH.OUTPUT_DIR, x]) for x in config["last_output"]]

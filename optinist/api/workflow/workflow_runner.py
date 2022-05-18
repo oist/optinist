@@ -51,7 +51,6 @@ def _create_workflow(unique_id, name, nodeDict, edgeDict, nwbParam):
 
 
 def _rulefile(unique_id: str, nodeDict: Dict[str, Node], edgeDict: Dict[str, Edge], nwbParam):
-    # nodeDict = _get_nodeDict(nodeList)
     endNodeList = _get_endNodeList(edgeDict, nodeDict)
 
     nwbfile = get_typecheck_params(nwbParam, "nwb")
