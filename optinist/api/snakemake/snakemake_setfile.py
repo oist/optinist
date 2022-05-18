@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict
 
 from optinist.api.dataclass.dataclass import *
 from optinist.api.snakemake.smk import Rule
@@ -9,10 +9,8 @@ from optinist.api.utils.filepath_creater import get_pickle_file
 
 class SmkSetfile:
     @classmethod
-    def image(cls, unique_id: str, node: Node, edgeList: List[Edge], nwbfile):
-        for edge in edgeList:
-            if node.id == edge.source:
-                return_name = edge.sourceHandle.split("--")[0]
+    def image(cls, unique_id: str, node: Node, edgeDict: Dict[str, Edge], nwbfile):
+        return_name = _get_return_name(node, edgeDict)
 
         output_file = get_pickle_file(
             unique_id,
@@ -31,10 +29,8 @@ class SmkSetfile:
         )
 
     @classmethod
-    def csv(cls, unique_id, node: Node, edgeList: List[Edge], nwbfile, nodeType="csv"):
-        for edge in edgeList:
-            if node.id == edge.source:
-                return_name = edge.sourceHandle.split("--")[0]
+    def csv(cls, unique_id, node: Node, edgeDict: Dict[str, Edge], nwbfile, nodeType="csv"):
+        return_name = _get_return_name(node, edgeDict)
 
         output_file = get_pickle_file(
             unique_id,
@@ -53,10 +49,8 @@ class SmkSetfile:
         )
 
     @classmethod
-    def hdf5(cls, unique_id, node: Node, edgeList: List[Edge], nwbfile):
-        for edge in edgeList:
-            if node.id == edge.source:
-                return_name = edge.sourceHandle.split("--")[0]
+    def hdf5(cls, unique_id, node: Node, edgeDict: Dict[str, Edge], nwbfile):
+        return_name = _get_return_name(node, edgeDict)
 
         output_file = get_pickle_file(
             unique_id,
@@ -76,10 +70,10 @@ class SmkSetfile:
         )
 
     @classmethod
-    def algo(cls, unique_id, node: Node, edgeList: List[Edge], nodeDict: Dict[str, Node]):
+    def algo(cls, unique_id, node: Node, edgeDict: Dict[str, Edge], nodeDict: Dict[str, Node]):
         algo_input = []
         return_arg_names = {}
-        for edge in edgeList:
+        for edge in edgeDict.values():
             if node.id == edge.target:
                 arg_name = edge.targetHandle.split("--")[1]
 
@@ -113,3 +107,10 @@ class SmkSetfile:
             path=node.data.path,
             type=node.data.label,
         )
+
+
+def _get_return_name(node: Node, edgeDict: Dict[str, Edge]):
+    for edge in edgeDict.values():
+        if node.id == edge.source:
+            return_name = edge.sourceHandle.split("--")[0]
+    return return_name

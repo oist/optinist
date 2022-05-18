@@ -14,6 +14,7 @@ class NodeType:
     HDF5: str = "HDF5FileNode"
     ALGO: str = "AlgorithmNode"
 
+
 @dataclass
 class OutputType:
     IMAGE: str = "images"
@@ -23,15 +24,6 @@ class OutputType:
     SCATTER: str = "scatter"
     BAR: str = "bar"
     HTML: str = "html"
-
-
-class RunItem(BaseModel):
-    name: str = None
-    nodeList: list = []
-    edgeList: list = []
-    snakemakeParam: dict = {}
-    nwbParam: dict = {}
-    forceRunList: List[ForceRun]
 
 
 class NodeItem(BaseModel):
@@ -96,3 +88,12 @@ class Edge:
     target: str
     targetHandle: str
     style: Style
+
+
+class RunItem(BaseModel):
+    name: str = None
+    nodeDict: dict = {}
+    edgeDict: dict = {}
+    snakemakeParam: dict = {}
+    nwbParam: dict = {}
+    forceRunList: List[ForceRun]

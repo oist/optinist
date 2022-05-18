@@ -45,7 +45,7 @@ export function isStartedPipeline(
 
 export function getInitialRunResult(runPostData: RunPostData) {
   const initialResult: RunResult = {}
-  runPostData.nodeList
+  Object.values(runPostData.nodeDict)
     .filter(({ data }) => data?.type === NODE_TYPE_SET.ALGORITHM)
     .forEach(({ id, data }) => {
       initialResult[id] = {

@@ -105,6 +105,7 @@ def ETA(
     )
     info['mean_heatmap'] = HeatMapData(
         norm_mean,
+        columns=list(np.arange(params['start_time'], params['end_time'])),
         file_name='mean_heatmap'
     )
     info['nwbfile'] = nwbfile

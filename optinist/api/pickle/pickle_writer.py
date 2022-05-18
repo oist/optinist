@@ -1,4 +1,3 @@
-import os
 import pickle
 
 from optinist.api.utils.filepath_creater import create_directory, join_filepath

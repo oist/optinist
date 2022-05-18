@@ -6,8 +6,8 @@ describe('RecordReproduce', () => {
   const initialState = store.getState()
 
   const importExperimentByUidPayload = {
-    nodeList: [
-      {
+    nodeDict: {
+      input_0: {
         id: 'input_0',
         type: 'ImageFileNode',
         data: {
@@ -27,7 +27,7 @@ describe('RecordReproduce', () => {
           borderRadius: null,
         },
       },
-      {
+      dummy_image2image_c8tqfxw0mq: {
         id: 'dummy_image2image_c8tqfxw0mq',
         type: 'AlgorithmNode',
         data: {
@@ -47,7 +47,7 @@ describe('RecordReproduce', () => {
           borderRadius: 0,
         },
       },
-      {
+      dummy_image2image8time_4mrz8h7hyk: {
         id: 'dummy_image2image8time_4mrz8h7hyk',
         type: 'AlgorithmNode',
         data: {
@@ -67,41 +67,43 @@ describe('RecordReproduce', () => {
           borderRadius: 0,
         },
       },
-    ],
-    edgeList: [
-      {
-        id: 'reactflow__edge-dummy_image2image_c8tqfxw0mqdummy_image2image_c8tqfxw0mq--image2image--ImageData-dummy_image2image8time_4mrz8h7hykdummy_image2image8time_4mrz8h7hyk--image1--ImageData',
-        type: 'buttonedge',
-        animated: false,
-        source: 'dummy_image2image_c8tqfxw0mq',
-        sourceHandle: 'dummy_image2image_c8tqfxw0mq--image2image--ImageData',
-        target: 'dummy_image2image8time_4mrz8h7hyk',
-        targetHandle: 'dummy_image2image8time_4mrz8h7hyk--image1--ImageData',
-        style: {
-          border: null,
-          height: null,
-          padding: null,
-          width: 5,
-          borderRadius: null,
+    },
+    edgeDict: {
+      'reactflow__edge-dummy_image2image_c8tqfxw0mqdummy_image2image_c8tqfxw0mq--image2image--ImageData-dummy_image2image8time_4mrz8h7hykdummy_image2image8time_4mrz8h7hyk--image1--ImageData':
+        {
+          id: 'reactflow__edge-dummy_image2image_c8tqfxw0mqdummy_image2image_c8tqfxw0mq--image2image--ImageData-dummy_image2image8time_4mrz8h7hykdummy_image2image8time_4mrz8h7hyk--image1--ImageData',
+          type: 'buttonedge',
+          animated: false,
+          source: 'dummy_image2image_c8tqfxw0mq',
+          sourceHandle: 'dummy_image2image_c8tqfxw0mq--image2image--ImageData',
+          target: 'dummy_image2image8time_4mrz8h7hyk',
+          targetHandle: 'dummy_image2image8time_4mrz8h7hyk--image1--ImageData',
+          style: {
+            border: null,
+            height: null,
+            padding: null,
+            width: 5,
+            borderRadius: null,
+          },
         },
-      },
-      {
-        id: 'reactflow__edge-input_0input_0--image--ImageData-dummy_image2image_c8tqfxw0mqdummy_image2image_c8tqfxw0mq--image--ImageData',
-        type: 'buttonedge',
-        animated: false,
-        source: 'input_0',
-        sourceHandle: 'input_0--image--ImageData',
-        target: 'dummy_image2image_c8tqfxw0mq',
-        targetHandle: 'dummy_image2image_c8tqfxw0mq--image--ImageData',
-        style: {
-          border: null,
-          height: null,
-          padding: null,
-          width: 5,
-          borderRadius: null,
+      'reactflow__edge-input_0input_0--image--ImageData-dummy_image2image_c8tqfxw0mqdummy_image2image_c8tqfxw0mq--image--ImageData':
+        {
+          id: 'reactflow__edge-input_0input_0--image--ImageData-dummy_image2image_c8tqfxw0mqdummy_image2image_c8tqfxw0mq--image--ImageData',
+          type: 'buttonedge',
+          animated: false,
+          source: 'input_0',
+          sourceHandle: 'input_0--image--ImageData',
+          target: 'dummy_image2image_c8tqfxw0mq',
+          targetHandle: 'dummy_image2image_c8tqfxw0mq--image--ImageData',
+          style: {
+            border: null,
+            height: null,
+            padding: null,
+            width: 5,
+            borderRadius: null,
+          },
         },
-      },
-    ],
+    },
   }
 
   const uid = '96844a59'

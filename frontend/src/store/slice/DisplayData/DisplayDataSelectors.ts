@@ -35,6 +35,12 @@ export const selectTimeSeriesDataError =
 export const selectHeatMapData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).heatMap[filePath].data
 
+export const selectHeatMapColumns = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).heatMap[filePath].columns
+
+export const selectHeatMapIndex = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).heatMap[filePath].index
+
 export const selectHeatMapDataIsInitialized =
   (filePath: string) => (state: RootState) =>
     Object.keys(selectDisplayData(state).heatMap).includes(filePath)
@@ -167,6 +173,9 @@ export const selectScatterDataIsFulfilled =
 
 export const selectBarData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).bar[filePath]?.data ?? []
+
+export const selectBarIndex = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).bar[filePath]?.index ?? []
 
 export const selectBarDataIsInitialized =
   (filePath: string) => (state: RootState) =>

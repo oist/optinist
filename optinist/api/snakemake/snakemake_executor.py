@@ -1,6 +1,7 @@
 import os
 from collections import deque
 
+from snakemake import snakemake
 from snakemake.exceptions import print_exception
 from snakemake.logging import logger
 from snakemake.workflow import Workflow
@@ -9,7 +10,7 @@ from snakemake.persistence import Persistence
 
 from optinist.api.dir_path import DIRPATH
 from optinist.api.snakemake.smk import SmkParam
-from snakemake import snakemake
+from optinist.api.utils.filepath_creater import join_filepath
 
 
 class SmkExecutor:
@@ -116,17 +117,6 @@ class SmkExecutor:
         return success
 
 
-# def snakemake_execute(params: SmkParam):
-#     smk_executor = SmkExecutor(
-#         DIRPATH.SNAKEMAKE_FILEPATH,
-#         forceall=params.forceall,
-#         cores=params.cores,
-#         use_conda=params.use_conda,
-#     )
-#     success = smk_executor.execute(params.forcerun)
-#     print("success: ", success)
-
-
 def snakemake_execute(params: SmkParam):
     # run snakemake
     snakemake(
@@ -151,7 +141,10 @@ def delete_dependencies(params):
         []  →  ['/Users/shogoakiyama/Desktop/optinist/optinist/test_data/snakemake/0/data_endoscope.pkl']
     """
 
-    del_filepath_list = params.forcerun
+    del_filepath_list = [
+        join_filepath([DIRPATH.OUTPUT_DIR, x])
+        for x in params.forcerun
+    ]
 
     smk_executor = SmkExecutor(
         DIRPATH.SNAKEMAKE_FILEPATH,

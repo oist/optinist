@@ -90,6 +90,7 @@ def GLM(
             file_name='actual_predicted'
         ),
         'params': BarData(Res.params.values, file_name='params'),
+        'textout': HTMLData(Res.summary().as_html(), file_name='textout'),
         'nwbfile': nwbfile,
     }
 

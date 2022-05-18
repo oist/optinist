@@ -2,7 +2,7 @@ import os
 import numpy as np
 import pandas as pd
 import tifffile
-from optinist.api.utils.filepath_creater import join_filepath
+from optinist.api.utils.filepath_creater import create_directory, join_filepath
 
 
 class JsonWriter:
@@ -11,14 +11,14 @@ class JsonWriter:
         pd.DataFrame(data).to_json(filepath, indent=4)
 
     @classmethod
-    def write_as_values(cls, filepath, data):
-        pd.DataFrame(data).to_json(filepath, indent=4, orient="values")
+    def write_as_split(cls, filepath, data):
+        pd.DataFrame(data).to_json(filepath, indent=4, orient="split")
 
 
-def save_tiff2json(tiff_file_path, start_index=None, end_index=None):
+def save_tiff2json(tiff_filepath, save_dirpath, start_index=None, end_index=None):
     # Tiff画像を読み込む
     tiffs = []
-    image = tifffile.imread(tiff_file_path)
+    image = tifffile.imread(tiff_filepath)
     if image.ndim == 2:
         image = image[np.newaxis, :, :]
 
@@ -31,12 +31,12 @@ def save_tiff2json(tiff_file_path, start_index=None, end_index=None):
 
         tiffs.append(page.tolist())
 
-    folder_path = os.path.dirname(tiff_file_path)
-    filename, _ = os.path.splitext(os.path.basename(tiff_file_path))
+    filename, _ = os.path.splitext(os.path.basename(tiff_filepath))
+    create_directory(save_dirpath)
 
-    JsonWriter.write_as_values(
+    JsonWriter.write_as_split(
         join_filepath([
-            folder_path,
+            save_dirpath,
             f'{filename}_{str(start_index)}_{str(end_index)}.json'
         ]),
         pd.DataFrame(tiffs)

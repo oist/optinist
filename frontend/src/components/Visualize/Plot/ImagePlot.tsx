@@ -362,6 +362,7 @@ const PlayBack = React.memo<{ activeIndex: number }>(({ activeIndex }) => {
         Pause
       </Button>
       <TextField
+        label="dur[msec]"
         type="number"
         inputProps={{
           step: 100,

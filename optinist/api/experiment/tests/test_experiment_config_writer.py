@@ -1,6 +1,6 @@
 from optinist.api.dir_path import DIRPATH
 from optinist.api.experiment.experiment import ExptConfig
-from optinist.api.experiment.experiment_writer import ExptConfigWriter, _create
+from optinist.api.experiment.experiment_writer import _create_config
 from optinist.api.utils.filepath_creater import create_filepath, join_filepath
 from optinist.api.workflow.workflow import RunItem
 
@@ -13,23 +13,23 @@ def test_filepath():
     return exp_filepath
 
 
-def test_create():
+def test_create_config():
     exp_filepath = test_filepath()
 
     runItem = RunItem(
         name="New Flow",
-        nodeList=[],
-        edgeList=[],
+        nodeDict={},
+        edgeDict={},
         snakemakeParam={},
         nwbParam={},
         forceRunList=[],
     )
 
-    exp_config = _create(
+    exp_config = _create_config(
         exp_filepath,
         runItem.name,
-        runItem.nodeList,
-        runItem.edgeList,
+        runItem.nodeDict,
+        runItem.edgeDict,
     )
 
     assert isinstance(exp_config, ExptConfig)

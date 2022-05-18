@@ -30,6 +30,7 @@ import {
   isTimeSeriesItem,
   isCsvItem,
   isScatterItem,
+  isBarItem,
 } from './VisualizeItemUtils'
 
 export const initialState: VisualaizeItem = {
@@ -108,12 +109,13 @@ const roiItemInitialValue: RoiItem = {
 const scatterItemInitialValue: ScatterItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.SCATTER,
-  xIndex: 0,
-  yIndex: 1,
+  xIndex: '0',
+  yIndex: '1',
 }
 const barItemInitialValue: BarItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.BAR,
+  index: '0',
 }
 const hdf5ItemInitialValue: HDF5Item = {
   ...displayDataCommonInitialValue,
@@ -715,7 +717,7 @@ export const visualaizeItemSlice = createSlice({
       state,
       action: PayloadAction<{
         itemId: number
-        xIndex: number
+        xIndex: string
       }>,
     ) => {
       const targetItem = state.items[action.payload.itemId]
@@ -727,12 +729,24 @@ export const visualaizeItemSlice = createSlice({
       state,
       action: PayloadAction<{
         itemId: number
-        yIndex: number
+        yIndex: string
       }>,
     ) => {
       const targetItem = state.items[action.payload.itemId]
       if (isScatterItem(targetItem)) {
         targetItem.yIndex = action.payload.yIndex
+      }
+    },
+    setBarItemIndex: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        index: string
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isBarItem(targetItem)) {
+        targetItem.index = action.payload.index
       }
     },
   },
@@ -894,6 +908,7 @@ export const {
   setCsvItemSetIndex,
   setScatterItemXIndex,
   setScatterItemYIndex,
+  setBarItemIndex,
 } = visualaizeItemSlice.actions
 
 export default visualaizeItemSlice.reducer

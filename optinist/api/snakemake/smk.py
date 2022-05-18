@@ -8,7 +8,7 @@ from pydantic import BaseModel
 @dataclass
 class Rule:
     rule_file: str
-    input: str
+    input: list
     return_arg: Union[str, Dict[str, str]]
     params: dict
     output: str

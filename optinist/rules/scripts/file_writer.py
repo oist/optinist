@@ -13,7 +13,13 @@ from optinist.routers.model import FILETYPE
 class FileWriter:
     @classmethod
     def csv(cls, rule_config: Rule, nodeType):
-        info = {rule_config.return_arg: CsvData(rule_config.input, rule_config.params, '')}
+        info = {
+            rule_config.return_arg: CsvData(
+                rule_config.input,
+                rule_config.params,
+                ''
+            )
+        }
         nwbfile = rule_config.nwbfile
 
         if nodeType == FILETYPE.CSV:
@@ -61,9 +67,4 @@ class FileWriter:
             nwbfile.pop('image_series', None)
             info['nwbfile'] = {'input': nwbfile}
 
-        # if NWBDATASET.TIMESERIES not in nwbfile:
-        #     nwbfile[NWBDATASET.TIMESERIES] = {}
-
-        # nwbfile[NWBDATASET.TIMESERIES][rule_config.return_arg] = info[rule_config.return_arg]
-        # info['nwbfile'] = nwbfile
         return info

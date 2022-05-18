@@ -1,9 +1,10 @@
-import { Node } from 'react-flow-renderer'
+import { isEdge, Node } from 'react-flow-renderer'
 
 import {
   AlgorithmNodePostData,
+  EdgeDict,
   InputNodePostData,
-  NodePostDataType,
+  NodeDict,
   RunPostData,
 } from 'api/run/Run'
 
@@ -15,10 +16,7 @@ import {
   selectAlgorithmName,
   selectAlgorithmParams,
 } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
-import {
-  selectEdgeListForRun,
-  selectFlowElements,
-} from 'store/slice/FlowElement/FlowElementSelectors'
+import { selectFlowElements } from 'store/slice/FlowElement/FlowElementSelectors'
 import {
   isAlgorithmNodeData,
   isNodeData,
@@ -38,14 +36,14 @@ import {
 export const selectRunPostData = (state: RootState) => {
   const nwbParam = selectNwbParams(state)
   const snakemakeParam = selectSnakemakeParams(state)
-  const edgeListForRun = selectEdgeListForRun(state)
-  const nodePostDataList = selectNodePostDataListForRun(state)
+  const edgeDictForRun = selectEdgeDictForRun(state)
+  const nodeDictForRun = selectNodeDictForRun(state)
   const forceRunList = selectForceRunList(state)
   const runPostData: Omit<RunPostData, 'name'> = {
     nwbParam,
     snakemakeParam,
-    edgeList: edgeListForRun,
-    nodeList: nodePostDataList,
+    edgeDict: edgeDictForRun,
+    nodeDict: nodeDictForRun,
     forceRunList,
   }
   return runPostData
@@ -69,11 +67,10 @@ const selectForceRunList = (state: RootState) => {
     }))
 }
 
-const selectNodePostDataListForRun = (
-  state: RootState,
-): Node<NodePostDataType>[] => {
+const selectNodeDictForRun = (state: RootState): NodeDict => {
   const elements = selectFlowElements(state)
-  const nodeList = elements.filter(isNodeData).map((node) => {
+  const nodeDict: NodeDict = {}
+  elements.filter(isNodeData).forEach((node) => {
     if (isAlgorithmNodeData(node)) {
       const param = selectAlgorithmParams(node.id)(state) ?? {}
       const functionPath = selectAlgorithmFunctionPath(node.id)(state)
@@ -87,7 +84,7 @@ const selectNodePostDataListForRun = (
           param,
         },
       }
-      return algorithmNodePostData
+      nodeDict[node.id] = algorithmNodePostData
     } else {
       const filePath = selectInputNodeSelectedFilePath(node.id)(state)
       const fileType = selectInputNodeFileType(node.id)(state)
@@ -105,8 +102,18 @@ const selectNodePostDataListForRun = (
           fileType,
         },
       }
-      return inputNodePosyData
+      nodeDict[node.id] = inputNodePosyData
     }
   })
-  return nodeList
+  return nodeDict
+}
+
+const selectEdgeDictForRun = (state: RootState) => {
+  const edgeDict: EdgeDict = {}
+  selectFlowElements(state)
+    .filter(isEdge)
+    .forEach((edge) => {
+      edgeDict[edge.id] = edge
+    })
+  return edgeDict
 }
