@@ -21,7 +21,7 @@ You are ready to start if the OptiNiSt page appears.
 OptiNiSt has three different pages, WORKFLOW, VISUALIZE, and RECORD. You can toggle these by clicking on the tag. 
 <br>
 <p align="left">
-<img width="300px" src="../_static/tutorials/fig2_2_pages.png" alt="Whole" />
+<img width="300px" src="../_static/tutorials/fig2.2_tags.png" alt="Whole" />
 </p>
 
 # Making Pipelines on WORKFLOW 
@@ -97,10 +97,10 @@ Each node has PARAM button and OUTPUT button.
 
 <br>
 <p align="left">
-<img width="200px" src="../_static/tutorials/fig10_0_buttons.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig10.1_buttons.png" alt="Whole" />
 </p>
 
-PARAM shows the parameters. Edit this as you like. The names and the types and the default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters. Here is the [link list](LINK TO LINKLIST).
+Clicking on PARAM shows the parameters. Edit this as you like. The names and the types and the default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters. Here is the [link list](LINK TO LINKLIST).
 
 <br>
 <p align="left">
@@ -232,7 +232,7 @@ In the same plotting box, select cell_roi from the Select Roi pull-downs.
 
 <br>
 <p align="left">
-<img width="400px" src="../_static/tutorials/fig24_selectroi.png" alt="Whole" />
+<img width="400px" src="../_static/tutorials/fig25_selectroi.png" alt="Whole" />
 </p>
 
 The plotting box (ID:0) shows the background image and detected cells.
