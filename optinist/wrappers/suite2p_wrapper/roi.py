@@ -49,9 +49,6 @@ def suite2p_roi(
     im = np.stack(arrays)
     im[im == 0] = np.nan
 
-    # NWBを追加
-    nwbfile = {}
-
     ### roiを追加
     roi_list = []
     for i in range(len(stat)):
@@ -59,6 +56,9 @@ def suite2p_roi(
         kargs['pixel_mask'] = np.array([
             stat[i]['ypix'], stat[i]['xpix'], stat[i]['lam']]).T
         roi_list.append(kargs)
+
+    # NWBを追加
+    nwbfile = {}
 
     nwbfile[NWBDATASET.ROI] = {
         'roi_list': roi_list

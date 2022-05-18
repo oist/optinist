@@ -33,7 +33,7 @@ class Runner:
             )
 
             # nwbfileの設定
-            output_info['nwbfile'] = _save_output_nwb(
+            output_info['nwbfile'] = _save_func_nwb(
                 f"{__rule.output.split('.')[0]}.nwb",
                 __rule.type,
                 nwbfile,
@@ -43,7 +43,7 @@ class Runner:
             # 各関数での結果を保存
             PickleWriter.write(__rule.output, output_info)
 
-            # NWB保存
+            # NWB全体保存
             if __rule.output in last_output:
                 # 全体の結果を保存する
                 path = join_filepath(__rule.output.split('/')[:-2])
@@ -65,7 +65,7 @@ class Runner:
             )
 
 
-def _save_output_nwb(save_path, name, nwbfile, output_info):
+def _save_func_nwb(save_path, name, nwbfile, output_info):
     if "nwbfile" in output_info:
         nwbfile[name] = output_info["nwbfile"]
         save_nwb(
