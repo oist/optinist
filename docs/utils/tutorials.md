@@ -214,20 +214,22 @@ The number indicated on the right of PAUSE button is the frame interval in milis
 
 
 ### Showing ROI and time courses
-After running the ROI detection algorithms, the most often created plots are extracted cell's shape and fluorescence timeseries. To show the plot, prepare two plotting boxes.
+After running the ROI detection algorithms, the most often created plots are extracted cells' shape and fluorescence time series. To show the plot, prepare two plotting boxes.
 
 <br>
 <p align="left">
 <img width="400px" src="../_static/tutorials/fig23_twobox.png" alt="Whole" />
 </p>
 
-In one plotting box (ex, the one with ID:0), select background image such as meanimg or Vcorr from the Select Item pull downs.
+In one plotting box (ex, the one with ID:0), select a background image such as meanimg or Vcorr from the Select Item pulldowns.
+
 <br>
 <p align="left">
 <img width="400px" src="../_static/tutorials/fig24_selectitem.png" alt="Whole" />
 </p>
 
-In the same plotting box, select cell_roi from the Select Roi pull downs.
+In the same plotting box, select cell_roi from the Select Roi pull-downs.
+
 <br>
 <p align="left">
 <img width="400px" src="../_static/tutorials/fig24_selectroi.png" alt="Whole" />
@@ -239,13 +241,16 @@ The plotting box (ID:0) shows the background image and detected cells.
 <img width="400px" src="../_static/tutorials/fig26_roi.png" alt="Whole" />
 </p>
 
-In another plotting box (ex, the one with ID:1), select fluorescence from the Select Item pull down.
-and select 0(same ID with the plotting box of your ROI image) from teh ref image pull down. This indicates that the two boxes shold be linked. 
+In another plotting box (ex, the one with ID:1), select fluorescence from the Select Item pulldown.
+And select 0(same ID with the plotting box of your ROI image) from the ref image pull down. By doing this,  the two plotting boxes are linked. 
 
 <br>
 <p align="left">
 <img width="400px" src="../_static/tutorials/fig27_fluo.png" alt="Whole" />
 </p>
+
+
+
 
 
 ### 
