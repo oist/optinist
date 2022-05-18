@@ -24,7 +24,7 @@ OptiNiSt has three different pages, WORKFLOW, VISUALIZE, and RECORD. You can tog
 <img width="300px" src="../_static/tutorials/fig2_2_pages.png" alt="Whole" />
 </p>
 
-# Making Pipelines
+# Making Pipelines on WORKFLOW 
 After launching, the first page you see is the workflow page. The workflow page is a place to define the analysis pipeline. You determine the data you will analyze, select the type of the algorithm or analysis method you use, and set the parameters and the order of analysis.  
 
 ### Assigning input data path
@@ -61,6 +61,8 @@ Once it is selected, it shows the name of files in the image node.
 <img width="200px" src="../_static/tutorials/fig5_imagenode2.png" alt="Whole" />
 </p>
 
+### creating pipelines
+
 Then, connect the analysis nodes in the order you like to process. Drugging from an output connector to an input connector creates an edge. The color of the connector indicates the format. For example, red is the image type format. You can only connect the same color. (Exception: black is an undefined data format. You can connect the black connector with any other connector, but be careful it does not check the consistency of input and output).
 
 <br>
@@ -92,7 +94,13 @@ Also, you can branch the flow. In the example, the two caiman_mc with different 
 
 ### parameter button and output button on the node
 Each node has PARAM button and OUTPUT button. 
-PARAM shows the parameters. Edit this as you like. The names and the types and the default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters.
+
+<br>
+<p align="left">
+<img width="200px" src="../_static/tutorials/fig10_0_buttons.png" alt="Whole" />
+</p>
+
+PARAM shows the parameters. Edit this as you like. The names and the types and the default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters. Here is the [link list](LINK TO LINKLIST).
 
 <br>
 <p align="left">
@@ -100,6 +108,8 @@ PARAM shows the parameters. Edit this as you like. The names and the types and t
 </p>
 
 OUTPUT button is for the quick check of the result. The button becomes effective after the successful execution of the pipeline. [Here](#visualzing-images-and-plots) explains a details of the charts. 
+
+### running pipelines
 
 Now you are ready to run the pipeline.
 RUN button at the right top shows two pulldown choices. RUNALL runs all the process. RUNALL assigns a new folder for saving the results. On the other hand, RUN skips the already ran processes. It checks the difference from the previous pipeline, including the existence of the results and the parameter change. If they are detected, the downstream process after that process is re-executed. The results are overwritten into the existing folder.
@@ -119,6 +129,24 @@ Next to the RUN button, there is the CANCEL button. You can abort the running pi
 <img width="200px" src="../_static/tutorials/fig12_cancel.png" alt="Whole" />
 </p>
 
+### timeseries analyses after ROI extraction
+OptiNiSt offers some basic time series analysis functions. 
+
+
+<br>
+<p align="left">
+<img width="200px" src="../_static/tutorials/***.png" alt="Whole" />
+</p>
+
+### Using behavioral parameters
+Most of the cases, you have task related variables and timestamps.
+
+
+
+
+
+### SNAKEMANE and NWB SETTING
+
 SNAKEMAKE and NWB SETTING buttons are for parameters for snakemake and output NWB file.
 The pipeline construction of Optinist is based on snakemake (ref), which is the pipeline controlling tool for python scripts. The SNAKEMAKE parameter setting is [here](#snakemake-settings).
 
@@ -131,45 +159,98 @@ NWB SETTING defines the metadata for the NWB file as an output. The parameter yo
 
 
 
+### Additional information on WORKFLOW
 
 
-#### uploading data to OPTNIST_DIR
+##### uploading data to OPTNIST_DIR
 Clicking on the UPLOAD button on the node opens the file explorer or finder so that you can select the data file. UPLOAD button copies the selected file to your OPTINIST_DIR/input. 
 
 
-#### setting OPTINIST_DIR
+##### setting OPTINIST_DIR
 The file assiging the OPTINIST_DIR is optinist/optinist/api/dir_path.py. Change line for OPTINIST_DIR, INPUT_DIR and OUTPUT_DIR according to your demand. Changing dir_path.py may also be necessary when running the pipeline on your cluster computers.
 
-#### snakemake settings
-use_conda:  ADD COMMENTS!
-cores:  ADD COMMENTS!
-forceall:  ADD COMMENTS!
-forcetargets:  ADD COMMENTS!
-lock:  ADD COMMENTS!
+##### snakemake settings
+use_conda:  ADD COMMENTS!  <br>
+cores:  ADD COMMENTS!  <br>
+forceall:  ADD COMMENTS!  <br>
+forcetargets:  ADD COMMENTS!  <br>
+lock:  ADD COMMENTS!<br>
 
-#### NWB settings
-session_description: ADD COMMENTS!
-identifier: ADD COMMENTS!
-experiment_description: ADD COMMENTS!
-device: ADD COMMENTS!
-optical_channel: ADD COMMENTS!
-imaging_plane: ADD COMMENTS!
-image_serises: ADD COMMENTS!
-ophys: ADD COMMENTS!
-
-
+##### NWB settings
+session_description: ADD COMMENTS!<br>
+identifier: ADD COMMENTS!<br>
+experiment_description: ADD COMMENTS!<br>
+device: ADD COMMENTS!<br>
+optical_channel: ADD COMMENTS!<br>
+imaging_plane: ADD COMMENTS!<br>
+image_serises: ADD COMMENTS!<br>
+ophys: ADD COMMENTS!<br>
 
 
 
 
-# Visualizing 
+
+# Making the images and the plots on VISUALIZE
 After executing the pipeline, you may want to check and compare the results.
-VISUALIZE window is the place to work on this. In VISUALIZE field, you can replay the tiff time-series, see the cell ROI images, the plot of cell fluorescence or spike time-series, and other plots showing the results of analyses. See here (LINK TO THE visualize.md)for basic usage.
+VISUALIZE page is the place to work on this. You can replay the tiff time-series, see the cell ROI images, the plot of cell fluorescence or spike time-series, and other plots showing the results of analyses. See here (LINK TO THE visualize.md) for basic usage.
 
 
-## Suite2Pをした後のvisualization の話。
+### Checking movies
+You may want to check some frames of the multi page tiff files. Visualize page offes the way to check. After creating a　plot box by clicking on + mark, Select the image using the SELECT IMAGE button on the left top.
+The range of the frame can be selected by assigning 1st and last frame numbers. LOAD button starts loading the data.
+
+<br>
+<p align="left">
+<img width="400px" src="../_static/tutorials/fig21_loadmovie.png" alt="Whole" />
+</p>
+
+Click on the PLAY button within the plotting box to play the loaded movie.
+The number indicated on the right of PAUSE button is the frame interval in milisecond. 
+
+<br>
+<p align="left">
+<img width="400px" src="../_static/tutorials/fig22_movie.png" alt="Whole" />
+</p>
+
+
+### Showing ROI and time courses
+After running the ROI detection algorithms, the most often created plots are extracted cell's shape and fluorescence timeseries. To show the plot, prepare two plotting boxes.
+
+<br>
+<p align="left">
+<img width="400px" src="../_static/tutorials/fig23_twobox.png" alt="Whole" />
+</p>
+
+In one plotting box (ex, the one with ID:0), select background image such as meanimg or Vcorr from the Select Item pull downs.
+<br>
+<p align="left">
+<img width="400px" src="../_static/tutorials/fig24_selectitem.png" alt="Whole" />
+</p>
+
+In the same plotting box, select cell_roi from the Select Roi pull downs.
+<br>
+<p align="left">
+<img width="400px" src="../_static/tutorials/fig24_selectroi.png" alt="Whole" />
+</p>
+
+The plotting box (ID:0) shows the background image and detected cells.
+<br>
+<p align="left">
+<img width="400px" src="../_static/tutorials/fig26_roi.png" alt="Whole" />
+</p>
+
+In another plotting box (ex, the one with ID:1), select fluorescence from the Select Item pull down.
+and select 0(same ID with the plotting box of your ROI image) from teh ref image pull down. This indicates that the two boxes shold be linked. 
+
+<br>
+<p align="left">
+<img width="400px" src="../_static/tutorials/fig27_fluo.png" alt="Whole" />
+</p>
+
+
+### 
  
-## movie の表示について
+
  
  
 # managing records
@@ -186,6 +267,9 @@ Clicking the Reproduce arrow retrieves the pipeline onto the workflow. This func
 The Download buttons for the workflow column and the NWB column copy the snakemake config or NWB file to your download folder. The snakemake config file contains the workflow information and parameters for each node. The NWB file contains the data and its analysis results. This function is convenient when users share the same analysis pipeline or results.
 
 
+RE-loaded のものはrunでvisualize可能
+
+
 <!-- 
 As a default, `OPTINIST_DIR` is assigned to /tmp/ in your computer.  
 To specifically assign your OPTINIST_DIR in which OptiNiSt copies the data and saves the results,
@@ -196,6 +280,7 @@ from
 to 
 _DEFAULT_DIR = '/your_dir'`
 -->
+
 
 
 
