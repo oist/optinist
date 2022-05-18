@@ -201,7 +201,7 @@ The range of the frame can be selected by assigning 1st and last frame numbers. 
 
 <br>
 <p align="left">
-<img width="400px" src="../_static/tutorials/fig21_loadmovie.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig21_loadmovie.png" alt="Whole" />
 </p>
 
 Click on the PLAY button within the plotting box to play the loaded movie.
@@ -218,21 +218,21 @@ After running the ROI detection algorithms, the most often created plots are ext
 
 <br>
 <p align="left">
-<img width="400px" src="../_static/tutorials/fig23_twobox.png" alt="Whole" />
+<img width="600px" src="../_static/tutorials/fig23_twobox.png" alt="Whole" />
 </p>
 
 In one plotting box (ex, the one with ID:0), select a background image such as meanimg or Vcorr from the Select Item pulldowns.
 
 <br>
 <p align="left">
-<img width="400px" src="../_static/tutorials/fig24_selectitem.png" alt="Whole" />
+<img width="100px" src="../_static/tutorials/fig24_selectitem.png" alt="Whole" />
 </p>
 
 In the same plotting box, select cell_roi from the Select Roi pull-downs.
 
 <br>
 <p align="left">
-<img width="400px" src="../_static/tutorials/fig25_selectroi.png" alt="Whole" />
+<img width="100px" src="../_static/tutorials/fig25_selectroi.png" alt="Whole" />
 </p>
 
 The plotting box (ID:0) shows the background image and detected cells.
@@ -252,13 +252,13 @@ And select 0(same ID with the plotting box of your ROI image) from the ref image
 Now you can explore the ROI and time course. The color of ROI and corresponding time course is matched. You will know the cell ID by letting your mouse over the cell. Clicking on the cell automatically add the fluorescence time course of the clicked cell. 
 <br>
 <p align="left">
-<img width="400px" src="../_static/tutorials/fig28_roifluo.png" alt="Whole" />
+<img width="600px" src="../_static/tutorials/fig28_roifluo.png" alt="Whole" />
 </p>
 
 In the case it is tiring to select the cell by clicking one by one, Turn on teh drag select button on the right in the plotting box of ROI. It enables to select all the cells within rectangular area.
 <br>
 <p align="left">
-<img width="400px" src="../_static/tutorials/fig29_dragselect.png" alt="Whole" />
+<img width="600px" src="../_static/tutorials/fig29_dragselect.png" alt="Whole" />
 </p>
 
 ### Savind plots
@@ -266,7 +266,7 @@ Created plots can be saved in svg, png, jpeg or webp format. Select the format a
 
 <br>
 <p align="left">
-<img width="400px" src="../_static/tutorials/fig30_saving.png" alt="Whole" />
+<img width="100px" src="../_static/tutorials/fig30_saving.png" alt="Whole" />
 </p>
 
 # managing records
@@ -275,21 +275,21 @@ RECORD section keeps your analysis pipeline easy to organize and easy to retriev
 
 <br>
 <p align="left">
-<img width="200px" src="../_static/tutorials/fig40_recordall.png" alt="Whole" />
+<img width="600px" src="../_static/tutorials/fig40_recordall.png" alt="Whole" />
 </p>
 
 Clicking the Reproduce arrow retrieves the pipeline onto the workflow. This function is convenient when you re-start analysis after closing the browser. Reproduced pipeline need to be RUN again (not ALL RUN) to make plots available.
 
 <br>
 <p align="left">
-<img width="200px" src="../_static/tutorials/fig41_reproduce.png" alt="Whole" />
+<img width="100px" src="../_static/tutorials/fig41_reproduce.png" alt="Whole" />
 </p>
 
 The Download buttons for the workflow column and the NWB column copy the snakemake config or NWB file to your download folder. The snakemake config file contains the workflow information and parameters for each node. The NWB file contains the data and its analysis results. This function is convenient when users share the same analysis pipeline or results.
 
 <br>
 <p align="left">
-<img width="200px" src="../_static/tutorials/fig42_workflownwb.png" alt="Whole" />
+<img width="150px" src="../_static/tutorials/fig42_workflownwb.png" alt="Whole" />
 </p>
 
 
