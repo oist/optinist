@@ -42,7 +42,7 @@ You may not want to change anything in your original data folder, or you may wis
 1. Copy your original data file to OPTINIST_DIR and assign the data path to the copied data. See [uploading data to OPTNIST_DIR](#uploading-data-to-optinist_dir) This can be done from the GUI.  
 2. Set OPTINIST_DIR as the data path by changing the dir_path.py file. See [setting optinist directory](#setting-optinist_dir).
 
-Once the data is made accessible, the SELECT IMAGE button on the image node becomes possible to assign the file as the input to the pipeline. You can select a file or a folder. Choosing a folder makes all the tiff files in the shown sequence an input set of continuous frames. See the case input file is [other than tiff] (../gui/workflow.md)/
+Once the data is made accessible, the SELECT IMAGE button on the image node can assign the file as the input to the pipeline. You can select a file or a folder. Choosing a folder makes all the tiff files in the shown sequence an input set of continuous frames. See the case input file is [other than tiff] (../gui/workflow.md)/
 
 ### Selecting analysis methods
 The left side of the window shows all available analysis methods. Clicking on the + mark adds the analysis nodes to the workflow field. ROI detection tools (currently suite2P and CaImAn ) are in ‘Algorithm’ category, and all other pre-installed analyses are in ‘optinist’ category.
@@ -100,14 +100,14 @@ Each node has PARAM button and OUTPUT button.
 <img width="200px" src="../_static/tutorials/fig10.1_buttons.png" alt="Whole" />
 </p>
 
-Clicking on PARAM shows the parameters. Edit this as you like. The names and the types and the default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters. Here is the [link list](LINK TO LINKLIST).
+Clicking on PARAM shows the parameters. Edit this as you like. The names, types and the default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters. Here is the [link list](LINK TO LINKLIST).
 
 <br>
 <p align="left">
 <img width="200px" src="../_static/tutorials/fig10_parameters.png" alt="Whole" />
 </p>
 
-OUTPUT button is for the quick check of the result. The button becomes effective after the successful execution of the pipeline. [Here](#visualzing-images-and-plots) explains a details of the charts. 
+OUTPUT button is for the quick check of the result. The button becomes effective after the successful execution of the pipeline. [Here](#visualzing-images-and-plots) explains the details of the charts. 
 
 ### running pipelines
 
@@ -129,7 +129,7 @@ Next to the RUN button, there is the CANCEL button. You can abort the running pi
 <img width="200px" src="../_static/tutorials/fig12_cancel.png" alt="Whole" />
 </p>
 
-### timeseries analyses after ROI extraction
+### time series analyses after ROI extraction
 OptiNiSt offers some basic time series analysis functions. 
 
 
@@ -139,7 +139,8 @@ OptiNiSt offers some basic time series analysis functions.
 </p>
 
 ### Using behavioral parameters
-Most of the cases, you have task related variables and timestamps.
+In most cases, you have task-related variables and want to relate them to the cell's activity.
+
 
 
 
@@ -155,7 +156,7 @@ The pipeline construction of Optinist is based on snakemake (ref), which is the 
 <img width="400px" src="../_static/tutorials/fig13_nwbsnakemake.png" alt="Whole" />
 </p>
 
-NWB SETTING defines the metadata for the NWB file as an output. The parameter you set here is only for your record and not used for the calculation inside OptiNiSt. You can leave this as default. The details of NWB setting in OptiNiSt is [here](#nwb-settings). Also general info about NWB is [here](https://www.nwb.org/getting-started/)
+NWB SETTING defines the metadata for the NWB file as an output. The parameter you set here is only for your record and not used for the calculation inside OptiNiSt. You can leave this as default. The details of NWB setting in OptiNiSt is [here](#nwb-settings). Also, general info about NWB is [here](https://www.nwb.org/getting-started/)
 
 
 
@@ -167,7 +168,7 @@ Clicking on the UPLOAD button on the node opens the file explorer or finder so t
 
 
 ##### setting OPTINIST_DIR
-The file assiging the OPTINIST_DIR is optinist/optinist/api/dir_path.py. Change line for OPTINIST_DIR, INPUT_DIR and OUTPUT_DIR according to your demand. Changing dir_path.py may also be necessary when running the pipeline on your cluster computers.
+The file assigning the OPTINIST_DIR is optinist/optinist/api/dir_path.py. Change line for OPTINIST_DIR, INPUT_DIR, and OUTPUT_DIR according to your demand. Changing dir_path.py may also be necessary when running the pipeline on your cluster computers.
 
 ##### snakemake settings
 use_conda:  ADD COMMENTS!  <br>
@@ -196,8 +197,8 @@ VISUALIZE page is the place to work on this. You can replay the tiff time-series
 
 
 ### Checking movies
-You may want to check some frames of the multi page tiff files. Visualize page offes the way to check. After creating a　plot box by clicking on + mark, Select the image using the SELECT IMAGE button on the left top.
-The range of the frame can be selected by assigning 1st and last frame numbers. LOAD button starts loading the data.
+You may want to check some frames of the multi-page tiff files. Visualize page offers the way to check. After creating a　plot box by clicking on + mark, Select the image using the SELECT IMAGE button on the left top.
+You can select the range of the frame by assigning 1st and last frame numbers. LOAD button starts loading the data.
 
 <br>
 <p align="left">
@@ -205,7 +206,7 @@ The range of the frame can be selected by assigning 1st and last frame numbers. 
 </p>
 
 Click on the PLAY button within the plotting box to play the loaded movie.
-The number indicated on the right of PAUSE button is the frame interval in milisecond. 
+The number indicated on the right of PAUSE button is the frame interval in milliseconds. 
 
 <br>
 <p align="left">
@@ -249,7 +250,7 @@ And select 0(same ID with the plotting box of your ROI image) from the ref image
 <img width="400px" src="../_static/tutorials/fig27_fluo.png" alt="Whole" />
 </p>
 
-Now you can explore the ROI and time course. The color of ROI and corresponding time course is matched. You will know the cell ID by letting your mouse over the cell. Clicking on the cell automatically add the fluorescence time course of the clicked cell. 
+Now you can explore the ROI and time course. The color of ROI and corresponding time course is matched. You will know the cell ID by letting your mouse over the cell. Clicking on the cell automatically adds the fluorescence time course of the clicked cell. 
 <br>
 <p align="left">
 <img width="600px" src="../_static/tutorials/fig28_roifluo.png" alt="Whole" />
@@ -262,11 +263,11 @@ In the case it is tiring to select the cell by clicking one by one, Turn on teh 
 </p>
 
 ### Savind plots
-Created plots can be saved in svg, png, jpeg or webp format. Select the format and Name it in the lower area on the left and Click camera mark in the plotting box. Svg format saves the plot as vector based graphical format which may be convenient when you need high resolution figures.
+You can save created plots in svg, png, jpeg, or webp format. Please select the format, decide the saving name in the lower area on the left panel, and click the camera mark in the plotting box. Svg format saves the plot as a vector-based graphical format which may be convenient when you need high-resolution figures.
 
 <br>
 <p align="left">
-<img width="100px" src="../_static/tutorials/fig30_saving.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig30_saving.png" alt="Whole" />
 </p>
 
 # managing records
@@ -278,7 +279,7 @@ RECORD section keeps your analysis pipeline easy to organize and easy to retriev
 <img width="600px" src="../_static/tutorials/fig40_recordall.png" alt="Whole" />
 </p>
 
-Clicking the Reproduce arrow retrieves the pipeline onto the workflow. This function is convenient when you re-start analysis after closing the browser. Reproduced pipeline need to be RUN again (not ALL RUN) to make plots available.
+Clicking the Reproduce arrow retrieves the pipeline onto the workflow. This function is convenient when you re-start analysis after closing the browser. The reproduced pipeline needs to be RUN again (not ALL RUN) to make plots available.
 
 <br>
 <p align="left">
