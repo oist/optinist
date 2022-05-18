@@ -1,5 +1,6 @@
-from optinist.api.dataclass.dataclass import *
+import os
 
+from optinist.api.dataclass.dataclass import *
 from optinist.api.dir_path import DIRPATH
 from optinist.api.utils.filepath_creater import join_filepath
 
@@ -14,8 +15,8 @@ def suite2p_file_convert(
     data_path_list = []
     data_name_list = []
     for file_path in image.path:
-        data_path_list.append('/'.join(file_path.split('/')[:-1]))
-        data_name_list.append(file_path.split('/')[-1])
+        data_path_list.append(os.path.dirname(file_path))
+        data_name_list.append(os.path.basename(file_path))
 
     print(data_path_list)
     print(data_name_list)
@@ -23,7 +24,7 @@ def suite2p_file_convert(
     db = {
         'data_path': data_path_list,
         'tiff_list': data_name_list,
-        'save_path0': DIRPATH.OPTINIST_DIR,
+        'save_path0': DIRPATH.OUTPUT_DIR,
         'save_folder': 'suite2p'
     }
 
