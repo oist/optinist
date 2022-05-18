@@ -24,7 +24,7 @@ OptiNiSt has three different pages, WORKFLOW, VISUALIZE, and RECORD. You can tog
 <img width="300px" src="../_static/tutorials/fig2.2_tags.png" alt="Whole" />
 </p>
 
-# Making Pipelines on WORKFLOW 
+# Making pipelines on WORKFLOW 
 After launching, the first page you see is the workflow page. The workflow page is a place to define the analysis pipeline. You determine the data you will analyze, select the type of the algorithm or analysis method you use, and set the parameters and the order of analysis.  
 
 ### Assigning input data path
@@ -39,7 +39,7 @@ OptiNiSt uses OPTINIST_DIR for retrieving data and saving results. OptiNiSt sear
 
 You may not want to change anything in your original data folder, or you may wish to make your data folder visible and accessible to OptiNist because the imaging data is sometimes huge and takes time to copy. You can take either strategy in assigning your data path.
 
-1. Copy your original data file to OPTINIST_DIR and assign the data path to the copied data. See [uploading data to OPTNIST_DIR](#uploading-data-to-optinist_dir) This can be done from the GUI.  
+1. Copy your original data file to OPTINIST_DIR and assign the data path to the copied data. [See here](#uploading-data) This can be done from the GUI.  
 2. Set OPTINIST_DIR as the data path by changing the dir_path.py file. See [setting optinist directory](#setting-optinist_dir).
 
 Once the data is made accessible, the SELECT IMAGE button on the image node can assign the file as the input to the pipeline. You can select a file or a folder. Choosing a folder makes all the tiff files in the shown sequence an input set of continuous frames. See the case input file is [other than tiff] (../gui/workflow.md)/
@@ -161,9 +161,9 @@ NWB SETTING defines the metadata for the NWB file as an output. The parameter yo
 
 
 ### Additional information on WORKFLOW
+  
 
-
-##### uploading data to OPTNIST_DIR
+##### uploading data
 Clicking on the UPLOAD button on the node opens the file explorer or finder so that you can select the data file. UPLOAD button copies the selected file to your OPTINIST_DIR/input. 
 
 
@@ -270,9 +270,8 @@ You can save created plots in svg, png, jpeg, or webp format. Please select the 
 <img width="200px" src="../_static/tutorials/fig30_saving.png" alt="Whole" />
 </p>
 
-# managing records
-
-RECORD section keeps your analysis pipeline easy to organize and easy to retrieve.
+# Managing records on RECORD
+RECORD section keeps your analysis pipeline easy to organize and easy to retrieve. For the basic usage of the RECORD page, see [here](link to record.md)
 
 <br>
 <p align="left">
