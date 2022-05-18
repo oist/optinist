@@ -6,7 +6,7 @@ from fastapi import APIRouter
 from optinist.api.dir_path import DIRPATH
 
 from optinist.api.utils.json_writer import JsonWriter, save_tiff2json
-from optinist.api.utils.filepath_creater import join_filepath
+from optinist.api.utils.filepath_creater import create_directory, join_filepath
 from optinist.routers.const import ACCEPT_TIFF_EXT
 from optinist.routers.fileIO.file_reader import JsonReader, Reader
 from optinist.routers.model import JsonTimeSeriesData
@@ -122,15 +122,19 @@ async def read_image(
         start_index: Optional[int] = None,
         end_index: Optional[int] = None
     ):
-    filepath = join_filepath([DIRPATH.INPUT_DIR, filepath])
     filename, ext = os.path.splitext(os.path.basename(filepath))
     if ext in ACCEPT_TIFF_EXT:
-        json_filepath = join_filepath([
+        filepath = join_filepath([DIRPATH.INPUT_DIR, filepath])
+        save_dirpath = join_filepath([
             os.path.dirname(filepath),
+            filename,
+        ])
+        json_filepath = join_filepath([
+            save_dirpath,
             f'{filename}_{str(start_index)}_{str(end_index)}.json'
         ])
         if not os.path.exists(json_filepath):
-            save_tiff2json(filepath, start_index, end_index)
+            save_tiff2json(filepath, save_dirpath, start_index, end_index)
     else:
         json_filepath = filepath
 
@@ -141,11 +145,16 @@ async def read_image(
 async def read_csv(filepath: str):
     filepath = join_filepath([DIRPATH.INPUT_DIR, filepath])
 
-    dirpath = os.path.dirname(filepath)
     filename, _ = os.path.splitext(os.path.basename(filepath))
+    save_dirpath = join_filepath([
+        os.path.dirname(filepath),
+        filename
+    ])
+    create_directory(save_dirpath)
     json_filepath = join_filepath([
-        dirpath,
+        save_dirpath,
         f'{filename}.json'
     ])
+
     JsonWriter.write_as_split(json_filepath, pd.read_csv(filepath, header=None))
     return JsonReader.read_as_output(json_filepath)

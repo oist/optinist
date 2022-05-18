@@ -57,12 +57,11 @@ async def get_files(file_type: str = None):
 
 @router.post("/files/upload/{filename}")
 async def create_file(filename: str, file: UploadFile = File(...)):
-    dirpath = os.path.splitext(join_filepath([DIRPATH.INPUT_DIR, filename]))[0]
-    create_directory(dirpath)
+    create_directory(DIRPATH.INPUT_DIR)
 
-    filepath = join_filepath([dirpath, filename])
+    filepath = join_filepath([DIRPATH.INPUT_DIR, filename])
 
     with open(filepath, "wb") as f:
         shutil.copyfileobj(file.file, f)
 
-    return { "file_path": filepath }
+    return { "file_path": filename }
