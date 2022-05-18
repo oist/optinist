@@ -249,30 +249,51 @@ And select 0(same ID with the plotting box of your ROI image) from the ref image
 <img width="400px" src="../_static/tutorials/fig27_fluo.png" alt="Whole" />
 </p>
 
+Now you can explore the ROI and time course. The color of ROI and corresponding time course is matched. You will know the cell ID by letting your mouse over the cell. Clicking on the cell automatically add the fluorescence time course of the clicked cell. 
+<br>
+<p align="left">
+<img width="400px" src="../_static/tutorials/fig28_roifluo.png" alt="Whole" />
+</p>
 
+In the case it is tiring to select the cell by clicking one by one, Turn on teh drag select button on the right in the plotting box of ROI. It enables to select all the cells within rectangular area.
+<br>
+<p align="left">
+<img width="400px" src="../_static/tutorials/fig29_dragselect.png" alt="Whole" />
+</p>
 
-
-
-### 
- 
-
- 
- 
-# managing records
-
-RECORD section keeps your analysis pipeline easy to organize and easy to retrieve.
-Figure shows one record of pipeline.
+### Savind plots
+Created plots can be saved in svg, png, jpeg or webp format. Select the format and Name it in the lower area on the left and Click camera mark in the plotting box. Svg format saves the plot as vector based graphical format which may be convenient when you need high resolution figures.
 
 <br>
 <p align="left">
-<img width="200px" src="../_static/tutorials/Fig2.png" alt="Whole" />
+<img width="400px" src="../_static/tutorials/fig30_saving.png" alt="Whole" />
 </p>
 
-Clicking the Reproduce arrow retrieves the pipeline onto the workflow. This function is convenient when you re-start analysis after closing the browser. 
+# managing records
+
+RECORD section keeps your analysis pipeline easy to organize and easy to retrieve.
+
+<br>
+<p align="left">
+<img width="200px" src="../_static/tutorials/fig40_recordall.png" alt="Whole" />
+</p>
+
+Clicking the Reproduce arrow retrieves the pipeline onto the workflow. This function is convenient when you re-start analysis after closing the browser. Reproduced pipeline need to be RUN again (not ALL RUN) to make plots available.
+
+<br>
+<p align="left">
+<img width="200px" src="../_static/tutorials/fig41_reproduce.png" alt="Whole" />
+</p>
+
 The Download buttons for the workflow column and the NWB column copy the snakemake config or NWB file to your download folder. The snakemake config file contains the workflow information and parameters for each node. The NWB file contains the data and its analysis results. This function is convenient when users share the same analysis pipeline or results.
 
+<br>
+<p align="left">
+<img width="200px" src="../_static/tutorials/fig42_workflownwb.png" alt="Whole" />
+</p>
 
-RE-loaded のものはrunでvisualize可能
+
+
 
 
 <!-- 
@@ -288,6 +309,3 @@ _DEFAULT_DIR = '/your_dir'`
 
 
 
-
-How it works
-=================
