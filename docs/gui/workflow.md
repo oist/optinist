@@ -11,7 +11,6 @@ OptiNiSt can help creating your analysis pipelines easily on the GUI. In this wo
 ## Creating workflow
 ### Setting Input Images
 
-<<<<<<< HEAD
 1. Click `UPLOAD` button to upload your image files to `OPTINIST_DIR`.  
 <!--   
 (Large data files take long time to upload, so it copies to `OPTINIST_DIR` directly and load file more quickly. )-->
