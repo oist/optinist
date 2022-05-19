@@ -44,6 +44,8 @@ git clone git@github.com:oist/optinist.git
 ### Install Anaconda
 Download https://repo.anaconda.com/archive/Anaconda3-2021.11-MacOSX-x86_64.pkg
 
+or Miniconda
+
 Install it.
 
 ### Create anaconda environment
