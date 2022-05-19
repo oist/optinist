@@ -1,7 +1,7 @@
 Workflow
 =================
 
-OptiNiSt can help creating your analysis pipelines easily on the GUI. In this workflow field, you select the data and the algorithms or analysis methods (nods). Connecting these nods defines the order of processing (pipelines). The analysis pipeline can be parallel or bifurcating.
+OptiNiSt can help creating your analysis pipelines easily on the GUI. In this workflow field, you select the data and the algorithms or analysis methods (nodes). Connecting these nodes defines the order of processing (pipelines). The analysis pipeline can be parallel or bifurcating.
 <br>
 <p align="center">
 <img width="400px" src="../_static/workflow/whole.png" alt="workflow" />
@@ -46,7 +46,7 @@ Click `PARAM` button of the node to change parameters.
 
 <br/>
 
-### Connecting Nods 
+### Connecting Nodes 
 Connect colored connectors of the nodes by dragging your cursor from the output connector to the next input connector to create connecting edges. The color of the connector indicates the data type of the input and the output.
 You can only connect the input and output connectors of the same color. 
 
@@ -64,7 +64,7 @@ You can only connect the input and output connectors of the same color.
 
 <br/>
 
-### Removing Nods 
+### Removing Nodes 
 Clicking on the x mark on a node or on an edge removes it from the workflow field. 
 
 
