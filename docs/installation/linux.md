@@ -24,7 +24,7 @@ Please follow instructions below.
 ## 0. GitHub SSH access settings
 **You only need to do the following once.**
 
-Follow this [link](installation_github_settings.md).
+Follow this [link](settings.md).
 
 ## 1. Clone optinist repository
 
