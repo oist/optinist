@@ -11,15 +11,17 @@ OptiNiSt can help creating your analysis pipelines easily on the GUI. In this wo
 ## Creating workflow
 ### Setting Input Images
 
+<<<<<<< HEAD
 1. Click `UPLOAD` button to upload your image files to `OPTINIST_DIR`.  
 <!--   
 (Large data files take long time to upload, so it copies to `OPTINIST_DIR` directly and load file more quickly. )-->
   If your files are in a remote place and your analysis computer is local, uploading (copying) input files to the local directory saves time for accessing them. 
   
 2. Click `SELECT IMAGE` button to set the path to the data as the input. You can select one file or all the files in a folder. All the image tiff files in a folder are concatenated if you choose a folder.
- 
 
 ** Currentlly, image files with {.tif, .TIF, .tiff, .TIFF} extensions are accepted. Other extensions will be added on request.
+
+
 <br>
 <p align="center">
 <img width="200px" src="../_static/workflow/components/imageNode.png" alt="imageNode" />

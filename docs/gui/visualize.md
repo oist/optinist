@@ -37,6 +37,8 @@ Pull down of the `Select Item` shows the available item to show. Select one of t
 Select one of the display boxes by clicking inside of the box. The blue highlight of the box indicates the current selection of the display box. The parameters shown on the left are attached to the currently selected box. Details of the parameter are explained here.
 
 
+### Add display box into columns right
+Click **︙** and `Insert into next columns` to add another display box.
 <p align="center">
 <img width="400px" src="../_static/visualize/components/customize_param.png" alt="CustomizeParam" />
 </p>
@@ -46,6 +48,9 @@ Select one of the display boxes by clicking inside of the box. The blue highligh
 There is a way to link ROI plots and fluorescence time series. 
 Create One box showing ROI and another box showing fluorescence. You can link two boxes by setting `ref image` in the fluorescence box to be the ID of the ROI box. (ID of the box is on the left upper side). By clicking on the ROI of a cell, you can visualize the corresponding fluorescence time course in the fluorescence box. By turning on the `drag select` in ROI box, you can select multiple cells in the image at once. 
 
+
+## Ref Image
+TimeSeries plot can refer to a image plot to synthronize cell number index. Click or drag image plot so that cell number indexes are synthoronized in corresponding timeseries plot.
 <p align="center">
 <img width="500px" src="../_static/visualize/components/ref_image.png" alt="RefImage" />
 </p>
