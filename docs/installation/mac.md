@@ -28,7 +28,7 @@ We use tensorflow in caiman code. We know that M1 mac doesn't install tensorflow
 ## 0. GitHub SSH access settings
 **You only need to do the following once.**
 
-Follow this [link](installation_github_settings.md).
+Follow this [link](settings.md).
 
 ## 1. Clone optinist repository
 
