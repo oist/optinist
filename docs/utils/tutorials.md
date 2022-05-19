@@ -42,7 +42,7 @@ You may not want to change anything in your original data folder, or you may wis
 1. Copy your original data file to OPTINIST_DIR and assign the data path to the copied data. [See here](#uploading-data) This can be done from the GUI.  
 2. Set OPTINIST_DIR as the data path by changing the dir_path.py file. See [setting optinist directory](#setting-optinist_dir).
 
-Once the data is made accessible, the SELECT IMAGE button on the image node can assign the file as the input to the pipeline. You can select a file or a folder. Choosing a folder makes all the tiff files in the shown sequence an input set of continuous frames. See the case input file is [other than tiff] (../gui/workflow.md)/
+Once the data is made accessible, the SELECT IMAGE button on the image node can assign the file as the input to the pipeline. You can select a file or a folder. Choosing a folder makes all the tiff files in the shown sequence an input set of continuous frames. See the case input file is [other than tiff] (docs/gui/workflow.md)/
 
 ### Selecting analysis methods
 The left side of the window shows all available analysis methods. Clicking on the + mark adds the analysis nodes to the workflow field. ROI detection tools (currently suite2P and CaImAn ) are in ‘Algorithm’ category, and all other pre-installed analyses are in ‘optinist’ category.
@@ -85,7 +85,7 @@ Also, you can perform motion correction of CaImAn (caiman_mc) and then perform s
 </p>
 
 The nodes should be connected as long as the input and the output are of the same format type (same color).
-Also, you can branch the flow. In the example, the two caiman_mc with different parameter settings are created, and the downstream from caiman_mc is also different. Each node's results are saved in a separate folder (See [RECORD](#record) part). 
+Also, you can branch the flow. In the example, the two caiman_mc with different parameter settings are created, and the downstream from caiman_mc is also different. Each node's results are saved in a separate folder (See [RECORD part](#managing-records-on-record)). 
 
 <br>
 <p align="left">
@@ -130,13 +130,65 @@ Next to the RUN button, there is the CANCEL button. You can abort the running pi
 </p>
 
 ### time series analyses after ROI extraction
-OptiNiSt offers some basic time series analysis functions. 
-
+OptiNiSt offers some basic time-series analysis functions. For example, event-triggered averaging can be applied to the ROI time-series data created by OptiNiSt. Because the ROI time-series is in NWB format, the hdf5 data node is appropriate as the input node. 
 
 <br>
 <p align="left">
-<img width="200px" src="../_static/tutorials/***.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig12.00_hdfnode.png" alt="Whole" />
 </p>
+
+Add the hdf5 node to the field. Upload the data to the OPTINIST_DIR. In addition to UPLOAD and SELECT to assign the file, you need to indicate the position of the fluorescence data in the HDF5 structure (STRUCTURE button appeared after you SELECT HDF5).
+
+<br>
+<p align="left">
+<img width="200px" src="../_static/tutorials/fig12.01_hdfnode2.png" alt="Whole" />
+</p>
+
+NWB structure of Suite2P and CaImAn is different because OptiNiSt inherits each algorithm's original NWB output format. You will find the colums and rows are opposite between Suite2P outputs and CaImAn outputs. You can re-assign the rows and columns in the parameter setting of eta node. 
+
+<br>
+<p align="left">
+<img width="200px" src="../_static/tutorials/fig12.02_hdfs2p.png" alt="Whole" />
+</p>
+
+<br>
+<p align="left">
+<img width="200px" src="../_static/tutorials/fig12.03_hdfcaiman.png" alt="Whole" />
+</p>
+
+As the behavioral data is .csv format in this example, csv data node or behavior data node is used for behavior input. 
+
+<br>
+<p align="left">
+<img width="200px" src="../_static/tutorials/fig12.04_behaviornode.png" alt="Whole" />
+</p>
+
+Once you SELECT CSV, SETTINGS button appears in the behavior node. This button confirms you the inside of csv data and make it possible to transpose the matrix if needed. If your csv include the headders, you can also assign it to ignore it in creating the matrix. Set Index adds index columns to the matrix.
+
+<br>
+<p align="left">
+<img width="200px" src="../_static/tutorials/fig12.05_behaviornode2.png" alt="Whole" />
+</p>
+
+
+Add event tirggered averaging (eta) node and connect fluorescence and behavior nodes to eta node. And Run the workflow. 
+
+<br>
+<p align="left">
+<img width="200px" src="../_static/tutorials/fig12.06_etaworkflow.png" alt="Whole" />
+</p>
+
+After finishing the process, you can quickly confirm your event-triggered average plot by cliking on the OUTPUT button on the eta node.
+
+<br>
+<p align="left">
+<img width="200px" src="../_static/tutorials/fig12.07_etamean.png" alt="Whole" />
+</p>
+
+The plots are for quick confirmation of the results. If you like to look into the results more in detail, basicall variety of outputs not only shown as plot but other resulting variables are saved in the OpTiNist output in NWB format. To inspect the data, [HDFView](https://www.hdfgroup.org/downloads/hdfview/) is convenient. 
+
+
+
 
 ### Using behavioral parameters
 In most cases, you have task-related variables and want to relate them to the cell's activity.
