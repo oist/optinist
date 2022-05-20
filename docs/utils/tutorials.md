@@ -87,7 +87,7 @@ Also, you can perform motion correction of CaImAn (caiman_mc) and then perform s
 </p>
 
 The nodes should be connected as long as the input and the output are of the same format type (same color).
-Also, you can branch the flow. In the example, the two caiman_mc with different parameter settings are created, and the downstream from caiman_mc is also different. Each node's results are saved in a separate folder (See [RECORD part](#managing-records-on-record)). 
+Also, you can branch the flow. In the example, the two caiman_mc with different parameter settings are created, and the downstream from caiman_mc is also different. Each node's results are saved in a separate folder (See [RECORD part](#managing-pipelines-on-record)). 
 
 <br>
 <p align="left">
@@ -192,6 +192,8 @@ Once you SELECT CSV, SETTINGS button appears in the behavior node. This button c
 
 Add event tirggered averaging (eta) node and connect fluorescence and behavior nodes to eta node. And Run the workflow. 
 
+
+
 <br>
 <p align="left">
 <img width="400px" src="../_static/tutorials/fig12.06_etaworkflow.png" alt="Whole" />
@@ -204,12 +206,16 @@ After finishing the process, you can quickly confirm your event-triggered averag
 <img width="400px" src="../_static/tutorials/fig12.07_etamean.png" alt="Whole" />
 </p>
 
-The plots are for quick confirmation of the results. If you want to look into the results more in detail,   available variables are all saved in the OptiNiSt output in NWB format. They are saved in processing/optinist. To inspect the data, [HDFView](https://www.hdfgroup.org/downloads/hdfview/) is convenient. 
+The plots are for quick confirmation of the results. If you want to look into the results more in detail,   available variables are all saved in the OptiNiSt output in NWB format. They are saved in processing/optinist. The NWB file is easily retrieved at RECORD page with just one click. To inspect the data, [HDFView](https://www.hdfgroup.org/downloads/hdfview/) is convenient. 
 
 <br>
 <p align="left">
 <img width="200px" src="../_static/tutorials/fig12.08_resulthdf.png" alt="Whole" />
 </p>
+
+
+
+
 
 
 ### Additional information on WORKFLOW
@@ -218,6 +224,10 @@ The plots are for quick confirmation of the results. If you want to look into th
 ##### setting OPTINIST_DIR
 The file assigning the OPTINIST_DIR is optinist/optinist/api/dir_path.py. Change line for OPTINIST_DIR, INPUT_DIR, and OUTPUT_DIR according to your demand. Changing dir_path.py may also be necessary when running the pipeline on your cluster computers. Also, you can quickly change OPTINIST_DIR by changing the environment variable by typing 'export OPTINIST_DIR="your_saving_dir"' before launching.
 
+ #### about the assumed data shape 
+ 
+ 
+ 
  
 
 ##### snakemake settings
@@ -322,7 +332,7 @@ You can save created plots in svg, png, jpeg, or webp format. Please select the 
 </p>
 
 # Managing pipelines on RECORD
-RECORD section keeps your analysis pipeline easy to organize and easy to retrieve. For the basic usage of the RECORD page, see also [here](../gui/record.md)
+RECORD section keeps your analysis pipeline easy to organize and easy to retrieve. For the basic usage of the RECORD page, see also [here](../gui/record.md) The RECORD page shows the summary of current status of OPTINIST_DIR/output. 
 
 <br>
 <p align="left">
@@ -336,7 +346,7 @@ Clicking the Reproduce arrow retrieves the pipeline onto the workflow. This func
 <img width="100px" src="../_static/tutorials/fig41_reproduce.png" alt="Whole" />
 </p>
 
-The Download buttons for the workflow column and the NWB column copy the snakemake config or NWB file to your download folder. The snakemake config file contains the workflow information and parameters for each node. The NWB file contains the data and its analysis results. This function is convenient when users share the same analysis pipeline or results.
+The Download buttons for the workflow column and the NWB column copy the snakemake config or NWB file to your download folder. The snakemake config file contains the workflow information and parameters for each node. The NWB file contains the data and its analysis results. This function is convenient when users share the same analysis pipeline or inspect the output results.
 
 <br>
 <p align="left">
@@ -345,18 +355,6 @@ The Download buttons for the workflow column and the NWB column copy the snakema
 
 
 
-
-
-<!-- 
-As a default, `OPTINIST_DIR` is assigned to /tmp/ in your computer.  
-To specifically assign your OPTINIST_DIR in which OptiNiSt copies the data and saves the results,
-type `export OPTINIST_DIR=~/your_dir` or change the line in optinist/api.dir_path.py directly
-
-from
-`_DEFAULT_DIR = '/tmp/optinist'`
-to 
-_DEFAULT_DIR = '/your_dir'`
--->
 
 
 
