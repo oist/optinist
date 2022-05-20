@@ -35,14 +35,16 @@ As a default, it shows an image node. This node defines the path to the data to 
 <img width="200px" src="../_static/tutorials/fig3_imagenode.png" alt="Whole" />
 </p>
 
-OptiNiSt uses OPTINIST_DIR for retrieving data and saving results. OptiNiSt searches input data from the OPTINIST_DIR/input directory. 
+OptiNiSt uses OPTINIST_DIR for retrieving data and saving results. OptiNiSt searches input data from the 'input' directory in OPTINIST_DIR. A default OPTINIST_DIR is `/tmp/optinist` in your computer.
 
 You may not want to change anything in your original data folder, or you may wish to make your data folder visible and accessible to OptiNist because the imaging data is sometimes huge and takes time to copy. You can take either strategy in assigning your data path.
 
-1. Copy your original data file to OPTINIST_DIR and assign the data path to the copied data. [See here](#uploading-data) This can be done from the GUI.  
-2. Set OPTINIST_DIR as the data path by changing the dir_path.py file. See [setting optinist directory](#setting-optinist_dir).
+1. Copy your original data file to OPTINIST_DIR and assign the data path to the copied data.   
+Clicking on the UPLOAD button on the node opens the file explorer or finder so that you can select the data file. UPLOAD button copies the selected file to your OPTINIST_DIR/input. This can be done from the GUI.  
+  
+2. Change the setting of OPTINIST_DIR by editing dir_path.py file. See [setting optinist directory](#setting-optinist_dir). Change is effective after re-launching.
 
-Once the data is made accessible, the SELECT IMAGE button on the image node can assign the file as the input to the pipeline. You can select a file or a folder. Choosing a folder makes all the tiff files in the shown sequence an input set of continuous frames. See the case input file is [other than tiff] (docs/gui/workflow.md)/
+Once the data is made accessible, the SELECT IMAGE button on the image node can assign the file as the input to the pipeline. You can select a file or a folder. Choosing a folder makes all the tiff files in the shown sequence an input set of continuous frames. See the case input file is [other than tiff] (../docs/gui/workflow.md)/
 
 ### Selecting analysis methods
 The left side of the window shows all available analysis methods. Clicking on the + mark adds the analysis nodes to the workflow field. ROI detection tools (currently suite2P and CaImAn ) are in ‘Algorithm’ category, and all other pre-installed analyses are in ‘optinist’ category.
@@ -192,7 +194,7 @@ Add event tirggered averaging (eta) node and connect fluorescence and behavior n
 
 <br>
 <p align="left">
-<img width="600px" src="../_static/tutorials/fig12.06_etaworkflow.png" alt="Whole" />
+<img width="400px" src="../_static/tutorials/fig12.06_etaworkflow.png" alt="Whole" />
 </p>
 
 After finishing the process, you can quickly confirm your event-triggered average plot by clicking the OUTPUT button on the eta node. This figure is also available from VISUALIZE pate.
@@ -212,10 +214,6 @@ The plots are for quick confirmation of the results. If you want to look into th
 
 ### Additional information on WORKFLOW
   
-
-##### uploading data
-Clicking on the UPLOAD button on the node opens the file explorer or finder so that you can select the data file. UPLOAD button copies the selected file to your OPTINIST_DIR/input. 
-
 
 ##### setting OPTINIST_DIR
 The file assigning the OPTINIST_DIR is optinist/optinist/api/dir_path.py. Change line for OPTINIST_DIR, INPUT_DIR, and OUTPUT_DIR according to your demand. Changing dir_path.py may also be necessary when running the pipeline on your cluster computers.
