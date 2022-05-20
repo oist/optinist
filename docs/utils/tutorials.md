@@ -224,8 +224,10 @@ The plots are for quick confirmation of the results. If you want to look into th
 ##### setting OPTINIST_DIR
 The file assigning the OPTINIST_DIR is optinist/optinist/api/dir_path.py. Change line for OPTINIST_DIR, INPUT_DIR, and OUTPUT_DIR according to your demand. Changing dir_path.py may also be necessary when running the pipeline on your cluster computers. Also, you can quickly change OPTINIST_DIR by changing the environment variable by typing 'export OPTINIST_DIR="your_saving_dir"' before launching.
 
- #### about the assumed data shape 
- 
+#### about the assumed data shape 
+eta, cca, correlation, cross_correlation, granger, glm, lda, and svm assume the input neural data shape is frames x cells matrix. Because the output of CaImAn and Suite2P on the pipeline is cell x frames, the default setting for neural data for these analyses is set to transpose. 
+
+Pca and tsne can be done in either direction depending on your purpose. The function assumes their input to be samples x features.  
  
  
  
