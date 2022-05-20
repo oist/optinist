@@ -61,7 +61,7 @@ Once it is selected, it shows the name of files in the image node.
 <img width="200px" src="../_static/tutorials/fig5_imagenode2.png" alt="Whole" />
 </p>
 
-### creating pipelines
+### Creating pipelines
 
 Then, connect the analysis nodes in the order you like to process. Drugging from an output connector to an input connector creates an edge. The color of the connector indicates the format. For example, red is the image type format. You can only connect the same color. (Exception: black is an undefined data format. You can connect the black connector with any other connector, but be careful it does not check the consistency of input and output).
 
@@ -92,7 +92,7 @@ Also, you can branch the flow. In the example, the two caiman_mc with different 
 <img width="600px" src="../_static/tutorials/fig9_workflowbranch.png" alt="Whole" />
 </p>
 
-### parameter button and output button on the node
+### Parameter button and output button on the node
 Each node has PARAM button and OUTPUT button. 
 
 <br>
@@ -129,73 +129,6 @@ Next to the RUN button, there is the CANCEL button. You can abort the running pi
 <img width="200px" src="../_static/tutorials/fig12_cancel.png" alt="Whole" />
 </p>
 
-### time series analyses after ROI extraction
-OptiNiSt offers some basic time-series analysis functions. For example, event-triggered averaging can be applied to the ROI time-series data created by OptiNiSt. Because the ROI time-series is in NWB format, the hdf5 data node is appropriate as the input node. 
-
-<br>
-<p align="left">
-<img width="200px" src="../_static/tutorials/fig12.00_hdfnode.png" alt="Whole" />
-</p>
-
-Add the hdf5 node to the field. Upload the data to the OPTINIST_DIR. In addition to UPLOAD and SELECT to assign the file, you need to indicate the position of the fluorescence data in the HDF5 structure (STRUCTURE button appeared after you SELECT HDF5).
-
-<br>
-<p align="left">
-<img width="200px" src="../_static/tutorials/fig12.01_hdfnode2.png" alt="Whole" />
-</p>
-
-NWB structure of Suite2P and CaImAn is different because OptiNiSt inherits each algorithm's original NWB output format. You will find the colums and rows are opposite between Suite2P outputs and CaImAn outputs. You can re-assign the rows and columns in the parameter setting of eta node. 
-
-<br>
-<p align="left">
-<img width="200px" src="../_static/tutorials/fig12.02_hdfs2p.png" alt="Whole" />
-</p>
-
-<br>
-<p align="left">
-<img width="200px" src="../_static/tutorials/fig12.03_hdfcaiman.png" alt="Whole" />
-</p>
-
-As the behavioral data is .csv format in this example, csv data node or behavior data node is used for behavior input. 
-
-<br>
-<p align="left">
-<img width="200px" src="../_static/tutorials/fig12.04_behaviornode.png" alt="Whole" />
-</p>
-
-Once you SELECT CSV, SETTINGS button appears in the behavior node. This button confirms you the inside of csv data and make it possible to transpose the matrix if needed. If your csv include the headders, you can also assign it to ignore it in creating the matrix. Set Index adds index columns to the matrix.
-
-<br>
-<p align="left">
-<img width="200px" src="../_static/tutorials/fig12.05_behaviornode2.png" alt="Whole" />
-</p>
-
-
-Add event tirggered averaging (eta) node and connect fluorescence and behavior nodes to eta node. And Run the workflow. 
-
-<br>
-<p align="left">
-<img width="200px" src="../_static/tutorials/fig12.06_etaworkflow.png" alt="Whole" />
-</p>
-
-After finishing the process, you can quickly confirm your event-triggered average plot by cliking on the OUTPUT button on the eta node.
-
-<br>
-<p align="left">
-<img width="200px" src="../_static/tutorials/fig12.07_etamean.png" alt="Whole" />
-</p>
-
-The plots are for quick confirmation of the results. If you like to look into the results more in detail, basicall variety of outputs not only shown as plot but other resulting variables are saved in the OpTiNist output in NWB format. To inspect the data, [HDFView](https://www.hdfgroup.org/downloads/hdfview/) is convenient. 
-
-
-
-
-### Using behavioral parameters
-In most cases, you have task-related variables and want to relate them to the cell's activity.
-
-
-
-
 
 
 ### SNAKEMANE and NWB SETTING
@@ -210,6 +143,71 @@ The pipeline construction of Optinist is based on snakemake (ref), which is the 
 
 NWB SETTING defines the metadata for the NWB file as an output. The parameter you set here is only for your record and not used for the calculation inside OptiNiSt. You can leave this as default. The details of NWB setting in OptiNiSt is [here](#nwb-settings). Also, general info about NWB is [here](https://www.nwb.org/getting-started/)
 
+
+
+
+### Time series analyses after ROI extraction
+OptiNiSt offers some basic time-series analysis functions. For example, event-triggered averaging can be applied to the ROI time-series data created by OptiNiSt. Because the ROI time-series is in NWB format, the hdf5 data node is appropriate as the input node. 
+
+<br>
+<p align="left">
+<img width="200px" src="../_static/tutorials/fig12.00_hdfnode.png" alt="Whole" />
+</p>
+
+Add the hdf5 node to the field. Upload the data to the OPTINIST_DIR. In addition to UPLOAD and SELECT to assign the file, you need to indicate the position of the fluorescence data in the HDF5 structure (STRUCTURE button appeared after you SELECT HDF5).
+
+<br>
+<p align="left">
+<img width="200px" src="../_static/tutorials/fig12.01_hdfnode2.png" alt="Whole" />
+</p>
+
+NWB structure of Suite2P and CaImAn is different because OptiNiSt inherits each algorithm's original NWB output format. You will find the colums and rows are opposite between Suite2P outputs and CaImAn outputs. You can re-assign the rows and columns in the parameter setting of the analysis node (in this case eta node). 
+
+<br>
+<p align="left">
+<img width="200px" src="../_static/tutorials/fig12.02_hdfs2p.png" alt="Whole" />
+</p>
+
+<br>
+<p align="left">
+<img width="200px" src="../_static/tutorials/fig12.03_hdfcaiman.png" alt="Whole" />
+</p>
+
+In this example, the behavioral data format is .csv. The csv data node or behavior data node is used for behavior input. 
+
+<br>
+<p align="left">
+<img width="200px" src="../_static/tutorials/fig12.04_behaviornode.png" alt="Whole" />
+</p>
+
+Once you SELECT CSV, SETTINGS button appears in the behavior node. This button confirms the inside of csv data and makes it possible to transpose the matrix if needed. If your csv includes the headers, you can also assign it to ignore it in creating the matrix. Set Index adds index columns to the matrix.
+
+<br>
+<p align="left">
+<img width="400px" src="../_static/tutorials/fig12.05_behaviornode2.png" alt="Whole" />
+</p>
+
+
+Add event tirggered averaging (eta) node and connect fluorescence and behavior nodes to eta node. And Run the workflow. 
+
+<br>
+<p align="left">
+<img width="600px" src="../_static/tutorials/fig12.06_etaworkflow.png" alt="Whole" />
+</p>
+
+After finishing the process, you can quickly confirm your event-triggered average plot by clicking the OUTPUT button on the eta node. This figure is also available from VISUALIZE pate.
+
+<br>
+<p align="left">
+<img width="400px" src="../_static/tutorials/fig12.07_etamean.png" alt="Whole" />
+</p>
+
+The plots are for quick confirmation of the results. If you want to look into the results more in detail,   available variables are all saved in the OptiNiSt output in NWB format. They are saved in processing/optinist. To inspect the data, [HDFView](https://www.hdfgroup.org/downloads/hdfview/) is convenient. 
+
+<br>
+<p align="left">
+<img width="200px" src="../_static/tutorials/fig12.08_resulthdf.png" alt="Whole" />
+</p>
 
 
 ### Additional information on WORKFLOW
@@ -243,13 +241,13 @@ ophys: ADD COMMENTS!<br>
 
 
 
-# Making the images and the plots on VISUALIZE
+# Inspecting the images and the plots on VISUALIZE
 After executing the pipeline, you may want to check and compare the results.
-VISUALIZE page is the place to work on this. You can replay the tiff time-series, see the cell ROI images, the plot of cell fluorescence or spike time-series, and other plots showing the results of analyses. See here (LINK TO THE visualize.md) for basic usage.
+VISUALIZE page is the place to work on this. You can replay the tiff time-series, see the cell ROI images, the plot of cell fluorescence or spike time-series, and other plots showing the results of analyses. See [here](../gui/visualize.md) for basic usage.
 
 
 ### Checking movies
-You may want to check some frames of the multi-page tiff files. Visualize page offers the way to check. After creating a　plot box by clicking on + mark, Select the image using the SELECT IMAGE button on the left top.
+You may want to check some frames of the multi-page tiff files. Visualize page offers the way to check. After creating a plot box by clicking on + mark, Select the image using the SELECT IMAGE button on the left top.
 You can select the range of the frame by assigning 1st and last frame numbers. LOAD button starts loading the data.
 
 <br>
@@ -274,14 +272,14 @@ After running the ROI detection algorithms, the most often created plots are ext
 <img width="600px" src="../_static/tutorials/fig23_twobox.png" alt="Whole" />
 </p>
 
-In one plotting box (ex, the one with ID:0), select a background image such as meanimg or Vcorr from the Select Item pulldowns.
+In one plotting box (ex, the one with ID:0), select a background image such as meanimg from the Select Item pulldowns.
 
 <br>
 <p align="left">
 <img width="100px" src="../_static/tutorials/fig24_selectitem.png" alt="Whole" />
 </p>
 
-In the same plotting box, select cell_roi from the Select Roi pull-downs.
+In the same plotting box, select cell_roi from the Select Roi pull-downs. Both Suite2P and CaImAn include the process to drop the extracted ROIs that do not meet the criteria. In OptiNiSt, the cell ID is given to all the ROIs. Cell_roi is the ROIs that passed the criteria. 
 
 <br>
 <p align="left">
@@ -302,13 +300,14 @@ And select 0(same ID with the plotting box of your ROI image) from the ref image
 <img width="400px" src="../_static/tutorials/fig27_fluo.png" alt="Whole" />
 </p>
 
-Now you can explore the ROI and time course. The color of ROI and corresponding time course is matched. You will know the cell ID by letting your mouse over the cell. Clicking on the cell automatically adds the fluorescence time course of the clicked cell. 
+Now you can explore the ROI and time course. The color of ROI and corresponding time course is matched. You will know the cell ID by letting your mouse over the cell in the image. Clicking on the cell automatically adds the fluorescence time course of the clicked cell. 
 <br>
 <p align="left">
 <img width="600px" src="../_static/tutorials/fig28_roifluo.png" alt="Whole" />
 </p>
 
-In the case it is tiring to select the cell by clicking one by one, Turn on teh drag select button on the right in the plotting box of ROI. It enables to select all the cells within rectangular area.
+If it is tiring to select the cell by clicking one by one, turn on the drag select button on the right in the plotting box of ROI. It enables selecting all the cells within the rectangular area you define.
+
 <br>
 <p align="left">
 <img width="600px" src="../_static/tutorials/fig29_dragselect.png" alt="Whole" />
@@ -323,7 +322,7 @@ You can save created plots in svg, png, jpeg, or webp format. Please select the 
 </p>
 
 # Managing records on RECORD
-RECORD section keeps your analysis pipeline easy to organize and easy to retrieve. For the basic usage of the RECORD page, see [here](link to record.md)
+RECORD section keeps your analysis pipeline easy to organize and easy to retrieve. For the basic usage of the RECORD page, see also [here](../gui/record.md)
 
 <br>
 <p align="left">
