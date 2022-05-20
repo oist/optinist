@@ -102,14 +102,14 @@ Each node has PARAM button and OUTPUT button.
 <img width="200px" src="../_static/tutorials/fig10.1_buttons.png" alt="Whole" />
 </p>
 
-Clicking on PARAM shows the parameters. Edit this as you like. The names, types and the default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters. Here is the [link list](LINK TO LINKLIST).
+Clicking on PARAM shows the parameters. Edit this as you like. The names, types and the default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters. The link list is on [README](../../README.md).
 
 <br>
 <p align="left">
 <img width="200px" src="../_static/tutorials/fig10_parameters.png" alt="Whole" />
 </p>
 
-OUTPUT button is for the quick check of the result. The button becomes effective after the successful execution of the pipeline. [Here](#visualzing-images-and-plots) explains the details of the charts. 
+OUTPUT button is for the quick check of the result. The button becomes effective after the successful execution of the pipeline. [Here](#inspecting-the-images-and-the-plots-on-visualize) explains the details of the charts. 
 
 ### running pipelines
 
@@ -143,13 +143,13 @@ The pipeline construction of Optinist is based on snakemake (ref), which is the 
 <img width="400px" src="../_static/tutorials/fig13_nwbsnakemake.png" alt="Whole" />
 </p>
 
-NWB SETTING defines the metadata for the NWB file as an output. The parameter you set here is only for your record and not used for the calculation inside OptiNiSt. You can leave this as default. The details of NWB setting in OptiNiSt is [here](#nwb-settings). Also, general info about NWB is [here](https://www.nwb.org/getting-started/)
+NWB SETTING defines the metadata for the NWB file as an output. The parameter you set here is only for your record and not used for the calculation inside OptiNiSt. You can leave this as default. The details of NWB setting in OptiNiSt is [here](#nwb-settings). Also, general info about NWB is [here](https://www.nwb.org/getting-started/).
 
 
 
 
 ### Time series analyses after ROI extraction
-OptiNiSt offers some basic time-series analysis functions. For example, event-triggered averaging can be applied to the ROI time-series data created by OptiNiSt. Because the ROI time-series is in NWB format, the hdf5 data node is appropriate as the input node. 
+OptiNiSt offers some basic time-series analysis functions. For example, event-triggered averaging can be applied to the ROI time-series data created by OptiNiSt. Assuming that you have the result of ROI extraction, here explains how to create the pipeline. Because the ROI time-series is in NWB format, the hdf5 data node is appropriate as the input node. 
 
 <br>
 <p align="left">
@@ -197,7 +197,7 @@ Add event tirggered averaging (eta) node and connect fluorescence and behavior n
 <img width="400px" src="../_static/tutorials/fig12.06_etaworkflow.png" alt="Whole" />
 </p>
 
-After finishing the process, you can quickly confirm your event-triggered average plot by clicking the OUTPUT button on the eta node. This figure is also available from VISUALIZE pate.
+After finishing the process, you can quickly confirm your event-triggered average plot by clicking the OUTPUT button on the eta node. This figure is also available at VISUALIZE page.
 
 <br>
 <p align="left">
@@ -216,7 +216,9 @@ The plots are for quick confirmation of the results. If you want to look into th
   
 
 ##### setting OPTINIST_DIR
-The file assigning the OPTINIST_DIR is optinist/optinist/api/dir_path.py. Change line for OPTINIST_DIR, INPUT_DIR, and OUTPUT_DIR according to your demand. Changing dir_path.py may also be necessary when running the pipeline on your cluster computers.
+The file assigning the OPTINIST_DIR is optinist/optinist/api/dir_path.py. Change line for OPTINIST_DIR, INPUT_DIR, and OUTPUT_DIR according to your demand. Changing dir_path.py may also be necessary when running the pipeline on your cluster computers. Also, you can quickly change OPTINIST_DIR by changing the environment variable by typing 'export OPTINIST_DIR="your_saving_dir"' before launching.
+
+ 
 
 ##### snakemake settings
 use_conda:  ADD COMMENTS!  <br>
@@ -319,7 +321,7 @@ You can save created plots in svg, png, jpeg, or webp format. Please select the 
 <img width="200px" src="../_static/tutorials/fig30_saving.png" alt="Whole" />
 </p>
 
-# Managing records on RECORD
+# Managing pipelines on RECORD
 RECORD section keeps your analysis pipeline easy to organize and easy to retrieve. For the basic usage of the RECORD page, see also [here](../gui/record.md)
 
 <br>
