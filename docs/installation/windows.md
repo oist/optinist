@@ -31,22 +31,15 @@ Please follow instructions below.
 
 <br />
 
-**CAUTION**: We strongly recommend **Windows 10** (not 11).
-
 **CAUTION**: For WSL2, we confirmed them on [Ubuntu 20.04](https://www.microsoft.com/ja-jp/p/ubuntu-2004-lts/9n6svws3rx71).
 
 
 ## 0. GitHub SSH access settings
 **You only need to do the following once.**
 
-Follow this [link](installation_github_settings.md).
+Follow this [link](settings.md).
 
 ## 1. Clone optinist repository
-If you've already installed optinist directory, please git pull command and not need to git clone process.
-```
-git pull origin develop
-```
-
 First, you get optinist code from github repository.
 ```
 cd "your working repository"
@@ -54,7 +47,7 @@ git clone git@github.com:oist/optinist.git
 ```
 Clone CaImAn repository.
 ```
-cd optinist/backend
+cd optinist
 git clone https://github.com/flatironinstitute/CaImAn -b v1.9.7
 ```
 <br />
