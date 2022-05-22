@@ -20,7 +20,7 @@ So, if you add new algorithm, regist in dictionary of `__init__.py` file.
 
 ### 1. Description algorithm
 
-#### 1.1 import。
+#### 1.1 import
 Import dataclass which use for input, output datatype.
 And NWB Dataset to save variable as nwb format.
 ```python
