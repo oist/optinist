@@ -1,9 +1,8 @@
 How to add original algorithm
 
 ## Algorithm list directory
-https://github.com/oist/optinist/tree/develop/optinist/wrappers
 
-current algorithm list status
+[current algorithm list](https://github.com/oist/optinist/tree/develop/optinist/wrappers) status
 - caiman
 - suite2p
 - optinist
