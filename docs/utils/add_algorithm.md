@@ -87,7 +87,7 @@ def correlation(
         neural_data: FluoData,
         iscell: IscellData=None,
         params: dict=None
-    ) -> dict():
+    ) -> {'corr': HeatMapData}:
 
     neural_data = neural_data.data
 
@@ -104,7 +104,6 @@ def correlation(
 
     num_cell = X.shape[0]
 
-    # calculate correlation
     corr = np.corrcoef(X)
     for i in range(num_cell):
         corr[i, i] = np.nan
