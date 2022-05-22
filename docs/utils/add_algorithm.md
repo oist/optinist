@@ -1,9 +1,8 @@
 How to add original algorithm
 
 ## Algorithm list directory
-https://github.com/oist/optinist/tree/develop/optinist/wrappers
 
-current algorithm list status
+[current algorithm list](https://github.com/oist/optinist/tree/develop/optinist/wrappers) status
 - caiman
 - suite2p
 - optinist
@@ -20,7 +19,7 @@ So, if you add new algorithm, regist in dictionary of `__init__.py` file.
 
 ### 1. Description algorithm
 
-#### 1.1 import。
+#### 1.1 import
 Import dataclass which use for input, output datatype.
 And NWB Dataset to save variable as nwb format.
 ```python
@@ -88,7 +87,7 @@ def correlation(
         neural_data: FluoData,
         iscell: IscellData=None,
         params: dict=None
-    ) -> dict():
+    ) -> {'corr': HeatMapData}:
 
     neural_data = neural_data.data
 
@@ -105,7 +104,6 @@ def correlation(
 
     num_cell = X.shape[0]
 
-    # calculate correlation
     corr = np.corrcoef(X)
     for i in range(num_cell):
         corr[i, i] = np.nan

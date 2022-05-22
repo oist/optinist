@@ -2,7 +2,6 @@ Record
 =================
 In the RECORD field, you can check the workflow status in your OPTINIST_DIR and manage your analysis pipeline. The table lists all the pipelines in your OPTINIST_DIR. By clicking on the mark on the 2nd column, you can show the details of each pipeline.
 
-=======
 OptiNiSt records and reproduces past workflow pipelines. It can download results in nwb format.
 <br>
 <p align="center">
