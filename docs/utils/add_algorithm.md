@@ -1,101 +1,94 @@
-# アルゴリズム一覧のディレクトリ
-アルゴリズム一覧は以下のディレクトリに記録されている。
+How to add original algorithm
+
+## Algorithm list directory
 https://github.com/oist/optinist/tree/develop/optinist/wrappers
 
-以下ではcorrelation関数を登録する手順を例に説明する。
-githubのブランチは最新版に更新しておく。
-```
-git pull origin develop
-```
+current algorithm list status
+- caiman
+- suite2p
+- optinist
+    - basic neural analysis
+    - dimension reduction
+    - neural population analysis
+    - neural decoding
 
-# 新規アルゴリズムの登録
+It hierarcy structure is writen in `__init__.py` file.
+So, if you add new algorithm, regist in dictionary of `__init__.py` file.
 
-## 1. アルゴリズムの記述
-correlationアルゴリズムの記述手順を説明していく。
 
-### 1.1 import文の記述
-optinistでは型を定義することで、inputとoutputの整合性を取っている。
-まずは、optinistで用意されている型をimportする。
+## Add new algorithm
+
+### 1. Description algorithm
+
+#### 1.1 import。
+Import dataclass which use for input, output datatype.
+And NWB Dataset to save variable as nwb format.
 ```python
-from wrappers.data_wrapper import *
+from optinist.api.dataclass.dataclass import *
+from optinist.api.nwb.nwb import NWBDATASET
 ```
 
-### 1.2 引数の設定
-関数が受け取る型を定義する。
-ここでは、`correlation`関数を例に説明する。  
-- correlationは変数`timeseries`、`iscell`を受け取る。（それぞれの型は`TimeSeriesData`, `IscellData`である。）  
-- timeseriesデータは時系列データである。iscellはcellかどうかを0,1で定義している。
-- default値をNoneとすると、GUI上でedgeのconnectionがなくても動作する。
-- nwbfileとparamsは全ての関数に共通であるため、以下のようにdefault値=Noneとして記述。
-- 以上により`correlation`関数の引数の定義は次のようになる。
+#### 1.2 Argument Datatype
+Describe function receving datatype.
+Exlain `correlation` function as example.  
+- Correlation function get `Fluorescence` and `iscell` as input.（Each datatypes are `FluoData`, `IscellData`).
+- Iscell is whether cells are 0 or 1.
+- If default value is None, it running not to connect in GUI.
 ```python
 def correlation(
-        timeseries: TimeSeriesData,
+        neural_data: FluoData,
         iscell: IscellData=None,
-        nwbfile: NWBFile=None,
         params: dict=None
     ):
-    timeseries = timeseries.data
+    neural_data = neural_data.data
     iscell = iscell.data
-　　　　　　　 ・・・・・・・
 ```
 
-### 1.3 返り値の設定
-- optinistで定義されている関数の返り値は辞書型で返す。nfoという辞書型の変数を返り値とする。
-- correlation関数で出力した変数をheatmapで描画したい場合には、HeatMapDataクラスとして、Wrapする。
-- GUI上で引数ハンドルを作成したい場合には `->{'corr': Correlation}`と記述すれば、GUI上での返り値に加えられる。
+#### 1.3 Return DataType
+- Function return as dictionary format.
+- correlation function output HeatMapData datatype. so output wrap as heatmap datatype. 
+- Describe `->{'corr': Correlation}` and argument handle.
 
 ```python
 def correlation(
-        timeseries: TimeSeriesData,
-        iscell: IscellData=None,
-        nwbfile: NWBFile=None,
-        params: dict=None
+        ・・・・・・
     ) -> {'corr': HeatMapData}:
 　　　　　　 　・・・・・・
-    info = {}
-    info['corr'] = HeatMapData(
-        corr,
-        file_name='corr'
-    )
+    info = {
+        'corr': HeatMapData(corr, file_name='corr'),
+        'nwbfile': nwbfile,
+    }
     return info
 ```
 
-### 1.4 NWB登録
-- POSTPROCESSの場合、その変数の名前と変数を以下のようにnwbfileに登録すれば、nwbfileとして登録される。
+#### 1.4 NWB Register
+- Postprocess function register `corr`.
 
 ```python
 def correlation(
-        timeseries: TimeSeriesData,
-        iscell: IscellData=None,
-        nwbfile: NWBFile=None,
-        params: dict=None
+        ・・・・・・
     ) -> {'corr': HeatMapData}:
 　　　　　　 　・・・・・・
-    # NWB追加
-    if nwbfile is not None:
-        nwbfile[NWBDATASET.POSTPROCESS] = {
-            'corr': corr,
-        }
-
-    info['nwbfile'] = nwbfile
-
-    return info
+    # NWB
+    nwbfile = {}
+    nwbfile[NWBDATASET.POSTPROCESS] = {
+        'corr': corr,
+    }
 ```
 
 
-### 1.5 最終的なcorrelation関数
-以上の手順により出来上がったcorrelation関数は以下の通りである。
+### 1.5 Final result correlation
+Final result
 
 ```python
-from wrappers.data_wrapper import *
+from optinist.api.dataclass.dataclass import *
+from optinist.api.nwb.nwb import NWBDATASET
 
 def correlation(
-        neural_data: TimeSeriesData,
+        neural_data: FluoData,
         iscell: IscellData=None,
-        nwbfile: NWBFile=None,
         params: dict=None
-    ) -> {}:
+    ) -> dict():
 
     neural_data = neural_data.data
 
@@ -117,32 +110,24 @@ def correlation(
     for i in range(num_cell):
         corr[i, i] = np.nan
 
-    info = {}
-    info['corr'] = HeatMapData(
-        corr,
-        file_name='corr'
-    )
+    # NWB
+    nwbfile = {}
+    nwbfile[NWBDATASET.POSTPROCESS] = {
+        'corr': corr,
+    }
 
-    # NWB追加
-    if nwbfile is not None:
-        nwbfile[NWBDATASET.POSTPROCESS] = {
-            'corr': corr,
-        }
-
-    info['nwbfile'] = nwbfile
+    info = {
+        'corr': HeatMapData(corr, file_name='corr'),
+        'nwbfile': nwbfile,
+    }
 
     return info
-
 ```
 
 
-## 2. アルゴリズムの登録
-作成したアルゴリズムをGUI側で使いたい場合に、登録が必要である。
-- correlationの登録は以下に記述されている。
-- 以下のように、関数名をkeyに、その関数をvalueにして登録すればGUI上で使用できる。
-https://github.com/oist/optinist/blob/develop/optinist/wrappers/optinist_wrapper/neural_population_analysis/__init__.py
-
-- それぞれのディレクトリに__init__ファイルがあるため、それぞれで名前をつければ、TreeView上で階層的に定義される。
+## 2. Algorithm register on GUI
+Need to Register algorithm [list file](https://github.com/oist/optinist/blob/develop/optinist/wrappers/optinist_wrapper/neural_population_analysis/__init__.py).
+- function name as key, function as value.
 
 ```python
 from .correlation import correlation
@@ -152,13 +137,12 @@ original_wrapper_dict = {
 }
 ```
 
-## 3. パラメータの登録
-- アルゴリズムのパラメータはconfigディレクトリに保存されている。
-- ファイルはyamlファイルで書かれている。
-- 2の手順で関数名をcorrelationと登録した場合には、correlation.yamlとして作ると自動でファイルを参照する。
-https://github.com/oist/optinist/tree/develop/optinist/config  
-*現在の仕様ではアルゴリズム名と一対一で対応するようにしているため、ファイル名は関数名と同じでないとエラーする。
+## 3. Parameter register
+- Algorithm parameters are saved in [config directory](https://github.com/oist/optinist/tree/main/optinist/config).
+- File is written in yaml format.
+- It is related registed function name, so correlation parameter file is named `correlation.yaml` file.
 
+ex)
 lda.yaml
 ```
 # whether standardize the data or not
@@ -187,12 +171,12 @@ LDA:
 ```
 
 
-## 4. Snakemakeの登録
-Snakemakeへの登録は上で追加した関数と同じディレクトリ構造になるようにファイルを作成する。
+## 4. Snakemake register
+To use function in workflow, register in snakefile too.
 https://github.com/oist/optinist/blob/develop/optinist/rules/smk/optinist/neural_population_analysis/correlation.py
 
-- ファイルの中身は下のテンプレをコピーして、`name`を関数名にする。
-- conda環境を作成する場合は、`conda:`にinstallパッケージを書く。
+- File contents are almost same as other file, copy and change file name.
+- conda environment `conda:`.
 
 ```
 from cui_api.const import ROOT_DIR
