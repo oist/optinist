@@ -16,7 +16,7 @@ OptiNiSt also supports reproducibility of scientific research, standardization o
 - **recording and reproducing**: OptiNiSt records and reproduces the workflow pipelines easily.
 
 ## Documentation
-- [Tutorial](docs/utils/tutorial.md)
+- [Tutorial](docs/utils/tutorials.md)
 - [How to use gui workflow](docs/gui/workflow.md)
 - [How to use gui visualize](docs/gui/visualize.md)
 
