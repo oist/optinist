@@ -211,11 +211,11 @@ const ImagePlotChart = React.memo<{
   const layout = React.useMemo(
     () => ({
       width: width,
-      height: height - 120,
+      height: height - 130,
       margin: {
         t: 30, // top
-        l: 120, // left
-        b: 30, // bottom
+        l: 100, // left
+        b: 20, // bottom
       },
       dragmode: selectMode ? 'select' : 'pan',
       xaxis: {
