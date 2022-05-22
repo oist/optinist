@@ -87,7 +87,7 @@ const HeatMapImple = React.memo(() => {
             },
           ]
         : [],
-    [heatMapData, showscale, colorscale],
+    [heatMapData, showscale, colorscale, columns, index],
   )
 
   const layout = React.useMemo(

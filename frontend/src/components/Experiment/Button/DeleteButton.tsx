@@ -9,11 +9,20 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import { selectExperimentName } from 'store/slice/Experiments/ExperimentsSelectors'
 import { deleteExperimentByUid } from 'store/slice/Experiments/ExperimentsActions'
 import { ExperimentUidContext } from '../ExperimentTable'
+import {
+  selectPipelineLatestUid,
+  selectPipelineIsStartedSuccess,
+} from 'store/slice/Pipeline/PipelineSelectors'
+import { RootState } from 'store/store'
 
 export const DeleteButton = React.memo(() => {
   const dispatch = useDispatch()
   const uid = React.useContext(ExperimentUidContext)
-
+  const isRunning = useSelector((state: RootState) => {
+    const currentUid = selectPipelineLatestUid(state)
+    const isPending = selectPipelineIsStartedSuccess(state)
+    return uid === currentUid && isPending
+  })
   const name = useSelector(selectExperimentName(uid))
   const [open, setOpen] = React.useState(false)
 
@@ -29,8 +38,8 @@ export const DeleteButton = React.memo(() => {
   }
   return (
     <>
-      <IconButton onClick={onClickOpen}>
-        <DeleteOutlineIcon color="error" />
+      <IconButton onClick={onClickOpen} disabled={isRunning} color="error">
+        <DeleteOutlineIcon />
       </IconButton>
       <Dialog open={open}>
         <DialogTitle>Are you sure you want to delete {name}?</DialogTitle>

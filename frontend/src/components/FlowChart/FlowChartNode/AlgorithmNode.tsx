@@ -32,9 +32,13 @@ import {
   selectPipelineLatestUid,
   selectPipelineNodeResultMessage,
   selectPipelineNodeResultStatus,
+  selectPipelineStatus,
 } from 'store/slice/Pipeline/PipelineSelectors'
 import { RootState } from 'store/store'
-import { NODE_RESULT_STATUS } from 'store/slice/Pipeline/PipelineType'
+import {
+  NODE_RESULT_STATUS,
+  RUN_STATUS,
+} from 'store/slice/Pipeline/PipelineType'
 import { AlgorithmOutputDialog } from './AlgorithmOutputDialog'
 
 const leftHandleStyle: CSSProperties = {
@@ -132,6 +136,7 @@ const AlgoName = React.memo<{
 }>(({ nodeId, data }) => {
   const theme = useTheme()
   const status = useStatus(nodeId)
+  const pipelineStatus = useSelector(selectPipelineStatus)
   return (
     <div
       style={{
@@ -140,7 +145,8 @@ const AlgoName = React.memo<{
       }}
       className="algoName"
     >
-      {status === NODE_RESULT_STATUS.PENDING && <LinearProgress />}
+      {pipelineStatus === RUN_STATUS.START_SUCCESS &&
+        status === NODE_RESULT_STATUS.PENDING && <LinearProgress />}
       <Typography
         style={{
           textAlign: 'left',
