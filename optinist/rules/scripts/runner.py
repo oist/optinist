@@ -1,3 +1,4 @@
+import os
 import traceback
 import gc
 import copy
@@ -46,7 +47,7 @@ class Runner:
             # NWB全体保存
             if __rule.output in last_output:
                 # 全体の結果を保存する
-                path = join_filepath(__rule.output.split('/')[:-2])
+                path = join_filepath(os.path.dirname(os.path.dirname(__rule.output)))
                 path = join_filepath([path, f"all_{__rule.type}.nwb"])
                 _save_all_nwb(
                     path,
