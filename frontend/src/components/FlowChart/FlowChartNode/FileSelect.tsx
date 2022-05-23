@@ -142,7 +142,7 @@ export const FileSelectImple = React.memo<FileSelectImpleProps>(
 function getFileInputAccept(fileType: FILE_TREE_TYPE | undefined) {
   switch (fileType) {
     case FILE_TREE_TYPE_SET.IMAGE:
-      return '.tif'
+      return '.tif,.tiff'
     case FILE_TREE_TYPE_SET.CSV:
       return '.csv'
     case FILE_TREE_TYPE_SET.HDF5:
