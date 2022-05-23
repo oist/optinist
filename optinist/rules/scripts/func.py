@@ -8,7 +8,10 @@ from optinist.api.utils.filepath_creater import join_filepath
 
 
 if __name__ == '__main__':
-    last_output = snakemake.config["last_output"]
+    last_output = [
+        join_filepath([DIRPATH.OUTPUT_DIR, x])
+        for x in snakemake.config["last_output"]
+    ]
 
     for rule_config in snakemake.config["rules"].values():
         rule_config = RuleConfigReader.read(rule_config)
