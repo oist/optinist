@@ -34,6 +34,7 @@ import {
   selectExperimentsSatusIsError,
   selectExperimentsErrorMessage,
   selectExperimentList,
+  selectExperimentHasNWB,
 } from 'store/slice/Experiments/ExperimentsSelectors'
 import {
   deleteExperimentByList,
@@ -229,6 +230,7 @@ const RowItem = React.memo<{
   const timestamp = useSelector(selectExperimentTimeStamp(uid))
   const status = useSelector(selectExperimentStatus(uid))
   const name = useSelector(selectExperimentName(uid))
+  const hasNWB = useSelector(selectExperimentHasNWB(uid))
   const [open, setOpen] = React.useState(false)
 
   return (
@@ -270,7 +272,7 @@ const RowItem = React.memo<{
           <ConfigDownloadButton />
         </TableCell>
         <TableCell>
-          <NWBDownloadButton name={uid} />
+          <NWBDownloadButton name={uid} hasNWB={hasNWB} />
         </TableCell>
         <TableCell>
           <DeleteButton />

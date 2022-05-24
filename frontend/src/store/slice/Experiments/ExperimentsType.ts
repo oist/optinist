@@ -27,16 +27,14 @@ export type ExperimentType = {
   }
   name: string
   timestamp: string
+  hasNWB: boolean
 }
 
 export type ExperimentFunction = {
   name: string
   nodeId: string
-  postion: {
-    x: number
-    y: number
-  }
   status: EXPERIMENTS_STATUS
+  hasNWB: boolean
 }
 
 export type EXPERIMENTS_STATUS = 'success' | 'error' | 'running'
