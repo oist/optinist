@@ -29,8 +29,8 @@ Add algorithm
     - `new_algorithm.py` - ＊
 
 
-`new_algorith.py`を以下の位置に作成する。
-https://github.com/oist/optinist/tree/main/optinist/wrappers/optinist_wrapper
+`new_algorith.py`を[`optinist/wrappers`](https://github.com/oist/optinist/tree/main/optinist/wrappers/optinist_wrapper)の位置に作成する。
+
 new_algorithm.py
 ```python
 def new_algorithm():
@@ -40,9 +40,9 @@ def new_algorithm():
 <br />
 
 ## 2. algorithmの登録
-①: 作成した`new_algorithm`関数をGUI上で使えるようにするには、各階層にある`__init__.py`に登録する必要がある。例えば①の`__init__.py`は以下のようになる。
+①: 作成した`new_algorithm`関数をGUI上で使えるようにするには、各階層にある`__init__.py`に登録する必要がある。例えば①の[`wrappers/__init__.py`](https://github.com/oist/optinist/blob/main/optinist/wrappers/__init__.py)は以下のようになる。
 これらは、一つ下の階層の`__init__.py`を読んでいる。
-https://github.com/oist/optinist/blob/main/optinist/wrappers/__init__.py
+
 ```python
 from .caiman_wrapper import caiman_wrapper_dict
 from .suite2p_wrapper import suite2p_wrapper_dict
@@ -55,8 +55,8 @@ wrapper_dict.update(**optinist_wrapper_dict)
 ```
 
 
-②: `caiman_wrapper/__init__py`では具体的に関数が定義されており、次のように書かれている。`関数名: {'function': 関数名}`と書くことで関数として登録できる。
-https://github.com/oist/optinist/blob/main/optinist/wrappers/caiman_wrapper/__init__.py
+②: [`wrappers/caiman_wrapper/__init__py`](https://github.com/oist/optinist/blob/main/optinist/wrappers/caiman_wrapper/__init__.py)では具体的に関数が定義されており、次のように書かれている。`関数名: {'function': 関数名}`と書くことで関数として登録できる。
+
 ```python
 from .motion_correction import caiman_mc
 from .cnmf import caiman_cnmf
@@ -75,8 +75,8 @@ caiman_wrapper_dict = {
 ```
 
 
-実際に`new_algorithm`関数を`optinist_wrapper/__init__.py`に定義する。
-https://github.com/oist/optinist/blob/main/optinist/wrappers/optinist_wrapper/__init__.py
+実際に`new_algorithm`関数を[`wrappers/optinist_wrapper/__init__.py`](https://github.com/oist/optinist/blob/main/optinist/wrappers/optinist_wrapper/__init__.py)に登録する。
+
 ```python
 from .basic_neural_analysis import basic_neural_analysis_wrapper_dict
 from .dimension_reduction import dimension_reduction_wrapper_dict
@@ -170,8 +170,7 @@ Snakemakeファイルは、関数と同じdirectory構造で以下のように�
 
 ここでは`new_algorithm.smk`というファイルを作成する。
 中身は他のファイルをコピペし、`name`変数を`new_algorithm`にする。
-具体的には下のようになるため、そのまま`optinist/rules/smk/optinist/new_algorithm.smk`に下のコードコピペする。
-https://github.com/oist/optinist/tree/main/optinist/rules/smk/optinist
+具体的には下のようになるため、そのまま[`optinist/rules/smk/optinist/new_algorithm.smk`](https://github.com/oist/optinist/tree/main/optinist/rules/smk/optinist)に下のコードコピペする。
 
 ```python:optinist/rules/smk/optinist/new_algorithm.smk
 from optinist.api.dir_path import DIRPATH
