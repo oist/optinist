@@ -22,6 +22,7 @@ Add algorithm
     - suite2p_roi.py
     - suite2p_cnmf.py
 - optinist_wrapper
+    - `__init__.py`
     - basic neural analysis
     - dimension reduction
     - neural population analysis
