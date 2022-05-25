@@ -5,8 +5,7 @@ Add algorithm
 
 ## 1. アルゴリズムファイルを作成
 最初にpythonファイルを以下のdirectoryの適切な位置に作成する。
-ここでは、例ととして`new_algorithm`という関数を作成する手順を説明する。作成する位置は、下のdirectory位置＊に作成する。
-https://github.com/oist/optinist/tree/main/optinist/wrappers/optinist_wrapper
+ここでは、例ととして`new_algorithm`という関数を作成する手順を説明する。作成する位置は、下の＊の位置[wrappers/optinist_wrapper](https://github.com/oist/optinist/tree/main/optinist/wrappers/optinist_wrapper)に作成する。
 
 `new_algorith.py`という名前で作成する。
 
