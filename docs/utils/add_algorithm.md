@@ -36,15 +36,6 @@ def new_algorithm():
     - neural decoding
     - `new_algorithm.py` - ＊
 
-
-`new_algorith.py`を[`optinist/wrappers`](https://github.com/oist/optinist/tree/main/optinist/wrappers/optinist_wrapper)の位置に作成する。
-
-new_algorithm.py
-```python
-def new_algorithm():
-    return
-```
-
 <br />
 
 ## 2. algorithmの登録
