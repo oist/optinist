@@ -64,7 +64,11 @@ export const inputNodeSlice = createSlice({
     builder
       .addCase(setInputNodeFilePath, (state, action) => {
         const { nodeId, filePath } = action.payload
-        state[nodeId].selectedFilePath = filePath
+        const targetNode = state[nodeId]
+        targetNode.selectedFilePath = filePath
+        if (isHDF5InputNode(targetNode)) {
+          targetNode.hdf5Path = undefined
+        }
       })
       .addCase(addInputNode, (state, action) => {
         const { node, fileType } = action.payload

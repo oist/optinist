@@ -121,7 +121,11 @@ const ItemSelect = React.memo<{
         <DialogTitle>{'Select File'}</DialogTitle>
         <Structure nodeId={nodeId} />
         <DialogActions>
-          <Button onClick={() => setOpen(false)} variant="outlined">
+          <Button
+            onClick={() => setOpen(false)}
+            color="inherit"
+            variant="outlined"
+          >
             cancel
           </Button>
           <Button

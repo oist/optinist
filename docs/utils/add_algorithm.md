@@ -1,197 +1,224 @@
+Add algorithm
+=================
+
 How to add original algorithm
 
-## Algorithm list directory
+## Create algorithm file
+First, create python file in algorithm list directory.
+Optinist support algorithm list is below link.
 
-[current algorithm list](https://github.com/oist/optinist/tree/develop/optinist/wrappers) status
-- caiman
-- suite2p
-- optinist
+[current algorithm list](https://github.com/oist/optinist/tree/develop/optinist/wrappers) 
+
+
+- `__init__.py` - ①
+- caiman_wrapper
+    - `__init__.py` - ②
+    - caiman_mc.py
+    - caiman_cnmf.py
+- suite2p_wrapper
+    - `__init__.py`
+    - suite2p_file_convert.py
+    - suite2p_registration.py
+    - suite2p_roi.py
+    - suite2p_cnmf.py
+- optinist_wrapper
     - basic neural analysis
     - dimension reduction
     - neural population analysis
     - neural decoding
+    - `new_algorithm.py` - *
 
-It hierarcy structure is writen in `__init__.py` file.
-So, if you add new algorithm, regist in dictionary of `__init__.py` file.
+*: create file and, describe sample code.
 
-
-## Add new algorithm
-
-### 1. Description algorithm
-
-#### 1.1 import
-Import dataclass which use for input, output datatype.
-And NWB Dataset to save variable as nwb format.
+new_algorithm.py
 ```python
-from optinist.api.dataclass.dataclass import *
-from optinist.api.nwb.nwb import NWBDATASET
+def new_algorithm():
+    return
 ```
 
-#### 1.2 Argument Datatype
-Describe function receving datatype.
-Exlain `correlation` function as example.  
-- Correlation function get `Fluorescence` and `iscell` as input.（Each datatypes are `FluoData`, `IscellData`).
-- Iscell is whether cells are 0 or 1.
-- If default value is None, it running not to connect in GUI.
+
+
+## Register algorithm
+①: For example, base `__init__.py` of ① is written like below.
 ```python
-def correlation(
-        neural_data: FluoData,
-        iscell: IscellData=None,
-        params: dict=None
-    ):
-    neural_data = neural_data.data
-    iscell = iscell.data
+from .caiman_wrapper import caiman_wrapper_dict
+from .suite2p_wrapper import suite2p_wrapper_dict
+from .optinist_wrapper import optinist_wrapper_dict
+
+wrapper_dict = {}
+wrapper_dict.update(**caiman_wrapper_dict)
+wrapper_dict.update(**suite2p_wrapper_dict)
+wrapper_dict.update(**optinist_wrapper_dict)
 ```
 
-#### 1.3 Return DataType
-- Function return as dictionary format.
-- correlation function output HeatMapData datatype. so output wrap as heatmap datatype. 
-- Describe `->{'corr': Correlation}` and argument handle.
+Getting each function dictionary and it's correspond to GUI algorithm tree view.
 
+
+②: And `caiman_wrapper/__init__py` is written like below.
 ```python
-def correlation(
-        ・・・・・・
-    ) -> {'corr': HeatMapData}:
-　　　　　　 　・・・・・・
-    info = {
-        'corr': HeatMapData(corr, file_name='corr'),
-        'nwbfile': nwbfile,
+from .motion_correction import caiman_mc
+from .cnmf import caiman_cnmf
+
+caiman_wrapper_dict = {
+    'caiman': {
+        'caiman_mc': { 
+            'function': caiman_mc,
+        },
+        'caiman_cnmf': {
+            'function': caiman_cnmf,
+        },
     }
-    return info
+}
+
 ```
 
-#### 1.4 NWB Register
-- Postprocess function register `corr`.
-
+So, whole dictionary structure are
 ```python
-def correlation(
-        ・・・・・・
-    ) -> {'corr': HeatMapData}:
-　　　　　　 　・・・・・・
-    # NWB
-    nwbfile = {}
-    nwbfile[NWBDATASET.POSTPROCESS] = {
-        'corr': corr,
+wrapper_dict = {
+    'caiman': {
+        'caiman_mc': {
+            'function': caiman_mc,
+        },
+        'caiman_cnmf': {
+            'function': caiman_cnmf,
+        },
+    },
+    'suite2p': {
+        'suite2p_file_convert': {
+            'function': suite2p_file_convert
+        },
+        ...
+    },
+    'optinist': {
+        ...
     }
-```
-
-
-### 1.5 Final result correlation
-Final result
-
-```python
-from optinist.api.dataclass.dataclass import *
-from optinist.api.nwb.nwb import NWBDATASET
-
-def correlation(
-        neural_data: FluoData,
-        iscell: IscellData=None,
-        params: dict=None
-    ) -> {'corr': HeatMapData}:
-
-    neural_data = neural_data.data
-
-    # data shold be time x component matrix
-    if params['transpose']:
-        X = neural_data.transpose()
-    else:
-        X = neural_data
-
-    if iscell is not None:
-        iscell = iscell.data
-        ind  = np.where(iscell > 0)[0]
-        X = X[ind, :]
-
-    num_cell = X.shape[0]
-
-    corr = np.corrcoef(X)
-    for i in range(num_cell):
-        corr[i, i] = np.nan
-
-    # NWB
-    nwbfile = {}
-    nwbfile[NWBDATASET.POSTPROCESS] = {
-        'corr': corr,
-    }
-
-    info = {
-        'corr': HeatMapData(corr, file_name='corr'),
-        'nwbfile': nwbfile,
-    }
-
-    return info
-```
-
-
-## 2. Algorithm register on GUI
-Need to Register algorithm [list file](https://github.com/oist/optinist/blob/develop/optinist/wrappers/optinist_wrapper/neural_population_analysis/__init__.py).
-- function name as key, function as value.
-
-```python
-from .correlation import correlation
-
-original_wrapper_dict = {
-    'correlation': correlation
 }
 ```
 
-## 3. Parameter register
-- Algorithm parameters are saved in [config directory](https://github.com/oist/optinist/tree/main/optinist/config).
-- File is written in yaml format.
-- It is related registed function name, so correlation parameter file is named `correlation.yaml` file.
+After creating python file, register your file in `optinist_wrapper/__init__.py` like below.
+```python
+from .basic_neural_analysis import basic_neural_analysis_wrapper_dict
+from .dimension_reduction import dimension_reduction_wrapper_dict
+from .neural_population_analysis import neural_population_analysis_wrapper_dict
+from .neural_decoding import neural_decoding_wrapper_dict
 
-ex)
-lda.yaml
-```
-# whether standardize the data or not
-standard_x_mean: True
-standard_x_std: True
+# ↓↓new add↓↓
+from .new_algorithm import new_algorithm
+# ↑↑new add↑↑
 
-transpose_x: False
-transpose_y: False
-
-target_index: 1
-
-# n_splits = int, default=5
-# Number of folds. Must be at least 2.
-CV:
-  n_splits: 5
-  shuffle: False
-
-LDA:
-  solver: 'svd'
-  shrinkage:
-  priors:
-  n_components: 2
-  store_covariance: False
-  tol: 0.0001
-  covariance_estimator:
+optinist_wrapper_dict = {
+    'optinist': {
+        'basic_neural_analysis': basic_neural_analysis_wrapper_dict,
+        'dimension_reduction': dimension_reduction_wrapper_dict ,
+        'neural_population_analysis': neural_population_analysis_wrapper_dict,
+        'neural_decoding': neural_decoding_wrapper_dict,
+        # ↓↓new add↓↓
+        'new_algorithm': {
+            'function': new_algorithm
+        }
+        # ↑↑new add↑↑
+    }
+}
 ```
 
 
-## 4. Snakemake register
-To use function in workflow, register in snakefile too.
-https://github.com/oist/optinist/blob/develop/optinist/rules/smk/optinist/neural_population_analysis/correlation.py
+Re-launch GUI, your creating algorithm node appear in GUI tree view.
+<p align="center">
+<img width="300px" src="../_static/add_algorithm/new_algorithm.png" alt="new_algorithm" />
+</p>
 
-- File contents are almost same as other file, copy and change file name.
-- conda environment `conda:`.
+
+## Describe Algorithm
+
+### 1. Input & Output
+
+#### 1.1 import
+Import dataclass which use for input, output datatype.
+```python
+from optinist.api.dataclass.dataclass import *
+```
+
+Optinist support datatype.
+- ImageData
+- TimeSeriesData
+- FluoData
+- BehaviorData
+- IscellData
+- Suite2pData
+- ScatterData
+- BarData
+
+It's correspond to GUI handle color.
+
+#### 1.2 Input & Output handle
+If your algorithm get `ImageData` datatype, arugument is `ImageData`.
+And return `FluoData` dataype, return is `FluoData`.
+```python
+def new_algorithm(
+        image_data: ImageData,
+        params: dict=None
+    ) -> dict(fluo=FluoData):
+```
+
+Re-launch GUI, and algorithm node input & output handle change datatype.
+<p align="center">
+<img width="200px" src="../_static/add_algorithm/input_output.png" alt="input_output" />
+</p>
+
+
+#### 1.3 Visualize output result
+- 上では、nodeのinputとoutputのhandleについて記述した、ここでは、結果の可視化について説明する。
+- 関数の出力はdictionaryを指定する。
+- まず、`new_algorithm`関数は`fluo`変数を`FluoData`でWrapして出力する。
+- それ以外に、可視化したい変数については、そのデータ型でWrapし出力する。
+
+```python
+def new_algorithm(
+        image_data: ImageData,
+        params: dict=None
+    ) -> dict(fluo=FluoData):
+    import numpy as np
+    info = {
+        "fluo": FluoData(np.random.rand(100, 20), file_name="fluo"),
+        "image": ImageData(np.random.rand(10, 100, 100), file_name="image"),
+        "heatmap": HeatMapData(np.random.rand(20, 20), file_name="heatmap")
+    }
+    return info
+```
+
+#### 1.4 Snakemakeの登録
+関数を実行するためにSnakemakeファイルを記述する。
+Snakemakeファイルは、関数と同じdirectory構造で以下のように記述されている。[snakemake list](https://github.com/oist/optinist/tree/develop/optinist/rules/smk) 
+
+したがって、ここでは`smk/optinist/new_algorithm.smk`というファイルを作成する。
+中身は他のファイルをコピペし、`name`変数を`new_algorithm`にする。
 
 ```
-from cui_api.const import ROOT_DIR
+from optinist.api.dir_path import DIRPATH
+from optinist.api.snakemake.smk_dir import smk_input, smk_output
 
-name = "correlation"
+name = "new_algorithm"
 
 rule:
     input:
         smk_input(config, name)
     output:
         smk_output(config, name)
-    conda:
-        f'{DIRPATH.ROOT_DIR}/rules/envs/optinist_env.yaml'
     params:
         name = name
-    conda:
-        f'{DIRPATH.ROOT_DIR}/rules/envs/optinist_env.yaml'
     script:
         f'{DIRPATH.ROOT_DIR}/rules/scripts/func.py'
 ```
+
+
+Re-launch GUI, and algorithm node input & output handle change datatype.
+<p align="center">
+<img width="300px" src="../_static/add_algorithm/run.png" alt="run" />
+</p>
+
+<p align="center">
+<img width="240px" src="../_static/add_algorithm/visualize_output.png" alt="output" />
+</p>
+
+
+** 2 ~ 3秒で終わる処理なので、処理が終わらない場合にはエラーをしている可能性がある。console画面で赤文字のエラー部分を確認して頂きたい。エラーが解決できない場合には、slackやissueに貼って貰えると解決できる場合もある。

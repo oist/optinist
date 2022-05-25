@@ -36,9 +36,6 @@ Pull down of the `Select Item` shows the available item to show. Select one of t
 ### Customizing visualization parameters
 Select one of the display boxes by clicking inside of the box. The blue highlight of the box indicates the current selection of the display box. The parameters shown on the left are attached to the currently selected box. Details of the parameter are explained here.
 
-
-### Add display box into columns right
-Click **︙** and `Insert into next columns` to add another display box.
 <p align="center">
 <img width="400px" src="../_static/visualize/components/customize_param.png" alt="CustomizeParam" />
 </p>
