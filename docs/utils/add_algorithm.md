@@ -6,9 +6,17 @@ Add algorithm
 ## 1. アルゴリズムファイルを作成
 最初にpythonファイルを以下のdirectoryの適切な位置に作成する。
 ここでは、例ととして`new_algorithm`という関数を作成する手順を説明する。作成する位置は、下のdirectory位置＊に作成する。
+https://github.com/oist/optinist/tree/main/optinist/wrappers/optinist_wrapper
+
+`new_algorith.py`という名前で作成する。
+
+
+```python:new_algorithm.py
+def new_algorithm():
+    return
+```
 
 [algorithm list](https://github.com/oist/optinist/tree/develop/optinist/wrappers) 
-
 
 - `__init__.py` - ①
 - caiman_wrapper
@@ -22,6 +30,7 @@ Add algorithm
     - suite2p_roi.py
     - suite2p_cnmf.py
 - optinist_wrapper
+    - `__init__.py`
     - basic neural analysis
     - dimension reduction
     - neural population analysis
