@@ -78,6 +78,8 @@ def test_get_dependencies_graph():
     assert edge_dict
     assert file_graph
 
+    os.remove(join_filepath([DIRPATH.INPUT_DIR, "data_endoscope.tif"]))
+
     return edge_dict, file_graph
 
 
