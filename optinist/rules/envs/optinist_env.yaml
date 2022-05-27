@@ -1,5 +1,5 @@
 dependencies:
   - pip:
-    - sklearn
-    - statsmodels<=0.13.1
-    - pynwb
+    - "sklearn"
+    - "statsmodels<=0.13.1"
+    - "pynwb"
