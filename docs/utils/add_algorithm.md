@@ -5,10 +5,9 @@ Add algorithm
 
 ## 1. アルゴリズムファイルを作成
 最初にpythonファイルを以下のdirectoryの適切な位置に作成する。
-ここでは、例ととして`new_algorithm`という関数を作成する手順を説明する。作成する位置は、下のdirectory位置＊に作成する。
-https://github.com/oist/optinist/tree/main/optinist/wrappers/optinist_wrapper
+ここでは、例ととして**new_algorithm**という関数を作成する手順を説明する。作成する位置は、下の＊の位置[optinist/wrappers/optinist_wrapper](https://github.com/oist/optinist/tree/main/optinist/wrappers/optinist_wrapper)に作成する。
 
-`new_algorith.py`という名前で作成する。
+**new_algorith.py**という名前で作成する。
 
 
 ```python:new_algorithm.py
@@ -18,39 +17,30 @@ def new_algorithm():
 
 [algorithm list](https://github.com/oist/optinist/tree/develop/optinist/wrappers) 
 
-- `__init__.py` - ①
+- \_\_init__.py - ①
 - caiman_wrapper
-    - `__init__.py` - ②
+    - \_\_init__.py - ②
     - caiman_mc.py
     - caiman_cnmf.py
 - suite2p_wrapper
-    - `__init__.py`
+    - \_\_init__.py
     - suite2p_file_convert.py
     - suite2p_registration.py
     - suite2p_roi.py
     - suite2p_cnmf.py
 - optinist_wrapper
-    - `__init__.py`
+    - \_\_init__.py
     - basic neural analysis
     - dimension reduction
     - neural population analysis
     - neural decoding
     - `new_algorithm.py` - ＊
 
-
-`new_algorith.py`を[`optinist/wrappers`](https://github.com/oist/optinist/tree/main/optinist/wrappers/optinist_wrapper)の位置に作成する。
-
-new_algorithm.py
-```python
-def new_algorithm():
-    return
-```
-
 <br />
 
 ## 2. algorithmの登録
-①: 作成した`new_algorithm`関数をGUI上で使えるようにするには、各階層にある`__init__.py`に登録する必要がある。例えば①の[`wrappers/__init__.py`](https://github.com/oist/optinist/blob/main/optinist/wrappers/__init__.py)は以下のようになる。
-これらは、一つ下の階層の`__init__.py`を読んでいる。
+①: 作成した**new_algorithm関数**をGUI上で使えるようにするには、各階層にある\_\_init__.pyに登録する必要がある。例えば①の[optinist/wrappers/\_\_init__.py](https://github.com/oist/optinist/blob/main/optinist/wrappers/__init__.py)は以下のようになる。
+これらは、一つ下の階層の\_\_init__.pyを読んでいる。
 
 ```python
 from .caiman_wrapper import caiman_wrapper_dict
@@ -64,7 +54,7 @@ wrapper_dict.update(**optinist_wrapper_dict)
 ```
 
 
-②: [`wrappers/caiman_wrapper/__init__py`](https://github.com/oist/optinist/blob/main/optinist/wrappers/caiman_wrapper/__init__.py)では具体的に関数が定義されており、次のように書かれている。`関数名: {'function': 関数名}`と書くことで関数として登録できる。
+②: [optinist/wrappers/caiman_wrapper/\_\_init__py](https://github.com/oist/optinist/blob/main/optinist/wrappers/caiman_wrapper/__init__.py)では具体的に関数が定義されており、次のように書かれている。`関数名: {'function': 関数名}`と書くことで関数として登録できる。
 
 ```python
 from .motion_correction import caiman_mc
@@ -84,7 +74,7 @@ caiman_wrapper_dict = {
 ```
 
 
-実際に`new_algorithm`関数を[`wrappers/optinist_wrapper/__init__.py`](https://github.com/oist/optinist/blob/main/optinist/wrappers/optinist_wrapper/__init__.py)に登録する。
+実際に**new_algorithm関数**を[optinist/wrappers/optinist_wrapper/\_\_init__.py](https://github.com/oist/optinist/blob/main/optinist/wrappers/optinist_wrapper/__init__.py)に登録する。
 
 ```python
 from .basic_neural_analysis import basic_neural_analysis_wrapper_dict
@@ -112,7 +102,7 @@ optinist_wrapper_dict = {
 ```
 
 
-GUIを再起動し、TreeViewを確認すると、実際に`new_algorithm`が確認できる。
+GUIを再起動し、TreeViewを確認すると、実際に**new_algorithm**が確認できる。
 <p align="center">
 <img width="300px" src="../_static/add_algorithm/new_algorithm.png" alt="new_algorithm" />
 </p>
@@ -135,7 +125,7 @@ Optinist support datatype.
 
 
 ### 3.2 Input & Output handle
-例として、`new_algorithm`関数は`ImageData`を受け取り, `FluoData`を返す関数とする。
+例として、**new_algorithm**関数は**ImageData**を受け取り, **FluoData**を返す関数とする。
 ここで、`from optinist.api.dataclass.dataclass import *`文はdataclassが定義されているファイルである。paramsはこの関数のパラメータが入るため、必要である。
 ```python:new_algorithm.py
 from optinist.api.dataclass.dataclass import *
@@ -147,7 +137,7 @@ def new_algorithm(
     return
 ```
 
-GUIを再起動し、`new_algorithm`をおくと、handleの色が変更されていることが確認できる。
+GUIを再起動し、**new_algorithm**をおくと、handleの色が変更されていることが確認できる。
 <p align="center">
 <img width="200px" src="../_static/add_algorithm/input_output.png" alt="input_output" />
 </p>
@@ -155,9 +145,9 @@ GUIを再起動し、`new_algorithm`をおくと、handleの色が変更され�
 
 ### 3.3 出力結果の描画
 - 上では、nodeのinputとoutputのhandleについて説明した、ここでは、結果の可視化について説明する。
-- 関数の出力はdictionaryを指定する。`info`
-- まず、`new_algorithm`関数の返り値となる`fluo`変数を`FluoData`でWrapして出力する。このときのkeyの名前は関数宣言時の`fluo`と一致させる必要がある。
-- それ以外に、可視化したい変数については、そのデータ型でWrapし出力する。ここでは、`ImageData`と`HeatMap`を例にする。
+- 関数の出力はdictionaryを指定する。**info**
+- まず、**new_algorithm関数**の返り値となる**fluo**変数を**FluoData**でWrapして出力する。このときのkeyの名前は関数宣言時の**fluo**と一致させる必要がある。
+- それ以外に、可視化したい変数については、そのデータ型でWrapし出力する。ここでは、**ImageData**と**HeatMap**を出力する。
 
 ```python:new_algorithm.py
 def new_algorithm(
@@ -177,9 +167,9 @@ def new_algorithm(
 最後に関数を実行するためにSnakemakeファイルを記述する。
 Snakemakeファイルは、関数と同じdirectory構造で以下のように記述されている。[snakemake list](https://github.com/oist/optinist/tree/develop/optinist/rules/smk) 
 
-ここでは`new_algorithm.smk`というファイルを作成する。
-中身は他のファイルをコピペし、`name`変数を`new_algorithm`にする。
-具体的には下のようになるため、そのまま[`optinist/rules/smk/optinist/new_algorithm.smk`](https://github.com/oist/optinist/tree/main/optinist/rules/smk/optinist)に下のコードコピペする。
+ここでは**new_algorithm.smk**というファイルを作成する。
+中身は他のファイルをコピペし、**name**変数を**new_algorithm**にする。
+具体的には下のようになるため、そのまま[optinist/rules/smk/optinist/new_algorithm.smk](https://github.com/oist/optinist/tree/main/optinist/rules/smk/optinist)に下のコードコピペする。
 
 ```python:optinist/rules/smk/optinist/new_algorithm.smk
 from optinist.api.dir_path import DIRPATH
