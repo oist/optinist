@@ -1,9 +1,11 @@
 dependencies:
   - python=3.9
+  - pip
   - pip:
-    - PyQt5<=5.15.1
-    - PyQt5-sip<=12.8.1
-    - pyqtgraph<=0.11.0
-    - pandas
-    - suite2p<=0.10.3
-    - tifffile<=v2022.3.25
+    - "numpy==1.20.1"
+    - "PyQt5<=5.15.1"
+    - "PyQt5-sip<=12.8.1"
+    - "pyqtgraph<=0.11.0"
+    - "pandas"
+    - "suite2p<=0.10.3"
+    - "tifffile<=v2022.3.25"
