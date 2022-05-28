@@ -14,7 +14,7 @@ for rule_name, details in config["rules"].items():
     if details["type"] in [FILETYPE.IMAGE, FILETYPE.CSV, FILETYPE.BEHAVIOR, FILETYPE.HDF5]:
         rule:
             input:
-                smk_func_input(details, details["type"])
+                smk_func_input(details)
             output:
                 smk_func_output(details)
             params:
@@ -24,12 +24,12 @@ for rule_name, details in config["rules"].items():
     else:
         rule:
             input:
-                smk_func_input(details, details["type"])
+                smk_func_input(details)
             output:
                 smk_func_output(details)
             params:
                 name = details
             conda:
-                get_conda(details["path"])
+                get_conda(details)
             script:
                 f"{DIRPATH.ROOT_DIR}/rules/scripts/func.py"

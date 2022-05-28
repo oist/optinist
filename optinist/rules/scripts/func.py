@@ -15,10 +15,7 @@ if __name__ == '__main__':
 
     rule_config = RuleConfigReader.read(snakemake.params.name)
 
-    rule_config.input = [
-        join_filepath([DIRPATH.OUTPUT_DIR, x])
-        for x in rule_config.input
-    ]
-    rule_config.output = join_filepath([DIRPATH.OUTPUT_DIR, rule_config.output])
+    rule_config.input = snakemake.input
+    rule_config.output = snakemake.output[0]
 
     Runner.run(rule_config, last_output)
