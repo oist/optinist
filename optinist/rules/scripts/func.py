@@ -13,14 +13,12 @@ if __name__ == '__main__':
         for x in snakemake.config["last_output"]
     ]
 
-    for rule_config in snakemake.config["rules"].values():
-        rule_config = RuleConfigReader.read(rule_config)
+    rule_config = RuleConfigReader.read(snakemake.params.name)
 
-        rule_config.input = [
-            join_filepath([DIRPATH.OUTPUT_DIR, x])
-            for x in rule_config.input
-        ]
-        rule_config.output = join_filepath([DIRPATH.OUTPUT_DIR, rule_config.output])
+    rule_config.input = [
+        join_filepath([DIRPATH.OUTPUT_DIR, x])
+        for x in rule_config.input
+    ]
+    rule_config.output = join_filepath([DIRPATH.OUTPUT_DIR, rule_config.output])
 
-        if rule_config.type == snakemake.params.name:  
-            Runner.run(rule_config, last_output)
+    Runner.run(rule_config, last_output)

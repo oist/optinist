@@ -19,7 +19,6 @@ class SmkSetfile:
         )
 
         return Rule(
-            rule_file=f"rules/smk/image.smk",
             input=node.data.path,
             return_arg=return_name,
             params=node.data.param,
@@ -39,7 +38,6 @@ class SmkSetfile:
         )
 
         return Rule(
-            rule_file=f"rules/smk/{nodeType}.smk",
             input=node.data.path,
             return_arg=return_name,
             params=node.data.param,
@@ -59,7 +57,6 @@ class SmkSetfile:
         )
 
         return Rule(
-            rule_file=f"rules/smk/hdf5.smk",
             input=node.data.path,
             return_arg=return_name,
             params=node.data.param,
@@ -99,7 +96,6 @@ class SmkSetfile:
         algo_output = get_pickle_file(unique_id, node.id, node.data.label)
 
         return Rule(
-            rule_file=f"rules/smk/{node.data.path}.smk",
             input=algo_input,
             return_arg=return_arg_names,
             params=params,
