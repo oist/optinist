@@ -1,6 +1,6 @@
 from optinist.api.dir_path import DIRPATH
 from optinist.api.utils.filepath_creater import join_filepath
-from optinist.api.snakemake.smk_dir import smk_func_input, smk_func_output, get_conda
+from optinist.api.snakemake.smk_utils import smk_input, smk_output, smk_conda
 from optinist.routers.model import FILETYPE
 
 configfile: join_filepath([DIRPATH.ROOT_DIR, 'config.yaml'])
@@ -14,9 +14,9 @@ for rule_name, details in config["rules"].items():
     if details["type"] in [FILETYPE.IMAGE, FILETYPE.CSV, FILETYPE.BEHAVIOR, FILETYPE.HDF5]:
         rule:
             input:
-                smk_func_input(details)
+                smk_input(details)
             output:
-                smk_func_output(details)
+                smk_output(details)
             params:
                 name = details
             script:
@@ -24,12 +24,12 @@ for rule_name, details in config["rules"].items():
     else:
         rule:
             input:
-                smk_func_input(details)
+                smk_input(details)
             output:
-                smk_func_output(details)
+                smk_output(details)
             params:
                 name = details
             conda:
-                get_conda(details)
+                smk_conda(details)
             script:
                 f"{DIRPATH.ROOT_DIR}/rules/scripts/func.py"

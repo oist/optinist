@@ -4,7 +4,7 @@ from optinist.routers.model import FILETYPE
 from optinist.wrappers import wrapper_dict
 
 
-def smk_func_input(details):
+def smk_input(details):
     if details["type"] in [FILETYPE.IMAGE]:
         return [
             join_filepath([DIRPATH.INPUT_DIR, x])
@@ -19,14 +19,14 @@ def smk_func_input(details):
         ]
 
 
-def smk_func_output(details):
+def smk_output(details):
     return join_filepath([
         DIRPATH.OUTPUT_DIR,
         details["output"]
     ])
 
 
-def get_conda(details):
+def smk_conda(details):
     if details["type"] in [FILETYPE.IMAGE, FILETYPE.CSV, FILETYPE.BEHAVIOR, FILETYPE.HDF5]:
         return None
 
