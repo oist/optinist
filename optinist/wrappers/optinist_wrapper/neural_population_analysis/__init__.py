@@ -5,12 +5,14 @@ from .granger import Granger
 
 neural_population_analysis_wrapper_dict = {
     'correlation': {
-        'function': correlation
+        'function': correlation,
     },
     'cross_correlation': {
-        'function': cross_correlation
+        'function': cross_correlation,
+        'conda': 'optinist_env.yaml',
     },
     'granger': {
-        'function': Granger
+        'function': Granger,
+        'conda': 'optinist_env.yaml',
     },
 }
