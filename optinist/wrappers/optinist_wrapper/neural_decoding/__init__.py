@@ -5,12 +5,15 @@ from .svm import SVM
 
 neural_decoding_wrapper_dict = {
     'glm': {
-        'function': GLM
+        'function': GLM,
+        'conda': 'optinist_env.yaml',
     },
     'lda': {
-        'function': LDA
+        'function': LDA,
+        'conda': 'optinist_env.yaml',
     },
     'svm': {
-        'function': SVM
+        'function': SVM,
+        'conda': 'optinist_env.yaml',
     },
 }

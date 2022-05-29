@@ -13,6 +13,9 @@ from optinist.api.snakemake.snakemake_executor import (
 from optinist.api.utils.filepath_creater import create_directory, join_filepath
 
 
+tiff_filename = "test.tif"
+
+
 def create_dummy_file(dirname, del_item):
     relative_filepath = os.path.join('test_data', 'snakemake', dirname, del_item)
     absolute_dirpath = os.path.join(DIRPATH.OUTPUT_DIR, 'test_data', 'snakemake', dirname)
@@ -46,8 +49,8 @@ def test_get_dependencies_graph():
     create_directory(DIRPATH.INPUT_DIR)
 
     shutil.copyfile(
-        join_filepath([smk_dirpath, "data_endoscope.tif"]),
-        join_filepath([DIRPATH.INPUT_DIR, "data_endoscope.tif"]),
+        join_filepath([smk_dirpath, tiff_filename]),
+        join_filepath([DIRPATH.INPUT_DIR, tiff_filename]),
     )
 
     # configを削除
@@ -77,6 +80,8 @@ def test_get_dependencies_graph():
 
     assert edge_dict
     assert file_graph
+
+    os.remove(join_filepath([DIRPATH.INPUT_DIR, tiff_filename]))
 
     return edge_dict, file_graph
 
