@@ -11,18 +11,16 @@ export type ExperimentDTO = {
   function: {
     [uid: string]: {
       name: string
-      position: {
-        x: number
-        y: number
-      }
       success: string
       unique_id: string
+      hasNWB: boolean
     }
   }
   name: string
   success: string
   timestamp: string
   unique_id: string
+  hasNWB: boolean
 }
 
 export async function getExperimentsApi(): Promise<ExperimentsDTO> {
@@ -51,13 +49,14 @@ export async function importExperimentByUidApi(
   return response.data
 }
 
-export async function downloadExperimentNwbApi(uid: string) {
-  const response = await axios.get(
-    `${BASE_URL}/experiments/download/nwb/${uid}`,
-    {
-      responseType: 'blob',
-    },
-  )
+export async function downloadExperimentNwbApi(uid: string, nodeId?: string) {
+  const path =
+    nodeId != null
+      ? `${BASE_URL}/experiments/download/nwb/${uid}/${nodeId}`
+      : `${BASE_URL}/experiments/download/nwb/${uid}`
+  const response = await axios.get(path, {
+    responseType: 'blob',
+  })
   return response.data
 }
 

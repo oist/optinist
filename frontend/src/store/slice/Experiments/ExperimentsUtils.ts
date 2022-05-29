@@ -22,14 +22,15 @@ export function convertToExperimentType(dto: ExperimentDTO): ExperimentType {
     functions[value.unique_id] = {
       name: value.name,
       nodeId: value.unique_id,
-      postion: value.position,
       status: convertToExperimentStatus(value.success),
+      hasNWB: value.hasNWB,
     }
   })
   return {
     uid: dto.unique_id,
     timestamp: dto.timestamp,
     name: dto.name,
+    hasNWB: dto.hasNWB,
     functions,
   }
 }
