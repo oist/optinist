@@ -5,7 +5,6 @@ class RuleConfigReader:
     @classmethod
     def read(cls, rule):
         return Rule(
-            rule_file=rule["rule_file"],
             input=rule["input"],
             return_arg=rule["return_arg"],
             params=rule["params"],

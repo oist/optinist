@@ -5,12 +5,15 @@ from .tsne import TSNE
 
 dimension_reduction_wrapper_dict = {
     'cca': {
-        'function': CCA
+        'function': CCA,
+        'conda': 'optinist_env.yaml',
     },
     'pca': {
-        'function': PCA
+        'function': PCA,
+        'conda': 'optinist_env.yaml',
     },
     'tsne': {
-        'function':  TSNE
+        'function':  TSNE,
+        'conda': 'optinist_env.yaml',
     },
 }

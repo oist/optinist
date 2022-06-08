@@ -45,6 +45,9 @@ export const selectExperimentTimeStamp = (uid: string) => (state: RootState) =>
 export const selectExperimentName = (uid: string) => (state: RootState) =>
   selectExperiment(uid)(state).name
 
+export const selectExperimentHasNWB = (uid: string) => (state: RootState) =>
+  selectExperiment(uid)(state).hasNWB
+
 export const selectExperimentStatus =
   (uid: string) =>
   (state: RootState): EXPERIMENTS_STATUS => {
@@ -78,3 +81,7 @@ export const selectExperimentFunctionName =
 export const selectExperimentFunctionStatus =
   (uid: string, nodeId: string) => (state: RootState) =>
     selectExperimentFunction(uid, nodeId)(state).status
+
+export const selectExperimentFunctionHasNWB =
+  (uid: string, nodeId: string) => (state: RootState) =>
+    selectExperimentFunction(uid, nodeId)(state).hasNWB

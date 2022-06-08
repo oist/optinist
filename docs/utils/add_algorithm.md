@@ -163,32 +163,6 @@ def new_algorithm(
     return info
 ```
 
-### 3.4 Snakemakeの登録
-最後に関数を実行するためにSnakemakeファイルを記述する。
-Snakemakeファイルは、関数と同じdirectory構造で以下のように記述されている。[snakemake list](https://github.com/oist/optinist/tree/develop/optinist/rules/smk) 
-
-ここでは**new_algorithm.smk**というファイルを作成する。
-中身は他のファイルをコピペし、**name**変数を**new_algorithm**にする。
-具体的には下のようになるため、そのまま[optinist/rules/smk/optinist/new_algorithm.smk](https://github.com/oist/optinist/tree/main/optinist/rules/smk/optinist)に下のコードコピペする。
-
-```python:optinist/rules/smk/optinist/new_algorithm.smk
-from optinist.api.dir_path import DIRPATH
-from optinist.api.snakemake.smk_dir import smk_input, smk_output
-
-name = "new_algorithm"
-
-rule:
-    input:
-        smk_input(config, name)
-    output:
-        smk_output(config, name)
-    params:
-        name = name
-    script:
-        f'{DIRPATH.ROOT_DIR}/rules/scripts/func.py'
-```
-
-
 GUIを再起動し、imageNodeを繋いで実行すると以下のように出力結果が表示される。
 
 ** 注意: 2 ~ 3秒で終わる処理なので、処理が終わらない場合にはエラーをしている可能性がある。console画面で赤文字のエラー部分を確認して頂きたい。エラーが解決できない場合には、slackやissueに貼って貰えると解決できる場合もある。
