@@ -35,6 +35,7 @@ def _create_config(unique_id, name, nodeDict, edgeDict) -> ExptConfig:
         unique_id=unique_id,
         name=name,
         timestamp=datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        hasNWB=False,
         nodeDict=nodeDict,
         edgeDict=edgeDict,
         function={},
@@ -53,6 +54,7 @@ def _add_run_info(expt_config: ExptConfig, nodeDict: Dict[str, Node], edgeDict: 
             unique_id=node.id,
             name=node.data.label,
             success="success" if node.data.type == "input" else "running",
+            hasNWB=False,
         )
     return expt_config
 
@@ -63,6 +65,7 @@ def _create_function_from_nodeDict(nodeDict: Dict[str, Node]) -> Dict[str, ExptF
             unique_id=node.id,
             name=node.data.label,
             success="success" if node.data.type == "input" else "running",
+            hasNWB=False,
         )
         for node in nodeDict.values()
     }

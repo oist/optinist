@@ -32,14 +32,17 @@ function:
     name: data_endoscope.tif
     success: success
     unique_id: input_0
+    hasNWB: False
   suite2p_file_convert_pi2bgrsd6m:
     name: suite2p_file_convert
     success: success
     unique_id: suite2p_file_convert_pi2bgrsd6m
+    hasNWB: False
   suite2p_roi_m6v8o3dctg:
     name: suite2p_roi
     success: success
     unique_id: suite2p_roi_m6v8o3dctg
+    hasNWB: False
 name: New flow
 nodeDict:
   input_0:
@@ -186,3 +189,4 @@ nodeDict:
     type: AlgorithmNode
 timestamp: '2022-05-15 23:02:15'
 unique_id: 838d4234
+hasNWB: False

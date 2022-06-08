@@ -17,3 +17,5 @@ optinist.egg-info
 optinist/config.yaml
 
 docs/_build
+
+optinist/notebooks

@@ -1,3 +1,4 @@
+import os
 from dataclasses import asdict
 from glob import glob
 from typing import Dict
@@ -16,10 +17,14 @@ class WorkflowResult:
     def get(cls, unique_id, nodeIdList):
         runPaths = []
         for node_id in nodeIdList:
-            for path in glob(join_filepath([DIRPATH.OUTPUT_DIR, unique_id, node_id, "*.pkl"])):
+            pickle_filepath = join_filepath([
+                DIRPATH.OUTPUT_DIR,
+                unique_id,
+                node_id,
+                "*.pkl"
+            ])
+            for path in glob(pickle_filepath):
                 runPaths.append(path.replace("\\", "/"))
-
-        print(runPaths)
 
         results: Dict[str, Message] = {}
         for path in runPaths:
@@ -28,6 +33,7 @@ class WorkflowResult:
 
             info = PickleReader.read(path)
 
+            ## success or error
             results[node_id] = {}
             if isinstance(info, (list, str)):
                 results[node_id] = _error(info, node_id, unique_id)
@@ -40,12 +46,57 @@ class WorkflowResult:
                     join_filepath(path.split("/")[:-1])
                 )
 
+            # has nwb output or not
+            _has_nwb(unique_id, node_id)
+
+        _has_nwb(unique_id)
+
         return results
 
 
+def _has_nwb(unique_id, node_id=None):
+    if node_id is None:
+        nwb_filepath_list = glob(join_filepath([
+            DIRPATH.OUTPUT_DIR,
+            unique_id,
+            "*.nwb"
+        ]))
+    else:
+        nwb_filepath_list = glob(join_filepath([
+            DIRPATH.OUTPUT_DIR,
+            unique_id,
+            node_id,
+            "*.nwb"
+        ]))
+
+    for nwb_filepath in nwb_filepath_list:
+        if os.path.exists(nwb_filepath):
+            expt_filepath = join_filepath([
+                DIRPATH.OUTPUT_DIR,
+                unique_id,
+                DIRPATH.EXPERIMENT_YML
+            ])
+            config = ExptConfigReader.read(expt_filepath)
+
+            if node_id is None:
+                config.hasNWB = True
+            else:
+                config.function[node_id].hasNWB = True
+
+            ConfigWriter.write(
+                dirname=join_filepath([DIRPATH.OUTPUT_DIR, unique_id]),
+                filename=DIRPATH.EXPERIMENT_YML,
+                config=asdict(config),
+            )
+
+
 def _success(info, node_id, algo_name, unique_id, dirpath):
-    config = ExptConfigReader.read(join_filepath(
-        [DIRPATH.OUTPUT_DIR, unique_id, DIRPATH.EXPERIMENT_YML]))
+    expt_filepath = join_filepath([
+        DIRPATH.OUTPUT_DIR,
+        unique_id,
+        DIRPATH.EXPERIMENT_YML
+    ])
+    config = ExptConfigReader.read(expt_filepath)
     config.function[node_id].success = "success"
 
     ConfigWriter.write(
@@ -62,8 +113,12 @@ def _success(info, node_id, algo_name, unique_id, dirpath):
 
 
 def _error(info, node_id, unique_id):
-    config = ExptConfigReader.read(join_filepath([
-        DIRPATH.OUTPUT_DIR, unique_id, DIRPATH.EXPERIMENT_YML]))
+    expt_filepath = join_filepath([
+        DIRPATH.OUTPUT_DIR,
+        unique_id,
+        DIRPATH.EXPERIMENT_YML
+    ])
+    config = ExptConfigReader.read(expt_filepath)
     config.function[node_id].success = "error"
 
     ConfigWriter.write(

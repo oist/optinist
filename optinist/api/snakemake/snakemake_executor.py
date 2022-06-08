@@ -163,7 +163,7 @@ def delete_dependencies(params):
         # terminate condition
         if len(queue) == 0:
             break
-        
+
         # delete item path
         del_key = queue.pop()
         del_filepath = file_graph[del_key]

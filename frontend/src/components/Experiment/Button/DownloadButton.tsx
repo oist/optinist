@@ -11,14 +11,16 @@ import { ExperimentUidContext } from '../ExperimentTable'
 
 export const NWBDownloadButton = React.memo<{
   name: string
-}>(({ name }) => {
+  nodeId?: string
+  hasNWB: boolean
+}>(({ name, nodeId, hasNWB }) => {
   const uid = React.useContext(ExperimentUidContext)
   const ref = useRef<HTMLAnchorElement | null>(null)
   const [url, setFileUrl] = useState<string>()
 
   const onClick = async () => {
     try {
-      const responseData = await downloadExperimentNwbApi(uid)
+      const responseData = await downloadExperimentNwbApi(uid, nodeId)
       const url = URL.createObjectURL(new Blob([responseData]))
       setFileUrl(url)
       ref.current?.click()
@@ -30,8 +32,8 @@ export const NWBDownloadButton = React.memo<{
 
   return (
     <>
-      <IconButton onClick={onClick}>
-        <GetAppIcon color="primary" />
+      <IconButton onClick={onClick} color="primary" disabled={!hasNWB}>
+        <GetAppIcon />
       </IconButton>
       <a href={url} download={`${name}.nwb`} className="hidden" ref={ref}>
         {/* 警告が出るので空文字を入れておく */}{' '}

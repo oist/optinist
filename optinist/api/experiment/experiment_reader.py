@@ -23,6 +23,7 @@ class ExptConfigReader:
             unique_id=config["unique_id"],
             name=config["name"],
             timestamp=config["timestamp"],
+            hasNWB=config["hasNWB"],
             function=cls.function_read(config["function"]),
             nodeDict=cls.nodeDict_read(config["nodeDict"]),
             edgeDict=cls.edgeDict_read(config["edgeDict"]),
@@ -35,6 +36,7 @@ class ExptConfigReader:
                 unique_id=value["unique_id"],
                 name=value["name"],
                 success=value["success"],
+                hasNWB=value["hasNWB"],
             )
             for key, value in config.items()
         }
