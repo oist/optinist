@@ -26,4 +26,4 @@ async def run_id(uid: str, runItem: RunItem, background_tasks: BackgroundTasks):
 
 @router.post("/run/result/{uid}")
 async def run_result(uid: str, nodeDict: NodeItem):
-    return WorkflowResult.get(uid, nodeDict.pendingNodeIdList)
+    return WorkflowResult(uid).get(nodeDict.pendingNodeIdList)

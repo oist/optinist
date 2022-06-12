@@ -13,70 +13,50 @@ from optinist.api.dir_path import DIRPATH
 
 
 class WorkflowResult:
-    @classmethod
-    def get(cls, unique_id, nodeIdList):
-        runPaths = []
+
+    def __init__(self, unique_id):
+        self.unique_id = unique_id
+        self.workflow_dirpath = join_filepath([
+            DIRPATH.OUTPUT_DIR,
+            self.unique_id,
+        ])
+        self.expt_filepath = join_filepath([
+            self.workflow_dirpath,
+            DIRPATH.EXPERIMENT_YML
+        ])
+
+    def get(self, nodeIdList):
+        results: Dict[str, Message] = {}
         for node_id in nodeIdList:
             pickle_filepath = join_filepath([
-                DIRPATH.OUTPUT_DIR,
-                unique_id,
+                self.workflow_dirpath,
                 node_id,
                 "*.pkl"
             ])
             for path in glob(pickle_filepath):
-                runPaths.append(path.replace("\\", "/"))
+                results[node_id] = NodeResult(self.workflow_dirpath, node_id, path).get()
+                self.has_nwb(node_id)
 
-        results: Dict[str, Message] = {}
-        for path in runPaths:
-            node_id = path.split("/")[-2]
-            algo_name = path.split("/")[-1].split(".")[0]
-
-            info = PickleReader.read(path)
-
-            ## success or error
-            results[node_id] = {}
-            if isinstance(info, (list, str)):
-                results[node_id] = cls.error(info, node_id, unique_id)
-            else:
-                results[node_id] = cls.success(
-                    info,
-                    node_id,
-                    algo_name,
-                    unique_id,
-                    join_filepath(path.split("/")[:-1])
-                )
-
-            # has nwb output or not
-            cls.has_nwb(unique_id, node_id)
-
-        cls.has_nwb(unique_id)
+        self.has_nwb()
 
         return results
 
-    @classmethod
-    def has_nwb(cls, unique_id, node_id=None):
+    def has_nwb(self, node_id=None):
         if node_id is None:
             nwb_filepath_list = glob(join_filepath([
-                DIRPATH.OUTPUT_DIR,
-                unique_id,
+                self.workflow_dirpath,
                 "*.nwb"
             ]))
         else:
             nwb_filepath_list = glob(join_filepath([
-                DIRPATH.OUTPUT_DIR,
-                unique_id,
+                self.workflow_dirpath,
                 node_id,
                 "*.nwb"
             ]))
 
         for nwb_filepath in nwb_filepath_list:
             if os.path.exists(nwb_filepath):
-                expt_filepath = join_filepath([
-                    DIRPATH.OUTPUT_DIR,
-                    unique_id,
-                    DIRPATH.EXPERIMENT_YML
-                ])
-                config = ExptConfigReader.read(expt_filepath)
+                config = ExptConfigReader.read(self.expt_filepath)
 
                 if node_id is None:
                     config.hasNWB = True
@@ -84,61 +64,65 @@ class WorkflowResult:
                     config.function[node_id].hasNWB = True
 
                 ConfigWriter.write(
-                    dirname=join_filepath([DIRPATH.OUTPUT_DIR, unique_id]),
+                    dirname=self.workflow_dirpath,
                     filename=DIRPATH.EXPERIMENT_YML,
                     config=asdict(config),
                 )
 
-    @classmethod
-    def success(cls, info, node_id, algo_name, unique_id, dirpath):
-        expt_filepath = join_filepath([
-            DIRPATH.OUTPUT_DIR,
-            unique_id,
+
+class NodeResult:
+
+    def __init__(self, workflow_dirpath, node_id, path):
+        self.workflow_dirpath = workflow_dirpath
+        self.node_id = node_id
+        self.node_dirpath = join_filepath([
+            self.workflow_dirpath,
+            self.node_id
+        ])
+        self.expt_filepath = join_filepath([
+            self.workflow_dirpath,
             DIRPATH.EXPERIMENT_YML
         ])
-        config = ExptConfigReader.read(expt_filepath)
-        config.function[node_id].success = "success"
+
+        path = path.replace("\\", "/")
+        self.algo_name = os.path.splitext(os.path.basename(path))[0]
+        self.info = PickleReader.read(path)
+
+    def get(self):
+        expt_config = ExptConfigReader.read(self.expt_filepath)
+        if isinstance(self.info, (list, str)):
+            expt_config.function[self.node_id].success = "error"
+            message = self.error()
+        else:
+            expt_config.function[self.node_id].success = "success"
+            message = self.success()
 
         ConfigWriter.write(
-            dirname=join_filepath([DIRPATH.OUTPUT_DIR, unique_id]),
+            dirname=self.workflow_dirpath,
             filename=DIRPATH.EXPERIMENT_YML,
-            config=asdict(config),
+            config=asdict(expt_config),
         )
 
+        return message
+
+    def success(self):
         return Message(
             status="success",
-            message=f"{algo_name} success",
-            outputPaths=cls.outputPaths(info, dirpath)
+            message=f"{self.algo_name} success",
+            outputPaths=self.outputPaths()
         )
 
-
-    @classmethod
-    def error(cls, info, node_id, unique_id):
-        expt_filepath = join_filepath([
-            DIRPATH.OUTPUT_DIR,
-            unique_id,
-            DIRPATH.EXPERIMENT_YML
-        ])
-        config = ExptConfigReader.read(expt_filepath)
-        config.function[node_id].success = "error"
-
-        ConfigWriter.write(
-            dirname=join_filepath([DIRPATH.OUTPUT_DIR, unique_id]),
-            filename=DIRPATH.EXPERIMENT_YML,
-            config=asdict(config),
-        )
-
+    def error(self):
         return Message(
             status="error",
-            message=info if isinstance(info, str) else "\n".join(info),
+            message=self.info if isinstance(self.info, str) else "\n".join(self.info),
         )
 
-    @classmethod
-    def outputPaths(cls, info, dirpath):
+    def outputPaths(self):
         outputPaths: Dict[str, OutputPath] = {}
-        for k, v in info.items():
+        for k, v in self.info.items():
             if isinstance(v, BaseData):
-                v.save_json(dirpath)
+                v.save_json(self.node_dirpath)
 
             if isinstance(v, ImageData):
                 outputPaths[k] = OutputPath(
