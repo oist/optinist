@@ -5,7 +5,6 @@ import {
   Position,
   isNode,
   FlowTransform,
-  XYPosition,
 } from 'react-flow-renderer'
 import {
   FLOW_ELEMENT_SLICE_NAME,
@@ -114,9 +113,12 @@ export const flowElementSlice = createSlice({
             sourcePosition: Position.Right,
           }
         }
-        const newPosition: XYPosition = state.elementCoord
-        state.flowElements.push({ ...node, position: newPosition })
-        updateElementCoord(state)
+        if (node.position != null) {
+          state.flowElements.push({ ...node, position: node.position })
+        } else {
+          state.flowElements.push({ ...node, position: state.elementCoord })
+          updateElementCoord(state)
+        }
       })
       .addCase(addInputNode, (state, action) => {
         let { node } = action.payload
@@ -131,9 +133,12 @@ export const flowElementSlice = createSlice({
             sourcePosition: Position.Right,
           }
         }
-        const newPosition: XYPosition = state.elementCoord
-        state.flowElements.push({ ...node, position: newPosition })
-        updateElementCoord(state)
+        if (node.position != null) {
+          state.flowElements.push({ ...node, position: node.position })
+        } else {
+          state.flowElements.push({ ...node, position: state.elementCoord })
+          updateElementCoord(state)
+        }
       })
       .addCase(setInputNodeFilePath, (state, action) => {
         let { nodeId, filePath } = action.payload

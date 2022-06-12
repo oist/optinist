@@ -8,8 +8,10 @@ import ReactFlow, {
   Connection,
   Edge,
   Node,
+  OnLoadParams,
   FlowTransform,
 } from 'react-flow-renderer'
+import { useDrop } from 'react-dnd'
 
 import 'style/flow.css'
 import {
@@ -28,6 +30,12 @@ import {
   reactFlowEdgeTypes,
   reactFlowNodeTypes,
 } from './FlowChartNode/ReactFlowNodeTypesConst'
+import {
+  DND_ITEM_TYPE_SET,
+  TreeItemCollectedProps,
+  TreeItemDragObject,
+  TreeItemDropResult,
+} from './DnDItemType'
 
 export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
   (props) => {
@@ -76,14 +84,47 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
       }
     }
 
+    const [reactFlowInstance, setReactFlowInstance] =
+      React.useState<OnLoadParams>()
+
+    const onLoad = (reactFlowInstance: OnLoadParams) =>
+      setReactFlowInstance(reactFlowInstance)
+    const wrapparRef = React.useRef<HTMLDivElement>(null)
+    const [, drop] = useDrop<
+      TreeItemDragObject,
+      TreeItemDropResult,
+      TreeItemCollectedProps
+    >(
+      () => ({
+        accept: DND_ITEM_TYPE_SET.TREE_ITEM,
+        drop: (_, monitor) => {
+          let position: TreeItemDropResult['position'] = undefined
+          const monitorOffset = monitor.getClientOffset()
+          if (
+            wrapparRef.current != null &&
+            monitorOffset != null &&
+            reactFlowInstance != null
+          ) {
+            position = reactFlowInstance.project({
+              x: monitorOffset.x - wrapparRef.current.offsetLeft - 40,
+              y: monitorOffset.y - wrapparRef.current.offsetTop - 40,
+            })
+          }
+          return { position }
+        },
+      }),
+      [reactFlowInstance],
+    )
     return (
       <div className="flow">
         <ReactFlowProvider>
-          <div className="reactflow-wrapper">
+          <div className="reactflow-wrapper" ref={wrapparRef}>
             <ReactFlow
+              ref={drop}
               elements={flowElements}
               onElementsRemove={onElementsRemove}
               onConnect={onConnect}
+              onLoad={onLoad}
               onDragOver={onDragOver}
               onNodeDragStop={onNodeDragStop}
               nodeTypes={reactFlowNodeTypes}

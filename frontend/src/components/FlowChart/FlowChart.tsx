@@ -3,6 +3,9 @@ import { useSelector } from 'react-redux'
 import Drawer, { drawerClasses } from '@mui/material/Drawer'
 import { default as MuiToolbar } from '@mui/material/Toolbar'
 import { styled } from '@mui/material/styles'
+import { DndProvider } from 'react-dnd'
+import { HTML5Backend } from 'react-dnd-html5-backend'
+
 import { AlgorithmTreeView } from './TreeView'
 import { ReactFlowComponent } from './ReactFlowComponent'
 import RightDrawer, { rightDrawerWidth } from './RightDrawer'
@@ -13,17 +16,19 @@ const FlowChart = React.memo<UseRunPipelineReturnType>((props) => {
   const open = useSelector(selectRightDrawerIsOpen)
   return (
     <RootDiv>
-      <StyledDrawer variant="permanent">
-        <MuiToolbar />
-        <DrawerContents>
-          <AlgorithmTreeView />
-        </DrawerContents>
-      </StyledDrawer>
+      <DndProvider backend={HTML5Backend}>
+        <StyledDrawer variant="permanent">
+          <MuiToolbar />
+          <DrawerContents>
+            <AlgorithmTreeView />
+          </DrawerContents>
+        </StyledDrawer>
 
-      <MainContents open={open}>
-        <MuiToolbar />
-        <ReactFlowComponent {...props} />
-      </MainContents>
+        <MainContents open={open}>
+          <MuiToolbar />
+          <ReactFlowComponent {...props} />
+        </MainContents>
+      </DndProvider>
       <RightDrawer />
     </RootDiv>
   )
