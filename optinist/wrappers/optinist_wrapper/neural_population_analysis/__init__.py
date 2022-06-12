@@ -9,10 +9,10 @@ neural_population_analysis_wrapper_dict = {
     },
     'cross_correlation': {
         'function': cross_correlation,
-        'conda': 'optinist_env.yaml',
+        'conda_yaml': 'optinist_env.yaml',
     },
     'granger': {
         'function': Granger,
-        'conda': 'optinist_env.yaml',
+        'conda_yaml': 'optinist_env.yaml',
     },
 }

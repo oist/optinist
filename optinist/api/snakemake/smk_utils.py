@@ -1,3 +1,5 @@
+import os
+
 from optinist.api.dir_path import DIRPATH
 from optinist.api.utils.filepath_creater import join_filepath
 from optinist.routers.model import FILETYPE
@@ -35,11 +37,17 @@ def smk_conda(details):
         details["path"].split('/')
     )
 
-    if "conda" in wrapper:
-        env_filename = wrapper['conda']
-        return f"{DIRPATH.ROOT_DIR}/rules/envs/{env_filename}"
-    else:
-        return None
+    if "conda_name" in wrapper:
+        _filename = wrapper["conda_name"]
+        conda_filepath = f"{DIRPATH.CONDAENV_DIR}/envs/{_filename}"
+        if os.path.exists(conda_filepath):
+            return conda_filepath
+
+    if "conda_yaml" in wrapper:
+        conda_yaml = wrapper["conda_yaml"]
+        return f"{DIRPATH.CONDAENV_DIR}/yaml/{conda_yaml}"
+
+    return None
 
 
 def _dict2leaf(root_dict: dict, path_list):

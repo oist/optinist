@@ -6,14 +6,14 @@ from .svm import SVM
 neural_decoding_wrapper_dict = {
     'glm': {
         'function': GLM,
-        'conda': 'optinist_env.yaml',
+        'conda_yaml': 'optinist_env.yaml',
     },
     'lda': {
         'function': LDA,
-        'conda': 'optinist_env.yaml',
+        'conda_yaml': 'optinist_env.yaml',
     },
     'svm': {
         'function': SVM,
-        'conda': 'optinist_env.yaml',
+        'conda_yaml': 'optinist_env.yaml',
     },
 }
