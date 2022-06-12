@@ -9,6 +9,8 @@ import {
 } from '@mui/material'
 import Box from '@mui/material/Box'
 import Checkbox from '@mui/material/Checkbox'
+import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+
 import {
   selectTimeSeriesItemDrawOrderList,
   selectTimeSeriesItemOffset,
@@ -38,8 +40,8 @@ import {
   getTimeSeriesDataById,
 } from 'store/slice/DisplayData/DisplayDataActions'
 import { arrayEqualityFn } from 'utils/EqualityUtils'
-import { Accordion } from 'components/Accordion'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+import { Accordion } from 'components/common/Accordion'
+
 import { SaveFig } from './SaveFig'
 
 export const TimeSeriesItemEditor: React.FC = () => {

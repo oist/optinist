@@ -12,7 +12,7 @@ import {
   selectNwbParamsKeyList,
   selectNwbParamsValue,
 } from 'store/slice/NWB/NWBSelectors'
-import { createParamFormItemComponent } from 'components/ParamFormItemCreator'
+import { createParamFormItemComponent } from 'components/common/ParamFormItemCreator'
 
 export const NWBSettingButton = React.memo(() => {
   const dispatch = useDispatch()

@@ -9,7 +9,7 @@ import Select, { SelectChangeEvent } from '@mui/material/Select'
 import FormControl from '@mui/material/FormControl'
 
 import { arrayEqualityFn } from 'utils/EqualityUtils'
-
+import { RootState } from 'store/store'
 import {
   selectDisplayDataIsSingle,
   selectImageItemFilePath,
@@ -23,22 +23,21 @@ import {
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-
-import { DisplayDataItemLayoutMenuIcon } from './VisualizeItemLayoutMenuIcon'
-import { DisplayDataItem } from './DisplayDataItem'
 import {
   selectItem,
   setItemSize,
   setRoiItemFilePath,
   setTimeSeriesRefImageItemId,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { RootState } from 'store/store'
-import { FilePathSelect } from './FilePathSelect'
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
 } from 'store/slice/DisplayData/DisplayDataType'
 import { setNewDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemActions'
+import { useMouseDragHandler } from 'components/utils/MouseDragUtil'
+import { DisplayDataItemLayoutMenuIcon } from './VisualizeItemLayoutMenuIcon'
+import { DisplayDataItem } from './DisplayDataItem'
+import { FilePathSelect } from './FilePathSelect'
 
 export const VisualizeItem = React.memo<{ itemId: number }>(({ itemId }) => {
   const dispatch = useDispatch()
@@ -316,31 +315,6 @@ function useItemDragResize(itemId: number) {
     onMouseDownY,
     onMouseDownXY,
   }
-}
-
-function useMouseDragHandler(
-  onMouseDown: (event: React.MouseEvent) => {
-    onMouseMove: (this: Document, event: MouseEvent) => void
-    onMouseUp: (this: Document, event: MouseEvent) => void
-  },
-  dependencies: React.DependencyList,
-) {
-  return React.useCallback(
-    (event: React.MouseEvent) => {
-      const { onMouseMove, onMouseUp } = onMouseDown(event)
-      document.addEventListener('mousemove', onMouseMove)
-      document.addEventListener(
-        'mouseup',
-        (event) => {
-          document.removeEventListener('mousemove', onMouseMove)
-          onMouseUp.call(document, event)
-        },
-        { once: true },
-      )
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [dependencies],
-  )
 }
 
 const RoiSelect = React.memo<{

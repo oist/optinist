@@ -12,7 +12,7 @@ import Typography from '@mui/material/Typography'
 import { isParamChild } from 'utils/param/ParamUtils'
 import { ParamType } from 'utils/param/ParamType'
 import { RootState } from 'store/store'
-import { Accordion } from 'components/Accordion'
+import { Accordion } from 'components/common/Accordion'
 
 type ParamSelectorType = (paramKey: string) => (state: RootState) => ParamType
 type ParamValueSelectorType = (path: string) => (state: RootState) => unknown
