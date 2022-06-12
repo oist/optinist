@@ -6,20 +6,23 @@ from optinist.api.utils.filepath_creater import (
     create_filepath,
     join_filepath
 )
-from optinist.api.experiment.experiment import ExptConfig
-from optinist.api.workflow.workflow import NodeData, NodePosition, Style
+from optinist.api.experiment.experiment import ExptConfig, ExptFunction
+from optinist.api.workflow.workflow import (
+    NodeData,
+    NodePosition,
+    Style,
+    Node,
+    Edge
+)
 
 
-def test_filepath():
-    exp_filepath = create_filepath(
-        join_filepath([DIRPATH.ROOT_DIR, "test_data"]),
-        DIRPATH.EXPERIMENT_YML
-    )
-    return exp_filepath
+exp_filepath = create_filepath(
+    join_filepath([DIRPATH.ROOT_DIR, "test_data"]),
+    DIRPATH.EXPERIMENT_YML
+)
 
 
 def test_read():
-    exp_filepath = test_filepath()
     exp_config = ExptConfigReader.read(exp_filepath)
 
     assert isinstance(exp_config, ExptConfig)
@@ -50,3 +53,68 @@ def test_read():
     assert isinstance(exp_config.edgeDict[edgeDictId].target, str)
     assert isinstance(exp_config.edgeDict[edgeDictId].targetHandle, str)
     assert isinstance(exp_config.edgeDict[edgeDictId].style, Style)
+
+
+def test_read_function():
+    func_config = {
+        "sample1": {
+            "unique_id": "a",
+            "name": "a",
+            "success": "success",
+            "hasNWB": False,
+        }
+    }
+
+    function = ExptConfigReader.read_function(func_config)
+
+    assert isinstance(function, dict)
+    assert isinstance(function["sample1"], ExptFunction)
+
+
+def test_read_nodeDict():
+    node_data = {
+        "label": "a",
+        "param": {},
+        "path": "",
+        "type": ""
+    }
+
+    position = {
+        "x": 0,
+        "y": 0
+    }
+
+    nodeDict_config = {
+        "sample1": {
+            "id": "a",
+            "type": "a",
+            "data": node_data,
+            "position": position,
+            "style": {},
+        }
+    }
+
+    nodeDict = ExptConfigReader.read_nodeDict(nodeDict_config)
+
+    assert isinstance(nodeDict, dict)
+    assert isinstance(nodeDict["sample1"], Node)
+
+
+def test_read_edgeDict():
+    edgeDict_config = {
+        "sample1": {
+            "id": "a",
+            "type": "a",
+            "animated": False,
+            "source": "a",
+            "sourceHandle": "a",
+            "target": "a",
+            "targetHandle": "a",
+            "style": {},
+        }
+    }
+
+    edgeDict = ExptConfigReader.read_edgeDict(edgeDict_config)
+
+    assert isinstance(edgeDict, dict)
+    assert isinstance(edgeDict["sample1"], Edge)
