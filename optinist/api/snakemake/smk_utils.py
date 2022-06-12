@@ -6,53 +6,56 @@ from optinist.routers.model import FILETYPE
 from optinist.wrappers import wrapper_dict
 
 
-def smk_input(details):
-    if details["type"] in [FILETYPE.IMAGE]:
-        return [
-            join_filepath([DIRPATH.INPUT_DIR, x])
-            for x in details["input"]
-        ]
-    elif details["type"] in [FILETYPE.CSV, FILETYPE.BEHAVIOR, FILETYPE.HDF5]:
-        return join_filepath([DIRPATH.INPUT_DIR, details["input"]])
-    else:
-        return [
-            join_filepath([DIRPATH.OUTPUT_DIR, x])
-            for x in details["input"]
-        ]
+class SmkUtils:
 
+    @classmethod
+    def input(cls, details):
+        if details["type"] in [FILETYPE.IMAGE]:
+            return [
+                join_filepath([DIRPATH.INPUT_DIR, x])
+                for x in details["input"]
+            ]
+        elif details["type"] in [FILETYPE.CSV, FILETYPE.BEHAVIOR, FILETYPE.HDF5]:
+            return join_filepath([DIRPATH.INPUT_DIR, details["input"]])
+        else:
+            return [
+                join_filepath([DIRPATH.OUTPUT_DIR, x])
+                for x in details["input"]
+            ]
 
-def smk_output(details):
-    return join_filepath([
-        DIRPATH.OUTPUT_DIR,
-        details["output"]
-    ])
+    @classmethod
+    def output(cls, details):
+        return join_filepath([
+            DIRPATH.OUTPUT_DIR,
+            details["output"]
+        ])
 
+    @classmethod
+    def conda(cls, details):
+        if details["type"] in [FILETYPE.IMAGE, FILETYPE.CSV, FILETYPE.BEHAVIOR, FILETYPE.HDF5]:
+            return None
 
-def smk_conda(details):
-    if details["type"] in [FILETYPE.IMAGE, FILETYPE.CSV, FILETYPE.BEHAVIOR, FILETYPE.HDF5]:
+        wrapper = cls.dict2leaf(
+            wrapper_dict,
+            details["path"].split('/')
+        )
+
+        if "conda_name" in wrapper:
+            _filename = wrapper["conda_name"]
+            conda_filepath = f"{DIRPATH.CONDAENV_DIR}/envs/{_filename}"
+            if os.path.exists(conda_filepath):
+                return conda_filepath
+
+        if "conda_yaml" in wrapper:
+            conda_yaml = wrapper["conda_yaml"]
+            return f"{DIRPATH.CONDAENV_DIR}/yaml/{conda_yaml}"
+
         return None
 
-    wrapper = _dict2leaf(
-        wrapper_dict,
-        details["path"].split('/')
-    )
-
-    if "conda_name" in wrapper:
-        _filename = wrapper["conda_name"]
-        conda_filepath = f"{DIRPATH.CONDAENV_DIR}/envs/{_filename}"
-        if os.path.exists(conda_filepath):
-            return conda_filepath
-
-    if "conda_yaml" in wrapper:
-        conda_yaml = wrapper["conda_yaml"]
-        return f"{DIRPATH.CONDAENV_DIR}/yaml/{conda_yaml}"
-
-    return None
-
-
-def _dict2leaf(root_dict: dict, path_list):
-    path = path_list.pop(0)
-    if len(path_list) > 0:
-        return _dict2leaf(root_dict[path], path_list)
-    else:
-        return root_dict[path]
+    @classmethod
+    def dict2leaf(cls, root_dict: dict, path_list):
+        path = path_list.pop(0)
+        if len(path_list) > 0:
+            return cls.dict2leaf(root_dict[path], path_list)
+        else:
+            return root_dict[path]
