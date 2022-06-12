@@ -36,9 +36,9 @@ class WorkflowResult:
             ## success or error
             results[node_id] = {}
             if isinstance(info, (list, str)):
-                results[node_id] = _error(info, node_id, unique_id)
+                results[node_id] = cls.error(info, node_id, unique_id)
             else:
-                results[node_id] = _success(
+                results[node_id] = cls.success(
                     info,
                     node_id,
                     algo_name,
@@ -47,136 +47,137 @@ class WorkflowResult:
                 )
 
             # has nwb output or not
-            _has_nwb(unique_id, node_id)
+            cls.has_nwb(unique_id, node_id)
 
-        _has_nwb(unique_id)
+        cls.has_nwb(unique_id)
 
         return results
 
-
-def _has_nwb(unique_id, node_id=None):
-    if node_id is None:
-        nwb_filepath_list = glob(join_filepath([
-            DIRPATH.OUTPUT_DIR,
-            unique_id,
-            "*.nwb"
-        ]))
-    else:
-        nwb_filepath_list = glob(join_filepath([
-            DIRPATH.OUTPUT_DIR,
-            unique_id,
-            node_id,
-            "*.nwb"
-        ]))
-
-    for nwb_filepath in nwb_filepath_list:
-        if os.path.exists(nwb_filepath):
-            expt_filepath = join_filepath([
+    @classmethod
+    def has_nwb(cls, unique_id, node_id=None):
+        if node_id is None:
+            nwb_filepath_list = glob(join_filepath([
                 DIRPATH.OUTPUT_DIR,
                 unique_id,
-                DIRPATH.EXPERIMENT_YML
-            ])
-            config = ExptConfigReader.read(expt_filepath)
-
-            if node_id is None:
-                config.hasNWB = True
-            else:
-                config.function[node_id].hasNWB = True
-
-            ConfigWriter.write(
-                dirname=join_filepath([DIRPATH.OUTPUT_DIR, unique_id]),
-                filename=DIRPATH.EXPERIMENT_YML,
-                config=asdict(config),
-            )
-
-
-def _success(info, node_id, algo_name, unique_id, dirpath):
-    expt_filepath = join_filepath([
-        DIRPATH.OUTPUT_DIR,
-        unique_id,
-        DIRPATH.EXPERIMENT_YML
-    ])
-    config = ExptConfigReader.read(expt_filepath)
-    config.function[node_id].success = "success"
-
-    ConfigWriter.write(
-        dirname=join_filepath([DIRPATH.OUTPUT_DIR, unique_id]),
-        filename=DIRPATH.EXPERIMENT_YML,
-        config=asdict(config),
-    )
-
-    return Message(
-        status="success",
-        message=f"{algo_name} success",
-        outputPaths=_outputPaths(info, dirpath)
-    )
-
-
-def _error(info, node_id, unique_id):
-    expt_filepath = join_filepath([
-        DIRPATH.OUTPUT_DIR,
-        unique_id,
-        DIRPATH.EXPERIMENT_YML
-    ])
-    config = ExptConfigReader.read(expt_filepath)
-    config.function[node_id].success = "error"
-
-    ConfigWriter.write(
-        dirname=join_filepath([DIRPATH.OUTPUT_DIR, unique_id]),
-        filename=DIRPATH.EXPERIMENT_YML,
-        config=asdict(config),
-    )
-
-    return Message(
-        status="error",
-        message=info if isinstance(info, str) else "\n".join(info),
-    )
-
-
-def _outputPaths(info, dirpath):
-    outputPaths: Dict[str, OutputPath] = {}
-    for k, v in info.items():
-        if isinstance(v, BaseData):
-            v.save_json(dirpath)
-
-        if isinstance(v, ImageData):
-            outputPaths[k] = OutputPath(
-                path=v.json_path,
-                type=OutputType.IMAGE,
-                max_index=len(v.data) if v.data.ndim == 3 else 1
-            )
-        elif isinstance(v, TimeSeriesData):
-            outputPaths[k] = OutputPath(
-                path=v.json_path,
-                type=OutputType.TIMESERIES,
-                max_index=len(v.data)
-            )
-        elif isinstance(v, HeatMapData):
-            outputPaths[k] = OutputPath(
-                path=v.json_path,
-                type=OutputType.HEATMAP,
-            )
-        elif isinstance(v, RoiData):
-            outputPaths[k] = OutputPath(
-                path=v.json_path,
-                type=OutputType.ROI,
-            )
-        elif isinstance(v, ScatterData):
-            outputPaths[k] = OutputPath(
-                path=v.json_path,
-                type=OutputType.SCATTER,
-            )
-        elif isinstance(v, BarData):
-            outputPaths[k] = OutputPath(
-                path=v.json_path,
-                type=OutputType.BAR,
-            )
-        elif isinstance(v, HTMLData):
-            outputPaths[k] = OutputPath(
-                path=v.json_path,
-                type=OutputType.HTML,
-            )
+                "*.nwb"
+            ]))
         else:
-            pass
+            nwb_filepath_list = glob(join_filepath([
+                DIRPATH.OUTPUT_DIR,
+                unique_id,
+                node_id,
+                "*.nwb"
+            ]))
 
-    return outputPaths
+        for nwb_filepath in nwb_filepath_list:
+            if os.path.exists(nwb_filepath):
+                expt_filepath = join_filepath([
+                    DIRPATH.OUTPUT_DIR,
+                    unique_id,
+                    DIRPATH.EXPERIMENT_YML
+                ])
+                config = ExptConfigReader.read(expt_filepath)
+
+                if node_id is None:
+                    config.hasNWB = True
+                else:
+                    config.function[node_id].hasNWB = True
+
+                ConfigWriter.write(
+                    dirname=join_filepath([DIRPATH.OUTPUT_DIR, unique_id]),
+                    filename=DIRPATH.EXPERIMENT_YML,
+                    config=asdict(config),
+                )
+
+    @classmethod
+    def success(cls, info, node_id, algo_name, unique_id, dirpath):
+        expt_filepath = join_filepath([
+            DIRPATH.OUTPUT_DIR,
+            unique_id,
+            DIRPATH.EXPERIMENT_YML
+        ])
+        config = ExptConfigReader.read(expt_filepath)
+        config.function[node_id].success = "success"
+
+        ConfigWriter.write(
+            dirname=join_filepath([DIRPATH.OUTPUT_DIR, unique_id]),
+            filename=DIRPATH.EXPERIMENT_YML,
+            config=asdict(config),
+        )
+
+        return Message(
+            status="success",
+            message=f"{algo_name} success",
+            outputPaths=cls.outputPaths(info, dirpath)
+        )
+
+
+    @classmethod
+    def error(cls, info, node_id, unique_id):
+        expt_filepath = join_filepath([
+            DIRPATH.OUTPUT_DIR,
+            unique_id,
+            DIRPATH.EXPERIMENT_YML
+        ])
+        config = ExptConfigReader.read(expt_filepath)
+        config.function[node_id].success = "error"
+
+        ConfigWriter.write(
+            dirname=join_filepath([DIRPATH.OUTPUT_DIR, unique_id]),
+            filename=DIRPATH.EXPERIMENT_YML,
+            config=asdict(config),
+        )
+
+        return Message(
+            status="error",
+            message=info if isinstance(info, str) else "\n".join(info),
+        )
+
+    @classmethod
+    def outputPaths(cls, info, dirpath):
+        outputPaths: Dict[str, OutputPath] = {}
+        for k, v in info.items():
+            if isinstance(v, BaseData):
+                v.save_json(dirpath)
+
+            if isinstance(v, ImageData):
+                outputPaths[k] = OutputPath(
+                    path=v.json_path,
+                    type=OutputType.IMAGE,
+                    max_index=len(v.data) if v.data.ndim == 3 else 1
+                )
+            elif isinstance(v, TimeSeriesData):
+                outputPaths[k] = OutputPath(
+                    path=v.json_path,
+                    type=OutputType.TIMESERIES,
+                    max_index=len(v.data)
+                )
+            elif isinstance(v, HeatMapData):
+                outputPaths[k] = OutputPath(
+                    path=v.json_path,
+                    type=OutputType.HEATMAP,
+                )
+            elif isinstance(v, RoiData):
+                outputPaths[k] = OutputPath(
+                    path=v.json_path,
+                    type=OutputType.ROI,
+                )
+            elif isinstance(v, ScatterData):
+                outputPaths[k] = OutputPath(
+                    path=v.json_path,
+                    type=OutputType.SCATTER,
+                )
+            elif isinstance(v, BarData):
+                outputPaths[k] = OutputPath(
+                    path=v.json_path,
+                    type=OutputType.BAR,
+                )
+            elif isinstance(v, HTMLData):
+                outputPaths[k] = OutputPath(
+                    path=v.json_path,
+                    type=OutputType.HTML,
+                )
+            else:
+                pass
+
+        return outputPaths
