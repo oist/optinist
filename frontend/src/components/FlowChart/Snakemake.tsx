@@ -12,7 +12,7 @@ import {
   selectSnakemakeParamsValue,
 } from 'store/slice/Snakemake/SnakemakeSelectors'
 import { arrayEqualityFn } from 'utils/EqualityUtils'
-import { createParamFormItemComponent } from 'components/ParamFormItemCreator'
+import { createParamFormItemComponent } from 'components/common/ParamFormItemCreator'
 
 export const SnakemakeButton = React.memo(() => {
   const dispatch = useDispatch()

@@ -5,10 +5,13 @@ import { FILE_TYPE } from '../InputNode/InputNodeType'
 import { FLOW_ELEMENT_SLICE_NAME, NodeData } from './FlowElementType'
 import { getAlgoParamsApi } from 'api/params/Params'
 
+export type AddingNodeData = Omit<Node<NodeData>, 'position'> &
+  Partial<Pick<Node<NodeData>, 'position'>>
+
 export const addAlgorithmNode = createAsyncThunk<
   ParamDTO,
   {
-    node: Omit<Node<NodeData>, 'position'>
+    node: AddingNodeData
     functionPath: string
     name: string
   }
@@ -22,6 +25,6 @@ export const addAlgorithmNode = createAsyncThunk<
 })
 
 export const addInputNode = createAction<{
-  node: Omit<Node<NodeData>, 'position'>
+  node: AddingNodeData
   fileType: FILE_TYPE
 }>(`${FLOW_ELEMENT_SLICE_NAME}/addInputNode`)
