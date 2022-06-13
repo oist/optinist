@@ -15,9 +15,9 @@ class Runner:
     @classmethod
     def run(cls, __rule: Rule, last_output):
         try:
-            input_info = _read_input_info(__rule.input)
+            input_info = cls.read_input_info(__rule.input)
 
-            _change_dict_key_exist(input_info, __rule)
+            cls.change_dict_key_exist(input_info, __rule)
 
             nwbfile = input_info['nwbfile']
 
@@ -27,14 +27,14 @@ class Runner:
                     input_info.pop(key)
 
             # output_info
-            output_info = _execute_function(
+            output_info = cls.execute_function(
                 __rule.path,
                 __rule.params,
                 input_info
             )
 
             # nwbfileの設定
-            output_info['nwbfile'] = _save_func_nwb(
+            output_info['nwbfile'] = cls.save_func_nwb(
                 f"{__rule.output.split('.')[0]}.nwb",
                 __rule.type,
                 nwbfile,
@@ -49,7 +49,7 @@ class Runner:
                 # 全体の結果を保存する
                 path = join_filepath(os.path.dirname(os.path.dirname(__rule.output)))
                 path = join_filepath([path, f"all_{__rule.type}.nwb"])
-                _save_all_nwb(
+                cls.save_all_nwb(
                     path,
                     output_info['nwbfile']
                 )
@@ -65,60 +65,61 @@ class Runner:
                 list(traceback.TracebackException.from_exception(e).format())[-2:]
             )
 
+    @classmethod
+    def save_func_nwb(cls, save_path, name, nwbfile, output_info):
+        if "nwbfile" in output_info:
+            nwbfile[name] = output_info["nwbfile"]
+            save_nwb(
+                save_path,
+                nwbfile["input"],
+                output_info["nwbfile"],
+            )
+        return nwbfile
 
-def _save_func_nwb(save_path, name, nwbfile, output_info):
-    if "nwbfile" in output_info:
-        nwbfile[name] = output_info["nwbfile"]
+    @classmethod
+    def save_all_nwb(cls, save_path, all_nwbfile):
+        input_nwbfile = all_nwbfile["input"]
+        all_nwbfile.pop("input")
+        nwbfile = {}
+        for x in all_nwbfile.values():
+            nwbfile = merge_nwbfile(nwbfile, x)
         save_nwb(
             save_path,
-            nwbfile["input"],
-            output_info["nwbfile"],
+            input_nwbfile,
+            nwbfile
         )
-    return nwbfile
 
+    @classmethod
+    def execute_function(cls, path, params, input_info):
+        wrapper = cls.dict2leaf(
+            wrapper_dict,
+            path.split('/')
+        )
+        func = copy.deepcopy(wrapper["function"])
+        output_info = func(params=params, **input_info)
+        del func
+        gc.collect()
 
-def _save_all_nwb(save_path, all_nwbfile):
-    input_nwbfile = all_nwbfile["input"]
-    all_nwbfile.pop("input")
-    nwbfile = {}
-    for x in all_nwbfile.values():
-        nwbfile = merge_nwbfile(nwbfile, x)
-    save_nwb(
-        save_path,
-        input_nwbfile,
-        nwbfile
-    )
+        return output_info
 
+    @classmethod
+    def change_dict_key_exist(cls, input_info, rule_config: Rule):
+        for return_name, arg_name in rule_config.return_arg.items():
+            if return_name in input_info:
+                input_info[arg_name] = input_info.pop(return_name)
 
-def _execute_function(path, params, input_info):
-    wrapper = _dict2leaf(
-        wrapper_dict,
-        path.split('/')
-    )
-    func = copy.deepcopy(wrapper["function"])
-    output_info = func(params=params, **input_info)
-    del func
-    gc.collect()
-    return output_info
+    @classmethod
+    def read_input_info(cls, input_files):
+        input_info = {}
+        for filepath in input_files:
+            load_data = PickleReader.read(filepath)
+            input_info = dict(list(load_data.items()) + list(input_info.items()))
+        return input_info
 
-
-def _change_dict_key_exist(input_info, rule_config: Rule):
-    for return_name, arg_name in rule_config.return_arg.items():
-        if return_name in input_info:
-            input_info[arg_name] = input_info.pop(return_name)
-
-
-def _read_input_info(input_files):
-    input_info = {}
-    for filepath in input_files:
-        load_data = PickleReader.read(filepath)
-        input_info = dict(list(load_data.items()) + list(input_info.items()))
-    return input_info
-
-
-def _dict2leaf(root_dict: dict, path_list):
-    path = path_list.pop(0)
-    if len(path_list) > 0:
-        return _dict2leaf(root_dict[path], path_list)
-    else:
-        return root_dict[path]
+    @classmethod
+    def dict2leaf(cls, root_dict: dict, path_list):
+        path = path_list.pop(0)
+        if len(path_list) > 0:
+            return cls.dict2leaf(root_dict[path], path_list)
+        else:
+            return root_dict[path]

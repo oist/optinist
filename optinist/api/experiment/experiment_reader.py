@@ -1,3 +1,4 @@
+from typing import Dict
 import yaml
 
 from optinist.api.experiment.experiment import (
@@ -24,13 +25,13 @@ class ExptConfigReader:
             name=config["name"],
             timestamp=config["timestamp"],
             hasNWB=config["hasNWB"],
-            function=cls.function_read(config["function"]),
-            nodeDict=cls.nodeDict_read(config["nodeDict"]),
-            edgeDict=cls.edgeDict_read(config["edgeDict"]),
+            function=cls.read_function(config["function"]),
+            nodeDict=cls.read_nodeDict(config["nodeDict"]),
+            edgeDict=cls.read_edgeDict(config["edgeDict"]),
         )
 
     @classmethod
-    def function_read(cls, config) -> ExptFunction:
+    def read_function(cls, config) -> Dict[str, ExptFunction]:
         return {
             key: ExptFunction(
                 unique_id=value["unique_id"],
@@ -42,10 +43,9 @@ class ExptConfigReader:
         }
 
     @classmethod
-    def nodeDict_read(cls, config) -> Node:
+    def read_nodeDict(cls, config) -> Dict[str, Node]:
         return { 
-            key: 
-            Node(
+            key: Node(
                 id=key,
                 type=value["type"],
                 data=NodeData(**value["data"]),
@@ -56,10 +56,9 @@ class ExptConfigReader:
         }
 
     @classmethod
-    def edgeDict_read(cls, config) -> Edge:
+    def read_edgeDict(cls, config) -> Dict[str, Edge]:
         return {
-            key:
-            Edge(
+            key: Edge(
                 id=key,
                 type=value["type"],
                 animated=value["animated"],

@@ -1,7 +1,12 @@
 .PHONY: test_run
 test_run:
-	python -m pytest
+	python -m pytest optinist/
 	cd frontend && rm -rf node_modules && yarn install && yarn test:ci
+
+.PHONY: test_python
+test_python:
+	python -m pytest optinist/
+
 
 .PHONY: docs
 docs:
