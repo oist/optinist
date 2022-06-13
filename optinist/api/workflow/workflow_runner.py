@@ -1,76 +1,75 @@
 from typing import Dict, List
 from dataclasses import asdict
 
-from optinist.api.snakemake.smk import FlowConfig, ForceRun, Rule, SmkParam
+from optinist.api.snakemake.smk import FlowConfig, Rule, SmkParam
 from optinist.api.snakemake.snakemake_reader import SmkParamReader
 from optinist.api.snakemake.snakemake_writer import SmkConfigWriter
 from optinist.api.snakemake.snakemake_setfile import SmkSetfile
 from optinist.api.snakemake.snakemake_executor import delete_dependencies, snakemake_execute
 
 from optinist.api.utils.filepath_creater import get_pickle_file
-from optinist.api.workflow.workflow import Edge, Node, NodeType, RunItem
 from optinist.api.workflow.workflow_params import get_typecheck_params
+from optinist.api.workflow.workflow import NodeType, RunItem
 from optinist.api.experiment.experiment_reader import ExptConfigReader
 from optinist.api.experiment.experiment_writer import ExptConfigWriter
 
 
 class WorkflowRunner:
-    @classmethod
-    def run_workflow(cls, unique_id, background_tasks, runItem: RunItem):
-        cls.create_workflow(
-            unique_id,
-            runItem.name,
-            ExptConfigReader.read_nodeDict(runItem.nodeDict),
-            ExptConfigReader.read_edgeDict(runItem.edgeDict),
-            runItem.nwbParam
+
+    def __init__(self, unique_id, runItem: RunItem) -> None:
+        self.unique_id = unique_id
+        self.runItem = runItem
+        self.nodeDict = ExptConfigReader.read_nodeDict(self.runItem.nodeDict)
+        self.edgeDict = ExptConfigReader.read_edgeDict(self.runItem.edgeDict)
+
+        ExptConfigWriter.write(
+            self.unique_id,
+            self.runItem.name,
+            self.nodeDict,
+            self.edgeDict
         )
 
-        snakemake_params: SmkParam = get_typecheck_params(runItem.snakemakeParam, "snakemake")
+    def run_workflow(self, background_tasks):
+        self.create_workflow()
+
+        snakemake_params: SmkParam = get_typecheck_params(self.runItem.snakemakeParam, "snakemake")
         snakemake_params = SmkParamReader.read(snakemake_params)
-        snakemake_params.forcerun = cls.get_forcerun_list(unique_id, runItem.forceRunList)
+        snakemake_params.forcerun = self.get_forceRunList()
         if len(snakemake_params.forcerun) > 0:
             delete_dependencies(snakemake_params)
         background_tasks.add_task(snakemake_execute, snakemake_params)
 
-    @classmethod
-    def create_workflow(cls, unique_id, name, nodeDict, edgeDict, nwbParam):
-        rules, last_output = cls.rulefile(
-            unique_id,
-            nodeDict,
-            edgeDict,
-            nwbParam,
-        )
+    def create_workflow(self):
+        rules, last_output = self.rulefile()
 
         flow_config = FlowConfig(
             rules=rules,
             last_output=last_output,
         )
 
-        SmkConfigWriter.write(unique_id, asdict(flow_config))
-        ExptConfigWriter.write(unique_id, name, nodeDict, edgeDict)
+        SmkConfigWriter.write(self.unique_id, asdict(flow_config))
 
-    @classmethod
-    def rulefile(cls, unique_id: str, nodeDict: Dict[str, Node], edgeDict: Dict[str, Edge], nwbParam):
-        endNodeList = cls.get_endNodeList(edgeDict, nodeDict)
+    def rulefile(self):
+        endNodeList = self.get_endNodeList()
 
-        nwbfile = get_typecheck_params(nwbParam, "nwb")
+        nwbfile = get_typecheck_params(self.runItem.nwbParam, "nwb")
 
         rule_dict: Dict[str, Rule] = {}
         last_outputs = []
 
-        for node in nodeDict.values():
+        for node in self.nodeDict.values():
             if node.type == NodeType.IMAGE:
-                rule_dict[node.id] = SmkSetfile.image(unique_id, node, edgeDict, nwbfile)
+                rule_dict[node.id] = SmkSetfile.image(self.unique_id, node, self.edgeDict, nwbfile)
             elif node.type == NodeType.CSV:
-                rule_dict[node.id] = SmkSetfile.csv(unique_id, node, edgeDict, nwbfile)
+                rule_dict[node.id] = SmkSetfile.csv(self.unique_id, node, self.edgeDict, nwbfile)
             elif node.type == NodeType.FLUO:
-                rule_dict[node.id] = SmkSetfile.csv(unique_id, node, edgeDict, nwbfile)
+                rule_dict[node.id] = SmkSetfile.csv(self.unique_id, node, self.edgeDict, nwbfile)
             elif node.type == NodeType.BEHAVIOR:
-                rule_dict[node.id] = SmkSetfile.csv(unique_id, node, edgeDict, nwbfile, "behavior")
+                rule_dict[node.id] = SmkSetfile.csv(self.unique_id, node, self.edgeDict, nwbfile, "behavior")
             elif node.type == NodeType.HDF5:
-                rule_dict[node.id] = SmkSetfile.hdf5(unique_id, node, edgeDict, nwbfile)
+                rule_dict[node.id] = SmkSetfile.hdf5(self.unique_id, node, self.edgeDict, nwbfile)
             elif node.type == NodeType.ALGO:
-                rule = SmkSetfile.algo(unique_id, node, edgeDict, nodeDict)
+                rule = SmkSetfile.algo(self.unique_id, node, self.edgeDict, self.nodeDict)
                 rule_dict[node.id] = rule
 
                 if node.id in endNodeList:
@@ -80,10 +79,9 @@ class WorkflowRunner:
 
         return rule_dict, last_outputs
 
-    @classmethod
-    def get_endNodeList(cls, edgeDict: Dict[str, Edge], nodeDict: Dict[str, Node]):
-        returnCntDict = {key: 0 for key in nodeDict.keys()}
-        for edge in edgeDict.values():
+    def get_endNodeList(self):
+        returnCntDict = {key: 0 for key in self.nodeDict.keys()}
+        for edge in self.edgeDict.values():
             returnCntDict[edge.source] += 1
 
         endNodeList = []
@@ -92,9 +90,14 @@ class WorkflowRunner:
                 endNodeList.append(key)
         return endNodeList
 
-    @classmethod
-    def get_forcerun_list(cls, unique_id, forceRunList: List[ForceRun]) -> List[str]:
+    def get_forceRunList(self) -> List[str]:
         target_list = []
-        for x in forceRunList:
-            target_list.append(get_pickle_file(unique_id, x.nodeId, x.name))
+        for x in self.runItem.forceRunList:
+            target_list.append(
+                get_pickle_file(
+                    self.unique_id,
+                    x.nodeId,
+                    x.name
+                )
+            )
         return target_list
