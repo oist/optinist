@@ -5,8 +5,11 @@ test_run:
 
 .PHONY: test_python
 test_python:
-	python -m pytest optinist/
-
+	# python -m pytest optinist/
+	docker-compose -f docker-compose.test.yml down --rmi all --volumes --remove-orphans
+	docker-compose -f docker-compose.test.yml rm -f
+	docker-compose -f docker-compose.test.yml build
+	docker-compose -f docker-compose.test.yml up
 
 .PHONY: docs
 docs:
