@@ -4,7 +4,6 @@ test_run:
 	docker-compose -f docker-compose.test.yml rm -f
 	docker-compose -f docker-compose.test.yml build
 	docker-compose -f docker-compose.test.yml up
-	# cd frontend && rm -rf node_modules && yarn install && yarn test:ci
 
 .PHONY: test_python
 test_python:
