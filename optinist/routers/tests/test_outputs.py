@@ -11,7 +11,7 @@ def test_read_file():
     dirpath = join_filepath([DIRPATH.ROOT_DIR, "test_data", "fluorescence.json"])
     response = client.get(f"/outputs/timedata/{dirpath}/?index=0")
     data = response.json()
-    print(data)
+
     assert response.status_code == 200
     assert isinstance(data, dict)
     assert isinstance(data["data"], dict)
