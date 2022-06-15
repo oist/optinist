@@ -10,7 +10,7 @@ from optinist.api.utils.filepath_creater import get_pickle_file
 class SmkSetfile:
     @classmethod
     def image(cls, unique_id: str, node: Node, edgeDict: Dict[str, Edge], nwbfile):
-        return_name = _get_return_name(node, edgeDict)
+        return_name = cls.get_return_name(node, edgeDict)
 
         output_file = get_pickle_file(
             unique_id,
@@ -29,7 +29,7 @@ class SmkSetfile:
 
     @classmethod
     def csv(cls, unique_id, node: Node, edgeDict: Dict[str, Edge], nwbfile, nodeType="csv"):
-        return_name = _get_return_name(node, edgeDict)
+        return_name = cls.get_return_name(node, edgeDict)
 
         output_file = get_pickle_file(
             unique_id,
@@ -48,7 +48,7 @@ class SmkSetfile:
 
     @classmethod
     def hdf5(cls, unique_id, node: Node, edgeDict: Dict[str, Edge], nwbfile):
-        return_name = _get_return_name(node, edgeDict)
+        return_name = cls.get_return_name(node, edgeDict)
 
         output_file = get_pickle_file(
             unique_id,
@@ -104,9 +104,9 @@ class SmkSetfile:
             type=node.data.label,
         )
 
-
-def _get_return_name(node: Node, edgeDict: Dict[str, Edge]):
-    for edge in edgeDict.values():
-        if node.id == edge.source:
-            return_name = edge.sourceHandle.split("--")[0]
-    return return_name
+    @classmethod
+    def get_return_name(cls, node: Node, edgeDict: Dict[str, Edge]):
+        for edge in edgeDict.values():
+            if node.id == edge.source:
+                return_name = edge.sourceHandle.split("--")[0]
+        return return_name

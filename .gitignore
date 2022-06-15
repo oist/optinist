@@ -19,3 +19,4 @@ optinist/config.yaml
 docs/_build
 
 optinist/notebooks
+conda/envs/*

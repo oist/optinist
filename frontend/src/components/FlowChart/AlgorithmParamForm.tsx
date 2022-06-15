@@ -11,9 +11,9 @@ import {
 } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
 import { updateParam } from 'store/slice/AlgorithmNode/AlgorithmNodeSlice'
 import { getAlgoParams } from 'store/slice/AlgorithmNode/AlgorithmNodeActions'
-
+import { createParamFormItemComponent } from 'components/common/ParamFormItemCreator'
 import { arrayEqualityFn } from 'utils/EqualityUtils'
-import { createParamFormItemComponent } from '../ParamFormItemCreator'
+
 import { ParamFormContext } from './RightDrawer'
 
 export const AlgorithmParamForm = React.memo(() => {

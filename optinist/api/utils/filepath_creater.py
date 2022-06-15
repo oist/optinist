@@ -1,8 +1,6 @@
 import os
 import shutil
 
-from optinist.api.dir_path import DIRPATH
-
 
 def join_filepath(path_list):
     if isinstance(path_list, str):
