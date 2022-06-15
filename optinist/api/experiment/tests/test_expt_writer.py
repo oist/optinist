@@ -112,3 +112,5 @@ def test_write_add():
     )
 
     assert os.path.exists(f"{dirpath}/experiment.yaml")
+
+    os.remove(f"{dirpath}/experiment.yaml")
