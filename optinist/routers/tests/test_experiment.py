@@ -1,42 +1,45 @@
 import pytest
 from fastapi.testclient import TestClient
-import shutil
 import os
 
 from optinist.routers.experiment import router
-from optinist.api.utils.filepath_creater import create_directory, join_filepath
+from optinist.api.utils.filepath_creater import join_filepath
 from optinist.api.dir_path import DIRPATH
 
 client = TestClient(router)
 
+unique_id = "0123"
 
-def test_read_experiment():
-    output_dir = join_filepath([DIRPATH.OUTPUT_DIR, "test"]) 
-    create_directory(output_dir)
-    shutil.copy(
-        join_filepath([DIRPATH.ROOT_DIR, "test_data", "experiment.yaml"]),
-        join_filepath([output_dir, "experiment.yaml"])
-    )
+
+def test_get():
     response = client.get("/experiments")
     data = response.json()
+
     assert response.status_code == 200
     assert isinstance(data, dict)
     assert isinstance(data[next(iter(data))], dict)
 
-    shutil.rmtree(output_dir)
+
+def test_import():
+    response = client.get(f"/experiments/import/{unique_id}")
+    data = response.json()
+
+    assert response.status_code == 200
+    assert isinstance(data, dict)
 
 
-def test_delete_experiment():
-    dirpath = join_filepath([DIRPATH.OUTPUT_DIR, "aa"])
+def test_delete():
+    dirname = "delete_dir"
+    dirpath = join_filepath([DIRPATH.OUTPUT_DIR, dirname])
     os.makedirs(dirpath, exist_ok=True)
     assert os.path.exists(dirpath)
-    response = client.delete("/experiments/aa")
+    response = client.delete(f"/experiments/{dirname}")
     assert response.status_code == 200
     assert not os.path.exists(dirpath)
 
 
-def test_delete_experiment_list():
-    uidList = ["aa", "bb"]
+def test_delete_list():
+    uidList = ["delete_dir1", "delete_dir2"]
     for name in uidList:
         dirpath = join_filepath([DIRPATH.OUTPUT_DIR, name])
         os.makedirs(dirpath, exist_ok=True)
@@ -52,12 +55,21 @@ def test_delete_experiment_list():
         assert not os.path.exists(dirpath)
 
 
-def test_download_experiment():
-    dirpath = join_filepath([DIRPATH.OPTINIST_DIR, "aa", "bb"])
-    os.makedirs(dirpath, exist_ok=True)
-    with open(join_filepath([dirpath, "aa.nwb"]), "w") as f:
-        f.write("aa")
-
-    response = client.get("/experiments/download/nwb/aa")
+def test_download_nwb():
+    response = client.get(f"/experiments/download/nwb/{unique_id}")
 
     assert response.status_code == 200
+    assert response.url == "http://testserver/experiments/download/nwb/0123"
+
+
+def test_download_nwb_function():
+    function_id = "func1"
+    response = client.get(f"/experiments/download/nwb/{unique_id}/{function_id}")
+    assert response.status_code == 200
+    assert response.url == "http://testserver/experiments/download/nwb/0123/func1"
+
+
+def test_download_config():
+    response = client.get(f"/experiments/download/config/{unique_id}")
+    assert response.status_code == 200
+    assert response.url == "http://testserver/experiments/download/config/0123"
