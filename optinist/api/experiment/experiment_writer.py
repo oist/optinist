@@ -12,25 +12,30 @@ from optinist.api.workflow.workflow import Edge, Node
 
 
 class ExptConfigWriter:
-    @classmethod
-    def write(cls, unique_id, name, nodeDict, edgeDict):
-        exp_filepath = join_filepath([DIRPATH.OUTPUT_DIR, unique_id, DIRPATH.EXPERIMENT_YML])
-        if os.path.exists(exp_filepath):
-            exp_config = ExptConfigReader.read(exp_filepath)
-            exp_config = cls.add_run_info(exp_config, nodeDict, edgeDict)
-        else:
-            exp_config = cls.config(unique_id, name, nodeDict, edgeDict)
 
-        exp_config.function = cls.function_from_nodeDict(nodeDict)
+    @classmethod
+    def write(cls, unique_id: str, name: str, nodeDict: Dict[str, Node], edgeDict: Dict[str, Edge]) -> None:
+        expt_filepath = join_filepath([
+            DIRPATH.OUTPUT_DIR,
+            unique_id,
+            DIRPATH.EXPERIMENT_YML
+        ])
+        if os.path.exists(expt_filepath):
+            expt_config = ExptConfigReader.read(expt_filepath)
+            expt_config = cls.add_run_info(expt_config, nodeDict, edgeDict)
+        else:
+            expt_config = cls.create_config(unique_id, name, nodeDict, edgeDict)
+
+        expt_config.function = cls.function_from_nodeDict(nodeDict)
 
         ConfigWriter.write(
             dirname=join_filepath([DIRPATH.OUTPUT_DIR, unique_id]),
             filename=DIRPATH.EXPERIMENT_YML,
-            config=asdict(exp_config),
+            config=asdict(expt_config),
         )
 
     @classmethod
-    def config(cls, unique_id, name, nodeDict, edgeDict) -> ExptConfig:
+    def create_config(cls, unique_id: str, name: str, nodeDict: Dict[str, Node], edgeDict: Dict[str, Edge]) -> ExptConfig:
         return ExptConfig(
             unique_id=unique_id,
             name=name,

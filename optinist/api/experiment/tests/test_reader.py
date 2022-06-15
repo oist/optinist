@@ -1,11 +1,6 @@
 import pytest
 
-from optinist.api.dir_path import DIRPATH
 from optinist.api.experiment.experiment_reader import ExptConfigReader
-from optinist.api.utils.filepath_creater import (
-    create_filepath,
-    join_filepath
-)
 from optinist.api.experiment.experiment import ExptConfig, ExptFunction
 from optinist.api.workflow.workflow import (
     NodeData,
@@ -15,15 +10,11 @@ from optinist.api.workflow.workflow import (
     Edge
 )
 
-
-exp_filepath = create_filepath(
-    join_filepath([DIRPATH.ROOT_DIR, "test_data"]),
-    DIRPATH.EXPERIMENT_YML
-)
+expt_filepath = "/tmp/optinist/output/0123/experiment.yaml"
 
 
 def test_read():
-    exp_config = ExptConfigReader.read(exp_filepath)
+    exp_config = ExptConfigReader.read(expt_filepath)
 
     assert isinstance(exp_config, ExptConfig)
     assert isinstance(exp_config.timestamp, str)
@@ -43,7 +34,7 @@ def test_read():
     assert isinstance(exp_config.nodeDict["input_0"].style, Style)
 
     assert isinstance(exp_config.edgeDict, dict)
-    
+
     edgeDictId = "reactflow__edge-input_0input_0--image--ImageData-suite2p_file_convert_pi2bgrsd6msuite2p_file_convert_pi2bgrsd6m--image--ImageData"
     assert isinstance(exp_config.edgeDict[edgeDictId].id, str)
     assert isinstance(exp_config.edgeDict[edgeDictId].type, str)
@@ -76,12 +67,12 @@ def test_read_nodeDict():
         "label": "a",
         "param": {},
         "path": "",
-        "type": ""
+        "type": "",
     }
 
     position = {
         "x": 0,
-        "y": 0
+        "y": 0,
     }
 
     nodeDict_config = {

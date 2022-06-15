@@ -15,6 +15,7 @@ from optinist.api.workflow.workflow import (
 
 
 class ExptConfigReader:
+
     @classmethod
     def read(cls, filepath) -> ExptConfig:
         with open(filepath, "r") as f:

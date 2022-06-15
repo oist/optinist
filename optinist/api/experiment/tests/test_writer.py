@@ -1,13 +1,10 @@
-from optinist.api.dir_path import DIRPATH
+import pytest
+import os
+import shutil
+
 from optinist.api.experiment.experiment import ExptConfig, ExptFunction
 from optinist.api.experiment.experiment_writer import ExptConfigWriter
-from optinist.api.utils.filepath_creater import create_filepath, join_filepath
-from optinist.api.workflow.workflow import Node, NodeData, RunItem
-
-expt_filepath = create_filepath(
-    join_filepath([DIRPATH.ROOT_DIR, "test_data"]),
-    DIRPATH.EXPERIMENT_YML
-)
+from optinist.api.workflow.workflow import Edge, Node, NodeData, RunItem
 
 
 node_data = NodeData(
@@ -17,30 +14,53 @@ node_data = NodeData(
     type=""
 )
 
-
 nodeDict = {
     "test1": Node(
         id="node_id",
         type="a",
         data=node_data,
-        position=None,
-        style=None,
+        position={
+            "x": 0,
+            "y": 0
+        },
+        style={
+            "border": None,
+            "borderRadius": 0,
+            "height": 100,
+            "padding": 0,
+            "width": 180,
+        },
     )
 }
 
+edgeDict = {
+    "test2": Edge(
+        id="edge_id",
+        type="a",
+        animated=False,
+        source="",
+        sourceHandle="",
+        target="",
+        targetHandle="",
+        style={},
+    )
+}
 
-def test_config() -> ExptConfig:
+dirpath = "/tmp/optinist/output/unique_id"
+
+
+def test_create_config() -> ExptConfig:
     runItem = RunItem(
         name="New Flow",
-        nodeDict={},
-        edgeDict={},
+        nodeDict=nodeDict,
+        edgeDict=edgeDict,
         snakemakeParam={},
         nwbParam={},
         forceRunList=[],
     )
 
-    expt_config = ExptConfigWriter.config(
-        expt_filepath,
+    expt_config = ExptConfigWriter.create_config(
+        "test_id",
         runItem.name,
         runItem.nodeDict,
         runItem.edgeDict,
@@ -55,7 +75,7 @@ def test_config() -> ExptConfig:
 
 def test_add_run_info():
     expt_config = ExptConfigWriter.add_run_info(
-        expt_config=test_config(),
+        expt_config=test_create_config(),
         nodeDict=nodeDict,
         edgeDict=None,
     )
@@ -68,3 +88,27 @@ def test_function_from_nodeDict():
 
     assert isinstance(expt_function, dict)
     assert isinstance(expt_function["node_id"], ExptFunction)
+
+
+def test_new_write():
+    shutil.rmtree(dirpath)
+
+    ExptConfigWriter.write(
+        unique_id="unique_id",
+        name="name",
+        nodeDict=nodeDict,
+        edgeDict=edgeDict,
+    )
+
+    assert os.path.exists(f"{dirpath}/experiment.yaml")
+
+
+def test_write_add():
+    ExptConfigWriter.write(
+        unique_id="unique_id",
+        name="name",
+        nodeDict=nodeDict,
+        edgeDict=edgeDict,
+    )
+
+    assert os.path.exists(f"{dirpath}/experiment.yaml")

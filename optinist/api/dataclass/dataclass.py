@@ -95,6 +95,7 @@ class TimeSeriesData(BaseData):
             self.cell_numbers = range(1, len(self.data) + 1)
 
     def save_json(self, json_dir):
+
         # timeseriesだけはdirを返す
         self.json_path = join_filepath([json_dir, self.file_name])
         create_directory(self.json_path, delete_dir=True)
@@ -228,7 +229,10 @@ class RoiData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        JsonWriter.write_as_split(self.json_path, create_images_list(self.data))
+        JsonWriter.write_as_split(
+            self.json_path,
+            create_images_list(self.data)
+        )
 
     def __del__(self):
         del self

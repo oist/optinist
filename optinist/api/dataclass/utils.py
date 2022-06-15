@@ -17,5 +17,5 @@ def create_images_list(data):
     images = []
     for _img in save_data:
         images.append(_img.tolist())
-    
+
     return images
