@@ -110,7 +110,7 @@ def test_snakemake_delete_dependencies():
     ]
     delete_dependencies(
         unique_id=unique_id,
-        params=smk_param,
+        smk_params=smk_param,
         nodeDict=nodeDict,
         edgeDict=edgeDict,
     )
@@ -129,7 +129,7 @@ def test_snakemake_delete_dependencies():
     ]
     delete_dependencies(
         unique_id=unique_id,
-        params=smk_param,
+        smk_params=smk_param,
         nodeDict=nodeDict,
         edgeDict=edgeDict,
     )
