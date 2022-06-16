@@ -17,6 +17,10 @@ conda env create --prefix ./conda/envs/suite2p -f ./conda/yaml/suite2p_env.yaml
 snakemakeを以下のコマンドでインストールする。（20220年6月15日現在バグがあるため、修正したrepositoryからinstallする必要がある。）
 
 ```
+pip uninstall snakemake
+```
+
+```
 pip install git+https://github.com/ShogoAkiyama/snakemake@main#egg=snakemake
 ```
 
