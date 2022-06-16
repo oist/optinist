@@ -12,47 +12,63 @@ from optinist.routers.model import FILETYPE, TreeNode
 router = APIRouter()
 
 
-def get_accept_files(path: str, file_types: List[str]):
-    files_list = []
-    for file_type in file_types:
-        files_list.extend(glob(
-            join_filepath([path, "**", f"*{file_type}"]),
-            recursive=True
-        ))
+class DirTreeGetter:
 
-    return files_list
+    @classmethod
+    def get_tree(cls, file_types: List[str], dirname: str = None) -> List[TreeNode]:
+        nodes: List[TreeNode] = []
+        
+        if dirname is None:
+            absolute_dirpath = DIRPATH.INPUT_DIR
+        else:
+            absolute_dirpath = join_filepath([DIRPATH.INPUT_DIR, dirname])
 
+        for node_name in os.listdir(absolute_dirpath):
 
-def get_dir_tree(dirpath: str, file_types: List[str]) -> List[TreeNode]:
-    nodes: List[TreeNode] = []
-    for node_name in os.listdir(dirpath):
-        node_path = join_filepath([dirpath, node_name])
-        if os.path.isfile(node_path) and node_name.endswith(tuple(file_types)):
-            nodes.append(TreeNode(
-                path=node_path.replace(f"{DIRPATH.INPUT_DIR}/", ""),
-                name=node_name,
-                isdir=False,
-                nodes=[],
+            if dirname is None:
+                relative_path = node_name
+            else:
+                relative_path = join_filepath([dirname, node_name])
+
+            search_dirpath = join_filepath([absolute_dirpath, node_name])
+
+            if os.path.isfile(search_dirpath) and node_name.endswith(tuple(file_types)):
+                nodes.append(TreeNode(
+                    path=relative_path,
+                    name=node_name,
+                    isdir=False,
+                    nodes=[],
+                ))
+            elif os.path.isdir(search_dirpath) and len(cls.accept_files(search_dirpath, file_types)) > 0:
+                nodes.append(TreeNode(
+                    path=node_name,
+                    name=node_name,
+                    isdir=True,
+                    nodes=cls.get_tree(file_types, relative_path)
+                ))
+
+        return nodes
+
+    @classmethod
+    def accept_files(cls, path: str, file_types: List[str]):
+        files_list = []
+        for file_type in file_types:
+            files_list.extend(glob(
+                join_filepath([path, "**", f"*{file_type}"]),
+                recursive=True
             ))
-        elif os.path.isdir(node_path) and len(get_accept_files(node_path, file_types)) > 0:
-            nodes.append(TreeNode(
-                path=node_name,
-                name=node_name,
-                isdir=True,
-                nodes=get_dir_tree(node_path, file_types)
-            ))
 
-    return nodes
+        return files_list
 
 
 @router.get("/files")
 async def get_files(file_type: str = None):
     if file_type == FILETYPE.IMAGE:
-        return get_dir_tree(DIRPATH.INPUT_DIR, ACCEPT_TIFF_EXT)
+        return DirTreeGetter.get_tree(ACCEPT_TIFF_EXT)
     elif file_type == FILETYPE.CSV:
-        return get_dir_tree(DIRPATH.INPUT_DIR, ACCEPT_CSV_EXT)
+        return DirTreeGetter.get_tree(ACCEPT_CSV_EXT)
     elif file_type == FILETYPE.HDF5:
-        return get_dir_tree(DIRPATH.INPUT_DIR, ACCEPT_HDF5_EXT)
+        return DirTreeGetter.get_tree(ACCEPT_HDF5_EXT)
 
 
 @router.post("/files/upload/{filename}")

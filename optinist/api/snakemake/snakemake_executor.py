@@ -118,7 +118,6 @@ class SmkExecutor:
 
 
 def snakemake_execute(params: SmkParam):
-    # run snakemake
     snakemake(
         DIRPATH.SNAKEMAKE_FILEPATH,
         forceall=params.forceall,

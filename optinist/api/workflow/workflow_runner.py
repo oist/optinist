@@ -30,7 +30,7 @@ class WorkflowRunner:
         )
 
     def run_workflow(self, background_tasks):
-        self.create_workflow()
+        self.set_smk_config()
 
         snakemake_params: SmkParam = get_typecheck_params(self.runItem.snakemakeParam, "snakemake")
         snakemake_params = SmkParamReader.read(snakemake_params)
@@ -39,7 +39,7 @@ class WorkflowRunner:
             delete_dependencies(snakemake_params)
         background_tasks.add_task(snakemake_execute, snakemake_params)
 
-    def create_workflow(self):
+    def set_smk_config(self):
         rules, last_output = self.rulefile()
 
         flow_config = FlowConfig(
@@ -79,7 +79,7 @@ class WorkflowRunner:
 
         return rule_dict, last_outputs
 
-    def get_endNodeList(self):
+    def get_endNodeList(self) -> List[str]:
         returnCntDict = {key: 0 for key in self.nodeDict.keys()}
         for edge in self.edgeDict.values():
             returnCntDict[edge.source] += 1

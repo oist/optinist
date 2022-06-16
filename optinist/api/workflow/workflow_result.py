@@ -28,13 +28,17 @@ class WorkflowResult:
     def get(self, nodeIdList):
         results: Dict[str, Message] = {}
         for node_id in nodeIdList:
-            pickle_filepath = join_filepath([
+            glob_pickle_filepath = join_filepath([
                 self.workflow_dirpath,
                 node_id,
                 "*.pkl"
             ])
-            for path in glob(pickle_filepath):
-                results[node_id] = NodeResult(self.workflow_dirpath, node_id, path).get()
+            for pickle_filepath in glob(glob_pickle_filepath):
+                results[node_id] = NodeResult(
+                    self.workflow_dirpath,
+                    node_id,
+                    pickle_filepath,
+                ).get()
                 self.has_nwb(node_id)
 
         self.has_nwb()
@@ -72,7 +76,7 @@ class WorkflowResult:
 
 class NodeResult:
 
-    def __init__(self, workflow_dirpath, node_id, path):
+    def __init__(self, workflow_dirpath, node_id, pickle_filepath):
         self.workflow_dirpath = workflow_dirpath
         self.node_id = node_id
         self.node_dirpath = join_filepath([
@@ -84,9 +88,9 @@ class NodeResult:
             DIRPATH.EXPERIMENT_YML
         ])
 
-        path = path.replace("\\", "/")
-        self.algo_name = os.path.splitext(os.path.basename(path))[0]
-        self.info = PickleReader.read(path)
+        pickle_filepath = pickle_filepath.replace("\\", "/")
+        self.algo_name = os.path.splitext(os.path.basename(pickle_filepath))[0]
+        self.info = PickleReader.read(pickle_filepath)
 
     def get(self):
         expt_config = ExptConfigReader.read(self.expt_filepath)

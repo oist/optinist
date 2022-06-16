@@ -1,19 +1,35 @@
 import pytest
 from fastapi.testclient import TestClient
+from optinist.routers.model import Algo
 
-from optinist.routers.algolist import router
+from optinist.wrappers import wrapper_dict
+from optinist.routers.algolist import NestDictGetter, router
 
 client = TestClient(router)
 
 
-def test_read_run():
+def test_run():
     response = client.get("/algolist")
-    data = response.json()
+    output = response.json()
+
     assert response.status_code == 200
-    assert isinstance(data, dict)
-    assert "caiman" in data
-    assert "children" in data["caiman"]
-    assert "caiman_mc" in data["caiman"]["children"]
-    assert "args" in data["caiman"]["children"]["caiman_mc"]
-    assert "path" in data["caiman"]["children"]["caiman_mc"]
-    assert "suite2p" in data
+    assert isinstance(output, dict)
+    assert "caiman" in output
+    assert "children" in output["caiman"]
+    assert "caiman_mc" in output["caiman"]["children"]
+
+    assert "args" in output["caiman"]["children"]["caiman_mc"]
+    assert "path" in output["caiman"]["children"]["caiman_mc"]
+    assert "suite2p" in output
+
+
+def test_NestDictGetter():
+    output = NestDictGetter.get_nest_dict(wrapper_dict, "")
+
+    assert isinstance(output, dict)
+    assert "caiman" in output
+    assert "children" in output["caiman"]
+    assert "caiman_mc" in output["caiman"]["children"]
+
+    assert isinstance(output["caiman"]["children"]["caiman_mc"], Algo)
+

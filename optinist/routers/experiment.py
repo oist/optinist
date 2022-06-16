@@ -13,7 +13,7 @@ router = APIRouter()
 
 
 @router.get("/experiments")
-async def read_experiment():
+async def get_experiments():
     exp_config = {}
     config_paths = glob(join_filepath([DIRPATH.OUTPUT_DIR, "*", DIRPATH.EXPERIMENT_YML]))
     for path in config_paths:
@@ -29,9 +29,12 @@ async def read_experiment():
 
 
 @router.get("/experiments/import/{unique_id}")
-async def read_experiment(unique_id: str):
+async def import_experiment(unique_id: str):
     config = ExptConfigReader.read(join_filepath([
-        DIRPATH.OUTPUT_DIR, unique_id, DIRPATH.EXPERIMENT_YML]))
+        DIRPATH.OUTPUT_DIR,
+        unique_id,
+        DIRPATH.EXPERIMENT_YML
+    ]))
     return {
         "nodeDict": config.nodeDict,
         "edgeDict": config.edgeDict,
@@ -50,15 +53,22 @@ async def delete_experiment(unique_id: str):
 @router.post("/experiments/delete")
 async def delete_experiment_list(deleteItem: DeleteItem):
     try:
-        [shutil.rmtree(join_filepath([DIRPATH.OUTPUT_DIR, uid])) for uid in deleteItem.uidList]
+        [
+            shutil.rmtree(join_filepath([DIRPATH.OUTPUT_DIR, uid]))
+            for uid in deleteItem.uidList
+        ]
         return True
     except Exception as e:
         return False
 
 
 @router.get("/experiments/download/nwb/{unique_id}")
-async def download_experiment(unique_id: str):
-    nwb_path_list = glob(join_filepath([DIRPATH.OUTPUT_DIR, unique_id, "*.nwb"]))
+async def download_nwb_experiment(unique_id: str):
+    nwb_path_list = glob(join_filepath([
+        DIRPATH.OUTPUT_DIR,
+        unique_id,
+        "*.nwb"
+    ]))
     if len(nwb_path_list) > 0:
         return FileResponse(nwb_path_list[0])
     else:
@@ -66,8 +76,13 @@ async def download_experiment(unique_id: str):
 
 
 @router.get("/experiments/download/nwb/{unique_id}/{function_id}")
-async def download_experiment(unique_id: str, function_id: str):
-    nwb_path_list = glob(join_filepath([DIRPATH.OUTPUT_DIR, unique_id, function_id, "*.nwb"]))
+async def download_nwb_experiment(unique_id: str, function_id: str):
+    nwb_path_list = glob(join_filepath([
+        DIRPATH.OUTPUT_DIR,
+        unique_id,
+        function_id,
+        "*.nwb"
+    ]))
     if len(nwb_path_list) > 0:
         return FileResponse(nwb_path_list[0])
     else:
@@ -75,6 +90,10 @@ async def download_experiment(unique_id: str, function_id: str):
 
 
 @router.get("/experiments/download/config/{unique_id}")
-async def download_experiment(unique_id: str):
-    config_filepath = join_filepath([DIRPATH.OUTPUT_DIR, unique_id, "config.yaml"])
+async def download_config_experiment(unique_id: str):
+    config_filepath = join_filepath([
+        DIRPATH.OUTPUT_DIR,
+        unique_id,
+        DIRPATH.SNAKEMAKE_CONFIG_YML
+    ])
     return FileResponse(config_filepath)
