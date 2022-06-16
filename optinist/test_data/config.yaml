@@ -1,48 +1,25 @@
 last_output:
-- snakemake/1/suite2p_roi.pkl
+- snakemake/suite2p_roi/suite2p_roi.pkl
 rules:
   input_0:
-    hdf5Path: null
     input:
     - test.tif
+    output: snakemake/input_0/data_endoscope.pkl
     nwbfile:
-      device:
-        description: Microscope Information
-        manufacturer: Microscope Manufacture
-        name: Microscope device
-      experiment_description: None
-      identifier: optinist
       image_series:
         name: TwoPhotonSeries
         starting_frame: 0
         starting_time: 0
-      imaging_plane:
-        description: standard
-        excitation_lambda: 600.0
-        imaging_rate: 30.0
-        indicator: GCaMap
-        location: V1
-        name: ImagingPlane
-      ophys:
-        plane_segmentation:
-          description: ''
-          name: PlaneSegmentation
-      optical_channel:
-        description: optical channel
-        emission_lambda: 500.0
-        name: OpticalChannel
-      session_description: optinist
-    output: snakemake/0/data_endoscope.pkl
     params: {}
     path: null
     return_arg: input_0
     type: image
-  suite2p_file_convert_0tncq8f708:
     hdf5Path: null
+  suite2p_file_convert:
     input:
-    - snakemake/0/data_endoscope.pkl
+    - snakemake/input_0/data_endoscope.pkl
+    output: snakemake/suite2p_file_convert/suite2p_file_convert.pkl
     nwbfile: null
-    output: snakemake/1/suite2p_roi.pkl
     params:
       batch_size: 500
       do_registration: 1
@@ -53,3 +30,20 @@ rules:
     return_arg:
       input_0: image
     type: suite2p_file_convert
+    hdf5Path: null
+  suite2p_roi:
+    input:
+    - snakemake/suite2p_file_convert/suite2p_file_convert.pkl
+    output: snakemake/suite2p_roi/suite2p_roi.pkl
+    nwbfile: null
+    params:
+      batch_size: 500
+      do_registration: 1
+      force_sktiff: false
+      nchannels: 1
+      nplanes: 1
+    path: suite2p/suite2p_roi
+    return_arg:
+      input_0: image
+    type: suite2p_roi
+    hdf5Path: null

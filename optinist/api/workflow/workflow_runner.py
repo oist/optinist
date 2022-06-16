@@ -7,7 +7,6 @@ from optinist.api.snakemake.snakemake_writer import SmkConfigWriter
 from optinist.api.snakemake.snakemake_setfile import SmkSetfile
 from optinist.api.snakemake.snakemake_executor import delete_dependencies, snakemake_execute
 
-from optinist.api.utils.filepath_creater import get_pickle_file
 from optinist.api.workflow.workflow_params import get_typecheck_params
 from optinist.api.workflow.workflow import NodeType, RunItem
 from optinist.api.experiment.experiment_reader import ExptConfigReader
@@ -16,7 +15,7 @@ from optinist.api.experiment.experiment_writer import ExptConfigWriter
 
 class WorkflowRunner:
 
-    def __init__(self, unique_id, runItem: RunItem) -> None:
+    def __init__(self, unique_id: str, runItem: RunItem) -> None:
         self.unique_id = unique_id
         self.runItem = runItem
         self.nodeDict = ExptConfigReader.read_nodeDict(self.runItem.nodeDict)
@@ -32,11 +31,19 @@ class WorkflowRunner:
     def run_workflow(self, background_tasks):
         self.set_smk_config()
 
-        snakemake_params: SmkParam = get_typecheck_params(self.runItem.snakemakeParam, "snakemake")
+        snakemake_params: SmkParam = get_typecheck_params(
+            self.runItem.snakemakeParam,
+            "snakemake"
+        )
         snakemake_params = SmkParamReader.read(snakemake_params)
-        snakemake_params.forcerun = self.get_forceRunList()
+        snakemake_params.forcerun = self.runItem.forceRunList
         if len(snakemake_params.forcerun) > 0:
-            delete_dependencies(snakemake_params)
+            delete_dependencies(
+                unique_id=self.unique_id,
+                smk_params=snakemake_params,
+                nodeDict=self.nodeDict,
+                edgeDict=self.edgeDict,
+            )
         background_tasks.add_task(snakemake_execute, snakemake_params)
 
     def set_smk_config(self):
@@ -89,15 +96,3 @@ class WorkflowRunner:
             if value == 0:
                 endNodeList.append(key)
         return endNodeList
-
-    def get_forceRunList(self) -> List[str]:
-        target_list = []
-        for x in self.runItem.forceRunList:
-            target_list.append(
-                get_pickle_file(
-                    self.unique_id,
-                    x.nodeId,
-                    x.name
-                )
-            )
-        return target_list
