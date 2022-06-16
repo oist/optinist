@@ -1,0 +1,16 @@
+version: "3.8"
+services:
+
+  optinist:
+    image: test_optinist
+    container_name: test_optinist
+    build:
+      context: .
+      dockerfile: Dockerfile-test
+    environment:
+      PYTHONPATH: .
+      TZ: Asia/Tokyo
+    volumes:
+      - ./optinist:/app/optinist
+      - ./conda/yaml:/app/conda/yaml
+      - ./optinist/test_data:/tmp/optinist

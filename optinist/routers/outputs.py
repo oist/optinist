@@ -15,7 +15,7 @@ router = APIRouter()
 
 
 @router.get("/outputs/inittimedata/{dirpath:path}")
-async def read_file(dirpath: str):
+async def get_inittimedata(dirpath: str):
     file_numbers = sorted([
         os.path.splitext(os.path.basename(x))[0]
         for x in glob(join_filepath([dirpath, '*.json']))
@@ -63,7 +63,7 @@ async def read_file(dirpath: str):
 
 
 @router.get("/outputs/timedata/{dirpath:path}")
-async def read_file(dirpath: str, index: int):
+async def get_timedata(dirpath: str, index: int):
     json_data = JsonReader.read_as_timeseries(
         join_filepath([
             dirpath,
@@ -86,7 +86,7 @@ async def read_file(dirpath: str, index: int):
 
 
 @router.get("/outputs/alltimedata/{dirpath:path}")
-async def read_file(dirpath: str):
+async def get_alltimedata(dirpath: str):
     return_data = JsonTimeSeriesData(
         xrange=[],
         data={},
@@ -107,20 +107,20 @@ async def read_file(dirpath: str):
 
 
 @router.get("/outputs/data/{filepath:path}")
-async def read_file(filepath: str):
+async def get_file(filepath: str):
     return JsonReader.read_as_output(filepath)
 
 
 @router.get("/outputs/html/{filepath:path}")
-async def read_html_file(filepath: str):
+async def get_html(filepath: str):
     return Reader.read_as_output(filepath)
 
 
 @router.get("/outputs/image/{filepath:path}")
-async def read_image(
+async def get_image(
         filepath: str,
-        start_index: Optional[int] = None,
-        end_index: Optional[int] = None
+        start_index: Optional[int] = 0,
+        end_index: Optional[int] = 1
     ):
     filename, ext = os.path.splitext(os.path.basename(filepath))
     if ext in ACCEPT_TIFF_EXT:
@@ -142,7 +142,7 @@ async def read_image(
 
 
 @router.get("/outputs/csv/{filepath:path}")
-async def read_csv(filepath: str):
+async def get_csv(filepath: str):
     filepath = join_filepath([DIRPATH.INPUT_DIR, filepath])
 
     filename, _ = os.path.splitext(os.path.basename(filepath))
@@ -156,5 +156,8 @@ async def read_csv(filepath: str):
         f'{filename}.json'
     ])
 
-    JsonWriter.write_as_split(json_filepath, pd.read_csv(filepath, header=None))
+    JsonWriter.write_as_split(
+        json_filepath,
+        pd.read_csv(filepath, header=None)
+    )
     return JsonReader.read_as_output(json_filepath)
