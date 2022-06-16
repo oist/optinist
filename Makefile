@@ -3,14 +3,14 @@ test_run:
 	docker-compose -f docker-compose.test.yml down --rmi all --volumes --remove-orphans
 	docker-compose -f docker-compose.test.yml rm -f
 	docker-compose -f docker-compose.test.yml build
-	docker-compose -f docker-compose.test.yml up
+	docker-compose -f docker-compose.test.yml run optinist
 
 .PHONY: test_python
 test_python:
 	docker-compose -f docker-compose.test.yml down --rmi all --volumes --remove-orphans
 	docker-compose -f docker-compose.test.yml rm -f
 	docker-compose -f docker-compose.test.yml build
-	docker-compose -f docker-compose.test.yml up
+	docker-compose -f docker-compose.test.yml run optinist
 
 .PHONY: docs
 docs:
