@@ -12,5 +12,5 @@ services:
       TZ: Asia/Tokyo
     volumes:
       - ./optinist:/app/optinist
-      - ./conda:/app/conda
+      - ./conda/yaml:/app/conda/yaml
       - ./optinist/test_data:/tmp/optinist

@@ -35,4 +35,4 @@ class SmkParam:
     forceall: bool
     forcetargets: bool
     lock: bool
-    forcerun: List[str] = field(default_factory=list)
+    forcerun: List[ForceRun] = field(default_factory=list)
