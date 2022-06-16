@@ -20,7 +20,7 @@ for rule_name, details in config["rules"].items():
             params:
                 name = details
             script:
-                f"{DIRPATH.ROOT_DIR}/rules/scripts/data.py"
+                f"{DIRPATH.ROOT_DIR}/api/rules/data.py"
     else:
         rule:
             input:
@@ -32,4 +32,4 @@ for rule_name, details in config["rules"].items():
             conda:
                 SmkUtils.conda(details)
             script:
-                f"{DIRPATH.ROOT_DIR}/rules/scripts/func.py"
+                f"{DIRPATH.ROOT_DIR}/api/rules/func.py"
