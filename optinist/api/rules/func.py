@@ -1,8 +1,9 @@
 import sys
-sys.path.append('../optinist')
+from const import OPTINIST_DIRPATH
+sys.path.append(OPTINIST_DIRPATH)
 
 from optinist.api.snakemake.snakemake_reader import RuleConfigReader
-from optinist.rules.scripts.runner import Runner
+from optinist.api.rules.runner import Runner
 from optinist.api.dir_path import DIRPATH
 from optinist.api.utils.filepath_creater import join_filepath
 

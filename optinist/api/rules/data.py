@@ -1,9 +1,9 @@
 import sys
-
-sys.path.append('../optinist')
+from const import OPTINIST_DIRPATH
+sys.path.append(OPTINIST_DIRPATH)
 
 from optinist.api.pickle.pickle_writer import PickleWriter
-from optinist.rules.scripts.file_writer import FileWriter
+from optinist.api.rules.file_writer import FileWriter
 from optinist.api.snakemake.snakemake_reader import RuleConfigReader
 from optinist.routers.model import FILETYPE
 
