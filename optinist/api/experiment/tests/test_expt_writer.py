@@ -91,7 +91,8 @@ def test_function_from_nodeDict():
 
 
 def test_new_write():
-    shutil.rmtree(dirpath)
+    if os.path.exists(dirpath):
+        shutil.rmtree(dirpath)
 
     ExptConfigWriter.write(
         unique_id="unique_id",
