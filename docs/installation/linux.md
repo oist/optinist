@@ -52,6 +52,11 @@ bash Anaconda3-2021.11-Linux-x86_64.sh
 conda create -n optinist python=3.8
 conda activate optinist
 ```
+
+```
+conda config --set channel_priority strict
+```
+
 ### Install mamba
 We use snakemake library, and it requires mamba.
 ```
