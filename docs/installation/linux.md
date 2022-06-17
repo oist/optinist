@@ -11,7 +11,8 @@ Linux
    * [Install mamba](#install-mamba)
    * [Install library](#install-library)
    * [Set saving directory](#set-saving-directory)
-   * [Run backend](#run-backend)
+* [3. Create virtualenv](#3-create-virtualenv)
+* [4. Run backend](#4-run-backend)
    * [Launch browser.  <a href="http://localhost:8000" rel="nofollow">http://localhost:8000</a>](#launch-browser--httplocalhost8000)
 
 ## Installation
@@ -51,12 +52,17 @@ bash Anaconda3-2021.11-Linux-x86_64.sh
 conda create -n optinist python=3.8
 conda activate optinist
 ```
+
+```
+conda config --set channel_priority strict
+```
+
 ### Install mamba
 We use snakemake library, and it requires mamba.
 ```
 conda install -n base -c conda-forge mamba
 ```
-### Install library
+<!-- ### Install library
 ```bash
 pip install -r requirements.txt
 # for CaImAn
@@ -65,14 +71,22 @@ pip install cython opencv-python matplotlib scikit-image==0.18.0 scikit-learn ip
 cd CaImAn
 pip install -e .
 cd ..
-```
+``` -->
 ### Set saving directory
 Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
 ```bash
 export OPTINIST_DIR="your_saving_dir"
 ```
 
-### Run backend
+## 3. Create virtualenv
+In snakemake used by optinist, a virtual environment is created and executed for each function.
+The procedure for first creating a virtual environment for processing suite2p, caiman, pca, etc. is described in the following link.
+
+*It is possible to run snakemake without creating a virtual environment in advance, but it is recommended to create a virtual environment in advance because of the higher possibility of errors during execution.
+
+Follow this [link](create_virtualenv.md).
+
+## 4. Run backend
 ```
 python main.py
 ```
