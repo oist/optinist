@@ -1,37 +1,41 @@
-# 既存のconda環境からworkflowを実行する
+Run workflow from an existing conda environment
+=================
 
-snakemakeでは、既にある仮想環境を用いた実行が可能である。
-以下ではあらかじめ作った仮想環境内で関数を実行する手順を説明する。
+snakemake can be executed using an existing virtual environment.
+The following is the procedure to execute a function in a virtual environment created in advance.
 
-## 1. 仮想環境を作成する
-以下ではsuite2pの仮想環境を作成する。（optinist上にいることを確認）
+* [create a virtual environment](#create-a-virtual-environment)
+  * [create suite2p environment](#create-suite2p-environment)
+  * [create optinist postprocessing(PCA, ETA, etc.) environment](#create-optinist-postprocessingpca-eta-etc-environment)
+  * [create caiman environment](#create-caiman-environment)
+* [FAQ](#faq)
+
+
+## create a virtual environment
+Create a virtual environment for suite2p. (Make sure you are on the optinist root directory.)
+
+### create suite2p environment
 ```
-conda env create --prefix ./conda/envs/caiman -f ./conda/yaml/caiman_env.yaml --force
 conda env create --prefix ./conda/envs/suite2p -f ./conda/yaml/suite2p_env.yaml --force
+```
+
+### create optinist postprocessing(PCA, ETA, etc.) environment
+```
 conda env create --prefix ./conda/envs/optinist -f ./conda/yaml/optinist_env.yaml --force
 ```
 
-M1 macの場合は、tensorflowを入れ直す。
+### create caiman environment
+````
+conda env create --prefix ./conda/envs/caiman -f ./conda/yaml/caiman_env.yaml --force
+```
+
+For M1 mac, re-install tensorflow.
 ```
 conda activate ./conda/envs/caiman && pip install ./conda/yaml/tensorflow-2.4.1-py3-none-any.whl --no-dependencies --force-reinstall
-```
+````
 
-仮想環境は、`optinist/conda/envs`に作成される。
+## FAQ
 
-*ここでエラーする場合には、condaのinstallエラーを調べてもらうか、issuなどで質問してもらえると助かる。
+A virtual environment will be created in `optinist/conda/envs`.
 
-
-## 2. snakemakeのinstall
-snakemakeを以下のコマンドでインストールする。（20220年6月15日現在バグがあるため、修正したrepositoryからinstallする必要がある。）
-
-```
-pip uninstall snakemake
-```
-
-```
-pip install git+https://github.com/ShogoAkiyama/snakemake@main#egg=snakemake
-```
-
-
-3. 実行
-GUIを立ち上げ、suite2pを実行する。
+*If you have errors here, it would be helpful if you could check conda's install errors or ask questions on issue, etc.
