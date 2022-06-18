@@ -12,5 +12,10 @@ export const theme = createTheme({
         variant: 'standard',
       },
     },
+    MuiDialog: {
+      defaultProps: {
+        disableEscapeKeyDown: true,
+      },
+    },
   },
 })
