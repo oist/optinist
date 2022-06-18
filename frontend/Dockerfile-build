@@ -1,0 +1,11 @@
+FROM node:16 as node
+RUN mkdir /app
+WORKDIR /app
+
+COPY . ./
+
+ENV GENERATE_SOURCEMAP false
+
+RUN yarn install
+
+CMD yarn build

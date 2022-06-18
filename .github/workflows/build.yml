@@ -20,10 +20,7 @@ jobs:
         env:
           CI: false
         run: |
-          cd frontend
-          rm -rf node_modules
-          yarn install
-          yarn build
+          make build_frontend
           git add build
           git commit -m"build frontend"
           git push origin develop

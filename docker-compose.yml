@@ -1,6 +1,6 @@
 version: "3.8"
 services:
-  optinist:
+  test_optinist:
     image: test_optinist
     container_name: test_optinist
     build:
@@ -14,11 +14,23 @@ services:
       - ./conda/yaml:/app/conda/yaml
       - ./optinist/test_data:/tmp/optinist
 
-  optinist_frontend:
+  test_optinist_frontend:
     image: test_optinist_frontend
     container_name: test_optinist_frontend
     build:
       context: ./frontend
+      dockerfile: Dockerfile-test
     environment:
       TZ: Asia/Tokyo
     command: yarn test:ci
+
+  build_optinist_frontend:
+    image: build_optinist_frontend
+    container_name: build_optinist_frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile-build
+    environment:
+      TZ: Asia/Tokyo
+    volumes:
+      - ./frontend/build:/app/build:cached
