@@ -33,6 +33,7 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
     uid,
     isStartedSuccess,
     filePathIsUndefined,
+    algorithmNodeNotExist,
     handleCancelPipeline,
     handleRunPipeline,
     handleRunPipelineByUid,
@@ -45,14 +46,23 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
   const [dialogOpen, setDialogOpen] = React.useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const handleClick = () => {
-    if (!filePathIsUndefined) {
+    let errorMessage: string | null = null
+    if (algorithmNodeNotExist) {
+      errorMessage = 'please add some algorithm nodes to the flowchart'
+    }
+    if (filePathIsUndefined) {
+      errorMessage = 'please select input file'
+    }
+    if (errorMessage != null) {
+      enqueueSnackbar(errorMessage, {
+        variant: 'error',
+      })
+    } else {
       if (runBtnOption === RUN_BTN_OPTIONS.RUN_NEW) {
         setDialogOpen(true)
       } else {
         handleRunPipelineByUid()
       }
-    } else {
-      enqueueSnackbar('please select input file', { variant: 'error' })
     }
   }
   const onClickDialogRun = (name: string) => {

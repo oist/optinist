@@ -53,3 +53,6 @@ export const selectAlgorithmParam =
       throw new Error('AlgorithmParam is null')
     }
   }
+
+export const selectAlgorithmNodeNotExist = (state: RootState) =>
+  Object.keys(selectAlgorithmNode(state)).length === 0
