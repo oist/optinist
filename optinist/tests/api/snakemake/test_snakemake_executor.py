@@ -27,7 +27,7 @@ shutil.copyfile(
 
 
 def test_snakemake_execute():
-    snakemake_execute(smk_param)
+    snakemake_execute(unique_id, smk_param)
 
 
 nodeDict = {
@@ -136,3 +136,8 @@ def test_snakemake_delete_dependencies():
 
     assert not os.path.exists(f"{output_dirpath}/suite2p_file_convert/suite2p_file_convert.pkl")
     assert not os.path.exists(f"{output_dirpath}/suite2p_roi/suite2p_roi.pkl")
+
+
+def test_error_snakemake_execute():
+    smk_param.use_conda = True
+    snakemake_execute(unique_id, smk_param)

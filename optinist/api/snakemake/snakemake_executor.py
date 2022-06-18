@@ -5,18 +5,20 @@ from typing import Dict
 from snakemake import snakemake
 
 from optinist.api.dir_path import DIRPATH
+from optinist.api.logger import Logger
 from optinist.api.snakemake.smk import SmkParam
 from optinist.api.utils.filepath_creater import get_pickle_file, join_filepath
 from optinist.api.workflow.workflow import Edge, Node
 
 
-def snakemake_execute(params: SmkParam):
+def snakemake_execute(unique_id: str, params: SmkParam):
     snakemake(
         DIRPATH.SNAKEMAKE_FILEPATH,
         forceall=params.forceall,
         cores=params.cores,
         use_conda=params.use_conda,
         workdir=f"{os.path.dirname(DIRPATH.ROOT_DIR)}",
+        log_handler=[Logger(unique_id).smk_logger],
     )
 
 

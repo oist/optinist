@@ -11,18 +11,18 @@ import TableCell, { tableCellClasses } from '@mui/material/TableCell'
 import TableContainer from '@mui/material/TableContainer'
 import TableHead from '@mui/material/TableHead'
 import TableRow from '@mui/material/TableRow'
+import TablePagination from '@mui/material/TablePagination'
 import Paper from '@mui/material/Paper'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
 import ReplayIcon from '@mui/icons-material/Replay'
 import DeleteIcon from '@mui/icons-material/Delete'
-import {
-  Checkbox,
-  Dialog,
-  DialogActions,
-  DialogTitle,
-  TableSortLabel,
-} from '@mui/material'
+import Checkbox from '@mui/material/Checkbox'
+import Dialog from '@mui/material/Dialog'
+import DialogActions from '@mui/material/DialogActions'
+import DialogTitle from '@mui/material/DialogTitle'
+import TableSortLabel from '@mui/material/TableSortLabel'
+import Typography from '@mui/material/Typography'
 
 import { CollapsibleTable } from './CollapsibleTable'
 import {
@@ -48,6 +48,7 @@ import {
   ConfigDownloadButton,
 } from './Button/DownloadButton'
 import { ImportButton } from './Button/ImportButton'
+import { useLocalStorage } from 'components/utils/LocalStorageUtil'
 
 export const ExperimentUidContext = React.createContext<string>('')
 
@@ -80,8 +81,12 @@ const ExperimentsErrorView: React.FC = () => {
   )
 }
 
+const LOCAL_STORAGE_KEY_PER_PAGE = 'optinist_experiment_table_per_page'
+
 const TableImple = React.memo(() => {
   const experimentList = useSelector(selectExperimentList)
+  const experimentListValues = Object.values(experimentList)
+  const experimentListKeys = Object.keys(experimentList)
   const dispatch = useDispatch()
   const onClickReload = () => {
     dispatch(getExperiments())
@@ -106,6 +111,17 @@ const TableImple = React.memo(() => {
       setCheckedList([...checkedList, uid])
     }
   }
+
+  const onChangeAllCheck = (checked: boolean) => {
+    if (checked) {
+      setCheckedList(experimentListValues.map((experiment) => experiment.uid))
+    } else {
+      setCheckedList([])
+    }
+  }
+
+  const recordsIsEmpty = experimentListKeys.length === 0
+
   const onClickDelete = () => {
     setOpen(true)
   }
@@ -118,17 +134,51 @@ const TableImple = React.memo(() => {
     setOpen(false)
   }
 
+  const [page, setPage] = React.useState(0)
+
+  const handleChangePage = (event: unknown, newPage: number) => {
+    setPage(newPage)
+  }
+
+  const [rowsPerPage, setRowsPerPage] = useLocalStorage(
+    LOCAL_STORAGE_KEY_PER_PAGE,
+    10,
+    (value) => {
+      const valueNum = Number(value)
+      return isNaN(valueNum) ? 10 : valueNum
+    },
+  )
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const newValue = parseInt(event.target.value, 10)
+    setRowsPerPage(newValue)
+    setPage(0)
+  }
+
+  // Avoid a layout jump when reaching the last page with empty rows.
+  const emptyRows =
+    page > 0
+      ? Math.max(0, (1 + page) * rowsPerPage - experimentListKeys.length)
+      : 0
+
   return (
-    <Box>
+    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
       <Box
         sx={{
           display: 'flex',
           justifyContent: 'flex-end',
+          alignItems: 'center',
         }}
       >
+        {!recordsIsEmpty && (
+          <Typography sx={{ flexGrow: 1, m: 1 }}>
+            {checkedList.length} selected
+          </Typography>
+        )}
         <Button
           sx={{
-            marginBottom: (theme) => theme.spacing(1),
+            margin: (theme) => theme.spacing(0, 1, 1, 0),
           }}
           variant="outlined"
           endIcon={<ReplayIcon />}
@@ -160,23 +210,85 @@ const TableImple = React.memo(() => {
           </Button>
         </DialogActions>
       </Dialog>
-      <TableContainer component={Paper} elevation={0} variant="outlined">
-        <Table aria-label="collapsible table">
-          <HeadItem order={order} sortHandler={sortHandler} />
-          <TableBody>
-            {Object.values(experimentList)
-              .sort(getComparator(order, sortTarget))
-              .map((expData) => (
-                <ExperimentUidContext.Provider
-                  value={expData.uid}
-                  key={expData.uid}
+      <Paper
+        elevation={0}
+        variant="outlined"
+        sx={{
+          flexGlow: 1,
+          height: '100%',
+        }}
+      >
+        <TableContainer component={Paper} elevation={0}>
+          <Table aria-label="collapsible table">
+            <HeadItem
+              order={order}
+              sortHandler={sortHandler}
+              allCheckIndeterminate={
+                checkedList.length !== 0 &&
+                checkedList.length !== Object.keys(experimentList).length
+              }
+              allChecked={
+                checkedList.length === Object.keys(experimentList).length
+              }
+              onChangeAllCheck={onChangeAllCheck}
+              checkboxVisible={!recordsIsEmpty}
+            />
+            <TableBody>
+              {experimentListValues
+                .sort(getComparator(order, sortTarget))
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((expData) => (
+                  <ExperimentUidContext.Provider
+                    value={expData.uid}
+                    key={expData.uid}
+                  >
+                    <RowItem
+                      onCheckBoxClick={onCheckBoxClick}
+                      checked={checkedList.includes(expData.uid)}
+                    />
+                  </ExperimentUidContext.Provider>
+                ))}
+              {emptyRows > 0 && (
+                <TableRow
+                  style={{
+                    height: 53 * emptyRows,
+                  }}
                 >
-                  <RowItem onCheckBoxClick={onCheckBoxClick} />
-                </ExperimentUidContext.Provider>
-              ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+                  <TableCell colSpan={10} />
+                </TableRow>
+              )}
+              {recordsIsEmpty && (
+                <TableRow>
+                  <TableCell colSpan={10}>
+                    <Typography
+                      sx={{
+                        color: (theme) => theme.palette.text.secondary,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        height: '300px',
+                        textAlign: 'center',
+                      }}
+                      variant="h6"
+                    >
+                      No Rows...
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+          </Table>
+        </TableContainer>
+        <TablePagination
+          rowsPerPageOptions={[5, 10, 25]}
+          component="div"
+          count={experimentListKeys.length}
+          rowsPerPage={rowsPerPage}
+          page={page}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+        />
+      </Paper>
     </Box>
   )
 })
@@ -184,48 +296,73 @@ const TableImple = React.memo(() => {
 const HeadItem = React.memo<{
   order: Order
   sortHandler: any
-}>(({ order, sortHandler }) => {
-  return (
-    <TableHead>
-      <TableRow>
-        <TableCell />
-        <TableCell />
-        <TableCell>
-          <TableSortLabel
-            active
-            direction={order}
-            onClick={sortHandler('timestamp')}
-          >
-            Timestamp
-          </TableSortLabel>
-        </TableCell>
-        <TableCell>
-          <TableSortLabel active direction={order} onClick={sortHandler('uid')}>
-            ID
-          </TableSortLabel>
-        </TableCell>
-        <TableCell>
-          <TableSortLabel
-            active
-            direction={order}
-            onClick={sortHandler('name')}
-          >
-            Name
-          </TableSortLabel>
-        </TableCell>
-        <TableCell>Success</TableCell>
-        <TableCell>Reproduce</TableCell>
-        <TableCell>SnakeFile</TableCell>
-        <TableCell>NWB</TableCell>
-        <TableCell>Delete</TableCell>
-      </TableRow>
-    </TableHead>
-  )
-})
+  allChecked: boolean
+  onChangeAllCheck: (checked: boolean) => void
+  allCheckIndeterminate: boolean
+  checkboxVisible: boolean
+}>(
+  ({
+    order,
+    sortHandler,
+    allChecked,
+    onChangeAllCheck,
+    allCheckIndeterminate,
+    checkboxVisible,
+  }) => {
+    return (
+      <TableHead>
+        <TableRow>
+          <TableCell padding="checkbox">
+            <Checkbox
+              sx={{ visibility: checkboxVisible ? 'visible' : 'hidden' }}
+              checked={allChecked}
+              indeterminate={allCheckIndeterminate}
+              onChange={(e) => onChangeAllCheck(e.target.checked)}
+            />
+          </TableCell>
+          <TableCell />
+          <TableCell>
+            <TableSortLabel
+              active
+              direction={order}
+              onClick={sortHandler('timestamp')}
+            >
+              Timestamp
+            </TableSortLabel>
+          </TableCell>
+          <TableCell>
+            <TableSortLabel
+              active
+              direction={order}
+              onClick={sortHandler('uid')}
+            >
+              ID
+            </TableSortLabel>
+          </TableCell>
+          <TableCell>
+            <TableSortLabel
+              active
+              direction={order}
+              onClick={sortHandler('name')}
+            >
+              Name
+            </TableSortLabel>
+          </TableCell>
+          <TableCell>Success</TableCell>
+          <TableCell>Reproduce</TableCell>
+          <TableCell>SnakeFile</TableCell>
+          <TableCell>NWB</TableCell>
+          <TableCell>Delete</TableCell>
+        </TableRow>
+      </TableHead>
+    )
+  },
+)
 
 const RowItem = React.memo<{
   onCheckBoxClick: (uid: string) => void
-}>(({ onCheckBoxClick }) => {
+  checked: boolean
+}>(({ onCheckBoxClick, checked }) => {
   const uid = React.useContext(ExperimentUidContext)
   const timestamp = useSelector(selectExperimentTimeStamp(uid))
   const status = useSelector(selectExperimentStatus(uid))
@@ -245,8 +382,8 @@ const RowItem = React.memo<{
           },
         }}
       >
-        <TableCell>
-          <Checkbox onChange={() => onCheckBoxClick(uid)} />
+        <TableCell padding="checkbox">
+          <Checkbox onChange={() => onCheckBoxClick(uid)} checked={checked} />
         </TableCell>
         <TableCell>
           <IconButton
