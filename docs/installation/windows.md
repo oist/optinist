@@ -21,8 +21,9 @@ Windows
       * [Install mamba](#install-mamba-1)
       * [Install library](#install-library-1)
       * [Set saving directory](#set-saving-directory-1)
-      * [Run backend](#run-backend-1)
-      * [Launch browser.  <a href="http://localhost:8000" rel="nofollow">http://localhost:8000</a>](#launch-browser--httplocalhost8000-1)
+* [3. Create virtualenv](#3-create-virtualenv)
+* [4. Run backend](#4-run-backend)
+   * [Launch browser.  <a href="http://localhost:8000" rel="nofollow">http://localhost:8000</a>](#launch-browser--httplocalhost8000-1)
 
 ## Installation
 We introduce how to install optinist.
@@ -68,6 +69,11 @@ On the Anaconda PowerShell Prompt(anaconda3),
 conda create -n optinist python=3.8
 conda activate optinist
 ```
+
+```
+conda config --set channel_priority strict
+```
+
 #### Install mamba
 We use snakemake library, and it requires mamba.
 On the Anaconda PowerShell Prompt(anaconda3),
@@ -134,6 +140,11 @@ bash Anaconda3-2021.11-Linux-x86_64.sh
 conda create -n optinist python=3.8
 conda activate optinist
 ```
+
+```
+conda config --set channel_priority strict
+```
+
 #### Install mamba
 We use snakemake library, and it requires mamba.
 ```
@@ -154,7 +165,16 @@ Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, thi
 ```bash
 export OPTINIST_DIR="your_saving_dir"
 ```
-## 3. Run backend
+
+## 3. Create virtualenv
+In snakemake used by optinist, a virtual environment is created and executed for each function.
+The procedure for first creating a virtual environment for processing suite2p, caiman, pca, etc. is described in the following link.
+
+*It is possible to run snakemake without creating a virtual environment in advance, but it is recommended to create a virtual environment in advance because of the higher possibility of errors during execution.
+
+Follow this [link](create_virtualenv.md).
+
+## 4. Run backend
 ```
 python main.py
 ```

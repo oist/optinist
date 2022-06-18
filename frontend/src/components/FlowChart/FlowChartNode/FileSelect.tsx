@@ -131,7 +131,6 @@ export const FileSelectImple = React.memo<FileSelectImpleProps>(
           onClickCancel={() => {
             setOpen(false)
           }}
-          onClose={() => setOpen(false)}
           fileType={fileTreeType}
         />
       </div>

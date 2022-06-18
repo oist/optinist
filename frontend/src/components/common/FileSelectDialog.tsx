@@ -36,7 +36,6 @@ type FileSelectDialogProps = {
   title?: string
   open: boolean
   onClickCancel: () => void
-  onClose?: () => void
   multiSelect: boolean
 }
 
@@ -46,7 +45,6 @@ export const FileSelectDialog = React.memo<FileSelectDialogProps>(
     initialFilePath,
     onClickCancel,
     onClickOk,
-    onClose,
     title,
     fileType = FILE_TREE_TYPE_SET.ALL,
     multiSelect,
@@ -65,7 +63,7 @@ export const FileSelectDialog = React.memo<FileSelectDialogProps>(
     }
     const theme = useTheme()
     return (
-      <Dialog open={open} onClose={onClose} fullWidth>
+      <Dialog open={open} fullWidth>
         <DialogTitle>{title ?? 'Select File'}</DialogTitle>
         <DialogContent dividers>
           <div
