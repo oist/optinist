@@ -106,6 +106,17 @@ const TableImple = React.memo(() => {
       setCheckedList([...checkedList, uid])
     }
   }
+
+  const onChangeAllCheck = (checked: boolean) => {
+    if (checked) {
+      setCheckedList(
+        Object.values(experimentList).map((experiment) => experiment.uid),
+      )
+    } else {
+      setCheckedList([])
+    }
+  }
+
   const onClickDelete = () => {
     setOpen(true)
   }
@@ -128,7 +139,7 @@ const TableImple = React.memo(() => {
       >
         <Button
           sx={{
-            marginBottom: (theme) => theme.spacing(1),
+            margin: (theme) => theme.spacing(0, 1, 1, 0),
           }}
           variant="outlined"
           endIcon={<ReplayIcon />}
@@ -162,7 +173,19 @@ const TableImple = React.memo(() => {
       </Dialog>
       <TableContainer component={Paper} elevation={0} variant="outlined">
         <Table aria-label="collapsible table">
-          <HeadItem order={order} sortHandler={sortHandler} />
+          <HeadItem
+            order={order}
+            sortHandler={sortHandler}
+            allCheckIndeterminate={
+              checkedList.length !== 0 &&
+              checkedList.length !== Object.keys(experimentList).length
+            }
+            allChecked={
+              checkedList.length === Object.keys(experimentList).length
+            }
+            onChangeAllCheck={onChangeAllCheck}
+            checkboxVisible={Object.keys(experimentList).length !== 0}
+          />
           <TableBody>
             {Object.values(experimentList)
               .sort(getComparator(order, sortTarget))
@@ -171,7 +194,10 @@ const TableImple = React.memo(() => {
                   value={expData.uid}
                   key={expData.uid}
                 >
-                  <RowItem onCheckBoxClick={onCheckBoxClick} />
+                  <RowItem
+                    onCheckBoxClick={onCheckBoxClick}
+                    checked={checkedList.includes(expData.uid)}
+                  />
                 </ExperimentUidContext.Provider>
               ))}
           </TableBody>
@@ -184,48 +210,73 @@ const TableImple = React.memo(() => {
 const HeadItem = React.memo<{
   order: Order
   sortHandler: any
-}>(({ order, sortHandler }) => {
-  return (
-    <TableHead>
-      <TableRow>
-        <TableCell />
-        <TableCell />
-        <TableCell>
-          <TableSortLabel
-            active
-            direction={order}
-            onClick={sortHandler('timestamp')}
-          >
-            Timestamp
-          </TableSortLabel>
-        </TableCell>
-        <TableCell>
-          <TableSortLabel active direction={order} onClick={sortHandler('uid')}>
-            ID
-          </TableSortLabel>
-        </TableCell>
-        <TableCell>
-          <TableSortLabel
-            active
-            direction={order}
-            onClick={sortHandler('name')}
-          >
-            Name
-          </TableSortLabel>
-        </TableCell>
-        <TableCell>Success</TableCell>
-        <TableCell>Reproduce</TableCell>
-        <TableCell>SnakeFile</TableCell>
-        <TableCell>NWB</TableCell>
-        <TableCell>Delete</TableCell>
-      </TableRow>
-    </TableHead>
-  )
-})
+  allChecked: boolean
+  onChangeAllCheck: (checked: boolean) => void
+  allCheckIndeterminate: boolean
+  checkboxVisible: boolean
+}>(
+  ({
+    order,
+    sortHandler,
+    allChecked,
+    onChangeAllCheck,
+    allCheckIndeterminate,
+    checkboxVisible,
+  }) => {
+    return (
+      <TableHead>
+        <TableRow>
+          <TableCell padding="checkbox">
+            <Checkbox
+              sx={{ visibility: checkboxVisible ? 'visible' : 'hidden' }}
+              checked={allChecked}
+              indeterminate={allCheckIndeterminate}
+              onChange={(e) => onChangeAllCheck(e.target.checked)}
+            />
+          </TableCell>
+          <TableCell />
+          <TableCell>
+            <TableSortLabel
+              active
+              direction={order}
+              onClick={sortHandler('timestamp')}
+            >
+              Timestamp
+            </TableSortLabel>
+          </TableCell>
+          <TableCell>
+            <TableSortLabel
+              active
+              direction={order}
+              onClick={sortHandler('uid')}
+            >
+              ID
+            </TableSortLabel>
+          </TableCell>
+          <TableCell>
+            <TableSortLabel
+              active
+              direction={order}
+              onClick={sortHandler('name')}
+            >
+              Name
+            </TableSortLabel>
+          </TableCell>
+          <TableCell>Success</TableCell>
+          <TableCell>Reproduce</TableCell>
+          <TableCell>SnakeFile</TableCell>
+          <TableCell>NWB</TableCell>
+          <TableCell>Delete</TableCell>
+        </TableRow>
+      </TableHead>
+    )
+  },
+)
 
 const RowItem = React.memo<{
   onCheckBoxClick: (uid: string) => void
-}>(({ onCheckBoxClick }) => {
+  checked: boolean
+}>(({ onCheckBoxClick, checked }) => {
   const uid = React.useContext(ExperimentUidContext)
   const timestamp = useSelector(selectExperimentTimeStamp(uid))
   const status = useSelector(selectExperimentStatus(uid))
@@ -245,8 +296,8 @@ const RowItem = React.memo<{
           },
         }}
       >
-        <TableCell>
-          <Checkbox onChange={() => onCheckBoxClick(uid)} />
+        <TableCell padding="checkbox">
+          <Checkbox onChange={() => onCheckBoxClick(uid)} checked={checked} />
         </TableCell>
         <TableCell>
           <IconButton
