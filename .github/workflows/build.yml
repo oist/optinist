@@ -18,7 +18,8 @@ jobs:
           token: ${{secrets.GITHUB_TOKEN}}
 
       - name: build
-        make build_frontend
+        run: |
+          make build_frontend
 
       - name: push
         env:
