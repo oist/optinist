@@ -1,5 +1,6 @@
 from typing import Dict
 import logging
+import os
 
 from optinist.api.dir_path import DIRPATH
 from optinist.api.utils.filepath_creater import create_directory, join_filepath
@@ -12,12 +13,18 @@ def get_logger(unique_id: str) -> logging.Logger:
     ])
     create_directory(output_dirpath)
 
-    logging.basicConfig(
-        filename=f"{output_dirpath}/error.log",
-        level=logging.DEBUG,
-        format="%(asctime)s : %(levelname)s - %(filename)s - %(message)s",
-    )
+    filepath = f"{output_dirpath}/error.log"
+    if os.path.exists(filepath):
+        os.remove(filepath)
+
     logger = logging.getLogger(unique_id)
+
+    # FileHandlerの設定
+    fh = logging.FileHandler(filepath)
+    fh.setLevel(logging.ERROR)
+    fmt = logging.Formatter("%(asctime)s : %(levelname)s - %(filename)s - %(message)s")
+    fh.setFormatter(fmt)
+    logger.addHandler(fh)
 
     return logger
 
@@ -34,13 +41,13 @@ class Logger:
                 "job_info": jobの始まりを通知。inputやoutputがある
                 "job_finished": jobの終了を通知。
         """
-
-        # エラーした
-        if "exception" in msg:
-            print("Error: ", msg)
-            self.logger.debug("Error")
+        # pass
+        # # エラーした
+        # if "exception" in msg:
+        #     self.logger.error(msg)
 
         if "level" in msg and "debug" in msg["level"]:
             level = msg["level"]
             if "debug" in level and "msg" in msg:
-                self.logger.debug("error message: ", msg)
+                if "Traceback" in msg["msg"]:
+                    self.logger.error(msg)

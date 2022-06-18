@@ -25,13 +25,15 @@ conda env create --prefix ./conda/envs/optinist -f ./conda/yaml/optinist_env.yam
 ```
 
 ### create caiman environment
-````
+```
 conda env create --prefix ./conda/envs/caiman -f ./conda/yaml/caiman_env.yaml --force
 ```
 
 For M1 mac, re-install tensorflow.
+[Downalod tensorflow.whl](
+https://drive.google.com/drive/folders/1oSipZLnoeQB0Awz8U68KYeCPsULy_dQ7)
 ```
-conda activate ./conda/envs/caiman && pip install ./conda/yaml/tensorflow-2.4.1-py3-none-any.whl --no-dependencies --force-reinstall
+conda activate ./conda/envs/caiman && pip install ./tensorflow-2.4.1-py3-none-any.whl --no-dependencies --force-reinstall
 ````
 
 ## FAQ
