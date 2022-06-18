@@ -142,10 +142,10 @@ const TableImple = React.memo(() => {
 
   const [rowsPerPage, setRowsPerPage] = useLocalStorage(
     LOCAL_STORAGE_KEY_PER_PAGE,
-    5,
+    10,
     (value) => {
       const valueNum = Number(value)
-      return isNaN(valueNum) ? 5 : valueNum
+      return isNaN(valueNum) ? 10 : valueNum
     },
   )
   const handleChangeRowsPerPage = (
