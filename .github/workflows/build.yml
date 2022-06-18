@@ -1,10 +1,10 @@
 name: Build
 
 on:
+  push:
+    branches: [ develop ]
   pull_request:
-    branches:
-      - main
-      - develop
+    branches: [ develop ]
 
   workflow_dispatch:
 
@@ -16,15 +16,11 @@ jobs:
       - uses: actions/checkout@v2
         with:
           token: ${{secrets.GITHUB_TOKEN}}
-
-      - name: build
-        run: |
-          make build_frontend
-
       - name: push
         env:
           CI: false
         run: |
+          make build_frontend
           git add build
           git commit -m"build frontend"
           git push origin develop
