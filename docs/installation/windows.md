@@ -85,11 +85,11 @@ On the Anaconda PowerShell Prompt(anaconda3),
 ```bash
 pip install -r requirements.txt
 # for suite2p
-pip install PyQt5<=5.15.1 PyQt5-sip<=12.8.1 pyqtgraph<=0.11.0 pandas suite2p<=0.10.3
+pip install "PyQt5<=5.15.1" "PyQt5-sip<=12.8.1" "pyqtgraph<=0.11.0" "pandas" "suite2p<=0.10.3" "tifffile<=v2022.3.25"
 # for GLM
-pip install sklearn statsmodels<=0.13.1 pynwb
+pip install "sklearn" "statsmodels<=0.13.1" "pynwb"
 # for CaImAn
-pip install cython opencv-python matplotlib scikit-image==0.18.0 scikit-learn ipyparallel holoviews watershed tensorflow
+pip install "cython" "opencv-python matplotlib" "scikit-image==0.18.0" "scikit-learn" "ipyparallel" "holoviews" "watershed" "tensorflow"
 cd CaImAn
 pip install -e .
 cd ..

@@ -10,6 +10,7 @@ from optinist.api.config.config_writer import ConfigWriter
 from optinist.api.experiment.experiment_reader import ExptConfigReader
 from optinist.api.utils.filepath_creater import join_filepath
 from optinist.api.dir_path import DIRPATH
+from optinist.routers.fileIO.file_reader import Reader
 
 
 class WorkflowResult:
@@ -24,10 +25,22 @@ class WorkflowResult:
             self.workflow_dirpath,
             DIRPATH.EXPERIMENT_YML
         ])
+        self.error_filepath = join_filepath([
+            self.workflow_dirpath,
+            "error.log"
+        ])
 
     def get(self, nodeIdList):
         results: Dict[str, Message] = {}
         for node_id in nodeIdList:
+            if os.path.exists(self.error_filepath):
+                error_message = Reader.read(self.error_filepath)
+                if error_message != "":
+                    results[node_id] = Message(
+                        status="error",
+                        message=error_message,
+                    )
+                
             glob_pickle_filepath = join_filepath([
                 self.workflow_dirpath,
                 node_id,
