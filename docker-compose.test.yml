@@ -1,6 +1,5 @@
 version: "3.8"
 services:
-
   optinist:
     image: test_optinist
     container_name: test_optinist
@@ -14,3 +13,12 @@ services:
       - ./optinist:/app/optinist
       - ./conda/yaml:/app/conda/yaml
       - ./optinist/test_data:/tmp/optinist
+
+  optinist_frontend:
+    image: test_optinist_frontend
+    container_name: test_optinist_frontend
+    build:
+      context: ./frontend
+    environment:
+      TZ: Asia/Tokyo
+    command: yarn test:ci

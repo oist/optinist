@@ -1,0 +1,9 @@
+FROM node:16 as node
+
+RUN mkdir /react-app
+WORKDIR /react-app
+
+COPY . ./
+ENV GENERATE_SOURCEMAP false 
+RUN yarn install
+RUN yarn build
