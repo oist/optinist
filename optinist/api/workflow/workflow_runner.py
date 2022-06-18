@@ -44,7 +44,11 @@ class WorkflowRunner:
                 nodeDict=self.nodeDict,
                 edgeDict=self.edgeDict,
             )
-        background_tasks.add_task(snakemake_execute, snakemake_params)
+        background_tasks.add_task(
+            snakemake_execute,
+            self.unique_id,
+            snakemake_params
+        )
 
     def set_smk_config(self):
         rules, last_output = self.rulefile()
