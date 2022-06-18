@@ -3,8 +3,8 @@ name: Build
 on:
   pull_request:
     branches:
+      - main
       - develop
-    types: [closed]
 
   workflow_dispatch:
 
