@@ -11,6 +11,7 @@ import {
 import { run, pollRunResult, runByCurrentUid } from './PipelineActions'
 import { cancelPipeline } from './PipelineSlice'
 import { selectFilePathIsUndefined } from '../InputNode/InputNodeSelectors'
+import { selectAlgorithmNodeNotExist } from '../AlgorithmNode/AlgorithmNodeSelectors'
 import { useSnackbar } from 'notistack'
 import { RUN_STATUS } from './PipelineType'
 
@@ -24,6 +25,7 @@ export function useRunPipeline() {
   const isCanceled = useSelector(selectPipelineIsCanceled)
   const isStartedSuccess = useSelector(selectPipelineIsStartedSuccess)
   const filePathIsUndefined = useSelector(selectFilePathIsUndefined)
+  const algorithmNodeNotExist = useSelector(selectAlgorithmNodeNotExist)
   const runPostData = useSelector(selectRunPostData)
   const handleRunPipeline = React.useCallback(
     (name: string) => {
@@ -67,6 +69,7 @@ export function useRunPipeline() {
   }, [status, prevStatus, enqueueSnackbar])
   return {
     filePathIsUndefined,
+    algorithmNodeNotExist,
     uid,
     status,
     isStartedSuccess,

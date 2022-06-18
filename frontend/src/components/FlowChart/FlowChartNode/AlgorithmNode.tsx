@@ -142,6 +142,7 @@ const AlgoName = React.memo<{
       style={{
         padding: 8,
         paddingLeft: 8,
+        width: '100%',
       }}
       className="algoName"
     >

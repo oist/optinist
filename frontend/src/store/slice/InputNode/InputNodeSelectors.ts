@@ -51,6 +51,7 @@ export const selectHDF5InputNodeSelectedFilePath =
   }
 
 export const selectFilePathIsUndefined = (state: RootState) =>
+  Object.keys(state.inputNode).length === 0 ||
   Object.values(state.inputNode).filter((inputNode) => {
     if (isHDF5InputNode(inputNode)) {
       return inputNode.selectedFilePath == null || inputNode.hdf5Path == null
