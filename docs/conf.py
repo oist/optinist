@@ -42,7 +42,6 @@ master_doc = 'index'
 #     "sphinx.ext.viewcode",
 #     'sphinx.ext.napoleon',
 #     'sphinx.ext.coverage',
-#     'sphinx-prompt',
 #     'sphinxcontrib.apidoc',
 #     'sphinx_autodoc_typehints',
 #     'myst_parser',
@@ -57,7 +56,8 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.extlinks',
     'sphinx.ext.intersphinx',
-    'sphinx.ext.autodoc.typehints'
+    'sphinx.ext.autodoc.typehints',
+    'myst_parser',
 ]
 
 # Tell myst-parser to assign header anchors for h1-h3.

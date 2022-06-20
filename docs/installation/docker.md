@@ -1,13 +1,10 @@
 Docker
 =================
 
-* [Table of Contents](#table-of-contents)
 * [Installation](#installation)
 * [1. Make docker image container](#1-make-docker-image-container)
    * [Make docker image](#make-docker-image)
    * [Set saving directory](#set-saving-directory)
-   * [Run backend](#run-backend)
-   * [Launch browser.  <a href="http://localhost:8000" rel="nofollow">http://localhost:8000</a>](#launch-browser--httplocalhost8000)
 
 ## Installation
 We introduce how to install optinist.
