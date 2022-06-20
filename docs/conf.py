@@ -35,30 +35,30 @@ master_doc = 'index'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-# extensions = [
-#     "sphinx.ext.autodoc",
-#     "sphinx.ext.intersphinx",
-#     "sphinx.ext.mathjax",
-#     "sphinx.ext.viewcode",
-#     'sphinx.ext.napoleon',
-#     'sphinx.ext.coverage',
-#     'sphinxcontrib.apidoc',
-#     'sphinx_autodoc_typehints',
-#     'myst_parser',
-# ]
-
 extensions = [
-    'sphinx.ext.autodoc',
-    'sphinx.ext.autosectionlabel',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.viewcode',
+    "sphinx.ext.autodoc",
+    "sphinx.ext.intersphinx",
+    "sphinx.ext.mathjax",
+    "sphinx.ext.viewcode",
     'sphinx.ext.napoleon',
-    'sphinx.ext.mathjax',
-    'sphinx.ext.extlinks',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.autodoc.typehints',
+    'sphinx.ext.coverage',
+    'sphinxcontrib.apidoc',
+    'sphinx_autodoc_typehints',
     'myst_parser',
 ]
+
+# extensions = [
+#     'sphinx.ext.autodoc',
+#     'sphinx.ext.autosectionlabel',
+#     'sphinx.ext.autosummary',
+#     'sphinx.ext.viewcode',
+#     'sphinx.ext.napoleon',
+#     'sphinx.ext.mathjax',
+#     'sphinx.ext.extlinks',
+#     'sphinx.ext.intersphinx',
+#     'sphinx.ext.autodoc.typehints',
+#     'myst_parser',
+# ]
 
 # Tell myst-parser to assign header anchors for h1-h3.
 myst_heading_anchors = 4
