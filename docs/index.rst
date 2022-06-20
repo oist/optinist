@@ -6,16 +6,16 @@
 OptiNiSt - Calcium Imaging Pipeline Tool
 ===================================
 
-OptiNiSt(Optical Neuroimage Studio) helps researchers try multiple data analysis methods, visualize the results, and construct the data analysis pipelines easily and quickly. OptiNiSt's data-saving format follows NWB standards.
+**OptiNiSt(Optical Neuroimage Studio)** helps researchers try multiple data analysis methods, visualize the results, and construct the data analysis pipelines easily and quickly. OptiNiSt's data-saving format follows NWB standards.
 
 OptiNiSt also supports reproducibility of scientific research, standardization of analysis protocols, and developments of novel analysis tools as plug-in.
 
 
 Main Features
 --------------
-- Easy-To-Create Workflow: allows you to create analysis pipelines easily on the GUI.
-- Visualizing analysis results: supports you visualize the analysis results.
-- Managing Workflows: records and reproduces the workflow pipelines easily.
+- **Easy-To-Create Workflow**: allows you to create analysis pipelines easily on the GUI.
+- **Visualizing analysis results**: supports you visualize the analysis results.
+- **Managing Workflows**: records and reproduces the workflow pipelines easily.
 
 
 .. _issue: https://github.com/oist/optinist/issues

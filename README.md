@@ -16,17 +16,7 @@ OptiNiSt also supports reproducibility of scientific research, standardization o
 - **recording and reproducing**: OptiNiSt records and reproduces the workflow pipelines easily.
 
 ## Documentation
-- [Tutorial](docs/utils/tutorials.md)
-- [How to use gui workflow](docs/gui/workflow.md)
-- [How to use gui visualize](docs/gui/visualize.md)
-
-
-## Install
-How to install and use optinist
-- [For Windows](docs/installation/windows.md)
-- [For Mac](docs/installation/mac.md)
-- [For Linux](docs/installation/linux.md)
-- [For Docker](docs/installation/docker.md)
+https://optinist.readthedocs.io/en/latest/
 
 
 ## Implemented Analysis
