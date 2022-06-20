@@ -8,3 +8,4 @@ OTHER
 
   add_algorithm
   cui_execution
+  implemented_analysis
