@@ -26,6 +26,8 @@ author = ''
 version = VERSION_SHORT
 release = VERSION
 
+# -- readthedocs -------------------------------------------------------------
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 # -- General configuration ---------------------------------------------------
 master_doc = 'index'
@@ -33,17 +35,29 @@ master_doc = 'index'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
+# extensions = [
+#     "sphinx.ext.autodoc",
+#     "sphinx.ext.intersphinx",
+#     "sphinx.ext.mathjax",
+#     "sphinx.ext.viewcode",
+#     'sphinx.ext.napoleon',
+#     'sphinx.ext.coverage',
+#     'sphinx-prompt',
+#     'sphinxcontrib.apidoc',
+#     'sphinx_autodoc_typehints',
+#     'myst_parser',
+# ]
+
 extensions = [
-    "sphinx.ext.autodoc",
-    "sphinx.ext.intersphinx",
-    "sphinx.ext.mathjax",
-    "sphinx.ext.viewcode",
+    'sphinx.ext.autodoc',
+    'sphinx.ext.autosectionlabel',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.viewcode',
     'sphinx.ext.napoleon',
-    'sphinx.ext.coverage',
-    'sphinx-prompt',
-    'sphinxcontrib.apidoc',
-    'sphinx_autodoc_typehints',
-    'myst_parser',
+    'sphinx.ext.mathjax',
+    'sphinx.ext.extlinks',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.autodoc.typehints'
 ]
 
 # Tell myst-parser to assign header anchors for h1-h3.
