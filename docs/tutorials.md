@@ -7,7 +7,7 @@ The console shows the log once the startup is completed.
 
 <br>
 <p align="left">
-<img width="400px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig1_console.png" alt="Whole" />
+<img width="400px" src="../_static/tutorials/fig1_console.png" alt="Whole" />
 </p>
 
 Once you see this, open your web browser (Google Chrome is recommended) at localhost:8000.
@@ -15,13 +15,13 @@ You are ready to start if the OptiNiSt page appears.
 
 <br>
 <p align="left">
-<img width="600px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig2_open.png" alt="Whole" />
+<img width="600px" src="../_static/tutorials/fig2_open.png" alt="Whole" />
 </p>
 
 OptiNiSt has three different pages, WORKFLOW, VISUALIZE, and RECORD. You can toggle these by clicking on the tag. 
 <br>
 <p align="left">
-<img width="300px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig2.2_tags.png" alt="Whole" />
+<img width="300px" src="../_static/tutorials/fig2.2_tags.png" alt="Whole" />
 </p>
 
 ## Making pipelines on WORKFLOW 
@@ -32,7 +32,7 @@ As a default, it shows an image node. This node defines the path to the data to 
 
 <br>
 <p align="left">
-<img width="200px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig3_imagenode.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig3_imagenode.png" alt="Whole" />
 </p>
 
 OptiNiSt uses OPTINIST_DIR for retrieving data and saving results. OptiNiSt searches input data from the 'input' directory in OPTINIST_DIR. A default OPTINIST_DIR is `/tmp/optinist` in your computer.
@@ -51,7 +51,7 @@ The left side of the window shows all available analysis methods. Clicking on th
 
 <br>
 <p align="left">
-<img width="200px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig4_algorithms.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig4_algorithms.png" alt="Whole" />
 </p>
 
 Let’s start with sample tiff data (mouse2p_2_long.tiff) and try suite2p ROI detection.
@@ -60,7 +60,7 @@ Once it is selected, it shows the name of files in the image node.
 
 <br>
 <p align="left">
-<img width="200px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig5_imagenode2.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig5_imagenode2.png" alt="Whole" />
 </p>
 
 ### Creating pipelines
@@ -69,21 +69,21 @@ Then, connect the analysis nodes in the order you like to process. Drugging from
 
 <br>
 <p align="left">
-<img width="800px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig6_suite2p.png" alt="Whole" />
+<img width="800px" src="../_static/tutorials/fig6_suite2p.png" alt="Whole" />
 </p>
 
 As for Suite2P, you might not use suite2P_registration (motion correction). In that case, you can connect the suite2p_file_convert to suite2p_roi directly. 
 
 <br>
 <p align="left">
-<img width="600px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig7_suite2p2.png" alt="Whole" />
+<img width="600px" src="../_static/tutorials/fig7_suite2p2.png" alt="Whole" />
 </p>
 
 Also, you can perform motion correction of CaImAn (caiman_mc) and then perform suite2P_roi.
 
 <br>
 <p align="left">
-<img width="600px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig8_suite2pcaiman.png" alt="Whole" />
+<img width="600px" src="../_static/tutorials/fig8_suite2pcaiman.png" alt="Whole" />
 </p>
 
 The nodes should be connected as long as the input and the output are of the same format type (same color).
@@ -91,7 +91,7 @@ Also, you can branch the flow. In the example, the two caiman_mc with different 
 
 <br>
 <p align="left">
-<img width="600px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig9_workflowbranch.png" alt="Whole" />
+<img width="600px" src="../_static/tutorials/fig9_workflowbranch.png" alt="Whole" />
 </p>
 
 ### Parameter button and output button on the node
@@ -99,14 +99,14 @@ Each node has PARAM button and OUTPUT button.
 
 <br>
 <p align="left">
-<img width="200px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig10.1_buttons.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig10.1_buttons.png" alt="Whole" />
 </p>
 
 Clicking on PARAM shows the parameters. Edit this as you like. The names, types and the default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters. The link list is on [README](../../README.md).
 
 <br>
 <p align="left">
-<img width="200px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig10_parameters.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig10_parameters.png" alt="Whole" />
 </p>
 
 OUTPUT button is for the quick check of the result. The button becomes effective after the successful execution of the pipeline. [Here](#inspecting-the-images-and-the-plots-on-visualize) explains the details of the charts. 
@@ -118,7 +118,7 @@ RUN button at the right top shows two pulldown choices. RUNALL runs all the proc
 
 <br>
 <p align="left">
-<img width="200px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig11_runall.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig11_runall.png" alt="Whole" />
 </p>
 
 When you click on the RUNALL, it shows the window to determine the folder name. This folder name is only for the user’s convenience. The actual folder name is long digit random letter+number. Further information about the structure of the saved results is [here](LINKTO /docs/gui/record.md #setting-input-images).
@@ -128,7 +128,7 @@ Next to the RUN button, there is the CANCEL button. You can abort the running pi
 
 <br>
 <p align="left">
-<img width="200px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig12_cancel.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig12_cancel.png" alt="Whole" />
 </p>
 
 
@@ -140,7 +140,7 @@ The pipeline construction of Optinist is based on snakemake (ref), which is the 
 
 <br>
 <p align="left">
-<img width="400px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig13_nwbsnakemake.png" alt="Whole" />
+<img width="400px" src="../_static/tutorials/fig13_nwbsnakemake.png" alt="Whole" />
 </p>
 
 NWB SETTING defines the metadata for the NWB file as an output. The parameter you set here is only for your record and not used for the calculation inside OptiNiSt. You can leave this as default. The details of NWB setting in OptiNiSt is [here](#nwb-settings). Also, general info about NWB is [here](https://www.nwb.org/getting-started/).
@@ -153,40 +153,40 @@ OptiNiSt offers some basic time-series analysis functions. For example, event-tr
 
 <br>
 <p align="left">
-<img width="200px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig12.00_hdfnode.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig12.00_hdfnode.png" alt="Whole" />
 </p>
 
 Add the hdf5 node to the field. Upload the data to the OPTINIST_DIR. In addition to UPLOAD and SELECT to assign the file, you need to indicate the position of the fluorescence data in the HDF5 structure (STRUCTURE button appeared after you SELECT HDF5).
 
 <br>
 <p align="left">
-<img width="200px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig12.01_hdfnode2.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig12.01_hdfnode2.png" alt="Whole" />
 </p>
 
 NWB structure of Suite2P and CaImAn is different because OptiNiSt inherits each algorithm's original NWB output format. You will find the colums and rows are opposite between Suite2P outputs and CaImAn outputs. You can re-assign the rows and columns in the parameter setting of the analysis node (in this case eta node). 
 
 <br>
 <p align="left">
-<img width="200px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig12.02_hdfs2p.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig12.02_hdfs2p.png" alt="Whole" />
 </p>
 
 <br>
 <p align="left">
-<img width="200px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig12.03_hdfcaiman.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig12.03_hdfcaiman.png" alt="Whole" />
 </p>
 
 In this example, the behavioral data format is .csv. The csv data node or behavior data node is used for behavior input. 
 
 <br>
 <p align="left">
-<img width="200px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig12.04_behaviornode.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig12.04_behaviornode.png" alt="Whole" />
 </p>
 
 Once you SELECT CSV, SETTINGS button appears in the behavior node. This button confirms the inside of csv data and makes it possible to transpose the matrix if needed. If your csv includes the headers, you can also assign it to ignore it in creating the matrix. Set Index adds index columns to the matrix.
 
 <br>
 <p align="left">
-<img width="400px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig12.05_behaviornode2.png" alt="Whole" />
+<img width="400px" src="../_static/tutorials/fig12.05_behaviornode2.png" alt="Whole" />
 </p>
 
 
@@ -196,21 +196,21 @@ Add event tirggered averaging (eta) node and connect fluorescence and behavior n
 
 <br>
 <p align="left">
-<img width="400px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig12.06_etaworkflow.png" alt="Whole" />
+<img width="400px" src="../_static/tutorials/fig12.06_etaworkflow.png" alt="Whole" />
 </p>
 
 After finishing the process, you can quickly confirm your event-triggered average plot by clicking the OUTPUT button on the eta node. This figure is also available at VISUALIZE page.
 
 <br>
 <p align="left">
-<img width="400px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig12.07_etamean.png" alt="Whole" />
+<img width="400px" src="../_static/tutorials/fig12.07_etamean.png" alt="Whole" />
 </p>
 
 The plots are for quick confirmation of the results. If you want to look into the results more in detail,   available variables are all saved in the OptiNiSt output in NWB format. They are saved in processing/optinist. The NWB file is easily retrieved at RECORD page with just one click. To inspect the data, [HDFView](https://www.hdfgroup.org/downloads/hdfview/) is convenient. 
 
 <br>
 <p align="left">
-<img width="200px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig12.08_resulthdf.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig12.08_resulthdf.png" alt="Whole" />
 </p>
 
 
@@ -261,7 +261,7 @@ You can select the range of the frame by assigning 1st and last frame numbers. L
 
 <br>
 <p align="left">
-<img width="200px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig21_loadmovie.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig21_loadmovie.png" alt="Whole" />
 </p>
 
 Click on the PLAY button within the plotting box to play the loaded movie.
@@ -269,7 +269,7 @@ The number indicated on the right of PAUSE button is the frame interval in milli
 
 <br>
 <p align="left">
-<img width="400px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig22_movie.png" alt="Whole" />
+<img width="400px" src="../_static/tutorials/fig22_movie.png" alt="Whole" />
 </p>
 
 
@@ -278,27 +278,27 @@ After running the ROI detection algorithms, the most often created plots are ext
 
 <br>
 <p align="left">
-<img width="600px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig23_twobox.png" alt="Whole" />
+<img width="600px" src="../_static/tutorials/fig23_twobox.png" alt="Whole" />
 </p>
 
 In one plotting box (ex, the one with ID:0), select a background image such as meanimg from the Select Item pulldowns.
 
 <br>
 <p align="left">
-<img width="100px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig24_selectitem.png" alt="Whole" />
+<img width="100px" src="../_static/tutorials/fig24_selectitem.png" alt="Whole" />
 </p>
 
 In the same plotting box, select cell_roi from the Select Roi pull-downs. Both Suite2P and CaImAn include the process to drop the extracted ROIs that do not meet the criteria. In OptiNiSt, the cell ID is given to all the ROIs. Cell_roi is the ROIs that passed the criteria. 
 
 <br>
 <p align="left">
-<img width="100px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig25_selectroi.png" alt="Whole" />
+<img width="100px" src="../_static/tutorials/fig25_selectroi.png" alt="Whole" />
 </p>
 
 The plotting box (ID:0) shows the background image and detected cells.
 <br>
 <p align="left">
-<img width="400px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig26_roi.png" alt="Whole" />
+<img width="400px" src="../_static/tutorials/fig26_roi.png" alt="Whole" />
 </p>
 
 In another plotting box (ex, the one with ID:1), select fluorescence from the Select Item pulldown.
@@ -306,20 +306,20 @@ And select 0(same ID with the plotting box of your ROI image) from the ref image
 
 <br>
 <p align="left">
-<img width="400px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig27_fluo.png" alt="Whole" />
+<img width="400px" src="../_static/tutorials/fig27_fluo.png" alt="Whole" />
 </p>
 
 Now you can explore the ROI and time course. The color of ROI and corresponding time course is matched. You will know the cell ID by letting your mouse over the cell in the image. Clicking on the cell automatically adds the fluorescence time course of the clicked cell. 
 <br>
 <p align="left">
-<img width="600px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig28_roifluo.png" alt="Whole" />
+<img width="600px" src="../_static/tutorials/fig28_roifluo.png" alt="Whole" />
 </p>
 
 If it is tiring to select the cell by clicking one by one, turn on the drag select button on the right in the plotting box of ROI. It enables selecting all the cells within the rectangular area you define.
 
 <br>
 <p align="left">
-<img width="600px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig29_dragselect.png" alt="Whole" />
+<img width="600px" src="../_static/tutorials/fig29_dragselect.png" alt="Whole" />
 </p>
 
 ### Savind plots
@@ -327,7 +327,7 @@ You can save created plots in svg, png, jpeg, or webp format. Please select the 
 
 <br>
 <p align="left">
-<img width="200px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig30_saving.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig30_saving.png" alt="Whole" />
 </p>
 
 ## Managing pipelines on RECORD
@@ -335,19 +335,19 @@ RECORD section keeps your analysis pipeline easy to organize and easy to retriev
 
 <br>
 <p align="left">
-<img width="600px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig40_recordall.png" alt="Whole" />
+<img width="600px" src="../_static/tutorials/fig40_recordall.png" alt="Whole" />
 </p>
 
 Clicking the Reproduce arrow retrieves the pipeline onto the workflow. This function is convenient when you re-start analysis after closing the browser. The reproduced pipeline needs to be RUN again (not ALL RUN) to make plots available.
 
 <br>
 <p align="left">
-<img width="100px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig41_reproduce.png" alt="Whole" />
+<img width="100px" src="../_static/tutorials/fig41_reproduce.png" alt="Whole" />
 </p>
 
 The Download buttons for the workflow column and the NWB column copy the snakemake config or NWB file to your download folder. The snakemake config file contains the workflow information and parameters for each node. The NWB file contains the data and its analysis results. This function is convenient when users share the same analysis pipeline or inspect the output results.
 
 <br>
 <p align="left">
-<img width="150px" src="https://github.com/oist/optinist/blob/main/docs/_static/tutorials/fig42_workflownwb.png" alt="Whole" />
+<img width="150px" src="../_static/tutorials/fig42_workflownwb.png" alt="Whole" />
 </p>
