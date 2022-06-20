@@ -1,10 +1,10 @@
 *********
-install
+Installation
 *********
 
 .. toctree::
   :maxdepth: 2
-  :caption: Install:
+  :caption: Installation:
 
   docker
   windows

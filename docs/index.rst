@@ -3,16 +3,20 @@
   You can adapt this file completely to your liking, but it should at least
   contain the root `toctree` directive.
 
-OptiNiSt - 
+OptiNiSt - Calcium Imaging Pipeline Tool
 ===================================
 
-OptiNiSt(Optical Neuroimage Studio) that helps researchers to try multiple data analysis methods, to visualize the results, and to construct data analysis pipelines. Data formats follow NWB standard.
+**OptiNiSt(Optical Neuroimage Studio)** helps researchers try multiple data analysis methods, visualize the results, and construct the data analysis pipelines easily and quickly. OptiNiSt's data-saving format follows NWB standards.
+
+OptiNiSt also supports reproducibility of scientific research, standardization of analysis protocols, and developments of novel analysis tools as plug-in.
 
 
-OpitNiSt will allow not only neural data experts but also non-experts to try advanced analysis methods by combining neuroimage and behavioral data.
-It will help functional data analysis and pipeline building first by Brain/MINDS researchers but also by neuroscientists and data scientists world wide.
-Availability of not only data but also the tool for analysis on Brian/MINDS Data Portal will facilitate wider usage of marmoset functional brain data.
-OptiNiSt will also help reproducibility of research, standardization of analysis protocols, and developments of novel analysis tools as plug-in.
+Main Features
+--------------
+- **Easy-To-Create Workflow**: allows you to create analysis pipelines easily on the GUI.
+- **Visualizing analysis results**: supports you visualize the analysis results.
+- **Managing Workflows**: records and reproduces the workflow pipelines easily.
+
 
 .. _issue: https://github.com/oist/optinist/issues
 .. _here: https://www.biorxiv.org/content/early/2017/07/20/061507
@@ -24,13 +28,10 @@ OptiNiSt will also help reproducibility of research, standardization of analysis
 .. * :ref:`genindex`
 
 .. toctree::
-  :maxdepth: 3
-  :caption: Install:
+  :maxdepth: 2
+  :caption: USER GUIDE:
 
   installation/index
-
-.. toctree::
-  :maxdepth: 3
-  :caption: GUI:
-
+  tutorials
   gui/index
+  utils/index

@@ -26,6 +26,8 @@ author = ''
 version = VERSION_SHORT
 release = VERSION
 
+# -- readthedocs -------------------------------------------------------------
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 # -- General configuration ---------------------------------------------------
 master_doc = 'index'
@@ -40,10 +42,13 @@ extensions = [
     "sphinx.ext.viewcode",
     'sphinx.ext.napoleon',
     'sphinx.ext.coverage',
-    'sphinx-prompt',
     'sphinxcontrib.apidoc',
     'sphinx_autodoc_typehints',
     'myst_parser',
+    'sphinx.ext.autosectionlabel',
+    'sphinx.ext.autosummary',
+    'sphinx.ext.extlinks',
+    'sphinx.ext.autodoc.typehints'
 ]
 
 # Tell myst-parser to assign header anchors for h1-h3.
