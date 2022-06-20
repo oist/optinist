@@ -112,7 +112,7 @@ optinist_wrapper_dict = {
 
 Restart the GUI and check TreeView, you can actually see the **new_algorithm**.
 <p align="center">
-<img width="300px" src="../_static/add_algorithm/new_algorithm.png" alt="new_algorithm" />
+<img width="300px" src="https://github.com/oist/optinist/blob/main/docs/_static/add_algorithm/new_algorithm.png" alt="new_algorithm" />
 </p>
 
 
@@ -147,7 +147,7 @@ def new_algorithm(
 
 Restart the GUI and put **new_algorithm**, and you will see that the handle color has changed.
 <p align="center">
-<img width="200px" src="../_static/add_algorithm/input_output.png" alt="input_output" />
+<img width="200px" src="https://github.com/oist/optinist/blob/main/docs/_static/add_algorithm/input_output.png" alt="input_output" />
 </p>
 
 
@@ -176,11 +176,11 @@ Restart the GUI, connect imageNode and run it, and you will see the output as fo
 ** Note: This process takes only 2~3 seconds, so if the process does not finish, there may be an error. If the error cannot be resolved, please post a message on slack or an issue.
 
 <p align="center">
-<img width="300px" src="../_static/add_algorithm/run.png" alt="run" />
+<img width="300px" src="https://github.com/oist/optinist/blob/main/docs/_static/add_algorithm/run.png" alt="run" />
 </p>
 
 <p align="center">
-<img width="240px" src="../_static/add_algorithm/visualize_output.png" alt="output" />
+<img width="240px" src="https://github.com/oist/optinist/blob/main/docs/_static/add_algorithm/visualize_output.png" alt="output" />
 </p>
 
 

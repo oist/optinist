@@ -47,19 +47,6 @@ extensions = [
     'myst_parser',
 ]
 
-# extensions = [
-#     'sphinx.ext.autodoc',
-#     'sphinx.ext.autosectionlabel',
-#     'sphinx.ext.autosummary',
-#     'sphinx.ext.viewcode',
-#     'sphinx.ext.napoleon',
-#     'sphinx.ext.mathjax',
-#     'sphinx.ext.extlinks',
-#     'sphinx.ext.intersphinx',
-#     'sphinx.ext.autodoc.typehints',
-#     'myst_parser',
-# ]
-
 # Tell myst-parser to assign header anchors for h1-h3.
 myst_heading_anchors = 4
 

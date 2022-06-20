@@ -5,7 +5,7 @@ In the RECORD field, you can check the workflow status in your OPTINIST_DIR and 
 OptiNiSt records and reproduces past workflow pipelines. It can download results in nwb format.
 <br>
 <p align="center">
-<img width="400px" src="../_static/record/whole.png" alt="Whole"/>
+<img width="400px" src="https://github.com/oist/optinist/blob/main/docs/_static/record/whole.png" alt="Whole"/>
 </p>
 
 
@@ -26,7 +26,7 @@ OptiNiSt can:
 - **Delete**: button to delete the workflow from the OPTINIST_DIR.
 
 <p align="center">
-<img width="400px" src="../_static/record/components/table.png" alt="Table"/>
+<img width="400px" src="https://github.com/oist/optinist/blob/main/docs/_static/record/components/table.png" alt="Table"/>
 </p>
 
 
@@ -38,5 +38,5 @@ OptiNiSt can:
 
 
 <p align="center">
-<img width="400px" src="../_static/record/components/details.png" alt="Details"/>
+<img width="400px" src="https://github.com/oist/optinist/blob/main/docs/_static/record/components/details.png" alt="Details"/>
 </p>

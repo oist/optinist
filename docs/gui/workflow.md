@@ -4,7 +4,7 @@ Workflow
 OptiNiSt can help creating your analysis pipelines easily on the GUI. In this workflow field, you select the data and the algorithms or analysis methods (nodes). Connecting these nodes defines the order of processing (pipelines). The analysis pipeline can be parallel or bifurcating.
 <br>
 <p align="center">
-<img width="400px" src="../_static/workflow/whole.png" alt="workflow" />
+<img width="400px" src="https://github.com/oist/optinist/blob/main/docs/_static/workflow/whole.png" alt="workflow" />
 
 <br/>
 
@@ -23,8 +23,8 @@ OptiNiSt can help creating your analysis pipelines easily on the GUI. In this wo
 
 <br>
 <p align="center">
-<img width="200px" src="../_static/workflow/components/imageNode.png" alt="imageNode" />
-<img width="200px" src="../_static/workflow/components/imageList.png" alt="imageNode" />
+<img width="200px" src="https://github.com/oist/optinist/blob/main/docs/_static/workflow/components/imageNode.png" alt="imageNode" />
+<img width="200px" src="https://github.com/oist/optinist/blob/main/docs/_static/workflow/components/imageList.png" alt="imageNode" />
 </p>
 <br/>
 
@@ -32,7 +32,7 @@ OptiNiSt can help creating your analysis pipelines easily on the GUI. In this wo
 Select algorithms or analysis methods from the treeview on the left by clicking "+" button. 
 <br>
 <p align="center">
-  <img width="300px" src="../_static/workflow/components/add_algorithm.png" alt="Add Algorithm" />
+  <img width="300px" src="https://github.com/oist/optinist/blob/main/docs/_static/workflow/components/add_algorithm.png" alt="Add Algorithm" />
 </p>
 
 <br>
@@ -41,7 +41,7 @@ Select algorithms or analysis methods from the treeview on the left by clicking 
 Click `PARAM` button of the node to change parameters.
 <br>
 <p align="center">
-<img width="300px" src="../_static/workflow/components/setparam.png" alt="Set Parameter" />
+<img width="300px" src="https://github.com/oist/optinist/blob/main/docs/_static/workflow/components/setparam.png" alt="Set Parameter" />
 </p>
 
 <br/>
@@ -59,7 +59,7 @@ You can only connect the input and output connectors of the same color.
 
 <br>
 <p align="center">
-<img width="300px" src="../_static/workflow/components/connect_edge.png" alt="Connect Algorithm" />
+<img width="300px" src="https://github.com/oist/optinist/blob/main/docs/_static/workflow/components/connect_edge.png" alt="Connect Algorithm" />
 </p>
 
 <br/>
@@ -78,7 +78,7 @@ CSV and hdf5 nodes have black output connectors. The edge connected to the black
 
 <br>
 <p align="center">
-<img width="300px" src="../_static/workflow/components/csv_connect.png" alt="CSV Connect" />
+<img width="300px" src="https://github.com/oist/optinist/blob/main/docs/_static/workflow/components/csv_connect.png" alt="CSV Connect" />
 </p>
 
 
@@ -90,8 +90,8 @@ RUN ALL command creates a new output folder in the OPTINIST_DIR and executes all
 
 <br>
 <p align="center">
-<img width="350px" src="../_static/workflow/components/run_start.png" alt="Run Start" />
-<img width="150px" src="../_static/workflow/components/run_name.png" alt="Run Name" />
+<img width="350px" src="https://github.com/oist/optinist/blob/main/docs/_static/workflow/components/run_start.png" alt="Run Start" />
+<img width="150px" src="https://github.com/oist/optinist/blob/main/docs/_static/workflow/components/run_name.png" alt="Run Name" />
 </p>
 
 Runninng...
@@ -99,7 +99,7 @@ During running, the indicators of the nodes show the progress of the computation
 Red checkmarks indicate the abortion of the process because of the error. You can check the error messages by moving the cursor over the checkmark.
 
 <p align="center">
-<img width="300px" src="../_static/workflow/components/running.png" alt="Running" />
+<img width="300px" src="https://github.com/oist/optinist/blob/main/docs/_static/workflow/components/running.png" alt="Running" />
 </p>
 
 ### RUN
@@ -107,7 +107,7 @@ Once you `RUN ALL`, you may want to change the last pipeline's parameters or add
 Use the `RUN` button in such a case. It automatically detects the change and runs only the nodes which were changed. The additional results are overwritten into the same folder. If you leave the previous results for comparison, use `RUN ALL` instead.
 
 <p align="center">
-<img width="300px" src="../_static/workflow/components/run_checkpoint.png" alt="Run Checkpoint" />
+<img width="300px" src="https://github.com/oist/optinist/blob/main/docs/_static/workflow/components/run_checkpoint.png" alt="Run Checkpoint" />
 </p>
 
 <br />
@@ -118,8 +118,8 @@ Once the green checkmark appears, you can quickly visualize the output by clicki
 
 <br>
 <p align="center">
-<img width="300px" src="../_static/workflow/components/run_finish.png" alt="Finish Run" />
-<img width="100px" src="../_static/workflow/components/run_output.png" alt="Finish Run" />
+<img width="300px" src="https://github.com/oist/optinist/blob/main/docs/_static/workflow/components/run_finish.png" alt="Finish Run" />
+<img width="100px" src="https://github.com/oist/optinist/blob/main/docs/_static/workflow/components/run_output.png" alt="Finish Run" />
 </p>
 
 
