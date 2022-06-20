@@ -1,10 +1,10 @@
 *********
-Using GUI
+GUI GUIDE
 *********
 
 .. toctree::
   :maxdepth: 2
-  :caption: GUI:
+  :caption: GUI GUIDE:
 
   workflow
   visualize

@@ -1,6 +1,26 @@
 Tutorials
 =================
 
+* [Opening the browser](#opening-the-browser)
+* [Making pipelines on WORKFLOW](#making-pipelines-on-workflow)
+  * [Assigning input data path](#assigning-input-data-path)
+  * [Selecting analysis methods](#selecting-analysis-methods)
+  * [Creating pipelines](#creating-pipelines)
+  * [Parameter button and output button on the node](#parameter-button-and-output-button-on-the-node)
+  * [running pipelines](#running-pipelines)
+  * [SNAKEMANE and NWB SETTING](#snakemane-and-nwb-setting)
+  * [Time series analyses after ROI extraction](#time-series-analyses-after-roi-extraction)
+  * [Additional information on WORKFLOW](#additional-information-on-workflow)
+        * [setting OPTINIST_DIR](#setting-optinist_dir)
+      * [about the assumed data shape](#about-the-assumed-data-shape)
+        * [snakemake settings](#snakemake-settings)
+        * [NWB settings](#nwb-settings)
+* [Inspecting the images and the plots on VISUALIZE](#inspecting-the-images-and-the-plots-on-visualize)
+  * [Checking movies](#checking-movies)
+  * [Showing ROI and time courses](#showing-roi-and-time-courses)
+  * [Savind plots](#savind-plots)
+* [Managing pipelines on RECORD](#managing-pipelines-on-record)
+
 ## Opening the browser
 To start OptiNiSt, you need to open a console and activate optinist environment `conda activate optinist` and type `run_optinist` or, change to optinist directory `cd ~/optinist/` and run main script `python main.py`. 
 The console shows the log once the startup is completed.

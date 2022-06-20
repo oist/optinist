@@ -25,24 +25,9 @@ OptiNiSt will also help reproducibility of research, standardization of analysis
 
 .. toctree::
   :maxdepth: 3
-  :caption: Install:
+  :caption: USER GUIDE:
 
   installation/index
-
-.. toctree::
-  :maxdepth: 3
-  :caption: Tutorial:
-
   tutorials
-
-.. toctree::
-  :maxdepth: 3
-  :caption: GUI:
-
   gui/index
-
-.. toctree::
-  :maxdepth: 3
-  :caption: etc:
-
   utils/index
