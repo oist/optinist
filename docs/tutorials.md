@@ -1,7 +1,7 @@
-Getting Started
+Tutorials
 =================
 
-# Opening the browser
+## Opening the browser
 To start OptiNiSt, you need to open a console and activate optinist environment `conda activate optinist` and type `run_optinist` or, change to optinist directory `cd ~/optinist/` and run main script `python main.py`. 
 The console shows the log once the startup is completed.
 
@@ -24,7 +24,7 @@ OptiNiSt has three different pages, WORKFLOW, VISUALIZE, and RECORD. You can tog
 <img width="300px" src="../_static/tutorials/fig2.2_tags.png" alt="Whole" />
 </p>
 
-# Making pipelines on WORKFLOW 
+## Making pipelines on WORKFLOW 
 After launching, the first page you see is the workflow page. The workflow page is a place to define the analysis pipeline. You determine the data you will analyze, select the type of the algorithm or analysis method you use, and set the parameters and the order of analysis.  
 
 ### Assigning input data path
@@ -219,7 +219,6 @@ The plots are for quick confirmation of the results. If you want to look into th
 
 
 ### Additional information on WORKFLOW
-  
 
 ##### setting OPTINIST_DIR
 The file assigning the OPTINIST_DIR is optinist/optinist/api/dir_path.py. Change line for OPTINIST_DIR, INPUT_DIR, and OUTPUT_DIR according to your demand. Changing dir_path.py may also be necessary when running the pipeline on your cluster computers. Also, you can quickly change OPTINIST_DIR by changing the environment variable by typing 'export OPTINIST_DIR="your_saving_dir"' before launching.
@@ -228,9 +227,7 @@ The file assigning the OPTINIST_DIR is optinist/optinist/api/dir_path.py. Change
 eta, cca, correlation, cross_correlation, granger, glm, lda, and svm assume the input neural data shape is frames x cells matrix. Because the output of CaImAn and Suite2P on the pipeline is cell x frames, the default setting for neural data for these analyses is set to transpose. 
 
 Pca and tsne can be done in either direction depending on your purpose. The function assumes their input to be samples x features.  
- 
- 
- 
+
 
 ##### snakemake settings
 use_conda:  ADD COMMENTS!  <br>
@@ -253,7 +250,7 @@ ophys: ADD COMMENTS!<br>
 
 
 
-# Inspecting the images and the plots on VISUALIZE
+## Inspecting the images and the plots on VISUALIZE
 After executing the pipeline, you may want to check and compare the results.
 VISUALIZE page is the place to work on this. You can replay the tiff time-series, see the cell ROI images, the plot of cell fluorescence or spike time-series, and other plots showing the results of analyses. See [here](../gui/visualize.md) for basic usage.
 
@@ -333,7 +330,7 @@ You can save created plots in svg, png, jpeg, or webp format. Please select the 
 <img width="200px" src="../_static/tutorials/fig30_saving.png" alt="Whole" />
 </p>
 
-# Managing pipelines on RECORD
+## Managing pipelines on RECORD
 RECORD section keeps your analysis pipeline easy to organize and easy to retrieve. For the basic usage of the RECORD page, see also [here](../gui/record.md) The RECORD page shows the summary of current status of OPTINIST_DIR/output. 
 
 <br>
@@ -354,9 +351,3 @@ The Download buttons for the workflow column and the NWB column copy the snakema
 <p align="left">
 <img width="150px" src="../_static/tutorials/fig42_workflownwb.png" alt="Whole" />
 </p>
-
-
-
-
-
-
