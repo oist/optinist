@@ -1,0 +1,8 @@
+sphinx>=4.3.0,<4.6.0
+sphinxcontrib-apidoc
+sphinx_rtd_theme
+sphinx-prompt
+sphinx-autodoc-typehints
+sphinx-copybutton==0.5.0
+sphinx-autobuild==2021.3.14
+myst-parser
