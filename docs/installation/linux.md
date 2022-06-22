@@ -47,6 +47,8 @@ We use snakemake library, and it requires mamba.
 conda install -n base -c conda-forge mamba
 ```
 
+### Install library
+
 ```bash
 pip install optinist
 ```
