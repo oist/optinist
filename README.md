@@ -5,7 +5,7 @@
        <img src="https://img.shields.io/badge/-Python-F9DC3E.svg?logo=python&style=flat">
     </a>
     <a>
-    <img src="https://img.shields.io/badge/-TypeScript-007ACC.svg?logo=typescript&style=flat">
+      <img src="https://img.shields.io/badge/-TypeScript-007ACC.svg?logo=typescript&style=flat&logoColor=white">
     </a>
     <a href="https://pypi.org/project/optinist/">
         <img alt="PYPI" src="https://static.pepy.tech/personalized-badge/optinist?period=total&units=international_system&left_color=black&right_color=blue&left_text=Downloads(PYPI)">
