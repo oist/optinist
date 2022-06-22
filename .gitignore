@@ -3,6 +3,8 @@ __pycache__
 .ipynb_checkpoints
 .vscode/*
 !.vscode/settings.json
+dist
+build
 
 optinist.extensions.yaml
 optinist.namespace.yaml
