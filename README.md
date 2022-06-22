@@ -15,6 +15,24 @@ OptiNiSt also supports reproducibility of scientific research, standardization o
 ### :rocket: Managing Workflows
 - **recording and reproducing**: OptiNiSt records and reproduces the workflow pipelines easily.
 
+
+## Installation
+Need anaconda or miniconda environment.
+```
+conda create -n optinist python=3.8
+conda activate optinist
+```
+
+Install from pip.
+```
+pip install optinist
+```
+
+launch.
+```
+run_optinist
+```
+
 ## Documentation
 https://optinist.readthedocs.io/en/latest/
 
@@ -57,7 +75,7 @@ https://optinist.readthedocs.io/en/latest/
 - [Syuya Saeki](https://github.com/hiiaka)
 
 
-## Citing the Project
+<!-- ## Citing the Project
 To cite this repository in publications:
 ```
 @misc{OptiNiSt,
@@ -68,4 +86,4 @@ To cite this repository in publications:
   journal = {},
   howpublished = {},
 }
-```
+``` -->

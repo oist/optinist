@@ -2,17 +2,15 @@ Linux
 =================
 
 * [Installation](#installation)
-* [0. GitHub SSH access settings](#0-github-ssh-access-settings)
-* [1. Clone optinist repository](#1-clone-optinist-repository)
-* [2. Make backend environment](#2-make-backend-environment)
+* [1. Make backend environment](#2-make-backend-environment)
    * [Install gcc, g++](#install-gcc-g)
    * [Install Anaconda](#install-anaconda)
    * [Create anaconda environment](#create-anaconda-environment)
    * [Install mamba](#install-mamba)
    * [Install library](#install-library)
    * [Set saving directory](#set-saving-directory)
-* [3. Create virtualenv](#3-create-virtualenv)
-* [4. Run backend](#4-run-backend)
+* [2. Create virtualenv](#3-create-virtualenv)
+* [3. Run backend](#4-run-backend)
    * [Launch browser.  <a href="http://localhost:8000" rel="nofollow">http://localhost:8000</a>](#launch-browser--httplocalhost8000)
 
 ## Installation
@@ -22,21 +20,7 @@ Please follow instructions below.
 
 **CAUTION**: We confirmed them on Ubuntu 18.04 or 20.04.
 
-## 0. GitHub SSH access settings
-**You only need to do the following once.**
-
-Follow this [link](settings.md).
-
-## 1. Clone optinist repository
-
-First, you get optinist code from github repository.
-```
-cd "your working repository"
-git clone git@github.com:oist/optinist.git
-```
-<br />
-
-## 2. Make backend environment
+## 1. Make backend environment
 ### Install gcc, g++
 - For install CaImAn, you need to install gcc and g++.
 ```
@@ -62,23 +46,17 @@ We use snakemake library, and it requires mamba.
 ```
 conda install -n base -c conda-forge mamba
 ```
-<!-- ### Install library
+
 ```bash
-pip install -r requirements.txt
-# for CaImAn
-git clone https://github.com/flatironinstitute/CaImAn -b v1.9.7
-pip install cython opencv-python matplotlib scikit-image==0.18.0 scikit-learn ipyparallel holoviews watershed tensorflow
-cd CaImAn
-pip install -e .
-cd ..
-``` -->
+pip install optinist
+```
 ### Set saving directory
 Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
 ```bash
 export OPTINIST_DIR="your_saving_dir"
 ```
 
-## 3. Create virtualenv
+## 2. Create virtualenv
 In snakemake used by optinist, a virtual environment is created and executed for each function.
 The procedure for first creating a virtual environment for processing suite2p, caiman, pca, etc. is described in the following link.
 
@@ -86,13 +64,13 @@ The procedure for first creating a virtual environment for processing suite2p, c
 
 Follow this [link](create_virtualenv.md).
 
-## 4. Run backend
+## 3. Run backend
 ```
-python main.py
+run_optinist
 ```
-- `python main.py` log is as blow:
+- `run_optinist` log is as blow:
 ```
-$ python main.py
+$ run_optinist
 INFO:     Will watch for changes in these directories: ['/home/oist/optinist/backend']
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
 INFO:     Started reloader process [6520] using statreload
