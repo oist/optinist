@@ -1,26 +1,26 @@
-name: Build
+# name: Build
 
-on:
-  push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+# on:
+#   push:
+#     branches: [ main ]
+#   pull_request:
+#     branches: [ main ]
 
-  workflow_dispatch:
+#   workflow_dispatch:
 
-jobs:
-  build:
-    if: github.event.pull_request.merged == true
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-        with:
-          token: ${{secrets.GITHUB_TOKEN}}
-      - name: push
-        env:
-          CI: false
-        run: |
-          make build_frontend
-          git add build
-          git commit -m"build frontend"
-          git push origin develop
+# jobs:
+#   build:
+#     if: github.event.pull_request.merged == true
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v2
+#         with:
+#           token: ${{secrets.GITHUB_TOKEN}}
+#       - name: push
+#         env:
+#           CI: false
+#         run: |
+#           make build_frontend
+#           git add build
+#           git commit -m"build frontend"
+#           git push origin develop

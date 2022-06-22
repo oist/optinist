@@ -2,15 +2,13 @@ Mac
 =================
 
 * [Installation](#installation)
-* [0. GitHub SSH access settings](#0-github-ssh-access-settings)
-* [1. Clone optinist repository](#1-clone-optinist-repository)
-* [2. Make backend environment](#2-make-backend-environment)
+* [1. Make backend environment](#2-make-backend-environment)
    * [Install Anaconda](#install-anaconda)
    * [Create anaconda environment](#create-anaconda-environment)
    * [Install library](#install-library)
    * [Set saving directory](#set-saving-directory)
-* [3. Create virtualenv](#3-create-virtualenv)
-* [4. Run backend](#4-run-backend)
+* [2. Create virtualenv](#3-create-virtualenv)
+* [3. Run backend](#4-run-backend)
    * [Launch browser.  <a href="http://localhost:8000" rel="nofollow">http://localhost:8000</a>](#launch-browser--httplocalhost8000)
 * [FAQ](#faq)
 
@@ -21,24 +19,7 @@ Please follow instructions below.
 
 <br />
 
-**CAUTION for M1 Mac User**
-We use tensorflow in caiman code. We know that M1 mac doesn't install tensorflow easily, so if there is a problem, skip install caiman. (Release in progress…)
-
-## 0. GitHub SSH access settings
-**You only need to do the following once.**
-
-Follow this [link](settings.md).
-
-## 1. Clone optinist repository
-
-First, you get optinist code from github repository.
-```
-cd "your working repository"
-git clone git@github.com:oist/optinist.git
-```
-<br />
-
-## 2. Make backend environment
+## 1. Make backend environment
 
 ### Install Anaconda
 Download https://repo.anaconda.com/archive/Anaconda3-2021.11-MacOSX-x86_64.pkg
@@ -58,13 +39,12 @@ conda config --set channel_priority strict
 ```
 
 ### Install library
-```bash
-pip install -r requirements.txt
+```bach
+pip install --upgrade pip
 ```
 
-In case an error occuered when you install ``` requirements.txt ```, pip upgrade command below may solve the error.
-```
-pip install --upgrade pip
+```bash
+pip install optinist
 ```
 
 ### Set saving directory
@@ -73,7 +53,7 @@ Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, thi
 export OPTINIST_DIR="your_saving_dir"
 ```
 
-## 3. Create virtualenv
+## 2. Create virtualenv
 In snakemake used by optinist, a virtual environment is created and executed for each function.
 The procedure for first creating a virtual environment for processing suite2p, caiman, pca, etc. is described in the following link.
 
@@ -82,13 +62,13 @@ The procedure for first creating a virtual environment for processing suite2p, c
 Follow this [link](create_virtualenv.md).
 
 
-## 4. Run backend
+## 3. Run backend
 ```
-python main.py
+run_optinist
 ```
-- `python main.py` log is as blow:
+- `run_optinist` log is as blow:
 ```
-$ python main.py
+$ run_optinist
 INFO:   Will watch for changes in these directories: [‘/Users/oist/optinist/backend’]
 INFO:   Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
 INFO:   Started reloader process [5811] using statreload

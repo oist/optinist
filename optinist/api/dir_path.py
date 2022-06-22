@@ -8,6 +8,7 @@ class DIRPATH:
     INPUT_DIR = f"{OPTINIST_DIR}/input"
     OUTPUT_DIR = f"{OPTINIST_DIR}/output"
 
+    CONDAYML_DIR = f"{os.path.dirname(os.path.dirname(__file__))}/conda"
     CONDAENV_DIR = f"{os.path.dirname(os.path.dirname(os.path.dirname(__file__)))}/conda"
 
     ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
