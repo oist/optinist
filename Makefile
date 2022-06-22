@@ -33,3 +33,22 @@ docs:
 	rm -rf docs/_build/
 	# sphinx-apidoc -f -o ./docs/_build/modules ./optinist
 	sphinx-autobuild -b html docs docs/_build --port 8001
+
+
+.PHONY: local_build
+local_build:
+	cp -r frontend/build optinist/frontend/build
+	pip install .
+
+.PHONY: upload_pypi
+upload_pypi:
+	python setup.py sdist
+	twine upload --repository testpypi dist/*
+
+.PHONY: test_pypi
+test_pypi:
+	python3 -m pip install --index-url https://test.pypi.org/simple/ optinist
+
+.PHONY: push_pypi
+push_pypi:
+	twine upload --repository pypi dist/*

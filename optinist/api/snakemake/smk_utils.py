@@ -48,7 +48,7 @@ class SmkUtils:
 
         if "conda_yaml" in wrapper:
             conda_yaml = wrapper["conda_yaml"]
-            return f"{DIRPATH.CONDAENV_DIR}/yaml/{conda_yaml}"
+            return f"{DIRPATH.CONDAYML_DIR}/{conda_yaml}"
 
         return None
 
