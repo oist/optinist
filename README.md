@@ -1,5 +1,31 @@
 # optinist <img src="docs/_static/optinist.png" width="250" title="optinist" alt="optinist" align="right" vspace = "50">
 
+<p align="center">
+    <a>
+       <img src="https://img.shields.io/badge/-Python-F9DC3E.svg?logo=python&style=flat">
+    </a>
+    <a>
+      <img src="https://img.shields.io/badge/-TypeScript-007ACC.svg?logo=typescript&style=flat&logoColor=white">
+    </a>
+    <a href="https://pypi.org/project/optinist/">
+        <img alt="PYPI" src="https://static.pepy.tech/personalized-badge/optinist?period=total&units=international_system&left_color=black&right_color=blue&left_text=Downloads(PYPI)">
+    </a>
+    <a href="https://pypi.org/project/optinist/">
+        <img alt="PYPI" src="https://static.pepy.tech/personalized-badge/optinist?period=week&units=international_system&left_color=black&right_color=blue&left_text=Downloads/week(PYPI)">
+    </a>
+    <a href="https://github.com/oist/optinist">
+      <img alt="" src="https://badge.fury.io/py/optinist.svg">
+    </a>
+    <a href="https://github.com/oist/optinist">
+      <img alt="" src="https://img.shields.io/github/repo-size/oist/optinist">
+    </a>
+    <a href="https://github.com/oist/optinist">
+      <img alt="" src="https://img.shields.io/github/stars/oist/optinist?style=social">
+    </a>
+    <a href="https://github.com/oist/optinist">
+      <img alt="" src="https://img.shields.io/github/forks/oist/optinist?style=social">
+    </a>
+</p>
 
 OptiNiSt(Optical Neuroimage Studio) helps researchers try multiple data analysis methods, visualize the results, and construct the data analysis pipelines easily and quickly. OptiNiSt's data-saving format follows NWB standards.
 
@@ -14,6 +40,24 @@ OptiNiSt also supports reproducibility of scientific research, standardization o
 
 ### :rocket: Managing Workflows
 - **recording and reproducing**: OptiNiSt records and reproduces the workflow pipelines easily.
+
+
+## Installation
+Need anaconda or miniconda environment.
+```
+conda create -n optinist python=3.8
+conda activate optinist
+```
+
+Install from pip.
+```
+pip install optinist
+```
+
+launch.
+```
+run_optinist
+```
 
 ## Documentation
 https://optinist.readthedocs.io/en/latest/
@@ -57,7 +101,7 @@ https://optinist.readthedocs.io/en/latest/
 - [Syuya Saeki](https://github.com/hiiaka)
 
 
-## Citing the Project
+<!-- ## Citing the Project
 To cite this repository in publications:
 ```
 @misc{OptiNiSt,
@@ -68,4 +112,4 @@ To cite this repository in publications:
   journal = {},
   howpublished = {},
 }
-```
+``` -->

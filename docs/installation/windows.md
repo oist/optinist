@@ -2,9 +2,7 @@ Windows
 =================
 
 * [Installation](#installation)
-* [0. GitHub SSH access settings](#0-github-ssh-access-settings)
-* [1. Clone optinist repository](#1-clone-optinist-repository)
-* [2. Make backend environment](#2-make-backend-environment)
+* [1. Make backend environment](#2-make-backend-environment)
    * [For Windows(PowerShell) Users](#for-windowspowershell-users)
       * [Install Visutal Studio Build Tools](#install-visutal-studio-build-tools)
       * [Install Anaconda](#install-anaconda)
@@ -21,8 +19,8 @@ Windows
       * [Install mamba](#install-mamba-1)
       * [Install library](#install-library-1)
       * [Set saving directory](#set-saving-directory-1)
-* [3. Create virtualenv](#3-create-virtualenv)
-* [4. Run backend](#4-run-backend)
+* [2. Create virtualenv](#3-create-virtualenv)
+* [3. Run backend](#4-run-backend)
    * [Launch browser.  <a href="http://localhost:8000" rel="nofollow">http://localhost:8000</a>](#launch-browser--httplocalhost8000-1)
 
 ## Installation
@@ -35,25 +33,7 @@ Please follow instructions below.
 **CAUTION**: For WSL2, we confirmed them on [Ubuntu 20.04](https://www.microsoft.com/ja-jp/p/ubuntu-2004-lts/9n6svws3rx71).
 
 
-## 0. GitHub SSH access settings
-**You only need to do the following once.**
-
-Follow this [link](settings.md).
-
-## 1. Clone optinist repository
-First, you get optinist code from github repository.
-```
-cd "your working repository"
-git clone git@github.com:oist/optinist.git
-```
-Clone CaImAn repository.
-```
-cd optinist
-git clone https://github.com/flatironinstitute/CaImAn -b v1.9.7
-```
-<br />
-
-## 2. Make backend environment
+## 1. Make backend environment
 
 ### For Windows(PowerShell) Users
 #### Install Visutal Studio Build Tools
@@ -83,7 +63,7 @@ conda install -n base -c conda-forge mamba
 #### Install library
 On the Anaconda PowerShell Prompt(anaconda3),
 ```bash
-pip install -r requirements.txt
+pip install optinist
 # for suite2p
 pip install "PyQt5<=5.15.1" "PyQt5-sip<=12.8.1" "pyqtgraph<=0.11.0" "pandas" "suite2p<=0.10.3" "tifffile<=v2022.3.25"
 # for GLM
@@ -106,11 +86,11 @@ $ENV:OPTINIST_DIR="your_saving_dir"
 #### Run backend
 On the Anaconda PowerShell Prompt(anaconda3),
 ```
-python main.py
+run_optinist
 ```
-- `python main.py` log is as blow:
+- `run_optinist` log is as blow:
 ```
-(optinist) PS C:\optinist\backend> python main.py
+(optinist) PS C:\optinist\backend> run_optinist
 [32mINFO[0m:     Will watch for changes in these directories: ['C:\\optinist\\backend']
 [32mINFO[0m:     Uvicorn running on [1mhttp://0.0.0.0:8000[0m (Press CTRL+C to quit)
 [32mINFO[0m:     Started reloader process [[36m[1m16312[0m] using [36m[1mstatreload[0m
@@ -152,13 +132,7 @@ conda install -n base -c conda-forge mamba
 ```
 #### Install library
 ```bash
-pip install -r requirements.txt
-# for CaImAn
-git clone https://github.com/flatironinstitute/CaImAn -b v1.9.7
-pip install cython opencv-python matplotlib scikit-image==0.18.0 scikit-learn ipyparallel holoviews watershed tensorflow
-cd CaImAn
-pip install -e .
-cd ..
+pip install optinist
 ```
 #### Set saving directory
 Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
@@ -166,7 +140,7 @@ Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, thi
 export OPTINIST_DIR="your_saving_dir"
 ```
 
-## 3. Create virtualenv
+## 2. Create virtualenv
 In snakemake used by optinist, a virtual environment is created and executed for each function.
 The procedure for first creating a virtual environment for processing suite2p, caiman, pca, etc. is described in the following link.
 
@@ -174,13 +148,13 @@ The procedure for first creating a virtual environment for processing suite2p, c
 
 Follow this [link](create_virtualenv.md).
 
-## 4. Run backend
+## 3. Run backend
 ```
-python main.py
+run_optinist
 ```
-- `python main.py` log is as blow:
+- `run_optinist` log is as blow:
 ```
-$ python main.py
+$ run_optinist
 INFO:     Will watch for changes in these directories: ['/home/oist/optinist/backend']
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
 INFO:     Started reloader process [3268] using statreload
