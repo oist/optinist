@@ -4,7 +4,7 @@ __pycache__
 .vscode/*
 !.vscode/settings.json
 dist
-build
+./build
 
 optinist.extensions.yaml
 optinist.namespace.yaml
