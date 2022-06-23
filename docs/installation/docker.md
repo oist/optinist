@@ -22,7 +22,7 @@ docker pull oistncu/optinist
 ```
 Start docker container.
 ```
-docker run -it --shm-size=2G --name optinist_container -d -p 8000:8000 --restart=unless-stopped oistncu/optinist:latest
+docker run -it --shm-size=2G --name optinist_container -d -p 8000:8000 --add-host="localhost:127.0.0.1" --restart=unless-stopped oistncu/optinist:latest
 ```
 
 Execute in terminal

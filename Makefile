@@ -34,6 +34,10 @@ docs:
 	# sphinx-apidoc -f -o ./docs/_build/modules ./optinist
 	sphinx-autobuild -b html docs docs/_build --port 8001
 
+.PHONY: dockerhub
+dockerhub:
+	docker build --rm -t oistncu/optinist:latest . --platform=linux/amd64
+	docker push oistncu/optinist:latest
 
 .PHONY: local_build
 local_build:
