@@ -1,32 +1,31 @@
-FROM python:3.9.7
+FROM python:3.9.7-slim
 
-RUN mkdir /app
-WORKDIR /app
+COPY requirements.txt /app/requirements.txt
 
-RUN apt-get --allow-releaseinfo-change update
-RUN apt-get install -y git gcc g++ libgl1
+RUN apt-get --allow-releaseinfo-change update && \
+    apt-get install --no-install-recommends -y git gcc g++ libgl1 libgl1-mesa-dev && \
+    pip3 install --no-cache-dir --upgrade pip && \
+    pip3 install --no-cache-dir -r /app/requirements.txt && \
+    pip3 install --no-cache-dir cython==0.29.30 && \
+    pip3 install --no-cache-dir git+https://github.com/flatironinstitute/CaImAn.git@914324989443fac5d481ef32aad4f327701294a8#egg=caiman && \
+    apt-get purge git -y && apt-get autoremove -y && apt-get clean && rm -rf /root/.cache/pip/*
 
-RUN /usr/local/bin/python -m pip install --upgrade pip
-COPY requirements.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+RUN mkdir -p /root/miniconda3 && \
+    apt-get install --no-install-recommends -y wget && \
+    wget -q https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh && \
+    apt-get purge wget -y && apt-get autoremove -y && apt-get clean && \
+    bash /root/miniconda3/miniconda.sh -b -u -p /root/miniconda3 && \
+    rm /root/miniconda3/miniconda.sh && \
+    export PATH="$PATH:/root/miniconda3/bin" && \
+    conda upgrade -y --all && \
+    conda config --set channel_priority strict && \
+    conda clean -y --tarballs
 
-# # caiman install
-RUN pip3 install cython opencv-python matplotlib scikit-image==0.18.0 scikit-learn ipyparallel holoviews watershed tensorflow
-RUN git clone https://github.com/flatironinstitute/CaImAn /CaImAn
-RUN cd /CaImAn && pip install -e .
-
-# install conda
-RUN mkdir -p ~/miniconda3
-RUN wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
-RUN bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
-RUN rm -rf ~/miniconda3/miniconda.sh
+COPY frontend/build /app/frontend/build
+COPY optinist /app/optinist
+COPY main.py /app/main.py
 
 ENV PATH $PATH:/root/miniconda3/bin
-RUN conda upgrade -y --all
-RUN conda install -n base -c conda-forge mamba
-
-RUN apt update && apt-get install -y libgl1-mesa-dev
-
-COPY . .
-
-ENTRYPOINT ["python", "main.py"]
+WORKDIR /app
+EXPOSE 8000
+ENTRYPOINT ["python3", "main.py"]
