@@ -1,11 +1,14 @@
-from setuptools import setup, find_packages, Extension
+import os
+from setuptools import setup, find_packages
+
+here = os.path.abspath(os.path.dirname(__file__))
+exec(open(os.path.join(here, 'optinist', 'version.py')).read())
 
 def _requires_from_file(filepath):
 
     def take_package_name(name):
-        if name.startswith("git+"):
-            _package = name.strip("=")[-1]
-            return f"{_package}"
+        if "snakemake" in name:
+            return f"snakemake @ https://github.com/ShogoAkiyama/snakemake/archive/refs/tags/v7.7.2-post1.zip"
         else:
             return name.strip()
 
@@ -14,7 +17,7 @@ def _requires_from_file(filepath):
 
 setup(
     name="optinist",
-    version="0.1.0-6",
+    version=VERSION,
     description="An offline deep reinforcement learning library",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
@@ -34,7 +37,6 @@ setup(
         "Operating System :: MacOS :: MacOS X"
     ],
     install_requires=_requires_from_file('requirements.txt'),
-    dependency_links=["git+https://github.com/ShogoAkiyama/snakemake@main#egg=snakemake"],
     packages=find_packages(exclude=["optinist/tests*"]),
     tests_require=["pytest"],
     zip_safe=False,
