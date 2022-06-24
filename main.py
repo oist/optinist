@@ -3,9 +3,9 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 import os
+import argparse
 import uvicorn
 from starlette.middleware.cors import CORSMiddleware
-DIRPATH = os.path.dirname(os.path.abspath(__file__))
 from optinist.routers import (
     files,
     run,
@@ -15,6 +15,8 @@ from optinist.routers import (
     hdf5,
     experiment,
 )
+
+DIRPATH = os.path.dirname(os.path.abspath(__file__))
 
 app = FastAPI(docs_url="/docs", openapi_url="/openapi")
 app.include_router(algolist.router)
@@ -30,16 +32,17 @@ app.add_middleware(
     allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"]
+    allow_headers=["*"],
 )
 
 app.mount(
     "/static",
     StaticFiles(directory=f"{DIRPATH}/frontend/build/static"),
-    name="static"
+    name="static",
 )
 
 templates = Jinja2Templates(directory=f"{DIRPATH}/frontend/build")
+
 
 @app.get("/")
 async def root(request: Request):
@@ -47,8 +50,11 @@ async def root(request: Request):
 
 
 def main():
-    uvicorn.run('main:app', port=8000, reload=True)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--host", type=str, default="127.0.0.1")
+    args = parser.parse_args()
+    uvicorn.run("main:app", host=args.host, port=8000, reload=True)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
