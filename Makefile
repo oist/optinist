@@ -44,8 +44,8 @@ local_build:
 	cp -r frontend/build optinist/frontend/build
 	pip install .
 
-.PHONY: upload_pypi
-upload_pypi:
+.PHONY: upload_testpypi
+upload_testpypi:
 	python setup.py sdist
 	twine upload --repository testpypi dist/*
 
