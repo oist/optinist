@@ -250,21 +250,23 @@ Pca and tsne can be done in either direction depending on your purpose. The func
 
 
 ##### snakemake settings
-use_conda:  ADD COMMENTS!  <br>
-cores:  ADD COMMENTS!  <br>
-forceall:  ADD COMMENTS!  <br>
-forcetargets:  ADD COMMENTS!  <br>
-lock:  ADD COMMENTS!<br>
+For details about snakemake parameters please refer to [here](https://snakemake.readthedocs.io/en/stable/executing/cli.html)
+use_conda: If this is on, snakemake uses conda environment.<br>
+cores: Specifies the number of cores to use. If not specified, snakemake uses number of available cores in the machine. <br>
+forceall: Flag to indicate the execution of the target regardless of already created output.<br>
+forcetargets:  <br>
+lock:  <br>
 
 ##### NWB settings
-session_description: ADD COMMENTS!<br>
-identifier: ADD COMMENTS!<br>
-experiment_description: ADD COMMENTS!<br>
-device: ADD COMMENTS!<br>
-optical_channel: ADD COMMENTS!<br>
-imaging_plane: ADD COMMENTS!<br>
-image_serises: ADD COMMENTS!<br>
-ophys: ADD COMMENTS!<br>
+For detais about NWB please refer to [here](https://pynwb.readthedocs.io/en/latest/pynwb.file.html)
+session_description: a description of the session where this data was generated <br>
+identifier: a unique text identifier for the file  <br>
+experiment_description: general description of the experiment <br>
+device: device used to aquire the data (information such as firmware version, model etc.) <br>
+optical_channel: channel used to acqure the data <br>
+imaging_plane:  <br>
+image_serises: <br>
+ophys: <br>
 
 
 
