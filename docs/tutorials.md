@@ -85,14 +85,14 @@ Once it is selected, it shows the name of files in the image node.
 
 ### Creating pipelines
 
-Then, connect the analysis nodes in the order you like to process. Drugging from an output connector to an input connector creates an edge. The color of the connector indicates the format. For example, red is the image type format. You can only connect the same color. (Exception: black is an undefined data format. You can connect the black connector with any other connector, but be careful it does not check the consistency of input and output).
+Then, connect the analysis nodes in the order you like to process. Drugging from an output connector of a node to the input connector of the next node creates an edge. The color of the connector indicates the format. For example, red is the image type format. You can only connect the same color. (Exception: black is an undefined data format. You can connect the black connector with any other connector, but be careful it does not check the consistency of input and output).
 
 <br>
 <p align="left">
 <img width="800px" src="./_static/tutorials/fig6_suite2p.png" alt="Whole" />
 </p>
 
-As for Suite2P, you might not use suite2P_registration (motion correction). In that case, you can connect the suite2p_file_convert to suite2p_roi directly. 
+As for Suite2P, you might not use suite2P_registration (motion correction). In that case, you can connect the suite2p_file_convert node to suite2p_roi node directly. 
 
 <br>
 <p align="left">
@@ -107,7 +107,7 @@ Also, you can perform motion correction of CaImAn (caiman_mc) and then perform s
 </p>
 
 The nodes should be connected as long as the input and the output are of the same format type (same color).
-Also, you can branch the flow. In the example, the two caiman_mc with different parameter settings are created, and the downstream from caiman_mc is also different. Each node's results are saved in a separate folder (See [RECORD part](#managing-pipelines-on-record)). 
+Also, you can branch the flow. In the example, the two caiman_mc with different parameter settings are created, and the downstream from caiman_mc is also different. Each node's results are saved separately (See [RECORD part](#managing-pipelines-on-record)). 
 
 <br>
 <p align="left">
