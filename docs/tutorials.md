@@ -22,7 +22,7 @@ Tutorials
 * [Managing pipelines on RECORD](#managing-pipelines-on-record)
 
 ## Opening the browser
-To start OptiNiSt, you need to open a console and activate optinist environment `conda activate optinist` and type `run_optinist` or, change to optinist directory `cd ~/optinist/` and run main script `python main.py`. 
+To start OptiNiSt, you need to open a console and activate optinist environment `conda activate optinist` and change to optinist directory `cd ~/optinist/` and run main script `python main.py`. If you install optinist by pip, you can also use `run_optinist` to start it.
 The console shows the log once the startup is completed.
 
 <br>
@@ -57,14 +57,14 @@ As a default, it shows an image node. This node defines the path to the data to 
 
 OptiNiSt uses OPTINIST_DIR for retrieving data and saving results. OptiNiSt searches input data from the 'input' directory in OPTINIST_DIR. A default OPTINIST_DIR is `/tmp/optinist` in your computer.
 
-You may not want to change anything in your original data folder, or you may wish to make your data folder visible and accessible to OptiNist because the imaging data is sometimes huge and takes time to copy. You can take either strategy in assigning your data path.
+You may not want to change anything in your original data folder, or you may wish to make your data folder visible and accessible to OptiNiSt because the imaging data is sometimes huge and takes time to copy. You can take either strategy in assigning your data path.
 
 1. Copy your original data file to OPTINIST_DIR and assign the data path to the copied data.   
-Clicking on the UPLOAD button on the node opens the file explorer or finder so that you can select the data file. UPLOAD button copies the selected file to your OPTINIST_DIR/input. This can be done from the GUI.  
+Tp copy the data to OPTINIST_DIR, click on the UPLOAD button on the node. UPLOAD button copies the selected file to your OPTINIST_DIR/input. This can be done from the GUI.  
   
 2. Change the setting of OPTINIST_DIR by editing dir_path.py file. See [setting optinist directory](#setting-optinist_dir). Change is effective after re-launching.
 
-Once the data is made accessible, the SELECT IMAGE button on the image node can assign the file as the input to the pipeline. You can select a file or a folder. Choosing a folder makes all the tiff files in the shown sequence an input set of continuous frames. See the case input file is [other than tiff] (../docs/gui/workflow.md)/
+Once the data is made accessible, the SELECT IMAGE button on the image node can assign the file as the input to the pipeline. You can select a file or a folder. Choosing a folder makes all the tiff files in the shown sequence an input set of continuous frames. 
 
 ### Selecting analysis methods
 The left side of the window shows all available analysis methods. Clicking on the + mark adds the analysis nodes to the workflow field. ROI detection tools (currently suite2P and CaImAn ) are in ‘Algorithm’ category, and all other pre-installed analyses are in ‘optinist’ category.
