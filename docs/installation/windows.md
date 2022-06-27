@@ -141,12 +141,13 @@ export OPTINIST_DIR="your_saving_dir"
 ```
 
 ## 2. Create virtualenv
-In snakemake used by optinist, a virtual environment is created and executed for each function.
+Under maintenance...
+<!-- In snakemake used by optinist, a virtual environment is created and executed for each function.
 The procedure for first creating a virtual environment for processing suite2p, caiman, pca, etc. is described in the following link.
 
 *It is possible to run snakemake without creating a virtual environment in advance, but it is recommended to create a virtual environment in advance because of the higher possibility of errors during execution.
 
-Follow this [link](create_virtualenv.md).
+Follow this [link](create_virtualenv.md). -->
 
 ## 3. Run backend
 ```
