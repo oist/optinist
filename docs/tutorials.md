@@ -22,7 +22,7 @@ Tutorials
 * [Managing pipelines on RECORD](#managing-pipelines-on-record)
 
 ## Opening the browser
-To start OptiNiSt, you need to open a console and activate optinist environment `conda activate optinist` and type `run_optinist` or, change to optinist directory `cd ~/optinist/` and run main script `python main.py`. 
+To start OptiNiSt, you need to open a console and activate optinist environment `conda activate optinist` and change to optinist directory `cd ~/optinist/` and run main script `python main.py`. If you install optinist by pip, you can also use `run_optinist` to start it.
 The console shows the log once the startup is completed.
 
 <br>
@@ -57,17 +57,17 @@ As a default, it shows an image node. This node defines the path to the data to 
 
 OptiNiSt uses OPTINIST_DIR for retrieving data and saving results. OptiNiSt searches input data from the 'input' directory in OPTINIST_DIR. A default OPTINIST_DIR is `/tmp/optinist` in your computer.
 
-You may not want to change anything in your original data folder, or you may wish to make your data folder visible and accessible to OptiNist because the imaging data is sometimes huge and takes time to copy. You can take either strategy in assigning your data path.
+You may not want to change anything in your original data folder, or you may wish to make your data folder visible and accessible to OptiNiSt because the imaging data is sometimes huge and takes time to copy. You can take either strategy in assigning your data path.
 
 1. Copy your original data file to OPTINIST_DIR and assign the data path to the copied data.   
-Clicking on the UPLOAD button on the node opens the file explorer or finder so that you can select the data file. UPLOAD button copies the selected file to your OPTINIST_DIR/input. This can be done from the GUI.  
+Tp copy the data to OPTINIST_DIR, click on the UPLOAD button on the node. UPLOAD button copies the selected file to your OPTINIST_DIR/input. This can be done from the GUI.  
   
 2. Change the setting of OPTINIST_DIR by editing dir_path.py file. See [setting optinist directory](#setting-optinist_dir). Change is effective after re-launching.
 
-Once the data is made accessible, the SELECT IMAGE button on the image node can assign the file as the input to the pipeline. You can select a file or a folder. Choosing a folder makes all the tiff files in the shown sequence an input set of continuous frames. See the case input file is [other than tiff] (../docs/gui/workflow.md)/
+Once the data is made accessible, you will see them by clicking on the SELECT IMAGE button on the image node. You can select a file or a folder here. Choosing a folder makes all the tiff files in the shown sequence an input set of continuous frames. 
 
 ### Selecting analysis methods
-The left side of the window shows all available analysis methods. Clicking on the + mark adds the analysis nodes to the workflow field. ROI detection tools (currently suite2P and CaImAn ) are in ‘Algorithm’ category, and all other pre-installed analyses are in ‘optinist’ category.
+The left side of the window shows all available analysis methods. Clicking on the + mark adds the analysis nodes to the workflow field. ROI detection tools (currently suite2P and CaImAn ) are in "Algorithm" category, and all other pre-installed analyses are in "optinist" category.
 
 <br>
 <p align="left">
@@ -85,21 +85,21 @@ Once it is selected, it shows the name of files in the image node.
 
 ### Creating pipelines
 
-Then, connect the analysis nodes in the order you like to process. Drugging from an output connector to an input connector creates an edge. The color of the connector indicates the format. For example, red is the image type format. You can only connect the same color. (Exception: black is an undefined data format. You can connect the black connector with any other connector, but be careful it does not check the consistency of input and output).
+Then, connect the analysis nodes in the order you like to process. Drugging from an output connector of a node to the input connector of the next node creates an edge. The color of the connector indicates the format. For example, red is the image type format. You can only connect the same color. (Exception: black is an undefined data format. You can connect the black connector with any other connector, but be careful it does not check the consistency of input and output).
 
 <br>
 <p align="left">
 <img width="800px" src="./_static/tutorials/fig6_suite2p.png" alt="Whole" />
 </p>
 
-As for Suite2P, you might not use suite2P_registration (motion correction). In that case, you can connect the suite2p_file_convert to suite2p_roi directly. 
+As for Suite2P, you might not use "suite2P_registration" (motion correction) node. In that case, you can connect the "suite2p_file_convert" node to "suite2p_roi" node directly. 
 
 <br>
 <p align="left">
 <img width="600px" src="./_static/tutorials/fig7_suite2p2.png" alt="Whole" />
 </p>
 
-Also, you can perform motion correction of CaImAn (caiman_mc) and then perform suite2P_roi.
+Also, you can perform "motion correction" of CaImAn (caiman_mc) and then perform "suite2P_roi".
 
 <br>
 <p align="left">
@@ -107,7 +107,7 @@ Also, you can perform motion correction of CaImAn (caiman_mc) and then perform s
 </p>
 
 The nodes should be connected as long as the input and the output are of the same format type (same color).
-Also, you can branch the flow. In the example, the two caiman_mc with different parameter settings are created, and the downstream from caiman_mc is also different. Each node's results are saved in a separate folder (See [RECORD part](#managing-pipelines-on-record)). 
+Also, you can branch the flow. In the example, the two "caiman_mc" with different parameter settings are created, and the downstream from "caiman_mc" is also different. Each node's results are saved separately (See [RECORD part](#managing-pipelines-on-record)). 
 
 <br>
 <p align="left">
@@ -122,7 +122,7 @@ Each node has PARAM button and OUTPUT button.
 <img width="200px" src="./_static/tutorials/fig10.1_buttons.png" alt="Whole" />
 </p>
 
-Clicking on PARAM shows the parameters. Edit this as you like. The names, types and the default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters. The link list is on [README](../../README.md).
+Clicking on PARAM shows the parameters. Edit this as you like. The names, types and the default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters. The link list is on [Implemented Analysis](https://optinist.readthedocs.io/en/latest/utils/implemented_analysis.html).
 
 <br>
 <p align="left">
@@ -141,8 +141,9 @@ RUN button at the right top shows two pulldown choices. RUNALL runs all the proc
 <img width="200px" src="./_static/tutorials/fig11_runall.png" alt="Whole" />
 </p>
 
-When you click on the RUNALL, it shows the window to determine the folder name. This folder name is only for the user’s convenience. The actual folder name is long digit random letter+number. Further information about the structure of the saved results is [here](LINKTO /docs/gui/record.md #setting-input-images).
-
+When you click on the RUNALL, it shows the window to determine the folder name. This folder name is only for the user’s convenience. The actual folder name is long digit random letter+number. 
+<!--Further information about the structure of the saved results is [here](https://optinist.readthedocs.io/en/latest/gui/record.html).)
+-->
 
 Next to the RUN button, there is the CANCEL button. You can abort the running pipeline with this button. It immediately cancels the current execution.
 
@@ -156,14 +157,14 @@ Next to the RUN button, there is the CANCEL button. You can abort the running pi
 ### SNAKEMANE and NWB SETTING
 
 SNAKEMAKE and NWB SETTING buttons are for parameters for snakemake and output NWB file.
-The pipeline construction of Optinist is based on snakemake (ref), which is the pipeline controlling tool for python scripts. The SNAKEMAKE parameter setting is [here](#snakemake-settings).
+The pipeline construction of Optinist is based on [snakemake](https://snakemake.readthedocs.io/en/stable/), which is the pipeline controlling tool for python scripts. The SNAKEMAKE parameter setting is [explained bellow](#snakemake-settings).
 
 <br>
 <p align="left">
 <img width="400px" src="./_static/tutorials/fig13_nwbsnakemake.png" alt="Whole" />
 </p>
 
-NWB SETTING defines the metadata for the NWB file as an output. The parameter you set here is only for your record and not used for the calculation inside OptiNiSt. You can leave this as default. The details of NWB setting in OptiNiSt is [here](#nwb-settings). Also, general info about NWB is [here](https://www.nwb.org/getting-started/).
+NWB SETTING defines the metadata associated with the input data. By setting this, the output NWB file includes the information set here. The parameter you set here is only for your record and not used for the calculation inside OptiNiSt. You can leave this as default. The details of NWB setting in OptiNiSt is [explained bellow](#nwb-settings). Also, general info about NWB is [here](https://www.nwb.org/getting-started/).
 
 
 
@@ -183,7 +184,7 @@ Add the hdf5 node to the field. Upload the data to the OPTINIST_DIR. In addition
 <img width="200px" src="./_static/tutorials/fig12.01_hdfnode2.png" alt="Whole" />
 </p>
 
-NWB structure of Suite2P and CaImAn is different because OptiNiSt inherits each algorithm's original NWB output format. You will find the colums and rows are opposite between Suite2P outputs and CaImAn outputs. You can re-assign the rows and columns in the parameter setting of the analysis node (in this case eta node). 
+NWB structure of Suite2P and CaImAn is different because OptiNiSt inherits each algorithm's original NWB output format. You will find the colums and rows are opposite between Suite2P outputs and CaImAn outputs. You can re-assign the rows and columns in the parameter setting of the analysis node. 
 
 <br>
 <p align="left">
@@ -226,7 +227,7 @@ After finishing the process, you can quickly confirm your event-triggered averag
 <img width="400px" src="./_static/tutorials/fig12.07_etamean.png" alt="Whole" />
 </p>
 
-The plots are for quick confirmation of the results. If you want to look into the results more in detail,   available variables are all saved in the OptiNiSt output in NWB format. They are saved in processing/optinist. The NWB file is easily retrieved at RECORD page with just one click. To inspect the data, [HDFView](https://www.hdfgroup.org/downloads/hdfview/) is convenient. 
+The plots are for quick confirmation of the results. If you want to look into the results more in detail,   available variables are all saved in the OptiNiSt output in NWB format. They are saved in processing/optinist inside NWB file. The NWB file is easily retrieved at RECORD page with just one click. To inspect the data, [HDFView](https://www.hdfgroup.org/downloads/hdfview/) is convenient. 
 
 <br>
 <p align="left">
@@ -250,21 +251,25 @@ Pca and tsne can be done in either direction depending on your purpose. The func
 
 
 ##### snakemake settings
-use_conda:  ADD COMMENTS!  <br>
-cores:  ADD COMMENTS!  <br>
-forceall:  ADD COMMENTS!  <br>
-forcetargets:  ADD COMMENTS!  <br>
-lock:  ADD COMMENTS!<br>
+For details about snakemake parameters please refer to [here](https://snakemake.readthedocs.io/en/stable/executing/cli.html)<br>
+<br>
+use_conda: If this is on, snakemake uses conda environment.<br>
+cores: Specifies the number of cores to use. If not specified, snakemake uses number of available cores in the machine. <br>
+forceall: Flag to indicate the execution of the target regardless of already created output.<br>
+forcetargets: Users may not want to change this. <br>
+lock: Users may not want to change this.  <br>
 
 ##### NWB settings
-session_description: ADD COMMENTS!<br>
-identifier: ADD COMMENTS!<br>
-experiment_description: ADD COMMENTS!<br>
-device: ADD COMMENTS!<br>
-optical_channel: ADD COMMENTS!<br>
-imaging_plane: ADD COMMENTS!<br>
-image_serises: ADD COMMENTS!<br>
-ophys: ADD COMMENTS!<br>
+For detais about NWB please refer to [here](https://pynwb.readthedocs.io/en/latest/pynwb.file.html)<br>
+<br>
+session_description: a description of the session where this data was generated <br>
+identifier: a unique text identifier for the file  <br>
+experiment_description: general description of the experiment <br>
+device: device used to aquire the data (information such as manufacturer, firmware version, model etc.) <br>
+optical_channel: information about the optical channel used to acquire the data <br>
+imaging_plane: information about imaging such as sampling rate, excitation wave length, calcium indicator.  <br>
+image_serises: information about imaing time<br>
+ophys: general information about imaging <br>
 
 
 
@@ -272,7 +277,7 @@ ophys: ADD COMMENTS!<br>
 
 ## Inspecting the images and the plots on VISUALIZE
 After executing the pipeline, you may want to check and compare the results.
-VISUALIZE page is the place to work on this. You can replay the tiff time-series, see the cell ROI images, the plot of cell fluorescence or spike time-series, and other plots showing the results of analyses. See [here](../gui/visualize.md) for basic usage.
+VISUALIZE page is the place to work on this. You can replay the tiff time-series, see the cell ROI images, the plot of cell fluorescence or spike time-series, and other plots showing the results of analyses. See [here](https://optinist.readthedocs.io/en/latest/gui/visualize.html) for basic usage.
 
 
 ### Checking movies
@@ -351,7 +356,7 @@ You can save created plots in svg, png, jpeg, or webp format. Please select the 
 </p>
 
 ## Managing pipelines on RECORD
-RECORD section keeps your analysis pipeline easy to organize and easy to retrieve. For the basic usage of the RECORD page, see also [here](../gui/record.md) The RECORD page shows the summary of current status of OPTINIST_DIR/output. 
+The RECORD page summarizes the current status of OPTINIST_DIR/output. This page keeps the analysis pipeline easy to organize and easy to retrieve. For the basic usage of the RECORD page, see also [here](https://optinist.readthedocs.io/en/latest/gui/record.html)  
 
 <br>
 <p align="left">
