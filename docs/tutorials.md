@@ -252,6 +252,7 @@ Pca and tsne can be done in either direction depending on your purpose. The func
 
 ##### snakemake settings
 For details about snakemake parameters please refer to [here](https://snakemake.readthedocs.io/en/stable/executing/cli.html)<br>
+<br>
 use_conda: If this is on, snakemake uses conda environment.<br>
 cores: Specifies the number of cores to use. If not specified, snakemake uses number of available cores in the machine. <br>
 forceall: Flag to indicate the execution of the target regardless of already created output.<br>
@@ -260,6 +261,7 @@ lock: Users may not want to change this.  <br>
 
 ##### NWB settings
 For detais about NWB please refer to [here](https://pynwb.readthedocs.io/en/latest/pynwb.file.html)<br>
+<br>
 session_description: a description of the session where this data was generated <br>
 identifier: a unique text identifier for the file  <br>
 experiment_description: general description of the experiment <br>
