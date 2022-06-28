@@ -7,13 +7,13 @@
     <a>
       <img src="https://img.shields.io/badge/-TypeScript-007ACC.svg?logo=typescript&style=flat&logoColor=white">
     </a>
-    <a href="https://pypi.org/project/optinist/">
+    <a href="https://pypi.org/project/optinist">
         <img alt="PYPI" src="https://static.pepy.tech/personalized-badge/optinist?period=total&units=international_system&left_color=black&right_color=blue&left_text=Downloads(PYPI)">
     </a>
-    <a href="https://pypi.org/project/optinist/">
+    <a href="https://pypi.org/project/optinist">
         <img alt="PYPI" src="https://static.pepy.tech/personalized-badge/optinist?period=week&units=international_system&left_color=black&right_color=blue&left_text=Downloads/week(PYPI)">
     </a>
-    <a href="https://github.com/oist/optinist">
+    <a href="https://pypi.org/project/optinist">
       <img alt="" src="https://badge.fury.io/py/optinist.svg">
     </a>
     <a href="https://github.com/oist/optinist">
