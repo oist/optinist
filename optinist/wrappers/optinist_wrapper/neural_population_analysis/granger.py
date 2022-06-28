@@ -26,9 +26,9 @@ def Granger(
     if iscell is not None:
         iscell = iscell.data
         ind  = np.where(iscell > 0)[0]
-        X = X[ind, :]
+        X = X[:, ind]
 
-    num_cell = X.shape[0]
+    num_cell = X.shape[1]
     comb = list(itertools.permutations(range(num_cell), 2))  # combinations with dup
     num_comb= len(comb)
 
@@ -107,7 +107,7 @@ def Granger(
         # does NOT Granger cause the time series in the first column0
         # column 1 -> colum 0
         tp = grangercausalitytests(
-            X[:, [comb[i][0], comb[i][1]]],
+            tX[:, [comb[i][0], comb[i][1]]],
             params['Granger_maxlag'],
             verbose=False,
             addconst=params['Granger_addconst']
@@ -128,7 +128,11 @@ def Granger(
 
     # main results for plot
     info = {}
-    info['Granger_fval_mat'] = ScatterData(
+    info['Granger_fval_mat_heatmap'] = HeatMapData(
+        GC['Granger_fval_mat'][0],
+        file_name='gfm_heatmap'
+    )
+    info['Granger_fval_mat_scatter'] = ScatterData(
         GC['Granger_fval_mat'][0],
         file_name='gfm'
     )
