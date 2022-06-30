@@ -4,7 +4,7 @@ from dataclasses import asdict
 from optinist.api.snakemake.smk import FlowConfig, Rule, SmkParam
 from optinist.api.snakemake.snakemake_reader import SmkParamReader
 from optinist.api.snakemake.snakemake_writer import SmkConfigWriter
-from optinist.api.snakemake.snakemake_setfile import SmkSetfile
+from optinist.api.snakemake.snakemake_rule import SmkRule
 from optinist.api.snakemake.snakemake_executor import delete_dependencies, snakemake_execute
 
 from optinist.api.workflow.workflow_params import get_typecheck_params
@@ -21,12 +21,12 @@ class WorkflowRunner:
         self.nodeDict = ExptConfigReader.read_nodeDict(self.runItem.nodeDict)
         self.edgeDict = ExptConfigReader.read_edgeDict(self.runItem.edgeDict)
 
-        ExptConfigWriter.write(
+        ExptConfigWriter(
             self.unique_id,
             self.runItem.name,
             self.nodeDict,
             self.edgeDict
-        )
+        ).write()
 
     def run_workflow(self, background_tasks):
         self.set_smk_config()
@@ -70,17 +70,47 @@ class WorkflowRunner:
 
         for node in self.nodeDict.values():
             if node.type == NodeType.IMAGE:
-                rule_dict[node.id] = SmkSetfile.image(self.unique_id, node, self.edgeDict, nwbfile)
+                rule_dict[node.id] = SmkRule(
+                    unique_id=self.unique_id,
+                    node=node,
+                    edgeDict=self.edgeDict,
+                    nwbfile=nwbfile,
+                ).image()
             elif node.type == NodeType.CSV:
-                rule_dict[node.id] = SmkSetfile.csv(self.unique_id, node, self.edgeDict, nwbfile)
+                rule_dict[node.id] = SmkRule(
+                    unique_id=self.unique_id,
+                    node=node,
+                    edgeDict=self.edgeDict,
+                    nwbfile=nwbfile,
+                ).csv()
             elif node.type == NodeType.FLUO:
-                rule_dict[node.id] = SmkSetfile.csv(self.unique_id, node, self.edgeDict, nwbfile)
+                rule_dict[node.id] = SmkRule(
+                    unique_id=self.unique_id,
+                    node=node,
+                    edgeDict=self.edgeDict,
+                    nwbfile=nwbfile,
+                ).csv()
             elif node.type == NodeType.BEHAVIOR:
-                rule_dict[node.id] = SmkSetfile.csv(self.unique_id, node, self.edgeDict, nwbfile, "behavior")
+                rule_dict[node.id] = SmkRule(
+                    unique_id=self.unique_id,
+                    node=node,
+                    edgeDict=self.edgeDict,
+                    nwbfile=nwbfile,
+                ).csv(nodeType="behavior")
             elif node.type == NodeType.HDF5:
-                rule_dict[node.id] = SmkSetfile.hdf5(self.unique_id, node, self.edgeDict, nwbfile)
+                rule_dict[node.id] = SmkRule(
+                    unique_id=self.unique_id,
+                    node=node,
+                    edgeDict=self.edgeDict,
+                    nwbfile=nwbfile,
+                ).hdf5()
             elif node.type == NodeType.ALGO:
-                rule = SmkSetfile.algo(self.unique_id, node, self.edgeDict, self.nodeDict)
+                rule = SmkRule(
+                    unique_id=self.unique_id,
+                    node=node,
+                    edgeDict=self.edgeDict,
+                ).algo(nodeDict=self.nodeDict)
+
                 rule_dict[node.id] = rule
 
                 if node.id in endNodeList:

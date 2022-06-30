@@ -11,8 +11,8 @@ test_run:
 test_python:
 	docker-compose -f docker-compose.yml down --rmi all --volumes --remove-orphans
 	docker-compose -f docker-compose.yml rm -f
-	docker-compose -f docker-compose.yml build optinist
-	docker-compose -f docker-compose.yml run optinist
+	docker-compose -f docker-compose.yml build test_optinist
+	docker-compose -f docker-compose.yml run test_optinist
 
 .PHONY: test_frontend
 test_frontend:
