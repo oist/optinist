@@ -59,12 +59,12 @@ def test_create_config() -> ExptConfig:
         forceRunList=[],
     )
 
-    expt_config = ExptConfigWriter.create_config(
-        "test_id",
-        runItem.name,
-        runItem.nodeDict,
-        runItem.edgeDict,
-    )
+    expt_config = ExptConfigWriter(
+        unique_id="test_id",
+        name=runItem.name,
+        nodeDict=runItem.nodeDict,
+        edgeDict=runItem.edgeDict,
+    ).create_config()
 
     assert isinstance(expt_config, ExptConfig)
     assert isinstance(expt_config.function, dict)
@@ -74,43 +74,49 @@ def test_create_config() -> ExptConfig:
 
 
 def test_add_run_info():
-    expt_config = ExptConfigWriter.add_run_info(
-        expt_config=test_create_config(),
+    expt_config = ExptConfigWriter(
+        unique_id="",
+        name="",
         nodeDict=nodeDict,
         edgeDict=None,
-    )
+    ).add_run_info()
 
     assert len(expt_config.nodeDict) == 1
 
 
 def test_function_from_nodeDict():
-    expt_function = ExptConfigWriter.function_from_nodeDict(nodeDict)
+    expt_config = ExptConfigWriter(
+        unique_id="",
+        name="",
+        nodeDict=nodeDict,
+        edgeDict=edgeDict,
+    ).function_from_nodeDict()
 
-    assert isinstance(expt_function, dict)
-    assert isinstance(expt_function["node_id"], ExptFunction)
+    assert isinstance(expt_config.function, dict)
+    assert isinstance(expt_config.function["node_id"], ExptFunction)
 
 
 def test_new_write():
     if os.path.exists(dirpath):
         shutil.rmtree(dirpath)
 
-    ExptConfigWriter.write(
+    ExptConfigWriter(
         unique_id="unique_id",
         name="name",
         nodeDict=nodeDict,
         edgeDict=edgeDict,
-    )
+    ).write()
 
     assert os.path.exists(f"{dirpath}/experiment.yaml")
 
 
 def test_write_add():
-    ExptConfigWriter.write(
+    ExptConfigWriter(
         unique_id="unique_id",
         name="name",
         nodeDict=nodeDict,
         edgeDict=edgeDict,
-    )
+    ).write()
 
     assert os.path.exists(f"{dirpath}/experiment.yaml")
 

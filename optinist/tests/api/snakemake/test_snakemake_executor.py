@@ -141,3 +141,9 @@ def test_snakemake_delete_dependencies():
 def test_error_snakemake_execute():
     smk_param.use_conda = True
     snakemake_execute(unique_id, smk_param)
+
+    error_log_filepath = "/tmp/optinist/output/snakemake/error.log"
+
+    assert os.path.exists(error_log_filepath)
+
+    os.remove(error_log_filepath)
