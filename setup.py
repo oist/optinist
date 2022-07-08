@@ -7,10 +7,10 @@ exec(open(os.path.join(here, 'optinist', 'version.py')).read())
 def _requires_from_file(filepath):
 
     def take_package_name(name):
-        if "snakemake" in name:
-            return f"snakemake @ https://github.com/ShogoAkiyama/snakemake/archive/refs/tags/v7.7.2-post1.zip"
-        else:
-            return name.strip()
+        # if "snakemake" in name:
+        #     return f"snakemake @ https://github.com/ShogoAkiyama/snakemake/archive/refs/tags/v7.7.2-post1.zip"
+        # else:
+        return name.strip()
 
     with open(filepath) as fp:
         return [take_package_name(pkg_name) for pkg_name in fp.readlines()]
