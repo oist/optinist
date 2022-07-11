@@ -69,7 +69,8 @@ pip install "PyQt5<=5.15.1" "PyQt5-sip<=12.8.1" "pyqtgraph<=0.11.0" "pandas" "su
 # for GLM
 pip install "sklearn" "statsmodels<=0.13.1" "pynwb"
 # for CaImAn
-pip install "cython" "opencv-python matplotlib" "scikit-image==0.18.0" "scikit-learn" "ipyparallel" "holoviews" "watershed" "tensorflow"
+pip install "cython" "opencv-python" "matplotlib" "scikit-image==0.18.0" "scikit-learn" "ipyparallel" "holoviews" "watershed" "tensorflow"
+git clone https://github.com/flatironinstitute/CaImAn.git
 cd CaImAn
 pip install -e .
 cd ..
