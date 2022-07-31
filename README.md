@@ -76,6 +76,8 @@ launch.
 run_optinist
 ```
 
+Open browser. http://localhost:8000
+
 ## Documentation
 https://optinist.readthedocs.io/en/latest/
 
