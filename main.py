@@ -6,7 +6,7 @@ import os
 import argparse
 import uvicorn
 from starlette.middleware.cors import CORSMiddleware
-from optinist.routers import (
+from studio.routers import (
     files,
     run,
     params,

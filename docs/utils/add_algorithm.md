@@ -13,7 +13,7 @@ How to add algorithms
 
 ## 1. Create algorithm function file
 First, create a python file at the appropriate location in the following directory.
-Here is an example of how to create a function named `new_algorithm`. The file should be created at the following location [optinist/wrappers/optinist_wrapper](https://github.com/oist/optinist/tree/main/optinist/wrappers/optinist_wrapper).
+Here is an example of how to create a function named `new_algorithm`. The file should be created at the following location [studio/wrappers/studio_wrapper](https://github.com/oist/studio/tree/main/studio/wrappers/studio_wrapper).
 
 Create it under the name **new_algorith.py**.
 
@@ -22,7 +22,7 @@ def new_algorithm():
     return
 ```
 
-[algorithm list](https://github.com/oist/optinist/tree/develop/optinist/wrappers) 
+[algorithm list](https://github.com/oist/studio/tree/develop/studio/wrappers) 
 
 - \_\_init__.py - ①
 - caiman_wrapper
@@ -35,7 +35,7 @@ def new_algorithm():
     - suite2p_registration.py
     - suite2p_roi.py
     - suite2p_cnmf.py
-- optinist_wrapper
+- studio_wrapper
     - \_\_init__.py
     - basic neural analysis
     - dimension reduction
@@ -46,23 +46,23 @@ def new_algorithm():
 <br />
 
 ## 2. Register your algorithm
-①: To be able to use the created **new_algorithm** on the GUI, it is necessary to register it in the \_\_init__.py. For example, [optinist/wrappers/\_\_init__.py](https://github.com/oist/optinist/blob/main/optinist/wrappers/__init__.py) in ① is as follows.
+①: To be able to use the created **new_algorithm** on the GUI, it is necessary to register it in the \_\_init__.py. For example, [studio/wrappers/\_\_init__.py](https://github.com/oist/studio/blob/main/studio/wrappers/__init__.py) in ① is as follows.
 These are reading one level down, \_\_init__.py.
 
 
 ```python
 from .caiman_wrapper import caiman_wrapper_dict
 from .suite2p_wrapper import suite2p_wrapper_dict
-from .optinist_wrapper import optinist_wrapper_dict
+from .studio_wrapper import studio_wrapper_dict
 
 wrapper_dict = {}
 wrapper_dict.update(**caiman_wrapper_dict)
 wrapper_dict.update(**suite2p_wrapper_dict)
-wrapper_dict.update(**optinist_wrapper_dict)
+wrapper_dict.update(**studio_wrapper_dict)
 ```
 
 
-②: In [optinist/wrappers/caiman_wrapper/\_\_init__py](https://github.com/oist/optinist/blob/main/optinist/wrappers/caiman_wrapper/__init__.py) function is defined concretely and is written as follows. It can be registered as a function by writing `function name: {'function': function name}`.
+②: In [studio/wrappers/caiman_wrapper/\_\_init__py](https://github.com/oist/studio/blob/main/studio/wrappers/caiman_wrapper/__init__.py) function is defined concretely and is written as follows. It can be registered as a function by writing `function name: {'function': function name}`.
 
 ```python
 from .motion_correction import caiman_mc
@@ -82,7 +82,7 @@ caiman_wrapper_dict = {
 ```
 
 
-Actually register the **new_algorithm** function in [optinist/wrappers/optinist_wrapper/\_init__.py](https://github.com/oist/optinist/blob/main/optinist/wrappers/optinist_wrapper/__init__.py).
+Actually register the **new_algorithm** function in [studio/wrappers/studio_wrapper/\_init__.py](https://github.com/oist/studio/blob/main/studio/wrappers/studio_wrapper/__init__.py).
 
 ```python
 from .basic_neural_analysis import basic_neural_analysis_wrapper_dict
@@ -94,8 +94,8 @@ from .neural_decoding import neural_decoding_wrapper_dict
 from .new_algorithm import new_algorithm
 # ↑↑new add↑↑
 
-optinist_wrapper_dict = {
-    'optinist': {
+studio_wrapper_dict = {
+    'studio': {
         'basic_neural_analysis': basic_neural_analysis_wrapper_dict,
         'dimension_reduction': dimension_reduction_wrapper_dict ,
         'neural_population_analysis': neural_population_analysis_wrapper_dict,
@@ -119,9 +119,9 @@ Restart the GUI and check TreeView, you can actually see the **new_algorithm**.
 ## 3. Describe function processing
 ### 3.1 import
 Next, data inputs and outputs are defined.
-Optinist defines several DataClasses to ensure consistency between Input and Output types. The main data types are as follows. These correspond to the color of each Node's handle.
+studio defines several DataClasses to ensure consistency between Input and Output types. The main data types are as follows. These correspond to the color of each Node's handle.
 
-Optinist support datatype.
+studio support datatype.
 - ImageData
 - TimeSeriesData
 - FluoData
@@ -134,9 +134,9 @@ Optinist support datatype.
 
 ### 3.2 Input & Output handle
 As an example, the **new_algorithm** function takes **ImageData** and returns **FluoData**.
-The `from optinist.api.dataclass.dataclass import *` statement is the file where the dataclass is defined. params is necessary because it contains parameters for this function.
+The `from studio.api.dataclass.dataclass import *` statement is the file where the dataclass is defined. params is necessary because it contains parameters for this function.
 ```python
-from optinist.api.dataclass.dataclass import *
+from studio.api.dataclass.dataclass import *
 
 def new_algorithm(
         image_data: ImageData,
@@ -185,6 +185,6 @@ Restart the GUI, connect imageNode and run it, and you will see the output as fo
 
 
 ### 4. How to add parameters
-The parameters are stored under [optinist/config](https://github.com/oist/optinist/tree/main/optinist/config) with **the same file name as the function name**.
+The parameters are stored under [studio/config](https://github.com/oist/studio/tree/main/studio/config) with **the same file name as the function name**.
 The file name is `new_algorithm.yaml` and can be registered by creating it.
 

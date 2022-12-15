@@ -13,7 +13,7 @@ describe('RecordReproduce', () => {
         data: {
           label: 'hoge.tif',
           param: {},
-          path: ['/tmp/optinist/input/hoge/hoge.tif'],
+          path: ['/tmp/studio/input/hoge/hoge.tif'],
           type: 'input',
           fileType: 'image',
           hdf5Path: null,
@@ -204,7 +204,7 @@ describe('RecordReproduce', () => {
     inputNode: {
       input_0: {
         fileType: 'image',
-        selectedFilePath: ['/tmp/optinist/input/hoge/hoge.tif'],
+        selectedFilePath: ['/tmp/studio/input/hoge/hoge.tif'],
         param: {},
       },
     },

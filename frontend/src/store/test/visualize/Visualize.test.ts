@@ -75,7 +75,7 @@ describe('Visualize', () => {
     const itemId = 0
     const nodeId = 'dummy_image2image8time_qikqvda3um'
     const filePath =
-      '/tmp/optinist/output/4fa05cff/dummy_image2image8time_qikqvda3um/image.json'
+      '/tmp/studio/output/4fa05cff/dummy_image2image8time_qikqvda3um/image.json'
     const dataType = DATA_TYPE_SET.IMAGE
     const deleteData = false
     const targetState = rootReducer(
@@ -96,7 +96,7 @@ describe('Visualize', () => {
   test(`${setNewDisplayDataPath.type} when deleteData is true`, () => {
     const itemId = 0
     const prevNodeId = 'input_0'
-    const prevFilePath = '/tmp/optinist/input/hoge/hoge.tif'
+    const prevFilePath = '/tmp/studio/input/hoge/hoge.tif'
     const prevDataType = DATA_TYPE_SET.IMAGE
     let prevState = rootReducer(
       rootReducer(initialRootState, pushInitialItemToNewRow),
@@ -124,7 +124,7 @@ describe('Visualize', () => {
       },
     }
     const deleteData = true
-    const filePath = '/tmp/optinist/input/sample/sample.csv'
+    const filePath = '/tmp/studio/input/sample/sample.csv'
     const nodeId = 'input_90i2lotktx'
     const dataType = DATA_TYPE_SET.CSV
     const targetState = rootReducer(
@@ -164,7 +164,7 @@ describe('Visualize', () => {
   test(`${deleteDisplayItem.type} when deleteData is true`, () => {
     const itemId = 0
     const prevNodeId = 'input_0'
-    const prevFilePath = '/tmp/optinist/input/hoge/hoge.tif'
+    const prevFilePath = '/tmp/studio/input/hoge/hoge.tif'
     const prevDataType = DATA_TYPE_SET.IMAGE
     let prevState = rootReducer(
       rootReducer(initialRootState, pushInitialItemToNewRow),
@@ -214,7 +214,7 @@ describe('Visualize', () => {
     const itemId = 0
     const nodeId = 'dummy_image2image8time_qikqvda3um'
     const filePath =
-      '/tmp/optinist/output/4fa05cff/dummy_image2image8time_qikqvda3um/image.json'
+      '/tmp/studio/output/4fa05cff/dummy_image2image8time_qikqvda3um/image.json'
     const dataType = DATA_TYPE_SET.IMAGE
     const targetState = rootReducer(
       initialRootState,
@@ -240,7 +240,7 @@ describe('Visualize', () => {
       addItemForWorkflowDialog({
         nodeId,
         filePath:
-          '/tmp/optinist/output/4fa05cff/dummy_image2image8time_qikqvda3um/image.json',
+          '/tmp/studio/output/4fa05cff/dummy_image2image8time_qikqvda3um/image.json',
         dataType: DATA_TYPE_SET.IMAGE,
       }),
     )
@@ -250,7 +250,7 @@ describe('Visualize', () => {
       addItemForWorkflowDialog({
         nodeId,
         filePath:
-          '/tmp/optinist/output/4fa05cff/dummy_image2image8time_qikqvda3um/timeseries',
+          '/tmp/studio/output/4fa05cff/dummy_image2image8time_qikqvda3um/timeseries',
         dataType: DATA_TYPE_SET.TIME_SERIES,
       }),
     )

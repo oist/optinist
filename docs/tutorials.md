@@ -11,7 +11,7 @@ Tutorials
   * [SNAKEMANE and NWB SETTING](#snakemane-and-nwb-setting)
   * [Time series analyses after ROI extraction](#time-series-analyses-after-roi-extraction)
   * [Additional information on WORKFLOW](#additional-information-on-workflow)
-        * [setting OPTINIST_DIR](#setting-optinist_dir)
+        * [setting studio_DIR](#setting-studio_dir)
       * [about the assumed data shape](#about-the-assumed-data-shape)
         * [snakemake settings](#snakemake-settings)
         * [NWB settings](#nwb-settings)
@@ -22,7 +22,7 @@ Tutorials
 * [Managing pipelines on RECORD](#managing-pipelines-on-record)
 
 ## Opening the browser
-To start OptiNiSt, you need to open a console and activate optinist environment `conda activate optinist` and change to optinist directory `cd ~/optinist/` and run main script `python main.py`. If you install optinist by pip, you can also use `run_optinist` to start it.
+To start studio, you need to open a console and activate studio environment `conda activate studio` and change to studio directory `cd ~/studio/` and run main script `python main.py`. If you install studio by pip, you can also use `run_studio` to start it.
 The console shows the log once the startup is completed.
 
 <br>
@@ -31,14 +31,14 @@ The console shows the log once the startup is completed.
 </p>
 
 Once you see this, open your web browser (Google Chrome is recommended) at localhost:8000.
-You are ready to start if the OptiNiSt page appears.
+You are ready to start if the studio page appears.
 
 <br>
 <p align="left">
 <img width="600px" src="./_static/tutorials/fig2_open.png" alt="Whole" />
 </p>
 
-OptiNiSt has three different pages, WORKFLOW, VISUALIZE, and RECORD. You can toggle these by clicking on the tag. 
+studio has three different pages, WORKFLOW, VISUALIZE, and RECORD. You can toggle these by clicking on the tag. 
 <br>
 <p align="left">
 <img width="300px" src="./_static/tutorials/fig2.2_tags.png" alt="Whole" />
@@ -55,19 +55,19 @@ As a default, it shows an image node. This node defines the path to the data to 
 <img width="200px" src="./_static/tutorials/fig3_imagenode.png" alt="Whole" />
 </p>
 
-OptiNiSt uses OPTINIST_DIR for retrieving data and saving results. OptiNiSt searches input data from the 'input' directory in OPTINIST_DIR. A default OPTINIST_DIR is `/tmp/optinist` in your computer.
+studio uses studio_DIR for retrieving data and saving results. studio searches input data from the 'input' directory in studio_DIR. A default studio_DIR is `/tmp/studio` in your computer.
 
-You may not want to change anything in your original data folder, or you may wish to make your data folder visible and accessible to OptiNiSt because the imaging data is sometimes huge and takes time to copy. You can take either strategy in assigning your data path.
+You may not want to change anything in your original data folder, or you may wish to make your data folder visible and accessible to studio because the imaging data is sometimes huge and takes time to copy. You can take either strategy in assigning your data path.
 
-1. Copy your original data file to OPTINIST_DIR and assign the data path to the copied data.   
-Tp copy the data to OPTINIST_DIR, click on the UPLOAD button on the node. UPLOAD button copies the selected file to your OPTINIST_DIR/input. This can be done from the GUI.  
+1. Copy your original data file to studio_DIR and assign the data path to the copied data.   
+Tp copy the data to studio_DIR, click on the UPLOAD button on the node. UPLOAD button copies the selected file to your studio_DIR/input. This can be done from the GUI.  
   
-2. Change the setting of OPTINIST_DIR by editing dir_path.py file. See [setting optinist directory](#setting-optinist_dir). Change is effective after re-launching.
+2. Change the setting of studio_DIR by editing dir_path.py file. See [setting studio directory](#setting-studio_dir). Change is effective after re-launching.
 
 Once the data is made accessible, you will see them by clicking on the SELECT IMAGE button on the image node. You can select a file or a folder here. Choosing a folder makes all the tiff files in the shown sequence an input set of continuous frames. 
 
 ### Selecting analysis methods
-The left side of the window shows all available analysis methods. Clicking on the + mark adds the analysis nodes to the workflow field. ROI detection tools (currently suite2P and CaImAn ) are in "Algorithm" category, and all other pre-installed analyses are in "optinist" category.
+The left side of the window shows all available analysis methods. Clicking on the + mark adds the analysis nodes to the workflow field. ROI detection tools (currently suite2P and CaImAn ) are in "Algorithm" category, and all other pre-installed analyses are in "studio" category.
 
 <br>
 <p align="left">
@@ -122,7 +122,7 @@ Each node has PARAM button and OUTPUT button.
 <img width="200px" src="./_static/tutorials/fig10.1_buttons.png" alt="Whole" />
 </p>
 
-Clicking on PARAM shows the parameters. Edit this as you like. The names, types and the default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters. The link list is on [Implemented Analysis](https://optinist.readthedocs.io/en/latest/utils/implemented_analysis.html).
+Clicking on PARAM shows the parameters. Edit this as you like. The names, types and the default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters. The link list is on [Implemented Analysis](https://studio.readthedocs.io/en/latest/utils/implemented_analysis.html).
 
 <br>
 <p align="left">
@@ -142,7 +142,7 @@ RUN button at the right top shows two pulldown choices. RUNALL runs all the proc
 </p>
 
 When you click on the RUNALL, it shows the window to determine the folder name. This folder name is only for the user’s convenience. The actual folder name is long digit random letter+number. 
-<!--Further information about the structure of the saved results is [here](https://optinist.readthedocs.io/en/latest/gui/record.html).)
+<!--Further information about the structure of the saved results is [here](https://studio.readthedocs.io/en/latest/gui/record.html).)
 -->
 
 Next to the RUN button, there is the CANCEL button. You can abort the running pipeline with this button. It immediately cancels the current execution.
@@ -157,34 +157,34 @@ Next to the RUN button, there is the CANCEL button. You can abort the running pi
 ### SNAKEMANE and NWB SETTING
 
 SNAKEMAKE and NWB SETTING buttons are for parameters for snakemake and output NWB file.
-The pipeline construction of Optinist is based on [snakemake](https://snakemake.readthedocs.io/en/stable/), which is the pipeline controlling tool for python scripts. The SNAKEMAKE parameter setting is [explained bellow](#snakemake-settings).
+The pipeline construction of studio is based on [snakemake](https://snakemake.readthedocs.io/en/stable/), which is the pipeline controlling tool for python scripts. The SNAKEMAKE parameter setting is [explained bellow](#snakemake-settings).
 
 <br>
 <p align="left">
 <img width="400px" src="./_static/tutorials/fig13_nwbsnakemake.png" alt="Whole" />
 </p>
 
-NWB SETTING defines the metadata associated with the input data. By setting this, the output NWB file includes the information set here. The parameter you set here is only for your record and not used for the calculation inside OptiNiSt. You can leave this as default. The details of NWB setting in OptiNiSt is [explained bellow](#nwb-settings). Also, general info about NWB is [here](https://www.nwb.org/getting-started/).
+NWB SETTING defines the metadata associated with the input data. By setting this, the output NWB file includes the information set here. The parameter you set here is only for your record and not used for the calculation inside studio. You can leave this as default. The details of NWB setting in studio is [explained bellow](#nwb-settings). Also, general info about NWB is [here](https://www.nwb.org/getting-started/).
 
 
 
 
 ### Time series analyses after ROI extraction
-OptiNiSt offers some basic time-series analysis functions. For example, event-triggered averaging can be applied to the ROI time-series data created by OptiNiSt. Assuming that you have the result of ROI extraction, here explains how to create the pipeline. Because the ROI time-series is in NWB format, the hdf5 data node is appropriate as the input node. 
+studio offers some basic time-series analysis functions. For example, event-triggered averaging can be applied to the ROI time-series data created by studio. Assuming that you have the result of ROI extraction, here explains how to create the pipeline. Because the ROI time-series is in NWB format, the hdf5 data node is appropriate as the input node. 
 
 <br>
 <p align="left">
 <img width="200px" src="./_static/tutorials/fig12.00_hdfnode.png" alt="Whole" />
 </p>
 
-Add the hdf5 node to the field. Upload the data to the OPTINIST_DIR. In addition to UPLOAD and SELECT to assign the file, you need to indicate the position of the fluorescence data in the HDF5 structure (STRUCTURE button appeared after you SELECT HDF5).
+Add the hdf5 node to the field. Upload the data to the studio_DIR. In addition to UPLOAD and SELECT to assign the file, you need to indicate the position of the fluorescence data in the HDF5 structure (STRUCTURE button appeared after you SELECT HDF5).
 
 <br>
 <p align="left">
 <img width="200px" src="./_static/tutorials/fig12.01_hdfnode2.png" alt="Whole" />
 </p>
 
-NWB structure of Suite2P and CaImAn is different because OptiNiSt inherits each algorithm's original NWB output format. You will find the colums and rows are opposite between Suite2P outputs and CaImAn outputs. You can re-assign the rows and columns in the parameter setting of the analysis node. 
+NWB structure of Suite2P and CaImAn is different because studio inherits each algorithm's original NWB output format. You will find the colums and rows are opposite between Suite2P outputs and CaImAn outputs. You can re-assign the rows and columns in the parameter setting of the analysis node. 
 
 <br>
 <p align="left">
@@ -227,7 +227,7 @@ After finishing the process, you can quickly confirm your event-triggered averag
 <img width="400px" src="./_static/tutorials/fig12.07_etamean.png" alt="Whole" />
 </p>
 
-The plots are for quick confirmation of the results. If you want to look into the results more in detail,   available variables are all saved in the OptiNiSt output in NWB format. They are saved in processing/optinist inside NWB file. The NWB file is easily retrieved at RECORD page with just one click. To inspect the data, [HDFView](https://www.hdfgroup.org/downloads/hdfview/) is convenient. 
+The plots are for quick confirmation of the results. If you want to look into the results more in detail,   available variables are all saved in the studio output in NWB format. They are saved in processing/studio inside NWB file. The NWB file is easily retrieved at RECORD page with just one click. To inspect the data, [HDFView](https://www.hdfgroup.org/downloads/hdfview/) is convenient. 
 
 <br>
 <p align="left">
@@ -241,8 +241,8 @@ The plots are for quick confirmation of the results. If you want to look into th
 
 ### Additional information on WORKFLOW
 
-##### setting OPTINIST_DIR
-The file assigning the OPTINIST_DIR is optinist/optinist/api/dir_path.py. Change line for OPTINIST_DIR, INPUT_DIR, and OUTPUT_DIR according to your demand. Changing dir_path.py may also be necessary when running the pipeline on your cluster computers. Also, you can quickly change OPTINIST_DIR by changing the environment variable by typing 'export OPTINIST_DIR="your_saving_dir"' before launching.
+##### setting studio_DIR
+The file assigning the studio_DIR is studio/studio/api/dir_path.py. Change line for studio_DIR, INPUT_DIR, and OUTPUT_DIR according to your demand. Changing dir_path.py may also be necessary when running the pipeline on your cluster computers. Also, you can quickly change studio_DIR by changing the environment variable by typing 'export studio_DIR="your_saving_dir"' before launching.
 
 #### about the assumed data shape 
 eta, cca, correlation, cross_correlation, granger, glm, lda, and svm assume the input neural data shape is frames x cells matrix. Because the output of CaImAn and Suite2P on the pipeline is cell x frames, the default setting for neural data for these analyses is set to transpose. 
@@ -277,7 +277,7 @@ ophys: general information about imaging <br>
 
 ## Inspecting the images and the plots on VISUALIZE
 After executing the pipeline, you may want to check and compare the results.
-VISUALIZE page is the place to work on this. You can replay the tiff time-series, see the cell ROI images, the plot of cell fluorescence or spike time-series, and other plots showing the results of analyses. See [here](https://optinist.readthedocs.io/en/latest/gui/visualize.html) for basic usage.
+VISUALIZE page is the place to work on this. You can replay the tiff time-series, see the cell ROI images, the plot of cell fluorescence or spike time-series, and other plots showing the results of analyses. See [here](https://studio.readthedocs.io/en/latest/gui/visualize.html) for basic usage.
 
 
 ### Checking movies
@@ -313,7 +313,7 @@ In one plotting box (ex, the one with ID:0), select a background image such as m
 <img width="100px" src="./_static/tutorials/fig24_selectitem.png" alt="Whole" />
 </p>
 
-In the same plotting box, select cell_roi from the Select Roi pull-downs. Both Suite2P and CaImAn include the process to drop the extracted ROIs that do not meet the criteria. In OptiNiSt, the cell ID is given to all the ROIs. Cell_roi is the ROIs that passed the criteria. 
+In the same plotting box, select cell_roi from the Select Roi pull-downs. Both Suite2P and CaImAn include the process to drop the extracted ROIs that do not meet the criteria. In studio, the cell ID is given to all the ROIs. Cell_roi is the ROIs that passed the criteria. 
 
 <br>
 <p align="left">
@@ -356,7 +356,7 @@ You can save created plots in svg, png, jpeg, or webp format. Please select the 
 </p>
 
 ## Managing pipelines on RECORD
-The RECORD page summarizes the current status of OPTINIST_DIR/output. This page keeps the analysis pipeline easy to organize and easy to retrieve. For the basic usage of the RECORD page, see also [here](https://optinist.readthedocs.io/en/latest/gui/record.html)  
+The RECORD page summarizes the current status of studio_DIR/output. This page keeps the analysis pipeline easy to organize and easy to retrieve. For the basic usage of the RECORD page, see also [here](https://studio.readthedocs.io/en/latest/gui/record.html)  
 
 <br>
 <p align="left">

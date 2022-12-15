@@ -57,8 +57,8 @@ describe('InputNode', () => {
   // filePath変更
   test(`${setInputNodeFilePath.type} by image`, () => {
     const filePath = [
-      '/tmp/optinist/input/hoge/hoge.tif',
-      '/tmp/optinist/input/copy_image1/copy_image1.tif',
+      '/tmp/studio/input/hoge/hoge.tif',
+      '/tmp/studio/input/copy_image1/copy_image1.tif',
     ]
     const setInputNodeFilePathAction = setInputNodeFilePath({
       nodeId,

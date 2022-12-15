@@ -13,16 +13,16 @@ Place the config file required by Snakemake at the appropriate location.
 The config file can be downloaded from **Record** on the GUI.
 
 ## 2. Set environment variables for save paths
-Change environment variables. Change the environment variable as follows, because the default setting refers to the directory under `/tmp/optinist`.
+Change environment variables. Change the environment variable as follows, because the default setting refers to the directory under `/tmp/studio`.
 ```bash
-export OPTINIST_DIR="your_saving_dir"
+export studio_DIR="your_saving_dir"
 ```
 
-With environment variables set, input refers to `{OPTINIST_DIR}/input/` and results are output to `{OPTINIST_DIR}/output`.
+With environment variables set, input refers to `{studio_DIR}/input/` and results are output to `{studio_DIR}/output`.
 
 ## 3. Input File Settings
-Input files are stored under `/{OPTINIST_DIR}/input/`.
-For example, if there is `mouse2p_2_donotouse.tiff`, it is stored as `/{OPTINIST_DIR}/input/mouse2p_2_donotouse.tiff`.
+Input files are stored under `/{studio_DIR}/input/`.
+For example, if there is `mouse2p_2_donotouse.tiff`, it is stored as `/{studio_DIR}/input/mouse2p_2_donotouse.tiff`.
 
 ## 4. Execution
 It can be executed in CUI by running `run_cluster.py`.
@@ -40,5 +40,5 @@ python run_cluster.py --config="{config.yaml file path}"
 ```
 
 ## 5.Output result
-The results are stored in `{OPTINIST_DIR}/output/{unique_id}`.
+The results are stored in `{studio_DIR}/output/{unique_id}`.
 If you want to visualize the results, you can move this directory to local, and you can check the results in GUI.

@@ -1,8 +1,8 @@
 version: "3.8"
 services:
-  test_optinist:
-    image: test_optinist
-    container_name: test_optinist
+  test_studio:
+    image: test_studio
+    container_name: test_studio
     build:
       context: .
       dockerfile: Dockerfile-test
@@ -10,13 +10,13 @@ services:
       PYTHONPATH: .
       TZ: Asia/Tokyo
     volumes:
-      - ./optinist:/app/optinist
+      - ./studio:/app/studio
       - ./conda/yaml:/app/conda/yaml
-      - ./optinist/test_data:/tmp/optinist
+      - ./studio/test_data:/tmp/studio
 
-  test_optinist_frontend:
-    image: test_optinist_frontend
-    container_name: test_optinist_frontend
+  test_studio_frontend:
+    image: test_studio_frontend
+    container_name: test_studio_frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile-test
@@ -24,9 +24,9 @@ services:
       TZ: Asia/Tokyo
     command: yarn test:ci
 
-  build_optinist_frontend:
-    image: build_optinist_frontend
-    container_name: build_optinist_frontend
+  build_studio_frontend:
+    image: build_studio_frontend
+    container_name: build_studio_frontend
     build:
       context: ./frontend
       dockerfile: Dockerfile-build

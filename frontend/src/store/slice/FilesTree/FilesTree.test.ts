@@ -6,24 +6,24 @@ import { TreeNodeTypeDTO } from 'api/files/Files'
 describe('FilesTree', () => {
   const mockPayload: TreeNodeTypeDTO[] = [
     {
-      path: '/tmp/optinist/input/hoge',
+      path: '/tmp/studio/input/hoge',
       name: 'hoge',
       isdir: true,
       nodes: [
         {
-          path: '/tmp/optinist/input/hoge/hoge.tif',
+          path: '/tmp/studio/input/hoge/hoge.tif',
           name: 'hoge.tif',
           isdir: false,
         },
       ],
     },
     {
-      path: '/tmp/optinist/input/copy_image1',
+      path: '/tmp/studio/input/copy_image1',
       name: 'copy_image1',
       isdir: true,
       nodes: [
         {
-          path: '/tmp/optinist/input/copy_image1/copy_image1.tif',
+          path: '/tmp/studio/input/copy_image1/copy_image1.tif',
           name: 'copy_image1.tif',
           isdir: false,
         },
@@ -37,24 +37,24 @@ describe('FilesTree', () => {
       isLatest: true,
       tree: [
         {
-          path: '/tmp/optinist/input/hoge',
+          path: '/tmp/studio/input/hoge',
           name: 'hoge',
           isDir: true,
           nodes: [
             {
-              path: '/tmp/optinist/input/hoge/hoge.tif',
+              path: '/tmp/studio/input/hoge/hoge.tif',
               name: 'hoge.tif',
               isDir: false,
             },
           ],
         },
         {
-          path: '/tmp/optinist/input/copy_image1',
+          path: '/tmp/studio/input/copy_image1',
           name: 'copy_image1',
           isDir: true,
           nodes: [
             {
-              path: '/tmp/optinist/input/copy_image1/copy_image1.tif',
+              path: '/tmp/studio/input/copy_image1/copy_image1.tif',
               name: 'copy_image1.tif',
               isDir: false,
             },

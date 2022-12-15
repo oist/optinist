@@ -81,7 +81,7 @@ const ExperimentsErrorView: React.FC = () => {
   )
 }
 
-const LOCAL_STORAGE_KEY_PER_PAGE = 'optinist_experiment_table_per_page'
+const LOCAL_STORAGE_KEY_PER_PAGE = 'studio_experiment_table_per_page'
 
 const TableImple = React.memo(() => {
   const experimentList = useSelector(selectExperimentList)

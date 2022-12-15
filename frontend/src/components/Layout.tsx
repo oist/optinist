@@ -14,7 +14,7 @@ import { useRunPipeline } from 'store/slice/Pipeline/PipelineHook'
 import FlowChart from './FlowChart/FlowChart'
 import Visualize from './Visualize/Visualize'
 import Experiment from './Experiment/Experiment'
-import optinistLogo from './optinist.png'
+import studioLogo from './studio.png'
 
 const Layout: React.FC = () => {
   const [value, setValue] = React.useState(0)
@@ -28,7 +28,7 @@ const Layout: React.FC = () => {
     <RootDiv>
       <StyledAppBar position="fixed" color="inherit">
         <Toolbar variant="dense">
-          <img src={optinistLogo} alt="optinist" width={75} height={50} />
+          <img src={studioLogo} alt="studio" width={75} height={50} />
           <Tabs
             sx={{ width: '100%' }}
             value={value}
@@ -43,7 +43,7 @@ const Layout: React.FC = () => {
           <Tooltip title="GitHub repository">
             <IconButton
               sx={{ mr: 1 }}
-              href="https://github.com/oist/optinist"
+              href="https://github.com/oist/studio"
               target="_blank"
             >
               <GitHubIcon />
@@ -51,7 +51,7 @@ const Layout: React.FC = () => {
           </Tooltip>
           <Tooltip title="Documentation">
             <IconButton
-              href="https://optinist.readthedocs.io/en/latest/"
+              href="https://studio.readthedocs.io/en/latest/"
               target="_blank"
             >
               <MenuBookIcon />

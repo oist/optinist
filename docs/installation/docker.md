@@ -7,8 +7,8 @@ Docker
    * [Set saving directory](#set-saving-directory)
 
 ## Installation
-We introduce how to install optinist.
-We have developed optinist python(backend) and typescript(frontend), so you need to make both environment.
+We introduce how to install studio.
+We have developed studio python(backend) and typescript(frontend), so you need to make both environment.
 Please follow instructions below.
 
 <br />
@@ -18,22 +18,22 @@ Please follow instructions below.
 ### Make docker image
 Pull the latest docker image from docker hub.
 ```
-docker pull oistncu/optinist
+docker pull oistncu/studio
 ```
 Start docker container.
 ```
-docker run -it --shm-size=2G --name optinist_container -d -p 8000:8000 --restart=unless-stopped oistncu/optinist:latest
+docker run -it --shm-size=2G --name studio_container -d -p 8000:8000 --restart=unless-stopped oistncu/studio:latest
 ```
 
 Execute in terminal
 ```
-docker exec -it optinist_container /bin/bash
+docker exec -it studio_container /bin/bash
 ```
 
 ### Set saving directory
-Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
+studio default saving directory is `/tmp/studio`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
 ```bash
-export OPTINIST_DIR="your_saving_dir"
+export studio_DIR="your_saving_dir"
 ```
 
 Done!
