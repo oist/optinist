@@ -101,7 +101,7 @@ export const FileSelectImple = React.memo<FileSelectImpleProps>(
             {!!selectButtonLabel ? selectButtonLabel : 'Select File'}
           </Button>
           <Button onClick={onClick} variant="outlined">
-            {!!uploadButtonLabel ? uploadButtonLabel : 'or Upload'}
+            {!!uploadButtonLabel ? uploadButtonLabel : 'Load'}
           </Button>
         </ButtonGroup>
         <div>
