@@ -7,7 +7,7 @@ from glob import glob
 from optinist.api.dir_path import DIRPATH
 from optinist.api.utils.filepath_creater import join_filepath
 from optinist.api.experiment.experiment_reader import ExptConfigReader
-from optinist.routers.model import DeleteItem
+from optinist.routers.model import DeleteItem, RenameItem
 
 router = APIRouter()
 
@@ -26,6 +26,15 @@ async def get_experiments():
             pass
 
     return exp_config
+
+
+@router.patch("/experiments/{unique_id}/rename")
+async def rename_experiment(unique_id: str, item: RenameItem):
+    config = ExptConfigReader.rename(join_filepath([DIRPATH.OUTPUT_DIR, unique_id, DIRPATH.EXPERIMENT_YML]), new_name=item.new_name)
+    config.nodeDict = []
+    config.edgeDict = []
+
+    return config
 
 
 @router.get("/experiments/import/{unique_id}")
