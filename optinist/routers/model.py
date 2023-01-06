@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 
 
 
+
 @dataclass
 class Arg:
     name: str
@@ -108,3 +109,6 @@ class SnakemakeParams(BaseModel):
     forceall: bool
     forcetargets: bool
     lock: bool
+    
+class RenameItem(BaseModel):
+    new_name: str
