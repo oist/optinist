@@ -63,7 +63,7 @@ export const VisualizeItem = React.memo<{ itemId: number }>(({ itemId }) => {
           onClick={onClick}
           sx={{
             width: `${size.width}px`,
-            height: `${size.height}px`,
+            minHeight: `${size.height}px`,
             p: 1,
             borderColor: (theme) =>
               isSelected ? theme.palette.primary.light : undefined,

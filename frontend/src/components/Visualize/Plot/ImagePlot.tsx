@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect } from 'react'
+import React, {
+  useCallback,
+  useEffect,
+  useState,
+  MouseEvent,
+  useRef,
+} from 'react'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { useSelector, useDispatch } from 'react-redux'
 import { RootState } from 'store/store'
@@ -9,7 +15,7 @@ import FormControlLabel from '@mui/material/FormControlLabel'
 import Switch from '@mui/material/Switch'
 import Slider from '@mui/material/Slider'
 import Box from '@mui/material/Box'
-
+import { styled } from '@mui/material/styles'
 import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
 import { DisplayDataContext } from '../DataContext'
 
@@ -56,6 +62,28 @@ import {
   setImageItemClikedDataId,
 } from 'store/slice/VisualizeItem/VisualizeItemActions'
 
+interface PointClick {
+  x: number
+  y: number
+  z: number
+}
+
+const initSizeDrag = {
+  width: 30,
+  height: 30,
+  left: Math.floor(321 / 2) - 15,
+  top: Math.floor(321 / 2) - 15,
+}
+
+enum PositionDrag {
+  'LEFT' = 'LEFT',
+  'RIGHT' = 'RIGHT',
+  'BOTTOM' = 'BOTTOM',
+  'TOP' = 'TOP',
+}
+
+const sChart = 320
+
 export const ImagePlot = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
 
@@ -80,7 +108,7 @@ export const ImagePlot = React.memo(() => {
       )
     }
     if (roiFilePath != null) {
-      dispatch(getRoiData({ path: roiFilePath }))
+      dispatch(getRoiData({ path: roiFilePath })) // if call api save successful then call reload roi data
     }
   }, [dispatch, isInitialized, path, startIndex, endIndex, roiFilePath])
   if (isPending) {
@@ -110,11 +138,20 @@ const ImagePlotChart = React.memo<{
     imageDataEqualtyFn,
   )
   const roiFilePath = useSelector(selectRoiItemFilePath(itemId))
+
   const roiData = useSelector(
     (state: RootState) =>
       roiFilePath != null ? selectRoiData(roiFilePath)(state) : [],
     imageDataEqualtyFn,
   )
+
+  const [isAddRoi, setIsAddRoi] = useState(false)
+
+  const [roiDataState, setRoiDataState] = useState(roiData)
+
+  const [pointClick, setPointClick] = useState<
+    (PointClick & { list: PointClick[] })[]
+  >([])
 
   const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
   const showline = useSelector(selectImageItemShowLine(itemId))
@@ -128,12 +165,24 @@ const ImagePlotChart = React.memo<{
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
 
+  const [sizeDrag, setSizeDrag] = useState(initSizeDrag)
+
+  const [startDragAddRoi, setStartDragAddRoi] = useState(false)
+  const [positionDrag, setChangeSize] = useState<PositionDrag | undefined>()
+
+  const refPageXSize = useRef(0)
+  const refPageYSize = useRef(0)
+
   const colorscaleRoi = createColormap({
     colormap: 'jet',
     nshades: 100, //timeDataMaxIndex >= 6 ? timeDataMaxIndex : 6,
     format: 'rgba',
     alpha: 1.0,
   })
+
+  useEffect(() => {
+    setRoiDataState(roiData)
+  }, [roiData])
 
   const data = React.useMemo(
     () => [
@@ -160,24 +209,24 @@ const ImagePlotChart = React.memo<{
           const hex = rgba2hex(rgb, alpha)
           return [offset, hex]
         }),
+        hoverinfo: 'none',
         hoverongaps: false,
         showscale: showscale,
         zsmooth: zsmooth, // ['best', 'fast', false]
-        // showlegend: true,
       },
       {
-        z: roiData,
+        z: roiDataState,
         type: 'heatmap',
         name: 'roi',
-        hovertemplate: 'cell id: %{z}',
+        hoverinfo: 'none',
         colorscale: [...Array(timeDataMaxIndex)].map((_, i) => {
           const new_i = Math.floor(((i % 10) * 10 + i / 10) % 100)
-          const offset = i / (timeDataMaxIndex - 1)
+          const offset: number = i / (timeDataMaxIndex - 1)
           const rgba = colorscaleRoi[new_i]
           const hex = rgba2hex(rgba, roiAlpha)
           return [offset, hex]
         }),
-        zmin: 1,
+        zmin: 0,
         zmax: timeDataMaxIndex,
         hoverongaps: false,
         zsmooth: false,
@@ -186,7 +235,7 @@ const ImagePlotChart = React.memo<{
     ],
     [
       imageData,
-      roiData,
+      roiDataState,
       zsmooth,
       showscale,
       colorscale,
@@ -258,36 +307,239 @@ const ImagePlotChart = React.memo<{
   }
 
   const onClick = (event: any) => {
-    const points: PlotDatum = event.points[0]
-    if (points.curveNumber >= 1) {
+    const point: PlotDatum = event.points[0]
+    if (point.curveNumber >= 1) {
+      setSelectRoi({
+        x: Number(point.x),
+        y: Number(point.y),
+        z: Number(point.z),
+      })
       dispatch(
         setImageItemClikedDataId({
           itemId,
-          clickedDataId: points.z.toString(),
+          clickedDataId: point.z.toString(),
         }),
       )
     }
   }
 
+  const setSelectRoi = (point: PointClick) => {
+    if (!point.z) return
+    const newPoints = [...pointClick, point]
+    const list: PointClick[] = []
+    const newRoi = roiDataState.map((roi, index) => {
+      return roi.map((element, i) => {
+        if (newPoints.some((p) => p.z === element)) {
+          list.push({ x: index, y: i, z: point.z })
+          return 0
+        }
+        return element
+      })
+    })
+    setPointClick([...pointClick, { ...point, list }])
+    setRoiDataState(newRoi)
+  }
+
+  const onCancel = () => {
+    setPointClick([])
+    setRoiDataState(roiData)
+  }
+
+  const onDeleteRoi = () => {
+    const newRoi = roiData.map((roi) => {
+      return roi.map((element) => {
+        if (pointClick.some((p) => p.z === element)) {
+          return null
+        }
+        return element
+      })
+    })
+    //send to server
+    setRoiDataState(newRoi as any)
+    setPointClick([])
+  }
+
+  const addRoi = () => {
+    setIsAddRoi(true)
+  }
+
+  const onCancelAdd = () => {
+    setIsAddRoi(false)
+    setSizeDrag(initSizeDrag)
+    setChangeSize(undefined)
+  }
+
+  const onMouseDownDragAddRoi = () => {
+    setStartDragAddRoi(true)
+  }
+
+  const onMouseUpDragAddRoi = () => {
+    setStartDragAddRoi(false)
+    setChangeSize(undefined)
+  }
+
+  const onMouseDownSize = (position: PositionDrag, event: MouseEvent) => {
+    setChangeSize(position)
+    refPageXSize.current = event.pageX
+    refPageYSize.current = event.pageY
+  }
+
+  const onMouseMoveAddRoi = (event: MouseEvent<HTMLDivElement>) => {
+    const { pageX, pageY } = event
+    let newSizeDrag
+    if (startDragAddRoi) {
+      const { y } = (event.currentTarget as any).getBoundingClientRect()
+      let newX = sizeDrag.left + (pageX - refPageXSize.current)
+      let newY = Math.ceil(pageY - y - 15)
+      if (newX < 0) newX = 0
+      else if (newX + sizeDrag.width > sChart) newX = sChart - sizeDrag.width
+      if (newY < 0) newY = 0
+      else if (newY + sizeDrag.height > sChart) newY = sChart - sizeDrag.height
+      newSizeDrag = { ...sizeDrag, left: newX, top: newY }
+    } else if (positionDrag === PositionDrag.LEFT) {
+      const newWidth = sizeDrag.width - (pageX - refPageXSize.current)
+      const newLeft = sizeDrag.left + (pageX - refPageXSize.current)
+      if (newWidth < 1 || newLeft < 3) return
+      newSizeDrag = { ...sizeDrag, width: newWidth, left: newLeft }
+    } else if (positionDrag === PositionDrag.RIGHT) {
+      const newWidth = sizeDrag.width + (pageX - refPageXSize.current)
+      if (newWidth < 1 || newWidth > sChart - sizeDrag.left) return
+      newSizeDrag = { ...sizeDrag, width: newWidth }
+    } else if (positionDrag === PositionDrag.BOTTOM) {
+      const newHeight = sizeDrag.height + (pageY - refPageYSize.current)
+      if (newHeight < 1 || newHeight > sChart - sizeDrag.top) return
+      newSizeDrag = { ...sizeDrag, height: newHeight }
+    } else if (positionDrag === PositionDrag.TOP) {
+      const newHeight = sizeDrag.height - (pageY - refPageYSize.current)
+      const newTop = sizeDrag.top + (pageY - refPageYSize.current)
+      if (newHeight < 1 || newTop < 2) return
+      newSizeDrag = { ...sizeDrag, height: newHeight, top: newTop }
+    }
+    if (newSizeDrag) setSizeDrag({ ...sizeDrag, ...newSizeDrag })
+    refPageXSize.current = pageX
+    refPageYSize.current = pageY
+  }
+
+  const addRoiSubmit = () => {
+    const sizeX = roiDataState[0].length - 1
+    const sizeY = roiDataState.length - 1
+    const xAdd = Math.floor(sizeDrag.width / (sChart / sizeX))
+    const yAdd = Math.floor(sizeDrag.height / (sChart / sizeY))
+    const x = Math.ceil(sizeDrag.left / (sChart / sizeX))
+    const y = Math.ceil(sizeDrag.top / (sChart / sizeY))
+    const z = timeDataMaxIndex + 1
+    let positionAdd = [{ x, y, z }]
+    for (let i = 0; i <= xAdd; i++) {
+      for (let j = 0; j <= yAdd; j++) {
+        positionAdd.push({ x: x + i, y: y + j, z })
+      }
+    }
+    const newRoiState = roiDataState.map((roi, index) => {
+      const findPos = positionAdd.filter((e) => e.y === index)
+      if (!findPos?.length) return roi
+      return roi.map((r, i) => {
+        const roiData = findPos.find((fp) => fp.x === i)
+        if (roiData) return roiData.z
+        return r
+      })
+    })
+    setIsAddRoi(false)
+    setRoiDataState(newRoiState)
+    onCancelAdd()
+  }
+
+  const renderActionRoi = () => {
+    if (!roiDataState?.length) return null
+    if (!isAddRoi) {
+      return <LinkDiv onClick={addRoi}>Add Roi</LinkDiv>
+    }
+    return (
+      <BoxDiv>
+        <LinkDiv onClick={addRoiSubmit}>Ok</LinkDiv>
+        <LinkDiv onClick={onCancelAdd}>Cancel</LinkDiv>
+      </BoxDiv>
+    )
+  }
+
   return (
     <div>
       <Box sx={{ display: 'flex' }}>
-        <Box sx={{ flexGrow: 1, ml: 1 }}>
+        <Box sx={{ flexGrow: 1, mt: 1 }}>
           <PlayBack activeIndex={activeIndex} />
         </Box>
         <FormControlLabel
-          sx={{ m: 1 }}
+          sx={{ ml: 1 }}
           control={<Switch checked={selectMode} onChange={handleChange} />}
           label="drag select"
         />
       </Box>
-      <PlotlyChart
-        data={data}
-        layout={layout}
-        config={config}
-        onClick={onClick}
-        onSelecting={onSelecting}
-      />
+      <Box sx={{ minHeight: 5.5 }}>
+        {pointClick.length ? (
+          <>
+            <BoxDiv>
+              <span>Roi Selecteds: [{String(pointClick.map((e) => e.z))}]</span>
+            </BoxDiv>
+            <BoxDiv>
+              <LinkDiv sx={{ ml: 0 }}>Merge Roi</LinkDiv>
+              <LinkDiv sx={{ color: '#F84E1B' }} onClick={onDeleteRoi}>
+                Delete Roi
+              </LinkDiv>
+              <LinkDiv onClick={onCancel}>Cancel</LinkDiv>
+            </BoxDiv>
+          </>
+        ) : (
+          renderActionRoi()
+        )}
+      </Box>
+      <div style={{ position: 'relative' }}>
+        <PlotlyChart
+          data={data}
+          layout={layout}
+          config={config}
+          onClick={onClick}
+          onSelecting={onSelecting}
+        />
+        {isAddRoi ? (
+          <DivAddRoi>
+            <DivSvg
+              onMouseLeave={onMouseUpDragAddRoi}
+              onMouseMove={onMouseMoveAddRoi}
+              onMouseUp={onMouseUpDragAddRoi}
+            >
+              <DivDrag style={sizeDrag}>
+                <DragCenter
+                  onMouseDown={onMouseDownDragAddRoi}
+                  style={{
+                    width: sizeDrag.width - 1,
+                    height: sizeDrag.height - 1,
+                    cursor: !startDragAddRoi ? 'grab' : 'grabbing',
+                  }}
+                />
+                <DragSizeLeft
+                  onMouseDown={(event) =>
+                    onMouseDownSize(PositionDrag.LEFT, event)
+                  }
+                />
+                <DragSizeRight
+                  onMouseDown={(event) => {
+                    onMouseDownSize(PositionDrag.RIGHT, event)
+                  }}
+                />
+                <DragSizeTop
+                  onMouseDown={(event) => {
+                    onMouseDownSize(PositionDrag.TOP, event)
+                  }}
+                />
+                <DragSizeBottom
+                  onMouseDown={(event) => {
+                    onMouseDownSize(PositionDrag.BOTTOM, event)
+                  }}
+                />
+              </DivDrag>
+            </DivSvg>
+          </DivAddRoi>
+        ) : null}
+      </div>
     </div>
   )
 })
@@ -355,14 +607,15 @@ const PlayBack = React.memo<{ activeIndex: number }>(({ activeIndex }) => {
   )
   return (
     <>
-      <Button variant="outlined" onClick={onPlayClick}>
+      <Button sx={{ mt: 1.5 }} variant="outlined" onClick={onPlayClick}>
         Play
       </Button>
-      <Button variant="outlined" onClick={onPauseClick}>
+      <Button sx={{ mt: 1.5, ml: 1 }} variant="outlined" onClick={onPauseClick}>
         Pause
       </Button>
       <TextField
-        label="dur[msec]"
+        sx={{ width: 100, ml: 2 }}
+        label="Duration [msec]"
         type="number"
         inputProps={{
           step: 100,
@@ -449,3 +702,79 @@ function debounce<T extends (...args: any[]) => unknown>(
     timeoutId = setTimeout(() => callback(...args), delay)
   }
 }
+
+const BoxDiv = styled('div')({
+  mt: 1,
+  display: 'flex',
+  alignItems: 'center',
+  listStyle: 'none',
+  padding: 0,
+  margin: 0,
+})
+
+const LinkDiv = styled('div')({
+  marginLeft: 16,
+  textDecoration: 'underline',
+  cursor: 'pointer',
+  color: '#1155cc',
+  zIndex: 999,
+  position: 'relative',
+})
+
+const DivAddRoi = styled('div')({
+  width: '100%',
+  height: '100%',
+  position: 'absolute',
+  left: 0,
+  top: 0,
+})
+
+const DivSvg = styled('div')({
+  width: 321,
+  height: 321,
+  marginTop: 30,
+  marginLeft: 99,
+  position: 'relative',
+})
+
+const DivDrag = styled('div')({
+  border: '1px solid #ffffff',
+  position: 'absolute',
+})
+
+const DragCenter = styled('div')({
+  borderRadius: 100,
+  cursor: 'grab',
+})
+
+const DragSize = styled('div')({
+  width: 3,
+  height: 3,
+  borderRadius: 100,
+  position: 'absolute',
+  background: '#fff',
+})
+
+const DragSizeLeft = styled(DragSize)({
+  top: `calc(50% - 1px)`,
+  left: -2,
+  cursor: 'ew-resize',
+})
+
+const DragSizeRight = styled(DragSize)({
+  top: `calc(50% - 1px)`,
+  right: -2,
+  cursor: 'ew-resize',
+})
+
+const DragSizeTop = styled(DragSize)({
+  top: -2,
+  right: `calc(50% - 1px)`,
+  cursor: 'ns-resize',
+})
+
+const DragSizeBottom = styled(DragSize)({
+  bottom: -2,
+  right: `calc(50% - 1px)`,
+  cursor: 'ns-resize',
+})

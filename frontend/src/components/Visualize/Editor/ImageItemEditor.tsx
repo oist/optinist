@@ -208,6 +208,7 @@ const Alpha: React.FC = () => {
   return (
     <>
       <TextField
+        style={{ width: '100%' }}
         label={'image alpha'}
         error={inputError}
         type="number"
@@ -241,6 +242,7 @@ const RoiAlpha: React.FC = () => {
   return (
     <>
       <TextField
+        style={{ width: '100%' }}
         label={'roi alpha'}
         error={inputError}
         type="number"
