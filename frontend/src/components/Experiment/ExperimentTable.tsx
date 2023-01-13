@@ -373,13 +373,13 @@ const RowItem = React.memo<{
   const hasNWB = useSelector(selectExperimentHasNWB(uid))
   const [open, setOpen] = React.useState(false)
   const [isEdit, setEdit] = useState(false)
-  const [error, setErrorEdit] = useState('')
+  const [errorEdit, setErrorEdit] = useState('')
   const [valueEdit, setValueEdit] = useState(name)
   const dispatch = useDispatch()
 
-  const onBlur = (event: any) => {
+  const onBlurEdit = (event: any) => {
     event.preventDefault()
-    if (error) return
+    if (errorEdit) return
     setTimeout(() => {
       setEdit(false)
       onSaveNewName()
@@ -387,7 +387,7 @@ const RowItem = React.memo<{
   }
 
   const onEdit = (event: any) => {
-    if (isEdit || error) return
+    if (isEdit || errorEdit) return
     event.preventDefault()
     setEdit(true)
   }
@@ -442,13 +442,13 @@ const RowItem = React.memo<{
             <>
               <Input
                 placeholder="Name"
-                error={!!error}
+                error={!!errorEdit}
                 onChange={onChangeName}
                 autoFocus
-                onBlur={onBlur}
+                onBlur={onBlurEdit}
                 value={valueEdit}
               />
-              {error ? <TextError>{error}</TextError> : null}
+              {errorEdit ? <TextError>{errorEdit}</TextError> : null}
             </>
           )}
         </TableCell>
