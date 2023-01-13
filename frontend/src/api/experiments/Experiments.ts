@@ -69,3 +69,13 @@ export async function downloadExperimentConfigApi(uid: string) {
   )
   return response.data
 }
+
+export async function renameExperiment(unique_id: string, new_name: string) {
+  const response = await axios.patch(
+    `${BASE_URL}/experiments/${unique_id}/rename`,
+    {
+      new_name,
+    },
+  )
+  return response.data
+}

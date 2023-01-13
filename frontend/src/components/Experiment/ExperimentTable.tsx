@@ -50,6 +50,7 @@ import {
 import { ImportButton } from './Button/ImportButton'
 import { useLocalStorage } from 'components/utils/LocalStorageUtil'
 import { styled } from '@mui/material/styles'
+import { renameExperiment } from 'api/experiments/Experiments'
 
 export const ExperimentUidContext = React.createContext<string>('')
 
@@ -63,6 +64,7 @@ export const ExperimentTable: React.FC = () => {
       dispatch(getExperiments())
     }
   }, [dispatch, isUninitialized])
+
   if (isFulfilled) {
     return <TableImple />
   } else if (isError) {
@@ -373,12 +375,14 @@ const RowItem = React.memo<{
   const [isEdit, setEdit] = useState(false)
   const [error, setErrorEdit] = useState('')
   const [valueEdit, setValueEdit] = useState(name)
+  const dispatch = useDispatch()
 
   const onBlur = (event: any) => {
     event.preventDefault()
     if (error) return
     setTimeout(() => {
       setEdit(false)
+      onSaveNewName()
     }, 300)
   }
 
@@ -395,6 +399,11 @@ const RowItem = React.memo<{
     }
     setErrorEdit(errorEdit)
     setValueEdit(event.target.value)
+  }
+
+  const onSaveNewName = async () => {
+    await renameExperiment(uid, valueEdit)
+    dispatch(getExperiments())
   }
 
   return (
