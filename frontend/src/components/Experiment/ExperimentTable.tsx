@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { ChangeEvent, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import Button from '@mui/material/Button'
 import Box from '@mui/material/Box'
@@ -49,6 +49,7 @@ import {
 } from './Button/DownloadButton'
 import { ImportButton } from './Button/ImportButton'
 import { useLocalStorage } from 'components/utils/LocalStorageUtil'
+import { styled } from '@mui/material/styles'
 
 export const ExperimentUidContext = React.createContext<string>('')
 
@@ -369,6 +370,32 @@ const RowItem = React.memo<{
   const name = useSelector(selectExperimentName(uid))
   const hasNWB = useSelector(selectExperimentHasNWB(uid))
   const [open, setOpen] = React.useState(false)
+  const [isEdit, setEdit] = useState(false)
+  const [error, setErrorEdit] = useState('')
+  const [valueEdit, setValueEdit] = useState(name)
+
+  const onBlur = (event: any) => {
+    event.preventDefault()
+    if (error) return
+    setTimeout(() => {
+      setEdit(false)
+    }, 300)
+  }
+
+  const onEdit = (event: any) => {
+    if (isEdit || error) return
+    event.preventDefault()
+    setEdit(true)
+  }
+
+  const onChangeName = (event: ChangeEvent<HTMLInputElement>) => {
+    let errorEdit = ''
+    if (!event.target.value.trim()) {
+      errorEdit = 'Name is empty'
+    }
+    setErrorEdit(errorEdit)
+    setValueEdit(event.target.value)
+  }
 
   return (
     <React.Fragment>
@@ -398,7 +425,23 @@ const RowItem = React.memo<{
           {timestamp}
         </TableCell>
         <TableCell>{uid}</TableCell>
-        <TableCell>{name}</TableCell>
+        <TableCell sx={{ width: 160, position: 'relative' }} onClick={onEdit}>
+          {!isEdit ? (
+            valueEdit
+          ) : (
+            <>
+              <Input
+                placeholder="Name"
+                error={!!error}
+                onChange={onChangeName}
+                autoFocus
+                onBlur={onBlur}
+                value={valueEdit}
+              />
+              {error ? <TextError>{error}</TextError> : null}
+            </>
+          )}
+        </TableCell>
         <TableCell>
           <ExperimentStatusIcon status={status} />
         </TableCell>
@@ -419,6 +462,23 @@ const RowItem = React.memo<{
     </React.Fragment>
   )
 })
+
+const Input = styled('input')<{ error: boolean }>(({ error }) => ({
+  width: '100%',
+  border: 'none',
+  borderBottom: '1px solid',
+  outline: 'none',
+  color: error ? '#d32f2f' : '',
+  borderColor: error ? '#d32f2f' : '',
+}))
+
+const TextError = styled(Typography)(() => ({
+  color: '#d32f2f',
+  fontSize: 12,
+  height: 12,
+  position: 'absolute',
+  bottom: 12,
+}))
 
 type Order = 'asc' | 'desc'
 
