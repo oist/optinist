@@ -9,7 +9,7 @@ from optinist.api.utils.json_writer import JsonWriter, save_tiff2json
 from optinist.api.utils.filepath_creater import create_directory, join_filepath
 from optinist.routers.const import ACCEPT_TIFF_EXT
 from optinist.routers.fileIO.file_reader import JsonReader, Reader
-from optinist.routers.model import JsonTimeSeriesData
+from optinist.routers.model import JsonTimeSeriesData, RoiPos
 
 router = APIRouter()
 
@@ -140,6 +140,22 @@ async def get_image(
 
     return JsonReader.read_as_output(json_filepath)
 
+@router.post("/outputs/image/{filepath:path}/add_roi")
+async def add_roi(filepath: str, pos: RoiPos):
+    # filename, ext = os.path.splitext(os.path.basename(filepath))
+    ops_path = os.path.join(os.path.dirname(filepath), 'suite2p.npy')
+    
+    from optinist.wrappers.suite2p_wrapper.add_roi import add_ROI
+    import numpy as np
+    ops=  np.load(ops_path, allow_pickle=True).item()
+    info = add_ROI(ops, pos=[pos.posx, pos.posy, pos.sizex, pos.sizey])
+
+    info['ops'].save_json(os.path.dirname(filepath))
+    info['all_roi'].save_json(os.path.dirname(filepath))
+    info['fluorescence'].save_json(os.path.dirname(filepath))
+    info['cell_roi'].save_json(os.path.dirname(filepath))
+    
+    return JsonReader.read_as_output(filepath)
 
 @router.get("/outputs/csv/{filepath:path}")
 async def get_csv(filepath: str):
