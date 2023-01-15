@@ -420,31 +420,19 @@ const ImagePlotChart = React.memo<{
     refPageYSize.current = pageY
   }
 
+
   const addRoiSubmit = () => {
     const sizeX = roiDataState[0].length - 1
     const sizeY = roiDataState.length - 1
-    const xAdd = Math.floor(sizeDrag.width / (sChart / sizeX))
-    const yAdd = Math.floor(sizeDrag.height / (sChart / sizeY))
+    const yAdd = Math.floor(sizeDrag.width / (sChart / sizeX))
+    const xAdd = Math.floor(sizeDrag.height / (sChart / sizeY))
     const x = Math.ceil(sizeDrag.left / (sChart / sizeX))
     const y = Math.ceil(sizeDrag.top / (sChart / sizeY))
-    const z = timeDataMaxIndex + 1
-    let positionAdd = [{ x, y, z }]
-    for (let i = 0; i <= xAdd; i++) {
-      for (let j = 0; j <= yAdd; j++) {
-        positionAdd.push({ x: x + i, y: y + j, z })
-      }
-    }
-    const newRoiState = roiDataState.map((roi, index) => {
-      const findPos = positionAdd.filter((e) => e.y === index)
-      if (!findPos?.length) return roi
-      return roi.map((r, i) => {
-        const roiData = findPos.find((fp) => fp.x === i)
-        if (roiData) return roiData.z
-        return r
-      })
-    })
+
+    const pointCenter = { posx: x + xAdd / 2, posy: y + yAdd / 2, sizex: xAdd, sizey: yAdd }
+    console.log('pointCenter', pointCenter)
+
     setIsAddRoi(false)
-    setRoiDataState(newRoiState)
     onCancelAdd()
   }
 
@@ -727,6 +715,7 @@ const DivAddRoi = styled('div')({
   position: 'absolute',
   left: 0,
   top: 0,
+  borderRadius: 100,
 })
 
 const DivSvg = styled('div')({
@@ -740,6 +729,7 @@ const DivSvg = styled('div')({
 const DivDrag = styled('div')({
   border: '1px solid #ffffff',
   position: 'absolute',
+  borderRadius: 100,
 })
 
 const DragCenter = styled('div')({

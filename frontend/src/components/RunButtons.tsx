@@ -115,8 +115,7 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
         anchorEl={anchorRef.current}
         role={undefined}
         transition
-        disablePortal
-      >
+        disablePortal={false} onResize={undefined} onResizeCapture={undefined}      >
         {({ TransitionProps, placement }) => (
           <Grow
             {...TransitionProps}
