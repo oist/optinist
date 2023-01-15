@@ -61,6 +61,7 @@ import {
   selectingImageArea,
   setImageItemClikedDataId,
 } from 'store/slice/VisualizeItem/VisualizeItemActions'
+import { addRoiApi } from 'api/outputs/Outputs'
 
 interface PointClick {
   x: number
@@ -169,6 +170,8 @@ const ImagePlotChart = React.memo<{
 
   const [startDragAddRoi, setStartDragAddRoi] = useState(false)
   const [positionDrag, setChangeSize] = useState<PositionDrag | undefined>()
+
+  const outputKey: string = useSelector((state: any) => state.visualaizeItem?.items[itemId]?.roiItem?.outputKey)
 
   const refPageXSize = useRef(0)
   const refPageYSize = useRef(0)
@@ -421,7 +424,8 @@ const ImagePlotChart = React.memo<{
   }
 
 
-  const addRoiSubmit = () => {
+  const addRoiSubmit = async () => {
+    if (!roiFilePath) return
     const sizeX = roiDataState[0].length - 1
     const sizeY = roiDataState.length - 1
     const yAdd = Math.floor(sizeDrag.width / (sChart / sizeX))
@@ -430,14 +434,14 @@ const ImagePlotChart = React.memo<{
     const y = Math.ceil(sizeDrag.top / (sChart / sizeY))
 
     const pointCenter = { posx: x + xAdd / 2, posy: y + yAdd / 2, sizex: xAdd, sizey: yAdd }
-    console.log('pointCenter', pointCenter)
-
+    await addRoiApi(roiFilePath, pointCenter)
     setIsAddRoi(false)
     onCancelAdd()
+    dispatch(getRoiData({ path: roiFilePath }))
   }
 
   const renderActionRoi = () => {
-    if (!roiDataState?.length) return null
+    if (!roiDataState?.length || outputKey !== 'cell_roi') return null
     if (!isAddRoi) {
       return <LinkDiv onClick={addRoi}>Add Roi</LinkDiv>
     }
