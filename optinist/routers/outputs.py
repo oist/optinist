@@ -9,7 +9,8 @@ from optinist.api.utils.json_writer import JsonWriter, save_tiff2json
 from optinist.api.utils.filepath_creater import create_directory, join_filepath
 from optinist.routers.const import ACCEPT_TIFF_EXT
 from optinist.routers.fileIO.file_reader import JsonReader, Reader
-from optinist.routers.model import JsonTimeSeriesData
+from optinist.routers.model import JsonTimeSeriesData, RoiPos
+from optinist.wrappers.suite2p_wrapper.add_roi import add_ROI
 
 router = APIRouter()
 
@@ -140,6 +141,11 @@ async def get_image(
 
     return JsonReader.read_as_output(json_filepath)
 
+@router.post("/outputs/image/{filepath:path}/add_roi")
+async def add_roi(filepath: str, pos: RoiPos):
+    # filename, ext = os.path.splitext(os.path.basename(filepath))
+    path = add_ROI(node_dirpath=os.path.dirname(filepath), pos=[pos.posx, pos.posy, pos.sizex, pos.sizey])
+    return JsonReader.read_as_output(path)
 
 @router.get("/outputs/csv/{filepath:path}")
 async def get_csv(filepath: str):
