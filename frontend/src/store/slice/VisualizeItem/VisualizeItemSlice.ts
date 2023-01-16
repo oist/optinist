@@ -227,9 +227,10 @@ export const visualaizeItemSlice = createSlice({
         itemId: number
         filePath: string
         nodeId: string | null
+        outputKey?: string
       }>,
     ) => {
-      const { itemId, filePath, nodeId } = action.payload
+      const { itemId, filePath, nodeId, outputKey } = action.payload
       const targetItem = state.items[itemId]
       if (isImageItem(targetItem)) {
         Object.values(state.items).forEach((item) => {
@@ -245,11 +246,13 @@ export const visualaizeItemSlice = createSlice({
         if (targetItem.roiItem != null) {
           targetItem.roiItem.filePath = filePath
           targetItem.roiItem.nodeId = nodeId
+          targetItem.roiItem.outputKey = outputKey
         } else {
           targetItem.roiItem = {
             ...roiItemInitialValue,
             filePath,
             nodeId,
+            outputKey,
           }
         }
       }
