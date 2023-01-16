@@ -171,7 +171,9 @@ const ImagePlotChart = React.memo<{
   const [startDragAddRoi, setStartDragAddRoi] = useState(false)
   const [positionDrag, setChangeSize] = useState<PositionDrag | undefined>()
 
-  const outputKey: string = useSelector((state: any) => state.visualaizeItem?.items[itemId]?.roiItem?.outputKey)
+  const outputKey: string = useSelector(
+    (state: any) => state.visualaizeItem?.items[itemId]?.roiItem?.outputKey,
+  )
 
   const refPageXSize = useRef(0)
   const refPageYSize = useRef(0)
@@ -212,7 +214,7 @@ const ImagePlotChart = React.memo<{
           const hex = rgba2hex(rgb, alpha)
           return [offset, hex]
         }),
-        hoverinfo: 'none',
+        // hoverinfo: 'none',
         hoverongaps: false,
         showscale: showscale,
         zsmooth: zsmooth, // ['best', 'fast', false]
@@ -221,7 +223,7 @@ const ImagePlotChart = React.memo<{
         z: roiDataState,
         type: 'heatmap',
         name: 'roi',
-        hoverinfo: 'none',
+        // hoverinfo: 'none',
         colorscale: [...Array(timeDataMaxIndex)].map((_, i) => {
           const new_i = Math.floor(((i % 10) * 10 + i / 10) % 100)
           const offset: number = i / (timeDataMaxIndex - 1)
@@ -423,18 +425,24 @@ const ImagePlotChart = React.memo<{
     refPageYSize.current = pageY
   }
 
-
   const addRoiSubmit = async () => {
     if (!roiFilePath) return
     const sizeX = roiDataState[0].length - 1
     const sizeY = roiDataState.length - 1
-    const yAdd = Math.floor(sizeDrag.width / (sChart / sizeX))
-    const xAdd = Math.floor(sizeDrag.height / (sChart / sizeY))
+    const xAdd = Math.ceil(sizeDrag.width / (sChart / sizeX))
+    const yAdd = Math.floor(sizeDrag.height / (sChart / sizeY))
     const x = Math.ceil(sizeDrag.left / (sChart / sizeX))
     const y = Math.ceil(sizeDrag.top / (sChart / sizeY))
 
-    const pointCenter = { posx: x + xAdd / 2, posy: y + yAdd / 2, sizex: xAdd, sizey: yAdd }
-    await addRoiApi(roiFilePath, pointCenter)
+    const pointCenter = {
+      posx: x + Math.floor(xAdd / 2),
+      posy: y + Math.floor(yAdd / 2),
+      sizex: xAdd,
+      sizey: yAdd,
+    }
+    try {
+      await addRoiApi(roiFilePath, pointCenter)
+    } catch {}
     setIsAddRoi(false)
     onCancelAdd()
     dispatch(getRoiData({ path: roiFilePath }))
