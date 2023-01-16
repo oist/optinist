@@ -1,3 +1,3 @@
-from .add_roi import add_ROI
+from .add_roi import execute_add_ROI
 from .merge_roi import execute_merge_roi
-# from .delete_roi import delete_roi
+from .delete_roi import excute_delete_roi
