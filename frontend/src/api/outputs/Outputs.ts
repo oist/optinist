@@ -131,3 +131,14 @@ export async function mergeRoiApi(
   )
   return response.data
 }
+
+export async function deleteRoiApi(
+  path: string,
+  data: { ids: number[] },
+): Promise<{ data: HTMLData }> {
+  const response = await axios.post(
+    `${BASE_URL}/outputs/image/${path}/delete_roi`,
+    data,
+  )
+  return response.data
+}

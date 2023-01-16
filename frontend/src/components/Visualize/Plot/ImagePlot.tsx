@@ -61,7 +61,7 @@ import {
   selectingImageArea,
   setImageItemClikedDataId,
 } from 'store/slice/VisualizeItem/VisualizeItemActions'
-import { addRoiApi, mergeRoiApi } from 'api/outputs/Outputs'
+import { addRoiApi, deleteRoiApi, mergeRoiApi } from 'api/outputs/Outputs'
 
 interface PointClick {
   x: number
@@ -69,11 +69,14 @@ interface PointClick {
   z: number
 }
 
+const WIDTH_CHARTJS = 321
+const INIT_WIDTH_ROI = 30
+
 const initSizeDrag = {
-  width: 30,
-  height: 30,
-  left: Math.floor(321 / 2) - 15,
-  top: Math.floor(321 / 2) - 15,
+  width: INIT_WIDTH_ROI,
+  height: INIT_WIDTH_ROI,
+  left: Math.floor((WIDTH_CHARTJS - INIT_WIDTH_ROI) / 2),
+  top: Math.floor((WIDTH_CHARTJS - INIT_WIDTH_ROI) / 2),
 }
 
 enum PositionDrag {
@@ -109,7 +112,7 @@ export const ImagePlot = React.memo(() => {
       )
     }
     if (roiFilePath != null) {
-      dispatch(getRoiData({ path: roiFilePath })) // if call api save successful then call reload roi data
+      dispatch(getRoiData({ path: roiFilePath }))
     }
   }, [dispatch, isInitialized, path, startIndex, endIndex, roiFilePath])
   if (isPending) {
@@ -150,9 +153,7 @@ const ImagePlotChart = React.memo<{
 
   const [roiDataState, setRoiDataState] = useState(roiData)
 
-  const [pointClick, setPointClick] = useState<
-    (PointClick & { list: PointClick[] })[]
-  >([])
+  const [pointClick, setPointClick] = useState<PointClick[]>([])
 
   const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
   const showline = useSelector(selectImageItemShowLine(itemId))
@@ -331,37 +332,21 @@ const ImagePlotChart = React.memo<{
   const setSelectRoi = (point: PointClick) => {
     if (!point.z) return
     const newPoints = [...pointClick, point]
-    const list: PointClick[] = []
-    const newRoi = roiDataState.map((roi, index) => {
-      return roi.map((element, i) => {
+    const newRoi = roiDataState.map((roi) => {
+      return roi.map((element) => {
         if (newPoints.some((p) => p.z === element)) {
-          list.push({ x: index, y: i, z: point.z })
           return 0
         }
         return element
       })
     })
-    setPointClick([...pointClick, { ...point, list }])
+    setPointClick([...pointClick, point])
     setRoiDataState(newRoi)
   }
 
   const onCancel = () => {
     setPointClick([])
     setRoiDataState(roiData)
-  }
-
-  const onDeleteRoi = () => {
-    const newRoi = roiData.map((roi) => {
-      return roi.map((element) => {
-        if (pointClick.some((p) => p.z === element)) {
-          return null
-        }
-        return element
-      })
-    })
-    //send to server
-    setRoiDataState(newRoi as any)
-    setPointClick([])
   }
 
   const addRoi = () => {
@@ -443,7 +428,6 @@ const ImagePlotChart = React.memo<{
     try {
       await addRoiApi(roiFilePath, pointCenter)
     } catch {}
-    setIsAddRoi(false)
     onCancelAdd()
     dispatch(getRoiData({ path: roiFilePath }))
   }
@@ -452,12 +436,21 @@ const ImagePlotChart = React.memo<{
     if (!roiFilePath) return
     try {
       await mergeRoiApi(roiFilePath, {
-        ids: pointClick.map((point) => point.z),
+        ids: pointClick.map((point) => point.z - 1),
       })
     } catch {}
-    setIsAddRoi(false)
-    onCancelAdd()
-    
+    onCancel()
+    dispatch(getRoiData({ path: roiFilePath }))
+  }
+
+  const onDeleteRoi = async () => {
+    if (!roiFilePath) return
+    try {
+      await deleteRoiApi(roiFilePath, {
+        ids: pointClick.map((point) => point.z - 1),
+      })
+    } catch {}
+    onCancel()
     dispatch(getRoiData({ path: roiFilePath }))
   }
 
@@ -493,9 +486,11 @@ const ImagePlotChart = React.memo<{
               <span>Roi Selecteds: [{String(pointClick.map((e) => e.z))}]</span>
             </BoxDiv>
             <BoxDiv>
-              <LinkDiv sx={{ ml: 0 }} onClick={onMergeRoi}>
-                Merge Roi
-              </LinkDiv>
+              {pointClick.length >= 2 ? (
+                <LinkDiv sx={{ ml: 0 }} onClick={onMergeRoi}>
+                  Merge Roi
+                </LinkDiv>
+              ) : null}
               <LinkDiv sx={{ color: '#F84E1B' }} onClick={onDeleteRoi}>
                 Delete Roi
               </LinkDiv>
