@@ -96,6 +96,16 @@ def get_stat0(ops, pos):
 
     return [{'ypix': ypix, 'xpix': xpix, 'lam': lam, 'npix': ypix.size, 'med': med}]
 
+def get_im(ops, stat):
+    arrays = []
+    for i, s in enumerate(stat):
+        array = ROI(ypix=s['ypix'], xpix=s['xpix'], lam=s['lam'], med=s['med'], do_crop=False
+        ).to_array(Ly=ops['Ly'], Lx=ops['Lx'])
+        array *= i + 1
+        arrays.append(array)
+    im = np.stack(arrays)
+    im[im == 0] = np.nan
+    return im 
 
 def add_ROI(node_dirpath, pos: list):
     ops = np.load(os.path.join(node_dirpath, 'suite2p.npy'), allow_pickle=True).item()
@@ -113,14 +123,7 @@ def add_ROI(node_dirpath, pos: list):
     F_all = np.concatenate((Fcell, ops['F']), axis=0)
 
     iscell = np.append(True, iscell)
-    arrays = []
-    for i, s in enumerate(stat_all):
-        array = ROI(ypix=s['ypix'], xpix=s['xpix'], lam=s['lam'], med=s['med'], do_crop=False
-        ).to_array(Ly=ops['Ly'], Lx=ops['Lx'])
-        array *= i + 1
-        arrays.append(array)
-    im = np.stack(arrays)
-    im[im == 0] = np.nan
+    im = get_im(ops, stat_all)
 
     ops['stat'] = stat_all
     ops['F'] = F_all
@@ -137,5 +140,8 @@ def add_ROI(node_dirpath, pos: list):
     for k, v in info.items():
         if isinstance(v, BaseData):
             v.save_json(node_dirpath)
+    
+    cell_roi_data = np.where(np.isnan(info['cell_roi'].data), None, info['cell_roi'].data)
+    max_index = len(info['fluorescence'].data)
+    return cell_roi_data.tolist(), max_index
 
-    return info['cell_roi'].json_path
