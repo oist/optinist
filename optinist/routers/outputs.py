@@ -148,7 +148,10 @@ async def add_roi(filepath: str, pos: RoiPos):
     if os.path.basename(filepath) != 'cell_roi.json':
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
     
-    cell_roi_data, max_index = execute_add_ROI(node_dirpath=os.path.dirname(filepath), pos=[pos.posx, pos.posy, pos.sizex, pos.sizey])
+    try:
+        cell_roi_data, max_index = execute_add_ROI(node_dirpath=os.path.dirname(filepath), pos=[pos.posx, pos.posy, pos.sizex, pos.sizey])
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
     return EditRoiSuccess(data=cell_roi_data, max_index=max_index)
 
 @router.post("/outputs/image/{filepath:path}/merge_roi", response_model=EditRoiSuccess)
@@ -158,7 +161,10 @@ async def merge_roi(filepath: str, roi_list: RoiList):
     if os.path.basename(filepath) != 'cell_roi.json':
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
     
-    cell_roi_data, max_index = execute_merge_roi(node_dirpath=os.path.dirname(filepath), merged_roi_ids=roi_list.ids)
+    try:
+        cell_roi_data, max_index = execute_merge_roi(node_dirpath=os.path.dirname(filepath), merged_roi_ids=roi_list.ids)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
     return EditRoiSuccess(data=cell_roi_data, max_index=max_index)
     
 @router.post("/outputs/image/{filepath:path}/delete_roi", response_model=EditRoiSuccess)
@@ -168,7 +174,10 @@ async def delete_roi(filepath: str, roi_list: RoiList):
     if os.path.basename(filepath) != 'cell_roi.json':
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
     
-    cell_roi_data, max_index = excute_delete_roi(node_dirpath=os.path.dirname(filepath), delete_roi_ids=roi_list.ids)
+    try:
+        cell_roi_data, max_index = excute_delete_roi(node_dirpath=os.path.dirname(filepath), delete_roi_ids=roi_list.ids)
+    except Exception as e:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
     return EditRoiSuccess(data=cell_roi_data, max_index=max_index)
 
 
