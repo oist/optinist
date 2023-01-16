@@ -61,7 +61,7 @@ import {
   selectingImageArea,
   setImageItemClikedDataId,
 } from 'store/slice/VisualizeItem/VisualizeItemActions'
-import { addRoiApi } from 'api/outputs/Outputs'
+import { addRoiApi, mergeRoiApi } from 'api/outputs/Outputs'
 
 interface PointClick {
   x: number
@@ -448,6 +448,19 @@ const ImagePlotChart = React.memo<{
     dispatch(getRoiData({ path: roiFilePath }))
   }
 
+  const onMergeRoi = async () => {
+    if (!roiFilePath) return
+    try {
+      await mergeRoiApi(roiFilePath, {
+        ids: pointClick.map((point) => point.z),
+      })
+    } catch {}
+    setIsAddRoi(false)
+    onCancelAdd()
+    
+    dispatch(getRoiData({ path: roiFilePath }))
+  }
+
   const renderActionRoi = () => {
     if (!roiDataState?.length || outputKey !== 'cell_roi') return null
     if (!isAddRoi) {
@@ -480,7 +493,9 @@ const ImagePlotChart = React.memo<{
               <span>Roi Selecteds: [{String(pointClick.map((e) => e.z))}]</span>
             </BoxDiv>
             <BoxDiv>
-              <LinkDiv sx={{ ml: 0 }}>Merge Roi</LinkDiv>
+              <LinkDiv sx={{ ml: 0 }} onClick={onMergeRoi}>
+                Merge Roi
+              </LinkDiv>
               <LinkDiv sx={{ color: '#F84E1B' }} onClick={onDeleteRoi}>
                 Delete Roi
               </LinkDiv>

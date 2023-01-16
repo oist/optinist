@@ -112,9 +112,22 @@ export async function getHTMLDataApi(
 
 export async function addRoiApi(
   path: string,
-  data: {posx: number, posy: number, sizex: number, sizey: number}
+  data: { posx: number; posy: number; sizex: number; sizey: number },
 ): Promise<{ data: HTMLData }> {
-  const response = await axios.post(`${BASE_URL}/outputs/image/${path}/add_roi`, data)
+  const response = await axios.post(
+    `${BASE_URL}/outputs/image/${path}/add_roi`,
+    data,
+  )
   return response.data
 }
 
+export async function mergeRoiApi(
+  path: string,
+  data: { ids: number[] },
+): Promise<{ data: HTMLData }> {
+  const response = await axios.post(
+    `${BASE_URL}/outputs/image/${path}/merge_roi`,
+    data,
+  )
+  return response.data
+}
