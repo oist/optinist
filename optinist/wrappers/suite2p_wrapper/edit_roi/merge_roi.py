@@ -1,9 +1,9 @@
 import numpy as np
 from optinist.api.dataclass.dataclass import *
-from suite2p.detection.stats import median_pix, roi_stats
 from .add_roi import get_im
 
 def execute_merge_roi(node_dirpath, merged_roi_ids):
+    from suite2p.detection.stats import median_pix, roi_stats
     ops = np.load(os.path.join(node_dirpath, 'suite2p.npy'), allow_pickle=True).item()
     iscell = np.load(os.path.join(node_dirpath, 'iscell.npy'))
     f_cell = ops['F']
@@ -88,6 +88,7 @@ def execute_merge_roi(node_dirpath, merged_roi_ids):
         if isinstance(v, BaseData):
             v.save_json(node_dirpath)
 
-    cell_roi_data = np.where(np.isnan(info['cell_roi'].data), None, info['cell_roi'].data)
+    cell_roi_data = info['cell_roi'].data
+    cell_roi_data = np.where(np.isnan(cell_roi_data), None, cell_roi_data)
     max_index = len(info['fluorescence'].data)
     return cell_roi_data.tolist(), max_index

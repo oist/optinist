@@ -3,7 +3,6 @@ import os
 import time
 from optinist.api.dataclass.dataclass import *
 from scipy import stats
-from suite2p import extraction, detection, ROI
 
 def masks_and_traces(ops, stat_manual, stat_orig):
     ''' main extraction function
@@ -12,6 +11,7 @@ def masks_and_traces(ops, stat_manual, stat_orig):
         returns: F (ROIs x time), Fneu (ROIs x time), F_chan2, Fneu_chan2, ops, stat
         F_chan2 and Fneu_chan2 will be empty if no second channel
     '''
+    from suite2p import extraction, detection
     if 'aspect' in ops:
         dy, dx = int(ops['aspect'] * 10), 10
     else:
@@ -97,6 +97,7 @@ def get_stat0(ops, pos):
     return [{'ypix': ypix, 'xpix': xpix, 'lam': lam, 'npix': ypix.size, 'med': med}]
 
 def get_im(ops, stat):
+    from suite2p import ROI
     arrays = []
     for i, s in enumerate(stat):
         array = ROI(ypix=s['ypix'], xpix=s['xpix'], lam=s['lam'], med=s['med'], do_crop=False
@@ -107,7 +108,7 @@ def get_im(ops, stat):
     im[im == 0] = np.nan
     return im 
 
-def add_ROI(node_dirpath, pos: list):
+def execute_add_ROI(node_dirpath, pos: list):
     ops = np.load(os.path.join(node_dirpath, 'suite2p.npy'), allow_pickle=True).item()
     iscell = np.load(os.path.join(node_dirpath, 'iscell.npy'))
     stat=ops['stat']
@@ -141,7 +142,8 @@ def add_ROI(node_dirpath, pos: list):
         if isinstance(v, BaseData):
             v.save_json(node_dirpath)
     
-    cell_roi_data = np.where(np.isnan(info['cell_roi'].data), None, info['cell_roi'].data)
+    cell_roi_data = info['cell_roi'].data
+    cell_roi_data = np.where(np.isnan(cell_roi_data), None, cell_roi_data)
     max_index = len(info['fluorescence'].data)
     return cell_roi_data.tolist(), max_index
 
