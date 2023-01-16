@@ -107,7 +107,7 @@ def get_im(ops, stat):
     im[im == 0] = np.nan
     return im 
 
-def add_ROI(node_dirpath, pos: list):
+def execute_add_ROI(node_dirpath, pos: list):
     ops = np.load(os.path.join(node_dirpath, 'suite2p.npy'), allow_pickle=True).item()
     iscell = np.load(os.path.join(node_dirpath, 'iscell.npy'))
     stat=ops['stat']
@@ -141,7 +141,8 @@ def add_ROI(node_dirpath, pos: list):
         if isinstance(v, BaseData):
             v.save_json(node_dirpath)
     
-    cell_roi_data = np.where(np.isnan(info['cell_roi'].data), None, info['cell_roi'].data)
+    cell_roi_data = info['cell_roi'].data
+    cell_roi_data = np.where(np.isnan(cell_roi_data), None, cell_roi_data)
     max_index = len(info['fluorescence'].data)
     return cell_roi_data.tolist(), max_index
 

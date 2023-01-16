@@ -10,7 +10,7 @@ from optinist.api.utils.filepath_creater import create_directory, join_filepath
 from optinist.routers.const import ACCEPT_TIFF_EXT
 from optinist.routers.fileIO.file_reader import JsonReader, Reader
 from optinist.routers.model import JsonTimeSeriesData, RoiList, RoiPos, EditRoiSuccess
-from optinist.wrappers.suite2p_wrapper.edit_roi import add_ROI, execute_merge_roi
+from optinist.wrappers.suite2p_wrapper.edit_roi import execute_add_ROI, execute_merge_roi, excute_delete_roi
 
 router = APIRouter()
 
@@ -149,7 +149,7 @@ async def add_roi(filepath: str, pos: RoiPos):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
     
     try:
-        cell_roi_data, max_index = add_ROI(node_dirpath=os.path.dirname(filepath), pos=[pos.posx, pos.posy, pos.sizex, pos.sizey])
+        cell_roi_data, max_index = execute_add_ROI(node_dirpath=os.path.dirname(filepath), pos=[pos.posx, pos.posy, pos.sizex, pos.sizey])
     except:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
     return EditRoiSuccess(data=cell_roi_data, max_index=max_index)
@@ -163,6 +163,19 @@ async def merge_roi(filepath: str, roi_list: RoiList):
     
     try:
         cell_roi_data, max_index = execute_merge_roi(node_dirpath=os.path.dirname(filepath), merged_roi_ids=roi_list.ids)
+    except:
+        raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
+    return EditRoiSuccess(data=cell_roi_data, max_index=max_index)
+    
+@router.post("/outputs/image/{filepath:path}/delete_roi", response_model=EditRoiSuccess)
+async def delete_roi(filepath: str, roi_list: RoiList):
+    if not os.path.exists(filepath):
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
+    if os.path.basename(filepath) != 'cell_roi.json':
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+    
+    try:
+        cell_roi_data, max_index = excute_delete_roi(node_dirpath=os.path.dirname(filepath), delete_roi_ids=roi_list.ids)
     except:
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
     return EditRoiSuccess(data=cell_roi_data, max_index=max_index)
