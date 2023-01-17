@@ -190,6 +190,11 @@ const ImagePlotChart = React.memo<{
     setRoiDataState(roiData)
   }, [roiData])
 
+  useEffect(() => {
+    onCancel()
+    onCancelAdd()
+  }, [outputKey])
+
   const data = React.useMemo(
     () => [
       {
@@ -314,7 +319,7 @@ const ImagePlotChart = React.memo<{
 
   const onClick = (event: any) => {
     const point: PlotDatum = event.points[0]
-    if (point.curveNumber >= 1) {
+    if (point.curveNumber >= 1 && outputKey === 'cell_roi') {
       setSelectRoi({
         x: Number(point.x),
         y: Number(point.y),
