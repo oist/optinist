@@ -3,7 +3,6 @@ import os
 import time
 from optinist.api.dataclass.dataclass import *
 from scipy import stats
-from suite2p import extraction, detection, ROI
 
 def masks_and_traces(ops, stat_manual, stat_orig):
     ''' main extraction function
@@ -12,6 +11,7 @@ def masks_and_traces(ops, stat_manual, stat_orig):
         returns: F (ROIs x time), Fneu (ROIs x time), F_chan2, Fneu_chan2, ops, stat
         F_chan2 and Fneu_chan2 will be empty if no second channel
     '''
+    from suite2p import extraction, detection
     if 'aspect' in ops:
         dy, dx = int(ops['aspect'] * 10), 10
     else:
@@ -97,6 +97,7 @@ def get_stat0(ops, pos):
     return [{'ypix': ypix, 'xpix': xpix, 'lam': lam, 'npix': ypix.size, 'med': med}]
 
 def get_im(ops, stat):
+    from suite2p import ROI
     arrays = []
     for i, s in enumerate(stat):
         array = ROI(ypix=s['ypix'], xpix=s['xpix'], lam=s['lam'], med=s['med'], do_crop=False

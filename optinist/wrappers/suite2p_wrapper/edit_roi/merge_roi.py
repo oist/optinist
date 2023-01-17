@@ -1,9 +1,9 @@
 import numpy as np
 from optinist.api.dataclass.dataclass import *
-from suite2p.detection.stats import median_pix, roi_stats
 from .add_roi import get_im
 
 def execute_merge_roi(node_dirpath, merged_roi_ids):
+    from suite2p.detection.stats import median_pix, roi_stats
     ops = np.load(os.path.join(node_dirpath, 'suite2p.npy'), allow_pickle=True).item()
     iscell = np.load(os.path.join(node_dirpath, 'iscell.npy'))
     f_cell = ops['F']
