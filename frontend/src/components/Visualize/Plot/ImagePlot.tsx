@@ -220,7 +220,7 @@ const ImagePlotChart = React.memo<{
           const hex = rgba2hex(rgb, alpha)
           return [offset, hex]
         }),
-        // hoverinfo: 'none',
+        hoverinfo: 'none',
         hoverongaps: false,
         showscale: showscale,
         zsmooth: zsmooth, // ['best', 'fast', false]
@@ -229,7 +229,7 @@ const ImagePlotChart = React.memo<{
         z: roiDataState,
         type: 'heatmap',
         name: 'roi',
-        // hoverinfo: 'none',
+        hoverinfo: 'none',
         colorscale: [...Array(timeDataMaxIndex)].map((_, i) => {
           const new_i = Math.floor(((i % 10) * 10 + i / 10) % 100)
           const offset: number = i / (timeDataMaxIndex - 1)
