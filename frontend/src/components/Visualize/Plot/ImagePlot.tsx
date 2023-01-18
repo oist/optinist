@@ -193,6 +193,7 @@ const ImagePlotChart = React.memo<{
   useEffect(() => {
     onCancel()
     onCancelAdd()
+    //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [outputKey])
 
   const data = React.useMemo(
@@ -298,7 +299,8 @@ const ImagePlotChart = React.memo<{
         showticklabels: showticklabels, // todo
       },
     }),
-    [showgrid, showline, showticklabels, width, height, selectMode],
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+    [showgrid, showline, showticklabels, width, height, selectMode, isAddRoi],
   )
 
   const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))
