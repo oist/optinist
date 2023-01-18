@@ -396,20 +396,20 @@ const ImagePlotChart = React.memo<{
     } else if (positionDrag === PositionDrag.LEFT) {
       const newWidth = sizeDrag.width - (pageX - refPageXSize.current)
       const newLeft = sizeDrag.left + (pageX - refPageXSize.current)
-      if (newWidth < 1 || newLeft < 3) return
+      if (newWidth < 10 || newLeft < 1) return
       newSizeDrag = { ...sizeDrag, width: newWidth, left: newLeft }
     } else if (positionDrag === PositionDrag.RIGHT) {
       const newWidth = sizeDrag.width + (pageX - refPageXSize.current)
-      if (newWidth < 1 || newWidth > sChart - sizeDrag.left) return
+      if (newWidth < 10 || newWidth > sChart - sizeDrag.left) return
       newSizeDrag = { ...sizeDrag, width: newWidth }
     } else if (positionDrag === PositionDrag.BOTTOM) {
       const newHeight = sizeDrag.height + (pageY - refPageYSize.current)
-      if (newHeight < 1 || newHeight > sChart - sizeDrag.top) return
+      if (newHeight < 10 || newHeight > sChart - sizeDrag.top) return
       newSizeDrag = { ...sizeDrag, height: newHeight }
     } else if (positionDrag === PositionDrag.TOP) {
       const newHeight = sizeDrag.height - (pageY - refPageYSize.current)
       const newTop = sizeDrag.top + (pageY - refPageYSize.current)
-      if (newHeight < 1 || newTop < 2) return
+      if (newHeight < 10 || newTop < 1) return
       newSizeDrag = { ...sizeDrag, height: newHeight, top: newTop }
     }
     if (newSizeDrag) setSizeDrag({ ...sizeDrag, ...newSizeDrag })
@@ -421,10 +421,10 @@ const ImagePlotChart = React.memo<{
     if (!roiFilePath) return
     const sizeX = roiDataState[0].length - 1
     const sizeY = roiDataState.length - 1
-    const xAdd = Math.ceil(sizeDrag.width / (sChart / sizeX))
-    const yAdd = Math.floor(sizeDrag.height / (sChart / sizeY))
-    const x = Math.ceil(sizeDrag.left / (sChart / sizeX))
-    const y = Math.ceil(sizeDrag.top / (sChart / sizeY))
+    const xAdd = Number(((sizeDrag.width + 2) / (sChart / sizeX)).toFixed(1))
+    const yAdd = Number(((sizeDrag.height + 2) / (sChart / sizeY)).toFixed(1))
+    const x = Number((sizeDrag.left / (sChart / sizeX)).toFixed(1))
+    const y = Number((sizeDrag.top / (sChart / sizeY)).toFixed(1))
 
     const pointCenter = {
       posx: x + Math.floor(xAdd / 2),
