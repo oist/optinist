@@ -29,8 +29,6 @@ def execute_add_ROI(node_dirpath, pos: list):
 
     info = save_json_data(ops, im, save_path=node_dirpath, save_data=['ops', 'fluorescence', 'all_roi', 'non_cell_roi', 'cell_roi'])
 
-    cell_roi_data = info['cell_roi'].data
-    cell_roi_data = np.where(np.isnan(cell_roi_data), None, cell_roi_data)
     max_index = len(info['fluorescence'].data)
-    return cell_roi_data.tolist(), max_index
+    return max_index
 

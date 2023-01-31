@@ -90,7 +90,7 @@ def masks_and_traces(ops, stat_manual, stat_orig):
 
 
 def get_stat0_add_roi(ops, pos):
-    posx, posy, sizex, sizey = pos
+    posx, posy, sizex, sizey = list(map(round, pos))
     xrange = (np.arange(-1 * int(sizex), 1) + int(posx)).astype(np.int32)
     yrange = (np.arange(-1 * int(sizey), 1) + int(posy)).astype(np.int32)
     xrange += int(np.floor(sizex / 2))
