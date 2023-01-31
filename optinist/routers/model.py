@@ -50,13 +50,6 @@ class RoiList(BaseModel):
     ids: List[int] = Field(default=[0, 1])
     
 class EditRoiSuccess(BaseModel):
-    data: List[List] = Field(default=[
-        [1,1,1, None, None],
-        [None,None,1, None, None],
-        [3,3,3, None, None],
-        [1,1,1, None, 3],
-        [2,2,None, None, 2],
-    ])
     max_index: int
 @dataclass
 class HDF5Node:
