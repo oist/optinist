@@ -54,6 +54,7 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
   incrementImageActiveIndex,
+  resetAllOrderList,
   setImageActiveIndex,
   setImageItemDuration,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
@@ -327,6 +328,8 @@ const ImagePlotChart = React.memo<{
         y: Number(point.y),
         z: Number(point.z),
       })
+    }
+    if (point.curveNumber >= 1 && point.z > 0) {
       dispatch(
         setImageItemClikedDataId({
           itemId,
@@ -441,6 +444,7 @@ const ImagePlotChart = React.memo<{
 
   const onMergeRoi = async () => {
     if (!roiFilePath) return
+    dispatch(resetAllOrderList())
     try {
       await mergeRoiApi(roiFilePath, {
         ids: pointClick.map((point) => point.z - 1),

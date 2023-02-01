@@ -626,6 +626,15 @@ export const visualaizeItemSlice = createSlice({
         targetItem.drawOrderList = drawOrderList
       }
     },
+    resetAllOrderList: (state) => {
+      Object.keys(state.items).map((id: any) => {
+        const targetItem = state.items[id]
+        if (isTimeSeriesItem(targetItem)) {
+          targetItem.drawOrderList = []
+        }
+      })
+      console.log('state', state)
+    },
     setTimeSeriesItemMaxIndex: (
       state,
       action: PayloadAction<{
@@ -912,6 +921,7 @@ export const {
   setScatterItemXIndex,
   setScatterItemYIndex,
   setBarItemIndex,
+  resetAllOrderList,
 } = visualaizeItemSlice.actions
 
 export default visualaizeItemSlice.reducer
