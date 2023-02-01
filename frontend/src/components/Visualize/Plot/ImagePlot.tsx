@@ -436,6 +436,7 @@ const ImagePlotChart = React.memo<{
       sizex: xAdd,
       sizey: yAdd,
     }
+    dispatch(resetAllOrderList())
     try {
       await addRoiApi(roiFilePath, pointCenter)
     } catch {}
