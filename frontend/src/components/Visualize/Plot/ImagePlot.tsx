@@ -31,6 +31,7 @@ import {
 import {
   getImageData,
   getRoiData,
+  getTimeSeriesAllData,
 } from 'store/slice/DisplayData/DisplayDataActions'
 import {
   selectImageItemShowticklabels,
@@ -440,6 +441,7 @@ const ImagePlotChart = React.memo<{
     } catch {}
     onCancelAdd()
     dispatch(getRoiData({ path: roiFilePath }))
+    dispatch(getTimeSeriesAllData({ path: roiFilePath }))
   }
 
   const onMergeRoi = async () => {
@@ -452,10 +454,12 @@ const ImagePlotChart = React.memo<{
     } catch {}
     onCancel()
     dispatch(getRoiData({ path: roiFilePath }))
+    dispatch(getTimeSeriesAllData({ path: roiFilePath }))
   }
 
   const onDeleteRoi = async () => {
     if (!roiFilePath) return
+    dispatch(resetAllOrderList())
     try {
       await deleteRoiApi(roiFilePath, {
         ids: pointClick.map((point) => point.z - 1),
@@ -463,6 +467,7 @@ const ImagePlotChart = React.memo<{
     } catch {}
     onCancel()
     dispatch(getRoiData({ path: roiFilePath }))
+    dispatch(getTimeSeriesAllData({ path: roiFilePath }))
   }
 
   const renderActionRoi = () => {
