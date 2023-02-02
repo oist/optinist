@@ -633,7 +633,6 @@ export const visualaizeItemSlice = createSlice({
           targetItem.drawOrderList = []
         }
       })
-      console.log('state', state)
     },
     setTimeSeriesItemMaxIndex: (
       state,

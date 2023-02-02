@@ -31,7 +31,7 @@ import {
 import {
   getImageData,
   getRoiData,
-  getTimeSeriesAllData,
+  getTimeSeriesInitData,
 } from 'store/slice/DisplayData/DisplayDataActions'
 import {
   selectImageItemShowticklabels,
@@ -64,6 +64,7 @@ import {
   setImageItemClikedDataId,
 } from 'store/slice/VisualizeItem/VisualizeItemActions'
 import { addRoiApi, deleteRoiApi, mergeRoiApi } from 'api/outputs/Outputs'
+import { isTimeSeriesItem } from 'store/slice/VisualizeItem/VisualizeItemUtils'
 
 interface PointClick {
   x: number
@@ -156,6 +157,8 @@ const ImagePlotChart = React.memo<{
   const [roiDataState, setRoiDataState] = useState(roiData)
 
   const [pointClick, setPointClick] = useState<PointClick[]>([])
+
+  const itemsVisual = useSelector((state: any) => state.visualaizeItem?.items)
 
   const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
   const showline = useSelector(selectImageItemShowLine(itemId))
@@ -442,7 +445,7 @@ const ImagePlotChart = React.memo<{
     } catch {}
     onCancelAdd()
     dispatch(getRoiData({ path: roiFilePath }))
-    dispatch(getTimeSeriesAllData({ path: roiFilePath }))
+    resetTimeSeries()
   }
 
   const onMergeRoi = async () => {
@@ -455,7 +458,7 @@ const ImagePlotChart = React.memo<{
     } catch {}
     onCancel()
     dispatch(getRoiData({ path: roiFilePath }))
-    dispatch(getTimeSeriesAllData({ path: roiFilePath }))
+    resetTimeSeries()
   }
 
   const onDeleteRoi = async () => {
@@ -468,7 +471,22 @@ const ImagePlotChart = React.memo<{
     } catch {}
     onCancel()
     dispatch(getRoiData({ path: roiFilePath }))
-    dispatch(getTimeSeriesAllData({ path: roiFilePath }))
+    resetTimeSeries()
+  }
+
+  const resetTimeSeries = () => {
+    if (itemsVisual) {
+      Object.keys(itemsVisual).forEach((item) => {
+        if (isTimeSeriesItem(itemsVisual[item])) {
+          dispatch(
+            getTimeSeriesInitData({
+              path: itemsVisual[item].filePath,
+              itemId: Number(item),
+            }),
+          )
+        }
+      })
+    }
   }
 
   const renderActionRoi = () => {
