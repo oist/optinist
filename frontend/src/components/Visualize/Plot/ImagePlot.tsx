@@ -394,7 +394,8 @@ const ImagePlotChart = React.memo<{
     if (startDragAddRoi) {
       const { y } = (event.currentTarget as any).getBoundingClientRect()
       let newX = sizeDrag.left + (pageX - refPageXSize.current)
-      let newY = Math.ceil(pageY - y - 15)
+      let newY = Math.ceil(pageY - y - 15) - window.scrollY
+
       if (newX < 0) newX = 0
       else if (newX + sizeDrag.width > sChart) newX = sChart - sizeDrag.width
       if (newY < 0) newY = 0
