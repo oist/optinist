@@ -90,7 +90,7 @@ class NWBCreater:
             # data=image_data,
             external_file=image_path,
             unit='na',
-            format='raw',
+            format='external',
             starting_time=0.0,
             rate=1.0
         )
