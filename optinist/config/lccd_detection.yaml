@@ -1,0 +1,18 @@
+blob_detector:
+  filtersize1: 100
+  filtersize2: 4
+  sigma: 1.25
+  fsize: 30
+  min_area: 20
+  max_area: 50
+  sparse: False
+roi_integration:
+  overlap_threshold: 0.4
+  min_area: 20
+  max_area: 100
+  sparse: False
+lccd:
+  frame_divider: 100
+dff:
+  f0_frames: 100
+  f0_percentile: 8
