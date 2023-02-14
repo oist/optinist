@@ -493,11 +493,11 @@ const ImagePlotChart = React.memo<{
   const renderActionRoi = () => {
     if (!roiDataState?.length || outputKey !== 'cell_roi') return null
     if (!isAddRoi) {
-      return <LinkDiv onClick={addRoi}>Add Roi</LinkDiv>
+      return <LinkDiv onClick={addRoi}>Add ROI</LinkDiv>
     }
     return (
       <BoxDiv>
-        <LinkDiv onClick={addRoiSubmit}>Ok</LinkDiv>
+        <LinkDiv onClick={addRoiSubmit}>OK</LinkDiv>
         <LinkDiv onClick={onCancelAdd}>Cancel</LinkDiv>
       </BoxDiv>
     )
@@ -519,16 +519,16 @@ const ImagePlotChart = React.memo<{
         {pointClick.length ? (
           <>
             <BoxDiv>
-              <span>Roi Selecteds: [{String(pointClick.map((e) => e.z))}]</span>
+              <span>ROI Selecteds: [{String(pointClick.map((e) => e.z))}]</span>
             </BoxDiv>
             <BoxDiv>
               {pointClick.length >= 2 ? (
                 <LinkDiv sx={{ ml: 0 }} onClick={onMergeRoi}>
-                  Merge Roi
+                  Merge ROI
                 </LinkDiv>
               ) : null}
               <LinkDiv sx={{ color: '#F84E1B' }} onClick={onDeleteRoi}>
-                Delete Roi
+                Delete ROI
               </LinkDiv>
               <LinkDiv onClick={onCancel}>Cancel</LinkDiv>
             </BoxDiv>

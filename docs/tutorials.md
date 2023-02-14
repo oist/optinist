@@ -18,6 +18,7 @@ Tutorials
 * [Inspecting the images and the plots on VISUALIZE](#inspecting-the-images-and-the-plots-on-visualize)
   * [Checking movies](#checking-movies)
   * [Showing ROI and time courses](#showing-roi-and-time-courses)
+  * [Editing ROI](#editing-roi)
   * [Savind plots](#savind-plots)
 * [Managing pipelines on RECORD](#managing-pipelines-on-record)
 
@@ -345,6 +346,46 @@ If it is tiring to select the cell by clicking one by one, turn on the drag sele
 <br>
 <p align="left">
 <img width="600px" src="./_static/tutorials/fig29_dragselect.png" alt="Whole" />
+</p>
+
+
+### Editing ROI
+To the edit roi, prepare a plotting box. 
+<br>
+<p align="left">
+<img width="600px" src="./_static/tutorials/edit-roi/box.png" alt="Whole" />
+</p>
+
+In one plotting box (ex, the one with ID:0), select a background image such as meanImg from the Select Item pulldowns.
+<br>
+<p align="left">
+<img width="100px" src="./_static/tutorials/fig24_selectitem.png" alt="Whole" />
+</p>
+In the same plotting box, select cell_roi from the Select Roi pull-downs. 
+
+<br>
+<p align="left">
+<img width="100px" src="./_static/tutorials/fig25_selectroi.png" alt="Whole" />
+</p>
+The plotting box (ID:0) shows the background image and detected cells.
+<br>
+<p align="left">
+<img width="400px" src="./_static/tutorials/edit-roi/cell_roi_selected.png" alt="Whole" />
+</p>
+
+You can click the <strong>Add ROI</strong> button then drag drop, resize the white cirle to change the new ROI position and size.
+Press <strong>OK</strong> or <strong>Cancel</strong> button to Add or No
+<br>
+<p align="left">
+<img width="400px" src="./_static/tutorials/edit-roi/add_roi_clicked.png" alt="Whole" />
+</p>
+
+Or click on each cell ROI to delete ROI or merge ROIs (when you select 2 or more ROI cells)
+Press <strong>Merge ROI</strong> or <strong>Delete ROI</strong> or <strong>Cancel</strong> button to Merge or Delete or No.
+
+<br>
+<p align="left">
+<img width="400px" src="./_static/tutorials/edit-roi/roi_selected_merge_or_delete.png" alt="Whole" />
 </p>
 
 ### Savind plots
