@@ -221,6 +221,11 @@ export const visualaizeItemSlice = createSlice({
     selectItem: (state, action: PayloadAction<number>) => {
       state.selectedItemId = action.payload
     },
+    reset: (state) => {
+      state.items = initialState.items
+      state.layout = initialState.layout
+      state.selectedItemId = initialState.selectedItemId
+    },
     setRoiItemFilePath: (
       state,
       action: PayloadAction<{
@@ -921,6 +926,7 @@ export const {
   setScatterItemYIndex,
   setBarItemIndex,
   resetAllOrderList,
+  reset,
 } = visualaizeItemSlice.actions
 
 export default visualaizeItemSlice.reducer
