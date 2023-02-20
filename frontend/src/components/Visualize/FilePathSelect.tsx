@@ -27,7 +27,7 @@ export const FilePathSelect: React.FC<{
   dataType?: DATA_TYPE
   selectedNodeId: string | null
   selectedFilePath: string | null
-  onSelect: (nodeId: string, filePath: string, dataType: DATA_TYPE) => void
+  onSelect: (nodeId: string, filePath: string, dataType: DATA_TYPE, outputKey?: string) => void
   label?: string
 }> = ({ dataType, selectedNodeId, selectedFilePath, onSelect, label }) => {
   const inputNodeFilePathInfoList = useSelector(
@@ -89,8 +89,9 @@ export const FilePathSelect: React.FC<{
     nodeId: string,
     filePath: string,
     dataType: DATA_TYPE,
+    outputKey?: string
   ) => {
-    onSelect(nodeId, filePath, dataType)
+    onSelect(nodeId, filePath, dataType, outputKey)
     handleClose()
   }
 
@@ -136,6 +137,7 @@ export const FilePathSelect: React.FC<{
               pathInfo.nodeId,
               outputPath.filePath,
               outputPath.type,
+              outputPath.outputKey
             )
           }
           key={`${pathInfo.nodeId}/${outputPath.filePath}`}

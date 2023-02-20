@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 from typing import Dict, List
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
+
+
 
 @dataclass
 class Arg:
@@ -38,6 +40,17 @@ class FILETYPE:
 class DeleteItem(BaseModel):
     uidList: list
 
+class RoiPos(BaseModel):
+    posx : int
+    posy : int
+    sizex : int
+    sizey : int
+    
+class RoiList(BaseModel):
+    ids: List[int] = Field(default=[0, 1])
+    
+class EditRoiSuccess(BaseModel):
+    max_index: int
 @dataclass
 class HDF5Node:
     isDir: bool
