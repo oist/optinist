@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, List
+from typing import Dict, List, Union
 from pydantic import BaseModel
 
 from optinist.api.snakemake.smk import ForceRun
@@ -48,7 +48,7 @@ class Message:
 class NodeData:
     label: str
     param: dict
-    path: list or str
+    path: Union[str, List]
     type: str
     fileType: str = None
     hdf5Path: str = None

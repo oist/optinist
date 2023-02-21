@@ -78,7 +78,7 @@ class HDF5Getter:
                 ))
 
 
-@router.get("/hdf5/{file_path:path}")
+@router.get("/hdf5/{file_path:path}", response_model=List[HDF5Node])
 async def get_files(file_path: str):
     file_path = join_filepath([DIRPATH.INPUT_DIR, file_path])
     return HDF5Getter.get(file_path)
