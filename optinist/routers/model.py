@@ -92,7 +92,7 @@ class AlgoList(BaseModel):
         }
     }
 
-class NWB(BaseModel):
+class NWBParams(BaseModel):
   session_description: str = "optinist"
   identifier: str = "optinist"
   experiment_description: Optional[str] = None
@@ -102,7 +102,7 @@ class NWB(BaseModel):
   image_series: Union[Dict, Any]
   ophys: Union[Dict, Any]
 
-class Snakemake(BaseModel):
+class SnakemakeParams(BaseModel):
     use_conda: bool
     cores: int
     forceall: bool
