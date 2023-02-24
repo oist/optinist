@@ -6,7 +6,7 @@ Linux
    * [Install gcc, g++](#install-gcc-g)
    * [Install Anaconda](#install-anaconda)
    * [Create anaconda environment](#create-anaconda-environment)
-   * [Install mamba](#install-mamba)
+   <!-- * [Install mamba](#install-mamba) -->
    * [Install library](#install-library)
    * [Set saving directory](#set-saving-directory)
 * [2. Create virtualenv](#3-create-virtualenv)
@@ -37,15 +37,15 @@ conda create -n optinist python=3.8
 conda activate optinist
 ```
 
-```
+<!-- ```
 conda config --set channel_priority strict
-```
+``` -->
 
-### Install mamba
+<!-- ### Install mamba
 We use snakemake library, and it requires mamba.
 ```
 conda install -n base -c conda-forge mamba
-```
+``` -->
 
 ### Install library
 

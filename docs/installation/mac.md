@@ -34,9 +34,9 @@ conda create -n optinist python=3.8
 conda activate optinist
 ```
 
-```
+<!-- ```
 conda config --set channel_priority strict
-```
+``` -->
 
 ### Install library
 ```bach

@@ -7,7 +7,7 @@ Windows
       * [Install Visutal Studio Build Tools](#install-visutal-studio-build-tools)
       * [Install Anaconda](#install-anaconda)
       * [Create anaconda environment](#create-anaconda-environment)
-      * [Install mamba](#install-mamba)
+      <!-- * [Install mamba](#install-mamba) -->
       * [Install library](#install-library)
       * [Set saving directory](#set-saving-directory)
       * [Run backend](#run-backend)
@@ -16,7 +16,7 @@ Windows
       * [Install gcc, g++](#install-gcc-g)
       * [Install Anaconda](#install-anaconda-1)
       * [Create anaconda environment](#create-anaconda-environment-1)
-      * [Install mamba](#install-mamba-1)
+      <!-- * [Install mamba](#install-mamba-1) -->
       * [Install library](#install-library-1)
       * [Set saving directory](#set-saving-directory-1)
 * [2. Create virtualenv](#3-create-virtualenv)
@@ -50,17 +50,17 @@ conda create -n optinist python=3.8
 conda activate optinist
 ```
 
-```
+<!-- ```
 conda config --set channel_priority strict
-```
+``` -->
 
-#### Install mamba
+<!-- #### Install mamba
 We use snakemake library, and it requires mamba.
 On the Anaconda PowerShell Prompt(anaconda3),
 ```
 conda install -n base -c conda-forge mamba
-```
-#### Install library
+``` -->
+<!-- #### Install library
 On the Anaconda PowerShell Prompt(anaconda3),
 ```bash
 pip install optinist
@@ -74,7 +74,7 @@ git clone https://github.com/flatironinstitute/CaImAn.git
 cd CaImAn
 pip install -e .
 cd ..
-```
+``` -->
 
 #### Set saving directory
 Optinist default saving directory is `C:\tmp\optinist`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
@@ -122,15 +122,15 @@ conda create -n optinist python=3.8
 conda activate optinist
 ```
 
-```
+<!-- ```
 conda config --set channel_priority strict
-```
+``` -->
 
-#### Install mamba
+<!-- #### Install mamba
 We use snakemake library, and it requires mamba.
 ```
 conda install -n base -c conda-forge mamba
-```
+``` -->
 #### Install library
 ```bash
 pip install optinist
