@@ -9,13 +9,13 @@ from optinist.api.utils.json_writer import JsonWriter, save_tiff2json
 from optinist.api.utils.filepath_creater import create_directory, join_filepath
 from optinist.routers.const import ACCEPT_TIFF_EXT
 from optinist.routers.fileIO.file_reader import JsonReader, Reader
-from optinist.routers.model import JsonTimeSeriesData, RoiList, RoiPos, EditRoiSuccess
+from optinist.routers.model import JsonTimeSeriesData, RoiList, RoiPos, EditRoiSuccess, OutputData
 from optinist.wrappers.suite2p_wrapper.edit_roi import execute_add_ROI, execute_merge_roi, excute_delete_roi
 
 router = APIRouter()
 
 
-@router.get("/outputs/inittimedata/{dirpath:path}")
+@router.get("/outputs/inittimedata/{dirpath:path}", response_model=JsonTimeSeriesData, tags=['outputs'])
 async def get_inittimedata(dirpath: str):
     file_numbers = sorted([
         os.path.splitext(os.path.basename(x))[0]
@@ -63,7 +63,7 @@ async def get_inittimedata(dirpath: str):
     return return_data
 
 
-@router.get("/outputs/timedata/{dirpath:path}")
+@router.get("/outputs/timedata/{dirpath:path}", response_model=JsonTimeSeriesData, tags=['outputs'])
 async def get_timedata(dirpath: str, index: int):
     json_data = JsonReader.read_as_timeseries(
         join_filepath([
@@ -86,7 +86,7 @@ async def get_timedata(dirpath: str, index: int):
     return return_data
 
 
-@router.get("/outputs/alltimedata/{dirpath:path}")
+@router.get("/outputs/alltimedata/{dirpath:path}", response_model=JsonTimeSeriesData, tags=['outputs'])
 async def get_alltimedata(dirpath: str):
     return_data = JsonTimeSeriesData(
         xrange=[],
@@ -107,17 +107,17 @@ async def get_alltimedata(dirpath: str):
     return return_data
 
 
-@router.get("/outputs/data/{filepath:path}")
+@router.get("/outputs/data/{filepath:path}", response_model=OutputData, tags=['outputs'])
 async def get_file(filepath: str):
     return JsonReader.read_as_output(filepath)
 
 
-@router.get("/outputs/html/{filepath:path}")
+@router.get("/outputs/html/{filepath:path}", response_model=OutputData, tags=['outputs'])
 async def get_html(filepath: str):
     return Reader.read_as_output(filepath)
 
 
-@router.get("/outputs/image/{filepath:path}")
+@router.get("/outputs/image/{filepath:path}", response_model=OutputData, tags=['outputs'])
 async def get_image(
         filepath: str,
         start_index: Optional[int] = 0,
@@ -141,7 +141,7 @@ async def get_image(
 
     return JsonReader.read_as_output(json_filepath)
 
-@router.post("/outputs/image/{filepath:path}/add_roi", response_model=EditRoiSuccess)
+@router.post("/outputs/image/{filepath:path}/add_roi", response_model=EditRoiSuccess, tags=['outputs'])
 async def add_roi(filepath: str, pos: RoiPos):
     if not os.path.exists(filepath):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -154,7 +154,7 @@ async def add_roi(filepath: str, pos: RoiPos):
         raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e))
     return EditRoiSuccess(max_index=max_index)
 
-@router.post("/outputs/image/{filepath:path}/merge_roi", response_model=EditRoiSuccess)
+@router.post("/outputs/image/{filepath:path}/merge_roi", response_model=EditRoiSuccess, tags=['outputs'])
 async def merge_roi(filepath: str, roi_list: RoiList):
     if not os.path.exists(filepath):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -168,7 +168,7 @@ async def merge_roi(filepath: str, roi_list: RoiList):
     return EditRoiSuccess(max_index=max_index)
 
 
-@router.post("/outputs/image/{filepath:path}/delete_roi", response_model=EditRoiSuccess)
+@router.post("/outputs/image/{filepath:path}/delete_roi", response_model=EditRoiSuccess, tags=['outputs'])
 async def delete_roi(filepath: str, roi_list: RoiList):
     if not os.path.exists(filepath):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
@@ -182,7 +182,7 @@ async def delete_roi(filepath: str, roi_list: RoiList):
     return EditRoiSuccess(max_index=max_index)
 
 
-@router.get("/outputs/csv/{filepath:path}")
+@router.get("/outputs/csv/{filepath:path}", response_model=OutputData, tags=['outputs'])
 async def get_csv(filepath: str):
     filepath = join_filepath([DIRPATH.INPUT_DIR, filepath])
 

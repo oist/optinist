@@ -7,7 +7,7 @@ from fastapi import APIRouter, File, UploadFile
 from optinist.api.dir_path import DIRPATH
 from optinist.api.utils.filepath_creater import create_directory, join_filepath
 from optinist.routers.const import ACCEPT_CSV_EXT, ACCEPT_HDF5_EXT, ACCEPT_TIFF_EXT
-from optinist.routers.model import FILETYPE, TreeNode
+from optinist.routers.model import FILETYPE, TreeNode, FilePath
 
 router = APIRouter()
 
@@ -61,7 +61,7 @@ class DirTreeGetter:
         return files_list
 
 
-@router.get("/files")
+@router.get("/files", response_model=List[TreeNode], tags=['files'])
 async def get_files(file_type: str = None):
     if file_type == FILETYPE.IMAGE:
         return DirTreeGetter.get_tree(ACCEPT_TIFF_EXT)
@@ -71,7 +71,7 @@ async def get_files(file_type: str = None):
         return DirTreeGetter.get_tree(ACCEPT_HDF5_EXT)
 
 
-@router.post("/files/upload/{filename}")
+@router.post("/files/upload/{filename}", response_model=FilePath, tags=['files'])
 async def create_file(filename: str, file: UploadFile = File(...)):
     create_directory(DIRPATH.INPUT_DIR)
 

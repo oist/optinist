@@ -3,7 +3,7 @@ from typing import Dict, List, ValuesView
 import inspect
 
 from optinist.routers.const import NOT_DISPLAY_ARGS_LIST
-from optinist.routers.model import Algo, Arg, Return
+from optinist.routers.model import Algo, Arg, Return, AlgoList
 from optinist.wrappers import wrapper_dict
 
 router = APIRouter()
@@ -66,8 +66,8 @@ class NestDictGetter:
             return f'{parent_key}/{key}'
 
 
-@router.get("/algolist")
-async def run() -> Dict[str, Algo]:
+@router.get("/algolist", response_model=AlgoList, tags=['others'])
+async def get_algolist() -> Dict[str, Algo]:
     """_summary_
 
     Returns:

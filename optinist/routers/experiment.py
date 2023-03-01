@@ -1,3 +1,4 @@
+from typing import Dict
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
@@ -7,12 +8,13 @@ from glob import glob
 from optinist.api.dir_path import DIRPATH
 from optinist.api.utils.filepath_creater import join_filepath
 from optinist.api.experiment.experiment_reader import ExptConfigReader
+from optinist.api.experiment.experiment import ExptConfig, ExptImportData
 from optinist.routers.model import DeleteItem
 
 router = APIRouter()
 
 
-@router.get("/experiments")
+@router.get("/experiments", response_model=Dict[str, ExptConfig], tags=['experiments'])
 async def get_experiments():
     exp_config = {}
     config_paths = glob(join_filepath([DIRPATH.OUTPUT_DIR, "*", DIRPATH.EXPERIMENT_YML]))
@@ -28,7 +30,7 @@ async def get_experiments():
     return exp_config
 
 
-@router.get("/experiments/import/{unique_id}")
+@router.get("/experiments/import/{unique_id}", response_model=ExptImportData, tags=['experiments'])
 async def import_experiment(unique_id: str):
     config = ExptConfigReader.read(join_filepath([
         DIRPATH.OUTPUT_DIR,
@@ -41,7 +43,7 @@ async def import_experiment(unique_id: str):
     }
 
 
-@router.delete("/experiments/{unique_id}")
+@router.delete("/experiments/{unique_id}", response_model=bool, tags=['experiments'])
 async def delete_experiment(unique_id: str):
     try:
         shutil.rmtree(join_filepath([DIRPATH.OUTPUT_DIR, unique_id]))
@@ -50,7 +52,7 @@ async def delete_experiment(unique_id: str):
         return False
 
 
-@router.post("/experiments/delete")
+@router.post("/experiments/delete", response_model=bool, tags=['experiments'])
 async def delete_experiment_list(deleteItem: DeleteItem):
     try:
         [
@@ -62,7 +64,7 @@ async def delete_experiment_list(deleteItem: DeleteItem):
         return False
 
 
-@router.get("/experiments/download/nwb/{unique_id}")
+@router.get("/experiments/download/nwb/{unique_id}", tags=['experiments'])
 async def download_nwb_experiment(unique_id: str):
     nwb_path_list = glob(join_filepath([
         DIRPATH.OUTPUT_DIR,
@@ -75,7 +77,7 @@ async def download_nwb_experiment(unique_id: str):
         return False
 
 
-@router.get("/experiments/download/nwb/{unique_id}/{function_id}")
+@router.get("/experiments/download/nwb/{unique_id}/{function_id}", tags=['experiments'])
 async def download_nwb_experiment(unique_id: str, function_id: str):
     nwb_path_list = glob(join_filepath([
         DIRPATH.OUTPUT_DIR,
@@ -89,7 +91,7 @@ async def download_nwb_experiment(unique_id: str, function_id: str):
         return False
 
 
-@router.get("/experiments/download/config/{unique_id}")
+@router.get("/experiments/download/config/{unique_id}", tags=['experiments'])
 async def download_config_experiment(unique_id: str):
     config_filepath = join_filepath([
         DIRPATH.OUTPUT_DIR,
