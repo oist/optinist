@@ -19,7 +19,7 @@ imaging_plane:
 image_series:
     name: 'TwoPhotonSeries'
     starting_time: 0
-    starting_frame: 0
+    starting_frame: [0,]
 ophys:
     plane_segmentation:
         name: 'PlaneSegmentation'
