@@ -10,3 +10,4 @@ Installation
   windows
   mac
   linux
+  for_developer

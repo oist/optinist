@@ -6,11 +6,11 @@ Linux
    * [Install gcc, g++](#install-gcc-g)
    * [Install Anaconda](#install-anaconda)
    * [Create anaconda environment](#create-anaconda-environment)
-   * [Install mamba](#install-mamba)
+   <!-- * [Install mamba](#install-mamba) -->
    * [Install library](#install-library)
    * [Set saving directory](#set-saving-directory)
-* [2. Create virtualenv](#3-create-virtualenv)
-* [3. Run backend](#4-run-backend)
+<!-- * [2. Create virtualenv](#3-create-virtualenv) -->
+* [2. Run backend](#2-run-backend)
    * [Launch browser.  <a href="http://localhost:8000" rel="nofollow">http://localhost:8000</a>](#launch-browser--httplocalhost8000)
 
 ## Installation
@@ -37,15 +37,15 @@ conda create -n optinist python=3.8
 conda activate optinist
 ```
 
-```
+<!-- ```
 conda config --set channel_priority strict
-```
+``` -->
 
-### Install mamba
+<!-- ### Install mamba
 We use snakemake library, and it requires mamba.
 ```
 conda install -n base -c conda-forge mamba
-```
+``` -->
 
 ### Install library
 
@@ -58,8 +58,10 @@ Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, thi
 export OPTINIST_DIR="your_saving_dir"
 ```
 
+<!--
 ## 2. Create virtualenv
 Under maintenance...
+-->
 <!-- In snakemake used by optinist, a virtual environment is created and executed for each function.
 The procedure for first creating a virtual environment for processing suite2p, caiman, pca, etc. is described in the following link.
 
@@ -67,7 +69,7 @@ The procedure for first creating a virtual environment for processing suite2p, c
 
 Follow this [link](create_virtualenv.md). -->
 
-## 3. Run backend
+## 2. Run backend
 ```
 run_optinist
 ```
