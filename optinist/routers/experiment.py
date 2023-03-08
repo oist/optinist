@@ -31,7 +31,7 @@ async def get_experiments():
     return exp_config
 
 
-@router.patch("/experiments/{unique_id}/rename", response_model=ExptImportData, tags=['experiments'])
+@router.patch("/experiments/{unique_id}/rename", response_model=ExptConfig, tags=['experiments'])
 async def rename_experiment(unique_id: str, item: RenameItem):
     config = ExptConfigReader.rename(join_filepath([DIRPATH.OUTPUT_DIR, unique_id, DIRPATH.EXPERIMENT_YML]), new_name=item.new_name)
     config.nodeDict = []

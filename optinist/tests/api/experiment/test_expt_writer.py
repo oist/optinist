@@ -70,7 +70,7 @@ def test_create_config() -> ExptConfig:
     assert isinstance(expt_config.function, dict)
     assert len(expt_config.function) == 0
 
-    return expt_config
+    assert expt_config
 
 
 def test_add_run_info():
