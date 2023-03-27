@@ -34,64 +34,69 @@ To start OptiNiSt, follow these steps:
 
 If you installed OptiNiSt using pip, you can also start it with the `run_optinist` command.
 
-The console will display the log once the startup is completed.
-
 <br>
 <p align="left">
 <img width="400px" src="./_static/tutorials/fig1_console.png" alt="Whole" />
 </p>
 
+The console will display the log once the startup is completed.
+
 Once you see this, 
 1. Open your web browser (Google Chrome is recommended).
 2. Navigate to `localhost:8000`.
-
-You are ready to start using OptiNiSt if the OptiNiSt page appears.
 
 <br>
 <p align="left">
 <img width="600px" src="./_static/tutorials/fig2_open.png" alt="Whole" />
 </p>
 
+You are ready to start using OptiNiSt if the OptiNiSt page appears.
 You can switch between these pages by clicking on the corresponding tabs.
 
-<br>
-<p align="left">
-<img width="300px" src="./_static/tutorials/fig2.2_tags.png" alt="Whole" />
-</p>
 
 ## Making pipelines on WORKFLOW 
 After launching, the first page you see is the workflow page. The workflow page is a place to define the analysis pipeline. You determine the data you will analyze, select the type of the algorithm or analysis method you use, and set the parameters and the order of analysis.  
 
 ### Assigning input data path
-As a default, it shows an image node. This node defines the path to the data to use.  
 
 <br>
 <p align="left">
 <img width="200px" src="./_static/tutorials/fig3_imagenode.png" alt="Whole" />
 </p>
 
-OptiNiSt uses OPTINIST_DIR for retrieving data and saving results. OptiNiSt searches input data from the 'input' directory in OPTINIST_DIR. A default OPTINIST_DIR is `/tmp/optinist` in your computer.
+By default, an Image node is displayed. This node defines the path to the data to use.
 
-You may not want to change anything in your original data folder, or you may wish to make your data folder visible and accessible to OptiNiSt because the imaging data is sometimes huge and takes time to copy. You can take either strategy in assigning your data path.
+OptiNiSt uses `OPTINIST_DIR` for retrieving data and saving results. OptiNiSt searches for input data in the 'input' directory within `OPTINIST_DIR`. The default `OPTINIST_DIR` is `/tmp/optinist` on your computer.
 
-1. Copy your original data file to OPTINIST_DIR and assign the data path to the copied data.   
-Tp copy the data to OPTINIST_DIR, click on the UPLOAD button on the node. UPLOAD button copies the selected file to your OPTINIST_DIR/input. This can be done from the GUI.  
-  
-2. Change the setting of OPTINIST_DIR by editing dir_path.py file. See [setting optinist directory](#setting-optinist_dir). Change is effective after re-launching.
+Choosing a folder makes all the TIFF files in the shown sequence an input set of continuous frames.
 
-Once the data is made accessible, you will see them by clicking on the SELECT IMAGE button on the image node. You can select a file or a folder here. Choosing a folder makes all the tiff files in the shown sequence an input set of continuous frames. 
+You may not want to modify your original data folder, or you may want to make your data folder visible and accessible to OptiNiSt because imaging data can be large and take time to copy. You can take either strategy in assigning your data path:
+
+1. **Copy your original data file to `OPTINIST_DIR` and assign the data path to the copied data.** To copy the data to `OPTINIST_DIR`, click on the UPLOAD button on the node. The UPLOAD button copies the selected file to your `OPTINIST_DIR/input`. This can be done from the GUI.
+
+2. **Change the setting of `OPTINIST_DIR` by editing the `dir_path.py` file.** See [setting optinist directory](#setting-optinist_dir). The change is effective after relaunching.
+
+Once the data is accessible, you can see it by clicking on the SELECT IMAGE button on the Image node. You can select a file or a folder here. Choosing a folder makes all the TIFF files in the shown sequence an input set of continuous frames.
+
+Once the data is accessible, you can view it by following these steps:
+
+1. Click on the SELECT IMAGE button on the Image node.
+2. Select a file or a folder.
+
 
 ### Selecting analysis methods
-The left side of the window shows all available analysis methods. Clicking on the + mark adds the analysis nodes to the workflow field. ROI detection tools (currently suite2P and CaImAn ) are in "Algorithm" category, and all other pre-installed analyses are in "optinist" category.
+
+The left side of the window displays all available analysis methods. Clicking on the + mark adds the analysis nodes to the Workflow field. ROI detection tools (currently Suite2P and CaImAn) are in the "Algorithm" category, and all other pre-installed analyses are in the "optinist" category.
+
 
 <br>
 <p align="left">
 <img width="200px" src="./_static/tutorials/fig4_algorithms.png" alt="Whole" />
 </p>
 
-Let’s start with sample tiff data (mouse2p_2_long.tiff) and try suite2p ROI detection.
-First, you need to determine the image you use. Select your image as explained [above](#assigning-input-data-path).
-Once it is selected, it shows the name of files in the image node. 
+Let's start with sample TIFF data (`mouse2p_2_long.tiff`) and try Suite2P ROI detection. 
+First, you need to determine the image you will use. Select your image as explained [above](#assigning-input-data-path). 
+Once it is selected, the name of the files is shown in the Image node.
 
 <br>
 <p align="left">
@@ -100,12 +105,16 @@ Once it is selected, it shows the name of files in the image node.
 
 ### Creating pipelines
 
-Then, connect the analysis nodes in the order you like to process. Drugging from an output connector of a node to the input connector of the next node creates an edge. The color of the connector indicates the format. For example, red is the image type format. You can only connect the same color. (Exception: black is an undefined data format. You can connect the black connector with any other connector, but be careful it does not check the consistency of input and output).
-
 <br>
 <p align="left">
 <img width="800px" src="./_static/tutorials/fig6_suite2p.png" alt="Whole" />
 </p>
+
+Connect the analysis nodes in the order you like to process. Drugging from an output connector of a node to the input connector of the next node creates an edge. The color of the connector indicates the format. 
+
+For example, red is the image type format. You can only connect the same color. (Exception: black is an undefined data format. You can connect the black connector with any other connector, but be careful it does not check the consistency of input and output).
+
+#### Pipeline example
 
 As for Suite2P, you might not use "suite2P_registration" (motion correction) node. In that case, you can connect the "suite2p_file_convert" node to "suite2p_roi" node directly. 
 
