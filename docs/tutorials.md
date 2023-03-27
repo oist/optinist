@@ -23,23 +23,35 @@ Tutorials
 * [Managing pipelines on RECORD](#managing-pipelines-on-record)
 
 ## Opening the browser
-To start OptiNiSt, you need to open a console and activate optinist environment `conda activate optinist` and change to optinist directory `cd ~/optinist/` and run main script `python main.py`. If you install optinist by pip, you can also use `run_optinist` to start it.
-The console shows the log once the startup is completed.
+To start OptiNiSt, follow these steps:
+
+1. Open a console.
+2. Activate the optinist environment with the command: `conda activate optinist`.
+3. Change to the optinist directory using the command: `cd ~/optinist/`.
+4. Run the main script with the command: `python main.py`.
+
+If you installed OptiNiSt using pip, you can also start it with the `run_optinist` command.
+
+The console will display the log once the startup is completed.
 
 <br>
 <p align="left">
 <img width="400px" src="./_static/tutorials/fig1_console.png" alt="Whole" />
 </p>
 
-Once you see this, open your web browser (Google Chrome is recommended) at localhost:8000.
-You are ready to start if the OptiNiSt page appears.
+Once you see this, 
+1. Open your web browser (Google Chrome is recommended).
+2. Navigate to `localhost:8000`.
+
+You are ready to start using OptiNiSt if the OptiNiSt page appears.
 
 <br>
 <p align="left">
 <img width="600px" src="./_static/tutorials/fig2_open.png" alt="Whole" />
 </p>
 
-OptiNiSt has three different pages, WORKFLOW, VISUALIZE, and RECORD. You can toggle these by clicking on the tag. 
+You can switch between these pages by clicking on the corresponding tabs.
+
 <br>
 <p align="left">
 <img width="300px" src="./_static/tutorials/fig2.2_tags.png" alt="Whole" />
