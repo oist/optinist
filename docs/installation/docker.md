@@ -36,4 +36,10 @@ Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, thi
 export OPTINIST_DIR="your_saving_dir"
 ```
 
+## 2. Access to backend
+
+- Launch browser, and go to http://localhost:8000
+
+It opens correctly!
+
 Done!
