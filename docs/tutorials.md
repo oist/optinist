@@ -21,6 +21,8 @@ Tutorials
   * [Editing ROI](#editing-roi)
   * [Savind plots](#savind-plots)
 * [Managing pipelines on RECORD](#managing-pipelines-on-record)
+  * [Reproduce Button](#reproduce-button)
+  * [Download Buttons](#download-buttons)
 
 ## Opening the browser
 To start OptiNiSt, follow these steps:
@@ -323,14 +325,14 @@ In one plotting box (ex, the one with ID:0), select a background image such as m
 
 <br>
 <p align="left">
-<img width="100px" src="./_static/tutorials/fig24_selectitem.png" alt="Whole" />
+<img width="200px" src="./_static/tutorials/fig24_selectitem.png" alt="Whole" />
 </p>
 
 In the same plotting box, select cell_roi from the Select Roi pull-downs. Both Suite2P and CaImAn include the process to drop the extracted ROIs that do not meet the criteria. In OptiNiSt, the cell ID is given to all the ROIs. Cell_roi is the ROIs that passed the criteria. 
 
 <br>
 <p align="left">
-<img width="100px" src="./_static/tutorials/fig25_selectroi.png" alt="Whole" />
+<img width="200px" src="./_static/tutorials/fig25_selectroi.png" alt="Whole" />
 </p>
 
 The plotting box (ID:0) shows the background image and detected cells.
@@ -365,19 +367,19 @@ If it is tiring to select the cell by clicking one by one, turn on the drag sele
 To the edit roi, prepare a plotting box. 
 <br>
 <p align="left">
-<img width="600px" src="./_static/tutorials/edit-roi/box.png" alt="Whole" />
+<img width="400px" src="./_static/tutorials/edit-roi/box.png" alt="Whole" />
 </p>
 
 In one plotting box (ex, the one with ID:0), select a background image such as meanImg from the Select Item pulldowns.
 <br>
 <p align="left">
-<img width="100px" src="./_static/tutorials/fig24_selectitem.png" alt="Whole" />
+<img width="200px" src="./_static/tutorials/fig24_selectitem.png" alt="Whole" />
 </p>
 In the same plotting box, select cell_roi from the Select Roi pull-downs. 
 
 <br>
 <p align="left">
-<img width="100px" src="./_static/tutorials/fig25_selectroi.png" alt="Whole" />
+<img width="200px" src="./_static/tutorials/fig25_selectroi.png" alt="Whole" />
 </p>
 The plotting box (ID:0) shows the background image and detected cells.
 <br>
