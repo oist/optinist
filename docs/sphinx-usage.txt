@@ -1,0 +1,13 @@
+# Sphinx (document generator) usage
+
+## Setup
+
+pip install -r requirements.txt
+
+## Usage
+
+- output html
+  ```
+  # output html to _build/
+  make html
+  ```

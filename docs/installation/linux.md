@@ -15,14 +15,16 @@ Please follow instructions below.
 
 ## 1. Make backend environment
 
-### Install gcc, g++
+### Install Tools
+
+#### Install gcc, g++
 
 - For install CaImAn, you need to install gcc and g++.
 ```
 sudo apt install gcc g++
 ```
 
-### Install Anaconda
+#### Install Anaconda
 
 ```
 wget https://repo.anaconda.com/archive/Anaconda3-2021.11-Linux-x86_64.sh
@@ -51,7 +53,7 @@ conda install -n base -c conda-forge mamba
 
 ### Install library
 
-```bash
+```
 pip install optinist
 ```
 

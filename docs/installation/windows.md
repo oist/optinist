@@ -16,17 +16,23 @@ Please follow instructions below.
 **CAUTION**: For WSL2, we confirmed them on [Ubuntu 20.04](https://www.microsoft.com/ja-jp/p/ubuntu-2004-lts/9n6svws3rx71).
 
 
-## For Windows (PowerShell) Users
+## For Windows (PowerShell)
 
 ### 1. Make backend environment
 
-#### Install Visual Studio Build Tools
+#### Install Tools
+
+(windows-install-visual-studio-build-tools)=
+
+##### Install Visual Studio Build Tools
 
 - For install CaImAn, you need to install Visual Studio Build Tools.
 - Download `Build Tools for Visual Studio 2022` from https://visualstudio.microsoft.com/ja/downloads/
 - In insteraller, select `Desktop Application for C++`
 
-#### Install Anaconda
+(windows-install-anaconda)=
+
+##### Install Anaconda
 
 Install [Anaconda for Windows](https://www.anaconda.com/products/individual)
 
@@ -56,7 +62,7 @@ conda install -n base -c conda-forge mamba
 #### Install library
 
 On the Anaconda PowerShell Prompt(anaconda3),
-```bash
+```
 pip install optinist
 # for suite2p
 pip install "PyQt5<=5.15.1" "PyQt5-sip<=12.8.1" "pyqtgraph<=0.11.0" "pandas" "suite2p<=0.10.3" "tifffile<=v2022.3.25"
@@ -89,12 +95,12 @@ run_optinist
 - `run_optinist` log is as blow:
 ```
 (optinist) PS C:\optinist\backend> run_optinist
-[32mINFO[0m:     Will watch for changes in these directories: ['C:\\optinist\\backend']
-[32mINFO[0m:     Uvicorn running on [1mhttp://0.0.0.0:8000[0m (Press CTRL+C to quit)
-[32mINFO[0m:     Started reloader process [[36m[1m16312[0m] using [36m[1mstatreload[0m
-[32mINFO[0m:     Started server process [[36m34084[0m]
-[32mINFO[0m:     Waiting for application startup.
-[32mINFO[0m:     Application startup complete.
+INFO:     Will watch for changes in these directories: ['C:\\optinist\\backend']
+INFO:     Uvicorn running on [1mhttp://0.0.0.0:8000[0m (Press CTRL+C to quit)
+INFO:     Started reloader process [[36m[1m16312[0m] using [36m[1mstatreload[0m
+INFO:     Started server process [[36m34084[0m]
+INFO:     Waiting for application startup.
+INFO:     Application startup complete.
 ```
 - Launch browser, and go to http://localhost:8000
 
@@ -102,11 +108,13 @@ It opens correctly!
 
 Done!
 
-## For Windows (WSL2) Users
+## For Windows (WSL2)
 
 ### 1. Make backend environment
 
-#### Install gcc, g++
+#### Install Tools
+
+##### Install gcc, g++
 
 - For install CaImAn, you need to install gcc and g++.
 ```
@@ -114,7 +122,7 @@ sudo apt update
 sudo apt install gcc g++
 ```
 
-#### Install Anaconda
+##### Install Anaconda
 
 ```
 wget https://repo.anaconda.com/archive/Anaconda3-2021.11-Linux-x86_64.sh
@@ -143,7 +151,7 @@ conda install -n base -c conda-forge mamba
 
 #### Install library
 
-```bash
+```
 pip install optinist
 ```
 

@@ -15,4 +15,7 @@ Installation
   :maxdepth: 2
   :caption: Installation (for Developer)
 
-  for_developer
+  docker_for_developer
+  linux_for_developer
+  windows_for_developer
+  mac_for_developer

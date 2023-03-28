@@ -15,7 +15,11 @@ Please follow instructions below.
 
 ## 1. Make backend environment
 
-### Install Anaconda
+### Install Tools
+
+(mac-install-anaconda)=
+
+#### Install Anaconda
 
 Download https://repo.anaconda.com/archive/Anaconda3-2021.11-MacOSX-x86_64.pkg
 
@@ -36,7 +40,7 @@ conda config --set channel_priority strict
 
 ### Install library
 
-```bash
+```
 pip install optinist
 ```
 
