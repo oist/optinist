@@ -28,7 +28,7 @@ cd ./optinist
 ### Create anaconda environment
 
 **CAUTION**:
-- *Due to issues with the operation of the use_conda function of the Windows version of snakemake, we will build an environment that does not use the above function here.*
+- *Due to issues with the operation of the use_conda function of the Mac version of snakemake, we will build an environment that does not use the above function here.*
 - *However, this method is tentative (as of 2023/3) due to some limitations (e.g., mixed use of python modules).*
 
 
