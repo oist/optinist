@@ -1,26 +1,21 @@
 Workflow
 =================
 
-OptiNiSt can help creating your analysis pipelines easily on the GUI. In this workflow field, you select the data and the algorithms or analysis methods (nodes). Connecting these nodes defines the order of processing (pipelines). The analysis pipeline can be parallel or bifurcating.
 <br>
 <p align="center">
 <img width="400px" src="../_static/workflow/whole.png" alt="workflow" />
-
 <br/>
+  
+  - OptiNiSt makes it easy to create analysis pipelines using the GUI.
+- In the workflow field, you can:
+    - Select the data and the algorithms or analysis methods (nodes).
+    - Connect these nodes to define the order of processing (pipelines).
+- The analysis pipeline can be parallel or bifurcating.
 
 ## Creating workflow
-### Setting Input Images
-
-1. Click `UPLOAD` button to upload your image files to `OPTINIST_DIR`.  
-<!--   
-(Large data files take long time to upload, so it copies to `OPTINIST_DIR` directly and load file more quickly. )-->
-  If your files are in a remote place and your analysis computer is local, uploading (copying) input files to the local directory saves time for accessing them. 
+### Setting Input data
   
-2. Click `SELECT IMAGE` button to set the path to the data as the input. You can select one file or all the files in a folder. All the image tiff files in a folder are concatenated if you choose a folder.
-
-** Currentlly, image files with {.tif, .TIF, .tiff, .TIFF} extensions are accepted. Other extensions will be added on request.
-
-
+  
 <br>
 <p align="center">
 <img width="200px" src="../_static/workflow/components/imageNode.png" alt="imageNode" />
@@ -28,23 +23,58 @@ OptiNiSt can help creating your analysis pipelines easily on the GUI. In this wo
 </p>
 <br/>
 
+By default, an Image node is displayed. This node defines the path to the data to use.
+  
+OptiNiSt uses `OPTINIST_DIR` for retrieving data and saving results. OptiNiSt searches for input data in the 'input' directory within `OPTINIST_DIR`. The default `OPTINIST_DIR` is `/tmp/optinist` on your computer.
+
+Choosing a folder makes all the TIFF files in the shown sequence an input set of continuous frames.
+
+You may not want to modify your original data folder, or you may want to make your data folder visible and accessible to OptiNiSt because imaging data can be large and take time to copy. You can take either strategy in assigning your data path:
+
+1. **Copy your original data file to `OPTINIST_DIR` and assign the data path to the copied data.** To copy the data to `OPTINIST_DIR`, click on the UPLOAD button on the node. The UPLOAD button copies the selected file to your `OPTINIST_DIR/input`. This can be done from the GUI.
+
+2. **Change the setting of `OPTINIST_DIR` by editing the `dir_path.py` file.** See [setting optinist directory](#setting-optinist_dir). The change is effective after relaunching.
+
+Once the data is accessible, you can see it by clicking on the SELECT IMAGE button on the Image node. You can select a file or a folder here. Choosing a folder makes all the TIFF files in the shown sequence an input set of continuous frames.
+
+Once the data is accessible, you can view it by following these steps:
+
+1. Click on the SELECT IMAGE button on the Image node.
+2. Select a file or a folder.
+
+  
+**Note:** Currently, image files with {.tif, .TIF, .tiff, .TIFF} extensions are accepted. Other extensions will be added on request.
+
+
+
 ### Adding Nodes
-Select algorithms or analysis methods from the treeview on the left by clicking "+" button. 
 <br>
 <p align="center">
   <img width="300px" src="../_static/workflow/components/add_algorithm.png" alt="Add Algorithm" />
 </p>
-
 <br>
 
-### Setting Parameters
-Click `PARAM` button of the node to change parameters.
+Select algorithms or analysis methods from the treeview on the left by clicking "+" button. 
+
+The left side of the window displays all available analysis methods. Clicking on the + mark adds the analysis nodes to the Workflow field. ROI detection tools (currently Suite2P and CaImAn) are in the "Algorithm" category, and all other pre-installed analyses are in the "optinist" category.
+
+Let's start with sample TIFF data (`mouse2p_2_long.tiff`) and try Suite2P ROI detection. 
+First, you need to determine the image you will use. Select your image as explained [above](#assigning-input-data-path). 
+Once it is selected, the name of the files is shown in the Image node.
+
+### Parameter button and output button on the node
+
 <br>
 <p align="center">
 <img width="300px" src="../_static/workflow/components/setparam.png" alt="Set Parameter" />
 </p>
-
 <br/>
+
+Each node has PARAM button and OUTPUT button. 
+
+- **Editing Parameters:** Click on the PARAM button to view the parameters. You can edit them as needed. The names, types, and default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters. The link list is available at [Implemented Analysis](https://optinist.readthedocs.io/en/latest/utils/implemented_analysis.html).
+
+- **Checking Results:** The OUTPUT button is for a quick check of the results. The button becomes active after the successful execution of the pipeline. For details about the charts, see [Inspecting the Images and the Plots on Visualize](#inspecting-the-images-and-the-plots-on-visualize).
 
 ### Connecting Nodes 
 Connect colored connectors of the nodes by dragging your cursor from the output connector to the next input connector to create connecting edges. The color of the connector indicates the data type of the input and the output.
