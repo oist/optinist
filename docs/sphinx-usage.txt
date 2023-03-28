@@ -1,0 +1,18 @@
+# Sphinx (document generator) usage
+
+## Setup
+
+pip install -r requirements.txt
+
+## Usage
+
+- output html
+  - output html to _build (use cache)
+    ```
+    make html
+    ```
+  - output html to _build (all rebuild)
+    ```
+    # "-E" is an option for all-rebuilding.
+    $env:SPHINXOPTS="-E"; make html; $env:SPHINXOPTS=""
+    ```
