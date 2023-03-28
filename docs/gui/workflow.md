@@ -135,15 +135,3 @@ Click the RUN button at the top right to see two dropdown choices: RUNALL and RU
 - **Cancel:**
     - Abort the running pipeline immediately.
 
-
-### OUTPUT
-Once the green checkmark appears, you can quickly visualize the output by clicking the `OUTPUT` button on the node.
-`OUTPUT` button shows a new window for the resulting graph. See VISUALIZE for the details of the chart.
-
-<br>
-<p align="center">
-<img width="300px" src="../_static/workflow/components/run_finish.png" alt="Finish Run" />
-<img width="100px" src="../_static/workflow/components/run_output.png" alt="Finish Run" />
-</p>
-<br/>
-
