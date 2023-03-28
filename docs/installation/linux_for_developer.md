@@ -1,4 +1,4 @@
-Linux for Developer
+Linux for Developer (recommended)
 =================
 
 ```{contents}

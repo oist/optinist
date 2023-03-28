@@ -37,11 +37,15 @@ cd ./optinist
   pip install conda-merge
 
   conda-merge ./optinist/conda/*.yaml > /tmp/optinist_algos_env.yaml
+
+  # Remove duplicate modules
+  # Fixed python version to 3.8 in the following
+  sed -i -e '/python=3.[^8]/d' /tmp/optinist_algos_env.yaml
   ```
 
 - create conda env
   ```
-  conda create -n optinist_dev -f /tmp/optinist_algos_env.yaml
+  conda env create -n optinist_dev -f /tmp/optinist_algos_env.yaml
   conda activate optinist_dev
   ```
 
