@@ -118,7 +118,7 @@ CSV and hdf5 nodes have black output connectors. The edge connected to the black
 <p align="left">
 <img width="200px" src="./_static/tutorials/fig11_runall.png" alt="Whole" />
 </p>
-</br>
+<br/>
 
 Click the RUN button at the top right to see two dropdown choices: RUNALL and RUN. 
 
@@ -146,8 +146,5 @@ Once the green checkmark appears, you can quickly visualize the output by clicki
 <img width="300px" src="../_static/workflow/components/run_finish.png" alt="Finish Run" />
 <img width="100px" src="../_static/workflow/components/run_output.png" alt="Finish Run" />
 </p>
-
-
-
 <br/>
 
