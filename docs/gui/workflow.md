@@ -18,13 +18,22 @@ Workflow
   
 <br>
 <p align="center">
-<img width="200px" src="../_static/workflow/components/imageNode.png" alt="imageNode" />
+<img width="200px" src="../_static/tutorials/fig3_imagenode.png" alt="imageNode" />
 <img width="200px" src="../_static/workflow/components/imageList.png" alt="imageNode" />
 </p>
 <br/>
 
 By default, an Image node is displayed. This node defines the path to the data to use.
+
+Once the data is accessible, you can view it by following these steps:
+
+1. Click on the SELECT IMAGE button on the Image node.
+2. Select a file or a folder. Choosing a folder makes all the TIFF files in the shown sequence an input set of continuous frames.
+
   
+**Note:** Currently, image files with {.tif, .TIF, .tiff, .TIFF} extensions are accepted. Other extensions will be added on request.
+
+#### Directory Setting
 OptiNiSt uses `OPTINIST_DIR` for retrieving data and saving results. OptiNiSt searches for input data in the 'input' directory within `OPTINIST_DIR`. The default `OPTINIST_DIR` is `/tmp/optinist` on your computer.
 
 Choosing a folder makes all the TIFF files in the shown sequence an input set of continuous frames.
@@ -35,16 +44,18 @@ You may not want to modify your original data folder, or you may want to make yo
 
 2. **Change the setting of `OPTINIST_DIR` by editing the `dir_path.py` file.** See [setting optinist directory](#setting-optinist_dir). The change is effective after relaunching.
 
-Once the data is accessible, you can see it by clicking on the SELECT IMAGE button on the Image node. You can select a file or a folder here. Choosing a folder makes all the TIFF files in the shown sequence an input set of continuous frames.
+#### Other Data Formats As The Input
+Some of the analyses, such as event-triggered averaging or GLM need timecourse of behavioral data as an input. A behavior node is best for it.
+The format should be .csv. Rows and columns can be specified by `settings` appearing after selecting the csv data. Note that the number of data points has to be the same as the number of frames of image data. 
+Fluo data node is for cell's fluorescence timecourse data given as .csv. 
 
-Once the data is accessible, you can view it by following these steps:
+Another data format prepared is hdf5. This format is compatible with the nwb data format.
+CSV and hdf5 nodes have black output connectors. The edge connected to the black output connector can be connected to any input connector. Be careful; this means that it does not check the format correspondence between input and output.
 
-1. Click on the SELECT IMAGE button on the Image node.
-2. Select a file or a folder.
-
-  
-**Note:** Currently, image files with {.tif, .TIF, .tiff, .TIFF} extensions are accepted. Other extensions will be added on request.
-
+<br>
+<p align="center">
+<img width="300px" src="../_static/workflow/components/csv_connect.png" alt="CSV Connect" />
+</p>
 
 
 ### Adding Nodes
@@ -56,7 +67,7 @@ Once the data is accessible, you can view it by following these steps:
 
 Select algorithms or analysis methods from the treeview on the left by clicking "+" button. 
 
-The left side of the window displays all available analysis methods. Clicking on the + mark adds the analysis nodes to the Workflow field. ROI detection tools (currently Suite2P and CaImAn) are in the "Algorithm" category, and all other pre-installed analyses are in the "optinist" category.
+The left side of the window displays all available analysis methods. Clicking on the + mark adds the analysis nodes to the Workflow field. ROI detection tools (currently Suite2P, CaImAn and LCCD) are in the "Algorithm" category, and all other pre-installed analyses are in the "optinist" category.
 
 Let's start with sample TIFF data (`mouse2p_2_long.tiff`) and try Suite2P ROI detection. 
 First, you need to determine the image you will use. Select your image as explained [above](#assigning-input-data-path). 
@@ -93,22 +104,8 @@ You can only connect the input and output connectors of the same color.
 </p>
 <br/>
 
-### Removing Nodes 
+### Removing Nodes or Connects
 Clicking on the x mark on a node or on an edge removes it from the workflow field. 
-
-
-### Other Data Formats As The Input
-Some of the analyses, such as event-triggered averaging or GLM need timecourse of behavioral data as an input. A behavior node is best for it.
-The format should be .csv. Rows and columns can be specified by `settings` appearing after selecting the csv data. Note that the number of data points has to be the same as the number of frames of image data. 
-Fluo data node is for cell's fluorescence timecourse data given as .csv. 
-
-Another data format prepared is hdf5. This format is compatible with the nwb data format.
-CSV and hdf5 nodes have black output connectors. The edge connected to the black output connector can be connected to any input connector. Be careful; this means that it does not check the format correspondence between input and output.
-
-<br>
-<p align="center">
-<img width="300px" src="../_static/workflow/components/csv_connect.png" alt="CSV Connect" />
-</p>
 
 
 
