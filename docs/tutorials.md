@@ -60,49 +60,9 @@ After launching, the first page you see is the workflow page. The workflow page 
 
 ### Assigning input data path
 
-<br>
-<p align="left">
-<img width="200px" src="./_static/tutorials/fig3_imagenode.png" alt="Whole" />
-</p>
-
-By default, an Image node is displayed. This node defines the path to the data to use.
-
-OptiNiSt uses `OPTINIST_DIR` for retrieving data and saving results. OptiNiSt searches for input data in the 'input' directory within `OPTINIST_DIR`. The default `OPTINIST_DIR` is `/tmp/optinist` on your computer.
-
-Choosing a folder makes all the TIFF files in the shown sequence an input set of continuous frames.
-
-You may not want to modify your original data folder, or you may want to make your data folder visible and accessible to OptiNiSt because imaging data can be large and take time to copy. You can take either strategy in assigning your data path:
-
-1. **Copy your original data file to `OPTINIST_DIR` and assign the data path to the copied data.** To copy the data to `OPTINIST_DIR`, click on the UPLOAD button on the node. The UPLOAD button copies the selected file to your `OPTINIST_DIR/input`. This can be done from the GUI.
-
-2. **Change the setting of `OPTINIST_DIR` by editing the `dir_path.py` file.** See [setting optinist directory](#setting-optinist_dir). The change is effective after relaunching.
-
-Once the data is accessible, you can see it by clicking on the SELECT IMAGE button on the Image node. You can select a file or a folder here. Choosing a folder makes all the TIFF files in the shown sequence an input set of continuous frames.
-
-Once the data is accessible, you can view it by following these steps:
-
-1. Click on the SELECT IMAGE button on the Image node.
-2. Select a file or a folder.
-
 
 ### Selecting analysis methods
 
-<br>
-<p align="left">
-<img width="200px" src="./_static/tutorials/fig4_algorithms.png" alt="Whole" />
-</p>
-
-The left side of the window displays all available analysis methods. Clicking on the + mark adds the analysis nodes to the Workflow field. ROI detection tools (currently Suite2P and CaImAn) are in the "Algorithm" category, and all other pre-installed analyses are in the "optinist" category.
-
-
-Let's start with sample TIFF data (`mouse2p_2_long.tiff`) and try Suite2P ROI detection. 
-First, you need to determine the image you will use. Select your image as explained [above](#assigning-input-data-path). 
-Once it is selected, the name of the files is shown in the Image node.
-
-<br>
-<p align="left">
-<img width="200px" src="./_static/tutorials/fig5_imagenode2.png" alt="Whole" />
-</p>
 
 ### Creating pipelines
 
@@ -140,44 +100,7 @@ The nodes should be connected as long as the input and the output are of the sam
 Also, you can branch the flow. In the example, the two "caiman_mc" with different parameter settings are created, and the downstream from "caiman_mc" is also different. Each node's results are saved separately (See [RECORD part](#managing-pipelines-on-record)). 
 
 
-### Parameter button and output button on the node
-Each node has PARAM button and OUTPUT button. 
-
-<br>
-<p align="left">
-<img width="200px" src="./_static/tutorials/fig10.1_buttons.png" alt="Whole" />
-</p>
-
-Clicking on PARAM shows the parameters. Edit this as you like. The names, types and the default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters. The link list is on [Implemented Analysis](https://optinist.readthedocs.io/en/latest/utils/implemented_analysis.html).
-
-<br>
-<p align="left">
-<img width="200px" src="./_static/tutorials/fig10_parameters.png" alt="Whole" />
-</p>
-
-OUTPUT button is for the quick check of the result. The button becomes effective after the successful execution of the pipeline. [Here](#inspecting-the-images-and-the-plots-on-visualize) explains the details of the charts. 
-
 ### running pipelines
-
-Now you are ready to run the pipeline.
-RUN button at the right top shows two pulldown choices. RUNALL runs all the process. RUNALL assigns a new folder for saving the results. On the other hand, RUN skips the already ran processes. It checks the difference from the previous pipeline, including the existence of the results and the parameter change. If they are detected, the downstream process after that process is re-executed. The results are overwritten into the existing folder.
-
-<br>
-<p align="left">
-<img width="200px" src="./_static/tutorials/fig11_runall.png" alt="Whole" />
-</p>
-
-When you click on the RUNALL, it shows the window to determine the folder name. This folder name is only for the user’s convenience. The actual folder name is long digit random letter+number. 
-<!--Further information about the structure of the saved results is [here](https://optinist.readthedocs.io/en/latest/gui/record.html).)
--->
-
-Next to the RUN button, there is the CANCEL button. You can abort the running pipeline with this button. It immediately cancels the current execution.
-
-<br>
-<p align="left">
-<img width="200px" src="./_static/tutorials/fig12_cancel.png" alt="Whole" />
-</p>
-
 
 
 ### SNAKEMANE and NWB SETTING
@@ -259,9 +182,6 @@ The plots are for quick confirmation of the results. If you want to look into th
 <p align="left">
 <img width="200px" src="./_static/tutorials/fig12.08_resulthdf.png" alt="Whole" />
 </p>
-
-
-
 
 
 
