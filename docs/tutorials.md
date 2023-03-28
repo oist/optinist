@@ -117,27 +117,28 @@ For example, red is the image type format. You can only connect the same color. 
 
 #### Pipeline example
 
-As for Suite2P, you might not use "suite2P_registration" (motion correction) node. In that case, you can connect the "suite2p_file_convert" node to "suite2p_roi" node directly. 
-
 <br>
 <p align="left">
 <img width="600px" src="./_static/tutorials/fig7_suite2p2.png" alt="Whole" />
 </p>
 
-Also, you can perform "motion correction" of CaImAn (caiman_mc) and then perform "suite2P_roi".
+As for Suite2P, you might not use "suite2P_registration" (motion correction) node. In that case, you can connect the "suite2p_file_convert" node to "suite2p_roi" node directly. 
 
 <br>
 <p align="left">
 <img width="600px" src="./_static/tutorials/fig8_suite2pcaiman.png" alt="Whole" />
 </p>
 
-The nodes should be connected as long as the input and the output are of the same format type (same color).
-Also, you can branch the flow. In the example, the two "caiman_mc" with different parameter settings are created, and the downstream from "caiman_mc" is also different. Each node's results are saved separately (See [RECORD part](#managing-pipelines-on-record)). 
+Also, you can perform "motion correction" of CaImAn (caiman_mc) and then perform "suite2P_roi".
 
 <br>
 <p align="left">
 <img width="600px" src="./_static/tutorials/fig9_workflowbranch.png" alt="Whole" />
 </p>
+
+The nodes should be connected as long as the input and the output are of the same format type (same color).
+Also, you can branch the flow. In the example, the two "caiman_mc" with different parameter settings are created, and the downstream from "caiman_mc" is also different. Each node's results are saved separately (See [RECORD part](#managing-pipelines-on-record)). 
+
 
 ### Parameter button and output button on the node
 Each node has PARAM button and OUTPUT button. 
