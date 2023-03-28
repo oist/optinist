@@ -116,8 +116,6 @@ The pipeline construction of Optinist is based on [snakemake](https://snakemake.
 NWB SETTING defines the metadata associated with the input data. By setting this, the output NWB file includes the information set here. The parameter you set here is only for your record and not used for the calculation inside OptiNiSt. You can leave this as default. The details of NWB setting in OptiNiSt is [explained bellow](#nwb-settings). Also, general info about NWB is [here](https://www.nwb.org/getting-started/).
 
 
-
-
 ### Time series analyses after ROI extraction
 OptiNiSt offers some basic time-series analysis functions. For example, event-triggered averaging can be applied to the ROI time-series data created by OptiNiSt. Assuming that you have the result of ROI extraction, here explains how to create the pipeline. Because the ROI time-series is in NWB format, the hdf5 data node is appropriate as the input node. 
 
