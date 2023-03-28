@@ -91,7 +91,6 @@ You can only connect the input and output connectors of the same color.
 <p align="center">
 <img width="300px" src="../_static/workflow/components/connect_edge.png" alt="Connect Algorithm" />
 </p>
-
 <br/>
 
 ### Removing Nodes 
@@ -116,7 +115,7 @@ CSV and hdf5 nodes have black output connectors. The edge connected to the black
 ## Running pipelines
 <br>
 <p align="left">
-<img width="200px" src="./_static/tutorials/fig11_runall.png" alt="Whole" />
+<img width="200px" src="../_static/tutorials/fig11_runall.png" alt="Whole" />
 </p>
 <br/>
 
