@@ -52,7 +52,7 @@ Once you see this,
 </p>
 
 You are ready to start using OptiNiSt if the OptiNiSt page appears.
-You can switch between these pages by clicking on the corresponding tabs.
+You can switch between these pages by clicking on the corresponding tabs (WORKFLOW, VISUALIZE, RECORD).
 
 
 ## Making pipelines on WORKFLOW 
@@ -87,13 +87,13 @@ Once the data is accessible, you can view it by following these steps:
 
 ### Selecting analysis methods
 
-The left side of the window displays all available analysis methods. Clicking on the + mark adds the analysis nodes to the Workflow field. ROI detection tools (currently Suite2P and CaImAn) are in the "Algorithm" category, and all other pre-installed analyses are in the "optinist" category.
-
-
 <br>
 <p align="left">
 <img width="200px" src="./_static/tutorials/fig4_algorithms.png" alt="Whole" />
 </p>
+
+The left side of the window displays all available analysis methods. Clicking on the + mark adds the analysis nodes to the Workflow field. ROI detection tools (currently Suite2P and CaImAn) are in the "Algorithm" category, and all other pre-installed analyses are in the "optinist" category.
+
 
 Let's start with sample TIFF data (`mouse2p_2_long.tiff`) and try Suite2P ROI detection. 
 First, you need to determine the image you will use. Select your image as explained [above](#assigning-input-data-path). 
