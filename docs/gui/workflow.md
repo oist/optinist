@@ -77,7 +77,7 @@ Once it is selected, the name of the files is shown in the Image node.
 
 <br>
 <p align="center">
-<img width="300px" src="../_static/workflow/components/setparam.png" alt="Set Parameter" />
+<img width="300px" src="../_static/tutorials/fig10.1_buttons.png" alt="Set Parameter" />
 </p>
 <br/>
 
@@ -108,7 +108,6 @@ You can only connect the input and output connectors of the same color.
 Clicking on the x mark on a node or on an edge removes it from the workflow field. 
 
 
-
 ## Running pipelines
 <br>
 <p align="left">
@@ -131,4 +130,17 @@ Click the RUN button at the top right to see two dropdown choices: RUNALL and RU
 
 - **Cancel:**
     - Abort the running pipeline immediately.
+
+## SNAKEMANE and NWB SETTING
+
+<br>
+<p align="left">
+<img width="400px" src="../_static/tutorials/fig13_nwbsnakemake.png" alt="Whole" />
+</p>
+
+SNAKEMAKE and NWB SETTING buttons are for parameters for snakemake and output NWB file.
+The pipeline construction of Optinist is based on [snakemake](https://snakemake.readthedocs.io/en/stable/), which is the pipeline controlling tool for python scripts. The SNAKEMAKE parameter setting is [explained bellow](#snakemake-settings).
+
+
+NWB SETTING defines the metadata associated with the input data. By setting this, the output NWB file includes the information set here. The parameter you set here is only for your record and not used for the calculation inside OptiNiSt. You can leave this as default. The details of NWB setting in OptiNiSt is [explained bellow](#nwb-settings). Also, general info about NWB is [here](https://www.nwb.org/getting-started/).
 
