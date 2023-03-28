@@ -114,33 +114,27 @@ CSV and hdf5 nodes have black output connectors. The edge connected to the black
 
 
 ## Running pipelines
-### RUN ALL
-After making the workflow pipeline, click "RUN ALL" button to execute the computation.
-RUN ALL command creates a new output folder in the OPTINIST_DIR and executes all the pipelines. Naming it helps you identify individual workflow in the RECORD field. Note the name you specify here is just a tag. The actual folder name is automatically assigned as 32 digit letter and number. See the RECORD field for more detail.
-
 <br>
-<p align="center">
-<img width="350px" src="../_static/workflow/components/run_start.png" alt="Run Start" />
-<img width="150px" src="../_static/workflow/components/run_name.png" alt="Run Name" />
+<p align="left">
+<img width="200px" src="./_static/tutorials/fig11_runall.png" alt="Whole" />
 </p>
 
-Runninng...
-During running, the indicators of the nodes show the progress of the computation. Green checkmarks indicate the termination of the process without errors.
-Red checkmarks indicate the abortion of the process because of the error. You can check the error messages by moving the cursor over the checkmark.
+Click the RUN button at the top right to see two dropdown choices: RUNALL and RUN. 
 
-<p align="center">
-<img width="300px" src="../_static/workflow/components/running.png" alt="Running" />
-</p>
+- **RUNALL:**
+    - Runs the entire process.
+    - Assigns a new folder for saving the results.　This folder name is only for the user’s convenience. The actual folder name is long digit random letter+number. <!--Further information about the structure of the saved results is [here](https://optinist.readthedocs.io/en/latest/gui/record.html).)
+-->
 
-### RUN
-Once you `RUN ALL`, you may want to change the last pipeline's parameters or add a new node to the current pipeline.
-Use the `RUN` button in such a case. It automatically detects the change and runs only the nodes which were changed. The additional results are overwritten into the same folder. If you leave the previous results for comparison, use `RUN ALL` instead.
+- **RUN:**
+    - Skips already executed processes.
+    - Checks for differences from the previous pipeline, including the existence of results and parameter changes.
+    - If differences are detected, the downstream process is re-executed.
+    - Results are overwritten in the existing folder.
 
-<p align="center">
-<img width="300px" src="../_static/workflow/components/run_checkpoint.png" alt="Run Checkpoint" />
-</p>
+- **Cancel:**
+    - Abort the running pipeline immediately.
 
-<br />
 
 ### OUTPUT
 Once the green checkmark appears, you can quickly visualize the output by clicking the `OUTPUT` button on the node.
