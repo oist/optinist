@@ -1,9 +1,10 @@
 import numpy as np
+
 from optinist.api.dataclass.dataclass import *
 from .utils import save_json_data
 
 
-def execute_merge_roi(node_dirpath, merged_roi_ids):
+def execute_merge_roi(node_dirpath, ids):
     from suite2p.detection.stats import median_pix, roi_stats
     from suite2p import ROI
 
@@ -26,7 +27,7 @@ def execute_merge_roi(node_dirpath, merged_roi_ids):
 
     # merged cells id
     merged_cells = []
-    for n in np.array(merged_roi_ids):
+    for n in np.array(ids):
         merged_cells.append(n)
     merged_cells = np.unique(np.array(merged_cells))
 
@@ -75,11 +76,16 @@ def execute_merge_roi(node_dirpath, merged_roi_ids):
     stat_orig = roi_stats(stat_orig, d0[0], d0[1], ops['Ly'], ops['Lx'])
     stat_orig[-1]['lam'] = stat_orig[-1]['lam'] * merged_cells.size
 
-    array = np.expand_dims(ROI(
-            ypix=stat_orig[-1]['ypix'], xpix=stat_orig[-1]['xpix'],
-            lam=stat_orig[-1]['lam'], med=stat_orig[-1]['med'],
-            do_crop=False
-    ).to_array(Ly=ops['Ly'], Lx=ops['Lx']), axis =0)
+    array = np.expand_dims(
+        ROI(
+            ypix=stat_orig[-1]['ypix'],
+            xpix=stat_orig[-1]['xpix'],
+            lam=stat_orig[-1]['lam'],
+            med=stat_orig[-1]['med'],
+            do_crop=False,
+        ).to_array(Ly=ops['Ly'], Lx=ops['Lx']),
+        axis=0,
+    )
     id = np.nanmax(im) + 1
     array *= id
     merge_roi.append(float(id))
@@ -107,7 +113,14 @@ def execute_merge_roi(node_dirpath, merged_roi_ids):
         ops,
         im,
         save_path=node_dirpath,
-        save_data=['ops', 'fluorescence', 'all_roi', 'non_cell_roi', 'cell_roi', 'nwbfile'],
+        save_data=[
+            'ops',
+            'fluorescence',
+            'all_roi',
+            'non_cell_roi',
+            'cell_roi',
+            'nwbfile',
+        ],
     )
 
     max_index = len(info['fluorescence'].data)

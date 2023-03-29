@@ -1,8 +1,10 @@
-import numpy as np
 import time
+
+import numpy as np
+from scipy import stats
+
 from optinist.api.config.config_reader import ConfigReader
 from optinist.api.dataclass.dataclass import *
-from scipy import stats
 from optinist.api.nwb.nwb import NWBDATASET
 from optinist.api.nwb.nwb_creater import overwrite_nwb
 
@@ -14,7 +16,7 @@ def masks_and_traces(ops, stat_manual, stat_orig):
     returns: F (ROIs x time), Fneu (ROIs x time), F_chan2, Fneu_chan2, ops, stat
     F_chan2 and Fneu_chan2 will be empty if no second channel
     '''
-    from suite2p import extraction, detection
+    from suite2p import detection, extraction
 
     if 'aspect' in ops:
         dy, dx = int(ops['aspect'] * 10), 10
@@ -92,8 +94,8 @@ def masks_and_traces(ops, stat_manual, stat_orig):
     return F, Fneu, F_chan2, Fneu_chan2, spks, ops, manual_roi_stats
 
 
-def get_stat0_add_roi(ops, pos):
-    posx, posy, sizex, sizey = list(map(round, pos))
+def get_stat0_add_roi(ops, posx, posy, sizex, sizey):
+    posx, posy, sizex, sizey = round(posx), round(posy), round(sizex), round(sizey)
     xrange = (np.arange(-1 * int(sizex), 1) + int(posx)).astype(np.int32)
     yrange = (np.arange(-1 * int(sizey), 1) + int(posy)).astype(np.int32)
     xrange += int(np.floor(sizex / 2))
@@ -111,7 +113,7 @@ def get_stat0_add_roi(ops, pos):
     ellipse = ellipse[np.logical_and(yrange >= 0, yrange < ops['Ly']), :]
     yrange = yrange[np.logical_and(yrange >= 0, yrange < ops['Ly'])]
 
-    med = pos[2:4]
+    med = [sizex, sizey]
     x, y = np.meshgrid(xrange, yrange)
     ypix = y[ellipse].flatten()
     xpix = x[ellipse].flatten()
