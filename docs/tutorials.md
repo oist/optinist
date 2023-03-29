@@ -6,11 +6,7 @@ Tutorials
 	* [ROI extraction](#roi-extraction)
 	* [Time series analyses](#time-series-analyses)
 	* [Pipeline example](#pipeline-example)
-* [Inspecting the images and the plots on VISUALIZE](#inspecting-the-images-and-the-plots-on-visualize)
-	* [Checking movies](#checking-movies)
-	* [Showing ROI and time courses](#showing-roi-and-time-courses)
-	* [Editing ROI](#editing-roi)
-	* [Savind plots](#savind-plots)
+* [Check execution result on VISUALIZE](#check-execution-result-on-VISUALIZE)
 * [Managing pipelines on RECORD](#managing-pipelines-on-record)
 
 ## Opening the browser
