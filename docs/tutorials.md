@@ -6,8 +6,9 @@ Tutorials
 	* [ROI extraction](#roi-extraction)
 	* [Time series analyses](#time-series-analyses)
 	* [Pipeline example](#pipeline-example)
-* [Check execution result on VISUALIZE](#check-execution-result-on-VISUALIZE)
+* [Check execution result on VISUALIZE](#check-execution-result-on-visualize)
 * [Managing pipelines on RECORD](#managing-pipelines-on-record)
+* 	* [Sample pipeline](#sample-pipeline
 
 ## Opening the browser
 To start OptiNiSt, follow these steps:
@@ -138,14 +139,31 @@ See [here](https://optinist.readthedocs.io/en/latest/gui/visualize.html) for det
 
 ## Managing pipelines on RECORD
 
-<br>
 <p align="center">
 <img width="600px" src="./_static/tutorials/fig40_recordall.png" alt="Whole" />
 </p>
 
-The RECORD page summarizes the current status of `OPTINIST_DIR/output`. This page helps keep the analysis pipeline organized and easy to retrieve. For basic usage of the RECORD page, see [here](https://optinist.readthedocs.io/en/latest/gui/record.html).
+The RECORD page summarizes the current status of `OPTINIST_DIR/output`. 
+This page helps keep the analysis pipeline organized and easy to retrieve. 
+For basic usage of the RECORD page, see [here](https://optinist.readthedocs.io/en/latest/gui/record.html).
 
+<p align="center">
+<img width="600px" src="./_static/tutorials/sample_pipelines.png" alt="Whole" />
+</p>
 
+We provide some sample pipelines `optinist/sample_data/workflows/`.
+You can immediately see the three results by copying this pipeline to `OPTINIST_DIR`.
 
+<p align="center">
+<img width="600px" src="./_static/tutorials/suite2p_sample_pipeline.png" alt="Whole" />
+<br/>
+<img width="600px" src="./_static/tutorials/caiman_sample_pipeline.png" alt="Whole" />
+<br/>
+<img width="600px" src="./_static/tutorials/lccd_sample_pipeline.png" alt="Whole" />
+</p>
 
+You can reproduce these pipelines instantly by clicking on each reproduce button.
+In addition, by clicking the `RUN` button in the upper right corner of the Workflow screen
+to confirm that you can load the results of an analysis that has already been run.
 
+Note: Unfortunately, this feature may not work properly at this time due to a bug.
