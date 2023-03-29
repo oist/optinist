@@ -42,7 +42,7 @@ You may not want to modify your original data folder, or you may want to make yo
 
 1. **Copy your original data file to `OPTINIST_DIR` ** To copy the data to `OPTINIST_DIR`, click on the LOAD button on the node. The LOAD button copies the selected file to your `OPTINIST_DIR/input`. This can be done from the GUI.
 
-2. **Change the setting of `OPTINIST_DIR`** OPTINIST_DIR is defined in optinist/optinist/api/dir_path.py. Change line for OPTINIST_DIR, INPUT_DIR, and OUTPUT_DIR according to your demand. Changing dir_path.py may also be necessary when running the pipeline on your cluster computers. Also, you can quickly change OPTINIST_DIR by changing the environment variable before launching. The change is effective after relaunching.
+2. **Change the setting of `OPTINIST_DIR` ** `OPTINIST_DIR` is defined in `optinist/optinist/api/dir_path.py`. Change line for `OPTINIST_DIR`, INPUT_DIR, and OUTPUT_DIR according to your demand. Changing `dir_path.py` may also be necessary when running the pipeline on your cluster computers. Also, you can quickly change OPTINIST_DIR by changing the environment variable before launching. The change is effective after relaunching.
 
 #### Other Data Formats As The Input
 
