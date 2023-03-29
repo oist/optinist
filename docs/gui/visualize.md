@@ -55,13 +55,13 @@ TimeSeries plot can refer to a image plot to synthronize cell number index. Clic
 
 ## Editing ROI
 
-<p align="left">
+<p align="center">
 <img width="400px" src="../_static/tutorials/edit-roi/box.png" alt="Whole" />
 </p>
 
 To the edit roi, prepare a plotting box. 
 
-<p align="left">
+<p align="center">
 <img width="200px" src="../_static/tutorials/fig24_selectitem.png" alt="Whole" />
 </p>
 
@@ -69,16 +69,16 @@ In one plotting box (ex, the one with ID:0), select a background image such as m
 In the same plotting box, select cell_roi from the Select Roi pull-downs. 
 
 <br>
-<p align="left">
+<p align="center">
 <img width="200px" src="../_static/tutorials/fig25_selectroi.png" alt="Whole" />
 </p>
 The plotting box (ID:0) shows the background image and detected cells.
 <br>
-<p align="left">
+<p align="center">
 <img width="400px" src="../_static/tutorials/edit-roi/cell_roi_selected.png" alt="Whole" />
 </p>
 
-<p align="left">
+<p align="center">
 <img width="400px" src="../_static/tutorials/edit-roi/add_roi_clicked.png" alt="Whole" />
 </p>
 
@@ -86,7 +86,7 @@ The plotting box (ID:0) shows the background image and detected cells.
 You can click the <strong>Add ROI</strong> button then drag drop, resize the white cirle to change the new ROI position and size.
 Press <strong>OK</strong> or <strong>Cancel</strong> button to Add or No
 
-<p align="left">
+<p align="center">
 <img width="400px" src="../_static/tutorials/edit-roi/roi_selected_merge_or_delete.png" alt="Whole" />
 </p>
 
@@ -96,7 +96,7 @@ Press <strong>Merge ROI</strong> or <strong>Delete ROI</strong> or <strong>Cance
 
 ## saving plots
 
-<p align="left">
+<p align="center">
 <img width="200px" src="../_static/tutorials/fig30_saving.png" alt="Whole" />
 </p>
 
