@@ -3,8 +3,9 @@ Tutorials
 
 * [Opening the browser](#opening-the-browser)
 * [Making pipelines on WORKFLOW](#making-pipelines-on-workflow)
+	* [ROI extraction](#roi-extraction)
+	* [Time series analyses](#time-series-analyses)
 	* [Pipeline example](#pipeline-example)
-	* [Time series analyses after ROI extraction](#time-series-analyses-after-roi-extraction)
 * [Inspecting the images and the plots on VISUALIZE](#inspecting-the-images-and-the-plots-on-visualize)
 	* [Checking movies](#checking-movies)
 	* [Showing ROI and time courses](#showing-roi-and-time-courses)
@@ -45,19 +46,26 @@ You can switch between these pages by clicking on the corresponding tabs (WORKFL
 ## Making pipelines on WORKFLOW 
 After launching, the first page you see is the workflow page. The workflow page is a place to define the analysis pipeline. You determine the data you will analyze, select the type of the algorithm or analysis method you use, and set the parameters and the order of analysis.  
 
+### ROI extraction
+
 <p align="center">
 <img width="800px" src="./_static/tutorials/fig6_suite2p.png" alt="Whole" />
 </p>
 
-The above workflow can be easily created with the following [GUI operations](https://optinist.readthedocs.io/en/latest/gui/workflow.html),
-1. Assign input data
+You can easily create the above workflow with the following [GUI operations](https://optinist.readthedocs.io/en/latest/gui/workflow.html),
+1. Assign input image data
 	- You can select a group of files for analysis in one of two ways.
 		* Select files or folders in a predefined folder with the SELECT button
 		* Select any local files or folders with the LOAD button 
 2. Select analysis method
 	- You can add the required analysis methods to workflow from the left pane.
+	- Currently we offer the following three methods of ROI detection
+		* [suite2p](https://github.com/MouseLand/suite2p)
+		* [CaImAn](https://github.com/flatironinstitute/CaImAn)
+		* [LCCD](https://github.com/magnetizedCell/lccd-python)
 3. Create pipeline
 	- You can build an analysis pipeline by connecting input data and analysis modules. 
+	- The nodes should be connected as long as the input and the output are of the same format type (same color).
 4. Press the RUN ALL button to execute the workflow.
  
 Note: Optinist can finely modify each of the following settings and parameters See [here](https://optinist.readthedocs.io/en/latest/gui/workflow.html)  for more details.
@@ -65,33 +73,8 @@ Note: Optinist can finely modify each of the following settings and parameters S
 - NWB
 - Analysis modules
 
-#### Pipeline example
 
-<br>
-<p align="center">
-<img width="600px" src="./_static/tutorials/fig7_suite2p2.png" alt="Whole" />
-</p>
-
-As for Suite2P, you might not use "suite2P_registration" (motion correction) node. In that case, you can connect the "suite2p_file_convert" node to "suite2p_roi" node directly. 
-
-<br>
-<p align="center">
-<img width="600px" src="./_static/tutorials/fig8_suite2pcaiman.png" alt="Whole" />
-</p>
-
-Also, you can perform "motion correction" of CaImAn (caiman_mc) and then perform "suite2P_roi".
-
-<br>
-<p align="center">
-<img width="600px" src="./_static/tutorials/fig9_workflowbranch.png" alt="Whole" />
-</p>
-
-The nodes should be connected as long as the input and the output are of the same format type (same color).
-Also, you can branch the flow. In the example, the two "caiman_mc" with different parameter settings are created, and the downstream from "caiman_mc" is also different. Each node's results are saved separately (See [RECORD part](#managing-pipelines-on-record)). 
-
-
-### Time series analyses after ROI extraction
-
+### Time series analyses
 
 OptiNiSt offers some basic time-series analysis functions. For example, event-triggered averaging can be applied to the ROI time-series data created by OptiNiSt. Assuming that you have the result of ROI extraction, here explains how to create the pipeline. Because the ROI time-series is in NWB format, the hdf5 data node is appropriate as the input node. 
 
@@ -118,6 +101,29 @@ Once you SELECT CSV, SETTINGS button appears in the behavior node. This button c
 Add event tirggered averaging (eta) node and connect fluorescence and behavior nodes to eta node. And Run the workflow. 
 After finishing the process, you can quickly confirm your event-triggered average plot by clicking the OUTPUT button on the eta node.
 The plots are for quick confirmation of the results. If you want to look into the results more in detail,   available variables are all saved in the OptiNiSt output in NWB format. They are saved in processing/optinist inside NWB file. The NWB file is easily retrieved at RECORD page with just one click. To inspect the data, [HDFView](https://www.hdfgroup.org/downloads/hdfview/) is convenient. 
+
+### Pipeline example
+
+<br>
+<p align="center">
+<img width="600px" src="./_static/tutorials/fig7_suite2p2.png" alt="Whole" />
+</p>
+
+As for Suite2P, you might not use "suite2P_registration" (motion correction) node. In that case, you can connect the "suite2p_file_convert" node to "suite2p_roi" node directly. 
+
+<br>
+<p align="center">
+<img width="600px" src="./_static/tutorials/fig8_suite2pcaiman.png" alt="Whole" />
+</p>
+
+Also, you can perform "motion correction" of CaImAn (caiman_mc) and then perform "suite2P_roi".
+
+<br>
+<p align="center">
+<img width="600px" src="./_static/tutorials/fig9_workflowbranch.png" alt="Whole" />
+</p>
+
+You can branch the flow. In the example, the two "caiman_mc" with different parameter settings are created, and the downstream from "caiman_mc" is also different. Each node's results are saved separately (See [RECORD part](#managing-pipelines-on-record)). 
 
 
 ## Inspecting the images and the plots on VISUALIZE
