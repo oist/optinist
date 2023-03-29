@@ -32,6 +32,23 @@ To add another display box to the right, click **︙** at the upper right side o
 
 Pull down of the `Select Item` shows the available item to show. Select one of these items.
 
+### Checking movies
+
+<p align="center">
+<img width="200px" src="../_static/tutorials/fig21_loadmovie.png" alt="Whole" />
+</p>
+
+You may want to check some frames of the multi-page tiff files. Visualize page offers the way to check. After creating a plot box by clicking on + mark, Select the image using the SELECT IMAGE button on the left top.
+You can select the range of the frame by assigning 1st and last frame numbers. LOAD button starts loading the data.
+
+<p align="center">
+<img width="400px" src="../_static/tutorials/fig22_movie.png" alt="Whole" />
+</p>
+
+Click on the PLAY button within the plotting box to play the loaded movie.
+The number indicated on the right of PAUSE button is the frame interval in milliseconds. 
+
+
 ### Customizing visualization parameters
 
 <p align="center">
@@ -52,22 +69,6 @@ Create One box showing ROI and another box showing fluorescence. You can link tw
 </p>
 
 TimeSeries plot can refer to a image plot to synthronize cell number index. Click or drag image plot so that cell number indexes are synthoronized in corresponding timeseries plot.
-
-## Checking movies
-
-<p align="center">
-<img width="200px" src="../_static/tutorials/fig21_loadmovie.png" alt="Whole" />
-</p>
-
-You may want to check some frames of the multi-page tiff files. Visualize page offers the way to check. After creating a plot box by clicking on + mark, Select the image using the SELECT IMAGE button on the left top.
-You can select the range of the frame by assigning 1st and last frame numbers. LOAD button starts loading the data.
-
-<p align="center">
-<img width="400px" src="../_static/tutorials/fig22_movie.png" alt="Whole" />
-</p>
-
-Click on the PLAY button within the plotting box to play the loaded movie.
-The number indicated on the right of PAUSE button is the frame interval in milliseconds. 
 
 
 ## Showing ROI and time courses
