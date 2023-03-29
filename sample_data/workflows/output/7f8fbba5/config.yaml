@@ -1,0 +1,191 @@
+last_output:
+- 7f8fbba5/correlation_onyx5cah3a/correlation.pkl
+- 7f8fbba5/eta_5d8mle1u5o/eta.pkl
+rules:
+  correlation_onyx5cah3a:
+    hdf5Path: null
+    input:
+    - 7f8fbba5/suite2p_roi_ib1necv3e5/suite2p_roi.pkl
+    - 7f8fbba5/suite2p_roi_ib1necv3e5/suite2p_roi.pkl
+    nwbfile: null
+    output: 7f8fbba5/correlation_onyx5cah3a/correlation.pkl
+    params:
+      transpose: false
+    path: optinist/neural_population_analysis/correlation
+    return_arg:
+      fluorescence: neural_data
+      iscell: iscell
+    type: correlation
+  eta_5d8mle1u5o:
+    hdf5Path: null
+    input:
+    - 7f8fbba5/input_4llibbnlp6/mouse2p.pkl
+    - 7f8fbba5/suite2p_roi_ib1necv3e5/suite2p_roi.pkl
+    - 7f8fbba5/suite2p_roi_ib1necv3e5/suite2p_roi.pkl
+    nwbfile: null
+    output: 7f8fbba5/eta_5d8mle1u5o/eta.pkl
+    params:
+      end_time: 50
+      start_time: -30
+      target_index: 1
+      transpose_x: true
+      transpose_y: false
+      trigger_threshold: 0
+      trigger_type: up
+    path: optinist/basic_neural_analysis/eta
+    return_arg:
+      fluorescence: neural_data
+      input_4llibbnlp6: behaviors_data
+      iscell: iscell
+    type: eta
+  input_0:
+    hdf5Path: null
+    input:
+    - mouse2p.tiff
+    nwbfile:
+      device:
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+        name: Microscope device
+      experiment_description: None
+      identifier: optinist
+      image_series:
+        name: TwoPhotonSeries
+        starting_frame: 0
+        starting_time: 0
+      imaging_plane:
+        description: standard
+        excitation_lambda: 600.0
+        imaging_rate: 30.0
+        indicator: GCaMap
+        location: V1
+        name: ImagingPlane
+      ophys:
+        plane_segmentation:
+          description: ''
+          name: PlaneSegmentation
+      optical_channel:
+        description: optical channel
+        emission_lambda: 500.0
+        name: OpticalChannel
+      session_description: optinist
+    output: 7f8fbba5/input_0/mouse2p.pkl
+    params: {}
+    path: null
+    return_arg: input_0
+    type: image
+  input_4llibbnlp6:
+    hdf5Path: null
+    input: mouse2p.csv
+    nwbfile:
+      device:
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+        name: Microscope device
+      experiment_description: None
+      identifier: optinist
+      image_series:
+        name: TwoPhotonSeries
+        starting_frame: 0
+        starting_time: 0
+      imaging_plane:
+        description: standard
+        excitation_lambda: 600.0
+        imaging_rate: 30.0
+        indicator: GCaMap
+        location: V1
+        name: ImagingPlane
+      ophys:
+        plane_segmentation:
+          description: ''
+          name: PlaneSegmentation
+      optical_channel:
+        description: optical channel
+        emission_lambda: 500.0
+        name: OpticalChannel
+      session_description: optinist
+    output: 7f8fbba5/input_4llibbnlp6/mouse2p.pkl
+    params:
+      setHeader: null
+      setIndex: false
+      transpose: false
+    path: null
+    return_arg: input_4llibbnlp6
+    type: behavior
+  suite2p_file_convert_en0tn54bv5:
+    hdf5Path: null
+    input:
+    - 7f8fbba5/input_0/mouse2p.pkl
+    nwbfile: null
+    output: 7f8fbba5/suite2p_file_convert_en0tn54bv5/suite2p_file_convert.pkl
+    params:
+      batch_size: 500
+      do_registration: 1
+      force_sktiff: false
+      nchannels: 1
+      nplanes: 1
+    path: suite2p/suite2p_file_convert
+    return_arg:
+      input_0: image
+    type: suite2p_file_convert
+  suite2p_registration_i26thsqya2:
+    hdf5Path: null
+    input:
+    - 7f8fbba5/suite2p_file_convert_en0tn54bv5/suite2p_file_convert.pkl
+    nwbfile: null
+    output: 7f8fbba5/suite2p_registration_i26thsqya2/suite2p_registration.pkl
+    params:
+      1Preg: false
+      align_by_chan: 1
+      bidi_corrected: false
+      bidiphase: 0
+      block_size:
+      - 128
+      - 128
+      diameter: 0
+      do_bidiphase: false
+      frames_include: -1
+      functional_chan: 1
+      keep_movie_raw: false
+      maxregshift: 0.1
+      maxregshiftNR: 5
+      nonrigid: true
+      pre_smooth: 0
+      reg_tif: false
+      smooth_sigma: 1.15
+      smooth_sigma_time: 0
+      snr_thresh: 1.2
+      spatial_hp_reg: 42
+      spatial_taper: 40
+      th_badframes: 1
+    path: suite2p/suite2p_registration
+    return_arg:
+      ops: ops
+    type: suite2p_registration
+  suite2p_roi_ib1necv3e5:
+    hdf5Path: null
+    input:
+    - 7f8fbba5/suite2p_registration_i26thsqya2/suite2p_registration.pkl
+    nwbfile: null
+    output: 7f8fbba5/suite2p_roi_ib1necv3e5/suite2p_roi.pkl
+    params:
+      allow_overlap: false
+      fs: 10
+      high_pass: 100
+      inner_neuropil_radius: 2
+      max_iterations: 20
+      max_overlap: 0.75
+      min_neuropil_pixels: 350
+      nbinned: 5000
+      neucoeff: 0.7
+      preclassify: 0
+      soma_crop: true
+      sparse_mode: true
+      spatial_hp_detect: 25
+      spatial_scale: 0
+      tau: 1
+      threshold_scaling: 1
+    path: suite2p/suite2p_roi
+    return_arg:
+      ops: ops
+    type: suite2p_roi

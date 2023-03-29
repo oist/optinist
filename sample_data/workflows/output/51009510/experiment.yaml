@@ -1,0 +1,413 @@
+edgeDict:
+  ? reactflow__edge-caiman_cnmf_1qpzy3hekwcaiman_cnmf_1qpzy3hekw--fluorescence--FluoData-correlation_ribhh6ohaecorrelation_ribhh6ohae--neural_data--FluoData
+  : animated: false
+    id: reactflow__edge-caiman_cnmf_1qpzy3hekwcaiman_cnmf_1qpzy3hekw--fluorescence--FluoData-correlation_ribhh6ohaecorrelation_ribhh6ohae--neural_data--FluoData
+    source: caiman_cnmf_1qpzy3hekw
+    sourceHandle: caiman_cnmf_1qpzy3hekw--fluorescence--FluoData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: correlation_ribhh6ohae
+    targetHandle: correlation_ribhh6ohae--neural_data--FluoData
+    type: buttonedge
+  ? reactflow__edge-caiman_cnmf_1qpzy3hekwcaiman_cnmf_1qpzy3hekw--fluorescence--FluoData-eta_ulbn0meve0eta_ulbn0meve0--neural_data--FluoData
+  : animated: false
+    id: reactflow__edge-caiman_cnmf_1qpzy3hekwcaiman_cnmf_1qpzy3hekw--fluorescence--FluoData-eta_ulbn0meve0eta_ulbn0meve0--neural_data--FluoData
+    source: caiman_cnmf_1qpzy3hekw
+    sourceHandle: caiman_cnmf_1qpzy3hekw--fluorescence--FluoData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: eta_ulbn0meve0
+    targetHandle: eta_ulbn0meve0--neural_data--FluoData
+    type: buttonedge
+  ? reactflow__edge-caiman_cnmf_1qpzy3hekwcaiman_cnmf_1qpzy3hekw--iscell--IscellData-correlation_ribhh6ohaecorrelation_ribhh6ohae--iscell--IscellData
+  : animated: false
+    id: reactflow__edge-caiman_cnmf_1qpzy3hekwcaiman_cnmf_1qpzy3hekw--iscell--IscellData-correlation_ribhh6ohaecorrelation_ribhh6ohae--iscell--IscellData
+    source: caiman_cnmf_1qpzy3hekw
+    sourceHandle: caiman_cnmf_1qpzy3hekw--iscell--IscellData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: correlation_ribhh6ohae
+    targetHandle: correlation_ribhh6ohae--iscell--IscellData
+    type: buttonedge
+  ? reactflow__edge-caiman_cnmf_1qpzy3hekwcaiman_cnmf_1qpzy3hekw--iscell--IscellData-eta_ulbn0meve0eta_ulbn0meve0--iscell--IscellData
+  : animated: false
+    id: reactflow__edge-caiman_cnmf_1qpzy3hekwcaiman_cnmf_1qpzy3hekw--iscell--IscellData-eta_ulbn0meve0eta_ulbn0meve0--iscell--IscellData
+    source: caiman_cnmf_1qpzy3hekw
+    sourceHandle: caiman_cnmf_1qpzy3hekw--iscell--IscellData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: eta_ulbn0meve0
+    targetHandle: eta_ulbn0meve0--iscell--IscellData
+    type: buttonedge
+  ? reactflow__edge-caiman_mc_ih1ehvmip7caiman_mc_ih1ehvmip7--mc_images--ImageData-caiman_cnmf_1qpzy3hekwcaiman_cnmf_1qpzy3hekw--images--ImageData
+  : animated: false
+    id: reactflow__edge-caiman_mc_ih1ehvmip7caiman_mc_ih1ehvmip7--mc_images--ImageData-caiman_cnmf_1qpzy3hekwcaiman_cnmf_1qpzy3hekw--images--ImageData
+    source: caiman_mc_ih1ehvmip7
+    sourceHandle: caiman_mc_ih1ehvmip7--mc_images--ImageData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: caiman_cnmf_1qpzy3hekw
+    targetHandle: caiman_cnmf_1qpzy3hekw--images--ImageData
+    type: buttonedge
+  ? reactflow__edge-input_0f8wcvhd2cinput_0f8wcvhd2c--behavior--BehaviorData-eta_ulbn0meve0eta_ulbn0meve0--behaviors_data--BehaviorData
+  : animated: false
+    id: reactflow__edge-input_0f8wcvhd2cinput_0f8wcvhd2c--behavior--BehaviorData-eta_ulbn0meve0eta_ulbn0meve0--behaviors_data--BehaviorData
+    source: input_0f8wcvhd2c
+    sourceHandle: input_0f8wcvhd2c--behavior--BehaviorData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: eta_ulbn0meve0
+    targetHandle: eta_ulbn0meve0--behaviors_data--BehaviorData
+    type: buttonedge
+  reactflow__edge-input_0input_0--image--ImageData-caiman_mc_ih1ehvmip7caiman_mc_ih1ehvmip7--image--ImageData:
+    animated: false
+    id: reactflow__edge-input_0input_0--image--ImageData-caiman_mc_ih1ehvmip7caiman_mc_ih1ehvmip7--image--ImageData
+    source: input_0
+    sourceHandle: input_0--image--ImageData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: caiman_mc_ih1ehvmip7
+    targetHandle: caiman_mc_ih1ehvmip7--image--ImageData
+    type: buttonedge
+function:
+  caiman_cnmf_1qpzy3hekw:
+    hasNWB: true
+    name: caiman_cnmf
+    success: success
+    unique_id: caiman_cnmf_1qpzy3hekw
+  caiman_mc_ih1ehvmip7:
+    hasNWB: true
+    name: caiman_mc
+    success: success
+    unique_id: caiman_mc_ih1ehvmip7
+  correlation_ribhh6ohae:
+    hasNWB: true
+    name: correlation
+    success: success
+    unique_id: correlation_ribhh6ohae
+  eta_ulbn0meve0:
+    hasNWB: true
+    name: eta
+    success: success
+    unique_id: eta_ulbn0meve0
+  input_0:
+    hasNWB: false
+    name: mouse2p.tiff
+    success: success
+    unique_id: input_0
+  input_0f8wcvhd2c:
+    hasNWB: false
+    name: mouse2p.csv
+    success: success
+    unique_id: input_0f8wcvhd2c
+hasNWB: true
+name: m2p_cm_eta_corr_f
+nodeDict:
+  caiman_cnmf_1qpzy3hekw:
+    data:
+      fileType: null
+      hdf5Path: null
+      label: caiman_cnmf
+      param:
+        K:
+          path: K
+          type: child
+          value: 100
+        gSig:
+          path: gSig
+          type: child
+          value:
+          - 4
+          - 4
+        merge_thr:
+          path: merge_thr
+          type: child
+          value: 0.85
+        method_init:
+          path: method_init
+          type: child
+          value: greedy_roi
+        nb:
+          path: nb
+          type: child
+          value: 1
+        p:
+          path: p
+          type: child
+          value: 2
+        rf:
+          path: rf
+          type: child
+          value: null
+        ssub:
+          path: ssub
+          type: child
+          value: 1
+        stride:
+          path: stride
+          type: child
+          value: 20
+        thr:
+          path: thr
+          type: child
+          value: 0.9
+        tsub:
+          path: tsub
+          type: child
+          value: 1
+      path: caiman/caiman_cnmf
+      type: algorithm
+    id: caiman_cnmf_1qpzy3hekw
+    position:
+      x: 600
+      y: 156
+    style:
+      border: null
+      borderRadius: 0
+      height: 100
+      padding: 0
+      width: 180
+    type: AlgorithmNode
+  caiman_mc_ih1ehvmip7:
+    data:
+      fileType: null
+      hdf5Path: null
+      label: caiman_mc
+      param:
+        border_nan:
+          path: border_nan
+          type: child
+          value: copy
+        gSig_filt:
+          path: gSig_filt
+          type: child
+          value: null
+        is3D:
+          path: is3D
+          type: child
+          value: false
+        max_deviation_rigid:
+          path: max_deviation_rigid
+          type: child
+          value: 3
+        max_shifts:
+          path: max_shifts
+          type: child
+          value:
+          - 6
+          - 6
+        min_mov:
+          path: min_mov
+          type: child
+          value: null
+        niter_rig:
+          path: niter_rig
+          type: child
+          value: 1
+        nonneg_movie:
+          path: nonneg_movie
+          type: child
+          value: true
+        num_frames_split:
+          path: num_frames_split
+          type: child
+          value: 80
+        num_splits_to_process_els:
+          path: num_splits_to_process_els
+          type: child
+          value: null
+        num_splits_to_process_rig:
+          path: num_splits_to_process_rig
+          type: child
+          value: null
+        overlaps:
+          path: overlaps
+          type: child
+          value:
+          - 32
+          - 32
+        pw_rigid:
+          path: pw_rigid
+          type: child
+          value: false
+        shifts_opencv:
+          path: shifts_opencv
+          type: child
+          value: true
+        splits_els:
+          path: splits_els
+          type: child
+          value: 14
+        splits_rig:
+          path: splits_rig
+          type: child
+          value: 14
+        strides:
+          path: strides
+          type: child
+          value:
+          - 96
+          - 96
+        upsample_factor_grid:
+          path: upsample_factor_grid
+          type: child
+          value: 4
+        use_cuda:
+          path: use_cuda
+          type: child
+          value: false
+      path: caiman/caiman_mc
+      type: algorithm
+    id: caiman_mc_ih1ehvmip7
+    position:
+      x: 350
+      y: 160
+    style:
+      border: null
+      borderRadius: 0
+      height: 100
+      padding: 0
+      width: 180
+    type: AlgorithmNode
+  correlation_ribhh6ohae:
+    data:
+      fileType: null
+      hdf5Path: null
+      label: correlation
+      param:
+        transpose:
+          path: transpose
+          type: child
+          value: false
+      path: optinist/neural_population_analysis/correlation
+      type: algorithm
+    id: correlation_ribhh6ohae
+    position:
+      x: 891
+      y: 316
+    style:
+      border: null
+      borderRadius: 0
+      height: 100
+      padding: 0
+      width: 180
+    type: AlgorithmNode
+  eta_ulbn0meve0:
+    data:
+      fileType: null
+      hdf5Path: null
+      label: eta
+      param:
+        end_time:
+          path: end_time
+          type: child
+          value: 50
+        start_time:
+          path: start_time
+          type: child
+          value: -30
+        target_index:
+          path: target_index
+          type: child
+          value: 1
+        transpose_x:
+          path: transpose_x
+          type: child
+          value: true
+        transpose_y:
+          path: transpose_y
+          type: child
+          value: false
+        trigger_threshold:
+          path: trigger_threshold
+          type: child
+          value: 0
+        trigger_type:
+          path: trigger_type
+          type: child
+          value: up
+      path: optinist/basic_neural_analysis/eta
+      type: algorithm
+    id: eta_ulbn0meve0
+    position:
+      x: 880
+      y: 168
+    style:
+      border: null
+      borderRadius: 0
+      height: 100
+      padding: 0
+      width: 180
+    type: AlgorithmNode
+  input_0:
+    data:
+      fileType: image
+      hdf5Path: null
+      label: mouse2p.tiff
+      param: {}
+      path:
+      - mouse2p.tiff
+      type: input
+    id: input_0
+    position:
+      x: 50
+      y: 150
+    style:
+      border: '1px solid #777'
+      borderRadius: null
+      height: 120
+      padding: null
+      width: null
+    type: ImageFileNode
+  input_0f8wcvhd2c:
+    data:
+      fileType: csv
+      hdf5Path: null
+      label: mouse2p.csv
+      param:
+        setHeader: null
+        setIndex: false
+        transpose: false
+      path: mouse2p.csv
+      type: input
+    id: input_0f8wcvhd2c
+    position:
+      x: 578
+      y: 310
+    style:
+      border: '1px solid #777'
+      borderRadius: null
+      height: 120
+      padding: null
+      width: null
+    type: BehaviorFileNode
+timestamp: '2023-03-23 11:55:22'
+unique_id: '51009510'
