@@ -11,11 +11,6 @@ Tutorials
   * [running pipelines](#running-pipelines)
   * [SNAKEMANE and NWB SETTING](#snakemane-and-nwb-setting)
   * [Time series analyses after ROI extraction](#time-series-analyses-after-roi-extraction)
-  * [Additional information on WORKFLOW](#additional-information-on-workflow)
-     * [setting OPTINIST_DIR](#setting-optinist_dir)
-     * [about the assumed data shape](#about-the-assumed-data-shape)
-     * [snakemake settings](#snakemake-settings)
-     * [NWB settings](#nwb-settings)
 * [Inspecting the images and the plots on VISUALIZE](#inspecting-the-images-and-the-plots-on-visualize)
   * [Checking movies](#checking-movies)
   * [Showing ROI and time courses](#showing-roi-and-time-courses)
@@ -171,42 +166,6 @@ The plots are for quick confirmation of the results. If you want to look into th
 
 
 
-### Additional information on WORKFLOW
-
-##### setting OPTINIST_DIR
-The file assigning the OPTINIST_DIR is optinist/optinist/api/dir_path.py. Change line for OPTINIST_DIR, INPUT_DIR, and OUTPUT_DIR according to your demand. Changing dir_path.py may also be necessary when running the pipeline on your cluster computers. Also, you can quickly change OPTINIST_DIR by changing the environment variable by typing 'export OPTINIST_DIR="your_saving_dir"' before launching.
-
-#### about the assumed data shape 
-eta, cca, correlation, cross_correlation, granger, glm, lda, and svm assume the input neural data shape is frames x cells matrix. Because the output of CaImAn and Suite2P on the pipeline is cell x frames, the default setting for neural data for these analyses is set to transpose. 
-
-Pca and tsne can be done in either direction depending on your purpose. The function assumes their input to be samples x features.  
-
-
-##### snakemake settings
-For details about snakemake parameters please refer to [here](https://snakemake.readthedocs.io/en/stable/executing/cli.html)<br>
-<br>
-use_conda: If this is on, snakemake uses conda environment.<br>
-cores: Specifies the number of cores to use. If not specified, snakemake uses number of available cores in the machine. <br>
-forceall: Flag to indicate the execution of the target regardless of already created output.<br>
-forcetargets: Users may not want to change this. <br>
-lock: Users may not want to change this.  <br>
-
-##### NWB settings
-For detais about NWB please refer to [here](https://pynwb.readthedocs.io/en/latest/pynwb.file.html)<br>
-<br>
-session_description: a description of the session where this data was generated <br>
-identifier: a unique text identifier for the file  <br>
-experiment_description: general description of the experiment <br>
-device: device used to aquire the data (information such as manufacturer, firmware version, model etc.) <br>
-optical_channel: information about the optical channel used to acquire the data <br>
-imaging_plane: information about imaging such as sampling rate, excitation wave length, calcium indicator.  <br>
-image_serises: information about imaing time<br>
-ophys: general information about imaging <br>
-
-
-
-
-
 ## Inspecting the images and the plots on VISUALIZE
 After executing the pipeline, you may want to check and compare the results.
 VISUALIZE page is the place to work on this. You can replay the tiff time-series, see the cell ROI images, the plot of cell fluorescence or spike time-series, and other plots showing the results of analyses. See [here](https://optinist.readthedocs.io/en/latest/gui/visualize.html) for basic usage.
@@ -320,21 +279,24 @@ Press <strong>Merge ROI</strong> or <strong>Delete ROI</strong> or <strong>Cance
 </p>
 
 ### Savind plots
-You can save created plots in svg, png, jpeg, or webp format. Please select the format, decide the saving name in the lower area on the left panel, and click the camera mark in the plotting box. Svg format saves the plot as a vector-based graphical format which may be convenient when you need high-resolution figures.
 
 <br>
 <p align="left">
 <img width="200px" src="./_static/tutorials/fig30_saving.png" alt="Whole" />
 </p>
 
-## Managing pipelines on RECORD
+You can save created plots in svg, png, jpeg, or webp format. Please select the format, decide the saving name in the lower area on the left panel, and click the camera mark in the plotting box. Svg format saves the plot as a vector-based graphical format which may be convenient when you need high-resolution figures.
 
-The RECORD page summarizes the current status of `OPTINIST_DIR/output`. This page helps keep the analysis pipeline organized and easy to retrieve. For basic usage of the RECORD page, see [here](https://optinist.readthedocs.io/en/latest/gui/record.html).
+
+## Managing pipelines on RECORD
 
 <br>
 <p align="left">
 <img width="600px" src="./_static/tutorials/fig40_recordall.png" alt="Whole" />
 </p>
+
+The RECORD page summarizes the current status of `OPTINIST_DIR/output`. This page helps keep the analysis pipeline organized and easy to retrieve. For basic usage of the RECORD page, see [here](https://optinist.readthedocs.io/en/latest/gui/record.html).
+
 
 
 
