@@ -5,7 +5,7 @@ Tutorials
 * [Making pipelines on WORKFLOW](#making-pipelines-on-workflow)
 	* [ROI extraction](#roi-extraction)
 	* [Time series analyses](#time-series-analyses)
-	* [Pipeline example](#pipeline-example)
+	* [example](#example)
 * [Check execution result on VISUALIZE](#check-execution-result-on-visualize)
 * [Managing pipelines on RECORD](#managing-pipelines-on-record)
  	* [Sample pipelines](#sample-pipelines)
@@ -99,7 +99,7 @@ Add event tirggered averaging (eta) node and connect fluorescence and behavior n
 After finishing the process, you can quickly confirm your event-triggered average plot by clicking the OUTPUT button on the eta node.
 The plots are for quick confirmation of the results. If you want to look into the results more in detail,   available variables are all saved in the OptiNiSt output in NWB format. They are saved in processing/optinist inside NWB file. The NWB file is easily retrieved at RECORD page with just one click. To inspect the data, [HDFView](https://www.hdfgroup.org/downloads/hdfview/) is convenient. 
 
-### Pipeline example
+### Example
 
 <br>
 <p align="center">
