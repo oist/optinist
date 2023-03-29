@@ -56,12 +56,19 @@ After launching, the first page you see is the workflow page. The workflow page 
 
 The above workflow can be easily created with the following [GUI operations](https://optinist.readthedocs.io/en/latest/gui/workflow.html),
 1. Assign input data
-	- You can select a group of files for analysis in one of two ways
+	- You can select a group of files for analysis in one of two ways.
 		* Select files or folders in a predefined folder with the SELECT button
 		* Select any local files or folders with the LOAD button 
-3. Select analysis method
-4. Create pipeline
-5. Press the RUN ALL button to execute the workflow.
+2. Select analysis method
+	- You can add the required analysis methods to workflow from the left pane.
+3. Create pipeline
+	- You can build an analysis pipeline by connecting input data and analysis modules. 
+4. Press the RUN ALL button to execute the workflow.
+ 
+Note: Optinist can finely modify each of the following settings and parameters See [here]  for more details.
+	- Snakemake
+	- NWB
+	- Analysis modules
 
 #### Pipeline example
 
