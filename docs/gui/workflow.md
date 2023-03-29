@@ -94,6 +94,13 @@ Each node has PARAM button and OUTPUT button.
 - **Checking Results:** The OUTPUT button is for a quick check of the results. The button becomes active after the successful execution of the pipeline. For details about the charts, see [Inspecting the Images and the Plots on Visualize](#inspecting-the-images-and-the-plots-on-visualize).
 
 ### Connecting Nodes 
+
+<br>
+<p align="center">
+<img width="300px" src="../_static/workflow/components/connect_edge.png" alt="Connect Algorithm" />
+</p>
+<br/>
+
 Connect colored connectors of the nodes by dragging your cursor from the output connector to the next input connector to create connecting edges. The color of the connector indicates the data type of the input and the output.
 You can only connect the input and output connectors of the same color. 
 
@@ -104,11 +111,6 @@ You can only connect the input and output connectors of the same color.
 - <span style="color: yellow; ">Behavior</span>
 - <span style="color: blue; ">Iscell</span>
 
-<br>
-<p align="center">
-<img width="300px" src="../_static/workflow/components/connect_edge.png" alt="Connect Algorithm" />
-</p>
-<br/>
 
 ### Removing Nodes or Connects
 Clicking on the x mark on a node or on an edge removes it from the workflow field. 
