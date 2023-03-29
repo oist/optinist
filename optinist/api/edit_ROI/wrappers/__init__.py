@@ -9,6 +9,11 @@ from .lccd_edit_roi import (
     excute_delete_roi as lccd_delete,
 )
 
+from .caiman_edit_roi import (
+    execute_add_ROI as caiman_add,
+    execute_merge_roi as caiman_merge,
+    excute_delete_roi as caiman_delete,
+)
 
 edit_roi_wrapper_dict = {
     'suite2p': {
@@ -25,6 +30,14 @@ edit_roi_wrapper_dict = {
             'add': lccd_add,
             'merge': lccd_merge,
             'delete': lccd_delete,
+        },
+    },
+    'caiman': {
+        'conda_yaml': 'caiman_env.yaml',
+        'function': {
+            'add': caiman_add,
+            'merge': caiman_merge,
+            'delete': caiman_delete
         },
     },
 }
