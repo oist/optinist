@@ -9,7 +9,6 @@ Tutorials
     * [Pipeline example](#pipeline-example)
   * [Parameter button and output button on the node](#parameter-button-and-output-button-on-the-node)
   * [running pipelines](#running-pipelines)
-  * [SNAKEMANE and NWB SETTING](#snakemane-and-nwb-setting)
   * [Time series analyses after ROI extraction](#time-series-analyses-after-roi-extraction)
 * [Inspecting the images and the plots on VISUALIZE](#inspecting-the-images-and-the-plots-on-visualize)
   * [Checking movies](#checking-movies)
@@ -94,10 +93,6 @@ Also, you can branch the flow. In the example, the two "caiman_mc" with differen
 
 
 ### running pipelines
-
-
-### SNAKEMANE and NWB SETTING
-
 
 ### Time series analyses after ROI extraction
 OptiNiSt offers some basic time-series analysis functions. For example, event-triggered averaging can be applied to the ROI time-series data created by OptiNiSt. Assuming that you have the result of ROI extraction, here explains how to create the pipeline. Because the ROI time-series is in NWB format, the hdf5 data node is appropriate as the input node. 
