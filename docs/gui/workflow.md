@@ -40,9 +40,9 @@ Choosing a folder makes all the TIFF files in the shown sequence an input set of
 
 You may not want to modify your original data folder, or you may want to make your data folder visible and accessible to OptiNiSt because imaging data can be large and take time to copy. You can take either strategy in assigning your data path:
 
-1. **Copy your original data file to `OPTINIST_DIR` and assign the data path to the copied data.** To copy the data to `OPTINIST_DIR`, click on the UPLOAD button on the node. The UPLOAD button copies the selected file to your `OPTINIST_DIR/input`. This can be done from the GUI.
+1. **Copy your original data file to `OPTINIST_DIR` ** To copy the data to `OPTINIST_DIR`, click on the LOAD button on the node. The LOAD button copies the selected file to your `OPTINIST_DIR/input`. This can be done from the GUI.
 
-2. **Change the setting of `OPTINIST_DIR` by editing the `dir_path.py` file.** See [setting optinist directory](#setting-optinist_dir). The change is effective after relaunching.
+2. **Change the setting of `OPTINIST_DIR`** OPTINIST_DIR is defined in optinist/optinist/api/dir_path.py. Change line for OPTINIST_DIR, INPUT_DIR, and OUTPUT_DIR according to your demand. Changing dir_path.py may also be necessary when running the pipeline on your cluster computers. Also, you can quickly change OPTINIST_DIR by changing the environment variable before launching. The change is effective after relaunching.
 
 #### Other Data Formats As The Input
 Some of the analyses, such as event-triggered averaging or GLM need timecourse of behavioral data as an input. A behavior node is best for it.
@@ -139,8 +139,30 @@ Click the RUN button at the top right to see two dropdown choices: RUNALL and RU
 </p>
 
 SNAKEMAKE and NWB SETTING buttons are for parameters for snakemake and output NWB file.
-The pipeline construction of Optinist is based on [snakemake](https://snakemake.readthedocs.io/en/stable/), which is the pipeline controlling tool for python scripts. The SNAKEMAKE parameter setting is [explained bellow](#snakemake-settings).
 
+- **SNAKEMAKE SETTING:**
+    - OptiNiSt's pipeline construction is based on [Snakemake](https://snakemake.readthedocs.io/en/stable/), a pipeline controlling tool for Python scripts.
+    - The Snakemake parameter setting is following.
+      - use_conda: If this is on, snakemake uses conda environment.
+      - cores: Specifies the number of cores to use. If not specified, snakemake uses number of available cores in the machine. 
+      - forceall: Flag to indicate the execution of the target regardless of already created output.
+      - forcetargets: Users may not want to change this. 
+      - lock: Users may not want to change this.
+    - For details about snakemake parameters please refer to [here](https://snakemake.readthedocs.io/en/stable/executing/cli.html)
 
-NWB SETTING defines the metadata associated with the input data. By setting this, the output NWB file includes the information set here. The parameter you set here is only for your record and not used for the calculation inside OptiNiSt. You can leave this as default. The details of NWB setting in OptiNiSt is [explained bellow](#nwb-settings). Also, general info about NWB is [here](https://www.nwb.org/getting-started/).
+- **NWB SETTING:**
+    - Defines the metadata associated with the input data.
+    - By configuring this, the output NWB file includes the information set here.
+    - The parameter you set here is only for your record and is not used for calculations within OptiNiSt.
+    - You can leave this setting as the default.
+    - The details of NWB setting in OptiNiSt are folling.
+      - session_description: a description of the session where this data was generated
+      - identifier: a unique text identifier for the file
+      - experiment_description: general description of the experiment
+      - device: device used to aquire the data (information such as manufacturer, firmware version, model etc.)
+      - optical_channel: information about the optical channel used to acquire the data
+      - imaging_plane: information about imaging such as sampling rate, excitation wave length, calcium indicator.
+      - image_serises: information about imaing time
+      - ophys: general information about imaging
+    - For general information about NWB, refer to the [official documentation](https://www.nwb.org/getting-started/).
 
