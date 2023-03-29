@@ -45,17 +45,23 @@ You may not want to modify your original data folder, or you may want to make yo
 2. **Change the setting of `OPTINIST_DIR`** OPTINIST_DIR is defined in optinist/optinist/api/dir_path.py. Change line for OPTINIST_DIR, INPUT_DIR, and OUTPUT_DIR according to your demand. Changing dir_path.py may also be necessary when running the pipeline on your cluster computers. Also, you can quickly change OPTINIST_DIR by changing the environment variable before launching. The change is effective after relaunching.
 
 #### Other Data Formats As The Input
-Some of the analyses, such as event-triggered averaging or GLM need timecourse of behavioral data as an input. A behavior node is best for it.
-The format should be .csv. Rows and columns can be specified by `settings` appearing after selecting the csv data. Note that the number of data points has to be the same as the number of frames of image data. 
-Fluo data node is for cell's fluorescence timecourse data given as .csv. 
-
-Another data format prepared is hdf5. This format is compatible with the nwb data format.
-CSV and hdf5 nodes have black output connectors. The edge connected to the black output connector can be connected to any input connector. Be careful; this means that it does not check the format correspondence between input and output.
 
 <br>
 <p align="center">
 <img width="300px" src="../_static/workflow/components/csv_connect.png" alt="CSV Connect" />
 </p>
+
+eta, cca, correlation, cross_correlation, granger, glm, lda, and svm assume the input neural data shape is frames x cells matrix. 
+Because the output of CaImAn and Suite2P on the pipeline is cell x frames, the default setting for neural data for these analyses is set to transpose. 
+Pca and tsne can be done in either direction depending on your purpose. 
+The function assumes their input to be samples x features.  
+Rows and columns can be specified by `settings` appearing after selecting the csv data. 
+Note that the number of data points has to be the same as the number of frames of image data. 
+Fluo data node is for cell's fluorescence timecourse data given as .csv. 
+
+Another data format prepared is hdf5. This format is compatible with the nwb data format.
+CSV and hdf5 nodes have black output connectors. 
+The edge connected to the black output connector can be connected to any input connector. Be careful; this means that it does not check the format correspondence between input and output.
 
 
 ### Adding Nodes
