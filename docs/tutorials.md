@@ -126,19 +126,19 @@ Also, you can perform "motion correction" of CaImAn (caiman_mc) and then perform
 You can branch the flow. In the example, the two "caiman_mc" with different parameter settings are created, and the downstream from "caiman_mc" is also different. Each node's results are saved separately (See [RECORD part](#managing-pipelines-on-record)). 
 
 
-## Inspecting the images and the plots on VISUALIZE
-After executing the pipeline, you may want to check and compare the results.
-VISUALIZE page is the place to work on this. You can replay the tiff time-series, see the cell ROI images, the plot of cell fluorescence or spike time-series, and other plots showing the results of analyses. See [here](https://optinist.readthedocs.io/en/latest/gui/visualize.html) for basic usage.
+## Check execution result on VISUALIZE
+After executing the workflow, you may want to check and compare the results.
 
+Here is an overview of the features on the VISUALIZE page
+ - Key features:
+	* Customize visualization parameters
+	* Display ROI and time courses
+	* Save plots in various formats
+	* Link ROI plots and fluorescence time series
+	* Explore ROIs and time courses
+	* Edit ROIs: Add, merge, or delete ROIs
 
-### Checking movies
-
-### Showing ROI and time courses
-
-### Editing ROI
-
-### Savind plots
-
+See [here](https://optinist.readthedocs.io/en/latest/gui/visualize.html) for detail usage.
 
 ## Managing pipelines on RECORD
 
