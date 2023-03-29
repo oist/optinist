@@ -53,6 +53,73 @@ Create One box showing ROI and another box showing fluorescence. You can link tw
 
 TimeSeries plot can refer to a image plot to synthronize cell number index. Click or drag image plot so that cell number indexes are synthoronized in corresponding timeseries plot.
 
+## Checking movies
+
+<p align="center">
+<img width="200px" src="../_static/tutorials/fig21_loadmovie.png" alt="Whole" />
+</p>
+
+You may want to check some frames of the multi-page tiff files. Visualize page offers the way to check. After creating a plot box by clicking on + mark, Select the image using the SELECT IMAGE button on the left top.
+You can select the range of the frame by assigning 1st and last frame numbers. LOAD button starts loading the data.
+
+<p align="center">
+<img width="400px" src="../_static/tutorials/fig22_movie.png" alt="Whole" />
+</p>
+
+Click on the PLAY button within the plotting box to play the loaded movie.
+The number indicated on the right of PAUSE button is the frame interval in milliseconds. 
+
+
+## Showing ROI and time courses
+After running the ROI detection algorithms, the most often created plots are extracted cells' shape and fluorescence time series. To show the plot, prepare two plotting boxes.
+
+<br>
+<p align="center">
+<img width="600px" src="../_static/tutorials/fig23_twobox.png" alt="Whole" />
+</p>
+
+In one plotting box (ex, the one with ID:0), select a background image such as meanimg from the Select Item pulldowns.
+
+<br>
+<p align="center">
+<img width="200px" src="../_static/tutorials/fig24_selectitem.png" alt="Whole" />
+</p>
+
+In the same plotting box, select cell_roi from the Select Roi pull-downs. Both Suite2P and CaImAn include the process to drop the extracted ROIs that do not meet the criteria. In OptiNiSt, the cell ID is given to all the ROIs. Cell_roi is the ROIs that passed the criteria. 
+
+<br>
+<p align="center">
+<img width="200px" src="../_static/tutorials/fig25_selectroi.png" alt="Whole" />
+</p>
+
+The plotting box (ID:0) shows the background image and detected cells.
+<br>
+<p align="center">
+<img width="400px" src="../_static/tutorials/fig26_roi.png" alt="Whole" />
+</p>
+
+In another plotting box (ex, the one with ID:1), select fluorescence from the Select Item pulldown.
+And select 0(same ID with the plotting box of your ROI image) from the ref image pull down. By doing this,  the two plotting boxes are linked. 
+
+<br>
+<p align="center">
+<img width="400px" src="../_static/tutorials/fig27_fluo.png" alt="Whole" />
+</p>
+
+Now you can explore the ROI and time course. The color of ROI and corresponding time course is matched. You will know the cell ID by letting your mouse over the cell in the image. Clicking on the cell automatically adds the fluorescence time course of the clicked cell. 
+<br>
+<p align="center">
+<img width="600px" src="../_static/tutorials/fig28_roifluo.png" alt="Whole" />
+</p>
+
+If it is tiring to select the cell by clicking one by one, turn on the drag select button on the right in the plotting box of ROI. It enables selecting all the cells within the rectangular area you define.
+
+<br>
+<p align="center">
+<img width="600px" src="../_static/tutorials/fig29_dragselect.png" alt="Whole" />
+</p>
+
+
 ## Editing ROI
 
 <p align="center">
