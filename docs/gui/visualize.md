@@ -95,5 +95,10 @@ Press <strong>Merge ROI</strong> or <strong>Delete ROI</strong> or <strong>Cance
 
 
 ## saving plots
-For your record, you can save the plots. Select the format and give the filename at the bottom of the parameters. Clicking on the camera mark in the box saves the plot figures to your download folder on your computer.
+
+<p align="left">
+<img width="200px" src="../_static/tutorials/fig30_saving.png" alt="Whole" />
+</p>
+
+You can save created plots in svg, png, jpeg, or webp format. Please select the format, decide the saving name in the lower area on the left panel, and click the camera mark in the plotting box. Svg format saves the plot as a vector-based graphical format which may be convenient when you need high-resolution figures.
 
