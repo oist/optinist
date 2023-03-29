@@ -8,7 +8,7 @@ Tutorials
 	* [Pipeline example](#pipeline-example)
 * [Check execution result on VISUALIZE](#check-execution-result-on-visualize)
 * [Managing pipelines on RECORD](#managing-pipelines-on-record)
-* 	* [Sample pipeline](#sample-pipeline
+ 	* [Sample pipelines](#sample-pipelines)
 
 ## Opening the browser
 To start OptiNiSt, follow these steps:
@@ -150,6 +150,8 @@ For basic usage of the RECORD page, see [here](https://optinist.readthedocs.io/e
 <p align="center">
 <img width="600px" src="./_static/tutorials/sample_pipelines.png" alt="Whole" />
 </p>
+
+### Sample pipelines 
 
 We provide some sample pipelines `optinist/sample_data/workflows/`.
 You can immediately see the three results by copying this pipeline to `OPTINIST_DIR`.
