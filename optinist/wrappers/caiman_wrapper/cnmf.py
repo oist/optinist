@@ -108,7 +108,7 @@ def caiman_cnmf(
         cm.stop_server(dview=dview)
 
     c, dview, n_processes = setup_cluster(
-        backend='local', n_processes=None, single_thread=False)
+        backend='local', n_processes=None, single_thread=True)
 
     cnm = cnmf.CNMF(n_processes=n_processes, dview=dview, Ain=None, params=ops)
     cnm = cnm.fit(mmap_images)
@@ -118,7 +118,7 @@ def caiman_cnmf(
     # contours plot
     Cn = local_correlations(mmap_images.transpose(1, 2, 0))
     Cn[np.isnan(Cn)] = 0
-    cnm.estimates.plot_contours(img=Cn)
+    # cnm.estimates.plot_contours(img=Cn)
 
     del mmap_images
     gc.collect()
@@ -209,6 +209,9 @@ def caiman_cnmf(
         cnm.estimates.f,
     ])
 
+    estimates_data = cnm.estimates.__dict__
+    estimates_data['dims'] = dims
+
     info = {
         'images': ImageData(np.array(Cn * 255, dtype=np.uint8), output_dir=output_dir, file_name='images'),
         'fluorescence': FluoData(fluorescence, file_name='fluorescence'),
@@ -216,7 +219,8 @@ def caiman_cnmf(
         'all_roi': RoiData(all_roi, output_dir=output_dir, file_name='all_roi'),
         'cell_roi': RoiData(cell_roi, output_dir=output_dir, file_name='cell_roi'),
         'non_cell_roi': RoiData(non_cell_roi, output_dir=output_dir, file_name='non_cell_roi'),
-        'nwbfile': nwbfile
+        'nwbfile': nwbfile,
+        'estimates': CaimanCnmfData(estimates_data), # save estimates object for further analysis
     }
 
     return info

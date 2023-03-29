@@ -10,3 +10,4 @@ from optinist.api.dataclass.scatter import *
 from optinist.api.dataclass.suite2p import *
 from optinist.api.dataclass.timeseries import *
 from optinist.api.dataclass.lccd import *
+from optinist.api.dataclass.caiman import *
