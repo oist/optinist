@@ -50,22 +50,18 @@ You can switch between these pages by clicking on the corresponding tabs (WORKFL
 ## Making pipelines on WORKFLOW 
 After launching, the first page you see is the workflow page. The workflow page is a place to define the analysis pipeline. You determine the data you will analyze, select the type of the algorithm or analysis method you use, and set the parameters and the order of analysis.  
 
-### Assigning input data path
-
-
-### Selecting analysis methods
-
-
-### Creating pipelines
-
-<br>
 <p align="left">
 <img width="800px" src="./_static/tutorials/fig6_suite2p.png" alt="Whole" />
 </p>
 
-Connect the analysis nodes in the order you like to process. Drugging from an output connector of a node to the input connector of the next node creates an edge. The color of the connector indicates the format. 
-
-For example, red is the image type format. You can only connect the same color. (Exception: black is an undefined data format. You can connect the black connector with any other connector, but be careful it does not check the consistency of input and output).
+The above workflow can be easily created with the following [GUI operations](https://optinist.readthedocs.io/en/latest/gui/workflow.html),
+1. Assign input data
+	- You can select a group of files for analysis in one of two ways
+		* Select files or folders in a predefined folder with the SELECT button
+		* Select any local files or folders with the LOAD button 
+3. Select analysis method
+4. Create pipeline
+5. Press the RUN ALL button to execute the workflow.
 
 #### Pipeline example
 
