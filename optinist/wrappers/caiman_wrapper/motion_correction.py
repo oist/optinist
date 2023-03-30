@@ -19,7 +19,7 @@ def caiman_mc(
         opts.change_params(params_dict=params)
 
     c, dview, n_processes = setup_cluster(
-        backend='local', n_processes=None, single_thread=False)
+        backend='local', n_processes=None, single_thread=True)
 
     mc = MotionCorrect(
         image.path, dview=dview, **opts.get_group('motion'))

@@ -4,12 +4,9 @@ Run workflow from an existing conda environment
 snakemake can be executed using an existing virtual environment.
 The following is the procedure to execute a function in a virtual environment created in advance.
 
-* [create a virtual environment](#create-a-virtual-environment)
-  * [create suite2p environment](#create-suite2p-environment)
-  * [create optinist postprocessing(PCA, ETA, etc.) environment](#create-optinist-postprocessingpca-eta-etc-environment)
-  * [create caiman environment](#create-caiman-environment)
-* [FAQ](#faq)
-
+```{contents}
+:depth: 4
+```
 
 ## create a virtual environment
 Create a virtual environment for suite2p. (Make sure you are on the optinist root directory.)

@@ -33,7 +33,7 @@ class NWBCreater:
         optical_channel = OpticalChannel(
             name=config['optical_channel']['name'], 
             description=config['optical_channel']['description'], 
-            emission_lambda=config['optical_channel']['emission_lambda']
+            emission_lambda=float(config['optical_channel']['emission_lambda'])
         )
 
         # imaging planeを追加
@@ -42,8 +42,8 @@ class NWBCreater:
             description=config['imaging_plane']['description'],
             optical_channel=optical_channel,   # 光チャネル
             device=device,   # 電極デバイス
-            imaging_rate=config['imaging_plane']['imaging_rate'],   # 画像の比率Hz
-            excitation_lambda=config['imaging_plane']['excitation_lambda'], # 励起（れいき）波長
+            imaging_rate=float(config['imaging_plane']['imaging_rate']),   # 画像の比率Hz
+            excitation_lambda=float(config['imaging_plane']['excitation_lambda']), # 励起（れいき）波長
             indicator=config['imaging_plane']['indicator'],   # カルシウムインディケーター
             location=config['imaging_plane']['location'],
         )
@@ -52,9 +52,18 @@ class NWBCreater:
         if NWBDATASET.IMAGE_SERIES in config and 'external_file' in config[NWBDATASET.IMAGE_SERIES]:
             # image_data = config[NWBDATASET.IMAGE_SERIES]['external_file'].data
             image_path = config[NWBDATASET.IMAGE_SERIES]['external_file'].path
+            starting_frames = config[NWBDATASET.IMAGE_SERIES]['starting_frame'] if 'starting_frame' in config[NWBDATASET.IMAGE_SERIES] else None
+
+            if isinstance(image_path, list) and len(image_path) > 1:
+                if starting_frames == 0 or starting_frames == [0]:
+                    starting_frames = [0 for _ in range(len(image_path))]
+                elif isinstance(starting_frames, str):
+                    starting_frames = starting_frames.split(',')
+                    starting_frames =  list(map(int, starting_frames))
+
             image_series = TwoPhotonSeries(
                 name='TwoPhotonSeries',
-                # data=image_data,
+                starting_frame = starting_frames,
                 external_file=image_path,
                 imaging_plane=imaging_plane,
                 rate=1.0,
@@ -90,7 +99,7 @@ class NWBCreater:
             # data=image_data,
             external_file=image_path,
             unit='na',
-            format='raw',
+            format='external',
             starting_time=0.0,
             rate=1.0
         )

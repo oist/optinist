@@ -71,3 +71,22 @@ class ExptConfigReader:
             )
             for key, value in config.items()
         }
+
+    @classmethod
+    def rename(cls, filepath, new_name: str) -> ExptConfig:
+        with open(filepath, "r") as f:
+            config = yaml.safe_load(f)
+            config["name"] = new_name
+
+        with open(filepath, "w") as f:
+            yaml.dump(config, f)
+
+        return ExptConfig(
+            unique_id=config["unique_id"],
+            name=config["name"],
+            timestamp=config["timestamp"],
+            hasNWB=config["hasNWB"],
+            function=cls.read_function(config["function"]),
+            nodeDict=cls.read_nodeDict(config["nodeDict"]),
+            edgeDict=cls.read_edgeDict(config["edgeDict"]),
+        )

@@ -1,15 +1,8 @@
+channels:
+  - defaults
+  - conda-forge
 dependencies:
   - python=3.8
-  - numpy
   - cython
-  - pip
-  - pip:
-    - "opencv-python" 
-    - "matplotlib"
-    - "scikit-image==0.18.0"
-    - "scikit-learn"
-    - "ipyparallel"
-    - "holoviews"
-    - "watershed"
-    - "tensorflow"
-    - "git+https://github.com/flatironinstitute/CaImAn.git@master#egg=caiman"
+  - numpy=1.20.3
+  - caiman

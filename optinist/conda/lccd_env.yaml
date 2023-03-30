@@ -1,0 +1,10 @@
+dependencies:
+  - python=3.8
+  - pip
+  - pip:
+      - 'pandas'
+      - 'argparse'
+      - 'joblib'
+      - 'numpy'
+      - 'scipy'
+      - 'scikit-image'
