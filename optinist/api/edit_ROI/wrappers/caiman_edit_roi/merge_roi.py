@@ -4,22 +4,42 @@ from optinist.wrappers.caiman_wrapper.cnmf import get_roi
 
 def execute_merge_roi(node_dirpath: str, ids: list):
     import numpy as np
-    
     from scipy.sparse import csc_matrix
+
+    from .utils import get_roi_manual
 
     estimates = np.load(f'{node_dirpath}/caiman_cnmf.npy', allow_pickle=True).item()
 
     dims = estimates['dims']
     A = estimates.get('A').toarray()
+    A_manual = estimates.get('A_manual', np.empty((dims[0]*dims[1], 0)))
 
-    merged_ROI = np.maximum(*([A[:, id] for id in ids]))
+    # get merging ROI
+    merging_ROIs = []
+    merging_ROIs_manual = []
+    [merging_ROIs.append(A[:, id]) for id in ids if id < A.shape[-1]]
+    [merging_ROIs_manual.append(A_manual[:, id - A.shape[-1]]) for id in ids if id >= A.shape[-1]]
+
+    # get merging ROI ID
+    merging_ROI_IDs = []
+    merging_ROIs_manual_ID = []
+    [merging_ROI_IDs.append(id) for id in ids if id < A.shape[-1]]
+    [merging_ROIs_manual_ID.append(id - A.shape[-1]) for id in ids if id >= A.shape[-1]]
+    
+    # delete merging ROIs from A and A_manual
+    A = np.delete(A, merging_ROI_IDs, axis=1)
+    A_manual = np.delete(A_manual, merging_ROIs_manual_ID, axis=1)
+
+    # get merged ROI
+    merged_ROI = np.maximum(*(merging_ROIs + merging_ROIs_manual))
     merged_ROI = merged_ROI.reshape(-1, 1)
+    if not merging_ROIs_manual:
+        A = np.hstack((A, merged_ROI))
+    else:
+        A_manual = np.hstack((A_manual, merged_ROI))
 
+    # get merged F
     merged_f = np.mean((estimates['C'][ids, :]), axis=0)
-
-    A = np.delete(A, ids, axis=1)
-    A = np.hstack((A, merged_ROI))
-
     estimates['C'] = np.delete(estimates['C'], ids, axis=0)
     estimates['C'] = np.vstack([estimates['C'], merged_f])
 
@@ -27,22 +47,14 @@ def execute_merge_roi(node_dirpath: str, ids: list):
     thr_method = 'nrg'
     swap_dim = False
 
-    iscell = np.concatenate([
-        np.ones(A.shape[-1]),
-        np.zeros(estimates['b'].shape[-1])
-    ])
     A = csc_matrix(A)
     cell_roi = get_roi(A, thr, thr_method, swap_dim, dims)
+    start_idx = A.shape[1]
+    if A_manual.shape[1] > 0:
+        cell_roi = cell_roi + (get_roi_manual(A_manual, dims, start_idx))
     cell_roi = np.stack(cell_roi)
     cell_roi = np.nanmax(cell_roi, axis=0).astype(float)
     cell_roi[cell_roi == 0] = np.nan
-
-    non_cell_roi = get_roi(csc_matrix(estimates['b']), thr, thr_method, swap_dim, dims)
-    non_cell_roi = np.stack(non_cell_roi)
-    non_cell_roi = np.nanmax(non_cell_roi, axis=0).astype(float)
-    non_cell_roi[non_cell_roi == 0] = np.nan
-
-    all_roi = np.nanmax(np.stack([cell_roi, non_cell_roi]), axis=0)
 
     fluorescence = np.concatenate([
         estimates['C'],
@@ -50,11 +62,10 @@ def execute_merge_roi(node_dirpath: str, ids: list):
     ])
 
     estimates['A'] = A
+    estimates['A_manual'] = A_manual
 
     info = {
         'fluorescence': FluoData(fluorescence, file_name='fluorescence'),
-        'iscell': IscellData(iscell, file_name='iscell'),
-        'all_roi': RoiData(all_roi, file_name='all_roi'),
         'cell_roi': RoiData(cell_roi, file_name='cell_roi'),
         'cnmf_data': CaimanCnmfData(estimates), # save estimates object for further analysis
     }
