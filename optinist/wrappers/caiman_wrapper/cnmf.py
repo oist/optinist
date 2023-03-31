@@ -117,10 +117,6 @@ def caiman_cnmf(
     # contours plot
     Cn = local_correlations(mmap_images.transpose(1, 2, 0))
     Cn[np.isnan(Cn)] = 0
-    # cnm.estimates.plot_contours(img=Cn)
-
-    del mmap_images
-    gc.collect()
 
     thr = params['thr']
     thr_method = 'nrg'
@@ -210,6 +206,7 @@ def caiman_cnmf(
 
     estimates_data = cnm.estimates.__dict__
     estimates_data['dims'] = dims
+    estimates_data['images'] = mmap_images # save images for extracting Fluorescence of new ROI
 
     info = {
         'images': ImageData(np.array(Cn * 255, dtype=np.uint8), file_name='images'),
