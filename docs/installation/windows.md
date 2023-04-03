@@ -58,9 +58,13 @@ conda install -n base -c conda-forge mamba
 ```
 -->
 
-<!--
 #### Install library
 
+```
+pip install optinist
+```
+
+<!--
 On the Anaconda PowerShell Prompt(anaconda3),
 ```
 pip install optinist
