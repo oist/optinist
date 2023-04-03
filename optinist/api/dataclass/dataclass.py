@@ -9,3 +9,4 @@ from optinist.api.dataclass.nwb import *
 from optinist.api.dataclass.scatter import *
 from optinist.api.dataclass.suite2p import *
 from optinist.api.dataclass.timeseries import *
+from optinist.api.dataclass.lccd import *
