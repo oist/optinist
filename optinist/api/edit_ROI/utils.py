@@ -23,7 +23,6 @@ class EditRoiUtils:
         params = config['params']
 
         func = copy.deepcopy(edit_roi_wrapper_dict[algo]["function"][action])
-        print(func.__name__, algo, action)
         output_info = func(node_dirpath, **params)
 
         del func
