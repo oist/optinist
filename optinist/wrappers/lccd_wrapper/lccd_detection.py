@@ -1,13 +1,12 @@
 from optinist.api.dataclass.dataclass import *
-import numpy as np
 
 
 def lccd_detect(
     mc_images: ImageData, params: dict = None
 ) -> dict(fluorescence=FluoData, cell_roi=RoiData):
+    import numpy as np
     from .lccd_python.lccd import LCCD
 
-    print('params: ', params)
     lccd = LCCD(params)
     D = LoadData(mc_images)
     assert len(D.shape) == 3, "input array should have dimensions (width, height, time)"
@@ -39,8 +38,13 @@ def lccd_detect(
                 )
                 timeseries_dff[i, k] = (timeseries[i, k] - f0) / f0
 
+    lccd_data = {}
+    lccd_data['images'] = D
+    lccd_data['roi'] = roi
+
     info = {
-        'rois': RoiData(np.nanmax(roi_list, axis=0), file_name='cell_roi'),
+        'lccd': LccdData(lccd_data),
+        'cell_roi': RoiData(np.nanmax(roi_list, axis=0), file_name='cell_roi'),
         'fluorescence': FluoData(timeseries, file_name='fluorescence'),
         'dff': FluoData(timeseries_dff, file_name='dff'),
     }
