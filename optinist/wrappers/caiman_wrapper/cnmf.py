@@ -128,9 +128,9 @@ def caiman_cnmf(
         np.zeros(cnm.estimates.b.shape[-1])
     ])
 
-    cell_roi = get_roi(cnm.estimates.A, thr, thr_method, swap_dim, dims)
-    cell_roi = np.stack(cell_roi)
-    cell_roi = np.nanmax(cell_roi, axis=0).astype(float)
+    ims = get_roi(cnm.estimates.A, thr, thr_method, swap_dim, dims)
+    ims = np.stack(ims)
+    cell_roi = np.nanmax(ims, axis=0).astype(float)
     cell_roi[cell_roi == 0] = np.nan
 
     non_cell_roi = get_roi(scipy.sparse.csc_matrix(cnm.estimates.b), thr, thr_method, swap_dim, dims)
@@ -205,8 +205,10 @@ def caiman_cnmf(
         cnm.estimates.f,
     ])
 
+    ims = np.where(ims != 0, 1, 0)
     estimates_data = cnm.estimates.__dict__
     estimates_data['dims'] = dims
+    estimates_data['ims'] = ims
     estimates_data['images'] = mmap_images # save images for extracting Fluorescence of new ROI
 
     info = {

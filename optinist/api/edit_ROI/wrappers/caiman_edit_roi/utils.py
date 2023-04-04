@@ -22,12 +22,13 @@ def create_mask(x: int, y: int, width: int, height: int, dims: Tuple[int, int]):
     return ellipse
 
 # display ROI added manually
-def get_roi_manual(A, dims, start_idx=0):
+def get_roi(ims):
     import numpy as np
 
-    ims = []
-    A_roi = A
-    A_roi = np.where(A_roi != 0, 1, A_roi)        
-    for i in range(A_roi.shape[-1]):
-        ims.append((A_roi[:, i].reshape(dims).T) * (start_idx + i + 1))
-    return ims
+    cell_roi = np.copy(ims)
+
+    num_rois = ims.shape[0]
+    for i in range(num_rois):
+        cell_roi[i, :, :] = np.where(cell_roi[i, :, :] != 0, i + 1, np.nan)
+    cell_roi = np.nanmax(cell_roi, axis=0)
+    return cell_roi
