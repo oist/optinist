@@ -1,4 +1,4 @@
-import React, { DragEvent, MouseEvent } from 'react'
+import React, { DragEvent, MouseEvent, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import ReactFlow, {
   ReactFlowProvider,
@@ -36,11 +36,14 @@ import {
   TreeItemDragObject,
   TreeItemDropResult,
 } from './DnDItemType'
+import { AlgorithmOutputDialog } from './FlowChartNode/AlgorithmOutputDialog'
+import { DialogContext } from 'components/Visualize/DialogContext'
 
 export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
   (props) => {
     const flowElements = useSelector(selectFlowElements)
     const dispatch = useDispatch()
+    const [dialogNodeId, setDialogNodeId] = useState('')
 
     const onConnect = (params: Connection | Edge) => {
       dispatch(
@@ -117,27 +120,36 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
     )
     return (
       <div className="flow">
-        <ReactFlowProvider>
-          <div className="reactflow-wrapper" ref={wrapparRef}>
-            <ReactFlow
-              ref={drop}
-              elements={flowElements}
-              onElementsRemove={onElementsRemove}
-              onConnect={onConnect}
-              onLoad={onLoad}
-              onDragOver={onDragOver}
-              onNodeDragStop={onNodeDragStop}
-              nodeTypes={reactFlowNodeTypes}
-              edgeTypes={reactFlowEdgeTypes}
-              defaultPosition={[flowPosition.x, flowPosition.y]}
-              defaultZoom={flowPosition.zoom}
-              onMoveEnd={onMoveEnd}
-            >
-              <ToolBar {...props} />
-              <Controls />
-            </ReactFlow>
-          </div>
-        </ReactFlowProvider>
+        <DialogContext.Provider value={{ onOpen: setDialogNodeId }}>
+          <ReactFlowProvider>
+            <div className="reactflow-wrapper" ref={wrapparRef}>
+              <ReactFlow
+                ref={drop}
+                elements={flowElements}
+                onElementsRemove={onElementsRemove}
+                onConnect={onConnect}
+                onLoad={onLoad}
+                onDragOver={onDragOver}
+                onNodeDragStop={onNodeDragStop}
+                nodeTypes={reactFlowNodeTypes}
+                edgeTypes={reactFlowEdgeTypes}
+                defaultPosition={[flowPosition.x, flowPosition.y]}
+                defaultZoom={flowPosition.zoom}
+                onMoveEnd={onMoveEnd}
+              >
+                <ToolBar {...props} />
+                <Controls />
+              </ReactFlow>
+            </div>
+          </ReactFlowProvider>
+          {dialogNodeId && (
+            <AlgorithmOutputDialog
+              nodeId={dialogNodeId}
+              open
+              onClose={() => setDialogNodeId('')}
+            />
+          )}
+        </DialogContext.Provider>
       </div>
     )
   },

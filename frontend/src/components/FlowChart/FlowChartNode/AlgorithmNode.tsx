@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react'
+import React, { CSSProperties, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
 import {
@@ -39,7 +39,7 @@ import {
   NODE_RESULT_STATUS,
   RUN_STATUS,
 } from 'store/slice/Pipeline/PipelineType'
-import { AlgorithmOutputDialog } from './AlgorithmOutputDialog'
+import { DialogContext } from 'components/Visualize/DialogContext'
 
 const leftHandleStyle: CSSProperties = {
   width: '4%',
@@ -65,6 +65,7 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
 
 const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
   ({ id: nodeId, selected: elementSelected, isConnectable, data }) => {
+    const { onOpen } = useContext(DialogContext)
     const theme = useTheme()
     const dispatch = useDispatch()
 
@@ -76,18 +77,15 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
       dispatch(deleteFlowElementsById(nodeId))
     }
 
-    const [open, setOpen] = React.useState(false)
-    const onCloseOutputDialog = () => {
-      setOpen(false)
-    }
     const onClickOutputButton = () => {
-      setOpen(true)
+      onOpen(nodeId)
     }
 
     const status = useStatus(nodeId)
 
     return (
       <div
+        tabIndex={0}
         style={{
           width: '100%',
           height: '110%',
@@ -116,11 +114,6 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
           >
             Output
           </Button>
-          <AlgorithmOutputDialog
-            nodeId={nodeId}
-            open={open}
-            onClose={onCloseOutputDialog}
-          />
         </ButtonGroup>
         <AlgoArgs nodeId={nodeId} />
         <AlgoReturns nodeId={nodeId} isConnectable={isConnectable} />
