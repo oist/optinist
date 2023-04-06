@@ -38,12 +38,22 @@ import {
 } from './DnDItemType'
 import { AlgorithmOutputDialog } from './FlowChartNode/AlgorithmOutputDialog'
 import { DialogContext } from 'components/Visualize/DialogContext'
+import { FileSelectDialog } from 'components/common/FileSelectDialog'
+
+const initDialogFile = {
+  filePath: '',
+  open: false,
+  fileTreeType: '',
+  multiSelect: false,
+  onSelectFile: (_: any) => null,
+}
 
 export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
   (props) => {
     const flowElements = useSelector(selectFlowElements)
     const dispatch = useDispatch()
     const [dialogNodeId, setDialogNodeId] = useState('')
+    const [dialogFile, setDialogFile] = useState(initDialogFile)
 
     const onConnect = (params: Connection | Edge) => {
       dispatch(
@@ -120,7 +130,12 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
     )
     return (
       <div className="flow">
-        <DialogContext.Provider value={{ onOpen: setDialogNodeId }}>
+        <DialogContext.Provider
+          value={{
+            onOpen: setDialogNodeId,
+            onOpenDialogFile: setDialogFile as any,
+          }}
+        >
           <ReactFlowProvider>
             <div className="reactflow-wrapper" ref={wrapparRef}>
               <ReactFlow
@@ -147,6 +162,21 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
               nodeId={dialogNodeId}
               open
               onClose={() => setDialogNodeId('')}
+            />
+          )}
+          {dialogFile.open && (
+            <FileSelectDialog
+              multiSelect={dialogFile.multiSelect}
+              initialFilePath={dialogFile.filePath}
+              open={dialogFile.open}
+              onClickOk={(path) => {
+                dialogFile.onSelectFile(path)
+                setDialogFile(initDialogFile)
+              }}
+              onClickCancel={() => {
+                setDialogFile(initDialogFile)
+              }}
+              fileType={dialogFile.fileTreeType as any}
             />
           )}
         </DialogContext.Provider>
