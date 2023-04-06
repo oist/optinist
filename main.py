@@ -50,10 +50,22 @@ async def root(request: Request):
 
 
 def main():
+    from optinist.api.config.config_reader import ConfigReader
+    from optinist.api.utils.filepath_creater import join_filepath
+    from optinist.api.dir_path import DIRPATH as OPTINIST_DIRPATH
+
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", type=str, default="127.0.0.1")
     args = parser.parse_args()
-    uvicorn.run("main:app", host=args.host, port=8000, reload=True)
+
+    # set fastapi@uvicorn logging config.
+    logging_config_path = join_filepath([OPTINIST_DIRPATH.ROOT_DIR, 'app_config', 'logging.yaml'])
+    logging_config = ConfigReader.read(logging_config_path)
+    fastapi_logging_config = uvicorn.config.LOGGING_CONFIG
+    fastapi_logging_config["formatters"]["default"]["fmt"] = logging_config["fastapi_logging_config"]["default_fmt"]
+    fastapi_logging_config["formatters"]["access"]["fmt"] = logging_config["fastapi_logging_config"]["access_fmt"]
+
+    uvicorn.run("main:app", host=args.host, port=8000, log_config=fastapi_logging_config, reload=True)
 
 
 if __name__ == "__main__":
