@@ -65,7 +65,9 @@ def main():
     fastapi_logging_config["formatters"]["default"]["fmt"] = logging_config["fastapi_logging_config"]["default_fmt"]
     fastapi_logging_config["formatters"]["access"]["fmt"] = logging_config["fastapi_logging_config"]["access_fmt"]
 
-    uvicorn.run("main:app", host=args.host, port=8000, log_config=fastapi_logging_config, reload=True)
+    #uvicorn.run("main:app", host=args.host, port=8000, log_config=fastapi_logging_config, reload=True, reload_excludes=[".snakemake/"])
+    uvicorn.run("main:app", host=args.host, port=8000, log_config=fastapi_logging_config, reload=True, reload_dirs=["optinist"])
+    
 
 
 if __name__ == "__main__":
