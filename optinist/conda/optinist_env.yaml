@@ -1,4 +1,6 @@
 dependencies:
+  - python=3.8
+  - pip
   - pip:
     - "sklearn"
     - "statsmodels<=0.13.1"
