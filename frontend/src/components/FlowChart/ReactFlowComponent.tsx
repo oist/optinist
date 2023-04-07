@@ -39,6 +39,7 @@ import {
 import { AlgorithmOutputDialog } from './FlowChartNode/AlgorithmOutputDialog'
 import { DialogContext } from 'components/Visualize/DialogContext'
 import { FileSelectDialog } from 'components/common/FileSelectDialog'
+import { FormHelperText, Popover } from '@mui/material'
 
 const initDialogFile = {
   filePath: '',
@@ -54,6 +55,10 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
     const dispatch = useDispatch()
     const [dialogNodeId, setDialogNodeId] = useState('')
     const [dialogFile, setDialogFile] = useState(initDialogFile)
+    const [messageError, setMessageError] = useState({
+      anchorElRef: { current: null },
+      message: '',
+    })
 
     const onConnect = (params: Connection | Edge) => {
       dispatch(
@@ -134,6 +139,7 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
           value={{
             onOpen: setDialogNodeId,
             onOpenDialogFile: setDialogFile as any,
+            onMessageError: setMessageError as any
           }}
         >
           <ReactFlowProvider>
@@ -178,6 +184,32 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
               }}
               fileType={dialogFile.fileTreeType as any}
             />
+          )}
+          {messageError?.message && (
+            <Popover
+              open
+              anchorEl={messageError.anchorElRef.current}
+              onClose={() =>
+                setMessageError({
+                  anchorElRef: { current: null },
+                  message: '',
+                })
+              }
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right',
+              }}
+              transformOrigin={{
+                vertical: 'bottom',
+                horizontal: 'left',
+              }}
+            >
+              <div style={{ margin: 8 }}>
+                <FormHelperText error={true}>
+                  {messageError.message}
+                </FormHelperText>
+              </div>
+            </Popover>
           )}
         </DialogContext.Provider>
       </div>

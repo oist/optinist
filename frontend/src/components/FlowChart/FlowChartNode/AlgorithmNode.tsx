@@ -325,36 +325,20 @@ const Message = React.memo<{
   const anchorElRef = React.useRef<HTMLButtonElement | null>(null)
   const [open, setOpen] = React.useState(false)
   const theme = useTheme()
+  const { onMessageError } = useContext(DialogContext)
 
   if (status === NODE_RESULT_STATUS.ERROR) {
     return (
-      <>
-        <IconButton
-          ref={anchorElRef}
-          onClick={() => setOpen((prevOpen) => !prevOpen)}
-          size="small"
-          style={{ color: theme.palette.error.main, float: 'right' }}
-        >
-          <ErrorIcon />
-        </IconButton>
-        <Popover
-          open={open}
-          anchorEl={anchorElRef.current}
-          onClose={() => setOpen(false)}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          transformOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-        >
-          <div style={{ margin: 8 }}>
-            <FormHelperText error={true}>{errorMsg}</FormHelperText>
-          </div>
-        </Popover>
-      </>
+      <IconButton
+        ref={anchorElRef}
+        onClick={() => {
+          onMessageError({ anchorElRef, message: errorMsg as string })
+        }}
+        size="small"
+        style={{ color: theme.palette.error.main, float: 'right' }}
+      >
+        <ErrorIcon />
+      </IconButton>
     )
   } else if (status === NODE_RESULT_STATUS.SUCCESS) {
     return <CheckCircleRoundedIcon color="success" sx={{ float: 'right' }} />
