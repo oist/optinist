@@ -16,6 +16,8 @@ from optinist.routers import (
     hdf5,
     experiment,
 )
+from optinist.api.config.config_reader import ConfigReader
+from optinist.api.utils.filepath_creater import join_filepath
 
 app = FastAPI(docs_url="/docs", openapi_url="/openapi")
 app.include_router(algolist.router)
@@ -54,13 +56,10 @@ async def root(request: Request):
 
 
 def main(develop_mode: bool = False):
-    from optinist.api.config.config_reader import ConfigReader
-    from optinist.api.utils.filepath_creater import join_filepath
-
     parser = argparse.ArgumentParser()
     parser.add_argument("--host", type=str, default="127.0.0.1")
     parser.add_argument("--port", type=int, default=8000)
-    parser.add_argument("--reload", type=int, default=1)
+    parser.add_argument("--reload", action="store_true")
     args = parser.parse_args()
 
     # set fastapi@uvicorn logging config.
@@ -71,6 +70,7 @@ def main(develop_mode: bool = False):
     fastapi_logging_config["formatters"]["access"]["fmt"] = logging_config["fastapi_logging_config"]["access_fmt"]
 
     if develop_mode:
-        uvicorn.run("optinist.__main_unit__:app", host=args.host, port=args.port, log_config=fastapi_logging_config, reload=bool(args.reload), reload_dirs=["optinist"])
+        reload_options = {"reload_dirs": ["optinist"]} if args.reload else {}
+        uvicorn.run("optinist.__main_unit__:app", host=args.host, port=args.port, log_config=fastapi_logging_config, reload=args.reload, **reload_options)
     else:
         uvicorn.run("optinist.__main_unit__:app", host=args.host, port=args.port, log_config=fastapi_logging_config, reload=False)
