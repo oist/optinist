@@ -52,6 +52,10 @@ mamba create -c conda-forge -c bioconda -n optinist_dev python=3.8 snakemake
 conda activate optinist_dev
 ```
 
+```
+conda config --set channel_priority strict
+```
+
 - Note:
   - If mamba is already installed, snakamake prefers to use mamba over conda.
 

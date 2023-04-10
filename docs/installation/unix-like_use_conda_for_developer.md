@@ -31,16 +31,16 @@ git clone https://github.com/oist/optinist.git
 cd ./optinist
 ```
 
-#### Create mamba(anaconda) environment
+#### Create anaconda environment
 
 ```
 conda create -n optinist_dev python=3.8
 conda activate optinist_dev
 ```
 
-- Note:
-  - If mamba is already installed, snakamake prefers to use mamba over conda.
-
+```
+conda config --set channel_priority strict
+```
 
 #### Install requirements
 
