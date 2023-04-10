@@ -1,4 +1,4 @@
-Linux for Developer (Use Mamba)
+Unix-like platforms for Developer (Use Mamba)
 =================
 
 ```{contents}
@@ -16,6 +16,13 @@ Please follow instructions below.
 ### 1. Make backend environment
 
 #### Install Tools
+
+- Linux
+  - [Install Tools](linux.md#install-tools)
+- Windows WSL
+  - [Install Tools](windows.md#install-tools-1)
+- Mac
+  - [Install Tools](mac.md#install-tools)
 
 ##### Install Mamba
 
