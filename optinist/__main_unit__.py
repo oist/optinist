@@ -71,7 +71,6 @@ def main(develop_mode: bool = False):
     fastapi_logging_config["formatters"]["access"]["fmt"] = logging_config["fastapi_logging_config"]["access_fmt"]
 
     if develop_mode:
-        #uvicorn.run("main:app", host=args.host, port=int(args.port), log_config=fastapi_logging_config, reload=True, reload_excludes=[".snakemake/"])
         uvicorn.run("optinist.__main_unit__:app", host=args.host, port=args.port, log_config=fastapi_logging_config, reload=bool(args.reload), reload_dirs=["optinist"])
     else:
         uvicorn.run("optinist.__main_unit__:app", host=args.host, port=args.port, log_config=fastapi_logging_config, reload=False)
