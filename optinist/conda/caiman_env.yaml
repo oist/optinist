@@ -1,8 +1,36 @@
-channels:
-  - defaults
-  - conda-forge
 dependencies:
   - python=3.8
   - cython
-  - numpy=1.20.3
-  - caiman
+  - numpy
+  - tensorflow
+  - pip
+  - pip:
+      - watershed==2.2.2
+      - bokeh
+      - coverage
+      - future
+      - h5py
+      - holoviews
+      - ipykernel
+      - ipython
+      - ipyparallel
+      - jupyter
+      - keras
+      - matplotlib
+      - mypy
+      - numpydoc
+      - opencv-python
+      - peakutils
+      - pims
+      - psutil
+      - pynwb
+      - pyqtgraph
+      - scikit-image==0.19.0
+      - scikit-learn
+      - scipy
+      - protobuf
+      - tifffile
+      - tk
+      - tqdm
+      - yapf
+      - git+https://github.com/flatironinstitute/CaImAn.git@master#egg=caiman
