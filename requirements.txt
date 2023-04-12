@@ -1,17 +1,15 @@
-fastapi==0.68.1
-uvicorn==0.15.0
+fastapi==0.68.*
+uvicorn==0.15.*
+numpy==1.23.*
 aiofiles
-numpy
 tqdm
 pyyaml
 imageio
 tifffile
 python-multipart
 future
-pynwb
+pynwb==2.2.0
 psutil
 nbstripout
-snakemake
-# git+https://github.com/ShogoAkiyama/snakemake@main#egg=snakemake
-jinja2==3.0.3
-suite2p==0.10.3
+snakemake==7.24.*
+jinja2==3.0.*
