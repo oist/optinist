@@ -6,6 +6,7 @@ import {
   selectPipelineIsCanceled,
   selectPipelineIsStartedSuccess,
   selectPipelineLatestUid,
+  selectPipelineRunBtn,
   selectPipelineStatus,
 } from './PipelineSelectors'
 import { run, pollRunResult, runByCurrentUid } from './PipelineActions'
@@ -13,7 +14,7 @@ import { cancelPipeline } from './PipelineSlice'
 import { selectFilePathIsUndefined } from '../InputNode/InputNodeSelectors'
 import { selectAlgorithmNodeNotExist } from '../AlgorithmNode/AlgorithmNodeSelectors'
 import { useSnackbar } from 'notistack'
-import { RUN_STATUS } from './PipelineType'
+import { RUN_BTN_OPTIONS, RUN_STATUS } from './PipelineType'
 
 const POLLING_INTERVAL = 5000
 
@@ -27,6 +28,7 @@ export function useRunPipeline() {
   const filePathIsUndefined = useSelector(selectFilePathIsUndefined)
   const algorithmNodeNotExist = useSelector(selectAlgorithmNodeNotExist)
   const runPostData = useSelector(selectRunPostData)
+  const runButton = useSelector(selectPipelineRunBtn)
   const handleRunPipeline = React.useCallback(
     (name: string) => {
       dispatch(run({ runPostData: { name, ...runPostData, forceRunList: [] } }))
@@ -44,13 +46,18 @@ export function useRunPipeline() {
   React.useEffect(() => {
     const intervalId = setInterval(() => {
       if (isStartedSuccess && !isCanceled && uid != null) {
-        dispatch(pollRunResult({ uid: uid }))
+        dispatch(
+          pollRunResult({
+            uid: uid,
+            isReproduce: runButton === RUN_BTN_OPTIONS.RUN_ALREADY,
+          }),
+        )
       }
     }, POLLING_INTERVAL)
     return () => {
       clearInterval(intervalId)
     }
-  }, [dispatch, uid, isCanceled, isStartedSuccess])
+  }, [dispatch, uid, isCanceled, isStartedSuccess, runButton])
   const status = useSelector(selectPipelineStatus)
   const { enqueueSnackbar } = useSnackbar()
   // タブ移動による再レンダリングするたびにスナックバーが実行されてしまう挙動を回避するために前回の値を保持

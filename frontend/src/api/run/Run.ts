@@ -74,10 +74,15 @@ export type OutputPathsDTO = {
 export async function runResult(data: {
   uid: string
   pendingNodeIdList: string[]
+  isReproduce?: boolean
 }): Promise<RunResultDTO> {
-  const { uid, pendingNodeIdList } = data
-  const response = await axios.post(`${BASE_URL}/run/result/${uid}`, {
-    pendingNodeIdList,
-  })
+  const { uid, pendingNodeIdList, isReproduce } = data
+  const response = await axios.post(
+    `${BASE_URL}/run/result/${uid}`,
+    {
+      pendingNodeIdList,
+    },
+    { params: { is_reproduce: isReproduce ?? false } },
+  )
   return response.data
 }

@@ -52,16 +52,24 @@ export const pollRunResult = createAsyncThunk<
   RunResultDTO,
   {
     uid: string
+    isReproduce?: boolean
   },
   ThunkApiConfig
->(`${PIPELINE_SLICE_NAME}/pollRunResult`, async ({ uid }, thunkAPI) => {
-  const pendingNodeIdList = selectRunResultPendingNodeIdList(
-    thunkAPI.getState(),
-  )
-  try {
-    const responseData = await runResult({ uid, pendingNodeIdList })
-    return responseData
-  } catch (e) {
-    return thunkAPI.rejectWithValue(e)
-  }
-})
+>(
+  `${PIPELINE_SLICE_NAME}/pollRunResult`,
+  async ({ uid, isReproduce }, thunkAPI) => {
+    const pendingNodeIdList = selectRunResultPendingNodeIdList(
+      thunkAPI.getState(),
+    )
+    try {
+      const responseData = await runResult({
+        uid,
+        pendingNodeIdList,
+        isReproduce,
+      })
+      return responseData
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
