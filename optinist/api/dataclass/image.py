@@ -14,8 +14,6 @@ class ImageData(BaseData):
     def __init__(self, data, file_name='image'):
         super().__init__(file_name)
 
-        self.json_path = None
-
         if data is None:
             self.path = None
         elif isinstance(data, str):
@@ -40,10 +38,9 @@ class ImageData(BaseData):
         else:
             return np.array(imageio.volread(self.path))
 
-    def save_json(self, json_dir):
-        self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
+    def save_data(self):
         JsonWriter.write_as_split(
-            self.json_path,
+            self.data_path,
             create_images_list(self.data)
         )
 
@@ -70,9 +67,8 @@ class RoiData(BaseData):
         elif data.ndim == 2:
             return data
 
-    def save_json(self, json_dir):
-        self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
+    def save_data(self):
         JsonWriter.write_as_split(
-            self.json_path,
+            self.data_path,
             create_images_list(self.data)
         )

@@ -22,7 +22,7 @@ class TimeSeriesData(BaseData):
 
         self.std = std
 
-        # indexを指定        
+        # indexを指定
         if index is not None:
             self.index = index
         else:
@@ -34,12 +34,12 @@ class TimeSeriesData(BaseData):
         else:
             self.cell_numbers = range(1, len(self.data) + 1)
 
-    def save_json(self, json_dir):
-
+    def set_data_path(self, data_dir):
         # timeseriesだけはdirを返す
-        self.json_path = join_filepath([json_dir, self.file_name])
-        create_directory(self.json_path, delete_dir=True)
+        self.data_path = join_filepath([data_dir, self.file_name])
+        create_directory(self.data_path, delete_dir=True)
 
+    def save_data(self):
         for i, cell_i in enumerate(self.cell_numbers):
             data = self.data[i]
             if self.std is not None:
@@ -57,7 +57,7 @@ class TimeSeriesData(BaseData):
                 )
 
             JsonWriter.write(
-                join_filepath([self.json_path, f'{str(cell_i)}.json']),
+                join_filepath([self.data_path, f'{str(cell_i)}.json']),
                 df
             )
 

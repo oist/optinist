@@ -26,5 +26,5 @@ async def run_id(uid: str, runItem: RunItem, background_tasks: BackgroundTasks):
 
 
 @router.post("/run/result/{uid}", response_model=Dict[str, Message], tags=['run'])
-async def run_result(uid: str, nodeDict: NodeItem):
-    return WorkflowResult(uid).get(nodeDict.pendingNodeIdList)
+async def run_result(uid: str, nodeDict: NodeItem, is_reproduce: bool = False):
+    return WorkflowResult(uid).get(nodeDict.pendingNodeIdList, is_reproduce)

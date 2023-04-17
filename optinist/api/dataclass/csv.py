@@ -26,13 +26,14 @@ class CsvData(BaseData):
         if self.data.ndim == 1:
             self.data = self.data[np.newaxis, :]
 
-    def save_json(self, json_dir):
+    def set_data_path(self, data_dir):
         # timeseriesだけはdirを返す
-        self.json_path = join_filepath([json_dir, self.file_name])
-        create_directory(self.json_path)
+        self.data_path = join_filepath([data_dir, self.file_name])
+        create_directory(self.data_path)
 
+    def save_data(self):
         for i, data in enumerate(self.data):
             JsonWriter.write_as_split(
-                join_filepath([self.json_path, f'{str(i)}.json']),
+                join_filepath([self.data_path, f'{str(i)}.json']),
                 data
             )

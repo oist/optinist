@@ -30,7 +30,7 @@ class WorkflowResult:
             "error.log"
         ])
 
-    def get(self, nodeIdList):
+    def get(self, nodeIdList, is_reproduce):
         results: Dict[str, Message] = {}
         for node_id in nodeIdList:
             if os.path.exists(self.error_filepath):
@@ -40,7 +40,7 @@ class WorkflowResult:
                         status="error",
                         message=error_message,
                     )
-                
+
             glob_pickle_filepath = join_filepath([
                 self.workflow_dirpath,
                 node_id,
@@ -51,6 +51,7 @@ class WorkflowResult:
                     self.workflow_dirpath,
                     node_id,
                     pickle_filepath,
+                    is_reproduce,
                 ).get()
                 self.has_nwb(node_id)
 
@@ -89,7 +90,7 @@ class WorkflowResult:
 
 class NodeResult:
 
-    def __init__(self, workflow_dirpath, node_id, pickle_filepath):
+    def __init__(self, workflow_dirpath, node_id, pickle_filepath, is_reproduce):
         self.workflow_dirpath = workflow_dirpath
         self.node_id = node_id
         self.node_dirpath = join_filepath([
@@ -104,6 +105,7 @@ class NodeResult:
         pickle_filepath = pickle_filepath.replace("\\", "/")
         self.algo_name = os.path.splitext(os.path.basename(pickle_filepath))[0]
         self.info = PickleReader.read(pickle_filepath)
+        self.is_reproduce = is_reproduce
 
     def get(self):
         expt_config = ExptConfigReader.read(self.expt_filepath)
@@ -139,43 +141,45 @@ class NodeResult:
         outputPaths: Dict[str, OutputPath] = {}
         for k, v in self.info.items():
             if isinstance(v, BaseData):
-                v.save_json(self.node_dirpath)
+                v.set_data_path(self.node_dirpath)
+                if not self.is_reproduce:
+                    v.save_data()
 
             if isinstance(v, ImageData):
                 outputPaths[k] = OutputPath(
-                    path=v.json_path,
+                    path=v.data_path,
                     type=OutputType.IMAGE,
                     max_index=len(v.data) if v.data.ndim == 3 else 1
                 )
             elif isinstance(v, TimeSeriesData):
                 outputPaths[k] = OutputPath(
-                    path=v.json_path,
+                    path=v.data_path,
                     type=OutputType.TIMESERIES,
                     max_index=len(v.data)
                 )
             elif isinstance(v, HeatMapData):
                 outputPaths[k] = OutputPath(
-                    path=v.json_path,
+                    path=v.data_path,
                     type=OutputType.HEATMAP,
                 )
             elif isinstance(v, RoiData):
                 outputPaths[k] = OutputPath(
-                    path=v.json_path,
+                    path=v.data_path,
                     type=OutputType.ROI,
                 )
             elif isinstance(v, ScatterData):
                 outputPaths[k] = OutputPath(
-                    path=v.json_path,
+                    path=v.data_path,
                     type=OutputType.SCATTER,
                 )
             elif isinstance(v, BarData):
                 outputPaths[k] = OutputPath(
-                    path=v.json_path,
+                    path=v.data_path,
                     type=OutputType.BAR,
                 )
             elif isinstance(v, HTMLData):
                 outputPaths[k] = OutputPath(
-                    path=v.json_path,
+                    path=v.data_path,
                     type=OutputType.HTML,
                 )
             else:

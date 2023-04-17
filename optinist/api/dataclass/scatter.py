@@ -1,5 +1,4 @@
 from optinist.api.dataclass.base import BaseData
-from optinist.api.utils.filepath_creater import join_filepath
 from optinist.api.utils.json_writer import JsonWriter
 
 
@@ -11,6 +10,5 @@ class ScatterData(BaseData):
 
         self.data = data.T
 
-    def save_json(self, json_dir):
-        self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        JsonWriter.write_as_split(self.json_path, self.data)
+    def save_data(self):
+        JsonWriter.write_as_split(self.data_path, self.data)

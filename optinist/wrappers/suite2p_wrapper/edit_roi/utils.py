@@ -179,7 +179,8 @@ def save_json_data(ops, im, save_path, save_data=[]):
 
     for k, v in info.items():
         if isinstance(v, BaseData):
-            v.save_json(save_path)
+            v.set_data_path(save_path)
+            v.save_data()
 
     return info
 
