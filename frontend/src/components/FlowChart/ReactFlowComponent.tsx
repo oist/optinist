@@ -41,7 +41,7 @@ import {
   DialogContext,
   ErrorDialogValue,
   OpenDialogValue,
-} from 'components/Visualize/DialogContext'
+} from 'components/FlowChart/DialogContext'
 import { FileSelectDialog } from 'components/common/FileSelectDialog'
 import { FormHelperText, Popover } from '@mui/material'
 

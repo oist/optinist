@@ -15,7 +15,7 @@ export declare type ErrorDialogValue = {
 }
 
 export const DialogContext = createContext<{
-  onOpen: (nodeId: string) => any
+  onOpen: (nodeId: string) => void
   onOpenDialogFile: (value: OpenDialogValue) => void
   onMessageError: (value: ErrorDialogValue) => void
 }>({
