@@ -7,7 +7,7 @@ import { LinearProgressWithLabel } from './LinerProgressWithLabel'
 import { FILE_TYPE } from 'store/slice/InputNode/InputNodeType'
 import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import { getLabelByPath } from 'store/slice/FlowElement/FlowElementUtils'
-import { DialogContext } from 'components/Visualize/DialogContext'
+import { DialogContext } from 'components/FlowChart/DialogContext'
 
 export const FileSelect = React.memo<{
   multiSelect?: boolean
@@ -105,7 +105,7 @@ export const FileSelectImple = React.memo<FileSelectImpleProps>(
                 open: true,
                 multiSelect,
                 filePath,
-                fileTreeType: fileTreeType as any,
+                fileTreeType,
                 onSelectFile,
               })
             }}
