@@ -105,7 +105,7 @@ export const FileSelectImple = React.memo<FileSelectImpleProps>(
                 open: true,
                 multiSelect,
                 filePath,
-                fileTreeType: fileTreeType as any,
+                fileTreeType,
                 onSelectFile,
               })
             }}

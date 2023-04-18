@@ -37,16 +37,20 @@ import {
   TreeItemDropResult,
 } from './DnDItemType'
 import { AlgorithmOutputDialog } from './FlowChartNode/AlgorithmOutputDialog'
-import { DialogContext } from 'components/Visualize/DialogContext'
+import {
+  DialogContext,
+  ErrorDialogValue,
+  OpenDialogValue,
+} from 'components/Visualize/DialogContext'
 import { FileSelectDialog } from 'components/common/FileSelectDialog'
 import { FormHelperText, Popover } from '@mui/material'
 
 const initDialogFile = {
   filePath: '',
   open: false,
-  fileTreeType: '',
+  fileTreeType: undefined,
   multiSelect: false,
-  onSelectFile: (_: any) => null,
+  onSelectFile: () => null,
 }
 
 export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
@@ -54,8 +58,9 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
     const flowElements = useSelector(selectFlowElements)
     const dispatch = useDispatch()
     const [dialogNodeId, setDialogNodeId] = useState('')
-    const [dialogFile, setDialogFile] = useState(initDialogFile)
-    const [messageError, setMessageError] = useState({
+    const [dialogFile, setDialogFile] =
+      useState<OpenDialogValue>(initDialogFile)
+    const [messageError, setMessageError] = useState<ErrorDialogValue>({
       anchorElRef: { current: null },
       message: '',
     })
@@ -138,8 +143,8 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
         <DialogContext.Provider
           value={{
             onOpen: setDialogNodeId,
-            onOpenDialogFile: setDialogFile as any,
-            onMessageError: setMessageError as any
+            onOpenDialogFile: setDialogFile,
+            onMessageError: setMessageError,
           }}
         >
           <ReactFlowProvider>
@@ -182,7 +187,7 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
               onClickCancel={() => {
                 setDialogFile(initDialogFile)
               }}
-              fileType={dialogFile.fileTreeType as any}
+              fileType={dialogFile.fileTreeType}
             />
           )}
           {messageError?.message && (

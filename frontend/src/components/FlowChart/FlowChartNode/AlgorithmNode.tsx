@@ -6,7 +6,6 @@ import {
   Typography,
   useTheme,
   Tooltip,
-  FormHelperText,
   IconButton,
   Button,
   LinearProgress,
@@ -14,7 +13,6 @@ import {
 } from '@mui/material'
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import ErrorIcon from '@mui/icons-material/Error'
-import Popover from '@mui/material/Popover'
 
 import { AlgorithmInfo } from 'api/algolist/AlgoList'
 import {
@@ -323,7 +321,6 @@ const Message = React.memo<{
   )
 
   const anchorElRef = React.useRef<HTMLButtonElement | null>(null)
-  const [open, setOpen] = React.useState(false)
   const theme = useTheme()
   const { onMessageError } = useContext(DialogContext)
 
