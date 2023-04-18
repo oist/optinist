@@ -8,4 +8,4 @@ dependencies:
     - pyqtgraph==0.12.*
     - pandas==1.5.*
     - suite2p==0.10.3
-    - tifffile==2022.10.*
+    - tifffile==2022.3.*
