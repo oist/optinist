@@ -262,7 +262,6 @@ const ImagePlotChart = React.memo<{
       roiAlpha,
       alpha,
       isAddRoi,
-      pointClick.length
     ],
   )
 
