@@ -16,6 +16,7 @@ def lccd_detect(
     dff_f0_percentile = params['dff']['f0_percentile']
     num_cell = roi.shape[1]
     num_frames = D.shape[2]
+    is_cell = np.ones(num_cell, dtype=bool)
 
     reshapedD = D.reshape([D.shape[0] * D.shape[1], D.shape[2]])
     timeseries = np.zeros([num_cell, num_frames])
@@ -41,6 +42,7 @@ def lccd_detect(
     lccd_data = {}
     lccd_data['images'] = D
     lccd_data['roi'] = roi
+    lccd_data['is_cell'] = is_cell
 
     info = {
         'lccd': LccdData(lccd_data),

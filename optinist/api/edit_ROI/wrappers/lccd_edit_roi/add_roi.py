@@ -8,7 +8,7 @@ def create_mask(x: int, y: int, width: int, height: int, dims: Tuple[int, int]):
     import numpy as np
 
     x, y, width, height = round(x), round(y), round(width), round(height)
-    
+
     x_coords = np.arange(0, dims[0])
     y_coords = np.arange(0, dims[1])
     xx, yy = np.meshgrid(x_coords, y_coords)
@@ -28,19 +28,21 @@ def create_mask(x: int, y: int, width: int, height: int, dims: Tuple[int, int]):
 def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
     import numpy as np
 
-
-    lccd_data = np.load(os.path.join(node_dirpath, 'lccd.npy'), allow_pickle=True).item()
+    lccd_data = np.load(
+        os.path.join(node_dirpath, 'lccd.npy'), allow_pickle=True
+    ).item()
 
     images = lccd_data.get('images', None)
     roi = lccd_data.get('roi', None)
+    is_cell = lccd_data.get('is_cell')
     shape = images.shape[:2]
     num_frames = images.shape[2]
     dff_f0_frames = 100
     dff_f0_percentile = 8
 
     new_roi = create_mask(posx, posy, sizex, sizey, shape).reshape(-1, 1)
-    roi = np.hstack((new_roi,roi))
-
+    roi = np.hstack((roi, new_roi))
+    is_cell = np.append(is_cell, True)
 
     num_cell = roi.shape[1]
     images = images.reshape([images.shape[0] * images.shape[1], images.shape[2]])
@@ -66,10 +68,11 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
                 timeseries_dff[i, k] = (timeseries[i, k] - f0) / f0
 
     lccd_data['roi'] = roi
+    lccd_data['is_cell'] = is_cell
 
     info = {
         'lccd': LccdData(lccd_data),
-        'cell_roi': RoiData(np.nanmax(roi_list, axis=0), file_name='cell_roi'),
+        'cell_roi': RoiData(np.nanmax(roi_list[is_cell], axis=0), file_name='cell_roi'),
         'fluorescence': FluoData(timeseries, file_name='fluorescence'),
         'dff': FluoData(timeseries_dff, file_name='dff'),
     }

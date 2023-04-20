@@ -4,22 +4,26 @@ from optinist.api.dataclass.dataclass import *
 def execute_merge_roi(node_dirpath, ids):
     import numpy as np
 
-
-    lccd_data = np.load(os.path.join(node_dirpath, 'lccd.npy'), allow_pickle=True).item()
+    lccd_data = np.load(
+        os.path.join(node_dirpath, 'lccd.npy'), allow_pickle=True
+    ).item()
 
     images = lccd_data.get('images', None)
     roi = lccd_data.get('roi', None)
+    is_cell = lccd_data.get('is_cell')
     shape = images.shape[:2]
     num_frames = images.shape[2]
     dff_f0_frames = 100
     dff_f0_percentile = 8
 
-    # Get merge ROI 
+    # Get merge ROI
     merging_rois = []
     [merging_rois.append(roi[:, id]) for id in ids]
     merged_roi = np.maximum.reduce(merging_rois)
-    roi = np.delete(roi, ids, axis=1)
+    # roi = np.delete(roi, ids, axis=1)
+    is_cell[ids] = False
     roi = np.hstack((roi, merged_roi.reshape(-1, 1)))
+    is_cell = np.append(is_cell, True)
 
     num_cell = roi.shape[1]
     images = images.reshape([images.shape[0] * images.shape[1], images.shape[2]])
@@ -45,10 +49,11 @@ def execute_merge_roi(node_dirpath, ids):
                 timeseries_dff[i, k] = (timeseries[i, k] - f0) / f0
 
     lccd_data['roi'] = roi
+    lccd_data['is_cell'] = is_cell
 
     info = {
         'lccd': LccdData(lccd_data),
-        'cell_roi': RoiData(np.nanmax(roi_list, axis=0), file_name='cell_roi'),
+        'cell_roi': RoiData(np.nanmax(roi_list[is_cell], axis=0), file_name='cell_roi'),
         'fluorescence': FluoData(timeseries, file_name='fluorescence'),
         'dff': FluoData(timeseries_dff, file_name='dff'),
     }
