@@ -51,6 +51,8 @@ import { ImportButton } from './Button/ImportButton'
 import { useLocalStorage } from 'components/utils/LocalStorageUtil'
 import { styled } from '@mui/material/styles'
 import { renameExperiment } from 'api/experiments/Experiments'
+import { selectPipelineLatestUid } from 'store/slice/Pipeline/PipelineSelectors'
+import { clearCurrentPipeline } from 'store/slice/Pipeline/PipelineSlice'
 
 export const ExperimentUidContext = React.createContext<string>('')
 
@@ -87,6 +89,7 @@ const ExperimentsErrorView: React.FC = () => {
 const LOCAL_STORAGE_KEY_PER_PAGE = 'optinist_experiment_table_per_page'
 
 const TableImple = React.memo(() => {
+  const currentPipelineUid = useSelector(selectPipelineLatestUid)
   const experimentList = useSelector(selectExperimentList)
   const experimentListValues = Object.values(experimentList)
   const experimentListKeys = Object.keys(experimentList)
@@ -133,6 +136,8 @@ const TableImple = React.memo(() => {
   }
   const onClickOk = () => {
     dispatch(deleteExperimentByList(checkedList))
+    checkedList.filter((v) => v === currentPipelineUid).length > 0 &&
+      dispatch(clearCurrentPipeline())
     setCheckedList([])
     setOpen(false)
   }

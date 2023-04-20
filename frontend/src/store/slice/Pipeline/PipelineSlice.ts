@@ -37,6 +37,7 @@ export const pipelineSlice = createSlice({
     ) => {
       state.runBtn = action.payload.runBtnOption
     },
+    clearCurrentPipeline: () => initialState,
   },
   extraReducers: (builder) => {
     builder
@@ -102,6 +103,7 @@ export const pipelineSlice = createSlice({
   },
 })
 
-export const { cancelPipeline, setRunBtnOption } = pipelineSlice.actions
+export const { cancelPipeline, setRunBtnOption, clearCurrentPipeline } =
+  pipelineSlice.actions
 
 export default pipelineSlice.reducer
