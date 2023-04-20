@@ -252,36 +252,45 @@ No access to NWB file
 #### Function output
 
 save_json_data(ops, im, save_path=node_dirpath,
-save_data=['ops', 'fluorescence', 'all_roi', 'non_cell_roi', 'cell_roi']
+save_data=['ops', 'fluorescence', 'all_roi', 'non_cell_roi', 'cell_roi', 'nwbfile']
 )
 
 ### Add ROI
 
 #### NWB output
 
-No access to NWB file
+- [optinist](https://pynwb.readthedocs.io/en/stable/pynwb.base.html#pynwb.base.ProcessingModule)
+  - [add_roi](https://pynwb.readthedocs.io/en/stable/pynwb.base.html#pynwb.base.ProcessingModule.add_container)
+  - [delete_roi](https://pynwb.readthedocs.io/en/stable/pynwb.base.html#pynwb.base.ProcessingModule.add_container)
+  - [merge_roi](https://pynwb.readthedocs.io/en/stable/pynwb.base.html#pynwb.base.ProcessingModule.add_container)
 
 #### Function output
 
 save_json_data(ops, im, save_path=node_dirpath,
-save_data=['ops', 'fluorescence', 'all_roi', 'non_cell_roi', 'cell_roi'])
+save_data=['ops', 'fluorescence', 'all_roi', 'non_cell_roi', 'cell_roi', 'nwbfile'])
 
 ### Delete ROI
 
 #### NWB output
 
-No access to NWB file
+- [optinist](https://pynwb.readthedocs.io/en/stable/pynwb.base.html#pynwb.base.ProcessingModule)
+  - [add_roi](https://pynwb.readthedocs.io/en/stable/pynwb.base.html#pynwb.base.ProcessingModule.add_container)
+  - [delete_roi](https://pynwb.readthedocs.io/en/stable/pynwb.base.html#pynwb.base.ProcessingModule.add_container)
+  - [merge_roi](https://pynwb.readthedocs.io/en/stable/pynwb.base.html#pynwb.base.ProcessingModule.add_container)
 
 #### Function output
 
 save_json_data(ops, im, save_path=node_dirpath,
-save_data=['ops', 'fluorescence', 'all_roi', 'non_cell_roi', 'cell_roi'])
+save_data=['ops', 'fluorescence', 'all_roi', 'non_cell_roi', 'cell_roi', 'nwbfile'])
 
 ### Merge ROI
 
 #### NWB output
 
-No access to NWB file
+- [optinist](https://pynwb.readthedocs.io/en/stable/pynwb.base.html#pynwb.base.ProcessingModule)
+  - [add_roi](https://pynwb.readthedocs.io/en/stable/pynwb.base.html#pynwb.base.ProcessingModule.add_container)
+  - [delete_roi](https://pynwb.readthedocs.io/en/stable/pynwb.base.html#pynwb.base.ProcessingModule.add_container)
+  - [merge_roi](https://pynwb.readthedocs.io/en/stable/pynwb.base.html#pynwb.base.ProcessingModule.add_container)
 
 #### Function output
 
