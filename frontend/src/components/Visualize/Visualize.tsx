@@ -12,8 +12,8 @@ const Visualize: React.FC = () => {
     <RootDiv>
       <StyledDrawer variant="permanent">
         <MuiToolbar />
+        <CurrentPipelineInfo />
         <StyledDrawerContents>
-          <CurrentPipelineInfo />
           <VisualizeItemEditor />
         </StyledDrawerContents>
       </StyledDrawer>

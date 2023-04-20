@@ -1,7 +1,7 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { selectPipelineLatestUid } from 'store/slice/Pipeline/PipelineSelectors'
-import { List, ListItem, ListSubheader, Divider } from '@mui/material'
+import { Divider, Typography, Grid } from '@mui/material'
 import {
   selectExperimentName,
   selectExperimentsSatusIsFulfilled,
@@ -24,10 +24,10 @@ export const CurrentPipelineInfo: React.FC = () => {
     <>
       {uid && (
         <>
-          <List dense>
+          <Grid container paddingX={2} paddingBottom={1}>
             <ExperimentUidInfo uid={uid} />
             {isFulFilled && <ExperimentNameInfo uid={uid} />}
-          </List>
+          </Grid>
           <Divider />
         </>
       )}
@@ -36,20 +36,29 @@ export const CurrentPipelineInfo: React.FC = () => {
 }
 
 const ExperimentUidInfo = React.memo<{ uid: string }>(({ uid }) => {
-  return (
-    <>
-      <ListSubheader>ID</ListSubheader>
-      <ListItem>{uid}</ListItem>
-    </>
-  )
+  return <LabelValueGridRow label="ID" value={uid} />
 })
 
 const ExperimentNameInfo = React.memo<{ uid: string }>(({ uid }) => {
   const name = useSelector(selectExperimentName(uid))
-  return (
-    <>
-      <ListSubheader>NAME</ListSubheader>
-      <ListItem>{name}</ListItem>
-    </>
-  )
+  return <LabelValueGridRow label="NAME" value={name} />
 })
+
+const LabelValueGridRow = React.memo<{ label: string; value: string }>(
+  ({ label, value }) => {
+    return (
+      <>
+        <Grid item xs={4}>
+          <Typography variant="body2" color="textSecondary">
+            {label}:
+          </Typography>
+        </Grid>
+        <Grid item xs={8}>
+          <Typography variant="body2" color="textSecondary">
+            {value}
+          </Typography>
+        </Grid>
+      </>
+    )
+  },
+)
