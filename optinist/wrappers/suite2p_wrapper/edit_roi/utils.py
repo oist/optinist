@@ -4,7 +4,7 @@ from optinist.api.config.config_reader import ConfigReader
 from optinist.api.dataclass.dataclass import *
 from scipy import stats
 from optinist.api.nwb.nwb import NWBDATASET
-from optinist.api.nwb.nwb_creater import merge_nwbfile, save_nwb
+from optinist.api.nwb.nwb_creater import overwrite_nwb
 
 
 def masks_and_traces(ops, stat_manual, stat_orig):
@@ -23,10 +23,11 @@ def masks_and_traces(ops, stat_manual, stat_orig):
         dy, dx = (d0, d0) if isinstance(d0, int) else d0
     t0 = time.time()
     # Concatenate stat so a good neuropil function can be formed
-    stat_all = stat_manual.copy()
-    for n in range(len(stat_orig)):
-        stat_all.append(stat_orig[n])
+    stat_all = stat_orig
+    for n in range(len(stat_manual)):
+        stat_all.append(stat_manual[n])
     stat_all = detection.stats.roi_stats(stat_all, dy, dx, ops['Ly'], ops['Lx'])
+
     cell_masks = [
         extraction.masks.create_cell_mask(
             stat, Ly=ops['Ly'], Lx=ops['Lx'], allow_overlap=ops['allow_overlap']
@@ -34,8 +35,9 @@ def masks_and_traces(ops, stat_manual, stat_orig):
         for stat in stat_all
     ]
     cell_pix = extraction.masks.create_cell_pix(stat_all, Ly=ops['Ly'], Lx=ops['Lx'])
-    manual_roi_stats = stat_all[: len(stat_manual)]
-    manual_cell_masks = cell_masks[: len(stat_manual)]
+    manual_roi_stats = stat_all[-len(stat_manual):]
+    manual_cell_masks = cell_masks[-len(stat_manual):]
+
     manual_neuropil_masks = extraction.masks.create_neuropil_masks(
         ypixs=[stat['ypix'] for stat in manual_roi_stats],
         xpixs=[stat['xpix'] for stat in manual_roi_stats],
@@ -82,6 +84,7 @@ def masks_and_traces(ops, stat_manual, stat_orig):
         fs=ops['fs'],
         prctile_baseline=ops['prctile_baseline'],
     )
+
     spks = extraction.dcnv.oasis(
         F=dF, batch_size=ops['batch_size'], tau=ops['tau'], fs=ops['fs']
     )
@@ -115,22 +118,6 @@ def get_stat0_add_roi(ops, pos):
     lam = np.ones(ypix.shape)
 
     return [{'ypix': ypix, 'xpix': xpix, 'lam': lam, 'npix': ypix.size, 'med': med}]
-
-
-def get_im(ops, stat):
-    from suite2p import ROI
-
-    arrays = []
-    for i, s in enumerate(stat):
-        array = ROI(
-            ypix=s['ypix'], xpix=s['xpix'], lam=s['lam'], med=s['med'], do_crop=False
-        ).to_array(Ly=ops['Ly'], Lx=ops['Lx'])
-        array *= i + 1
-        arrays.append(array)
-    im = np.stack(arrays)
-    im[im == 0] = np.nan
-    return im
-
 
 def save_json_data(ops, im, save_path, save_data=[]):
     info = {}
@@ -166,15 +153,11 @@ def save_json_data(ops, im, save_path, save_data=[]):
             )
 
         if d == 'nwbfile':
-            nwbfile = get_nwbfile(ops)
-            info['nwbfile'] = nwbfile
-
-            filepath = join_filepath([DIRPATH.CONFIG_DIR, f'nwb.yaml'])
-            default_nwb_config = ConfigReader.read(filepath)
-            for x in nwbfile.values():
-                nwbfile = merge_nwbfile(nwbfile, x)
-            save_nwb(
-                os.path.join(save_path, 'suite2p_roi1.nwb'), default_nwb_config, nwbfile
+            nwbfile = set_nwbfile(ops)
+            overwrite_nwb(
+                nwbfile,
+                save_path,
+                'suite2p_roi.nwb'
             )
 
     for k, v in info.items():
@@ -184,7 +167,7 @@ def save_json_data(ops, im, save_path, save_data=[]):
     return info
 
 
-def get_nwbfile(ops):
+def set_nwbfile(ops):
     stat = ops.get('stat')
     iscell = ops.get('iscell')
     F = ops.get('F')
@@ -221,5 +204,17 @@ def get_nwbfile(ops):
             'unit': 'lumens',
             'rate': ops['fs'],
         }
+
+    add_roi = ops.get('add_roi') if ops.get('add_roi') else []
+    delete_roi = ops.get('delete_roi') if ops.get('delete_roi') else []
+    merge_roi = ops.get('merge_roi') if ops.get('merge_roi') else []
+
+    # NWB追加
+    nwbfile[NWBDATASET.POSTPROCESS] = {
+        'add_roi': add_roi,
+        'delete_roi': delete_roi,
+        'merge_roi': merge_roi,
+    }
+
 
     return nwbfile
