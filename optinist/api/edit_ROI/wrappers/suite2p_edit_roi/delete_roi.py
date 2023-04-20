@@ -24,6 +24,3 @@ def excute_delete_roi(node_dirpath, ids):
         save_path=node_dirpath,
         save_data=['ops', 'non_cell_roi', 'cell_roi', 'nwbfile'],
     )
-
-    max_index = len(ops['F'])
-    return max_index

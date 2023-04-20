@@ -109,7 +109,7 @@ def execute_merge_roi(node_dirpath, ids):
     ops['im'] = im
     ops['merge_roi'] = merge_roi
 
-    info = save_json_data(
+    save_json_data(
         ops,
         im,
         save_path=node_dirpath,
@@ -122,6 +122,3 @@ def execute_merge_roi(node_dirpath, ids):
             'nwbfile',
         ],
     )
-
-    max_index = len(info['fluorescence'].data)
-    return max_index
