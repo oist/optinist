@@ -7,7 +7,7 @@ import React, {
 } from 'react'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { useSelector, useDispatch } from 'react-redux'
-import {RootState, State} from 'store/store'
+import {RootState} from 'store/store'
 import {Datum, LayoutAxis, PlotData, PlotMouseEvent, PlotSelectionEvent} from 'plotly.js'
 import createColormap from 'colormap'
 import { Button, LinearProgress, TextField, Typography } from '@mui/material'
@@ -52,6 +52,8 @@ import {
   selectVisualizeSaveFilename,
   selectVisualizeSaveFormat,
   selectImageItemAlpha,
+  selectRoiItemOutputKeys,
+  selectVisualizeItems,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
   incrementImageActiveIndex,
@@ -65,7 +67,6 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemActions'
 import { addRoiApi, deleteRoiApi, mergeRoiApi } from 'api/outputs/Outputs'
 import { isTimeSeriesItem } from 'store/slice/VisualizeItem/VisualizeItemUtils'
-import {ImageItem} from "../../../store/slice/VisualizeItem/VisualizeItemType";
 
 interface PointClick {
   x: number
@@ -159,7 +160,7 @@ const ImagePlotChart = React.memo<{
 
   const [pointClick, setPointClick] = useState<PointClick[]>([])
 
-  const itemsVisual = useSelector((state: State) => state.visualaizeItem?.items)
+  const itemsVisual = useSelector(selectVisualizeItems)
 
   const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
   const showline = useSelector(selectImageItemShowLine(itemId))
@@ -178,9 +179,7 @@ const ImagePlotChart = React.memo<{
   const [startDragAddRoi, setStartDragAddRoi] = useState(false)
   const [positionDrag, setChangeSize] = useState<PositionDrag | undefined>()
 
-  const outputKey: string | undefined = useSelector(
-    (state: State) => (state.visualaizeItem?.items[itemId] as ImageItem)?.roiItem?.outputKey,
-  )
+  const outputKey: string | null = useSelector(selectRoiItemOutputKeys(itemId))
 
   const refPageXSize = useRef(0)
   const refPageYSize = useRef(0)
@@ -227,7 +226,7 @@ const ImagePlotChart = React.memo<{
           const hex = rgba2hex(rgb, alpha)
           return [offset, hex]
         }),
-        hoverinfo: isAddRoi || pointClick.length ? 'none' : undefined,
+        // hoverinfo: isAddRoi || pointClick.length ? 'none' : undefined,
         hoverongaps: false,
         showscale: showscale,
         zsmooth: zsmooth, // ['best', 'fast', false]
@@ -236,7 +235,8 @@ const ImagePlotChart = React.memo<{
         z: roiDataState,
         type: 'heatmap',
         name: 'roi',
-        hoverinfo: isAddRoi || pointClick.length ? 'none' : undefined,
+        hovertemplate: isAddRoi ? 'none' : 'cell id: %{z}',
+        // hoverinfo: isAddRoi || pointClick.length ? 'none' : undefined,
         colorscale: [...Array(timeDataMaxIndex)].map((_, i) => {
           const new_i = Math.floor(((i % 10) * 10 + i / 10) % 100)
           const offset: number = i / (timeDataMaxIndex - 1)
@@ -327,7 +327,7 @@ const ImagePlotChart = React.memo<{
     },
   }
 
-  const onClick = (event: PlotMouseEvent) => {
+  const onChartClick = (event: PlotMouseEvent) => {
     const point: PlotDatum = event.points[0] as PlotDatum
     if (point.curveNumber >= 1 && outputKey === 'cell_roi') {
       setSelectRoi({
@@ -545,7 +545,7 @@ const ImagePlotChart = React.memo<{
           data={data}
           layout={layout}
           config={config}
-          onClick={onClick}
+          onClick={onChartClick}
           onSelecting={onSelecting}
         />
         {isAddRoi ? (
