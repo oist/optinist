@@ -5,7 +5,7 @@ export const VISUALIZE_ITEM_SLICE_NAME = 'visualaizeItem'
 export type VisualaizeItem = {
   selectedItemId: number | null
   items: {
-    [itemId: number]: VisualaizeItemType
+    [itemId: number | string]: VisualaizeItemType
   }
   layout: ItemLayout
 }
