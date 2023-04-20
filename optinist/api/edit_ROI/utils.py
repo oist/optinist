@@ -11,7 +11,7 @@ class EditRoiUtils:
         algo = config['algo']
         if "conda_yaml" in edit_roi_wrapper_dict[algo]:
             conda_yaml = edit_roi_wrapper_dict[algo]["conda_yaml"]
-            return f"{DIRPATH.CONDAYML_DIR}/{conda_yaml}"
+            return f"{DIRPATH.CONDAYML_DIR}/{conda_yaml}" if conda_yaml else None
 
         return None
 

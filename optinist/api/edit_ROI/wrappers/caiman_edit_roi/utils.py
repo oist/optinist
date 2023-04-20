@@ -5,7 +5,7 @@ def create_mask(x: int, y: int, width: int, height: int, dims: Tuple[int, int]):
     import numpy as np
 
     x, y, width, height = round(x), round(y), round(width), round(height)
-    
+
     x_coords = np.arange(0, dims[0])
     y_coords = np.arange(0, dims[1])
     xx, yy = np.meshgrid(x_coords, y_coords)
@@ -21,6 +21,7 @@ def create_mask(x: int, y: int, width: int, height: int, dims: Tuple[int, int]):
 
     return ellipse
 
+
 # display ROI added manually
 def get_roi(ims):
     import numpy as np
@@ -30,5 +31,5 @@ def get_roi(ims):
     num_rois = ims.shape[0]
     for i in range(num_rois):
         cell_roi[i, :, :] = np.where(cell_roi[i, :, :] != 0, i + 1, np.nan)
-    cell_roi = np.nanmax(cell_roi, axis=0)
+
     return cell_roi

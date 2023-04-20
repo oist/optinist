@@ -3,38 +3,25 @@ from optinist.api.dataclass.dataclass import *
 
 def excute_delete_roi(node_dirpath, ids):
     import numpy as np
-    from scipy.sparse import csc_matrix
 
     from .utils import get_roi
 
     # load data
-    estimates = np.load(f'{node_dirpath}/caiman_cnmf.npy', allow_pickle=True).item()
-    dims = estimates['dims']
-    A = estimates.get('A').toarray()
-    ims = estimates.get('ims')
-    images = estimates.get('images')
+    cnmf_data = np.load(f'{node_dirpath}/caiman_cnmf.npy', allow_pickle=True).item()
+    is_cell = cnmf_data.get('is_cell')
+    ims = cnmf_data.get('ims')
 
     # delete ROI
-    A = np.delete(A, ids, axis=1)
-    ims = np.delete(ims, ids, axis=0)
-    
-    # delete fluorescence
-    estimates['C'] = np.delete(estimates['C'], ids, axis=0)
+    is_cell[ids] = False
 
     cell_roi = get_roi(ims)
-    
-    fluorescence = np.concatenate([
-        estimates['C'],
-        estimates['f'],
-    ])
 
-    estimates['A'] = csc_matrix(A)
-    estimates['ims'] = ims
+    cnmf_data['ims'] = ims
+    cnmf_data['is_cell'] = is_cell
 
     info = {
-        'fluorescence': FluoData(fluorescence, file_name='fluorescence'),
-        'cell_roi': RoiData(cell_roi, file_name='cell_roi'),
-        'cnmf_data': CaimanCnmfData(estimates), # save estimates object for further analysis
+        'cell_roi': RoiData(np.nanmax(cell_roi[is_cell], axis=0), file_name='cell_roi',),
+        'cnmf_data': CaimanCnmfData(cnmf_data),
     }
 
     for v in info.values():

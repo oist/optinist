@@ -16,11 +16,11 @@ def get_roi(A, thr, thr_method, swap_dim, dims):
     for i in range(nr):
         pars = dict()
         # we compute the cumulative sum of the energy of the Ath component that has been ordered from least to highest
-        patch_data = A.data[A.indptr[i]:A.indptr[i + 1]]
+        patch_data = A.data[A.indptr[i] : A.indptr[i + 1]]
         indx = np.argsort(patch_data)[::-1]
 
         if thr_method == 'nrg':
-            cumEn = np.cumsum(patch_data[indx]**2)
+            cumEn = np.cumsum(patch_data[indx] ** 2)
             if len(cumEn) == 0:
                 pars = dict(
                     coordinates=np.array([]),
@@ -34,10 +34,12 @@ def get_roi(A, thr, thr_method, swap_dim, dims):
                 cumEn /= cumEn[-1]
                 Bvec = np.ones(d)
                 # we put it in a similar matrix
-                Bvec[A.indices[A.indptr[i]:A.indptr[i + 1]][indx]] = cumEn
+                Bvec[A.indices[A.indptr[i] : A.indptr[i + 1]][indx]] = cumEn
         else:
             Bvec = np.zeros(d)
-            Bvec[A.indices[A.indptr[i]:A.indptr[i + 1]]] = patch_data / patch_data.max()
+            Bvec[A.indices[A.indptr[i] : A.indptr[i + 1]]] = (
+                patch_data / patch_data.max()
+            )
 
         if swap_dim:
             Bmat = np.reshape(Bvec, dims, order='C')
@@ -91,7 +93,8 @@ def caiman_cnmf(
         mode='w+',
         dtype=np.float32,
         shape=prepare_shape(shape_mov),
-        order=order)
+        order=order,
+    )
 
     mmap_images = np.reshape(mmap_images.T, [T] + list(dims), order='F')
     mmap_images[:] = images[:]
@@ -108,7 +111,8 @@ def caiman_cnmf(
         cm.stop_server(dview=dview)
 
     c, dview, n_processes = setup_cluster(
-        backend='local', n_processes=None, single_thread=True)
+        backend='local', n_processes=None, single_thread=True
+    )
 
     cnm = cnmf.CNMF(n_processes=n_processes, dview=dview, Ain=None, params=ops)
     cnm = cnm.fit(mmap_images)
@@ -123,19 +127,20 @@ def caiman_cnmf(
     thr_method = 'nrg'
     swap_dim = False
 
-    iscell = np.concatenate([
-        np.ones(cnm.estimates.A.shape[-1]),
-        np.zeros(cnm.estimates.b.shape[-1])
-    ])
+    iscell = np.concatenate(
+        [np.ones(cnm.estimates.A.shape[-1]), np.zeros(cnm.estimates.b.shape[-1])]
+    )
 
     ims = get_roi(cnm.estimates.A, thr, thr_method, swap_dim, dims)
     ims = np.stack(ims)
     cell_roi = np.nanmax(ims, axis=0).astype(float)
     cell_roi[cell_roi == 0] = np.nan
 
-    non_cell_roi = get_roi(scipy.sparse.csc_matrix(cnm.estimates.b), thr, thr_method, swap_dim, dims)
-    non_cell_roi = np.stack(non_cell_roi)
-    non_cell_roi = np.nanmax(non_cell_roi, axis=0).astype(float)
+    non_cell_roi_ims = get_roi(
+        scipy.sparse.csc_matrix(cnm.estimates.b), thr, thr_method, swap_dim, dims
+    )
+    non_cell_roi_ims = np.stack(non_cell_roi_ims)
+    non_cell_roi = np.nanmax(non_cell_roi_ims, axis=0).astype(float)
     non_cell_roi[non_cell_roi == 0] = np.nan
 
     all_roi = np.nanmax(np.stack([cell_roi, non_cell_roi]), axis=0)
@@ -193,23 +198,26 @@ def caiman_cnmf(
         },
         'Background_Fluorescence_Response': {
             'table_name': 'Background',
-            'region': list(range(n_rois, n_rois+n_bg)),
+            'region': list(range(n_rois, n_rois + n_bg)),
             'name': 'Background_Fluorescence_Response',
             'data': cnm.estimates.f.T,
             'unit': 'lumens',
-        }
+        },
     }
 
-    fluorescence = np.concatenate([
-        cnm.estimates.C,
-        cnm.estimates.f,
-    ])
+    fluorescence = np.concatenate(
+        [
+            cnm.estimates.C,
+            cnm.estimates.f,
+        ]
+    )
 
-    ims = np.where(ims != 0, 1, 0)
-    estimates_data = cnm.estimates.__dict__
-    estimates_data['dims'] = dims
-    estimates_data['ims'] = ims
-    estimates_data['images'] = mmap_images # save images for extracting Fluorescence of new ROI
+    caiman_cnmf_data = {}
+    caiman_cnmf_data['fluorescence'] = fluorescence
+    caiman_cnmf_data['dims'] = dims
+    caiman_cnmf_data['ims'] = np.concatenate([ims, non_cell_roi_ims], axis=0)
+    caiman_cnmf_data['is_cell'] = iscell.astype(bool)
+    caiman_cnmf_data['images'] = mmap_images
 
     info = {
         'images': ImageData(np.array(Cn * 255, dtype=np.uint8), output_dir=output_dir, file_name='images'),
@@ -219,7 +227,7 @@ def caiman_cnmf(
         'cell_roi': RoiData(cell_roi, output_dir=output_dir, file_name='cell_roi'),
         'non_cell_roi': RoiData(non_cell_roi, output_dir=output_dir, file_name='non_cell_roi'),
         'nwbfile': nwbfile,
-        'estimates': CaimanCnmfData(estimates_data), # save estimates object for further analysis
+        'estimates': CaimanCnmfData(caiman_cnmf_data),  # save data for further analysis
     }
 
     return info

@@ -25,7 +25,7 @@ edit_roi_wrapper_dict = {
         },
     },
     'lccd': {
-        'conda_yaml': 'lccd_env.yaml',
+        'conda_yaml': None,
         'function': {
             'add': lccd_add,
             'merge': lccd_merge,
@@ -33,11 +33,11 @@ edit_roi_wrapper_dict = {
         },
     },
     'caiman': {
-        'conda_yaml': 'caiman_env.yaml',
+        'conda_yaml': None,
         'function': {
             'add': caiman_add,
             'merge': caiman_merge,
-            'delete': caiman_delete
+            'delete': caiman_delete,
         },
     },
 }
