@@ -11,6 +11,7 @@ import { ReactFlowComponent } from './ReactFlowComponent'
 import RightDrawer, { rightDrawerWidth } from './RightDrawer'
 import { selectRightDrawerIsOpen } from 'store/slice/RightDrawer/RightDrawerSelectors'
 import { UseRunPipelineReturnType } from 'store/slice/Pipeline/PipelineHook'
+import { CurrentPipelineInfo } from 'components/common/CurrentPipelineInfo'
 
 const FlowChart = React.memo<UseRunPipelineReturnType>((props) => {
   const open = useSelector(selectRightDrawerIsOpen)
@@ -19,6 +20,7 @@ const FlowChart = React.memo<UseRunPipelineReturnType>((props) => {
       <DndProvider backend={HTML5Backend}>
         <StyledDrawer variant="permanent">
           <MuiToolbar />
+          <CurrentPipelineInfo />
           <DrawerContents>
             <AlgorithmTreeView />
           </DrawerContents>
