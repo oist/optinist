@@ -1,7 +1,5 @@
-import os
-
 import numpy as np
-
+import os
 from optinist.api.dataclass.dataclass import *
 from .utils import get_stat0_add_roi, masks_and_traces, save_json_data
 
@@ -16,9 +14,7 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
     im = ops.get('im')
     add_roi = ops.get('add_roi') if ops.get('add_roi') else []
 
-    Fcell, Fneu, F_chan2, Fneu_chan2, spks, ops, manual_stat_cell = masks_and_traces(
-        ops, stat0, stat
-    )
+    Fcell, Fneu, _, _, _, ops, manual_stat_cell = masks_and_traces(ops, stat0, stat)
 
     for n in range(len(manual_stat_cell)):
         array = np.expand_dims(
@@ -41,7 +37,6 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
     F_all = np.concatenate((ops['F'], Fcell), axis=0)
     Fneu_all = np.concatenate((ops['Fneu'], Fneu), axis=0)
     iscell = np.append(iscell, True)
-
     ops['stat'] = stat
     ops['F'] = F_all
     ops['Fneu'] = Fneu_all
@@ -51,7 +46,6 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
 
     info = save_json_data(
         ops,
-        im,
         save_path=node_dirpath,
         save_data=[
             'ops',
@@ -59,6 +53,7 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
             'all_roi',
             'non_cell_roi',
             'cell_roi',
+            'nwbfile',
         ],
     )
 

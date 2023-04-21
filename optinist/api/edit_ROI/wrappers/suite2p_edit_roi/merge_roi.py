@@ -14,7 +14,6 @@ def execute_merge_roi(node_dirpath, ids):
     im = ops.get('im')
     F_all = ops['F']
     Fneu_all = ops['Fneu']
-
     merge_roi = ops.get('merge_roi') if ops.get('merge_roi') else []
 
     print('merging activity... this may take some time')
@@ -72,6 +71,7 @@ def execute_merge_roi(node_dirpath, ids):
             d0 = [d0, d0]
 
     # add cell to structs
+    print(type(stat_orig), type(stat0), type(stat_orig[0]))
     stat_orig.append(stat0)
     stat_orig = roi_stats(stat_orig, d0[0], d0[1], ops['Ly'], ops['Lx'])
     stat_orig[-1]['lam'] = stat_orig[-1]['lam'] * merged_cells.size
@@ -95,6 +95,7 @@ def execute_merge_roi(node_dirpath, ids):
     im = np.concatenate((im, array), axis=0)
     im[im == 0] = np.nan
 
+    print(merge_roi)
     try:
         F_all = np.concatenate((ops['F'], np.expand_dims(F, axis=0)), axis=0)
         Fneu_all = np.concatenate((ops['Fneu'], np.expand_dims(Fneu, axis=0)), axis=0)
@@ -111,7 +112,6 @@ def execute_merge_roi(node_dirpath, ids):
 
     save_json_data(
         ops,
-        im,
         save_path=node_dirpath,
         save_data=[
             'ops',

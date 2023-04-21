@@ -3,7 +3,6 @@ import time
 import numpy as np
 from scipy import stats
 
-from optinist.api.config.config_reader import ConfigReader
 from optinist.api.dataclass.dataclass import *
 from optinist.api.nwb.nwb import NWBDATASET
 from optinist.api.nwb.nwb_creater import overwrite_nwb
@@ -37,8 +36,8 @@ def masks_and_traces(ops, stat_manual, stat_orig):
         for stat in stat_all
     ]
     cell_pix = extraction.masks.create_cell_pix(stat_all, Ly=ops['Ly'], Lx=ops['Lx'])
-    manual_roi_stats = stat_all[-len(stat_manual):]
-    manual_cell_masks = cell_masks[-len(stat_manual):]
+    manual_roi_stats = stat_all[-len(stat_manual) :]
+    manual_cell_masks = cell_masks[-len(stat_manual) :]
 
     manual_neuropil_masks = extraction.masks.create_neuropil_masks(
         ypixs=[stat['ypix'] for stat in manual_roi_stats],
@@ -121,9 +120,11 @@ def get_stat0_add_roi(ops, posx, posy, sizex, sizey):
 
     return [{'ypix': ypix, 'xpix': xpix, 'lam': lam, 'npix': ypix.size, 'med': med}]
 
-def save_json_data(ops, im, save_path, save_data=[]):
+
+def save_json_data(ops, save_path, save_data=[]):
     info = {}
     iscell = ops.get('iscell')
+    im = ops.get('im')
 
     for d in save_data:
         if d == 'ops':
@@ -156,11 +157,7 @@ def save_json_data(ops, im, save_path, save_data=[]):
 
         if d == 'nwbfile':
             nwbfile = set_nwbfile(ops)
-            overwrite_nwb(
-                nwbfile,
-                save_path,
-                'suite2p_roi.nwb'
-            )
+            overwrite_nwb(nwbfile, save_path, 'suite2p_roi.nwb')
 
     for k, v in info.items():
         if isinstance(v, BaseData):
@@ -217,6 +214,5 @@ def set_nwbfile(ops):
         'delete_roi': delete_roi,
         'merge_roi': merge_roi,
     }
-
 
     return nwbfile
