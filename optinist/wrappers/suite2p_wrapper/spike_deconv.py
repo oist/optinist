@@ -3,9 +3,10 @@ from optinist.api.nwb.nwb import NWBDATASET
 
 
 def suite2p_spike_deconv(
-        ops: Suite2pData,
-        params: dict=None
-    ) -> dict(ops=Suite2pData, spks=FluoData):
+    ops: Suite2pData,
+    output_dir: str,
+    params: dict = None
+) -> dict(ops=Suite2pData, spks=FluoData):
     from suite2p import extraction, default_ops
     print('start suite2_spike_deconv')
     ops = ops.data

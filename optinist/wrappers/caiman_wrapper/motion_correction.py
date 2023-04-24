@@ -3,9 +3,10 @@ from optinist.api.nwb.nwb import NWBDATASET
 
 
 def caiman_mc(
-        image: ImageData,
-        params: dict=None
-    ) -> dict(mc_images=ImageData):
+    image: ImageData,
+    output_dir: str,
+    params: dict = None
+) -> dict(mc_images=ImageData):
     import numpy as np
     from caiman import load, save_memmap, load_memmap, stop_server
     from caiman.source_extraction.cnmf.params import CNMFParams
@@ -55,7 +56,7 @@ def caiman_mc(
     xy_trans_data = (np.array(mc.x_shifts_els), np.array(mc.y_shifts_els)) \
                     if params['pw_rigid'] else np.array(mc.shifts_rig)
 
-    mc_images = ImageData(images, file_name='mc_images')
+    mc_images = ImageData(images, output_dir=output_dir, file_name='mc_images')
 
     nwbfile = {}
     nwbfile[NWBDATASET.MOTION_CORRECTION] = {
@@ -67,8 +68,8 @@ def caiman_mc(
 
     info = {
         'mc_images': mc_images,
-        'meanImg': ImageData(meanImg, file_name='meanImg'),
-        'rois': RoiData(rois, file_name='rois'),
+        'meanImg': ImageData(meanImg, output_dir=output_dir, file_name='meanImg'),
+        'rois': RoiData(rois, output_dir=output_dir, file_name='rois'),
         'nwbfile': nwbfile,
     }
 

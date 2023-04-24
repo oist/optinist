@@ -3,11 +3,12 @@ from optinist.wrappers.optinist_wrapper.utils import standard_norm
 from optinist.api.nwb.nwb import NWBDATASET
 
 def CCA(
-        neural_data: FluoData,
-        behaviors_data: BehaviorData,
-        iscell: IscellData=None,
-        params: dict=None
-    ) -> dict():
+    neural_data: FluoData,
+    behaviors_data: BehaviorData,
+    output_dir: str,
+    iscell: IscellData = None,
+    params: dict = None
+) -> dict():
 
     from sklearn.cross_decomposition import CCA
 

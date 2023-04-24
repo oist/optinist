@@ -3,10 +3,11 @@ from optinist.api.nwb.nwb import NWBDATASET
 
 
 def cross_correlation(
-        neural_data: FluoData,
-        iscell: IscellData=None,
-        params: dict=None
-    ) -> dict():
+    neural_data: FluoData,
+    output_dir: str,
+    iscell: IscellData = None,
+    params: dict = None
+) -> dict():
 
     import scipy.signal as ss
     import itertools

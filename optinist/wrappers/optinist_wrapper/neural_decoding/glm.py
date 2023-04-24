@@ -9,11 +9,12 @@ from optinist.wrappers.optinist_wrapper.utils import standard_norm
 from optinist.api.nwb.nwb import NWBDATASET
 
 def GLM(
-        neural_data: FluoData,
-        behaviors_data: BehaviorData,
-        iscell: IscellData=None,
-        params: dict=None
-    ) -> dict():
+    neural_data: FluoData,
+    behaviors_data: BehaviorData,
+    output_dir: str,
+    iscell: IscellData = None,
+    params: dict = None
+) -> dict():
 
     # modules specific to function
     import statsmodels.api as sm

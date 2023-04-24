@@ -3,9 +3,10 @@ from optinist.api.nwb.nwb import NWBDATASET
 
 
 def suite2p_roi(
-        ops: Suite2pData,
-        params: dict=None
-    ) -> dict(ops=Suite2pData, fluorescence=FluoData, iscell=IscellData):
+    ops: Suite2pData,
+    output_dir: str,
+    params: dict = None
+) -> dict(ops=Suite2pData, fluorescence=FluoData, iscell=IscellData):
     import numpy as np
     from suite2p import extraction, classification, detection, ROI, default_ops
     print('start suite2p_roi')
@@ -92,13 +93,13 @@ def suite2p_roi(
 
     info = {
         'ops': Suite2pData(ops),
-        'max_proj': ImageData(ops['max_proj'], file_name='max_proj'),
-        'Vcorr': ImageData(ops['Vcorr'], file_name='Vcorr'),
+        'max_proj': ImageData(ops['max_proj'], output_dir=output_dir, file_name='max_proj'),
+        'Vcorr': ImageData(ops['Vcorr'], output_dir=output_dir, file_name='Vcorr'),
         'fluorescence': FluoData(F, file_name='fluorescence'),
         'iscell': IscellData(iscell, file_name='iscell'),
-        'all_roi': RoiData(np.nanmax(im, axis=0), file_name='all_roi'),
-        'non_cell_roi': RoiData(np.nanmax(im[~iscell], axis=0), file_name='noncell_roi'),
-        'cell_roi': RoiData(np.nanmax(im[iscell], axis=0), file_name='cell_roi'),
+        'all_roi': RoiData(np.nanmax(im, axis=0), output_dir=output_dir, file_name='all_roi'),
+        'non_cell_roi': RoiData(np.nanmax(im[~iscell], axis=0), output_dir=output_dir, file_name='noncell_roi'),
+        'cell_roi': RoiData(np.nanmax(im[iscell], axis=0), output_dir=output_dir, file_name='cell_roi'),
         'nwbfile': nwbfile,
     }
 

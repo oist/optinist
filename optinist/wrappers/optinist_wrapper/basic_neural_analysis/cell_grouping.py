@@ -2,10 +2,11 @@ from optinist.api.dataclass.dataclass import *
 
 
 def cell_grouping(
-        neural_data: TimeSeriesData,
-        nwbfile: NWBFile=None,
-        params: dict=None
-    ) -> dict():
+    neural_data: TimeSeriesData,
+    nwbfile: NWBFile=None,
+    output_dir: str,
+    params: dict = None
+) -> dict():
     import numpy as np
 
     neural_data = neural_data.data
