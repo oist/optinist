@@ -35,11 +35,12 @@ def calc_trigger_average(neural_data, trigger_idx, start_time, end_time):
 
 
 def ETA(
-        neural_data: FluoData,
-        behaviors_data: BehaviorData,
-        iscell: IscellData=None,
-        params: dict=None
-    ) -> dict(mean=TimeSeriesData):
+    neural_data: FluoData,
+    behaviors_data: BehaviorData,
+    output_dir: str,
+    iscell: IscellData = None,
+    params: dict = None
+) -> dict(mean=TimeSeriesData):
     import numpy as np
 
     neural_data = neural_data.data

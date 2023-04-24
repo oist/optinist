@@ -3,9 +3,10 @@ from optinist.api.nwb.nwb import NWBDATASET
 
 
 def suite2p_roi(
-        ops: Suite2pData,
-        params: dict=None
-    ) -> dict(ops=Suite2pData, fluorescence=FluoData, iscell=IscellData):
+    ops: Suite2pData,
+    output_dir: str,
+    params: dict = None
+) -> dict(ops=Suite2pData, fluorescence=FluoData, iscell=IscellData):
     import numpy as np
     from suite2p import extraction, classification, detection, ROI, default_ops
     print('start suite2p_roi')

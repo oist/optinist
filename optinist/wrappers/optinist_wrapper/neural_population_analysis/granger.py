@@ -4,10 +4,11 @@ from optinist.api.nwb.nwb import NWBDATASET
 
 
 def Granger(
-        neural_data: FluoData,
-        iscell: IscellData=None,
-        params: dict=None
-    ) -> dict():
+    neural_data: FluoData,
+    output_dir: str,
+    iscell: IscellData = None,
+    params: dict = None
+) -> dict():
 
     # modules specific to function
     # from sklearn.preprocessing import StandardScaler

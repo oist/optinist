@@ -3,7 +3,9 @@ import numpy as np
 
 
 def lccd_detect(
-    mc_images: ImageData, params: dict = None
+    mc_images: ImageData,
+    output_dir: str,
+    params: dict = None
 ) -> dict(fluorescence=FluoData, cell_roi=RoiData):
     from .lccd_python.lccd import LCCD
 

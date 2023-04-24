@@ -57,9 +57,10 @@ def get_roi(A, thr, thr_method, swap_dim, dims):
 
 
 def caiman_cnmf(
-        images: ImageData,
-        params: dict=None
-    ) -> dict(fluorescence=FluoData, iscell=IscellData):
+    images: ImageData,
+    output_dir: str,
+    params: dict = None
+) -> dict(fluorescence=FluoData, iscell=IscellData):
     from caiman import local_correlations, stop_server
     from caiman.paths import memmap_frames_filename
     from caiman.mmapping import prepare_shape

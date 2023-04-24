@@ -2,9 +2,10 @@ from optinist.api.dataclass.dataclass import *
 
 
 def suite2p_registration(
-        ops: Suite2pData,
-        params: dict=None
-    ) -> dict(ops=Suite2pData):
+    ops: Suite2pData,
+    output_dir: str,
+    params: dict = None
+) -> dict(ops=Suite2pData):
     from suite2p import registration, default_ops
     ops = ops.data
     refImg = ops['meanImg']

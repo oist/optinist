@@ -3,9 +3,10 @@ from optinist.api.nwb.nwb import NWBDATASET
 
 
 def caiman_mc(
-        image: ImageData,
-        params: dict=None
-    ) -> dict(mc_images=ImageData):
+    image: ImageData,
+    output_dir: str,
+    params: dict = None
+) -> dict(mc_images=ImageData):
     import numpy as np
     from caiman import load, save_memmap, load_memmap, stop_server
     from caiman.source_extraction.cnmf.params import CNMFParams
