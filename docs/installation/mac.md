@@ -21,11 +21,14 @@ Please follow instructions below.
 
 #### Install Anaconda
 
-Download https://repo.anaconda.com/archive/Anaconda3-2021.11-MacOSX-x86_64.pkg
+- Download and install package.
+  - https://repo.anaconda.com/archive/
+    - Anaconda3-\*.\*-MacOSX-x86_64.pkg
+      - *The latest version of the module is ok.
 
-or Miniconda https://docs.conda.io/en/latest/miniconda.html
-
-Install it.
+- **CAUTION**
+  - On mac, you must use the x86_64 version.
+    - The arm64 version has some modules that cannot be installed by conda install or pip install.
 
 ### Create anaconda environment
 
@@ -47,7 +50,7 @@ pip install optinist
 ### Set saving directory
 
 Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
-```bash
+```
 export OPTINIST_DIR="your_saving_dir"
 ```
 
@@ -85,10 +88,3 @@ INFO:   Application startup complete.
 It opens correctly!
 
 Done!
-
-
-## FAQ
-
-If you get the warning message shown below, we recommend `rm -rf /Users/usename/opt/anaconda3/envs/optinist ` and recreate conda environment
-or add `--force` option when you create optinist conda environment.
-> WARNING: A directory already exists at the target location '/Users/usename/opt/anaconda3/envs/optinist' but it is not a conda environment.

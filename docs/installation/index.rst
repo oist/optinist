@@ -16,6 +16,5 @@ Installation
   :caption: Installation (for Developer)
 
   docker_for_developer
-  linux_for_developer
-  windows_for_developer
-  mac_for_developer
+  each_platforms_for_developer
+..  each_platforms_for_developer_use_mamba
