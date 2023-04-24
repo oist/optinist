@@ -25,8 +25,8 @@ def suite2p_registration(
         ops = registration.get_pc_metrics(ops)
 
     info = {
-        'refImg': ImageData(ops['refImg'], file_name='refImg'),
-        'meanImgE': ImageData(ops['meanImgE'], file_name='meanImgE'),
+        'refImg': ImageData(ops['refImg'], output_dir=output_dir, file_name='refImg'),
+        'meanImgE': ImageData(ops['meanImgE'], output_dir=output_dir, file_name='meanImgE'),
         'ops': Suite2pData(ops, file_name='ops'),
     }
 

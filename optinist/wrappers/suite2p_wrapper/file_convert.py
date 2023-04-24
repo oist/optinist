@@ -1,7 +1,6 @@
 import os
 
 from optinist.api.dataclass.dataclass import *
-from optinist.api.dir_path import DIRPATH
 from optinist.api.utils.filepath_creater import join_filepath
 
 
@@ -25,7 +24,7 @@ def suite2p_file_convert(
     db = {
         'data_path': data_path_list,
         'tiff_list': data_name_list,
-        'save_path0': DIRPATH.OUTPUT_DIR,
+        'save_path0': output_dir,
         'save_folder': 'suite2p'
     }
 
@@ -40,7 +39,7 @@ def suite2p_file_convert(
     ops = io.tiff_to_binary(ops.copy())
 
     info = {
-        'meanImg': ImageData(ops['meanImg'], file_name='meanImg'),
+        'meanImg': ImageData(ops['meanImg'], output_dir=output_dir, file_name='meanImg'),
         'ops': Suite2pData(ops, file_name='ops')
     }
 

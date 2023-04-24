@@ -210,12 +210,12 @@ def caiman_cnmf(
     ])
 
     info = {
-        'images': ImageData(np.array(Cn * 255, dtype=np.uint8), file_name='images'),
+        'images': ImageData(np.array(Cn * 255, dtype=np.uint8), output_dir=output_dir, file_name='images'),
         'fluorescence': FluoData(fluorescence, file_name='fluorescence'),
         'iscell': IscellData(iscell, file_name='iscell'),
-        'all_roi': RoiData(all_roi, file_name='all_roi'),
-        'cell_roi': RoiData(cell_roi, file_name='cell_roi'),
-        'non_cell_roi': RoiData(non_cell_roi, file_name='non_cell_roi'),
+        'all_roi': RoiData(all_roi, output_dir=output_dir, file_name='all_roi'),
+        'cell_roi': RoiData(cell_roi, output_dir=output_dir, file_name='cell_roi'),
+        'non_cell_roi': RoiData(non_cell_roi, output_dir=output_dir, file_name='non_cell_roi'),
         'nwbfile': nwbfile
     }
 

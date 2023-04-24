@@ -11,7 +11,7 @@ from optinist.api.dataclass.base import BaseData
 
 
 class ImageData(BaseData):
-    def __init__(self, data, file_name='image'):
+    def __init__(self, data, output_dir=DIRPATH.OUTPUT_DIR, file_name='image'):
         super().__init__(file_name)
 
         self.json_path = None
@@ -23,7 +23,7 @@ class ImageData(BaseData):
         elif isinstance(data, list) and isinstance(data[0], str):
             self.path = data
         else:
-            _dir = join_filepath([DIRPATH.OUTPUT_DIR, "tiff", file_name])
+            _dir = join_filepath([output_dir, "tiff", file_name])
             create_directory(_dir)
 
             _path = join_filepath([_dir, f'{file_name}.tif'])
@@ -49,12 +49,12 @@ class ImageData(BaseData):
 
 
 class RoiData(BaseData):
-    def __init__(self, data, file_name='roi'):
+    def __init__(self, data, output_dir=DIRPATH.OUTPUT_DIR, file_name='roi'):
         super().__init__(file_name)
 
         images = create_images_list(data)
 
-        _dir = join_filepath([DIRPATH.OUTPUT_DIR, "tiff", file_name])
+        _dir = join_filepath([output_dir, "tiff", file_name])
         create_directory(_dir)
         self.path = join_filepath([_dir, f'{file_name}.tif'])
         tifffile.imsave(self.path, images)

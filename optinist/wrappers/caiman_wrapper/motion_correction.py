@@ -56,7 +56,7 @@ def caiman_mc(
     xy_trans_data = (np.array(mc.x_shifts_els), np.array(mc.y_shifts_els)) \
                     if params['pw_rigid'] else np.array(mc.shifts_rig)
 
-    mc_images = ImageData(images, file_name='mc_images')
+    mc_images = ImageData(images, output_dir=output_dir, file_name='mc_images')
 
     nwbfile = {}
     nwbfile[NWBDATASET.MOTION_CORRECTION] = {
@@ -68,8 +68,8 @@ def caiman_mc(
 
     info = {
         'mc_images': mc_images,
-        'meanImg': ImageData(meanImg, file_name='meanImg'),
-        'rois': RoiData(rois, file_name='rois'),
+        'meanImg': ImageData(meanImg, output_dir=output_dir, file_name='meanImg'),
+        'rois': RoiData(rois, output_dir=output_dir, file_name='rois'),
         'nwbfile': nwbfile,
     }
 

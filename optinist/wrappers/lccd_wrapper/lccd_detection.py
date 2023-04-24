@@ -42,7 +42,7 @@ def lccd_detect(
                 timeseries_dff[i, k] = (timeseries[i, k] - f0) / f0
 
     info = {
-        'rois': RoiData(np.nanmax(roi_list, axis=0), file_name='cell_roi'),
+        'rois': RoiData(np.nanmax(roi_list, axis=0), output_dir=output_dir, file_name='cell_roi'),
         'fluorescence': FluoData(timeseries, file_name='fluorescence'),
         'dff': FluoData(timeseries_dff, file_name='dff'),
     }
