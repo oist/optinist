@@ -1,4 +1,4 @@
-Linux for Developer (recommended)
+Each Platforms for Developer
 =================
 
 ```{contents}
@@ -15,9 +15,15 @@ Please follow instructions below.
 
 ### Install Tools
 
-#### Install Anaconda
-
-Install [Anaconda for Windows](https://www.anaconda.com/products/individual)
+- Unix-like platforms
+  - Linux
+    - [Install Tools](linux.md#install-tools)
+  - Windows WSL
+    - [Install Tools](windows.md#install-tools-1)
+  - Mac
+    - [Install Tools](mac.md#install-tools)
+- Windows
+    - [Install Tools](windows.md#install-tools)
 
 ### Clone repository
 
@@ -29,8 +35,12 @@ cd ./optinist
 ### Create anaconda environment
 
 ```
-conda create -n optinist python=3.8
-conda activate optinist
+conda create -n optinist_dev python=3.8
+conda activate optinist_dev
+```
+
+```
+conda config --set channel_priority strict
 ```
 
 ### Install requirements
@@ -42,12 +52,12 @@ pip install -r requirements.txt
 ### Set saving directory
 
 Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
-```bash
+```
 export OPTINIST_DIR="your_saving_dir"
 ```
 
 <!--
-## 2. Create virtualenv
+### 2. Create virtualenv
 
 Under maintenance...
 -->

@@ -1,4 +1,4 @@
-Docker for Developer (recommended)
+Docker for Developer
 =================
 
 ```{contents}

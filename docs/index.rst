@@ -4,7 +4,7 @@
   contain the root `toctree` directive.
 
 OptiNiSt - Calcium Imaging Pipeline Tool
-===================================
+==========================================
 
 **OptiNiSt(Optical Neuroimage Studio)** helps researchers try multiple data analysis methods, visualize the results, and construct the data analysis pipelines easily and quickly. OptiNiSt's data-saving format follows NWB standards.
 
