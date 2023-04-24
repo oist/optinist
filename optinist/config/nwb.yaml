@@ -17,7 +17,6 @@ imaging_plane:
     indicator: 'GCaMap'
     location: 'V1'
 image_series:
-    name: 'TwoPhotonSeries'
     starting_time: 0
     starting_frame: [0,]
 ophys:

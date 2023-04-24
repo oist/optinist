@@ -1,3 +1,5 @@
+import os
+import shutil
 from pynwb import NWBFile, NWBHDF5IO
 from pynwb.ophys import (
     OpticalChannel, TwoPhotonSeries, ImageSegmentation,
@@ -24,15 +26,15 @@ class NWBCreater:
 
         # 顕微鏡情報を登録
         device = nwbfile.create_device(
-            name=config['device']['name'], 
+            name=config['device']['name'],
             description=config['device']['description'],
             manufacturer=config['device']['manufacturer']
         )
 
         # 光チャネルを登録
         optical_channel = OpticalChannel(
-            name=config['optical_channel']['name'], 
-            description=config['optical_channel']['description'], 
+            name=config['optical_channel']['name'],
+            description=config['optical_channel']['description'],
             emission_lambda=float(config['optical_channel']['emission_lambda'])
         )
 
@@ -66,10 +68,22 @@ class NWBCreater:
                 starting_frame = starting_frames,
                 external_file=image_path,
                 imaging_plane=imaging_plane,
+                starting_time=float(config[NWBDATASET.IMAGE_SERIES]['starting_time']),
                 rate=1.0,
                 unit='normalized amplitude'
             )
             nwbfile.add_acquisition(image_series)
+
+        nwbfile.create_processing_module(
+            name='ophys',
+            description='optical physiology processed data'
+        )
+
+        nwbfile.create_processing_module(
+            name='optinist',
+            description='description'
+        )
+        cls.ophys(nwbfile)
 
         return nwbfile
 
@@ -216,19 +230,74 @@ class NWBCreater:
 
         return nwbfile
 
+    @classmethod
+    def reaqcuisition(cls, nwbfile):
+        new_nwbfile = NWBFile(
+            session_description=nwbfile.session_description,
+            identifier=nwbfile.identifier,
+            experiment_description=nwbfile.experiment_description,
+            session_start_time=nwbfile.session_start_time,
+        )
+
+        devices = []
+        for key in nwbfile.devices.keys():
+            device = new_nwbfile.create_device(
+                    name=key,
+                    description=nwbfile.devices[key].description,
+                    manufacturer=nwbfile.devices[key].manufacturer
+            )
+            devices.append(device)
+
+        old_optical_channel = nwbfile.imaging_planes['ImagingPlane'].optical_channel[0]
+        optical_channels = []
+        for old_optical_channel in nwbfile.imaging_planes['ImagingPlane'].optical_channel:
+            optical_channel = OpticalChannel(
+                name=old_optical_channel.name,
+                description=old_optical_channel.description,
+                emission_lambda=old_optical_channel.emission_lambda
+            )
+            optical_channels.append(optical_channel)
+
+        imaging_planes = []
+        for key in nwbfile.imaging_planes.keys():
+            imaging_plane = new_nwbfile.create_imaging_plane(
+                    name=nwbfile.imaging_planes[key].name,
+                    description=nwbfile.imaging_planes[key].description,
+                    optical_channel=optical_channels,   # 光チャネル
+                    device=devices[0],   # 電極デバイス
+                    imaging_rate=float(nwbfile.imaging_planes['ImagingPlane'].imaging_rate),   # 画像の比率Hz
+                    excitation_lambda=float(nwbfile.imaging_planes['ImagingPlane'].excitation_lambda), # 励起（れいき）波長
+                    indicator=nwbfile.imaging_planes['ImagingPlane'].indicator,   # カルシウムインディケーター
+                    location=nwbfile.imaging_planes['ImagingPlane'].location,
+            )
+            imaging_planes.append(imaging_plane)
+
+        image_series = TwoPhotonSeries(
+                name='TwoPhotonSeries',
+                starting_frame = nwbfile.acquisition['TwoPhotonSeries'].starting_frame,
+                external_file=nwbfile.acquisition['TwoPhotonSeries'].external_file,
+                imaging_plane=imaging_planes[0],
+                starting_time=nwbfile.acquisition['TwoPhotonSeries'].starting_time,
+                rate= nwbfile.acquisition['TwoPhotonSeries'].rate,
+                unit=nwbfile.acquisition['TwoPhotonSeries'].unit
+        )
+
+        new_nwbfile.add_acquisition(image_series)
+
+        new_nwbfile.create_processing_module(
+            name='ophys',
+            description='optical physiology processed data'
+        )
+        new_nwbfile.create_processing_module(
+            name='optinist',
+            description='description'
+        )
+        cls.ophys(new_nwbfile)
+        return new_nwbfile
+
 
 def save_nwb(save_path, input_config, config):
     nwbfile = NWBCreater.acquisition(input_config)
-    nwbfile.create_processing_module(
-        name='ophys',
-        description='optical physiology processed data'
-    )
-    NWBCreater.ophys(nwbfile)
-
-    nwbfile.create_processing_module(
-        name='optinist', 
-        description='description'
-    )
 
     if NWBDATASET.POSTPROCESS in config:
         for key, value in config[NWBDATASET.POSTPROCESS].items():
@@ -261,6 +330,50 @@ def save_nwb(save_path, input_config, config):
     with NWBHDF5IO(save_path, 'w') as f:
         f.write(nwbfile)
 
+
+
+def overwrite_nwb(config, save_path, nwb_file_name):
+    # バックアップファイルを作成
+    nwb_path = os.path.join(save_path, nwb_file_name)
+    tmp_nwb_path = os.path.join(save_path, 'tmp_' + nwb_file_name)
+
+    # NWBファイルの読み込み
+    with NWBHDF5IO(nwb_path, 'r') as io:
+        nwbfile = io.read()
+        # acquisition を元ファイルから作成する
+        new_nwbfile = NWBCreater.reaqcuisition(nwbfile)
+
+        if NWBDATASET.POSTPROCESS in config:
+            for key, value in config[NWBDATASET.POSTPROCESS].items():
+                new_nwbfile = NWBCreater.postprocess(new_nwbfile, key, value)
+
+        if NWBDATASET.TIMESERIES in config:
+            for key, value in config[NWBDATASET.TIMESERIES].items():
+                new_nwbfile = NWBCreater.timeseries(new_nwbfile, key, value)
+
+        if NWBDATASET.BEHAVIOR in config:
+            for key, value in config[NWBDATASET.BEHAVIOR].items():
+                new_nwbfile = NWBCreater.behavior(new_nwbfile, key, value)
+
+        if NWBDATASET.MOTION_CORRECTION in config:
+            for mc in config[NWBDATASET.MOTION_CORRECTION].values():
+                new_nwbfile = NWBCreater.motion_correction(new_nwbfile, **mc)
+
+        if NWBDATASET.ROI in config:
+            for roi_list in config[NWBDATASET.ROI].values():
+                new_nwbfile = NWBCreater.roi(new_nwbfile, roi_list)
+
+        if NWBDATASET.COLUMN in config:
+            for value in config[NWBDATASET.COLUMN].values():
+                new_nwbfile = nwbfile = NWBCreater.column(new_nwbfile, **value)
+
+        if NWBDATASET.FLUORESCENCE in config:
+            for value in config[NWBDATASET.FLUORESCENCE].values():
+                new_nwbfile = NWBCreater.fluorescence(new_nwbfile, **value)
+
+        with NWBHDF5IO(tmp_nwb_path, 'w') as io:
+            io.write(new_nwbfile)
+    shutil.copyfile(tmp_nwb_path, nwb_path)
 
 def merge_nwbfile(old_nwbfile, new_nwbfile):
     for pattern in [

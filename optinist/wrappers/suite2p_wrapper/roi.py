@@ -32,6 +32,7 @@ def suite2p_roi(
 
     ######## ROI EXTRACTION ##############
     ops, stat, F, Fneu, _, _ = extraction.create_masks_and_extract(ops, stat)
+    stat = stat.tolist()
 
     ######## ROI CLASSIFICATION ##############
     iscell = classification.classify(stat=stat, classfile=classfile)
@@ -90,6 +91,7 @@ def suite2p_roi(
     ops['F'] = F
     ops['Fneu'] = Fneu
     ops['iscell'] = iscell
+    ops['im'] = im
 
     info = {
         'ops': Suite2pData(ops),
