@@ -1,13 +1,15 @@
 import numpy as np
 
 from optinist.api.dataclass.dataclass import *
-from .utils import save_json_data
+from optinist.api.edit_ROI.utils import save_edit_ROI_data
 
+from .utils import set_nwbfile
 
+@save_edit_ROI_data
 def excute_delete_roi(node_dirpath, ids):
     ops = np.load(os.path.join(node_dirpath, 'suite2p.npy'), allow_pickle=True).item()
     iscell = ops.get('iscell')
-    stat = ops.get('stat')
+    delete_roi = ops.get('delete_roi', [])
     im = ops.get('im')
 
     delete_roi = ops.get('delete_roi') if ops.get('delete_roi') else []
@@ -18,9 +20,13 @@ def excute_delete_roi(node_dirpath, ids):
     ops['iscell'] = iscell
     ops['delete_roi'] = delete_roi
 
-    save_json_data(
-        ops,
-        im,
-        save_path=node_dirpath,
-        save_data=['ops', 'non_cell_roi', 'cell_roi', 'nwbfile'],
-    )
+    info = {
+        'ops': Suite2pData(ops),
+        'non_cell_roi': RoiData(
+            np.nanmax(im[~iscell], axis=0), file_name='noncell_roi'
+        ),
+        'cell_roi': RoiData(np.nanmax(im[iscell], axis=0), file_name='cell_roi'),
+        'nwbfile': set_nwbfile(ops),
+    }
+    
+    return info

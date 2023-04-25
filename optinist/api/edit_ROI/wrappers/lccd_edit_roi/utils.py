@@ -30,6 +30,5 @@ def get_nwbfile(lccd_data, roi_list, fluorescence=None):
         'delete_roi': lccd_data.get('delete_roi', []),
         'merge_roi': lccd_data.get('merge_roi', []),
     }
-    print(nwbfile[NWBDATASET.POSTPROCESS])
 
     return nwbfile

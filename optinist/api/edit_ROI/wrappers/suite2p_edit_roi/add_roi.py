@@ -1,9 +1,12 @@
 import numpy as np
-import os
+
 from optinist.api.dataclass.dataclass import *
-from .utils import get_stat0_add_roi, masks_and_traces, save_json_data
+from optinist.api.edit_ROI.utils import save_edit_ROI_data
+
+from .utils import get_stat0_add_roi, masks_and_traces, set_nwbfile
 
 
+@save_edit_ROI_data
 def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
     from suite2p import ROI
 
@@ -12,7 +15,7 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
     stat = ops.get('stat')
     stat0 = get_stat0_add_roi(ops, posx, posy, sizex, sizey)
     im = ops.get('im')
-    add_roi = ops.get('add_roi') if ops.get('add_roi') else []
+    add_roi = ops.get('add_roi', [])
 
     Fcell, Fneu, _, _, _, ops, manual_stat_cell = masks_and_traces(ops, stat0, stat)
 
@@ -44,18 +47,11 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
     ops['im'] = im
     ops['add_roi'] = add_roi
 
-    info = save_json_data(
-        ops,
-        save_path=node_dirpath,
-        save_data=[
-            'ops',
-            'fluorescence',
-            'all_roi',
-            'non_cell_roi',
-            'cell_roi',
-            'nwbfile',
-        ],
-    )
-
-    max_index = len(info['fluorescence'].data)
-    return max_index
+    info = {
+        'ops': Suite2pData(ops),
+        'fluorescence': FluoData(ops['F'], file_name='fluorescence'),
+        'all_roi': RoiData(np.nanmax(im, axis=0), file_name='all_roi'),
+        'cell_roi': RoiData(np.nanmax(im[iscell], axis=0), file_name='cell_roi'),
+        'nwbfile': set_nwbfile(ops),
+    }
+    return info

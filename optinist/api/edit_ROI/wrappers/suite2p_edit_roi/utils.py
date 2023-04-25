@@ -5,7 +5,6 @@ from scipy import stats
 
 from optinist.api.dataclass.dataclass import *
 from optinist.api.nwb.nwb import NWBDATASET
-from optinist.api.nwb.nwb_creater import overwrite_nwb
 
 
 def masks_and_traces(ops, stat_manual, stat_orig):
@@ -121,51 +120,6 @@ def get_stat0_add_roi(ops, posx, posy, sizex, sizey):
     return [{'ypix': ypix, 'xpix': xpix, 'lam': lam, 'npix': ypix.size, 'med': med}]
 
 
-def save_json_data(ops, save_path, save_data=[]):
-    info = {}
-    iscell = ops.get('iscell')
-    im = ops.get('im')
-
-    for d in save_data:
-        if d == 'ops':
-            info['ops'] = Suite2pData(ops)
-
-        if d == 'max_proj':
-            info['max_proj'] = ImageData(ops['max_proj'], file_name='max_proj')
-
-        if d == 'Vcorr':
-            info['Vcorr'] = ImageData(ops['Vcorr'], file_name='Vcorr')
-
-        if d == 'fluorescence':
-            info['fluorescence'] = FluoData(ops['F'], file_name='fluorescence')
-
-        if d == 'iscell' and iscell is not None:
-            info['iscell'] = IscellData(ops['iscell'], file_name='iscell')
-
-        if d == 'all_roi' and im is not None:
-            info['all_roi'] = RoiData(np.nanmax(im, axis=0), file_name='all_roi')
-
-        if d == 'non_cell_roi' and iscell is not None and im is not None:
-            info['non_cell_roi'] = RoiData(
-                np.nanmax(im[~iscell], axis=0), file_name='noncell_roi'
-            )
-
-        if d == 'cell_roi' and iscell is not None and im is not None:
-            info['cell_roi'] = RoiData(
-                np.nanmax(im[iscell], axis=0), file_name='cell_roi'
-            )
-
-        if d == 'nwbfile':
-            nwbfile = set_nwbfile(ops)
-            overwrite_nwb(nwbfile, save_path, 'suite2p_roi.nwb')
-
-    for k, v in info.items():
-        if isinstance(v, BaseData):
-            v.save_json(save_path)
-
-    return info
-
-
 def set_nwbfile(ops):
     stat = ops.get('stat')
     iscell = ops.get('iscell')
@@ -204,15 +158,11 @@ def set_nwbfile(ops):
             'rate': ops['fs'],
         }
 
-    add_roi = ops.get('add_roi') if ops.get('add_roi') else []
-    delete_roi = ops.get('delete_roi') if ops.get('delete_roi') else []
-    merge_roi = ops.get('merge_roi') if ops.get('merge_roi') else []
-
     # NWB追加
     nwbfile[NWBDATASET.POSTPROCESS] = {
-        'add_roi': add_roi,
-        'delete_roi': delete_roi,
-        'merge_roi': merge_roi,
+        'add_roi': ops.get('add_roi', []),
+        'delete_roi': ops.get('delete_roi', []),
+        'merge_roi': ops.get('merge_roi', []),
     }
 
     return nwbfile

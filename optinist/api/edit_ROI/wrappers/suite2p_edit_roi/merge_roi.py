@@ -1,12 +1,15 @@
 import numpy as np
 
 from optinist.api.dataclass.dataclass import *
-from .utils import save_json_data
+from optinist.api.edit_ROI.utils import save_edit_ROI_data
+
+from .utils import set_nwbfile
 
 
+@save_edit_ROI_data
 def execute_merge_roi(node_dirpath, ids):
-    from suite2p.detection.stats import median_pix, roi_stats
     from suite2p import ROI
+    from suite2p.detection.stats import median_pix, roi_stats
 
     ops = np.load(os.path.join(node_dirpath, 'suite2p.npy'), allow_pickle=True).item()
     iscell = ops.get('iscell')
@@ -14,7 +17,7 @@ def execute_merge_roi(node_dirpath, ids):
     im = ops.get('im')
     F_all = ops['F']
     Fneu_all = ops['Fneu']
-    merge_roi = ops.get('merge_roi') if ops.get('merge_roi') else []
+    merge_roi = ops.get('merge_roi', [])
 
     print('merging activity... this may take some time')
     ypix = np.zeros((0,), np.int32)
@@ -95,7 +98,6 @@ def execute_merge_roi(node_dirpath, ids):
     im = np.concatenate((im, array), axis=0)
     im[im == 0] = np.nan
 
-    print(merge_roi)
     try:
         F_all = np.concatenate((ops['F'], np.expand_dims(F, axis=0)), axis=0)
         Fneu_all = np.concatenate((ops['Fneu'], np.expand_dims(Fneu, axis=0)), axis=0)
@@ -110,15 +112,14 @@ def execute_merge_roi(node_dirpath, ids):
     ops['im'] = im
     ops['merge_roi'] = merge_roi
 
-    save_json_data(
-        ops,
-        save_path=node_dirpath,
-        save_data=[
-            'ops',
-            'fluorescence',
-            'all_roi',
-            'non_cell_roi',
-            'cell_roi',
-            'nwbfile',
-        ],
-    )
+    info = {
+        'ops': Suite2pData(ops),
+        'fluorescence': FluoData(ops['F'], file_name='fluorescence'),
+        'all_roi': RoiData(np.nanmax(im, axis=0), file_name='all_roi'),
+        'non_cell_roi': RoiData(
+            np.nanmax(im[~iscell], axis=0), file_name='noncell_roi'
+        ),
+        'cell_roi': RoiData(np.nanmax(im[iscell], axis=0), file_name='cell_roi'),
+        'nwbfile': set_nwbfile(ops),
+    }
+    return info
