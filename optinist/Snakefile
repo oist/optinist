@@ -1,12 +1,12 @@
 from optinist.api.dir_path import DIRPATH
 from optinist.api.utils.filepath_creater import join_filepath
 from optinist.api.snakemake.smk_utils import SmkUtils
-from optinist.api.edit_ROI import EditRoiUtils
+from optinist.api.edit_ROI import EditRoiUtils, ACTION
 from optinist.routers.model import FILETYPE
 
 configfile: join_filepath([DIRPATH.ROOT_DIR, 'config.yaml'])
 
-if config.get('action') in ['add', 'merge', 'delete']:
+if config.get('type') == ACTION.EDIT_ROI:
     rule edit_ROI:
         conda:
             EditRoiUtils.conda(config)
