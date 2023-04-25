@@ -1,6 +1,6 @@
-from .glm import GLM
-from .lda import LDA
-from .svm import SVM
+from optinist.wrappers.optinist_wrapper.neural_decoding.glm import GLM
+from optinist.wrappers.optinist_wrapper.neural_decoding.lda import LDA
+from optinist.wrappers.optinist_wrapper.neural_decoding.svm import SVM
 
 
 neural_decoding_wrapper_dict = {

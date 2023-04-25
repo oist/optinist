@@ -9,30 +9,31 @@
 Below we describe an example procedure for adding a new algorithm.
 
 **Prerequisite**
- - Sample Algorithm Name ... `new_algo`
- - Sample Algorithm Function Name ... `new_algo_func`
- - {OPTINIST_SRC_DIR}  ... Replace with the actual source storage directory path.
 
+- Sample Algorithm Name ... `new_algo`
+- Sample Algorithm Function Name ... `new_algo_func`
+- {OPTINIST_SRC_DIR} ... Replace with the actual source storage directory path.
 
 ### 1. Prepare necessary directories and files for the algorithm
 
 First, prepare the necessary directories and files for the algorithm.
 
 - {OPTINIST_SRC_DIR}/optinist/wrappers/
-  - \_\_init__.py
+
+  - \_\_init\_\_.py
   - xxxx_wrapper/
   - yyyy_wrapper/
   - ...
-  - `new_algo_wrapper/`    (*1)
-      - \_\_init__.py      (*2)
-      - `new_algo_func.py` (*3)
-      - ...                (*4)
+  - `new_algo_wrapper/` (\*1)
+    - \_\_init\_\_.py (\*2)
+    - `new_algo_func.py` (\*3)
+    - ... (\*4)
 
 - Explanation:
-  - (*1) The name is arbitrary, but `{algorithm name}_wrapper` is the standard.
-  - (*2) Empty first.
-  - (*3) Empty first.
-  - (*4) Prepare other files to be added.
+  - (\*1) The name is arbitrary, but `{algorithm name}_wrapper` is the standard.
+  - (\*2) Empty first.
+  - (\*3) Empty first.
+  - (\*4) Prepare other files to be added.
 
 ### 2. Algorithm implementation
 
@@ -48,7 +49,6 @@ from optinist.api.dataclass.dataclass import *
 - Explanation:
   - If the required dataclass does not exist, you can add your own.
   - see. [DataClass](#dataclass)
-
 
 #### Define the Input/Output of the function and implement the logic.
 
@@ -72,19 +72,19 @@ def new_algo_func(               # (*1)
 ```
 
 - Explanation:
-  - (*1) Function name can be any content.
-  - (*2) The first argument specifies the input data type. (This is also reflected in the GUI.)
-  - (*3) The second argument receives the function parameters.
+  - (\*1) Function name can be any content.
+  - (\*2) The first argument specifies the input data type. (This is also reflected in the GUI.)
+  - (\*3) The second argument receives the function parameters.
     - see. [Function Parameter Definitions](#function-parameter-definitions)
-  - (*4) The return value is a dictionary type. (This is also reflected in the GUI.)
+  - (\*4) The return value is a dictionary type. (This is also reflected in the GUI.)
 
 #### Definition of information to be displayed in the GUI
 
 - Target file
-  - {OPTINIST_SRC_DIR}/optinist/wrappers/`new_algo_wrapper`/\_\_init__.py
+  - {OPTINIST_SRC_DIR}/optinist/wrappers/`new_algo_wrapper`/\_\_init\_\_.py
 
 ```python
-from .new_algo_func import new_algo_func
+from optinist.wrappers.new_algo_wrapper.new_algo_func import new_algo_func
 
 new_algo_wrapper_dict = {                       # (*1)
     'new_algo': {                               # (*2)
@@ -98,25 +98,24 @@ new_algo_wrapper_dict = {                       # (*1)
 ```
 
 - Explanation:
-  - (*1) The variable name is arbitrary, but `{algorithm_name}_wrapper_dict` is the standard.
-  - (*2) Algorithm name can be any text (display label to GUI)
-  - (*3) Algorithm function name can be any text (display label to GUI)
-  - (*4) Algorithm function name specifies the actual function name
-  - (*4, 5) The conda setting is optional (to be defined when using conda with snakemake)
-
+  - (\*1) The variable name is arbitrary, but `{algorithm_name}_wrapper_dict` is the standard.
+  - (\*2) Algorithm name can be any text (display label to GUI)
+  - (\*3) Algorithm function name can be any text (display label to GUI)
+  - (\*4) Algorithm function name specifies the actual function name
+  - (\*4, 5) The conda setting is optional (to be defined when using conda with snakemake)
 
 ### 3. Algorithm Registration
 
 Register the created algorithm to the application by adding the following settings.
 
 - Target file
-  - {OPTINIST_SRC_DIR}/optinist/wrappers/\_\_init__.py
+  - {OPTINIST_SRC_DIR}/optinist/wrappers/\_\_init\_\_.py
 
 ```python
-from .xxxx_wrapper import xxxx_wrapper_dict
-from .yyyy_wrapper import yyyy_wrapper_dict
+from optinist.wrappers.xxxx_wrapper import xxxx_wrapper_dict
+from optinist.wrappers.yyyy_wrapper import yyyy_wrapper_dict
 ...
-from .new_algo_wrapper import new_algo_wrapper_dict    # <-- Add
+from optinist.wrappers.new_algo_wrapper import new_algo_wrapper_dict    # <-- Add
 
 wrapper_dict = {}
 wrapper_dict.update(**xxxx_wrapper_dict)
@@ -126,7 +125,6 @@ wrapper_dict.update(**new_algo_wrapper_dict)    # <-- Add
 ```
 
 After the registration process up to this point, restart the application browser to confirm that the algorithm has been added.
-
 
 ## Detailed Explanations
 
@@ -170,6 +168,7 @@ Function input parameters (input on GUI) can be defined in the following file.
 - {OPTINIST_SRC_DIR}/optinist/config/{algorithm_function_name}.yaml
 
 - Sample:
+
   ```yaml
   new_algo_params_1:
     filtersize1: 10
@@ -181,7 +180,6 @@ Function input parameters (input on GUI) can be defined in the following file.
 
 - Explanation:
   - {algorithm_function_name} must match the actual function name.
-
 
 ### Drawing output results
 

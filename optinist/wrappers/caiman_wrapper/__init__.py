@@ -1,5 +1,5 @@
-from .motion_correction import caiman_mc
-from .cnmf import caiman_cnmf
+from optinist.wrappers.caiman_wrapper.motion_correction import caiman_mc
+from optinist.wrappers.caiman_wrapper.cnmf import caiman_cnmf
 
 
 caiman_wrapper_dict = {

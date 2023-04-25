@@ -7,7 +7,7 @@ def lccd_detect(
     output_dir: str,
     params: dict = None
 ) -> dict(fluorescence=FluoData, cell_roi=RoiData):
-    from .lccd_python.lccd import LCCD
+    from optinist.wrappers.lccd_wrapper.lccd_python.lccd import LCCD
 
     print('params: ', params)
     lccd = LCCD(params)

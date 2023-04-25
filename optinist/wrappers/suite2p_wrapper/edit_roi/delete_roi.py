@@ -1,6 +1,6 @@
 import numpy as np
 from optinist.api.dataclass.dataclass import *
-from .utils import save_json_data
+from optinist.wrappers.suite2p_wrapper.edit_roi.utils import save_json_data
 
 
 def excute_delete_roi(node_dirpath, delete_roi_ids):

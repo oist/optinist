@@ -6,8 +6,8 @@ import skimage.measure
 import skimage.filters
 import skimage.exposure
 
-from . import oval_filter
-from .utils import matlab_conv2
+from optinist.wrappers.lccd_wrapper.lccd_python import oval_filter
+from optinist.wrappers.lccd_wrapper.lccd_python.utils import matlab_conv2
 
 
 def matlab_style_gauss2D(shape=(3, 3), sigma=0.5):

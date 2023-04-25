@@ -1,6 +1,6 @@
-from .correlation import correlation
-from .cross_correlation import cross_correlation
-from .granger import Granger
+from optinist.wrappers.optinist_wrapper.neural_population_analysis.correlation import correlation
+from optinist.wrappers.optinist_wrapper.neural_population_analysis.cross_correlation import cross_correlation
+from optinist.wrappers.optinist_wrapper.neural_population_analysis.granger import Granger
 
 
 neural_population_analysis_wrapper_dict = {

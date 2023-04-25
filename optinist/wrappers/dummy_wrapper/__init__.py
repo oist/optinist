@@ -1,4 +1,4 @@
-from .dummy import *
+from optinist.wrappers.dummy_wrapper.dummy import *
 
 dummy_wrapper_dict = {
     'dummy': {

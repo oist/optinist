@@ -4,8 +4,8 @@
 
 import numpy as np
 
-from .blob_detector import BlobDetector
-from .roi_integration import RoiIntegration
+from optinist.wrappers.lccd_wrapper.lccd_python.blob_detector import BlobDetector
+from optinist.wrappers.lccd_wrapper.lccd_python.roi_integration import RoiIntegration
 
 
 class LCCD:

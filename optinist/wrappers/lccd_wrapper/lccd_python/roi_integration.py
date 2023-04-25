@@ -2,7 +2,7 @@ import itertools
 
 import numpy as np
 import scipy.sparse
-from . import utils
+from optinist.wrappers.lccd_wrapper.lccd_python import utils
 
 
 def filter_roi_by_area(roi, min_area, max_area):
