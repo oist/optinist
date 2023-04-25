@@ -1,29 +1,37 @@
 from optinist.api.dataclass.dataclass import *
+from optinist.api.edit_ROI.utils import save_edit_ROI_data
+
+from .utils import get_nwbfile
 
 
+@save_edit_ROI_data
 def excute_delete_roi(node_dirpath, ids):
     import numpy as np
-
-    from .utils import get_roi
 
     # load data
     cnmf_data = np.load(f'{node_dirpath}/caiman_cnmf.npy', allow_pickle=True).item()
     is_cell = cnmf_data.get('is_cell')
-    ims = cnmf_data.get('ims')
+    delete_roi = cnmf_data.get('delete_roi', [])
+    im = cnmf_data.get('im')
 
     # delete ROI
     is_cell[ids] = False
+    [delete_roi.append(id + 1) for id in ids]
 
-    cell_roi = get_roi(ims)
+    cell_roi = np.copy(im)
+    num_rois = im.shape[0]
+    for i in range(num_rois):
+        cell_roi[i, :, :] = np.where(cell_roi[i, :, :] != 0, i + 1, np.nan)
 
-    cnmf_data['ims'] = ims
     cnmf_data['is_cell'] = is_cell
+    cnmf_data['delete_roi'] = delete_roi
 
     info = {
-        'cell_roi': RoiData(np.nanmax(cell_roi[is_cell], axis=0), file_name='cell_roi',),
+        'cell_roi': RoiData(
+            np.nanmax(cell_roi[is_cell], axis=0),
+            file_name='cell_roi',
+        ),
         'cnmf_data': CaimanCnmfData(cnmf_data),
+        'nwbfile': get_nwbfile(cnmf_data),
     }
-
-    for v in info.values():
-        if isinstance(v, BaseData):
-            v.save_json(node_dirpath)
+    return info

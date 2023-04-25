@@ -212,12 +212,11 @@ def caiman_cnmf(
         ]
     )
 
-    caiman_cnmf_data = {}
-    caiman_cnmf_data['fluorescence'] = fluorescence
-    caiman_cnmf_data['dims'] = dims
-    caiman_cnmf_data['ims'] = np.concatenate([ims, non_cell_roi_ims], axis=0)
-    caiman_cnmf_data['is_cell'] = iscell.astype(bool)
-    caiman_cnmf_data['images'] = mmap_images
+    cnmf_data = {}
+    cnmf_data['fluorescence'] = fluorescence
+    cnmf_data['im'] = np.concatenate([ims, non_cell_roi_ims], axis=0)
+    cnmf_data['is_cell'] = iscell.astype(bool)
+    cnmf_data['images'] = mmap_images
 
     info = {
         'images': ImageData(np.array(Cn * 255, dtype=np.uint8), output_dir=output_dir, file_name='images'),
@@ -227,7 +226,7 @@ def caiman_cnmf(
         'cell_roi': RoiData(cell_roi, output_dir=output_dir, file_name='cell_roi'),
         'non_cell_roi': RoiData(non_cell_roi, output_dir=output_dir, file_name='non_cell_roi'),
         'nwbfile': nwbfile,
-        'estimates': CaimanCnmfData(caiman_cnmf_data),  # save data for further analysis
+        'estimates': CaimanCnmfData(cnmf_data),  # save data for further analysis
     }
 
     return info

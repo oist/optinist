@@ -1,35 +1,49 @@
-from typing import Tuple
+from optinist.api.nwb.nwb import NWBDATASET
 
 
-def create_mask(x: int, y: int, width: int, height: int, dims: Tuple[int, int]):
-    import numpy as np
+def get_nwbfile(cnmf_data):
+    im = cnmf_data.get('im')
+    is_cell = cnmf_data.get('is_cell')
+    fluorescence = cnmf_data.get('fluorescence')
 
-    x, y, width, height = round(x), round(y), round(width), round(height)
+    # NWBの追加
+    nwbfile = {}
+    ### NWBにROIを追加
+    roi_list = []
+    n_cells = im.shape[0]
+    for i in range(n_cells):
+        kargs = {}
+        kargs['image_mask'] = im[i, :]
+        roi_list.append(kargs)
 
-    x_coords = np.arange(0, dims[0])
-    y_coords = np.arange(0, dims[1])
-    xx, yy = np.meshgrid(x_coords, y_coords)
+    nwbfile[NWBDATASET.ROI] = {'roi_list': roi_list}
 
-    # Calculate the distance of each pixel from the center of the ellipse
-    a = width / 2
-    b = height / 2
-    distance = ((xx - x) / a) ** 2 + ((yy - y) / b) ** 2
+    ### iscellを追加
+    nwbfile[NWBDATASET.COLUMN] = {
+        'roi_column': {
+            'name': 'iscell',
+            'discription': 'two columns - iscell & probcell',
+            'data': is_cell,
+        }
+    }
 
-    # Set the pixels within the ellipse to 1, and the pixels outside the ellipse to 0
-    ellipse = np.zeros(dims)
-    ellipse[distance <= 1] = 1
+    ### Fluorescence
 
-    return ellipse
+    nwbfile[NWBDATASET.FLUORESCENCE] = {
+        'RoiResponseSeries': {
+            'table_name': 'ROIs',
+            'region': list(range(n_cells)),
+            'name': 'RoiResponseSeries',
+            'data': fluorescence.T,
+            'unit': 'lumens',
+        },
+    }
 
+    # NWB追加
+    nwbfile[NWBDATASET.POSTPROCESS] = {
+        'add_roi': cnmf_data.get('add_roi', []),
+        'delete_roi': cnmf_data.get('delete_roi', []),
+        'merge_roi': cnmf_data.get('merge_roi', []),
+    }
 
-# display ROI added manually
-def get_roi(ims):
-    import numpy as np
-
-    cell_roi = np.copy(ims)
-
-    num_rois = ims.shape[0]
-    for i in range(num_rois):
-        cell_roi[i, :, :] = np.where(cell_roi[i, :, :] != 0, i + 1, np.nan)
-
-    return cell_roi
+    return nwbfile

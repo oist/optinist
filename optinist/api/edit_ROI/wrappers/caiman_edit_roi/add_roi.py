@@ -1,22 +1,25 @@
 from optinist.api.dataclass.dataclass import *
+from optinist.api.edit_ROI.utils import create_mask, save_edit_ROI_data
+
+from .utils import get_nwbfile
 
 
+@save_edit_ROI_data
 def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
     import numpy as np
 
-    from .utils import create_mask, get_roi
-
     # load data
     cnmf_data = np.load(f'{node_dirpath}/caiman_cnmf.npy', allow_pickle=True).item()
-    dims = cnmf_data['dims']
     is_cell = cnmf_data.get('is_cell')
-    ims = cnmf_data.get('ims')
+    im = cnmf_data.get('im')
     images = cnmf_data.get('images')
+    add_roi = cnmf_data.get('add_roi', [])
     fluorescence = cnmf_data.get('fluorescence')
 
     # Create mask for new roi
-    new_roi = create_mask(posx, posy, sizex, sizey, dims)
-    ims = np.concatenate((ims, new_roi[np.newaxis, :, :]), axis=0)
+    new_roi = create_mask(posx, posy, sizex, sizey, images.shape[1:])
+
+    im = np.concatenate((im, new_roi[np.newaxis, :, :]), axis=0)
     is_cell = np.append(is_cell, True)
 
     # extract fluorescence of new ROI
@@ -26,19 +29,23 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
     new_fluorescence = np.mean(reshapeImages[new_roi.reshape(-1, 1)[:, 0] > 0], axis=0)
     fluorescence = np.vstack([fluorescence, new_fluorescence])
 
-    cell_roi = get_roi(ims)
+    cell_roi = np.copy(im)
+    num_rois = im.shape[0]
+    for i in range(num_rois):
+        cell_roi[i, :, :] = np.where(cell_roi[i, :, :] != 0, i + 1, np.nan)
+    add_roi.append(num_rois)
 
     # save data
-    cnmf_data['ims'] = ims
+    cnmf_data['im'] = im
     cnmf_data['is_cell'] = is_cell
     cnmf_data['fluorescence'] = fluorescence
+    cnmf_data['add_roi'] = add_roi
 
     info = {
         'fluorescence': FluoData(fluorescence, file_name='fluorescence'),
         'cell_roi': RoiData(np.nanmax(cell_roi[is_cell], axis=0), file_name='cell_roi'),
         'cnmf_data': CaimanCnmfData(cnmf_data),
+        'nwbfile': get_nwbfile(cnmf_data)
     }
 
-    for v in info.values():
-        if isinstance(v, BaseData):
-            v.save_json(node_dirpath)
+    return info

@@ -1,43 +1,52 @@
 from optinist.api.dataclass.dataclass import *
+from optinist.api.edit_ROI.utils import save_edit_ROI_data
+
+from .utils import get_nwbfile
 
 
+@save_edit_ROI_data
 def execute_merge_roi(node_dirpath: str, ids: list):
     import numpy as np
-
-    from .utils import get_roi
 
     # load data
     cnmf_data = np.load(f'{node_dirpath}/caiman_cnmf.npy', allow_pickle=True).item()
     is_cell = cnmf_data.get('is_cell')
-    ims = cnmf_data.get('ims')
+    merge_roi = cnmf_data.get('merge_roi', [])
+    im = cnmf_data.get('im')
     fluorescence = cnmf_data.get('fluorescence')
 
     # get merging ROI
     merging_ROIs = []
-    [merging_ROIs.append(ims[id, :, :]) for id in ids]
+    [merging_ROIs.append(im[id, :, :]) for id in ids]
 
     # get merged ROI
     merged_ROI = np.maximum.reduce(merging_ROIs)
     is_cell[ids] = False
     is_cell = np.append(is_cell, True)
-    ims = np.concatenate((ims, merged_ROI[np.newaxis, :, :]), axis=0)
+    im = np.concatenate((im, merged_ROI[np.newaxis, :, :]), axis=0)
 
     # get merged F
     merged_f = np.mean((fluorescence[ids, :]), axis=0)
     fluorescence = np.vstack([fluorescence, merged_f])
 
-    cell_roi = get_roi(ims)
+    cell_roi = np.copy(im)
+    num_rois = im.shape[0]
+    for i in range(num_rois):
+        cell_roi[i, :, :] = np.where(cell_roi[i, :, :] != 0, i + 1, np.nan)
+    merge_roi.append(float(num_rois))
+    merge_roi += [(id + 1) for id in ids]
+    merge_roi.append((-1.0))
 
-    cnmf_data['ims'] = ims
+    cnmf_data['im'] = im
     cnmf_data['is_cell'] = is_cell
     cnmf_data['fluorescence'] = fluorescence
+    cnmf_data['merge_roi'] = merge_roi
 
     info = {
         'fluorescence': FluoData(fluorescence, file_name='fluorescence'),
         'cell_roi': RoiData(np.nanmax(cell_roi[is_cell], axis=0), file_name='cell_roi'),
         'cnmf_data': CaimanCnmfData(cnmf_data),
+        'nwbfile': get_nwbfile(cnmf_data),
     }
 
-    for v in info.values():
-        if isinstance(v, BaseData):
-            v.save_json(node_dirpath)
+    return info
