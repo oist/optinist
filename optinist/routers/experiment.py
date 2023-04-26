@@ -26,7 +26,7 @@ async def get_experiments():
             config.nodeDict = []
             config.edgeDict = []
             exp_config[config.unique_id] = config
-        except Exception as e:
+        except Exception:
             pass
 
     return exp_config
@@ -66,7 +66,7 @@ async def delete_experiment(unique_id: str):
     try:
         shutil.rmtree(join_filepath([DIRPATH.OUTPUT_DIR, unique_id]))
         return True
-    except Exception as e:
+    except Exception:
         return False
 
 
@@ -78,7 +78,7 @@ async def delete_experiment_list(deleteItem: DeleteItem):
             for uid in deleteItem.uidList
         ]
         return True
-    except Exception as e:
+    except Exception:
         return False
 
 
