@@ -182,7 +182,7 @@ def set_nwbfile(ops):
 
     nwbfile[NWBDATASET.ROI] = {"roi_list": roi_list}
 
-    ### iscellを追加
+    # iscellを追加
     nwbfile[NWBDATASET.COLUMN] = {
         "roi_column": {
             "name": "iscell",
@@ -191,7 +191,7 @@ def set_nwbfile(ops):
         }
     }
 
-    ### Fluorenceを追加
+    # Fluorenceを追加
     nwbfile[NWBDATASET.FLUORESCENCE] = {}
     for name, data in zip(["Fluorescence", "Neuropil"], [F, Fneu]):
         nwbfile[NWBDATASET.FLUORESCENCE][name] = {

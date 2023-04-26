@@ -29,11 +29,11 @@ def suite2p_roi(
 
     ops, stat = detection.detect(ops=ops, classfile=classfile)
 
-    ######## ROI EXTRACTION ##############
+    # ROI EXTRACTION
     ops, stat, F, Fneu, _, _ = extraction.create_masks_and_extract(ops, stat)
     stat = stat.tolist()
 
-    ######## ROI CLASSIFICATION ##############
+    # ROI CLASSIFICATION
     iscell = classification.classify(stat=stat, classfile=classfile)
     iscell = iscell[:, 0].astype(bool)
 
@@ -48,7 +48,7 @@ def suite2p_roi(
     im = np.stack(arrays)
     im[im == 0] = np.nan
 
-    ### roiを追加
+    # roiを追加
     roi_list = []
     for i in range(len(stat)):
         kargs = {}
@@ -62,7 +62,7 @@ def suite2p_roi(
 
     nwbfile[NWBDATASET.ROI] = {"roi_list": roi_list}
 
-    ### iscellを追加
+    # iscellを追加
     nwbfile[NWBDATASET.COLUMN] = {
         "roi_column": {
             "name": "iscell",
@@ -71,7 +71,7 @@ def suite2p_roi(
         }
     }
 
-    ### Fluorenceを追加
+    # Fluorenceを追加
     nwbfile[NWBDATASET.FLUORESCENCE] = {}
     for name, data in zip(["Fluorescence", "Neuropil"], [F, Fneu]):
         nwbfile[NWBDATASET.FLUORESCENCE][name] = {

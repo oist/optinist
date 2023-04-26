@@ -42,10 +42,10 @@ def LDA(
 
     Y = Y[:, params["target_index"]].reshape(-1, 1)
 
-    # # preprocessing  ##################
+    # preprocessing
     tX = standard_norm(X, params["standard_x_mean"], params["standard_x_std"])
 
-    # cross validation of LDA model ##################
+    # cross validation of LDA model
     skf = StratifiedKFold(**params["CV"])
 
     score = []

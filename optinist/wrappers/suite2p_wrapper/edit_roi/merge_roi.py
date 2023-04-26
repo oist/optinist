@@ -52,7 +52,7 @@ def execute_merge_roi(node_dirpath, merged_roi_ids):
     xpix = xpix[goodi]
     lam = lam[goodi]
 
-    ### compute statistics of merges
+    # compute statistics of merges
     stat0 = {}
     stat0["ypix"] = ypix
     stat0["xpix"] = xpix
@@ -63,7 +63,7 @@ def execute_merge_roi(node_dirpath, merged_roi_ids):
     stat0["chan2_prob"] = -1
     stat0["inmerge"] = -1
 
-    ### compute activity of merged cells
+    # compute activity of merged cells
     F = F.mean(axis=0)
     Fneu = Fneu.mean(axis=0)
 

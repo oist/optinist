@@ -19,7 +19,7 @@ def suite2p_file_convert(
 
     print(data_path_list)
     print(data_name_list)
-    ### data pathと保存pathを指定
+    # data pathと保存pathを指定
     db = {
         "data_path": data_path_list,
         "tiff_list": data_name_list,

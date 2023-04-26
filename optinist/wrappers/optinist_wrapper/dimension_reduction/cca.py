@@ -40,7 +40,7 @@ def CCA(
 
     Y = Y[:, params["target_index"]].reshape(-1, 1)
 
-    # # preprocessing  ##################
+    # preprocessing
     tX = standard_norm(X, params["standard_x_mean"], params["standard_x_std"])
     tY = standard_norm(Y, params["standard_y_mean"], params["standard_y_std"])
 

@@ -151,7 +151,7 @@ def caiman_cnmf(
 
     # NWBの追加
     nwbfile = {}
-    ### NWBにROIを追加
+    # NWBにROIを追加
     roi_list = []
     n_cells = cnm.estimates.A.shape[-1]
     for i in range(n_cells):
@@ -163,7 +163,7 @@ def caiman_cnmf(
             kargs["rejected"] = i in cnm.estimates.rejected_list
         roi_list.append(kargs)
 
-    ### backgroundsを追加
+    # backgroundsを追加
     bg_list = []
     for bg in cnm.estimates.b.T:
         kargs = {}
@@ -179,7 +179,7 @@ def caiman_cnmf(
         "bg_list": bg_list,
     }
 
-    ### iscellを追加
+    # iscellを追加
     nwbfile[NWBDATASET.COLUMN] = {
         "roi_column": {
             "name": "iscell",
@@ -188,7 +188,7 @@ def caiman_cnmf(
         }
     }
 
-    ### Fluorescence
+    # Fluorescence
     n_rois = cnm.estimates.A.shape[-1]
     n_bg = len(cnm.estimates.f)
 

@@ -33,10 +33,10 @@ def Granger(
     comb = list(itertools.permutations(range(num_cell), 2))  # combinations with dup
     num_comb = len(comb)
 
-    # # preprocessing  ##################
+    # preprocessing
     tX = standard_norm(X, params["standard_mean"], params["standard_std"])
 
-    # calculate dickey-fuller test  ##################
+    # calculate dickey-fuller test
     # augmented dickey-fuller test---- if p val is large, it cannot reject  there is a unit root
     # -> small p-val means OK : means this is not unit root process that it can apply Causality test
 
@@ -64,7 +64,7 @@ def Granger(
             )
             adf["adf_icbest"][i] = tp[5]
 
-    #  test for cointegration ##################
+    #  test for cointegration
     # augmented engle-granger two-step test ----- Test for no-cointegration of a univariate equation
     # if p val is small, the relation is cointegration
     # -> check this if ADF pval is large
@@ -85,7 +85,7 @@ def Granger(
                 cit["cit_pvalue"][i] = tp[1]
             cit["cit_crit_value"][i, :] = tp[2]
 
-    #  Granger causality ##################
+    #  Granger causality
     print("granger test ")
 
     if hasattr(params["Granger_maxlag"], "__iter__"):

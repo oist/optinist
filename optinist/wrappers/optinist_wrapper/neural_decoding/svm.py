@@ -43,12 +43,12 @@ def SVM(
 
     Y = Y[:, params["target_index"]].reshape(-1, 1)
 
-    # # preprocessing  ##################
+    # preprocessing
     tX = standard_norm(X, params["standard_x_mean"], params["standard_x_std"])
 
     hp = params["SVC"]
 
-    # SVM determination of hyper parameters if needed ##################
+    # SVM determination of hyper parameters if needed
     gs_clf = []
     if params["use_grid_search"]:
         param_grid = [params["grid_search"]["param_grid"]]
@@ -63,7 +63,7 @@ def SVM(
         for i in range(len(keys)):
             hp[keys[i]] = gs_clf.best_params_[keys[i]]
 
-    # cross validation of SVM using best grid search paraneters ##################
+    # cross validation of SVM using best grid search paraneters
     skf = StratifiedKFold(**params["CV"])
 
     score = []

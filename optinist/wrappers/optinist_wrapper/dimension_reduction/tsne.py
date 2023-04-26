@@ -24,10 +24,10 @@ def TSNE(
         ind = np.where(iscell > 0)[0]
         X = X[:, ind]
 
-    # preprocessing  ##################
+    # preprocessing
     tX = standard_norm(X, params["standard_mean"], params["standard_std"])
 
-    # calculate TSNE ##################
+    # calculate TSNE
     tsne = TSNE(**params["TSNE"])
 
     proj_X = tsne.fit_transform(tX)

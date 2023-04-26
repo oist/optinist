@@ -27,7 +27,7 @@ def cross_correlation(
         ind = np.where(iscell > 0)[0]
         X = X[ind, :]
 
-    # calculate cross correlation ##################
+    # calculate cross correlation
     num_cell = X.shape[0]
     data_len = X.shape[1]
     shuffle_num = params["shuffle_sample_number"]
@@ -85,7 +85,7 @@ def cross_correlation(
         "nwbfile": nwbfile
     }
 
-    # output structures ###################
+    # output structures
     cb = list(itertools.combinations(range(num_cell), 2))
 
     for i in range(len(cb)):

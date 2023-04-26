@@ -31,7 +31,7 @@ def suite2p_spike_deconv(
     # NWBを追加
     nwbfile = {}
 
-    ### roiを追加
+    # roiを追加
     stat = ops["stat"]
     roi_list = []
     for i in range(len(stat)):
@@ -43,7 +43,7 @@ def suite2p_spike_deconv(
 
     nwbfile[NWBDATASET.ROI] = {"roi_list": roi_list}
 
-    ### Fluorenceを追加
+    # Fluorenceを追加
     name = "Deconvolved"
     nwbfile[NWBDATASET.FLUORESCENCE] = {
         name: {

@@ -25,10 +25,10 @@ def PCA(
         ind = np.where(iscell > 0)[0]
         X = X[:, ind]
 
-    # # preprocessing  ##################
+    # # preprocessing
     tX = standard_norm(X, params["standard_mean"], params["standard_std"])
 
-    # calculate PCA ##################
+    # calculate PCA
     pca = PCA(**params["PCA"])
     proj_X = pca.fit_transform(tX)
 

@@ -10,7 +10,7 @@ def suite2p_registration(
     refImg = ops["meanImg"]
     print("start suite2_registration")
 
-    ######### REGISTRATION #########
+    # REGISTRATION
     if len(refImg.shape) == 3:
         refImg = refImg[0]
 
