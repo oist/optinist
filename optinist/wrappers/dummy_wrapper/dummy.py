@@ -1,5 +1,4 @@
 import numpy as np
-from pynwb import NWBFile
 
 from optinist.api.dataclass.dataclass import *
 

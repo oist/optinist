@@ -1,5 +1,7 @@
 import gc
 
+import numpy as np
+
 from optinist.api.dataclass.dataclass import *
 from optinist.api.nwb.nwb import NWBDATASET
 from optinist.api.utils.filepath_creater import join_filepath
@@ -62,7 +64,6 @@ def get_roi(A, thr, thr_method, swap_dim, dims):
 def caiman_cnmf(
     images: ImageData, output_dir: str, params: dict = None
 ) -> dict(fluorescence=FluoData, iscell=IscellData):
-    import numpy as np
     import scipy
     from caiman import local_correlations, stop_server
     from caiman.cluster import setup_cluster

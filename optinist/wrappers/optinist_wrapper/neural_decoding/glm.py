@@ -17,6 +17,7 @@ def GLM(
     params: dict = None,
 ) -> dict():
     # modules specific to function
+    import numpy as np
     import pandas as pd
     import statsmodels.api as sm
 
@@ -60,7 +61,7 @@ def GLM(
         tX = sm.add_constant(tX, prepend=False)
 
     # set family
-    link = getattr(sm.genmod.families.links, params["link"])()
+    link = getattr(sm.genmod.families.links, params["link"])()  # noqa
     family = eval(f"sm.families.{params['family']}(link=link)")
 
     # model fit

@@ -1,3 +1,5 @@
+import numpy as np
+
 from optinist.api.dataclass.dataclass import *
 from optinist.api.nwb.nwb import NWBDATASET
 
@@ -41,8 +43,6 @@ def ETA(
     iscell: IscellData = None,
     params: dict = None,
 ) -> dict(mean=TimeSeriesData):
-    import numpy as np
-
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data
 

@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 
 from optinist.api.dataclass.dataclass import *
@@ -8,7 +10,6 @@ from .utils import save_json_data
 def excute_delete_roi(node_dirpath, delete_roi_ids):
     ops = np.load(os.path.join(node_dirpath, "suite2p.npy"), allow_pickle=True).item()
     iscell = ops.get("iscell")
-    stat = ops.get("stat")
     im = ops.get("im")
 
     delete_roi = ops.get("delete_roi") if ops.get("delete_roi") else []

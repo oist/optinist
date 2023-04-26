@@ -10,6 +10,7 @@ def CCA(
     iscell: IscellData = None,
     params: dict = None,
 ) -> dict():
+    import numpy as np
     from sklearn.cross_decomposition import CCA
 
     neural_data = neural_data.data

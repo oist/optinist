@@ -3,7 +3,6 @@ import time
 import numpy as np
 from scipy import stats
 
-from optinist.api.config.config_reader import ConfigReader
 from optinist.api.dataclass.dataclass import *
 from optinist.api.nwb.nwb import NWBDATASET
 from optinist.api.nwb.nwb_creater import overwrite_nwb

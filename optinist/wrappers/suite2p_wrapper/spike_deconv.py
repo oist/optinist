@@ -5,6 +5,7 @@ from optinist.api.nwb.nwb import NWBDATASET
 def suite2p_spike_deconv(
     ops: Suite2pData, output_dir: str, params: dict = None
 ) -> dict(ops=Suite2pData, spks=FluoData):
+    import numpy as np
     from suite2p import default_ops, extraction
 
     print("start suite2_spike_deconv")
