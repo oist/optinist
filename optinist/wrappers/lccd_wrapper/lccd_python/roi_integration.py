@@ -127,7 +127,8 @@ class RoiIntegration:
         while 1:
             change_occured = False
             sim = roi_a.T.dot(roi_b)
-            # sim[i][j] is area of overlap by ith region in roi_a and jth region in roi_b
+            # sim[i][j] is area of overlap
+            # by ith region in roi_a and jth region in roi_b
             # roi_a.shape = (1500x1500, 5000), roi_b.shape = (1500x1500, 3000)
             # density 30 / (1500x1500)
             # roi_a.T.dot(roi_b) took 6ms (AMD Ryzen 5900x)

@@ -30,20 +30,26 @@ class LCCD:
 
 # def main(args):
 #     # args = parser.parse_args()
-#     with open('config/config.json', 'r') as f:
+#     with open("config/config.json", "r") as f:
 #         config = json.load(f)
 #     lccd = LCCD(config)
 
-#     v = np.load('profiles/src.npy')
-#     assert len(v.shape) == 3, "input array should have dimensions (width, height, time)"
+#     v = np.load("profiles/src.npy")
+#     assert len(v.shape) == 3, (
+#         "input array should have"
+#         "dimensions (width, height, time)"
+#     )
 #     roi = lccd.apply(v)
-#     joblib.dump({"config": config, "roi": roi}, 'out.dump')
+#     joblib.dump({"config": config, "roi": roi}, "out.dump")
 
 
-# if __name__ == '__main__':
+# if __name__ == "__main__":
 #     parser = argparse.ArgumentParser()
-#     parser.add_argument('--conf', default='config/config.json', help="lccd config file")
-#     parser.add_argument('--src', help='path to input file.')
-#     parser.add_argument('--dst', help='path to output file.')
+#     parser.add_argument(
+#         "--conf", default="config/config.json",
+#         help="lccd config file"
+#     )
+#     parser.add_argument("--src", help="path to input file.")
+#     parser.add_argument("--dst", help="path to output file.")
 #     args = parser.parse_args()
 #     main(args)

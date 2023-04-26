@@ -20,7 +20,8 @@ def insert_binary_col_binary_csc(mat, indices, i=None):
     Insert a column into a binary csc sparse matrix as ith column.
     The column to be inserted is a binary column vector.
     The indices of nonzero elements is given as argument indices.
-    if i is None, insert the column as the first column of mat. Mayber faster than specified i.
+    if i is None, insert the column as the first column of mat.
+    Mayber faster than specified i.
 
     This method is in-place operation.
 
@@ -148,7 +149,9 @@ def delete_col_csc_inplace(mat, i):
 def count_nonzero_values_in_col_csc(mat, i):
     """
     count nonzero values of mat's ith column
-    equivalent to np.sum(mat[:, i]>0), mat[:, i].count_nonzero() and np.count_nonzero(mat[:, i].toarray())
+    equivalent to np.sum(mat[:, i]>0),
+    mat[:, i].count_nonzero()
+    and np.count_nonzero(mat[:, i].toarray())
     """
     if not isinstance(mat, scipy.sparse.csc_matrix):
         raise ValueError("works only for CSC format -- use .tocsc() first")
@@ -156,7 +159,10 @@ def count_nonzero_values_in_col_csc(mat, i):
 
 
 def intersect_unique_sorted_1d(arr1, arr2):
-    """Assuming each array is sorted and unique, this method is faster than numpy.intersect1d by 1.5 times"""
+    """
+    Assuming each array is sorted and unique,
+    this method is faster than numpy.intersect1d by 1.5 times
+    """
 
     def new_merge(a, b):
         """https://stackoverflow.com/a/54131815"""

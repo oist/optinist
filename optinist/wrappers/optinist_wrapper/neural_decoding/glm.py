@@ -2,7 +2,7 @@
 #  input:  A:matrix[num_cell x timeseries ]   B:timeseries(behavior)[1 x timeseries]
 #  Generalized linear modeling using statsmodels
 #
-# 　https://www.statsmodels.org/stable/glm.html
+#  https://www.statsmodels.org/stable/glm.html
 
 from optinist.api.dataclass.dataclass import *
 from optinist.api.nwb.nwb import NWBDATASET
