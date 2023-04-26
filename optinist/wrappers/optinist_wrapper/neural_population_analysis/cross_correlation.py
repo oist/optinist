@@ -10,6 +10,7 @@ def cross_correlation(
 ) -> dict():
     import itertools
 
+    import numpy as np
     import scipy.signal as ss
     import scipy.stats as stats
     from tqdm import tqdm

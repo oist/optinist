@@ -18,6 +18,7 @@ def Granger(
     # from sklearn.preprocessing import StandardScaler
     import itertools
 
+    import numpy as np
     from statsmodels.tsa.stattools import adfuller, coint, grangercausalitytests
     from tqdm import tqdm
 

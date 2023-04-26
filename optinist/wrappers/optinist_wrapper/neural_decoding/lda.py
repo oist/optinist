@@ -11,6 +11,7 @@ def LDA(
     params: dict = None,
 ) -> dict():
     # modules specific to function
+    import numpy as np
     from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
     from sklearn.model_selection import StratifiedKFold
 

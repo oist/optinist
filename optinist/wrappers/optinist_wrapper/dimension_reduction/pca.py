@@ -10,6 +10,7 @@ def PCA(
     params: dict = None,
 ) -> dict():
     # modules specific to function
+    import numpy as np
     from sklearn.decomposition import PCA
 
     neural_data = neural_data.data

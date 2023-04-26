@@ -9,6 +9,7 @@ def TSNE(
     iscell: IscellData = None,
     params: dict = None,
 ) -> dict():
+    import numpy as np
     from sklearn.manifold import TSNE
 
     neural_data = neural_data.data
