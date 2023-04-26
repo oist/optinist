@@ -1,6 +1,7 @@
-from genericpath import exists
-import pytest
 import os
+
+import pytest
+from genericpath import exists
 
 from optinist.api.config.config_writer import ConfigWriter
 from optinist.api.utils.filepath_creater import join_filepath
@@ -15,10 +16,6 @@ def test_config_writer():
     if os.path.exists(filepath):
         os.remove(filepath)
 
-    ConfigWriter.write(
-        dirpath,
-        filename,
-        {"test": "test"}
-    )
+    ConfigWriter.write(dirpath, filename, {"test": "test"})
 
     assert os.path.exists(filepath)

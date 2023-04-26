@@ -1,21 +1,12 @@
 from typing import Dict
+
 import yaml
 
-from optinist.api.experiment.experiment import (
-    ExptConfig,
-    ExptFunction,
-)
-from optinist.api.workflow.workflow import (
-    Edge,
-    Node,
-    NodeData,
-    NodePosition,
-    Style
-)
+from optinist.api.experiment.experiment import ExptConfig, ExptFunction
+from optinist.api.workflow.workflow import Edge, Node, NodeData, NodePosition, Style
 
 
 class ExptConfigReader:
-
     @classmethod
     def read(cls, filepath) -> ExptConfig:
         with open(filepath, "r") as f:
@@ -45,13 +36,13 @@ class ExptConfigReader:
 
     @classmethod
     def read_nodeDict(cls, config) -> Dict[str, Node]:
-        return { 
+        return {
             key: Node(
                 id=key,
                 type=value["type"],
                 data=NodeData(**value["data"]),
                 position=NodePosition(**value["position"]),
-                style=Style(**value["style"])
+                style=Style(**value["style"]),
             )
             for key, value in config.items()
         }

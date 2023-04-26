@@ -1,8 +1,8 @@
-import pytest
 import os
 
-from optinist.api.pickle.pickle_writer import PickleWriter
+import pytest
 
+from optinist.api.pickle.pickle_writer import PickleWriter
 
 filepath = "/tmp/optinist/output/0123/func2/func2.pkl"
 

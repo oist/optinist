@@ -9,5 +9,5 @@ class PickleWriter:
         # ファイル保存先
         dirpath = join_filepath(pickle_path.split("/")[:-1])
         create_directory(dirpath)
-        with open(pickle_path, 'wb') as f:
+        with open(pickle_path, "wb") as f:
             pickle.dump(info, f)

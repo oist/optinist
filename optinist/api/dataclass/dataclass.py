@@ -1,5 +1,5 @@
-from optinist.api.dataclass.base import *
 from optinist.api.dataclass.bar import *
+from optinist.api.dataclass.base import *
 from optinist.api.dataclass.csv import *
 from optinist.api.dataclass.heatmap import *
 from optinist.api.dataclass.html import *

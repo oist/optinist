@@ -1,7 +1,9 @@
-import pytest
 import os
 
+import pytest
+
 filepath = "/tmp/optinist/output/test.txt"
+
 
 def test_create_filepath():
     with open(filepath, "w") as f:

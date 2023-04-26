@@ -69,6 +69,7 @@ def test_alltimedata():
 
 tif_filepath = f"test.tif"
 
+
 def test_image():
     response = client.get(f"/outputs/image/{tif_filepath}")
     data = response.json()

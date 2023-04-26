@@ -12,7 +12,7 @@ class LCCD:
     def __init__(self, config):
         self.blob_detector = BlobDetector(**config["blob_detector"])
         self.roi_integration = RoiIntegration(**config["roi_integration"])
-        self.frame_divider = config["lccd"]['frame_divider']
+        self.frame_divider = config["lccd"]["frame_divider"]
 
     def apply(self, v):
         # lazy loading of v will make this method memory efficient.

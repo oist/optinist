@@ -2,9 +2,9 @@ import numpy as np
 import scipy
 import scipy.signal
 import skimage
-import skimage.measure
-import skimage.filters
 import skimage.exposure
+import skimage.filters
+import skimage.measure
 
 from . import oval_filter
 from .utils import matlab_conv2
@@ -74,13 +74,13 @@ class BlobDetector:
         X, Y, T = tv.shape
         tv = tv.reshape(-1, T)
         smooth_tv = np.maximum(
-            self.conv2(tv, self.mavefil2, mode='same')
-            - self.conv2(tv, self.mavefil1, mode='same'),
+            self.conv2(tv, self.mavefil2, mode="same")
+            - self.conv2(tv, self.mavefil1, mode="same"),
             0,
         )
         max_lumi_map = np.max(smooth_tv, axis=1).reshape(X, Y)
         lumi_map = np.maximum(
-            self.conv2(max_lumi_map, self.sp_fil, mode='same'),
+            self.conv2(max_lumi_map, self.sp_fil, mode="same"),
             # Here, the article says the mode is 'valid' (Algorithm2, line 10).
             # But in order that ROI have the dimesion (0, 1)^{XY x N_r} (line 21),
             # mode should be 'same'.
@@ -97,14 +97,14 @@ class BlobDetector:
         if not self.debug:
             return ROI
         return {
-            'smooth_tv': smooth_tv,
-            'max_lumi_map': max_lumi_map,
-            'lumi_map': lumi_map,
-            'cont_enhanced_map': cont_enhanced_map,
-            'threshold': threshold,
-            'bwm': bwm,
-            'label_mat': label_mat,
-            'label_mat2': label_mat2,
-            'ROI': ROI,
-            'lumi_map_shape': lumi_map.shape,
+            "smooth_tv": smooth_tv,
+            "max_lumi_map": max_lumi_map,
+            "lumi_map": lumi_map,
+            "cont_enhanced_map": cont_enhanced_map,
+            "threshold": threshold,
+            "bwm": bwm,
+            "label_mat": label_mat,
+            "label_mat2": label_mat2,
+            "ROI": ROI,
+            "lumi_map_shape": lumi_map.shape,
         }

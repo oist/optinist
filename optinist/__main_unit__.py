@@ -1,23 +1,16 @@
+import argparse
+import os
+
+import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-
-import os
-import argparse
-import uvicorn
 from starlette.middleware.cors import CORSMiddleware
-from optinist.api.dir_path import DIRPATH as OPTINIST_DIRPATH
-from optinist.routers import (
-    files,
-    run,
-    params,
-    outputs,
-    algolist,
-    hdf5,
-    experiment,
-)
+
 from optinist.api.config.config_reader import ConfigReader
+from optinist.api.dir_path import DIRPATH as OPTINIST_DIRPATH
 from optinist.api.utils.filepath_creater import join_filepath
+from optinist.routers import algolist, experiment, files, hdf5, outputs, params, run
 
 app = FastAPI(docs_url="/docs", openapi_url="/openapi")
 app.include_router(algolist.router)
@@ -63,14 +56,33 @@ def main(develop_mode: bool = False):
     args = parser.parse_args()
 
     # set fastapi@uvicorn logging config.
-    logging_config_path = join_filepath([OPTINIST_DIRPATH.ROOT_DIR, 'app_config', 'logging.yaml'])
+    logging_config_path = join_filepath(
+        [OPTINIST_DIRPATH.ROOT_DIR, "app_config", "logging.yaml"]
+    )
     logging_config = ConfigReader.read(logging_config_path)
     fastapi_logging_config = uvicorn.config.LOGGING_CONFIG
-    fastapi_logging_config["formatters"]["default"]["fmt"] = logging_config["fastapi_logging_config"]["default_fmt"]
-    fastapi_logging_config["formatters"]["access"]["fmt"] = logging_config["fastapi_logging_config"]["access_fmt"]
+    fastapi_logging_config["formatters"]["default"]["fmt"] = logging_config[
+        "fastapi_logging_config"
+    ]["default_fmt"]
+    fastapi_logging_config["formatters"]["access"]["fmt"] = logging_config[
+        "fastapi_logging_config"
+    ]["access_fmt"]
 
     if develop_mode:
         reload_options = {"reload_dirs": ["optinist"]} if args.reload else {}
-        uvicorn.run("optinist.__main_unit__:app", host=args.host, port=args.port, log_config=fastapi_logging_config, reload=args.reload, **reload_options)
+        uvicorn.run(
+            "optinist.__main_unit__:app",
+            host=args.host,
+            port=args.port,
+            log_config=fastapi_logging_config,
+            reload=args.reload,
+            **reload_options,
+        )
     else:
-        uvicorn.run("optinist.__main_unit__:app", host=args.host, port=args.port, log_config=fastapi_logging_config, reload=False)
+        uvicorn.run(
+            "optinist.__main_unit__:app",
+            host=args.host,
+            port=args.port,
+            log_config=fastapi_logging_config,
+            reload=False,
+        )

@@ -2,6 +2,7 @@ import itertools
 
 import numpy as np
 import scipy.sparse
+
 from . import utils
 
 
@@ -30,7 +31,7 @@ def filter_roi_by_area(roi, min_area, max_area):
     return roi[:, np.array(indices)]
 
 
-class RoiIntegration():
+class RoiIntegration:
     def __init__(self, overlap_threshold, min_area, max_area, sparse=True, **kwargs):
         self.overlap_threshold = overlap_threshold
         self.min_area = min_area
@@ -42,12 +43,12 @@ class RoiIntegration():
             return utils.delete_col_csc(arr, idx)
         else:
             return np.delete(arr, idx, 1)
-    
+
     def cat_rois(self, roi_a, roi_b):
         if self.sparse:
             return scipy.sparse.hstack((roi_a, roi_b))
         return np.hstack((roi_a, roi_b))
-    
+
     def get_area(self, roi, i):
         """
         get area of ith region in roi.
@@ -55,15 +56,25 @@ class RoiIntegration():
         """
         if self.sparse:
             return utils.count_nonzero_values_in_col_csc(roi, i)
-        return np.sum(roi[:, i]) # for dense array, np.count_nonzero is slower than np.sum(col)
+        return np.sum(
+            roi[:, i]
+        )  # for dense array, np.count_nonzero is slower than np.sum(col)
 
     def gather_overlapping_regions(self, sim):
         """
         Gather regions those have overlapping area with other regions.
         """
         if self.sparse:
-            return [region_in_a for region_in_a in range(sim.shape[0]) if sim.getrow(region_in_a).nnz > 0]
-        return [region_in_a for region_in_a in range(sim.shape[0]) if np.sum(sim[region_in_a]) > 0]
+            return [
+                region_in_a
+                for region_in_a in range(sim.shape[0])
+                if sim.getrow(region_in_a).nnz > 0
+            ]
+        return [
+            region_in_a
+            for region_in_a in range(sim.shape[0])
+            if np.sum(sim[region_in_a]) > 0
+        ]
 
     def remove_overlap(self, roi_a, roi_b, i, j):
         """
@@ -81,14 +92,18 @@ class RoiIntegration():
         roi_b[:, j] = [0, 1, 0, 0, 1, 0, 0].T
         """
 
-        if self.sparse: # TODO: improve readability
-            roi_a_region_indices = roi_a.indices[roi_a.indptr[i]: roi_a.indptr[i+1]]
-            roi_b_region_indices = roi_b.indices[roi_b.indptr[j]: roi_b.indptr[j+1]]
+        if self.sparse:  # TODO: improve readability
+            roi_a_region_indices = roi_a.indices[roi_a.indptr[i] : roi_a.indptr[i + 1]]
+            roi_b_region_indices = roi_b.indices[roi_b.indptr[j] : roi_b.indptr[j + 1]]
             overlap_indices = utils.intersect_unique_sorted_1d(
-                roi_a_region_indices,
-                roi_b_region_indices)
-            roi_a_region_separated_indices = np.setdiff1d(roi_a_region_indices, overlap_indices, True) # This set operation may be slow.
-            roi_b_region_separated_indices = np.setdiff1d(roi_b_region_indices, overlap_indices, True)
+                roi_a_region_indices, roi_b_region_indices
+            )
+            roi_a_region_separated_indices = np.setdiff1d(
+                roi_a_region_indices, overlap_indices, True
+            )  # This set operation may be slow.
+            roi_b_region_separated_indices = np.setdiff1d(
+                roi_b_region_indices, overlap_indices, True
+            )
             utils.delete_col_csc_inplace(roi_a, i)
             utils.insert_binary_col_binary_csc(roi_a, roi_a_region_separated_indices, i)
             utils.delete_col_csc_inplace(roi_b, j)
@@ -119,14 +134,18 @@ class RoiIntegration():
 
             overlapping_regions_in_a = self.gather_overlapping_regions(sim)
             for region_in_roi_a in overlapping_regions_in_a:
-                region_in_roi_b = np.argmax(sim[region_in_roi_a]) # most overlapping region in roi_b
+                region_in_roi_b = np.argmax(
+                    sim[region_in_roi_a]
+                )  # most overlapping region in roi_b
                 area_overlap = sim[region_in_roi_a, region_in_roi_b]
                 if area_overlap == 0:
                     continue
                 area_a = self.get_area(roi_a, region_in_roi_a)
                 area_b = self.get_area(roi_b, region_in_roi_b)
-                if area_overlap / area_a > self.overlap_threshold or\
-                        area_overlap / area_b > self.overlap_threshold:
+                if (
+                    area_overlap / area_a > self.overlap_threshold
+                    or area_overlap / area_b > self.overlap_threshold
+                ):
                     change_occured = True
                     if area_a > area_b:
                         roi_b = self.delete_col(roi_b, region_in_roi_b)
@@ -134,8 +153,10 @@ class RoiIntegration():
                     else:
                         roi_a = self.delete_col(roi_a, region_in_roi_a)
                     break
-                elif area_overlap / area_a <= self.overlap_threshold and\
-                        area_overlap / area_b <= self.overlap_threshold:
+                elif (
+                    area_overlap / area_a <= self.overlap_threshold
+                    and area_overlap / area_b <= self.overlap_threshold
+                ):
                     change_occured = True
                     self.remove_overlap(roi_a, roi_b, region_in_roi_a, region_in_roi_b)
                     break

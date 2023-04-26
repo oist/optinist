@@ -1,4 +1,3 @@
-
 from optinist.api.experiment.experiment import ExptConfig
 
 
@@ -12,7 +11,7 @@ class ExptConfigBuilder:
         self._nodeDict = None
         self._edgeDict = None
 
-    def set_config(self, config: ExptConfig) -> 'ExptConfigBuilder':
+    def set_config(self, config: ExptConfig) -> "ExptConfigBuilder":
         self._timestamp = config.timestamp
         self._name = config.name
         self._unique_id = config.unique_id
@@ -22,31 +21,31 @@ class ExptConfigBuilder:
         self._edgeDict = config.edgeDict
         return self
 
-    def set_timestamp(self, timestamp) -> 'ExptConfigBuilder':
+    def set_timestamp(self, timestamp) -> "ExptConfigBuilder":
         self._timestamp = timestamp
         return self
 
-    def set_name(self, name) -> 'ExptConfigBuilder':
+    def set_name(self, name) -> "ExptConfigBuilder":
         self._name = name
         return self
 
-    def set_unique_id(self, unique_id) -> 'ExptConfigBuilder':
+    def set_unique_id(self, unique_id) -> "ExptConfigBuilder":
         self._unique_id = unique_id
         return self
 
-    def set_hasNWB(self, hasNWB) -> 'ExptConfigBuilder':
+    def set_hasNWB(self, hasNWB) -> "ExptConfigBuilder":
         self._hasNWB = hasNWB
         return self
 
-    def set_function(self, function) -> 'ExptConfigBuilder':
+    def set_function(self, function) -> "ExptConfigBuilder":
         self._function = function
         return self
 
-    def set_nodeDict(self, nodeDict) -> 'ExptConfigBuilder':
+    def set_nodeDict(self, nodeDict) -> "ExptConfigBuilder":
         self._nodeDict = nodeDict
         return self
 
-    def set_edgeDict(self, edgeDict) -> 'ExptConfigBuilder':
+    def set_edgeDict(self, edgeDict) -> "ExptConfigBuilder":
         self._edgeDict = edgeDict
         return self
 

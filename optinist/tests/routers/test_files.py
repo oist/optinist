@@ -17,9 +17,6 @@ def test_create_files():
 
 
 def test_DirTreeGetter_tif():
-    output = DirTreeGetter.get_tree(
-        [".tif", ".tiff", ".TIF", ".TIFF"],
-        "files"
-    )
+    output = DirTreeGetter.get_tree([".tif", ".tiff", ".TIF", ".TIFF"], "files")
     assert len(output) == 4
     assert isinstance(output[0], TreeNode)

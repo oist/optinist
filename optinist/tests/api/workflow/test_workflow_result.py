@@ -1,9 +1,9 @@
-import pytest
 import os
+
+import pytest
+
 from optinist.api.workflow.workflow import Message
-
 from optinist.api.workflow.workflow_result import NodeResult, WorkflowResult
-
 
 unique_id = "result_test"
 node_id_list = ["func1", "func2"]
@@ -13,9 +13,7 @@ pickle_path = f"/tmp/optinist/output/{unique_id}/func1/func1.pkl"
 
 
 def test_WorkflowResult_get():
-    output = WorkflowResult(
-        unique_id=unique_id
-    ).get(node_id_list)
+    output = WorkflowResult(unique_id=unique_id).get(node_id_list)
 
     assert isinstance(output, dict)
     assert len(output) == 1
