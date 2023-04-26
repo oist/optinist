@@ -1,4 +1,4 @@
-from optinist.api.dataclass.dataclass import *
+from optinist.api.dataclass.dataclass import BarData, BehaviorData, FluoData, IscellData
 from optinist.api.nwb.nwb import NWBDATASET
 from optinist.wrappers.optinist_wrapper.utils import standard_norm
 
@@ -13,7 +13,6 @@ def LDA(
     # modules specific to function
     from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
     from sklearn.model_selection import StratifiedKFold
-    from sklearn.preprocessing import StandardScaler
 
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data

@@ -1,4 +1,10 @@
-from optinist.api.dataclass.dataclass import *
+from optinist.api.dataclass.dataclass import (
+    BarData,
+    BehaviorData,
+    FluoData,
+    IscellData,
+    ScatterData,
+)
 from optinist.api.nwb.nwb import NWBDATASET
 from optinist.wrappers.optinist_wrapper.utils import standard_norm
 

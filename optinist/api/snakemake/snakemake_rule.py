@@ -1,6 +1,5 @@
 from typing import Dict
 
-from optinist.api.dataclass.dataclass import *
 from optinist.api.snakemake.smk import Rule
 from optinist.api.snakemake.smk_builder import RuleBuilder
 from optinist.api.utils.filepath_creater import get_pickle_file

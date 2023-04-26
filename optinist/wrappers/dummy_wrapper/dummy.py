@@ -1,6 +1,13 @@
 import numpy as np
 
-from optinist.api.dataclass.dataclass import *
+from optinist.api.dataclass.dataclass import (
+    HeatMapData,
+    ImageData,
+    IscellData,
+    RoiData,
+    ScatterData,
+    TimeSeriesData,
+)
 
 
 def dummy_image2image(

@@ -1,4 +1,4 @@
-from optinist.api.dataclass.dataclass import *
+from optinist.api.dataclass.dataclass import BarData, BehaviorData, FluoData, IscellData
 from optinist.api.nwb.nwb import NWBDATASET
 from optinist.wrappers.optinist_wrapper.utils import standard_norm
 
@@ -14,7 +14,6 @@ def SVM(
     import numpy as np
     from sklearn import svm
     from sklearn.model_selection import GridSearchCV, StratifiedKFold
-    from sklearn.preprocessing import StandardScaler
 
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data

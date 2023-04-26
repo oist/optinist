@@ -2,7 +2,7 @@ import gc
 
 import numpy as np
 
-from optinist.api.dataclass.dataclass import *
+from optinist.api.dataclass.dataclass import FluoData, ImageData, IscellData, RoiData
 from optinist.api.nwb.nwb import NWBDATASET
 from optinist.api.utils.filepath_creater import join_filepath
 
@@ -18,7 +18,8 @@ def get_roi(A, thr, thr_method, swap_dim, dims):
     coordinates = []
     for i in range(nr):
         pars = dict()
-        # we compute the cumulative sum of the energy of the Ath component that has been ordered from least to highest
+        # we compute the cumulative sum of the energy of the Ath component
+        # that has been ordered from least to highest
         patch_data = A.data[A.indptr[i] : A.indptr[i + 1]]
         indx = np.argsort(patch_data)[::-1]
 

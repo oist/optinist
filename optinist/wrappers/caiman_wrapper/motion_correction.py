@@ -1,4 +1,4 @@
-from optinist.api.dataclass.dataclass import *
+from optinist.api.dataclass.dataclass import ImageData, RoiData
 from optinist.api.nwb.nwb import NWBDATASET
 
 
@@ -6,7 +6,7 @@ def caiman_mc(
     image: ImageData, output_dir: str, params: dict = None
 ) -> dict(mc_images=ImageData):
     import numpy as np
-    from caiman import load, load_memmap, save_memmap, stop_server
+    from caiman import load_memmap, save_memmap, stop_server
     from caiman.base.rois import extract_binary_masks_from_structural_channel
     from caiman.cluster import setup_cluster
     from caiman.motion_correction import MotionCorrect

@@ -1,4 +1,10 @@
-from optinist.api.dataclass.dataclass import *
+from optinist.api.dataclass.dataclass import (
+    FluoData,
+    ImageData,
+    IscellData,
+    RoiData,
+    Suite2pData,
+)
 from optinist.api.nwb.nwb import NWBDATASET
 
 

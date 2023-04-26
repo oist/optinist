@@ -1,4 +1,9 @@
-from optinist.api.dataclass.dataclass import *
+from optinist.api.dataclass.dataclass import (
+    FluoData,
+    HeatMapData,
+    IscellData,
+    ScatterData,
+)
 from optinist.api.nwb.nwb import NWBDATASET
 from optinist.wrappers.optinist_wrapper.utils import standard_norm
 
@@ -37,8 +42,11 @@ def Granger(
     tX = standard_norm(X, params["standard_mean"], params["standard_std"])
 
     # calculate dickey-fuller test
-    # augmented dickey-fuller test---- if p val is large, it cannot reject  there is a unit root
-    # -> small p-val means OK : means this is not unit root process that it can apply Causality test
+    # augmented dickey-fuller test
+    # - if p val is large
+    #   -> it cannot reject  there is a unit root
+    # - small p-val means OK
+    #   -> means this is not unit root process that it can apply Causality test
 
     adf = {
         "adf_teststat": np.zeros([num_cell], dtype="float64"),
@@ -65,7 +73,8 @@ def Granger(
             adf["adf_icbest"][i] = tp[5]
 
     #  test for cointegration
-    # augmented engle-granger two-step test ----- Test for no-cointegration of a univariate equation
+    # augmented engle-granger two-step test
+    # Test for no-cointegration of a univariate equation
     # if p val is small, the relation is cointegration
     # -> check this if ADF pval is large
     cit = {
@@ -106,7 +115,8 @@ def Granger(
     }
 
     for i in tqdm(range(len(comb))):
-        # The Null hypothesis for grangercausalitytests is that the time series in the second column1,
+        # The Null hypothesis for grangercausalitytests is
+        # that the time series in the second column1,
         # does NOT Granger cause the time series in the first column0
         # column 1 -> colum 0
         tp = grangercausalitytests(

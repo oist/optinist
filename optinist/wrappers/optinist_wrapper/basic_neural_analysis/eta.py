@@ -1,6 +1,12 @@
 import numpy as np
 
-from optinist.api.dataclass.dataclass import *
+from optinist.api.dataclass.dataclass import (
+    BehaviorData,
+    FluoData,
+    HeatMapData,
+    IscellData,
+    TimeSeriesData,
+)
 from optinist.api.nwb.nwb import NWBDATASET
 
 
