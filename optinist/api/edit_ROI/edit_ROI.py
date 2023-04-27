@@ -2,12 +2,17 @@ import copy
 import gc
 import os
 from dataclasses import dataclass
+from glob import glob
 
 from fastapi import HTTPException, status
 from snakemake import snakemake
 
 from optinist.api.config.config_writer import ConfigWriter
+from optinist.api.dataclass.base import BaseData
 from optinist.api.dir_path import DIRPATH
+from optinist.api.nwb.nwb_creater import overwrite_nwb
+from optinist.api.pickle.pickle_writer import PickleWriter
+from optinist.api.utils.filepath_creater import join_filepath
 
 
 @dataclass
@@ -98,3 +103,16 @@ class EditRoiUtils:
 
         del func
         gc.collect()
+
+        for k, v in output_info.items():
+            if isinstance(v, BaseData):
+                v.save_json(node_dirpath)
+
+            if k == 'nwbfile':
+                nwb_files = glob(join_filepath([node_dirpath, "*.nwb"]))
+                if len(nwb_files) > 0:
+                    overwrite_nwb(v, node_dirpath, os.path.basename(nwb_files[0]))
+
+        pickle_files = glob(join_filepath([node_dirpath, "*.pkl"]))
+        if len(pickle_files) > 0:
+            PickleWriter.overwrite(pickle_path=pickle_files[0], info=output_info)

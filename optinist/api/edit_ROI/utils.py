@@ -1,25 +1,4 @@
-import os
 from typing import Tuple
-
-from optinist.api.dataclass.base import BaseData
-from optinist.api.nwb.nwb_creater import overwrite_nwb
-
-
-def save_edit_ROI_data(func):
-    def wrapper(*args, **kwargs):
-        info = func(*args, **kwargs)
-
-        node_dirpath = args[0]
-        node_name = os.path.basename(node_dirpath)[:-11]
-
-        for k, v in info.items():
-            if isinstance(v, BaseData):
-                v.save_json(node_dirpath)
-
-            if k == 'nwbfile':
-                overwrite_nwb(v, node_dirpath, f'{node_name}.nwb')
-
-    return wrapper
 
 
 def create_mask(x: int, y: int, width: int, height: int, dims: Tuple[int, int]):

@@ -1,12 +1,10 @@
 import numpy as np
 
 from optinist.api.dataclass.dataclass import *
-from optinist.api.edit_ROI.utils import save_edit_ROI_data
 
 from .utils import get_stat0_add_roi, masks_and_traces, set_nwbfile
 
 
-@save_edit_ROI_data
 def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
     from suite2p import ROI
 

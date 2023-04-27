@@ -1,7 +1,7 @@
 from optinist.api.nwb.nwb import NWBDATASET
 
 
-def get_nwbfile(lccd_data, roi_list, fluorescence=None):
+def set_nwbfile(lccd_data, roi_list, fluorescence=None):
     nwbfile = {}
 
     nwbfile[NWBDATASET.ROI] = {'roi_list': roi_list}

@@ -2,11 +2,10 @@ import os
 
 from optinist.api.dataclass.dataclass import *
 
-from optinist.api.edit_ROI.utils import save_edit_ROI_data, create_mask
-from .utils import get_nwbfile
+from optinist.api.edit_ROI.utils import create_mask
+from .utils import set_nwbfile
 
 
-@save_edit_ROI_data
 def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
     import numpy as np
 
@@ -64,7 +63,7 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
         'cell_roi': RoiData(np.nanmax(im[is_cell], axis=0), file_name='cell_roi'),
         'fluorescence': FluoData(timeseries, file_name='fluorescence'),
         'dff': FluoData(timeseries_dff, file_name='dff'),
-        'nwbfile': get_nwbfile(lccd_data, roi_list, fluorescence=timeseries),
+        'nwbfile': set_nwbfile(lccd_data, roi_list, fluorescence=timeseries),
     }
 
     return info

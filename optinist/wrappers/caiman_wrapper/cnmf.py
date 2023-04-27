@@ -226,7 +226,7 @@ def caiman_cnmf(
         'cell_roi': RoiData(cell_roi, output_dir=output_dir, file_name='cell_roi'),
         'non_cell_roi': RoiData(non_cell_roi, output_dir=output_dir, file_name='non_cell_roi'),
         'nwbfile': nwbfile,
-        'estimates': CaimanCnmfData(cnmf_data),  # save data for further analysis
+        'cnmf_data': CaimanCnmfData(cnmf_data)
     }
 
     return info

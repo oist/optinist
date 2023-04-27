@@ -1,7 +1,7 @@
 from optinist.api.nwb.nwb import NWBDATASET
 
 
-def get_nwbfile(cnmf_data):
+def set_nwbfile(cnmf_data):
     im = cnmf_data.get('im')
     is_cell = cnmf_data.get('is_cell')
     fluorescence = cnmf_data.get('fluorescence')

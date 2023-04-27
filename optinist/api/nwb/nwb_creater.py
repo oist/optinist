@@ -374,6 +374,7 @@ def overwrite_nwb(config, save_path, nwb_file_name):
         with NWBHDF5IO(tmp_nwb_path, 'w') as io:
             io.write(new_nwbfile)
     shutil.copyfile(tmp_nwb_path, nwb_path)
+    os.remove(tmp_nwb_path)
 
 def merge_nwbfile(old_nwbfile, new_nwbfile):
     for pattern in [

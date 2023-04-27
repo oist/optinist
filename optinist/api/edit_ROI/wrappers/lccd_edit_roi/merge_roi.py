@@ -1,10 +1,8 @@
 from optinist.api.dataclass.dataclass import *
 
-from optinist.api.edit_ROI.utils import save_edit_ROI_data
-from .utils import get_nwbfile
+from .utils import set_nwbfile
 
 
-@save_edit_ROI_data
 def execute_merge_roi(node_dirpath, ids):
     import numpy as np
 
@@ -69,7 +67,7 @@ def execute_merge_roi(node_dirpath, ids):
         'cell_roi': RoiData(np.nanmax(im[is_cell], axis=0), file_name='cell_roi'),
         'fluorescence': FluoData(timeseries, file_name='fluorescence'),
         'dff': FluoData(timeseries_dff, file_name='dff'),
-        'nwbfile': get_nwbfile(lccd_data, roi_list, fluorescence=timeseries),
+        'nwbfile': set_nwbfile(lccd_data, roi_list, fluorescence=timeseries),
     }
 
     return info

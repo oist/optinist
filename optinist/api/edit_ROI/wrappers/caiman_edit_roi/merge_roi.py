@@ -1,10 +1,8 @@
 from optinist.api.dataclass.dataclass import *
-from optinist.api.edit_ROI.utils import save_edit_ROI_data
 
-from .utils import get_nwbfile
+from .utils import set_nwbfile
 
 
-@save_edit_ROI_data
 def execute_merge_roi(node_dirpath: str, ids: list):
     import numpy as np
 
@@ -46,7 +44,7 @@ def execute_merge_roi(node_dirpath: str, ids: list):
         'fluorescence': FluoData(fluorescence, file_name='fluorescence'),
         'cell_roi': RoiData(np.nanmax(cell_roi[is_cell], axis=0), file_name='cell_roi'),
         'cnmf_data': CaimanCnmfData(cnmf_data),
-        'nwbfile': get_nwbfile(cnmf_data),
+        'nwbfile': set_nwbfile(cnmf_data),
     }
 
     return info

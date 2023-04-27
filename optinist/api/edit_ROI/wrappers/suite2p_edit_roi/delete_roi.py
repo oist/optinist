@@ -1,11 +1,10 @@
 import numpy as np
 
 from optinist.api.dataclass.dataclass import *
-from optinist.api.edit_ROI.utils import save_edit_ROI_data
 
 from .utils import set_nwbfile
 
-@save_edit_ROI_data
+
 def excute_delete_roi(node_dirpath, ids):
     ops = np.load(os.path.join(node_dirpath, 'suite2p.npy'), allow_pickle=True).item()
     iscell = ops.get('iscell')
@@ -28,5 +27,5 @@ def excute_delete_roi(node_dirpath, ids):
         'cell_roi': RoiData(np.nanmax(im[iscell], axis=0), file_name='cell_roi'),
         'nwbfile': set_nwbfile(ops),
     }
-    
+
     return info

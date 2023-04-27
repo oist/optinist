@@ -1,12 +1,10 @@
 import numpy as np
 
 from optinist.api.dataclass.dataclass import *
-from optinist.api.edit_ROI.utils import save_edit_ROI_data
 
 from .utils import set_nwbfile
 
 
-@save_edit_ROI_data
 def execute_merge_roi(node_dirpath, ids):
     from suite2p import ROI
     from suite2p.detection.stats import median_pix, roi_stats
