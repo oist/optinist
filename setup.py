@@ -23,7 +23,7 @@ def _requires_from_file(filepath):
 setup(
     name="optinist",
     version=VERSION,  # noqa: F821
-    description="An offline deep reinforcement learning library",
+    description="Calcium Imaging Pipeline Tool",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
     url="https://github.com/oist/optinist",
