@@ -29,10 +29,10 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
     new_fluorescence = np.mean(reshapeImages[new_roi.reshape(-1, 1)[:, 0] > 0], axis=0)
     fluorescence = np.vstack([fluorescence, new_fluorescence])
 
-    cell_roi = np.copy(im)
+    cell_roi = np.zeros(im.shape)
     num_rois = im.shape[0]
     for i in range(num_rois):
-        cell_roi[i, :, :] = np.where(cell_roi[i, :, :] != 0, i + 1, np.nan)
+        cell_roi[i, :, :] = np.where(im[i, :, :] != 0, i + 1, np.nan)
     add_roi.append(num_rois)
 
     # save data
