@@ -1,5 +1,3 @@
-import pytest
-
 from optinist.api.snakemake.smk import Rule, SmkParam
 from optinist.api.snakemake.snakemake_reader import RuleConfigReader, SmkParamReader
 

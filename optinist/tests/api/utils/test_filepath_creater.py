@@ -1,7 +1,5 @@
 import os
 
-import pytest
-
 filepath = "/tmp/optinist/output/test.txt"
 
 

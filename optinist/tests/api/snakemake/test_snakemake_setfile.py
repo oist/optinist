@@ -1,5 +1,3 @@
-import pytest
-
 from optinist.api.snakemake.snakemake_rule import SmkRule
 from optinist.api.workflow.workflow import Edge, Node, NodeData, NodePosition
 

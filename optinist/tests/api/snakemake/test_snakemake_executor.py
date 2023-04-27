@@ -1,8 +1,6 @@
 import os
 import shutil
 
-import pytest
-
 from optinist.api.dir_path import DIRPATH
 from optinist.api.snakemake.smk import ForceRun, SmkParam
 from optinist.api.snakemake.snakemake_executor import (
@@ -106,7 +104,7 @@ def test_snakemake_delete_dependencies():
     assert not os.path.exists(f"{output_dirpath}/suite2p_roi/suite2p_roi.pkl")
 
 
-def test_snakemake_delete_dependencies():
+def test_snakemake_delete_dependencies_file_convert():
     test_snakemake_execute()
 
     smk_param.forcerun = [

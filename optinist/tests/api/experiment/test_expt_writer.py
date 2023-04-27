@@ -1,8 +1,6 @@
 import os
 import shutil
 
-import pytest
-
 from optinist.api.experiment.experiment import ExptConfig, ExptFunction
 from optinist.api.experiment.experiment_writer import ExptConfigWriter
 from optinist.api.workflow.workflow import Edge, Node, NodeData, RunItem

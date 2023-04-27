@@ -1,7 +1,5 @@
 import os
 
-import pytest
-
 from optinist.api.snakemake.snakemake_writer import SmkConfigWriter
 
 unique_id = "smk_test"

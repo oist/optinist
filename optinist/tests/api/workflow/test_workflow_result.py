@@ -1,7 +1,5 @@
 import os
 
-import pytest
-
 from optinist.api.workflow.workflow import Message
 from optinist.api.workflow.workflow_result import NodeResult, WorkflowResult
 

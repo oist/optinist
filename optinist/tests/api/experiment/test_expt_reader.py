@@ -1,5 +1,3 @@
-import pytest
-
 from optinist.api.experiment.experiment import ExptConfig, ExptFunction
 from optinist.api.experiment.experiment_reader import ExptConfigReader
 from optinist.api.workflow.workflow import Edge, Node, NodeData, NodePosition, Style

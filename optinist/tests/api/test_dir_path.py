@@ -1,7 +1,5 @@
 import os
 
-import pytest
-
 from optinist.api.dir_path import DIRPATH
 
 

@@ -1,8 +1,5 @@
 import os
 
-import pytest
-from genericpath import exists
-
 from optinist.api.config.config_writer import ConfigWriter
 from optinist.api.utils.filepath_creater import join_filepath
 

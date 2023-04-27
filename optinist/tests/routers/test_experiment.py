@@ -1,6 +1,5 @@
 import os
 
-import pytest
 from fastapi.testclient import TestClient
 
 from optinist.api.dir_path import DIRPATH

@@ -1,5 +1,3 @@
-import pytest
-
 from optinist.api.config.config_reader import ConfigReader
 from optinist.api.dir_path import DIRPATH
 from optinist.api.utils.filepath_creater import join_filepath
