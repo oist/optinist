@@ -10,8 +10,6 @@
       "source.organizeImports": true
     }
   },
-  "flake8.args": ["--max-line-length=88", "--extend-ignore=E203"],
-  "isort.args": ["--profile", "black"],
   "python.linting.enabled": true,
   "python.linting.lintOnSave": true,
   "python.linting.pylintEnabled": false,
