@@ -92,7 +92,7 @@ async def download_nwb_experiment(unique_id: str):
 
 
 @router.get("/experiments/download/nwb/{unique_id}/{function_id}", tags=["experiments"])
-async def download_nwb_experiment(unique_id: str, function_id: str):
+async def download_nwb_experiment_with_function_id(unique_id: str, function_id: str):
     nwb_path_list = glob(
         join_filepath([DIRPATH.OUTPUT_DIR, unique_id, function_id, "*.nwb"])
     )

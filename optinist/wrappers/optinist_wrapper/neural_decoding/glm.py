@@ -68,7 +68,7 @@ def GLM(
         tX = sm.add_constant(tX, prepend=False)
 
     # set family
-    link = getattr(sm.genmod.families.links, params["link"])()  # noqa
+    link = getattr(sm.genmod.families.links, params["link"])()  # noqa: F841
     family = eval(f"sm.families.{params['family']}(link=link)")
 
     # model fit

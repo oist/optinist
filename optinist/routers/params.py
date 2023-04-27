@@ -19,11 +19,11 @@ async def get_params(name: str):
 
 @router.get("/snakemake", response_model=SnakemakeParams, tags=["params"])
 async def get_snakemake_params():
-    filepath = join_filepath([DIRPATH.CONFIG_DIR, f"snakemake.yaml"])
+    filepath = join_filepath([DIRPATH.CONFIG_DIR, "snakemake.yaml"])
     return ConfigReader.read(filepath)
 
 
 @router.get("/nwb", response_model=NWBParams, tags=["params"])
 async def get_nwb_params():
-    filepath = join_filepath([DIRPATH.CONFIG_DIR, f"nwb.yaml"])
+    filepath = join_filepath([DIRPATH.CONFIG_DIR, "nwb.yaml"])
     return ConfigReader.read(filepath)

@@ -17,7 +17,7 @@ def check_types(params, default_params):
         if isinstance(params[key], dict):
             params[key] = check_types(params[key], default_params[key])
         else:
-            if type(params[key]) != type(default_params[key]):
+            if not isinstance(type(params[key]), type(default_params[key])):
                 data_type = type(default_params[key])
                 p = params[key]
                 if isinstance(data_type, str):

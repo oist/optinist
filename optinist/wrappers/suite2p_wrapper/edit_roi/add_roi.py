@@ -2,8 +2,6 @@ import os
 
 import numpy as np
 
-from optinist.api.dataclass.dataclass import *
-
 from .utils import get_stat0_add_roi, masks_and_traces, save_json_data
 
 

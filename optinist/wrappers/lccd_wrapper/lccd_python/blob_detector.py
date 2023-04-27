@@ -27,9 +27,9 @@ def matlab_style_gauss2D(shape=(3, 3), sigma=0.5):
     return h
 
 
-def im2bw(I, level):
-    result = np.zeros_like(I)
-    result[I > level] = 1
+def im2bw(nd_array_img, level):
+    result = np.zeros_like(nd_array_img)
+    result[nd_array_img > level] = 1
     return result
 
 

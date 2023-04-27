@@ -109,7 +109,7 @@ def caiman_cnmf(
         ops = CNMFParams(params_dict=params)
 
     if "dview" in locals():
-        cm.stop_server(dview=dview)
+        stop_server(dview=dview)  # noqa: F821
 
     c, dview, n_processes = setup_cluster(
         backend="local", n_processes=None, single_thread=False

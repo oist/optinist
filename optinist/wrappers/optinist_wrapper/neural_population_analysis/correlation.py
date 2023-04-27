@@ -1,4 +1,4 @@
-from optinist.api.dataclass.dataclass import *
+from optinist.api.dataclass.dataclass import FluoData, HeatMapData, IscellData
 from optinist.api.nwb.nwb import NWBDATASET
 
 
@@ -8,6 +8,8 @@ def correlation(
     iscell: IscellData = None,
     params: dict = None,
 ) -> dict():
+    import numpy as np
+
     neural_data = neural_data.data
 
     # data shold be time x component matrix
