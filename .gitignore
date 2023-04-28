@@ -19,7 +19,7 @@ optinist.egg-info
 .pytest_cache
 
 optinist/config.yaml
-
+optinist/test_data/output
 docs/_build
 
 optinist/notebooks

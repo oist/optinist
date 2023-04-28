@@ -1,0 +1,111 @@
+edgeDict:
+  ? reactflow__edge-input_0input_0--image--ImageData-suite2p_file_convert_pi2bgrsd6msuite2p_file_convert_pi2bgrsd6m--image--ImageData
+  : animated: false
+    id: reactflow__edge-input_0input_0--image--ImageData-suite2p_file_convert_pi2bgrsd6msuite2p_file_convert_pi2bgrsd6m--image--ImageData
+    source: input_0
+    sourceHandle: input_0--image--ImageData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: suite2p_file_convert_pi2bgrsd6m
+    targetHandle: suite2p_file_convert_pi2bgrsd6m--image--ImageData
+    type: buttonedge
+  ? reactflow__edge-suite2p_file_convert_pi2bgrsd6msuite2p_file_convert_pi2bgrsd6m--ops--Suite2pData-suite2p_roi_m6v8o3dctgsuite2p_roi_m6v8o3dctg--ops--Suite2pData
+  : animated: false
+    id: reactflow__edge-suite2p_file_convert_pi2bgrsd6msuite2p_file_convert_pi2bgrsd6m--ops--Suite2pData-suite2p_roi_m6v8o3dctgsuite2p_roi_m6v8o3dctg--ops--Suite2pData
+    source: suite2p_file_convert_pi2bgrsd6m
+    sourceHandle: suite2p_file_convert_pi2bgrsd6m--ops--Suite2pData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: suite2p_roi_m6v8o3dctg
+    targetHandle: suite2p_roi_m6v8o3dctg--ops--Suite2pData
+    type: buttonedge
+function:
+  func1:
+    hasNWB: true
+    name: func1
+    success: error
+    unique_id: func1
+  func2:
+    hasNWB: false
+    name: func2
+    success: error
+    unique_id: func1
+hasNWB: false
+name: New flow
+nodeDict:
+  input_0:
+    data:
+      fileType: image
+      hdf5Path: null
+      label: data_endoscope.tif
+      param: {}
+      path:
+      - /tmp/optinist/input/data_endoscope/data_endoscope.tif
+      type: input
+    id: input_0
+    position:
+      x: 52
+      y: 150
+    style:
+      border: '1px solid #777'
+      borderRadius: null
+      height: 120
+      padding: null
+      width: null
+    type: ImageFileNode
+  suite2p_file_convert_pi2bgrsd6m:
+    data:
+      fileType: null
+      hdf5Path: null
+      label: suite2p_file_convert
+      param:
+        batch_size:
+          path: batch_size
+          type: child
+          value: 500
+      path: suite2p/suite2p_file_convert
+      type: algorithm
+    id: suite2p_file_convert_pi2bgrsd6m
+    position:
+      x: 350
+      y: 161.17742150468368
+    style:
+      border: null
+      borderRadius: 0
+      height: 100
+      padding: 0
+      width: 180
+    type: AlgorithmNode
+  suite2p_roi_m6v8o3dctg:
+    data:
+      fileType: null
+      hdf5Path: null
+      label: suite2p_roi
+      param:
+        allow_overlap:
+          path: allow_overlap
+          type: child
+          value: false
+      path: suite2p/suite2p_roi
+      type: algorithm
+    id: suite2p_roi_m6v8o3dctg
+    position:
+      x: 600
+      y: 177.39747814137326
+    style:
+      border: null
+      borderRadius: 0
+      height: 100
+      padding: 0
+      width: 180
+    type: AlgorithmNode
+timestamp: '2022-05-15 23:02:15'
+unique_id: 838d4234
