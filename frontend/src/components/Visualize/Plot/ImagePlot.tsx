@@ -548,14 +548,25 @@ const ImagePlotChart = React.memo<{
             </BoxDiv>
             <BoxDiv>
               {pointClick.length >= 2 ? (
-                <LinkDiv sx={{ ml: 0 }} onClick={onMergeRoi}>
+                <LinkDiv
+                  sx={{ ml: 0, opacity: loadingApi ? 0.5 : 1 }}
+                  onClick={onMergeRoi}
+                >
                   Merge ROI
                 </LinkDiv>
               ) : null}
-              <LinkDiv sx={{ color: '#F84E1B' }} onClick={onDeleteRoi}>
+              <LinkDiv
+                sx={{ color: '#F84E1B', opacity: loadingApi ? 0.5 : 1 }}
+                onClick={onDeleteRoi}
+              >
                 Delete ROI
               </LinkDiv>
-              <LinkDiv onClick={onCancel}>Cancel</LinkDiv>
+              <LinkDiv
+                sx={{ opacity: loadingApi ? 0.5 : 1 }}
+                onClick={onCancel}
+              >
+                Cancel
+              </LinkDiv>
             </BoxDiv>
           </>
         ) : (
