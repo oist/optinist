@@ -1,4 +1,5 @@
 import os
+import shutil
 
 from fastapi.testclient import TestClient
 
@@ -9,6 +10,14 @@ from optinist.routers.experiment import router
 client = TestClient(router)
 
 unique_id = "0123"
+
+output_test_dir = f"{DIRPATH.OPTINIST_DIR}/output_test"
+
+shutil.copytree(
+    f"{output_test_dir}/{unique_id}",
+    f"{DIRPATH.OUTPUT_DIR}/{unique_id}",
+    dirs_exist_ok=True,
+)
 
 
 def test_get():
@@ -30,7 +39,7 @@ def test_import():
 
 def test_delete():
     dirname = "delete_dir"
-    dirpath = join_filepath([DIRPATH.OUTPUT_DIR, dirname])
+    dirpath = join_filepath([f"{DIRPATH.OPTINIST_DIR}/output", dirname])
     os.makedirs(dirpath, exist_ok=True)
     assert os.path.exists(dirpath)
     response = client.delete(f"/experiments/{dirname}")

@@ -1,8 +1,9 @@
+from optinist.api.dir_path import DIRPATH
 from optinist.api.experiment.experiment import ExptConfig, ExptFunction
 from optinist.api.experiment.experiment_reader import ExptConfigReader
 from optinist.api.workflow.workflow import Edge, Node, NodeData, NodePosition, Style
 
-expt_filepath = "/tmp/optinist/output/0123/experiment.yaml"
+expt_filepath = f"{DIRPATH.OPTINIST_DIR}/output_test/0123/experiment.yaml"
 
 
 def test_read():

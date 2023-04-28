@@ -13,3 +13,5 @@ psutil
 nbstripout
 snakemake==7.24.*
 jinja2==3.0.*
+pytest
+pytest-env

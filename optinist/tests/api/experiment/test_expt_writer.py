@@ -1,6 +1,7 @@
 import os
 import shutil
 
+from optinist.api.dir_path import DIRPATH
 from optinist.api.experiment.experiment import ExptConfig, ExptFunction
 from optinist.api.experiment.experiment_writer import ExptConfigWriter
 from optinist.api.workflow.workflow import Edge, Node, NodeData, RunItem
@@ -36,7 +37,7 @@ edgeDict = {
     )
 }
 
-dirpath = "/tmp/optinist/output/unique_id"
+dirpath = f"{DIRPATH.OPTINIST_DIR}/output/unique_id"
 
 
 def test_create_config() -> ExptConfig:
