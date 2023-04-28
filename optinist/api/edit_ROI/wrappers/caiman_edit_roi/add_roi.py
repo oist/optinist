@@ -42,9 +42,13 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
 
     info = {
         'fluorescence': FluoData(fluorescence, file_name='fluorescence'),
-        'cell_roi': RoiData(np.nanmax(cell_roi[is_cell], axis=0), file_name='cell_roi'),
+        'cell_roi': RoiData(
+            np.nanmax(cell_roi[is_cell], axis=0),
+            output_dir=node_dirpath,
+            file_name='cell_roi',
+        ),
         'cnmf_data': CaimanCnmfData(cnmf_data),
-        'nwbfile': set_nwbfile(cnmf_data)
+        'nwbfile': set_nwbfile(cnmf_data),
     }
 
     return info

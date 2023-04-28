@@ -113,11 +113,17 @@ def execute_merge_roi(node_dirpath, ids):
     info = {
         'ops': Suite2pData(ops),
         'fluorescence': FluoData(ops['F'], file_name='fluorescence'),
-        'all_roi': RoiData(np.nanmax(im, axis=0), file_name='all_roi'),
-        'non_cell_roi': RoiData(
-            np.nanmax(im[~iscell], axis=0), file_name='noncell_roi'
+        'all_roi': RoiData(
+            np.nanmax(im, axis=0), output_dir=node_dirpath, file_name='all_roi'
         ),
-        'cell_roi': RoiData(np.nanmax(im[iscell], axis=0), file_name='cell_roi'),
+        'non_cell_roi': RoiData(
+            np.nanmax(im[~iscell], axis=0),
+            output_dir=node_dirpath,
+            file_name='noncell_roi',
+        ),
+        'cell_roi': RoiData(
+            np.nanmax(im[iscell], axis=0), output_dir=node_dirpath, file_name='cell_roi'
+        ),
         'nwbfile': set_nwbfile(ops),
     }
     return info

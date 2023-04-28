@@ -100,9 +100,12 @@ class EditRoiUtils:
 
         func = copy.deepcopy(edit_roi_wrapper_dict[algo]["function"][action])
         output_info = func(node_dirpath, **params)
-
         del func
         gc.collect()
+
+        pickle_files = glob(join_filepath([node_dirpath, "*.pkl"]))
+        if len(pickle_files) > 0:
+            PickleWriter.overwrite(pickle_path=pickle_files[0], info=output_info)
 
         for k, v in output_info.items():
             if isinstance(v, BaseData):
@@ -113,6 +116,5 @@ class EditRoiUtils:
                 if len(nwb_files) > 0:
                     overwrite_nwb(v, node_dirpath, os.path.basename(nwb_files[0]))
 
-        pickle_files = glob(join_filepath([node_dirpath, "*.pkl"]))
-        if len(pickle_files) > 0:
-            PickleWriter.overwrite(pickle_path=pickle_files[0], info=output_info)
+        del output_info
+        gc.collect()

@@ -64,7 +64,7 @@ def execute_merge_roi(node_dirpath, ids):
 
     info = {
         'lccd': LccdData(lccd_data),
-        'cell_roi': RoiData(np.nanmax(im[is_cell], axis=0), file_name='cell_roi'),
+        'cell_roi': RoiData(np.nanmax(im[is_cell], axis=0), output_dir=node_dirpath, file_name='cell_roi'),
         'fluorescence': FluoData(timeseries, file_name='fluorescence'),
         'dff': FluoData(timeseries_dff, file_name='dff'),
         'nwbfile': set_nwbfile(lccd_data, roi_list, fluorescence=timeseries),

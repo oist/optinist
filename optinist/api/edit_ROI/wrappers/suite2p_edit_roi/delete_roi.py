@@ -22,9 +22,13 @@ def excute_delete_roi(node_dirpath, ids):
     info = {
         'ops': Suite2pData(ops),
         'non_cell_roi': RoiData(
-            np.nanmax(im[~iscell], axis=0), file_name='noncell_roi'
+            np.nanmax(im[~iscell], axis=0),
+            output_dir=node_dirpath,
+            file_name='noncell_roi',
         ),
-        'cell_roi': RoiData(np.nanmax(im[iscell], axis=0), file_name='cell_roi'),
+        'cell_roi': RoiData(
+            np.nanmax(im[iscell], axis=0), output_dir=node_dirpath, file_name='cell_roi'
+        ),
         'nwbfile': set_nwbfile(ops),
     }
 

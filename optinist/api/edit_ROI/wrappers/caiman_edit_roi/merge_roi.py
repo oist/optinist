@@ -42,7 +42,7 @@ def execute_merge_roi(node_dirpath: str, ids: list):
 
     info = {
         'fluorescence': FluoData(fluorescence, file_name='fluorescence'),
-        'cell_roi': RoiData(np.nanmax(cell_roi[is_cell], axis=0), file_name='cell_roi'),
+        'cell_roi': RoiData(np.nanmax(cell_roi[is_cell], axis=0), output_dir=node_dirpath, file_name='cell_roi'),
         'cnmf_data': CaimanCnmfData(cnmf_data),
         'nwbfile': set_nwbfile(cnmf_data),
     }
