@@ -1,3 +1,5 @@
+import pytest
+
 from optinist.api.snakemake.snakemake_rule import SmkRule
 from optinist.api.workflow.workflow import Edge, Node, NodeData, NodePosition
 
@@ -21,7 +23,9 @@ node = Node(
     style={},
 )
 
-nodeDict = {"node1": node}
+nodeDict = {
+    "node1": node
+}
 
 edgeDict = {
     "edge1": Edge(
@@ -45,7 +49,7 @@ def test_SmkSetfile_image():
         nwbfile={},
     ).image()
 
-    assert rule.type == "image"
+    assert rule.type == 'image'
 
 
 def test_SmkSetfile_csv():
@@ -55,7 +59,7 @@ def test_SmkSetfile_csv():
         edgeDict=edgeDict,
         nwbfile={},
     ).csv()
-    assert rule.type == "csv"
+    assert rule.type == 'csv'
 
 
 def test_SmkSetfile_hdf5():
@@ -66,7 +70,7 @@ def test_SmkSetfile_hdf5():
         nwbfile={},
     ).hdf5()
 
-    assert rule.type == "hdf5"
+    assert rule.type == 'hdf5'
 
 
 def test_SmkSetfile_algo():

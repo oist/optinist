@@ -1,6 +1,9 @@
 import yaml
 
-from optinist.api.utils.filepath_creater import create_directory, join_filepath
+from optinist.api.utils.filepath_creater import (
+    create_directory,
+    join_filepath
+)
 
 
 class ConfigWriter:

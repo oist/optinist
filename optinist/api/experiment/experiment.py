@@ -22,7 +22,6 @@ class ExptConfig:
     nodeDict: Dict[str, Node]
     edgeDict: Dict[str, Edge]
 
-
 @dataclass
 class ExptImportData:
     nodeDict: Dict[str, Node]

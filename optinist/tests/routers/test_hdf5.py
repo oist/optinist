@@ -1,3 +1,4 @@
+import pytest
 from fastapi.testclient import TestClient
 
 from optinist.routers.hdf5 import HDF5Getter, router

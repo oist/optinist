@@ -4,7 +4,7 @@ from optinist.routers.outputs import router
 
 client = TestClient(router)
 
-timeseries_dirpath = "/tmp/optinist/output/0123/func1/fluorescence.json"
+timeseries_dirpath = f"/tmp/optinist/output/0123/func1/fluorescence.json"
 
 
 def test_inittimedata():
@@ -67,8 +67,7 @@ def test_alltimedata():
         assert len(value) == 1000
 
 
-tif_filepath = "test.tif"
-
+tif_filepath = f"test.tif"
 
 def test_image():
     response = client.get(f"/outputs/image/{tif_filepath}")

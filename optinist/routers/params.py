@@ -1,5 +1,4 @@
-from typing import Any, Dict
-
+from typing import Dict, Any
 from fastapi import APIRouter
 
 from optinist.api.config.config_reader import ConfigReader
@@ -10,20 +9,20 @@ from optinist.routers.model import NWBParams, SnakemakeParams
 router = APIRouter()
 
 
-@router.get("/params/{name}", response_model=Dict[str, Any], tags=["params"])
+@router.get("/params/{name}", response_model=Dict[str, Any], tags=['params'])
 async def get_params(name: str):
-    filepath = join_filepath([DIRPATH.CONFIG_DIR, f"{name}.yaml"])
+    filepath = join_filepath([DIRPATH.CONFIG_DIR, f'{name}.yaml'])
     config = ConfigReader.read(filepath)
     return config
 
 
-@router.get("/snakemake", response_model=SnakemakeParams, tags=["params"])
+@router.get("/snakemake", response_model=SnakemakeParams, tags=['params'])
 async def get_snakemake_params():
-    filepath = join_filepath([DIRPATH.CONFIG_DIR, "snakemake.yaml"])
+    filepath = join_filepath([DIRPATH.CONFIG_DIR, f'snakemake.yaml'])
     return ConfigReader.read(filepath)
 
 
-@router.get("/nwb", response_model=NWBParams, tags=["params"])
+@router.get("/nwb", response_model=NWBParams, tags=['params'])
 async def get_nwb_params():
-    filepath = join_filepath([DIRPATH.CONFIG_DIR, "nwb.yaml"])
+    filepath = join_filepath([DIRPATH.CONFIG_DIR, f'nwb.yaml'])
     return ConfigReader.read(filepath)

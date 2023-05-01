@@ -1,8 +1,9 @@
+import pytest
 from fastapi.testclient import TestClient
-
-from optinist.routers.algolist import NestDictGetter, router
 from optinist.routers.model import Algo
+
 from optinist.wrappers import wrapper_dict
+from optinist.routers.algolist import NestDictGetter, router
 
 client = TestClient(router)
 
@@ -31,3 +32,4 @@ def test_NestDictGetter():
     assert "caiman_mc" in output["caiman"]["children"]
 
     assert isinstance(output["caiman"]["children"]["caiman_mc"], Algo)
+
