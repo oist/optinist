@@ -2,7 +2,6 @@ import os
 
 import numpy as np
 
-from optinist.api.dataclass.dataclass import *
 from optinist.wrappers.suite2p_wrapper.edit_roi.utils import save_json_data
 
 

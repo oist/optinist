@@ -1,4 +1,17 @@
-from optinist.wrappers.dummy_wrapper.dummy import *
+from optinist.wrappers.dummy_wrapper.dummy import (
+    dummy_image2heat,
+    dummy_image2image,
+    dummy_image2image8roi,
+    dummy_image2image8roi8time8heat,
+    dummy_image2image8time,
+    dummy_image2roi,
+    dummy_image2scatter,
+    dummy_image2time,
+    dummy_image2time8iscell,
+    dummy_keyerror,
+    dummy_time2time,
+    dummy_typeerror,
+)
 
 dummy_wrapper_dict = {
     "dummy": {

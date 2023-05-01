@@ -3,6 +3,7 @@ import scipy.sparse
 
 from optinist.wrappers.lccd_wrapper.lccd_python import utils
 
+
 def filter_roi_by_area(roi, min_area, max_area):
     """
     Parameters

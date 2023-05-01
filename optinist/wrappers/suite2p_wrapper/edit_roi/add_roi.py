@@ -1,7 +1,13 @@
 import os
 
-from optinist.api.dataclass.dataclass import *
-from optinist.wrappers.suite2p_wrapper.edit_roi.utils import get_stat0_add_roi, masks_and_traces, save_json_data
+import numpy as np
+
+from optinist.wrappers.suite2p_wrapper.edit_roi.utils import (
+    get_stat0_add_roi,
+    masks_and_traces,
+    save_json_data,
+)
+
 
 def execute_add_ROI(node_dirpath, pos: list):
     from suite2p import ROI
