@@ -3,7 +3,7 @@ from optinist.api.utils.filepath_creater import join_filepath
 
 
 class HTMLData(BaseData):
-    def __init__(self, data, file_name='html'):
+    def __init__(self, data, file_name="html"):
         super().__init__(file_name)
         self.data = data
 

@@ -1,22 +1,24 @@
+import os
+
 import numpy as np
+
 from optinist.api.dataclass.dataclass import *
 from optinist.wrappers.suite2p_wrapper.edit_roi.utils import save_json_data
 
-
 def execute_merge_roi(node_dirpath, merged_roi_ids):
-    from suite2p.detection.stats import median_pix, roi_stats
     from suite2p import ROI
+    from suite2p.detection.stats import median_pix, roi_stats
 
-    ops = np.load(os.path.join(node_dirpath, 'suite2p.npy'), allow_pickle=True).item()
-    iscell = ops.get('iscell')
-    stat_orig = ops.get('stat')
-    im = ops.get('im')
-    F_all = ops['F']
-    Fneu_all = ops['Fneu']
+    ops = np.load(os.path.join(node_dirpath, "suite2p.npy"), allow_pickle=True).item()
+    iscell = ops.get("iscell")
+    stat_orig = ops.get("stat")
+    im = ops.get("im")
+    F_all = ops["F"]
+    Fneu_all = ops["Fneu"]
 
-    merge_roi = ops.get('merge_roi') if ops.get('merge_roi') else []
+    merge_roi = ops.get("merge_roi") if ops.get("merge_roi") else []
 
-    print('merging activity... this may take some time')
+    print("merging activity... this may take some time")
     ypix = np.zeros((0,), np.int32)
     xpix = np.zeros((0,), np.int32)
     lam = np.zeros((0,), np.float32)
@@ -48,38 +50,43 @@ def execute_merge_roi(node_dirpath, merged_roi_ids):
     xpix = xpix[goodi]
     lam = lam[goodi]
 
-    ### compute statistics of merges
+    # compute statistics of merges
     stat0 = {}
-    stat0['ypix'] = ypix
-    stat0['xpix'] = xpix
-    stat0['lam'] = lam / lam.sum()
-    stat0['npix'] = ypix.size
-    stat0['med'] = median_pix(ypix, xpix)
+    stat0["ypix"] = ypix
+    stat0["xpix"] = xpix
+    stat0["lam"] = lam / lam.sum()
+    stat0["npix"] = ypix.size
+    stat0["med"] = median_pix(ypix, xpix)
 
-    stat0['chan2_prob'] = -1
+    stat0["chan2_prob"] = -1
     stat0["inmerge"] = -1
 
-    ### compute activity of merged cells
+    # compute activity of merged cells
     F = F.mean(axis=0)
     Fneu = Fneu.mean(axis=0)
 
-    if 'aspect' in ops:
-        d0 = np.array([int(ops['aspect'] * 10), 10])
+    if "aspect" in ops:
+        d0 = np.array([int(ops["aspect"] * 10), 10])
     else:
-        d0 = ops['diameter']
+        d0 = ops["diameter"]
         if isinstance(d0, int):
             d0 = [d0, d0]
 
     # add cell to structs
     stat_orig.append(stat0)
-    stat_orig = roi_stats(stat_orig, d0[0], d0[1], ops['Ly'], ops['Lx'])
-    stat_orig[-1]['lam'] = stat_orig[-1]['lam'] * merged_cells.size
+    stat_orig = roi_stats(stat_orig, d0[0], d0[1], ops["Ly"], ops["Lx"])
+    stat_orig[-1]["lam"] = stat_orig[-1]["lam"] * merged_cells.size
 
-    array = np.expand_dims(ROI(
-            ypix=stat_orig[-1]['ypix'], xpix=stat_orig[-1]['xpix'],
-            lam=stat_orig[-1]['lam'], med=stat_orig[-1]['med'],
-            do_crop=False
-    ).to_array(Ly=ops['Ly'], Lx=ops['Lx']), axis =0)
+    array = np.expand_dims(
+        ROI(
+            ypix=stat_orig[-1]["ypix"],
+            xpix=stat_orig[-1]["xpix"],
+            lam=stat_orig[-1]["lam"],
+            med=stat_orig[-1]["med"],
+            do_crop=False,
+        ).to_array(Ly=ops["Ly"], Lx=ops["Lx"]),
+        axis=0,
+    )
     id = np.nanmax(im) + 1
     array *= id
     merge_roi.append(float(id))
@@ -90,25 +97,32 @@ def execute_merge_roi(node_dirpath, merged_roi_ids):
     im[im == 0] = np.nan
 
     try:
-        F_all = np.concatenate((ops['F'], np.expand_dims(F, axis=0)), axis=0)
-        Fneu_all = np.concatenate((ops['Fneu'], np.expand_dims(Fneu, axis=0)), axis=0)
+        F_all = np.concatenate((ops["F"], np.expand_dims(F, axis=0)), axis=0)
+        Fneu_all = np.concatenate((ops["Fneu"], np.expand_dims(Fneu, axis=0)), axis=0)
         iscell = np.append(iscell, True)
     except Exception as e:
         print(e)
 
-    ops['stat'] = stat_orig
-    ops['F'] = F_all
-    ops['Fneu'] = Fneu_all
-    ops['iscell'] = iscell
-    ops['im'] = im
-    ops['merge_roi'] = merge_roi
+    ops["stat"] = stat_orig
+    ops["F"] = F_all
+    ops["Fneu"] = Fneu_all
+    ops["iscell"] = iscell
+    ops["im"] = im
+    ops["merge_roi"] = merge_roi
 
     info = save_json_data(
         ops,
         im,
         save_path=node_dirpath,
-        save_data=['ops', 'fluorescence', 'all_roi', 'non_cell_roi', 'cell_roi', 'nwbfile'],
+        save_data=[
+            "ops",
+            "fluorescence",
+            "all_roi",
+            "non_cell_roi",
+            "cell_roi",
+            "nwbfile",
+        ],
     )
 
-    max_index = len(info['fluorescence'].data)
+    max_index = len(info["fluorescence"].data)
     return max_index

@@ -1,4 +1,3 @@
-import pytest
 import os
 import shutil
 
@@ -6,23 +5,14 @@ from optinist.api.experiment.experiment import ExptConfig, ExptFunction
 from optinist.api.experiment.experiment_writer import ExptConfigWriter
 from optinist.api.workflow.workflow import Edge, Node, NodeData, RunItem
 
-
-node_data = NodeData(
-    label="a",
-    param={},
-    path="",
-    type=""
-)
+node_data = NodeData(label="a", param={}, path="", type="")
 
 nodeDict = {
     "test1": Node(
         id="node_id",
         type="a",
         data=node_data,
-        position={
-            "x": 0,
-            "y": 0
-        },
+        position={"x": 0, "y": 0},
         style={
             "border": None,
             "borderRadius": 0,

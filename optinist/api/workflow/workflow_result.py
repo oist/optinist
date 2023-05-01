@@ -3,32 +3,38 @@ from dataclasses import asdict
 from glob import glob
 from typing import Dict
 
-from optinist.api.pickle.pickle_reader import PickleReader
-from optinist.api.dataclass.dataclass import *
-from optinist.api.workflow.workflow import Message, OutputPath, OutputType
 from optinist.api.config.config_writer import ConfigWriter
-from optinist.api.experiment.experiment_reader import ExptConfigReader
-from optinist.api.utils.filepath_creater import join_filepath
+from optinist.api.dataclass.dataclass import (
+    BarData,
+    BaseData,
+    HeatMapData,
+    HTMLData,
+    ImageData,
+    RoiData,
+    ScatterData,
+    TimeSeriesData,
+)
 from optinist.api.dir_path import DIRPATH
+from optinist.api.experiment.experiment_reader import ExptConfigReader
+from optinist.api.pickle.pickle_reader import PickleReader
+from optinist.api.utils.filepath_creater import join_filepath
+from optinist.api.workflow.workflow import Message, OutputPath, OutputType
 from optinist.routers.fileIO.file_reader import Reader
 
 
 class WorkflowResult:
-
     def __init__(self, unique_id):
         self.unique_id = unique_id
-        self.workflow_dirpath = join_filepath([
-            DIRPATH.OUTPUT_DIR,
-            self.unique_id,
-        ])
-        self.expt_filepath = join_filepath([
-            self.workflow_dirpath,
-            DIRPATH.EXPERIMENT_YML
-        ])
-        self.error_filepath = join_filepath([
-            self.workflow_dirpath,
-            "error.log"
-        ])
+        self.workflow_dirpath = join_filepath(
+            [
+                DIRPATH.OUTPUT_DIR,
+                self.unique_id,
+            ]
+        )
+        self.expt_filepath = join_filepath(
+            [self.workflow_dirpath, DIRPATH.EXPERIMENT_YML]
+        )
+        self.error_filepath = join_filepath([self.workflow_dirpath, "error.log"])
 
     def get(self, nodeIdList):
         results: Dict[str, Message] = {}
@@ -40,12 +46,10 @@ class WorkflowResult:
                         status="error",
                         message=error_message,
                     )
-                
-            glob_pickle_filepath = join_filepath([
-                self.workflow_dirpath,
-                node_id,
-                "*.pkl"
-            ])
+
+            glob_pickle_filepath = join_filepath(
+                [self.workflow_dirpath, node_id, "*.pkl"]
+            )
             for pickle_filepath in glob(glob_pickle_filepath):
                 results[node_id] = NodeResult(
                     self.workflow_dirpath,
@@ -60,16 +64,11 @@ class WorkflowResult:
 
     def has_nwb(self, node_id=None):
         if node_id is None:
-            nwb_filepath_list = glob(join_filepath([
-                self.workflow_dirpath,
-                "*.nwb"
-            ]))
+            nwb_filepath_list = glob(join_filepath([self.workflow_dirpath, "*.nwb"]))
         else:
-            nwb_filepath_list = glob(join_filepath([
-                self.workflow_dirpath,
-                node_id,
-                "*.nwb"
-            ]))
+            nwb_filepath_list = glob(
+                join_filepath([self.workflow_dirpath, node_id, "*.nwb"])
+            )
 
         for nwb_filepath in nwb_filepath_list:
             if os.path.exists(nwb_filepath):
@@ -88,18 +87,13 @@ class WorkflowResult:
 
 
 class NodeResult:
-
     def __init__(self, workflow_dirpath, node_id, pickle_filepath):
         self.workflow_dirpath = workflow_dirpath
         self.node_id = node_id
-        self.node_dirpath = join_filepath([
-            self.workflow_dirpath,
-            self.node_id
-        ])
-        self.expt_filepath = join_filepath([
-            self.workflow_dirpath,
-            DIRPATH.EXPERIMENT_YML
-        ])
+        self.node_dirpath = join_filepath([self.workflow_dirpath, self.node_id])
+        self.expt_filepath = join_filepath(
+            [self.workflow_dirpath, DIRPATH.EXPERIMENT_YML]
+        )
 
         pickle_filepath = pickle_filepath.replace("\\", "/")
         self.algo_name = os.path.splitext(os.path.basename(pickle_filepath))[0]
@@ -126,7 +120,7 @@ class NodeResult:
         return Message(
             status="success",
             message=f"{self.algo_name} success",
-            outputPaths=self.outputPaths()
+            outputPaths=self.outputPaths(),
         )
 
     def error(self):
@@ -145,13 +139,11 @@ class NodeResult:
                 outputPaths[k] = OutputPath(
                     path=v.json_path,
                     type=OutputType.IMAGE,
-                    max_index=len(v.data) if v.data.ndim == 3 else 1
+                    max_index=len(v.data) if v.data.ndim == 3 else 1,
                 )
             elif isinstance(v, TimeSeriesData):
                 outputPaths[k] = OutputPath(
-                    path=v.json_path,
-                    type=OutputType.TIMESERIES,
-                    max_index=len(v.data)
+                    path=v.json_path, type=OutputType.TIMESERIES, max_index=len(v.data)
                 )
             elif isinstance(v, HeatMapData):
                 outputPaths[k] = OutputPath(

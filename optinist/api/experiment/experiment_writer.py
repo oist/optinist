@@ -1,14 +1,14 @@
 import os
-from datetime import datetime
 from dataclasses import asdict
+from datetime import datetime
 from typing import Dict
 
+from optinist.api.config.config_writer import ConfigWriter
 from optinist.api.dir_path import DIRPATH
-from optinist.api.experiment.experiment_builder import ExptConfigBuilder
 from optinist.api.experiment.experiment import ExptConfig, ExptFunction
+from optinist.api.experiment.experiment_builder import ExptConfigBuilder
 from optinist.api.experiment.experiment_reader import ExptConfigReader
 from optinist.api.utils.filepath_creater import join_filepath
-from optinist.api.config.config_writer import ConfigWriter
 from optinist.api.workflow.workflow import Edge, Node
 
 
@@ -28,11 +28,9 @@ class ExptConfigWriter:
         self.builder = ExptConfigBuilder()
 
     def write(self) -> None:
-        expt_filepath = join_filepath([
-            DIRPATH.OUTPUT_DIR,
-            self.unique_id,
-            DIRPATH.EXPERIMENT_YML
-        ])
+        expt_filepath = join_filepath(
+            [DIRPATH.OUTPUT_DIR, self.unique_id, DIRPATH.EXPERIMENT_YML]
+        )
         if os.path.exists(expt_filepath):
             expt_config = ExptConfigReader.read(expt_filepath)
             self.builder.set_config(expt_config)
@@ -50,10 +48,9 @@ class ExptConfigWriter:
 
     def create_config(self) -> ExptConfig:
         return (
-            self.builder
-            .set_unique_id(self.unique_id)
+            self.builder.set_unique_id(self.unique_id)
             .set_name(self.name)
-            .set_timestamp(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+            .set_timestamp(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             .set_nodeDict(self.nodeDict)
             .set_edgeDict(self.edgeDict)
             .build()
@@ -61,8 +58,9 @@ class ExptConfigWriter:
 
     def add_run_info(self) -> ExptConfig:
         return (
-            self.builder
-            .set_timestamp(datetime.now().strftime('%Y-%m-%d %H:%M:%S'))   # 時間を更新
+            self.builder.set_timestamp(
+                datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            )  # 時間を更新
             .set_nodeDict(self.nodeDict)
             .set_edgeDict(self.edgeDict)
             .build()
@@ -78,8 +76,4 @@ class ExptConfigWriter:
             )
             for node in self.nodeDict.values()
         }
-        return (
-            self.builder
-            .set_function(func_dict)
-            .build()
-        )
+        return self.builder.set_function(func_dict).build()

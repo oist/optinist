@@ -1,5 +1,3 @@
-
-
 from optinist.api.snakemake.smk import Rule
 
 
@@ -14,35 +12,35 @@ class RuleBuilder:
         self._hdf5Path = None
         self._path = None
 
-    def set_input(self, input) -> 'RuleBuilder':
+    def set_input(self, input) -> "RuleBuilder":
         self._input = input
         return self
 
-    def set_return_arg(self, return_arg) -> 'RuleBuilder':
+    def set_return_arg(self, return_arg) -> "RuleBuilder":
         self._return_arg = return_arg
         return self
 
-    def set_params(self, params) -> 'RuleBuilder':
+    def set_params(self, params) -> "RuleBuilder":
         self._params = params
         return self
 
-    def set_output(self, output) -> 'RuleBuilder':
+    def set_output(self, output) -> "RuleBuilder":
         self._output = output
         return self
 
-    def set_type(self, type) -> 'RuleBuilder':
+    def set_type(self, type) -> "RuleBuilder":
         self._type = type
         return self
 
-    def set_nwbfile(self, nwbfile) -> 'RuleBuilder':
+    def set_nwbfile(self, nwbfile) -> "RuleBuilder":
         self._nwbfile = nwbfile
         return self
 
-    def set_hdf5Path(self, hdf5Path) -> 'RuleBuilder':
+    def set_hdf5Path(self, hdf5Path) -> "RuleBuilder":
         self._hdf5Path = hdf5Path
         return self
 
-    def set_path(self, path) -> 'RuleBuilder':
+    def set_path(self, path) -> "RuleBuilder":
         self._path = path
         return self
 
