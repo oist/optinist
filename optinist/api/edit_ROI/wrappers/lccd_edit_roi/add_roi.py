@@ -2,8 +2,7 @@ import os
 
 from optinist.api.dataclass.dataclass import FluoData, LccdData, RoiData
 from optinist.api.edit_ROI.utils import create_mask
-
-from .utils import set_nwbfile
+from optinist.api.edit_ROI.wrappers.lccd_edit_roi.utils import set_nwbfile
 
 
 def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):

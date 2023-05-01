@@ -1,7 +1,6 @@
 from optinist.api.dataclass.dataclass import CaimanCnmfData, FluoData, RoiData
 from optinist.api.edit_ROI.utils import create_mask
-
-from .utils import set_nwbfile
+from optinist.api.edit_ROI.wrappers.caiman_edit_roi.utils import set_nwbfile
 
 
 def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):

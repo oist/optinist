@@ -1,6 +1,5 @@
 from optinist.api.dataclass.dataclass import CaimanCnmfData, RoiData
-
-from .utils import set_nwbfile
+from optinist.api.edit_ROI.wrappers.caiman_edit_roi.utils import set_nwbfile
 
 
 def excute_delete_roi(node_dirpath, ids):

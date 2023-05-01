@@ -1,6 +1,5 @@
 from optinist.api.dataclass.dataclass import CaimanCnmfData, FluoData, RoiData
-
-from .utils import set_nwbfile
+from optinist.api.edit_ROI.wrappers.caiman_edit_roi.utils import set_nwbfile
 
 
 def execute_merge_roi(node_dirpath: str, ids: list):

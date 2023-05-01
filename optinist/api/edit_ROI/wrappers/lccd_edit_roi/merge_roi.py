@@ -1,8 +1,7 @@
 import os
 
 from optinist.api.dataclass.dataclass import FluoData, LccdData, RoiData
-
-from .utils import set_nwbfile
+from optinist.api.edit_ROI.wrappers.lccd_edit_roi.utils import set_nwbfile
 
 
 def execute_merge_roi(node_dirpath, ids):

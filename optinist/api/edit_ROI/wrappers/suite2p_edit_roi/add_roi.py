@@ -3,8 +3,11 @@ import os
 import numpy as np
 
 from optinist.api.dataclass.dataclass import FluoData, RoiData, Suite2pData
-
-from .utils import get_stat0_add_roi, masks_and_traces, set_nwbfile
+from optinist.api.edit_ROI.wrappers.suite2p_edit_roi.utils import (
+    get_stat0_add_roi,
+    masks_and_traces,
+    set_nwbfile,
+)
 
 
 def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):

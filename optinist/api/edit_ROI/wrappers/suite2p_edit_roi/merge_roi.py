@@ -3,8 +3,7 @@ import os
 import numpy as np
 
 from optinist.api.dataclass.dataclass import FluoData, RoiData, Suite2pData
-
-from .utils import set_nwbfile
+from optinist.api.edit_ROI.wrappers.suite2p_edit_roi.utils import set_nwbfile
 
 
 def execute_merge_roi(node_dirpath, ids):
