@@ -1,4 +1,5 @@
 import copy
+
 import numpy as np
 
 
@@ -8,7 +9,7 @@ def create_images_list(data):
     elif len(data.shape) == 3:
         save_data = copy.deepcopy(data[:10])
     else:
-        assert False, 'data is error'
+        assert False, "data is error"
 
     if len(data.shape) == 2:
         data = data[np.newaxis, :, :]

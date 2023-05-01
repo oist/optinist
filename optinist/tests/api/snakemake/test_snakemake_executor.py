@@ -1,12 +1,13 @@
-import pytest
 import os
 import shutil
 
 from optinist.api.dir_path import DIRPATH
-from optinist.api.snakemake.smk import SmkParam, ForceRun
-from optinist.api.snakemake.snakemake_executor import delete_dependencies, snakemake_execute
+from optinist.api.snakemake.smk import ForceRun, SmkParam
+from optinist.api.snakemake.snakemake_executor import (
+    delete_dependencies,
+    snakemake_execute,
+)
 from optinist.api.workflow.workflow import Edge, Node, NodeData
-
 
 tiff_filename = "test.tif"
 
@@ -34,16 +35,8 @@ nodeDict = {
     "suite2p_file_convert": Node(
         id="suite2p_file_convert",
         type="a",
-        data=NodeData(
-            label="suite2p_file_convert",
-            param={},
-            path="",
-            type=""
-        ),
-        position={
-            "x": 0,
-            "y": 0
-        },
+        data=NodeData(label="suite2p_file_convert", param={}, path="", type=""),
+        position={"x": 0, "y": 0},
         style={
             "border": None,
             "borderRadius": 0,
@@ -55,16 +48,8 @@ nodeDict = {
     "suite2p_roi": Node(
         id="suite2p_roi",
         type="a",
-        data=NodeData(
-            label="suite2p_roi",
-            param={},
-            path="",
-            type=""
-        ),
-        position={
-            "x": 0,
-            "y": 0
-        },
+        data=NodeData(label="suite2p_roi", param={}, path="", type=""),
+        position={"x": 0, "y": 0},
         style={
             "border": None,
             "borderRadius": 0,
@@ -101,6 +86,7 @@ edgeDict = {
 
 output_dirpath = "/tmp/optinist/output/snakemake"
 
+
 def test_snakemake_delete_dependencies():
     smk_param.forcerun = [
         ForceRun(
@@ -118,7 +104,7 @@ def test_snakemake_delete_dependencies():
     assert not os.path.exists(f"{output_dirpath}/suite2p_roi/suite2p_roi.pkl")
 
 
-def test_snakemake_delete_dependencies():
+def test_snakemake_delete_dependencies_file_convert():
     test_snakemake_execute()
 
     smk_param.forcerun = [
@@ -134,7 +120,9 @@ def test_snakemake_delete_dependencies():
         edgeDict=edgeDict,
     )
 
-    assert not os.path.exists(f"{output_dirpath}/suite2p_file_convert/suite2p_file_convert.pkl")
+    assert not os.path.exists(
+        f"{output_dirpath}/suite2p_file_convert/suite2p_file_convert.pkl"
+    )
     assert not os.path.exists(f"{output_dirpath}/suite2p_roi/suite2p_roi.pkl")
 
 

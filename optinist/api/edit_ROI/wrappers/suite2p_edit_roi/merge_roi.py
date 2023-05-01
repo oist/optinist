@@ -1,6 +1,8 @@
+import os
+
 import numpy as np
 
-from optinist.api.dataclass.dataclass import *
+from optinist.api.dataclass.dataclass import FluoData, RoiData, Suite2pData
 
 from .utils import set_nwbfile
 
@@ -9,15 +11,15 @@ def execute_merge_roi(node_dirpath, ids):
     from suite2p import ROI
     from suite2p.detection.stats import median_pix, roi_stats
 
-    ops = np.load(os.path.join(node_dirpath, 'suite2p.npy'), allow_pickle=True).item()
-    iscell = ops.get('iscell')
-    stat_orig = ops.get('stat')
-    im = ops.get('im')
-    F_all = ops['F']
-    Fneu_all = ops['Fneu']
-    merge_roi = ops.get('merge_roi', [])
+    ops = np.load(os.path.join(node_dirpath, "suite2p.npy"), allow_pickle=True).item()
+    iscell = ops.get("iscell")
+    stat_orig = ops.get("stat")
+    im = ops.get("im")
+    F_all = ops["F"]
+    Fneu_all = ops["Fneu"]
+    merge_roi = ops.get("merge_roi", [])
 
-    print('merging activity... this may take some time')
+    print("merging activity... this may take some time")
     ypix = np.zeros((0,), np.int32)
     xpix = np.zeros((0,), np.int32)
     lam = np.zeros((0,), np.float32)
@@ -49,42 +51,42 @@ def execute_merge_roi(node_dirpath, ids):
     xpix = xpix[goodi]
     lam = lam[goodi]
 
-    ### compute statistics of merges
+    # compute statistics of merges
     stat0 = {}
-    stat0['ypix'] = ypix
-    stat0['xpix'] = xpix
-    stat0['lam'] = lam / lam.sum()
-    stat0['npix'] = ypix.size
-    stat0['med'] = median_pix(ypix, xpix)
+    stat0["ypix"] = ypix
+    stat0["xpix"] = xpix
+    stat0["lam"] = lam / lam.sum()
+    stat0["npix"] = ypix.size
+    stat0["med"] = median_pix(ypix, xpix)
 
-    stat0['chan2_prob'] = -1
+    stat0["chan2_prob"] = -1
     stat0["inmerge"] = -1
 
-    ### compute activity of merged cells
+    # compute activity of merged cells
     F = F.mean(axis=0)
     Fneu = Fneu.mean(axis=0)
 
-    if 'aspect' in ops:
-        d0 = np.array([int(ops['aspect'] * 10), 10])
+    if "aspect" in ops:
+        d0 = np.array([int(ops["aspect"] * 10), 10])
     else:
-        d0 = ops['diameter']
+        d0 = ops["diameter"]
         if isinstance(d0, int):
             d0 = [d0, d0]
 
     # add cell to structs
     print(type(stat_orig), type(stat0), type(stat_orig[0]))
     stat_orig.append(stat0)
-    stat_orig = roi_stats(stat_orig, d0[0], d0[1], ops['Ly'], ops['Lx'])
-    stat_orig[-1]['lam'] = stat_orig[-1]['lam'] * merged_cells.size
+    stat_orig = roi_stats(stat_orig, d0[0], d0[1], ops["Ly"], ops["Lx"])
+    stat_orig[-1]["lam"] = stat_orig[-1]["lam"] * merged_cells.size
 
     array = np.expand_dims(
         ROI(
-            ypix=stat_orig[-1]['ypix'],
-            xpix=stat_orig[-1]['xpix'],
-            lam=stat_orig[-1]['lam'],
-            med=stat_orig[-1]['med'],
+            ypix=stat_orig[-1]["ypix"],
+            xpix=stat_orig[-1]["xpix"],
+            lam=stat_orig[-1]["lam"],
+            med=stat_orig[-1]["med"],
             do_crop=False,
-        ).to_array(Ly=ops['Ly'], Lx=ops['Lx']),
+        ).to_array(Ly=ops["Ly"], Lx=ops["Lx"]),
         axis=0,
     )
     id = np.nanmax(im) + 1
@@ -97,33 +99,33 @@ def execute_merge_roi(node_dirpath, ids):
     im[im == 0] = np.nan
 
     try:
-        F_all = np.concatenate((ops['F'], np.expand_dims(F, axis=0)), axis=0)
-        Fneu_all = np.concatenate((ops['Fneu'], np.expand_dims(Fneu, axis=0)), axis=0)
+        F_all = np.concatenate((ops["F"], np.expand_dims(F, axis=0)), axis=0)
+        Fneu_all = np.concatenate((ops["Fneu"], np.expand_dims(Fneu, axis=0)), axis=0)
         iscell = np.append(iscell, True)
     except Exception as e:
         print(e)
 
-    ops['stat'] = stat_orig
-    ops['F'] = F_all
-    ops['Fneu'] = Fneu_all
-    ops['iscell'] = iscell
-    ops['im'] = im
-    ops['merge_roi'] = merge_roi
+    ops["stat"] = stat_orig
+    ops["F"] = F_all
+    ops["Fneu"] = Fneu_all
+    ops["iscell"] = iscell
+    ops["im"] = im
+    ops["merge_roi"] = merge_roi
 
     info = {
-        'ops': Suite2pData(ops),
-        'fluorescence': FluoData(ops['F'], file_name='fluorescence'),
-        'all_roi': RoiData(
-            np.nanmax(im, axis=0), output_dir=node_dirpath, file_name='all_roi'
+        "ops": Suite2pData(ops),
+        "fluorescence": FluoData(ops["F"], file_name="fluorescence"),
+        "all_roi": RoiData(
+            np.nanmax(im, axis=0), output_dir=node_dirpath, file_name="all_roi"
         ),
-        'non_cell_roi': RoiData(
+        "non_cell_roi": RoiData(
             np.nanmax(im[~iscell], axis=0),
             output_dir=node_dirpath,
-            file_name='noncell_roi',
+            file_name="noncell_roi",
         ),
-        'cell_roi': RoiData(
-            np.nanmax(im[iscell], axis=0), output_dir=node_dirpath, file_name='cell_roi'
+        "cell_roi": RoiData(
+            np.nanmax(im[iscell], axis=0), output_dir=node_dirpath, file_name="cell_roi"
         ),
-        'nwbfile': set_nwbfile(ops),
+        "nwbfile": set_nwbfile(ops),
     }
     return info

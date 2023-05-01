@@ -1,8 +1,8 @@
 import os
 
-from optinist.api.dataclass.dataclass import *
-
+from optinist.api.dataclass.dataclass import FluoData, LccdData, RoiData
 from optinist.api.edit_ROI.utils import create_mask
+
 from .utils import set_nwbfile
 
 
@@ -10,13 +10,13 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
     import numpy as np
 
     lccd_data = np.load(
-        os.path.join(node_dirpath, 'lccd.npy'), allow_pickle=True
+        os.path.join(node_dirpath, "lccd.npy"), allow_pickle=True
     ).item()
 
-    images = lccd_data.get('images', None)
-    roi = lccd_data.get('roi', None)
-    is_cell = lccd_data.get('is_cell')
-    add_roi = lccd_data.get('add_roi', [])
+    images = lccd_data.get("images", None)
+    roi = lccd_data.get("roi", None)
+    is_cell = lccd_data.get("is_cell")
+    add_roi = lccd_data.get("add_roi", [])
 
     shape = images.shape[:2]
     num_frames = images.shape[2]
@@ -52,18 +52,22 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
                 )
                 timeseries_dff[i, k] = (timeseries[i, k] - f0) / f0
 
-    roi_list = [{'image_mask': roi[:, i].reshape(shape)} for i in range(num_cell)]
+    roi_list = [{"image_mask": roi[:, i].reshape(shape)} for i in range(num_cell)]
 
-    lccd_data['roi'] = roi
-    lccd_data['is_cell'] = is_cell
-    lccd_data['add_roi'] = add_roi
+    lccd_data["roi"] = roi
+    lccd_data["is_cell"] = is_cell
+    lccd_data["add_roi"] = add_roi
 
     info = {
-        'lccd': LccdData(lccd_data),
-        'cell_roi': RoiData(np.nanmax(im[is_cell], axis=0), output_dir=node_dirpath, file_name='cell_roi'),
-        'fluorescence': FluoData(timeseries, file_name='fluorescence'),
-        'dff': FluoData(timeseries_dff, file_name='dff'),
-        'nwbfile': set_nwbfile(lccd_data, roi_list, fluorescence=timeseries),
+        "lccd": LccdData(lccd_data),
+        "cell_roi": RoiData(
+            np.nanmax(im[is_cell], axis=0),
+            output_dir=node_dirpath,
+            file_name="cell_roi",
+        ),
+        "fluorescence": FluoData(timeseries, file_name="fluorescence"),
+        "dff": FluoData(timeseries_dff, file_name="dff"),
+        "nwbfile": set_nwbfile(lccd_data, roi_list, fluorescence=timeseries),
     }
 
     return info

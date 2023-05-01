@@ -1,4 +1,4 @@
-from optinist.api.dataclass.dataclass import *
+from optinist.api.dataclass.dataclass import CaimanCnmfData, FluoData, RoiData
 
 from .utils import set_nwbfile
 
@@ -7,11 +7,11 @@ def execute_merge_roi(node_dirpath: str, ids: list):
     import numpy as np
 
     # load data
-    cnmf_data = np.load(f'{node_dirpath}/caiman_cnmf.npy', allow_pickle=True).item()
-    is_cell = cnmf_data.get('is_cell')
-    merge_roi = cnmf_data.get('merge_roi', [])
-    im = cnmf_data.get('im')
-    fluorescence = cnmf_data.get('fluorescence')
+    cnmf_data = np.load(f"{node_dirpath}/caiman_cnmf.npy", allow_pickle=True).item()
+    is_cell = cnmf_data.get("is_cell")
+    merge_roi = cnmf_data.get("merge_roi", [])
+    im = cnmf_data.get("im")
+    fluorescence = cnmf_data.get("fluorescence")
 
     # get merging ROI
     merging_ROIs = []
@@ -35,16 +35,20 @@ def execute_merge_roi(node_dirpath: str, ids: list):
     merge_roi += [(id + 1) for id in ids]
     merge_roi.append((-1.0))
 
-    cnmf_data['im'] = im
-    cnmf_data['is_cell'] = is_cell
-    cnmf_data['fluorescence'] = fluorescence
-    cnmf_data['merge_roi'] = merge_roi
+    cnmf_data["im"] = im
+    cnmf_data["is_cell"] = is_cell
+    cnmf_data["fluorescence"] = fluorescence
+    cnmf_data["merge_roi"] = merge_roi
 
     info = {
-        'fluorescence': FluoData(fluorescence, file_name='fluorescence'),
-        'cell_roi': RoiData(np.nanmax(cell_roi[is_cell], axis=0), output_dir=node_dirpath, file_name='cell_roi'),
-        'cnmf_data': CaimanCnmfData(cnmf_data),
-        'nwbfile': set_nwbfile(cnmf_data),
+        "fluorescence": FluoData(fluorescence, file_name="fluorescence"),
+        "cell_roi": RoiData(
+            np.nanmax(cell_roi[is_cell], axis=0),
+            output_dir=node_dirpath,
+            file_name="cell_roi",
+        ),
+        "cnmf_data": CaimanCnmfData(cnmf_data),
+        "nwbfile": set_nwbfile(cnmf_data),
     }
 
     return info

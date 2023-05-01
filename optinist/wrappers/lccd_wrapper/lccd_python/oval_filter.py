@@ -2,7 +2,7 @@ import numpy as np
 import scipy.sparse
 import skimage
 
-from . import utils
+from optinist.wrappers.lccd_wrapper.lccd_python import utils
 
 
 def oval_filter(label_mat, sparse=False):
@@ -45,8 +45,8 @@ def oval_filter(label_mat, sparse=False):
         lil_arr = scipy.sparse.lil_matrix(
             (len(data), label_mat.shape[0] * label_mat.shape[1]), dtype=data[0][0].dtype
         )
-        lil_arr.data = np.array(data, dtype='object')
-        lil_arr.rows = np.array(rows, dtype='object')
+        lil_arr.data = np.array(data, dtype="object")
+        lil_arr.rows = np.array(rows, dtype="object")
         csr_arr = scipy.sparse.csr_matrix(lil_arr)
         return csr_arr.T  # By transpose, csr_matrix is converted to csc_matrix.
     if len(rois) == 0:

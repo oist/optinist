@@ -17,10 +17,10 @@ from optinist.api.utils.filepath_creater import join_filepath
 
 @dataclass
 class ACTION:
-    EDIT_ROI: str = 'edit_ROI'
-    ADD: str = 'add'
-    MERGE: str = 'merge'
-    DELETE: str = 'delete'
+    EDIT_ROI: str = "edit_ROI"
+    ADD: str = "add"
+    MERGE: str = "merge"
+    DELETE: str = "delete"
 
 
 class EditROI:
@@ -42,7 +42,7 @@ class EditROI:
             != DIRPATH.OPTINIST_DIR
         ):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-        if os.path.basename(filepath) != 'cell_roi.json':
+        if os.path.basename(filepath) != "cell_roi.json":
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
 
         algo_list = edit_roi_wrapper_dict.keys()
@@ -64,11 +64,11 @@ class EditROI:
 
     def set_smk_config(self):
         config = {
-            'type': ACTION.EDIT_ROI,
-            'action': self.action,
-            'node_dirpath': self.node_dirpath,
-            'algo': self.algo,
-            'params': self.params,
+            "type": ACTION.EDIT_ROI,
+            "action": self.action,
+            "node_dirpath": self.node_dirpath,
+            "algo": self.algo,
+            "params": self.params,
         }
         ConfigWriter.write(
             dirname=DIRPATH.ROOT_DIR,
@@ -82,7 +82,7 @@ class EditRoiUtils:
     def conda(cls, config):
         from optinist.api.edit_ROI import edit_roi_wrapper_dict
 
-        algo = config['algo']
+        algo = config["algo"]
         if "conda_yaml" in edit_roi_wrapper_dict[algo]:
             conda_yaml = edit_roi_wrapper_dict[algo]["conda_yaml"]
             return f"{DIRPATH.CONDAYML_DIR}/{conda_yaml}" if conda_yaml else None
@@ -93,10 +93,10 @@ class EditRoiUtils:
     def excute(cls, config):
         from optinist.api.edit_ROI import edit_roi_wrapper_dict
 
-        algo = config['algo']
-        node_dirpath = config['node_dirpath']
-        action = config['action']
-        params = config['params']
+        algo = config["algo"]
+        node_dirpath = config["node_dirpath"]
+        action = config["action"]
+        params = config["params"]
 
         func = copy.deepcopy(edit_roi_wrapper_dict[algo]["function"][action])
         output_info = func(node_dirpath, **params)
@@ -111,7 +111,7 @@ class EditRoiUtils:
             if isinstance(v, BaseData):
                 v.save_json(node_dirpath)
 
-            if k == 'nwbfile':
+            if k == "nwbfile":
                 nwb_files = glob(join_filepath([node_dirpath, "*.nwb"]))
                 if len(nwb_files) > 0:
                     overwrite_nwb(v, node_dirpath, os.path.basename(nwb_files[0]))

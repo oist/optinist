@@ -1,4 +1,6 @@
-from optinist.api.dataclass.dataclass import *
+import os
+
+from optinist.api.dataclass.dataclass import FluoData, LccdData, RoiData
 
 from .utils import set_nwbfile
 
@@ -7,13 +9,13 @@ def excute_delete_roi(node_dirpath, ids):
     import numpy as np
 
     lccd_data = np.load(
-        os.path.join(node_dirpath, 'lccd.npy'), allow_pickle=True
+        os.path.join(node_dirpath, "lccd.npy"), allow_pickle=True
     ).item()
 
-    images = lccd_data.get('images', None)
-    roi = lccd_data.get('roi', None)
-    is_cell = lccd_data.get('is_cell')
-    delete_roi = lccd_data.get('delete_roi', [])
+    images = lccd_data.get("images", None)
+    roi = lccd_data.get("roi", None)
+    is_cell = lccd_data.get("is_cell")
+    delete_roi = lccd_data.get("delete_roi", [])
 
     shape = images.shape[:2]
     num_frames = images.shape[2]
@@ -50,22 +52,22 @@ def excute_delete_roi(node_dirpath, ids):
                 )
                 timeseries_dff[i, k] = (timeseries[i, k] - f0) / f0
 
-    lccd_data['roi'] = roi
-    lccd_data['is_cell'] = is_cell
-    lccd_data['delete_roi'] = delete_roi
+    lccd_data["roi"] = roi
+    lccd_data["is_cell"] = is_cell
+    lccd_data["delete_roi"] = delete_roi
 
-    roi_list = [{'image_mask': roi[:, i].reshape(shape)} for i in range(num_cell)]
+    roi_list = [{"image_mask": roi[:, i].reshape(shape)} for i in range(num_cell)]
 
     info = {
-        'lccd': LccdData(lccd_data),
-        'cell_roi': RoiData(
+        "lccd": LccdData(lccd_data),
+        "cell_roi": RoiData(
             np.nanmax(im[is_cell], axis=0),
             output_dir=node_dirpath,
-            file_name='cell_roi',
+            file_name="cell_roi",
         ),
-        'fluorescence': FluoData(timeseries, file_name='fluorescence'),
-        'dff': FluoData(timeseries_dff, file_name='dff'),
-        'nwbfile': set_nwbfile(lccd_data, roi_list),
+        "fluorescence": FluoData(timeseries, file_name="fluorescence"),
+        "dff": FluoData(timeseries_dff, file_name="dff"),
+        "nwbfile": set_nwbfile(lccd_data, roi_list),
     }
 
     return info

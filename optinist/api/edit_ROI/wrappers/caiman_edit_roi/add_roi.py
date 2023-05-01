@@ -1,4 +1,4 @@
-from optinist.api.dataclass.dataclass import *
+from optinist.api.dataclass.dataclass import CaimanCnmfData, FluoData, RoiData
 from optinist.api.edit_ROI.utils import create_mask
 
 from .utils import set_nwbfile
@@ -8,12 +8,12 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
     import numpy as np
 
     # load data
-    cnmf_data = np.load(f'{node_dirpath}/caiman_cnmf.npy', allow_pickle=True).item()
-    is_cell = cnmf_data.get('is_cell')
-    im = cnmf_data.get('im')
-    images = cnmf_data.get('images')
-    add_roi = cnmf_data.get('add_roi', [])
-    fluorescence = cnmf_data.get('fluorescence')
+    cnmf_data = np.load(f"{node_dirpath}/caiman_cnmf.npy", allow_pickle=True).item()
+    is_cell = cnmf_data.get("is_cell")
+    im = cnmf_data.get("im")
+    images = cnmf_data.get("images")
+    add_roi = cnmf_data.get("add_roi", [])
+    fluorescence = cnmf_data.get("fluorescence")
 
     # Create mask for new roi
     new_roi = create_mask(posx, posy, sizex, sizey, images.shape[1:])
@@ -35,20 +35,20 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
     add_roi.append(num_rois)
 
     # save data
-    cnmf_data['im'] = im
-    cnmf_data['is_cell'] = is_cell
-    cnmf_data['fluorescence'] = fluorescence
-    cnmf_data['add_roi'] = add_roi
+    cnmf_data["im"] = im
+    cnmf_data["is_cell"] = is_cell
+    cnmf_data["fluorescence"] = fluorescence
+    cnmf_data["add_roi"] = add_roi
 
     info = {
-        'fluorescence': FluoData(fluorescence, file_name='fluorescence'),
-        'cell_roi': RoiData(
+        "fluorescence": FluoData(fluorescence, file_name="fluorescence"),
+        "cell_roi": RoiData(
             np.nanmax(cell_roi[is_cell], axis=0),
             output_dir=node_dirpath,
-            file_name='cell_roi',
+            file_name="cell_roi",
         ),
-        'cnmf_data': CaimanCnmfData(cnmf_data),
-        'nwbfile': set_nwbfile(cnmf_data),
+        "cnmf_data": CaimanCnmfData(cnmf_data),
+        "nwbfile": set_nwbfile(cnmf_data),
     }
 
     return info

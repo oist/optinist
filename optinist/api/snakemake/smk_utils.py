@@ -7,38 +7,30 @@ from optinist.wrappers import wrapper_dict
 
 
 class SmkUtils:
-
     @classmethod
     def input(cls, details):
         if details["type"] in [FILETYPE.IMAGE]:
-            return [
-                join_filepath([DIRPATH.INPUT_DIR, x])
-                for x in details["input"]
-            ]
+            return [join_filepath([DIRPATH.INPUT_DIR, x]) for x in details["input"]]
         elif details["type"] in [FILETYPE.CSV, FILETYPE.BEHAVIOR, FILETYPE.HDF5]:
             return join_filepath([DIRPATH.INPUT_DIR, details["input"]])
         else:
-            return [
-                join_filepath([DIRPATH.OUTPUT_DIR, x])
-                for x in details["input"]
-            ]
+            return [join_filepath([DIRPATH.OUTPUT_DIR, x]) for x in details["input"]]
 
     @classmethod
     def output(cls, details):
-        return join_filepath([
-            DIRPATH.OUTPUT_DIR,
-            details["output"]
-        ])
+        return join_filepath([DIRPATH.OUTPUT_DIR, details["output"]])
 
     @classmethod
     def conda(cls, details):
-        if details["type"] in [FILETYPE.IMAGE, FILETYPE.CSV, FILETYPE.BEHAVIOR, FILETYPE.HDF5]:
+        if details["type"] in [
+            FILETYPE.IMAGE,
+            FILETYPE.CSV,
+            FILETYPE.BEHAVIOR,
+            FILETYPE.HDF5,
+        ]:
             return None
 
-        wrapper = cls.dict2leaf(
-            wrapper_dict,
-            details["path"].split('/')
-        )
+        wrapper = cls.dict2leaf(wrapper_dict, details["path"].split("/"))
 
         if "conda_name" in wrapper:
             _filename = wrapper["conda_name"]
