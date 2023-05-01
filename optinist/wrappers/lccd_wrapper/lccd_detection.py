@@ -1,22 +1,21 @@
-from optinist.api.dataclass.dataclass import *
 import numpy as np
+
+from optinist.api.dataclass.dataclass import FluoData, ImageData, RoiData
 
 
 def lccd_detect(
-    mc_images: ImageData,
-    output_dir: str,
-    params: dict = None
+    mc_images: ImageData, output_dir: str, params: dict = None
 ) -> dict(fluorescence=FluoData, cell_roi=RoiData):
     from .lccd_python.lccd import LCCD
 
-    print('params: ', params)
+    print("params: ", params)
     lccd = LCCD(params)
     D = LoadData(mc_images)
     assert len(D.shape) == 3, "input array should have dimensions (width, height, time)"
     roi = lccd.apply(D)
 
-    dff_f0_frames = params['dff']['f0_frames']
-    dff_f0_percentile = params['dff']['f0_percentile']
+    dff_f0_frames = params["dff"]["f0_frames"]
+    dff_f0_percentile = params["dff"]["f0_percentile"]
     num_cell = roi.shape[1]
     num_frames = D.shape[2]
 
@@ -42,9 +41,11 @@ def lccd_detect(
                 timeseries_dff[i, k] = (timeseries[i, k] - f0) / f0
 
     info = {
-        'rois': RoiData(np.nanmax(roi_list, axis=0), output_dir=output_dir, file_name='cell_roi'),
-        'fluorescence': FluoData(timeseries, file_name='fluorescence'),
-        'dff': FluoData(timeseries_dff, file_name='dff'),
+        "rois": RoiData(
+            np.nanmax(roi_list, axis=0), output_dir=output_dir, file_name="cell_roi"
+        ),
+        "fluorescence": FluoData(timeseries, file_name="fluorescence"),
+        "dff": FluoData(timeseries_dff, file_name="dff"),
     }
 
     return info

@@ -1,17 +1,18 @@
-import numpy as np
-import imageio
-import tifffile
 import gc
 
-from optinist.api.utils.filepath_creater import create_directory, join_filepath
-from optinist.api.dir_path import DIRPATH
-from optinist.api.dataclass.utils import create_images_list
-from optinist.api.utils.json_writer import JsonWriter
+import imageio
+import numpy as np
+import tifffile
+
 from optinist.api.dataclass.base import BaseData
+from optinist.api.dataclass.utils import create_images_list
+from optinist.api.dir_path import DIRPATH
+from optinist.api.utils.filepath_creater import create_directory, join_filepath
+from optinist.api.utils.json_writer import JsonWriter
 
 
 class ImageData(BaseData):
-    def __init__(self, data, output_dir=DIRPATH.OUTPUT_DIR, file_name='image'):
+    def __init__(self, data, output_dir=DIRPATH.OUTPUT_DIR, file_name="image"):
         super().__init__(file_name)
 
         self.json_path = None
@@ -26,7 +27,7 @@ class ImageData(BaseData):
             _dir = join_filepath([output_dir, "tiff", file_name])
             create_directory(_dir)
 
-            _path = join_filepath([_dir, f'{file_name}.tif'])
+            _path = join_filepath([_dir, f"{file_name}.tif"])
             tifffile.imsave(_path, data)
             self.path = [_path]
 
@@ -42,21 +43,18 @@ class ImageData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        JsonWriter.write_as_split(
-            self.json_path,
-            create_images_list(self.data)
-        )
+        JsonWriter.write_as_split(self.json_path, create_images_list(self.data))
 
 
 class RoiData(BaseData):
-    def __init__(self, data, output_dir=DIRPATH.OUTPUT_DIR, file_name='roi'):
+    def __init__(self, data, output_dir=DIRPATH.OUTPUT_DIR, file_name="roi"):
         super().__init__(file_name)
 
         images = create_images_list(data)
 
         _dir = join_filepath([output_dir, "tiff", file_name])
         create_directory(_dir)
-        self.path = join_filepath([_dir, f'{file_name}.tif'])
+        self.path = join_filepath([_dir, f"{file_name}.tif"])
         tifffile.imsave(self.path, images)
 
         del images, data
@@ -72,7 +70,4 @@ class RoiData(BaseData):
 
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
-        JsonWriter.write_as_split(
-            self.json_path,
-            create_images_list(self.data)
-        )
+        JsonWriter.write_as_split(self.json_path, create_images_list(self.data))

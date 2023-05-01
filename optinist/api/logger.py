@@ -1,16 +1,18 @@
-from typing import Dict
 import logging
 import os
+from typing import Dict
 
 from optinist.api.dir_path import DIRPATH
 from optinist.api.utils.filepath_creater import create_directory, join_filepath
 
 
 def get_logger(unique_id: str) -> logging.Logger:
-    output_dirpath = join_filepath([
-        DIRPATH.OUTPUT_DIR,
-        unique_id,
-    ])
+    output_dirpath = join_filepath(
+        [
+            DIRPATH.OUTPUT_DIR,
+            unique_id,
+        ]
+    )
     create_directory(output_dirpath)
 
     filepath = f"{output_dirpath}/error.log"
