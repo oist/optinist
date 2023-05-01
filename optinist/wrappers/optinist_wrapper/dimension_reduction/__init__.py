@@ -1,6 +1,6 @@
-from .cca import CCA
-from .pca import PCA
-from .tsne import TSNE
+from optinist.wrappers.optinist_wrapper.dimension_reduction.cca import CCA
+from optinist.wrappers.optinist_wrapper.dimension_reduction.pca import PCA
+from optinist.wrappers.optinist_wrapper.dimension_reduction.tsne import TSNE
 
 dimension_reduction_wrapper_dict = {
     "cca": {

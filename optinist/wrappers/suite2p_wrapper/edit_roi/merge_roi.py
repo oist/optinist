@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 
-from .utils import save_json_data
+from optinist.wrappers.suite2p_wrapper.edit_roi.utils import save_json_data
 
 
 def execute_merge_roi(node_dirpath, merged_roi_ids):

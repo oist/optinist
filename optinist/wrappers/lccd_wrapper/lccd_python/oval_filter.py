@@ -2,7 +2,7 @@ import numpy as np
 import scipy.sparse
 import skimage
 
-from . import utils
+from optinist.wrappers.lccd_wrapper.lccd_python import utils
 
 
 def oval_filter(label_mat, sparse=False):

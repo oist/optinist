@@ -84,7 +84,7 @@ def new_algo_func(               # (*1)
   - {OPTINIST_SRC_DIR}/optinist/wrappers/`new_algo_wrapper`/\_\_init__.py
 
 ```python
-from .new_algo_func import new_algo_func
+from optinist.wrappers.new_algo_wrapper.new_algo_func import new_algo_func
 
 new_algo_wrapper_dict = {                       # (*1)
     'new_algo': {                               # (*2)
@@ -113,10 +113,10 @@ Register the created algorithm to the application by adding the following settin
   - {OPTINIST_SRC_DIR}/optinist/wrappers/\_\_init__.py
 
 ```python
-from .xxxx_wrapper import xxxx_wrapper_dict
-from .yyyy_wrapper import yyyy_wrapper_dict
+from optinist.wrappers.xxxx_wrapper import xxxx_wrapper_dict
+from optinist.wrappers.yyyy_wrapper import yyyy_wrapper_dict
 ...
-from .new_algo_wrapper import new_algo_wrapper_dict    # <-- Add
+from optinist.wrappers.new_algo_wrapper import new_algo_wrapper_dict    # <-- Add
 
 wrapper_dict = {}
 wrapper_dict.update(**xxxx_wrapper_dict)

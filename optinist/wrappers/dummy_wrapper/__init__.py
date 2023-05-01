@@ -1,4 +1,4 @@
-from .dummy import (
+from optinist.wrappers.dummy_wrapper.dummy import (
     dummy_image2heat,
     dummy_image2image,
     dummy_image2image8roi,

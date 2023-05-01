@@ -1,4 +1,4 @@
-from .lccd_detection import lccd_detect
+from optinist.wrappers.lccd_wrapper.lccd_detection import lccd_detect
 
 lccd_wrapper_dict = {
     "lccd": {
