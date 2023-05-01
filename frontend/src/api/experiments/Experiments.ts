@@ -28,6 +28,11 @@ export async function getExperimentsApi(): Promise<ExperimentsDTO> {
   return response.data
 }
 
+export async function getLastExperimentUidApi(): Promise<string> {
+  const response = await axios.get(`${BASE_URL}/experiments/last`)
+  return response.data
+}
+
 export async function deleteExperimentByUidApi(uid: string): Promise<boolean> {
   const response = await axios.delete(`${BASE_URL}/experiments/${uid}`)
   return response.data

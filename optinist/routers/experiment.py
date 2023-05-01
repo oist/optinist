@@ -1,10 +1,12 @@
 from typing import Dict
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException, status
 from fastapi.responses import FileResponse
 
 import shutil
 from glob import glob
 
+from optinist.api.config.config_reader import ConfigReader
+from optinist.api.config.config_writer import ConfigWriter
 from optinist.api.dir_path import DIRPATH
 from optinist.api.utils.filepath_creater import join_filepath
 from optinist.api.experiment.experiment_reader import ExptConfigReader
@@ -53,9 +55,34 @@ async def import_experiment(unique_id: str):
     }
 
 
+def get_last_workflow_uid():
+    last_workflow = ConfigReader.read(join_filepath([DIRPATH.OUTPUT_DIR, DIRPATH.WORKFLOW_YML]))
+    last_unique_id = last_workflow.get("uid")
+    return last_unique_id
+
+
+def clear_last_workflow_uid():
+    ConfigWriter.write(
+        dirname=DIRPATH.OUTPUT_DIR,
+        filename=DIRPATH.WORKFLOW_YML,
+        config={'uid': None}
+    )
+
+
+@router.get("/experiments/last", tags=['experiments'])
+async def get_last_experiment() -> str:
+    last_unique_id = get_last_workflow_uid()
+    if last_unique_id:
+        return last_unique_id
+    else:
+        raise HTTPException(status.HTTP_422_UNPROCESSABLE_ENTITY)
+
+
 @router.delete("/experiments/{unique_id}", response_model=bool, tags=['experiments'])
 async def delete_experiment(unique_id: str):
     try:
+        if get_last_workflow_uid() == unique_id:
+            clear_last_workflow_uid()
         shutil.rmtree(join_filepath([DIRPATH.OUTPUT_DIR, unique_id]))
         return True
     except Exception as e:
@@ -69,6 +96,8 @@ async def delete_experiment_list(deleteItem: DeleteItem):
             shutil.rmtree(join_filepath([DIRPATH.OUTPUT_DIR, uid]))
             for uid in deleteItem.uidList
         ]
+        if get_last_workflow_uid() in deleteItem.uidList:
+            clear_last_workflow_uid()
         return True
     except Exception as e:
         return False

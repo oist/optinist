@@ -8,12 +8,17 @@ import {
   selectPipelineLatestUid,
   selectPipelineStatus,
 } from './PipelineSelectors'
+import { AppDispatch } from 'store/store'
 import { run, pollRunResult, runByCurrentUid } from './PipelineActions'
 import { cancelPipeline } from './PipelineSlice'
 import { selectFilePathIsUndefined } from '../InputNode/InputNodeSelectors'
 import { selectAlgorithmNodeNotExist } from '../AlgorithmNode/AlgorithmNodeSelectors'
 import { useSnackbar } from 'notistack'
 import { RUN_STATUS } from './PipelineType'
+import {
+  getLastExperimentUid,
+  importExperimentByUid,
+} from '../Experiments/ExperimentsActions'
 
 const POLLING_INTERVAL = 5000
 
@@ -21,6 +26,7 @@ export type UseRunPipelineReturnType = ReturnType<typeof useRunPipeline>
 
 export function useRunPipeline() {
   const dispatch = useDispatch()
+  const appDispatch: AppDispatch = useDispatch()
   const uid = useSelector(selectPipelineLatestUid)
   const isCanceled = useSelector(selectPipelineIsCanceled)
   const isStartedSuccess = useSelector(selectPipelineIsStartedSuccess)
@@ -41,6 +47,24 @@ export function useRunPipeline() {
       dispatch(cancelPipeline())
     }
   }, [dispatch, uid])
+  React.useEffect(() => {
+    appDispatch(getLastExperimentUid())
+      .unwrap()
+      .then((uid) => {
+        if (uid) {
+          appDispatch(importExperimentByUid(uid))
+            .unwrap()
+            .then((_runPostData) => {
+              dispatch(
+                runByCurrentUid({
+                  runPostData: { ...runPostData, ..._runPostData },
+                }),
+              )
+            })
+        }
+      })
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
   React.useEffect(() => {
     const intervalId = setInterval(() => {
       if (isStartedSuccess && !isCanceled && uid != null) {

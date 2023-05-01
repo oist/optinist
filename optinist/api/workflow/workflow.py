@@ -6,6 +6,11 @@ from optinist.api.snakemake.smk import ForceRun
 
 
 @dataclass
+class LastWorkflow:
+    uid: str
+
+
+@dataclass
 class NodeType:
     IMAGE: str = "ImageFileNode"
     CSV: str = "CsvFileNode"

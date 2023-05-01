@@ -2,6 +2,7 @@ import { createAsyncThunk } from '@reduxjs/toolkit'
 import {
   ExperimentsDTO,
   getExperimentsApi,
+  getLastExperimentUidApi,
   deleteExperimentByUidApi,
   importExperimentByUidApi,
   deleteExperimentByListApi,
@@ -14,6 +15,18 @@ export const getExperiments = createAsyncThunk<ExperimentsDTO, undefined>(
   async (_, thunkAPI) => {
     try {
       const response = await getExperimentsApi()
+      return response
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
+
+export const getLastExperimentUid = createAsyncThunk<string, undefined>(
+  `${EXPERIMENTS_SLICE_NAME}/getLastExperiment`,
+  async (_, thunkAPI) => {
+    try {
+      const response = await getLastExperimentUidApi()
       return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)
