@@ -15,7 +15,10 @@ def get_logger(unique_id: str) -> logging.Logger:
 
     filepath = f"{output_dirpath}/error.log"
     if os.path.exists(filepath):
-        os.remove(filepath)
+        try:
+            os.remove(filepath)
+        except Exception as e:
+            print("[Exception][Logger]", e)
 
     logger = logging.getLogger(unique_id)
 
