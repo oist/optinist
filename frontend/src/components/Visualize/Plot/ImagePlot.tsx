@@ -155,6 +155,7 @@ const ImagePlotChart = React.memo<{
   )
 
   const [isAddRoi, setIsAddRoi] = useState(false)
+  const [loadingApi, setLoadingApi] = useState(false)
 
   const [roiDataState, setRoiDataState] = useState(roiData)
 
@@ -199,7 +200,7 @@ const ImagePlotChart = React.memo<{
     onCancel()
     onCancelAdd()
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [outputKey])
+  }, [outputKey, roiFilePath])
 
   const data = React.useMemo(
     () => [
@@ -428,7 +429,8 @@ const ImagePlotChart = React.memo<{
   }
 
   const addRoiSubmit = async () => {
-    if (!roiFilePath) return
+    if (!roiFilePath || loadingApi) return
+    setLoadingApi(true)
     const sizeX = roiDataState[0].length - 1
     const sizeY = roiDataState.length - 1
     const xAdd = Number(((sizeDrag.width + 2) / (sChart / sizeX)).toFixed(1))
@@ -446,32 +448,37 @@ const ImagePlotChart = React.memo<{
     try {
       await addRoiApi(roiFilePath, pointCenter)
     } catch {}
+    setLoadingApi(false)
     onCancelAdd()
     dispatch(getRoiData({ path: roiFilePath }))
     resetTimeSeries()
   }
 
   const onMergeRoi = async () => {
-    if (!roiFilePath) return
+    if (!roiFilePath || loadingApi) return
+    setLoadingApi(true)
     dispatch(resetAllOrderList())
     try {
       await mergeRoiApi(roiFilePath, {
         ids: pointClick.map((point) => point.z - 1),
       })
     } catch {}
+    setLoadingApi(false)
     onCancel()
     dispatch(getRoiData({ path: roiFilePath }))
     resetTimeSeries()
   }
 
   const onDeleteRoi = async () => {
-    if (!roiFilePath) return
+    if (!roiFilePath || loadingApi) return
+    setLoadingApi(true)
     dispatch(resetAllOrderList())
     try {
       await deleteRoiApi(roiFilePath, {
         ids: pointClick.map((point) => point.z - 1),
       })
     } catch {}
+    setLoadingApi(false)
     onCancel()
     dispatch(getRoiData({ path: roiFilePath }))
     resetTimeSeries()
@@ -499,8 +506,24 @@ const ImagePlotChart = React.memo<{
     }
     return (
       <BoxDiv>
-        <LinkDiv onClick={addRoiSubmit}>OK</LinkDiv>
-        <LinkDiv onClick={onCancelAdd}>Cancel</LinkDiv>
+        <LinkDiv
+          style={{
+            opacity: loadingApi ? 0.5 : 1,
+            cursor: loadingApi ? 'progress' : 'pointer',
+          }}
+          onClick={addRoiSubmit}
+        >
+          OK
+        </LinkDiv>
+        <LinkDiv
+          style={{
+            opacity: loadingApi ? 0.5 : 1,
+            cursor: loadingApi ? 'progress' : 'pointer',
+          }}
+          onClick={onCancelAdd}
+        >
+          Cancel
+        </LinkDiv>
       </BoxDiv>
     )
   }
@@ -525,14 +548,25 @@ const ImagePlotChart = React.memo<{
             </BoxDiv>
             <BoxDiv>
               {pointClick.length >= 2 ? (
-                <LinkDiv sx={{ ml: 0 }} onClick={onMergeRoi}>
+                <LinkDiv
+                  sx={{ ml: 0, opacity: loadingApi ? 0.5 : 1 }}
+                  onClick={onMergeRoi}
+                >
                   Merge ROI
                 </LinkDiv>
               ) : null}
-              <LinkDiv sx={{ color: '#F84E1B' }} onClick={onDeleteRoi}>
+              <LinkDiv
+                sx={{ color: '#F84E1B', opacity: loadingApi ? 0.5 : 1 }}
+                onClick={onDeleteRoi}
+              >
                 Delete ROI
               </LinkDiv>
-              <LinkDiv onClick={onCancel}>Cancel</LinkDiv>
+              <LinkDiv
+                sx={{ opacity: loadingApi ? 0.5 : 1 }}
+                onClick={onCancel}
+              >
+                Cancel
+              </LinkDiv>
             </BoxDiv>
           </>
         ) : (

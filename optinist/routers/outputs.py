@@ -3,9 +3,10 @@ from glob import glob
 from typing import Optional
 
 import pandas as pd
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter
 
 from optinist.api.dir_path import DIRPATH
+from optinist.api.edit_ROI import ACTION, EditROI
 from optinist.api.utils.filepath_creater import create_directory, join_filepath
 from optinist.api.utils.json_writer import JsonWriter, save_tiff2json
 from optinist.routers.const import ACCEPT_TIFF_EXT
@@ -16,11 +17,6 @@ from optinist.routers.model import (
     OutputData,
     RoiList,
     RoiPos,
-)
-from optinist.wrappers.suite2p_wrapper.edit_roi import (
-    excute_delete_roi,
-    execute_add_ROI,
-    execute_merge_roi,
 )
 
 router = APIRouter()
@@ -171,21 +167,8 @@ async def get_image(
     tags=["outputs"],
 )
 async def add_roi(filepath: str, pos: RoiPos):
-    if not os.path.exists(filepath):
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    if os.path.basename(filepath) != "cell_roi.json":
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        max_index = execute_add_ROI(
-            node_dirpath=os.path.dirname(filepath),
-            pos=[pos.posx, pos.posy, pos.sizex, pos.sizey],
-        )
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)
-        )
-    return EditRoiSuccess(max_index=max_index)
+    EditROI(action=ACTION.ADD, filepath=filepath, params=pos.dict()).excute()
+    return EditRoiSuccess(max_index=0)
 
 
 @router.post(
@@ -194,20 +177,8 @@ async def add_roi(filepath: str, pos: RoiPos):
     tags=["outputs"],
 )
 async def merge_roi(filepath: str, roi_list: RoiList):
-    if not os.path.exists(filepath):
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    if os.path.basename(filepath) != "cell_roi.json":
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        max_index = execute_merge_roi(
-            node_dirpath=os.path.dirname(filepath), merged_roi_ids=roi_list.ids
-        )
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)
-        )
-    return EditRoiSuccess(max_index=max_index)
+    EditROI(action=ACTION.MERGE, filepath=filepath, params=roi_list.dict()).excute()
+    return EditRoiSuccess(max_index=0)
 
 
 @router.post(
@@ -216,20 +187,8 @@ async def merge_roi(filepath: str, roi_list: RoiList):
     tags=["outputs"],
 )
 async def delete_roi(filepath: str, roi_list: RoiList):
-    if not os.path.exists(filepath):
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
-    if os.path.basename(filepath) != "cell_roi.json":
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-
-    try:
-        max_index = excute_delete_roi(
-            node_dirpath=os.path.dirname(filepath), delete_roi_ids=roi_list.ids
-        )
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=str(e)
-        )
-    return EditRoiSuccess(max_index=max_index)
+    EditROI(action=ACTION.DELETE, filepath=filepath, params=roi_list.dict()).excute()
+    return EditRoiSuccess(max_index=0)
 
 
 @router.get("/outputs/csv/{filepath:path}", response_model=OutputData, tags=["outputs"])

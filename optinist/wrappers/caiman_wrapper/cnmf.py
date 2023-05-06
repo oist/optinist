@@ -2,7 +2,13 @@ import gc
 
 import numpy as np
 
-from optinist.api.dataclass.dataclass import FluoData, ImageData, IscellData, RoiData
+from optinist.api.dataclass.dataclass import (
+    CaimanCnmfData,
+    FluoData,
+    ImageData,
+    IscellData,
+    RoiData,
+)
 from optinist.api.nwb.nwb import NWBDATASET
 from optinist.api.utils.filepath_creater import join_filepath
 
@@ -112,7 +118,7 @@ def caiman_cnmf(
         stop_server(dview=dview)  # noqa: F821
 
     c, dview, n_processes = setup_cluster(
-        backend="local", n_processes=None, single_thread=False
+        backend="local", n_processes=None, single_thread=True
     )
 
     cnm = cnmf.CNMF(n_processes=n_processes, dview=dview, Ain=None, params=ops)
@@ -123,10 +129,6 @@ def caiman_cnmf(
     # contours plot
     Cn = local_correlations(mmap_images.transpose(1, 2, 0))
     Cn[np.isnan(Cn)] = 0
-    cnm.estimates.plot_contours(img=Cn)
-
-    del mmap_images
-    gc.collect()
 
     thr = params["thr"]
     thr_method = "nrg"
@@ -136,16 +138,16 @@ def caiman_cnmf(
         [np.ones(cnm.estimates.A.shape[-1]), np.zeros(cnm.estimates.b.shape[-1])]
     )
 
-    cell_roi = get_roi(cnm.estimates.A, thr, thr_method, swap_dim, dims)
-    cell_roi = np.stack(cell_roi)
-    cell_roi = np.nanmax(cell_roi, axis=0).astype(float)
+    ims = get_roi(cnm.estimates.A, thr, thr_method, swap_dim, dims)
+    ims = np.stack(ims)
+    cell_roi = np.nanmax(ims, axis=0).astype(float)
     cell_roi[cell_roi == 0] = np.nan
 
-    non_cell_roi = get_roi(
+    non_cell_roi_ims = get_roi(
         scipy.sparse.csc_matrix(cnm.estimates.b), thr, thr_method, swap_dim, dims
     )
-    non_cell_roi = np.stack(non_cell_roi)
-    non_cell_roi = np.nanmax(non_cell_roi, axis=0).astype(float)
+    non_cell_roi_ims = np.stack(non_cell_roi_ims)
+    non_cell_roi = np.nanmax(non_cell_roi_ims, axis=0).astype(float)
     non_cell_roi[non_cell_roi == 0] = np.nan
 
     all_roi = np.nanmax(np.stack([cell_roi, non_cell_roi]), axis=0)
@@ -217,6 +219,12 @@ def caiman_cnmf(
         ]
     )
 
+    cnmf_data = {}
+    cnmf_data["fluorescence"] = fluorescence
+    cnmf_data["im"] = np.concatenate([ims, non_cell_roi_ims], axis=0)
+    cnmf_data["is_cell"] = iscell.astype(bool)
+    cnmf_data["images"] = mmap_images
+
     info = {
         "images": ImageData(
             np.array(Cn * 255, dtype=np.uint8),
@@ -231,6 +239,7 @@ def caiman_cnmf(
             non_cell_roi, output_dir=output_dir, file_name="non_cell_roi"
         ),
         "nwbfile": nwbfile,
+        "cnmf_data": CaimanCnmfData(cnmf_data),
     }
 
     return info
