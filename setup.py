@@ -55,6 +55,7 @@ setup(
             "frontend/build/static/media/*",
             "config/*.yaml",
             "conda/*.yaml",
+            "Snakefile",
         ]
     },
     py_modules=["Snakefile"],

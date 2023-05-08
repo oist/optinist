@@ -46,6 +46,8 @@ local_build:
 
 .PHONY: upload_testpypi
 upload_testpypi:
+	mkdir -p optinist/frontend/build
+	cp -r frontend/build optinist/frontend/
 	python setup.py sdist
 	twine upload --repository testpypi dist/*
 
