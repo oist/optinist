@@ -53,6 +53,7 @@ setup(
             "frontend/build/static/css/*",
             "frontend/build/static/js/*",
             "frontend/build/static/media/*",
+            "app_config/*.yaml",
             "config/*.yaml",
             "conda/*.yaml",
             "Snakefile",
