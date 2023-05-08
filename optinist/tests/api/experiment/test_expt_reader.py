@@ -27,8 +27,10 @@ def test_read():
 
     assert isinstance(exp_config.edgeDict, dict)
 
-    edgeDictId = "reactflow__edge-input_0input_0--image--ImageData-suite2p_file_ \
-        convert_pi2bgrsd6msuite2p_file_convert_pi2bgrsd6m--image--ImageData"
+    edgeDictId = (
+        "reactflow__edge-input_0input_0--image--ImageData-suite2p_file_"
+        "convert_pi2bgrsd6msuite2p_file_convert_pi2bgrsd6m--image--ImageData"
+    )
     assert isinstance(exp_config.edgeDict[edgeDictId].id, str)
     assert isinstance(exp_config.edgeDict[edgeDictId].type, str)
     assert isinstance(exp_config.edgeDict[edgeDictId].animated, bool)
