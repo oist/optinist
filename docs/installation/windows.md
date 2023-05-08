@@ -13,7 +13,7 @@ Please follow instructions below.
 
 <br />
 
-**CAUTION**: For WSL2, we confirmed them on [Ubuntu 20.04](https://www.microsoft.com/ja-jp/p/ubuntu-2004-lts/9n6svws3rx71).
+**CAUTION**: For WSL2, we confirmed them on Ubuntu 20.04/22.04.
 
 
 ## For Windows (PowerShell)
@@ -34,7 +34,8 @@ Please follow instructions below.
 
 ##### Install Anaconda
 
-Install [Anaconda for Windows](https://www.anaconda.com/products/individual)
+- Install Anaconda for Windows
+  - https://www.anaconda.com/products/individual
 
 #### Create anaconda environment
 
@@ -58,9 +59,13 @@ conda install -n base -c conda-forge mamba
 ```
 -->
 
-<!--
 #### Install library
 
+```
+pip install optinist
+```
+
+<!--
 On the Anaconda PowerShell Prompt(anaconda3),
 ```
 pip install optinist
@@ -96,9 +101,9 @@ run_optinist
 ```
 (optinist) PS C:\optinist\backend> run_optinist
 INFO:     Will watch for changes in these directories: ['C:\\optinist\\backend']
-INFO:     Uvicorn running on [1mhttp://0.0.0.0:8000[0m (Press CTRL+C to quit)
-INFO:     Started reloader process [[36m[1m16312[0m] using [36m[1mstatreload[0m
-INFO:     Started server process [[36m34084[0m]
+INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
+INFO:     Started reloader process 16312 using statreload
+INFO:     Started server process 34084
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 ```
@@ -125,8 +130,9 @@ sudo apt install gcc g++
 ##### Install Anaconda
 
 ```
-wget https://repo.anaconda.com/archive/Anaconda3-2021.11-Linux-x86_64.sh
-bash Anaconda3-2021.11-Linux-x86_64.sh
+# *The latest version of the module is ok.
+wget https://repo.anaconda.com/archive/Anaconda3-2022.10-Linux-x86_64.sh
+bash Anaconda3-2022.10-Linux-x86_64.sh
 ```
 
 #### Create anaconda environment
@@ -158,7 +164,7 @@ pip install optinist
 #### Set saving directory
 
 Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
-```bash
+```
 export OPTINIST_DIR="your_saving_dir"
 ```
 

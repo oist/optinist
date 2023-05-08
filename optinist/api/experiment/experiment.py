@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict
+from typing import Dict, Optional
 
 from optinist.api.workflow.workflow import Edge, Node
 
@@ -15,12 +15,13 @@ class ExptFunction:
 @dataclass
 class ExptConfig:
     timestamp: str
-    name: str
+    name: Optional[str]
     unique_id: str
     hasNWB: bool
     function: Dict[str, ExptFunction]
     nodeDict: Dict[str, Node]
     edgeDict: Dict[str, Edge]
+
 
 @dataclass
 class ExptImportData:

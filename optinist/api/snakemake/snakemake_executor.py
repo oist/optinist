@@ -42,14 +42,16 @@ def delete_dependencies(
         node_id = queue.pop()
         algo_name = nodeDict[node_id].data.label
 
-        pickle_filepath = join_filepath([
-            DIRPATH.OUTPUT_DIR,
-            get_pickle_file(
-                unique_id=unique_id,
-                node_id=node_id,
-                algo_name=algo_name,
-            )
-        ])
+        pickle_filepath = join_filepath(
+            [
+                DIRPATH.OUTPUT_DIR,
+                get_pickle_file(
+                    unique_id=unique_id,
+                    node_id=node_id,
+                    algo_name=algo_name,
+                ),
+            ]
+        )
         # print(pickle_filepath)
 
         if os.path.exists(pickle_filepath):

@@ -7,8 +7,8 @@ import React, {
 } from 'react'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { useSelector, useDispatch } from 'react-redux'
-import { RootState } from 'store/store'
-import { Datum, LayoutAxis, PlotData, PlotSelectionEvent } from 'plotly.js'
+import {RootState} from 'store/store'
+import {Datum, LayoutAxis, PlotData, PlotMouseEvent, PlotSelectionEvent} from 'plotly.js'
 import createColormap from 'colormap'
 import { Button, LinearProgress, TextField, Typography } from '@mui/material'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -52,6 +52,8 @@ import {
   selectVisualizeSaveFilename,
   selectVisualizeSaveFormat,
   selectImageItemAlpha,
+  selectRoiItemOutputKeys,
+  selectVisualizeItems,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import {
   incrementImageActiveIndex,
@@ -153,12 +155,13 @@ const ImagePlotChart = React.memo<{
   )
 
   const [isAddRoi, setIsAddRoi] = useState(false)
+  const [loadingApi, setLoadingApi] = useState(false)
 
   const [roiDataState, setRoiDataState] = useState(roiData)
 
   const [pointClick, setPointClick] = useState<PointClick[]>([])
 
-  const itemsVisual = useSelector((state: any) => state.visualaizeItem?.items)
+  const itemsVisual = useSelector(selectVisualizeItems)
 
   const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
   const showline = useSelector(selectImageItemShowLine(itemId))
@@ -177,9 +180,7 @@ const ImagePlotChart = React.memo<{
   const [startDragAddRoi, setStartDragAddRoi] = useState(false)
   const [positionDrag, setChangeSize] = useState<PositionDrag | undefined>()
 
-  const outputKey: string = useSelector(
-    (state: any) => state.visualaizeItem?.items[itemId]?.roiItem?.outputKey,
-  )
+  const outputKey: string | null = useSelector(selectRoiItemOutputKeys(itemId))
 
   const refPageXSize = useRef(0)
   const refPageYSize = useRef(0)
@@ -199,7 +200,7 @@ const ImagePlotChart = React.memo<{
     onCancel()
     onCancelAdd()
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [outputKey])
+  }, [outputKey, roiFilePath])
 
   const data = React.useMemo(
     () => [
@@ -226,7 +227,7 @@ const ImagePlotChart = React.memo<{
           const hex = rgba2hex(rgb, alpha)
           return [offset, hex]
         }),
-        hoverinfo: 'none',
+        // hoverinfo: isAddRoi || pointClick.length ? 'none' : undefined,
         hoverongaps: false,
         showscale: showscale,
         zsmooth: zsmooth, // ['best', 'fast', false]
@@ -235,7 +236,8 @@ const ImagePlotChart = React.memo<{
         z: roiDataState,
         type: 'heatmap',
         name: 'roi',
-        hoverinfo: 'none',
+        hovertemplate: isAddRoi ? 'none' : 'cell id: %{z}',
+        // hoverinfo: isAddRoi || pointClick.length ? 'none' : undefined,
         colorscale: [...Array(timeDataMaxIndex)].map((_, i) => {
           const new_i = Math.floor(((i % 10) * 10 + i / 10) % 100)
           const offset: number = i / (timeDataMaxIndex - 1)
@@ -260,6 +262,7 @@ const ImagePlotChart = React.memo<{
       timeDataMaxIndex,
       roiAlpha,
       alpha,
+      isAddRoi,
     ],
   )
 
@@ -324,8 +327,8 @@ const ImagePlotChart = React.memo<{
     },
   }
 
-  const onClick = (event: any) => {
-    const point: PlotDatum = event.points[0]
+  const onChartClick = (event: PlotMouseEvent) => {
+    const point: PlotDatum = event.points[0] as PlotDatum
     if (point.curveNumber >= 1 && outputKey === 'cell_roi') {
       setSelectRoi({
         x: Number(point.x),
@@ -392,7 +395,7 @@ const ImagePlotChart = React.memo<{
     const { pageX, pageY } = event
     let newSizeDrag
     if (startDragAddRoi) {
-      const { y } = (event.currentTarget as any).getBoundingClientRect()
+      const { y } = event.currentTarget.getBoundingClientRect()
       let newX = sizeDrag.left + (pageX - refPageXSize.current)
       let newY = Math.ceil(pageY - y - 15) - window.scrollY
 
@@ -426,7 +429,8 @@ const ImagePlotChart = React.memo<{
   }
 
   const addRoiSubmit = async () => {
-    if (!roiFilePath) return
+    if (!roiFilePath || loadingApi) return
+    setLoadingApi(true)
     const sizeX = roiDataState[0].length - 1
     const sizeY = roiDataState.length - 1
     const xAdd = Number(((sizeDrag.width + 2) / (sChart / sizeX)).toFixed(1))
@@ -444,32 +448,37 @@ const ImagePlotChart = React.memo<{
     try {
       await addRoiApi(roiFilePath, pointCenter)
     } catch {}
+    setLoadingApi(false)
     onCancelAdd()
     dispatch(getRoiData({ path: roiFilePath }))
     resetTimeSeries()
   }
 
   const onMergeRoi = async () => {
-    if (!roiFilePath) return
+    if (!roiFilePath || loadingApi) return
+    setLoadingApi(true)
     dispatch(resetAllOrderList())
     try {
       await mergeRoiApi(roiFilePath, {
         ids: pointClick.map((point) => point.z - 1),
       })
     } catch {}
+    setLoadingApi(false)
     onCancel()
     dispatch(getRoiData({ path: roiFilePath }))
     resetTimeSeries()
   }
 
   const onDeleteRoi = async () => {
-    if (!roiFilePath) return
+    if (!roiFilePath || loadingApi) return
+    setLoadingApi(true)
     dispatch(resetAllOrderList())
     try {
       await deleteRoiApi(roiFilePath, {
         ids: pointClick.map((point) => point.z - 1),
       })
     } catch {}
+    setLoadingApi(false)
     onCancel()
     dispatch(getRoiData({ path: roiFilePath }))
     resetTimeSeries()
@@ -481,7 +490,7 @@ const ImagePlotChart = React.memo<{
         if (isTimeSeriesItem(itemsVisual[item])) {
           dispatch(
             getTimeSeriesInitData({
-              path: itemsVisual[item].filePath,
+              path: itemsVisual[item].filePath as string,
               itemId: Number(item),
             }),
           )
@@ -497,8 +506,24 @@ const ImagePlotChart = React.memo<{
     }
     return (
       <BoxDiv>
-        <LinkDiv onClick={addRoiSubmit}>OK</LinkDiv>
-        <LinkDiv onClick={onCancelAdd}>Cancel</LinkDiv>
+        <LinkDiv
+          style={{
+            opacity: loadingApi ? 0.5 : 1,
+            cursor: loadingApi ? 'progress' : 'pointer',
+          }}
+          onClick={addRoiSubmit}
+        >
+          OK
+        </LinkDiv>
+        <LinkDiv
+          style={{
+            opacity: loadingApi ? 0.5 : 1,
+            cursor: loadingApi ? 'progress' : 'pointer',
+          }}
+          onClick={onCancelAdd}
+        >
+          Cancel
+        </LinkDiv>
       </BoxDiv>
     )
   }
@@ -523,14 +548,25 @@ const ImagePlotChart = React.memo<{
             </BoxDiv>
             <BoxDiv>
               {pointClick.length >= 2 ? (
-                <LinkDiv sx={{ ml: 0 }} onClick={onMergeRoi}>
+                <LinkDiv
+                  sx={{ ml: 0, opacity: loadingApi ? 0.5 : 1 }}
+                  onClick={onMergeRoi}
+                >
                   Merge ROI
                 </LinkDiv>
               ) : null}
-              <LinkDiv sx={{ color: '#F84E1B' }} onClick={onDeleteRoi}>
+              <LinkDiv
+                sx={{ color: '#F84E1B', opacity: loadingApi ? 0.5 : 1 }}
+                onClick={onDeleteRoi}
+              >
                 Delete ROI
               </LinkDiv>
-              <LinkDiv onClick={onCancel}>Cancel</LinkDiv>
+              <LinkDiv
+                sx={{ opacity: loadingApi ? 0.5 : 1 }}
+                onClick={onCancel}
+              >
+                Cancel
+              </LinkDiv>
             </BoxDiv>
           </>
         ) : (
@@ -542,7 +578,7 @@ const ImagePlotChart = React.memo<{
           data={data}
           layout={layout}
           config={config}
-          onClick={onClick}
+          onClick={onChartClick}
           onSelecting={onSelecting}
         />
         {isAddRoi ? (

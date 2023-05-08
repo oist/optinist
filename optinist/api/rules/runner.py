@@ -1,14 +1,14 @@
+import copy
+import gc
 import os
 import traceback
-import gc
-import copy
 
-from optinist.wrappers import wrapper_dict
-from optinist.api.snakemake.smk import Rule
+from optinist.api.nwb.nwb_creater import merge_nwbfile, save_nwb
 from optinist.api.pickle.pickle_reader import PickleReader
 from optinist.api.pickle.pickle_writer import PickleWriter
+from optinist.api.snakemake.smk import Rule
 from optinist.api.utils.filepath_creater import join_filepath
-from optinist.api.nwb.nwb_creater import merge_nwbfile, save_nwb
+from optinist.wrappers import wrapper_dict
 
 
 class Runner:
@@ -19,7 +19,7 @@ class Runner:
 
             cls.change_dict_key_exist(input_info, __rule)
 
-            nwbfile = input_info['nwbfile']
+            nwbfile = input_info["nwbfile"]
 
             # input_info
             for key in list(input_info):
@@ -28,13 +28,11 @@ class Runner:
 
             # output_info
             output_info = cls.execute_function(
-                __rule.path,
-                __rule.params,
-                input_info
+                __rule.path, __rule.params, os.path.dirname(__rule.output), input_info
             )
 
             # nwbfileの設定
-            output_info['nwbfile'] = cls.save_func_nwb(
+            output_info["nwbfile"] = cls.save_func_nwb(
                 f"{__rule.output.split('.')[0]}.nwb",
                 __rule.type,
                 nwbfile,
@@ -49,10 +47,7 @@ class Runner:
                 # 全体の結果を保存する
                 path = join_filepath(os.path.dirname(os.path.dirname(__rule.output)))
                 path = join_filepath([path, f"whole_{__rule.type}.nwb"])
-                cls.save_all_nwb(
-                    path,
-                    output_info['nwbfile']
-                )
+                cls.save_all_nwb(path, output_info["nwbfile"])
 
             print("output: ", __rule.output)
 
@@ -62,7 +57,7 @@ class Runner:
         except Exception as e:
             PickleWriter.write(
                 __rule.output,
-                list(traceback.TracebackException.from_exception(e).format())[-2:]
+                list(traceback.TracebackException.from_exception(e).format())[-2:],
             )
 
     @classmethod
@@ -83,20 +78,13 @@ class Runner:
         nwbfile = {}
         for x in all_nwbfile.values():
             nwbfile = merge_nwbfile(nwbfile, x)
-        save_nwb(
-            save_path,
-            input_nwbfile,
-            nwbfile
-        )
+        save_nwb(save_path, input_nwbfile, nwbfile)
 
     @classmethod
-    def execute_function(cls, path, params, input_info):
-        wrapper = cls.dict2leaf(
-            wrapper_dict,
-            path.split('/')
-        )
+    def execute_function(cls, path, params, output_dir, input_info):
+        wrapper = cls.dict2leaf(wrapper_dict, path.split("/"))
         func = copy.deepcopy(wrapper["function"])
-        output_info = func(params=params, **input_info)
+        output_info = func(params=params, output_dir=output_dir, **input_info)
         del func
         gc.collect()
 
