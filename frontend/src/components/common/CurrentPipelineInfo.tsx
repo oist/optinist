@@ -1,24 +1,15 @@
 import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector } from 'react-redux'
 import { selectPipelineLatestUid } from 'store/slice/Pipeline/PipelineSelectors'
 import { Divider, Typography, Grid } from '@mui/material'
 import {
   selectExperimentName,
   selectExperimentsSatusIsFulfilled,
-  selectExperimentsSatusIsUninitialized,
 } from 'store/slice/Experiments/ExperimentsSelectors'
-import { getExperiments } from 'store/slice/Experiments/ExperimentsActions'
 
 export const CurrentPipelineInfo: React.FC = () => {
   const uid = useSelector(selectPipelineLatestUid)
-  const isUninitialized = useSelector(selectExperimentsSatusIsUninitialized)
   const isFulFilled = useSelector(selectExperimentsSatusIsFulfilled)
-  const dispatch = useDispatch()
-  React.useEffect(() => {
-    if (isUninitialized) {
-      dispatch(getExperiments())
-    }
-  }, [dispatch, isUninitialized])
 
   return (
     <>
