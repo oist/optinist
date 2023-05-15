@@ -7,7 +7,10 @@ import {
 } from '../FlowElement/FlowElementSlice'
 import { isNodeData } from '../FlowElement/FlowElementUtils'
 import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
-import { importExperimentByUid } from '../Experiments/ExperimentsActions'
+import {
+  fetchExperiment,
+  importExperimentByUid,
+} from '../Experiments/ExperimentsActions'
 import { getAlgoParams } from './AlgorithmNodeActions'
 import { ALGORITHM_NODE_SLICE_NAME, AlgorithmNode } from './AlgorithmNodeType'
 import { isAlgorithmNodePostData } from 'api/run/RunUtils'
@@ -72,6 +75,22 @@ export const algorithmNodeSlice = createSlice({
         }
       })
       .addCase(importExperimentByUid.fulfilled, (_, action) => {
+        const newState: AlgorithmNode = {}
+        Object.values(action.payload.nodeDict)
+          .filter(isAlgorithmNodePostData)
+          .forEach((node) => {
+            if (node.data != null) {
+              newState[node.id] = {
+                name: node.data.label,
+                functionPath: node.data.path,
+                params: node.data.param,
+                isUpdated: false,
+              }
+            }
+          })
+        return newState
+      })
+      .addCase(fetchExperiment.fulfilled, (state, action) => {
         const newState: AlgorithmNode = {}
         Object.values(action.payload.nodeDict)
           .filter(isAlgorithmNodePostData)
