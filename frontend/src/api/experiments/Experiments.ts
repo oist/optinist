@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import { BASE_URL } from 'const/API'
-import { OutputPathsDTO, RunPostData } from 'api/run/Run'
+import { EdgeDict, NodeDict, OutputPathsDTO, RunPostData } from 'api/run/Run'
 import { EXPERIMENTS_STATUS } from 'store/slice/Experiments/ExperimentsType'
 
 export type ExperimentsDTO = {
@@ -29,6 +29,8 @@ export type ExperimentDTO = {
   finished_at?: string
   unique_id: string
   hasNWB: boolean
+  edgeDict: EdgeDict
+  nodeDict: NodeDict
 }
 
 export async function getExperimentsApi(): Promise<ExperimentsDTO> {
@@ -54,6 +56,11 @@ export async function importExperimentByUidApi(
   uid: string,
 ): Promise<RunPostData> {
   const response = await axios.get(`${BASE_URL}/experiments/import/${uid}`)
+  return response.data
+}
+
+export async function fetchExperimentApi(): Promise<ExperimentDTO | null> {
+  const response = await axios.get(`${BASE_URL}/experiments/fetch`)
   return response.data
 }
 
