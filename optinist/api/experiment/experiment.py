@@ -18,7 +18,7 @@ class ExptFunction:
 
 @dataclass
 class ExptConfig:
-    created_at: str
+    started_at: str
     finished_at: Optional[str]
     success: Optional[str]
     name: Optional[str]

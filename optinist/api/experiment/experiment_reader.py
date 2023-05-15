@@ -22,7 +22,7 @@ class ExptConfigReader:
         return ExptConfig(
             unique_id=config["unique_id"],
             name=config["name"],
-            created_at=config.get("created_at", config.get("timestamp")),
+            started_at=config.get("started_at", config.get("timestamp")),
             finished_at=config.get("finished_at"),
             success=config.get("success"),
             hasNWB=config["hasNWB"],

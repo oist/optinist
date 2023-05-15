@@ -8,22 +8,24 @@ export type ExperimentsDTO = {
   [uid: string]: ExperimentDTO
 }
 
-export type ExperimentDTO = {
-  function: {
-    [uid: string]: {
-      name: string
-      success: string
-      unique_id: string
-      hasNWB: boolean
-      message?: string
-      started_at?: string
-      finished_at?: string
-      outputPaths?: OutputPathsDTO
-    }
+export type FunctionsDTO = {
+  [nodeId: string]: {
+    name: string
+    success: string
+    unique_id: string
+    hasNWB: boolean
+    message?: string
+    started_at?: string
+    finished_at?: string
+    outputPaths?: OutputPathsDTO
   }
+}
+
+export type ExperimentDTO = {
+  function: FunctionsDTO
   name: string
   success?: EXPERIMENTS_STATUS
-  created_at: string
+  started_at: string
   finished_at?: string
   unique_id: string
   hasNWB: boolean

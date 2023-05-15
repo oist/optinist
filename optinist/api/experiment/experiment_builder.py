@@ -3,7 +3,7 @@ from optinist.api.experiment.experiment import ExptConfig
 
 class ExptConfigBuilder:
     def __init__(self):
-        self._created_at = None
+        self._started_at = None
         self._finished_at = None
         self._success = None
         self._name = None
@@ -14,7 +14,7 @@ class ExptConfigBuilder:
         self._edgeDict = None
 
     def set_config(self, config: ExptConfig) -> "ExptConfigBuilder":
-        self._created_at = config.created_at
+        self._started_at = config.started_at
         self._finished_at = config.finished_at
         self._success = config.success
         self._name = config.name
@@ -25,8 +25,8 @@ class ExptConfigBuilder:
         self._edgeDict = config.edgeDict
         return self
 
-    def set_created_at(self, timestamp) -> "ExptConfigBuilder":
-        self._created_at = timestamp
+    def set_started_at(self, timestamp) -> "ExptConfigBuilder":
+        self._started_at = timestamp
         return self
 
     def set_success(self, success: str) -> "ExptConfigBuilder":
@@ -59,7 +59,7 @@ class ExptConfigBuilder:
 
     def build(self) -> ExptConfig:
         return ExptConfig(
-            created_at=self._created_at,
+            started_at=self._started_at,
             finished_at=self._finished_at,
             success=self._success,
             name=self._name,
