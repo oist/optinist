@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 import { BASE_URL } from 'const/API'
-import { RunPostData } from 'api/run/Run'
+import { OutputPathsDTO, RunPostData } from 'api/run/Run'
 
 export type ExperimentsDTO = {
   [uid: string]: ExperimentDTO
@@ -14,11 +14,16 @@ export type ExperimentDTO = {
       success: string
       unique_id: string
       hasNWB: boolean
+      message?: string
+      started_at?: string
+      finished_at?: string
+      outputPaths?: OutputPathsDTO
     }
   }
   name: string
   success: string
-  timestamp: string
+  created_at: string
+  finished_at?: string
   unique_id: string
   hasNWB: boolean
 }

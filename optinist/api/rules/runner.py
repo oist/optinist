@@ -2,7 +2,12 @@ import copy
 import gc
 import os
 import traceback
+from dataclasses import asdict
+from datetime import datetime
 
+from optinist.api.config.config_writer import ConfigWriter
+from optinist.api.dir_path import DIRPATH
+from optinist.api.experiment.experiment_reader import ExptConfigReader
 from optinist.api.nwb.nwb_creater import merge_nwbfile, save_nwb
 from optinist.api.pickle.pickle_reader import PickleReader
 from optinist.api.pickle.pickle_writer import PickleWriter
@@ -25,6 +30,8 @@ class Runner:
             for key in list(input_info):
                 if key not in __rule.return_arg.values():
                     input_info.pop(key)
+
+            cls.set_func_start_timestamp(os.path.dirname(__rule.output))
 
             # output_info
             output_info = cls.execute_function(
@@ -59,6 +66,22 @@ class Runner:
                 __rule.output,
                 list(traceback.TracebackException.from_exception(e).format())[-2:],
             )
+
+    @classmethod
+    def set_func_start_timestamp(cls, output_dirpath):
+        workflow_dirpath = os.path.dirname(output_dirpath)
+        node_id = os.path.basename(output_dirpath)
+        expt_config = ExptConfigReader.read(
+            join_filepath([workflow_dirpath, DIRPATH.EXPERIMENT_YML])
+        )
+        expt_config.function[node_id].started_at = datetime.now().strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
+        ConfigWriter.write(
+            dirname=workflow_dirpath,
+            filename=DIRPATH.EXPERIMENT_YML,
+            config=asdict(expt_config),
+        )
 
     @classmethod
     def save_func_nwb(cls, save_path, name, nwbfile, output_info):

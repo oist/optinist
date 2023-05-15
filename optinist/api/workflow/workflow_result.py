@@ -1,5 +1,6 @@
 import os
 from dataclasses import asdict
+from datetime import datetime
 from glob import glob
 from typing import Dict
 
@@ -104,9 +105,14 @@ class NodeResult:
         if isinstance(self.info, (list, str)):
             expt_config.function[self.node_id].success = "error"
             message = self.error()
+            expt_config.function[self.node_id].outputPaths = message.outputPaths
         else:
             expt_config.function[self.node_id].success = "success"
             message = self.success()
+        expt_config.function[self.node_id].finished_at = datetime.now().strftime(
+            "%Y-%m-%d %H:%M:%S"
+        )
+        expt_config.function[self.node_id].message = message.message
 
         ConfigWriter.write(
             dirname=self.workflow_dirpath,

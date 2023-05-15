@@ -50,7 +50,7 @@ class ExptConfigWriter:
         return (
             self.builder.set_unique_id(self.unique_id)
             .set_name(self.name)
-            .set_timestamp(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            .set_created_at(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
             .set_nodeDict(self.nodeDict)
             .set_edgeDict(self.edgeDict)
             .build()
@@ -58,7 +58,7 @@ class ExptConfigWriter:
 
     def add_run_info(self) -> ExptConfig:
         return (
-            self.builder.set_timestamp(
+            self.builder.set_created_at(
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             )  # 時間を更新
             .set_nodeDict(self.nodeDict)
@@ -67,13 +67,15 @@ class ExptConfigWriter:
         )
 
     def function_from_nodeDict(self) -> ExptConfig:
-        func_dict = {
-            node.id: ExptFunction(
-                unique_id=node.id,
-                name=node.data.label,
-                success="success" if node.data.type == "input" else "running",
-                hasNWB=False,
+        func_dict: Dict[str, ExptFunction] = {}
+        for node in self.nodeDict.values():
+            func_dict[node.id] = ExptFunction(
+                unique_id=node.id, name=node.data.label, hasNWB=False, success="running"
             )
-            for node in self.nodeDict.values()
-        }
+            if node.data.type == "input":
+                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                func_dict[node.id].started_at = timestamp
+                func_dict[node.id].finished_at = timestamp
+                func_dict[node.id].success = "success"
+
         return self.builder.set_function(func_dict).build()

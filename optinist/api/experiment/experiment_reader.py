@@ -3,7 +3,14 @@ from typing import Dict
 import yaml
 
 from optinist.api.experiment.experiment import ExptConfig, ExptFunction
-from optinist.api.workflow.workflow import Edge, Node, NodeData, NodePosition, Style
+from optinist.api.workflow.workflow import (
+    Edge,
+    Node,
+    NodeData,
+    NodePosition,
+    OutputPath,
+    Style,
+)
 
 
 class ExptConfigReader:
@@ -15,7 +22,8 @@ class ExptConfigReader:
         return ExptConfig(
             unique_id=config["unique_id"],
             name=config["name"],
-            timestamp=config["timestamp"],
+            created_at=config["created_at"],
+            finished_at=config["finished_at"],
             hasNWB=config["hasNWB"],
             function=cls.read_function(config["function"]),
             nodeDict=cls.read_nodeDict(config["nodeDict"]),
@@ -30,6 +38,10 @@ class ExptConfigReader:
                 name=value["name"],
                 success=value["success"],
                 hasNWB=value["hasNWB"],
+                started_at=value["started_at"],
+                finished_at=value["finished_at"],
+                message=value["message"],
+                outputPaths=cls.read_output_paths(value["outputPaths"]),
             )
             for key, value in config.items()
         }
@@ -62,6 +74,18 @@ class ExptConfigReader:
             )
             for key, value in config.items()
         }
+
+    @classmethod
+    def read_output_paths(cls, config) -> Dict[str, OutputPath]:
+        if config:
+            return {
+                key: OutputPath(
+                    path=value["path"], type=value["type"], max_index=value["max_index"]
+                )
+                for key, value in config.items()
+            }
+        else:
+            return None
 
     @classmethod
     def rename(cls, filepath, new_name: str) -> ExptConfig:
