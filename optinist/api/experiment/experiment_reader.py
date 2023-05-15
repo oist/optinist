@@ -24,6 +24,7 @@ class ExptConfigReader:
             name=config["name"],
             created_at=config["created_at"],
             finished_at=config["finished_at"],
+            success=config["success"],
             hasNWB=config["hasNWB"],
             function=cls.read_function(config["function"]),
             nodeDict=cls.read_nodeDict(config["nodeDict"]),

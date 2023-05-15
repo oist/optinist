@@ -5,6 +5,7 @@ class ExptConfigBuilder:
     def __init__(self):
         self._created_at = None
         self._finished_at = None
+        self._success = None
         self._name = None
         self._unique_id = None
         self._hasNWB = False
@@ -15,6 +16,7 @@ class ExptConfigBuilder:
     def set_config(self, config: ExptConfig) -> "ExptConfigBuilder":
         self._created_at = config.created_at
         self._finished_at = config.finished_at
+        self._success = config.success
         self._name = config.name
         self._unique_id = config.unique_id
         self._hasNWB = config.hasNWB
@@ -25,6 +27,10 @@ class ExptConfigBuilder:
 
     def set_created_at(self, timestamp) -> "ExptConfigBuilder":
         self._created_at = timestamp
+        return self
+
+    def set_success(self, success: str) -> "ExptConfigBuilder":
+        self._success = success
         return self
 
     def set_name(self, name) -> "ExptConfigBuilder":
@@ -55,6 +61,7 @@ class ExptConfigBuilder:
         return ExptConfig(
             created_at=self._created_at,
             finished_at=self._finished_at,
+            success=self._success,
             name=self._name,
             unique_id=self._unique_id,
             hasNWB=self._hasNWB,

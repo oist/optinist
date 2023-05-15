@@ -51,6 +51,7 @@ class ExptConfigWriter:
             self.builder.set_unique_id(self.unique_id)
             .set_name(self.name)
             .set_created_at(datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+            .set_success("running")
             .set_nodeDict(self.nodeDict)
             .set_edgeDict(self.edgeDict)
             .build()
@@ -61,6 +62,7 @@ class ExptConfigWriter:
             self.builder.set_created_at(
                 datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             )  # 時間を更新
+            .set_success("running")
             .set_nodeDict(self.nodeDict)
             .set_edgeDict(self.edgeDict)
             .build()
