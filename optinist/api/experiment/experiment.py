@@ -20,7 +20,7 @@ class ExptFunction:
 class ExptConfig:
     created_at: str
     finished_at: Optional[str]
-    success: str
+    success: Optional[str]
     name: Optional[str]
     unique_id: str
     hasNWB: bool

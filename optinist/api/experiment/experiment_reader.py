@@ -22,9 +22,9 @@ class ExptConfigReader:
         return ExptConfig(
             unique_id=config["unique_id"],
             name=config["name"],
-            created_at=config["created_at"],
-            finished_at=config["finished_at"],
-            success=config["success"],
+            created_at=config.get("created_at", config.get("timestamp")),
+            finished_at=config.get("finished_at"),
+            success=config.get("success"),
             hasNWB=config["hasNWB"],
             function=cls.read_function(config["function"]),
             nodeDict=cls.read_nodeDict(config["nodeDict"]),
@@ -39,10 +39,10 @@ class ExptConfigReader:
                 name=value["name"],
                 success=value["success"],
                 hasNWB=value["hasNWB"],
-                started_at=value["started_at"],
-                finished_at=value["finished_at"],
-                message=value["message"],
-                outputPaths=cls.read_output_paths(value["outputPaths"]),
+                started_at=value.get("started_at"),
+                finished_at=value.get("finished_at"),
+                message=value.get("message"),
+                outputPaths=cls.read_output_paths(value.get("outputPaths")),
             )
             for key, value in config.items()
         }

@@ -29,6 +29,7 @@ export function convertToExperimentType(dto: ExperimentDTO): ExperimentType {
   return {
     uid: dto.unique_id,
     timestamp: dto.created_at,
+    status: dto.success,
     name: dto.name,
     hasNWB: dto.hasNWB,
     functions,

@@ -51,14 +51,23 @@ export const selectExperimentHasNWB = (uid: string) => (state: RootState) =>
 export const selectExperimentStatus =
   (uid: string) =>
   (state: RootState): EXPERIMENTS_STATUS => {
-    const functions = selectExperimentList(state)[uid].functions
-    const statusList = Object.values(functions).map((f) => f.status)
-    if (statusList.findIndex((status) => status === 'error') >= 0) {
-      return 'error'
-    } else if (statusList.findIndex((status) => status === 'running') >= 0) {
-      return 'running'
+    const experiment = selectExperimentList(state)[uid]
+    if (experiment.status) {
+      return experiment.status
     } else {
-      return 'success'
+      /* NOTE
+        Following process is to maintain backward compatibility for changes to experiments API.
+        On finish the compatibility support, if any experiments doesn't have success, you can see no experiments.
+      */
+      const functions = selectExperimentList(state)[uid].functions
+      const statusList = Object.values(functions).map((f) => f.status)
+      if (statusList.findIndex((status) => status === 'error') >= 0) {
+        return 'error'
+      } else if (statusList.findIndex((status) => status === 'running') >= 0) {
+        return 'running'
+      } else {
+        return 'success'
+      }
     }
   }
 

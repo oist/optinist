@@ -2,6 +2,7 @@ import axios from 'axios'
 
 import { BASE_URL } from 'const/API'
 import { OutputPathsDTO, RunPostData } from 'api/run/Run'
+import { EXPERIMENTS_STATUS } from 'store/slice/Experiments/ExperimentsType'
 
 export type ExperimentsDTO = {
   [uid: string]: ExperimentDTO
@@ -21,7 +22,7 @@ export type ExperimentDTO = {
     }
   }
   name: string
-  success: string
+  success?: EXPERIMENTS_STATUS
   created_at: string
   finished_at?: string
   unique_id: string
