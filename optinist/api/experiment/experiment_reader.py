@@ -24,7 +24,7 @@ class ExptConfigReader:
             name=config["name"],
             started_at=config.get("started_at", config.get("timestamp")),
             finished_at=config.get("finished_at"),
-            success=config.get("success"),
+            success=config.get("success", "running"),
             hasNWB=config["hasNWB"],
             function=cls.read_function(config["function"]),
             nodeDict=cls.read_nodeDict(config["nodeDict"]),
@@ -37,7 +37,7 @@ class ExptConfigReader:
             key: ExptFunction(
                 unique_id=value["unique_id"],
                 name=value["name"],
-                success=value["success"],
+                success=value.get("success", "running"),
                 hasNWB=value["hasNWB"],
                 started_at=value.get("started_at"),
                 finished_at=value.get("finished_at"),

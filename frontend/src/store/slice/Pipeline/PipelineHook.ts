@@ -15,6 +15,7 @@ import { selectAlgorithmNodeNotExist } from '../AlgorithmNode/AlgorithmNodeSelec
 import { getExperiments } from '../Experiments/ExperimentsActions'
 import { useSnackbar } from 'notistack'
 import { RUN_STATUS } from './PipelineType'
+import { fetchExperiment } from '../Experiments/ExperimentsActions'
 
 const POLLING_INTERVAL = 5000
 
@@ -37,6 +38,10 @@ export function useRunPipeline() {
   const handleRunPipelineByUid = React.useCallback(() => {
     dispatch(runByCurrentUid({ runPostData }))
   }, [dispatch, runPostData])
+  React.useEffect(() => {
+    dispatch(fetchExperiment())
+    // eslint-disable-next-line
+  }, [])
   const handleCancelPipeline = React.useCallback(() => {
     if (uid != null) {
       dispatch(cancelPipeline())

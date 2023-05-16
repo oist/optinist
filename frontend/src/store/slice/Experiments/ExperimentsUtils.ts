@@ -1,10 +1,15 @@
-import type { ExperimentDTO, ExperimentsDTO } from 'api/experiments/Experiments'
+import type {
+  ExperimentDTO,
+  ExperimentsDTO,
+  FunctionsDTO,
+} from 'api/experiments/Experiments'
 import type {
   ExperimentListType,
   ExperimentType,
   ExperimentFunction,
   EXPERIMENTS_STATUS,
 } from './ExperimentsType'
+import { RunResultDTO } from 'api/run/Run'
 
 export function convertToExperimentListType(
   dto: ExperimentsDTO,
@@ -34,6 +39,21 @@ export function convertToExperimentType(dto: ExperimentDTO): ExperimentType {
     hasNWB: dto.hasNWB,
     functions,
   }
+}
+
+export function convertFunctionsToRunResultDTO(
+  dto: FunctionsDTO,
+): RunResultDTO {
+  const result: RunResultDTO = {}
+  Object.entries(dto).forEach(([key, value]) => {
+    result[key] = {
+      status: value.success,
+      message: value.message ?? '',
+      name: value.name,
+      outputPaths: value.outputPaths,
+    }
+  })
+  return result
 }
 
 function convertToExperimentStatus(dto: string): EXPERIMENTS_STATUS {

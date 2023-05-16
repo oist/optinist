@@ -4,8 +4,12 @@ import {
   getExperiments,
   deleteExperimentByUid,
   deleteExperimentByList,
+  fetchExperiment,
 } from './ExperimentsActions'
-import { convertToExperimentListType } from './ExperimentsUtils'
+import {
+  convertToExperimentListType,
+  convertToExperimentType,
+} from './ExperimentsUtils'
 import {
   pollRunResult,
   run,
@@ -61,6 +65,12 @@ export const experimentsSlice = createSlice({
               target.functions[nodeId].status = 'error'
             }
           })
+        }
+      })
+      .addCase(fetchExperiment.fulfilled, (state, action) => {
+        if (state.status === 'fulfilled') {
+          state.experimentList[action.payload.unique_id] =
+            convertToExperimentType(action.payload)
         }
       })
       .addMatcher(isAnyOf(run.fulfilled, runByCurrentUid.fulfilled), () => {

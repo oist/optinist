@@ -1,5 +1,8 @@
 import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
-import { importExperimentByUid } from '../Experiments/ExperimentsActions'
+import {
+  fetchExperiment,
+  importExperimentByUid,
+} from '../Experiments/ExperimentsActions'
 import { pollRunResult, run, runByCurrentUid } from './PipelineActions'
 import {
   Pipeline,
@@ -14,6 +17,7 @@ import {
   convertToRunResult,
   isNodeResultPending,
 } from './PipelineUtils'
+import { convertFunctionsToRunResultDTO } from '../Experiments/ExperimentsUtils'
 
 const initialState: Pipeline = {
   run: {
@@ -66,6 +70,36 @@ export const pipelineSlice = createSlice({
         state.runBtn = RUN_BTN_OPTIONS.RUN_ALREADY
         state.run = {
           status: RUN_STATUS.START_UNINITIALIZED,
+        }
+      })
+      .addCase(fetchExperiment.fulfilled, (state, action) => {
+        state.currentPipeline = {
+          uid: action.payload.unique_id,
+        }
+        state.runBtn = RUN_BTN_OPTIONS.RUN_ALREADY
+        state.run = {
+          uid: action.payload.unique_id,
+          status: RUN_STATUS.START_SUCCESS,
+          runResult: {
+            ...convertToRunResult(
+              convertFunctionsToRunResultDTO(action.payload.function),
+            ),
+          },
+          runPostData: {
+            name: action.payload.name,
+            nodeDict: action.payload.nodeDict,
+            edgeDict: action.payload.edgeDict,
+            snakemakeParam: {},
+            nwbParam: {},
+            forceRunList: [],
+          },
+        }
+
+        const runResultPendingList = Object.values(state.run.runResult).filter(
+          isNodeResultPending,
+        )
+        if (runResultPendingList.length === 0) {
+          state.run.status = RUN_STATUS.FINISHED
         }
       })
       .addMatcher(
