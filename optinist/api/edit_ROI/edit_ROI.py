@@ -106,16 +106,32 @@ class EditRoiUtils:
         del func
         gc.collect()
 
+        workflow_dirpath = os.path.dirname(node_dirpath)
+        smk_config_file = join_filepath(
+            [workflow_dirpath, DIRPATH.SNAKEMAKE_CONFIG_YML]
+        )
+        smk_config = ConfigReader.read(smk_config_file)
+        last_outputs = smk_config.get("last_output")
         pickle_files = glob(join_filepath([node_dirpath, "*.pkl"]))
+
         if len(pickle_files) > 0:
-            prev_output_info = PickleReader.read(pickle_files[0])
             func_name = os.path.splitext(os.path.basename(pickle_files[0]))[0]
-            for k, v in output_info.items():
-                if k == "nwbfile":
-                    prev_output_info[k][func_name] = v
-                else:
-                    prev_output_info[k] = v
-            PickleWriter.overwrite(pickle_path=pickle_files[0], info=prev_output_info)
+            cls.__update_pickle_for_roi_edition(pickle_files[0], func_name, output_info)
+
+            for last_output in last_outputs:
+                last_output_path = join_filepath([DIRPATH.OUTPUT_DIR, last_output])
+                last_output_info = cls.__update_pickle_for_roi_edition(
+                    last_output_path, func_name, output_info
+                )
+                rule_type = os.path.splitext(os.path.basename(last_output_path))[0]
+                whole_nwb_path = join_filepath(
+                    [workflow_dirpath, f"whole_{rule_type}.nwb"]
+                )
+
+                Runner.save_all_nwb(whole_nwb_path, last_output_info["nwbfile"])
+
+                del last_output_info
+                gc.collect()
 
         for k, v in output_info.items():
             if isinstance(v, BaseData):
@@ -126,23 +142,16 @@ class EditRoiUtils:
                 if len(nwb_files) > 0:
                     overwrite_nwb(v, node_dirpath, os.path.basename(nwb_files[0]))
 
-        del prev_output_info, output_info
+        del output_info
         gc.collect()
 
-        workflow_dirpath = os.path.dirname(node_dirpath)
-        smk_config_file = join_filepath(
-            [workflow_dirpath, DIRPATH.SNAKEMAKE_CONFIG_YML]
-        )
-        smk_config = ConfigReader.read(smk_config_file)
-        last_outputs = smk_config.get("last_output")
-
-        for last_output in last_outputs:
-            last_output_path = join_filepath([DIRPATH.OUTPUT_DIR, last_output])
-            last_output_info = PickleReader.read(last_output_path)
-
-            rule_type = os.path.splitext(os.path.basename(last_output_path))[0]
-            whole_nwb_path = join_filepath([workflow_dirpath, f"whole_{rule_type}.nwb"])
-
-            Runner.save_all_nwb(whole_nwb_path, last_output_info["nwbfile"])
-            del last_output_info
-            gc.collect()
+    @classmethod
+    def __update_pickle_for_roi_edition(cls, filepath, func_name, new_output_info):
+        output_info = PickleReader.read(filepath)
+        for k, v in new_output_info.items():
+            if k == "nwbfile":
+                output_info[k][func_name] = v
+            else:
+                output_info[k] = v
+        PickleWriter.overwrite(pickle_path=filepath, info=output_info)
+        return output_info
