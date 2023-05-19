@@ -163,27 +163,45 @@ Press <strong>Merge ROI</strong> or <strong>Delete ROI</strong> or <strong>Cance
 
 NWB file is overwirtten with the ROI edit information.
 
-Note: ROI edit information in NWB file
-- common
-  - processing/optinist section
-    - edited ROI ids are recorded
-- specific
-  - merge
-    - iscell data of ROIs to be merged turn into False
-    - ROI after merge are added with new ID
-  - delete
-    - iscell data of deleted ROI turn into False.
+```{eval-rst}
+.. note::
+  ROI edit information in NWB file
 
-Caution: ROI's id and index of viewer have different values!
-- id
-  - The id of ROI, <strong>starting from 1</strong>.
-  - Shown in
-    - VISUALIZE tab.
-    - NWBfile's processing/optinist section.
-- index
-  - Numbering of columns and rows in tables <srtong>starting from 0</strong>.
-  - Shown in
-    - table when you open NWBfile's timecourse data with viewers like [HDFView](https://www.hdfgroup.org/downloads/hdfview/)
+  - common
+
+      - edited ROI ids are recorded in processing/optinist section
+
+  - specific
+
+      - merge
+
+          - iscell data of ROIs to be merged changes to False
+          - ROI after merge are added with new ID
+
+      - delete
+
+          - iscell data of deleted ROI changes to False.
+```
+
+```{eval-rst}
+.. note::
+  ROI's id and index of viewer have different values!
+
+  - id
+
+      - The id of ROI, **starting from 1**.
+      - Shown in
+
+          - VISUALIZE tab.
+          - NWBfile's processing/optinist section.
+
+  - index
+
+      - Numbering of columns and rows in tables, **starting from 0**.
+      - Shown in
+
+          - table when you open NWBfile's timecourse data with viewers like `HDFView <https://www.hdfgroup.org/downloads/hdfview/>`_
+```
 
 
 ## saving plots
