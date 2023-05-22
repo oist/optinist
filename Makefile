@@ -58,3 +58,8 @@ test_pypi:
 .PHONY: push_pypi
 push_pypi:
 	twine upload --repository pypi dist/*
+
+.PHONY: test_doc
+test_doc:
+	python3 -m pip install -r docs/requirements.txt
+	sphinx-autobuild -b html docs docs/_build --port 8001

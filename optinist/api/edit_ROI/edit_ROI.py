@@ -7,11 +7,14 @@ from glob import glob
 from fastapi import HTTPException, status
 from snakemake import snakemake
 
+from optinist.api.config.config_reader import ConfigReader
 from optinist.api.config.config_writer import ConfigWriter
 from optinist.api.dataclass.base import BaseData
 from optinist.api.dir_path import DIRPATH
 from optinist.api.nwb.nwb_creater import overwrite_nwb
+from optinist.api.pickle.pickle_reader import PickleReader
 from optinist.api.pickle.pickle_writer import PickleWriter
+from optinist.api.rules.runner import Runner
 from optinist.api.utils.filepath_creater import join_filepath
 
 
@@ -103,9 +106,32 @@ class EditRoiUtils:
         del func
         gc.collect()
 
+        workflow_dirpath = os.path.dirname(node_dirpath)
+        smk_config_file = join_filepath(
+            [workflow_dirpath, DIRPATH.SNAKEMAKE_CONFIG_YML]
+        )
+        smk_config = ConfigReader.read(smk_config_file)
+        last_outputs = smk_config.get("last_output")
         pickle_files = glob(join_filepath([node_dirpath, "*.pkl"]))
+
         if len(pickle_files) > 0:
-            PickleWriter.overwrite(pickle_path=pickle_files[0], info=output_info)
+            func_name = os.path.splitext(os.path.basename(pickle_files[0]))[0]
+            cls.__update_pickle_for_roi_edition(pickle_files[0], func_name, output_info)
+
+            for last_output in last_outputs:
+                last_output_path = join_filepath([DIRPATH.OUTPUT_DIR, last_output])
+                last_output_info = cls.__update_pickle_for_roi_edition(
+                    last_output_path, func_name, output_info
+                )
+                rule_type = os.path.splitext(os.path.basename(last_output_path))[0]
+                whole_nwb_path = join_filepath(
+                    [workflow_dirpath, f"whole_{rule_type}.nwb"]
+                )
+
+                Runner.save_all_nwb(whole_nwb_path, last_output_info["nwbfile"])
+
+                del last_output_info
+                gc.collect()
 
         for k, v in output_info.items():
             if isinstance(v, BaseData):
@@ -118,3 +144,14 @@ class EditRoiUtils:
 
         del output_info
         gc.collect()
+
+    @classmethod
+    def __update_pickle_for_roi_edition(cls, filepath, func_name, new_output_info):
+        output_info = PickleReader.read(filepath)
+        for k, v in new_output_info.items():
+            if k == "nwbfile":
+                output_info[k][func_name] = v
+            else:
+                output_info[k] = v
+        PickleWriter.overwrite(pickle_path=filepath, info=output_info)
+        return output_info
