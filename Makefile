@@ -59,3 +59,10 @@ test_pypi:
 .PHONY: push_pypi
 push_pypi:
 	twine upload --repository pypi dist/*
+
+
+.PHONY: format
+format:
+	black optinist *.py
+	isort optinist *.py
+	flake8 optinist *.py
