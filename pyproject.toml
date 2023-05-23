@@ -82,3 +82,6 @@ exclude = ["optinist/tests*"]
   "conda/*.yaml",
   "Snakefile",
 ]
+
+[tool.isort]
+profile = "black"
