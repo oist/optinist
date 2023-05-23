@@ -49,6 +49,7 @@ dev = [
   "isort",
   "build",
   "twine",
+  "pre-commit",
 ]
 doc = [
   "sphinx>=4.3.0,<4.6.0",
