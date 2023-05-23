@@ -1,11 +1,11 @@
 FROM --platform=linux/amd64 python:3.8.16-slim
 
-COPY requirements.txt /app/requirements.txt
+COPY pyproject.toml /app/pyproject.toml
 
 RUN apt-get --allow-releaseinfo-change update && \
     apt-get install --no-install-recommends -y gcc g++ libgl1 libgl1-mesa-dev && \
     pip3 install --no-cache-dir --upgrade pip && \
-    pip3 install --no-cache-dir -r /app/requirements.txt && \
+    pip3 install --no-cache-dir -e 'app/.[test]' && \
     apt-get clean && rm -rf /root/.cache/pip/*
 
 RUN mkdir -p /root/miniconda3 && \

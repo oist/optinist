@@ -43,6 +43,13 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
+dev = [
+  "black",
+  "flake8",
+  "isort",
+  "build",
+  "twine",
+]
 doc = [
   "sphinx>=4.3.0,<4.6.0",
   "sphinxcontrib-apidoc",
@@ -53,6 +60,9 @@ doc = [
   "sphinx-copybutton==0.5.0",
   "sphinx-autobuild==2021.3.14",
   "myst-parser",
+]
+test = [
+  "pytest",
 ]
 
 [project.urls]
