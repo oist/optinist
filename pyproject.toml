@@ -70,7 +70,7 @@ test = [
 Documentation = "https://optinist.readthedocs.io"
 Repository = "https://github.com/oist/optinist"
 
-[project.entry-points."console_scripts"]
+[project.scripts]
 run_optinist = "optinist.__main__:main"
 
 [tool.setuptools]
