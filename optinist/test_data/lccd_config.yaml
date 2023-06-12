@@ -1,0 +1,68 @@
+last_output:
+- 57d9349b/lccd_cell_detection/lccd_cell_detection.pkl
+rules:
+  input_0:
+    hdf5Path: null
+    input:
+    - test.tif
+    nwbfile:
+      device:
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+        name: Microscope device
+      experiment_description: None
+      identifier: optinist
+      image_series:
+        starting_frame:
+        - 0
+        starting_time: 0
+      imaging_plane:
+        description: standard
+        excitation_lambda: 600.0
+        imaging_rate: 30.0
+        indicator: GCaMap
+        location: V1
+        name: ImagingPlane
+      ophys:
+        plane_segmentation:
+          description: ''
+          name: PlaneSegmentation
+      optical_channel:
+        description: optical channel
+        emission_lambda: 500.0
+        name: OpticalChannel
+      session_description: optinist
+    output: 57d9349b/input_0/mouse2p_2_donotouse.pkl
+    params: {}
+    path: null
+    return_arg: input_0
+    type: image
+  lccd_cell_detection:
+    hdf5Path: null
+    input:
+    - 57d9349b/input_0/mouse2p_2_donotouse.pkl
+    nwbfile: null
+    output: 57d9349b/lccd_cell_detection/lccd_cell_detection.pkl
+    params:
+      blob_detector:
+        filtersize1: 100
+        filtersize2: 4
+        fsize: 30
+        max_area: 50
+        min_area: 20
+        sigma: 1.25
+        sparse: false
+      dff:
+        f0_frames: 100
+        f0_percentile: 8
+      lccd:
+        frame_divider: 100
+      roi_integration:
+        max_area: 100
+        min_area: 20
+        overlap_threshold: 0.4
+        sparse: false
+    path: lccd/lccd_cell_detection
+    return_arg:
+      input_0: mc_images
+    type: lccd_cell_detection
