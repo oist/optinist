@@ -1,0 +1,97 @@
+last_output:
+  - ae974587/granger/granger.pkl
+  - ae974587/correlation/correlation.pkl
+  - ae974587/cross_correlation/cross_correlation.pkl
+rules:
+  correlation:
+    hdf5Path: null
+    input:
+      - ae974587/input_u2ion9tojm/whole_lccd_cell_detection.pkl
+    nwbfile: null
+    output: ae974587/correlation/correlation.pkl
+    params:
+      transpose: true
+    path: optinist/neural_population_analysis/correlation
+    return_arg:
+      input_u2ion9tojm: neural_data
+    type: correlation
+  cross_correlation:
+    hdf5Path: null
+    input:
+      - ae974587/input_u2ion9tojm/whole_lccd_cell_detection.pkl
+    nwbfile: null
+    output: ae974587/cross_correlation/cross_correlation.pkl
+    params:
+      lags: 100
+      method: direct
+      shuffle_confidence_interval: 0.95
+      shuffle_sample_number: 100
+      transpose: false
+    path: optinist/neural_population_analysis/cross_correlation
+    return_arg:
+      input_u2ion9tojm: neural_data
+    type: cross_correlation
+  granger:
+    hdf5Path: null
+    input:
+      - ae974587/input_u2ion9tojm/whole_lccd_cell_detection.pkl
+    nwbfile: null
+    output: ae974587/granger/granger.pkl
+    params:
+      Granger_addconst: true
+      Granger_maxlag: 1
+      adfuller:
+        autolag: AIC
+        maxlag: null
+        regression: c
+        regresults: false
+        store: false
+      coint:
+        autolag: AIC
+        maxlag: null
+        method: aeg
+        trend: c
+      standard_mean: true
+      standard_std: true
+      transpose: true
+      use_adfuller_test: true
+      use_coint_test: true
+    path: optinist/neural_population_analysis/granger
+    return_arg:
+      input_u2ion9tojm: neural_data
+    type: granger
+  input_u2ion9tojm:
+    hdf5Path: processing/ophys/Fluorescence/Fluorescence/data
+    input: test_nwb.nwb
+    nwbfile:
+      device:
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+        name: Microscope device
+      experiment_description: None
+      identifier: optinist
+      image_series:
+        starting_frame:
+          - 0
+        starting_time: 0
+      imaging_plane:
+        description: standard
+        excitation_lambda: 600.0
+        imaging_rate: 30.0
+        indicator: GCaMap
+        location: V1
+        name: ImagingPlane
+      ophys:
+        plane_segmentation:
+          description: ''
+          name: PlaneSegmentation
+      optical_channel:
+        description: optical channel
+        emission_lambda: 500.0
+        name: OpticalChannel
+      session_description: optinist
+    output: ae974587/input_u2ion9tojm/whole_lccd_cell_detection.pkl
+    params: {}
+    path: null
+    return_arg: input_u2ion9tojm
+    type: hdf5
