@@ -1,0 +1,151 @@
+last_output:
+  - 281f3b24/cca/cca.pkl
+  - 281f3b24/pca/pca.pkl
+  - 281f3b24/tsne/tsne.pkl
+rules:
+  cca:
+    hdf5Path: null
+    input:
+      - 281f3b24/input_ydp3753qjy/whole_lccd_cell_detection.pkl
+      - 281f3b24/input_5ebabm04ys/whole_lccd_cell_detection.pkl
+    nwbfile: null
+    output: 281f3b24/cca/cca.pkl
+    params:
+      CCA:
+        copy: true
+        max_iter: 500
+        n_components: 1
+        scale: true
+        tol: 1.0e-06
+      standard_x_mean: true
+      standard_x_std: true
+      standard_y_mean: true
+      standard_y_std: true
+      target_index: 0
+      transpose_x: false
+      transpose_y: false
+    path: optinist/dimension_reduction/cca
+    return_arg:
+      input_5ebabm04ys: neural_data
+      input_ydp3753qjy: behaviors_data
+    type: cca
+  input_5ebabm04ys:
+    hdf5Path: processing/ophys/Fluorescence/Fluorescence/data
+    input: test_nwb.nwb
+    nwbfile:
+      device:
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+        name: Microscope device
+      experiment_description: None
+      identifier: optinist
+      image_series:
+        starting_frame:
+          - 0
+        starting_time: 0
+      imaging_plane:
+        description: standard
+        excitation_lambda: 600.0
+        imaging_rate: 30.0
+        indicator: GCaMap
+        location: V1
+        name: ImagingPlane
+      ophys:
+        plane_segmentation:
+          description: ''
+          name: PlaneSegmentation
+      optical_channel:
+        description: optical channel
+        emission_lambda: 500.0
+        name: OpticalChannel
+      session_description: optinist
+    output: 281f3b24/input_5ebabm04ys/whole_lccd_cell_detection.pkl
+    params: {}
+    path: null
+    return_arg: input_5ebabm04ys
+    type: hdf5
+  input_ydp3753qjy:
+    hdf5Path: processing/ophys/Fluorescence/Fluorescence/data
+    input: test_nwb.nwb
+    nwbfile:
+      device:
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+        name: Microscope device
+      experiment_description: None
+      identifier: optinist
+      image_series:
+        starting_frame:
+          - 0
+        starting_time: 0
+      imaging_plane:
+        description: standard
+        excitation_lambda: 600.0
+        imaging_rate: 30.0
+        indicator: GCaMap
+        location: V1
+        name: ImagingPlane
+      ophys:
+        plane_segmentation:
+          description: ''
+          name: PlaneSegmentation
+      optical_channel:
+        description: optical channel
+        emission_lambda: 500.0
+        name: OpticalChannel
+      session_description: optinist
+    output: 281f3b24/input_ydp3753qjy/whole_lccd_cell_detection.pkl
+    params: {}
+    path: null
+    return_arg: input_ydp3753qjy
+    type: hdf5
+  pca:
+    hdf5Path: null
+    input:
+      - 281f3b24/input_ydp3753qjy/whole_lccd_cell_detection.pkl
+    nwbfile: null
+    output: 281f3b24/pca/pca.pkl
+    params:
+      PCA:
+        copy: true
+        iterated_power: auto
+        n_components: 2
+        svd_solver: auto
+        tol: 0
+        whiten: false
+      standard_mean: true
+      standard_std: true
+      transpose: true
+    path: optinist/dimension_reduction/pca
+    return_arg:
+      input_ydp3753qjy: neural_data
+    type: pca
+  tsne:
+    hdf5Path: null
+    input:
+      - 281f3b24/input_ydp3753qjy/whole_lccd_cell_detection.pkl
+    nwbfile: null
+    output: 281f3b24/tsne/tsne.pkl
+    params:
+      TSNE:
+        angle: 0.5
+        early_exaggeration: 12
+        init: warn
+        learning_rate: warn
+        method: barnes_hut
+        metric: euclidean
+        min_grad_norm: 1.0e-07
+        n_components: 2
+        n_iter: 1000
+        n_iter_without_progress: 300
+        n_jobs: 1
+        perplexity: 30
+        random_state: 0
+        square_distances: legacy
+      standard_mean: true
+      standard_std: true
+      transpose: true
+    path: optinist/dimension_reduction/tsne
+    return_arg:
+      input_ydp3753qjy: neural_data
+    type: tsne
