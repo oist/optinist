@@ -1,0 +1,100 @@
+last_output:
+  - 5c33b71a/glm/glm.pkl
+rules:
+  glm:
+    hdf5Path: null
+    input:
+      - 5c33b71a/input/test_nwb.pkl
+      - 5c33b71a/input_0/test_nwb.pkl
+    nwbfile: null
+    output: 5c33b71a/glm/glm.pkl
+    params:
+      GLM:
+        exposure: null
+        missing: null
+        offset: null
+      add_constant: false
+      family: Gaussian
+      link: log
+      standard_x_mean: true
+      standard_x_std: true
+      standard_y_mean: true
+      standard_y_std: true
+      target_index: 0
+      transpose_x: true
+      transpose_y: true
+    path: optinist/neural_decoding/glm
+    return_arg:
+      input_0: behaviors_data
+      input: neural_data
+    type: glm
+  input_0:
+    hdf5Path: processing/ophys/Fluorescence/Fluorescence/data
+    input: test_nwb.nwb
+    nwbfile:
+      device:
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+        name: Microscope device
+      experiment_description: None
+      identifier: optinist
+      image_series:
+        starting_frame:
+          - 0
+        starting_time: 0
+      imaging_plane:
+        description: standard
+        excitation_lambda: 600.0
+        imaging_rate: 30.0
+        indicator: GCaMap
+        location: V1
+        name: ImagingPlane
+      ophys:
+        plane_segmentation:
+          description: ''
+          name: PlaneSegmentation
+      optical_channel:
+        description: optical channel
+        emission_lambda: 500.0
+        name: OpticalChannel
+      session_description: optinist
+    output: 5c33b71a/input_0/test_nwb.pkl
+    params: {}
+    path: null
+    return_arg: input_0
+    type: hdf5
+  input:
+    hdf5Path: processing/ophys/Fluorescence/Fluorescence/data
+    input: test_nwb.nwb
+    nwbfile:
+      device:
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+        name: Microscope device
+      experiment_description: None
+      identifier: optinist
+      image_series:
+        starting_frame:
+          - 0
+        starting_time: 0
+      imaging_plane:
+        description: standard
+        excitation_lambda: 600.0
+        imaging_rate: 30.0
+        indicator: GCaMap
+        location: V1
+        name: ImagingPlane
+      ophys:
+        plane_segmentation:
+          description: ''
+          name: PlaneSegmentation
+      optical_channel:
+        description: optical channel
+        emission_lambda: 500.0
+        name: OpticalChannel
+      session_description: optinist
+    output: 5c33b71a/input/test_nwb.pkl
+    params: {}
+    path: null
+    return_arg: input
+    type: hdf5
