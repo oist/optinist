@@ -6,7 +6,7 @@ from optinist.api.snakemake.smk import SmkParam
 from optinist.api.snakemake.snakemake_executor import snakemake_execute
 
 
-def test_dimension_reduction_config():
+def test_dimension_reduction():
     """
     cca
     pca

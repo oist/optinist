@@ -1,0 +1,93 @@
+last_output:
+  - 3cec3f81/eta/eta.pkl
+rules:
+  eta:
+    hdf5Path: null
+    input:
+      - 3cec3f81/input_0/whole_lccd_cell_detection.pkl
+      - 3cec3f81/input_1/whole_lccd_cell_detection.pkl
+    nwbfile: null
+    output: 3cec3f81/eta/eta.pkl
+    params:
+      end_time: 10
+      start_time: 0
+      target_index: 0
+      transpose_x: true
+      transpose_y: true
+      trigger_threshold: 0
+      trigger_type: ''
+    path: optinist/basic_neural_analysis/eta
+    return_arg:
+      input_0: neural_data
+      input_1: behaviors_data
+    type: eta
+  input_0:
+    hdf5Path: processing/ophys/Fluorescence/Fluorescence/data
+    input: test_nwb.nwb
+    nwbfile:
+      device:
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+        name: Microscope device
+      experiment_description: None
+      identifier: optinist
+      image_series:
+        starting_frame:
+          - 0
+        starting_time: 0
+      imaging_plane:
+        description: standard
+        excitation_lambda: 600.0
+        imaging_rate: 30.0
+        indicator: GCaMap
+        location: V1
+        name: ImagingPlane
+      ophys:
+        plane_segmentation:
+          description: ''
+          name: PlaneSegmentation
+      optical_channel:
+        description: optical channel
+        emission_lambda: 500.0
+        name: OpticalChannel
+      session_description: optinist
+    output: 3cec3f81/input_0/whole_lccd_cell_detection.pkl
+    params: {}
+    path: null
+    return_arg: input_0
+    type: hdf5
+  input_1:
+    hdf5Path: processing/ophys/Fluorescence/Fluorescence/data
+    input: test_nwb.nwb
+    nwbfile:
+      device:
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+        name: Microscope device
+      experiment_description: None
+      identifier: optinist
+      image_series:
+        starting_frame:
+          - 0
+        starting_time: 0
+      imaging_plane:
+        description: standard
+        excitation_lambda: 600.0
+        imaging_rate: 30.0
+        indicator: GCaMap
+        location: V1
+        name: ImagingPlane
+      ophys:
+        plane_segmentation:
+          description: ''
+          name: PlaneSegmentation
+      optical_channel:
+        description: optical channel
+        emission_lambda: 500.0
+        name: OpticalChannel
+      session_description: optinist
+    output: 3cec3f81/input_1/whole_lccd_cell_detection.pkl
+    params: {}
+    path: null
+    return_arg: input_1
+    type: hdf5
