@@ -160,7 +160,7 @@ describe('getAlgoList', () => {
         },
       },
     },
-    studio: {
+    optinist: {
       children: {
         basic_neural_analysis: {
           children: {
@@ -176,7 +176,7 @@ describe('getAlgoList', () => {
               ],
               returns: [{ name: 'mean', type: 'TimeSeriesData' }],
               parameter: null,
-              path: 'studio/basic_neural_analysis/eta',
+              path: 'optinist/basic_neural_analysis/eta',
             },
             cell_grouping: {
               args: [
@@ -188,7 +188,7 @@ describe('getAlgoList', () => {
               ],
               returns: [],
               parameter: null,
-              path: 'studio/basic_neural_analysis/cell_grouping',
+              path: 'optinist/basic_neural_analysis/cell_grouping',
             },
           },
         },
@@ -206,7 +206,7 @@ describe('getAlgoList', () => {
               ],
               returns: [],
               parameter: null,
-              path: 'studio/dimension_reduction/cca',
+              path: 'optinist/dimension_reduction/cca',
             },
             pca: {
               args: [
@@ -215,7 +215,7 @@ describe('getAlgoList', () => {
               ],
               returns: [],
               parameter: null,
-              path: 'studio/dimension_reduction/pca',
+              path: 'optinist/dimension_reduction/pca',
             },
             tsne: {
               args: [
@@ -224,7 +224,7 @@ describe('getAlgoList', () => {
               ],
               returns: [],
               parameter: null,
-              path: 'studio/dimension_reduction/tsne',
+              path: 'optinist/dimension_reduction/tsne',
             },
           },
         },
@@ -237,7 +237,7 @@ describe('getAlgoList', () => {
               ],
               returns: [],
               parameter: null,
-              path: 'studio/neural_population_analysis/correlation',
+              path: 'optinist/neural_population_analysis/correlation',
             },
             cross_correlation: {
               args: [
@@ -246,7 +246,7 @@ describe('getAlgoList', () => {
               ],
               returns: [],
               parameter: null,
-              path: 'studio/neural_population_analysis/cross_correlation',
+              path: 'optinist/neural_population_analysis/cross_correlation',
             },
             granger: {
               args: [
@@ -255,7 +255,7 @@ describe('getAlgoList', () => {
               ],
               returns: [],
               parameter: null,
-              path: 'studio/neural_population_analysis/granger',
+              path: 'optinist/neural_population_analysis/granger',
             },
           },
         },
@@ -273,7 +273,7 @@ describe('getAlgoList', () => {
               ],
               returns: [],
               parameter: null,
-              path: 'studio/neural_decoding/glm',
+              path: 'optinist/neural_decoding/glm',
             },
             lda: {
               args: [
@@ -287,7 +287,7 @@ describe('getAlgoList', () => {
               ],
               returns: [],
               parameter: null,
-              path: 'studio/neural_decoding/lda',
+              path: 'optinist/neural_decoding/lda',
             },
             svm: {
               args: [
@@ -301,7 +301,7 @@ describe('getAlgoList', () => {
               ],
               returns: [],
               parameter: null,
-              path: 'studio/neural_decoding/svm',
+              path: 'optinist/neural_decoding/svm',
             },
           },
         },
@@ -460,7 +460,7 @@ describe('getAlgoList', () => {
           },
         },
       },
-      studio: {
+      optinist: {
         type: 'parent',
         children: {
           basic_neural_analysis: {
@@ -468,7 +468,7 @@ describe('getAlgoList', () => {
             children: {
               eta: {
                 type: 'child',
-                functionPath: 'studio/basic_neural_analysis/eta',
+                functionPath: 'optinist/basic_neural_analysis/eta',
                 args: [
                   { name: 'neural_data', type: 'FluoData', isNone: false },
                   {
@@ -482,7 +482,7 @@ describe('getAlgoList', () => {
               },
               cell_grouping: {
                 type: 'child',
-                functionPath: 'studio/basic_neural_analysis/cell_grouping',
+                functionPath: 'optinist/basic_neural_analysis/cell_grouping',
                 args: [
                   {
                     name: 'neural_data',
@@ -499,7 +499,7 @@ describe('getAlgoList', () => {
             children: {
               cca: {
                 type: 'child',
-                functionPath: 'studio/dimension_reduction/cca',
+                functionPath: 'optinist/dimension_reduction/cca',
                 args: [
                   { name: 'neural_data', type: 'FluoData', isNone: false },
                   {
@@ -513,7 +513,7 @@ describe('getAlgoList', () => {
               },
               pca: {
                 type: 'child',
-                functionPath: 'studio/dimension_reduction/pca',
+                functionPath: 'optinist/dimension_reduction/pca',
                 args: [
                   { name: 'neural_data', type: 'FluoData', isNone: false },
                   { name: 'iscell', type: 'IscellData', isNone: true },
@@ -522,7 +522,7 @@ describe('getAlgoList', () => {
               },
               tsne: {
                 type: 'child',
-                functionPath: 'studio/dimension_reduction/tsne',
+                functionPath: 'optinist/dimension_reduction/tsne',
                 args: [
                   { name: 'neural_data', type: 'FluoData', isNone: false },
                   { name: 'iscell', type: 'IscellData', isNone: true },
@@ -536,7 +536,7 @@ describe('getAlgoList', () => {
             children: {
               correlation: {
                 type: 'child',
-                functionPath: 'studio/neural_population_analysis/correlation',
+                functionPath: 'optinist/neural_population_analysis/correlation',
                 args: [
                   { name: 'neural_data', type: 'FluoData', isNone: false },
                   { name: 'iscell', type: 'IscellData', isNone: true },
@@ -546,7 +546,7 @@ describe('getAlgoList', () => {
               cross_correlation: {
                 type: 'child',
                 functionPath:
-                  'studio/neural_population_analysis/cross_correlation',
+                  'optinist/neural_population_analysis/cross_correlation',
                 args: [
                   { name: 'neural_data', type: 'FluoData', isNone: false },
                   { name: 'iscell', type: 'IscellData', isNone: true },
@@ -555,7 +555,7 @@ describe('getAlgoList', () => {
               },
               granger: {
                 type: 'child',
-                functionPath: 'studio/neural_population_analysis/granger',
+                functionPath: 'optinist/neural_population_analysis/granger',
                 args: [
                   { name: 'neural_data', type: 'FluoData', isNone: false },
                   { name: 'iscell', type: 'IscellData', isNone: true },
@@ -569,7 +569,7 @@ describe('getAlgoList', () => {
             children: {
               glm: {
                 type: 'child',
-                functionPath: 'studio/neural_decoding/glm',
+                functionPath: 'optinist/neural_decoding/glm',
                 args: [
                   { name: 'neural_data', type: 'FluoData', isNone: false },
                   {
@@ -583,7 +583,7 @@ describe('getAlgoList', () => {
               },
               lda: {
                 type: 'child',
-                functionPath: 'studio/neural_decoding/lda',
+                functionPath: 'optinist/neural_decoding/lda',
                 args: [
                   { name: 'neural_data', type: 'FluoData', isNone: false },
                   {
@@ -597,7 +597,7 @@ describe('getAlgoList', () => {
               },
               svm: {
                 type: 'child',
-                functionPath: 'studio/neural_decoding/svm',
+                functionPath: 'optinist/neural_decoding/svm',
                 args: [
                   { name: 'neural_data', type: 'FluoData', isNone: false },
                   {

@@ -3,8 +3,8 @@ import argparse
 import shutil
 from snakemake import snakemake
 
-from studio.api.dir_path import DIRPATH
-from studio.api.utils.filepath_creater import join_filepath
+from optinist.api.dir_path import DIRPATH
+from optinist.api.utils.filepath_creater import join_filepath
 
 def main(args):
     # copy config file
@@ -24,7 +24,7 @@ def main(args):
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description="studio")
+    parser = argparse.ArgumentParser(description="optinist")
     parser.add_argument("--cores", type=int, default=2)
     parser.add_argument("--forceall", action="store_true")
     parser.add_argument("--use_conda", action="store_true")

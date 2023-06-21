@@ -125,17 +125,17 @@ describe('RunSelectors', () => {
       input_0: {
         fileType: 'image',
         param: {},
-        selectedFilePath: ['/tmp/studio/input/hoge/hoge.tif'],
+        selectedFilePath: ['/tmp/optinist/input/hoge/hoge.tif'],
       },
     },
     nwb: {
       params: {
         session_description: {
           type: 'child',
-          value: 'studio',
+          value: 'optinist',
           path: 'session_description',
         },
-        identifier: { type: 'child', value: 'studio', path: 'identifier' },
+        identifier: { type: 'child', value: 'optinist', path: 'identifier' },
         experiment_description: {
           type: 'child',
           value: 'None',
@@ -274,12 +274,12 @@ describe('RunSelectors', () => {
     nwbParam: {
       session_description: {
         type: 'child',
-        value: 'studio',
+        value: 'optinist',
         path: 'session_description',
       },
       identifier: {
         type: 'child',
-        value: 'studio',
+        value: 'optinist',
         path: 'identifier',
       },
       experiment_description: {
@@ -441,7 +441,7 @@ describe('RunSelectors', () => {
         data: {
           type: 'input',
           label: 'hoge.tif',
-          path: ['/tmp/studio/input/hoge/hoge.tif'],
+          path: ['/tmp/optinist/input/hoge/hoge.tif'],
           param: {},
           fileType: 'image',
         },
@@ -599,7 +599,7 @@ describe('RunSelectors', () => {
       input_0: {
         fileType: 'image',
         param: {},
-        selectedFilePath: ['/tmp/studio/input/hoge/hoge.tif'],
+        selectedFilePath: ['/tmp/optinist/input/hoge/hoge.tif'],
       },
     },
     nwb: { params: {} },
@@ -629,7 +629,7 @@ describe('RunSelectors', () => {
         data: {
           type: 'input',
           label: 'hoge.tif',
-          path: ['/tmp/studio/input/hoge/hoge.tif'],
+          path: ['/tmp/optinist/input/hoge/hoge.tif'],
           param: {},
           fileType: 'image',
         },

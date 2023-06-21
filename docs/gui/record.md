@@ -1,15 +1,15 @@
 Record
 =================
-In the RECORD field, you can check the workflow status in your studio_DIR and manage your analysis pipeline. The table lists all the pipelines in your studio_DIR. By clicking on the mark on the 2nd column, you can show the details of each pipeline.
+In the RECORD field, you can check the workflow status in your OPTINIST_DIR and manage your analysis pipeline. The table lists all the pipelines in your OPTINIST_DIR. By clicking on the mark on the 2nd column, you can show the details of each pipeline.
 
-studio records and reproduces past workflow pipelines. It can download results in nwb format.
+OptiNiSt records and reproduces past workflow pipelines. It can download results in nwb format.
 <br>
 <p align="center">
 <img width="400px" src="../_static/record/whole.png" alt="Whole"/>
 </p>
 
 
-studio can:
+OptiNiSt can:
 - Record past executed workflow
 - Reproduce past workflow
 - Download results as NWB files
@@ -23,7 +23,7 @@ studio can:
 - **Reproduce**: button to reproduce the workflow graph to the WORKFLOW field. 
 - **SnakeFile**: button to copy snakemake config file to your download folder on your computer.
 - **NWB**: button to copy the analysis results as NWB file to your download folder on your computer.
-- **Delete**: button to delete the workflow from the studio_DIR.
+- **Delete**: button to delete the workflow from the OPTINIST_DIR.
 
 <p align="center">
 <img width="400px" src="../_static/record/components/table.png" alt="Table"/>

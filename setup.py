@@ -2,7 +2,7 @@ import os
 from setuptools import setup, find_packages
 
 here = os.path.abspath(os.path.dirname(__file__))
-exec(open(os.path.join(here, 'studio', 'version.py')).read())
+exec(open(os.path.join(here, 'optinist', 'version.py')).read())
 
 def _requires_from_file(filepath):
 
@@ -16,12 +16,12 @@ def _requires_from_file(filepath):
         return [take_package_name(pkg_name) for pkg_name in fp.readlines()]
 
 setup(
-    name="studio",
+    name="optinist",
     version=VERSION,
     description="An offline deep reinforcement learning library",
     long_description=open("README.md").read(),
     long_description_content_type="text/markdown",
-    url="https://github.com/oist/studio",
+    url="https://github.com/oist/optinist",
     author="OIST",
     license="GPL3.0",
     classifiers=[
@@ -37,7 +37,7 @@ setup(
         "Operating System :: MacOS :: MacOS X"
     ],
     install_requires=_requires_from_file('requirements.txt'),
-    packages=find_packages(exclude=["studio/tests*"]),
+    packages=find_packages(exclude=["optinist/tests*"]),
     tests_require=["pytest"],
     zip_safe=False,
     include_package_data=True,
@@ -53,7 +53,7 @@ setup(
     py_modules=["Snakefile"],
     entry_points={
         "console_scripts": [
-            "run_studio=studio.__main__:main",
+            "run_optinist=optinist.__main__:main",
         ]
     },
 )

@@ -2,7 +2,7 @@ Visualize
 =================
 
 
-studio visualizes the analysis results by plotly. 
+OptiNiSt visualizes the analysis results by plotly. 
 <br>
 <p align="center">
 <img width="400px" src="../_static/visualize/whole.png" alt="Whole" />

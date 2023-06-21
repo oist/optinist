@@ -1,14 +1,14 @@
-.. studio documentation master file, created by
+.. OptiNiSt documentation master file, created by
   sphinx-quickstart on Sun Aug 18 15:27:04 2019.
   You can adapt this file completely to your liking, but it should at least
   contain the root `toctree` directive.
 
-studio - Calcium Imaging Pipeline Tool
+OptiNiSt - Calcium Imaging Pipeline Tool
 ===================================
 
-**studio(Optical Neuroimage Studio)** helps researchers try multiple data analysis methods, visualize the results, and construct the data analysis pipelines easily and quickly. studio's data-saving format follows NWB standards.
+**OptiNiSt(Optical Neuroimage Studio)** helps researchers try multiple data analysis methods, visualize the results, and construct the data analysis pipelines easily and quickly. OptiNiSt's data-saving format follows NWB standards.
 
-studio also supports reproducibility of scientific research, standardization of analysis protocols, and developments of novel analysis tools as plug-in.
+OptiNiSt also supports reproducibility of scientific research, standardization of analysis protocols, and developments of novel analysis tools as plug-in.
 
 
 Main Features
@@ -18,10 +18,10 @@ Main Features
 - **Managing Workflows**: records and reproduces the workflow pipelines easily.
 
 
-.. _issue: https://github.com/oist/studio/issues
+.. _issue: https://github.com/oist/optinist/issues
 .. _here: https://www.biorxiv.org/content/early/2017/07/20/061507
 .. _this paper: Comming Soon
-.. _pypi: https://pypi.org/project/studio/
+.. _pypi: https://pypi.org/project/optinist/
 
 .. * :ref:`modindex`
 .. * :ref:`search`

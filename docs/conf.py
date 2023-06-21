@@ -8,7 +8,7 @@ import os
 import sys
 from datetime import datetime
 sys.path.insert(0, os.path.abspath('../'))
-from studio.version import VERSION, VERSION_SHORT
+from optinist.version import VERSION, VERSION_SHORT
 
 # -- Path setup --------------------------------------------------------------
 
@@ -20,7 +20,7 @@ from studio.version import VERSION, VERSION_SHORT
 
 # -- Project information -----------------------------------------------------
 
-project = 'studio'
+project = 'OptiNiSt'
 copyright = f"{datetime.today().year}, OIST"
 author = ''
 version = VERSION_SHORT
@@ -77,7 +77,7 @@ html_theme = 'sphinx_rtd_theme'
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
-html_logo = '_static/studio.png'
+html_logo = '_static/optinist.png'
 html_favicon = '_static/favicon.ico'
 
 # disable document page source link

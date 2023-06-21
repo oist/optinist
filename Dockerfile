@@ -31,7 +31,7 @@ RUN mkdir -p /root/miniconda3 && \
     conda clean -y --tarballs
 
 COPY frontend/build /app/frontend/build
-COPY studio /app/studio
+COPY optinist /app/optinist
 COPY main.py /app/main.py
 
 ENV PATH $PATH:/root/miniconda3/bin

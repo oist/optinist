@@ -13,8 +13,8 @@ Mac
 * [FAQ](#faq)
 
 ## Installation
-We introduce how to install studio.
-We have developed studio python(backend) and typescript(frontend), so you need to make both environment.
+We introduce how to install optinist.
+We have developed optinist python(backend) and typescript(frontend), so you need to make both environment.
 Please follow instructions below.
 
 <br />
@@ -30,8 +30,8 @@ Install it.
 
 ### Create anaconda environment
 ```
-conda create -n studio python=3.8
-conda activate studio
+conda create -n optinist python=3.8
+conda activate optinist
 ```
 
 ```
@@ -44,18 +44,18 @@ pip install --upgrade pip
 ```
 
 ```bash
-pip install studio
+pip install optinist
 ```
 
 ### Set saving directory
-studio default saving directory is `/tmp/studio`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
+Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
 ```bash
-export studio_DIR="your_saving_dir"
+export OPTINIST_DIR="your_saving_dir"
 ```
 
 ## 2. Create virtualenv
 Under maintenance...
-<!-- In snakemake used by studio, a virtual environment is created and executed for each function.
+<!-- In snakemake used by optinist, a virtual environment is created and executed for each function.
 The procedure for first creating a virtual environment for processing suite2p, caiman, pca, etc. is described in the following link.
 
 *It is possible to run snakemake without creating a virtual environment in advance, but it is recommended to create a virtual environment in advance because of the higher possibility of errors during execution.
@@ -65,12 +65,12 @@ Follow this [link](create_virtualenv.md). -->
 
 ## 3. Run backend
 ```
-run_studio
+run_optinist
 ```
-- `run_studio` log is as blow:
+- `run_optinist` log is as blow:
 ```
-$ run_studio
-INFO:   Will watch for changes in these directories: [‘/Users/oist/studio/backend’]
+$ run_optinist
+INFO:   Will watch for changes in these directories: [‘/Users/oist/optinist/backend’]
 INFO:   Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
 INFO:   Started reloader process [5811] using statreload
 INFO:   Started server process [5820]
@@ -84,6 +84,6 @@ Done!
 
 
 ## FAQ
-If you get the warning message shown below, we recommend `rm -rf /Users/usename/opt/anaconda3/envs/studio ` and recreate conda environment
-or add `--force` option when you create studio conda environment.
-> WARNING: A directory already exists at the target location '/Users/usename/opt/anaconda3/envs/studio' but it is not a conda environment.
+If you get the warning message shown below, we recommend `rm -rf /Users/usename/opt/anaconda3/envs/optinist ` and recreate conda environment
+or add `--force` option when you create optinist conda environment.
+> WARNING: A directory already exists at the target location '/Users/usename/opt/anaconda3/envs/optinist' but it is not a conda environment.

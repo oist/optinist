@@ -1,7 +1,7 @@
 Workflow
 =================
 
-studio can help creating your analysis pipelines easily on the GUI. In this workflow field, you select the data and the algorithms or analysis methods (nodes). Connecting these nodes defines the order of processing (pipelines). The analysis pipeline can be parallel or bifurcating.
+OptiNiSt can help creating your analysis pipelines easily on the GUI. In this workflow field, you select the data and the algorithms or analysis methods (nodes). Connecting these nodes defines the order of processing (pipelines). The analysis pipeline can be parallel or bifurcating.
 <br>
 <p align="center">
 <img width="400px" src="../_static/workflow/whole.png" alt="workflow" />
@@ -11,9 +11,9 @@ studio can help creating your analysis pipelines easily on the GUI. In this work
 ## Creating workflow
 ### Setting Input Images
 
-1. Click `UPLOAD` button to upload your image files to `studio_DIR`.  
+1. Click `UPLOAD` button to upload your image files to `OPTINIST_DIR`.  
 <!--   
-(Large data files take long time to upload, so it copies to `studio_DIR` directly and load file more quickly. )-->
+(Large data files take long time to upload, so it copies to `OPTINIST_DIR` directly and load file more quickly. )-->
   If your files are in a remote place and your analysis computer is local, uploading (copying) input files to the local directory saves time for accessing them. 
   
 2. Click `SELECT IMAGE` button to set the path to the data as the input. You can select one file or all the files in a folder. All the image tiff files in a folder are concatenated if you choose a folder.
@@ -86,7 +86,7 @@ CSV and hdf5 nodes have black output connectors. The edge connected to the black
 ## Running pipelines
 ### RUN ALL
 After making the workflow pipeline, click "RUN ALL" button to execute the computation.
-RUN ALL command creates a new output folder in the studio_DIR and executes all the pipelines. Naming it helps you identify individual workflow in the RECORD field. Note the name you specify here is just a tag. The actual folder name is automatically assigned as 32 digit letter and number. See the RECORD field for more detail.
+RUN ALL command creates a new output folder in the OPTINIST_DIR and executes all the pipelines. Naming it helps you identify individual workflow in the RECORD field. Note the name you specify here is just a tag. The actual folder name is automatically assigned as 32 digit letter and number. See the RECORD field for more detail.
 
 <br>
 <p align="center">
