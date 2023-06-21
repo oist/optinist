@@ -1,7 +1,8 @@
 import os
 
-_DEFAULT_DIR = '/tmp/optinist'
-_ENV_DIR = os.environ.get('OPTINIST_DIR')
+_DEFAULT_DIR = "/tmp/optinist"
+_ENV_DIR = os.environ.get("OPTINIST_DIR")
+
 
 class DIRPATH:
     OPTINIST_DIR = _DEFAULT_DIR if _ENV_DIR is None else _ENV_DIR
@@ -9,7 +10,9 @@ class DIRPATH:
     OUTPUT_DIR = f"{OPTINIST_DIR}/output"
 
     CONDAYML_DIR = f"{os.path.dirname(os.path.dirname(__file__))}/conda"
-    CONDAENV_DIR = f"{os.path.dirname(os.path.dirname(os.path.dirname(__file__)))}/conda"
+    CONDAENV_DIR = (
+        f"{os.path.dirname(os.path.dirname(os.path.dirname(__file__)))}/conda"
+    )
 
     ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
     CONFIG_DIR = f"{ROOT_DIR}/config"

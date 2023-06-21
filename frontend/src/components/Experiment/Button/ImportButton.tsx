@@ -6,6 +6,7 @@ import { importExperimentByUid } from 'store/slice/Experiments/ExperimentsAction
 import { AppDispatch } from 'store/store'
 import { ExperimentUidContext } from '../ExperimentTable'
 import ReplyIcon from '@mui/icons-material/Reply'
+import { reset } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 
 export const ImportButton = React.memo(() => {
   const dispatch: AppDispatch = useDispatch()
@@ -15,9 +16,10 @@ export const ImportButton = React.memo(() => {
   const onClick = () => {
     dispatch(importExperimentByUid(uid))
       .unwrap()
-      .then(() =>
-        enqueueSnackbar('Successfully imported.', { variant: 'success' }),
-      )
+      .then(() => {
+        enqueueSnackbar('Successfully imported.', { variant: 'success' })
+        dispatch(reset())
+      })
   }
   return (
     <IconButton onClick={onClick}>

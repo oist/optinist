@@ -1,0 +1,175 @@
+last_output:
+- 553d2b31/correlation_onyx5cah3a/correlation.pkl
+- 553d2b31/eta_5d8mle1u5o/eta.pkl
+rules:
+  caiman_mc_ldvldnoirg:
+    hdf5Path: null
+    input:
+    - 553d2b31/input_0/mouse2p.pkl
+    nwbfile: null
+    output: 553d2b31/caiman_mc_ldvldnoirg/caiman_mc.pkl
+    params:
+      border_nan: copy
+      gSig_filt: null
+      is3D: false
+      max_deviation_rigid: 3
+      max_shifts:
+      - 6
+      - 6
+      min_mov: null
+      niter_rig: 1
+      nonneg_movie: true
+      num_frames_split: 80
+      num_splits_to_process_els: null
+      num_splits_to_process_rig: null
+      overlaps:
+      - 32
+      - 32
+      pw_rigid: false
+      shifts_opencv: true
+      splits_els: 14
+      splits_rig: 14
+      strides:
+      - 96
+      - 96
+      upsample_factor_grid: 4
+      use_cuda: false
+    path: caiman/caiman_mc
+    return_arg:
+      input_0: image
+    type: caiman_mc
+  correlation_onyx5cah3a:
+    hdf5Path: null
+    input:
+    - 553d2b31/lccd_cell_detection_rafri53t4o/lccd_cell_detection.pkl
+    nwbfile: null
+    output: 553d2b31/correlation_onyx5cah3a/correlation.pkl
+    params:
+      transpose: false
+    path: optinist/neural_population_analysis/correlation
+    return_arg:
+      fluorescence: neural_data
+    type: correlation
+  eta_5d8mle1u5o:
+    hdf5Path: null
+    input:
+    - 553d2b31/input_4llibbnlp6/mouse2p.pkl
+    - 553d2b31/lccd_cell_detection_rafri53t4o/lccd_cell_detection.pkl
+    nwbfile: null
+    output: 553d2b31/eta_5d8mle1u5o/eta.pkl
+    params:
+      end_time: 50
+      start_time: -30
+      target_index: 1
+      transpose_x: true
+      transpose_y: false
+      trigger_threshold: 0
+      trigger_type: up
+    path: optinist/basic_neural_analysis/eta
+    return_arg:
+      fluorescence: neural_data
+      input_4llibbnlp6: behaviors_data
+    type: eta
+  input_0:
+    hdf5Path: null
+    input:
+    - mouse2p.tiff
+    nwbfile:
+      device:
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+        name: Microscope device
+      experiment_description: None
+      identifier: optinist
+      image_series:
+        name: TwoPhotonSeries
+        starting_frame: 0
+        starting_time: 0
+      imaging_plane:
+        description: standard
+        excitation_lambda: 600.0
+        imaging_rate: 30.0
+        indicator: GCaMap
+        location: V1
+        name: ImagingPlane
+      ophys:
+        plane_segmentation:
+          description: ''
+          name: PlaneSegmentation
+      optical_channel:
+        description: optical channel
+        emission_lambda: 500.0
+        name: OpticalChannel
+      session_description: optinist
+    output: 553d2b31/input_0/mouse2p.pkl
+    params: {}
+    path: null
+    return_arg: input_0
+    type: image
+  input_4llibbnlp6:
+    hdf5Path: null
+    input: mouse2p.csv
+    nwbfile:
+      device:
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+        name: Microscope device
+      experiment_description: None
+      identifier: optinist
+      image_series:
+        name: TwoPhotonSeries
+        starting_frame: 0
+        starting_time: 0
+      imaging_plane:
+        description: standard
+        excitation_lambda: 600.0
+        imaging_rate: 30.0
+        indicator: GCaMap
+        location: V1
+        name: ImagingPlane
+      ophys:
+        plane_segmentation:
+          description: ''
+          name: PlaneSegmentation
+      optical_channel:
+        description: optical channel
+        emission_lambda: 500.0
+        name: OpticalChannel
+      session_description: optinist
+    output: 553d2b31/input_4llibbnlp6/mouse2p.pkl
+    params:
+      setHeader: null
+      setIndex: false
+      transpose: false
+    path: null
+    return_arg: input_4llibbnlp6
+    type: behavior
+  lccd_cell_detection_rafri53t4o:
+    hdf5Path: null
+    input:
+    - 553d2b31/caiman_mc_ldvldnoirg/caiman_mc.pkl
+    nwbfile: null
+    output: 553d2b31/lccd_cell_detection_rafri53t4o/lccd_cell_detection.pkl
+    params:
+      blob_detector:
+        filtersize1: 100
+        filtersize2: 4
+        fsize: 30
+        max_area: 50
+        min_area: 20
+        sigma: 1.25
+        sparse: false
+      dff:
+        f0_frames: 100
+        f0_percentile: 8
+      lccd:
+        frame_divider: 100
+      roi_integration:
+        max_area: 100
+        min_area: 20
+        overlap_threshold: 0.4
+        sparse: false
+    path: lccd/lccd_cell_detection
+    return_arg:
+      mc_images: mc_images
+    type: lccd_cell_detection

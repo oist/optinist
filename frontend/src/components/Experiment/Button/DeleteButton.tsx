@@ -8,6 +8,7 @@ import DialogTitle from '@mui/material/DialogTitle'
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline'
 import { selectExperimentName } from 'store/slice/Experiments/ExperimentsSelectors'
 import { deleteExperimentByUid } from 'store/slice/Experiments/ExperimentsActions'
+import { clearCurrentPipeline } from 'store/slice/Pipeline/PipelineSlice'
 import { ExperimentUidContext } from '../ExperimentTable'
 import {
   selectPipelineLatestUid,
@@ -17,6 +18,7 @@ import { RootState } from 'store/store'
 
 export const DeleteButton = React.memo(() => {
   const dispatch = useDispatch()
+  const currentPipelineUid = useSelector(selectPipelineLatestUid)
   const uid = React.useContext(ExperimentUidContext)
   const isRunning = useSelector((state: RootState) => {
     const currentUid = selectPipelineLatestUid(state)
@@ -35,6 +37,7 @@ export const DeleteButton = React.memo(() => {
   const onClickOk = () => {
     setOpen(false)
     dispatch(deleteExperimentByUid(uid))
+    uid === currentPipelineUid && dispatch(clearCurrentPipeline())
   }
   return (
     <>

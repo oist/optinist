@@ -1,10 +1,10 @@
-import pytest
-from fastapi.testclient import TestClient
 import os
 
-from optinist.routers.experiment import router
-from optinist.api.utils.filepath_creater import join_filepath
+from fastapi.testclient import TestClient
+
 from optinist.api.dir_path import DIRPATH
+from optinist.api.utils.filepath_creater import join_filepath
+from optinist.routers.experiment import router
 
 client = TestClient(router)
 
@@ -45,9 +45,7 @@ def test_delete_list():
         os.makedirs(dirpath, exist_ok=True)
         assert os.path.exists(dirpath)
 
-    response = client.post(
-        "/experiments/delete", json={"uidList": uidList}
-    )
+    response = client.post("/experiments/delete", json={"uidList": uidList})
     assert response.status_code == 200
 
     for name in uidList:
@@ -73,3 +71,17 @@ def test_download_config():
     response = client.get(f"/experiments/download/config/{unique_id}")
     assert response.status_code == 200
     assert response.url == "http://testserver/experiments/download/config/0123"
+
+
+def test_expt_rename():
+    origin_name = "New flow"
+    new_name = "TEST RENAME WORKFLOW"
+    response = client.patch(
+        f"/experiments/{unique_id}/rename", json={"new_name": new_name}
+    )
+    data = response.json()
+    assert response.status_code == 200
+    assert data["name"] == new_name
+    response = client.patch(
+        f"/experiments/{unique_id}/rename", json={"new_name": origin_name}
+    )

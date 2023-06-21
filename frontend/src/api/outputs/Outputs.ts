@@ -109,3 +109,36 @@ export async function getHTMLDataApi(
   const response = await axios.get(`${BASE_URL}/outputs/html/${path}`, {})
   return response.data
 }
+
+export async function addRoiApi(
+  path: string,
+  data: { posx: number; posy: number; sizex: number; sizey: number },
+): Promise<{ data: HTMLData }> {
+  const response = await axios.post(
+    `${BASE_URL}/outputs/image/${path}/add_roi`,
+    data,
+  )
+  return response.data
+}
+
+export async function mergeRoiApi(
+  path: string,
+  data: { ids: number[] },
+): Promise<{ data: HTMLData }> {
+  const response = await axios.post(
+    `${BASE_URL}/outputs/image/${path}/merge_roi`,
+    data,
+  )
+  return response.data
+}
+
+export async function deleteRoiApi(
+  path: string,
+  data: { ids: number[] },
+): Promise<{ data: HTMLData }> {
+  const response = await axios.post(
+    `${BASE_URL}/outputs/image/${path}/delete_roi`,
+    data,
+  )
+  return response.data
+}

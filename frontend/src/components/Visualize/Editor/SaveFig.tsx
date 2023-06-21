@@ -34,7 +34,10 @@ export const SaveFig: React.FC = () => {
   return (
     <>
       <h3>SaveFig</h3>
-      <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
+      <FormControl
+        variant="standard"
+        sx={{ minWidth: 120, width: '100%', marginBottom: 1 }}
+      >
         <InputLabel>format</InputLabel>
         <Select label="smooth" value={saveFormat} onChange={handleChange}>
           <MenuItem value={'svg'}>svg</MenuItem>
@@ -44,6 +47,7 @@ export const SaveFig: React.FC = () => {
         </Select>
       </FormControl>
       <TextField
+        style={{ width: '100%' }}
         label={'Filename'}
         InputLabelProps={{
           shrink: true,

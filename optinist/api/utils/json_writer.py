@@ -1,7 +1,9 @@
 import os
+
 import numpy as np
 import pandas as pd
 import tifffile
+
 from optinist.api.utils.filepath_creater import create_directory, join_filepath
 
 
@@ -23,7 +25,7 @@ def save_tiff2json(tiff_filepath, save_dirpath, start_index=None, end_index=None
         image = image[np.newaxis, :, :]
 
     for i, page in enumerate(image):
-        if i < start_index-1:
+        if i < start_index - 1:
             continue
 
         if i >= end_index:
@@ -35,9 +37,8 @@ def save_tiff2json(tiff_filepath, save_dirpath, start_index=None, end_index=None
     create_directory(save_dirpath)
 
     JsonWriter.write_as_split(
-        join_filepath([
-            save_dirpath,
-            f'{filename}_{str(start_index)}_{str(end_index)}.json'
-        ]),
-        pd.DataFrame(tiffs)
+        join_filepath(
+            [save_dirpath, f"{filename}_{str(start_index)}_{str(end_index)}.json"]
+        ),
+        pd.DataFrame(tiffs),
     )

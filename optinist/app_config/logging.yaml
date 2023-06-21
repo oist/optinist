@@ -1,0 +1,3 @@
+fastapi_logging_config:
+  default_fmt: "%(asctime)s  %(levelprefix)s %(message)s"
+  access_fmt: "%(asctime)s  %(levelprefix)s %(message)s"

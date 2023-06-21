@@ -4,10 +4,10 @@ from optinist.api.utils.json_writer import JsonWriter
 
 
 class ScatterData(BaseData):
-    def __init__(self, data, file_name='scatter'):
+    def __init__(self, data, file_name="scatter"):
         super().__init__(file_name)
 
-        assert data.ndim <= 2, 'Scatter Dimension Error'
+        assert data.ndim <= 2, "Scatter Dimension Error"
 
         self.data = data.T
 

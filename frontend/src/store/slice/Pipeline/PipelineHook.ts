@@ -12,6 +12,7 @@ import { run, pollRunResult, runByCurrentUid } from './PipelineActions'
 import { cancelPipeline } from './PipelineSlice'
 import { selectFilePathIsUndefined } from '../InputNode/InputNodeSelectors'
 import { selectAlgorithmNodeNotExist } from '../AlgorithmNode/AlgorithmNodeSelectors'
+import { getExperiments } from '../Experiments/ExperimentsActions'
 import { useSnackbar } from 'notistack'
 import { RUN_STATUS } from './PipelineType'
 
@@ -59,14 +60,19 @@ export function useRunPipeline() {
     if (prevStatus !== status) {
       if (status === RUN_STATUS.FINISHED) {
         enqueueSnackbar('Finished', { variant: 'success' })
+        dispatch(getExperiments())
+      } else if (status === RUN_STATUS.START_SUCCESS) {
+        dispatch(getExperiments())
       } else if (status === RUN_STATUS.ABORTED) {
         enqueueSnackbar('Aborted', { variant: 'error' })
+        dispatch(getExperiments())
       } else if (status === RUN_STATUS.CANCELED) {
         enqueueSnackbar('Canceled', { variant: 'info' })
+        dispatch(getExperiments())
       }
       setPrevStatus(status)
     }
-  }, [status, prevStatus, enqueueSnackbar])
+  }, [dispatch, status, prevStatus, enqueueSnackbar])
   return {
     filePathIsUndefined,
     algorithmNodeNotExist,
