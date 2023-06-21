@@ -42,13 +42,13 @@ dockerhub:
 
 .PHONY: local_build
 local_build:
-	cp -r frontend/build optinist/frontend/build
+	cd frontend
+	yarn install && yarn build
+	cd ../
 	pip install .
 
 .PHONY: upload_testpypi
 upload_testpypi:
-	mkdir -p optinist/frontend/build
-	cp -r frontend/build optinist/frontend/
 	python -m build
 	twine upload --repository testpypi dist/*
 

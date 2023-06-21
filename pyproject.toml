@@ -82,12 +82,14 @@ py-modules = ["Snakefile"]
 exclude = ["optinist/tests*"]
 
 [tool.setuptools.package-data]
-"*" = [
-  "frontend/build/*",
-  "frontend/build/static/*",
-  "frontend/build/static/css/*",
-  "frontend/build/static/js/*",
-  "frontend/build/static/media/*",
+frontend = [
+  "build/*",
+  "build/static/*",
+  "build/static/css/*",
+  "build/static/js/*",
+  "build/static/media/*",
+]
+optinist = [
   "app_config/*.yaml",
   "config/*.yaml",
   "conda/*.yaml",
