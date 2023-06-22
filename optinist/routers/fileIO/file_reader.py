@@ -6,7 +6,7 @@ from optinist.routers.model import JsonTimeSeriesData, OutputData
 class Reader:
     @classmethod
     def read(cls, filepath):
-        with open(filepath, 'r') as f:
+        with open(filepath, "r") as f:
             data = f.read()
         return data
 
@@ -18,7 +18,7 @@ class Reader:
 class JsonReader:
     @classmethod
     def read(cls, filepath):
-        with open(filepath, 'r') as f:
+        with open(filepath, "r") as f:
             json_data = json.load(f)
         return json_data
 
@@ -26,9 +26,9 @@ class JsonReader:
     def read_as_output(cls, filepath) -> OutputData:
         json_data = cls.read(filepath)
         return OutputData(
-            data=json_data['data'],
-            columns=json_data['columns'],
-            index=json_data['index'],
+            data=json_data["data"],
+            columns=json_data["columns"],
+            index=json_data["index"],
         )
 
     @classmethod

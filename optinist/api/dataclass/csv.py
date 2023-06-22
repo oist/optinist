@@ -2,13 +2,12 @@ import numpy as np
 import pandas as pd
 
 from optinist.api.dataclass.base import BaseData
-
 from optinist.api.utils.filepath_creater import create_directory, join_filepath
 from optinist.api.utils.json_writer import JsonWriter
 
 
 class CsvData(BaseData):
-    def __init__(self, data, params, file_name='csv'):
+    def __init__(self, data, params, file_name="csv"):
         super().__init__(file_name)
 
         if isinstance(data, str):
@@ -33,6 +32,5 @@ class CsvData(BaseData):
 
         for i, data in enumerate(self.data):
             JsonWriter.write_as_split(
-                join_filepath([self.json_path, f'{str(i)}.json']),
-                data
+                join_filepath([self.json_path, f"{str(i)}.json"]), data
             )

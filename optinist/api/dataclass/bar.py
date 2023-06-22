@@ -7,16 +7,16 @@ from optinist.api.utils.json_writer import JsonWriter
 
 
 class BarData(BaseData):
-    def __init__(self, data, index=None, file_name='bar'):
+    def __init__(self, data, index=None, file_name="bar"):
         super().__init__(file_name)
         data = np.array(data)
 
-        assert data.ndim <= 2, 'Bar Dimension Error'
+        assert data.ndim <= 2, "Bar Dimension Error"
 
         if data.ndim == 1:
             data = data[np.newaxis]
 
-        assert data.ndim == 2, 'Bar Dimesion is not 2'
+        assert data.ndim == 2, "Bar Dimesion is not 2"
 
         self.data = data
 

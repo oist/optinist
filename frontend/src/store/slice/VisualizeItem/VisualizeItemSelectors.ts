@@ -152,6 +152,15 @@ export const selectRoiItemFilePath = (itemId: number) => (state: RootState) => {
   }
 }
 
+export const selectRoiItemOutputKeys = (itemId: number) => (state: RootState) => {
+  const item = selectVisualizeItemById(itemId)(state)
+  if (isImageItem(item)) {
+    return item.roiItem?.outputKey ?? null
+  } else {
+    throw new Error('invalid VisualaizeItemType')
+  }
+}
+
 export const selectImageItemShowticklabels =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItemById(itemId)(state)

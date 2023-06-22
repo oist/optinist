@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react'
+import React, { CSSProperties, useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Handle, Position, NodeProps } from 'react-flow-renderer'
 import {
@@ -6,7 +6,6 @@ import {
   Typography,
   useTheme,
   Tooltip,
-  FormHelperText,
   IconButton,
   Button,
   LinearProgress,
@@ -14,7 +13,6 @@ import {
 } from '@mui/material'
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import ErrorIcon from '@mui/icons-material/Error'
-import Popover from '@mui/material/Popover'
 
 import { AlgorithmInfo } from 'api/algolist/AlgoList'
 import {
@@ -39,7 +37,7 @@ import {
   NODE_RESULT_STATUS,
   RUN_STATUS,
 } from 'store/slice/Pipeline/PipelineType'
-import { AlgorithmOutputDialog } from './AlgorithmOutputDialog'
+import { DialogContext } from 'components/FlowChart/DialogContext'
 
 const leftHandleStyle: CSSProperties = {
   width: '4%',
@@ -65,6 +63,7 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
 
 const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
   ({ id: nodeId, selected: elementSelected, isConnectable, data }) => {
+    const { onOpen } = useContext(DialogContext)
     const theme = useTheme()
     const dispatch = useDispatch()
 
@@ -76,18 +75,15 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
       dispatch(deleteFlowElementsById(nodeId))
     }
 
-    const [open, setOpen] = React.useState(false)
-    const onCloseOutputDialog = () => {
-      setOpen(false)
-    }
     const onClickOutputButton = () => {
-      setOpen(true)
+      onOpen(nodeId)
     }
 
     const status = useStatus(nodeId)
 
     return (
       <div
+        tabIndex={0}
         style={{
           width: '100%',
           height: '110%',
@@ -116,11 +112,6 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
           >
             Output
           </Button>
-          <AlgorithmOutputDialog
-            nodeId={nodeId}
-            open={open}
-            onClose={onCloseOutputDialog}
-          />
         </ButtonGroup>
         <AlgoArgs nodeId={nodeId} />
         <AlgoReturns nodeId={nodeId} isConnectable={isConnectable} />
@@ -330,38 +321,21 @@ const Message = React.memo<{
   )
 
   const anchorElRef = React.useRef<HTMLButtonElement | null>(null)
-  const [open, setOpen] = React.useState(false)
   const theme = useTheme()
+  const { onMessageError } = useContext(DialogContext)
 
   if (status === NODE_RESULT_STATUS.ERROR) {
     return (
-      <>
-        <IconButton
-          ref={anchorElRef}
-          onClick={() => setOpen((prevOpen) => !prevOpen)}
-          size="small"
-          style={{ color: theme.palette.error.main, float: 'right' }}
-        >
-          <ErrorIcon />
-        </IconButton>
-        <Popover
-          open={open}
-          anchorEl={anchorElRef.current}
-          onClose={() => setOpen(false)}
-          anchorOrigin={{
-            vertical: 'top',
-            horizontal: 'right',
-          }}
-          transformOrigin={{
-            vertical: 'bottom',
-            horizontal: 'left',
-          }}
-        >
-          <div style={{ margin: 8 }}>
-            <FormHelperText error={true}>{errorMsg}</FormHelperText>
-          </div>
-        </Popover>
-      </>
+      <IconButton
+        ref={anchorElRef}
+        onClick={() => {
+          onMessageError({ anchorElRef, message: errorMsg as string })
+        }}
+        size="small"
+        style={{ color: theme.palette.error.main, float: 'right' }}
+      >
+        <ErrorIcon />
+      </IconButton>
     )
   } else if (status === NODE_RESULT_STATUS.SUCCESS) {
     return <CheckCircleRoundedIcon color="success" sx={{ float: 'right' }} />

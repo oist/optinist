@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Button, Typography } from '@mui/material'
 import ButtonGroup from '@mui/material/ButtonGroup'
 
@@ -7,7 +7,7 @@ import { LinearProgressWithLabel } from './LinerProgressWithLabel'
 import { FILE_TYPE } from 'store/slice/InputNode/InputNodeType'
 import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
 import { getLabelByPath } from 'store/slice/FlowElement/FlowElementUtils'
-import { FileSelectDialog } from 'components/common/FileSelectDialog'
+import { DialogContext } from 'components/FlowChart/DialogContext'
 
 export const FileSelect = React.memo<{
   multiSelect?: boolean
@@ -71,6 +71,8 @@ export const FileSelectImple = React.memo<FileSelectImpleProps>(
     selectButtonLabel,
     uploadButtonLabel,
   }) => {
+    const { onOpenDialogFile } = useContext(DialogContext)
+
     const onFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       event.preventDefault()
       if (event.target.files != null && event.target.files[0] != null) {
@@ -87,7 +89,6 @@ export const FileSelectImple = React.memo<FileSelectImpleProps>(
         inputRef.current.click()
       }
     }
-    const [open, setOpen] = React.useState(false)
     const accept = getFileInputAccept(fileTreeType)
     const fileName = getLabelByPath(filePath)
     return (
@@ -97,11 +98,22 @@ export const FileSelectImple = React.memo<FileSelectImpleProps>(
         }}
       >
         <ButtonGroup size="small" style={{ marginRight: 4 }}>
-          <Button variant="outlined" onClick={() => setOpen(true)}>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              onOpenDialogFile({
+                open: true,
+                multiSelect,
+                filePath,
+                fileTreeType,
+                onSelectFile,
+              })
+            }}
+          >
             {!!selectButtonLabel ? selectButtonLabel : 'Select File'}
           </Button>
           <Button onClick={onClick} variant="outlined">
-            {!!uploadButtonLabel ? uploadButtonLabel : 'or Upload'}
+            {!!uploadButtonLabel ? uploadButtonLabel : 'Load'}
           </Button>
         </ButtonGroup>
         <div>
@@ -120,19 +132,6 @@ export const FileSelectImple = React.memo<FileSelectImpleProps>(
             {!!fileName ? fileName : 'No file is selected.'}
           </Typography>
         </div>
-        <FileSelectDialog
-          multiSelect={multiSelect}
-          initialFilePath={filePath}
-          open={open}
-          onClickOk={(path) => {
-            onSelectFile(path)
-            setOpen(false)
-          }}
-          onClickCancel={() => {
-            setOpen(false)
-          }}
-          fileType={fileTreeType}
-        />
       </div>
     )
   },

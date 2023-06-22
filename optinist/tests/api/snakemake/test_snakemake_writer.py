@@ -1,8 +1,6 @@
-import pytest
 import os
 
 from optinist.api.snakemake.snakemake_writer import SmkConfigWriter
-
 
 unique_id = "smk_test"
 output_fileapth = f"/tmp/optinist/output/{unique_id}/config.yaml"

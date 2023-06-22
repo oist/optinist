@@ -1,4 +1,3 @@
-import pytest
 from fastapi.testclient import TestClient
 
 from optinist.routers.params import router
@@ -17,7 +16,7 @@ def test_params():
     assert data["border_nan"] == "copy"
 
     assert isinstance(data["use_cuda"], bool)
-    assert data["use_cuda"] == False
+    assert data["use_cuda"] is False
 
 
 def test_snakemake_params():
@@ -31,7 +30,7 @@ def test_snakemake_params():
     assert data["cores"] == 2
 
     assert isinstance(data["use_conda"], bool)
-    assert data["use_conda"] == True
+    assert data["use_conda"] is True
 
 
 def test_nwb_params():

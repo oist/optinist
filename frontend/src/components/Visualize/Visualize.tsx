@@ -5,12 +5,14 @@ import { styled } from '@mui/material/styles'
 import { drawerWidth } from 'components/FlowChart/FlowChart'
 import { FlexItemList } from './FlexItemList'
 import { VisualizeItemEditor } from './VisualizeItemEditor'
+import { CurrentPipelineInfo } from 'components/common/CurrentPipelineInfo'
 
 const Visualize: React.FC = () => {
   return (
     <RootDiv>
       <StyledDrawer variant="permanent">
         <MuiToolbar />
+        <CurrentPipelineInfo />
         <StyledDrawerContents>
           <VisualizeItemEditor />
         </StyledDrawerContents>

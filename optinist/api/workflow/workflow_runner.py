@@ -1,20 +1,21 @@
-from typing import Dict, List
 from dataclasses import asdict
+from typing import Dict, List
 
-from optinist.api.snakemake.smk import FlowConfig, Rule, SmkParam
-from optinist.api.snakemake.snakemake_reader import SmkParamReader
-from optinist.api.snakemake.snakemake_writer import SmkConfigWriter
-from optinist.api.snakemake.snakemake_rule import SmkRule
-from optinist.api.snakemake.snakemake_executor import delete_dependencies, snakemake_execute
-
-from optinist.api.workflow.workflow_params import get_typecheck_params
-from optinist.api.workflow.workflow import NodeType, RunItem
 from optinist.api.experiment.experiment_reader import ExptConfigReader
 from optinist.api.experiment.experiment_writer import ExptConfigWriter
+from optinist.api.snakemake.smk import FlowConfig, Rule, SmkParam
+from optinist.api.snakemake.snakemake_executor import (
+    delete_dependencies,
+    snakemake_execute,
+)
+from optinist.api.snakemake.snakemake_reader import SmkParamReader
+from optinist.api.snakemake.snakemake_rule import SmkRule
+from optinist.api.snakemake.snakemake_writer import SmkConfigWriter
+from optinist.api.workflow.workflow import NodeType, RunItem
+from optinist.api.workflow.workflow_params import get_typecheck_params
 
 
 class WorkflowRunner:
-
     def __init__(self, unique_id: str, runItem: RunItem) -> None:
         self.unique_id = unique_id
         self.runItem = runItem
@@ -22,18 +23,14 @@ class WorkflowRunner:
         self.edgeDict = ExptConfigReader.read_edgeDict(self.runItem.edgeDict)
 
         ExptConfigWriter(
-            self.unique_id,
-            self.runItem.name,
-            self.nodeDict,
-            self.edgeDict
+            self.unique_id, self.runItem.name, self.nodeDict, self.edgeDict
         ).write()
 
     def run_workflow(self, background_tasks):
         self.set_smk_config()
 
         snakemake_params: SmkParam = get_typecheck_params(
-            self.runItem.snakemakeParam,
-            "snakemake"
+            self.runItem.snakemakeParam, "snakemake"
         )
         snakemake_params = SmkParamReader.read(snakemake_params)
         snakemake_params.forcerun = self.runItem.forceRunList
@@ -44,11 +41,7 @@ class WorkflowRunner:
                 nodeDict=self.nodeDict,
                 edgeDict=self.edgeDict,
             )
-        background_tasks.add_task(
-            snakemake_execute,
-            self.unique_id,
-            snakemake_params
-        )
+        background_tasks.add_task(snakemake_execute, self.unique_id, snakemake_params)
 
     def set_smk_config(self):
         rules, last_output = self.rulefile()
