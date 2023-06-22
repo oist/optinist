@@ -55,7 +55,7 @@ class BlobDetector:
         matlab_conv=False,
         debug=False,
         sparse=True,
-        **kwargs
+        **kwargs,
     ):
         self.min_area = min_area
         self.max_area = max_area

@@ -46,7 +46,7 @@ conda config --set channel_priority strict
 ### Install requirements
 
 ```
-pip install -r requirements.txt
+pip install -e '.[dev]'
 ```
 
 ### Set saving directory

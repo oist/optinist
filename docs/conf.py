@@ -5,11 +5,9 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
 import os
-import sys
 from datetime import datetime
 
-sys.path.insert(0, os.path.abspath("../"))
-from optinist.version import VERSION, VERSION_SHORT  # noqa: E402
+from sphinx_pyproject import SphinxConfig
 
 # -- Path setup --------------------------------------------------------------
 
@@ -20,12 +18,11 @@ from optinist.version import VERSION, VERSION_SHORT  # noqa: E402
 
 
 # -- Project information -----------------------------------------------------
-
+config = SphinxConfig("../pyproject.toml", globalns=globals())
 project = "OptiNiSt"
 copyright = f"{datetime.today().year}, OIST"
 author = ""
-version = VERSION_SHORT
-release = VERSION
+release = ".".join(config.version.split(".")[:2])
 
 # -- readthedocs -------------------------------------------------------------
 on_rtd = os.environ.get("READTHEDOCS", None) == "True"

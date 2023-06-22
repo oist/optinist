@@ -31,6 +31,7 @@ build_frontend:
 .PHONY: docs
 docs:
 	rm -rf docs/_build/
+	pip install -e '.[doc]'
 	# sphinx-apidoc -f -o ./docs/_build/modules ./optinist
 	sphinx-autobuild -b html docs docs/_build --port 8001
 
@@ -41,14 +42,14 @@ dockerhub:
 
 .PHONY: local_build
 local_build:
-	cp -r frontend/build optinist/frontend/build
+	cd frontend
+	yarn install && yarn build
+	cd ../
 	pip install .
 
 .PHONY: upload_testpypi
 upload_testpypi:
-	mkdir -p optinist/frontend/build
-	cp -r frontend/build optinist/frontend/
-	python setup.py sdist
+	python -m build
 	twine upload --repository testpypi dist/*
 
 .PHONY: test_pypi
@@ -59,7 +60,9 @@ test_pypi:
 push_pypi:
 	twine upload --repository pypi dist/*
 
-.PHONY: test_doc
-test_doc:
-	python3 -m pip install -r docs/requirements.txt
-	sphinx-autobuild -b html docs docs/_build --port 8001
+
+.PHONY: format
+format:
+	black optinist *.py
+	isort optinist *.py
+	flake8 optinist *.py
