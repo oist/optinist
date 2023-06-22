@@ -64,6 +64,7 @@ doc = [
 ]
 test = [
   "pytest",
+  "pytest-env",
 ]
 
 [project.urls]
