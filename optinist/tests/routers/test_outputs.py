@@ -1,10 +1,11 @@
 from fastapi.testclient import TestClient
 
+from optinist.api.dir_path import DIRPATH
 from optinist.routers.outputs import router
 
 client = TestClient(router)
 
-timeseries_dirpath = "/tmp/optinist/output/0123/func1/fluorescence.json"
+timeseries_dirpath = f"{DIRPATH.OPTINIST_DIR}/output/0123/func1/fluorescence.json"
 
 
 def test_inittimedata():

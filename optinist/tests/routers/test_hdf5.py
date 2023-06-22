@@ -1,5 +1,6 @@
 from fastapi.testclient import TestClient
 
+from optinist.api.dir_path import DIRPATH
 from optinist.routers.hdf5 import HDF5Getter, router
 from optinist.routers.model import HDF5Node
 
@@ -18,7 +19,7 @@ def test_hdf5():
 
 
 def test_HDF5Getter():
-    output = HDF5Getter.get("/tmp/optinist/input/files/test.nwb")
+    output = HDF5Getter.get(f"{DIRPATH.OPTINIST_DIR}/input/files/test.nwb")
 
     assert isinstance(output, list)
     assert isinstance(output[0], HDF5Node)

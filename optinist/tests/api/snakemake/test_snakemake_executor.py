@@ -22,7 +22,7 @@ smk_param = SmkParam(
 )
 
 shutil.copyfile(
-    "/tmp/optinist/config.yaml",
+    f"{DIRPATH.OPTINIST_DIR}/config.yaml",
     f"{DIRPATH.ROOT_DIR}/config.yaml",
 )
 
@@ -84,7 +84,7 @@ edgeDict = {
     ),
 }
 
-output_dirpath = "/tmp/optinist/output/snakemake"
+output_dirpath = f"{DIRPATH.OPTINIST_DIR}/output/snakemake"
 
 
 def test_snakemake_delete_dependencies():
@@ -130,8 +130,6 @@ def test_error_snakemake_execute():
     smk_param.use_conda = True
     snakemake_execute(unique_id, smk_param)
 
-    error_log_filepath = "/tmp/optinist/output/snakemake/error.log"
+    error_log_filepath = f"{DIRPATH.OUTPUT_DIR}/snakemake/error.log"
 
     assert os.path.exists(error_log_filepath)
-
-    os.remove(error_log_filepath)

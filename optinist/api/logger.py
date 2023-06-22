@@ -30,7 +30,7 @@ def get_logger(unique_id: str) -> logging.Logger:
     fmt = logging.Formatter("%(asctime)s : %(levelname)s - %(filename)s - %(message)s")
     fh.setFormatter(fmt)
     logger.addHandler(fh)
-
+    fh.close()
     return logger
 
 
