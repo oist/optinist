@@ -14,6 +14,7 @@ class DIRPATH:
         f"{os.path.dirname(os.path.dirname(os.path.dirname(__file__)))}/conda"
     )
 
+    PKG_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
     ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
     CONFIG_DIR = f"{ROOT_DIR}/config"
 

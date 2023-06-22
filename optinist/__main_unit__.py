@@ -1,5 +1,4 @@
 import argparse
-import os
 
 import uvicorn
 from fastapi import FastAPI, Request
@@ -29,10 +28,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-if "OPTINIST_DEV_ROOT_DIR" in os.environ:
-    FRONTEND_DIRPATH = os.environ["OPTINIST_DEV_ROOT_DIR"] + "/frontend"
-else:
-    FRONTEND_DIRPATH = OPTINIST_DIRPATH.ROOT_DIR + "/frontend"
+FRONTEND_DIRPATH = OPTINIST_DIRPATH.PKG_DIR + "/frontend"
 
 app.mount(
     "/static",
