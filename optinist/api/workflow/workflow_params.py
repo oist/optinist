@@ -1,12 +1,9 @@
 from optinist.api.config.config_reader import ConfigReader
-from optinist.api.dir_path import DIRPATH
-from optinist.api.utils.filepath_creater import join_filepath
+from optinist.api.utils.filepath_finder import find_param_filepath
 
 
 def get_typecheck_params(message_params, name):
-    default_params = ConfigReader.read(
-        join_filepath([DIRPATH.CONFIG_DIR, f"{name}.yaml"])
-    )
+    default_params = ConfigReader.read(find_param_filepath(name))
     if message_params != {} and message_params is not None:
         return check_types(nest2dict(message_params), default_params)
     return default_params

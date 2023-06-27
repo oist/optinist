@@ -1,0 +1,24 @@
+frames_include: -1
+keep_movie_raw: False
+do_bidiphase: False
+
+smooth_sigma: 1.15
+smooth_sigma_time: 0
+bidiphase: 0
+maxregshift: 0.1
+maxregshiftNR: 5
+nonrigid: True
+block_size: [128, 128]
+snr_thresh: 1.2
+functional_chan : 1
+align_by_chan : 1
+reg_tif: False
+th_badframes: 1.0
+diameter: 0
+
+# 1P setting
+1Preg: False
+spatial_hp_reg: 42
+pre_smooth: 0
+spatial_taper: 40
+bidi_corrected: False

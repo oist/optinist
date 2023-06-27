@@ -16,6 +16,7 @@ from optinist.api.pickle.pickle_reader import PickleReader
 from optinist.api.pickle.pickle_writer import PickleWriter
 from optinist.api.rules.runner import Runner
 from optinist.api.utils.filepath_creater import join_filepath
+from optinist.api.utils.filepath_finder import find_condaenv_filepath
 
 
 @dataclass
@@ -86,9 +87,9 @@ class EditRoiUtils:
         from optinist.api.edit_ROI import edit_roi_wrapper_dict
 
         algo = config["algo"]
-        if "conda_yaml" in edit_roi_wrapper_dict[algo]:
-            conda_yaml = edit_roi_wrapper_dict[algo]["conda_yaml"]
-            return f"{DIRPATH.CONDAYML_DIR}/{conda_yaml}" if conda_yaml else None
+        if "conda_name" in edit_roi_wrapper_dict[algo]:
+            conda_name = edit_roi_wrapper_dict[algo]["conda_name"]
+            return find_condaenv_filepath(conda_name) if conda_name else None
 
         return None
 

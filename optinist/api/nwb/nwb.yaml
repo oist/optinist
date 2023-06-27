@@ -1,0 +1,25 @@
+session_description: 'optinist'
+identifier: 'optinist'
+experiment_description: 'None'
+device:
+    name: 'Microscope device'
+    description: 'Microscope Information'
+    manufacturer: 'Microscope Manufacture'
+optical_channel:
+    name: 'OpticalChannel'
+    description: 'optical channel'
+    emission_lambda: 500.0
+imaging_plane:
+    name: 'ImagingPlane'
+    description: 'standard'
+    imaging_rate: 30.0
+    excitation_lambda: 600.0
+    indicator: 'GCaMap'
+    location: 'V1'
+image_series:
+    starting_time: 0
+    starting_frame: [0,]
+ophys:
+    plane_segmentation:
+        name: 'PlaneSegmentation'
+        description: ''

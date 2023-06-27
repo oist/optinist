@@ -1,9 +1,9 @@
-from optinist.wrappers.caiman_wrapper import caiman_wrapper_dict
-from optinist.wrappers.lccd_wrapper import lccd_wrapper_dict
+from optinist.wrappers.caiman import caiman_wrapper_dict
+from optinist.wrappers.lccd import lccd_wrapper_dict
 
 # from optinist.wrappers.dummy_wrapper import dummy_wrapper_dict
-from optinist.wrappers.optinist_wrapper import optinist_wrapper_dict
-from optinist.wrappers.suite2p_wrapper import suite2p_wrapper_dict
+from optinist.wrappers.optinist import optinist_wrapper_dict
+from optinist.wrappers.suite2p import suite2p_wrapper_dict
 
 wrapper_dict = {}
 wrapper_dict.update(**caiman_wrapper_dict)

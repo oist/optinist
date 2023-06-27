@@ -9,14 +9,12 @@ class DIRPATH:
     INPUT_DIR = f"{OPTINIST_DIR}/input"
     OUTPUT_DIR = f"{OPTINIST_DIR}/output"
 
-    CONDAYML_DIR = f"{os.path.dirname(os.path.dirname(__file__))}/conda"
     CONDAENV_DIR = (
         f"{os.path.dirname(os.path.dirname(os.path.dirname(__file__)))}/conda"
     )
 
     PKG_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
     ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
-    CONFIG_DIR = f"{ROOT_DIR}/config"
 
     if not os.path.exists(INPUT_DIR):
         os.makedirs(INPUT_DIR)

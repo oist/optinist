@@ -22,7 +22,7 @@ from optinist.api.edit_ROI.wrappers.suite2p_edit_roi import (
 
 edit_roi_wrapper_dict = {
     "suite2p": {
-        "conda_yaml": "suite2p_env.yaml",
+        "conda_name": "suite2p",
         "function": {
             "add": suite2p_add,
             "merge": suite2p_merge,
@@ -30,7 +30,7 @@ edit_roi_wrapper_dict = {
         },
     },
     "lccd": {
-        "conda_yaml": None,
+        "conda_name": None,
         "function": {
             "add": lccd_add,
             "merge": lccd_merge,
@@ -38,7 +38,7 @@ edit_roi_wrapper_dict = {
         },
     },
     "caiman": {
-        "conda_yaml": None,
+        "conda_name": None,
         "function": {
             "add": caiman_add,
             "merge": caiman_merge,
