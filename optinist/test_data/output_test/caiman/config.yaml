@@ -1,0 +1,63 @@
+last_output:
+- c1cb51f7/caiman_cnmf_8ul87sa0vx/caiman_cnmf.pkl
+rules:
+  caiman_cnmf_8ul87sa0vx:
+    hdf5Path: null
+    input:
+    - c1cb51f7/input_0/test.pkl
+    nwbfile: null
+    output: c1cb51f7/caiman_cnmf_8ul87sa0vx/caiman_cnmf.pkl
+    params:
+      K: 4
+      gSig:
+      - 4
+      - 4
+      merge_thr: 0.85
+      method_init: greedy_roi
+      nb: 2
+      p: 1
+      rf: null
+      ssub: 1
+      stride: 6
+      thr: 0.9
+      tsub: 1
+    path: caiman/caiman_cnmf
+    return_arg:
+      input_0: images
+    type: caiman_cnmf
+  input_0:
+    hdf5Path: null
+    input:
+    - test.tif
+    nwbfile:
+      device:
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+        name: Microscope device
+      experiment_description: None
+      identifier: optinist
+      image_series:
+        starting_frame:
+        - 0
+        starting_time: 0
+      imaging_plane:
+        description: standard
+        excitation_lambda: 600.0
+        imaging_rate: 30.0
+        indicator: GCaMap
+        location: V1
+        name: ImagingPlane
+      ophys:
+        plane_segmentation:
+          description: ''
+          name: PlaneSegmentation
+      optical_channel:
+        description: optical channel
+        emission_lambda: 500.0
+        name: OpticalChannel
+      session_description: optinist
+    output: c1cb51f7/input_0/test.pkl
+    params: {}
+    path: null
+    return_arg: input_0
+    type: image
