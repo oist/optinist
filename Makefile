@@ -2,37 +2,37 @@
 test_run:
 	docker-compose -f docker-compose.yml down --rmi all --volumes --remove-orphans
 	docker-compose -f docker-compose.yml rm -f
-	docker-compose -f docker-compose.yml build test_optinist
-	docker-compose -f docker-compose.yml build test_optinist_frontend
-	docker-compose -f docker-compose.yml run test_optinist
-	docker-compose -f docker-compose.yml run test_optinist_frontend
+	docker-compose -f docker-compose.yml build test_studio
+	docker-compose -f docker-compose.yml build test_studio_frontend
+	docker-compose -f docker-compose.yml run test_studio
+	docker-compose -f docker-compose.yml run test_studio_frontend
 
 .PHONY: test_python
 test_python:
 	docker-compose -f docker-compose.yml down --rmi all --volumes --remove-orphans
 	docker-compose -f docker-compose.yml rm -f
-	docker-compose -f docker-compose.yml build test_optinist
-	docker-compose -f docker-compose.yml run test_optinist
+	docker-compose -f docker-compose.yml build test_studio
+	docker-compose -f docker-compose.yml run test_studio
 
 .PHONY: test_frontend
 test_frontend:
 	docker-compose -f docker-compose.yml down --rmi all --volumes --remove-orphans
 	docker-compose -f docker-compose.yml rm -f
-	docker-compose -f docker-compose.yml build test_optinist_frontend
-	docker-compose -f docker-compose.yml run test_optinist_frontend
+	docker-compose -f docker-compose.yml build test_studio_frontend
+	docker-compose -f docker-compose.yml run test_studio_frontend
 
 .PHONY: build_frontend
 build_frontend:
 	docker-compose -f docker-compose.yml down --rmi all --volumes --remove-orphans
 	docker-compose -f docker-compose.yml rm -f
-	docker-compose -f docker-compose.yml build build_optinist_frontend
-	docker-compose -f docker-compose.yml run build_optinist_frontend
+	docker-compose -f docker-compose.yml build build_studio_frontend
+	docker-compose -f docker-compose.yml run build_studio_frontend
 
 .PHONY: docs
 docs:
 	rm -rf docs/_build/
 	pip install -e '.[doc]'
-	# sphinx-apidoc -f -o ./docs/_build/modules ./optinist
+	# sphinx-apidoc -f -o ./docs/_build/modules ./studio
 	sphinx-autobuild -b html docs docs/_build --port 8001
 
 .PHONY: dockerhub
@@ -54,7 +54,7 @@ upload_testpypi:
 
 .PHONY: test_pypi
 test_pypi:
-	python3 -m pip install --index-url https://test.pypi.org/simple/ optinist
+	python3 -m pip install --index-url https://test.pypi.org/simple/ studio
 
 .PHONY: push_pypi
 push_pypi:
@@ -63,6 +63,6 @@ push_pypi:
 
 .PHONY: format
 format:
-	black optinist *.py
-	isort optinist *.py
-	flake8 optinist *.py
+	black studio *.py
+	isort studio *.py
+	flake8 studio *.py

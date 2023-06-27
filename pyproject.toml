@@ -72,7 +72,7 @@ Documentation = "https://optinist.readthedocs.io"
 Repository = "https://github.com/oist/optinist"
 
 [project.scripts]
-run_optinist = "optinist.__main__:main"
+run_optinist = "studio.__main__:main"
 
 [tool.setuptools]
 include-package-data = true
@@ -80,7 +80,7 @@ zip-safe = false
 py-modules = ["Snakefile"]
 
 [tool.setuptools.packages.find]
-exclude = ["optinist/tests*"]
+exclude = ["studio/tests*"]
 
 [tool.setuptools.package-data]
 frontend = [
@@ -90,10 +90,10 @@ frontend = [
   "build/static/js/*",
   "build/static/media/*",
 ]
-optinist = [
-  "app_config/*.yaml",
-  "config/*.yaml",
-  "conda/*.yaml",
+studio = [
+  "services/nwb/nwb.yaml",
+  "services/snakemake/snakemake.yaml",
+  "wrappers/**/*.yaml",
   "Snakefile",
 ]
 
@@ -103,5 +103,5 @@ profile = "black"
 [tool.pytest.ini_options]
 pythonpath = "."
 env = [
-  "OPTINIST_DIR=optinist/test_data",
+  "OPTINIST_DIR=studio/test_data",
 ]

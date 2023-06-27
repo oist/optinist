@@ -4,8 +4,8 @@ import shutil
 
 from snakemake import snakemake
 
-from optinist.services.dir_path import DIRPATH
-from optinist.services.utils.filepath_creater import join_filepath
+from studio.services.dir_path import DIRPATH
+from studio.services.utils.filepath_creater import join_filepath
 
 
 def main(args):

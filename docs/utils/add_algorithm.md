@@ -18,7 +18,7 @@ Below we describe an example procedure for adding a new algorithm.
 
 First, prepare the necessary directories and files for the algorithm.
 
-- {OPTINIST_SRC_DIR}/optinist/wrappers/
+- {OPTINIST_SRC_DIR}/studio/wrappers/
   - \_\_init__.py
   - xxxx/
   - yyyy/
@@ -39,10 +39,10 @@ First, prepare the necessary directories and files for the algorithm.
 #### Import statement description
 
 - Target file
-  - {OPTINIST_SRC_DIR}/optinist/wrappers/`new_algo`/`new_algo_func`.py
+  - {OPTINIST_SRC_DIR}/studio/wrappers/`new_algo`/`new_algo_func`.py
 
 ```python
-from optinist.services.dataclass import *
+from studio.services.dataclass import *
 ```
 
 - Explanation:
@@ -53,7 +53,7 @@ from optinist.services.dataclass import *
 #### Define the Input/Output of the function and implement the logic.
 
 - Target file
-  - {OPTINIST_SRC_DIR}/optinist/wrappers/`new_algo_wrapper`/`new_algo_func`.py
+  - {OPTINIST_SRC_DIR}/studio/wrappers/`new_algo_wrapper`/`new_algo_func`.py
 
 The function code is described below.
 
@@ -81,10 +81,10 @@ def new_algo_func(               # (*1)
 #### Definition of information to be displayed in the GUI
 
 - Target file
-  - {OPTINIST_SRC_DIR}/optinist/wrappers/`new_algo`/\_\_init__.py
+  - {OPTINIST_SRC_DIR}/studio/wrappers/`new_algo`/\_\_init__.py
 
 ```python
-from optinist.wrappers.new_algo.new_algo_func import new_algo_func
+from studio.wrappers.new_algo.new_algo_func import new_algo_func
 
 new_algo_wrapper_dict = {                       # (*1)
     'new_algo': {                               # (*2)
@@ -109,13 +109,13 @@ new_algo_wrapper_dict = {                       # (*1)
 Register the created algorithm to the application by adding the following settings.
 
 - Target file
-  - {OPTINIST_SRC_DIR}/optinist/wrappers/\_\_init__.py
+  - {OPTINIST_SRC_DIR}/studio/wrappers/\_\_init__.py
 
 ```python
-from optinist.wrappers.xxxx import xxxx_wrapper_dict
-from optinist.wrappers.yyyy import yyyy_wrapper_dict
+from studio.wrappers.xxxx import xxxx_wrapper_dict
+from studio.wrappers.yyyy import yyyy_wrapper_dict
 ...
-from optinist.wrappers.new_algo import new_algo_wrapper_dict    # <-- Add
+from studio.wrappers.new_algo import new_algo_wrapper_dict    # <-- Add
 
 wrapper_dict = {}
 wrapper_dict.update(**xxxx_wrapper_dict)
@@ -149,7 +149,7 @@ Optinist support datatype.
 In the following example, the **new_algo_func** function takes **ImageData** and returns **FluoData**.
 
 ```python
-from optinist.services.dataclass import *
+from studio.services.dataclass import *
 
 def new_algo_func(
         image_data: ImageData,
@@ -166,7 +166,7 @@ Restart the Application and place **new_algo_func** on the GUI , and you will se
 
 Function input parameters (input on GUI) can be defined in the following file.
 
-- {OPTINIST_SRC_DIR}/optinist/wrappers/`new_algo`/params/{algorithm_function_name}.yaml
+- {OPTINIST_SRC_DIR}/studio/wrappers/`new_algo`/params/{algorithm_function_name}.yaml
 
 - Sample:
   ```yaml

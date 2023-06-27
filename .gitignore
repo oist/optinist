@@ -6,22 +6,21 @@ __pycache__
 !.vscode/extensions.json
 dist
 /build
-optinist/frontend
 
-optinist.extensions.yaml
-optinist.namespace.yaml
+*.extensions.yaml
+*.namespace.yaml
 
 files/*
 Pipfile.lock
-optinist.egg-info
+*.egg-info
 .tox
 .snakemake
 .pytest_cache
 
-optinist/config.yaml
-optinist/test_data/output
+studio/config.yaml
+studio/test_data/output
 docs/_build
 
-optinist/notebooks
+studio/notebooks
 conda/envs/*
 tensorflow-2.4.1-py3-none-any.whl
