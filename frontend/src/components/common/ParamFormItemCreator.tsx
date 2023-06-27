@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AnyAction } from '@reduxjs/toolkit'
 import Switch from '@mui/material/Switch'
@@ -44,13 +44,35 @@ export function createParamFormItemComponent({
   const ParamItemForString = React.memo<ParamChildItemProps>(({ path }) => {
     const dispatch = useDispatch()
     const [value, updateParamAction] = useParamValueUpdate(path)
+    const isArray = useRef(Array.isArray(value))
     const onChange = (
       e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
     ) => {
       const newValue = e.target.value as string
       dispatch(updateParamAction(newValue))
     }
-    return <TextField value={value} onChange={onChange} multiline />
+
+    const onBlur = (
+      e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+    ) => {
+      const newValue = e.target.value as string
+      dispatch(
+        updateParamAction(
+          newValue
+            .split(',')
+            .filter(Boolean)
+            .map((e) => Number(e)),
+        ),
+      )
+    }
+    return (
+      <TextField
+        value={value}
+        onChange={onChange}
+        multiline
+        onBlur={isArray ? onBlur : undefined}
+      />
+    )
   })
   const ParamItemForNumber = React.memo<ParamChildItemProps>(({ path }) => {
     const dispatch = useDispatch()
