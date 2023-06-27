@@ -3,9 +3,9 @@ from typing import Dict
 
 from fastapi import APIRouter, BackgroundTasks
 
-from optinist.api.workflow.workflow import Message, NodeItem, RunItem
-from optinist.api.workflow.workflow_result import WorkflowResult
-from optinist.api.workflow.workflow_runner import WorkflowRunner
+from optinist.services.workflow.workflow import Message, NodeItem, RunItem
+from optinist.services.workflow.workflow_result import WorkflowResult
+from optinist.services.workflow.workflow_runner import WorkflowRunner
 
 router = APIRouter()
 

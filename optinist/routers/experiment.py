@@ -5,11 +5,11 @@ from typing import Dict
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
-from optinist.api.dir_path import DIRPATH
-from optinist.api.experiment.experiment import ExptConfig, ExptImportData
-from optinist.api.experiment.experiment_reader import ExptConfigReader
-from optinist.api.utils.filepath_creater import join_filepath
 from optinist.routers.model import DeleteItem, RenameItem
+from optinist.services.dir_path import DIRPATH
+from optinist.services.experiment.experiment import ExptConfig, ExptImportData
+from optinist.services.experiment.experiment_reader import ExptConfigReader
+from optinist.services.utils.filepath_creater import join_filepath
 
 router = APIRouter()
 

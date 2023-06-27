@@ -1,13 +1,13 @@
 import os
 import shutil
 
-from optinist.api.dir_path import DIRPATH
-from optinist.api.snakemake.smk import ForceRun, SmkParam
-from optinist.api.snakemake.snakemake_executor import (
+from optinist.services.dir_path import DIRPATH
+from optinist.services.snakemake.smk import ForceRun, SmkParam
+from optinist.services.snakemake.snakemake_executor import (
     delete_dependencies,
     snakemake_execute,
 )
-from optinist.api.workflow.workflow import Edge, Node, NodeData
+from optinist.services.workflow.workflow import Edge, Node, NodeData
 
 tiff_filename = "test.tif"
 

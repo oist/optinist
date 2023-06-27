@@ -1,5 +1,5 @@
-from optinist.api.dataclass import FluoData, IscellData, TimeSeriesData
-from optinist.api.nwb.nwb import NWBDATASET
+from optinist.services.dataclass import FluoData, IscellData, TimeSeriesData
+from optinist.services.nwb.nwb import NWBDATASET
 
 
 def cross_correlation(

@@ -6,8 +6,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.cors import CORSMiddleware
 
-from optinist.api.dir_path import DIRPATH as OPTINIST_DIRPATH
 from optinist.routers import algolist, experiment, files, hdf5, outputs, params, run
+from optinist.services.dir_path import DIRPATH as OPTINIST_DIRPATH
 
 app = FastAPI(docs_url="/docs", openapi_url="/openapi")
 app.include_router(algolist.router)

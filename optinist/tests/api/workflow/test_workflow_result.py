@@ -1,9 +1,9 @@
 import os
 import shutil
 
-from optinist.api.dir_path import DIRPATH
-from optinist.api.workflow.workflow import Message
-from optinist.api.workflow.workflow_result import NodeResult, WorkflowResult
+from optinist.services.dir_path import DIRPATH
+from optinist.services.workflow.workflow import Message
+from optinist.services.workflow.workflow_result import NodeResult, WorkflowResult
 
 unique_id = "result_test"
 node_id_list = ["func1", "func2"]

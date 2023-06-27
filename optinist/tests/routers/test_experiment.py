@@ -3,9 +3,9 @@ import shutil
 
 from fastapi.testclient import TestClient
 
-from optinist.api.dir_path import DIRPATH
-from optinist.api.utils.filepath_creater import join_filepath
 from optinist.routers.experiment import router
+from optinist.services.dir_path import DIRPATH
+from optinist.services.utils.filepath_creater import join_filepath
 
 client = TestClient(router)
 

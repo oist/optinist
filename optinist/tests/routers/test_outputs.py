@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 
-from optinist.api.dir_path import DIRPATH
 from optinist.routers.outputs import router
+from optinist.services.dir_path import DIRPATH
 
 client = TestClient(router)
 

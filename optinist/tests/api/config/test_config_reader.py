@@ -1,5 +1,5 @@
-from optinist.api.config.config_reader import ConfigReader
-from optinist.api.utils.filepath_finder import find_param_filepath
+from optinist.services.config.config_reader import ConfigReader
+from optinist.services.utils.filepath_finder import find_param_filepath
 
 
 def test_reader():

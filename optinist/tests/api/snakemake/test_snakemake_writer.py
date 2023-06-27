@@ -1,7 +1,7 @@
 import os
 
-from optinist.api.dir_path import DIRPATH
-from optinist.api.snakemake.snakemake_writer import SmkConfigWriter
+from optinist.services.dir_path import DIRPATH
+from optinist.services.snakemake.snakemake_writer import SmkConfigWriter
 
 unique_id = "smk_test"
 output_fileapth = f"{DIRPATH.OPTINIST_DIR}/output/{unique_id}/config.yaml"

@@ -1,7 +1,7 @@
 import os
 
-from optinist.api.dataclass import ImageData, Suite2pData
-from optinist.api.utils.filepath_creater import create_directory, join_filepath
+from optinist.services.dataclass import ImageData, Suite2pData
+from optinist.services.utils.filepath_creater import create_directory, join_filepath
 
 
 def suite2p_file_convert(

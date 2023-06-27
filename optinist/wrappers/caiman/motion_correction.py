@@ -1,5 +1,5 @@
-from optinist.api.dataclass import ImageData, RoiData
-from optinist.api.nwb.nwb import NWBDATASET
+from optinist.services.dataclass import ImageData, RoiData
+from optinist.services.nwb.nwb import NWBDATASET
 
 
 def caiman_mc(

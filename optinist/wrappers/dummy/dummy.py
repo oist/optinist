@@ -1,6 +1,6 @@
 import numpy as np
 
-from optinist.api.dataclass import (
+from optinist.services.dataclass import (
     HeatMapData,
     ImageData,
     IscellData,

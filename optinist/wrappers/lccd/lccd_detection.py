@@ -1,7 +1,7 @@
 import numpy as np
 
-from optinist.api.dataclass import FluoData, ImageData, LccdData, RoiData
-from optinist.api.nwb.nwb import NWBDATASET
+from optinist.services.dataclass import FluoData, ImageData, LccdData, RoiData
+from optinist.services.nwb.nwb import NWBDATASET
 
 
 def lccd_detect(

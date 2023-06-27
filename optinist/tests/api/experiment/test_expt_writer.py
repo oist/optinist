@@ -1,10 +1,10 @@
 import os
 import shutil
 
-from optinist.api.dir_path import DIRPATH
-from optinist.api.experiment.experiment import ExptConfig, ExptFunction
-from optinist.api.experiment.experiment_writer import ExptConfigWriter
-from optinist.api.workflow.workflow import Edge, Node, NodeData, RunItem
+from optinist.services.dir_path import DIRPATH
+from optinist.services.experiment.experiment import ExptConfig, ExptFunction
+from optinist.services.experiment.experiment_writer import ExptConfigWriter
+from optinist.services.workflow.workflow import Edge, Node, NodeData, RunItem
 
 node_data = NodeData(label="a", param={}, path="", type="")
 

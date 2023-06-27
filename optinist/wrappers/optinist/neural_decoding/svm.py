@@ -1,5 +1,5 @@
-from optinist.api.dataclass import BarData, BehaviorData, FluoData, IscellData
-from optinist.api.nwb.nwb import NWBDATASET
+from optinist.services.dataclass import BarData, BehaviorData, FluoData, IscellData
+from optinist.services.nwb.nwb import NWBDATASET
 from optinist.wrappers.optinist.utils import standard_norm
 
 

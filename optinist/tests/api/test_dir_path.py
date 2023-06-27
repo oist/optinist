@@ -1,6 +1,6 @@
 import os
 
-from optinist.api.dir_path import DIRPATH
+from optinist.services.dir_path import DIRPATH
 
 
 def test_dir_path():

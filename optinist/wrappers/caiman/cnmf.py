@@ -2,15 +2,15 @@ import gc
 
 import numpy as np
 
-from optinist.api.dataclass import (
+from optinist.services.dataclass import (
     CaimanCnmfData,
     FluoData,
     ImageData,
     IscellData,
     RoiData,
 )
-from optinist.api.nwb.nwb import NWBDATASET
-from optinist.api.utils.filepath_creater import join_filepath
+from optinist.services.nwb.nwb import NWBDATASET
+from optinist.services.utils.filepath_creater import join_filepath
 
 
 def get_roi(A, thr, thr_method, swap_dim, dims):

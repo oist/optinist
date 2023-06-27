@@ -1,5 +1,5 @@
-from optinist.api.dataclass import FluoData, Suite2pData
-from optinist.api.nwb.nwb import NWBDATASET
+from optinist.services.dataclass import FluoData, Suite2pData
+from optinist.services.nwb.nwb import NWBDATASET
 
 
 def suite2p_spike_deconv(

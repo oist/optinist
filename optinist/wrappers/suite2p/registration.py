@@ -1,4 +1,4 @@
-from optinist.api.dataclass import ImageData, Suite2pData
+from optinist.services.dataclass import ImageData, Suite2pData
 
 
 def suite2p_registration(

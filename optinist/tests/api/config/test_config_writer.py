@@ -1,8 +1,8 @@
 import os
 
-from optinist.api.config.config_writer import ConfigWriter
-from optinist.api.dir_path import DIRPATH
-from optinist.api.utils.filepath_creater import join_filepath
+from optinist.services.config.config_writer import ConfigWriter
+from optinist.services.dir_path import DIRPATH
+from optinist.services.utils.filepath_creater import join_filepath
 
 dirpath = f"{DIRPATH.OPTINIST_DIR}/output"
 filename = "test.yaml"

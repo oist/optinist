@@ -3,9 +3,9 @@ from typing import List
 import h5py
 from fastapi import APIRouter
 
-from optinist.api.dir_path import DIRPATH
-from optinist.api.utils.filepath_creater import join_filepath
 from optinist.routers.model import HDF5Node
+from optinist.services.dir_path import DIRPATH
+from optinist.services.utils.filepath_creater import join_filepath
 
 router = APIRouter()
 

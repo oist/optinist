@@ -1,13 +1,13 @@
 import numpy as np
 
-from optinist.api.dataclass import (
+from optinist.services.dataclass import (
     BehaviorData,
     FluoData,
     HeatMapData,
     IscellData,
     TimeSeriesData,
 )
-from optinist.api.nwb.nwb import NWBDATASET
+from optinist.services.nwb.nwb import NWBDATASET
 
 
 def calc_trigger(behavior_data, trigger_type, trigger_threshold):

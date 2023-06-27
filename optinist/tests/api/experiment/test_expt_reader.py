@@ -1,7 +1,13 @@
-from optinist.api.dir_path import DIRPATH
-from optinist.api.experiment.experiment import ExptConfig, ExptFunction
-from optinist.api.experiment.experiment_reader import ExptConfigReader
-from optinist.api.workflow.workflow import Edge, Node, NodeData, NodePosition, Style
+from optinist.services.dir_path import DIRPATH
+from optinist.services.experiment.experiment import ExptConfig, ExptFunction
+from optinist.services.experiment.experiment_reader import ExptConfigReader
+from optinist.services.workflow.workflow import (
+    Edge,
+    Node,
+    NodeData,
+    NodePosition,
+    Style,
+)
 
 expt_filepath = f"{DIRPATH.OPTINIST_DIR}/output_test/0123/experiment.yaml"
 

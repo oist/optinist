@@ -2,9 +2,9 @@ from typing import Any, Dict
 
 from fastapi import APIRouter
 
-from optinist.api.config.config_reader import ConfigReader
-from optinist.api.utils.filepath_finder import find_param_filepath
 from optinist.routers.model import NWBParams, SnakemakeParams
+from optinist.services.config.config_reader import ConfigReader
+from optinist.services.utils.filepath_finder import find_param_filepath
 
 router = APIRouter()
 

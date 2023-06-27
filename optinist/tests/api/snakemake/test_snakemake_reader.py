@@ -1,5 +1,8 @@
-from optinist.api.snakemake.smk import Rule, SmkParam
-from optinist.api.snakemake.snakemake_reader import RuleConfigReader, SmkParamReader
+from optinist.services.snakemake.smk import Rule, SmkParam
+from optinist.services.snakemake.snakemake_reader import (
+    RuleConfigReader,
+    SmkParamReader,
+)
 
 rule_config = {
     "hdf5Path": None,

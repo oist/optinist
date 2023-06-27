@@ -1,5 +1,5 @@
-from optinist.api.snakemake.snakemake_rule import SmkRule
-from optinist.api.workflow.workflow import Edge, Node, NodeData, NodePosition
+from optinist.services.snakemake.snakemake_rule import SmkRule
+from optinist.services.workflow.workflow import Edge, Node, NodeData, NodePosition
 
 unique_id = "test"
 
