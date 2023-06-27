@@ -1,6 +1,6 @@
 import numpy as np
 
-from optinist.api.dataclass.dataclass import (
+from optinist.api.dataclass import (
     BehaviorData,
     FluoData,
     HeatMapData,

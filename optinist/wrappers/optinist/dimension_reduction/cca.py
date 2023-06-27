@@ -1,4 +1,4 @@
-from optinist.api.dataclass.dataclass import (
+from optinist.api.dataclass import (
     BarData,
     BehaviorData,
     FluoData,

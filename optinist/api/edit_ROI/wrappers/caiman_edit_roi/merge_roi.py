@@ -1,4 +1,4 @@
-from optinist.api.dataclass.dataclass import CaimanCnmfData, FluoData, RoiData
+from optinist.api.dataclass import CaimanCnmfData, FluoData, RoiData
 from optinist.api.edit_ROI.wrappers.caiman_edit_roi.utils import set_nwbfile
 
 

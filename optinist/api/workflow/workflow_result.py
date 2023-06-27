@@ -4,7 +4,7 @@ from glob import glob
 from typing import Dict
 
 from optinist.api.config.config_writer import ConfigWriter
-from optinist.api.dataclass.dataclass import (
+from optinist.api.dataclass import (
     BarData,
     BaseData,
     HeatMapData,
@@ -17,9 +17,9 @@ from optinist.api.dataclass.dataclass import (
 from optinist.api.dir_path import DIRPATH
 from optinist.api.experiment.experiment_reader import ExptConfigReader
 from optinist.api.pickle.pickle_reader import PickleReader
+from optinist.api.utils.file_reader import Reader
 from optinist.api.utils.filepath_creater import join_filepath
 from optinist.api.workflow.workflow import Message, OutputPath, OutputType
-from optinist.routers.fileIO.file_reader import Reader
 
 
 class WorkflowResult:

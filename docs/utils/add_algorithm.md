@@ -42,7 +42,7 @@ First, prepare the necessary directories and files for the algorithm.
   - {OPTINIST_SRC_DIR}/optinist/wrappers/`new_algo`/`new_algo_func`.py
 
 ```python
-from optinist.api.dataclass.dataclass import *
+from optinist.api.dataclass import *
 ```
 
 - Explanation:
@@ -149,7 +149,7 @@ Optinist support datatype.
 In the following example, the **new_algo_func** function takes **ImageData** and returns **FluoData**.
 
 ```python
-from optinist.api.dataclass.dataclass import *
+from optinist.api.dataclass import *
 
 def new_algo_func(
         image_data: ImageData,

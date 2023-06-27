@@ -1,6 +1,6 @@
 import os
 
-from optinist.api.dataclass.dataclass import FluoData, LccdData, RoiData
+from optinist.api.dataclass import FluoData, LccdData, RoiData
 from optinist.api.edit_ROI.utils import create_mask
 from optinist.api.edit_ROI.wrappers.lccd_edit_roi.utils import set_nwbfile
 

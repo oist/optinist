@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 
-from optinist.api.dataclass.dataclass import RoiData, Suite2pData
+from optinist.api.dataclass import RoiData, Suite2pData
 from optinist.api.edit_ROI.wrappers.suite2p_edit_roi.utils import set_nwbfile
 
 

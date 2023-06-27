@@ -6,9 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.cors import CORSMiddleware
 
-from optinist.api.config.config_reader import ConfigReader
 from optinist.api.dir_path import DIRPATH as OPTINIST_DIRPATH
-from optinist.api.utils.filepath_creater import join_filepath
 from optinist.routers import algolist, experiment, files, hdf5, outputs, params, run
 
 app = FastAPI(docs_url="/docs", openapi_url="/openapi")
@@ -52,17 +50,10 @@ def main(develop_mode: bool = False):
     args = parser.parse_args()
 
     # set fastapi@uvicorn logging config.
-    logging_config_path = join_filepath(
-        [OPTINIST_DIRPATH.ROOT_DIR, "app_config", "logging.yaml"]
-    )
-    logging_config = ConfigReader.read(logging_config_path)
+    log_format = "%(asctime)s  %(levelprefix)s %(message)s"
     fastapi_logging_config = uvicorn.config.LOGGING_CONFIG
-    fastapi_logging_config["formatters"]["default"]["fmt"] = logging_config[
-        "fastapi_logging_config"
-    ]["default_fmt"]
-    fastapi_logging_config["formatters"]["access"]["fmt"] = logging_config[
-        "fastapi_logging_config"
-    ]["access_fmt"]
+    fastapi_logging_config["formatters"]["default"]["fmt"] = log_format
+    fastapi_logging_config["formatters"]["access"]["fmt"] = log_format
 
     if develop_mode:
         reload_options = {"reload_dirs": ["optinist"]} if args.reload else {}

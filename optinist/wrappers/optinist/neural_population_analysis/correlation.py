@@ -1,4 +1,4 @@
-from optinist.api.dataclass.dataclass import FluoData, HeatMapData, IscellData
+from optinist.api.dataclass import FluoData, HeatMapData, IscellData
 from optinist.api.nwb.nwb import NWBDATASET
 
 

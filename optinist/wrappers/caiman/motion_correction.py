@@ -1,4 +1,4 @@
-from optinist.api.dataclass.dataclass import ImageData, RoiData
+from optinist.api.dataclass import ImageData, RoiData
 from optinist.api.nwb.nwb import NWBDATASET
 
 

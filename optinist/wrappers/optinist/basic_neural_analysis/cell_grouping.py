@@ -1,4 +1,4 @@
-from optinist.api.dataclass.dataclass import NWBFile, TimeSeriesData
+from optinist.api.dataclass import NWBFile, TimeSeriesData
 
 
 def cell_grouping(

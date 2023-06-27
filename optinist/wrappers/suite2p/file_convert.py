@@ -1,6 +1,6 @@
 import os
 
-from optinist.api.dataclass.dataclass import ImageData, Suite2pData
+from optinist.api.dataclass import ImageData, Suite2pData
 from optinist.api.utils.filepath_creater import create_directory, join_filepath
 
 

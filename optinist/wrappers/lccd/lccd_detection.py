@@ -1,6 +1,6 @@
 import numpy as np
 
-from optinist.api.dataclass.dataclass import FluoData, ImageData, LccdData, RoiData
+from optinist.api.dataclass import FluoData, ImageData, LccdData, RoiData
 from optinist.api.nwb.nwb import NWBDATASET
 
 

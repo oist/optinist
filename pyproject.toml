@@ -99,3 +99,9 @@ optinist = [
 
 [tool.isort]
 profile = "black"
+
+[tool.pytest.ini_options]
+pythonpath = "."
+env = [
+  "OPTINIST_DIR=optinist/test_data",
+]

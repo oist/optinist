@@ -7,10 +7,10 @@ from fastapi import APIRouter
 
 from optinist.api.dir_path import DIRPATH
 from optinist.api.edit_ROI import ACTION, EditROI
+from optinist.api.utils.file_reader import JsonReader, Reader
 from optinist.api.utils.filepath_creater import create_directory, join_filepath
 from optinist.api.utils.json_writer import JsonWriter, save_tiff2json
 from optinist.routers.const import ACCEPT_TIFF_EXT
-from optinist.routers.fileIO.file_reader import JsonReader, Reader
 from optinist.routers.model import (
     EditRoiSuccess,
     JsonTimeSeriesData,

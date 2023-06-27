@@ -1,6 +1,6 @@
 import h5py
 
-from optinist.api.dataclass.dataclass import CsvData, ImageData, TimeSeriesData
+from optinist.api.dataclass import CsvData, ImageData, TimeSeriesData
 from optinist.api.nwb.nwb import NWBDATASET
 from optinist.api.snakemake.smk import Rule
 from optinist.routers.model import FILETYPE
