@@ -1,4 +1,4 @@
-from studio.services.dataclass import ImageData, Suite2pData
+from studio.core.dataclass import ImageData, Suite2pData
 
 
 def suite2p_registration(

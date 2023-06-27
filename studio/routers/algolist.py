@@ -3,8 +3,8 @@ from typing import Dict, List, ValuesView
 
 from fastapi import APIRouter
 
-from studio.routers.const import NOT_DISPLAY_ARGS_LIST
-from studio.routers.model import Algo, AlgoList, Arg, Return
+from studio.core.const import NOT_DISPLAY_ARGS_LIST
+from studio.core.models import Algo, AlgoList, Arg, Return
 from studio.wrappers import wrapper_dict
 
 router = APIRouter()

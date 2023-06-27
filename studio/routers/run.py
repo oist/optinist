@@ -3,9 +3,9 @@ from typing import Dict
 
 from fastapi import APIRouter, BackgroundTasks
 
-from studio.services.workflow.workflow import Message, NodeItem, RunItem
-from studio.services.workflow.workflow_result import WorkflowResult
-from studio.services.workflow.workflow_runner import WorkflowRunner
+from studio.core.workflow.workflow import Message, NodeItem, RunItem
+from studio.core.workflow.workflow_result import WorkflowResult
+from studio.core.workflow.workflow_runner import WorkflowRunner
 
 router = APIRouter()
 

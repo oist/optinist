@@ -1,13 +1,13 @@
 import numpy as np
 
-from studio.services.dataclass import (
+from studio.core.dataclass import (
     BehaviorData,
     FluoData,
     HeatMapData,
     IscellData,
     TimeSeriesData,
 )
-from studio.services.nwb.nwb import NWBDATASET
+from studio.core.nwb.nwb import NWBDATASET
 
 
 def calc_trigger(behavior_data, trigger_type, trigger_threshold):

@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 
+from studio.core.dir_path import DIRPATH
 from studio.routers.outputs import router
-from studio.services.dir_path import DIRPATH
 
 client = TestClient(router)
 

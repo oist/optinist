@@ -1,6 +1,6 @@
 import numpy as np
 
-from studio.services.dataclass import (
+from studio.core.dataclass import (
     HeatMapData,
     ImageData,
     IscellData,

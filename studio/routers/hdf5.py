@@ -3,9 +3,9 @@ from typing import List
 import h5py
 from fastapi import APIRouter
 
-from studio.routers.model import HDF5Node
-from studio.services.dir_path import DIRPATH
-from studio.services.utils.filepath_creater import join_filepath
+from studio.core.dir_path import DIRPATH
+from studio.core.models import HDF5Node
+from studio.core.utils.filepath_creater import join_filepath
 
 router = APIRouter()
 

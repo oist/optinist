@@ -2,9 +2,9 @@ from typing import Any, Dict
 
 from fastapi import APIRouter
 
-from studio.routers.model import NWBParams, SnakemakeParams
-from studio.services.config.config_reader import ConfigReader
-from studio.services.utils.filepath_finder import find_param_filepath
+from studio.core.models import NWBParams, SnakemakeParams
+from studio.core.utils.config_handler import ConfigReader
+from studio.core.utils.filepath_finder import find_param_filepath
 
 router = APIRouter()
 

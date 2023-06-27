@@ -1,5 +1,5 @@
-from studio.services.dataclass import FluoData, IscellData, TimeSeriesData
-from studio.services.nwb.nwb import NWBDATASET
+from studio.core.dataclass import FluoData, IscellData, TimeSeriesData
+from studio.core.nwb.nwb import NWBDATASET
 
 
 def cross_correlation(

@@ -2,15 +2,15 @@ import gc
 
 import numpy as np
 
-from studio.services.dataclass import (
+from studio.core.dataclass import (
     CaimanCnmfData,
     FluoData,
     ImageData,
     IscellData,
     RoiData,
 )
-from studio.services.nwb.nwb import NWBDATASET
-from studio.services.utils.filepath_creater import join_filepath
+from studio.core.nwb.nwb import NWBDATASET
+from studio.core.utils.filepath_creater import join_filepath
 
 
 def get_roi(A, thr, thr_method, swap_dim, dims):

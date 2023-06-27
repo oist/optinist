@@ -5,11 +5,11 @@ from typing import Dict
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
-from studio.routers.model import DeleteItem, RenameItem
-from studio.services.dir_path import DIRPATH
-from studio.services.experiment.experiment import ExptConfig, ExptImportData
-from studio.services.experiment.experiment_reader import ExptConfigReader
-from studio.services.utils.filepath_creater import join_filepath
+from studio.core.dir_path import DIRPATH
+from studio.core.experiment.experiment import ExptConfig, ExptImportData
+from studio.core.experiment.experiment_reader import ExptConfigReader
+from studio.core.models import DeleteItem, RenameItem
+from studio.core.utils.filepath_creater import join_filepath
 
 router = APIRouter()
 

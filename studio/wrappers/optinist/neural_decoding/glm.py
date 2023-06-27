@@ -4,7 +4,7 @@
 #
 #  https://www.statsmodels.org/stable/glm.html
 
-from studio.services.dataclass import (
+from studio.core.dataclass import (
     BarData,
     BehaviorData,
     FluoData,
@@ -12,7 +12,7 @@ from studio.services.dataclass import (
     IscellData,
     ScatterData,
 )
-from studio.services.nwb.nwb import NWBDATASET
+from studio.core.nwb.nwb import NWBDATASET
 from studio.wrappers.optinist.utils import standard_norm
 
 

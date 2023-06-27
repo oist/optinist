@@ -1,4 +1,4 @@
-from studio.services.dataclass import NWBFile, TimeSeriesData
+from studio.core.dataclass import NWBFile, TimeSeriesData
 
 
 def cell_grouping(

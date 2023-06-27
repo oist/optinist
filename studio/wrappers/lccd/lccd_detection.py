@@ -1,7 +1,7 @@
 import numpy as np
 
-from studio.services.dataclass import FluoData, ImageData, LccdData, RoiData
-from studio.services.nwb.nwb import NWBDATASET
+from studio.core.dataclass import FluoData, ImageData, LccdData, RoiData
+from studio.core.nwb.nwb import NWBDATASET
 
 
 def lccd_detect(

@@ -1,5 +1,5 @@
-from studio.services.dataclass import ImageData, RoiData
-from studio.services.nwb.nwb import NWBDATASET
+from studio.core.dataclass import ImageData, RoiData
+from studio.core.nwb.nwb import NWBDATASET
 
 
 def caiman_mc(
