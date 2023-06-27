@@ -1,4 +1,7 @@
 import gc
+from typing import Optional
+
+from studio.core.workflow.workflow import OutputPath
 
 
 class BaseData:
@@ -7,6 +10,10 @@ class BaseData:
 
     def save_json(self, json_dir):
         pass
+
+    @property
+    def output_path(self) -> Optional[OutputPath]:
+        return None
 
     def __del__(self):
         del self

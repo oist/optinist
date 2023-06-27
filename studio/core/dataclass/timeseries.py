@@ -4,6 +4,7 @@ import pandas as pd
 from studio.core.dataclass.base import BaseData
 from studio.core.utils.filepath_creater import create_directory, join_filepath
 from studio.core.utils.json_writer import JsonWriter
+from studio.core.workflow.workflow import OutputPath, OutputType
 
 
 class TimeSeriesData(BaseData):
@@ -54,6 +55,12 @@ class TimeSeriesData(BaseData):
                 df = pd.DataFrame(data, index=self.index, columns=["data"])
 
             JsonWriter.write(join_filepath([self.json_path, f"{str(cell_i)}.json"]), df)
+
+    @property
+    def output_path(self) -> OutputPath:
+        return OutputPath(
+            path=self.json_path, type=OutputType.TIMESERIES, max_index=len(self.data)
+        )
 
 
 class FluoData(TimeSeriesData):

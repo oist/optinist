@@ -3,23 +3,14 @@ from dataclasses import asdict
 from glob import glob
 from typing import Dict
 
-from studio.core.dataclass import (
-    BarData,
-    BaseData,
-    HeatMapData,
-    HTMLData,
-    ImageData,
-    RoiData,
-    ScatterData,
-    TimeSeriesData,
-)
+from studio.core.dataclass import BaseData
 from studio.core.dir_path import DIRPATH
 from studio.core.experiment.experiment_reader import ExptConfigReader
 from studio.core.utils.config_handler import ConfigWriter
 from studio.core.utils.file_reader import Reader
 from studio.core.utils.filepath_creater import join_filepath
 from studio.core.utils.pickle_handler import PickleReader
-from studio.core.workflow.workflow import Message, OutputPath, OutputType
+from studio.core.workflow.workflow import Message, OutputPath
 
 
 class WorkflowResult:
@@ -134,43 +125,7 @@ class NodeResult:
         for k, v in self.info.items():
             if isinstance(v, BaseData):
                 v.save_json(self.node_dirpath)
-
-            if isinstance(v, ImageData):
-                outputPaths[k] = OutputPath(
-                    path=v.json_path,
-                    type=OutputType.IMAGE,
-                    max_index=len(v.data) if v.data.ndim == 3 else 1,
-                )
-            elif isinstance(v, TimeSeriesData):
-                outputPaths[k] = OutputPath(
-                    path=v.json_path, type=OutputType.TIMESERIES, max_index=len(v.data)
-                )
-            elif isinstance(v, HeatMapData):
-                outputPaths[k] = OutputPath(
-                    path=v.json_path,
-                    type=OutputType.HEATMAP,
-                )
-            elif isinstance(v, RoiData):
-                outputPaths[k] = OutputPath(
-                    path=v.json_path,
-                    type=OutputType.ROI,
-                )
-            elif isinstance(v, ScatterData):
-                outputPaths[k] = OutputPath(
-                    path=v.json_path,
-                    type=OutputType.SCATTER,
-                )
-            elif isinstance(v, BarData):
-                outputPaths[k] = OutputPath(
-                    path=v.json_path,
-                    type=OutputType.BAR,
-                )
-            elif isinstance(v, HTMLData):
-                outputPaths[k] = OutputPath(
-                    path=v.json_path,
-                    type=OutputType.HTML,
-                )
-            else:
-                pass
+                if v.output_path:
+                    outputPaths[k] = v.output_path
 
         return outputPaths

@@ -9,6 +9,7 @@ from studio.core.dataclass.utils import create_images_list
 from studio.core.dir_path import DIRPATH
 from studio.core.utils.filepath_creater import create_directory, join_filepath
 from studio.core.utils.json_writer import JsonWriter
+from studio.core.workflow.workflow import OutputPath, OutputType
 
 
 class ImageData(BaseData):
@@ -45,6 +46,14 @@ class ImageData(BaseData):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
         JsonWriter.write_as_split(self.json_path, create_images_list(self.data))
 
+    @property
+    def output_path(self) -> OutputPath:
+        return OutputPath(
+            path=self.json_path,
+            type=OutputType.IMAGE,
+            max_index=len(self.data) if self.data.ndim == 3 else 1,
+        )
+
 
 class RoiData(BaseData):
     def __init__(self, data, output_dir=DIRPATH.OUTPUT_DIR, file_name="roi"):
@@ -71,3 +80,7 @@ class RoiData(BaseData):
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
         JsonWriter.write_as_split(self.json_path, create_images_list(self.data))
+
+    @property
+    def output_path(self) -> OutputPath:
+        return OutputPath(path=self.json_path, type=OutputType.ROI)

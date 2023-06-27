@@ -1,5 +1,6 @@
 from studio.core.dataclass.base import BaseData
 from studio.core.utils.filepath_creater import join_filepath
+from studio.core.workflow.workflow import OutputPath, OutputType
 
 
 class HTMLData(BaseData):
@@ -12,3 +13,7 @@ class HTMLData(BaseData):
 
         with open(self.json_path, "w") as f:
             f.write(self.data)
+
+    @property
+    def output_path(self) -> OutputPath:
+        return OutputPath(path=self.json_path, type=OutputType.HTML)

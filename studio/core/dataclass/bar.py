@@ -4,6 +4,7 @@ import pandas as pd
 from studio.core.dataclass.base import BaseData
 from studio.core.utils.filepath_creater import join_filepath
 from studio.core.utils.json_writer import JsonWriter
+from studio.core.workflow.workflow import OutputPath, OutputType
 
 
 class BarData(BaseData):
@@ -33,3 +34,7 @@ class BarData(BaseData):
             index=self.index,
         )
         JsonWriter.write_as_split(self.json_path, df)
+
+    @property
+    def output_path(self) -> OutputPath:
+        return OutputPath(path=self.json_path, type=OutputType.BAR)
