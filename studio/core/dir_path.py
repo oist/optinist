@@ -5,16 +5,10 @@ _ENV_DIR = os.environ.get("OPTINIST_DIR")
 
 
 class DIRPATH:
-    OPTINIST_DIR = _DEFAULT_DIR if _ENV_DIR is None else _ENV_DIR
-    INPUT_DIR = f"{OPTINIST_DIR}/input"
-    OUTPUT_DIR = f"{OPTINIST_DIR}/output"
+    DATA_DIR = _DEFAULT_DIR if _ENV_DIR is None else _ENV_DIR
 
-    CONDAENV_DIR = (
-        f"{os.path.dirname(os.path.dirname(os.path.dirname(__file__)))}/conda"
-    )
-
-    PKG_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
-    ROOT_DIR = os.path.dirname(os.path.dirname(__file__))
+    INPUT_DIR = f"{DATA_DIR}/input"
+    OUTPUT_DIR = f"{DATA_DIR}/output"
 
     if not os.path.exists(INPUT_DIR):
         os.makedirs(INPUT_DIR)
@@ -24,6 +18,13 @@ class DIRPATH:
         os.makedirs(OUTPUT_DIR)
     assert os.path.exists(OUTPUT_DIR)
 
-    SNAKEMAKE_FILEPATH = f"{ROOT_DIR}/Snakefile"
+    ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
+    STUDIO_DIR = os.path.dirname(os.path.dirname(__file__))
+
+    CONDAENV_DIR = (
+        f"{os.path.dirname(os.path.dirname(os.path.dirname(__file__)))}/conda"
+    )
+
+    SNAKEMAKE_FILEPATH = f"{STUDIO_DIR}/Snakefile"
     EXPERIMENT_YML = "experiment.yaml"
     SNAKEMAKE_CONFIG_YML = "config.yaml"

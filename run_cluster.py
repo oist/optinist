@@ -12,7 +12,8 @@ def main(args):
     # copy config file
     if args.config is not None:
         shutil.copyfile(
-            args.config, join_filepath([DIRPATH.ROOT_DIR, DIRPATH.SNAKEMAKE_CONFIG_YML])
+            args.config,
+            join_filepath([DIRPATH.STUDIO_DIR, DIRPATH.SNAKEMAKE_CONFIG_YML]),
         )
 
     snakemake(
@@ -20,7 +21,7 @@ def main(args):
         forceall=args.forceall,
         cores=args.cores,
         use_conda=args.use_conda,
-        workdir=f"{os.path.dirname(DIRPATH.ROOT_DIR)}",
+        workdir=f"{os.path.dirname(DIRPATH.STUDIO_DIR)}",
     )
 
 

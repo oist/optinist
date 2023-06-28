@@ -2,7 +2,7 @@ import os
 
 from studio.core.dir_path import DIRPATH
 
-filepath = f"{DIRPATH.OPTINIST_DIR}/output/test.txt"
+filepath = f"{DIRPATH.DATA_DIR}/output/test.txt"
 
 
 def test_create_filepath():

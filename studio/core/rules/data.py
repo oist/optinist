@@ -5,9 +5,9 @@
 # - F821: do not import snakemake
 import sys
 
-from const import OPTINIST_DIRPATH
+from const import ROOT_DIRPATH
 
-sys.path.append(OPTINIST_DIRPATH)
+sys.path.append(ROOT_DIRPATH)
 
 from studio.core.models import FILETYPE
 from studio.core.rules.file_writer import FileWriter

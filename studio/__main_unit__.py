@@ -26,7 +26,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-FRONTEND_DIRPATH = DIRPATH.PKG_DIR + "/frontend"
+FRONTEND_DIRPATH = DIRPATH.ROOT_DIR + "/frontend"
 
 app.mount(
     "/static",

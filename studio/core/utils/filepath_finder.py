@@ -10,7 +10,7 @@ def find_filepath(name, category) -> Optional[str]:
     name, _ = os.path.splitext(name)
 
     filepaths = glob(
-        join_filepath([DIRPATH.ROOT_DIR, "wrappers", "**", category, f"{name}.yaml"]),
+        join_filepath([DIRPATH.STUDIO_DIR, "wrappers", "**", category, f"{name}.yaml"]),
         recursive=True,
     )
     return filepaths[0] if len(filepaths) > 0 else None
@@ -18,7 +18,7 @@ def find_filepath(name, category) -> Optional[str]:
 
 def find_param_filepath(name: str):
     if name in ["snakemake", "nwb"]:
-        return join_filepath([DIRPATH.ROOT_DIR, "core", name, f"{name}.yaml"])
+        return join_filepath([DIRPATH.STUDIO_DIR, "core", name, f"{name}.yaml"])
     else:
         return find_filepath(name, "params")
 

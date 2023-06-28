@@ -17,7 +17,7 @@ def snakemake_execute(unique_id: str, params: SmkParam):
         forceall=params.forceall,
         cores=params.cores,
         use_conda=params.use_conda,
-        workdir=f"{os.path.dirname(DIRPATH.ROOT_DIR)}",
+        workdir=f"{os.path.dirname(DIRPATH.STUDIO_DIR)}",
         log_handler=[Logger(unique_id).smk_logger],
     )
 

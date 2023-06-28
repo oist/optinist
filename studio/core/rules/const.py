@@ -1,6 +1,3 @@
-import os
+from os.path import abspath, dirname
 
-optinist_dirname = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-)
-OPTINIST_DIRPATH = f"{optinist_dirname}"
+ROOT_DIRPATH = dirname(dirname(dirname(dirname(abspath(__file__)))))

@@ -5,7 +5,7 @@ from studio.core.utils.config_handler import ConfigReader, ConfigWriter
 from studio.core.utils.filepath_creater import join_filepath
 from studio.core.utils.filepath_finder import find_param_filepath
 
-dirpath = f"{DIRPATH.OPTINIST_DIR}/output"
+dirpath = f"{DIRPATH.DATA_DIR}/output"
 filename = "test.yaml"
 
 

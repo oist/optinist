@@ -7,7 +7,7 @@ class SmkConfigWriter:
     @classmethod
     def write(cls, unique_id, flow_config):
         ConfigWriter.write(
-            dirname=DIRPATH.ROOT_DIR,
+            dirname=DIRPATH.STUDIO_DIR,
             filename=DIRPATH.SNAKEMAKE_CONFIG_YML,
             config=flow_config,
         )

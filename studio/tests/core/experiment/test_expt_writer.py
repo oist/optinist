@@ -37,7 +37,7 @@ edgeDict = {
     )
 }
 
-dirpath = f"{DIRPATH.OPTINIST_DIR}/output/unique_id"
+dirpath = f"{DIRPATH.DATA_DIR}/output/unique_id"
 
 
 def test_create_config() -> ExptConfig:

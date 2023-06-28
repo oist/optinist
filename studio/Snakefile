@@ -4,14 +4,14 @@ from studio.core.models import FILETYPE
 from studio.core.snakemake.smk_utils import SmkUtils
 from studio.core.utils.filepath_creater import join_filepath
 
-configfile: join_filepath([DIRPATH.ROOT_DIR, 'config.yaml'])
+configfile: join_filepath([DIRPATH.STUDIO_DIR, 'config.yaml'])
 
 if config.get('type') == ACTION.EDIT_ROI:
     rule edit_ROI:
         conda:
             EditRoiUtils.conda(config)
         script:
-            f"{DIRPATH.ROOT_DIR}/core/rules/edit_ROI.py"
+            f"{DIRPATH.STUDIO_DIR}/core/rules/edit_ROI.py"
 else:
     rule all:
         input: [join_filepath([DIRPATH.OUTPUT_DIR, x]) for x in config["last_output"]]
@@ -27,7 +27,7 @@ else:
                 params:
                     name = details
                 script:
-                    f"{DIRPATH.ROOT_DIR}/core/rules/data.py"
+                    f"{DIRPATH.STUDIO_DIR}/core/rules/data.py"
         else:
             rule:
                 input:
@@ -39,4 +39,4 @@ else:
                 conda:
                     SmkUtils.conda(details)
                 script:
-                    f"{DIRPATH.ROOT_DIR}/core/rules/func.py"
+                    f"{DIRPATH.STUDIO_DIR}/core/rules/func.py"

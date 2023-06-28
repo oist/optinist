@@ -40,8 +40,7 @@ class EditROI:
 
         if (
             not os.path.exists(filepath)
-            and os.path.commonpath([DIRPATH.OPTINIST_DIR, filepath])
-            != DIRPATH.OPTINIST_DIR
+            and os.path.commonpath([DIRPATH.DATA_DIR, filepath]) != DIRPATH.DATA_DIR
         ):
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND)
         if os.path.basename(filepath) != "cell_roi.json":
@@ -61,7 +60,7 @@ class EditROI:
             DIRPATH.SNAKEMAKE_FILEPATH,
             use_conda=True,
             cores=2,
-            workdir=f"{os.path.dirname(DIRPATH.ROOT_DIR)}",
+            workdir=f"{os.path.dirname(DIRPATH.STUDIO_DIR)}",
         )
 
     def set_smk_config(self):
@@ -73,7 +72,7 @@ class EditROI:
             "params": self.params,
         }
         ConfigWriter.write(
-            dirname=DIRPATH.ROOT_DIR,
+            dirname=DIRPATH.STUDIO_DIR,
             filename=DIRPATH.SNAKEMAKE_CONFIG_YML,
             config=config,
         )

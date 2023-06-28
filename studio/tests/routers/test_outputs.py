@@ -5,7 +5,7 @@ from studio.routers.outputs import router
 
 client = TestClient(router)
 
-timeseries_dirpath = f"{DIRPATH.OPTINIST_DIR}/output/0123/func1/fluorescence.json"
+timeseries_dirpath = f"{DIRPATH.DATA_DIR}/output/0123/func1/fluorescence.json"
 
 
 def test_inittimedata():

@@ -19,7 +19,7 @@ def test_hdf5():
 
 
 def test_HDF5Getter():
-    output = HDF5Getter.get(f"{DIRPATH.OPTINIST_DIR}/input/files/test.nwb")
+    output = HDF5Getter.get(f"{DIRPATH.DATA_DIR}/input/files/test.nwb")
 
     assert isinstance(output, list)
     assert isinstance(output[0], HDF5Node)

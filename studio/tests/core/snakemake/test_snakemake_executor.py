@@ -22,8 +22,8 @@ smk_param = SmkParam(
 )
 
 shutil.copyfile(
-    f"{DIRPATH.OPTINIST_DIR}/config.yaml",
-    f"{DIRPATH.ROOT_DIR}/config.yaml",
+    f"{DIRPATH.DATA_DIR}/config.yaml",
+    f"{DIRPATH.STUDIO_DIR}/config.yaml",
 )
 
 
@@ -84,7 +84,7 @@ edgeDict = {
     ),
 }
 
-output_dirpath = f"{DIRPATH.OPTINIST_DIR}/output/snakemake"
+output_dirpath = f"{DIRPATH.DATA_DIR}/output/snakemake"
 
 
 def test_snakemake_delete_dependencies():
