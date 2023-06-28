@@ -1,17 +1,17 @@
 last_output:
-- c1cb51f7/caiman_cnmf_8ul87sa0vx/caiman_cnmf.pkl
+  - caiman/caiman_cnmf/caiman_cnmf.pkl
 rules:
-  caiman_cnmf_8ul87sa0vx:
+  caiman_cnmf:
     hdf5Path: null
     input:
-    - c1cb51f7/input_0/test.pkl
+      - caiman/input_0/test.pkl
     nwbfile: null
-    output: c1cb51f7/caiman_cnmf_8ul87sa0vx/caiman_cnmf.pkl
+    output: caiman/caiman_cnmf/caiman_cnmf.pkl
     params:
       K: 4
       gSig:
-      - 4
-      - 4
+        - 4
+        - 4
       merge_thr: 0.85
       method_init: greedy_roi
       nb: 2
@@ -28,7 +28,7 @@ rules:
   input_0:
     hdf5Path: null
     input:
-    - test.tif
+      - test.tif
     nwbfile:
       device:
         description: Microscope Information
@@ -38,7 +38,7 @@ rules:
       identifier: optinist
       image_series:
         starting_frame:
-        - 0
+          - 0
         starting_time: 0
       imaging_plane:
         description: standard
@@ -56,7 +56,7 @@ rules:
         emission_lambda: 500.0
         name: OpticalChannel
       session_description: optinist
-    output: c1cb51f7/input_0/test.pkl
+    output: caiman/input_0/test.pkl
     params: {}
     path: null
     return_arg: input_0

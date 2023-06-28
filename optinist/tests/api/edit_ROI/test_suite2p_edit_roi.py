@@ -9,14 +9,14 @@ from optinist.api.utils.filepath_creater import join_filepath
 shutil.rmtree(f"{DIRPATH.OUTPUT_DIR}/suite2p", ignore_errors=True)
 shutil.copytree(
     f"{DIRPATH.OPTINIST_DIR}/output_test/suite2p",
-    f"{DIRPATH.OUTPUT_DIR}/suite2p",
+    f"{DIRPATH.OUTPUT_DIR}/132545b3",
     dirs_exist_ok=True,
 )
-file_path = f"{DIRPATH.OUTPUT_DIR}/suite2p/suite2p_roi/cell_roi.json"
+file_path = f"{DIRPATH.OUTPUT_DIR}/132545b3/suite2p_roi_w8unnq1iai/cell_roi.json"
 node_dirpath = os.path.dirname(file_path)
 
 cur_num_rois = lambda: len(  # noqa: E731
-    glob(join_filepath(f'{node_dirpath}/fluorescence/*.json'))
+    glob(join_filepath(f"{node_dirpath}/fluorescence/*.json"))
 )
 
 
