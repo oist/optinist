@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 
-from studio.core.models import TreeNode
 from studio.routers.files import DirTreeGetter, router
+from studio.schemas.files import TreeNode
 
 client = TestClient(router)
 

@@ -1,6 +1,6 @@
 import json
 
-from studio.core.models import JsonTimeSeriesData, OutputData
+from studio.schemas.outputs import JsonTimeSeriesData, OutputData
 
 
 class Reader:

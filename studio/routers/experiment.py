@@ -8,8 +8,8 @@ from fastapi.responses import FileResponse
 from studio.core.dir_path import DIRPATH
 from studio.core.experiment.experiment import ExptConfig, ExptImportData
 from studio.core.experiment.experiment_reader import ExptConfigReader
-from studio.core.models import DeleteItem, RenameItem
 from studio.core.utils.filepath_creater import join_filepath
+from studio.schemas.experiment import DeleteItem, RenameItem
 
 router = APIRouter()
 

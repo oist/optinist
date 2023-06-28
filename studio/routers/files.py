@@ -5,10 +5,10 @@ from typing import List
 
 from fastapi import APIRouter, File, UploadFile
 
-from studio.core.const import ACCEPT_CSV_EXT, ACCEPT_HDF5_EXT, ACCEPT_TIFF_EXT
+from studio.core.const import ACCEPT_CSV_EXT, ACCEPT_HDF5_EXT, ACCEPT_TIFF_EXT, FILETYPE
 from studio.core.dir_path import DIRPATH
-from studio.core.models import FILETYPE, FilePath, TreeNode
 from studio.core.utils.filepath_creater import create_directory, join_filepath
+from studio.schemas.files import FilePath, TreeNode
 
 router = APIRouter()
 

@@ -9,7 +9,7 @@ from const import ROOT_DIRPATH
 
 sys.path.append(ROOT_DIRPATH)
 
-from studio.core.models import FILETYPE
+from studio.core.const import FILETYPE
 from studio.core.rules.file_writer import FileWriter
 from studio.core.snakemake.snakemake_reader import RuleConfigReader
 from studio.core.utils.pickle_handler import PickleWriter

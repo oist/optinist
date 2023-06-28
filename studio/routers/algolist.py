@@ -4,7 +4,7 @@ from typing import Dict, List, ValuesView
 from fastapi import APIRouter
 
 from studio.core.const import NOT_DISPLAY_ARGS_LIST
-from studio.core.models import Algo, AlgoList, Arg, Return
+from studio.schemas.algolist import Algo, AlgoList, Arg, Return
 from studio.wrappers import wrapper_dict
 
 router = APIRouter()

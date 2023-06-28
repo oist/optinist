@@ -8,16 +8,16 @@ from fastapi import APIRouter
 from studio.core.const import ACCEPT_TIFF_EXT
 from studio.core.dir_path import DIRPATH
 from studio.core.edit_ROI import ACTION, EditROI
-from studio.core.models import (
+from studio.core.utils.file_reader import JsonReader, Reader
+from studio.core.utils.filepath_creater import create_directory, join_filepath
+from studio.core.utils.json_writer import JsonWriter, save_tiff2json
+from studio.schemas.outputs import (
     EditRoiSuccess,
     JsonTimeSeriesData,
     OutputData,
     RoiList,
     RoiPos,
 )
-from studio.core.utils.file_reader import JsonReader, Reader
-from studio.core.utils.filepath_creater import create_directory, join_filepath
-from studio.core.utils.json_writer import JsonWriter, save_tiff2json
 
 router = APIRouter()
 

@@ -1,7 +1,7 @@
 import h5py
 
+from studio.core.const import FILETYPE
 from studio.core.dataclass import CsvData, ImageData, TimeSeriesData
-from studio.core.models import FILETYPE
 from studio.core.nwb.nwb import NWBDATASET
 from studio.core.snakemake.smk import Rule
 

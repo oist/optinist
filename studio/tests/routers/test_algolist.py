@@ -1,7 +1,7 @@
 from fastapi.testclient import TestClient
 
-from studio.core.models import Algo
 from studio.routers.algolist import NestDictGetter, router
+from studio.schemas.algolist import Algo
 from studio.wrappers import wrapper_dict
 
 client = TestClient(router)

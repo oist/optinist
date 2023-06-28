@@ -4,8 +4,8 @@ import h5py
 from fastapi import APIRouter
 
 from studio.core.dir_path import DIRPATH
-from studio.core.models import HDF5Node
 from studio.core.utils.filepath_creater import join_filepath
+from studio.schemas.hdf5 import HDF5Node
 
 router = APIRouter()
 
