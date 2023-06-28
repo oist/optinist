@@ -55,7 +55,7 @@ class EditROI:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
         return algo
 
-    def excute(self):
+    def execute(self):
         self.set_smk_config()
 
         snakemake(
@@ -93,7 +93,7 @@ class EditRoiUtils:
         return None
 
     @classmethod
-    def excute(cls, config):
+    def execute(cls, config):
         from optinist.api.edit_ROI import edit_roi_wrapper_dict
 
         algo = config["algo"]

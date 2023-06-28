@@ -16,7 +16,7 @@ file_path = f"{DIRPATH.OUTPUT_DIR}/lccd/lccd_cell_detection/cell_roi.json"
 node_dirpath = os.path.dirname(file_path)
 
 cur_num_rois = lambda: len(  # noqa: E731
-    glob(join_filepath(f'{node_dirpath}/fluorescence/*.json'))
+    glob(join_filepath(f"{node_dirpath}/fluorescence/*.json"))
 )
 
 
@@ -31,7 +31,7 @@ def test_lccd_add_roi():
             sizex=10,
             sizey=10,
         ),
-    ).excute()
+    ).execute()
     assert cur_num_rois() == cur_roi + 1
 
 
@@ -41,7 +41,7 @@ def test_lccd_merge_roi():
         action=ACTION.MERGE,
         filepath=file_path,
         params=dict(ids=[1, 2, 3]),
-    ).excute()
+    ).execute()
 
     assert cur_num_rois() == cur_roi + 1
 
@@ -52,6 +52,6 @@ def test_lccd_delete_roi():
         action=ACTION.DELETE,
         filepath=file_path,
         params=dict(ids=[4, 5, 6]),
-    ).excute()
+    ).execute()
 
     assert cur_num_rois() == cur_roi
