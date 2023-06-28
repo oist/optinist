@@ -6,7 +6,7 @@ services:
     container_name: test_studio
     build:
       context: .
-      dockerfile: Dockerfile.test
+      dockerfile: studio/config/docker/Dockerfile.test
     environment:
       PYTHONPATH: .
       TZ: Asia/Tokyo

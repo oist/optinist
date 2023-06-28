@@ -4,7 +4,7 @@ services:
   studio-dev-be:
     build:
       context: .
-      dockerfile: Dockerfile.dev
+      dockerfile: studio/config/docker/Dockerfile.dev
     working_dir: /app
     volumes:
       - .:/app
