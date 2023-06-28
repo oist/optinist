@@ -22,7 +22,7 @@ def test_dimension_reduction():
     )
 
     shutil.copyfile(
-        f"{DIRPATH.OPTINIST_DIR}/dimension_reduction_config.yaml",
+        f"{DIRPATH.OPTINIST_DIR}/config/dimension_reduction_config.yaml",
         f"{DIRPATH.ROOT_DIR}/config.yaml",
     )
     snakemake_execute(unique_id, smk_param)

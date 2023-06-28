@@ -22,7 +22,7 @@ def test_basic_neural_analysis():
     )
 
     shutil.copyfile(
-        f"{DIRPATH.OPTINIST_DIR}/basic_neural_analysis_config.yaml",
+        f"{DIRPATH.OPTINIST_DIR}/config/basic_neural_analysis_config.yaml",
         f"{DIRPATH.ROOT_DIR}/config.yaml",
     )
     snakemake_execute(unique_id, smk_param)

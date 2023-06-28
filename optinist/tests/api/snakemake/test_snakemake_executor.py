@@ -22,7 +22,7 @@ smk_param = SmkParam(
 )
 
 shutil.copyfile(
-    f"{DIRPATH.OPTINIST_DIR}/config.yaml",
+    f"{DIRPATH.OPTINIST_DIR}/config/config.yaml",
     f"{DIRPATH.ROOT_DIR}/config.yaml",
 )
 

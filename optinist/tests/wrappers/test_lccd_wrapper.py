@@ -16,7 +16,7 @@ def test_lccd_cell_detection():
         lock=False,
     )
     shutil.copyfile(
-        f"{DIRPATH.OPTINIST_DIR}/lccd_config.yaml",
+        f"{DIRPATH.OPTINIST_DIR}/config/lccd_config.yaml",
         f"{DIRPATH.ROOT_DIR}/config.yaml",
     )
     snakemake_execute(unique_id, smk_param)

@@ -17,7 +17,7 @@ def test_glm():
     )
 
     shutil.copyfile(
-        f"{DIRPATH.OPTINIST_DIR}/neural_decoding_config.yaml",
+        f"{DIRPATH.OPTINIST_DIR}/config/neural_decoding_config.yaml",
         f"{DIRPATH.ROOT_DIR}/config.yaml",
     )
     snakemake_execute(unique_id, smk_param)

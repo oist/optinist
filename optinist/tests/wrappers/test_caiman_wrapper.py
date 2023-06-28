@@ -17,7 +17,7 @@ def test_caiman_mc_cnmf():
     )
 
     shutil.copyfile(
-        f"{DIRPATH.OPTINIST_DIR}/caiman_config.yaml",
+        f"{DIRPATH.OPTINIST_DIR}/config/caiman_config.yaml",
         f"{DIRPATH.ROOT_DIR}/config.yaml",
     )
     snakemake_execute(unique_id, smk_param)

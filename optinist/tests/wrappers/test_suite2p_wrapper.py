@@ -19,7 +19,7 @@ def test_suite2p():
         lock=False,
     )
     shutil.copyfile(
-        f"{DIRPATH.OPTINIST_DIR}/suite2p_config.yaml",
+        f"{DIRPATH.OPTINIST_DIR}/config/suite2p_config.yaml",
         f"{DIRPATH.ROOT_DIR}/config.yaml",
     )
     snakemake_execute(unique_id, smk_param)
