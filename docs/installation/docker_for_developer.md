@@ -24,18 +24,13 @@ git clone https://github.com/oist/optinist.git
 cd ./optinist
 ```
 
-### Build docker image
-
-```
-docker build --no-cache -t optinist-dev -f Dockerfile .
-```
-
 ### Start docker container
 
 ```
-docker run -it --shm-size=2G --name optinist_dev_container -d -p 8000:8000 --restart=unless-stopped optinist-dev
-
+docker compose -f docker-compose.dev.yml up
 ```
+
+- add `-d` option to make container run in background
 
 <!--
 ## 2. Create virtualenv
@@ -45,8 +40,13 @@ Under maintenance...
 
 ## 2. Access to backend
 
-- Launch browser, and go to http://localhost:8000
+- Launch browser, and go to http://localhost:3000
+- Your local code change will be applied on save.
 
-It opens correctly!
+```{eval-rst}
+.. note::
+    dev container uses port 3000,
+    while production docker image uses 8000.
+```
 
 Done!

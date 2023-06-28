@@ -4,5 +4,5 @@ RUN mkdir /react-app
 WORKDIR /react-app
 
 COPY . ./
-ENV GENERATE_SOURCEMAP false 
+ENV GENERATE_SOURCEMAP false
 RUN yarn install

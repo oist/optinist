@@ -1,32 +1,32 @@
 .PHONY: test_run
 test_run:
-	docker-compose -f docker-compose.yml down --rmi all --volumes --remove-orphans
-	docker-compose -f docker-compose.yml rm -f
-	docker-compose -f docker-compose.yml build test_studio
-	docker-compose -f docker-compose.yml build test_studio_frontend
-	docker-compose -f docker-compose.yml run test_studio
-	docker-compose -f docker-compose.yml run test_studio_frontend
+	docker-compose -f docker-compose.test.yml down --rmi all --volumes --remove-orphans
+	docker-compose -f docker-compose.test.yml rm -f
+	docker-compose -f docker-compose.test.yml build test_studio
+	docker-compose -f docker-compose.test.yml build test_studio_frontend
+	docker-compose -f docker-compose.test.yml run test_studio
+	docker-compose -f docker-compose.test.yml run test_studio_frontend
 
 .PHONY: test_python
 test_python:
-	docker-compose -f docker-compose.yml down --rmi all --volumes --remove-orphans
-	docker-compose -f docker-compose.yml rm -f
-	docker-compose -f docker-compose.yml build test_studio
-	docker-compose -f docker-compose.yml run test_studio
+	docker-compose -f docker-compose.test.yml down --rmi all --volumes --remove-orphans
+	docker-compose -f docker-compose.test.yml rm -f
+	docker-compose -f docker-compose.test.yml build test_studio
+	docker-compose -f docker-compose.test.yml run test_studio
 
 .PHONY: test_frontend
 test_frontend:
-	docker-compose -f docker-compose.yml down --rmi all --volumes --remove-orphans
-	docker-compose -f docker-compose.yml rm -f
-	docker-compose -f docker-compose.yml build test_studio_frontend
-	docker-compose -f docker-compose.yml run test_studio_frontend
+	docker-compose -f docker-compose.test.yml down --rmi all --volumes --remove-orphans
+	docker-compose -f docker-compose.test.yml rm -f
+	docker-compose -f docker-compose.test.yml build test_studio_frontend
+	docker-compose -f docker-compose.test.yml run test_studio_frontend
 
 .PHONY: build_frontend
 build_frontend:
-	docker-compose -f docker-compose.yml down --rmi all --volumes --remove-orphans
-	docker-compose -f docker-compose.yml rm -f
-	docker-compose -f docker-compose.yml build build_studio_frontend
-	docker-compose -f docker-compose.yml run build_studio_frontend
+	docker-compose -f docker-compose.test.yml down --rmi all --volumes --remove-orphans
+	docker-compose -f docker-compose.test.yml rm -f
+	docker-compose -f docker-compose.test.yml build build_studio_frontend
+	docker-compose -f docker-compose.test.yml run build_studio_frontend
 
 .PHONY: docs
 docs:

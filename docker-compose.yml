@@ -1,36 +1,14 @@
-version: "3.8"
+version: "3"
+
 services:
-  test_studio:
-    image: test_studio
-    container_name: test_studio
+  studio:
     build:
       context: .
-      dockerfile: Dockerfile-test
+      dockerfile: Dockerfile
+    working_dir: /app
+    ports:
+      - "8000:8000"
+    command: python main.py --host 0.0.0.0 --port 8000
     environment:
-      PYTHONPATH: .
+      PYTHONPATH: /app/
       TZ: Asia/Tokyo
-    volumes:
-      - ./studio:/app/studio
-      - ./conda/yaml:/app/conda/yaml
-      - ./studio/test_data:/tmp/studio
-
-  test_studio_frontend:
-    image: test_studio_frontend
-    container_name: test_studio_frontend
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile-test
-    environment:
-      TZ: Asia/Tokyo
-    command: yarn test:ci
-
-  build_studio_frontend:
-    image: build_studio_frontend
-    container_name: build_studio_frontend
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile-build
-    environment:
-      TZ: Asia/Tokyo
-    volumes:
-      - ./frontend/build:/app/build:cached
