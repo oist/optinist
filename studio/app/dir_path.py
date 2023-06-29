@@ -21,16 +21,17 @@ class DIRPATH:
 
     ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
     STUDIO_DIR = os.path.dirname(os.path.dirname(__file__))
+    APP_DIR = os.path.dirname(__file__)
 
     CONDAENV_DIR = (
         f"{os.path.dirname(os.path.dirname(os.path.dirname(__file__)))}/conda"
     )
 
-    SNAKEMAKE_FILEPATH = f"{STUDIO_DIR}/Snakefile"
+    SNAKEMAKE_FILEPATH = f"{APP_DIR}/Snakefile"
     EXPERIMENT_YML = "experiment.yaml"
     SNAKEMAKE_CONFIG_YML = "config.yaml"
 
 
 class CORE_PARAM_PATH(Enum):
-    nwb = f"{DIRPATH.STUDIO_DIR}/app/optinist/core/nwb/nwb.yaml"
-    snakemake = f"{DIRPATH.STUDIO_DIR}/app/common/core/snakemake/snakemake.yaml"
+    nwb = f"{DIRPATH.APP_DIR}/optinist/core/nwb/nwb.yaml"
+    snakemake = f"{DIRPATH.APP_DIR}/common/core/snakemake/snakemake.yaml"

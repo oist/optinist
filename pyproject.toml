@@ -80,7 +80,7 @@ zip-safe = false
 py-modules = ["Snakefile"]
 
 [tool.setuptools.packages.find]
-exclude = ["studio/tests*"]
+exclude = ["studio.tests.*"]
 
 [tool.setuptools.package-data]
 frontend = [
@@ -91,10 +91,10 @@ frontend = [
   "build/static/media/*",
 ]
 studio = [
-  "core/nwb/nwb.yaml",
-  "core/snakemake/snakemake.yaml",
-  "wrappers/**/*.yaml",
-  "Snakefile",
+  "app/optinist/core/nwb/nwb.yaml",
+  "app/common/core/snakemake/snakemake.yaml",
+  "app/*/wrappers/**/*.yaml",
+  "app/Snakefile",
 ]
 
 [tool.isort]

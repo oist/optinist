@@ -11,7 +11,7 @@ def find_filepath(name, category) -> Optional[str]:
 
     filepaths = glob(
         join_filepath(
-            [DIRPATH.STUDIO_DIR, "app", "*", "wrappers", "**", category, f"{name}.yaml"]
+            [DIRPATH.APP_DIR, "*", "wrappers", "**", category, f"{name}.yaml"]
         ),
         recursive=True,
     )
@@ -26,4 +26,4 @@ def find_param_filepath(name: str):
 
 
 def find_condaenv_filepath(name: str):
-    return find_filepath(name, "env")
+    return find_filepath(name, "conda")
