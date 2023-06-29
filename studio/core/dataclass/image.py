@@ -4,9 +4,9 @@ import imageio
 import numpy as np
 import tifffile
 
+from studio.config.dir_path import DIRPATH
 from studio.core.dataclass.base import BaseData
 from studio.core.dataclass.utils import create_images_list
-from studio.core.dir_path import DIRPATH
 from studio.core.utils.filepath_creater import create_directory, join_filepath
 from studio.core.utils.json_writer import JsonWriter
 from studio.core.workflow.workflow import OutputPath, OutputType

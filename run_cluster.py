@@ -4,7 +4,7 @@ import shutil
 
 from snakemake import snakemake
 
-from studio.core.dir_path import DIRPATH
+from studio.config.dir_path import DIRPATH
 from studio.core.utils.filepath_creater import join_filepath
 
 

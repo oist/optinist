@@ -3,7 +3,7 @@ from dataclasses import asdict
 from datetime import datetime
 from typing import Dict
 
-from studio.core.dir_path import DIRPATH
+from studio.config.dir_path import DIRPATH
 from studio.core.experiment.experiment import ExptConfig, ExptFunction
 from studio.core.experiment.experiment_builder import ExptConfigBuilder
 from studio.core.experiment.experiment_reader import ExptConfigReader

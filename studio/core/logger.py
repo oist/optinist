@@ -2,7 +2,7 @@ import logging
 import os
 from typing import Dict
 
-from studio.core.dir_path import DIRPATH
+from studio.config.dir_path import DIRPATH
 from studio.core.utils.filepath_creater import create_directory, join_filepath
 
 

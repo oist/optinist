@@ -3,7 +3,7 @@ from typing import List
 import h5py
 from fastapi import APIRouter
 
-from studio.core.dir_path import DIRPATH
+from studio.config.dir_path import DIRPATH
 from studio.core.utils.filepath_creater import join_filepath
 from studio.schemas.hdf5 import HDF5Node
 

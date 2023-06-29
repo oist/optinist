@@ -1,6 +1,6 @@
 import os
 
-from studio.core.dir_path import DIRPATH
+from studio.config.dir_path import DIRPATH
 from studio.core.utils.pickle_handler import PickleReader, PickleWriter
 
 filepath = f"{DIRPATH.DATA_DIR}/output/0123/func2/func2.pkl"

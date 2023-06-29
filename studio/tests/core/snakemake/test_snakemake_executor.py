@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from studio.core.dir_path import DIRPATH
+from studio.config.dir_path import DIRPATH
 from studio.core.snakemake.smk import ForceRun, SmkParam
 from studio.core.snakemake.snakemake_executor import (
     delete_dependencies,

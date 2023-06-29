@@ -1,6 +1,6 @@
 import os
 
-from studio.core.dir_path import DIRPATH
+from studio.config.dir_path import DIRPATH
 from studio.core.utils.config_handler import ConfigReader, ConfigWriter
 from studio.core.utils.filepath_creater import join_filepath
 from studio.core.utils.filepath_finder import find_param_filepath

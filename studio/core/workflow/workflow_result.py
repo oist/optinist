@@ -3,8 +3,8 @@ from dataclasses import asdict
 from glob import glob
 from typing import Dict
 
+from studio.config.dir_path import DIRPATH
 from studio.core.dataclass import BaseData
-from studio.core.dir_path import DIRPATH
 from studio.core.experiment.experiment_reader import ExptConfigReader
 from studio.core.utils.config_handler import ConfigWriter
 from studio.core.utils.file_reader import Reader

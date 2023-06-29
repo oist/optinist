@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from studio.core.dir_path import DIRPATH
+from studio.config.dir_path import DIRPATH
 from studio.routers.hdf5 import HDF5Getter, router
 from studio.schemas.hdf5 import HDF5Node
 

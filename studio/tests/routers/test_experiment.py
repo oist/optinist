@@ -3,7 +3,7 @@ import shutil
 
 from fastapi.testclient import TestClient
 
-from studio.core.dir_path import DIRPATH
+from studio.config.dir_path import DIRPATH
 from studio.core.utils.filepath_creater import join_filepath
 from studio.routers.experiment import router
 

@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.cors import CORSMiddleware
 
-from studio.core.dir_path import DIRPATH
+from studio.config.dir_path import DIRPATH
 from studio.routers import algolist, experiment, files, hdf5, outputs, params, run
 
 app = FastAPI(docs_url="/docs", openapi_url="/openapi")

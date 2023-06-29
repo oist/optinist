@@ -7,8 +7,8 @@ from glob import glob
 from fastapi import HTTPException, status
 from snakemake import snakemake
 
+from studio.config.dir_path import DIRPATH
 from studio.core.dataclass.base import BaseData
-from studio.core.dir_path import DIRPATH
 from studio.core.nwb.nwb_creater import overwrite_nwb
 from studio.core.rules.runner import Runner
 from studio.core.utils.config_handler import ConfigReader, ConfigWriter

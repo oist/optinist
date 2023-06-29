@@ -9,7 +9,7 @@ from const import ROOT_DIRPATH
 
 sys.path.append(ROOT_DIRPATH)
 
-from studio.core.dir_path import DIRPATH
+from studio.config.dir_path import DIRPATH
 from studio.core.rules.runner import Runner
 from studio.core.snakemake.snakemake_reader import RuleConfigReader
 from studio.core.utils.filepath_creater import join_filepath

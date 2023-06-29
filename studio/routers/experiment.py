@@ -5,7 +5,7 @@ from typing import Dict
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
-from studio.core.dir_path import DIRPATH
+from studio.config.dir_path import DIRPATH
 from studio.core.experiment.experiment import ExptConfig, ExptImportData
 from studio.core.experiment.experiment_reader import ExptConfigReader
 from studio.core.utils.filepath_creater import join_filepath

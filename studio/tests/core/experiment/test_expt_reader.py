@@ -1,4 +1,4 @@
-from studio.core.dir_path import DIRPATH
+from studio.config.dir_path import DIRPATH
 from studio.core.experiment.experiment import ExptConfig, ExptFunction
 from studio.core.experiment.experiment_reader import ExptConfigReader
 from studio.core.workflow.workflow import Edge, Node, NodeData, NodePosition, Style

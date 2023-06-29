@@ -5,8 +5,8 @@ from typing import Optional
 import pandas as pd
 from fastapi import APIRouter
 
-from studio.core.const import ACCEPT_TIFF_EXT
-from studio.core.dir_path import DIRPATH
+from studio.config.const import ACCEPT_TIFF_EXT
+from studio.config.dir_path import DIRPATH
 from studio.core.edit_ROI import ACTION, EditROI
 from studio.core.utils.file_reader import JsonReader, Reader
 from studio.core.utils.filepath_creater import create_directory, join_filepath

@@ -1,7 +1,7 @@
 import os
 import shutil
 
-from studio.core.dir_path import DIRPATH
+from studio.config.dir_path import DIRPATH
 from studio.core.workflow.workflow import Message
 from studio.core.workflow.workflow_result import NodeResult, WorkflowResult
 

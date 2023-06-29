@@ -2,7 +2,7 @@ import os
 from glob import glob
 from typing import Optional
 
-from studio.core.dir_path import DIRPATH
+from studio.config.dir_path import DIRPATH
 from studio.core.utils.filepath_creater import join_filepath
 
 

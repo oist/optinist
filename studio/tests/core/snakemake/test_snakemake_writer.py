@@ -1,6 +1,6 @@
 import os
 
-from studio.core.dir_path import DIRPATH
+from studio.config.dir_path import DIRPATH
 from studio.core.snakemake.snakemake_writer import SmkConfigWriter
 
 unique_id = "smk_test"

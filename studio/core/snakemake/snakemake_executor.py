@@ -4,7 +4,7 @@ from typing import Dict
 
 from snakemake import snakemake
 
-from studio.core.dir_path import DIRPATH
+from studio.config.dir_path import DIRPATH
 from studio.core.logger import Logger
 from studio.core.snakemake.smk import SmkParam
 from studio.core.utils.filepath_creater import get_pickle_file, join_filepath
