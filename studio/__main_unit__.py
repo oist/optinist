@@ -7,16 +7,32 @@ from fastapi.templating import Jinja2Templates
 from starlette.middleware.cors import CORSMiddleware
 
 from studio.config.dir_path import DIRPATH
-from studio.routers import algolist, experiment, files, hdf5, outputs, params, run
+from studio.routers import (
+    algolist,
+    experiment,
+    files,
+    hdf5,
+    nwb,
+    outputs,
+    params,
+    roi,
+    run,
+)
 
 app = FastAPI(docs_url="/docs", openapi_url="/openapi")
+
+# common routers
 app.include_router(algolist.router)
 app.include_router(files.router)
 app.include_router(outputs.router)
 app.include_router(params.router)
 app.include_router(run.router)
-app.include_router(hdf5.router)
 app.include_router(experiment.router)
+
+# optinist routers
+app.include_router(hdf5.router)
+app.include_router(nwb.router)
+app.include_router(roi.router)
 
 app.add_middleware(
     CORSMiddleware,

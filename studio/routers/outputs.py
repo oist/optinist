@@ -7,17 +7,10 @@ from fastapi import APIRouter
 
 from studio.config.const import ACCEPT_TIFF_EXT
 from studio.config.dir_path import DIRPATH
-from studio.core.edit_ROI import ACTION, EditROI
 from studio.core.utils.file_reader import JsonReader, Reader
 from studio.core.utils.filepath_creater import create_directory, join_filepath
 from studio.core.utils.json_writer import JsonWriter, save_tiff2json
-from studio.schemas.outputs import (
-    EditRoiSuccess,
-    JsonTimeSeriesData,
-    OutputData,
-    RoiList,
-    RoiPos,
-)
+from studio.schemas.outputs import JsonTimeSeriesData, OutputData
 
 router = APIRouter()
 
@@ -159,36 +152,6 @@ async def get_image(
         json_filepath = filepath
 
     return JsonReader.read_as_output(json_filepath)
-
-
-@router.post(
-    "/outputs/image/{filepath:path}/add_roi",
-    response_model=EditRoiSuccess,
-    tags=["outputs"],
-)
-async def add_roi(filepath: str, pos: RoiPos):
-    EditROI(action=ACTION.ADD, filepath=filepath, params=pos.dict()).excute()
-    return EditRoiSuccess(max_index=0)
-
-
-@router.post(
-    "/outputs/image/{filepath:path}/merge_roi",
-    response_model=EditRoiSuccess,
-    tags=["outputs"],
-)
-async def merge_roi(filepath: str, roi_list: RoiList):
-    EditROI(action=ACTION.MERGE, filepath=filepath, params=roi_list.dict()).excute()
-    return EditRoiSuccess(max_index=0)
-
-
-@router.post(
-    "/outputs/image/{filepath:path}/delete_roi",
-    response_model=EditRoiSuccess,
-    tags=["outputs"],
-)
-async def delete_roi(filepath: str, roi_list: RoiList):
-    EditROI(action=ACTION.DELETE, filepath=filepath, params=roi_list.dict()).excute()
-    return EditRoiSuccess(max_index=0)
 
 
 @router.get("/outputs/csv/{filepath:path}", response_model=OutputData, tags=["outputs"])
