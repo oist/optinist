@@ -1,4 +1,5 @@
 import os
+from enum import Enum
 
 _DEFAULT_DIR = "/tmp/studio"
 _ENV_DIR = os.environ.get("OPTINIST_DIR")
@@ -28,3 +29,8 @@ class DIRPATH:
     SNAKEMAKE_FILEPATH = f"{STUDIO_DIR}/Snakefile"
     EXPERIMENT_YML = "experiment.yaml"
     SNAKEMAKE_CONFIG_YML = "config.yaml"
+
+
+class CORE_PARAM_PATH(Enum):
+    nwb = f"{DIRPATH.STUDIO_DIR}/app/optinist/core/nwb/nwb.yaml"
+    snakemake = f"{DIRPATH.STUDIO_DIR}/app/common/core/snakemake/snakemake.yaml"

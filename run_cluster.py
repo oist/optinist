@@ -4,8 +4,8 @@ import shutil
 
 from snakemake import snakemake
 
+from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.config.dir_path import DIRPATH
-from studio.core.utils.filepath_creater import join_filepath
 
 
 def main(args):
