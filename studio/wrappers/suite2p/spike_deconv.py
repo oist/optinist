@@ -1,5 +1,5 @@
-from studio.core.dataclass import FluoData, Suite2pData
 from studio.core.nwb.nwb import NWBDATASET
+from studio.dataclass import FluoData, Suite2pData
 
 
 def suite2p_spike_deconv(

@@ -1,8 +1,8 @@
 import os
 
-from studio.core.dataclass import FluoData, LccdData, RoiData
 from studio.core.edit_ROI.utils import create_mask
 from studio.core.edit_ROI.wrappers.lccd_edit_roi.utils import set_nwbfile
+from studio.dataclass import FluoData, LccdData, RoiData
 
 
 def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):

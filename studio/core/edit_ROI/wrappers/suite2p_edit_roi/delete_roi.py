@@ -2,8 +2,8 @@ import os
 
 import numpy as np
 
-from studio.core.dataclass import RoiData, Suite2pData
 from studio.core.edit_ROI.wrappers.suite2p_edit_roi.utils import set_nwbfile
+from studio.dataclass import RoiData, Suite2pData
 
 
 def excute_delete_roi(node_dirpath, ids):

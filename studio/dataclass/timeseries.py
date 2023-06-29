@@ -1,10 +1,10 @@
 import numpy as np
 import pandas as pd
 
-from studio.core.dataclass.base import BaseData
 from studio.core.utils.filepath_creater import create_directory, join_filepath
 from studio.core.utils.json_writer import JsonWriter
 from studio.core.workflow.workflow import OutputPath, OutputType
+from studio.dataclass.base import BaseData
 
 
 class TimeSeriesData(BaseData):

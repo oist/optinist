@@ -1,4 +1,4 @@
-from studio.core.dataclass.timeseries import TimeSeriesData
+from studio.dataclass.timeseries import TimeSeriesData
 
 
 class BehaviorData(TimeSeriesData):

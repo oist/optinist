@@ -2,12 +2,12 @@ import os
 
 import numpy as np
 
-from studio.core.dataclass import FluoData, RoiData, Suite2pData
 from studio.core.edit_ROI.wrappers.suite2p_edit_roi.utils import (
     get_stat0_add_roi,
     masks_and_traces,
     set_nwbfile,
 )
+from studio.dataclass import FluoData, RoiData, Suite2pData
 
 
 def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):

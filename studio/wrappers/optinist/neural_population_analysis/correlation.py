@@ -1,5 +1,5 @@
-from studio.core.dataclass import FluoData, HeatMapData, IscellData
 from studio.core.nwb.nwb import NWBDATASET
+from studio.dataclass import FluoData, HeatMapData, IscellData
 
 
 def correlation(

@@ -1,6 +1,6 @@
-from studio.core.dataclass.base import BaseData
 from studio.core.utils.filepath_creater import join_filepath
 from studio.core.workflow.workflow import OutputPath, OutputType
+from studio.dataclass.base import BaseData
 
 
 class HTMLData(BaseData):

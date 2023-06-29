@@ -1,7 +1,7 @@
 import os
 
-from studio.core.dataclass import ImageData, Suite2pData
 from studio.core.utils.filepath_creater import create_directory, join_filepath
+from studio.dataclass import ImageData, Suite2pData
 
 
 def suite2p_file_convert(

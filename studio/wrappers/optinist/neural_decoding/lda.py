@@ -1,5 +1,5 @@
-from studio.core.dataclass import BarData, BehaviorData, FluoData, IscellData
 from studio.core.nwb.nwb import NWBDATASET
+from studio.dataclass import BarData, BehaviorData, FluoData, IscellData
 from studio.wrappers.optinist.utils import standard_norm
 
 

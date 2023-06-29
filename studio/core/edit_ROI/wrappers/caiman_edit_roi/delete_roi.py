@@ -1,5 +1,5 @@
-from studio.core.dataclass import CaimanCnmfData, RoiData
 from studio.core.edit_ROI.wrappers.caiman_edit_roi.utils import set_nwbfile
+from studio.dataclass import CaimanCnmfData, RoiData
 
 
 def excute_delete_roi(node_dirpath, ids):

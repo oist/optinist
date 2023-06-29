@@ -1,5 +1,5 @@
-from studio.core.dataclass import CaimanCnmfData, FluoData, RoiData
 from studio.core.edit_ROI.wrappers.caiman_edit_roi.utils import set_nwbfile
+from studio.dataclass import CaimanCnmfData, FluoData, RoiData
 
 
 def execute_merge_roi(node_dirpath: str, ids: list):

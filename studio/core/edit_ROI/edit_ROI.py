@@ -8,13 +8,13 @@ from fastapi import HTTPException, status
 from snakemake import snakemake
 
 from studio.config.dir_path import DIRPATH
-from studio.core.dataclass.base import BaseData
 from studio.core.nwb.nwb_creater import overwrite_nwb
 from studio.core.rules.runner import Runner
 from studio.core.utils.config_handler import ConfigReader, ConfigWriter
 from studio.core.utils.filepath_creater import join_filepath
 from studio.core.utils.filepath_finder import find_condaenv_filepath
 from studio.core.utils.pickle_handler import PickleReader, PickleWriter
+from studio.dataclass.base import BaseData
 
 
 @dataclass

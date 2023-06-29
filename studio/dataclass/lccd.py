@@ -2,7 +2,7 @@ import os
 
 import numpy as np
 
-from studio.core.dataclass.base import BaseData
+from studio.dataclass.base import BaseData
 
 
 class LccdData(BaseData):

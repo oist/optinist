@@ -1,7 +1,7 @@
 import os
 
-from studio.core.dataclass import FluoData, LccdData, RoiData
 from studio.core.edit_ROI.wrappers.lccd_edit_roi.utils import set_nwbfile
+from studio.dataclass import FluoData, LccdData, RoiData
 
 
 def excute_delete_roi(node_dirpath, ids):

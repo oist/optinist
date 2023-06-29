@@ -1,5 +1,5 @@
-from studio.core.dataclass import FluoData, ImageData, IscellData, RoiData, Suite2pData
 from studio.core.nwb.nwb import NWBDATASET
+from studio.dataclass import FluoData, ImageData, IscellData, RoiData, Suite2pData
 
 
 def suite2p_roi(
