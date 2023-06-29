@@ -7,8 +7,8 @@ from fastapi.templating import Jinja2Templates
 from starlette.middleware.cors import CORSMiddleware
 
 from studio.app.common.routers import algolist, experiment, files, outputs, params, run
+from studio.app.dir_path import DIRPATH
 from studio.app.optinist.routers import hdf5, nwb, roi
-from studio.config.dir_path import DIRPATH
 
 app = FastAPI(docs_url="/docs", openapi_url="/openapi")
 

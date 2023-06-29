@@ -12,8 +12,8 @@ from studio.app.common.core.utils.filepath_creater import (
 )
 from studio.app.common.core.utils.json_writer import JsonWriter, save_tiff2json
 from studio.app.common.schemas.outputs import JsonTimeSeriesData, OutputData
-from studio.config.const import ACCEPT_TIFF_EXT
-from studio.config.dir_path import DIRPATH
+from studio.app.const import ACCEPT_TIFF_EXT
+from studio.app.dir_path import DIRPATH
 
 router = APIRouter()
 

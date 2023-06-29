@@ -7,7 +7,7 @@ from studio.app.common.core.workflow.workflow import (
     NodePosition,
     Style,
 )
-from studio.config.dir_path import DIRPATH
+from studio.app.dir_path import DIRPATH
 
 expt_filepath = f"{DIRPATH.DATA_DIR}/output_test/0123/experiment.yaml"
 

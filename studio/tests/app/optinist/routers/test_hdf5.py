@@ -1,8 +1,8 @@
 from fastapi.testclient import TestClient
 
+from studio.app.dir_path import DIRPATH
 from studio.app.optinist.routers.hdf5 import HDF5Getter, router
 from studio.app.optinist.schemas.hdf5 import HDF5Node
-from studio.config.dir_path import DIRPATH
 
 client = TestClient(router)
 

@@ -12,7 +12,7 @@ sys.path.append(ROOT_DIRPATH)
 from studio.app.common.core.rules.file_writer import FileWriter
 from studio.app.common.core.snakemake.snakemake_reader import RuleConfigReader
 from studio.app.common.core.utils.pickle_handler import PickleWriter
-from studio.config.const import FILETYPE
+from studio.app.const import FILETYPE
 
 if __name__ == "__main__":
     last_output = snakemake.config["last_output"]

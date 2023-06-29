@@ -10,7 +10,7 @@ from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.utils.pickle_handler import PickleReader
 from studio.app.common.core.workflow.workflow import Message, OutputPath
 from studio.app.common.dataclass import BaseData
-from studio.config.dir_path import DIRPATH
+from studio.app.dir_path import DIRPATH
 
 
 class WorkflowResult:

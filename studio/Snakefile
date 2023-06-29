@@ -1,8 +1,8 @@
 from studio.app.common.core.snakemake.smk_utils import SmkUtils
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.optinist.core.edit_ROI import EditRoiUtils, ACTION
-from studio.config.const import FILETYPE
-from studio.config.dir_path import DIRPATH
+from studio.app.const import FILETYPE
+from studio.app.dir_path import DIRPATH
 
 configfile: join_filepath([DIRPATH.STUDIO_DIR, 'config.yaml'])
 

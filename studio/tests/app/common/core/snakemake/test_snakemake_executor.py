@@ -7,7 +7,7 @@ from studio.app.common.core.snakemake.snakemake_executor import (
     snakemake_execute,
 )
 from studio.app.common.core.workflow.workflow import Edge, Node, NodeData
-from studio.config.dir_path import DIRPATH
+from studio.app.dir_path import DIRPATH
 
 tiff_filename = "test.tif"
 

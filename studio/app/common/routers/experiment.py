@@ -9,7 +9,7 @@ from studio.app.common.core.experiment.experiment import ExptConfig, ExptImportD
 from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.schemas.experiment import DeleteItem, RenameItem
-from studio.config.dir_path import DIRPATH
+from studio.app.dir_path import DIRPATH
 
 router = APIRouter()
 

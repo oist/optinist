@@ -3,7 +3,7 @@ from glob import glob
 from typing import Optional
 
 from studio.app.common.core.utils.filepath_creater import join_filepath
-from studio.config.dir_path import CORE_PARAM_PATH, DIRPATH
+from studio.app.dir_path import CORE_PARAM_PATH, DIRPATH
 
 
 def find_filepath(name, category) -> Optional[str]:

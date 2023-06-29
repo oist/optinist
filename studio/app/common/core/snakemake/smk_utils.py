@@ -2,9 +2,9 @@ import os
 
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.utils.filepath_finder import find_condaenv_filepath
+from studio.app.const import FILETYPE
+from studio.app.dir_path import DIRPATH
 from studio.app.wrappers import wrapper_dict
-from studio.config.const import FILETYPE
-from studio.config.dir_path import DIRPATH
 
 
 class SmkUtils:

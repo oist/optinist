@@ -2,8 +2,8 @@ import h5py
 
 from studio.app.common.core.snakemake.smk import Rule
 from studio.app.common.dataclass import CsvData, ImageData, TimeSeriesData
+from studio.app.const import FILETYPE
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
-from studio.config.const import FILETYPE
 
 
 class FileWriter:

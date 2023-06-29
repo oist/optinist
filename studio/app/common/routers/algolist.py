@@ -4,8 +4,8 @@ from typing import Dict, List, ValuesView
 from fastapi import APIRouter
 
 from studio.app.common.schemas.algolist import Algo, AlgoList, Arg, Return
+from studio.app.const import NOT_DISPLAY_ARGS_LIST
 from studio.app.wrappers import wrapper_dict
-from studio.config.const import NOT_DISPLAY_ARGS_LIST
 
 router = APIRouter()
 

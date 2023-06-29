@@ -1,7 +1,7 @@
 import os
 
 from studio.app.common.core.snakemake.snakemake_writer import SmkConfigWriter
-from studio.config.dir_path import DIRPATH
+from studio.app.dir_path import DIRPATH
 
 unique_id = "smk_test"
 output_fileapth = f"{DIRPATH.DATA_DIR}/output/{unique_id}/config.yaml"

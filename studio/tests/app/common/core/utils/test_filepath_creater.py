@@ -1,6 +1,6 @@
 import os
 
-from studio.config.dir_path import DIRPATH
+from studio.app.dir_path import DIRPATH
 
 filepath = f"{DIRPATH.DATA_DIR}/output/test.txt"
 

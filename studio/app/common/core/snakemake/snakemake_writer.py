@@ -1,6 +1,6 @@
 from studio.app.common.core.utils.config_handler import ConfigWriter
 from studio.app.common.core.utils.filepath_creater import join_filepath
-from studio.config.dir_path import DIRPATH
+from studio.app.dir_path import DIRPATH
 
 
 class SmkConfigWriter:

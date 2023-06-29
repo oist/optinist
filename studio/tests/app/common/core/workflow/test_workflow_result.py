@@ -3,7 +3,7 @@ import shutil
 
 from studio.app.common.core.workflow.workflow import Message
 from studio.app.common.core.workflow.workflow_result import NodeResult, WorkflowResult
-from studio.config.dir_path import DIRPATH
+from studio.app.dir_path import DIRPATH
 
 unique_id = "result_test"
 node_id_list = ["func1", "func2"]

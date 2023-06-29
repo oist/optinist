@@ -10,13 +10,8 @@ from studio.app.common.core.utils.filepath_creater import (
     join_filepath,
 )
 from studio.app.common.schemas.files import FilePath, TreeNode
-from studio.config.const import (
-    ACCEPT_CSV_EXT,
-    ACCEPT_HDF5_EXT,
-    ACCEPT_TIFF_EXT,
-    FILETYPE,
-)
-from studio.config.dir_path import DIRPATH
+from studio.app.const import ACCEPT_CSV_EXT, ACCEPT_HDF5_EXT, ACCEPT_TIFF_EXT, FILETYPE
+from studio.app.dir_path import DIRPATH
 
 router = APIRouter()
 

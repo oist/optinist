@@ -13,7 +13,7 @@ sys.path.append(ROOT_DIRPATH)
 from studio.app.common.core.rules.runner import Runner
 from studio.app.common.core.snakemake.snakemake_reader import RuleConfigReader
 from studio.app.common.core.utils.filepath_creater import join_filepath
-from studio.config.dir_path import DIRPATH
+from studio.app.dir_path import DIRPATH
 
 if __name__ == "__main__":
     last_output = [

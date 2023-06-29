@@ -4,7 +4,7 @@ import shutil
 from studio.app.common.core.experiment.experiment import ExptConfig, ExptFunction
 from studio.app.common.core.experiment.experiment_writer import ExptConfigWriter
 from studio.app.common.core.workflow.workflow import Edge, Node, NodeData, RunItem
-from studio.config.dir_path import DIRPATH
+from studio.app.dir_path import DIRPATH
 
 node_data = NodeData(label="a", param={}, path="", type="")
 

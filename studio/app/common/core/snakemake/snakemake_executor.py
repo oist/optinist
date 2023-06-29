@@ -8,7 +8,7 @@ from studio.app.common.core.logger import Logger
 from studio.app.common.core.snakemake.smk import SmkParam
 from studio.app.common.core.utils.filepath_creater import get_pickle_file, join_filepath
 from studio.app.common.core.workflow.workflow import Edge, Node
-from studio.config.dir_path import DIRPATH
+from studio.app.dir_path import DIRPATH
 
 
 def snakemake_execute(unique_id: str, params: SmkParam):

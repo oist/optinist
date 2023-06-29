@@ -6,7 +6,7 @@ from studio.app.common.core.utils.filepath_creater import (
     create_directory,
     join_filepath,
 )
-from studio.config.dir_path import DIRPATH
+from studio.app.dir_path import DIRPATH
 
 
 def get_logger(unique_id: str) -> logging.Logger:
