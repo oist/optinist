@@ -20,7 +20,7 @@ cur_num_rois = lambda: len(  # noqa: E731
 )
 
 
-def test_suit2p_add_roi():
+def test_caiman_add_roi():
     cur_roi = cur_num_rois()
     EditROI(
         action=ACTION.ADD,
@@ -36,7 +36,7 @@ def test_suit2p_add_roi():
     assert cur_num_rois() == cur_roi + 1
 
 
-def test_suit2p_merge_roi():
+def test_caiman_merge_roi():
     cur_roi = cur_num_rois()
     EditROI(
         action=ACTION.MERGE,
@@ -47,7 +47,7 @@ def test_suit2p_merge_roi():
     assert cur_num_rois() == cur_roi + 1
 
 
-def test_suit2p_delete_roi():
+def test_caiman_delete_roi():
     cur_roi = cur_num_rois()
     EditROI(
         action=ACTION.DELETE,
