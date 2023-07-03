@@ -26,7 +26,11 @@ class DirTreeGetter:
         else:
             absolute_dirpath = join_filepath([DIRPATH.INPUT_DIR, dirname])
 
-        for node_name in os.listdir(absolute_dirpath):
+        sorted_listdir = sorted(
+            os.listdir(absolute_dirpath),
+            key=lambda x: (not os.path.isdir(join_filepath([absolute_dirpath, x])), x),
+        )
+        for node_name in sorted_listdir:
             if dirname is None:
                 relative_path = node_name
             else:
