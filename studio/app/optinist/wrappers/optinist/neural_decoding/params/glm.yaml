@@ -1,0 +1,19 @@
+standard_x_mean: True
+standard_x_std: True
+
+standard_y_mean: True
+standard_y_std: True
+
+transpose_x: True
+transpose_y: False
+
+target_index: 0
+
+add_constant: False
+link: 'log'
+family: 'Gaussian'
+
+GLM:
+  offset:
+  exposure:
+  missing:

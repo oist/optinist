@@ -31,7 +31,7 @@ jobs:
       - uses: liskin/gh-problem-matcher-wrap@d8afa2cfb66dd3f982b1950429e652bc14d0d7d2
         with:
           linters: isort
-          run: isort --check --diff optinist
+          run: isort --check --diff studio
   black:
     runs-on: ubuntu-latest
     steps:

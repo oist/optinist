@@ -1,0 +1,17 @@
+standard_x_mean: True
+standard_x_std: True
+
+standard_y_mean: True
+standard_y_std: True
+
+transpose_x: True
+transpose_y: False
+
+target_index: 0
+
+CCA:
+  n_components: 2
+  scale: True
+  max_iter: 500
+  tol: 0.000001
+  copy: True

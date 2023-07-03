@@ -18,18 +18,18 @@ Below we describe an example procedure for adding a new algorithm.
 
 First, prepare the necessary directories and files for the algorithm.
 
-- {OPTINIST_SRC_DIR}/optinist/wrappers/
+- {OPTINIST_SRC_DIR}/studio/app/optinist/wrappers/
   - \_\_init__.py
-  - xxxx_wrapper/
-  - yyyy_wrapper/
+  - xxxx/
+  - yyyy/
   - ...
-  - `new_algo_wrapper/`    (*1)
+  - `new_algo/`    (*1)
       - \_\_init__.py      (*2)
       - `new_algo_func.py` (*3)
       - ...                (*4)
 
 - Explanation:
-  - (*1) The name is arbitrary, but `{algorithm name}_wrapper` is the standard.
+  - (*1) The name is arbitrary, but `{algorithm name}` is the standard.
   - (*2) Empty first.
   - (*3) Empty first.
   - (*4) Prepare other files to be added.
@@ -39,10 +39,10 @@ First, prepare the necessary directories and files for the algorithm.
 #### Import statement description
 
 - Target file
-  - {OPTINIST_SRC_DIR}/optinist/wrappers/`new_algo_wrapper`/`new_algo_func`.py
+  - {OPTINIST_SRC_DIR}/studio/app/optinist/wrappers/`new_algo`/`new_algo_func`.py
 
 ```python
-from optinist.api.dataclass.dataclass import *
+from studio.app.common.dataclass import *
 ```
 
 - Explanation:
@@ -53,7 +53,7 @@ from optinist.api.dataclass.dataclass import *
 #### Define the Input/Output of the function and implement the logic.
 
 - Target file
-  - {OPTINIST_SRC_DIR}/optinist/wrappers/`new_algo_wrapper`/`new_algo_func`.py
+  - {OPTINIST_SRC_DIR}/studio/app/optinist/wrappers/`new_algo_wrapper`/`new_algo_func`.py
 
 The function code is described below.
 
@@ -81,17 +81,16 @@ def new_algo_func(               # (*1)
 #### Definition of information to be displayed in the GUI
 
 - Target file
-  - {OPTINIST_SRC_DIR}/optinist/wrappers/`new_algo_wrapper`/\_\_init__.py
+  - {OPTINIST_SRC_DIR}/studio/app/optinist/wrappers/`new_algo`/\_\_init__.py
 
 ```python
-from optinist.wrappers.new_algo_wrapper.new_algo_func import new_algo_func
+from studio.app.optinist.wrappers.new_algo.new_algo_func import new_algo_func
 
 new_algo_wrapper_dict = {                       # (*1)
     'new_algo': {                               # (*2)
         'new_algo_func': {                      # (*3)
             'function': new_algo_func,          # (*4)
             'conda_name': 'new_algo',           # (*5)
-            'conda_yaml': 'new_algo_env.yaml',  # (*5)
         },
     }
 }
@@ -110,13 +109,13 @@ new_algo_wrapper_dict = {                       # (*1)
 Register the created algorithm to the application by adding the following settings.
 
 - Target file
-  - {OPTINIST_SRC_DIR}/optinist/wrappers/\_\_init__.py
+  - {OPTINIST_SRC_DIR}/studio/app/optinist/wrappers/\_\_init__.py
 
 ```python
-from optinist.wrappers.xxxx_wrapper import xxxx_wrapper_dict
-from optinist.wrappers.yyyy_wrapper import yyyy_wrapper_dict
+from studio.app.optinist.wrappers.xxxx import xxxx_wrapper_dict
+from studio.app.optinist.wrappers.yyyy import yyyy_wrapper_dict
 ...
-from optinist.wrappers.new_algo_wrapper import new_algo_wrapper_dict    # <-- Add
+from studio.app.optinist.wrappers.new_algo import new_algo_wrapper_dict    # <-- Add
 
 wrapper_dict = {}
 wrapper_dict.update(**xxxx_wrapper_dict)
@@ -150,7 +149,7 @@ Optinist support datatype.
 In the following example, the **new_algo_func** function takes **ImageData** and returns **FluoData**.
 
 ```python
-from optinist.api.dataclass.dataclass import *
+from studio.app.common.dataclass import *
 
 def new_algo_func(
         image_data: ImageData,
@@ -167,7 +166,7 @@ Restart the Application and place **new_algo_func** on the GUI , and you will se
 
 Function input parameters (input on GUI) can be defined in the following file.
 
-- {OPTINIST_SRC_DIR}/optinist/config/{algorithm_function_name}.yaml
+- {OPTINIST_SRC_DIR}/studio/app/optinist/wrappers/`new_algo`/params/{algorithm_function_name}.yaml
 
 - Sample:
   ```yaml

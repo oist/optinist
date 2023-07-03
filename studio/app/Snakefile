@@ -1,0 +1,42 @@
+from studio.app.common.core.snakemake.smk_utils import SmkUtils
+from studio.app.common.core.utils.filepath_creater import join_filepath
+from studio.app.optinist.core.edit_ROI import EditRoiUtils, ACTION
+from studio.app.const import FILETYPE
+from studio.app.dir_path import DIRPATH
+
+configfile: join_filepath([DIRPATH.STUDIO_DIR, 'config.yaml'])
+
+if config.get('type') == ACTION.EDIT_ROI:
+    rule edit_ROI:
+        conda:
+            EditRoiUtils.conda(config)
+        script:
+            f"{DIRPATH.APP_DIR}/optinist/core/rules/edit_ROI.py"
+else:
+    rule all:
+        input: [join_filepath([DIRPATH.OUTPUT_DIR, x]) for x in config["last_output"]]
+
+
+    for rule_name, details in config["rules"].items():
+        if details["type"] in [FILETYPE.IMAGE, FILETYPE.CSV, FILETYPE.BEHAVIOR, FILETYPE.HDF5]:
+            rule:
+                input:
+                    SmkUtils.input(details)
+                output:
+                    SmkUtils.output(details)
+                params:
+                    name = details
+                script:
+                    f"{DIRPATH.APP_DIR}/common/core/rules/data.py"
+        else:
+            rule:
+                input:
+                    SmkUtils.input(details)
+                output:
+                    SmkUtils.output(details)
+                params:
+                    name = details
+                conda:
+                    SmkUtils.conda(details)
+                script:
+                    f"{DIRPATH.APP_DIR}/common/core/rules/func.py"

@@ -1,0 +1,70 @@
+
+
+# whether standardize the data or not
+standard_x_mean: True
+standard_x_std: True
+
+transpose_x: True
+transpose_y: False
+
+target_index: 1
+
+##############################
+#  grid search  parameters
+##############################
+
+# whether grid search is performed or not
+use_grid_search: True
+
+# grids for grid search
+grid_search:
+  param_grid:
+    C: [0.001, 0.01, 0.1]
+    kernel: ['linear']
+    degree: [3]
+    gamma: ['scale']
+    coef0: [0.0]
+    shrinking: [True]
+    tol: [0.001]
+    decision_function_shape: ['ovr']
+
+  CV:
+    scoring: 'accuracy'
+    n_jobs: 1
+    refit: True
+    cv:
+    verbose: 3
+    pre_dispatch: '2*n_jobs'
+    error_score: -1000000
+    return_train_score: False
+
+
+##############################
+#  StratifiedKFold  parameters
+##############################
+CV:
+  n_splits: 5
+  shuffle: True
+  # random_state: 0
+
+##############################
+#  SVC parameters
+##############################
+
+# C= float, default=1.0
+# Regularization parameter. The strength of the regularization is inversely proportional to C. Must be strictly positive. The penalty is a squared l2 penalty.
+SVC:
+  C: 1.0
+  kernel: 'rbf'
+  degree: 3
+  gamma: 'scale'
+  coef0: 0.0
+  shrinking: True
+  probability: False
+  tol: 0.001
+  cache_size: 200
+  class_weight:
+  max_iter: -1
+  decision_function_shape: 'ovr'
+  break_ties: False
+  random_state: 0
