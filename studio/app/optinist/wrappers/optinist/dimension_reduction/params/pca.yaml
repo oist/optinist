@@ -1,0 +1,14 @@
+# whether standardize the data or not
+standard_mean: True
+standard_std: True
+
+transpose: True
+
+PCA:
+  n_components: 2
+  copy: True
+  whiten: False
+  svd_solver: 'auto'
+  tol: 0.0
+  iterated_power: 'auto'
+  # random_state: 0

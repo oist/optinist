@@ -1,36 +1,14 @@
-version: "3.8"
+version: "3"
+
 services:
-  test_optinist:
-    image: test_optinist
-    container_name: test_optinist
+  studio:
     build:
       context: .
-      dockerfile: Dockerfile-test
+      dockerfile: studio/config/docker/Dockerfile
+    working_dir: /app
+    ports:
+      - "8000:8000"
+    command: python main.py --host 0.0.0.0 --port 8000
     environment:
-      PYTHONPATH: .
+      PYTHONPATH: /app/
       TZ: Asia/Tokyo
-    volumes:
-      - ./optinist:/app/optinist
-      - ./conda/yaml:/app/conda/yaml
-      - ./optinist/test_data:/tmp/optinist
-
-  test_optinist_frontend:
-    image: test_optinist_frontend
-    container_name: test_optinist_frontend
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile-test
-    environment:
-      TZ: Asia/Tokyo
-    command: yarn test:ci
-
-  build_optinist_frontend:
-    image: build_optinist_frontend
-    container_name: build_optinist_frontend
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile-build
-    environment:
-      TZ: Asia/Tokyo
-    volumes:
-      - ./frontend/build:/app/build:cached
