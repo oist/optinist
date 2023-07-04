@@ -2,10 +2,16 @@ import copy
 import gc
 import os
 import traceback
+from dataclasses import asdict
+from datetime import datetime
 
+from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
 from studio.app.common.core.snakemake.smk import Rule
+from studio.app.common.core.utils.config_handler import ConfigWriter
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.utils.pickle_handler import PickleReader, PickleWriter
+from studio.app.const import DATE_FORMAT
+from studio.app.dir_path import DIRPATH
 from studio.app.optinist.core.nwb.nwb_creater import merge_nwbfile, save_nwb
 from studio.app.wrappers import wrapper_dict
 
@@ -24,6 +30,8 @@ class Runner:
             for key in list(input_info):
                 if key not in __rule.return_arg.values():
                     input_info.pop(key)
+
+            cls.set_func_start_timestamp(os.path.dirname(__rule.output))
 
             # output_info
             output_info = cls.execute_function(
@@ -58,6 +66,20 @@ class Runner:
                 __rule.output,
                 list(traceback.TracebackException.from_exception(e).format())[-2:],
             )
+
+    @classmethod
+    def set_func_start_timestamp(cls, output_dirpath):
+        workflow_dirpath = os.path.dirname(output_dirpath)
+        node_id = os.path.basename(output_dirpath)
+        expt_config = ExptConfigReader.read(
+            join_filepath([workflow_dirpath, DIRPATH.EXPERIMENT_YML])
+        )
+        expt_config.function[node_id].started_at = datetime.now().strftime(DATE_FORMAT)
+        ConfigWriter.write(
+            dirname=workflow_dirpath,
+            filename=DIRPATH.EXPERIMENT_YML,
+            config=asdict(expt_config),
+        )
 
     @classmethod
     def save_func_nwb(cls, save_path, name, nwbfile, output_info):

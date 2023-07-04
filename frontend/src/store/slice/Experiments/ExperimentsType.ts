@@ -25,6 +25,7 @@ export type ExperimentType = {
   functions: {
     [nodeId: string]: ExperimentFunction
   }
+  status?: EXPERIMENTS_STATUS
   name: string
   timestamp: string
   hasNWB: boolean

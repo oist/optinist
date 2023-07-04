@@ -11,18 +11,19 @@ from studio.app.common.core.workflow.workflow import Edge, Node
 from studio.app.dir_path import DIRPATH
 
 
-def snakemake_execute(unique_id: str, params: SmkParam):
+def snakemake_execute(workspace_id: str, unique_id: str, params: SmkParam):
     snakemake(
         DIRPATH.SNAKEMAKE_FILEPATH,
         forceall=params.forceall,
         cores=params.cores,
         use_conda=params.use_conda,
         workdir=f"{os.path.dirname(DIRPATH.STUDIO_DIR)}",
-        log_handler=[Logger(unique_id).smk_logger],
+        log_handler=[Logger(workspace_id, unique_id).smk_logger],
     )
 
 
 def delete_dependencies(
+    workspace_id: str,
     unique_id: str,
     smk_params: SmkParam,
     nodeDict: Dict[str, Node],
@@ -46,6 +47,7 @@ def delete_dependencies(
             [
                 DIRPATH.OUTPUT_DIR,
                 get_pickle_file(
+                    workspace_id=workspace_id,
                     unique_id=unique_id,
                     node_id=node_id,
                     algo_name=algo_name,

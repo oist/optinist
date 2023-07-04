@@ -9,8 +9,14 @@ from studio.app.common.core.workflow.workflow_params import get_typecheck_params
 
 class SmkRule:
     def __init__(
-        self, unique_id: str, node: Node, edgeDict: Dict[str, Edge], nwbfile=None
+        self,
+        workspace_id: str,
+        unique_id: str,
+        node: Node,
+        edgeDict: Dict[str, Edge],
+        nwbfile=None,
     ) -> None:
+        self._workspace_id = workspace_id
         self._unique_id = unique_id
         self._node = node
         self._edgeDict = edgeDict
@@ -19,7 +25,10 @@ class SmkRule:
         _return_name = self.get_return_name()
 
         _output_file = get_pickle_file(
-            self._unique_id, self._node.id, self._node.data.label.split(".")[0]
+            self._workspace_id,
+            self._unique_id,
+            self._node.id,
+            self._node.data.label.split(".")[0],
         )
 
         self.builder = RuleBuilder()
@@ -58,14 +67,16 @@ class SmkRule:
                     funcname = sourceNode.data.label.split(".")[0]
 
                 algo_input.append(
-                    get_pickle_file(self._unique_id, sourceNode.id, funcname)
+                    get_pickle_file(
+                        self._workspace_id, self._unique_id, sourceNode.id, funcname
+                    )
                 )
 
                 return_arg_names[return_name] = arg_name
 
         params = get_typecheck_params(self._node.data.param, self._node.data.label)
         algo_output = get_pickle_file(
-            self._unique_id, self._node.id, self._node.data.label
+            self._workspace_id, self._unique_id, self._node.id, self._node.data.label
         )
 
         return (

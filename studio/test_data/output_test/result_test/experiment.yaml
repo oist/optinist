@@ -27,15 +27,24 @@ edgeDict:
     target: suite2p_roi_m6v8o3dctg
     targetHandle: suite2p_roi_m6v8o3dctg--ops--Suite2pData
     type: buttonedge
+finished_at: '2023-07-04 14:02:55'
 function:
   func1:
+    finished_at: '2023-07-04 14:02:55'
     hasNWB: true
+    message: abc
     name: func1
+    outputPaths: null
+    started_at: null
     success: error
     unique_id: func1
   func2:
+    finished_at: null
     hasNWB: false
+    message: null
     name: func2
+    outputPaths: null
+    started_at: null
     success: error
     unique_id: func1
 hasNWB: false
@@ -107,5 +116,7 @@ nodeDict:
       padding: 0
       width: 180
     type: AlgorithmNode
-timestamp: '2022-05-15 23:02:15'
+started_at: '2022-05-15 23:02:15'
+success: error
 unique_id: 838d4234
+workspace_id: default

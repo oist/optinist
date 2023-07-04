@@ -3,16 +3,16 @@ import { EXPERIMENTS_STATUS } from './ExperimentsType'
 
 const selectExperiments = (state: RootState) => state.experiments
 
-export const selectExperimentsSatusIsUninitialized = (state: RootState) =>
+export const selectExperimentsStatusIsUninitialized = (state: RootState) =>
   selectExperiments(state).status === 'uninitialized'
 
-export const selectExperimentsSatusIsPending = (state: RootState) =>
+export const selectExperimentsStatusIsPending = (state: RootState) =>
   selectExperiments(state).status === 'pending'
 
-export const selectExperimentsSatusIsFulfilled = (state: RootState) =>
+export const selectExperimentsStatusIsFulfilled = (state: RootState) =>
   selectExperiments(state).status === 'fulfilled'
 
-export const selectExperimentsSatusIsError = (state: RootState) =>
+export const selectExperimentsStatusIsError = (state: RootState) =>
   selectExperiments(state).status === 'error'
 
 export const selectExperimentsErrorMessage = (state: RootState) => {
@@ -51,6 +51,11 @@ export const selectExperimentHasNWB = (uid: string) => (state: RootState) =>
 export const selectExperimentStatus =
   (uid: string) =>
   (state: RootState): EXPERIMENTS_STATUS => {
+    const experiment = selectExperimentList(state)[uid]
+    if (experiment.status) {
+      return experiment.status
+    }
+
     const functions = selectExperimentList(state)[uid].functions
     const statusList = Object.values(functions).map((f) => f.status)
     if (statusList.findIndex((status) => status === 'error') >= 0) {

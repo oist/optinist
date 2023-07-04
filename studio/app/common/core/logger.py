@@ -9,10 +9,11 @@ from studio.app.common.core.utils.filepath_creater import (
 from studio.app.dir_path import DIRPATH
 
 
-def get_logger(unique_id: str) -> logging.Logger:
+def get_logger(workspace_id: str, unique_id: str) -> logging.Logger:
     output_dirpath = join_filepath(
         [
             DIRPATH.OUTPUT_DIR,
+            workspace_id,
             unique_id,
         ]
     )
@@ -38,9 +39,10 @@ def get_logger(unique_id: str) -> logging.Logger:
 
 
 class Logger:
-    def __init__(self, unique_id):
+    def __init__(self, workspace_id, unique_id):
+        self.workspace_id = workspace_id
         self.unique_id = unique_id
-        self.logger: logging.Logger = get_logger(unique_id)
+        self.logger: logging.Logger = get_logger(workspace_id, unique_id)
 
     def smk_logger(self, msg: Dict[str, str] = None):
         """

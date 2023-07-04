@@ -1,26 +1,28 @@
 import React, { useState, useRef } from 'react'
 import IconButton from '@mui/material/IconButton'
 import GetAppIcon from '@mui/icons-material/GetApp'
-
+import { useSelector } from 'react-redux'
 import {
   downloadExperimentConfigApi,
   downloadExperimentNwbApi,
 } from 'api/experiments/Experiments'
 
 import { ExperimentUidContext } from '../ExperimentTable'
+import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
 
 export const NWBDownloadButton = React.memo<{
   name: string
   nodeId?: string
   hasNWB: boolean
 }>(({ name, nodeId, hasNWB }) => {
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const uid = React.useContext(ExperimentUidContext)
   const ref = useRef<HTMLAnchorElement | null>(null)
   const [url, setFileUrl] = useState<string>()
 
   const onClick = async () => {
     try {
-      const responseData = await downloadExperimentNwbApi(uid, nodeId)
+      const responseData = await downloadExperimentNwbApi(workspaceId, uid, nodeId)
       const url = URL.createObjectURL(new Blob([responseData]))
       setFileUrl(url)
       ref.current?.click()
@@ -43,13 +45,14 @@ export const NWBDownloadButton = React.memo<{
 })
 
 export const ConfigDownloadButton = React.memo(() => {
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const uid = React.useContext(ExperimentUidContext)
   const ref = useRef<HTMLAnchorElement | null>(null)
   const [url, setFileUrl] = useState<string>()
 
   const onClick = async () => {
     try {
-      const responseData = await downloadExperimentConfigApi(uid)
+      const responseData = await downloadExperimentConfigApi(workspaceId, uid)
       const url = URL.createObjectURL(new Blob([responseData]))
       setFileUrl(url)
       ref.current?.click()

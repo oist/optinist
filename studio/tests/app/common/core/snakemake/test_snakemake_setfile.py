@@ -1,6 +1,7 @@
 from studio.app.common.core.snakemake.snakemake_rule import SmkRule
 from studio.app.common.core.workflow.workflow import Edge, Node, NodeData, NodePosition
 
+workspace_id = "default"
 unique_id = "test"
 
 node = Node(
@@ -39,6 +40,7 @@ edgeDict = {
 
 def test_SmkSetfile_image():
     rule = SmkRule(
+        workspace_id=workspace_id,
         unique_id=unique_id,
         node=node,
         edgeDict=edgeDict,
@@ -50,6 +52,7 @@ def test_SmkSetfile_image():
 
 def test_SmkSetfile_csv():
     rule = SmkRule(
+        workspace_id=workspace_id,
         unique_id=unique_id,
         node=node,
         edgeDict=edgeDict,
@@ -60,6 +63,7 @@ def test_SmkSetfile_csv():
 
 def test_SmkSetfile_hdf5():
     rule = SmkRule(
+        workspace_id=workspace_id,
         unique_id=unique_id,
         node=node,
         edgeDict=edgeDict,
@@ -71,6 +75,7 @@ def test_SmkSetfile_hdf5():
 
 def test_SmkSetfile_algo():
     rule = SmkRule(
+        workspace_id=workspace_id,
         unique_id=unique_id,
         node=node,
         edgeDict=edgeDict,
