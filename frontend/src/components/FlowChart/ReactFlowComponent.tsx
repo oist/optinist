@@ -1,4 +1,4 @@
-import React, { DragEvent, MouseEvent, useState } from 'react'
+import React, { DragEvent, FC, MouseEvent, ReactNode, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import ReactFlow, {
   ReactFlowProvider,
@@ -10,6 +10,7 @@ import ReactFlow, {
   Node,
   OnLoadParams,
   FlowTransform,
+  NodeTypesType,
 } from 'react-flow-renderer'
 import { useDrop } from 'react-dnd'
 
@@ -52,6 +53,10 @@ const initDialogFile = {
   multiSelect: false,
   onSelectFile: () => null,
 }
+
+const ReactFlowProviderComponent = ReactFlowProvider as FC<{
+  children: ReactNode
+}>
 
 export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
   (props) => {
@@ -147,7 +152,7 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
             onMessageError: setMessageError,
           }}
         >
-          <ReactFlowProvider>
+          <ReactFlowProviderComponent>
             <div className="reactflow-wrapper" ref={wrapparRef}>
               <ReactFlow
                 ref={drop}
@@ -157,8 +162,8 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
                 onLoad={onLoad}
                 onDragOver={onDragOver}
                 onNodeDragStop={onNodeDragStop}
-                nodeTypes={reactFlowNodeTypes}
-                edgeTypes={reactFlowEdgeTypes}
+                nodeTypes={reactFlowNodeTypes as unknown as NodeTypesType}
+                edgeTypes={reactFlowEdgeTypes as unknown as NodeTypesType}
                 defaultPosition={[flowPosition.x, flowPosition.y]}
                 defaultZoom={flowPosition.zoom}
                 onMoveEnd={onMoveEnd}
@@ -167,7 +172,7 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
                 <Controls />
               </ReactFlow>
             </div>
-          </ReactFlowProvider>
+          </ReactFlowProviderComponent>
           {dialogNodeId && (
             <AlgorithmOutputDialog
               nodeId={dialogNodeId}
