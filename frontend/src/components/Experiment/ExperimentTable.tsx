@@ -26,12 +26,12 @@ import Typography from '@mui/material/Typography'
 
 import { CollapsibleTable } from './CollapsibleTable'
 import {
-  selectExperimentsSatusIsUninitialized,
-  selectExperimentsSatusIsFulfilled,
+  selectExperimentsStatusIsUninitialized,
+  selectExperimentsStatusIsFulfilled,
   selectExperimentTimeStamp,
   selectExperimentName,
   selectExperimentStatus,
-  selectExperimentsSatusIsError,
+  selectExperimentsStatusIsError,
   selectExperimentsErrorMessage,
   selectExperimentList,
   selectExperimentHasNWB,
@@ -53,13 +53,14 @@ import { styled } from '@mui/material/styles'
 import { renameExperiment } from 'api/experiments/Experiments'
 import { selectPipelineLatestUid } from 'store/slice/Pipeline/PipelineSelectors'
 import { clearCurrentPipeline } from 'store/slice/Pipeline/PipelineSlice'
+import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
 
 export const ExperimentUidContext = React.createContext<string>('')
 
 export const ExperimentTable: React.FC = () => {
-  const isUninitialized = useSelector(selectExperimentsSatusIsUninitialized)
-  const isFulfilled = useSelector(selectExperimentsSatusIsFulfilled)
-  const isError = useSelector(selectExperimentsSatusIsError)
+  const isUninitialized = useSelector(selectExperimentsStatusIsUninitialized)
+  const isFulfilled = useSelector(selectExperimentsStatusIsFulfilled)
+  const isError = useSelector(selectExperimentsStatusIsError)
   const dispatch = useDispatch()
   React.useEffect(() => {
     if (isUninitialized) {
@@ -371,6 +372,7 @@ const RowItem = React.memo<{
   onCheckBoxClick: (uid: string) => void
   checked: boolean
 }>(({ onCheckBoxClick, checked }) => {
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const uid = React.useContext(ExperimentUidContext)
   const timestamp = useSelector(selectExperimentTimeStamp(uid))
   const status = useSelector(selectExperimentStatus(uid))
@@ -408,7 +410,7 @@ const RowItem = React.memo<{
 
   const onSaveNewName = async () => {
     if (valueEdit === name) return
-    await renameExperiment(uid, valueEdit)
+    await renameExperiment(workspaceId, uid, valueEdit)
     dispatch(getExperiments())
   }
 

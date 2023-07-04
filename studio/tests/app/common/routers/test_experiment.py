@@ -62,20 +62,6 @@ def test_delete_list():
         assert not os.path.exists(dirpath)
 
 
-def test_download_nwb():
-    response = client.get(f"/experiments/download/nwb/{unique_id}")
-
-    assert response.status_code == 200
-    assert response.url == "http://testserver/experiments/download/nwb/0123"
-
-
-def test_download_nwb_function():
-    function_id = "func1"
-    response = client.get(f"/experiments/download/nwb/{unique_id}/{function_id}")
-    assert response.status_code == 200
-    assert response.url == "http://testserver/experiments/download/nwb/0123/func1"
-
-
 def test_download_config():
     response = client.get(f"/experiments/download/config/{unique_id}")
     assert response.status_code == 200

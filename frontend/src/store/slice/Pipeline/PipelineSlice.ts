@@ -61,7 +61,7 @@ export const pipelineSlice = createSlice({
       })
       .addCase(importExperimentByUid.fulfilled, (state, action) => {
         state.currentPipeline = {
-          uid: action.meta.arg,
+          uid: action.meta.arg.uid,
         }
         state.runBtn = RUN_BTN_OPTIONS.RUN_ALREADY
         state.run = {

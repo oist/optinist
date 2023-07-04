@@ -14,11 +14,15 @@ from studio.app.dir_path import DIRPATH
 router = APIRouter()
 
 
-@router.get("/experiments", response_model=Dict[str, ExptConfig], tags=["experiments"])
-async def get_experiments():
+@router.get(
+    "/experiments/{workspace_id}",
+    response_model=Dict[str, ExptConfig],
+    tags=["experiments"],
+)
+async def get_experiments(workspace_id: str):
     exp_config = {}
     config_paths = glob(
-        join_filepath([DIRPATH.OUTPUT_DIR, "*", DIRPATH.EXPERIMENT_YML])
+        join_filepath([DIRPATH.OUTPUT_DIR, workspace_id, "*", DIRPATH.EXPERIMENT_YML])
     )
     for path in config_paths:
         try:
@@ -33,11 +37,15 @@ async def get_experiments():
 
 
 @router.patch(
-    "/experiments/{unique_id}/rename", response_model=ExptConfig, tags=["experiments"]
+    "/experiments/{workspace_id}/{unique_id}/rename",
+    response_model=ExptConfig,
+    tags=["experiments"],
 )
-async def rename_experiment(unique_id: str, item: RenameItem):
+async def rename_experiment(workspace_id: str, unique_id: str, item: RenameItem):
     config = ExptConfigReader.rename(
-        join_filepath([DIRPATH.OUTPUT_DIR, unique_id, DIRPATH.EXPERIMENT_YML]),
+        join_filepath(
+            [DIRPATH.OUTPUT_DIR, workspace_id, unique_id, DIRPATH.EXPERIMENT_YML]
+        ),
         new_name=item.new_name,
     )
     config.nodeDict = []
@@ -47,13 +55,15 @@ async def rename_experiment(unique_id: str, item: RenameItem):
 
 
 @router.get(
-    "/experiments/import/{unique_id}",
+    "/experiments/import/{workspace_id}/{unique_id}",
     response_model=ExptImportData,
     tags=["experiments"],
 )
-async def import_experiment(unique_id: str):
+async def import_experiment(workspace_id: str, unique_id: str):
     config = ExptConfigReader.read(
-        join_filepath([DIRPATH.OUTPUT_DIR, unique_id, DIRPATH.EXPERIMENT_YML])
+        join_filepath(
+            [DIRPATH.OUTPUT_DIR, workspace_id, unique_id, DIRPATH.EXPERIMENT_YML]
+        )
     )
     return {
         "nodeDict": config.nodeDict,
@@ -61,20 +71,24 @@ async def import_experiment(unique_id: str):
     }
 
 
-@router.delete("/experiments/{unique_id}", response_model=bool, tags=["experiments"])
-async def delete_experiment(unique_id: str):
+@router.delete(
+    "/experiments/{workspace_id}/{unique_id}", response_model=bool, tags=["experiments"]
+)
+async def delete_experiment(workspace_id: str, unique_id: str):
     try:
-        shutil.rmtree(join_filepath([DIRPATH.OUTPUT_DIR, unique_id]))
+        shutil.rmtree(join_filepath([DIRPATH.OUTPUT_DIR, workspace_id, unique_id]))
         return True
     except Exception:
         return False
 
 
-@router.post("/experiments/delete", response_model=bool, tags=["experiments"])
-async def delete_experiment_list(deleteItem: DeleteItem):
+@router.post(
+    "/experiments/delete/{workspace_id}", response_model=bool, tags=["experiments"]
+)
+async def delete_experiment_list(workspace_id: str, deleteItem: DeleteItem):
     try:
         [
-            shutil.rmtree(join_filepath([DIRPATH.OUTPUT_DIR, uid]))
+            shutil.rmtree(join_filepath([DIRPATH.OUTPUT_DIR, workspace_id, uid]))
             for uid in deleteItem.uidList
         ]
         return True
@@ -82,29 +96,11 @@ async def delete_experiment_list(deleteItem: DeleteItem):
         return False
 
 
-@router.get("/experiments/download/nwb/{unique_id}", tags=["experiments"])
-async def download_nwb_experiment(unique_id: str):
-    nwb_path_list = glob(join_filepath([DIRPATH.OUTPUT_DIR, unique_id, "*.nwb"]))
-    if len(nwb_path_list) > 0:
-        return FileResponse(nwb_path_list[0])
-    else:
-        return False
-
-
-@router.get("/experiments/download/nwb/{unique_id}/{function_id}", tags=["experiments"])
-async def download_nwb_experiment_with_function_id(unique_id: str, function_id: str):
-    nwb_path_list = glob(
-        join_filepath([DIRPATH.OUTPUT_DIR, unique_id, function_id, "*.nwb"])
-    )
-    if len(nwb_path_list) > 0:
-        return FileResponse(nwb_path_list[0])
-    else:
-        return False
-
-
-@router.get("/experiments/download/config/{unique_id}", tags=["experiments"])
-async def download_config_experiment(unique_id: str):
+@router.get(
+    "/experiments/download/config/{workspace_id}/{unique_id}", tags=["experiments"]
+)
+async def download_config_experiment(workspace_id: str, unique_id: str):
     config_filepath = join_filepath(
-        [DIRPATH.OUTPUT_DIR, unique_id, DIRPATH.SNAKEMAKE_CONFIG_YML]
+        [DIRPATH.OUTPUT_DIR, workspace_id, unique_id, DIRPATH.SNAKEMAKE_CONFIG_YML]
     )
     return FileResponse(config_filepath)
