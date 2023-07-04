@@ -37,8 +37,6 @@ edgeDict = {
     )
 }
 
-dirpath = f"{DIRPATH.DATA_DIR}/output/unique_id"
-
 
 def test_create_config() -> ExptConfig:
     runItem = RunItem(
@@ -51,6 +49,7 @@ def test_create_config() -> ExptConfig:
     )
 
     expt_config = ExptConfigWriter(
+        workspace_id="test_workspace_id",
         unique_id="test_id",
         name=runItem.name,
         nodeDict=runItem.nodeDict,
@@ -66,6 +65,7 @@ def test_create_config() -> ExptConfig:
 
 def test_add_run_info():
     expt_config = ExptConfigWriter(
+        workspace_id="",
         unique_id="",
         name="",
         nodeDict=nodeDict,
@@ -77,6 +77,7 @@ def test_add_run_info():
 
 def test_function_from_nodeDict():
     expt_config = ExptConfigWriter(
+        workspace_id="",
         unique_id="",
         name="",
         nodeDict=nodeDict,
@@ -87,11 +88,15 @@ def test_function_from_nodeDict():
     assert isinstance(expt_config.function["node_id"], ExptFunction)
 
 
+dirpath = f"{DIRPATH.DATA_DIR}/output/workspace_id/unique_id"
+
+
 def test_new_write():
     if os.path.exists(dirpath):
         shutil.rmtree(dirpath)
 
     ExptConfigWriter(
+        workspace_id="workspace_id",
         unique_id="unique_id",
         name="name",
         nodeDict=nodeDict,
@@ -103,6 +108,7 @@ def test_new_write():
 
 def test_write_add():
     ExptConfigWriter(
+        workspace_id="workspace_id",
         unique_id="unique_id",
         name="name",
         nodeDict=nodeDict,

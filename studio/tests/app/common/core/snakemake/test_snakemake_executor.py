@@ -11,6 +11,7 @@ from studio.app.dir_path import DIRPATH
 
 tiff_filename = "test.tif"
 
+workspace_id = "default"
 unique_id = "snakemake"
 
 smk_param = SmkParam(
@@ -28,7 +29,7 @@ shutil.copyfile(
 
 
 def test_snakemake_execute():
-    snakemake_execute(unique_id, smk_param)
+    snakemake_execute(workspace_id, unique_id, smk_param)
 
 
 nodeDict = {
@@ -84,7 +85,7 @@ edgeDict = {
     ),
 }
 
-output_dirpath = f"{DIRPATH.DATA_DIR}/output/snakemake"
+output_dirpath = f"{DIRPATH.DATA_DIR}/output/default/snakemake"
 
 
 def test_snakemake_delete_dependencies():
@@ -95,6 +96,7 @@ def test_snakemake_delete_dependencies():
         )
     ]
     delete_dependencies(
+        workspace_id=workspace_id,
         unique_id=unique_id,
         smk_params=smk_param,
         nodeDict=nodeDict,
@@ -114,6 +116,7 @@ def test_snakemake_delete_dependencies_file_convert():
         )
     ]
     delete_dependencies(
+        workspace_id=workspace_id,
         unique_id=unique_id,
         smk_params=smk_param,
         nodeDict=nodeDict,
@@ -128,8 +131,8 @@ def test_snakemake_delete_dependencies_file_convert():
 
 def test_error_snakemake_execute():
     smk_param.use_conda = True
-    snakemake_execute(unique_id, smk_param)
+    snakemake_execute(workspace_id, unique_id, smk_param)
 
-    error_log_filepath = f"{DIRPATH.OUTPUT_DIR}/snakemake/error.log"
+    error_log_filepath = f"{DIRPATH.OUTPUT_DIR}/default/snakemake/error.log"
 
     assert os.path.exists(error_log_filepath)
