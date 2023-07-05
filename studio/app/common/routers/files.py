@@ -13,7 +13,7 @@ from studio.app.common.schemas.files import FilePath, TreeNode
 from studio.app.const import ACCEPT_CSV_EXT, ACCEPT_HDF5_EXT, ACCEPT_TIFF_EXT, FILETYPE
 from studio.app.dir_path import DIRPATH
 
-router = APIRouter()
+router = APIRouter(prefix="/files", tags=["files"])
 
 
 class DirTreeGetter:
@@ -73,7 +73,7 @@ class DirTreeGetter:
         return files_list
 
 
-@router.get("/files", response_model=List[TreeNode], tags=["files"])
+@router.get("/", response_model=List[TreeNode])
 async def get_files(file_type: str = None):
     if file_type == FILETYPE.IMAGE:
         return DirTreeGetter.get_tree(ACCEPT_TIFF_EXT)
@@ -83,7 +83,7 @@ async def get_files(file_type: str = None):
         return DirTreeGetter.get_tree(ACCEPT_HDF5_EXT)
 
 
-@router.post("/files/upload/{filename}", response_model=FilePath, tags=["files"])
+@router.post("/upload/{filename}", response_model=FilePath)
 async def create_file(filename: str, file: UploadFile = File(...)):
     create_directory(DIRPATH.INPUT_DIR)
 

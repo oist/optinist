@@ -11,14 +11,10 @@ from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.schemas.experiment import DeleteItem, RenameItem
 from studio.app.dir_path import DIRPATH
 
-router = APIRouter()
+router = APIRouter(prefix="/experiments", tags=["experiments"])
 
 
-@router.get(
-    "/experiments/{workspace_id}",
-    response_model=Dict[str, ExptConfig],
-    tags=["experiments"],
-)
+@router.get("/{workspace_id}", response_model=Dict[str, ExptConfig])
 async def get_experiments(workspace_id: str):
     exp_config = {}
     config_paths = glob(
@@ -36,11 +32,7 @@ async def get_experiments(workspace_id: str):
     return exp_config
 
 
-@router.patch(
-    "/experiments/{workspace_id}/{unique_id}/rename",
-    response_model=ExptConfig,
-    tags=["experiments"],
-)
+@router.patch("/{workspace_id}/{unique_id}/rename", response_model=ExptConfig)
 async def rename_experiment(workspace_id: str, unique_id: str, item: RenameItem):
     config = ExptConfigReader.rename(
         join_filepath(
@@ -54,11 +46,7 @@ async def rename_experiment(workspace_id: str, unique_id: str, item: RenameItem)
     return config
 
 
-@router.get(
-    "/experiments/import/{workspace_id}/{unique_id}",
-    response_model=ExptImportData,
-    tags=["experiments"],
-)
+@router.get("/import/{workspace_id}/{unique_id}", response_model=ExptImportData)
 async def import_experiment(workspace_id: str, unique_id: str):
     config = ExptConfigReader.read(
         join_filepath(
@@ -71,9 +59,7 @@ async def import_experiment(workspace_id: str, unique_id: str):
     }
 
 
-@router.delete(
-    "/experiments/{workspace_id}/{unique_id}", response_model=bool, tags=["experiments"]
-)
+@router.delete("/{workspace_id}/{unique_id}", response_model=bool)
 async def delete_experiment(workspace_id: str, unique_id: str):
     try:
         shutil.rmtree(join_filepath([DIRPATH.OUTPUT_DIR, workspace_id, unique_id]))
@@ -82,9 +68,7 @@ async def delete_experiment(workspace_id: str, unique_id: str):
         return False
 
 
-@router.post(
-    "/experiments/delete/{workspace_id}", response_model=bool, tags=["experiments"]
-)
+@router.post("/delete/{workspace_id}", response_model=bool)
 async def delete_experiment_list(workspace_id: str, deleteItem: DeleteItem):
     try:
         [
@@ -96,9 +80,7 @@ async def delete_experiment_list(workspace_id: str, deleteItem: DeleteItem):
         return False
 
 
-@router.get(
-    "/experiments/download/config/{workspace_id}/{unique_id}", tags=["experiments"]
-)
+@router.get("/download/config/{workspace_id}/{unique_id}")
 async def download_config_experiment(workspace_id: str, unique_id: str):
     config_filepath = join_filepath(
         [DIRPATH.OUTPUT_DIR, workspace_id, unique_id, DIRPATH.SNAKEMAKE_CONFIG_YML]

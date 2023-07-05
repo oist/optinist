@@ -22,6 +22,7 @@ class DIRPATH:
     ROOT_DIR = os.path.dirname(os.path.dirname(os.path.dirname(__file__)))
     STUDIO_DIR = os.path.dirname(os.path.dirname(__file__))
     APP_DIR = os.path.dirname(__file__)
+    CONFIG_DIR = f"{STUDIO_DIR}/config"
 
     CONDAENV_DIR = (
         f"{os.path.dirname(os.path.dirname(os.path.dirname(__file__)))}/conda"
@@ -30,6 +31,9 @@ class DIRPATH:
     SNAKEMAKE_FILEPATH = f"{APP_DIR}/Snakefile"
     EXPERIMENT_YML = "experiment.yaml"
     SNAKEMAKE_CONFIG_YML = "config.yaml"
+
+    FIREBASE_PRIVATE_PATH = f"{CONFIG_DIR}/auth/firebase_private.json"
+    FIREBASE_CONFIG_PATH = f"{CONFIG_DIR}/auth/firebase_config.json"
 
 
 class CORE_PARAM_PATH(Enum):

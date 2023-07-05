@@ -40,6 +40,12 @@ dependencies = [
   "nbstripout",
   "snakemake==7.24.*",
   "jinja2==3.0.*",
+  "firebase_admin",
+  "pyrebase4==4.6.0",
+  "pydantic[email]",
+  "pydantic[dotenv]",
+  "requests-toolbelt==0.10.1",
+  "python-jose[cryptography]",
 ]
 
 [project.optional-dependencies]
