@@ -5,6 +5,7 @@ from firebase_admin import auth as firebase_auth
 from firebase_admin.auth import UserRecord
 
 from studio.app.common.core.auth.auth import authenticate_user
+from studio.app.common.schemas.auth import UserAuth
 from studio.app.common.schemas.users import (
     ListUserPaging,
     User,
@@ -60,11 +61,11 @@ async def update_user(uid: str, data: UserUpdate):
 
 async def upate_password(uid: str, data: UserPasswordUpdate):
     user = await get_user(uid)
-    _, err = await authenticate_user(user.email, data.old_password)
 
-    if err:
-        raise HTTPException(status_code=400, detail="Invalid password")
     try:
+        await authenticate_user(
+            data=UserAuth(email=user.email, password=data.old_password)
+        )
         user = firebase_auth.update_user(uid, password=data.new_password)
         return User(uid=user.uid, email=user.email)
     except Exception as e:

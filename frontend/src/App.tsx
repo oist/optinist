@@ -2,8 +2,14 @@ import React from 'react'
 import IconButton from '@mui/material/IconButton'
 import Close from '@mui/icons-material/Close'
 import { SnackbarProvider, SnackbarKey, useSnackbar } from 'notistack'
-
-import AppLayout from './components/Layout'
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
+import Layout from 'components/Layout'
+import Dashboard from 'pages/Dashboard'
+import Account from 'pages/Account'
+import AccountDelete from 'pages/AccountDelete'
+import Login from 'pages/Login'
+import ResetPassword from "./pages/ResetPassword";
+import Workspace from 'components/Workspace'
 
 const App: React.FC = () => {
   return (
@@ -13,7 +19,18 @@ const App: React.FC = () => {
         <SnackbarCloseButton snackbarKey={snackbarKey} />
       )}
     >
-      <AppLayout />
+      <BrowserRouter>
+        <Layout>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="/account" element={<Account />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/workspace" element={<Workspace />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
+            <Route path="/account-deleted" element={<AccountDelete />} />
+          </Routes>
+        </Layout>
+      </BrowserRouter>
     </SnackbarProvider>
   )
 }

@@ -17,3 +17,8 @@ export const updateMePasswordApi = async (
   const response = await axios.put('/users/me/password', data)
   return response.data
 }
+
+export const deleteMeApi = async (): Promise<string> => {
+  const response = await axios.delete('/users/me')
+  return response.data
+}

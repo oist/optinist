@@ -73,7 +73,7 @@ class DirTreeGetter:
         return files_list
 
 
-@router.get("/", response_model=List[TreeNode])
+@router.get("", response_model=List[TreeNode])
 async def get_files(file_type: str = None):
     if file_type == FILETYPE.IMAGE:
         return DirTreeGetter.get_tree(ACCEPT_TIFF_EXT)

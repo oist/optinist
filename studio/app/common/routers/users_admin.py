@@ -9,12 +9,12 @@ router = APIRouter(
 )
 
 
-@router.get("/", response_model=ListUserPaging)
+@router.get("", response_model=ListUserPaging)
 async def list_user(offset: int = 0, limit: int = 10):
     return await crud_users.list_user(offset, limit)
 
 
-@router.post("/", response_model=User)
+@router.post("", response_model=User)
 async def create_user(data: UserCreate):
     return await crud_users.create_user(data)
 
