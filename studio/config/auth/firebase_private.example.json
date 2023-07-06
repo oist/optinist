@@ -1,6 +1,6 @@
 {
   "type": "service_account",
-  "project_id": "mrianalysisstudioformouse",
+  "project_id": "example_project_id",
   "private_key_id": "",
   "private_key": "",
   "client_email": "",

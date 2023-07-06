@@ -409,7 +409,7 @@ const RowItem = React.memo<{
   }
 
   const onSaveNewName = async () => {
-    if (valueEdit === name) return
+    if (valueEdit === name || workspaceId === void 0) return
     await renameExperiment(workspaceId, uid, valueEdit)
     dispatch(getExperiments())
   }

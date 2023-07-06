@@ -1,15 +1,15 @@
 import { Box, Button, Modal, styled, Typography } from '@mui/material'
 import { ChangeEvent, FC, useState } from 'react'
 import { regexIgnoreS, regexPassword } from 'const/Auth'
-import InputPassword from 'components/InputPassword'
+import InputPassword from 'components/Account/InputPassword'
 
-type ModalDeleteAccountProps = {
+type ChangePasswordModalProps = {
   onClose: () => void
   open: boolean
   onSubmit: (oldPass: string, newPass: string) => void
 }
 
-const ModalChangePassword: FC<ModalDeleteAccountProps> = ({
+const ChangePasswordModal: FC<ChangePasswordModalProps> = ({
   onClose,
   open,
   onSubmit,
@@ -205,4 +205,4 @@ const ButtonConfirm = styled(Button)({
   }
 })
 
-export default ModalChangePassword
+export default ChangePasswordModal

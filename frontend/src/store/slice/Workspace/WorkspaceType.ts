@@ -2,9 +2,8 @@ export const WORKSPACE_SLICE_NAME = 'workspace'
 
 export type Workspace = {
   workspaces: WorkspaceType[]
-  currentWorkspace?: {
-    workspace_id: string
-  }
+  currentWorkspaceId?: string
+  loading: boolean
 }
 
 export type WorkspaceType = {

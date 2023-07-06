@@ -9,7 +9,8 @@ import Account from 'pages/Account'
 import AccountDelete from 'pages/AccountDelete'
 import Login from 'pages/Login'
 import ResetPassword from "./pages/ResetPassword";
-import Workspace from 'components/Workspace'
+import Workspaces from 'pages/Workspace'
+import Workspace from 'pages/Workspace/Workspace'
 
 const App: React.FC = () => {
   return (
@@ -25,7 +26,10 @@ const App: React.FC = () => {
             <Route path="/" element={<Dashboard />} />
             <Route path="/account" element={<Account />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/workspace" element={<Workspace />} />
+            <Route path="/workspaces">
+              <Route path="" element={<Workspaces />} />
+              <Route path=":workspaceId" element={<Workspace />} />
+            </Route>
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/account-deleted" element={<AccountDelete />} />
           </Routes>

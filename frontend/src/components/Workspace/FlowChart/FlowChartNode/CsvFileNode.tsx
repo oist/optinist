@@ -36,7 +36,7 @@ import {
   selectCsvDataIsPending,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getCsvData } from 'store/slice/DisplayData/DisplayDataActions'
-import { PresentationalCsvPlot } from 'components/Visualize/Plot/CsvPlot'
+import { PresentationalCsvPlot } from 'components/Workspace/Visualize/Plot/CsvPlot'
 
 const sourceHandleStyle: CSSProperties = {
   width: 8,

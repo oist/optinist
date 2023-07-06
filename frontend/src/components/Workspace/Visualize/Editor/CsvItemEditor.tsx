@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { FileSelectImple } from 'components/FlowChart/FlowChartNode/FileSelect'
+import { FileSelectImple } from 'components/Workspace/FlowChart/FlowChartNode/FileSelect'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 import {
   selectCsvItemSetHeader,

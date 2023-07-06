@@ -1,20 +1,33 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { useParams } from 'react-router-dom'
 import Tabs from '@mui/material/Tabs'
 import Tab from '@mui/material/Tab'
 import Toolbar from '@mui/material/Toolbar'
 import { styled } from '@mui/material/styles'
 import { useRunPipeline } from 'store/slice/Pipeline/PipelineHook'
-import FlowChart from './FlowChart/FlowChart'
-import Experiment from './Experiment/Experiment'
+import FlowChart from '../../components/Workspace/FlowChart/FlowChart'
+import Experiment from '../../components/Workspace/Experiment/Experiment'
 import { Box } from '@mui/material'
-import Visualize from "./Visualize/Visualize";
+import Visualize from "../../components/Workspace/Visualize/Visualize";
+import { useDispatch } from 'react-redux'
+import { clearCurrentWorkspace, setCurrentWorkspace } from 'store/slice/Workspace/WorkspaceSlice'
 
 const Workspace: React.FC = () => {
+  const dispatch = useDispatch()
   const [value, setValue] = React.useState(0)
   const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
     setValue(newValue)
   }
   const runPipeline = useRunPipeline() // タブ切り替えによって結果取得処理が止まってしまうのを回避するため、タブの親レイヤーで呼び出している
+
+  const { workspaceId } = useParams<{ workspaceId: string }>()
+  useEffect(() => {
+    workspaceId && dispatch(setCurrentWorkspace(workspaceId))
+    return () => {
+      dispatch(clearCurrentWorkspace())
+    }
+  }, [workspaceId, dispatch])
+
   return (
     <RootDiv>
       <StyledAppBar color="inherit">

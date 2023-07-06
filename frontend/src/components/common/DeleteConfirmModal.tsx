@@ -3,15 +3,15 @@ import { Box, Button, Modal, styled, Typography } from '@mui/material'
 import Input  from 'components/common/Input'
 import Loading from "../common/Loading";
 
-type ModalDeleteAccountProps = {
+type DeleteConfirmModalProps = {
   onClose: () => void
   open: boolean
   onSubmit: () => void
   titleSubmit: string
-  description?: string
+  description: string
   isLoading?: boolean
 }
-const ModalDeleteAccount: FC<ModalDeleteAccountProps> = ({
+const DeleteConfirmModal: FC<DeleteConfirmModalProps> = ({
   onClose,
   open,
   onSubmit,
@@ -37,9 +37,9 @@ const ModalDeleteAccount: FC<ModalDeleteAccountProps> = ({
       >
         <ContentDelete>
           <Typography style={{ whiteSpace: 'pre-wrap' }}>
-            {description || 'Delete account will erase all of your data.'}This
-            operation cannot be undone. To continue, type "
-            <span style={{ fontWeight: 600 }}>DELETE</span>" in the box below:
+            {description}
+            This operation cannot be undone.
+            To continue, type "<span style={{ fontWeight: 600 }}>DELETE</span>" in the box below:
           </Typography>
           <BoxConfirm>
             <Input
@@ -95,4 +95,4 @@ const BoxConfirm = styled(Box)({
   margin: '20px 0 0',
 })
 
-export default ModalDeleteAccount
+export default DeleteConfirmModal

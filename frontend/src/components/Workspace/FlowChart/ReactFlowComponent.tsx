@@ -25,7 +25,7 @@ import {
   selectFlowPosition,
 } from 'store/slice/FlowElement/FlowElementSelectors'
 import { UseRunPipelineReturnType } from 'store/slice/Pipeline/PipelineHook'
-import { ToolBar } from 'components/ToolBar'
+import { ToolBar } from 'components/Workspace/ToolBar'
 import {
   reactFlowEdgeTypes,
   reactFlowNodeTypes,
@@ -41,7 +41,7 @@ import {
   DialogContext,
   ErrorDialogValue,
   OpenDialogValue,
-} from 'components/FlowChart/DialogContext'
+} from 'components/Workspace/FlowChart/DialogContext'
 import { FileSelectDialog } from 'components/common/FileSelectDialog'
 import { FormHelperText, Popover } from '@mui/material'
 

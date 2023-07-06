@@ -1,8 +1,8 @@
 import { useSelector, useDispatch } from 'react-redux'
 import { Box, styled, Typography } from '@mui/material'
 import Loading from "components/common/Loading"
-import ModalChangePassword from 'components/ModalChangePassword'
-import ModalDeleteAccount from 'components/ModalDeleteAccount'
+import ChangePasswordModal from 'components/Account/ChangePasswordModal'
+import DeleteConfirmModal from 'components/common/DeleteConfirmModal'
 import { useState } from 'react'
 import { useNavigate } from "react-router-dom";
 import { updateMePasswordApi } from 'api/users/UsersMe'
@@ -12,19 +12,19 @@ const Account = () => {
   const user = useSelector(selectCurrentUser)
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] = useState(false)
   const [isChangePwModalOpen, setIsChangePwModalOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const handleCloseDelete = () => {
-    setIsDeleteModalOpen(false)
+  const handleCloseDeleteComfirmModal = () => {
+    setIsDeleteConfirmModalOpen(false)
   }
 
   const onDeleteAccountClick = () => {
-    setIsDeleteModalOpen(true)
+    setIsDeleteConfirmModalOpen(true)
   }
 
-  const onDelete = async () => {
+  const onConfirmDelete = async () => {
     if(!user) return
     setIsLoading(true)
     try {
@@ -35,7 +35,7 @@ const Account = () => {
     finally {
       setIsLoading(false)
     }
-    handleCloseDelete()
+    handleCloseDeleteComfirmModal()
   }
 
   const handleCloseChangePw = () => {
@@ -46,7 +46,7 @@ const Account = () => {
     setIsChangePwModalOpen(true)
   }
 
-  const onChangePw = async (oldPass: string, newPass: string) => {
+  const onConfirmChangePw = async (oldPass: string, newPass: string) => {
     setIsLoading(true)
     try {
       await updateMePasswordApi({old_password: oldPass, new_password: newPass})
@@ -63,14 +63,15 @@ const Account = () => {
 
   return (
     <AccountWrapper>
-      <ModalDeleteAccount
+      <DeleteConfirmModal
         titleSubmit="Delete My Account"
-        onClose={handleCloseDelete}
-        open={isDeleteModalOpen}
-        onSubmit={onDelete}
+        onClose={handleCloseDeleteComfirmModal}
+        open={isDeleteConfirmModalOpen}
+        onSubmit={onConfirmDelete}
+        description='Delete account will erase all of your data.'
       />
-      <ModalChangePassword
-        onSubmit={onChangePw}
+      <ChangePasswordModal
+        onSubmit={onConfirmChangePw}
         open={isChangePwModalOpen}
         onClose={handleCloseChangePw}
       />

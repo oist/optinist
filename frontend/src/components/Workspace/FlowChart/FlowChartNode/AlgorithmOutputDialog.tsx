@@ -21,7 +21,7 @@ import {
   addItemForWorkflowDialog,
   deleteAllItemForWorkflowDialog,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { DisplayDataItem } from 'components/Visualize/DisplayDataItem'
+import { DisplayDataItem } from 'components/Workspace/Visualize/DisplayDataItem'
 
 export const AlgorithmOutputDialog = React.memo<{
   open: boolean

@@ -22,7 +22,7 @@ export const NWBDownloadButton = React.memo<{
 
   const onClick = async () => {
     try {
-      const responseData = await downloadExperimentNwbApi(workspaceId, uid, nodeId)
+      const responseData = await downloadExperimentNwbApi(workspaceId!, uid, nodeId)
       const url = URL.createObjectURL(new Blob([responseData]))
       setFileUrl(url)
       ref.current?.click()
@@ -52,7 +52,7 @@ export const ConfigDownloadButton = React.memo(() => {
 
   const onClick = async () => {
     try {
-      const responseData = await downloadExperimentConfigApi(workspaceId, uid)
+      const responseData = await downloadExperimentConfigApi(workspaceId!, uid)
       const url = URL.createObjectURL(new Blob([responseData]))
       setFileUrl(url)
       ref.current?.click()
