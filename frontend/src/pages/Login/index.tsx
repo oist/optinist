@@ -26,19 +26,22 @@ const Login = () => {
     if (errorCheck) return
     setIsLoading(true)
 
-    try {
-      dispatch(login(values)).unwrap().then((_) => {
-        dispatch(getMe()).unwrap().then((_) => {
-          navigate('/')
-        })
+    dispatch(login(values))
+      .unwrap()
+      .then((_) => {
+        dispatch(getMe())
+          .unwrap()
+          .then((_) => {
+            navigate('/')
+          })
       })
-    } catch (e) {
-      setErrors({ email: 'Email or password is wrong', password: '' })
-    } finally {
-      setIsLoading(false)
-    }
+      .catch((_) => {
+        setErrors({ email: 'Email or password is wrong', password: '' })
+      })
+      .finally(() => {
+        setIsLoading(false)
+      })
   }
-
 
   const validateSubmit = () => {
     let errors = { email: '', password: '' }

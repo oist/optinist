@@ -31,7 +31,7 @@ export const userSlice = createSlice({
       })
       .addMatcher(
         isAnyOf(login.rejected, getMe.rejected, deleteMe.fulfilled),
-        (state, _) => {
+        (state) => {
           removeToken()
           removeExToken()
           state = initialState

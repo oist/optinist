@@ -3,7 +3,6 @@ from typing import Optional
 from fastapi import Depends, HTTPException, Response, status
 from fastapi.security import APIKeyHeader, HTTPAuthorizationCredentials, HTTPBearer
 from firebase_admin import auth as firebase_auth
-from firebase_admin.auth import UserRecord
 
 from studio.app.common.core.auth.auth_config import AUTH_CONFIG
 from studio.app.common.core.auth.security import validate_access_token
@@ -24,9 +23,9 @@ async def get_current_user(
                 headers={"WWW-Authenticate": "Bearer realm='auth_required'"},
             )
         try:
-            user: UserRecord = firebase_auth.verify_id_token(credential.credentials)
-            user: User = await get_user(user.uid)
-            return user
+            user = firebase_auth.verify_id_token(credential.credentials)
+            authed_user: User = await get_user(user["uid"])
+            return authed_user
         except Exception:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
