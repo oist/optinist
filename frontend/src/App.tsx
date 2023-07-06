@@ -25,13 +25,13 @@ const App: React.FC = () => {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/account" element={<Account />} />
+            <Route path="/account-deleted" element={<AccountDelete />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/workspaces">
               <Route path="" element={<Workspaces />} />
               <Route path=":workspaceId" element={<Workspace />} />
             </Route>
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/account-deleted" element={<AccountDelete />} />
           </Routes>
         </Layout>
       </BrowserRouter>

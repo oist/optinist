@@ -1,7 +1,7 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
-import { selectRunPostData } from 'store/selectors/run/RunSelectors'
+import { selectRunPostData } from 'store/slice/Run/RunSelectors'
 import {
   selectPipelineIsCanceled,
   selectPipelineIsStartedSuccess,
