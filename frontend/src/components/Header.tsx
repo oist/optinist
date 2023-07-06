@@ -1,15 +1,16 @@
 import { FC, useRef, useState } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { Box, Typography } from '@mui/material'
 import { styled } from '@mui/material/styles'
 import PortraitIcon from '@mui/icons-material/Portrait'
 import AccountCircleIcon from '@mui/icons-material/AccountCircle'
-import { removeToken } from 'utils/auth/AuthUtils'
 import { useNavigate } from 'react-router-dom'
 import { selectCurrentUser } from 'store/slice/User/UserSelector'
+import { logout } from 'store/slice/User/UserSlice'
 
 const Header: FC = () => {
   const [open, setOpen] = useState(false)
+  const dispatch = useDispatch()
   const navigate = useNavigate()
   const user = useSelector(selectCurrentUser)
 
@@ -28,12 +29,12 @@ const Header: FC = () => {
     setOpen(true)
   }
 
-  const onLogout = () => {
-    removeToken()
+  const onClickLogout = () => {
+    dispatch(logout())
     navigate('/login')
   }
 
-  const onNavigateAccount = () => {
+  const onClickAccount = () => {
     navigate('/account')
   }
 
@@ -53,10 +54,10 @@ const Header: FC = () => {
                 <Typography>{user?.email}</Typography>
               </Box>
             </BoxInfo>
-            <BoxMenuItem onClick={onNavigateAccount}>
+            <BoxMenuItem onClick={onClickAccount}>
               <PortraitIcon /> Account Profile
             </BoxMenuItem>
-            <BoxMenuItemLogout onClick={onLogout}>
+            <BoxMenuItemLogout onClick={onClickLogout}>
               SIGN OUT
             </BoxMenuItemLogout>
           </BoxDropdown>

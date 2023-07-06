@@ -30,11 +30,6 @@ const Layout: FC = ({ children }) => {
   useEffect(() => {
     checkAuth()
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    checkAuth()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname, user])
 
   const checkAuth = async () => {

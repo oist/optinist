@@ -15,7 +15,13 @@ const initialState: User = { currentUser: undefined }
 export const userSlice = createSlice({
   name: USER_SLICE_NAME,
   initialState,
-  reducers: {},
+  reducers: {
+    logout: (state) => {
+      removeToken()
+      removeExToken()
+      state = initialState
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(login.fulfilled, (_, action) => {
@@ -40,4 +46,5 @@ export const userSlice = createSlice({
   },
 })
 
+export const { logout } = userSlice.actions
 export default userSlice.reducer
