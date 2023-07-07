@@ -1,24 +1,29 @@
 import React from 'react'
-import Drawer, { drawerClasses } from '@mui/material/Drawer'
-import { default as MuiToolbar } from '@mui/material/Toolbar'
 import { styled } from '@mui/material/styles'
-import { drawerWidth } from 'components/Workspace/FlowChart/FlowChart'
 import { FlexItemList } from './FlexItemList'
 import { VisualizeItemEditor } from './VisualizeItemEditor'
 import { CurrentPipelineInfo } from 'components/common/CurrentPipelineInfo'
+import { DRAWER_WIDTH } from 'const/Layout'
+import { Box } from '@mui/material'
+import { grey } from '@mui/material/colors'
 
 const Visualize: React.FC = () => {
   return (
     <RootDiv>
-      <StyledDrawer variant="permanent">
-        <MuiToolbar />
+      <Box
+        sx={{
+          width: DRAWER_WIDTH,
+        }}
+        borderRight={1}
+        borderColor={grey[300]}
+      >
         <CurrentPipelineInfo />
         <StyledDrawerContents>
           <VisualizeItemEditor />
         </StyledDrawerContents>
-      </StyledDrawer>
+      </Box>
+
       <MainContents>
-        <MuiToolbar />
         <FlexItemList />
       </MainContents>
     </RootDiv>
@@ -27,14 +32,6 @@ const Visualize: React.FC = () => {
 
 const RootDiv = styled('div')({
   display: 'flex',
-})
-
-const StyledDrawer = styled(Drawer)({
-  width: drawerWidth,
-  flexShrink: 0,
-  [`& .${drawerClasses.paper}`]: {
-    width: drawerWidth,
-  },
 })
 
 const StyledDrawerContents = styled('div')({

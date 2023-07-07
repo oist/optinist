@@ -6,6 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.middleware.cors import CORSMiddleware
 
+from studio.app.common.core.auth.auth_config import AUTH_CONFIG
 from studio.app.common.routers import (
     algolist,
     auth,
@@ -24,14 +25,17 @@ app = FastAPI(docs_url="/docs", openapi_url="/openapi")
 
 # common routers
 app.include_router(algolist.router)
-app.include_router(auth.router)
 app.include_router(experiment.router)
 app.include_router(files.router)
 app.include_router(outputs.router)
 app.include_router(params.router)
 app.include_router(run.router)
-app.include_router(users_admin.router)
-app.include_router(users_me.router)
+
+# auth routers
+if not AUTH_CONFIG.IS_STANDALONE:
+    app.include_router(auth.router)
+    app.include_router(users_admin.router)
+    app.include_router(users_me.router)
 
 # optinist routers
 app.include_router(hdf5.router)

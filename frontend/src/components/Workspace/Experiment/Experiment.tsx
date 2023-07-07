@@ -1,5 +1,4 @@
 import React from 'react'
-import { default as MuiToolbar } from '@mui/material/Toolbar'
 import { ExperimentTable } from './ExperimentTable'
 
 const Experiment = React.memo(() => {
@@ -14,7 +13,6 @@ const Experiment = React.memo(() => {
           padding: 16,
         }}
       >
-        <MuiToolbar />
         <ExperimentTable />
       </main>
     </div>

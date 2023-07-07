@@ -21,6 +21,7 @@ import { NWBSettingContents } from './NWB'
 import { RootState } from 'store/store'
 import { AlgorithmParamForm } from './AlgorithmParamForm'
 import { SnakemakeContents } from './Snakemake'
+import { RIGHT_DRAWER_WIDTH } from 'const/Layout'
 
 const RightDrawer: React.FC = () => {
   const open = useSelector(selectRightDrawerIsOpen)
@@ -88,13 +89,11 @@ const ParamFormConetent: React.FC = () => {
   }
 }
 
-export const rightDrawerWidth = 320
-
 const StyledDrawer = styled(Drawer)({
-  width: rightDrawerWidth,
+  width: RIGHT_DRAWER_WIDTH,
   flexShrink: 0,
   [`& .${drawerClasses.paper}`]: {
-    width: rightDrawerWidth,
+    width: RIGHT_DRAWER_WIDTH,
   },
 })
 
