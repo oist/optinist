@@ -8,6 +8,7 @@ import { selectCurrentUser } from 'store/slice/User/UserSelector'
 import { getMe } from 'store/slice/User/UserActions'
 import Header from './Header'
 import LeftMenu from './LeftMenu'
+import { IS_STANDALONE } from 'const/Mode'
 
 const ignorePaths = ['/login', '/account-delete', '/reset-password']
 const loginPaths = ['/login', '/reset-password']
@@ -28,7 +29,7 @@ const Layout: FC = ({ children }) => {
   }
 
   useEffect(() => {
-    checkAuth()
+    !IS_STANDALONE && checkAuth()
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location.pathname, user])
 
