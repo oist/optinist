@@ -1,5 +1,2 @@
 *.json
 !*.example.json
-
-.env*
-!*.env.example
