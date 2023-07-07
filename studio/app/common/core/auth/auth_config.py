@@ -10,7 +10,6 @@ class AuthConfig(BaseSettings):
     SECRET_KEY: str = Field(default="123456", env="SECRET_KEY")
     USE_FIREBASE_TOKEN: bool = Field(default=True, env="USE_FIREBASE_TOKEN")
     ALGORITHM = "HS256"
-    IS_STANDALONE: bool = Field(default=True, env="IS_STANDALONE")
 
     class Config:
         env_file = f"{DIRPATH.CONFIG_DIR}/.env"
