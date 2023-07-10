@@ -44,7 +44,6 @@ dependencies = [
   "pyrebase4==4.7.1",
   "pydantic[email]",
   "pydantic[dotenv]",
-  "requests-toolbelt==0.10.1",
   "python-jose[cryptography]",
 ]
 
@@ -86,7 +85,7 @@ zip-safe = false
 py-modules = ["Snakefile"]
 
 [tool.setuptools.packages.find]
-exclude = ["studio.tests.*"]
+exclude = ["studio.tests.*", "conda.env.*"]
 
 [tool.setuptools.package-data]
 frontend = [
