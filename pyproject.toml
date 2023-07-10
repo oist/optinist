@@ -85,7 +85,7 @@ zip-safe = false
 py-modules = ["Snakefile"]
 
 [tool.setuptools.packages.find]
-exclude = ["studio.tests.*"]
+exclude = ["studio.tests.*", "conda.env.*"]
 
 [tool.setuptools.package-data]
 frontend = [
