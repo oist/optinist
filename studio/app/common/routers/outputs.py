@@ -15,14 +15,10 @@ from studio.app.common.schemas.outputs import JsonTimeSeriesData, OutputData
 from studio.app.const import ACCEPT_TIFF_EXT
 from studio.app.dir_path import DIRPATH
 
-router = APIRouter()
+router = APIRouter(prefix="/outputs", tags=["outputs"])
 
 
-@router.get(
-    "/outputs/inittimedata/{dirpath:path}",
-    response_model=JsonTimeSeriesData,
-    tags=["outputs"],
-)
+@router.get("/inittimedata/{dirpath:path}", response_model=JsonTimeSeriesData)
 async def get_inittimedata(dirpath: str):
     file_numbers = sorted(
         [
@@ -68,11 +64,7 @@ async def get_inittimedata(dirpath: str):
     return return_data
 
 
-@router.get(
-    "/outputs/timedata/{dirpath:path}",
-    response_model=JsonTimeSeriesData,
-    tags=["outputs"],
-)
+@router.get("/timedata/{dirpath:path}", response_model=JsonTimeSeriesData)
 async def get_timedata(dirpath: str, index: int):
     json_data = JsonReader.read_as_timeseries(
         join_filepath([dirpath, f"{str(index)}.json"])
@@ -92,11 +84,7 @@ async def get_timedata(dirpath: str, index: int):
     return return_data
 
 
-@router.get(
-    "/outputs/alltimedata/{dirpath:path}",
-    response_model=JsonTimeSeriesData,
-    tags=["outputs"],
-)
+@router.get("/alltimedata/{dirpath:path}", response_model=JsonTimeSeriesData)
 async def get_alltimedata(dirpath: str):
     return_data = JsonTimeSeriesData(
         xrange=[],
@@ -117,23 +105,17 @@ async def get_alltimedata(dirpath: str):
     return return_data
 
 
-@router.get(
-    "/outputs/data/{filepath:path}", response_model=OutputData, tags=["outputs"]
-)
+@router.get("/data/{filepath:path}", response_model=OutputData)
 async def get_file(filepath: str):
     return JsonReader.read_as_output(filepath)
 
 
-@router.get(
-    "/outputs/html/{filepath:path}", response_model=OutputData, tags=["outputs"]
-)
+@router.get("/html/{filepath:path}", response_model=OutputData)
 async def get_html(filepath: str):
     return Reader.read_as_output(filepath)
 
 
-@router.get(
-    "/outputs/image/{filepath:path}", response_model=OutputData, tags=["outputs"]
-)
+@router.get("/image/{filepath:path}", response_model=OutputData)
 async def get_image(
     filepath: str, start_index: Optional[int] = 0, end_index: Optional[int] = 1
 ):
@@ -157,7 +139,7 @@ async def get_image(
     return JsonReader.read_as_output(json_filepath)
 
 
-@router.get("/outputs/csv/{filepath:path}", response_model=OutputData, tags=["outputs"])
+@router.get("/csv/{filepath:path}", response_model=OutputData)
 async def get_csv(filepath: str):
     filepath = join_filepath([DIRPATH.INPUT_DIR, filepath])
 

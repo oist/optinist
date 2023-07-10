@@ -24,3 +24,6 @@ docs/_build
 studio/notebooks
 conda/envs/*
 tensorflow-2.4.1-py3-none-any.whl
+
+.env*
+!*.env.example

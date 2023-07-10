@@ -1,0 +1,12 @@
+import json
+
+import pyrebase
+
+from studio.app.dir_path import DIRPATH
+
+try:
+    pyrebase_app = pyrebase.initialize_app(
+        json.load(open(DIRPATH.FIREBASE_CONFIG_PATH))
+    )
+except Exception:
+    pyrebase_app = None

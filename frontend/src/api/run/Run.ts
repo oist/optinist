@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'utils/axios'
 import type { Edge, Node } from 'react-flow-renderer'
 
 import { BASE_URL } from 'const/API'
