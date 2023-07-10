@@ -27,23 +27,64 @@ edgeDict:
     target: suite2p_roi_m6v8o3dctg
     targetHandle: suite2p_roi_m6v8o3dctg--ops--Suite2pData
     type: buttonedge
+finished_at: '2023-07-04 12:52:19'
 function:
   input_0:
+    finished_at: '2023-07-04 12:51:48'
     hasNWB: false
+    message: null
     name: data_endoscope.tif
+    outputPaths: null
+    started_at: '2023-07-04 12:51:48'
     success: success
     unique_id: input_0
   suite2p_file_convert_pi2bgrsd6m:
+    finished_at: '2023-07-04 12:52:03'
     hasNWB: false
+    message: suite2p_file_convert success
     name: suite2p_file_convert
+    outputPaths:
+      meanImg:
+        max_index: 1
+        path: /tmp/optinist/output/default/838d4234/suite2p_file_convert_pi2bgrsd6m/meanImg.json
+        type: images
+    started_at: '2023-07-04 12:51:56'
     success: success
     unique_id: suite2p_file_convert_pi2bgrsd6m
   suite2p_roi_m6v8o3dctg:
-    hasNWB: false
+    finished_at: '2023-07-04 12:52:19'
+    hasNWB: true
+    message: suite2p_roi success
     name: suite2p_roi
+    outputPaths:
+      Vcorr:
+        max_index: 1
+        path: /tmp/optinist/output/default/838d4234/suite2p_roi_m6v8o3dctg/Vcorr.json
+        type: images
+      all_roi:
+        max_index: null
+        path: /tmp/optinist/output/default/838d4234/suite2p_roi_m6v8o3dctg/all_roi.json
+        type: roi
+      cell_roi:
+        max_index: null
+        path: /tmp/optinist/output/default/838d4234/suite2p_roi_m6v8o3dctg/cell_roi.json
+        type: roi
+      fluorescence:
+        max_index: 353
+        path: /tmp/optinist/output/default/838d4234/suite2p_roi_m6v8o3dctg/fluorescence
+        type: timeseries
+      max_proj:
+        max_index: 1
+        path: /tmp/optinist/output/default/838d4234/suite2p_roi_m6v8o3dctg/max_proj.json
+        type: images
+      non_cell_roi:
+        max_index: null
+        path: /tmp/optinist/output/default/838d4234/suite2p_roi_m6v8o3dctg/noncell_roi.json
+        type: roi
+    started_at: '2023-07-04 12:52:06'
     success: success
     unique_id: suite2p_roi_m6v8o3dctg
-hasNWB: false
+hasNWB: true
 name: New flow
 nodeDict:
   input_0:
@@ -188,5 +229,7 @@ nodeDict:
       padding: 0
       width: 180
     type: AlgorithmNode
-timestamp: '2022-05-15 23:02:15'
+started_at: '2023-07-04 12:51:48'
+success: success
 unique_id: 838d4234
+workspace_id: default

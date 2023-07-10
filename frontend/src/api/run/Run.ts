@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'utils/axios'
 import type { Edge, Node } from 'react-flow-renderer'
 
 import { BASE_URL } from 'const/API'
@@ -42,16 +42,23 @@ export interface AlgorithmNodePostData extends AlgorithmNodeData {
   param: ParamMap
 }
 
-export async function runApi(data: RunPostData): Promise<string> {
-  const response = await axios.post(`${BASE_URL}/run`, data)
+export async function runApi(
+  workspaceId: string,
+  data: RunPostData,
+): Promise<string> {
+  const response = await axios.post(`${BASE_URL}/run/${workspaceId}`, data)
   return response.data
 }
 
 export async function runByUidApi(
+  workspaceId: string,
   uid: string,
   data: Omit<RunPostData, 'name'>,
 ): Promise<string> {
-  const response = await axios.post(`${BASE_URL}/run/${uid}`, data)
+  const response = await axios.post(
+    `${BASE_URL}/run/${workspaceId}/${uid}`,
+    data,
+  )
   return response.data
 }
 
@@ -72,12 +79,16 @@ export type OutputPathsDTO = {
 }
 
 export async function runResult(data: {
+  workspaceId: string
   uid: string
   pendingNodeIdList: string[]
 }): Promise<RunResultDTO> {
-  const { uid, pendingNodeIdList } = data
-  const response = await axios.post(`${BASE_URL}/run/result/${uid}`, {
-    pendingNodeIdList,
-  })
+  const { workspaceId, uid, pendingNodeIdList } = data
+  const response = await axios.post(
+    `${BASE_URL}/run/result/${workspaceId}/${uid}`,
+    {
+      pendingNodeIdList,
+    },
+  )
   return response.data
 }

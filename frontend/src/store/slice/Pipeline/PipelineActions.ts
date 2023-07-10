@@ -13,17 +13,23 @@ import {
   selectPipelineLatestUid,
   selectRunResultPendingNodeIdList,
 } from './PipelineSelectors'
+import { selectCurrentWorkspaceId } from '../Workspace/WorkspaceSelector'
 
 export const run = createAsyncThunk<
   string,
   { runPostData: RunPostData },
   ThunkApiConfig
 >(`${PIPELINE_SLICE_NAME}/run`, async ({ runPostData }, thunkAPI) => {
-  try {
-    const responseData = await runApi(runPostData)
-    return responseData
-  } catch (e) {
-    return thunkAPI.rejectWithValue(e)
+  const workspaceId = selectCurrentWorkspaceId(thunkAPI.getState())
+  if (workspaceId) {
+    try {
+      const responseData = await runApi(workspaceId, runPostData)
+      return responseData
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  } else {
+    return thunkAPI.rejectWithValue('workspace id does not exist.')
   }
 })
 
@@ -34,16 +40,23 @@ export const runByCurrentUid = createAsyncThunk<
 >(
   `${PIPELINE_SLICE_NAME}/runByCurrentUid`,
   async ({ runPostData }, thunkAPI) => {
+    const workspaceId = selectCurrentWorkspaceId(thunkAPI.getState())
     const currentUid = selectPipelineLatestUid(thunkAPI.getState())
-    if (currentUid != null) {
+    if (workspaceId && currentUid != null) {
       try {
-        const responseData = await runByUidApi(currentUid, runPostData)
+        const responseData = await runByUidApi(
+          workspaceId,
+          currentUid,
+          runPostData,
+        )
         return responseData
       } catch (e) {
         return thunkAPI.rejectWithValue(e)
       }
     } else {
-      return thunkAPI.rejectWithValue('currentUid dose not exist.')
+      return thunkAPI.rejectWithValue(
+        'workspaceId or currentUid dose not exist.',
+      )
     }
   },
 )
@@ -58,10 +71,19 @@ export const pollRunResult = createAsyncThunk<
   const pendingNodeIdList = selectRunResultPendingNodeIdList(
     thunkAPI.getState(),
   )
-  try {
-    const responseData = await runResult({ uid, pendingNodeIdList })
-    return responseData
-  } catch (e) {
-    return thunkAPI.rejectWithValue(e)
+  const workspaceId = selectCurrentWorkspaceId(thunkAPI.getState())
+  if (workspaceId) {
+    try {
+      const responseData = await runResult({
+        workspaceId,
+        uid,
+        pendingNodeIdList,
+      })
+      return responseData
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  } else {
+    return thunkAPI.rejectWithValue('workspace id does not exist')
   }
 })

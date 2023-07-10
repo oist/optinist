@@ -1,5 +1,6 @@
 import os
 from dataclasses import asdict
+from datetime import datetime
 from glob import glob
 from typing import Dict
 
@@ -10,15 +11,18 @@ from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.utils.pickle_handler import PickleReader
 from studio.app.common.core.workflow.workflow import Message, OutputPath
 from studio.app.common.dataclass import BaseData
+from studio.app.const import DATE_FORMAT
 from studio.app.dir_path import DIRPATH
 
 
 class WorkflowResult:
-    def __init__(self, unique_id):
+    def __init__(self, workspace_id, unique_id):
+        self.workspace_id = workspace_id
         self.unique_id = unique_id
         self.workflow_dirpath = join_filepath(
             [
                 DIRPATH.OUTPUT_DIR,
+                self.workspace_id,
                 self.unique_id,
             ]
         )
@@ -98,6 +102,18 @@ class NodeResult:
         else:
             expt_config.function[self.node_id].success = "success"
             message = self.success()
+            expt_config.function[self.node_id].outputPaths = message.outputPaths
+        now = datetime.now().strftime(DATE_FORMAT)
+        expt_config.function[self.node_id].finished_at = now
+        expt_config.function[self.node_id].message = message.message
+
+        statuses = list(map(lambda x: x.success, expt_config.function.values()))
+        if "running" not in statuses:
+            expt_config.finished_at = now
+            if "error" in statuses:
+                expt_config.success = "error"
+            else:
+                expt_config.success = "success"
 
         ConfigWriter.write(
             dirname=self.workflow_dirpath,
