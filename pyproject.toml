@@ -44,7 +44,6 @@ dependencies = [
   "pyrebase4==4.7.1",
   "pydantic[email]",
   "pydantic[dotenv]",
-  "requests-toolbelt==0.10.1",
   "python-jose[cryptography]",
 ]
 
