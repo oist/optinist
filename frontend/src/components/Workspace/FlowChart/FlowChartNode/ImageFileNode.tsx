@@ -12,7 +12,7 @@ import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import { useHandleColor } from './HandleColorHook'
 import { FileSelect } from './FileSelect'
 import { toHandleId, isValidConnection } from './FlowChartUtils'
-import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
+import { deleteFlowNodeById } from 'store/slice/FlowElement/FlowElementSlice'
 import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
 import { arrayEqualityFn } from 'utils/EqualityUtils'
 
@@ -51,7 +51,7 @@ const ImageFileNodeImple = React.memo<NodeProps>(
     const imageColor = useHandleColor(returnType)
 
     const onClickDeleteIcon = () => {
-      dispatch(deleteFlowElementsById(nodeId))
+      dispatch(deleteFlowNodeById(nodeId))
     }
 
     return (

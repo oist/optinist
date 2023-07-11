@@ -1,4 +1,4 @@
-import { isEdge, Node } from 'react-flow-renderer'
+import { Node } from 'react-flow-renderer'
 
 import {
   AlgorithmNodePostData,
@@ -16,11 +16,11 @@ import {
   selectAlgorithmName,
   selectAlgorithmParams,
 } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
-import { selectFlowElements } from 'store/slice/FlowElement/FlowElementSelectors'
 import {
-  isAlgorithmNodeData,
-  isNodeData,
-} from 'store/slice/FlowElement/FlowElementUtils'
+  selectFlowEdges,
+  selectFlowNodes,
+} from 'store/slice/FlowElement/FlowElementSelectors'
+import { isAlgorithmNodeData } from 'store/slice/FlowElement/FlowElementUtils'
 import { selectNwbParams } from 'store/slice/NWB/NWBSelectors'
 import { selectPipelineNodeResultStatus } from 'store/slice/Pipeline/PipelineSelectors'
 import { NODE_RESULT_STATUS } from 'store/slice/Pipeline/PipelineType'
@@ -53,8 +53,8 @@ export const selectRunPostData = (state: RootState) => {
  * 前回の結果で、エラーまたはParamに変更があるnodeのリストを返す
  */
 const selectForceRunList = (state: RootState) => {
-  const elements = selectFlowElements(state)
-  return elements
+  const nodes = selectFlowNodes(state)
+  return nodes
     .filter(isAlgorithmNodeData)
     .filter((node) => {
       const isUpdated = selectAlgorithmIsUpdated(node.id)(state)
@@ -68,9 +68,9 @@ const selectForceRunList = (state: RootState) => {
 }
 
 const selectNodeDictForRun = (state: RootState): NodeDict => {
-  const elements = selectFlowElements(state)
+  const nodes = selectFlowNodes(state)
   const nodeDict: NodeDict = {}
-  elements.filter(isNodeData).forEach((node) => {
+  nodes.forEach((node) => {
     if (isAlgorithmNodeData(node)) {
       const param = selectAlgorithmParams(node.id)(state) ?? {}
       const functionPath = selectAlgorithmFunctionPath(node.id)(state)
@@ -110,10 +110,8 @@ const selectNodeDictForRun = (state: RootState): NodeDict => {
 
 const selectEdgeDictForRun = (state: RootState) => {
   const edgeDict: EdgeDict = {}
-  selectFlowElements(state)
-    .filter(isEdge)
-    .forEach((edge) => {
-      edgeDict[edge.id] = edge
-    })
+  selectFlowEdges(state).forEach((edge) => {
+    edgeDict[edge.id] = edge
+  })
   return edgeDict
 }

@@ -28,7 +28,7 @@ import { setCsvInputNodeParam } from 'store/slice/InputNode/InputNodeSlice'
 import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
 import { toHandleId } from './FlowChartUtils'
 import { FileSelect } from './FileSelect'
-import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
+import { deleteFlowNodeById } from 'store/slice/FlowElement/FlowElementSlice'
 import {
   selectCsvDataError,
   selectCsvDataIsFulfilled,
@@ -65,7 +65,7 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   const theme = useTheme()
 
   const onClickDeleteIcon = () => {
-    dispatch(deleteFlowElementsById(nodeId))
+    dispatch(deleteFlowNodeById(nodeId))
   }
 
   return (

@@ -11,7 +11,7 @@ import {
 import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
 import { toHandleId } from './FlowChartUtils'
 import { FileSelect } from './FileSelect'
-import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
+import { deleteFlowNodeById } from 'store/slice/FlowElement/FlowElementSlice'
 import { useHandleColor } from './HandleColorHook'
 import { ParamSettingDialog } from './CsvFileNode'
 
@@ -45,7 +45,7 @@ const BehaviorFileNodeImple = React.memo<NodeProps>(
     const behaviorColor = useHandleColor(returnType)
 
     const onClickDeleteIcon = () => {
-      dispatch(deleteFlowElementsById(nodeId))
+      dispatch(deleteFlowNodeById(nodeId))
     }
 
     return (
