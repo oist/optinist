@@ -1,8 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { importExperimentByUid } from '../Experiments/ExperimentsActions'
 import {
-  deleteFlowElements,
-  deleteFlowElementsById,
+  deleteFlowNodes,
+  deleteFlowNodeById,
 } from '../FlowElement/FlowElementSlice'
 
 type RightDrawer = {
@@ -19,7 +19,7 @@ export const RIGHT_DRAWER_MODE = {
 } as const
 
 export type RIGHT_DRAWER_MODE_TYPE =
-  typeof RIGHT_DRAWER_MODE[keyof typeof RIGHT_DRAWER_MODE]
+  (typeof RIGHT_DRAWER_MODE)[keyof typeof RIGHT_DRAWER_MODE]
 
 const initialState: RightDrawer = {
   open: false,
@@ -76,14 +76,14 @@ export const rightDrawerSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(deleteFlowElements, (state, action) => {
+      .addCase(deleteFlowNodes, (state, action) => {
         if (
           action.payload.findIndex((elm) => elm.id === state.currendNodeId) > 0
         ) {
           state.currendNodeId = null
         }
       })
-      .addCase(deleteFlowElementsById, (state, action) => {
+      .addCase(deleteFlowNodeById, (state, action) => {
         if (action.payload === state.currendNodeId) {
           state.currendNodeId = null
         }

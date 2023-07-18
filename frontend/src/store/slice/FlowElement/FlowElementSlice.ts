@@ -1,10 +1,13 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import {
-  Elements,
-  removeElements,
+  Node,
+  NodeChange,
+  Edge,
+  EdgeChange,
+  applyNodeChanges,
+  applyEdgeChanges,
   Position,
-  isNode,
-  FlowTransform,
+  Transform,
 } from 'react-flow-renderer'
 import {
   FLOW_ELEMENT_SLICE_NAME,
@@ -27,7 +30,7 @@ import { addAlgorithmNode, addInputNode } from './FlowElementActions'
 import { getLabelByPath } from './FlowElementUtils'
 import { uploadFile } from '../FileUploader/FileUploaderActions'
 
-const initialElements: Elements<NodeData> = [
+const initialNodes: Node<NodeData>[] = [
   {
     id: INITIAL_IMAGE_ELEMENT_ID,
     type: REACT_FLOW_NODE_TYPE_KEY.ImageFileNode,
@@ -40,11 +43,7 @@ const initialElements: Elements<NodeData> = [
   },
 ]
 
-const initialFlowPosition: FlowTransform = {
-  x: 0,
-  y: 0,
-  zoom: 0.7,
-}
+const initialFlowPosition: Transform = [0, 0, 0.7] // [x, y, zoom]
 
 const initialElementCoord: ElementCoord = {
   x: 100,
@@ -52,7 +51,8 @@ const initialElementCoord: ElementCoord = {
 }
 
 const initialState: FlowElement = {
-  flowElements: initialElements,
+  flowNodes: initialNodes,
+  flowEdges: [],
   flowPosition: initialFlowPosition,
   elementCoord: initialElementCoord,
 }
@@ -61,24 +61,48 @@ export const flowElementSlice = createSlice({
   name: FLOW_ELEMENT_SLICE_NAME,
   initialState,
   reducers: {
-    setFlowPosition: (state, action: PayloadAction<FlowTransform>) => {
+    setFlowPosition: (state, action: PayloadAction<Transform>) => {
       state.flowPosition = action.payload
     },
-    setFlowElements: (state, action: PayloadAction<Elements>) => {
-      state.flowElements = action.payload
+    setFlowNodes: (state, action: PayloadAction<Node[]>) => {
+      state.flowNodes = action.payload
     },
-    deleteFlowElements: (state, action: PayloadAction<Elements>) => {
-      state.flowElements = removeElements(action.payload, state.flowElements)
+    setFlowEdges: (state, action: PayloadAction<Edge[]>) => {
+      state.flowEdges = action.payload
     },
-    deleteFlowElementsById: (state, action: PayloadAction<string>) => {
-      const element = state.flowElements.find(
-        (edge) => edge.id === action.payload,
+    deleteFlowNodes: (state, action: PayloadAction<Node[]>) => {
+      state.flowNodes = applyNodeChanges(
+        action.payload.map((node) => {
+          return { id: node.id, type: 'remove' }
+        }),
+        state.flowNodes,
       )
+    },
+    setNodesChange: (state, action: PayloadAction<NodeChange[]>) => {
+      state.flowNodes = applyNodeChanges(action.payload, state.flowNodes)
+    },
+    setEdgesChange: (state, action: PayloadAction<EdgeChange[]>) => {
+      state.flowEdges = applyEdgeChanges(action.payload, state.flowEdges)
+    },
+    deleteFlowEdgeById: (state, action: PayloadAction<string>) => {
+      const element = state.flowEdges.find((edge) => edge.id === action.payload)
       if (element !== undefined) {
-        state.flowElements = removeElements([element], state.flowElements)
+        state.flowEdges = applyEdgeChanges(
+          [{ id: element.id, type: 'remove' }],
+          state.flowEdges,
+        )
       }
     },
-    editFlowElementPositionById: (
+    deleteFlowNodeById: (state, action: PayloadAction<string>) => {
+      const element = state.flowNodes.find((node) => node.id === action.payload)
+      if (element !== undefined) {
+        state.flowNodes = applyNodeChanges(
+          [{ id: element.id, type: 'remove' }],
+          state.flowNodes,
+        )
+      }
+    },
+    editFlowNodePositionById: (
       state,
       action: PayloadAction<{
         nodeId: string
@@ -89,13 +113,9 @@ export const flowElementSlice = createSlice({
       }>,
     ) => {
       let { nodeId, coord } = action.payload
-      const elementIdx = state.flowElements.findIndex(
-        (ele) => ele.id === nodeId,
-      )
-      const targetItem = state.flowElements[elementIdx]
-      if (isNode(targetItem)) {
-        targetItem.position = coord
-      }
+      const elementIdx = state.flowNodes.findIndex((node) => node.id === nodeId)
+      const targetItem = state.flowNodes[elementIdx]
+      targetItem.position = coord
     },
   },
   extraReducers: (builder) =>
@@ -114,9 +134,9 @@ export const flowElementSlice = createSlice({
           }
         }
         if (node.position != null) {
-          state.flowElements.push({ ...node, position: node.position })
+          state.flowNodes.push({ ...node, position: node.position })
         } else {
-          state.flowElements.push({ ...node, position: state.elementCoord })
+          state.flowNodes.push({ ...node, position: state.elementCoord })
           updateElementCoord(state)
         }
       })
@@ -134,19 +154,17 @@ export const flowElementSlice = createSlice({
           }
         }
         if (node.position != null) {
-          state.flowElements.push({ ...node, position: node.position })
+          state.flowNodes.push({ ...node, position: node.position })
         } else {
-          state.flowElements.push({ ...node, position: state.elementCoord })
+          state.flowNodes.push({ ...node, position: state.elementCoord })
           updateElementCoord(state)
         }
       })
       .addCase(setInputNodeFilePath, (state, action) => {
         let { nodeId, filePath } = action.payload
         const label = getLabelByPath(filePath)
-        const elementIdx = state.flowElements.findIndex(
-          (ele) => ele.id === nodeId,
-        )
-        const targetNode = state.flowElements[elementIdx]
+        const nodeIdx = state.flowNodes.findIndex((node) => node.id === nodeId)
+        const targetNode = state.flowNodes[nodeIdx]
         if (targetNode.data != null) {
           targetNode.data.label = label
         }
@@ -154,10 +172,10 @@ export const flowElementSlice = createSlice({
       .addCase(uploadFile.fulfilled, (state, action) => {
         const { nodeId } = action.meta.arg
         if (nodeId != null) {
-          const elementIdx = state.flowElements.findIndex(
-            (ele) => ele.id === nodeId,
+          const nodeIdx = state.flowNodes.findIndex(
+            (node) => node.id === nodeId,
           )
-          const targetNode = state.flowElements[elementIdx]
+          const targetNode = state.flowNodes[nodeIdx]
           if (targetNode.data != null) {
             targetNode.data.label = getLabelByPath(action.payload.resultPath)
           }
@@ -166,9 +184,7 @@ export const flowElementSlice = createSlice({
       .addCase(importExperimentByUid.fulfilled, (state, action) => {
         state.flowPosition = initialFlowPosition
         state.elementCoord = initialElementCoord
-        const newNodeList: Elements<NodeData> = Object.values(
-          action.payload.nodeDict,
-        ).map((node) => {
+        state.flowNodes = Object.values(action.payload.nodeDict).map((node) => {
           if (isInputNodePostData(node)) {
             return {
               ...node,
@@ -187,9 +203,7 @@ export const flowElementSlice = createSlice({
             }
           }
         })
-        state.flowElements = newNodeList.concat(
-          Object.values(action.payload.edgeDict),
-        )
+        state.flowEdges = Object.values(action.payload.edgeDict)
       }),
 })
 
@@ -209,11 +223,15 @@ function updateElementCoord(state: FlowElement) {
 }
 
 export const {
+  setNodesChange,
+  setEdgesChange,
   setFlowPosition,
-  setFlowElements,
-  deleteFlowElements,
-  deleteFlowElementsById,
-  editFlowElementPositionById,
+  setFlowNodes,
+  setFlowEdges,
+  deleteFlowNodes,
+  deleteFlowEdgeById,
+  deleteFlowNodeById,
+  editFlowNodePositionById,
 } = flowElementSlice.actions
 
 export default flowElementSlice.reducer

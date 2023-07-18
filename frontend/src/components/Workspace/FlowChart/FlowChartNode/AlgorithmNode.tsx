@@ -25,7 +25,7 @@ import { NodeData } from 'store/slice/FlowElement/FlowElementType'
 import { useHandleColor } from './HandleColorHook'
 import { toHandleId, isValidConnection } from './FlowChartUtils'
 import { toggleParamForm } from 'store/slice/RightDrawer/RightDrawerSlice'
-import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
+import { deleteFlowNodeById } from 'store/slice/FlowElement/FlowElementSlice'
 import {
   selectPipelineLatestUid,
   selectPipelineNodeResultMessage,
@@ -72,7 +72,7 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
     }
 
     const onClickDeleteIcon = () => {
-      dispatch(deleteFlowElementsById(nodeId))
+      dispatch(deleteFlowNodeById(nodeId))
     }
 
     const onClickOutputButton = () => {

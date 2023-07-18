@@ -1,8 +1,8 @@
 import { RootState } from 'store/store'
-import { isNodeData } from './FlowElementUtils'
 
-export const selectFlowElements = (state: RootState) =>
-  state.flowElement.flowElements
+export const selectFlowNodes = (state: RootState) => state.flowElement.flowNodes
+
+export const selectFlowEdges = (state: RootState) => state.flowElement.flowEdges
 
 export const selectFlowPosition = (state: RootState) =>
   state.flowElement.flowPosition
@@ -11,9 +11,7 @@ export const selectElementCoord = (state: RootState) =>
   state.flowElement.elementCoord
 
 export const selectNodeById = (nodeId: string) => (state: RootState) =>
-  selectFlowElements(state)
-    .filter(isNodeData)
-    .find((node) => node.id === nodeId)
+  selectFlowNodes(state).find((node) => node.id === nodeId)
 
 export const selectNodeTypeById = (nodeId: string) => (state: RootState) =>
   selectNodeById(nodeId)(state)?.data?.type
