@@ -1,11 +1,6 @@
 import { useDispatch } from 'react-redux'
-import {
-  EdgeProps,
-  getBezierPath,
-  getMarkerEnd,
-  getEdgeCenter,
-} from 'react-flow-renderer'
-import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
+import { EdgeProps, getBezierPath, getEdgeCenter } from 'react-flow-renderer'
+import { deleteFlowEdgeById } from 'store/slice/FlowElement/FlowElementSlice'
 import 'style/flowbutton.css'
 
 const foreignObjectSize = 40
@@ -20,8 +15,7 @@ export const CustomEdge: React.FC<EdgeProps> = ({
   targetPosition,
   style = {},
   data,
-  arrowHeadType,
-  markerEndId,
+  markerEnd,
 }) => {
   const edgePath = getBezierPath({
     sourceX,
@@ -31,7 +25,7 @@ export const CustomEdge: React.FC<EdgeProps> = ({
     targetY,
     targetPosition,
   })
-  const markerEnd = getMarkerEnd(arrowHeadType, markerEndId)
+
   const [edgeCenterX, edgeCenterY] = getEdgeCenter({
     sourceX,
     sourceY,
@@ -42,7 +36,7 @@ export const CustomEdge: React.FC<EdgeProps> = ({
   const dispatch = useDispatch()
 
   const onEdgeClick = () => {
-    dispatch(deleteFlowElementsById(id))
+    dispatch(deleteFlowEdgeById(id))
   }
 
   return (

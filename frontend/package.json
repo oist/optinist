@@ -29,9 +29,10 @@
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^17.0.2",
-    "react-flow-renderer": "^9.6.6",
+    "react-flow-renderer": "^10.3.17",
     "react-linear-gradient-picker": "^2.0.2",
     "react-plotlyjs-ts": "^2.2.2",
+    "react-redux": "^7.2.9",
     "react-router-dom": "^6.6.2",
     "react-scripts": "4.0.3",
     "styled-components": "^5.3.0",
@@ -66,6 +67,7 @@
   },
   "devDependencies": {
     "@types/plotly.js": "^1.54.16",
+    "@types/react-redux": "^7.1.25",
     "lint-staged": "^11.1.2",
     "prettier": "^2.3.2"
   },

@@ -2,10 +2,9 @@ import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
 
 import { convertToParamMap, getChildParam } from 'utils/param/ParamUtils'
 import {
-  deleteFlowElements,
-  deleteFlowElementsById,
+  deleteFlowNodes,
+  deleteFlowNodeById,
 } from '../FlowElement/FlowElementSlice'
-import { isNodeData } from '../FlowElement/FlowElementUtils'
 import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
 import { importExperimentByUid } from '../Experiments/ExperimentsActions'
 import { getAlgoParams } from './AlgorithmNodeActions'
@@ -57,16 +56,14 @@ export const algorithmNodeSlice = createSlice({
           }
         }
       })
-      .addCase(deleteFlowElements, (state, action) => {
-        action.payload
-          .filter((node) => isNodeData(node))
-          .forEach((node) => {
-            if (node.data?.type === NODE_TYPE_SET.ALGORITHM) {
-              delete state[node.id]
-            }
-          })
+      .addCase(deleteFlowNodes, (state, action) => {
+        action.payload.forEach((node) => {
+          if (node.data?.type === NODE_TYPE_SET.ALGORITHM) {
+            delete state[node.id]
+          }
+        })
       })
-      .addCase(deleteFlowElementsById, (state, action) => {
+      .addCase(deleteFlowNodeById, (state, action) => {
         if (Object.keys(state).includes(action.payload)) {
           delete state[action.payload]
         }

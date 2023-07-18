@@ -1,6 +1,6 @@
 import { store, rootReducer } from 'store/store'
 import { REACT_FLOW_NODE_TYPE_KEY } from 'const/flowchart'
-import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
+import { deleteFlowNodeById } from 'store/slice/FlowElement/FlowElementSlice'
 import { addInputNode } from 'store/slice/FlowElement/FlowElementActions'
 import { NODE_TYPE_SET } from 'store/slice/FlowElement/FlowElementType'
 import { selectNodeById } from 'store/slice/FlowElement/FlowElementSelectors'
@@ -42,11 +42,11 @@ describe('InputNode', () => {
   })
 
   // 削除
-  test(deleteFlowElementsById.type, () => {
-    const deleteFlowElementsByIdAction = deleteFlowElementsById(nodeId)
+  test(deleteFlowNodeById.type, () => {
+    const deleteFlowNodeByIdAction = deleteFlowNodeById(nodeId)
     const targetState = rootReducer(
       rootReducer(initialRootState, addImageInputNodeAction),
-      deleteFlowElementsByIdAction,
+      deleteFlowNodeByIdAction,
     )
     // FlowElement
     expect(selectNodeById(nodeId)(targetState)).toBeUndefined()

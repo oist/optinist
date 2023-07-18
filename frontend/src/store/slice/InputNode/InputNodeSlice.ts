@@ -5,11 +5,10 @@ import { importExperimentByUid } from '../Experiments/ExperimentsActions'
 import { uploadFile } from '../FileUploader/FileUploaderActions'
 import { addInputNode } from '../FlowElement/FlowElementActions'
 import {
-  deleteFlowElements,
-  deleteFlowElementsById,
+  deleteFlowNodes,
+  deleteFlowNodeById,
 } from '../FlowElement/FlowElementSlice'
 import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
-import { isNodeData } from '../FlowElement/FlowElementUtils'
 import { setInputNodeFilePath } from './InputNodeActions'
 import {
   CsvInputParamType,
@@ -119,16 +118,14 @@ export const inputNodeSlice = createSlice({
           }
         }
       })
-      .addCase(deleteFlowElements, (state, action) => {
-        action.payload
-          .filter((node) => isNodeData(node))
-          .forEach((node) => {
-            if (node.data?.type === NODE_TYPE_SET.INPUT) {
-              delete state[node.id]
-            }
-          })
+      .addCase(deleteFlowNodes, (state, action) => {
+        action.payload.forEach((node) => {
+          if (node.data?.type === NODE_TYPE_SET.INPUT) {
+            delete state[node.id]
+          }
+        })
       })
-      .addCase(deleteFlowElementsById, (state, action) => {
+      .addCase(deleteFlowNodeById, (state, action) => {
         if (Object.keys(state).includes(action.payload)) {
           delete state[action.payload]
         }
