@@ -4,8 +4,6 @@ from studio.app.optinist.core.edit_ROI import EditRoiUtils, ACTION
 from studio.app.const import FILETYPE
 from studio.app.dir_path import DIRPATH
 
-configfile: join_filepath([DIRPATH.STUDIO_DIR, 'config.yaml'])
-
 if config.get('type') == ACTION.EDIT_ROI:
     rule edit_ROI:
         conda:

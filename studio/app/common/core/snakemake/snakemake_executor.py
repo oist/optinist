@@ -18,6 +18,16 @@ def snakemake_execute(workspace_id: str, unique_id: str, params: SmkParam):
         cores=params.cores,
         use_conda=params.use_conda,
         workdir=f"{os.path.dirname(DIRPATH.STUDIO_DIR)}",
+        configfiles=[
+            join_filepath(
+                [
+                    DIRPATH.OUTPUT_DIR,
+                    workspace_id,
+                    unique_id,
+                    DIRPATH.SNAKEMAKE_CONFIG_YML,
+                ]
+            )
+        ],
         log_handler=[Logger(workspace_id, unique_id).smk_logger],
     )
 

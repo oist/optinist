@@ -30,7 +30,7 @@ class DIRPATH:
 
     SNAKEMAKE_FILEPATH = f"{APP_DIR}/Snakefile"
     EXPERIMENT_YML = "experiment.yaml"
-    SNAKEMAKE_CONFIG_YML = "config.yaml"
+    SNAKEMAKE_CONFIG_YML = "snakemake.yaml"
 
     FIREBASE_PRIVATE_PATH = f"{CONFIG_DIR}/auth/firebase_private.json"
     FIREBASE_CONFIG_PATH = f"{CONFIG_DIR}/auth/firebase_config.json"
