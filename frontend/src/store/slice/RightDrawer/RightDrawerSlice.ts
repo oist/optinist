@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { importExperimentByUid } from '../Experiments/ExperimentsActions'
+import { importWorkflowByUid } from 'store/slice/Workflow/WorkflowActions'
 import {
   deleteFlowNodes,
   deleteFlowNodeById,
@@ -19,7 +19,7 @@ export const RIGHT_DRAWER_MODE = {
 } as const
 
 export type RIGHT_DRAWER_MODE_TYPE =
-  (typeof RIGHT_DRAWER_MODE)[keyof typeof RIGHT_DRAWER_MODE]
+  typeof RIGHT_DRAWER_MODE[keyof typeof RIGHT_DRAWER_MODE]
 
 const initialState: RightDrawer = {
   open: false,
@@ -88,7 +88,7 @@ export const rightDrawerSlice = createSlice({
           state.currendNodeId = null
         }
       })
-      .addCase(importExperimentByUid.fulfilled, () => {
+      .addCase(importWorkflowByUid.fulfilled, () => {
         return initialState
       })
   },

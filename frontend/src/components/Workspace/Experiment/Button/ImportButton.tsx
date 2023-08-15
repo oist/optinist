@@ -2,7 +2,7 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import IconButton from '@mui/material/IconButton'
 import { useSnackbar } from 'notistack'
-import { importExperimentByUid } from 'store/slice/Experiments/ExperimentsActions'
+import { importWorkflowByUid } from 'store/slice/Workflow/WorkflowActions'
 import { AppDispatch } from 'store/store'
 import { ExperimentUidContext } from '../ExperimentTable'
 import ReplyIcon from '@mui/icons-material/Reply'
@@ -17,7 +17,7 @@ export const ImportButton = React.memo(() => {
 
   const onClick = () => {
     if (workspaceId) {
-      dispatch(importExperimentByUid({workspaceId, uid}))
+      dispatch(importWorkflowByUid({workspaceId, uid}))
       .unwrap()
       .then(() => {
         enqueueSnackbar('Successfully imported.', { variant: 'success' })

@@ -1,7 +1,7 @@
 import axios from 'utils/axios'
 
 import { BASE_URL } from 'const/API'
-import { EdgeDict, NodeDict, OutputPathsDTO, RunPostData } from 'api/run/Run'
+import { EdgeDict, NodeDict, OutputPathsDTO } from 'api/run/Run'
 import { EXPERIMENTS_STATUS } from 'store/slice/Experiments/ExperimentsType'
 
 export type ExperimentsDTO = {
@@ -60,16 +60,6 @@ export async function deleteExperimentByListApi(
     {
       uidList,
     },
-  )
-  return response.data
-}
-
-export async function importExperimentByUidApi(
-  workspaceId: string,
-  uid: string,
-): Promise<RunPostData> {
-  const response = await axios.get(
-    `${BASE_URL}/experiments/import/${workspaceId}/${uid}`,
   )
   return response.data
 }

@@ -11,8 +11,6 @@ class ExptConfigBuilder:
         self._success = None
         self._hasNWB = False
         self._function = {}
-        self._nodeDict = None
-        self._edgeDict = None
 
     def set_config(self, config: ExptConfig) -> "ExptConfigBuilder":
         self._workspace_id = config.workspace_id
@@ -23,8 +21,6 @@ class ExptConfigBuilder:
         self._success = config.success
         self._hasNWB = config.hasNWB
         self._function = config.function
-        self._nodeDict = config.nodeDict
-        self._edgeDict = config.edgeDict
         return self
 
     def set_workspace_id(self, workspace_id) -> "ExptConfigBuilder":
@@ -55,14 +51,6 @@ class ExptConfigBuilder:
         self._function = function
         return self
 
-    def set_nodeDict(self, nodeDict) -> "ExptConfigBuilder":
-        self._nodeDict = nodeDict
-        return self
-
-    def set_edgeDict(self, edgeDict) -> "ExptConfigBuilder":
-        self._edgeDict = edgeDict
-        return self
-
     def build(self) -> ExptConfig:
         return ExptConfig(
             workspace_id=self._workspace_id,
@@ -73,6 +61,4 @@ class ExptConfigBuilder:
             success=self._success,
             hasNWB=self._hasNWB,
             function=self._function,
-            nodeDict=self._nodeDict,
-            edgeDict=self._edgeDict,
         )

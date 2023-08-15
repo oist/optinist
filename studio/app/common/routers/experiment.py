@@ -5,7 +5,7 @@ from typing import Dict
 from fastapi import APIRouter
 from fastapi.responses import FileResponse
 
-from studio.app.common.core.experiment.experiment import ExptConfig, ExptImportData
+from studio.app.common.core.experiment.experiment import ExptConfig
 from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.schemas.experiment import DeleteItem, RenameItem
@@ -23,8 +23,6 @@ async def get_experiments(workspace_id: str):
     for path in config_paths:
         try:
             config = ExptConfigReader.read(path)
-            config.nodeDict = []
-            config.edgeDict = []
             exp_config[config.unique_id] = config
         except Exception:
             pass
@@ -40,23 +38,8 @@ async def rename_experiment(workspace_id: str, unique_id: str, item: RenameItem)
         ),
         new_name=item.new_name,
     )
-    config.nodeDict = []
-    config.edgeDict = []
 
     return config
-
-
-@router.get("/import/{workspace_id}/{unique_id}", response_model=ExptImportData)
-async def import_experiment(workspace_id: str, unique_id: str):
-    config = ExptConfigReader.read(
-        join_filepath(
-            [DIRPATH.OUTPUT_DIR, workspace_id, unique_id, DIRPATH.EXPERIMENT_YML]
-        )
-    )
-    return {
-        "nodeDict": config.nodeDict,
-        "edgeDict": config.edgeDict,
-    }
 
 
 @router.delete("/{workspace_id}/{unique_id}", response_model=bool)

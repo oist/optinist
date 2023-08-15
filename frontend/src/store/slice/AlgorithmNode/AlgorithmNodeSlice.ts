@@ -6,7 +6,7 @@ import {
   deleteFlowNodeById,
 } from '../FlowElement/FlowElementSlice'
 import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
-import { importExperimentByUid } from '../Experiments/ExperimentsActions'
+import { importWorkflowByUid } from 'store/slice/Workflow/WorkflowActions'
 import { getAlgoParams } from './AlgorithmNodeActions'
 import { ALGORITHM_NODE_SLICE_NAME, AlgorithmNode } from './AlgorithmNodeType'
 import { isAlgorithmNodePostData } from 'api/run/RunUtils'
@@ -68,7 +68,7 @@ export const algorithmNodeSlice = createSlice({
           delete state[action.payload]
         }
       })
-      .addCase(importExperimentByUid.fulfilled, (_, action) => {
+      .addCase(importWorkflowByUid.fulfilled, (_, action) => {
         const newState: AlgorithmNode = {}
         Object.values(action.payload.nodeDict)
           .filter(isAlgorithmNodePostData)

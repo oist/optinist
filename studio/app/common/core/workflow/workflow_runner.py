@@ -1,7 +1,6 @@
 from dataclasses import asdict
 from typing import Dict, List
 
-from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
 from studio.app.common.core.experiment.experiment_writer import ExptConfigWriter
 from studio.app.common.core.snakemake.smk import FlowConfig, Rule, SmkParam
 from studio.app.common.core.snakemake.snakemake_executor import (
@@ -13,6 +12,8 @@ from studio.app.common.core.snakemake.snakemake_rule import SmkRule
 from studio.app.common.core.snakemake.snakemake_writer import SmkConfigWriter
 from studio.app.common.core.workflow.workflow import NodeType, RunItem
 from studio.app.common.core.workflow.workflow_params import get_typecheck_params
+from studio.app.common.core.workflow.workflow_reader import WorkflowConfigReader
+from studio.app.common.core.workflow.workflow_writer import WorkflowConfigWriter
 
 
 class WorkflowRunner:
@@ -20,15 +21,20 @@ class WorkflowRunner:
         self.workspace_id = workspace_id
         self.unique_id = unique_id
         self.runItem = runItem
-        self.nodeDict = ExptConfigReader.read_nodeDict(self.runItem.nodeDict)
-        self.edgeDict = ExptConfigReader.read_edgeDict(self.runItem.edgeDict)
+        self.nodeDict = WorkflowConfigReader.read_nodeDict(self.runItem.nodeDict)
+        self.edgeDict = WorkflowConfigReader.read_edgeDict(self.runItem.edgeDict)
+
+        WorkflowConfigWriter(
+            self.workspace_id,
+            self.unique_id,
+            self.nodeDict,
+            self.edgeDict,
+        ).write()
 
         ExptConfigWriter(
             self.workspace_id,
             self.unique_id,
             self.runItem.name,
-            self.nodeDict,
-            self.edgeDict,
         ).write()
 
     def run_workflow(self, background_tasks):

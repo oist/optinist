@@ -1,0 +1,18 @@
+from fastapi import APIRouter
+
+from studio.app.common.core.utils.filepath_creater import join_filepath
+from studio.app.common.core.workflow.workflow import WorkflowConfig
+from studio.app.common.core.workflow.workflow_reader import WorkflowConfigReader
+from studio.app.dir_path import DIRPATH
+
+router = APIRouter(prefix="/workflow", tags=["workflow"])
+
+
+@router.get("/import/{workspace_id}/{unique_id}", response_model=WorkflowConfig)
+async def import_experiment(workspace_id: str, unique_id: str):
+    config = WorkflowConfigReader.read(
+        join_filepath(
+            [DIRPATH.OUTPUT_DIR, workspace_id, unique_id, DIRPATH.WORKFLOW_YML]
+        )
+    )
+    return config

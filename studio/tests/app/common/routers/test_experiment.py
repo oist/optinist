@@ -30,14 +30,6 @@ def test_get():
     assert isinstance(data[next(iter(data))], dict)
 
 
-def test_import():
-    response = client.get(f"/experiments/import/{workspace_id}/{unique_id}")
-    data = response.json()
-
-    assert response.status_code == 200
-    assert isinstance(data, dict)
-
-
 def test_delete():
     dirname = "delete_dir"
     dirpath = join_filepath([f"{DIRPATH.DATA_DIR}/output/{workspace_id}", dirname])

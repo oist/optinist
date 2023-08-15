@@ -23,7 +23,7 @@ import {
   INITIAL_IMAGE_ELEMENT_NAME,
   REACT_FLOW_NODE_TYPE_KEY,
 } from 'const/flowchart'
-import { importExperimentByUid } from '../Experiments/ExperimentsActions'
+import { importWorkflowByUid } from 'store/slice/Workflow/WorkflowActions'
 import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
 import { isInputNodePostData } from 'api/run/RunUtils'
 import { addAlgorithmNode, addInputNode } from './FlowElementActions'
@@ -181,7 +181,7 @@ export const flowElementSlice = createSlice({
           }
         }
       })
-      .addCase(importExperimentByUid.fulfilled, (state, action) => {
+      .addCase(importWorkflowByUid.fulfilled, (state, action) => {
         state.flowPosition = initialFlowPosition
         state.elementCoord = initialElementCoord
         state.flowNodes = Object.values(action.payload.nodeDict).map((node) => {

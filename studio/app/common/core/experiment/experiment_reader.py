@@ -3,14 +3,7 @@ from typing import Dict
 import yaml
 
 from studio.app.common.core.experiment.experiment import ExptConfig, ExptFunction
-from studio.app.common.core.workflow.workflow import (
-    Edge,
-    Node,
-    NodeData,
-    NodePosition,
-    OutputPath,
-    Style,
-)
+from studio.app.common.core.workflow.workflow import OutputPath
 
 
 class ExptConfigReader:
@@ -28,8 +21,6 @@ class ExptConfigReader:
             success=config.get("success", "running"),
             hasNWB=config["hasNWB"],
             function=cls.read_function(config["function"]),
-            nodeDict=cls.read_nodeDict(config["nodeDict"]),
-            edgeDict=cls.read_edgeDict(config["edgeDict"]),
         )
 
     @classmethod
@@ -44,35 +35,6 @@ class ExptConfigReader:
                 hasNWB=value["hasNWB"],
                 message=value.get("message"),
                 outputPaths=cls.read_output_paths(value.get("outputPaths")),
-            )
-            for key, value in config.items()
-        }
-
-    @classmethod
-    def read_nodeDict(cls, config) -> Dict[str, Node]:
-        return {
-            key: Node(
-                id=key,
-                type=value["type"],
-                data=NodeData(**value["data"]),
-                position=NodePosition(**value["position"]),
-                style=Style(**value["style"]),
-            )
-            for key, value in config.items()
-        }
-
-    @classmethod
-    def read_edgeDict(cls, config) -> Dict[str, Edge]:
-        return {
-            key: Edge(
-                id=key,
-                type=value["type"],
-                animated=value["animated"],
-                source=value["source"],
-                sourceHandle=value["sourceHandle"],
-                target=value["target"],
-                targetHandle=value["targetHandle"],
-                style=Style(**value["style"]),
             )
             for key, value in config.items()
         }
@@ -109,6 +71,4 @@ class ExptConfigReader:
             success=config.get("success", "running"),
             hasNWB=config["hasNWB"],
             function=cls.read_function(config["function"]),
-            nodeDict=cls.read_nodeDict(config["nodeDict"]),
-            edgeDict=cls.read_edgeDict(config["edgeDict"]),
         )
