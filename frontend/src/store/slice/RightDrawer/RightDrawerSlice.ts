@@ -1,5 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { importWorkflowByUid } from 'store/slice/Workflow/WorkflowActions'
+import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
+import {
+  importWorkflowByUid,
+  loadWorkflowConfig,
+} from 'store/slice/Workflow/WorkflowActions'
 import {
   deleteFlowNodes,
   deleteFlowNodeById,
@@ -88,9 +91,12 @@ export const rightDrawerSlice = createSlice({
           state.currendNodeId = null
         }
       })
-      .addCase(importWorkflowByUid.fulfilled, () => {
-        return initialState
-      })
+      .addMatcher(
+        isAnyOf(importWorkflowByUid.fulfilled, loadWorkflowConfig.fulfilled),
+        () => {
+          return initialState
+        },
+      )
   },
 })
 

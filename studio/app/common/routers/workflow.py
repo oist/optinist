@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+import yaml
+from fastapi import APIRouter, File, UploadFile
 from fastapi.responses import FileResponse
 
 from studio.app.common.core.utils.filepath_creater import join_filepath
@@ -25,3 +26,9 @@ async def download_workspace_config(workspace_id: str, unique_id: str):
         [DIRPATH.OUTPUT_DIR, workspace_id, unique_id, DIRPATH.WORKFLOW_YML]
     )
     return FileResponse(config_filepath, filename=DIRPATH.WORKFLOW_YML)
+
+
+@router.post("/load")
+async def load_workflow_config(file: UploadFile = File(...)):
+    contents = yaml.safe_load(await file.read())
+    return WorkflowConfig(**contents)

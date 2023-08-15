@@ -6,7 +6,10 @@ import {
   deleteFlowNodeById,
 } from '../FlowElement/FlowElementSlice'
 import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
-import { importWorkflowByUid } from 'store/slice/Workflow/WorkflowActions'
+import {
+  importWorkflowByUid,
+  loadWorkflowConfig,
+} from 'store/slice/Workflow/WorkflowActions'
 import { getAlgoParams } from './AlgorithmNodeActions'
 import { ALGORITHM_NODE_SLICE_NAME, AlgorithmNode } from './AlgorithmNodeType'
 import { isAlgorithmNodePostData } from 'api/run/RunUtils'
@@ -68,22 +71,25 @@ export const algorithmNodeSlice = createSlice({
           delete state[action.payload]
         }
       })
-      .addCase(importWorkflowByUid.fulfilled, (_, action) => {
-        const newState: AlgorithmNode = {}
-        Object.values(action.payload.nodeDict)
-          .filter(isAlgorithmNodePostData)
-          .forEach((node) => {
-            if (node.data != null) {
-              newState[node.id] = {
-                name: node.data.label,
-                functionPath: node.data.path,
-                params: node.data.param,
-                isUpdated: false,
+      .addMatcher(
+        isAnyOf(importWorkflowByUid.fulfilled, loadWorkflowConfig.fulfilled),
+        (_, action) => {
+          const newState: AlgorithmNode = {}
+          Object.values(action.payload.nodeDict)
+            .filter(isAlgorithmNodePostData)
+            .forEach((node) => {
+              if (node.data != null) {
+                newState[node.id] = {
+                  name: node.data.label,
+                  functionPath: node.data.path,
+                  params: node.data.param,
+                  isUpdated: false,
+                }
               }
-            }
-          })
-        return newState
-      })
+            })
+          return newState
+        },
+      )
       .addMatcher(
         isAnyOf(run.fulfilled, runByCurrentUid.fulfilled),
         (state, action) => {
