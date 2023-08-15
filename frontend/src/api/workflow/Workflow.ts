@@ -12,3 +12,16 @@ export async function importWorkflowByUidApi(
   )
   return response.data
 }
+
+export async function downloadWorkflowConfigApi(
+  workspaceId: string,
+  uid: string,
+) {
+  const response = await axios.get(
+    `${BASE_URL}/workflow/download/${workspaceId}/${uid}`,
+    {
+      responseType: 'blob',
+    },
+  )
+  return response.data
+}

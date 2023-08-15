@@ -46,6 +46,7 @@ import { DeleteButton } from './Button/DeleteButton'
 import {
   NWBDownloadButton,
   ConfigDownloadButton,
+  WorkflowDownloadButton
 } from './Button/DownloadButton'
 import { ImportButton } from './Button/ImportButton'
 import { useLocalStorage } from 'components/utils/LocalStorageUtil'
@@ -359,6 +360,7 @@ const HeadItem = React.memo<{
           </TableCell>
           <TableCell>Success</TableCell>
           <TableCell>Reproduce</TableCell>
+          <TableCell>Workflow</TableCell>
           <TableCell>SnakeFile</TableCell>
           <TableCell>NWB</TableCell>
           <TableCell>Delete</TableCell>
@@ -464,6 +466,9 @@ const RowItem = React.memo<{
         </TableCell>
         <TableCell>
           <ImportButton />
+        </TableCell>
+        <TableCell>
+          <WorkflowDownloadButton />
         </TableCell>
         <TableCell>
           <ConfigDownloadButton />

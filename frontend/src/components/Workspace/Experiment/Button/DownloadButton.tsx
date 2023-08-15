@@ -9,6 +9,7 @@ import {
 
 import { ExperimentUidContext } from '../ExperimentTable'
 import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
+import { downloadWorkflowConfigApi } from 'api/workflow/Workflow'
 
 export const NWBDownloadButton = React.memo<{
   name: string
@@ -68,6 +69,36 @@ export const ConfigDownloadButton = React.memo(() => {
         <GetAppIcon color="primary" />
       </IconButton>
       <a href={url} download={`snakemake.yaml`} className="hidden" ref={ref}>
+        {/* 警告が出るので空文字を入れておく */}{' '}
+      </a>
+    </>
+  )
+})
+
+export const WorkflowDownloadButton = React.memo(() => {
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const uid = React.useContext(ExperimentUidContext)
+  const ref = useRef<HTMLAnchorElement | null>(null)
+  const [url, setFileUrl] = useState<string>()
+
+  const onClick = async () => {
+    try {
+      const responseData = await downloadWorkflowConfigApi(workspaceId!, uid)
+      const url = URL.createObjectURL(new Blob([responseData]))
+      setFileUrl(url)
+      ref.current?.click()
+      URL.revokeObjectURL(url)
+    } catch (error) {
+      throw new Error('Download Error')
+    }
+  }
+
+  return (
+    <>
+      <IconButton onClick={onClick}>
+        <GetAppIcon color="primary" />
+      </IconButton>
+      <a href={url} download={`workflow.yaml`} className="hidden" ref={ref}>
         {/* 警告が出るので空文字を入れておく */}{' '}
       </a>
     </>

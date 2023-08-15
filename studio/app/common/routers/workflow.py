@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi.responses import FileResponse
 
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.workflow.workflow import WorkflowConfig
@@ -16,3 +17,11 @@ async def import_experiment(workspace_id: str, unique_id: str):
         )
     )
     return config
+
+
+@router.get("/download/{workspace_id}/{unique_id}")
+async def download_workspace_config(workspace_id: str, unique_id: str):
+    config_filepath = join_filepath(
+        [DIRPATH.OUTPUT_DIR, workspace_id, unique_id, DIRPATH.WORKFLOW_YML]
+    )
+    return FileResponse(config_filepath, filename=DIRPATH.WORKFLOW_YML)
