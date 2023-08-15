@@ -23,8 +23,8 @@ smk_param = SmkParam(
 )
 
 shutil.copyfile(
-    f"{DIRPATH.DATA_DIR}/config.yaml",
-    f"{DIRPATH.STUDIO_DIR}/config.yaml",
+    f"{DIRPATH.DATA_DIR}/snakemake.yaml",
+    f"{DIRPATH.DATA_DIR}/output/default/snakemake/snakemake.yaml",
 )
 
 
