@@ -1,5 +1,5 @@
 import yaml
-from fastapi import APIRouter, File, UploadFile
+from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
 
 from studio.app.common.core.utils.filepath_creater import join_filepath
@@ -30,5 +30,10 @@ async def download_workspace_config(workspace_id: str, unique_id: str):
 
 @router.post("/load")
 async def load_workflow_config(file: UploadFile = File(...)):
-    contents = yaml.safe_load(await file.read())
-    return WorkflowConfig(**contents)
+    try:
+        contents = yaml.safe_load(await file.read())
+        if contents is None:
+            raise HTTPException(status_code=400, detail="Invalid yaml file")
+        return WorkflowConfig(**contents)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Parsing yaml failed: {str(e)}")

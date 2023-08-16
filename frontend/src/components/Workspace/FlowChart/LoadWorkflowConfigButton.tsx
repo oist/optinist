@@ -28,8 +28,8 @@ export const LoadWorkflowConfigButton = React.memo(() => {
           enqueueSnackbar('Successfully loaded', { variant: 'success' })
           dispatch(reset())
         })
-        .catch((e) => {
-          enqueueSnackbar(e.message, { variant: 'error' })
+        .catch(() => {
+          enqueueSnackbar('Invalid yaml file', { variant: 'error' })
         })
     }
   }
