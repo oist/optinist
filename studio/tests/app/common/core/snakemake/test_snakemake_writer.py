@@ -5,7 +5,7 @@ from studio.app.dir_path import DIRPATH
 
 workspace_id = "default"
 unique_id = "smk_test"
-output_fileapth = f"{DIRPATH.DATA_DIR}/output/{workspace_id}/{unique_id}/config.yaml"
+output_fileapth = f"{DIRPATH.DATA_DIR}/output/{workspace_id}/{unique_id}/snakemake.yaml"
 
 
 def test():

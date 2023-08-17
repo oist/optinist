@@ -67,7 +67,7 @@ export const ConfigDownloadButton = React.memo(() => {
       <IconButton onClick={onClick}>
         <GetAppIcon color="primary" />
       </IconButton>
-      <a href={url} download={`config.yaml`} className="hidden" ref={ref}>
+      <a href={url} download={`snakemake.yaml`} className="hidden" ref={ref}>
         {/* 警告が出るので空文字を入れておく */}{' '}
       </a>
     </>
