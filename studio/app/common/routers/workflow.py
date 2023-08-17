@@ -14,12 +14,13 @@ router = APIRouter(prefix="/workflow", tags=["workflow"])
 
 @router.get("/reproduce/{workspace_id}/{unique_id}", response_model=WorkflowConfig)
 async def reproduce_experiment(workspace_id: str, unique_id: str):
-    config = WorkflowConfigReader.read(
-        join_filepath(
-            [DIRPATH.OUTPUT_DIR, workspace_id, unique_id, DIRPATH.WORKFLOW_YML]
-        )
+    config_filepath = join_filepath(
+        [DIRPATH.OUTPUT_DIR, workspace_id, unique_id, DIRPATH.WORKFLOW_YML]
     )
-    return config
+    if os.path.exists(config_filepath):
+        return WorkflowConfigReader.read(config_filepath)
+    else:
+        raise HTTPException(status_code=404, detail="file not found")
 
 
 @router.get("/download/{workspace_id}/{unique_id}")
@@ -33,8 +34,8 @@ async def download_workspace_config(workspace_id: str, unique_id: str):
         raise HTTPException(status_code=404, detail="file not found")
 
 
-@router.post("/load")
-async def load_workflow_config(file: UploadFile = File(...)):
+@router.post("/import")
+async def import_workflow_config(file: UploadFile = File(...)):
     try:
         contents = yaml.safe_load(await file.read())
         if contents is None:

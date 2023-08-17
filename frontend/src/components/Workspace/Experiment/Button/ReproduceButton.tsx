@@ -20,11 +20,14 @@ export const ReproduceButton = React.memo(() => {
       dispatch(reproduceWorkflow({workspaceId, uid}))
       .unwrap()
       .then(() => {
-        enqueueSnackbar('Successfully imported.', { variant: 'success' })
+        enqueueSnackbar('Successfully reproduced.', { variant: 'success' })
         dispatch(reset())
       })
+      .catch(() => {
+        enqueueSnackbar('Failed to reproduce', { variant: 'error' })
+      })
     } else {
-      throw new Error('Workspace ID is missing.')
+      enqueueSnackbar('Workspace id is missing', { variant: 'error' })
     }
   }
   return (

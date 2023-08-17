@@ -25,7 +25,7 @@ import {
 } from 'const/flowchart'
 import {
   reproduceWorkflow,
-  loadWorkflowConfig,
+  importWorkflowConfig,
 } from 'store/slice/Workflow/WorkflowActions'
 import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
 import { isInputNodePostData } from 'api/run/RunUtils'
@@ -185,7 +185,7 @@ export const flowElementSlice = createSlice({
         }
       })
       .addMatcher(
-        isAnyOf(reproduceWorkflow.fulfilled, loadWorkflowConfig.fulfilled),
+        isAnyOf(reproduceWorkflow.fulfilled, importWorkflowConfig.fulfilled),
         (state, action) => {
           state.flowPosition = initialFlowPosition
           state.elementCoord = initialElementCoord

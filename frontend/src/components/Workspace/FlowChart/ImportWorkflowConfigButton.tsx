@@ -4,10 +4,10 @@ import { useSnackbar } from 'notistack'
 import React from 'react'
 import { useDispatch } from 'react-redux'
 import { reset } from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { loadWorkflowConfig } from 'store/slice/Workflow/WorkflowActions'
+import { importWorkflowConfig } from 'store/slice/Workflow/WorkflowActions'
 import { AppDispatch } from 'store/store'
 
-export const LoadWorkflowConfigButton = React.memo(() => {
+export const ImportWorkflowConfigButton = React.memo(() => {
   const dispatch: AppDispatch = useDispatch()
   const inputRef = React.useRef<HTMLInputElement>(null)
   const { enqueueSnackbar } = useSnackbar()
@@ -22,10 +22,10 @@ export const LoadWorkflowConfigButton = React.memo(() => {
       const file = event.target.files[0]
       const formData = new FormData()
       formData.append('file', file)
-      dispatch(loadWorkflowConfig({ formData }))
+      dispatch(importWorkflowConfig({ formData }))
         .unwrap()
         .then(() => {
-          enqueueSnackbar('Successfully loaded', { variant: 'success' })
+          enqueueSnackbar('Import success', { variant: 'success' })
           dispatch(reset())
         })
         .catch(() => {
@@ -41,7 +41,7 @@ export const LoadWorkflowConfigButton = React.memo(() => {
       sx={{ margin: (theme) => theme.spacing(1) }}
       endIcon={<UploadFile />}
     >
-      Load
+      Import
       <input
         hidden
         ref={inputRef}

@@ -1,7 +1,7 @@
 import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
 import {
   reproduceWorkflow,
-  loadWorkflowConfig,
+  importWorkflowConfig,
 } from 'store/slice/Workflow/WorkflowActions'
 import { pollRunResult, run, runByCurrentUid } from './PipelineActions'
 import {
@@ -71,7 +71,7 @@ export const pipelineSlice = createSlice({
           status: RUN_STATUS.START_UNINITIALIZED,
         }
       })
-      .addCase(loadWorkflowConfig.fulfilled, (state, action) => {
+      .addCase(importWorkflowConfig.fulfilled, (state, action) => {
         state.currentPipeline = undefined
         state.runBtn = RUN_BTN_OPTIONS.RUN_NEW
         state.run = {

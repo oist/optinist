@@ -26,9 +26,9 @@ export async function downloadWorkflowConfigApi(
   return response.data
 }
 
-export async function loadWorkflowConfigApi(
+export async function importWorkflowConfigApi(
   formData: FormData,
 ): Promise<RunPostData> {
-  const response = await axios.post(`${BASE_URL}/workflow/load`, formData)
+  const response = await axios.post(`${BASE_URL}/workflow/import`, formData)
   return response.data
 }

@@ -3,7 +3,7 @@ import { isInputNodePostData } from 'api/run/RunUtils'
 import { INITIAL_IMAGE_ELEMENT_ID } from 'const/flowchart'
 import {
   reproduceWorkflow,
-  loadWorkflowConfig,
+  importWorkflowConfig,
 } from 'store/slice/Workflow/WorkflowActions'
 import { uploadFile } from '../FileUploader/FileUploaderActions'
 import { addInputNode } from '../FlowElement/FlowElementActions'
@@ -163,7 +163,7 @@ export const inputNodeSlice = createSlice({
           })
         return newState
       })
-      .addCase(loadWorkflowConfig.fulfilled, (_, action) => {
+      .addCase(importWorkflowConfig.fulfilled, (_, action) => {
         const newState: InputNode = {}
         Object.values(action.payload.nodeDict)
           .filter(isInputNodePostData)

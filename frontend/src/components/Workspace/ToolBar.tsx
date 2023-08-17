@@ -5,7 +5,7 @@ import { UseRunPipelineReturnType } from 'store/slice/Pipeline/PipelineHook'
 import { NWBSettingButton } from './FlowChart/NWB'
 import { SnakemakeButton } from './FlowChart/Snakemake'
 import { RunButtons } from './RunButtons'
-import { LoadWorkflowConfigButton } from './FlowChart/LoadWorkflowConfigButton'
+import { ImportWorkflowConfigButton } from './FlowChart/ImportWorkflowConfigButton'
 
 export const ToolBar = React.memo<UseRunPipelineReturnType>((props) => (
   <Box
@@ -19,7 +19,7 @@ export const ToolBar = React.memo<UseRunPipelineReturnType>((props) => (
       textTransform: 'none',
     }}
   >
-    <LoadWorkflowConfigButton />
+    <ImportWorkflowConfigButton />
     <SnakemakeButton />
     <NWBSettingButton />
     <RunButtons {...props} />
