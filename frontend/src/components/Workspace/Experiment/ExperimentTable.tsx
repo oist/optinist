@@ -48,7 +48,7 @@ import {
   ConfigDownloadButton,
   WorkflowDownloadButton
 } from './Button/DownloadButton'
-import { ImportButton } from './Button/ImportButton'
+import { ReproduceButton } from './Button/ReproduceButton'
 import { useLocalStorage } from 'components/utils/LocalStorageUtil'
 import { styled } from '@mui/material/styles'
 import { renameExperiment } from 'api/experiments/Experiments'
@@ -465,7 +465,7 @@ const RowItem = React.memo<{
           <ExperimentStatusIcon status={status} />
         </TableCell>
         <TableCell>
-          <ImportButton />
+          <ReproduceButton />
         </TableCell>
         <TableCell>
           <WorkflowDownloadButton />

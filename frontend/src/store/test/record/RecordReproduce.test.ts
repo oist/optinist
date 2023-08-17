@@ -1,11 +1,11 @@
 import { store, rootReducer } from 'store/store'
-import { importWorkflowByUid } from 'store/slice/Workflow/WorkflowActions'
+import { reproduceWorkflow } from 'store/slice/Workflow/WorkflowActions'
 import { RUN_BTN_OPTIONS } from 'store/slice/Pipeline/PipelineType'
 
 describe('RecordReproduce', () => {
   const initialState = store.getState()
 
-  const importWorkflowByUidPayload = {
+  const reproduceWorkflowPayload = {
     nodeDict: {
       input_0: {
         id: 'input_0',
@@ -217,10 +217,10 @@ describe('RecordReproduce', () => {
     },
   }
 
-  test(importWorkflowByUid.fulfilled.type, () => {
+  test(reproduceWorkflow.fulfilled.type, () => {
     const targetState = rootReducer(initialState, {
-      type: importWorkflowByUid.fulfilled.type,
-      payload: importWorkflowByUidPayload,
+      type: reproduceWorkflow.fulfilled.type,
+      payload: reproduceWorkflowPayload,
       meta: {
         arg: uid,
         requestId: '9rVf2XzPaoBIbRtyVl-Zk',

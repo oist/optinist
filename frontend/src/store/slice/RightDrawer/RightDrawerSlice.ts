@@ -1,6 +1,6 @@
 import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
 import {
-  importWorkflowByUid,
+  reproduceWorkflow,
   loadWorkflowConfig,
 } from 'store/slice/Workflow/WorkflowActions'
 import {
@@ -92,7 +92,7 @@ export const rightDrawerSlice = createSlice({
         }
       })
       .addMatcher(
-        isAnyOf(importWorkflowByUid.fulfilled, loadWorkflowConfig.fulfilled),
+        isAnyOf(reproduceWorkflow.fulfilled, loadWorkflowConfig.fulfilled),
         () => {
           return initialState
         },

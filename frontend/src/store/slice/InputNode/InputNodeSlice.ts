@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { isInputNodePostData } from 'api/run/RunUtils'
 import { INITIAL_IMAGE_ELEMENT_ID } from 'const/flowchart'
 import {
-  importWorkflowByUid,
+  reproduceWorkflow,
   loadWorkflowConfig,
 } from 'store/slice/Workflow/WorkflowActions'
 import { uploadFile } from '../FileUploader/FileUploaderActions'
@@ -133,7 +133,7 @@ export const inputNodeSlice = createSlice({
           delete state[action.payload]
         }
       })
-      .addCase(importWorkflowByUid.fulfilled, (_, action) => {
+      .addCase(reproduceWorkflow.fulfilled, (_, action) => {
         const newState: InputNode = {}
         Object.values(action.payload.nodeDict)
           .filter(isInputNodePostData)

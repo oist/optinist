@@ -7,7 +7,7 @@ import {
 } from '../FlowElement/FlowElementSlice'
 import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
 import {
-  importWorkflowByUid,
+  reproduceWorkflow,
   loadWorkflowConfig,
 } from 'store/slice/Workflow/WorkflowActions'
 import { getAlgoParams } from './AlgorithmNodeActions'
@@ -72,7 +72,7 @@ export const algorithmNodeSlice = createSlice({
         }
       })
       .addMatcher(
-        isAnyOf(importWorkflowByUid.fulfilled, loadWorkflowConfig.fulfilled),
+        isAnyOf(reproduceWorkflow.fulfilled, loadWorkflowConfig.fulfilled),
         (_, action) => {
           const newState: AlgorithmNode = {}
           Object.values(action.payload.nodeDict)

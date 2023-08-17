@@ -9,7 +9,7 @@ unique_id = "0123"
 
 
 def test_import():
-    response = client.get(f"/workflow/import/{workspace_id}/{unique_id}")
+    response = client.get(f"/workflow/reproduce/{workspace_id}/{unique_id}")
     data = response.json()
 
     assert response.status_code == 200

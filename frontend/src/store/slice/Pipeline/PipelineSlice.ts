@@ -1,6 +1,6 @@
 import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
 import {
-  importWorkflowByUid,
+  reproduceWorkflow,
   loadWorkflowConfig,
 } from 'store/slice/Workflow/WorkflowActions'
 import { pollRunResult, run, runByCurrentUid } from './PipelineActions'
@@ -62,7 +62,7 @@ export const pipelineSlice = createSlice({
       .addCase(pollRunResult.rejected, (state, action) => {
         state.run.status = RUN_STATUS.ABORTED
       })
-      .addCase(importWorkflowByUid.fulfilled, (state, action) => {
+      .addCase(reproduceWorkflow.fulfilled, (state, action) => {
         state.currentPipeline = {
           uid: action.meta.arg.uid,
         }

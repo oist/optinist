@@ -1,6 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit'
 import { WORKSPACE_SLICE_NAME, Workspace } from './WorkspaceType'
-import { importWorkflowByUid } from '../Workflow/WorkflowActions'
+import { reproduceWorkflow } from '../Workflow/WorkflowActions'
 
 const initialState: Workspace = {
   workspaces: [{ workspace_id: 'default' }],
@@ -27,7 +27,7 @@ export const workspaceSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase(importWorkflowByUid.fulfilled, (state, action) => {
+    builder.addCase(reproduceWorkflow.fulfilled, (state, action) => {
       state.currentWorkspace.workspaceId = action.meta.arg.workspaceId
     })
     // TODO: add case for set loading on get workspaces pending
