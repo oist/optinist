@@ -1,8 +1,9 @@
+import os
 import shutil
 from glob import glob
 from typing import Dict
 
-from fastapi import APIRouter
+from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
 
 from studio.app.common.core.experiment.experiment import ExptConfig
@@ -68,4 +69,7 @@ async def download_config_experiment(workspace_id: str, unique_id: str):
     config_filepath = join_filepath(
         [DIRPATH.OUTPUT_DIR, workspace_id, unique_id, DIRPATH.SNAKEMAKE_CONFIG_YML]
     )
-    return FileResponse(config_filepath)
+    if os.path.exists(config_filepath):
+        return FileResponse(config_filepath)
+    else:
+        raise HTTPException(status_code=404, detail="file not found")

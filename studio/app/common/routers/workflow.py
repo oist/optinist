@@ -1,3 +1,5 @@
+import os
+
 import yaml
 from fastapi import APIRouter, File, HTTPException, UploadFile
 from fastapi.responses import FileResponse
@@ -25,7 +27,10 @@ async def download_workspace_config(workspace_id: str, unique_id: str):
     config_filepath = join_filepath(
         [DIRPATH.OUTPUT_DIR, workspace_id, unique_id, DIRPATH.WORKFLOW_YML]
     )
-    return FileResponse(config_filepath, filename=DIRPATH.WORKFLOW_YML)
+    if os.path.exists(config_filepath):
+        return FileResponse(config_filepath, filename=DIRPATH.WORKFLOW_YML)
+    else:
+        raise HTTPException(status_code=404, detail="file not found")
 
 
 @router.post("/load")

@@ -10,6 +10,7 @@ import {
 import { ExperimentUidContext } from '../ExperimentTable'
 import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
 import { downloadWorkflowConfigApi } from 'api/workflow/Workflow'
+import { useSnackbar } from 'notistack'
 
 export const NWBDownloadButton = React.memo<{
   name: string
@@ -20,16 +21,21 @@ export const NWBDownloadButton = React.memo<{
   const uid = React.useContext(ExperimentUidContext)
   const ref = useRef<HTMLAnchorElement | null>(null)
   const [url, setFileUrl] = useState<string>()
+  const { enqueueSnackbar } = useSnackbar()
 
   const onClick = async () => {
     try {
-      const responseData = await downloadExperimentNwbApi(workspaceId!, uid, nodeId)
+      const responseData = await downloadExperimentNwbApi(
+        workspaceId!,
+        uid,
+        nodeId,
+      )
       const url = URL.createObjectURL(new Blob([responseData]))
       setFileUrl(url)
       ref.current?.click()
       URL.revokeObjectURL(url)
     } catch (error) {
-      throw new Error('Download Error')
+      enqueueSnackbar('File not found', { variant: 'error' })
     }
   }
 
@@ -50,6 +56,7 @@ export const ConfigDownloadButton = React.memo(() => {
   const uid = React.useContext(ExperimentUidContext)
   const ref = useRef<HTMLAnchorElement | null>(null)
   const [url, setFileUrl] = useState<string>()
+  const { enqueueSnackbar } = useSnackbar()
 
   const onClick = async () => {
     try {
@@ -59,7 +66,7 @@ export const ConfigDownloadButton = React.memo(() => {
       ref.current?.click()
       URL.revokeObjectURL(url)
     } catch (error) {
-      throw new Error('Download Error')
+      enqueueSnackbar('File not found', { variant: 'error' })
     }
   }
 
@@ -80,6 +87,7 @@ export const WorkflowDownloadButton = React.memo(() => {
   const uid = React.useContext(ExperimentUidContext)
   const ref = useRef<HTMLAnchorElement | null>(null)
   const [url, setFileUrl] = useState<string>()
+  const { enqueueSnackbar } = useSnackbar()
 
   const onClick = async () => {
     try {
@@ -89,7 +97,7 @@ export const WorkflowDownloadButton = React.memo(() => {
       ref.current?.click()
       URL.revokeObjectURL(url)
     } catch (error) {
-      throw new Error('Download Error')
+      enqueueSnackbar('File not found', { variant: 'error' })
     }
   }
 
