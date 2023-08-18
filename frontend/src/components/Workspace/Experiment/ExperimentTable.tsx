@@ -45,9 +45,10 @@ import { Experiment } from 'store/slice/Experiments/ExperimentsType'
 import { DeleteButton } from './Button/DeleteButton'
 import {
   NWBDownloadButton,
-  ConfigDownloadButton,
+  SnakemakeDownloadButton,
+  WorkflowDownloadButton
 } from './Button/DownloadButton'
-import { ImportButton } from './Button/ImportButton'
+import { ReproduceButton } from './Button/ReproduceButton'
 import { useLocalStorage } from 'components/utils/LocalStorageUtil'
 import { styled } from '@mui/material/styles'
 import { renameExperiment } from 'api/experiments/Experiments'
@@ -359,7 +360,8 @@ const HeadItem = React.memo<{
           </TableCell>
           <TableCell>Success</TableCell>
           <TableCell>Reproduce</TableCell>
-          <TableCell>SnakeFile</TableCell>
+          <TableCell>Workflow</TableCell>
+          <TableCell>Snakemake</TableCell>
           <TableCell>NWB</TableCell>
           <TableCell>Delete</TableCell>
         </TableRow>
@@ -463,10 +465,13 @@ const RowItem = React.memo<{
           <ExperimentStatusIcon status={status} />
         </TableCell>
         <TableCell>
-          <ImportButton />
+          <ReproduceButton />
         </TableCell>
         <TableCell>
-          <ConfigDownloadButton />
+          <WorkflowDownloadButton />
+        </TableCell>
+        <TableCell>
+          <SnakemakeDownloadButton />
         </TableCell>
         <TableCell>
           <NWBDownloadButton name={uid} hasNWB={hasNWB} />

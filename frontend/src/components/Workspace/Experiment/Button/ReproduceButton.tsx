@@ -2,14 +2,14 @@ import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import IconButton from '@mui/material/IconButton'
 import { useSnackbar } from 'notistack'
-import { importExperimentByUid } from 'store/slice/Experiments/ExperimentsActions'
+import { reproduceWorkflow } from 'store/slice/Workflow/WorkflowActions'
 import { AppDispatch } from 'store/store'
 import { ExperimentUidContext } from '../ExperimentTable'
 import ReplyIcon from '@mui/icons-material/Reply'
 import { reset } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
 
-export const ImportButton = React.memo(() => {
+export const ReproduceButton = React.memo(() => {
   const dispatch: AppDispatch = useDispatch()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const uid = React.useContext(ExperimentUidContext)
@@ -17,14 +17,17 @@ export const ImportButton = React.memo(() => {
 
   const onClick = () => {
     if (workspaceId) {
-      dispatch(importExperimentByUid({workspaceId, uid}))
+      dispatch(reproduceWorkflow({workspaceId, uid}))
       .unwrap()
       .then(() => {
-        enqueueSnackbar('Successfully imported.', { variant: 'success' })
+        enqueueSnackbar('Successfully reproduced.', { variant: 'success' })
         dispatch(reset())
       })
+      .catch(() => {
+        enqueueSnackbar('Failed to reproduce', { variant: 'error' })
+      })
     } else {
-      throw new Error('Workspace ID is missing.')
+      enqueueSnackbar('Workspace id is missing', { variant: 'error' })
     }
   }
   return (

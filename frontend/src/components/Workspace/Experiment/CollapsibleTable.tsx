@@ -25,7 +25,7 @@ export const CollapsibleTable = React.memo<{
 }>(({ open }) => {
   return (
     <TableRow>
-      <TableCell sx={{ paddingBottom: 0, paddingTop: 0 }} colSpan={10}>
+      <TableCell sx={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
         <Collapse in={open} timeout="auto" unmountOnExit>
           <Box margin={1}>
             <Typography variant="h6" gutterBottom component="div">

@@ -16,6 +16,7 @@ from studio.app.common.routers import (
     run,
     users_admin,
     users_me,
+    workflow,
 )
 from studio.app.dir_path import DIRPATH
 from studio.app.optinist.routers import hdf5, nwb, roi
@@ -32,6 +33,7 @@ app.include_router(params.router)
 app.include_router(run.router)
 app.include_router(users_admin.router)
 app.include_router(users_me.router)
+app.include_router(workflow.router)
 
 # optinist routers
 app.include_router(hdf5.router)

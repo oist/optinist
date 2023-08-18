@@ -1,5 +1,8 @@
 import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
-import { importExperimentByUid } from '../Experiments/ExperimentsActions'
+import {
+  reproduceWorkflow,
+  importWorkflowConfig,
+} from 'store/slice/Workflow/WorkflowActions'
 import { pollRunResult, run, runByCurrentUid } from './PipelineActions'
 import {
   Pipeline,
@@ -59,11 +62,18 @@ export const pipelineSlice = createSlice({
       .addCase(pollRunResult.rejected, (state, action) => {
         state.run.status = RUN_STATUS.ABORTED
       })
-      .addCase(importExperimentByUid.fulfilled, (state, action) => {
+      .addCase(reproduceWorkflow.fulfilled, (state, action) => {
         state.currentPipeline = {
           uid: action.meta.arg.uid,
         }
         state.runBtn = RUN_BTN_OPTIONS.RUN_ALREADY
+        state.run = {
+          status: RUN_STATUS.START_UNINITIALIZED,
+        }
+      })
+      .addCase(importWorkflowConfig.fulfilled, (state, action) => {
+        state.currentPipeline = undefined
+        state.runBtn = RUN_BTN_OPTIONS.RUN_NEW
         state.run = {
           status: RUN_STATUS.START_UNINITIALIZED,
         }

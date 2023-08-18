@@ -98,3 +98,9 @@ class RunItem(BaseModel):
     snakemakeParam: dict = {}
     nwbParam: dict = {}
     forceRunList: List[ForceRun]
+
+
+@dataclass
+class WorkflowConfig:
+    nodeDict: Dict[str, Node]
+    edgeDict: Dict[str, Edge]
