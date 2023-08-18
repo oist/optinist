@@ -44,7 +44,7 @@ export const NWBDownloadButton = React.memo<{
       <IconButton onClick={onClick} color="primary" disabled={!hasNWB}>
         <GetAppIcon />
       </IconButton>
-      <a href={url} download={`${name}.nwb`} className="hidden" ref={ref}>
+      <a href={url} download={`nwb_${name}.nwb`} className="hidden" ref={ref}>
         {/* 警告が出るので空文字を入れておく */}{' '}
       </a>
     </>
@@ -75,7 +75,7 @@ export const ConfigDownloadButton = React.memo(() => {
       <IconButton onClick={onClick}>
         <GetAppIcon color="primary" />
       </IconButton>
-      <a href={url} download={`snakemake.yaml`} className="hidden" ref={ref}>
+      <a href={url} download={`snakemake_${workspaceId}.yaml`} className="hidden" ref={ref}>
         {/* 警告が出るので空文字を入れておく */}{' '}
       </a>
     </>
@@ -106,7 +106,7 @@ export const WorkflowDownloadButton = React.memo(() => {
       <IconButton onClick={onClick}>
         <GetAppIcon color="primary" />
       </IconButton>
-      <a href={url} download={`workflow.yaml`} className="hidden" ref={ref}>
+      <a href={url} download={`workflow_${workspaceId}.yaml`} className="hidden" ref={ref}>
         {/* 警告が出るので空文字を入れておく */}{' '}
       </a>
     </>
