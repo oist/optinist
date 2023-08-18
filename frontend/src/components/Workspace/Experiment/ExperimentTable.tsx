@@ -45,7 +45,7 @@ import { Experiment } from 'store/slice/Experiments/ExperimentsType'
 import { DeleteButton } from './Button/DeleteButton'
 import {
   NWBDownloadButton,
-  ConfigDownloadButton,
+  SnakemakeDownloadButton,
   WorkflowDownloadButton
 } from './Button/DownloadButton'
 import { ReproduceButton } from './Button/ReproduceButton'
@@ -361,7 +361,7 @@ const HeadItem = React.memo<{
           <TableCell>Success</TableCell>
           <TableCell>Reproduce</TableCell>
           <TableCell>Workflow</TableCell>
-          <TableCell>SnakeFile</TableCell>
+          <TableCell>Snakemake</TableCell>
           <TableCell>NWB</TableCell>
           <TableCell>Delete</TableCell>
         </TableRow>
@@ -471,7 +471,7 @@ const RowItem = React.memo<{
           <WorkflowDownloadButton />
         </TableCell>
         <TableCell>
-          <ConfigDownloadButton />
+          <SnakemakeDownloadButton />
         </TableCell>
         <TableCell>
           <NWBDownloadButton name={uid} hasNWB={hasNWB} />

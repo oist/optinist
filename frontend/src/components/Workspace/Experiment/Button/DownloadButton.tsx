@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import IconButton from '@mui/material/IconButton'
-import GetAppIcon from '@mui/icons-material/GetApp'
+import SimCardDownloadOutlinedIcon from '@mui/icons-material/SimCardDownloadOutlined'
 import { useSelector } from 'react-redux'
 import {
   downloadExperimentConfigApi,
@@ -42,7 +42,7 @@ export const NWBDownloadButton = React.memo<{
   return (
     <>
       <IconButton onClick={onClick} color="primary" disabled={!hasNWB}>
-        <GetAppIcon />
+        <SimCardDownloadOutlinedIcon />
       </IconButton>
       <a href={url} download={`nwb_${name}.nwb`} className="hidden" ref={ref}>
         {/* 警告が出るので空文字を入れておく */}{' '}
@@ -51,7 +51,7 @@ export const NWBDownloadButton = React.memo<{
   )
 })
 
-export const ConfigDownloadButton = React.memo(() => {
+export const SnakemakeDownloadButton = React.memo(() => {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const uid = React.useContext(ExperimentUidContext)
   const ref = useRef<HTMLAnchorElement | null>(null)
@@ -73,9 +73,14 @@ export const ConfigDownloadButton = React.memo(() => {
   return (
     <>
       <IconButton onClick={onClick}>
-        <GetAppIcon color="primary" />
+        <SimCardDownloadOutlinedIcon color="primary" />
       </IconButton>
-      <a href={url} download={`snakemake_${workspaceId}.yaml`} className="hidden" ref={ref}>
+      <a
+        href={url}
+        download={`snakemake_${workspaceId}.yaml`}
+        className="hidden"
+        ref={ref}
+      >
         {/* 警告が出るので空文字を入れておく */}{' '}
       </a>
     </>
@@ -104,9 +109,14 @@ export const WorkflowDownloadButton = React.memo(() => {
   return (
     <>
       <IconButton onClick={onClick}>
-        <GetAppIcon color="primary" />
+        <SimCardDownloadOutlinedIcon color="primary" />
       </IconButton>
-      <a href={url} download={`workflow_${workspaceId}.yaml`} className="hidden" ref={ref}>
+      <a
+        href={url}
+        download={`workflow_${workspaceId}.yaml`}
+        className="hidden"
+        ref={ref}
+      >
         {/* 警告が出るので空文字を入れておく */}{' '}
       </a>
     </>
