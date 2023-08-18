@@ -39,6 +39,7 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
         timeseries[i, :] = np.mean(images[roi[:, i] > 0, :], axis=0)
     im = np.stack(im)
     im[im == 0] = np.nan
+    im -= 1
 
     # Get DFF
     timeseries_dff = np.ones([num_cell, num_frames]) * np.nan

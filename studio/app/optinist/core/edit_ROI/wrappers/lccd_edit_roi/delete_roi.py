@@ -39,6 +39,7 @@ def excute_delete_roi(node_dirpath, ids):
     else:
         im = np.stack(im)
     im[im == 0] = np.nan
+    im -= 1
 
     # Get DFF
     timeseries_dff = np.ones([num_cell, num_frames]) * np.nan
