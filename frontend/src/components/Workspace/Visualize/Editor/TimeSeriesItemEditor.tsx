@@ -96,7 +96,7 @@ const Span: React.FC = () => {
             shrink: true,
           }}
           onChange={onChange}
-          defaultValue={span}
+          value={span}
         />
       }
       label="offset std"
@@ -208,7 +208,8 @@ const Xrange: React.FC = () => {
               shrink: true,
             }}
             onChange={onChangeLeft}
-            defaultValue={xrange.left}
+            value={xrange.left ?? ''}
+            defaultValue={undefined}
           />
           <TextField
             label="right"
@@ -218,7 +219,7 @@ const Xrange: React.FC = () => {
               shrink: true,
             }}
             onChange={onChangeRight}
-            defaultValue={xrange.right}
+            value={xrange.right ?? ''}
           />
         </>
       }
