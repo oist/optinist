@@ -82,8 +82,6 @@ class ExptConfigWriter:
         ).nodeDict
 
         for node in node_dict.values():
-            print("hoge")
-            print(node.id)
             func_dict[node.id] = ExptFunction(
                 unique_id=node.id, name=node.data.label, hasNWB=False, success="running"
             )
