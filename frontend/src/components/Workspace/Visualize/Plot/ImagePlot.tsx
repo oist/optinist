@@ -7,8 +7,14 @@ import React, {
 } from 'react'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { useSelector, useDispatch } from 'react-redux'
-import {RootState} from 'store/store'
-import {Datum, LayoutAxis, PlotData, PlotMouseEvent, PlotSelectionEvent} from 'plotly.js'
+import { RootState } from 'store/store'
+import {
+  Datum,
+  LayoutAxis,
+  PlotData,
+  PlotMouseEvent,
+  PlotSelectionEvent,
+} from 'plotly.js'
 import createColormap from 'colormap'
 import { Button, LinearProgress, TextField, Typography } from '@mui/material'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -347,12 +353,12 @@ const ImagePlotChart = React.memo<{
   }
 
   const setSelectRoi = (point: PointClick) => {
-    if (typeof point.z !== 'number') return
+    if (typeof point.z !== 'number' || point.z === -1) return
     const newPoints = [...pointClick, point]
     const newRoi = roiDataState.map((roi) => {
       return roi.map((element) => {
         if (newPoints.some((p) => p.z === element)) {
-          return 0
+          return -1
         }
         return element
       })
