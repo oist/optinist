@@ -347,7 +347,7 @@ const ImagePlotChart = React.memo<{
   }
 
   const setSelectRoi = (point: PointClick) => {
-    if (!point.z) return
+    if (typeof point.z !== 'number') return
     const newPoints = [...pointClick, point]
     const newRoi = roiDataState.map((roi) => {
       return roi.map((element) => {
@@ -460,7 +460,7 @@ const ImagePlotChart = React.memo<{
     dispatch(resetAllOrderList())
     try {
       await mergeRoiApi(roiFilePath, {
-        ids: pointClick.map((point) => point.z - 1),
+        ids: pointClick.map((point) => point.z),
       })
     } catch {}
     setLoadingApi(false)
@@ -475,7 +475,7 @@ const ImagePlotChart = React.memo<{
     dispatch(resetAllOrderList())
     try {
       await deleteRoiApi(roiFilePath, {
-        ids: pointClick.map((point) => point.z - 1),
+        ids: pointClick.map((point) => point.z),
       })
     } catch {}
     setLoadingApi(false)
