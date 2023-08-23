@@ -1,6 +1,10 @@
 import json
 
-from studio.app.common.schemas.outputs import JsonTimeSeriesData, OutputData
+from studio.app.common.schemas.outputs import (
+    JsonTimeSeriesData,
+    OutputData,
+    PlotMetaData,
+)
 
 
 class Reader:
@@ -29,6 +33,7 @@ class JsonReader:
             data=json_data["data"],
             columns=json_data["columns"],
             index=json_data["index"],
+            meta=PlotMetaData(**json_data.get("meta", {})),
         )
 
     @classmethod

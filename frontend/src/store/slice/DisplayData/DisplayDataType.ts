@@ -77,6 +77,12 @@ export const DATA_TYPE_SET = {
 
 export type DATA_TYPE = typeof DATA_TYPE_SET[keyof typeof DATA_TYPE_SET]
 
+export type PlotMetaData = {
+  xlabel?: string
+  ylabel?: string
+  title?: string
+}
+
 interface BaseDisplay<T extends DATA_TYPE, Data> {
   type: T
   data: Data
@@ -95,6 +101,7 @@ export interface HeatMapDisplayData
   extends BaseDisplay<'heatMap', HeatMapData> {
   columns: string[]
   index: string[]
+  meta?: PlotMetaData
 }
 
 export interface ImageDisplayData extends BaseDisplay<'image', ImageData> {}
@@ -108,11 +115,14 @@ export interface RoiDisplayData extends BaseDisplay<'roi', RoiData> {
 }
 
 export interface ScatterDisplayData
-  extends BaseDisplay<'scatter', ScatterData> {}
+  extends BaseDisplay<'scatter', ScatterData> {
+  meta?: PlotMetaData
+}
 
 export interface BarDisplayData extends BaseDisplay<'bar', BarData> {
   columns: string[]
   index: string[]
+  meta?: PlotMetaData
 }
 
 export interface HTMLDisplayData extends BaseDisplay<'html', HTMLData> {}

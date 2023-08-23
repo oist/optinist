@@ -27,6 +27,7 @@ import {
   getPieDataApi,
   getPolarDataApi,
 } from 'api/outputs/Outputs'
+import { PlotMetaData } from './DisplayDataType'
 import { DISPLAY_DATA_SLICE_NAME } from './DisplayDataType'
 
 export const getTimeSeriesInitData = createAsyncThunk<
@@ -75,7 +76,12 @@ export const getTimeSeriesAllData = createAsyncThunk<
 )
 
 export const getHeatMapData = createAsyncThunk<
-  { data: HeatMapData; columns: string[]; index: string[] },
+  {
+    data: HeatMapData
+    columns: string[]
+    index: string[]
+    meta?: PlotMetaData
+  },
   { path: string }
 >(`${DISPLAY_DATA_SLICE_NAME}/getHeatMapData`, async ({ path }, thunkAPI) => {
   try {
@@ -138,7 +144,7 @@ export const getRoiData = createAsyncThunk<
 )
 
 export const getScatterData = createAsyncThunk<
-  { data: ScatterData },
+  { data: ScatterData; meta?: PlotMetaData },
   { path: string }
 >(`${DISPLAY_DATA_SLICE_NAME}/getScatterData`, async ({ path }, thunkAPI) => {
   try {
@@ -150,7 +156,7 @@ export const getScatterData = createAsyncThunk<
 })
 
 export const getBarData = createAsyncThunk<
-  { data: BarData; columns: string[]; index: string[] },
+  { data: BarData; columns: string[]; index: string[]; meta?: PlotMetaData },
   { path: string }
 >(`${DISPLAY_DATA_SLICE_NAME}/getBarData`, async ({ path }, thunkAPI) => {
   try {

@@ -1,5 +1,5 @@
 import axios from 'utils/axios'
-
+import { PlotMetaData } from 'store/slice/DisplayData/DisplayDataType'
 import { BASE_URL } from 'const/API'
 
 export type TimeSeriesData = {
@@ -36,9 +36,12 @@ export async function getTimeSeriesAllDataApi(
 
 export type HeatMapData = number[][]
 
-export async function getHeatMapDataApi(
-  path: string,
-): Promise<{ data: HeatMapData; columns: string[]; index: string[] }> {
+export async function getHeatMapDataApi(path: string): Promise<{
+  data: HeatMapData
+  columns: string[]
+  index: string[]
+  meta?: PlotMetaData
+}> {
   const response = await axios.get(`${BASE_URL}/outputs/data/${path}`)
   return response.data
 }
@@ -96,7 +99,7 @@ export type ScatterData = {
 
 export async function getScatterDataApi(
   path: string,
-): Promise<{ data: ScatterData }> {
+): Promise<{ data: ScatterData; meta?: PlotMetaData }> {
   const response = await axios.get(`${BASE_URL}/outputs/data/${path}`, {})
   return response.data
 }
@@ -107,9 +110,12 @@ export type BarData = {
   }
 }
 
-export async function getBarDataApi(
-  path: string,
-): Promise<{ data: BarData; columns: string[]; index: string[] }> {
+export async function getBarDataApi(path: string): Promise<{
+  data: BarData
+  columns: string[]
+  index: string[]
+  meta?: PlotMetaData
+}> {
   const response = await axios.get(`${BASE_URL}/outputs/data/${path}`, {})
   return response.data
 }

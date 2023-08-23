@@ -35,6 +35,9 @@ export const selectTimeSeriesDataError =
 export const selectHeatMapData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).heatMap[filePath].data
 
+export const selectHeatMapMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).heatMap[filePath].meta
+
 export const selectHeatMapColumns = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).heatMap[filePath].columns
 
@@ -151,6 +154,9 @@ export const selectRoiUniqueList = (filePath: string) => (state: RootState) => {
 export const selectScatterData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).scatter[filePath]?.data ?? []
 
+export const selectScatterMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).scatter[filePath]?.meta
+
 export const selectScatterDataIsInitialized =
   (filePath: string) => (state: RootState) =>
     Object.keys(selectDisplayData(state).scatter).includes(filePath)
@@ -173,6 +179,9 @@ export const selectScatterDataIsFulfilled =
 
 export const selectBarData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).bar[filePath]?.data ?? []
+
+export const selectBarMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).bar[filePath]?.meta
 
 export const selectBarIndex = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).bar[filePath]?.index ?? []

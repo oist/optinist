@@ -211,6 +211,7 @@ export const displayDataSlice = createSlice({
         state.heatMap[path] = {
           type: 'heatMap',
           data: action.payload.data,
+          meta: action.payload.meta,
           columns: action.payload.columns,
           index: action.payload.index,
           pending: false,
@@ -473,6 +474,7 @@ export const displayDataSlice = createSlice({
         state.scatter[path] = {
           type: 'scatter',
           data: action.payload.data,
+          meta: action.payload.meta,
           pending: false,
           fulfilled: true,
           error: null,
@@ -517,6 +519,7 @@ export const displayDataSlice = createSlice({
         state.bar[path] = {
           type: 'bar',
           data: action.payload.data,
+          meta: action.payload.meta,
           columns: action.payload.columns,
           index: action.payload.index,
           pending: false,
