@@ -13,7 +13,7 @@ def excute_delete_roi(node_dirpath, ids):
 
     # delete ROI
     is_cell[ids] = False
-    [delete_roi.append(id + 1) for id in ids]
+    delete_roi += ids
 
     cell_roi = np.zeros(im.shape)
     num_rois = im.shape[0]

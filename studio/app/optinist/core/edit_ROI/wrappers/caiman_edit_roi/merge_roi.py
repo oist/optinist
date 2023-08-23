@@ -32,8 +32,8 @@ def execute_merge_roi(node_dirpath: str, ids: list):
         cell_roi[i, :, :] = np.where(im[i, :, :] != 0, i + 1, np.nan)
     cell_roi -= 1
 
-    merge_roi.append(float(num_rois))
-    merge_roi += [(id + 1) for id in ids]
+    merge_roi.append(float(num_rois - 1))
+    merge_roi += ids
     merge_roi.append((-1.0))
 
     cnmf_data["im"] = im

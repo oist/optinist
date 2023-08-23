@@ -23,7 +23,7 @@ def excute_delete_roi(node_dirpath, ids):
 
     # delete ROI
     is_cell[ids] = False
-    delete_roi += [(id + 1) for id in ids]
+    delete_roi += ids
 
     num_cell = roi.shape[1]
     images = images.reshape([images.shape[0] * images.shape[1], images.shape[2]])

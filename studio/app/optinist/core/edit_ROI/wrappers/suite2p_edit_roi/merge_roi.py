@@ -93,7 +93,7 @@ def execute_merge_roi(node_dirpath, ids):
     id = np.nanmax(im) + 1
     array *= id
     merge_roi.append(float(id))
-    merge_roi += (merged_cells + 1).tolist()
+    merge_roi += (merged_cells).tolist()
     merge_roi.append((-1.0))
 
     im = np.concatenate((im, array), axis=0)
