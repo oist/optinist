@@ -140,7 +140,7 @@ def set_nwbfile(ops):
     nwbfile[NWBDATASET.COLUMN] = {
         "roi_column": {
             "name": "iscell",
-            "discription": "two columns - iscell & probcell",
+            "description": "two columns - iscell & probcell",
             "data": iscell,
         }
     }

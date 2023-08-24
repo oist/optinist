@@ -151,12 +151,12 @@ class NWBCreater:
         return nwbfile
 
     @classmethod
-    def column(cls, nwbfile, name, discription, data):
+    def column(cls, nwbfile, name, description, data):
         data_interfaces = nwbfile.processing["ophys"].data_interfaces
         plane_seg = data_interfaces["ImageSegmentation"].plane_segmentations[
             "PlaneSegmentation"
         ]
-        plane_seg.add_column(name, discription, data)
+        plane_seg.add_column(name, description, data)
 
         return nwbfile
 

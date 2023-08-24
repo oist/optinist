@@ -19,7 +19,7 @@ def set_nwbfile(lccd_data, roi_list, fluorescence=None):
     nwbfile[NWBDATASET.COLUMN] = {
         "roi_column": {
             "name": "iscell",
-            "discription": "two columns - iscell & probcell",
+            "description": "two columns - iscell & probcell",
             "data": lccd_data.get("is_cell"),
         }
     }

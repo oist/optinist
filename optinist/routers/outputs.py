@@ -167,7 +167,7 @@ async def get_image(
     tags=["outputs"],
 )
 async def add_roi(filepath: str, pos: RoiPos):
-    EditROI(action=ACTION.ADD, filepath=filepath, params=pos.dict()).excute()
+    EditROI(action=ACTION.ADD, filepath=filepath, params=pos.dict()).execute()
     return EditRoiSuccess(max_index=0)
 
 
@@ -177,7 +177,7 @@ async def add_roi(filepath: str, pos: RoiPos):
     tags=["outputs"],
 )
 async def merge_roi(filepath: str, roi_list: RoiList):
-    EditROI(action=ACTION.MERGE, filepath=filepath, params=roi_list.dict()).excute()
+    EditROI(action=ACTION.MERGE, filepath=filepath, params=roi_list.dict()).execute()
     return EditRoiSuccess(max_index=0)
 
 
@@ -187,7 +187,7 @@ async def merge_roi(filepath: str, roi_list: RoiList):
     tags=["outputs"],
 )
 async def delete_roi(filepath: str, roi_list: RoiList):
-    EditROI(action=ACTION.DELETE, filepath=filepath, params=roi_list.dict()).excute()
+    EditROI(action=ACTION.DELETE, filepath=filepath, params=roi_list.dict()).execute()
     return EditRoiSuccess(max_index=0)
 
 

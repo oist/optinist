@@ -54,7 +54,7 @@ def insert_binary_col_binary_csc(mat, indices, i=None):
     ]       ^ Inserted column
 
     When indices = np.array([0, 2]),
-    The colum to be inserted is
+    The column to be inserted is
     [
         [1],
         [0],

@@ -41,7 +41,7 @@ OptiNiSt also supports reproducibility of scientific research, standardization o
 
 ### Postprocessing
 - [x] Basic Neural Analysis(Event Trigger Average...)
-- [x] Dimenstion Reduction(PCA...)
+- [x] Dimension Reduction(PCA...)
 - [x] Neural Decoding(LDA...)
 - [x] Neural Population Analysis(Correlation...)
 

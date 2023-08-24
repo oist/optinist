@@ -82,7 +82,7 @@ class BlobDetector:
         lumi_map = np.maximum(
             self.conv2(max_lumi_map, self.sp_fil, mode="same"),
             # Here, the article says the mode is 'valid' (Algorithm2, line 10).
-            # But in order that ROI have the dimesion (0, 1)^{XY x N_r} (line 21),
+            # But in order that ROI have the dimension (0, 1)^{XY x N_r} (line 21),
             # mode should be 'same'.
             0,
         )

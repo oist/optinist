@@ -13,4 +13,4 @@ from optinist.api.edit_ROI import EditRoiUtils
 
 if __name__ == "__main__":
     config = snakemake.config
-    EditRoiUtils.excute(config)
+    EditRoiUtils.execute(config)
