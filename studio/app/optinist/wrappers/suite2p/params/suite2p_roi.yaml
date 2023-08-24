@@ -1,6 +1,5 @@
 # main settings
 tau:  1.0              # this is the main parameter for deconvolution
-fs: 10.0               # sampling rate (PER PLANE e.g. for 12 plane recordings it will be around 2.5)
 
 # classification parameters
 soma_crop: True        # crop dendrites for cell classification stats like compactness
