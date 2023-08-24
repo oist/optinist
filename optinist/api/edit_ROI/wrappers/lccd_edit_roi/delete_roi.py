@@ -4,7 +4,7 @@ from optinist.api.dataclass.dataclass import FluoData, LccdData, RoiData
 from optinist.api.edit_ROI.wrappers.lccd_edit_roi.utils import set_nwbfile
 
 
-def excute_delete_roi(node_dirpath, ids):
+def execute_delete_roi(node_dirpath, ids):
     import numpy as np
 
     lccd_data = np.load(

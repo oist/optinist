@@ -5,7 +5,7 @@ import numpy as np
 from optinist.wrappers.suite2p_wrapper.edit_roi.utils import save_json_data
 
 
-def excute_delete_roi(node_dirpath, delete_roi_ids):
+def execute_delete_roi(node_dirpath, delete_roi_ids):
     ops = np.load(os.path.join(node_dirpath, "suite2p.npy"), allow_pickle=True).item()
     iscell = ops.get("iscell")
     im = ops.get("im")

@@ -6,7 +6,7 @@ from optinist.api.dataclass.dataclass import RoiData, Suite2pData
 from optinist.api.edit_ROI.wrappers.suite2p_edit_roi.utils import set_nwbfile
 
 
-def excute_delete_roi(node_dirpath, ids):
+def execute_delete_roi(node_dirpath, ids):
     ops = np.load(os.path.join(node_dirpath, "suite2p.npy"), allow_pickle=True).item()
     iscell = ops.get("iscell")
     delete_roi = ops.get("delete_roi", [])

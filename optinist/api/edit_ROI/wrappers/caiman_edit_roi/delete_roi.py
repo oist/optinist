@@ -2,7 +2,7 @@ from optinist.api.dataclass.dataclass import CaimanCnmfData, RoiData
 from optinist.api.edit_ROI.wrappers.caiman_edit_roi.utils import set_nwbfile
 
 
-def excute_delete_roi(node_dirpath, ids):
+def execute_delete_roi(node_dirpath, ids):
     import numpy as np
 
     # load data
