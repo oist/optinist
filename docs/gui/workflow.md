@@ -163,7 +163,7 @@ SNAKEMAKE and NWB SETTING buttons are for parameters for snakemake and output NW
     - By configuring this, the output NWB file includes the information set here.
     - The parameter you set here is only for your record and is not used for calculations within OptiNiSt.
     - You can leave this setting as the default.
-    - The details of NWB setting in OptiNiSt are folling.
+    - The details of NWB setting in OptiNiSt are following.
       - session_description: a description of the session where this data was generated
       - identifier: a unique text identifier for the file
       - experiment_description: general description of the experiment

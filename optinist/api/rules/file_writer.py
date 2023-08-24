@@ -27,7 +27,7 @@ class FileWriter:
                 rule_config.return_arg
             ]
         else:
-            assert False, "NodeType doesn't exsits"
+            assert False, "NodeType doesn't exist"
 
         nwbfile.pop("image_series", None)
         info["nwbfile"] = {"input": nwbfile}

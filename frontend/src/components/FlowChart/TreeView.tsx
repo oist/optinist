@@ -298,7 +298,7 @@ const LeafItem = styled(TreeItem)({
 })
 
 function useLeafItemDrag(
-  onDragEnd: (positon: { x: number; y: number }) => void,
+  onDragEnd: (position: { x: number; y: number }) => void,
 ) {
   const [{ isDragging }, dragRef] = useDrag<
     TreeItemDragObject,

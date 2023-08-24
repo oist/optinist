@@ -10,7 +10,7 @@ def filter_roi_by_area(roi, min_area, max_area):
     ----------
     roi: np.array or scipy.sparse.csc (Maybe work with other sparse matrix types)
         roi has shape (X, n).
-        X is spacial dimension.
+        X is spatial dimension.
         n is the number of rois
     min_area: int
     max_area: int
