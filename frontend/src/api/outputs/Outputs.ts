@@ -4,13 +4,13 @@ import { BASE_URL } from 'const/API'
 
 export type TimeSeriesData = {
   [key: string]: {
-    [key: number]: number
+    [key: string]: number
   }
 }
 
 export async function getTimeSeriesInitDataApi(
   path: string,
-): Promise<{ data: TimeSeriesData; xrange: number[]; std: TimeSeriesData }> {
+): Promise<{ data: TimeSeriesData; xrange: string[]; std: TimeSeriesData }> {
   const response = await axios.get(`${BASE_URL}/outputs/inittimedata/${path}`)
   return response.data
 }
@@ -18,7 +18,7 @@ export async function getTimeSeriesInitDataApi(
 export async function getTimeSeriesDataByIdApi(
   path: string,
   index: string,
-): Promise<{ data: TimeSeriesData; xrange: number[]; std: TimeSeriesData }> {
+): Promise<{ data: TimeSeriesData; xrange: string[]; std: TimeSeriesData }> {
   const response = await axios.get(`${BASE_URL}/outputs/timedata/${path}`, {
     params: {
       index: index,
@@ -29,7 +29,7 @@ export async function getTimeSeriesDataByIdApi(
 
 export async function getTimeSeriesAllDataApi(
   path: string,
-): Promise<{ data: TimeSeriesData; xrange: number[]; std: TimeSeriesData }> {
+): Promise<{ data: TimeSeriesData; xrange: string[]; std: TimeSeriesData }> {
   const response = await axios.get(`${BASE_URL}/outputs/alltimedata/${path}`)
   return response.data
 }

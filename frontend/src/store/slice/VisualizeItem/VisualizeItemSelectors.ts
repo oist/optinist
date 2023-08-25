@@ -534,3 +534,13 @@ export const selectDisplayDataIsSingle =
         .length === 1
     )
   }
+
+export const selectImageItemRangeUnit =
+    (itemId: number) => (state: RootState) => {
+      const item = selectVisualizeItemById(itemId)(state)
+      if (isTimeSeriesItem(item)) {
+        return item.rangeUnit
+      } else {
+        throw new Error('invalid VisualaizeItemType')
+      }
+    }

@@ -81,6 +81,7 @@ const timeSeriesItemInitialValue: TimeSeriesItem = {
     left: undefined,
     right: undefined,
   },
+  rangeUnit: 'frames',
   maxIndex: 0,
   drawOrderList: [],
   refImageItemId: null,
@@ -165,6 +166,12 @@ export const visualaizeItemSlice = createSlice({
   name: VISUALIZE_ITEM_SLICE_NAME,
   initialState,
   reducers: {
+    changeRangeUnit: (state, action) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isTimeSeriesItem(targetItem)) {
+        targetItem.rangeUnit = action.payload.rangeUnit
+      }
+    },
     pushInitialItemToNewRow: (state) => {
       const newItemId = addInitialItemFn(state)
       state.layout.push([newItemId])
@@ -878,6 +885,7 @@ function resetImageActiveIndexFn(
 }
 
 export const {
+  changeRangeUnit,
   pushInitialItemToNewRow,
   insertInitialItemToNextColumn,
   addItemForWorkflowDialog,

@@ -84,6 +84,7 @@ export interface TimeSeriesItem extends DisplayDataItemBaseType {
     left: number | undefined
     right: number | undefined
   }
+  rangeUnit: 'frames' | 'time'
   maxIndex: number
   refImageItemId: number | null
   drawOrderList: string[]

@@ -22,7 +22,7 @@ import {
 import { DISPLAY_DATA_SLICE_NAME } from './DisplayDataType'
 
 export const getTimeSeriesInitData = createAsyncThunk<
-  { data: TimeSeriesData; xrange: number[]; std: TimeSeriesData },
+  { data: TimeSeriesData; xrange: string[]; std: TimeSeriesData },
   { path: string; itemId: number }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesInitData`,
@@ -37,7 +37,7 @@ export const getTimeSeriesInitData = createAsyncThunk<
 )
 
 export const getTimeSeriesDataById = createAsyncThunk<
-  { data: TimeSeriesData; xrange: number[]; std: TimeSeriesData },
+  { data: TimeSeriesData; xrange: string[]; std: TimeSeriesData },
   { path: string; index: string }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesDataById`,
@@ -52,7 +52,7 @@ export const getTimeSeriesDataById = createAsyncThunk<
 )
 
 export const getTimeSeriesAllData = createAsyncThunk<
-  { data: TimeSeriesData; xrange: number[]; std: TimeSeriesData },
+  { data: TimeSeriesData; xrange: string[]; std: TimeSeriesData },
   { path: string }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesAllData`,

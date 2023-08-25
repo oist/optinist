@@ -1,4 +1,4 @@
-import React from 'react'
+import React, {useEffect, useState} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { LegendClickEvent } from 'plotly.js'
@@ -33,6 +33,7 @@ import {
   selectTimeSeriesItemKeys,
   selectVisualizeSaveFilename,
   selectVisualizeSaveFormat,
+  selectImageItemRangeUnit,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import createColormap from 'colormap'
 import { setTimeSeriesItemDrawOrderList } from 'store/slice/VisualizeItem/VisualizeItemSlice'
@@ -72,9 +73,10 @@ const TimeSeriesPlotImple = React.memo(() => {
     timeSeriesDataEqualityFn,
   )
 
+
   const dataXrange = useSelector(selectTimeSeriesXrange(path))
   const dataStd = useSelector(selectTimeSeriesStd(path))
-
+  const rangeUnit = useSelector(selectImageItemRangeUnit(itemId))
   const offset = useSelector(selectTimeSeriesItemOffset(itemId))
   const span = useSelector(selectTimeSeriesItemSpan(itemId))
   const showgrid = useSelector(selectTimeSeriesItemShowGrid(itemId))
@@ -87,6 +89,29 @@ const TimeSeriesPlotImple = React.memo(() => {
   const height = useSelector(selectVisualizeItemHeight(itemId))
   const dataKeys = useSelector(selectTimeSeriesItemKeys(itemId))
 
+  const [newDataXrange, setNewDataXrange] = useState<string[]>(dataXrange)
+  const [newTimeSeriesData, setNewTimeSeriesData] = useState(timeSeriesData)
+
+  useEffect(() => {
+    if(rangeUnit === 'time' && timeSeriesData && Object.keys(timeSeriesData).length > 0) {
+      setNewDataXrange(dataXrange.map(data => String(Number(data) / 50)))
+      let newTime: any = JSON.parse(JSON.stringify(timeSeriesData))
+      for(let key in newTime) {
+        if (Object.isFrozen(newTime[key])) {
+          newTime[key] = { ...newTime[key] };
+        }
+        for(let keyChild in newTime[String(key)]) {
+          newTime[key][String(Number(keyChild) / 50)] = newTime[String(key)][keyChild]
+        }
+        setNewTimeSeriesData(newTime)
+      }
+    }
+    else {
+      setNewDataXrange(dataXrange)
+      setNewTimeSeriesData(timeSeriesData)
+    }
+  }, [JSON.stringify(rangeUnit), JSON.stringify(dataXrange), JSON.stringify(timeSeriesData)])
+
   const colorScale = createColormap({
     colormap: 'jet',
     nshades: 100, //maxIndex >= 6 ? maxIndex : 6,
@@ -97,37 +122,39 @@ const TimeSeriesPlotImple = React.memo(() => {
   const data = React.useMemo(() => {
     return Object.fromEntries(
       dataKeys.map((key) => {
-        let y = dataXrange.map((x) => timeSeriesData[key][x])
-        const i = Number(key) - 1
-        const new_i = Math.floor((i % 10) * 10 + i / 10) % 100
-        if (drawOrderList.includes(key) && offset) {
-          const activeIdx: number = drawOrderList.findIndex((v) => v === key)
-          const mean: number = y.reduce((a, b) => a + b) / y.length
-          const std: number =
-            span *
-            Math.sqrt(y.reduce((a, b) => a + Math.pow(b - mean, 2)) / y.length)
-          y = y.map((value) => (value - mean) / (std + 1e-10) + activeIdx)
-        }
+      let y = newDataXrange.map((x) => {
+        return newTimeSeriesData[key][String(Number(x) / 50)] || newTimeSeriesData[key][x]
+      })
+      const i = Number(key) - 1
+      const new_i = Math.floor((i % 10) * 10 + i / 10) % 100
+      if (drawOrderList.includes(key) && offset) {
+        const activeIdx: number = drawOrderList.findIndex((v) => v === key)
+        const mean: number = y.reduce((a, b) => a + b) / y.length
+        const std: number =
+          span *
+          Math.sqrt(y.reduce((a, b) => a + Math.pow(b - mean, 2)) / y.length)
+        y = y.map((value) => (value - mean) / (std + 1e-10) + activeIdx)
+      }
 
-        return [
-          key,
-          {
-            name: key,
-            x: dataXrange,
-            y: y,
-            visible: drawOrderList.includes(key) ? true : 'legendonly',
-            line: { color: colorScale[new_i] },
-            error_y: {
-              type: 'data',
-              array:
-                !offset && Object.keys(dataStd).includes(key)
-                  ? Object.values(dataStd[key])
-                  : null,
-              visible: true,
-            },
+      return [
+        key,
+        {
+          name: key,
+          x: newDataXrange,
+          y: y,
+          visible: drawOrderList.includes(key) ? true : 'legendonly',
+          line: { color: colorScale[new_i] },
+          error_y: {
+            type: 'data',
+            array:
+              !offset && Object.keys(dataStd).includes(key)
+                ? Object.values(dataStd[key])
+                : null,
+            visible: true,
           },
-        ]
-      }),
+        },
+      ]
+    }),
     )
   }, [
     timeSeriesData,
@@ -138,13 +165,15 @@ const TimeSeriesPlotImple = React.memo(() => {
     dataStd,
     dataXrange,
     dataKeys,
+    newDataXrange,
   ])
 
   const annotations = React.useMemo(() => {
+    const range = rangeUnit === 'time' ? 50 : 1
     return drawOrderList.map((value) => {
       return {
-        x: Number(dataXrange[dataXrange.length - 1]) + dataXrange.length / 10,
-        y: data[value].y[dataXrange.length - 1],
+        x: Number((newDataXrange.length - 1) / range) + newDataXrange.length / (10 * range),
+        y: data[value].y[newDataXrange.length - 1],
         xref: 'x',
         yref: 'y',
         text: `cell: ${value}`,
@@ -153,7 +182,7 @@ const TimeSeriesPlotImple = React.memo(() => {
         ay: -10,
       }
     })
-  }, [data, drawOrderList, dataXrange])
+  }, [data, drawOrderList, dataXrange, newDataXrange])
 
   const layout = React.useMemo(
     () => ({
@@ -167,7 +196,19 @@ const TimeSeriesPlotImple = React.memo(() => {
       width: width,
       height: height - 50,
       xaxis: {
-        range: [xrange.left, xrange.right],
+        title: {
+          text: rangeUnit,
+        },
+        titlefont: {
+          size: 12,
+          color: 'black',
+        },
+        tickfont: {
+          size: 10,
+          color: 'black',
+        },
+        range: rangeUnit === 'frames' ? [xrange.left, xrange.right] :
+          [xrange.left ? xrange.left / 50 : -1.2 , xrange.right ? xrange.right / 50 : (dataXrange.length / 50 + 3)],
         showgrid: showgrid,
         showline: showline,
         showticklabels: showticklabels,
@@ -207,6 +248,7 @@ const TimeSeriesPlotImple = React.memo(() => {
 
   const onLegendClick = (event: LegendClickEvent) => {
     const clickNumber = dataKeys[event.curveNumber]
+
 
     const newDrawOrderList = drawOrderList.includes(clickNumber)
       ? drawOrderList.filter((value) => value !== clickNumber)
