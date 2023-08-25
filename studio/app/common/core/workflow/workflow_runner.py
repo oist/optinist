@@ -35,6 +35,8 @@ class WorkflowRunner:
             self.workspace_id,
             self.unique_id,
             self.runItem.name,
+            nwbfile=get_typecheck_params(self.runItem.nwbParam, "nwb"),
+            snakemake=get_typecheck_params(self.runItem.snakemakeParam, "snakemake"),
         ).write()
 
     def run_workflow(self, background_tasks):
