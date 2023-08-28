@@ -33,11 +33,13 @@ class Runner:
 
             cls.set_func_start_timestamp(os.path.dirname(__rule.output))
 
+            nwb_params = cls.get_nwb_params(os.path.dirname(__rule.output))
+
             # output_info
             output_info = cls.execute_function(
                 __rule.path,
                 __rule.params,
-                __rule.nwbfile,
+                nwb_params,
                 os.path.dirname(__rule.output),
                 input_info,
             )
@@ -86,6 +88,14 @@ class Runner:
         )
 
     @classmethod
+    def get_nwb_params(cls, output_dirpath):
+        workflow_dirpath = os.path.dirname(output_dirpath)
+        expt_config = ExptConfigReader.read(
+            join_filepath([workflow_dirpath, DIRPATH.EXPERIMENT_YML])
+        )
+        return expt_config.nwb
+
+    @classmethod
     def save_func_nwb(cls, save_path, name, nwbfile, output_info):
         if "nwbfile" in output_info:
             nwbfile[name] = output_info["nwbfile"]
@@ -106,11 +116,11 @@ class Runner:
         save_nwb(save_path, input_nwbfile, nwbfile)
 
     @classmethod
-    def execute_function(cls, path, params, nwbfile, output_dir, input_info):
+    def execute_function(cls, path, params, nwb_params, output_dir, input_info):
         wrapper = cls.dict2leaf(wrapper_dict, path.split("/"))
         func = copy.deepcopy(wrapper["function"])
         output_info = func(
-            params=params, nwbfile=nwbfile, output_dir=output_dir, **input_info
+            params=params, nwbfile=nwb_params, output_dir=output_dir, **input_info
         )
         del func
         gc.collect()

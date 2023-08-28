@@ -124,7 +124,6 @@ class WorkflowRunner:
                     unique_id=self.unique_id,
                     node=node,
                     edgeDict=self.edgeDict,
-                    nwbfile=nwbfile,
                 ).algo(nodeDict=self.nodeDict)
 
                 rule_dict[node.id] = rule
