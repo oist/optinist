@@ -34,7 +34,9 @@ class HeatMapData(BaseData):
             self.data,
             columns=self.columns,
         )
-        JsonWriter.write_as_split(self.json_path, df, self.meta)
+        JsonWriter.write_as_split(self.json_path, df)
+        plot_meta_path = join_filepath([json_dir, f"{self.file_name}.plot-meta.json"])
+        JsonWriter.write_plot_meta(plot_meta_path, self.meta)
 
     @property
     def output_path(self) -> OutputPath:

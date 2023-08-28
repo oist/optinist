@@ -1,6 +1,5 @@
 import json
 import os
-from dataclasses import asdict
 from typing import Optional
 
 import numpy as np
@@ -16,17 +15,18 @@ from studio.app.common.schemas.outputs import PlotMetaData
 
 class JsonWriter:
     @classmethod
-    def write(cls, filepath, data, orient=None, meta: Optional[PlotMetaData] = None):
-        pd.DataFrame(data).to_json(indent=4)
-        df = json.loads(pd.DataFrame(data).to_json(indent=4, orient=orient))
-        if meta:
-            df.update({"meta": asdict(meta)})
-        with open(filepath, "w") as f:
-            json.dump(df, f, indent=4)
+    def write(cls, filepath, data):
+        pd.DataFrame(data).to_json(filepath, indent=4)
 
     @classmethod
-    def write_as_split(cls, filepath, data, meta: Optional[PlotMetaData] = None):
-        cls.write(filepath, data, orient="split", meta=meta)
+    def write_as_split(cls, filepath, data):
+        pd.DataFrame(data).to_json(filepath, indent=4, orient="split")
+
+    @classmethod
+    def write_plot_meta(cls, filepath, data: Optional[PlotMetaData]):
+        if data is not None:
+            with open(filepath, "w") as f:
+                json.dump(data.value_present_dict(), f, indent=4)
 
 
 def save_tiff2json(tiff_filepath, save_dirpath, start_index=None, end_index=None):

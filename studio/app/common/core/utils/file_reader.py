@@ -1,4 +1,5 @@
 import json
+import os
 
 from studio.app.common.schemas.outputs import (
     JsonTimeSeriesData,
@@ -29,11 +30,17 @@ class JsonReader:
     @classmethod
     def read_as_output(cls, filepath) -> OutputData:
         json_data = cls.read(filepath)
+        plot_metadata_path = f"{os.path.splitext(filepath)[0]}.plot-meta.json"
+
+        plot_metadata = (
+            cls.read(plot_metadata_path) if os.path.exists(plot_metadata_path) else {}
+        )
+
         return OutputData(
             data=json_data["data"],
             columns=json_data["columns"],
             index=json_data["index"],
-            meta=PlotMetaData(**json_data.get("meta", {})),
+            meta=PlotMetaData(**plot_metadata),
         )
 
     @classmethod
