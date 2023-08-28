@@ -73,7 +73,6 @@ const TimeSeriesPlotImple = React.memo(() => {
     timeSeriesDataEqualityFn,
   )
 
-
   const dataXrange = useSelector(selectTimeSeriesXrange(path))
   const dataStd = useSelector(selectTimeSeriesStd(path))
   const rangeUnit = useSelector(selectImageItemRangeUnit(itemId))
@@ -92,16 +91,18 @@ const TimeSeriesPlotImple = React.memo(() => {
   const [newDataXrange, setNewDataXrange] = useState<string[]>(dataXrange)
   const [newTimeSeriesData, setNewTimeSeriesData] = useState(timeSeriesData)
 
+  const frameRate = 50
+
   useEffect(() => {
     if(rangeUnit === 'time' && timeSeriesData && Object.keys(timeSeriesData).length > 0) {
-      setNewDataXrange(dataXrange.map(data => String(Number(data) / 50)))
+      setNewDataXrange(dataXrange.map(data => String(Number(data) / frameRate)))
       let newTime: any = JSON.parse(JSON.stringify(timeSeriesData))
       for(let key in newTime) {
         if (Object.isFrozen(newTime[key])) {
           newTime[key] = { ...newTime[key] };
         }
         for(let keyChild in newTime[String(key)]) {
-          newTime[key][String(Number(keyChild) / 50)] = newTime[String(key)][keyChild]
+          newTime[key][String(Number(keyChild) / frameRate)] = newTime[String(key)][keyChild]
         }
         setNewTimeSeriesData(newTime)
       }
@@ -110,6 +111,7 @@ const TimeSeriesPlotImple = React.memo(() => {
       setNewDataXrange(dataXrange)
       setNewTimeSeriesData(timeSeriesData)
     }
+    //eslint-disable-next-line
   }, [JSON.stringify(rangeUnit), JSON.stringify(dataXrange), JSON.stringify(timeSeriesData)])
 
   const colorScale = createColormap({
@@ -123,7 +125,7 @@ const TimeSeriesPlotImple = React.memo(() => {
     return Object.fromEntries(
       dataKeys.map((key) => {
       let y = newDataXrange.map((x) => {
-        return newTimeSeriesData[key][String(Number(x) / 50)] || newTimeSeriesData[key][x]
+        return newTimeSeriesData[key][String(Number(x) / frameRate)] || newTimeSeriesData[key][x]
       })
       const i = Number(key) - 1
       const new_i = Math.floor((i % 10) * 10 + i / 10) % 100
@@ -157,19 +159,18 @@ const TimeSeriesPlotImple = React.memo(() => {
     }),
     )
   }, [
-    timeSeriesData,
     drawOrderList,
     offset,
     span,
     colorScale,
     dataStd,
-    dataXrange,
     dataKeys,
     newDataXrange,
+    newTimeSeriesData,
   ])
 
   const annotations = React.useMemo(() => {
-    const range = rangeUnit === 'time' ? 50 : 1
+    const range = rangeUnit === 'time' ? frameRate : 1
     return drawOrderList.map((value) => {
       return {
         x: Number((newDataXrange.length - 1) / range) + newDataXrange.length / (10 * range),
@@ -182,7 +183,7 @@ const TimeSeriesPlotImple = React.memo(() => {
         ay: -10,
       }
     })
-  }, [data, drawOrderList, dataXrange, newDataXrange])
+  }, [data, drawOrderList, newDataXrange, rangeUnit])
 
   const layout = React.useMemo(
     () => ({
@@ -208,7 +209,8 @@ const TimeSeriesPlotImple = React.memo(() => {
           color: 'black',
         },
         range: rangeUnit === 'frames' ? [xrange.left, xrange.right] :
-          [xrange.left ? xrange.left / 50 : -1.2 , xrange.right ? xrange.right / 50 : (dataXrange.length / 50 + 3)],
+          [typeof xrange.left !== 'undefined' ? xrange.left / frameRate : -1.2 ,
+            typeof xrange.right !== 'undefined' ? xrange.right / frameRate : (dataXrange.length / frameRate) + 3.35],
         showgrid: showgrid,
         showline: showline,
         showticklabels: showticklabels,
@@ -231,6 +233,8 @@ const TimeSeriesPlotImple = React.memo(() => {
       annotations,
       width,
       height,
+      rangeUnit,
+      dataXrange
     ],
   )
 

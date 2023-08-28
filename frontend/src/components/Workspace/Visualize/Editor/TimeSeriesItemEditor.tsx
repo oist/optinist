@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react'
-import {useSelector, useDispatch, DefaultRootState} from 'react-redux'
+import {useSelector, useDispatch} from 'react-redux'
 import {
   AccordionDetails,
   AccordionSummary,
@@ -199,6 +199,7 @@ const SelectValue: React.FC = () => {
 
 const Xrange: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
+  const frameRate = 50
 
   const rangeUnit = useSelector(selectImageItemRangeUnit(itemId))
   const xrangeSelector = useSelector(selectTimeSeriesItemXrange(itemId))
@@ -207,20 +208,21 @@ const Xrange: React.FC = () => {
 
   useEffect(() => {
     if(Object.keys(xrange).length < 1) return
-    rangeUnit === 'frames' ? setXrange(xrangeSelector) : setXrange({left: Number(xrangeSelector.left)/ 50, right: Number(xrangeSelector.right) / 50})
+    rangeUnit === 'frames' ? setXrange(xrangeSelector) : setXrange({left: Number(xrangeSelector.left)/ frameRate, right: Number(xrangeSelector.right) / frameRate})
+  //eslint-disable-next-line
   }, [JSON.stringify(rangeUnit), JSON.stringify(xrangeSelector)])
 
   const dispatch = useDispatch()
   const onChangeLeft = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newLeft = event.target.value === '' ? '' : Number(event.target.value)
     if (typeof newLeft === 'number') {
-      dispatch(setTimeSeriesItemXrangeLeft({ itemId, left: rangeUnit === 'frames' ? newLeft : newLeft * 50 }))
+      dispatch(setTimeSeriesItemXrangeLeft({ itemId, left: rangeUnit === 'frames' ? newLeft : newLeft * frameRate }))
     }
   }
   const onChangeRight = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newRight = event.target.value === '' ? '' : Number(event.target.value)
     if (typeof newRight === 'number') {
-      dispatch(setTimeSeriesItemXrangeRight({ itemId, right: rangeUnit === 'frames' ? newRight : newRight * 50 }))
+      dispatch(setTimeSeriesItemXrangeRight({ itemId, right: rangeUnit === 'frames' ? newRight : newRight * frameRate }))
     }
   }
 
