@@ -1,4 +1,5 @@
 import gc
+from typing import Optional
 
 import imageio
 import numpy as np
@@ -12,14 +13,22 @@ from studio.app.common.core.utils.json_writer import JsonWriter
 from studio.app.common.core.workflow.workflow import OutputPath, OutputType
 from studio.app.common.dataclass.base import BaseData
 from studio.app.common.dataclass.utils import create_images_list
+from studio.app.common.schemas.outputs import PlotMetaData
 from studio.app.dir_path import DIRPATH
 
 
 class ImageData(BaseData):
-    def __init__(self, data, output_dir=DIRPATH.OUTPUT_DIR, file_name="image"):
+    def __init__(
+        self,
+        data,
+        output_dir=DIRPATH.OUTPUT_DIR,
+        file_name="image",
+        meta: Optional[PlotMetaData] = None,
+    ):
         super().__init__(file_name)
 
         self.json_path = None
+        self.meta = meta
 
         if data is None:
             self.path = None
@@ -48,6 +57,7 @@ class ImageData(BaseData):
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
         JsonWriter.write_as_split(self.json_path, create_images_list(self.data))
+        JsonWriter.write_plot_meta(json_dir, self.file_name, self.meta)
 
     @property
     def output_path(self) -> OutputPath:

@@ -19,8 +19,7 @@ class ScatterData(BaseData):
     def save_json(self, json_dir):
         self.json_path = join_filepath([json_dir, f"{self.file_name}.json"])
         JsonWriter.write_as_split(self.json_path, self.data)
-        plot_meta_path = join_filepath([json_dir, f"{self.file_name}.plot-meta.json"])
-        JsonWriter.write_plot_meta(plot_meta_path, self.meta)
+        JsonWriter.write_plot_meta(json_dir, self.file_name, self.meta)
 
     @property
     def output_path(self) -> OutputPath:

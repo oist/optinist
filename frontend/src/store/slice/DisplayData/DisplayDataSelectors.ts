@@ -5,6 +5,9 @@ const selectDisplayData = (state: RootState) => state.displayData
 export const selectTimeSeriesData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).timeSeries[filePath].data
 
+export const selectTimesSeriesMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).timeSeries[filePath].meta
+
 export const selectTimeSeriesXrange =
   (filePath: string) => (state: RootState) =>
     selectDisplayData(state).timeSeries[filePath].xrange
@@ -67,6 +70,9 @@ export const selectHeatMapDataError =
 export const selectImageData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).image[filePath]
 
+export const selectImageMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).image[filePath].meta
+
 export const selectImageDataIsInitialized =
   (filePath: string) => (state: RootState) =>
     Object.keys(selectDisplayData(state).image).includes(filePath)
@@ -103,6 +109,9 @@ export const selectActiveImageData =
 export const selectCsvData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).csv[filePath].data
 
+export const selectCsvMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).csv[filePath].meta
+
 export const selectCsvDataIsInitialized =
   (filePath: string) => (state: RootState) =>
     Object.keys(selectDisplayData(state).csv).includes(filePath)
@@ -124,6 +133,9 @@ export const selectCsvDataIsFulfilled =
 
 export const selectRoiData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).roi[filePath]?.data[0] ?? []
+
+export const selectRoiMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).roi[filePath].meta
 
 export const selectRoiDataIsInitialized =
   (filePath: string) => (state: RootState) =>
@@ -207,6 +219,9 @@ export const selectBarDataIsFulfilled =
 
 export const selectHTMLData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).html[filePath]?.data ?? ''
+
+export const selectHTMLMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).html[filePath].meta
 
 export const selectHTMLDataIsInitialized =
   (filePath: string) => (state: RootState) =>

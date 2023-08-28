@@ -96,6 +96,7 @@ export const displayDataSlice = createSlice({
         state.timeSeries[path].fulfilled = true
         state.timeSeries[path].error = null
 
+        state.timeSeries[path].meta = action.payload.meta
         state.timeSeries[path].data[index] = action.payload.data[index]
         if (action.payload.std[index] !== undefined) {
           state.timeSeries[path].std[index] = action.payload.std[index]
@@ -137,6 +138,7 @@ export const displayDataSlice = createSlice({
         state.timeSeries[path].fulfilled = true
         state.timeSeries[path].error = null
         state.timeSeries[path].xrange = action.payload.xrange
+        state.timeSeries[path].meta = action.payload.meta
         state.timeSeries[path].data = action.payload.data
         if (action.payload.std !== undefined) {
           state.timeSeries[path].std = action.payload.std
@@ -179,6 +181,7 @@ export const displayDataSlice = createSlice({
         state.timeSeries[path].error = null
 
         state.timeSeries[path].xrange = action.payload.xrange
+        state.timeSeries[path].meta = action.payload.meta
         state.timeSeries[path].data = action.payload.data
         state.timeSeries[path].std = action.payload.std
       })
@@ -369,6 +372,7 @@ export const displayDataSlice = createSlice({
         state.image[path] = {
           type: 'image',
           data: action.payload.data,
+          meta: action.payload.meta,
           pending: false,
           fulfilled: true,
           error: null,
@@ -399,6 +403,7 @@ export const displayDataSlice = createSlice({
         state.csv[path] = {
           type: 'csv',
           data: action.payload.data,
+          meta: action.payload.meta,
           pending: false,
           fulfilled: true,
           error: null,
@@ -442,6 +447,7 @@ export const displayDataSlice = createSlice({
         state.roi[path] = {
           type: 'roi',
           data: data,
+          meta: action.payload.meta,
           pending: false,
           fulfilled: true,
           error: null,
@@ -542,6 +548,7 @@ export const displayDataSlice = createSlice({
         state.html[path] = {
           type: 'html',
           data: action.payload.data,
+          meta: action.payload.meta,
           pending: false,
           fulfilled: true,
           error: null,

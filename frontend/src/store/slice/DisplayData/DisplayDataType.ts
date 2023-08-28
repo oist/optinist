@@ -86,6 +86,7 @@ export type PlotMetaData = {
 interface BaseDisplay<T extends DATA_TYPE, Data> {
   type: T
   data: Data
+  meta?: PlotMetaData
   pending: boolean
   error: string | null
   fulfilled: boolean
@@ -101,7 +102,6 @@ export interface HeatMapDisplayData
   extends BaseDisplay<'heatMap', HeatMapData> {
   columns: string[]
   index: string[]
-  meta?: PlotMetaData
 }
 
 export interface ImageDisplayData extends BaseDisplay<'image', ImageData> {}
@@ -115,14 +115,11 @@ export interface RoiDisplayData extends BaseDisplay<'roi', RoiData> {
 }
 
 export interface ScatterDisplayData
-  extends BaseDisplay<'scatter', ScatterData> {
-  meta?: PlotMetaData
-}
+  extends BaseDisplay<'scatter', ScatterData> {}
 
 export interface BarDisplayData extends BaseDisplay<'bar', BarData> {
   columns: string[]
   index: string[]
-  meta?: PlotMetaData
 }
 
 export interface HTMLDisplayData extends BaseDisplay<'html', HTMLData> {}

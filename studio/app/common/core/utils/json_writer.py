@@ -23,7 +23,8 @@ class JsonWriter:
         pd.DataFrame(data).to_json(filepath, indent=4, orient="split")
 
     @classmethod
-    def write_plot_meta(cls, filepath, data: Optional[PlotMetaData]):
+    def write_plot_meta(cls, dir_name, file_name, data: Optional[PlotMetaData]):
+        filepath = join_filepath([dir_name, f"{file_name}.plot-meta.json"])
         if data is not None:
             with open(filepath, "w") as f:
                 json.dump(data.value_present_dict(), f, indent=4)

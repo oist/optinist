@@ -31,7 +31,12 @@ import { PlotMetaData } from './DisplayDataType'
 import { DISPLAY_DATA_SLICE_NAME } from './DisplayDataType'
 
 export const getTimeSeriesInitData = createAsyncThunk<
-  { data: TimeSeriesData; xrange: string[]; std: TimeSeriesData },
+  {
+    data: TimeSeriesData
+    xrange: string[]
+    std: TimeSeriesData
+    meta?: PlotMetaData
+  },
   { path: string; itemId: number }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesInitData`,
@@ -46,7 +51,12 @@ export const getTimeSeriesInitData = createAsyncThunk<
 )
 
 export const getTimeSeriesDataById = createAsyncThunk<
-  { data: TimeSeriesData; xrange: string[]; std: TimeSeriesData },
+  {
+    data: TimeSeriesData
+    xrange: string[]
+    std: TimeSeriesData
+    meta?: PlotMetaData
+  },
   { path: string; index: string }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesDataById`,
@@ -61,7 +71,12 @@ export const getTimeSeriesDataById = createAsyncThunk<
 )
 
 export const getTimeSeriesAllData = createAsyncThunk<
-  { data: TimeSeriesData; xrange: string[]; std: TimeSeriesData },
+  {
+    data: TimeSeriesData
+    xrange: string[]
+    std: TimeSeriesData
+    meta?: PlotMetaData
+  },
   { path: string }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesAllData`,
@@ -93,7 +108,7 @@ export const getHeatMapData = createAsyncThunk<
 })
 
 export const getImageData = createAsyncThunk<
-  { data: ImageData },
+  { data: ImageData; meta?: PlotMetaData },
   { path: string; workspaceId: number; startIndex?: number; endIndex?: number }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getImageData`,
@@ -112,9 +127,7 @@ export const getImageData = createAsyncThunk<
 )
 
 export const getCsvData = createAsyncThunk<
-  {
-    data: CsvData
-  },
+  { data: CsvData; meta?: PlotMetaData },
   { path: string; workspaceId: number }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getCsvData`,
@@ -129,7 +142,7 @@ export const getCsvData = createAsyncThunk<
 )
 
 export const getRoiData = createAsyncThunk<
-  { data: RoiData },
+  { data: RoiData; meta?: PlotMetaData },
   { path: string; workspaceId: number }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getRoiData`,
@@ -168,7 +181,7 @@ export const getBarData = createAsyncThunk<
 })
 
 export const getHTMLData = createAsyncThunk<
-  { data: HTMLData },
+  { data: HTMLData; meta?: PlotMetaData },
   { path: string }
 >(`${DISPLAY_DATA_SLICE_NAME}/getHTMLData`, async ({ path }, thunkAPI) => {
   try {
