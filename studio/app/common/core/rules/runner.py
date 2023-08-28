@@ -33,13 +33,11 @@ class Runner:
 
             cls.set_func_start_timestamp(os.path.dirname(__rule.output))
 
-            nwb_params = cls.get_nwb_params(os.path.dirname(__rule.output))
-
             # output_info
             output_info = cls.execute_function(
                 __rule.path,
                 __rule.params,
-                nwb_params,
+                nwbfile.get("input"),
                 os.path.dirname(__rule.output),
                 input_info,
             )
@@ -86,14 +84,6 @@ class Runner:
             filename=DIRPATH.EXPERIMENT_YML,
             config=asdict(expt_config),
         )
-
-    @classmethod
-    def get_nwb_params(cls, output_dirpath):
-        workflow_dirpath = os.path.dirname(output_dirpath)
-        expt_config = ExptConfigReader.read(
-            join_filepath([workflow_dirpath, DIRPATH.EXPERIMENT_YML])
-        )
-        return expt_config.nwb
 
     @classmethod
     def save_func_nwb(cls, save_path, name, nwbfile, output_info):
