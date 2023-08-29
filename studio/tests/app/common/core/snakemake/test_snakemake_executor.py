@@ -22,9 +22,13 @@ smk_param = SmkParam(
     lock=False,
 )
 
+workflow_dirpath = f"{DIRPATH.DATA_DIR}/output/default/snakemake"
+
+if not os.path.isdir(workflow_dirpath):
+    os.mkdir(workflow_dirpath)
 shutil.copyfile(
     f"{DIRPATH.DATA_DIR}/snakemake.yaml",
-    f"{DIRPATH.DATA_DIR}/output/default/snakemake/snakemake.yaml",
+    f"{workflow_dirpath}/snakemake.yaml",
 )
 
 
