@@ -94,25 +94,28 @@ const TimeSeriesPlotImple = React.memo(() => {
   const frameRate = 50
 
   useEffect(() => {
+    let seriesData: any = {}
+    drawOrderList.forEach((key) => {
+      seriesData[key] = timeSeriesData[key]
+    })
     if(rangeUnit === 'time' && timeSeriesData && Object.keys(timeSeriesData).length > 0) {
+      let newSeriesData: any = {}
+      Object.keys(seriesData).forEach(key => {
+        newSeriesData[key] = {}
+        Object.keys(seriesData[key]).forEach((keyTime) => {
+          const newKeyTime =  Number(keyTime) / frameRate
+          newSeriesData[key][newKeyTime] = seriesData[key][keyTime]
+        })
+      })
       setNewDataXrange(dataXrange.map(data => String(Number(data) / frameRate)))
-      let newTime: any = JSON.parse(JSON.stringify(timeSeriesData))
-      for(let key in newTime) {
-        if (Object.isFrozen(newTime[key])) {
-          newTime[key] = { ...newTime[key] };
-        }
-        for(let keyChild in newTime[String(key)]) {
-          newTime[key][String(Number(keyChild) / frameRate)] = newTime[String(key)][keyChild]
-        }
-        setNewTimeSeriesData(newTime)
-      }
+      setNewTimeSeriesData(newSeriesData)
     }
     else {
       setNewDataXrange(dataXrange)
-      setNewTimeSeriesData(timeSeriesData)
+      setNewTimeSeriesData(seriesData)
     }
     //eslint-disable-next-line
-  }, [JSON.stringify(rangeUnit), JSON.stringify(dataXrange), JSON.stringify(timeSeriesData)])
+  }, [rangeUnit, dataXrange, timeSeriesData, drawOrderList])
 
   const colorScale = createColormap({
     colormap: 'jet',
@@ -124,9 +127,7 @@ const TimeSeriesPlotImple = React.memo(() => {
   const data = React.useMemo(() => {
     return Object.fromEntries(
       dataKeys.map((key) => {
-      let y = newDataXrange.map((x) => {
-        return newTimeSeriesData[key][String(Number(x) / frameRate)] || newTimeSeriesData[key][x]
-      })
+      let y = newDataXrange.map((x) => newTimeSeriesData[key]?.[x])
       const i = Number(key) - 1
       const new_i = Math.floor((i % 10) * 10 + i / 10) % 100
       if (drawOrderList.includes(key) && offset) {
@@ -209,8 +210,8 @@ const TimeSeriesPlotImple = React.memo(() => {
           color: 'black',
         },
         range: rangeUnit === 'frames' ? [xrange.left, xrange.right] :
-          [typeof xrange.left !== 'undefined' ? xrange.left / frameRate : -1.2 ,
-            typeof xrange.right !== 'undefined' ? xrange.right / frameRate : (dataXrange.length / frameRate) + 3.35],
+          [typeof xrange.left !== 'undefined' ? xrange.left / frameRate : -2.5 ,
+            typeof xrange.right !== 'undefined' ? xrange.right / frameRate : (dataXrange.length / frameRate) + 6.8],
         showgrid: showgrid,
         showline: showline,
         showticklabels: showticklabels,
