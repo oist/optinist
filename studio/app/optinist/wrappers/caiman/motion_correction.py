@@ -55,6 +55,7 @@ def caiman_mc(
 
     rois = np.nanmax(rois, axis=0)
     rois[rois == 0] = np.nan
+    rois -= 1
 
     xy_trans_data = (
         (np.array(mc.x_shifts_els), np.array(mc.y_shifts_els))

@@ -32,6 +32,7 @@ def lccd_detect(
 
     im = np.stack(roi_list)
     im[im == 0] = np.nan
+    im -= 1
 
     timeseries_dff = np.ones([num_cell, num_frames]) * np.nan
     for i in range(num_cell):
