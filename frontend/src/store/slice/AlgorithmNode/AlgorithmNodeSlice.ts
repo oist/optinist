@@ -59,8 +59,8 @@ export const algorithmNodeSlice = createSlice({
       })
       .addCase(deleteFlowElements, (state, action) => {
         action.payload
-          .filter((node) => isNodeData(node))
-          .forEach((node) => {
+          .filter((node: any) => isNodeData(node))
+          .forEach((node: any) => {
             if (node.data?.type === NODE_TYPE_SET.ALGORITHM) {
               delete state[node.id]
             }

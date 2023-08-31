@@ -1,17 +1,20 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import {
-  Elements,
-  removeElements,
+  // Elements,
+  // removeElements,
   Position,
   isNode,
-  FlowTransform,
-} from 'react-flow-renderer'
+  // FlowTransform,
+  Node,
+  Viewport,
+  Edge,
+} from 'reactflow'
 import {
   FLOW_ELEMENT_SLICE_NAME,
   FlowElement,
   NODE_TYPE_SET,
-  NodeData,
   ElementCoord,
+  NodeData,
 } from './FlowElementType'
 import {
   INITIAL_ALGO_STYLE,
@@ -27,7 +30,7 @@ import { addAlgorithmNode, addInputNode } from './FlowElementActions'
 import { getLabelByPath } from './FlowElementUtils'
 import { uploadFile } from '../FileUploader/FileUploaderActions'
 
-const initialElements: Elements<NodeData> = [
+const initialElements: Node<NodeData>[] = [
   {
     id: INITIAL_IMAGE_ELEMENT_ID,
     type: REACT_FLOW_NODE_TYPE_KEY.ImageFileNode,
@@ -40,7 +43,7 @@ const initialElements: Elements<NodeData> = [
   },
 ]
 
-const initialFlowPosition: FlowTransform = {
+const initialFlowPosition: Viewport = {
   x: 0,
   y: 0,
   zoom: 0.7,
@@ -61,22 +64,26 @@ export const flowElementSlice = createSlice({
   name: FLOW_ELEMENT_SLICE_NAME,
   initialState,
   reducers: {
-    setFlowPosition: (state, action: PayloadAction<FlowTransform>) => {
+    setFlowPosition: (state, action: PayloadAction<Viewport>) => {
       state.flowPosition = action.payload
     },
-    setFlowElements: (state, action: PayloadAction<Elements>) => {
+    setFlowElements: (
+      state,
+      action: PayloadAction<(Node<NodeData> | Edge<NodeData>)[]>,
+    ) => {
       state.flowElements = action.payload
     },
-    deleteFlowElements: (state, action: PayloadAction<Elements>) => {
-      state.flowElements = removeElements(action.payload, state.flowElements)
+    deleteFlowElements: (state, action: PayloadAction<any>) => {
+      // state.flowElements = removeElements(action.payload, state.flowElements)
     },
     deleteFlowElementsById: (state, action: PayloadAction<string>) => {
-      const element = state.flowElements.find(
-        (edge) => edge.id === action.payload,
-      )
-      if (element !== undefined) {
-        state.flowElements = removeElements([element], state.flowElements)
-      }
+      // const element = state.flowElements.find(
+      //   (edge: any) => edge.id === action.payload,
+      // )
+      // if (element !== undefined) {
+      //   state.flowElements = removeElements([element], state.flowElements)
+      // }
+      return state
     },
     editFlowElementPositionById: (
       state,
@@ -90,7 +97,7 @@ export const flowElementSlice = createSlice({
     ) => {
       let { nodeId, coord } = action.payload
       const elementIdx = state.flowElements.findIndex(
-        (ele) => ele.id === nodeId,
+        (ele: any) => ele.id === nodeId,
       )
       const targetItem = state.flowElements[elementIdx]
       if (isNode(targetItem)) {
@@ -102,6 +109,7 @@ export const flowElementSlice = createSlice({
     builder
       .addCase(addAlgorithmNode.fulfilled, (state, action) => {
         let { node } = action.meta.arg
+        console.log('node', node)
         if (node.data?.type === NODE_TYPE_SET.ALGORITHM) {
           node = {
             ...node,
@@ -144,7 +152,7 @@ export const flowElementSlice = createSlice({
         let { nodeId, filePath } = action.payload
         const label = getLabelByPath(filePath)
         const elementIdx = state.flowElements.findIndex(
-          (ele) => ele.id === nodeId,
+          (ele: any) => ele.id === nodeId,
         )
         const targetNode = state.flowElements[elementIdx]
         if (targetNode.data != null) {
@@ -155,7 +163,7 @@ export const flowElementSlice = createSlice({
         const { nodeId } = action.meta.arg
         if (nodeId != null) {
           const elementIdx = state.flowElements.findIndex(
-            (ele) => ele.id === nodeId,
+            (ele: any) => ele.id === nodeId,
           )
           const targetNode = state.flowElements[elementIdx]
           if (targetNode.data != null) {
@@ -166,29 +174,29 @@ export const flowElementSlice = createSlice({
       .addCase(importExperimentByUid.fulfilled, (state, action) => {
         state.flowPosition = initialFlowPosition
         state.elementCoord = initialElementCoord
-        const newNodeList: Elements<NodeData> = Object.values(
-          action.payload.nodeDict,
-        ).map((node) => {
-          if (isInputNodePostData(node)) {
-            return {
-              ...node,
-              data: {
-                label: node.data?.label ?? '',
-                type: node.data?.type ?? 'input',
-              },
+        const newNodeList = Object.values(action.payload.nodeDict).map(
+          (node) => {
+            if (isInputNodePostData(node)) {
+              return {
+                ...node,
+                data: {
+                  label: node.data?.label ?? '',
+                  type: node.data?.type ?? 'input',
+                },
+              }
+            } else {
+              return {
+                ...node,
+                data: {
+                  label: node.data?.label ?? '',
+                  type: node.data?.type ?? 'algorithm',
+                },
+              }
             }
-          } else {
-            return {
-              ...node,
-              data: {
-                label: node.data?.label ?? '',
-                type: node.data?.type ?? 'algorithm',
-              },
-            }
-          }
-        })
+          },
+        )
         state.flowElements = newNodeList.concat(
-          Object.values(action.payload.edgeDict),
+          Object.values(action.payload.edgeDict) as any,
         )
       }),
 })

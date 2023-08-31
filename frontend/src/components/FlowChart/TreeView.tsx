@@ -36,9 +36,10 @@ import {
   TreeItemDragObject,
   TreeItemDropResult,
 } from './DnDItemType'
+import { AppDispatch } from 'store/store'
 
 export const AlgorithmTreeView = React.memo(() => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const algoList = useSelector(selectAlgorithmListTree)
   const isLatest = useSelector(selectAlgorithmListIsLated)
 
@@ -270,8 +271,13 @@ const AddButton = React.memo<{
 }>(({ name, onClick }) => {
   return (
     <>
-      <IconButton aria-label="add" style={{ padding: 2 }} size="large">
-        <AddIcon onClick={() => onClick()} />
+      <IconButton
+        onClick={() => onClick()}
+        aria-label="add"
+        style={{ padding: 2 }}
+        size="large"
+      >
+        <AddIcon />
       </IconButton>
       <Typography
         variant="inherit"

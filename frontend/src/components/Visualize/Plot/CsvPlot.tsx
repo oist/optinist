@@ -19,6 +19,7 @@ import {
   selectCsvItemSetIndex,
   selectCsvItemTranspose,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import { AppDispatch } from 'store/store'
 
 export const CsvPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -26,7 +27,8 @@ export const CsvPlot = React.memo(() => {
   const isPending = useSelector(selectCsvDataIsPending(path))
   const isFulfilled = useSelector(selectCsvDataIsFulfilled(path))
   const error = useSelector(selectCsvDataError(path))
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
+  
   React.useEffect(() => {
     if (!isInitialized) {
       dispatch(getCsvData({ path }))

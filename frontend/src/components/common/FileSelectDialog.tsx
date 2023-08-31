@@ -28,6 +28,7 @@ import {
   getNodeByPath,
   isDirNodeByPath,
 } from 'store/slice/FilesTree/FilesTreeUtils'
+import { AppDispatch } from 'store/store'
 
 type FileSelectDialogProps = {
   initialFilePath: string[] | string
@@ -294,7 +295,7 @@ const FilePathSelectedListView = React.memo<{ path: string | string[] }>(
 function useFileTree(
   fileType: FILE_TREE_TYPE,
 ): [TreeNodeType[] | undefined, boolean] {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const tree = useSelector(selectFilesTreeNodes(fileType))
   const isLatest = useSelector(selectFilesIsLatest(fileType))
   const isLoading = useSelector(selectFilesIsLoading(fileType))

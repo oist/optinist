@@ -32,6 +32,10 @@
   }
 }
 
+.react-flow__node {
+  width: fit-content;
+}
+
 .outputkey {
   margin-left: auto;
   margin-right: auto;

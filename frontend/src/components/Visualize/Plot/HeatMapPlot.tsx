@@ -23,10 +23,11 @@ import {
   selectVisualizeSaveFilename,
   selectVisualizeSaveFormat,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import { AppDispatch } from 'store/store'
 
 export const HeatMapPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const isPending = useSelector(selectHeatMapDataIsPending(path))
   const isInitialized = useSelector(selectHeatMapDataIsInitialized(path))
   const error = useSelector(selectHeatMapDataError(path))

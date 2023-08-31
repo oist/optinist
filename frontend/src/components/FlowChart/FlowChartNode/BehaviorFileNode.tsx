@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Handle, Position, NodeProps } from 'react-flow-renderer'
+import { Handle, Position, NodeProps } from 'reactflow'
 import { alpha, useTheme } from '@mui/material/styles'
 
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'

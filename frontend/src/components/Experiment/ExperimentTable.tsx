@@ -53,6 +53,7 @@ import { styled } from '@mui/material/styles'
 import { renameExperiment } from 'api/experiments/Experiments'
 import { selectPipelineLatestUid } from 'store/slice/Pipeline/PipelineSelectors'
 import { clearCurrentPipeline } from 'store/slice/Pipeline/PipelineSlice'
+import { AppDispatch } from 'store/store'
 
 export const ExperimentUidContext = React.createContext<string>('')
 
@@ -60,7 +61,7 @@ export const ExperimentTable: React.FC = () => {
   const isUninitialized = useSelector(selectExperimentsSatusIsUninitialized)
   const isFulfilled = useSelector(selectExperimentsSatusIsFulfilled)
   const isError = useSelector(selectExperimentsSatusIsError)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   React.useEffect(() => {
     if (isUninitialized) {
       dispatch(getExperiments())
@@ -93,7 +94,7 @@ const TableImple = React.memo(() => {
   const experimentList = useSelector(selectExperimentList)
   const experimentListValues = Object.values(experimentList)
   const experimentListKeys = Object.keys(experimentList)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const onClickReload = () => {
     dispatch(getExperiments())
   }
@@ -380,7 +381,7 @@ const RowItem = React.memo<{
   const [isEdit, setEdit] = useState(false)
   const [errorEdit, setErrorEdit] = useState('')
   const [valueEdit, setValueEdit] = useState(name)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   const onBlurEdit = (event: any) => {
     event.preventDefault()

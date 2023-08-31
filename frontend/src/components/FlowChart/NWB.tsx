@@ -13,6 +13,7 @@ import {
   selectNwbParamsValue,
 } from 'store/slice/NWB/NWBSelectors'
 import { createParamFormItemComponent } from 'components/common/ParamFormItemCreator'
+import { AppDispatch } from 'store/store'
 
 export const NWBSettingButton = React.memo(() => {
   const dispatch = useDispatch()
@@ -34,7 +35,7 @@ export const NWBSettingButton = React.memo(() => {
 })
 
 export const NWBSettingContents = React.memo(() => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   const paramKeyList = useSelector(selectNwbParamsKeyList, arrayEqualityFn)
   useEffect(() => {

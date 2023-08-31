@@ -1,5 +1,5 @@
 import axios from 'axios'
-import type { Edge, Node } from 'react-flow-renderer'
+import type { Edge, Node } from 'reactflow'
 
 import { BASE_URL } from 'const/API'
 import type {

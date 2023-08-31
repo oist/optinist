@@ -1,10 +1,5 @@
 import { useDispatch } from 'react-redux'
-import {
-  EdgeProps,
-  getBezierPath,
-  getMarkerEnd,
-  getEdgeCenter,
-} from 'react-flow-renderer'
+import { EdgeProps, getBezierPath } from 'reactflow'
 import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
 import 'style/flowbutton.css'
 
@@ -19,24 +14,15 @@ export const CustomEdge: React.FC<EdgeProps> = ({
   sourcePosition,
   targetPosition,
   style = {},
-  data,
-  arrowHeadType,
-  markerEndId,
+  markerEnd,
 }) => {
-  const edgePath = getBezierPath({
+  const [path, edgeCenterX, edgeCenterY] = getBezierPath({
     sourceX,
     sourceY,
     sourcePosition,
     targetX,
     targetY,
     targetPosition,
-  })
-  const markerEnd = getMarkerEnd(arrowHeadType, markerEndId)
-  const [edgeCenterX, edgeCenterY] = getEdgeCenter({
-    sourceX,
-    sourceY,
-    targetX,
-    targetY,
   })
 
   const dispatch = useDispatch()
@@ -51,7 +37,7 @@ export const CustomEdge: React.FC<EdgeProps> = ({
         id={id}
         style={style}
         className="react-flow__edge-path"
-        d={edgePath}
+        d={path}
         markerEnd={markerEnd}
       />
       <foreignObject

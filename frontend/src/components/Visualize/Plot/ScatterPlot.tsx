@@ -31,10 +31,11 @@ import {
   setScatterItemXIndex,
   setScatterItemYIndex,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { AppDispatch } from 'store/store'
 
 export const ScatterPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const isPending = useSelector(selectScatterDataIsPending(path))
   const isInitialized = useSelector(selectScatterDataIsInitialized(path))
   const error = useSelector(selectScatterDataError(path))

@@ -1,4 +1,4 @@
-import { isEdge, Node } from 'react-flow-renderer'
+import { isEdge, Node } from 'reactflow'
 
 import {
   AlgorithmNodePostData,
@@ -56,12 +56,12 @@ const selectForceRunList = (state: RootState) => {
   const elements = selectFlowElements(state)
   return elements
     .filter(isAlgorithmNodeData)
-    .filter((node) => {
+    .filter((node: any) => {
       const isUpdated = selectAlgorithmIsUpdated(node.id)(state)
       const status = selectPipelineNodeResultStatus(node.id)(state)
       return isUpdated || status === NODE_RESULT_STATUS.ERROR
     })
-    .map((node) => ({
+    .map((node: any) => ({
       nodeId: node.id,
       name: selectAlgorithmName(node.id)(state),
     }))
@@ -70,7 +70,7 @@ const selectForceRunList = (state: RootState) => {
 const selectNodeDictForRun = (state: RootState): NodeDict => {
   const elements = selectFlowElements(state)
   const nodeDict: NodeDict = {}
-  elements.filter(isNodeData).forEach((node) => {
+  elements.filter(isNodeData).forEach((node: any) => {
     if (isAlgorithmNodeData(node)) {
       const param = selectAlgorithmParams(node.id)(state) ?? {}
       const functionPath = selectAlgorithmFunctionPath(node.id)(state)
@@ -112,7 +112,7 @@ const selectEdgeDictForRun = (state: RootState) => {
   const edgeDict: EdgeDict = {}
   selectFlowElements(state)
     .filter(isEdge)
-    .forEach((edge) => {
+    .forEach((edge: any) => {
       edgeDict[edge.id] = edge
     })
   return edgeDict

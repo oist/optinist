@@ -28,10 +28,11 @@ import {
   selectVisualizeSaveFormat,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { setBarItemIndex } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { AppDispatch } from 'store/store'
 
 export const BarPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const isPending = useSelector(selectBarDataIsPending(path))
   const isInitialized = useSelector(selectBarDataIsInitialized(path))
   const error = useSelector(selectBarDataError(path))

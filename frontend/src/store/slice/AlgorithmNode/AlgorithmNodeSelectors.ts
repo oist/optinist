@@ -13,21 +13,21 @@ export const selectAlgorithmNodeDefined =
 
 export const selectAlgorithmFunctionPath =
   (nodeId: string) => (state: RootState) =>
-    selectAlgorithmNodeById(nodeId)(state).functionPath
+    selectAlgorithmNodeById(nodeId)(state)?.functionPath
 
 export const selectAlgorithmName = (nodeId: string) => (state: RootState) =>
-  selectAlgorithmNodeById(nodeId)(state).name
+  selectAlgorithmNodeById(nodeId)(state)?.name
 
 export const selectAlgorithmParams = (nodeId: string) => (state: RootState) =>
-  selectAlgorithmNodeById(nodeId)(state).params
+  selectAlgorithmNodeById(nodeId)(state)?.params
 
 export const selectAlgorithmIsUpdated =
   (nodeId: string) => (state: RootState) =>
-    selectAlgorithmNodeById(nodeId)(state).isUpdated
+    selectAlgorithmNodeById(nodeId)(state)?.isUpdated
 
 export const selectAlgorithmParamsExit =
   (nodeId: string) => (state: RootState) =>
-    selectAlgorithmNodeById(nodeId)(state).params !== null
+    selectAlgorithmNodeById(nodeId)(state)?.params !== null
 
 export const selectAlgorithmParamsKeyList =
   (nodeId: string) => (state: RootState) =>

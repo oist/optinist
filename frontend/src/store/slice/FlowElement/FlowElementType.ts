@@ -1,4 +1,4 @@
-import { Elements, FlowTransform } from 'react-flow-renderer'
+import { Edge, Node, Viewport } from 'reactflow'
 
 export const FLOW_ELEMENT_SLICE_NAME = 'flowElement'
 
@@ -28,7 +28,7 @@ export interface ElementCoord {
 }
 
 export interface FlowElement {
-  flowElements: Elements<NodeData>
-  flowPosition: FlowTransform
+  flowElements: (Node<NodeData> | Edge<NodeData>)[]
+  flowPosition: Viewport
   elementCoord: ElementCoord
 }

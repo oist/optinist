@@ -1,22 +1,30 @@
-import React, { DragEvent, FC, MouseEvent, ReactNode, useState } from 'react'
+import React, {
+  DragEvent,
+  MouseEvent as ReactMouseEvent,
+  FC,
+  ReactNode,
+  useState,
+} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import ReactFlow, {
   ReactFlowProvider,
-  addEdge,
   Controls,
-  Elements,
   Connection,
   Edge,
   Node,
-  OnLoadParams,
-  FlowTransform,
-  NodeTypesType,
-} from 'react-flow-renderer'
+  applyNodeChanges,
+  NodeTypes,
+  EdgeTypes,
+  NodeChange,
+  Viewport,
+  isNode,
+  addEdge,
+  ReactFlowInstance,
+} from 'reactflow'
 import { useDrop } from 'react-dnd'
-
+import 'reactflow/dist/style.css'
 import 'style/flow.css'
 import {
-  deleteFlowElements,
   editFlowElementPositionById,
   setFlowElements,
   setFlowPosition,
@@ -45,6 +53,7 @@ import {
 } from 'components/FlowChart/DialogContext'
 import { FileSelectDialog } from 'components/common/FileSelectDialog'
 import { FormHelperText, Popover } from '@mui/material'
+import { NodeData } from 'store/slice/FlowElement/FlowElementType'
 
 const initDialogFile = {
   filePath: '',
@@ -61,6 +70,12 @@ const ReactFlowProviderComponent = ReactFlowProvider as FC<{
 export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
   (props) => {
     const flowElements = useSelector(selectFlowElements)
+    const nodes = flowElements.filter((item) =>
+      isNode(item),
+    ) as Node<NodeData>[]
+    const egdes = flowElements.filter(
+      (item) => !isNode(item),
+    ) as Edge<NodeData>[]
     const dispatch = useDispatch()
     const [dialogNodeId, setDialogNodeId] = useState('')
     const [dialogFile, setDialogFile] =
@@ -72,22 +87,23 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
 
     const onConnect = (params: Connection | Edge) => {
       dispatch(
-        setFlowElements(
-          addEdge(
+        setFlowElements([
+          ...nodes,
+          ...addEdge(
             {
               ...params,
               animated: false,
               style: { width: 5 },
               type: 'buttonedge',
             },
-            flowElements,
+            egdes,
           ),
-        ),
+        ]),
       )
     }
 
-    const onElementsRemove = (elementsToRemove: Elements) => {
-      dispatch(deleteFlowElements(elementsToRemove))
+    const onNodesChange = (changes: NodeChange[]) => {
+      dispatch(setFlowElements([...applyNodeChanges(changes, nodes), ...egdes]))
     }
 
     const onDragOver = (event: DragEvent) => {
@@ -95,7 +111,7 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
       event.dataTransfer.dropEffect = 'move'
     }
 
-    const onNodeDragStop = (event: MouseEvent, node: Node) => {
+    const onNodeDragStop = (event: ReactMouseEvent, node: Node) => {
       dispatch(
         editFlowElementPositionById({
           nodeId: node.id,
@@ -106,17 +122,20 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
 
     const flowPosition = useSelector(selectFlowPosition)
 
-    const onMoveEnd = (event: FlowTransform | undefined) => {
-      if (event !== undefined) {
-        dispatch(setFlowPosition(event))
-      }
+    const onMoveEnd = (_: MouseEvent | TouchEvent, viewport: Viewport) => {
+      dispatch(setFlowPosition(viewport))
     }
 
-    const [reactFlowInstance, setReactFlowInstance] =
-      React.useState<OnLoadParams>()
+    const [reactFlowInstance, setReactFlowInstance] = React.useState<
+      ReactFlowInstance<NodeData, NodeData> | undefined
+    >()
 
-    const onLoad = (reactFlowInstance: OnLoadParams) =>
+    const onLoad = (
+      reactFlowInstance: ReactFlowInstance<NodeData, NodeData>,
+    ) => {
       setReactFlowInstance(reactFlowInstance)
+    }
+
     const wrapparRef = React.useRef<HTMLDivElement>(null)
     const [, drop] = useDrop<
       TreeItemDragObject,
@@ -156,16 +175,16 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
             <div className="reactflow-wrapper" ref={wrapparRef}>
               <ReactFlow
                 ref={drop}
-                elements={flowElements}
-                onElementsRemove={onElementsRemove}
+                nodes={nodes}
+                edges={egdes}
+                onNodesChange={onNodesChange}
                 onConnect={onConnect}
-                onLoad={onLoad}
+                onInit={onLoad}
                 onDragOver={onDragOver}
                 onNodeDragStop={onNodeDragStop}
-                nodeTypes={reactFlowNodeTypes as unknown as NodeTypesType}
-                edgeTypes={reactFlowEdgeTypes as unknown as NodeTypesType}
-                defaultPosition={[flowPosition.x, flowPosition.y]}
-                defaultZoom={flowPosition.zoom}
+                nodeTypes={reactFlowNodeTypes as unknown as NodeTypes}
+                edgeTypes={reactFlowEdgeTypes as unknown as EdgeTypes}
+                defaultViewport={flowPosition}
                 onMoveEnd={onMoveEnd}
               >
                 <ToolBar {...props} />
