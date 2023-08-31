@@ -75,14 +75,6 @@ def caiman_cnmf(
     from caiman.source_extraction.cnmf.params import CNMFParams
 
     Ain = params.pop("Ain", None)
-    use_cnmfe = params.pop("use_cnmfe", None)
-
-    cnmfe_fixed_params = {
-        "center_psf": True,
-        "method_init": "corr_pnr",  # use this for 1 photon
-        "only_init": True,  # set it to True to run CNMF-E
-    }
-    params = {**params, **cnmfe_fixed_params} if use_cnmfe else params
 
     file_path = images.path
     if isinstance(file_path, list):

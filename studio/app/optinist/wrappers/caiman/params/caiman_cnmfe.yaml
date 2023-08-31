@@ -1,6 +1,3 @@
-nb: 2
-stride: 6
-method_init: "greedy_roi"
 Ain: null # possibility to seed with predetermined binary masks
 thr: 0.9
 p: 1 # order of the autoregressive system
