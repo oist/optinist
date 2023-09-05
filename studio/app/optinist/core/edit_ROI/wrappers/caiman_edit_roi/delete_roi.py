@@ -13,12 +13,13 @@ def excute_delete_roi(node_dirpath, ids):
 
     # delete ROI
     is_cell[ids] = False
-    [delete_roi.append(id + 1) for id in ids]
+    delete_roi += ids
 
     cell_roi = np.zeros(im.shape)
     num_rois = im.shape[0]
     for i in range(num_rois):
         cell_roi[i, :, :] = np.where(im[i, :, :] != 0, i + 1, np.nan)
+    cell_roi -= 1
 
     cnmf_data["is_cell"] = is_cell
     cnmf_data["delete_roi"] = delete_roi

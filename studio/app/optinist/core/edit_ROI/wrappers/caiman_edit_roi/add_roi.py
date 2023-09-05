@@ -31,7 +31,8 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
     num_rois = im.shape[0]
     for i in range(num_rois):
         cell_roi[i, :, :] = np.where(im[i, :, :] != 0, i + 1, np.nan)
-    add_roi.append(num_rois)
+    cell_roi -= 1
+    add_roi.append(num_rois - 1)
 
     # save data
     cnmf_data["im"] = im

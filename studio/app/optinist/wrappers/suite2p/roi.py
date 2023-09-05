@@ -48,6 +48,7 @@ def suite2p_roi(
 
     im = np.stack(arrays)
     im[im == 0] = np.nan
+    im -= 1
 
     # roiを追加
     roi_list = []

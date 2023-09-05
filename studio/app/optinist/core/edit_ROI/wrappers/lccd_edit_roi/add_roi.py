@@ -30,7 +30,7 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
     images = images.reshape([images.shape[0] * images.shape[1], images.shape[2]])
     timeseries = np.zeros([num_cell, num_frames])
 
-    add_roi.append(num_cell)
+    add_roi.append(num_cell - 1)
 
     # Get ROI list and extract Fluor
     im = []
@@ -39,6 +39,7 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
         timeseries[i, :] = np.mean(images[roi[:, i] > 0, :], axis=0)
     im = np.stack(im)
     im[im == 0] = np.nan
+    im -= 1
 
     # Get DFF
     timeseries_dff = np.ones([num_cell, num_frames]) * np.nan
