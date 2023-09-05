@@ -135,7 +135,10 @@ def caiman_cnmf(
     swap_dim = False
 
     iscell = np.concatenate(
-        [np.ones(cnm.estimates.A.shape[-1]), np.zeros(cnm.estimates.b.shape[-1])]
+        [
+            np.ones(cnm.estimates.A.shape[-1]),
+            np.zeros(cnm.estimates.b.shape[-1] if cnm.estimates.b is not None else 0),
+        ]
     )
 
     ims = get_roi(cnm.estimates.A, thr, thr_method, swap_dim, dims)
@@ -143,11 +146,15 @@ def caiman_cnmf(
     cell_roi = np.nanmax(ims, axis=0).astype(float)
     cell_roi[cell_roi == 0] = np.nan
 
-    non_cell_roi_ims = get_roi(
-        scipy.sparse.csc_matrix(cnm.estimates.b), thr, thr_method, swap_dim, dims
-    )
-    non_cell_roi_ims = np.stack(non_cell_roi_ims)
-    non_cell_roi = np.nanmax(non_cell_roi_ims, axis=0).astype(float)
+    if cnm.estimates.b is not None:
+        non_cell_roi_ims = get_roi(
+            scipy.sparse.csc_matrix(cnm.estimates.b), thr, thr_method, swap_dim, dims
+        )
+        non_cell_roi_ims = np.stack(non_cell_roi_ims)
+        non_cell_roi = np.nanmax(non_cell_roi_ims, axis=0).astype(float)
+    else:
+        non_cell_roi_ims = None
+        non_cell_roi = np.zeros(dims)
     non_cell_roi[non_cell_roi == 0] = np.nan
 
     all_roi = np.nanmax(np.stack([cell_roi, non_cell_roi]), axis=0)
@@ -168,14 +175,15 @@ def caiman_cnmf(
 
     # backgroundsを追加
     bg_list = []
-    for bg in cnm.estimates.b.T:
-        kargs = {}
-        kargs["image_mask"] = bg.reshape(dims)
-        if hasattr(cnm.estimates, "accepted_list"):
-            kargs["accepted"] = False
-        if hasattr(cnm.estimates, "rejected_list"):
-            kargs["rejected"] = False
-        bg_list.append(kargs)
+    if cnm.estimates.b is not None:
+        for bg in cnm.estimates.b.T:
+            kargs = {}
+            kargs["image_mask"] = bg.reshape(dims)
+            if hasattr(cnm.estimates, "accepted_list"):
+                kargs["accepted"] = False
+            if hasattr(cnm.estimates, "rejected_list"):
+                kargs["rejected"] = False
+            bg_list.append(kargs)
 
     nwbfile[NWBDATASET.ROI] = {
         "roi_list": roi_list,
@@ -193,7 +201,7 @@ def caiman_cnmf(
 
     # Fluorescence
     n_rois = cnm.estimates.A.shape[-1]
-    n_bg = len(cnm.estimates.f)
+    n_bg = len(cnm.estimates.f) if cnm.estimates.f is not None else 0
 
     nwbfile[NWBDATASET.FLUORESCENCE] = {
         "RoiResponseSeries": {
@@ -207,21 +215,29 @@ def caiman_cnmf(
             "table_name": "Background",
             "region": list(range(n_rois, n_rois + n_bg)),
             "name": "Background_Fluorescence_Response",
-            "data": cnm.estimates.f.T,
+            "data": cnm.estimates.f.T if cnm.estimates.f is not None else np.array([]),
             "unit": "lumens",
         },
     }
 
-    fluorescence = np.concatenate(
-        [
-            cnm.estimates.C,
-            cnm.estimates.f,
-        ]
+    fluorescence = (
+        np.concatenate(
+            [
+                cnm.estimates.C,
+                cnm.estimates.f,
+            ]
+        )
+        if cnm.estimates.f is not None
+        else cnm.estimates.C
     )
 
     cnmf_data = {}
     cnmf_data["fluorescence"] = fluorescence
-    cnmf_data["im"] = np.concatenate([ims, non_cell_roi_ims], axis=0)
+    cnmf_data["im"] = (
+        np.concatenate([ims, non_cell_roi_ims], axis=0)
+        if non_cell_roi_ims is not None
+        else ims
+    )
     cnmf_data["is_cell"] = iscell.astype(bool)
     cnmf_data["images"] = mmap_images
 
