@@ -22,9 +22,10 @@ smk_param = SmkParam(
     lock=False,
 )
 
-shutil.copyfile(
-    f"{DIRPATH.DATA_DIR}/snakemake.yaml",
-    f"{DIRPATH.DATA_DIR}/output/default/snakemake/snakemake.yaml",
+shutil.copytree(
+    f"{DIRPATH.DATA_DIR}/output_test/{workspace_id}/{unique_id}",
+    f"{DIRPATH.DATA_DIR}/output/{workspace_id}/{unique_id}",
+    dirs_exist_ok=True,
 )
 
 

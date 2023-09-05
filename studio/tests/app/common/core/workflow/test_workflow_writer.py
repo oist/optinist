@@ -68,5 +68,3 @@ def test_write():
     ).write()
 
     assert os.path.exists(f"{dirpath}/workflow.yaml")
-
-    os.remove(f"{dirpath}/workflow.yaml")
