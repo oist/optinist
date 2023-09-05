@@ -121,6 +121,9 @@ def caiman_cnmf(
     cnm = cnmf.CNMF(n_processes=n_processes, dview=dview, Ain=Ain, params=ops)
     cnm = cnm.fit(mmap_images)
 
+    if params.get("do_refit"):
+        cnm = cnm.refit(mmap_images, dview=dview)
+
     stop_server(dview=dview)
 
     # contours plot

@@ -29,3 +29,4 @@ min_corr: .8 # min peak value from correlation image
 min_pnr: 10 # min peak to noise ration from PNR image
 ssub_B: 2 # additional downsampling factor in space for background
 ring_size_factor: 1.4 # radius of ring is gSiz*ring_size_factor
+do_refit: False
