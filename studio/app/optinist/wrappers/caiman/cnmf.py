@@ -218,6 +218,22 @@ def caiman_cnmf(
             "data": cnm.estimates.f.T if cnm.estimates.f is not None else np.array([]),
             "unit": "lumens",
         },
+        "estimates.W": {
+            "table_name": "estimates.W",
+            "region": [],
+            "name": "estimates.W",
+            "data": cnm.estimates.W.toarray()
+            if cnm.estimates.W is not None
+            else np.array([]),
+            "unit": "lumens",
+        },
+        "estimates.b0": {
+            "table_name": "estimates.b0",
+            "region": [],
+            "name": "estimates.b0",
+            "data": cnm.estimates.b0 if cnm.estimates.b0 is not None else np.array([]),
+            "unit": "lumens",
+        },
     }
 
     fluorescence = (
