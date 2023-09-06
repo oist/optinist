@@ -11,7 +11,10 @@ export function convertToExperimentListType(
 ): ExperimentListType {
   const experimentList: ExperimentListType = {}
   Object.entries(dto).forEach(([uid, value]) => {
-    experimentList[uid] = convertToExperimentType(value)
+    experimentList[uid] = {
+      ...convertToExperimentType(value),
+      frameRate: convertToExperimentType(value).frameRate
+    }
   })
   return experimentList
 }
@@ -33,6 +36,7 @@ export function convertToExperimentType(dto: ExperimentDTO): ExperimentType {
     name: dto.name,
     hasNWB: dto.hasNWB,
     functions,
+    frameRate: dto.nwb.imaging_plane.imaging_rate
   }
 }
 

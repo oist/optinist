@@ -3,7 +3,9 @@ import {useSelector, useDispatch} from 'react-redux'
 import {
   AccordionDetails,
   AccordionSummary,
-  FormControlLabel, MenuItem, Select,
+  FormControlLabel,
+  MenuItem,
+  Select,
   Switch,
   TextField,
 } from '@mui/material'
@@ -23,6 +25,7 @@ import {
   selectTimeSeriesItemFilePath,
   selectTimeSeriesItemKeys,
   selectImageItemRangeUnit,
+  selectVisualizeDataNodeId,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 import {
@@ -34,7 +37,8 @@ import {
   setTimeSeriesItemXrangeLeft,
   setTimeSeriesItemXrangeRight,
   setTimeSeriesItemZeroLine,
-  setTimeSeriesItemDrawOrderList, changeRangeUnit,
+  setTimeSeriesItemDrawOrderList,
+  changeRangeUnit,
 } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import {
   getTimeSeriesAllData,
@@ -44,6 +48,7 @@ import { arrayEqualityFn } from 'utils/EqualityUtils'
 import { Accordion } from 'components/common/Accordion'
 
 import { SaveFig } from './SaveFig'
+import { selectFrameRate }  from "../../../../store/slice/Experiments/ExperimentsSelectors";
 
 export const TimeSeriesItemEditor: React.FC = () => {
   return (
@@ -199,8 +204,8 @@ const SelectValue: React.FC = () => {
 
 const Xrange: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
-  const frameRate = 50
-
+  const nodeId = useSelector(selectVisualizeDataNodeId(itemId))
+  const frameRate = useSelector(selectFrameRate(nodeId))
   const rangeUnit = useSelector(selectImageItemRangeUnit(itemId))
   const xrangeSelector = useSelector(selectTimeSeriesItemXrange(itemId))
 

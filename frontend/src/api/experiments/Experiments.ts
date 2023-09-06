@@ -21,6 +21,12 @@ export type FunctionsDTO = {
   }
 }
 
+type NWBType = {
+  imaging_plane: {
+    imaging_rate: number
+  }
+}
+
 export type ExperimentDTO = {
   function: FunctionsDTO
   name: string
@@ -32,6 +38,7 @@ export type ExperimentDTO = {
   hasNWB: boolean
   edgeDict: EdgeDict
   nodeDict: NodeDict
+  nwb: NWBType
 }
 
 export async function getExperimentsApi(

@@ -34,9 +34,11 @@ import {
   selectVisualizeSaveFilename,
   selectVisualizeSaveFormat,
   selectImageItemRangeUnit,
+  selectVisualizeDataNodeId,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import createColormap from 'colormap'
 import { setTimeSeriesItemDrawOrderList } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { selectFrameRate } from "../../../../store/slice/Experiments/ExperimentsSelectors";
 
 export const TimeSeriesPlot = React.memo(() => {
   const { itemId, filePath: path } = React.useContext(DisplayDataContext)
@@ -91,7 +93,8 @@ const TimeSeriesPlotImple = React.memo(() => {
   const [newDataXrange, setNewDataXrange] = useState<string[]>(dataXrange)
   const [newTimeSeriesData, setNewTimeSeriesData] = useState(timeSeriesData)
 
-  const frameRate = 50
+  const nodeId = useSelector(selectVisualizeDataNodeId(itemId))
+  const frameRate = useSelector(selectFrameRate(nodeId))
 
   useEffect(() => {
     let seriesData: any = {}
@@ -184,7 +187,7 @@ const TimeSeriesPlotImple = React.memo(() => {
         ay: -10,
       }
     })
-  }, [data, drawOrderList, newDataXrange, rangeUnit])
+  }, [data, drawOrderList, newDataXrange, rangeUnit, frameRate])
 
   const layout = React.useMemo(
     () => ({
@@ -235,7 +238,8 @@ const TimeSeriesPlotImple = React.memo(() => {
       width,
       height,
       rangeUnit,
-      dataXrange
+      dataXrange,
+      frameRate
     ],
   )
 
