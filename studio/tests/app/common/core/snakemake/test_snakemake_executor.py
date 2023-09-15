@@ -22,13 +22,10 @@ smk_param = SmkParam(
     lock=False,
 )
 
-workflow_dirpath = f"{DIRPATH.DATA_DIR}/output/default/snakemake"
-
-if not os.path.isdir(workflow_dirpath):
-    os.mkdir(workflow_dirpath)
-shutil.copyfile(
-    f"{DIRPATH.DATA_DIR}/snakemake.yaml",
-    f"{workflow_dirpath}/snakemake.yaml",
+shutil.copytree(
+    f"{DIRPATH.DATA_DIR}/output_test/{workspace_id}/{unique_id}",
+    f"{DIRPATH.DATA_DIR}/output/{workspace_id}/{unique_id}",
+    dirs_exist_ok=True,
 )
 
 

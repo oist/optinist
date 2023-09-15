@@ -23,7 +23,7 @@ def excute_delete_roi(node_dirpath, ids):
 
     # delete ROI
     is_cell[ids] = False
-    delete_roi += [(id + 1) for id in ids]
+    delete_roi += ids
 
     num_cell = roi.shape[1]
     images = images.reshape([images.shape[0] * images.shape[1], images.shape[2]])
@@ -39,6 +39,7 @@ def excute_delete_roi(node_dirpath, ids):
     else:
         im = np.stack(im)
     im[im == 0] = np.nan
+    im -= 1
 
     # Get DFF
     timeseries_dff = np.ones([num_cell, num_frames]) * np.nan

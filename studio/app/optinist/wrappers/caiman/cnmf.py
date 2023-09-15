@@ -140,6 +140,7 @@ def caiman_cnmf(
     ims = np.stack(ims)
     cell_roi = np.nanmax(ims, axis=0).astype(float)
     cell_roi[cell_roi == 0] = np.nan
+    cell_roi -= 1
 
     non_cell_roi_ims = get_roi(
         scipy.sparse.csc_matrix(cnm.estimates.b), thr, thr_method, swap_dim, dims
