@@ -1,0 +1,30 @@
+version: 1
+disable_existing_loggers: false
+formatters:
+  default:
+    (): "uvicorn.logging.DefaultFormatter"
+    fmt: "%(asctime)s %(levelprefix)s %(funcName)s():%(lineno)d - %(message)s"
+  access:
+    (): "uvicorn.logging.AccessFormatter"
+    fmt: "%(asctime)s %(levelprefix)s %(funcName)s():%(lineno)d - %(message)s"
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: default
+  rotating_file:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: DEBUG
+    formatter: default
+    filename: logs/studio.log
+    when: midnight
+    interval: 1
+    backupCount: 365
+loggers:
+  snakemake:
+    level: INFO
+    handlers: [rotating_file]
+    propagate: false
+root:
+  level: INFO
+  handlers: [console, rotating_file]
