@@ -31,3 +31,8 @@ async def run_id(
 @router.post("/result/{workspace_id}/{uid}", response_model=Dict[str, Message])
 async def run_result(workspace_id: str, uid: str, nodeDict: NodeItem):
     return WorkflowResult(workspace_id, uid).get(nodeDict.pendingNodeIdList)
+
+
+@router.post("/cancel/{workspace_id}/{uid}", response_model=bool)
+async def run_cancel(workspace_id: str, uid: str):
+    return WorkflowResult(workspace_id, uid).cancel()

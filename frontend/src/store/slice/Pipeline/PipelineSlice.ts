@@ -3,7 +3,7 @@ import {
   reproduceWorkflow,
   importWorkflowConfig,
 } from 'store/slice/Workflow/WorkflowActions'
-import { pollRunResult, run, runByCurrentUid } from './PipelineActions'
+import { cancelResult, pollRunResult, run, runByCurrentUid } from './PipelineActions'
 import {
   Pipeline,
   PIPELINE_SLICE_NAME,
@@ -29,9 +29,6 @@ export const pipelineSlice = createSlice({
   name: PIPELINE_SLICE_NAME,
   initialState,
   reducers: {
-    cancelPipeline(state) {
-      state.run.status = RUN_STATUS.CANCELED
-    },
     setRunBtnOption: (
       state,
       action: PayloadAction<{
@@ -78,6 +75,9 @@ export const pipelineSlice = createSlice({
           status: RUN_STATUS.START_UNINITIALIZED,
         }
       })
+      .addCase(cancelResult.fulfilled, (state, action) => {
+        state.run.status = RUN_STATUS.CANCELED
+      })
       .addMatcher(
         isAnyOf(run.pending, runByCurrentUid.pending),
         (state, action) => {
@@ -113,7 +113,7 @@ export const pipelineSlice = createSlice({
   },
 })
 
-export const { cancelPipeline, setRunBtnOption, clearCurrentPipeline } =
+export const { setRunBtnOption, clearCurrentPipeline } =
   pipelineSlice.actions
 
 export default pipelineSlice.reducer

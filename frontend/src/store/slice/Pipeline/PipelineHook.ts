@@ -8,12 +8,11 @@ import {
   selectPipelineLatestUid,
   selectPipelineStatus,
 } from './PipelineSelectors'
-import { run, pollRunResult, runByCurrentUid } from './PipelineActions'
-import { cancelPipeline } from './PipelineSlice'
+import { run, pollRunResult, runByCurrentUid, cancelResult } from './PipelineActions'
 import { selectFilePathIsUndefined } from '../InputNode/InputNodeSelectors'
 import { selectAlgorithmNodeNotExist } from '../AlgorithmNode/AlgorithmNodeSelectors'
 import { getExperiments } from '../Experiments/ExperimentsActions'
-import { useSnackbar } from 'notistack'
+import { useSnackbar, VariantType } from 'notistack'
 import { RUN_STATUS } from './PipelineType'
 
 const POLLING_INTERVAL = 5000
@@ -34,13 +33,20 @@ export function useRunPipeline() {
     },
     [dispatch, runPostData],
   )
+  const handleClickVariant = (variant: VariantType, mess: string) => {
+    enqueueSnackbar(mess, { variant });
+  }
   const handleRunPipelineByUid = React.useCallback(() => {
     dispatch(runByCurrentUid({ runPostData }))
   }, [dispatch, runPostData])
-  const handleCancelPipeline = React.useCallback(() => {
+  const handleCancelPipeline = React.useCallback(async () => {
     if (uid != null) {
-      dispatch(cancelPipeline())
+      const data = await dispatch(cancelResult({ uid }))
+      if ((data as any).error) {
+        handleClickVariant('error', 'Failed to cancel workflow. Please try again.')
+      }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, uid])
   React.useEffect(() => {
     const intervalId = setInterval(() => {
@@ -67,7 +73,7 @@ export function useRunPipeline() {
         enqueueSnackbar('Aborted', { variant: 'error' })
         dispatch(getExperiments())
       } else if (status === RUN_STATUS.CANCELED) {
-        enqueueSnackbar('Canceled', { variant: 'info' })
+        enqueueSnackbar('Workflow canceled.', { variant: 'success' })
         dispatch(getExperiments())
       }
       setPrevStatus(status)

@@ -8,6 +8,7 @@ import {
   runResult,
   RunResultDTO,
   RunPostData,
+  cancelResultApi,
 } from 'api/run/Run'
 import {
   selectPipelineLatestUid,
@@ -78,6 +79,29 @@ export const pollRunResult = createAsyncThunk<
         workspaceId,
         uid,
         pendingNodeIdList,
+      })
+      return responseData
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  } else {
+    return thunkAPI.rejectWithValue('workspace id does not exist')
+  }
+})
+
+export const cancelResult = createAsyncThunk<
+    RunResultDTO,
+    {
+      uid: string
+    },
+    ThunkApiConfig
+>(`${PIPELINE_SLICE_NAME}/cancelResult`, async ({ uid }, thunkAPI) => {
+  const workspaceId = selectCurrentWorkspaceId(thunkAPI.getState())
+  if (workspaceId) {
+    try {
+      const responseData = await cancelResultApi({
+        workspaceId: String(workspaceId),
+        uid
       })
       return responseData
     } catch (e) {

@@ -92,3 +92,12 @@ export async function runResult(data: {
   )
   return response.data
 }
+
+export async function cancelResultApi(data: {
+  workspaceId: string
+  uid: string
+}): Promise<RunResultDTO> {
+  const { workspaceId, uid } = data
+  const response = await axios.post(`${BASE_URL}/run/cancel/${workspaceId}/${uid}`)
+  return response.data
+}
