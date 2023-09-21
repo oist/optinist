@@ -1,5 +1,6 @@
 from studio.app.common.core.snakemake.snakemake_rule import SmkRule
-from studio.app.common.core.workflow.workflow import Edge, Node, NodeData, NodePosition
+from studio.app.common.core.workflow.workflow import (Edge, Node, NodeData,
+                                                      NodePosition)
 
 workspace_id = "default"
 unique_id = "test"

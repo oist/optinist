@@ -2,7 +2,8 @@ import os
 import shutil
 
 from studio.app.common.core.workflow.workflow import Message
-from studio.app.common.core.workflow.workflow_result import NodeResult, WorkflowResult
+from studio.app.common.core.workflow.workflow_result import (NodeResult,
+                                                             WorkflowResult)
 from studio.app.dir_path import DIRPATH
 
 workspace_id = "default"

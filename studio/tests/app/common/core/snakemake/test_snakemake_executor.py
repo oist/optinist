@@ -3,9 +3,7 @@ import shutil
 
 from studio.app.common.core.snakemake.smk import ForceRun, SmkParam
 from studio.app.common.core.snakemake.snakemake_executor import (
-    delete_dependencies,
-    snakemake_execute,
-)
+    delete_dependencies, snakemake_execute)
 from studio.app.common.core.workflow.workflow import Edge, Node, NodeData
 from studio.app.dir_path import DIRPATH
 

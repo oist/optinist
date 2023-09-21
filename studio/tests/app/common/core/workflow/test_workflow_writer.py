@@ -1,13 +1,10 @@
 import os
 import shutil
 
-from studio.app.common.core.workflow.workflow import (
-    Edge,
-    Node,
-    NodeData,
-    WorkflowConfig,
-)
-from studio.app.common.core.workflow.workflow_writer import WorkflowConfigWriter
+from studio.app.common.core.workflow.workflow import (Edge, Node, NodeData,
+                                                      WorkflowConfig)
+from studio.app.common.core.workflow.workflow_writer import \
+    WorkflowConfigWriter
 from studio.app.dir_path import DIRPATH
 
 node_data = NodeData(label="a", param={}, path="", type="")
