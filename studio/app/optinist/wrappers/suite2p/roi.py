@@ -9,7 +9,9 @@ def suite2p_roi(
     import numpy as np
     from suite2p import ROI, classification, default_ops, detection, extraction
 
-    print("start suite2p_roi")
+    function_id = output_dir.split("/")[-1]
+    print("start suite2p_roi:", function_id)
+
     ops = ops.data
 
     ops = {**default_ops(), **ops, **params}
@@ -62,11 +64,11 @@ def suite2p_roi(
     # NWBを追加
     nwbfile = {}
 
-    nwbfile[NWBDATASET.ROI] = {"roi_list": roi_list}
+    nwbfile[NWBDATASET.ROI] = {function_id: roi_list}
 
     # iscellを追加
     nwbfile[NWBDATASET.COLUMN] = {
-        "roi_column": {
+        function_id: {
             "name": "iscell",
             "discription": "two columns - iscell & probcell",
             "data": iscell,
@@ -74,16 +76,26 @@ def suite2p_roi(
     }
 
     # Fluorenceを追加
-    nwbfile[NWBDATASET.FLUORESCENCE] = {}
-    for name, data in zip(["Fluorescence", "Neuropil"], [F, Fneu]):
-        nwbfile[NWBDATASET.FLUORESCENCE][name] = {
-            "table_name": name,
-            "region": list(range(len(data))),
-            "name": name,
-            "data": data,
-            "unit": "lumens",
-            "rate": ops["fs"],
+    nwbfile[NWBDATASET.FLUORESCENCE] = {
+        function_id: {
+            "Fluorescence": {
+                "table_name": "Fluorescence",
+                "region": list(range(len(F))),
+                "name": "Fluorescence",
+                "data": F,
+                "unit": "lumens",
+                "rate": ops["fs"],
+            },
+            "Neuropil": {
+                "table_name": "Neuropil",
+                "region": list(range(len(Fneu))),
+                "name": "Neuropil",
+                "data": Fneu,
+                "unit": "lumens",
+                "rate": ops["fs"],
+            },
         }
+    }
 
     ops["stat"] = stat
     ops["F"] = F

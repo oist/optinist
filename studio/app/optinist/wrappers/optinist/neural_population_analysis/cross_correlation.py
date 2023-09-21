@@ -16,6 +16,9 @@ def cross_correlation(
     import scipy.stats as stats
     from tqdm import tqdm
 
+    function_id = output_dir.split("/")[-1]
+    print("start cross_correlation:", function_id)
+
     neural_data = neural_data.data
 
     # data shold be time x component matrix
@@ -77,9 +80,11 @@ def cross_correlation(
     # NWB追加
     nwbfile = {}
     nwbfile[NWBDATASET.POSTPROCESS] = {
-        "mat": mat,
-        "baseline": s_mean,
-        "base_confint": s_confint,
+        function_id: {
+            "mat": mat,
+            "baseline": s_mean,
+            "base_confint": s_confint,
+        }
     }
 
     info = {

@@ -45,7 +45,8 @@ dependencies = [
   "pyrebase4==4.7.1",
   "pydantic[email]",
   "pydantic[dotenv]",
-  "python-jose[cryptography]",
+  "python-jose[cryptography]"
+  "filelock",
 ]
 
 [project.optional-dependencies]

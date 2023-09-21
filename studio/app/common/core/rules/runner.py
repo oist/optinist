@@ -5,6 +5,8 @@ import traceback
 from dataclasses import asdict
 from datetime import datetime
 
+from filelock import FileLock
+
 from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
 from studio.app.common.core.snakemake.smk import Rule
 from studio.app.common.core.utils.config_handler import ConfigWriter
@@ -12,7 +14,11 @@ from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.utils.pickle_handler import PickleReader, PickleWriter
 from studio.app.const import DATE_FORMAT
 from studio.app.dir_path import DIRPATH
-from studio.app.optinist.core.nwb.nwb_creater import merge_nwbfile, save_nwb
+from studio.app.optinist.core.nwb.nwb_creater import (
+    merge_nwbfile,
+    overwrite_nwbfile,
+    save_nwb,
+)
 from studio.app.wrappers import wrapper_dict
 
 
@@ -96,10 +102,21 @@ class Runner:
     def save_all_nwb(cls, save_path, all_nwbfile):
         input_nwbfile = all_nwbfile["input"]
         all_nwbfile.pop("input")
-        nwbfile = {}
+        nwbconfig = {}
         for x in all_nwbfile.values():
-            nwbfile = merge_nwbfile(nwbfile, x)
-        save_nwb(save_path, input_nwbfile, nwbfile)
+            nwbconfig = merge_nwbfile(nwbconfig, x)
+        # 同一のnwbfileに対して、複数の関数を実行した場合、h5pyエラーが発生する
+        lock_path = save_path + ".lock"
+        timeout = 30  # ロック取得のタイムアウト時間（秒）
+        with FileLock(lock_path, timeout=timeout):
+            # ロックが取得できたら、ファイルに書き込みを行う
+            try:
+                if os.path.exists(save_path):
+                    overwrite_nwbfile(save_path, nwbconfig)
+                else:
+                    save_nwb(save_path, input_nwbfile, nwbconfig)
+            except Exception as e:
+                print(e)
 
     @classmethod
     def execute_function(cls, path, params, output_dir, input_info):

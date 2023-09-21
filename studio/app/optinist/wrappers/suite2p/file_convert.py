@@ -13,7 +13,8 @@ def suite2p_file_convert(
 ) -> dict(ops=Suite2pData):
     from suite2p import default_ops, io
 
-    print("start suite2_file_convert")
+    function_id = output_dir.split("/")[-1]
+    print("start suite2p_file_convert:", function_id)
 
     data_path_list = []
     data_name_list = []
