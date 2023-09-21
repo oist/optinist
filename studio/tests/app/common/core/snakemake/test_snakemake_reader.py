@@ -1,6 +1,8 @@
 from studio.app.common.core.snakemake.smk import Rule, SmkParam
 from studio.app.common.core.snakemake.snakemake_reader import (
-    RuleConfigReader, SmkParamReader)
+    RuleConfigReader,
+    SmkParamReader,
+)
 
 rule_config = {
     "hdf5Path": None,

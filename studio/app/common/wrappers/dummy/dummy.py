@@ -1,7 +1,11 @@
 import numpy as np
 
-from studio.app.common.dataclass import (HeatMapData, ImageData, ScatterData,
-                                         TimeSeriesData)
+from studio.app.common.dataclass import (
+    HeatMapData,
+    ImageData,
+    ScatterData,
+    TimeSeriesData,
+)
 from studio.app.optinist.dataclass import IscellData, RoiData
 
 

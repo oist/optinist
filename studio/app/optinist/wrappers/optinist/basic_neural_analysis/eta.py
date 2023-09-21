@@ -44,7 +44,6 @@ def ETA(
     iscell: IscellData = None,
     params: dict = None,
 ) -> dict(mean=TimeSeriesData):
-
     function_id = output_dir.split("/")[-1]
     print("start ETA:", function_id)
 

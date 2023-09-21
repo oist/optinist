@@ -1,8 +1,12 @@
-from studio.app.common.core.workflow.workflow import (Edge, Node, NodeData,
-                                                      NodePosition, Style,
-                                                      WorkflowConfig)
-from studio.app.common.core.workflow.workflow_reader import \
-    WorkflowConfigReader
+from studio.app.common.core.workflow.workflow import (
+    Edge,
+    Node,
+    NodeData,
+    NodePosition,
+    Style,
+    WorkflowConfig,
+)
+from studio.app.common.core.workflow.workflow_reader import WorkflowConfigReader
 from studio.app.dir_path import DIRPATH
 
 workflow_filepath = f"{DIRPATH.DATA_DIR}/output_test/0123/workflow.yaml"

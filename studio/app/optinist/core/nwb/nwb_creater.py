@@ -375,7 +375,6 @@ def set_nwbconfig(nwbfile, config):
 
 
 def save_nwb(save_path, input_config, config):
-
     nwbfile = NWBCreater.acquisition(input_config)
 
     nwbfile = set_nwbconfig(nwbfile, config)

@@ -1,7 +1,5 @@
-from studio.app.common.core.experiment.experiment import (ExptConfig,
-                                                          ExptFunction)
-from studio.app.common.core.experiment.experiment_reader import \
-    ExptConfigReader
+from studio.app.common.core.experiment.experiment import ExptConfig, ExptFunction
+from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
 from studio.app.dir_path import DIRPATH
 
 expt_filepath = f"{DIRPATH.DATA_DIR}/output_test/0123/experiment.yaml"

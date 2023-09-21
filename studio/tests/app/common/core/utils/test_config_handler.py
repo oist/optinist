@@ -1,7 +1,6 @@
 import os
 
-from studio.app.common.core.utils.config_handler import (ConfigReader,
-                                                         ConfigWriter)
+from studio.app.common.core.utils.config_handler import ConfigReader, ConfigWriter
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.utils.filepath_finder import find_param_filepath
 from studio.app.dir_path import DIRPATH

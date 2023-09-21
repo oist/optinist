@@ -1,8 +1,10 @@
 import numpy as np
 import pandas as pd
 
-from studio.app.common.core.utils.filepath_creater import (create_directory,
-                                                           join_filepath)
+from studio.app.common.core.utils.filepath_creater import (
+    create_directory,
+    join_filepath,
+)
 from studio.app.common.core.utils.json_writer import JsonWriter
 from studio.app.common.core.workflow.workflow import OutputPath, OutputType
 from studio.app.common.dataclass.base import BaseData
