@@ -8,6 +8,10 @@ import {
   HTMLData,
   ImageData,
   HeatMapData,
+  HistogramData,
+  LineData,
+  PieData,
+  PolarData,
   getTimeSeriesInitDataApi,
   getTimeSeriesDataByIdApi,
   getTimeSeriesAllDataApi,
@@ -18,6 +22,10 @@ import {
   getScatterDataApi,
   getBarDataApi,
   getHTMLDataApi,
+  getHistogramDataApi,
+  getLineDataApi,
+  getPieDataApi,
+  getPolarDataApi,
 } from 'api/outputs/Outputs'
 import { DISPLAY_DATA_SLICE_NAME } from './DisplayDataType'
 
@@ -149,6 +157,54 @@ export const getHTMLData = createAsyncThunk<
 >(`${DISPLAY_DATA_SLICE_NAME}/getHTMLData`, async ({ path }, thunkAPI) => {
   try {
     const response = await getHTMLDataApi(path)
+    return response
+  } catch (e) {
+    return thunkAPI.rejectWithValue(e)
+  }
+})
+
+export const getHistogramData = createAsyncThunk<
+  { data: HistogramData },
+  { path: string }
+>(`${DISPLAY_DATA_SLICE_NAME}/getHistogramData`, async ({ path }, thunkAPI) => {
+  try {
+    const response = await getHistogramDataApi(path)
+    return response
+  } catch (e) {
+    return thunkAPI.rejectWithValue(e)
+  }
+})
+
+export const getLineData = createAsyncThunk<
+  { data: LineData; columns: number[]; index: number[] },
+  { path: string }
+>(`${DISPLAY_DATA_SLICE_NAME}/getLineData`, async ({ path }, thunkAPI) => {
+  try {
+    const response = await getLineDataApi(path)
+    return response
+  } catch (e) {
+    return thunkAPI.rejectWithValue(e)
+  }
+})
+
+export const getPieData = createAsyncThunk<
+  { data: PieData; columns: string[] },
+  { path: string }
+>(`${DISPLAY_DATA_SLICE_NAME}/getPieData`, async ({ path }, thunkAPI) => {
+  try {
+    const response = await getPieDataApi(path)
+    return response
+  } catch (e) {
+    return thunkAPI.rejectWithValue(e)
+  }
+})
+
+export const getPolarData = createAsyncThunk<
+  { data: PolarData; columns: number[]; index: number[] },
+  { path: string }
+>(`${DISPLAY_DATA_SLICE_NAME}/getPolarData`, async ({ path }, thunkAPI) => {
+  try {
+    const response = await getPolarDataApi(path)
     return response
   } catch (e) {
     return thunkAPI.rejectWithValue(e)

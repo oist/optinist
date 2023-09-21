@@ -46,6 +46,8 @@ dependencies = [
   "pydantic[email]",
   "pydantic[dotenv]",
   "python-jose[cryptography]",
+  "plotly==5.15.0",
+  "kaleido==0.2.1",
 ]
 
 [project.optional-dependencies]

@@ -14,6 +14,9 @@ import {
   isCsvItem,
   isScatterItem,
   isBarItem,
+  isHistogramItem,
+  isLineItem,
+  isPolarItem,
 } from './VisualizeItemUtils'
 
 export const selectSelectedVisualizeItemId = (state: RootState) =>
@@ -152,14 +155,15 @@ export const selectRoiItemFilePath = (itemId: number) => (state: RootState) => {
   }
 }
 
-export const selectRoiItemOutputKeys = (itemId: number) => (state: RootState) => {
-  const item = selectVisualizeItemById(itemId)(state)
-  if (isImageItem(item)) {
-    return item.roiItem?.outputKey ?? null
-  } else {
-    throw new Error('invalid VisualaizeItemType')
+export const selectRoiItemOutputKeys =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItemById(itemId)(state)
+    if (isImageItem(item)) {
+      return item.roiItem?.outputKey ?? null
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
   }
-}
 
 export const selectImageItemShowticklabels =
   (itemId: number) => (state: RootState) => {
@@ -533,4 +537,34 @@ export const selectDisplayDataIsSingle =
       Object.values(items).filter((value) => value.filePath === targetFilePath)
         .length === 1
     )
+  }
+
+export const selectHistogramItemBins =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItemById(itemId)(state)
+    if (isHistogramItem(item)) {
+      return item.bins
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectLineItemSelectedIndex =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItemById(itemId)(state)
+    if (isLineItem(item)) {
+      return item.selectedIndex
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
+  }
+
+export const selectPolarItemSelectedIndex =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItemById(itemId)(state)
+    if (isPolarItem(item)) {
+      return item.selectedIndex
+    } else {
+      throw new Error('invalid VisualaizeItemType')
+    }
   }

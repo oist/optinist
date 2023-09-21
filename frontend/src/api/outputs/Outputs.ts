@@ -142,3 +142,39 @@ export async function deleteRoiApi(
   )
   return response.data
 }
+
+export type LineData = number[][]
+
+export async function getLineDataApi(
+  path: string,
+): Promise<{ data: LineData; columns: number[]; index: number[] }> {
+  const response = await axios.get(`${BASE_URL}/outputs/data/${path}`, {})
+  return response.data
+}
+
+export type PolarData = number[][]
+
+export async function getPolarDataApi(
+  path: string,
+): Promise<{ data: PolarData; columns: number[]; index: number[] }> {
+  const response = await axios.get(`${BASE_URL}/outputs/data/${path}`, {})
+  return response.data
+}
+
+export type HistogramData = number[][]
+
+export async function getHistogramDataApi(
+  path: string,
+): Promise<{ data: HistogramData }> {
+  const response = await axios.get(`${BASE_URL}/outputs/data/${path}`, {})
+  return response.data
+}
+
+export type PieData = number[][]
+
+export async function getPieDataApi(
+  path: string,
+): Promise<{ data: PieData; columns: string[] }> {
+  const response = await axios.get(`${BASE_URL}/outputs/data/${path}`, {})
+  return response.data
+}
