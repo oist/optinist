@@ -5,6 +5,7 @@ import uvicorn
 from fastapi import FastAPI, Request
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
+from fastapi_pagination import add_pagination
 from starlette.middleware.cors import CORSMiddleware
 
 from studio.app.common.routers import (
@@ -23,6 +24,8 @@ from studio.app.dir_path import DIRPATH
 from studio.app.optinist.routers import hdf5, nwb, roi
 
 app = FastAPI(docs_url="/docs", openapi_url="/openapi")
+
+add_pagination(app)
 
 # common routers
 app.include_router(algolist.router)
