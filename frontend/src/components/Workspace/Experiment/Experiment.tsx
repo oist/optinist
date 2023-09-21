@@ -1,5 +1,6 @@
 import React from 'react'
 import { ExperimentTable } from './ExperimentTable'
+import { CONTENT_HEIGHT } from 'const/Layout'
 
 const Experiment = React.memo(() => {
   return (
@@ -9,8 +10,7 @@ const Experiment = React.memo(() => {
           display: 'flex',
           flexDirection: 'column',
           flexGrow: 1,
-          height: '100vh',
-          padding: 16,
+          minHeight: CONTENT_HEIGHT,
         }}
       >
         <ExperimentTable />

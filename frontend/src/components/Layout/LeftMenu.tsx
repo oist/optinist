@@ -6,8 +6,8 @@ import ListItem from '@mui/material/ListItem'
 import ListItemButton from '@mui/material/ListItemButton'
 import ListItemIcon from '@mui/material/ListItemIcon'
 import ListItemText from '@mui/material/ListItemText'
-import HomeIcon from '@mui/icons-material/Home'
-import SourceIcon from '@mui/icons-material/Source'
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import AnalyticsIcon from '@mui/icons-material/Analytics'
 import { DRAWER_WIDTH } from 'const/Layout'
 import { Box } from '@mui/material'
 
@@ -19,12 +19,12 @@ const LeftMenu: FC<{ open: boolean; handleDrawerClose: () => void }> = ({
 
   const onClickDashboard = () => {
     handleDrawerClose()
-    navigate('/')
+    navigate('/console')
   }
 
   const onClickWorkspaces = () => {
     handleDrawerClose()
-    navigate('/workspaces')
+    navigate('/console/workspaces')
   }
 
   return (
@@ -35,7 +35,7 @@ const LeftMenu: FC<{ open: boolean; handleDrawerClose: () => void }> = ({
             <ListItem key="dashboard" disablePadding>
               <ListItemButton onClick={onClickDashboard}>
                 <ListItemIcon>
-                  <HomeIcon />
+                  <DashboardIcon />
                 </ListItemIcon>
                 <ListItemText primary="Dashboard" />
               </ListItemButton>
@@ -43,7 +43,7 @@ const LeftMenu: FC<{ open: boolean; handleDrawerClose: () => void }> = ({
             <ListItem key="workspaces" disablePadding>
               <ListItemButton onClick={onClickWorkspaces}>
                 <ListItemIcon>
-                  <SourceIcon />
+                  <AnalyticsIcon />
                 </ListItemIcon>
                 <ListItemText primary="Workspaces" />
               </ListItemButton>

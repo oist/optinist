@@ -30,15 +30,17 @@ const App: React.FC = () => {
             </Routes>
           ) : (
             <Routes>
-              <Route path="/" element={<Dashboard />} />
-              <Route path="/account" element={<Account />} />
+              <Route path="/" element={<Navigate replace to="/console" />} />
               <Route path="/account-deleted" element={<AccountDelete />} />
               <Route path="/login" element={<Login />} />
               <Route path="/reset-password" element={<ResetPassword />} />
-              <Route path="/workspaces">
+              <Route path="/console" element={<Dashboard />} />
+              <Route path="/console/account" element={<Account />} />
+              <Route path="/console/workspaces">
                 <Route path="" element={<Workspaces />} />
                 <Route path=":workspaceId" element={<Workspace />} />
               </Route>
+              <Route path="/console/*" element={<Navigate replace to="/console" />} />
               <Route path="*" element={<Navigate replace to="/" />} />
             </Routes>
           )}

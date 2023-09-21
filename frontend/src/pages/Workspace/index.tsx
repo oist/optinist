@@ -18,7 +18,7 @@ const columns: GridColDef[] = [
     field: 'workspace_id',
     headerName: 'ID',
     renderCell: (params: GridRenderCellParams<string>) => (
-      <Link to={`/workspaces/${params.value}`}>{params.value}</Link>
+      <Link to={`/console/workspaces/${params.value}`}>{params.value}</Link>
     ),
   },
 ]
