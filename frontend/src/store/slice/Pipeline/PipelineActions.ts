@@ -100,7 +100,7 @@ export const cancelResult = createAsyncThunk<
   if (workspaceId) {
     try {
       const responseData = await cancelResultApi({
-        workspaceId: String(workspaceId),
+        workspaceId: workspaceId,
         uid
       })
       return responseData

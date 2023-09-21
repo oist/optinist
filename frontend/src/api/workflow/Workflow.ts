@@ -4,7 +4,7 @@ import { RunPostData } from 'api/run/Run'
 import { BASE_URL } from 'const/API'
 
 export async function reproduceWorkflowApi(
-  workspaceId: string,
+  workspaceId: number,
   uid: string,
 ): Promise<RunPostData> {
   const response = await axios.get(
@@ -14,7 +14,7 @@ export async function reproduceWorkflowApi(
 }
 
 export async function downloadWorkflowConfigApi(
-  workspaceId: string,
+  workspaceId: number,
   uid: string,
 ) {
   const response = await axios.get(

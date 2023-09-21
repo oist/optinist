@@ -3,7 +3,7 @@ import { WORKSPACE_SLICE_NAME, Workspace } from './WorkspaceType'
 import { reproduceWorkflow } from '../Workflow/WorkflowActions'
 
 const initialState: Workspace = {
-  workspaces: [{ workspace_id: 'default' }],
+  workspaces: [{ workspace_id: 1 }],
   currentWorkspace: {
     selectedTab: 0,
   },
@@ -17,7 +17,7 @@ export const workspaceSlice = createSlice({
     setActiveTab: (state, action: PayloadAction<number>) => {
       state.currentWorkspace.selectedTab = action.payload
     },
-    setCurrentWorkspace: (state, action: PayloadAction<string>) => {
+    setCurrentWorkspace: (state, action: PayloadAction<number>) => {
       state.currentWorkspace.workspaceId = action.payload
     },
     clearCurrentWorkspace: (state) => {

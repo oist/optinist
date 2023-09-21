@@ -88,12 +88,16 @@ export const getHeatMapData = createAsyncThunk<
 
 export const getImageData = createAsyncThunk<
   { data: ImageData },
-  { path: string; startIndex?: number; endIndex?: number }
+  { path: string; workspaceId: number; startIndex?: number; endIndex?: number }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getImageData`,
-  async ({ path, startIndex, endIndex }, thunkAPI) => {
+  async ({ path, startIndex, endIndex, workspaceId }, thunkAPI) => {
     try {
-      const response = await getImageDataApi(path, { startIndex, endIndex })
+      const response = await getImageDataApi(path, {
+        workspaceId,
+        startIndex,
+        endIndex,
+      })
       return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)
@@ -105,21 +109,27 @@ export const getCsvData = createAsyncThunk<
   {
     data: CsvData
   },
-  { path: string }
->(`${DISPLAY_DATA_SLICE_NAME}/getCsvData`, async ({ path }, thunkAPI) => {
-  try {
-    const response = await getCsvDataApi(path)
-    return response
-  } catch (e) {
-    return thunkAPI.rejectWithValue(e)
-  }
-})
-
-export const getRoiData = createAsyncThunk<{ data: RoiData }, { path: string }>(
-  `${DISPLAY_DATA_SLICE_NAME}/getRoiData`,
-  async ({ path }, thunkAPI) => {
+  { path: string; workspaceId: number }
+>(
+  `${DISPLAY_DATA_SLICE_NAME}/getCsvData`,
+  async ({ path, workspaceId }, thunkAPI) => {
     try {
-      const response = await getRoiDataApi(path)
+      const response = await getCsvDataApi(path, { workspaceId })
+      return response
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
+
+export const getRoiData = createAsyncThunk<
+  { data: RoiData },
+  { path: string; workspaceId: number }
+>(
+  `${DISPLAY_DATA_SLICE_NAME}/getRoiData`,
+  async ({ path, workspaceId }, thunkAPI) => {
+    try {
+      const response = await getRoiDataApi(path, { workspaceId })
       return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)

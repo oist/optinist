@@ -28,6 +28,7 @@ import {
   getNodeByPath,
   isDirNodeByPath,
 } from 'store/slice/FilesTree/FilesTreeUtils'
+import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
 
 type FileSelectDialogProps = {
   initialFilePath: string[] | string
@@ -298,10 +299,11 @@ function useFileTree(
   const tree = useSelector(selectFilesTreeNodes(fileType))
   const isLatest = useSelector(selectFilesIsLatest(fileType))
   const isLoading = useSelector(selectFilesIsLoading(fileType))
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
   React.useEffect(() => {
-    if (!isLatest && !isLoading) {
-      dispatch(getFilesTree(fileType))
+    if (workspaceId && !isLatest && !isLoading) {
+      dispatch(getFilesTree({workspaceId, fileType}))
     }
-  }, [isLatest, isLoading, fileType, dispatch])
+  }, [workspaceId, isLatest, isLoading, fileType, dispatch])
   return [tree, isLoading]
 }

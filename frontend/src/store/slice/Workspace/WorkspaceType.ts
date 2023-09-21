@@ -3,13 +3,13 @@ export const WORKSPACE_SLICE_NAME = 'workspace'
 export type Workspace = {
   workspaces: WorkspaceType[]
   currentWorkspace: {
-    workspaceId?: string
+    workspaceId?: number
     selectedTab: number
   }
   loading: boolean
 }
 
 export type WorkspaceType = {
-  workspace_id: string
+  workspace_id: number
   // TODO: add fields required for workspace
 }

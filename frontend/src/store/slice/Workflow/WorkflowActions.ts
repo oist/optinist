@@ -8,7 +8,7 @@ import {
 
 export const reproduceWorkflow = createAsyncThunk<
   RunPostData,
-  { workspaceId: string; uid: string }
+  { workspaceId: number; uid: string }
 >(
   `${WORKFLOW_SLICE_NAME}/reproduceWorkflow`,
   async ({ workspaceId, uid }, thunkAPI) => {

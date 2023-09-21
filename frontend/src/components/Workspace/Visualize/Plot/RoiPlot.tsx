@@ -20,6 +20,7 @@ import {
   selectVisualizeSaveFilename,
   selectVisualizeSaveFormat,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
 
 export const RoiPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -27,13 +28,14 @@ export const RoiPlot = React.memo(() => {
   const isInitialized = useSelector(selectRoiDataIsInitialized(path))
   const isFulfilled = useSelector(selectRoiDataIsFulfilled(path))
   const error = useSelector(selectRoiDataError(path))
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
 
   const dispatch = useDispatch()
   React.useEffect(() => {
-    if (!isInitialized) {
-      dispatch(getRoiData({ path }))
+    if (workspaceId && !isInitialized) {
+      dispatch(getRoiData({ path, workspaceId }))
     }
-  }, [dispatch, isInitialized, path])
+  }, [dispatch, isInitialized, path, workspaceId])
   if (isPending) {
     return <LinearProgress />
   } else if (error != null) {

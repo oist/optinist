@@ -17,21 +17,22 @@ import { selectActiveTab } from 'store/slice/Workspace/WorkspaceSelector'
 const Workspace: React.FC = () => {
   const dispatch = useDispatch()
   const runPipeline = useRunPipeline() // タブ切り替えによって結果取得処理が止まってしまうのを回避するため、タブの親レイヤーで呼び出している
+  const activeTab = useSelector(selectActiveTab)
 
   const { workspaceId } = useParams<{ workspaceId: string }>()
+  const _workspaceId = Number(workspaceId)
 
   useEffect(() => {
     if (IS_STANDALONE) {
       dispatch(setCurrentWorkspace(STANDALONE_WORKSPACE_ID))
     } else {
-      workspaceId && dispatch(setCurrentWorkspace(workspaceId))
+      _workspaceId && dispatch(setCurrentWorkspace(_workspaceId))
     }
     return () => {
       dispatch(clearCurrentWorkspace())
     }
-  }, [workspaceId, dispatch])
+  }, [_workspaceId, dispatch])
 
-  const activeTab = useSelector(selectActiveTab)
 
   return (
     <RootDiv>
