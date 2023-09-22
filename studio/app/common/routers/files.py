@@ -3,11 +3,15 @@ import shutil
 from glob import glob
 from typing import List
 
-from fastapi import APIRouter, File, UploadFile
+from fastapi import APIRouter, Depends, File, UploadFile
 
 from studio.app.common.core.utils.filepath_creater import (
     create_directory,
     join_filepath,
+)
+from studio.app.common.core.workspace.workspace_dependencies import (
+    is_workspace_available,
+    is_workspace_owner,
 )
 from studio.app.common.schemas.files import FilePath, TreeNode
 from studio.app.const import ACCEPT_CSV_EXT, ACCEPT_HDF5_EXT, ACCEPT_TIFF_EXT, FILETYPE
@@ -78,7 +82,11 @@ class DirTreeGetter:
         return files_list
 
 
-@router.get("/{workspace_id}", response_model=List[TreeNode])
+@router.get(
+    "/{workspace_id}",
+    response_model=List[TreeNode],
+    dependencies=[Depends(is_workspace_available)],
+)
 async def get_files(workspace_id: str, file_type: str = None):
     if file_type == FILETYPE.IMAGE:
         return DirTreeGetter.get_tree(workspace_id, ACCEPT_TIFF_EXT)
@@ -90,7 +98,11 @@ async def get_files(workspace_id: str, file_type: str = None):
         return []
 
 
-@router.post("/{workspace_id}/upload/{filename}", response_model=FilePath)
+@router.post(
+    "/{workspace_id}/upload/{filename}",
+    response_model=FilePath,
+    dependencies=[Depends(is_workspace_owner)],
+)
 async def create_file(workspace_id: str, filename: str, file: UploadFile = File(...)):
     create_directory(join_filepath([DIRPATH.INPUT_DIR, workspace_id]))
 
