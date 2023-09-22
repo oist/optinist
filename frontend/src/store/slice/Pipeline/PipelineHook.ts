@@ -14,6 +14,12 @@ import { selectAlgorithmNodeNotExist } from '../AlgorithmNode/AlgorithmNodeSelec
 import { getExperiments } from '../Experiments/ExperimentsActions'
 import { useSnackbar, VariantType } from 'notistack'
 import { RUN_STATUS } from './PipelineType'
+import { IS_STANDALONE, STANDALONE_WORKSPACE_ID } from 'const/Mode'
+import { clearCurrentWorkspace, setActiveTab, setCurrentWorkspace } from '../Workspace/WorkspaceSlice'
+import { getWorkspace } from '../Workspace/WorkspaceActions'
+import { clearExperiments } from '../Experiments/ExperimentsSlice'
+import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { AppDispatch } from 'store/store'
 
 const POLLING_INTERVAL = 5000
 
@@ -21,6 +27,33 @@ export type UseRunPipelineReturnType = ReturnType<typeof useRunPipeline>
 
 export function useRunPipeline() {
   const dispatch = useDispatch()
+  const appDispatch: AppDispatch = useDispatch()
+  const navigate = useNavigate()
+  const location = useLocation()
+
+  const { workspaceId } = useParams<{ workspaceId: string }>()
+  const _workspaceId = Number(workspaceId)
+
+  React.useEffect(() => {
+    if (IS_STANDALONE) {
+      dispatch(setCurrentWorkspace(STANDALONE_WORKSPACE_ID))
+    } else {
+      appDispatch(getWorkspace({ id: _workspaceId }))
+        .unwrap()
+        .then((_) => {
+          const selectedTab = location.state?.tab
+          selectedTab && dispatch(setActiveTab(selectedTab))
+        })
+        .catch((_) => {
+          navigate('/console/workspaces')
+        })
+    }
+    return () => {
+      dispatch(clearExperiments())
+      dispatch(clearCurrentWorkspace())
+    }
+  }, [dispatch, appDispatch, navigate, _workspaceId, location.state])
+
   const uid = useSelector(selectPipelineLatestUid)
   const isCanceled = useSelector(selectPipelineIsCanceled)
   const isStartedSuccess = useSelector(selectPipelineIsStartedSuccess)

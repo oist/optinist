@@ -1,13 +1,28 @@
-import { PayloadAction, createSlice } from '@reduxjs/toolkit'
+import { PayloadAction, createSlice, isAnyOf } from '@reduxjs/toolkit'
 import { WORKSPACE_SLICE_NAME, Workspace } from './WorkspaceType'
 import { reproduceWorkflow } from '../Workflow/WorkflowActions'
+import {
+  delWorkspace,
+  getListUserShareWorkSpaces,
+  getWorkspace,
+  getWorkspaceList,
+  postListUserShareWorkspaces,
+  postWorkspace,
+  putWorkspace,
+} from './WorkspaceActions'
 
 const initialState: Workspace = {
-  workspaces: [{ workspace_id: 1 }],
   currentWorkspace: {
     selectedTab: 0,
   },
+  workspace: {
+    items: [],
+    total: 0,
+    limit: 50,
+    offset: 0,
+  },
   loading: false,
+  listUserShare: undefined,
 }
 
 export const workspaceSlice = createSlice({
@@ -27,10 +42,54 @@ export const workspaceSlice = createSlice({
     },
   },
   extraReducers(builder) {
-    builder.addCase(reproduceWorkflow.fulfilled, (state, action) => {
-      state.currentWorkspace.workspaceId = action.meta.arg.workspaceId
-    })
-    // TODO: add case for set loading on get workspaces pending
+    builder
+      .addCase(reproduceWorkflow.fulfilled, (state, action) => {
+        state.currentWorkspace.workspaceId = action.meta.arg.workspaceId
+      })
+      .addCase(getWorkspace.fulfilled, (state, action) => {
+        state.currentWorkspace.workspaceId = action.payload.id
+        state.currentWorkspace.ownerId = action.payload.user.id
+        state.loading = false
+      })
+      .addCase(getWorkspaceList.fulfilled, (state, action) => {
+        state.workspace = action.payload
+        state.loading = false
+      })
+      .addCase(getListUserShareWorkSpaces.fulfilled, (state, action) => {
+        state.listUserShare = action.payload
+        state.loading = false
+      })
+      .addMatcher(
+        isAnyOf(
+          getWorkspace.rejected,
+          getWorkspaceList.rejected,
+          postWorkspace.fulfilled,
+          postWorkspace.rejected,
+          putWorkspace.fulfilled,
+          putWorkspace.rejected,
+          delWorkspace.fulfilled,
+          delWorkspace.rejected,
+          getListUserShareWorkSpaces.rejected,
+          postListUserShareWorkspaces.rejected,
+        ),
+        (state) => {
+          state.loading = false
+        },
+      )
+      .addMatcher(
+        isAnyOf(
+          getWorkspace.pending,
+          getWorkspaceList.pending,
+          postWorkspace.pending,
+          putWorkspace.pending,
+          delWorkspace.pending,
+          getListUserShareWorkSpaces.pending,
+          postListUserShareWorkspaces.pending,
+        ),
+        (state) => {
+          state.loading = true
+        },
+      )
   },
 })
 

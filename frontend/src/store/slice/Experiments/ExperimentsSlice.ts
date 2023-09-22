@@ -19,7 +19,9 @@ export const initialState: Experiments = {
 export const experimentsSlice = createSlice({
   name: EXPERIMENTS_SLICE_NAME,
   initialState: initialState as Experiments,
-  reducers: {},
+  reducers: {
+    clearExperiments: () => initialState,
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getExperiments.pending, () => {
@@ -71,4 +73,5 @@ export const experimentsSlice = createSlice({
   },
 })
 
+export const { clearExperiments } = experimentsSlice.actions
 export default experimentsSlice.reducer
