@@ -18,6 +18,7 @@ from studio.app.common.routers import (
     run,
     users_admin,
     users_me,
+    users_search,
     workflow,
     workspace,
 )
@@ -38,6 +39,7 @@ app.include_router(params.router)
 app.include_router(run.router)
 app.include_router(users_admin.router)
 app.include_router(users_me.router)
+app.include_router(users_search.router)
 app.include_router(workflow.router)
 app.include_router(workspace.router)
 

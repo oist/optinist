@@ -22,6 +22,7 @@ import Loading from 'components/common/Loading'
 import {
   selectIsLoadingWorkspaceList,
   selectWorkspaceData,
+  selectWorkspaceListUserShare,
 } from 'store/slice/Workspace/WorkspaceSelector'
 import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
 import {
@@ -31,6 +32,7 @@ import {
   postWorkspace,
   putWorkspace,
 } from 'store/slice/Workspace/WorkspaceActions'
+import PopupShare from 'components/Workspace/PopupShare'
 import moment from 'moment'
 import GroupsIcon from '@mui/icons-material/Groups'
 import EditIcon from '@mui/icons-material/Edit'
@@ -284,6 +286,7 @@ const Workspaces = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
   const loading = useSelector(selectIsLoadingWorkspaceList)
+  const listUserShare = useSelector(selectWorkspaceListUserShare)
   const data = useSelector(selectWorkspaceData)
   const user = useSelector(selectCurrentUser)
   const [open, setOpen] = useState({
@@ -331,6 +334,10 @@ const Workspaces = () => {
     dispatch(getListUserShareWorkSpaces({ id: open.shareId }))
     //eslint-disable-next-line
   }, [open.share, open.shareId])
+
+  const handleClosePopupShare = () => {
+    setOpen({ ...open, share: false })
+  }
 
   const handleOpenPopupDel = (id: number, name: string) => {
     setWorkspaceDel({ id, name })
@@ -494,11 +501,6 @@ const Workspaces = () => {
           }}
         >
           <DataGrid
-            // todo enable when api complete
-            // filterMode={'server'}
-            // sortingMode={'server'}
-            // onSortModelChange={handleSort}
-            // onFilterModelChange={handleFilter as any}
             onCellClick={onCellClick}
             rows={data?.items}
             editMode="row"
@@ -528,6 +530,20 @@ const Workspaces = () => {
           handlePage={handlePage}
           handleLimit={handleLimit}
           limit={Number(limit)}
+        />
+      ) : null}
+      {open.share ? (
+        <PopupShare
+          title="Share Workspace"
+          usersShare={listUserShare}
+          open={open.share}
+          handleClose={(_isSubmit: boolean) => {
+            if (_isSubmit) {
+              dispatch(getWorkspaceList(dataParams))
+            }
+            handleClosePopupShare()
+          }}
+          id={open.shareId}
         />
       ) : null}
       <PopupDelete
