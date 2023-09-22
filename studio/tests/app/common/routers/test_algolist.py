@@ -1,13 +1,9 @@
-from fastapi.testclient import TestClient
-
-from studio.app.common.routers.algolist import NestDictGetter, router
+from studio.app.common.routers.algolist import NestDictGetter
 from studio.app.common.schemas.algolist import Algo
 from studio.app.wrappers import wrapper_dict
 
-client = TestClient(router)
 
-
-def test_run():
+def test_run(client):
     response = client.get("/algolist")
     output = response.json()
 

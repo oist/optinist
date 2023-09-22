@@ -1,14 +1,8 @@
-from fastapi.testclient import TestClient
-
-from studio.app.common.routers.workflow import router
-
-client = TestClient(router)
-
 workspace_id = "default"
 unique_id = "0123"
 
 
-def test_import():
+def test_import(client):
     response = client.get(f"/workflow/reproduce/{workspace_id}/{unique_id}")
     data = response.json()
 

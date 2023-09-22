@@ -1,14 +1,9 @@
-from fastapi.testclient import TestClient
-
-from studio.app.common.routers.outputs import router
 from studio.app.dir_path import DIRPATH
-
-client = TestClient(router)
 
 timeseries_dirpath = f"{DIRPATH.DATA_DIR}/output/default/0123/func1/fluorescence.json"
 
 
-def test_inittimedata():
+def test_inittimedata(client):
     response = client.get(f"/outputs/inittimedata/{timeseries_dirpath}")
     data = response.json()
 
@@ -28,7 +23,7 @@ def test_inittimedata():
             assert len(value) == 1
 
 
-def test_timedata():
+def test_timedata(client):
     index = 0
     response = client.get(f"/outputs/timedata/{timeseries_dirpath}/?index={index}")
     data = response.json()
@@ -52,7 +47,7 @@ def test_timedata():
     assert data["data"]["1"]["0"] == 488.6315612793
 
 
-def test_alltimedata():
+def test_alltimedata(client):
     response = client.get(f"/outputs/alltimedata/{timeseries_dirpath}")
     data = response.json()
 
@@ -69,10 +64,11 @@ def test_alltimedata():
 
 
 tif_filepath = "test.tif"
+workspace_id = "1"
 
 
-def test_image():
-    response = client.get(f"/outputs/image/{tif_filepath}")
+def test_image(client):
+    response = client.get(f"/outputs/image/{tif_filepath}?workspace_id={workspace_id}")
     data = response.json()
 
     assert response.status_code == 200

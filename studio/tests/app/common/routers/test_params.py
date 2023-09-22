@@ -1,11 +1,4 @@
-from fastapi.testclient import TestClient
-
-from studio.app.common.routers.params import router
-
-client = TestClient(router)
-
-
-def test_params():
+def test_params(client):
     response = client.get("/params/caiman_mc")
     data = response.json()
 
@@ -19,7 +12,7 @@ def test_params():
     assert data["use_cuda"] is False
 
 
-def test_snakemake_params():
+def test_snakemake_params(client):
     response = client.get("/snakemake")
     data = response.json()
 
