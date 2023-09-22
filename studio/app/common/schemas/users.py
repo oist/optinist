@@ -1,7 +1,8 @@
 from datetime import datetime
 from enum import Enum
-from typing import List, Optional
+from typing import Optional
 
+from fastapi import Query
 from pydantic import BaseModel, EmailStr, Field
 
 password_regex = r"^(?=.*\d)(?=.*[!#$%&()*+,-./@_|])(?=.*[a-zA-Z]).{6,255}$"
@@ -13,6 +14,11 @@ class Organization(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class UserSearchOptions(BaseModel):
+    email: Optional[str] = Field(Query(default=""))
+    name: Optional[str] = Field(Query(default=""))
 
 
 class UserRole(int, Enum):
@@ -31,18 +37,19 @@ class User(BaseModel):
     def is_admin(self) -> bool:
         return self.role_id == UserRole.admin
 
+    @property
+    def is_admin_data(self) -> bool:
+        return self.is_admin or self.role_id == UserRole.data_manager
+
     class Config:
         orm_mode = True
-
-
-class ListUserPaging(BaseModel):
-    data: Optional[List[User]]
-    total_page: Optional[int]
 
 
 class UserCreate(BaseModel):
     email: EmailStr
     password: str = Field(max_length=255, regex=password_regex)
+    name: str
+    role_id: int
 
     class Config:
         anystr_strip_whitespace = True
@@ -50,6 +57,13 @@ class UserCreate(BaseModel):
 
 class UserUpdate(BaseModel):
     email: Optional[EmailStr]
+    name: str
+    role_id: int
+
+
+class SelfUserUpdate(BaseModel):
+    email: Optional[EmailStr]
+    name: str
 
 
 class UserPasswordUpdate(BaseModel):
