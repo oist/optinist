@@ -8,18 +8,31 @@ import {
   selectPipelineLatestUid,
   selectPipelineStatus,
 } from './PipelineSelectors'
-import { run, pollRunResult, runByCurrentUid, cancelResult } from './PipelineActions'
+import {
+  run,
+  pollRunResult,
+  runByCurrentUid,
+  cancelResult,
+} from './PipelineActions'
 import { selectFilePathIsUndefined } from '../InputNode/InputNodeSelectors'
 import { selectAlgorithmNodeNotExist } from '../AlgorithmNode/AlgorithmNodeSelectors'
-import { getExperiments } from '../Experiments/ExperimentsActions'
+import {
+  fetchExperiment,
+  getExperiments,
+} from '../Experiments/ExperimentsActions'
 import { useSnackbar, VariantType } from 'notistack'
 import { RUN_STATUS } from './PipelineType'
-import { IS_STANDALONE, STANDALONE_WORKSPACE_ID } from 'const/Mode'
-import { clearCurrentWorkspace, setActiveTab, setCurrentWorkspace } from '../Workspace/WorkspaceSlice'
-import { getWorkspace } from '../Workspace/WorkspaceActions'
-import { clearExperiments } from '../Experiments/ExperimentsSlice'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
+import { IS_STANDALONE, STANDALONE_WORKSPACE_ID } from 'const/Mode'
+import {
+  clearCurrentWorkspace,
+  setActiveTab,
+  setCurrentWorkspace,
+} from '../Workspace/WorkspaceSlice'
+import { clearExperiments } from '../Experiments/ExperimentsSlice'
 import { AppDispatch } from 'store/store'
+import { getWorkspace } from 'store/slice/Workspace/WorkspaceActions'
+import { selectIsWorkspaceOwner } from '../Workspace/WorkspaceSelector'
 
 const POLLING_INTERVAL = 5000
 
@@ -37,10 +50,12 @@ export function useRunPipeline() {
   React.useEffect(() => {
     if (IS_STANDALONE) {
       dispatch(setCurrentWorkspace(STANDALONE_WORKSPACE_ID))
+      dispatch(fetchExperiment(STANDALONE_WORKSPACE_ID))
     } else {
       appDispatch(getWorkspace({ id: _workspaceId }))
         .unwrap()
         .then((_) => {
+          dispatch(fetchExperiment(_workspaceId))
           const selectedTab = location.state?.tab
           selectedTab && dispatch(setActiveTab(selectedTab))
         })
@@ -57,6 +72,9 @@ export function useRunPipeline() {
   const uid = useSelector(selectPipelineLatestUid)
   const isCanceled = useSelector(selectPipelineIsCanceled)
   const isStartedSuccess = useSelector(selectPipelineIsStartedSuccess)
+  const isOwner = useSelector(selectIsWorkspaceOwner)
+  const runDisabled = isOwner ? isStartedSuccess : true
+
   const filePathIsUndefined = useSelector(selectFilePathIsUndefined)
   const algorithmNodeNotExist = useSelector(selectAlgorithmNodeNotExist)
   const runPostData = useSelector(selectRunPostData)
@@ -67,7 +85,7 @@ export function useRunPipeline() {
     [dispatch, runPostData],
   )
   const handleClickVariant = (variant: VariantType, mess: string) => {
-    enqueueSnackbar(mess, { variant });
+    enqueueSnackbar(mess, { variant })
   }
   const handleRunPipelineByUid = React.useCallback(() => {
     dispatch(runByCurrentUid({ runPostData }))
@@ -76,10 +94,13 @@ export function useRunPipeline() {
     if (uid != null) {
       const data = await dispatch(cancelResult({ uid }))
       if ((data as any).error) {
-        handleClickVariant('error', 'Failed to cancel workflow. Please try again.')
+        handleClickVariant(
+          'error',
+          'Failed to cancel workflow. Please try again.',
+        )
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    //eslint-disable-next-line
   }, [dispatch, uid])
   React.useEffect(() => {
     const intervalId = setInterval(() => {
@@ -117,7 +138,7 @@ export function useRunPipeline() {
     algorithmNodeNotExist,
     uid,
     status,
-    isStartedSuccess,
+    runDisabled,
     handleRunPipeline,
     handleRunPipelineByUid,
     handleCancelPipeline,

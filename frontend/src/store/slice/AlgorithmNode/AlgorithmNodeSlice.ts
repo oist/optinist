@@ -6,6 +6,7 @@ import {
   deleteFlowNodeById,
 } from '../FlowElement/FlowElementSlice'
 import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
+import { fetchExperiment } from '../Experiments/ExperimentsActions'
 import {
   reproduceWorkflow,
   importWorkflowConfig,
@@ -72,7 +73,11 @@ export const algorithmNodeSlice = createSlice({
         }
       })
       .addMatcher(
-        isAnyOf(reproduceWorkflow.fulfilled, importWorkflowConfig.fulfilled),
+        isAnyOf(
+          reproduceWorkflow.fulfilled,
+          importWorkflowConfig.fulfilled,
+          fetchExperiment.fulfilled,
+        ),
         (_, action) => {
           const newState: AlgorithmNode = {}
           Object.values(action.payload.nodeDict)

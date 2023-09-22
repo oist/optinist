@@ -1,8 +1,9 @@
 import axios from 'utils/axios'
 
 import { BASE_URL } from 'const/API'
-import { EdgeDict, NodeDict, OutputPathsDTO } from 'api/run/Run'
+import { OutputPathsDTO } from 'api/run/Run'
 import { EXPERIMENTS_STATUS } from 'store/slice/Experiments/ExperimentsType'
+import { WorkflowConfigDTO } from 'api/workflow/Workflow'
 
 export type ExperimentsDTO = {
   [uid: string]: ExperimentDTO
@@ -27,12 +28,12 @@ export type ExperimentDTO = {
   success?: EXPERIMENTS_STATUS
   started_at: string
   finished_at?: string
-  workspace_id: string
+  workspace_id: number
   unique_id: string
   hasNWB: boolean
-  edgeDict: EdgeDict
-  nodeDict: NodeDict
 }
+
+export type FetchExperimentDTO = ExperimentDTO & WorkflowConfigDTO
 
 export async function getExperimentsApi(
   workspaceId: number,
@@ -88,6 +89,15 @@ export async function downloadExperimentConfigApi(
     {
       responseType: 'blob',
     },
+  )
+  return response.data
+}
+
+export async function fetchExperimentApi(
+  workspace_id: number,
+): Promise<FetchExperimentDTO> {
+  const response = await axios.get(
+    `${BASE_URL}/experiments/fetch/${workspace_id}`,
   )
   return response.data
 }
