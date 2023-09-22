@@ -13,9 +13,9 @@ class PieData(BaseData):
     def __init__(self, data, labels: list, file_name="pie"):
         super().__init__(file_name)
 
-        if type(data) == list:
+        if isinstance(data, list):
             data = np.array(data)
-        assert type(data) == np.ndarray, "Pie Type Error"
+        assert isinstance(data, np.ndarray), "Pie Type Error"
         assert data.ndim == 1, "Pie Dimension Error"
         assert data.shape[0] == len(
             labels

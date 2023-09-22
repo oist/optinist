@@ -13,9 +13,9 @@ class HistogramData(BaseData):
     def __init__(self, data, file_name="histogram"):
         super().__init__(file_name)
 
-        if type(data) == list:
+        if isinstance(data, list):
             data = np.array(data)
-        assert type(data) == np.ndarray, "Histogram Type Error"
+        assert isinstance(data, np.ndarray), "Histogram Type Error"
         assert data.ndim == 1, "Histogram Dimension Error"
         self.data = data.reshape(1, -1)
 

@@ -10,9 +10,8 @@
       "source.organizeImports": true
     }
   },
-  "python.linting.enabled": true,
-  "python.linting.lintOnSave": true,
-  "python.linting.pylintEnabled": false,
-  "python.linting.flake8Enabled": true,
+  "flake8.args": ["--config=.flake8"],
+  // NOTE: Uncomment following line and fix "optinist_dev" to your conda env name
+  // "flake8.path": ["conda", "run", "-n", "optinist_dev", "python", "-m", "flake8"],
   "esbonio.sphinx.confDir": ""
 }
