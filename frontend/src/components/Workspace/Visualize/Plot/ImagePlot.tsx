@@ -73,6 +73,7 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemActions'
 import { addRoiApi, deleteRoiApi, mergeRoiApi } from 'api/outputs/Outputs'
 import { isTimeSeriesItem } from 'store/slice/VisualizeItem/VisualizeItemUtils'
+import Loading from "../../../common/Loading";
 
 interface PointClick {
   x: number
@@ -160,6 +161,8 @@ const ImagePlotChart = React.memo<{
     imageDataEqualtyFn,
   )
 
+  // console.log("roiData", roiData)
+
   const [isAddRoi, setIsAddRoi] = useState(false)
   const [loadingApi, setLoadingApi] = useState(false)
 
@@ -184,6 +187,7 @@ const ImagePlotChart = React.memo<{
   const [sizeDrag, setSizeDrag] = useState(initSizeDrag)
 
   const [startDragAddRoi, setStartDragAddRoi] = useState(false)
+  const [action, setAction] = React.useState('')
   const [positionDrag, setChangeSize] = useState<PositionDrag | undefined>()
 
   const outputKey: string | null = useSelector(selectRoiItemOutputKeys(itemId))
@@ -202,11 +206,11 @@ const ImagePlotChart = React.memo<{
     setRoiDataState(roiData)
   }, [roiData])
 
-  useEffect(() => {
-    onCancel()
-    onCancelAdd()
-    //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [outputKey, roiFilePath])
+  // useEffect(() => {
+  //   onCancel()
+  //   onCancelAdd()
+  //   //eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [outputKey, roiFilePath])
 
   const data = React.useMemo(
     () => [
@@ -243,14 +247,32 @@ const ImagePlotChart = React.memo<{
         type: 'heatmap',
         name: 'roi',
         hovertemplate: isAddRoi ? 'none' : 'cell id: %{z}',
-        // hoverinfo: isAddRoi || pointClick.length ? 'none' : undefined,
+        hoverinfo: isAddRoi || pointClick.length ? 'none' : undefined,
         colorscale: [...Array(timeDataMaxIndex)].map((_, i) => {
-          const new_i = Math.floor(((i % 10) * 10 + i / 10) % 100)
-          const offset: number = i / (timeDataMaxIndex - 1)
-          const rgba = colorscaleRoi[new_i]
-          const hex = rgba2hex(rgba, roiAlpha)
-          return [offset, hex]
-        }),
+        //   const new_i = Math.floor(((i % 10) * 10 + i / 10) % 100)
+        //   const offset: number = i / (timeDataMaxIndex - 1)
+        //   const rgba = colorscaleRoi[new_i]
+        //   const hex = rgba2hex(rgba, roiAlpha)
+        //   if(pointClick.find(e => {
+        //     console.log(e.z, 'i', i)
+        //     return e.z === i - 1
+        //   })) {
+        //     return [offset, '#ffffff']
+        //   }
+        //   return [offset, hex]
+        // })
+          console.log('i', i)
+      const new_i = Math.floor(((i % 10) * 10 + i / 10) % 100)
+          // console.log('new_i',new_i, pointClick)
+      const offset: number = i / (timeDataMaxIndex - 1)
+          // console.log("offset", offset)
+      const rgba = colorscaleRoi[new_i]
+      const hex = rgba2hex(rgba, roiAlpha)
+      if(pointClick.find(e => e.z === i)) {
+          return [offset, '#ffffff']
+      }
+      return [offset, hex]
+    }),
         zmin: 0,
         zmax: timeDataMaxIndex,
         hoverongaps: false,
@@ -269,10 +291,14 @@ const ImagePlotChart = React.memo<{
       roiAlpha,
       alpha,
       isAddRoi,
+      pointClick
     ],
   )
 
+  console.log('data', data)
+
   const [selectMode, setSelectMode] = React.useState(false)
+  const [edit, setEdit] = React.useState(false)
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectMode(event.target.checked)
@@ -353,30 +379,47 @@ const ImagePlotChart = React.memo<{
   }
 
   const setSelectRoi = (point: PointClick) => {
-    if (typeof point.z !== 'number' || point.z === -1) return
-    const newPoints = [...pointClick, point]
-    const newRoi = roiDataState.map((roi) => {
-      return roi.map((element) => {
-        if (newPoints.some((p) => p.z === element)) {
-          return -1
-        }
-        return element
-      })
-    })
-    setPointClick([...pointClick, point])
-    setRoiDataState(newRoi)
+    if (isNaN(Number(point.z))) return
+    let newPoints
+    const check = pointClick.findIndex(item => item.z === point.z)
+    if(check < 0) {
+      newPoints = [...pointClick, point]
+    }
+    else {
+      newPoints = pointClick.filter(item => item.z !== point.z)
+    }
+
+    // const newRoi = roiDataState.map((roi) => {
+    //   return roi.map((element) => {
+    //     if (newPoints.some((p) => p.z === element)) {
+    //       return -1
+    //     }
+    //     return element
+    //   })
+    // })
+    setPointClick(newPoints)
+    // setRoiDataState(newRoi)
   }
 
   const onCancel = () => {
+    setEdit(false)
     setPointClick([])
     setRoiDataState(roiData)
   }
 
   const addRoi = () => {
+    setEdit(false)
+    setAction('')
     setIsAddRoi(true)
   }
 
+  const editRoi = () => {
+    setEdit(true)
+  }
+
   const onCancelAdd = () => {
+    setAction('')
+    setEdit(true)
     setIsAddRoi(false)
     setSizeDrag(initSizeDrag)
     setChangeSize(undefined)
@@ -436,58 +479,70 @@ const ImagePlotChart = React.memo<{
 
   const addRoiSubmit = async () => {
     if (!roiFilePath || loadingApi) return
-    setLoadingApi(true)
-    const sizeX = roiDataState[0].length - 1
-    const sizeY = roiDataState.length - 1
-    const xAdd = Number(((sizeDrag.width + 2) / (sChart / sizeX)).toFixed(1))
-    const yAdd = Number(((sizeDrag.height + 2) / (sChart / sizeY)).toFixed(1))
-    const x = Number((sizeDrag.left / (sChart / sizeX)).toFixed(1))
-    const y = Number((sizeDrag.top / (sChart / sizeY)).toFixed(1))
+    setEdit(false)
+    if(isAddRoi) {
+      setAction('')
+      setLoadingApi(true)
+      const sizeX = roiDataState[0].length - 1
+      const sizeY = roiDataState.length - 1
+      const xAdd = Number(((sizeDrag.width + 2) / (sChart / sizeX)).toFixed(1))
+      const yAdd = Number(((sizeDrag.height + 2) / (sChart / sizeY)).toFixed(1))
+      const x = Number((sizeDrag.left / (sChart / sizeX)).toFixed(1))
+      const y = Number((sizeDrag.top / (sChart / sizeY)).toFixed(1))
 
-    const pointCenter = {
-      posx: x + Math.floor(xAdd / 2),
-      posy: y + Math.floor(yAdd / 2),
-      sizex: xAdd,
-      sizey: yAdd,
+      const pointCenter = {
+        posx: x + Math.floor(xAdd / 2),
+        posy: y + Math.floor(yAdd / 2),
+        sizex: xAdd,
+        sizey: yAdd,
+      }
+      dispatch(resetAllOrderList())
+      try {
+        await addRoiApi(roiFilePath, pointCenter)
+      } catch {}
+      setLoadingApi(false)
+      onCancelAdd()
+      dispatch(getRoiData({ path: roiFilePath }))
     }
-    dispatch(resetAllOrderList())
-    try {
-      await addRoiApi(roiFilePath, pointCenter)
-    } catch {}
-    setLoadingApi(false)
-    onCancelAdd()
-    dispatch(getRoiData({ path: roiFilePath }))
+    if(action === 'Merge ROI') {
+      if(pointClick.length < 2) return
+      setLoadingApi(true)
+      dispatch(resetAllOrderList())
+      try {
+        await mergeRoiApi(roiFilePath, {
+          ids: pointClick.map((point) => point.z),
+        })
+      } catch {}
+      setLoadingApi(false)
+      onCancel()
+      dispatch(getRoiData({ path: roiFilePath }))
+    }
+    if(action === 'Delete ROI') {
+      if(!pointClick.length) return
+      setLoadingApi(true)
+      dispatch(resetAllOrderList())
+      try {
+        await deleteRoiApi(roiFilePath, {
+          ids: pointClick.map((point) => point.z),
+        })
+      } catch {}
+      setLoadingApi(false)
+      onCancel()
+      dispatch(getRoiData({ path: roiFilePath }))
+    }
     resetTimeSeries()
   }
 
   const onMergeRoi = async () => {
     if (!roiFilePath || loadingApi) return
-    setLoadingApi(true)
-    dispatch(resetAllOrderList())
-    try {
-      await mergeRoiApi(roiFilePath, {
-        ids: pointClick.map((point) => point.z),
-      })
-    } catch {}
-    setLoadingApi(false)
-    onCancel()
-    dispatch(getRoiData({ path: roiFilePath }))
-    resetTimeSeries()
+    setAction('Merge ROI')
+    setEdit(false)
   }
 
   const onDeleteRoi = async () => {
     if (!roiFilePath || loadingApi) return
-    setLoadingApi(true)
-    dispatch(resetAllOrderList())
-    try {
-      await deleteRoiApi(roiFilePath, {
-        ids: pointClick.map((point) => point.z),
-      })
-    } catch {}
-    setLoadingApi(false)
-    onCancel()
-    dispatch(getRoiData({ path: roiFilePath }))
-    resetTimeSeries()
+    setEdit(false)
+    setAction('Delete ROI')
   }
 
   const resetTimeSeries = () => {
@@ -506,36 +561,60 @@ const ImagePlotChart = React.memo<{
   }
 
   const renderActionRoi = () => {
-    if (!roiDataState?.length || outputKey !== 'cell_roi') return null
-    if (!isAddRoi) {
-      return <LinkDiv onClick={addRoi}>Add ROI</LinkDiv>
+    // if (!roiDataState?.length || outputKey !== 'cell_roi') return null
+    // if (!isAddRoi) {
+    //   return <LinkDiv onClick={addRoi}>Add ROI</LinkDiv>
+    // }
+
+    if(isAddRoi || action) {
+      return (
+        <>
+          {!isAddRoi ?
+            <BoxDiv>
+              ROI Selecteds: [{pointClick.map(item => item.z).join(',')}]
+            </BoxDiv>
+            : null
+          }
+          <BoxDiv
+              sx={{ display: 'flex', gap: 1}}
+          >
+            <LinkDiv
+              sx={{
+                color: action ? action === 'Delete ROI' ?  '#F84E1B' : '#6619A9' : 'default',
+                display: 'flex',
+                gap: 1
+              }}
+            >
+              {isAddRoi ? '[Add ROI]' : `[${action}]`}
+            </LinkDiv>
+            <LinkDiv
+              onClick={onCancelAdd}
+            >
+              Cancel
+            </LinkDiv>
+            <LinkDiv
+              style={{
+                opacity: (pointClick.length < 2 && action === 'Merge ROI') || (pointClick.length < 1 && action === 'Delete ROI') ? 0.5 : 1,
+                cursor: (pointClick.length < 2 && action === 'Merge ROI') || (pointClick.length < 1 && action === 'Delete ROI') ? 'default' : 'pointer',
+              }}
+              onClick={addRoiSubmit}
+            >
+              OK
+            </LinkDiv>
+          </BoxDiv>
+        </>
+      )
     }
-    return (
-      <BoxDiv>
-        <LinkDiv
-          style={{
-            opacity: loadingApi ? 0.5 : 1,
-            cursor: loadingApi ? 'progress' : 'pointer',
-          }}
-          onClick={addRoiSubmit}
-        >
-          OK
-        </LinkDiv>
-        <LinkDiv
-          style={{
-            opacity: loadingApi ? 0.5 : 1,
-            cursor: loadingApi ? 'progress' : 'pointer',
-          }}
-          onClick={onCancelAdd}
-        >
-          Cancel
-        </LinkDiv>
-      </BoxDiv>
-    )
+
+    if(!edit) return <LinkDiv onClick={editRoi}>Edit ROI</LinkDiv>
+    return null
   }
 
   return (
     <div>
+      {
+        loadingApi ? <Loading /> : null
+      }
       <Box sx={{ display: 'flex' }}>
         <Box sx={{ flexGrow: 1, mt: 1 }}>
           <PlayBack activeIndex={activeIndex} />
@@ -547,32 +626,42 @@ const ImagePlotChart = React.memo<{
         />
       </Box>
       <Box sx={{ minHeight: 5.5 }}>
-        {pointClick.length ? (
+        {edit ? (
           <>
             <BoxDiv>
-              <span>ROI Selecteds: [{String(pointClick.map((e) => e.z))}]</span>
-            </BoxDiv>
-            <BoxDiv>
-              {pointClick.length >= 2 ? (
+              <BoxWrapper>
                 <LinkDiv
-                  sx={{ ml: 0, opacity: loadingApi ? 0.5 : 1 }}
+                  sx={{ opacity: loadingApi ? 0.5 : 1 }}
+                  onClick={addRoi}
+                >
+                  Add ROI
+                </LinkDiv>
+                <LinkDiv
+                  sx={{ color: '#F84E1B', opacity: loadingApi ? 0.5 : 1 }}
+                  onClick={onDeleteRoi}
+                >
+                  Delete ROI
+                </LinkDiv>
+                <LinkDiv
+                  sx={{ color: '#6619A9', ml: 0, opacity: loadingApi ? 0.5 : 1 }}
                   onClick={onMergeRoi}
                 >
                   Merge ROI
                 </LinkDiv>
-              ) : null}
-              <LinkDiv
-                sx={{ color: '#F84E1B', opacity: loadingApi ? 0.5 : 1 }}
-                onClick={onDeleteRoi}
-              >
-                Delete ROI
-              </LinkDiv>
-              <LinkDiv
-                sx={{ opacity: loadingApi ? 0.5 : 1 }}
-                onClick={onCancel}
-              >
-                Cancel
-              </LinkDiv>
+              </BoxWrapper>
+              <BoxWrapper>
+                <LinkDiv
+                  sx={{ color: '#32A919', opacity: loadingApi ? 0.5 : 1 }}
+                >
+                  Commit Edit
+                </LinkDiv>
+                <LinkDiv
+                  sx={{ opacity: loadingApi ? 0.5 : 1 }}
+                  onClick={onCancel}
+                >
+                  Cancel
+                </LinkDiv>
+              </BoxWrapper>
             </BoxDiv>
           </>
         ) : (
@@ -793,15 +882,18 @@ function debounce<T extends (...args: any[]) => unknown>(
 
 const BoxDiv = styled('div')({
   mt: 1,
-  display: 'flex',
   alignItems: 'center',
   listStyle: 'none',
   padding: 0,
   margin: 0,
 })
 
+const BoxWrapper = styled('div')({
+  display: 'flex',
+  gap: 12
+})
+
 const LinkDiv = styled('div')({
-  marginLeft: 16,
   textDecoration: 'underline',
   cursor: 'pointer',
   color: '#1155cc',
