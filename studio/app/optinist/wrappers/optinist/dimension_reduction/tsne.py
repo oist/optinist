@@ -9,6 +9,7 @@ def TSNE(
     output_dir: str,
     iscell: IscellData = None,
     params: dict = None,
+    **kwargs,
 ) -> dict():
     import numpy as np
     from sklearn.manifold import TSNE

@@ -43,6 +43,7 @@ def ETA(
     output_dir: str,
     iscell: IscellData = None,
     params: dict = None,
+    **kwargs,
 ) -> dict(mean=TimeSeriesData):
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data

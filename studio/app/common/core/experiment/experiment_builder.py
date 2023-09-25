@@ -11,6 +11,8 @@ class ExptConfigBuilder:
         self._success = None
         self._hasNWB = False
         self._function = {}
+        self._nwbfile = None
+        self._snakemake = None
 
     def set_config(self, config: ExptConfig) -> "ExptConfigBuilder":
         self._workspace_id = config.workspace_id
@@ -21,6 +23,8 @@ class ExptConfigBuilder:
         self._success = config.success
         self._hasNWB = config.hasNWB
         self._function = config.function
+        self._nwbfile = config.nwb
+        self._snakemake = config.snakemake
         return self
 
     def set_workspace_id(self, workspace_id) -> "ExptConfigBuilder":
@@ -51,6 +55,14 @@ class ExptConfigBuilder:
         self._function = function
         return self
 
+    def set_nwbfile(self, nwbfile) -> "ExptConfigBuilder":
+        self._nwbfile = nwbfile
+        return self
+
+    def set_snakemake(self, snakemake) -> "ExptConfigBuilder":
+        self._snakemake = snakemake
+        return self
+
     def build(self) -> ExptConfig:
         return ExptConfig(
             workspace_id=self._workspace_id,
@@ -61,4 +73,6 @@ class ExptConfigBuilder:
             success=self._success,
             hasNWB=self._hasNWB,
             function=self._function,
+            nwb=self._nwbfile,
+            snakemake=self._snakemake,
         )

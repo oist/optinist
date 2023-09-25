@@ -9,7 +9,7 @@ from studio.app.optinist.dataclass import Suite2pData
 
 
 def suite2p_file_convert(
-    image: ImageData, output_dir: str, params: dict = None
+    image: ImageData, output_dir: str, params: dict = None, **kwargs
 ) -> dict(ops=Suite2pData):
     from suite2p import default_ops, io
 
