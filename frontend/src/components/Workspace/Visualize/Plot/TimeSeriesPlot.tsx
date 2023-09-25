@@ -34,11 +34,11 @@ import {
   selectVisualizeSaveFilename,
   selectVisualizeSaveFormat,
   selectImageItemRangeUnit,
-  selectVisualizeDataNodeId,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import createColormap from 'colormap'
 import { setTimeSeriesItemDrawOrderList } from 'store/slice/VisualizeItem/VisualizeItemSlice'
 import { selectFrameRate } from "../../../../store/slice/Experiments/ExperimentsSelectors";
+import {selectPipelineLatestUid} from "../../../../store/slice/Pipeline/PipelineSelectors";
 
 export const TimeSeriesPlot = React.memo(() => {
   const { itemId, filePath: path } = React.useContext(DisplayDataContext)
@@ -92,9 +92,8 @@ const TimeSeriesPlotImple = React.memo(() => {
 
   const [newDataXrange, setNewDataXrange] = useState<string[]>(dataXrange)
   const [newTimeSeriesData, setNewTimeSeriesData] = useState(timeSeriesData)
-
-  const nodeId = useSelector(selectVisualizeDataNodeId(itemId))
-  const frameRate = useSelector(selectFrameRate(nodeId))
+  const currentPipelineUid = useSelector(selectPipelineLatestUid)
+  const frameRate = useSelector(selectFrameRate(currentPipelineUid))
 
   useEffect(() => {
     let seriesData: any = {}

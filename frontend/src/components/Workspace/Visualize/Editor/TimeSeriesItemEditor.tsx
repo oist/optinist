@@ -25,7 +25,6 @@ import {
   selectTimeSeriesItemFilePath,
   selectTimeSeriesItemKeys,
   selectImageItemRangeUnit,
-  selectVisualizeDataNodeId,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { SelectedItemIdContext } from '../VisualizeItemEditor'
 import {
@@ -49,6 +48,7 @@ import { Accordion } from 'components/common/Accordion'
 
 import { SaveFig } from './SaveFig'
 import { selectFrameRate }  from "../../../../store/slice/Experiments/ExperimentsSelectors";
+import {selectPipelineLatestUid} from "../../../../store/slice/Pipeline/PipelineSelectors";
 
 export const TimeSeriesItemEditor: React.FC = () => {
   return (
@@ -203,9 +203,9 @@ const SelectValue: React.FC = () => {
 }
 
 const Xrange: React.FC = () => {
+  const currentPipelineUid = useSelector(selectPipelineLatestUid)
   const itemId = React.useContext(SelectedItemIdContext)
-  const nodeId = useSelector(selectVisualizeDataNodeId(itemId))
-  const frameRate = useSelector(selectFrameRate(nodeId))
+  const frameRate = useSelector(selectFrameRate(currentPipelineUid))
   const rangeUnit = useSelector(selectImageItemRangeUnit(itemId))
   const xrangeSelector = useSelector(selectTimeSeriesItemXrange(itemId))
 

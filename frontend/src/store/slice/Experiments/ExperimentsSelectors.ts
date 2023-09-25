@@ -91,10 +91,7 @@ export const selectExperimentFunctionHasNWB =
   (uid: string, nodeId: string) => (state: RootState) =>
     selectExperimentFunction(uid, nodeId)(state).hasNWB
 
-export const selectFrameRate = (nodeId: string | null) => (state: RootState) => {
-  if(!nodeId) return 50
-  const list = selectExperimentList(state)
-  const key =  Object.keys(list).find(key => list[key].functions?.[nodeId])
-  if(key) return list[key].frameRate || 50
-  return 50
+export const selectFrameRate = (currentPipelineUid?: string) => (state: RootState) => {
+  if(!currentPipelineUid) return 50
+  return selectExperiment(currentPipelineUid)(state).frameRate || 50
 }
