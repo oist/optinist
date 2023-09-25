@@ -29,6 +29,7 @@ export type ExperimentType = {
   name: string
   timestamp: string
   hasNWB: boolean
+  frameRate?: number
 }
 
 export type ExperimentFunction = {
