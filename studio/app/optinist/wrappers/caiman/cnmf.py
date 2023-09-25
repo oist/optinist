@@ -75,6 +75,8 @@ def caiman_cnmf(
     from caiman.source_extraction.cnmf.params import CNMFParams
 
     Ain = params.pop("Ain", None)
+    do_refit = params.pop("do_refit", None)
+    thr = params.pop("thr", None)
 
     file_path = images.path
     if isinstance(file_path, list):
@@ -121,7 +123,7 @@ def caiman_cnmf(
     cnm = cnmf.CNMF(n_processes=n_processes, dview=dview, Ain=Ain, params=ops)
     cnm = cnm.fit(mmap_images)
 
-    if params.get("do_refit"):
+    if do_refit:
         cnm = cnm.refit(mmap_images, dview=dview)
 
     stop_server(dview=dview)
@@ -130,7 +132,6 @@ def caiman_cnmf(
     Cn = local_correlations(mmap_images.transpose(1, 2, 0))
     Cn[np.isnan(Cn)] = 0
 
-    thr = params["thr"]
     thr_method = "nrg"
     swap_dim = False
 
