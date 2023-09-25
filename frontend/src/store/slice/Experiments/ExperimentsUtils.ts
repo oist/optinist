@@ -11,10 +11,7 @@ export function convertToExperimentListType(
 ): ExperimentListType {
   const experimentList: ExperimentListType = {}
   Object.entries(dto).forEach(([uid, value]) => {
-    experimentList[uid] = {
-      ...convertToExperimentType(value),
-      frameRate: convertToExperimentType(value).frameRate
-    }
+    experimentList[uid] = convertToExperimentType(value)
   })
   return experimentList
 }
