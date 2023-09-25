@@ -1,4 +1,5 @@
 Ain: null # possibility to seed with predetermined binary masks
+do_refit: False
 thr: 0.9
 p: 1 # order of the autoregressive system
 K: 4 # upper bound on number of components per patch, in general None

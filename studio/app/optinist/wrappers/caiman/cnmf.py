@@ -147,7 +147,7 @@ def caiman_cnmf(
     cell_roi = np.nanmax(ims, axis=0).astype(float)
     cell_roi[cell_roi == 0] = np.nan
 
-    if cnm.estimates.b is not None:
+    if cnm.estimates.b is not None and cnm.estimates.b.size != 0:
         non_cell_roi_ims = get_roi(
             scipy.sparse.csc_matrix(cnm.estimates.b), thr, thr_method, swap_dim, dims
         )
