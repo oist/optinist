@@ -14,8 +14,9 @@ OptiNiSt records and reproduces past workflow pipelines. It can download results
 OptiNiSt can:
 - Record past executed workflow
 - Reproduce past workflow
-- Download results as NWB files
+- Download workflow config file
 - Download snakemake config file
+- Download results as NWB files
 
 ### Record Table
 
@@ -27,7 +28,8 @@ OptiNiSt can:
 - **ID**: unique ID. This is the directory name for the whole results of the pipeline.
 - **Name**: user-defined workflow name.
 - **Success**: success or failure (abortion with error) of execution.
-- **Reproduce**: button to reproduce the workflow graph to the WORKFLOW field. 
+- **Reproduce**: button to reproduce the workflow graph to the WORKFLOW field.
+- **Workflow**: button to copy the workflow composition to your download folder on your computer.
 - **SnakeFile**: button to copy snakemake config file to your download folder on your computer.
 - **NWB**: button to copy the analysis results as NWB file to your download folder on your computer.
 - **Delete**: button to delete the workflow from the OPTINIST_DIR.
@@ -59,12 +61,13 @@ Clicking the Reproduce arrow retrieves the pipeline onto the workflow. This func
 
 <br>
 <p align="left">
-<img width="150px" src="../_static/tutorials/fig42_workflownwb.png" alt="Whole" />
+<img width="300px" src="../_static/tutorials/fig42_workflownwb.png" alt="Whole" />
 </p>
 
-The Download buttons for the Workflow column and the NWB column copy the Snakemake config or NWB file to your download folder. 
+You can download 3 types of config files here.
 
-- The Snakemake config file contains the workflow information and parameters for each node. 
-- The NWB file contains the data and its analysis results. 
+- Workflow: the workflow and parameters information to reproduce in OptiNiSt GUI.
+- Snakemake: the workflow and parameters information used by Snakemake.
+- NWB: nwbfile which contains the data and its analysis results.
 
 This function is convenient when users want to share the same analysis pipeline or inspect the output results.
