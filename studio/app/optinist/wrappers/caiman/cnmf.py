@@ -74,6 +74,12 @@ def caiman_cnmf(
     from caiman.source_extraction.cnmf import cnmf
     from caiman.source_extraction.cnmf.params import CNMFParams
 
+    # flatten params segments.
+    params_flatten = {}
+    for params_segment in params.values():
+        params_flatten.update(params_segment)
+    params = params_flatten
+
     Ain = params.pop("Ain", None)
     do_refit = params.pop("do_refit", None)
     thr = params.pop("thr", None)

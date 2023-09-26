@@ -12,6 +12,6 @@ def caiman_cnmfe(
         "only_init": True,  # set it to True to run CNMF-E
         "normalize_init": False,
     }
-    params = {**params, **cnmfe_fixed_params}
+    params["fixed_params"] = cnmfe_fixed_params
 
     return caiman_cnmf(images=images, output_dir=output_dir, params=params)
