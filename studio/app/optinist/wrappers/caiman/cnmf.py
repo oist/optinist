@@ -64,7 +64,7 @@ def get_roi(A, thr, thr_method, swap_dim, dims):
 
 
 def caiman_cnmf(
-    images: ImageData, output_dir: str, params: dict = None
+    images: ImageData, output_dir: str, params: dict = None, **kwargs
 ) -> dict(fluorescence=FluoData, iscell=IscellData):
     import scipy
     from caiman import local_correlations, stop_server
@@ -104,10 +104,13 @@ def caiman_cnmf(
     del images
     gc.collect()
 
+    nwbfile = kwargs.get("nwbfile", {})
+    fr = nwbfile.get("imaging_plane", {}).get("imaging_rate", 30)
+
     if params is None:
         ops = CNMFParams()
     else:
-        ops = CNMFParams(params_dict=params)
+        ops = CNMFParams(params_dict={**params, "fr": fr})
 
     if "dview" in locals():
         stop_server(dview=dview)  # noqa: F821

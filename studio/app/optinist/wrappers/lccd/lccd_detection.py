@@ -6,7 +6,7 @@ from studio.app.optinist.dataclass import FluoData, LccdData, RoiData
 
 
 def lccd_detect(
-    mc_images: ImageData, output_dir: str, params: dict = None
+    mc_images: ImageData, output_dir: str, params: dict = None, **kwargs
 ) -> dict(fluorescence=FluoData, cell_roi=RoiData):
     from studio.app.optinist.wrappers.lccd.lccd_python.lccd import LCCD
 

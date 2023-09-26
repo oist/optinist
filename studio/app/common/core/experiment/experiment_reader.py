@@ -21,6 +21,8 @@ class ExptConfigReader:
             success=config.get("success", "running"),
             hasNWB=config["hasNWB"],
             function=cls.read_function(config["function"]),
+            nwb=config.get("nwb"),
+            snakemake=config.get("snakemake"),
         )
 
     @classmethod
@@ -71,4 +73,6 @@ class ExptConfigReader:
             success=config.get("success", "running"),
             hasNWB=config["hasNWB"],
             function=cls.read_function(config["function"]),
+            nwb=config.get("nwb"),
+            snakemake=config.get("snakemake"),
         )

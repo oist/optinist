@@ -22,6 +22,12 @@ export type FunctionsDTO = {
   }
 }
 
+type NWBType = {
+  imaging_plane: {
+    imaging_rate: number
+  }
+}
+
 export type ExperimentDTO = {
   function: FunctionsDTO
   name: string
@@ -31,6 +37,7 @@ export type ExperimentDTO = {
   workspace_id: number
   unique_id: string
   hasNWB: boolean
+  nwb: NWBType
 }
 
 export type FetchExperimentDTO = ExperimentDTO & WorkflowConfigDTO

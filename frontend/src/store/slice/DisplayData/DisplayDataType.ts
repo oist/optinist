@@ -87,7 +87,7 @@ interface BaseDisplay<T extends DATA_TYPE, Data> {
 
 export interface TimeSeriesDisplayData
   extends BaseDisplay<'timeSeries', TimeSeriesData> {
-  xrange: number[]
+  xrange: string[]
   std: TimeSeriesData
 }
 

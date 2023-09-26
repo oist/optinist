@@ -9,6 +9,7 @@ def Granger(
     output_dir: str,
     iscell: IscellData = None,
     params: dict = None,
+    **kwargs,
 ) -> dict():
     # modules specific to function
     # from sklearn.preprocessing import StandardScaler
