@@ -34,4 +34,5 @@ Main Features
   installation/index
   tutorials
   gui/index
+  host_for_multiuser/index
   utils/index
