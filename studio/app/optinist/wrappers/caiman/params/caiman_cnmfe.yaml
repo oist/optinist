@@ -1,0 +1,30 @@
+# Ain: null # possibility to seed with predetermined binary masks
+#             TBD: need to support 2D array type.
+do_refit: False
+thr: 0.9
+p: 1 # order of the autoregressive system
+K: 4 # upper bound on number of components per patch, in general None
+gSig: [3, 3] # gaussian width of a 2D gaussian kernel, which approximates a neuron
+gSiz: [13, 13] # average diameter of a neuron, in general 4*gSig+1
+merge_thr: .7 # merging threshold, max correlation allowed
+rf: 40 # half-size of the patches in pixels. e.g., if rf=40, patches are 80x80
+stride: 20 # amount of overlap between the patches in pixels
+#                     (keep it at least large as gSiz, i.e 4 times the neuron size gSig)
+tsub: 2 # downsampling factor in time for initialization,
+#                     increase if you have memory problems
+ssub: 1 # downsampling factor in space for initialization,
+#                     increase if you have memory problems
+#                     you can pass them here as boolean vectors
+low_rank_background: null # None leaves background of each patch intact,
+#                     True performs global low-rank approximation if gnb>0
+nb: 0 # number of background components (rank) if positive,
+#                     else exact ring model with following settings
+#                         gnb= 0: Return background as b and W
+#                         gnb=-1: Return full rank background B
+#                         gnb<-1: Don't return background
+nb_patch: 0 # number of background components (rank) per patch if gnb>0,
+#                     else it is set automatically
+min_corr: .8 # min peak value from correlation image
+min_pnr: 10 # min peak to noise ration from PNR image
+ssub_B: 2 # additional downsampling factor in space for background
+ring_size_factor: 1.4 # radius of ring is gSiz*ring_size_factor
