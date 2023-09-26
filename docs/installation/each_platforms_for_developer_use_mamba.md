@@ -111,7 +111,28 @@ INFO:     Started server process [6557]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 ```
-- Launch browser, and go to http://localhost:8000
+
+## 3. Run frontend
+
+Open new terminal window, and go to `frontend` directory.
+
+```
+cd optinist/frontend
+```
+
+Then install packages and run.
+```
+yarn install
+yarn start
+```
+
+- Launch browser, and go to http://localhost:3000
+
+```{eval-rst}
+.. note::
+    frontend in development environment uses port 3000,
+    while production optinist uses 8000.
+```
 
 It opens correctly!
 
