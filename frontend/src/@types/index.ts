@@ -1,5 +1,6 @@
 export enum ROLE {
   ADMIN = 1,
+  OPERATOR = 20,
 }
 
 export const enum SHARE {

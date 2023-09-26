@@ -23,6 +23,7 @@ class UserSearchOptions(BaseModel):
 
 class UserRole(int, Enum):
     admin = 1
+    operator = 20
 
 
 class User(BaseModel):
@@ -36,10 +37,6 @@ class User(BaseModel):
     @property
     def is_admin(self) -> bool:
         return self.role_id == UserRole.admin
-
-    @property
-    def is_admin_data(self) -> bool:
-        return self.is_admin or self.role_id == UserRole.data_manager
 
     class Config:
         orm_mode = True

@@ -483,6 +483,9 @@ const AccountManager = () => {
       case 'ADMIN':
         newRole = ROLE.ADMIN
         break
+      case 'OPERATOR':
+        newRole = ROLE.OPERATOR
+        break
     }
     if (id !== undefined) {
       const data = await dispatch(
@@ -626,6 +629,9 @@ const AccountManager = () => {
           case ROLE.ADMIN:
             role = 'Admin'
             break
+          case ROLE.OPERATOR:
+            role = 'OPERATOR'
+            break
         }
         return <span>{role}</span>
       },
@@ -671,6 +677,9 @@ const AccountManager = () => {
         switch (role_id) {
           case ROLE.ADMIN:
             role = 'ADMIN'
+            break
+          case ROLE.OPERATOR:
+            role = 'OPERATOR'
             break
         }
 
