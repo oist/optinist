@@ -25,6 +25,19 @@ Please follow instructions below.
 - Windows
   - *Under construction.
 
+#### Install Node.js
+
+Get node with version 16 or 18
+- [Node.js Official](https://nodejs.org/ja)
+- version 20 is not supported yet.
+
+You can also install node via [nvm](https://github.com/nvm-sh/nvm)
+
+After install node, install yarn.
+```bash
+npm install -g yarn
+```
+
 #### Install Mamba
 
 - Unix-like platforms
