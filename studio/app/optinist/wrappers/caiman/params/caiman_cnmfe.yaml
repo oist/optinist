@@ -1,4 +1,5 @@
-Ain: null # possibility to seed with predetermined binary masks
+# Ain: null # possibility to seed with predetermined binary masks
+#             TBD: need to support 2D array type.
 do_refit: False
 thr: 0.9
 p: 1 # order of the autoregressive system
