@@ -16,6 +16,10 @@ import {
   getBarData,
   getHTMLData,
   getTimeSeriesInitData,
+  getHistogramData,
+  getLineData,
+  getPieData,
+  getPolarData,
 } from './DisplayDataActions'
 import {
   deleteDisplayItem,
@@ -31,6 +35,10 @@ const initialState: DisplayData = {
   scatter: {},
   bar: {},
   html: {},
+  histogram: {},
+  line: {},
+  pie: {},
+  polar: {},
 }
 
 export const displayDataSlice = createSlice({
@@ -202,6 +210,141 @@ export const displayDataSlice = createSlice({
         const { path } = action.meta.arg
         state.heatMap[path] = {
           type: 'heatMap',
+          data: action.payload.data,
+          columns: action.payload.columns,
+          index: action.payload.index,
+          pending: false,
+          fulfilled: true,
+          error: null,
+        }
+      })
+      .addCase(getHistogramData.pending, (state, action) => {
+        const { path } = action.meta.arg
+        state.histogram[path] = {
+          type: 'histogram',
+          data: [],
+          pending: true,
+          fulfilled: false,
+          error: null,
+        }
+      })
+      .addCase(getHistogramData.rejected, (state, action) => {
+        const { path } = action.meta.arg
+        state.histogram[path] = {
+          type: 'histogram',
+          data: [],
+          pending: false,
+          fulfilled: false,
+          error: action.error.message ?? 'rejected',
+        }
+      })
+      .addCase(getHistogramData.fulfilled, (state, action) => {
+        const { path } = action.meta.arg
+        state.histogram[path] = {
+          type: 'histogram',
+          data: action.payload.data,
+          pending: false,
+          fulfilled: true,
+          error: null,
+        }
+      })
+      .addCase(getLineData.pending, (state, action) => {
+        const { path } = action.meta.arg
+        state.line[path] = {
+          type: 'line',
+          data: [],
+          columns: [],
+          index: [],
+          pending: true,
+          fulfilled: false,
+          error: null,
+        }
+      })
+      .addCase(getLineData.rejected, (state, action) => {
+        const { path } = action.meta.arg
+        state.line[path] = {
+          type: 'line',
+          data: [],
+          columns: [],
+          index: [],
+          pending: false,
+          fulfilled: false,
+          error: action.error.message ?? 'rejected',
+        }
+      })
+      .addCase(getLineData.fulfilled, (state, action) => {
+        const { path } = action.meta.arg
+        state.line[path] = {
+          type: 'line',
+          data: action.payload.data,
+          columns: action.payload.columns,
+          index: action.payload.index,
+          pending: false,
+          fulfilled: true,
+          error: null,
+        }
+      })
+      .addCase(getPieData.pending, (state, action) => {
+        const { path } = action.meta.arg
+        state.pie[path] = {
+          type: 'pie',
+          data: [],
+          columns: [],
+          pending: true,
+          fulfilled: false,
+          error: null,
+        }
+      })
+      .addCase(getPieData.rejected, (state, action) => {
+        const { path } = action.meta.arg
+        state.pie[path] = {
+          type: 'pie',
+          data: [],
+          columns: [],
+          pending: false,
+          fulfilled: false,
+          error: action.error.message ?? 'rejected',
+        }
+      })
+      .addCase(getPieData.fulfilled, (state, action) => {
+        const { path } = action.meta.arg
+        state.pie[path] = {
+          type: 'pie',
+          data: action.payload.data,
+          columns: action.payload.columns,
+          pending: false,
+          fulfilled: true,
+          error: null,
+        }
+      })
+      .addCase(getPolarData.pending, (state, action) => {
+        const { path } = action.meta.arg
+        state.polar[path] = {
+          type: 'polar',
+          data: [],
+          columns: [],
+          index: [],
+          pending: true,
+          fulfilled: false,
+          error: null,
+        }
+      })
+      .addCase(getPolarData.rejected, (state, action) => {
+        const { path } = action.meta.arg
+        state.polar[path] = {
+          type: 'polar',
+          data: [],
+          columns: [],
+          index: [],
+          pending: false,
+          fulfilled: false,
+          error: action.error.message ?? 'rejected',
+        }
+      })
+      .addCase(getPolarData.fulfilled, (state, action) => {
+        const { path } = action.meta.arg
+        state.polar[path] = {
+          type: 'polar',
           data: action.payload.data,
           columns: action.payload.columns,
           index: action.payload.index,
@@ -435,6 +578,14 @@ function deleteDisplayDataFn(
     delete state.bar[filePath]
   } else if (dataType === DATA_TYPE_SET.HTML) {
     delete state.html[filePath]
+  } else if (dataType === DATA_TYPE_SET.HISTOGRAM) {
+    delete state.histogram[filePath]
+  } else if (dataType === DATA_TYPE_SET.LINE) {
+    delete state.line[filePath]
+  } else if (dataType === DATA_TYPE_SET.PIE) {
+    delete state.pie[filePath]
+  } else if (dataType === DATA_TYPE_SET.POLAR) {
+    delete state.polar[filePath]
   }
 }
 

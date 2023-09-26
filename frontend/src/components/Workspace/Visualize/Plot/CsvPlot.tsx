@@ -19,19 +19,21 @@ import {
   selectCsvItemSetIndex,
   selectCsvItemTranspose,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
 
 export const CsvPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const isInitialized = useSelector(selectCsvDataIsInitialized(path))
   const isPending = useSelector(selectCsvDataIsPending(path))
   const isFulfilled = useSelector(selectCsvDataIsFulfilled(path))
   const error = useSelector(selectCsvDataError(path))
   const dispatch = useDispatch()
   React.useEffect(() => {
-    if (!isInitialized) {
-      dispatch(getCsvData({ path }))
+    if (workspaceId && !isInitialized) {
+      dispatch(getCsvData({ path, workspaceId }))
     }
-  }, [dispatch, isInitialized, path])
+  }, [dispatch, isInitialized, path, workspaceId])
   if (isPending) {
     return <LinearProgress />
   } else if (error != null) {

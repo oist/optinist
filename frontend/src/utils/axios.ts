@@ -1,7 +1,7 @@
 import axiosLibrary from 'axios'
 import { refreshTokenApi } from 'api/auth/Auth'
 import { BASE_URL } from 'const/API'
-import { getExToken, getToken, saveToken } from 'utils/auth/AuthUtils'
+import { getExToken, getToken, logout, saveToken } from 'utils/auth/AuthUtils'
 
 const axios = axiosLibrary.create({
   baseURL: BASE_URL,
@@ -21,10 +21,17 @@ axios.interceptors.response.use(
   async (res) => res,
   async (error) => {
     if (error?.response?.status === 401) {
-      const { access_token } = await refreshTokenApi()
-      saveToken(access_token)
-      error.config.headers.Authorization = `Bearer ${access_token}`
-      return axiosLibrary(error.config)
+      try {
+        const { access_token } = await refreshTokenApi()
+        saveToken(access_token)
+        error.config.headers.Authorization = `Bearer ${access_token}`
+        return axiosLibrary(error.config)
+      } catch (e: any) {
+        if (e?.response?.status === 400) {
+          logout()
+        }
+        throw e
+      }
     }
     return Promise.reject(error)
   },

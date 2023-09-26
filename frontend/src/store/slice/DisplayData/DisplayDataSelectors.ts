@@ -217,3 +217,106 @@ export const selectHTMLDataIsFulfilled =
   (filePath: string) => (state: RootState) =>
     selectHTMLDataIsInitialized(filePath)(state) &&
     selectDisplayData(state).html[filePath].fulfilled
+
+export const selectHistogramData = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).histogram[filePath].data
+
+export const selectHistogramDataIsInitialized =
+  (filePath: string) => (state: RootState) =>
+    Object.keys(selectDisplayData(state).histogram).includes(filePath)
+
+export const selectHistogramDataIsPending =
+  (filePath: string) => (state: RootState) =>
+    selectHistogramDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).histogram[filePath].pending
+
+export const selectHistogramDataIsFulfilled =
+  (filePath: string) => (state: RootState) =>
+    selectHistogramDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).histogram[filePath].fulfilled
+
+export const selectHistogramDataError =
+  (filePath: string) => (state: RootState) =>
+    selectHistogramDataIsInitialized(filePath)(state)
+      ? selectDisplayData(state).histogram[filePath].error
+      : null
+export const selectLineData = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).line[filePath].data
+
+export const selectLineColumns = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).line[filePath].columns
+
+export const selectLineIndex = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).line[filePath].index
+
+export const selectLineDataIsInitialized =
+  (filePath: string) => (state: RootState) =>
+    Object.keys(selectDisplayData(state).line).includes(filePath)
+
+export const selectLineDataIsPending =
+  (filePath: string) => (state: RootState) =>
+    selectLineDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).line[filePath].pending
+
+export const selectLineDataIsFulfilled =
+  (filePath: string) => (state: RootState) =>
+    selectLineDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).line[filePath].fulfilled
+
+export const selectLineDataError = (filePath: string) => (state: RootState) =>
+  selectLineDataIsInitialized(filePath)(state)
+    ? selectDisplayData(state).line[filePath].error
+    : null
+
+export const selectPieData = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).pie[filePath].data
+
+export const selectPieColumns = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).pie[filePath].columns
+
+export const selectPieDataIsInitialized =
+  (filePath: string) => (state: RootState) =>
+    Object.keys(selectDisplayData(state).pie).includes(filePath)
+
+export const selectPieDataIsPending =
+  (filePath: string) => (state: RootState) =>
+    selectPieDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).pie[filePath].pending
+
+export const selectPieDataIsFulfilled =
+  (filePath: string) => (state: RootState) =>
+    selectPieDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).pie[filePath].fulfilled
+
+export const selectPieDataError = (filePath: string) => (state: RootState) =>
+  selectPieDataIsInitialized(filePath)(state)
+    ? selectDisplayData(state).pie[filePath].error
+    : null
+
+export const selectPolarData = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).polar[filePath].data
+
+export const selectPolarColumns = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).polar[filePath].columns
+
+export const selectPolarIndex = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).polar[filePath].index
+
+export const selectPolarDataIsInitialized =
+  (filePath: string) => (state: RootState) =>
+    Object.keys(selectDisplayData(state).polar).includes(filePath)
+
+export const selectPolarDataIsPending =
+  (filePath: string) => (state: RootState) =>
+    selectPolarDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).polar[filePath].pending
+
+export const selectPolarDataIsFulfilled =
+  (filePath: string) => (state: RootState) =>
+    selectPolarDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).polar[filePath].fulfilled
+
+export const selectPolarDataError = (filePath: string) => (state: RootState) =>
+  selectPolarDataIsInitialized(filePath)(state)
+    ? selectDisplayData(state).polar[filePath].error
+    : null

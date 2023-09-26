@@ -1,14 +1,14 @@
-import { RunPostData } from 'api/run/Run'
 import { WORKFLOW_SLICE_NAME } from './WorkflowType'
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import {
   reproduceWorkflowApi,
   importWorkflowConfigApi,
+  WorkflowConfigDTO,
 } from 'api/workflow/Workflow'
 
 export const reproduceWorkflow = createAsyncThunk<
-  RunPostData,
-  { workspaceId: string; uid: string }
+  WorkflowConfigDTO,
+  { workspaceId: number; uid: string }
 >(
   `${WORKFLOW_SLICE_NAME}/reproduceWorkflow`,
   async ({ workspaceId, uid }, thunkAPI) => {
@@ -22,7 +22,7 @@ export const reproduceWorkflow = createAsyncThunk<
 )
 
 export const importWorkflowConfig = createAsyncThunk<
-  RunPostData,
+  WorkflowConfigDTO,
   { formData: FormData }
 >(
   `${WORKFLOW_SLICE_NAME}/importWorkflowConfig`,

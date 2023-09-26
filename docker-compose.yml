@@ -6,9 +6,15 @@ services:
       context: .
       dockerfile: studio/config/docker/Dockerfile
     working_dir: /app
+    volumes:
+      - ../optinist-docker-volumes/.snakemake/:/app/.snakemake
+      - ../optinist-docker-volumes/logs/:/app/logs
+      - ../optinist-docker-volumes/studio_data/:/app/studio_data
     ports:
       - "8000:8000"
     command: python main.py --host 0.0.0.0 --port 8000
     environment:
       PYTHONPATH: /app/
       TZ: Asia/Tokyo
+      OPTINIST_DIR: /app/studio_data
+    restart: always

@@ -117,11 +117,14 @@ async def get_html(filepath: str):
 
 @router.get("/image/{filepath:path}", response_model=OutputData)
 async def get_image(
-    filepath: str, start_index: Optional[int] = 0, end_index: Optional[int] = 1
+    filepath: str,
+    workspace_id: str,
+    start_index: Optional[int] = 0,
+    end_index: Optional[int] = 1,
 ):
     filename, ext = os.path.splitext(os.path.basename(filepath))
     if ext in ACCEPT_TIFF_EXT:
-        filepath = join_filepath([DIRPATH.INPUT_DIR, filepath])
+        filepath = join_filepath([DIRPATH.INPUT_DIR, workspace_id, filepath])
         save_dirpath = join_filepath(
             [
                 os.path.dirname(filepath),
@@ -140,8 +143,8 @@ async def get_image(
 
 
 @router.get("/csv/{filepath:path}", response_model=OutputData)
-async def get_csv(filepath: str):
-    filepath = join_filepath([DIRPATH.INPUT_DIR, filepath])
+async def get_csv(filepath: str, workspace_id: str):
+    filepath = join_filepath([DIRPATH.INPUT_DIR, workspace_id, filepath])
 
     filename, _ = os.path.splitext(os.path.basename(filepath))
     save_dirpath = join_filepath([os.path.dirname(filepath), filename])
