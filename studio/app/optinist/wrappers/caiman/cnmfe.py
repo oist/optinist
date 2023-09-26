@@ -10,6 +10,7 @@ def caiman_cnmfe(
         "center_psf": True,
         "method_init": "corr_pnr",  # use this for 1 photon
         "only_init": True,  # set it to True to run CNMF-E
+        "normalize_init": False,
     }
     params = {**params, **cnmfe_fixed_params}
 
