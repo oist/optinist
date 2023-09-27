@@ -7,11 +7,14 @@ import {
 
 import { FILES_TREE_SLICE_NAME } from './FilesTreeType'
 
-export const getFilesTree = createAsyncThunk<TreeNodeTypeDTO[], FILE_TREE_TYPE>(
+export const getFilesTree = createAsyncThunk<
+  TreeNodeTypeDTO[],
+  { workspaceId: number; fileType: FILE_TREE_TYPE }
+>(
   `${FILES_TREE_SLICE_NAME}/getFilesTree`,
-  async (fileType, thunkAPI) => {
+  async ({ workspaceId, fileType }, thunkAPI) => {
     try {
-      const response = await getFilesTreeApi(fileType)
+      const response = await getFilesTreeApi(workspaceId, fileType)
       return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)

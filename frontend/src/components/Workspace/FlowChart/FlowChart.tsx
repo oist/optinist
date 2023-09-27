@@ -10,7 +10,7 @@ import RightDrawer from './RightDrawer'
 import { selectRightDrawerIsOpen } from 'store/slice/RightDrawer/RightDrawerSelectors'
 import { UseRunPipelineReturnType } from 'store/slice/Pipeline/PipelineHook'
 import { CurrentPipelineInfo } from 'components/common/CurrentPipelineInfo'
-import { DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from 'const/Layout'
+import { CONTENT_HEIGHT, DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from 'const/Layout'
 import { Box } from '@mui/material'
 import { grey } from '@mui/material/colors'
 
@@ -53,7 +53,7 @@ const MainContents = styled('main')<{ open: boolean }>(
   ({ theme }) => ({
     flexDirection: 'column',
     flexGrow: 1,
-    height: '90vh',
+    minHeight: CONTENT_HEIGHT,
     transition: theme.transitions.create('margin', {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,

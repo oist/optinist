@@ -9,6 +9,7 @@ def PCA(
     output_dir: str,
     iscell: IscellData = None,
     params: dict = None,
+    **kwargs,
 ) -> dict():
     # modules specific to function
     import numpy as np

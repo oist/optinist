@@ -175,9 +175,10 @@ class NWBCreater:
         nwbfile = cls.add_plane_segmentation(nwbfile, function_id)
         plane_seg = image_seg.plane_segmentations[function_id]
 
-        for col in roi_list[0]:
-            if col != "pixel_mask" and col not in plane_seg.colnames:
-                plane_seg.add_column(col, f"{col} list")
+        if roi_list:
+            for col in roi_list[0]:
+                if col != "pixel_mask" and col not in plane_seg.colnames:
+                    plane_seg.add_column(col, f"{col} list")
 
         for col in roi_list:
             plane_seg.add_roi(**col)

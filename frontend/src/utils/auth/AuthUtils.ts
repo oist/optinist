@@ -14,6 +14,17 @@ export const getRefreshToken = () => {
   return localStorage.getItem('refresh_token')
 }
 
+export const removeRefreshToken = () => {
+  return localStorage.removeItem('refresh_token')
+}
+
+export const logout = () => {
+  removeRefreshToken()
+  removeToken()
+  removeExToken()
+  window.location.href = '/login'
+}
+
 export const removeToken = () => {
   return localStorage.removeItem('access_token')
 }

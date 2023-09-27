@@ -2,6 +2,7 @@ import logging
 import os
 from typing import Dict
 
+from studio.app.common.core.utils.file_reader import JsonReader
 from studio.app.common.core.utils.filepath_creater import (
     create_directory,
     join_filepath,
@@ -39,6 +40,9 @@ def get_logger(workspace_id: str, unique_id: str) -> logging.Logger:
 
 
 class Logger:
+    # TODO: Since the Snakemake library automatically creates thread for workflows and
+    # shares the same loggers in the library, all workflows running at the same time
+    # will use same log data.
     def __init__(self, workspace_id, unique_id):
         self.workspace_id = workspace_id
         self.unique_id = unique_id
@@ -60,4 +64,29 @@ class Logger:
             level = msg["level"]
             if "debug" in level and "msg" in msg:
                 if "Traceback" in msg["msg"]:
-                    self.logger.error(msg)
+                    # check if the message is thrown by killing process action
+                    if any(
+                        err in msg["msg"]
+                        for err in ["Signals.SIGTERM", "exit status 15"]
+                    ):
+                        pid_filepath = join_filepath(
+                            [
+                                DIRPATH.OUTPUT_DIR,
+                                self.workspace_id,
+                                self.unique_id,
+                                "pid.json",
+                            ]
+                        )
+                        pid_data = JsonReader.read(pid_filepath)
+                        # since multiple running workflow share log data,
+                        # check if message really belongs to the current workflow
+                        if pid_data["last_script_file"] in msg["msg"]:
+                            self.logger.error("Workflow cancelled")
+                    else:
+                        self.logger.error(msg)
+
+    def clean_up(self):
+        """
+        remove all handlers from this logger
+        """
+        self.logger.handlers.clear()

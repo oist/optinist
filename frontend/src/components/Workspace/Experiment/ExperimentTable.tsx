@@ -46,7 +46,7 @@ import { DeleteButton } from './Button/DeleteButton'
 import {
   NWBDownloadButton,
   SnakemakeDownloadButton,
-  WorkflowDownloadButton
+  WorkflowDownloadButton,
 } from './Button/DownloadButton'
 import { ReproduceButton } from './Button/ReproduceButton'
 import { useLocalStorage } from 'components/utils/LocalStorageUtil'
@@ -54,7 +54,10 @@ import { styled } from '@mui/material/styles'
 import { renameExperiment } from 'api/experiments/Experiments'
 import { selectPipelineLatestUid } from 'store/slice/Pipeline/PipelineSelectors'
 import { clearCurrentPipeline } from 'store/slice/Pipeline/PipelineSlice'
-import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
+import {
+  selectCurrentWorkspaceId,
+  selectIsWorkspaceOwner,
+} from 'store/slice/Workspace/WorkspaceSelector'
 
 export const ExperimentUidContext = React.createContext<string>('')
 
@@ -91,6 +94,7 @@ const ExperimentsErrorView: React.FC = () => {
 const LOCAL_STORAGE_KEY_PER_PAGE = 'optinist_experiment_table_per_page'
 
 const TableImple = React.memo(() => {
+  const isOwner = useSelector(selectIsWorkspaceOwner)
   const currentPipelineUid = useSelector(selectPipelineLatestUid)
   const experimentList = useSelector(selectExperimentList)
   const experimentListValues = Object.values(experimentList)
@@ -196,18 +200,20 @@ const TableImple = React.memo(() => {
         >
           Reload
         </Button>
-        <Button
-          sx={{
-            marginBottom: (theme) => theme.spacing(1),
-          }}
-          variant="outlined"
-          color="error"
-          endIcon={<DeleteIcon />}
-          onClick={onClickDelete}
-          disabled={checkedList.length === 0}
-        >
-          Delete
-        </Button>
+        {isOwner && (
+          <Button
+            sx={{
+              marginBottom: (theme) => theme.spacing(1),
+            }}
+            variant="outlined"
+            color="error"
+            endIcon={<DeleteIcon />}
+            onClick={onClickDelete}
+            disabled={checkedList.length === 0}
+          >
+            Delete
+          </Button>
+        )}
       </Box>
       <Dialog open={open}>
         <DialogTitle>Are you sure you want to delete?</DialogTitle>
@@ -242,6 +248,7 @@ const TableImple = React.memo(() => {
               }
               onChangeAllCheck={onChangeAllCheck}
               checkboxVisible={!recordsIsEmpty}
+              isOwner={isOwner}
             />
             <TableBody>
               {experimentListValues
@@ -255,6 +262,7 @@ const TableImple = React.memo(() => {
                     <RowItem
                       onCheckBoxClick={onCheckBoxClick}
                       checked={checkedList.includes(expData.uid)}
+                      isOwner={isOwner}
                     />
                   </ExperimentUidContext.Provider>
                 ))}
@@ -310,6 +318,7 @@ const HeadItem = React.memo<{
   onChangeAllCheck: (checked: boolean) => void
   allCheckIndeterminate: boolean
   checkboxVisible: boolean
+  isOwner: boolean
 }>(
   ({
     order,
@@ -318,6 +327,7 @@ const HeadItem = React.memo<{
     onChangeAllCheck,
     allCheckIndeterminate,
     checkboxVisible,
+    isOwner,
   }) => {
     return (
       <TableHead>
@@ -363,7 +373,7 @@ const HeadItem = React.memo<{
           <TableCell>Workflow</TableCell>
           <TableCell>Snakemake</TableCell>
           <TableCell>NWB</TableCell>
-          <TableCell>Delete</TableCell>
+          {isOwner && <TableCell>Delete</TableCell>}
         </TableRow>
       </TableHead>
     )
@@ -373,7 +383,8 @@ const HeadItem = React.memo<{
 const RowItem = React.memo<{
   onCheckBoxClick: (uid: string) => void
   checked: boolean
-}>(({ onCheckBoxClick, checked }) => {
+  isOwner: boolean
+}>(({ onCheckBoxClick, checked, isOwner }) => {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const uid = React.useContext(ExperimentUidContext)
   const timestamp = useSelector(selectExperimentTimeStamp(uid))
@@ -476,9 +487,7 @@ const RowItem = React.memo<{
         <TableCell>
           <NWBDownloadButton name={uid} hasNWB={hasNWB} />
         </TableCell>
-        <TableCell>
-          <DeleteButton />
-        </TableCell>
+        {isOwner &&<TableCell> <DeleteButton /></TableCell>}
       </TableRow>
       <CollapsibleTable open={open} />
     </React.Fragment>

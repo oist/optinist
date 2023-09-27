@@ -12,6 +12,7 @@ from studio.app.dir_path import DIRPATH
 
 
 def snakemake_execute(workspace_id: str, unique_id: str, params: SmkParam):
+    logger = Logger(workspace_id, unique_id)
     snakemake(
         DIRPATH.SNAKEMAKE_FILEPATH,
         forceall=params.forceall,
@@ -28,8 +29,9 @@ def snakemake_execute(workspace_id: str, unique_id: str, params: SmkParam):
                 ]
             )
         ],
-        log_handler=[Logger(workspace_id, unique_id).smk_logger],
+        log_handler=[logger.smk_logger],
     )
+    logger.clean_up()
 
 
 def delete_dependencies(

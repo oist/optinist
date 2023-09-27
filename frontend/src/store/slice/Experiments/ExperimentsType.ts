@@ -29,6 +29,7 @@ export type ExperimentType = {
   name: string
   timestamp: string
   hasNWB: boolean
+  frameRate?: number
 }
 
 export type ExperimentFunction = {
@@ -36,6 +37,7 @@ export type ExperimentFunction = {
   nodeId: string
   status: EXPERIMENTS_STATUS
   hasNWB: boolean
+  message?: string
 }
 
 export type EXPERIMENTS_STATUS = 'success' | 'error' | 'running'

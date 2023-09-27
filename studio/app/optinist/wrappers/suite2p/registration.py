@@ -3,7 +3,7 @@ from studio.app.optinist.dataclass import Suite2pData
 
 
 def suite2p_registration(
-    ops: Suite2pData, output_dir: str, params: dict = None
+    ops: Suite2pData, output_dir: str, params: dict = None, **kwargs
 ) -> dict(ops=Suite2pData):
     from suite2p import default_ops, registration
 

@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
 import { isInputNodePostData } from 'api/run/RunUtils'
 import { INITIAL_IMAGE_ELEMENT_ID } from 'const/flowchart'
+import { fetchExperiment } from '../Experiments/ExperimentsActions'
 import {
   reproduceWorkflow,
   importWorkflowConfig,
@@ -133,36 +134,19 @@ export const inputNodeSlice = createSlice({
           delete state[action.payload]
         }
       })
-      .addCase(reproduceWorkflow.fulfilled, (_, action) => {
-        const newState: InputNode = {}
-        Object.values(action.payload.nodeDict)
-          .filter(isInputNodePostData)
-          .forEach((node) => {
-            if (node.data != null) {
-              if (node.data.fileType === FILE_TYPE_SET.IMAGE) {
-                newState[node.id] = {
-                  fileType: FILE_TYPE_SET.IMAGE,
-                  selectedFilePath: node.data.path as string[],
-                  param: {},
-                }
-              } else if (node.data.fileType === FILE_TYPE_SET.CSV) {
-                newState[node.id] = {
-                  fileType: FILE_TYPE_SET.CSV,
-                  selectedFilePath: node.data.path as string,
-                  param: node.data.param as CsvInputParamType,
-                }
-              } else if (node.data.fileType === FILE_TYPE_SET.HDF5) {
-                newState[node.id] = {
-                  fileType: FILE_TYPE_SET.HDF5,
-                  hdf5Path: node.data.hdf5Path,
-                  selectedFilePath: node.data.path as string,
-                  param: {},
-                }
-              }
-            }
-          })
-        return newState
+      .addCase(uploadFile.fulfilled, (state, action) => {
+        const { nodeId } = action.meta.arg
+        if (nodeId != null) {
+          const { resultPath } = action.payload
+          const target = state[nodeId]
+          if (target.fileType === FILE_TYPE_SET.IMAGE) {
+            target.selectedFilePath = [resultPath]
+          } else {
+            target.selectedFilePath = resultPath
+          }
+        }
       })
+      .addCase(fetchExperiment.rejected, () => initialState)
       .addCase(importWorkflowConfig.fulfilled, (_, action) => {
         const newState: InputNode = {}
         Object.values(action.payload.nodeDict)
@@ -189,18 +173,39 @@ export const inputNodeSlice = createSlice({
           })
         return newState
       })
-      .addCase(uploadFile.fulfilled, (state, action) => {
-        const { nodeId } = action.meta.arg
-        if (nodeId != null) {
-          const { resultPath } = action.payload
-          const target = state[nodeId]
-          if (target.fileType === FILE_TYPE_SET.IMAGE) {
-            target.selectedFilePath = [resultPath]
-          } else {
-            target.selectedFilePath = resultPath
-          }
-        }
-      }),
+      .addMatcher(
+        isAnyOf(reproduceWorkflow.fulfilled, fetchExperiment.fulfilled),
+        (_, action) => {
+          const newState: InputNode = {}
+          Object.values(action.payload.nodeDict)
+            .filter(isInputNodePostData)
+            .forEach((node) => {
+              if (node.data != null) {
+                if (node.data.fileType === FILE_TYPE_SET.IMAGE) {
+                  newState[node.id] = {
+                    fileType: FILE_TYPE_SET.IMAGE,
+                    selectedFilePath: node.data.path as string[],
+                    param: {},
+                  }
+                } else if (node.data.fileType === FILE_TYPE_SET.CSV) {
+                  newState[node.id] = {
+                    fileType: FILE_TYPE_SET.CSV,
+                    selectedFilePath: node.data.path as string,
+                    param: node.data.param as CsvInputParamType,
+                  }
+                } else if (node.data.fileType === FILE_TYPE_SET.HDF5) {
+                  newState[node.id] = {
+                    fileType: FILE_TYPE_SET.HDF5,
+                    hdf5Path: node.data.hdf5Path,
+                    selectedFilePath: node.data.path as string,
+                    param: {},
+                  }
+                }
+              }
+            })
+          return newState
+        },
+      ),
 })
 
 export const { setCsvInputNodeParam, setInputNodeHDF5Path } =

@@ -41,7 +41,11 @@ class Runner:
 
             # output_info
             output_info = cls.execute_function(
-                __rule.path, __rule.params, os.path.dirname(__rule.output), input_info
+                __rule.path,
+                __rule.params,
+                nwbfile.get("input"),
+                os.path.dirname(__rule.output),
+                input_info,
             )
 
             # nwbfileの設定
@@ -119,10 +123,12 @@ class Runner:
                 print(e)
 
     @classmethod
-    def execute_function(cls, path, params, output_dir, input_info):
+    def execute_function(cls, path, params, nwb_params, output_dir, input_info):
         wrapper = cls.dict2leaf(wrapper_dict, path.split("/"))
         func = copy.deepcopy(wrapper["function"])
-        output_info = func(params=params, output_dir=output_dir, **input_info)
+        output_info = func(
+            params=params, nwbfile=nwb_params, output_dir=output_dir, **input_info
+        )
         del func
         gc.collect()
 

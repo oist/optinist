@@ -16,6 +16,10 @@ import { TimeSeriesItemEditor } from './Editor/TimeSeriesItemEditor'
 import { RoiItemEditor } from './Editor/RoiItemEditor'
 import { ScatterItemEditor } from './Editor/ScatterItemEditor'
 import { BarItemEditor } from './Editor/BarItemEditor'
+import { HistogramItemEditor } from './Editor/HistogramItemEditor'
+import { LineItemEditor } from './Editor/LineItemEditor'
+import { PieItemEditor } from './Editor/PieItemEditor'
+import { PolarItemEditor } from './Editor/PolarItemEditor'
 
 export const VisualizeItemEditor = () => {
   const selectedItemId = useSelector(selectSelectedVisualizeItemId)
@@ -67,6 +71,14 @@ const DisplayEditor: React.FC<{
       return <BarItemEditor />
     case DATA_TYPE_SET.HTML:
       return <div>html editor</div>
+    case DATA_TYPE_SET.HISTOGRAM:
+      return <HistogramItemEditor />
+    case DATA_TYPE_SET.LINE:
+      return <LineItemEditor />
+    case DATA_TYPE_SET.PIE:
+      return <PieItemEditor />
+    case DATA_TYPE_SET.POLAR:
+      return <PolarItemEditor />
     default:
       return null
   }

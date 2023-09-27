@@ -1,11 +1,14 @@
 from glob import glob
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from fastapi.responses import FileResponse
 
 from studio.app.common.core.utils.config_handler import ConfigReader
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.utils.filepath_finder import find_param_filepath
+from studio.app.common.core.workspace.workspace_dependencies import (
+    is_workspace_available,
+)
 from studio.app.dir_path import DIRPATH
 from studio.app.optinist.schemas.nwb import NWBParams
 
@@ -19,7 +22,9 @@ async def get_nwb_params():
 
 
 @router.get(
-    "/experiments/download/nwb/{workspace_id}/{unique_id}", tags=["experiments"]
+    "/experiments/download/nwb/{workspace_id}/{unique_id}",
+    dependencies=[Depends(is_workspace_available)],
+    tags=["experiments"],
 )
 async def download_nwb_experiment(workspace_id: str, unique_id: str):
     nwb_path_list = glob(
@@ -33,6 +38,7 @@ async def download_nwb_experiment(workspace_id: str, unique_id: str):
 
 @router.get(
     "/experiments/download/nwb/{workspace_id}/{unique_id}/{function_id}",
+    dependencies=[Depends(is_workspace_available)],
     tags=["experiments"],
 )
 async def download_nwb_experiment_with_function_id(

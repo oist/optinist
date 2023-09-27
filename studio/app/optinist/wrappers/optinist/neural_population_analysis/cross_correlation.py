@@ -8,6 +8,7 @@ def cross_correlation(
     output_dir: str,
     iscell: IscellData = None,
     params: dict = None,
+    **kwargs,
 ) -> dict():
     import itertools
 

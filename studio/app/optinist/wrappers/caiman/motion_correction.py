@@ -4,7 +4,7 @@ from studio.app.optinist.dataclass import RoiData
 
 
 def caiman_mc(
-    image: ImageData, output_dir: str, params: dict = None
+    image: ImageData, output_dir: str, params: dict = None, **kwargs
 ) -> dict(mc_images=ImageData):
     import numpy as np
     from caiman import load_memmap, save_memmap, stop_server

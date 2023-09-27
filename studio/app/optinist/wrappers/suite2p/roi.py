@@ -4,7 +4,7 @@ from studio.app.optinist.dataclass import FluoData, IscellData, RoiData, Suite2p
 
 
 def suite2p_roi(
-    ops: Suite2pData, output_dir: str, params: dict = None
+    ops: Suite2pData, output_dir: str, params: dict = None, **kwargs
 ) -> dict(ops=Suite2pData, fluorescence=FluoData, iscell=IscellData):
     import numpy as np
     from suite2p import ROI, classification, default_ops, detection, extraction
@@ -12,9 +12,11 @@ def suite2p_roi(
     function_id = output_dir.split("/")[-1]
     print("start suite2p_roi:", function_id)
 
-    ops = ops.data
+    nwbfile = kwargs.get("nwbfile", {})
+    fs = nwbfile.get("imaging_plane", {}).get("imaging_rate", 30)
 
-    ops = {**default_ops(), **ops, **params}
+    ops = ops.data
+    ops = {**default_ops(), **ops, **params, "fs": fs}
 
     # ROI detection
     ops_classfile = ops.get("classifier_path")

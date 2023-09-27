@@ -50,6 +50,7 @@ import Button from '@mui/material/Button'
 import { getImageData } from 'store/slice/DisplayData/DisplayDataActions'
 import { setNewDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemActions'
 import { SaveFig } from './SaveFig'
+import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
 
 export const ImageItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
@@ -263,6 +264,7 @@ const RoiAlpha: React.FC = () => {
 }
 
 const StartEndIndex: React.FC = () => {
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const itemId = React.useContext(SelectedItemIdContext)
   const [startIndex, onChangeStartIndex] = React.useState(
     useSelector(selectImageItemStartIndex(itemId)),
@@ -291,9 +293,10 @@ const StartEndIndex: React.FC = () => {
       dispatch(setImageItemStartIndex({ itemId, startIndex }))
       dispatch(setImageItemEndIndex({ itemId, endIndex }))
       dispatch(resetImageActiveIndex({ itemId, startIndex, endIndex }))
-      if (filePath !== null) {
+      if (workspaceId && filePath !== null) {
         dispatch(
           getImageData({
+            workspaceId,
             path: filePath,
             startIndex: startIndex ?? 1,
             endIndex: endIndex ?? 10,

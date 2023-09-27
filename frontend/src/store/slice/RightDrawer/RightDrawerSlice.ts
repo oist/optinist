@@ -1,4 +1,5 @@
 import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
+import { fetchExperiment } from '../Experiments/ExperimentsActions'
 import {
   reproduceWorkflow,
   importWorkflowConfig,
@@ -91,11 +92,15 @@ export const rightDrawerSlice = createSlice({
           state.currendNodeId = null
         }
       })
+
       .addMatcher(
-        isAnyOf(reproduceWorkflow.fulfilled, importWorkflowConfig.fulfilled),
-        () => {
-          return initialState
-        },
+        isAnyOf(
+          reproduceWorkflow.fulfilled,
+          importWorkflowConfig.fulfilled,
+          fetchExperiment.fulfilled,
+          fetchExperiment.rejected,
+        ),
+        () => initialState,
       )
   },
 })
