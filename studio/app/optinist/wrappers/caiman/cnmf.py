@@ -211,8 +211,6 @@ def caiman_cnmf(
 
     # Fluorescence
     n_rois = len(cnm.estimates.C)
-    n_bg = len(cnm.estimates.f)
-    n_rois = cnm.estimates.A.shape[-1]
     n_bg = len(cnm.estimates.f) if cnm.estimates.f is not None else 0
 
     fluorescence = (
