@@ -14,6 +14,7 @@ services:
       - ./studio:/app/studio
       - ./conda/yaml:/app/conda/yaml
       - ./studio/test_data:/tmp/studio
+      - ./frontend/build:/app/frontend/build
 
   test_studio_frontend:
     image: test_studio_frontend
