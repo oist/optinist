@@ -46,7 +46,7 @@ dependencies = [
   "pydantic[email]",
   "pydantic[dotenv]",
   "python-jose[cryptography]",
-  "alembic==1.9.2",
+  "alembic==1.12.0",
   "sqlmodel==0.0.8",
   "pymysql==1.0.2",
   "fastapi_pagination==0.12.5",
