@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice, isAnyOf } from '@reduxjs/toolkit'
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
@@ -25,7 +25,7 @@ import {
   deleteDisplayItem,
   setNewDisplayDataPath,
 } from '../VisualizeItem/VisualizeItemActions'
-
+import { run, runByCurrentUid } from 'store/slice/Pipeline/PipelineActions'
 const initialState: DisplayData = {
   timeSeries: {},
   heatMap: {},
@@ -554,6 +554,10 @@ export const displayDataSlice = createSlice({
           error: action.error.message ?? 'rejected',
         }
       })
+      .addMatcher(
+        isAnyOf(run.fulfilled, runByCurrentUid.fulfilled),
+        (state, action) => initialState,
+      )
   },
 })
 
