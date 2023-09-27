@@ -65,7 +65,7 @@ dev = [
   "pre-commit",
 ]
 doc = [
-  "sphinx==7.1.2",
+  "sphinx==7.2.6",
   "sphinxcontrib-apidoc",
   "sphinx_rtd_theme",
   "sphinx-prompt",
