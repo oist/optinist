@@ -4,8 +4,12 @@ import {
   getExperiments,
   deleteExperimentByUid,
   deleteExperimentByList,
+  fetchExperiment,
 } from './ExperimentsActions'
-import { convertToExperimentListType } from './ExperimentsUtils'
+import {
+  convertToExperimentListType,
+  convertToExperimentType,
+} from './ExperimentsUtils'
 import {
   pollRunResult,
   run,
@@ -19,7 +23,9 @@ export const initialState: Experiments = {
 export const experimentsSlice = createSlice({
   name: EXPERIMENTS_SLICE_NAME,
   initialState: initialState as Experiments,
-  reducers: {},
+  reducers: {
+    clearExperiments: () => initialState,
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getExperiments.pending, () => {
@@ -63,6 +69,12 @@ export const experimentsSlice = createSlice({
           })
         }
       })
+      .addCase(fetchExperiment.fulfilled, (state, action) => {
+        if (state.status === 'fulfilled') {
+          state.experimentList[action.payload.unique_id] =
+            convertToExperimentType(action.payload)
+        }
+      })
       .addMatcher(isAnyOf(run.fulfilled, runByCurrentUid.fulfilled), () => {
         return {
           status: 'uninitialized',
@@ -71,4 +83,5 @@ export const experimentsSlice = createSlice({
   },
 })
 
+export const { clearExperiments } = experimentsSlice.actions
 export default experimentsSlice.reducer

@@ -1,68 +1,98 @@
-import axios from 'axios'
+import axios from 'utils/axios'
 
 import { BASE_URL } from 'const/API'
-import { RunPostData } from 'api/run/Run'
+import { OutputPathsDTO } from 'api/run/Run'
+import { EXPERIMENTS_STATUS } from 'store/slice/Experiments/ExperimentsType'
+import { WorkflowConfigDTO } from 'api/workflow/Workflow'
 
 export type ExperimentsDTO = {
   [uid: string]: ExperimentDTO
 }
 
-export type ExperimentDTO = {
-  function: {
-    [uid: string]: {
-      name: string
-      success: string
-      unique_id: string
-      hasNWB: boolean
-    }
+export type FunctionsDTO = {
+  [nodeId: string]: {
+    name: string
+    success: string
+    unique_id: string
+    hasNWB: boolean
+    message?: string
+    started_at?: string
+    finished_at?: string
+    outputPaths?: OutputPathsDTO
   }
-  name: string
-  success: string
-  timestamp: string
-  unique_id: string
-  hasNWB: boolean
 }
 
-export async function getExperimentsApi(): Promise<ExperimentsDTO> {
-  const response = await axios.get(`${BASE_URL}/experiments`)
+type NWBType = {
+  imaging_plane: {
+    imaging_rate: number
+  }
+}
+
+export type ExperimentDTO = {
+  function: FunctionsDTO
+  name: string
+  success?: EXPERIMENTS_STATUS
+  started_at: string
+  finished_at?: string
+  workspace_id: number
+  unique_id: string
+  hasNWB: boolean
+  nwb: NWBType
+}
+
+export type FetchExperimentDTO = ExperimentDTO & WorkflowConfigDTO
+
+export async function getExperimentsApi(
+  workspaceId: number,
+): Promise<ExperimentsDTO> {
+  const response = await axios.get(`${BASE_URL}/experiments/${workspaceId}`)
   return response.data
 }
 
-export async function deleteExperimentByUidApi(uid: string): Promise<boolean> {
-  const response = await axios.delete(`${BASE_URL}/experiments/${uid}`)
+export async function deleteExperimentByUidApi(
+  workspaceId: number,
+  uid: string,
+): Promise<boolean> {
+  const response = await axios.delete(
+    `${BASE_URL}/experiments/${workspaceId}/${uid}`,
+  )
   return response.data
 }
 
 export async function deleteExperimentByListApi(
+  workspaceId: number,
   uidList: Array<string>,
 ): Promise<boolean> {
-  const response = await axios.post(`${BASE_URL}/experiments/delete`, {
-    uidList,
-  })
+  const response = await axios.post(
+    `${BASE_URL}/experiments/delete/${workspaceId}`,
+    {
+      uidList,
+    },
+  )
   return response.data
 }
 
-export async function importExperimentByUidApi(
+export async function downloadExperimentNwbApi(
+  workspaceId: number,
   uid: string,
-): Promise<RunPostData> {
-  const response = await axios.get(`${BASE_URL}/experiments/import/${uid}`)
-  return response.data
-}
-
-export async function downloadExperimentNwbApi(uid: string, nodeId?: string) {
+  nodeId?: string,
+) {
   const path =
     nodeId != null
-      ? `${BASE_URL}/experiments/download/nwb/${uid}/${nodeId}`
-      : `${BASE_URL}/experiments/download/nwb/${uid}`
+      ? `${BASE_URL}/experiments/download/nwb/${workspaceId}/${uid}/${nodeId}`
+      : `${BASE_URL}/experiments/download/nwb/${workspaceId}/${uid}`
   const response = await axios.get(path, {
     responseType: 'blob',
   })
   return response.data
 }
 
-export async function downloadExperimentConfigApi(uid: string) {
+export async function downloadExperimentConfigApi(
+  workspaceId: number,
+  uid: string,
+) {
   const response = await axios.get(
-    `${BASE_URL}/experiments/download/config/${uid}`,
+    `${BASE_URL}/experiments/download/config/${workspaceId}/${uid}`,
     {
       responseType: 'blob',
     },
@@ -70,9 +100,22 @@ export async function downloadExperimentConfigApi(uid: string) {
   return response.data
 }
 
-export async function renameExperiment(unique_id: string, new_name: string) {
+export async function fetchExperimentApi(
+  workspace_id: number,
+): Promise<FetchExperimentDTO> {
+  const response = await axios.get(
+    `${BASE_URL}/experiments/fetch/${workspace_id}`,
+  )
+  return response.data
+}
+
+export async function renameExperiment(
+  workspaceId: number,
+  uid: string,
+  new_name: string,
+) {
   const response = await axios.patch(
-    `${BASE_URL}/experiments/${unique_id}/rename`,
+    `${BASE_URL}/experiments/${workspaceId}/${uid}/rename`,
     {
       new_name,
     },

@@ -1,0 +1,5 @@
+nplanes: 1
+nchannels: 1
+force_sktiff: False
+batch_size: 500
+do_registration: 1

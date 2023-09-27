@@ -1,0 +1,121 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "optinist"
+description = "Calcium Imaging Pipeline Tool"
+version = "1.0.0"
+readme = "README.md"
+requires-python = "==3.8.*"
+license = {file = "LICENSE"}
+authors = [
+  {name = "OIST"},
+]
+classifiers=[
+  "Intended Audience :: Developers",
+  "Intended Audience :: Education",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering",
+  "Programming Language :: Python :: 3.7",
+  "Programming Language :: Python :: 3.8",
+  "Programming Language :: Python :: 3.9",
+  "Operating System :: POSIX :: Linux",
+  "Operating System :: Microsoft :: Windows",
+  "Operating System :: MacOS :: MacOS X",
+]
+dependencies = [
+  "fastapi==0.99.*",
+  "uvicorn==0.22.*",
+  "numpy>=1.23,<1.26",
+  "aiofiles",
+  "tqdm",
+  "pyyaml",
+  "imageio",
+  "tifffile",
+  "python-multipart",
+  "future",
+  "pynwb==2.2.0",
+  "psutil",
+  "nbstripout",
+  "snakemake>=7.24,<7.31",
+  "jinja2==3.1.*",
+  "httpx",
+  "firebase_admin",
+  "pyrebase4==4.7.1",
+  "pydantic[email]",
+  "pydantic[dotenv]",
+  "python-jose[cryptography]",
+  "alembic==1.9.2",
+  "sqlmodel==0.0.8",
+  "pymysql==1.0.2",
+  "fastapi_pagination==0.12.5",
+  "plotly==5.15.0",
+  "kaleido==0.2.1",
+  "filelock",
+]
+
+[project.optional-dependencies]
+dev = [
+  "black",
+  "flake8==6.1.*",
+  "isort",
+  "build",
+  "twine",
+  "pre-commit",
+]
+doc = [
+  "sphinx==7.1.2",
+  "sphinxcontrib-apidoc",
+  "sphinx_rtd_theme",
+  "sphinx-prompt",
+  "sphinx-pyproject",
+  "sphinx-autodoc-typehints",
+  "sphinx-copybutton==0.5.2",
+  "sphinx-autobuild==2021.3.14",
+  "myst-parser",
+]
+test = [
+  "pytest",
+  "pytest-env",
+]
+
+[project.urls]
+Documentation = "https://optinist.readthedocs.io"
+Repository = "https://github.com/oist/optinist"
+
+[project.scripts]
+run_optinist = "studio.__main__:main"
+
+[tool.setuptools]
+include-package-data = true
+zip-safe = false
+py-modules = ["Snakefile"]
+
+[tool.setuptools.packages.find]
+exclude = ["studio.tests.*", "conda.env.*"]
+
+[tool.setuptools.package-data]
+frontend = [
+  "build/*",
+  "build/static/*",
+  "build/static/css/*",
+  "build/static/js/*",
+  "build/static/media/*",
+]
+studio = [
+  "app/optinist/core/nwb/nwb.yaml",
+  "app/common/core/snakemake/snakemake.yaml",
+  "app/*/wrappers/**/*.yaml",
+  "app/Snakefile",
+  "config/*.yaml",
+]
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+pythonpath = "."
+env = [
+  "OPTINIST_DIR=studio/test_data",
+]

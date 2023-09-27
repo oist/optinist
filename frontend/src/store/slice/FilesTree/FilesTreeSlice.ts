@@ -15,7 +15,7 @@ export const filesTreeSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(getFilesTree.pending, (state, action) => {
-        const fileType = action.meta.arg
+        const { fileType } = action.meta.arg
         state[fileType] = {
           isLoading: true,
           isLatest: false,
@@ -23,10 +23,10 @@ export const filesTreeSlice = createSlice({
         }
       })
       .addCase(getFilesTree.fulfilled, (state, action) => {
-        const fileTreeType = action.meta.arg
-        state[fileTreeType].tree = convertToTreeNodeType(action.payload)
-        state[fileTreeType].isLatest = true
-        state[fileTreeType].isLoading = false
+        const { fileType } = action.meta.arg
+        state[fileType].tree = convertToTreeNodeType(action.payload)
+        state[fileType].isLatest = true
+        state[fileType].isLoading = false
       })
       .addCase(uploadFile.pending, (state, action) => {
         const { fileType } = action.meta.arg

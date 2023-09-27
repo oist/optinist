@@ -1,7 +1,0 @@
-dependencies:
-  - python=3.8
-  - pip
-  - pip:
-    - scikit-learn==1.1.*
-    - statsmodels==0.13.*
-    - pynwb==2.2.0

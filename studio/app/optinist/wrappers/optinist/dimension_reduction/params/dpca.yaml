@@ -1,0 +1,58 @@
+transpose: False
+
+standard_mean: True
+standard_std: True
+
+
+labels: 'tbc'
+#    int or string
+#    Labels of feature axis.
+#    If int the corresponding number of labels are selected from the alphabet 'abcde...'
+#    --- seems int is not accepted. numbers of characters should match the dimension of the data
+join:
+#    None or dict
+#    Parameter combinations to join
+#    If a data set has parametrized by time t and stimulus s, then dPCA will split
+#    the data into marginalizations corresponding to 't', 's' and 'ts'. At times,
+#    we want to join different marginalizations (like 's' and 'ts'), e.g. if
+#    we are only interested in the time-modulated stimulus components. In this case,
+#    we would pass {'ts' : ['s','ts']}.
+
+regularizer: 0
+#    None, float, 'auto'
+#    Regularization parameter. If None or 0, then no regularization is applied.
+#    For float, the regularization weight is regularizer*var(data). If 'auto', the
+#    optimal regularization parameter is found during fitting (might take some time).
+
+
+n_components: 8
+#    None, int or dict
+#    Number of components to keep.
+#    If n_components is int, then the same number of components are kept in every
+#    marginalization. Otherwise, the dict allows to set the number of components
+#    in each marginalization (e.g. {'t' : 10, 'ts' : 5}). Defaults to 10.
+
+copy: True
+#    bool
+#    If False, data passed to fit are overwritten and running
+#    fit(X).transform(X) will not yield the expected results,
+#    use fit_transform(X) instead.
+
+n_iter: 0
+# int (default: 0)
+#    Number of iterations for randomized SVD solver (sklearn).
+
+trigger_column: 1
+
+trigger_type: 'down'
+
+trigger_threshold: 0
+
+trigger_duration: [-10, 10]
+
+feature_colums: [3,4]
+
+
+figure_components: [0,1]
+
+figure_features: ['t', 'b', 'c', 'tbc']

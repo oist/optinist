@@ -27,7 +27,7 @@ docker pull oistncu/optinist
 ```
 Start docker container.
 ```
-docker run -it --shm-size=2G --name optinist_container -d -p 8000:8000 --restart=unless-stopped oistncu/optinist:latest
+docker run -it --shm-size=2G --name optinist_container -d -p 8000:8000 --restart=unless-stopped oistncu/optinist:latest python main.py --host 0.0.0.0 --port 8000
 ```
 
 Execute in terminal

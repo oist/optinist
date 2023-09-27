@@ -1,16 +1,16 @@
-import axios from 'axios'
+import axios from 'utils/axios'
 
 import { BASE_URL } from 'const/API'
 
 export type TimeSeriesData = {
   [key: string]: {
-    [key: number]: number
+    [key: string]: number
   }
 }
 
 export async function getTimeSeriesInitDataApi(
   path: string,
-): Promise<{ data: TimeSeriesData; xrange: number[]; std: TimeSeriesData }> {
+): Promise<{ data: TimeSeriesData; xrange: string[]; std: TimeSeriesData }> {
   const response = await axios.get(`${BASE_URL}/outputs/inittimedata/${path}`)
   return response.data
 }
@@ -18,7 +18,7 @@ export async function getTimeSeriesInitDataApi(
 export async function getTimeSeriesDataByIdApi(
   path: string,
   index: string,
-): Promise<{ data: TimeSeriesData; xrange: number[]; std: TimeSeriesData }> {
+): Promise<{ data: TimeSeriesData; xrange: string[]; std: TimeSeriesData }> {
   const response = await axios.get(`${BASE_URL}/outputs/timedata/${path}`, {
     params: {
       index: index,
@@ -29,7 +29,7 @@ export async function getTimeSeriesDataByIdApi(
 
 export async function getTimeSeriesAllDataApi(
   path: string,
-): Promise<{ data: TimeSeriesData; xrange: number[]; std: TimeSeriesData }> {
+): Promise<{ data: TimeSeriesData; xrange: string[]; std: TimeSeriesData }> {
   const response = await axios.get(`${BASE_URL}/outputs/alltimedata/${path}`)
   return response.data
 }
@@ -48,12 +48,14 @@ export type ImageData = number[][][]
 export async function getImageDataApi(
   path: string,
   params: {
+    workspaceId: number
     startIndex?: number
     endIndex?: number
   },
 ): Promise<{ data: ImageData }> {
   const response = await axios.get(`${BASE_URL}/outputs/image/${path}`, {
     params: {
+      workspace_id: params.workspaceId,
       start_index: params.startIndex,
       end_index: params.endIndex,
     },
@@ -63,15 +65,26 @@ export async function getImageDataApi(
 
 export type CsvData = number[][]
 
-export async function getCsvDataApi(path: string): Promise<{ data: CsvData }> {
-  const response = await axios.get(`${BASE_URL}/outputs/csv/${path}`)
+export async function getCsvDataApi(
+  path: string,
+  params: { workspaceId: number },
+): Promise<{ data: CsvData }> {
+  const response = await axios.get(`${BASE_URL}/outputs/csv/${path}`, {
+    params: { workspace_id: params.workspaceId },
+  })
+
   return response.data
 }
 
 export type RoiData = number[][][]
 
-export async function getRoiDataApi(path: string): Promise<{ data: RoiData }> {
-  const response = await axios.get(`${BASE_URL}/outputs/image/${path}`, {})
+export async function getRoiDataApi(
+  path: string,
+  params: { workspaceId: number },
+): Promise<{ data: RoiData }> {
+  const response = await axios.get(`${BASE_URL}/outputs/image/${path}`, {
+    params: { workspace_id: params.workspaceId },
+  })
   return response.data
 }
 
@@ -140,5 +153,41 @@ export async function deleteRoiApi(
     `${BASE_URL}/outputs/image/${path}/delete_roi`,
     data,
   )
+  return response.data
+}
+
+export type LineData = number[][]
+
+export async function getLineDataApi(
+  path: string,
+): Promise<{ data: LineData; columns: number[]; index: number[] }> {
+  const response = await axios.get(`${BASE_URL}/outputs/data/${path}`, {})
+  return response.data
+}
+
+export type PolarData = number[][]
+
+export async function getPolarDataApi(
+  path: string,
+): Promise<{ data: PolarData; columns: number[]; index: number[] }> {
+  const response = await axios.get(`${BASE_URL}/outputs/data/${path}`, {})
+  return response.data
+}
+
+export type HistogramData = number[][]
+
+export async function getHistogramDataApi(
+  path: string,
+): Promise<{ data: HistogramData }> {
+  const response = await axios.get(`${BASE_URL}/outputs/data/${path}`, {})
+  return response.data
+}
+
+export type PieData = number[][]
+
+export async function getPieDataApi(
+  path: string,
+): Promise<{ data: PieData; columns: string[] }> {
+  const response = await axios.get(`${BASE_URL}/outputs/data/${path}`, {})
   return response.data
 }
