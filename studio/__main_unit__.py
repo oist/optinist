@@ -109,13 +109,19 @@ def main(develop_mode: bool = False):
     parser.add_argument("--reload", action="store_true")
     args = parser.parse_args()
 
+    log_config_file = (
+        f"{DIRPATH.CONFIG_DIR}/standalone-logging.yaml"
+        if MODE.IS_STANDALONE
+        else f"{DIRPATH.CONFIG_DIR}/logging.yaml"
+    )
+
     if develop_mode:
         reload_options = {"reload_dirs": ["studio"]} if args.reload else {}
         uvicorn.run(
             "studio.__main_unit__:app",
             host=args.host,
             port=args.port,
-            log_config=f"{DIRPATH.CONFIG_DIR}/logging.yaml",
+            log_config=log_config_file,
             reload=args.reload,
             **reload_options,
         )
@@ -124,6 +130,6 @@ def main(develop_mode: bool = False):
             "studio.__main_unit__:app",
             host=args.host,
             port=args.port,
-            log_config=f"{DIRPATH.CONFIG_DIR}/logging.yaml",
+            log_config=log_config_file,
             reload=False,
         )

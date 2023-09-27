@@ -108,6 +108,7 @@ studio = [
   "app/common/core/snakemake/snakemake.yaml",
   "app/*/wrappers/**/*.yaml",
   "app/Snakefile",
+  "config/*.yaml",
 ]
 
 [tool.isort]
