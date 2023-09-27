@@ -12,8 +12,14 @@ class RuleBuilder:
         self._hdf5Path = None
         self._path = None
 
-    def set_input(self, input) -> "RuleBuilder":
-        self._input = input
+    def set_input(self, input, workspace_id=None) -> "RuleBuilder":
+        if workspace_id:
+            if isinstance(input, list):
+                self._input = [f"{workspace_id}/{i}" for i in input]
+            else:
+                self._input = f"{workspace_id}/{input}"
+        else:
+            self._input = input
         return self
 
     def set_return_arg(self, return_arg) -> "RuleBuilder":

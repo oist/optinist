@@ -3,7 +3,7 @@ import { styled } from '@mui/material/styles'
 import { FlexItemList } from './FlexItemList'
 import { VisualizeItemEditor } from './VisualizeItemEditor'
 import { CurrentPipelineInfo } from 'components/common/CurrentPipelineInfo'
-import { DRAWER_WIDTH } from 'const/Layout'
+import { CONTENT_HEIGHT, DRAWER_WIDTH } from 'const/Layout'
 import { Box } from '@mui/material'
 import { grey } from '@mui/material/colors'
 
@@ -42,7 +42,7 @@ const MainContents = styled('main')({
   display: 'flex',
   flexDirection: 'column',
   flexGrow: 1,
-  height: '100vh',
+  minHeight: CONTENT_HEIGHT
 })
 
 export default Visualize

@@ -23,3 +23,5 @@ services:
     ports:
       - "3000:3000"
     command: ash -c 'yarn install && yarn start'
+    environment:
+      TZ: Asia/Tokyo

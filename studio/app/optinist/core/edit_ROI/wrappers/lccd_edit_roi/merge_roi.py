@@ -41,9 +41,10 @@ def execute_merge_roi(node_dirpath, ids):
         timeseries[i, :] = np.mean(images[roi[:, i] > 0, :], axis=0)
     im = np.stack(im)
     im[im == 0] = np.nan
+    im -= 1
 
-    merge_roi.append(float(num_cell))
-    merge_roi += [(id + 1) for id in ids]
+    merge_roi.append(float(num_cell - 1))
+    merge_roi += ids
     merge_roi.append((-1.0))
 
     # Get DFF

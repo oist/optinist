@@ -11,6 +11,7 @@ import {
   selectFileUploadError,
 } from './FileUploaderSelectors'
 import { FILE_TYPE } from '../InputNode/InputNodeType'
+import { selectCurrentWorkspaceId } from '../Workspace/WorkspaceSelector'
 
 type UseFileUploaderProps = {
   fileType?: FILE_TYPE
@@ -20,19 +21,25 @@ type UseFileUploaderProps = {
 export function useFileUploader({ fileType, nodeId }: UseFileUploaderProps) {
   const dispatch = useDispatch()
   const id = React.useRef(nanoid())
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const onUploadFile = React.useCallback(
     (formData: FormData, fileName: string) => {
-      dispatch(
-        uploadFile({
-          requestId: id.current,
-          nodeId,
-          fileName,
-          formData,
-          fileType,
-        }),
-      )
+      if (workspaceId) {
+        dispatch(
+          uploadFile({
+            workspaceId,
+            requestId: id.current,
+            nodeId,
+            fileName,
+            formData,
+            fileType,
+          }),
+        )
+      } else {
+        throw new Error('workspaceId is undefined')
+      }
     },
-    [dispatch, fileType, nodeId],
+    [dispatch, workspaceId, fileType, nodeId],
   )
   const uninitialized = useSelector(selectFileUploadIsUninitialized(id.current))
   const filePath = useSelector(selectUploadFilePath(id.current))

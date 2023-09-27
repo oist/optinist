@@ -4,13 +4,14 @@ import shutil
 from studio.app.common.core.experiment.experiment import ExptConfig, ExptFunction
 from studio.app.common.core.experiment.experiment_writer import ExptConfigWriter
 from studio.app.common.core.workflow.workflow import Edge, Node, NodeData, RunItem
+from studio.app.common.core.workflow.workflow_writer import WorkflowConfigWriter
 from studio.app.dir_path import DIRPATH
 
 node_data = NodeData(label="a", param={}, path="", type="")
 
 nodeDict = {
     "test1": Node(
-        id="node_id",
+        id="test1",
         type="a",
         data=node_data,
         position={"x": 0, "y": 0},
@@ -26,7 +27,7 @@ nodeDict = {
 
 edgeDict = {
     "test2": Edge(
-        id="edge_id",
+        id="test2",
         type="a",
         animated=False,
         source="",
@@ -52,8 +53,6 @@ def test_create_config() -> ExptConfig:
         workspace_id="test_workspace_id",
         unique_id="test_id",
         name=runItem.name,
-        nodeDict=runItem.nodeDict,
-        edgeDict=runItem.edgeDict,
     ).create_config()
 
     assert isinstance(expt_config, ExptConfig)
@@ -68,39 +67,47 @@ def test_add_run_info():
         workspace_id="",
         unique_id="",
         name="",
-        nodeDict=nodeDict,
-        edgeDict=None,
     ).add_run_info()
 
-    assert len(expt_config.nodeDict) == 1
-
-
-def test_function_from_nodeDict():
-    expt_config = ExptConfigWriter(
-        workspace_id="",
-        unique_id="",
-        name="",
-        nodeDict=nodeDict,
-        edgeDict=edgeDict,
-    ).function_from_nodeDict()
-
-    assert isinstance(expt_config.function, dict)
-    assert isinstance(expt_config.function["node_id"], ExptFunction)
+    assert expt_config.success == "running"
 
 
 dirpath = f"{DIRPATH.DATA_DIR}/output/workspace_id/unique_id"
+
+
+def test_function_from_nodeDict():
+    WorkflowConfigWriter(
+        workspace_id="workspace_id",
+        unique_id="unique_id",
+        nodeDict=nodeDict,
+        edgeDict=edgeDict,
+    ).write()
+
+    expt_config = ExptConfigWriter(
+        workspace_id="workspace_id",
+        unique_id="unique_id",
+        name="name",
+    ).function_from_nodeDict()
+
+    assert isinstance(expt_config.function, dict)
+    assert isinstance(expt_config.function["test1"], ExptFunction)
 
 
 def test_new_write():
     if os.path.exists(dirpath):
         shutil.rmtree(dirpath)
 
+    WorkflowConfigWriter(
+        workspace_id="workspace_id",
+        unique_id="unique_id",
+        nodeDict=nodeDict,
+        edgeDict=edgeDict,
+    ).write()
+
     ExptConfigWriter(
         workspace_id="workspace_id",
         unique_id="unique_id",
         name="name",
-        nodeDict=nodeDict,
-        edgeDict=edgeDict,
     ).write()
 
     assert os.path.exists(f"{dirpath}/experiment.yaml")
@@ -111,10 +118,6 @@ def test_write_add():
         workspace_id="workspace_id",
         unique_id="unique_id",
         name="name",
-        nodeDict=nodeDict,
-        edgeDict=edgeDict,
     ).write()
 
     assert os.path.exists(f"{dirpath}/experiment.yaml")
-
-    os.remove(f"{dirpath}/experiment.yaml")

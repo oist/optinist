@@ -7,8 +7,14 @@ import React, {
 } from 'react'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { useSelector, useDispatch } from 'react-redux'
-import {RootState} from 'store/store'
-import {Datum, LayoutAxis, PlotData, PlotMouseEvent, PlotSelectionEvent} from 'plotly.js'
+import { RootState } from 'store/store'
+import {
+  Datum,
+  LayoutAxis,
+  PlotData,
+  PlotMouseEvent,
+  PlotSelectionEvent,
+} from 'plotly.js'
 import createColormap from 'colormap'
 import { Button, LinearProgress, TextField, Typography } from '@mui/material'
 import FormControlLabel from '@mui/material/FormControlLabel'
@@ -67,6 +73,7 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemActions'
 import { addRoiApi, deleteRoiApi, mergeRoiApi } from 'api/outputs/Outputs'
 import { isTimeSeriesItem } from 'store/slice/VisualizeItem/VisualizeItemUtils'
+import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
 
 interface PointClick {
   x: number
@@ -96,6 +103,7 @@ const sChart = 320
 export const ImagePlot = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
 
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const startIndex = useSelector(selectImageItemStartIndex(itemId))
   const endIndex = useSelector(selectImageItemEndIndex(itemId))
   const isPending = useSelector(selectImageDataIsPending(path))
@@ -107,19 +115,30 @@ export const ImagePlot = React.memo(() => {
 
   const dispatch = useDispatch()
   React.useEffect(() => {
-    if (!isInitialized) {
-      dispatch(
-        getImageData({
-          path,
-          startIndex: startIndex ?? 1,
-          endIndex: endIndex ?? 10,
-        }),
-      )
+    if (workspaceId) {
+      if (!isInitialized) {
+        dispatch(
+          getImageData({
+            path,
+            workspaceId,
+            startIndex: startIndex ?? 1,
+            endIndex: endIndex ?? 10,
+          }),
+        )
+      }
+      if (roiFilePath != null) {
+        dispatch(getRoiData({ path: roiFilePath, workspaceId }))
+      }
     }
-    if (roiFilePath != null) {
-      dispatch(getRoiData({ path: roiFilePath }))
-    }
-  }, [dispatch, isInitialized, path, startIndex, endIndex, roiFilePath])
+  }, [
+    dispatch,
+    isInitialized,
+    path,
+    workspaceId,
+    startIndex,
+    endIndex,
+    roiFilePath,
+  ])
   if (isPending) {
     return <LinearProgress />
   } else if (error != null) {
@@ -141,6 +160,7 @@ const ImagePlotChart = React.memo<{
   activeIndex: number
 }>(({ activeIndex }) => {
   const dispatch = useDispatch()
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
   const imageData = useSelector(
     selectActiveImageData(path, activeIndex),
@@ -450,7 +470,7 @@ const ImagePlotChart = React.memo<{
     } catch {}
     setLoadingApi(false)
     onCancelAdd()
-    dispatch(getRoiData({ path: roiFilePath }))
+    workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     resetTimeSeries()
   }
 
@@ -465,7 +485,7 @@ const ImagePlotChart = React.memo<{
     } catch {}
     setLoadingApi(false)
     onCancel()
-    dispatch(getRoiData({ path: roiFilePath }))
+    workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     resetTimeSeries()
   }
 
@@ -480,7 +500,7 @@ const ImagePlotChart = React.memo<{
     } catch {}
     setLoadingApi(false)
     onCancel()
-    dispatch(getRoiData({ path: roiFilePath }))
+    workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     resetTimeSeries()
   }
 

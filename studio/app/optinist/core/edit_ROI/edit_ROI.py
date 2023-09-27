@@ -8,7 +8,7 @@ from fastapi import HTTPException, status
 from snakemake import snakemake
 
 from studio.app.common.core.rules.runner import Runner
-from studio.app.common.core.utils.config_handler import ConfigReader, ConfigWriter
+from studio.app.common.core.utils.config_handler import ConfigReader
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.utils.filepath_finder import find_condaenv_filepath
 from studio.app.common.core.utils.pickle_handler import PickleReader, PickleWriter
@@ -53,27 +53,18 @@ class EditROI:
         return algo
 
     def excute(self):
-        self.set_smk_config()
-
         snakemake(
             DIRPATH.SNAKEMAKE_FILEPATH,
             use_conda=True,
             cores=2,
             workdir=f"{os.path.dirname(DIRPATH.STUDIO_DIR)}",
-        )
-
-    def set_smk_config(self):
-        config = {
-            "type": ACTION.EDIT_ROI,
-            "action": self.action,
-            "node_dirpath": self.node_dirpath,
-            "algo": self.algo,
-            "params": self.params,
-        }
-        ConfigWriter.write(
-            dirname=DIRPATH.STUDIO_DIR,
-            filename=DIRPATH.SNAKEMAKE_CONFIG_YML,
-            config=config,
+            config={
+                "type": ACTION.EDIT_ROI,
+                "action": self.action,
+                "node_dirpath": self.node_dirpath,
+                "algo": self.algo,
+                "params": self.params,
+            },
         )
 
 

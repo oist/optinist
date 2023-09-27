@@ -17,7 +17,7 @@ def excute_delete_roi(node_dirpath, ids):
     delete_roi = ops.get("delete_roi") if ops.get("delete_roi") else []
     for id in ids:
         iscell[id] = False
-        delete_roi.append(id + 1)
+        delete_roi.append(id)
 
     ops["iscell"] = iscell
     ops["delete_roi"] = delete_roi

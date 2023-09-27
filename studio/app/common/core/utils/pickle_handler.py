@@ -27,7 +27,7 @@ class PickleWriter:
         with open(pickle_path, "rb") as f:
             old_pkl = pickle.load(f)
 
-        if type(old_pkl) == type(info) == dict:
+        if isinstance(old_pkl, dict) and isinstance(info, dict):
             old_pkl.update(info)
 
             with open(pickle_path, "wb") as f:

@@ -1,7 +1,9 @@
 from dataclasses import dataclass
 from typing import Dict, Optional
 
-from studio.app.common.core.workflow.workflow import Edge, Node, OutputPath
+from studio.app.common.core.snakemake.smk import SmkParam
+from studio.app.common.core.workflow.workflow import OutputPath
+from studio.app.optinist.schemas.nwb import NWBParams
 
 
 @dataclass
@@ -26,11 +28,5 @@ class ExptConfig:
     success: Optional[str]
     hasNWB: bool
     function: Dict[str, ExptFunction]
-    nodeDict: Dict[str, Node]
-    edgeDict: Dict[str, Edge]
-
-
-@dataclass
-class ExptImportData:
-    nodeDict: Dict[str, Node]
-    edgeDict: Dict[str, Edge]
+    nwb: NWBParams
+    snakemake: SmkParam

@@ -1,13 +1,8 @@
 import os
 import shutil
 
-from fastapi.testclient import TestClient
-
 from studio.app.common.core.utils.filepath_creater import join_filepath
-from studio.app.common.routers.experiment import router
 from studio.app.dir_path import DIRPATH
-
-client = TestClient(router)
 
 workspace_id = "default"
 unique_id = "0123"
@@ -21,7 +16,7 @@ shutil.copytree(
 )
 
 
-def test_get():
+def test_get(client):
     response = client.get(f"/experiments/{workspace_id}")
     data = response.json()
 
@@ -30,15 +25,7 @@ def test_get():
     assert isinstance(data[next(iter(data))], dict)
 
 
-def test_import():
-    response = client.get(f"/experiments/import/{workspace_id}/{unique_id}")
-    data = response.json()
-
-    assert response.status_code == 200
-    assert isinstance(data, dict)
-
-
-def test_delete():
+def test_delete(client):
     dirname = "delete_dir"
     dirpath = join_filepath([f"{DIRPATH.DATA_DIR}/output/{workspace_id}", dirname])
     os.makedirs(dirpath, exist_ok=True)
@@ -48,7 +35,7 @@ def test_delete():
     assert not os.path.exists(dirpath)
 
 
-def test_delete_list():
+def test_delete_list(client):
     uidList = ["delete_dir1", "delete_dir2"]
     for name in uidList:
         dirpath = join_filepath([DIRPATH.OUTPUT_DIR, workspace_id, name])
@@ -65,13 +52,13 @@ def test_delete_list():
         assert not os.path.exists(dirpath)
 
 
-def test_download_config():
+def test_download_config(client):
     response = client.get(f"/experiments/download/config/{workspace_id}/{unique_id}")
     assert response.status_code == 200
     assert response.url == "http://testserver/experiments/download/config/default/0123"
 
 
-def test_expt_rename():
+def test_expt_rename(client):
     origin_name = "New flow"
     new_name = "TEST RENAME WORKFLOW"
     response = client.patch(

@@ -1,30 +1,46 @@
 import { Link } from 'react-router-dom'
 import { Box, styled, Typography } from '@mui/material'
-import StorageIcon from '@mui/icons-material/Storage'
-import AccountCircleIcon from '@mui/icons-material/AccountCircle'
+import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
+import AnalyticsIcon from '@mui/icons-material/Analytics'
+import {useDispatch, useSelector} from 'react-redux'
+import {isAdmin, selectCurrentUser} from 'store/slice/User/UserSelector'
+import {useEffect} from "react";
+import {getMe} from "../../store/slice/User/UserActions";
 
 const Dashboard = () => {
+  const dispatch = useDispatch()
+  const admin = useSelector(isAdmin)
+  const user = useSelector(selectCurrentUser)
+  useEffect(() => {
+    if(!user) return
+    dispatch(getMe())
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <BoxWrapper>
       <h1 style={{ paddingLeft: 16 }}>Dashboard</h1>
       <DashboardWrapper>
         <DashboardContent>
-          <LinkWrapper to="/workspaces">
+          <LinkWrapper to="/console/workspaces">
             <BoxMenu>
               <Box>
-                <StorageIcon fontSize="large" />
+                <AnalyticsIcon fontSize="large" />
                 <TitleMenu>Workspaces</TitleMenu>
               </Box>
             </BoxMenu>
           </LinkWrapper>
-          <LinkWrapper to="/account">
-            <BoxMenu>
-              <Box>
-                <AccountCircleIcon fontSize="large" />
-                <TitleMenu>Account</TitleMenu>
-              </Box>
-            </BoxMenu>
-          </LinkWrapper>
+          {
+            admin ?
+              <LinkWrapper to="/console/account-manager">
+                <BoxMenu>
+                  <Box>
+                    <ManageAccountsIcon fontSize="large" />
+                    <TitleMenu>Account Manager</TitleMenu>
+                  </Box>
+                </BoxMenu>
+              </LinkWrapper>: null
+          }
         </DashboardContent>
       </DashboardWrapper>
     </BoxWrapper>
