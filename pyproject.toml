@@ -52,6 +52,7 @@ dependencies = [
   "fastapi_pagination==0.12.5",
   "plotly==5.15.0",
   "kaleido==0.2.1",
+  "filelock",
 ]
 
 [project.optional-dependencies]

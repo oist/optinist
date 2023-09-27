@@ -45,6 +45,9 @@ def ETA(
     params: dict = None,
     **kwargs,
 ) -> dict(mean=TimeSeriesData):
+    function_id = output_dir.split("/")[-1]
+    print("start ETA:", function_id)
+
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data
 
@@ -92,9 +95,11 @@ def ETA(
     # NWB追加
     nwbfile = {}
     nwbfile[NWBDATASET.POSTPROCESS] = {
-        "mean": mean,
-        "sem": sem,
-        "num_sample": [len(mean)],
+        function_id: {
+            "mean": mean,
+            "sem": sem,
+            "num_sample": [len(mean)],
+        }
     }
 
     min_value = np.min(mean, axis=1, keepdims=True)

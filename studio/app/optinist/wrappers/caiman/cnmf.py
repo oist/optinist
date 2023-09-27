@@ -74,6 +74,9 @@ def caiman_cnmf(
     from caiman.source_extraction.cnmf import cnmf
     from caiman.source_extraction.cnmf.params import CNMFParams
 
+    function_id = output_dir.split("/")[-1]
+    print("start caiman_cnmf:", function_id)
+
     # flatten params segments.
     params_flatten = {}
     for params_segment in params.values():
@@ -149,7 +152,7 @@ def caiman_cnmf(
             np.ones(cnm.estimates.A.shape[-1]),
             np.zeros(cnm.estimates.b.shape[-1] if cnm.estimates.b is not None else 0),
         ]
-    )
+    ).astype(bool)
 
     ims = get_roi(cnm.estimates.A, thr, thr_method, swap_dim, dims)
     ims = np.stack(ims)
@@ -185,7 +188,6 @@ def caiman_cnmf(
         roi_list.append(kargs)
 
     # backgroundsを追加
-    bg_list = []
     if cnm.estimates.b is not None:
         for bg in cnm.estimates.b.T:
             kargs = {}
@@ -194,16 +196,13 @@ def caiman_cnmf(
                 kargs["accepted"] = False
             if hasattr(cnm.estimates, "rejected_list"):
                 kargs["rejected"] = False
-            bg_list.append(kargs)
+            roi_list.append(kargs)
 
-    nwbfile[NWBDATASET.ROI] = {
-        "roi_list": roi_list,
-        "bg_list": bg_list,
-    }
+    nwbfile[NWBDATASET.ROI] = {function_id: roi_list}
 
     # iscellを追加
     nwbfile[NWBDATASET.COLUMN] = {
-        "roi_column": {
+        function_id: {
             "name": "iscell",
             "discription": "two columns - iscell & probcell",
             "data": iscell,
@@ -211,41 +210,8 @@ def caiman_cnmf(
     }
 
     # Fluorescence
-    n_rois = cnm.estimates.A.shape[-1]
+    n_rois = len(cnm.estimates.C)
     n_bg = len(cnm.estimates.f) if cnm.estimates.f is not None else 0
-
-    nwbfile[NWBDATASET.FLUORESCENCE] = {
-        "RoiResponseSeries": {
-            "table_name": "ROIs",
-            "region": list(range(n_rois)),
-            "name": "RoiResponseSeries",
-            "data": cnm.estimates.C.T,
-            "unit": "lumens",
-        },
-        "Background_Fluorescence_Response": {
-            "table_name": "Background",
-            "region": list(range(n_rois, n_rois + n_bg)),
-            "name": "Background_Fluorescence_Response",
-            "data": cnm.estimates.f.T if cnm.estimates.f is not None else np.array([]),
-            "unit": "lumens",
-        },
-        "estimates.W": {
-            "table_name": "estimates.W",
-            "region": [],
-            "name": "estimates.W",
-            "data": cnm.estimates.W.toarray()
-            if cnm.estimates.W is not None
-            else np.array([]),
-            "unit": "lumens",
-        },
-        "estimates.b0": {
-            "table_name": "estimates.b0",
-            "region": [],
-            "name": "estimates.b0",
-            "data": cnm.estimates.b0 if cnm.estimates.b0 is not None else np.array([]),
-            "unit": "lumens",
-        },
-    }
 
     fluorescence = (
         np.concatenate(
@@ -257,6 +223,18 @@ def caiman_cnmf(
         if cnm.estimates.f is not None
         else cnm.estimates.C
     )
+
+    nwbfile[NWBDATASET.FLUORESCENCE] = {
+        function_id: {
+            "Fluorescence": {
+                "table_name": "ROIs",
+                "region": list(range(n_rois + n_bg)),
+                "name": "Fluorescence",
+                "data": fluorescence,
+                "unit": "lumens",
+            }
+        }
+    }
 
     cnmf_data = {}
     cnmf_data["fluorescence"] = fluorescence

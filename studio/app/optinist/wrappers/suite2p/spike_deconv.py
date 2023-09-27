@@ -8,7 +8,9 @@ def suite2p_spike_deconv(
     import numpy as np
     from suite2p import default_ops, extraction
 
-    print("start suite2_spike_deconv")
+    function_id = output_dir.split("/")[-1]
+    print("start suite2_spike_deconv:", function_id)
+
     ops = ops.data
 
     ops = {**default_ops(), **ops, **params}
@@ -41,18 +43,19 @@ def suite2p_spike_deconv(
         ).T
         roi_list.append(kargs)
 
-    nwbfile[NWBDATASET.ROI] = {"roi_list": roi_list}
+    nwbfile[NWBDATASET.ROI] = {function_id: {"roi_list": roi_list}}
 
     # Fluorenceを追加
-    name = "Deconvolved"
     nwbfile[NWBDATASET.FLUORESCENCE] = {
-        name: {
-            "table_name": name,
-            "region": list(range(len(spks))),
-            "name": name,
-            "data": spks,
-            "unit": "lumens",
-            "rate": ops["fs"],
+        function_id: {
+            "Deconvolved": {
+                "table_name": "Deconvolved",
+                "region": list(range(len(spks))),
+                "name": function_id + "_Deconvolved",
+                "data": spks,
+                "unit": "lumens",
+                "rate": ops["fs"],
+            }
         }
     }
 

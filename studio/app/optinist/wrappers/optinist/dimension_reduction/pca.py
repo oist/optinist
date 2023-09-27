@@ -15,6 +15,9 @@ def PCA(
     import numpy as np
     from sklearn.decomposition import PCA
 
+    function_id = output_dir.split("/")[-1]
+    print("start PCA:", function_id)
+
     neural_data = neural_data.data
 
     # data shold be time x component matrix
@@ -38,16 +41,18 @@ def PCA(
     # NWB追加
     nwbfile = {}
     nwbfile[NWBDATASET.POSTPROCESS] = {
-        "pca_projectedNd": proj_X,
-        "components": pca.components_,
-        "explained_variance": pca.explained_variance_,
-        "explained_variance_ratio": pca.explained_variance_ratio_,
-        "singular_values": pca.singular_values_,
-        "mean": pca.mean_,
-        "n_components": [pca.n_components_],
-        "n_samples": [pca.n_samples_],
-        "noise_variance": [pca.noise_variance_],
-        "n_features_in": [pca.n_features_in_],
+        function_id: {
+            "pca_projectedNd": proj_X,
+            "components": pca.components_,
+            "explained_variance": pca.explained_variance_,
+            "explained_variance_ratio": pca.explained_variance_ratio_,
+            "singular_values": pca.singular_values_,
+            "mean": pca.mean_,
+            "n_components": [pca.n_components_],
+            "n_samples": [pca.n_samples_],
+            "noise_variance": [pca.noise_variance_],
+            "n_features_in": [pca.n_features_in_],
+        }
     }
 
     # import pdb; pdb.set_trace()

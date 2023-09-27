@@ -13,6 +13,9 @@ def caiman_mc(
     from caiman.motion_correction import MotionCorrect
     from caiman.source_extraction.cnmf.params import CNMFParams
 
+    function_id = output_dir.split("/")[-1]
+    print("start caiman motion_correction:", function_id)
+
     opts = CNMFParams()
 
     if params is not None:
@@ -67,7 +70,7 @@ def caiman_mc(
 
     nwbfile = {}
     nwbfile[NWBDATASET.MOTION_CORRECTION] = {
-        "caiman_mc": {
+        function_id: {
             "mc_data": mc_images,
             "xy_trans_data": xy_trans_data,
         }

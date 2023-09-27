@@ -4,7 +4,7 @@ from studio.app.optinist.wrappers.caiman.cnmf import caiman_cnmf
 
 
 def caiman_cnmfe(
-    images: ImageData, output_dir: str, params: dict = None
+    images: ImageData, output_dir: str, params: dict = None, **kwargs
 ) -> dict(fluorescence=FluoData, iscell=IscellData):
     cnmfe_fixed_params = {
         "center_psf": True,
@@ -14,4 +14,4 @@ def caiman_cnmfe(
     }
     params["fixed_params"] = cnmfe_fixed_params
 
-    return caiman_cnmf(images=images, output_dir=output_dir, params=params)
+    return caiman_cnmf(images=images, output_dir=output_dir, params=params, **kwargs)

@@ -23,6 +23,9 @@ def GLM(
     import pandas as pd
     import statsmodels.api as sm
 
+    function_id = output_dir.split("/")[-1]
+    print("start glm:", function_id)
+
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data
 
@@ -73,19 +76,21 @@ def GLM(
     # NWB追加
     nwbfile = {}
     nwbfile[NWBDATASET.POSTPROCESS] = {
-        "actual_predicted": np.array([Res._endog, Res.mu]).transpose(),
-        "params": Res.params.values,
-        "pvalues": Res.pvalues.values,
-        "tvalues": Res.tvalues.values,  # z
-        "aic": [Res.aic],
-        "bic_llf": [Res.bic_llf],
-        "llf": [Res.llf],  # log-Likelihood
-        "pearson_chi2": [Res.pearson_chi2],
-        "df_model": [Res.df_model],
-        "df_resid": [Res.df_resid],
-        "scale": [Res.scale],
-        "mu": Res.mu,
-        "endog": Res._endog,
+        function_id: {
+            "actual_predicted": np.array([Res._endog, Res.mu]).transpose(),
+            "params": Res.params.values,
+            "pvalues": Res.pvalues.values,
+            "tvalues": Res.tvalues.values,  # z
+            "aic": [Res.aic],
+            "bic_llf": [Res.bic_llf],
+            "llf": [Res.llf],  # log-Likelihood
+            "pearson_chi2": [Res.pearson_chi2],
+            "df_model": [Res.df_model],
+            "df_resid": [Res.df_resid],
+            "scale": [Res.scale],
+            "mu": Res.mu,
+            "endog": Res._endog,
+        }
     }
 
     # main results for plot

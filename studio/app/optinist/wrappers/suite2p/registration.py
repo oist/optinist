@@ -7,6 +7,9 @@ def suite2p_registration(
 ) -> dict(ops=Suite2pData):
     from suite2p import default_ops, registration
 
+    function_id = output_dir.split("/")[-1]
+    print("start suite2p registration:", function_id)
+
     ops = ops.data
     refImg = ops["meanImg"]
     print("start suite2_registration")
