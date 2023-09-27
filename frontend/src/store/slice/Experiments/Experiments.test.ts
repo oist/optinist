@@ -23,10 +23,12 @@ describe('Experiments', () => {
     },
     payload: {
       [uid1]: {
-        timestamp: '2022-05-07 05:26:54',
+        started_at: '2022-05-07 05:26:54',
+        finished_at: '2022-05-07 05:26:55',
         name: 'record test',
         unique_id: uid1,
         hasNWB: true,
+        success: 'success',
         function: {
           dummy_image2image8time_4mrz8h7hyk: {
             unique_id: 'dummy_image2image8time_4mrz8h7hyk',
@@ -49,12 +51,19 @@ describe('Experiments', () => {
         },
         nodeDict: {},
         edgeDict: {},
+        nwb: {
+          imaging_plane: {
+            imaging_rate: 30,
+          },
+        },
       },
       [uid2]: {
-        timestamp: '2022-05-07 05:54:53',
+        started_at: '2022-05-07 05:54:53',
+        finished_at: '2022-05-07 05:54:54',
         name: 'New flow',
         unique_id: uid2,
         hasNWB: true,
+        success: 'success',
         function: {
           dummy_image2image8time_4mrz8h7hyk: {
             unique_id: 'dummy_image2image8time_4mrz8h7hyk',
@@ -77,6 +86,11 @@ describe('Experiments', () => {
         },
         nodeDict: {},
         edgeDict: {},
+        nwb: {
+          imaging_plane: {
+            imaging_rate: 30,
+          },
+        },
       },
     },
   }
@@ -92,8 +106,10 @@ describe('Experiments', () => {
         [uid1]: {
           uid: uid1,
           timestamp: '2022-05-07 05:26:54',
+          frameRate: 30,
           name: 'record test',
           hasNWB: true,
+          status: 'success',
           functions: {
             dummy_image2image8time_4mrz8h7hyk: {
               name: 'dummy_image2image8time',
@@ -118,8 +134,10 @@ describe('Experiments', () => {
         [uid2]: {
           uid: uid2,
           timestamp: '2022-05-07 05:54:53',
+          frameRate: 30,
           name: 'New flow',
           hasNWB: true,
+          status: 'success',
           functions: {
             dummy_image2image8time_4mrz8h7hyk: {
               name: 'dummy_image2image8time',

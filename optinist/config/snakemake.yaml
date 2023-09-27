@@ -1,5 +1,0 @@
-use_conda: True
-cores: 2
-forceall: False
-forcetargets: True
-lock: False

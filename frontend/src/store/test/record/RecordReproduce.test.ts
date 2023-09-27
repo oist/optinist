@@ -1,11 +1,11 @@
 import { store, rootReducer } from 'store/store'
-import { importExperimentByUid } from 'store/slice/Experiments/ExperimentsActions'
+import { reproduceWorkflow } from 'store/slice/Workflow/WorkflowActions'
 import { RUN_BTN_OPTIONS } from 'store/slice/Pipeline/PipelineType'
 
 describe('RecordReproduce', () => {
   const initialState = store.getState()
 
-  const importExperimentByUidPayload = {
+  const reproduceWorkflowPayload = {
     nodeDict: {
       input_0: {
         id: 'input_0',
@@ -125,11 +125,45 @@ describe('RecordReproduce', () => {
       },
     },
     flowElement: {
-      flowElements: [
+      flowEdges: [
         {
+          id: 'reactflow__edge-dummy_image2image_c8tqfxw0mqdummy_image2image_c8tqfxw0mq--image2image--ImageData-dummy_image2image8time_4mrz8h7hykdummy_image2image8time_4mrz8h7hyk--image1--ImageData',
+          type: 'buttonedge',
+          animated: false,
+          source: 'dummy_image2image_c8tqfxw0mq',
+          sourceHandle: 'dummy_image2image_c8tqfxw0mq--image2image--ImageData',
+          target: 'dummy_image2image8time_4mrz8h7hyk',
+          targetHandle: 'dummy_image2image8time_4mrz8h7hyk--image1--ImageData',
+          style: {
+            border: null,
+            height: null,
+            padding: null,
+            width: 5,
+            borderRadius: null,
+          },
+        },
+        {
+          id: 'reactflow__edge-input_0input_0--image--ImageData-dummy_image2image_c8tqfxw0mqdummy_image2image_c8tqfxw0mq--image--ImageData',
+          type: 'buttonedge',
+          animated: false,
+          source: 'input_0',
+          sourceHandle: 'input_0--image--ImageData',
+          target: 'dummy_image2image_c8tqfxw0mq',
+          targetHandle: 'dummy_image2image_c8tqfxw0mq--image--ImageData',
+          style: {
+            border: null,
+            height: null,
+            padding: null,
+            width: 5,
+            borderRadius: null,
+          },
+        },
+      ],
+      flowNodes: [
+        {
+          data: { label: 'hoge.tif', type: 'input' },
           id: 'input_0',
           type: 'ImageFileNode',
-          data: { label: 'hoge.tif', type: 'input' },
           position: { x: 51, y: 150 },
           style: {
             border: '1px solid #777',
@@ -165,40 +199,8 @@ describe('RecordReproduce', () => {
             borderRadius: 0,
           },
         },
-        {
-          id: 'reactflow__edge-dummy_image2image_c8tqfxw0mqdummy_image2image_c8tqfxw0mq--image2image--ImageData-dummy_image2image8time_4mrz8h7hykdummy_image2image8time_4mrz8h7hyk--image1--ImageData',
-          type: 'buttonedge',
-          animated: false,
-          source: 'dummy_image2image_c8tqfxw0mq',
-          sourceHandle: 'dummy_image2image_c8tqfxw0mq--image2image--ImageData',
-          target: 'dummy_image2image8time_4mrz8h7hyk',
-          targetHandle: 'dummy_image2image8time_4mrz8h7hyk--image1--ImageData',
-          style: {
-            border: null,
-            height: null,
-            padding: null,
-            width: 5,
-            borderRadius: null,
-          },
-        },
-        {
-          id: 'reactflow__edge-input_0input_0--image--ImageData-dummy_image2image_c8tqfxw0mqdummy_image2image_c8tqfxw0mq--image--ImageData',
-          type: 'buttonedge',
-          animated: false,
-          source: 'input_0',
-          sourceHandle: 'input_0--image--ImageData',
-          target: 'dummy_image2image_c8tqfxw0mq',
-          targetHandle: 'dummy_image2image_c8tqfxw0mq--image--ImageData',
-          style: {
-            border: null,
-            height: null,
-            padding: null,
-            width: 5,
-            borderRadius: null,
-          },
-        },
       ],
-      flowPosition: { x: 0, y: 0, zoom: 0.7 },
+      flowPosition: [0, 0, 0.7],
       elementCoord: { x: 100, y: 150 },
     },
     inputNode: {
@@ -215,14 +217,20 @@ describe('RecordReproduce', () => {
       runBtn: RUN_BTN_OPTIONS.RUN_ALREADY,
       currentPipeline: { uid: uid },
     },
+    workspace: {
+      listUserShare: undefined,
+      loading: false,
+      workspace: { items: [], limit: 50, offset: 0, total: 0 },
+      currentWorkspace: { selectedTab: 0, workspaceId: 1 },
+    },
   }
 
-  test(importExperimentByUid.fulfilled.type, () => {
+  test(reproduceWorkflow.fulfilled.type, () => {
     const targetState = rootReducer(initialState, {
-      type: importExperimentByUid.fulfilled.type,
-      payload: importExperimentByUidPayload,
+      type: reproduceWorkflow.fulfilled.type,
+      payload: reproduceWorkflowPayload,
       meta: {
-        arg: uid,
+        arg: { workspaceId: 1, uid: uid },
         requestId: '9rVf2XzPaoBIbRtyVl-Zk',
         requestStatus: 'fulfilled',
       },

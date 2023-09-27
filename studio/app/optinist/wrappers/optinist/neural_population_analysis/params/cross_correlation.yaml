@@ -1,0 +1,13 @@
+transpose: False
+
+method:  'direct'
+
+# lags: int number of frames to show (+-frames)
+lags: 100
+
+# shuffle_sample_number: int
+# number of cross correlation caliculation for randomization
+shuffle_sample_number: 100
+
+# shuffle_confidence_interval: float
+shuffle_confidence_interval: 0.95

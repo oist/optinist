@@ -70,7 +70,7 @@ describe('FilesTree', () => {
         reducer(initialState, {
           type: getFilesTree.pending.type,
           meta: {
-            arg: 'image',
+            arg: { fileType: 'image' },
             requestId: 'F0QeIMS-KV132B2q79qaz',
             requestStatus: 'pending',
           },
@@ -79,7 +79,7 @@ describe('FilesTree', () => {
           type: getFilesTree.fulfilled.type,
           payload: mockPayload,
           meta: {
-            arg: 'image',
+            arg: { fileType: 'image' },
             requestId: 'F0QeIMS-KV132B2q79qaz',
             requestStatus: 'fulfilled',
           },

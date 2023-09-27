@@ -1,4 +1,4 @@
-import axios from 'axios'
+import axios from 'utils/axios'
 
 import { BASE_URL } from 'const/API'
 
@@ -19,7 +19,12 @@ export interface HDF5FileDTO {
   nbytes: string
 }
 
-export async function getHDF5TreeApi(path: string): Promise<HDF5TreeDTO[]> {
-  const response = await axios.get(`${BASE_URL}/hdf5/${path}`)
+export async function getHDF5TreeApi(
+  path: string,
+  workspaceId: number,
+): Promise<HDF5TreeDTO[]> {
+  const response = await axios.get(
+    `${BASE_URL}/hdf5/${path}?workspace_id=${workspaceId}`,
+  )
   return response.data
 }

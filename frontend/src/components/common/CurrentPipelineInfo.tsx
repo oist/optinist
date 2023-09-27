@@ -4,12 +4,12 @@ import { selectPipelineLatestUid } from 'store/slice/Pipeline/PipelineSelectors'
 import { Divider, Typography, Grid } from '@mui/material'
 import {
   selectExperimentName,
-  selectExperimentsSatusIsFulfilled,
+  selectExperimentsStatusIsFulfilled,
 } from 'store/slice/Experiments/ExperimentsSelectors'
 
 export const CurrentPipelineInfo: React.FC = () => {
   const uid = useSelector(selectPipelineLatestUid)
-  const isFulFilled = useSelector(selectExperimentsSatusIsFulfilled)
+  const isFulFilled = useSelector(selectExperimentsStatusIsFulfilled)
 
   return (
     <>

@@ -1,0 +1,49 @@
+last_output:
+- default/snakemake/suite2p_roi/suite2p_roi.pkl
+rules:
+  input_0:
+    input:
+    - test.tif
+    output: default/snakemake/input_0/data_endoscope.pkl
+    nwbfile:
+      image_series:
+        name: TwoPhotonSeries
+        starting_frame: 0
+        starting_time: 0
+    params: {}
+    path: null
+    return_arg: input_0
+    type: image
+    hdf5Path: null
+  suite2p_file_convert:
+    input:
+    - default/snakemake/input_0/data_endoscope.pkl
+    output: default/snakemake/suite2p_file_convert/suite2p_file_convert.pkl
+    nwbfile: null
+    params:
+      batch_size: 500
+      do_registration: 1
+      force_sktiff: false
+      nchannels: 1
+      nplanes: 1
+    path: suite2p/suite2p_file_convert
+    return_arg:
+      input_0: image
+    type: suite2p_file_convert
+    hdf5Path: null
+  suite2p_roi:
+    input:
+    - default/snakemake/suite2p_file_convert/suite2p_file_convert.pkl
+    output: default/snakemake/suite2p_roi/suite2p_roi.pkl
+    nwbfile: null
+    params:
+      batch_size: 500
+      do_registration: 1
+      force_sktiff: false
+      nchannels: 1
+      nplanes: 1
+    path: suite2p/suite2p_roi
+    return_arg:
+      input_0: image
+    type: suite2p_roi
+    hdf5Path: null

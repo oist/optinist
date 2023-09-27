@@ -1,37 +1,38 @@
 .PHONY: test_run
 test_run:
-	docker-compose -f docker-compose.yml down --rmi all --volumes --remove-orphans
-	docker-compose -f docker-compose.yml rm -f
-	docker-compose -f docker-compose.yml build test_optinist
-	docker-compose -f docker-compose.yml build test_optinist_frontend
-	docker-compose -f docker-compose.yml run test_optinist
-	docker-compose -f docker-compose.yml run test_optinist_frontend
+	docker-compose -f docker-compose.test.yml down --rmi all --volumes --remove-orphans
+	docker-compose -f docker-compose.test.yml rm -f
+	docker-compose -f docker-compose.test.yml build test_studio
+	docker-compose -f docker-compose.test.yml build test_studio_frontend
+	docker-compose -f docker-compose.test.yml run test_studio
+	docker-compose -f docker-compose.test.yml run test_studio_frontend
 
 .PHONY: test_python
 test_python:
-	docker-compose -f docker-compose.yml down --rmi all --volumes --remove-orphans
-	docker-compose -f docker-compose.yml rm -f
-	docker-compose -f docker-compose.yml build test_optinist
-	docker-compose -f docker-compose.yml run test_optinist
+	docker-compose -f docker-compose.test.yml down --rmi all --volumes --remove-orphans
+	docker-compose -f docker-compose.test.yml rm -f
+	docker-compose -f docker-compose.test.yml build test_studio
+	docker-compose -f docker-compose.test.yml run test_studio
 
 .PHONY: test_frontend
 test_frontend:
-	docker-compose -f docker-compose.yml down --rmi all --volumes --remove-orphans
-	docker-compose -f docker-compose.yml rm -f
-	docker-compose -f docker-compose.yml build test_optinist_frontend
-	docker-compose -f docker-compose.yml run test_optinist_frontend
+	docker-compose -f docker-compose.test.yml down --rmi all --volumes --remove-orphans
+	docker-compose -f docker-compose.test.yml rm -f
+	docker-compose -f docker-compose.test.yml build test_studio_frontend
+	docker-compose -f docker-compose.test.yml run test_studio_frontend
 
 .PHONY: build_frontend
 build_frontend:
-	docker-compose -f docker-compose.yml down --rmi all --volumes --remove-orphans
-	docker-compose -f docker-compose.yml rm -f
-	docker-compose -f docker-compose.yml build build_optinist_frontend
-	docker-compose -f docker-compose.yml run build_optinist_frontend
+	docker-compose -f docker-compose.test.yml down --rmi all --volumes --remove-orphans
+	docker-compose -f docker-compose.test.yml rm -f
+	docker-compose -f docker-compose.test.yml build build_studio_frontend
+	docker-compose -f docker-compose.test.yml run build_studio_frontend
 
 .PHONY: docs
 docs:
 	rm -rf docs/_build/
-	# sphinx-apidoc -f -o ./docs/_build/modules ./optinist
+	# pip install -e '.[doc]'
+	# sphinx-apidoc -f -o ./docs/_build/modules ./studio
 	sphinx-autobuild -b html docs docs/_build --port 8001
 
 .PHONY: dockerhub
@@ -41,25 +42,27 @@ dockerhub:
 
 .PHONY: local_build
 local_build:
-	cp -r frontend/build optinist/frontend/build
+	cd frontend
+	yarn install && yarn build
+	cd ../
 	pip install .
 
 .PHONY: upload_testpypi
 upload_testpypi:
-	mkdir -p optinist/frontend/build
-	cp -r frontend/build optinist/frontend/
-	python setup.py sdist
+	python -m build
 	twine upload --repository testpypi dist/*
 
 .PHONY: test_pypi
 test_pypi:
-	python3 -m pip install --index-url https://test.pypi.org/simple/ optinist
+	python3 -m pip install --index-url https://test.pypi.org/simple/ studio
 
 .PHONY: push_pypi
 push_pypi:
 	twine upload --repository pypi dist/*
 
-.PHONY: test_doc
-test_doc:
-	python3 -m pip install -r docs/requirements.txt
-	sphinx-autobuild -b html docs docs/_build --port 8001
+
+.PHONY: format
+format:
+	black studio *.py
+	isort studio *.py
+	flake8 studio *.py

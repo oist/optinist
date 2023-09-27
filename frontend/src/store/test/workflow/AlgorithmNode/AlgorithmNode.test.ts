@@ -8,7 +8,7 @@ import {
   selectAlgorithmParamsValue,
 } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
 import { updateParam } from 'store/slice/AlgorithmNode/AlgorithmNodeSlice'
-import { deleteFlowElementsById } from 'store/slice/FlowElement/FlowElementSlice'
+import { deleteFlowNodeById } from 'store/slice/FlowElement/FlowElementSlice'
 
 describe('AlgorithmNode', () => {
   const initialRootState = store.getState()
@@ -86,11 +86,11 @@ describe('AlgorithmNode', () => {
   })
 
   // 削除
-  test(deleteFlowElementsById.type, () => {
-    const deleteFlowElementsByIdAction = deleteFlowElementsById(nodeId)
+  test(deleteFlowNodeById.type, () => {
+    const deleteFlowNodeByIdAction = deleteFlowNodeById(nodeId)
     const targetState = rootReducer(
       rootReducer(initialRootState, addAlgorithmNodeAction),
-      deleteFlowElementsByIdAction,
+      deleteFlowNodeByIdAction,
     )
     // FlowElement
     expect(selectNodeById(nodeId)(targetState)).toBeUndefined()

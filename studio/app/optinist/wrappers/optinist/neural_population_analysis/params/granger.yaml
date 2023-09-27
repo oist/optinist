@@ -1,0 +1,27 @@
+standard_mean: True
+standard_std: True
+
+transpose: True
+
+# Granger_maxlag(int, Iterable[int]): If an integer, computes the test for all lags up to maxlag. If an iterable, computes the tests only for the lags in maxlag.
+# no default value
+Granger_maxlag: 1
+
+#Include a constant in the model or not.
+Granger_addconst: True
+
+use_adfuller_test: True
+use_coint_test: True
+
+adfuller:
+  maxlag:
+  regression: 'c'
+  autolag: 'AIC'
+  store: False
+  regresults: False
+
+coint:
+  trend: 'c'
+  method: 'aeg'
+  maxlag:
+  autolag: 'AIC'
