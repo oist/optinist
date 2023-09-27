@@ -35,7 +35,7 @@ dependencies = [
   "tifffile",
   "python-multipart",
   "future",
-  "pynwb==2.2.0",
+  "pynwb==2.5.0",
   "psutil",
   "nbstripout",
   "snakemake>=7.24,<7.31",
