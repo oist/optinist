@@ -5,3 +5,6 @@ dependencies:
     - scikit-learn==1.1.*
     - statsmodels==0.13.*
     - pynwb==2.2.0
+    - numexpr
+    - numba
+    - dpca
