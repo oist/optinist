@@ -73,15 +73,15 @@ Follow the steps below to setup `multiuser` mode.
     ```
 3. Create database for your project.
     ```sql
-    CREATE DATABASE {YOUR_DATABASE_NAME};
+    CREATE DATABASE YOUR_DATABASE_NAME;
     ```
 4. Create user for your project.
     ```sql
-    CREATE USER '{DB_USER_NAME}'@'localhost' IDENTIFIED BY '{DB_USER_PASSWORD}';
+    CREATE USER 'DB_USER_NAME'@'localhost' IDENTIFIED BY 'DB_USER_PASSWORD';
     ```
 5. Grant all privileges to the user for the database.
     ```sql
-    GRANT ALL PRIVILEGES ON {YOUR_DATABASE_NAME}.* TO '{DB_USER_NAME}'@'localhost';
+    GRANT ALL PRIVILEGES ON YOUR_DATABASE_NAME.* TO 'DB_USER_NAME'@'localhost';
     ```
 
 ### Set OptiNiSt config
@@ -130,13 +130,13 @@ Follow the steps below to setup `multiuser` mode.
 3. Insert initial data
 
     ```bash
-    mysql -u {DB_USER_NAME} -p
+    mysql -u DB_USER_NAME -p
     ```
     ```sql
-    USE {YOUR_DATABASE_NAME};
-    INSERT INTO organization (name) VALUES ('{YOUR_ORGANIZATION_NAME}');
+    USE YOUR_DATABASE_NAME;
+    INSERT INTO organization (name) VALUES ('YOUR_ORGANIZATION_NAME');
     INSERT INTO roles (id, role) VALUES (1, 'admin'), (20, 'operator');
-    INSERT INTO users (uid, organization_id, name, email, active, ) VALUES ('{USER_UID}', 1, '{YOUR_EMAIL}', '{YOUR_PASSWORD}', 1);
+    INSERT INTO users (uid, organization_id, name, email, active, ) VALUES ('USER_UID', 1, 'YOUR_EMAIL', 'YOUR_PASSWORD', 1);
     INSERT INTO user_roles (user_id, role_id) VALUES (1, 1);
     ```
     - USER_UID is the user uid you created in the previous step ([Create admin user for the project](#create-admin-user-for-the-project)).

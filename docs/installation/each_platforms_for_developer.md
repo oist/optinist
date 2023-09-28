@@ -62,9 +62,11 @@ conda config --set channel_priority strict
 pip install -e '.[dev]'
 ```
 
+If you will make PRs, please see the [](Contributing) section.
+
 ### Set saving directory
 
-Optinist default saving directory is `/tmp/optinist`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
+Optinist default saving directory is `/tmp/studio`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
 ```
 export OPTINIST_DIR="your_saving_dir"
 ```
@@ -91,12 +93,15 @@ INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 ```
 
+- If you won't develop the frontend code, launch browser and go to http://localhost:8000
+
 ## 3. Run frontend
 
 Open new terminal window, and go to `frontend` directory.
 
 ```
-cd optinist/frontend
+# from optinist root directory
+cd frontend
 ```
 
 Then install packages and run.
