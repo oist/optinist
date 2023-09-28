@@ -50,3 +50,5 @@ Under maintenance...
 ```
 
 Done!
+
+If you will make PRs, please see the [](Contributing) section.
