@@ -130,7 +130,7 @@ const TimeSeriesPlotImple = React.memo(() => {
     return Object.fromEntries(
       dataKeys.map((key) => {
       let y = newDataXrange.map((x) => newTimeSeriesData[key]?.[x])
-      const i = Number(key) - 1
+      const i = Number(key)
       const new_i = Math.floor((i % 10) * 10 + i / 10) % 100
       if (drawOrderList.includes(key) && offset) {
         const activeIdx: number = drawOrderList.findIndex((v) => v === key)
