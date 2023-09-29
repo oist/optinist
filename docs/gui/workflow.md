@@ -18,8 +18,8 @@ Workflow
 
 <br>
 <p align="center">
-<img width="200px" src="../_static/tutorials/fig3_imagenode.png" alt="imageNode" />
-<img width="200px" src="../_static/workflow/components/imageList.png" alt="imageNode" />
+<img width="250px" src="../_static/tutorials/fig3_imagenode.png" alt="imageNode" />
+<img width="250px" src="../_static/workflow/components/imageList.png" alt="imageNode" />
 </p>
 <br/>
 
@@ -40,9 +40,33 @@ Choosing a folder makes all the TIFF files in the shown sequence an input set of
 
 You may not want to modify your original data folder, or you may want to make your data folder visible and accessible to OptiNiSt because imaging data can be large and take time to copy. You can take either strategy in assigning your data path:
 
-1. **Copy your original data file to `OPTINIST_DIR` ** To copy the data to `OPTINIST_DIR`, click on the LOAD button on the node. The LOAD button copies the selected file to your `OPTINIST_DIR/input`. This can be done from the GUI.
+1. **Upload from GUI**
 
-2. **Change the setting of `OPTINIST_DIR` ** `OPTINIST_DIR` is defined in `optinist/optinist/api/dir_path.py`. Change line for `OPTINIST_DIR`, INPUT_DIR, and OUTPUT_DIR according to your demand. Changing `dir_path.py` may also be necessary when running the pipeline on your cluster computers. Also, you can quickly change OPTINIST_DIR by changing the environment variable before launching. The change is effective after relaunching.
+    Click on the LOAD button on the node. The LOAD button copies the selected file to your `OPTINIST_DIR/input`.
+
+    **By this method, you cannot upload multiple files or folder at once**.
+    - If you want to upload multiple files or folder at once, use the method below.
+
+2. **Copy files to `OPTINIST_DIR`**
+
+    Copy your raw data to `OPTINIST_DIR/input/1/` by your OS's file manager or command lines.
+      ```{eval-rst}
+      .. warning::
+          Be sure to copy under ``input/1/``. ``1`` is the default workspace id for :ref:`standalone mode <about-multiuser-mode>`.
+          If you copy under ``input/`` directly, the file cannot be found from GUI.
+      ```
+
+    You can copy folder into the input directory.
+    - If you put folder, you can see the folder from GUI, SELECT IMAGE dialog like this.
+      <br>
+      <p align="center">
+      <img width="400px" src="../_static/workflow/components/put_folder_to_input_dir.png" alt="Put Folder to Input Dir" />
+      </p>
+
+3. **Change the setting of `OPTINIST_DIR`**
+
+    This requires modifying source codes. See [](each-platforms-for-developer) installation guide section.
+    `OPTINIST_DIR` is defined in `optinist/studio/app/dir_path.py`. Change line for `OPTINIST_DIR`, `INPUT_DIR`, and `OUTPUT_DIR` according to your demand. Changing `dir_path.py` may also be necessary when running the pipeline on your cluster computers. Also, you can quickly change `OPTINIST_DIR` by changing the environment variable before launching. The change is effective after relaunching.
 
 #### Other Data Formats As The Input
 

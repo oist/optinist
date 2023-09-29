@@ -60,8 +60,10 @@ The function code is described below.
 ```python
 def new_algo_func(               # (*1)
         image_data: ImageData,   # (*2)
-        params: dict=None        # (*3)
-    ) -> dict(fluo=FluoData):    # (*4)
+        output_dir: str,         # (*3)
+        params: dict=None        # (*4)
+        **kwargs,                # (*3)
+    ) -> dict(fluo=FluoData):    # (*5)
     import numpy as np
     info = {
         "fluo": FluoData(np.random.rand(100, 20), file_name="fluo"),
@@ -74,9 +76,10 @@ def new_algo_func(               # (*1)
 - Explanation:
   - (*1) Function name can be any content.
   - (*2) The first argument specifies the input data type. (This is also reflected in the GUI.)
-  - (*3) The second argument receives the function parameters.
+  - (*3) Add these arguments. These arguments are required for the handling workflow.
+  - (*4) This argument receives the function parameters.
     - see. [Function Parameter Definitions](#function-parameter-definitions)
-  - (*4) The return value is a dictionary type. (This is also reflected in the GUI.)
+  - (*5) The return value is a dictionary type. (This is also reflected in the GUI.)
 
 #### Definition of information to be displayed in the GUI
 
@@ -153,7 +156,9 @@ from studio.app.common.dataclass import *
 
 def new_algo_func(
         image_data: ImageData,
-        params: dict=None
+        output_dir: str,
+        params: dict=None,
+        **kwargs,
     ) -> dict(fluo=FluoData):
     return
 ```
@@ -192,7 +197,9 @@ Function input parameters (input on GUI) can be defined in the following file.
 ```python
 def new_algo_func(
         image_data: ImageData,
-        params: dict=None
+        output_dir: str,
+        params: dict=None,
+        **kwargs,
     ) -> dict(fluo=FluoData):
     import numpy as np
     info = {
@@ -215,3 +222,51 @@ Restart the Application, connect imageNode and run it, and you will see the outp
 <style>
 img { width: 50%; }
 </style>
+
+#### Customize plot metadata
+
+You can set plot title and axis labels to some outpus.
+
+![](../_static/add_algorithm/heatmap_with_metadata.png)
+
+To do this,
+
+1. import PlotMetaData in the algorithm function file.
+2. Add PlotMetaData to the output dataclass's `meta` attribute with title or labels you want. If you need only one of them, you can omit the other attributes.
+    ```python
+    from studio.app.common.schemas.outputs import PlotMetaData
+
+    def new_algo_func(
+        image_data: ImageData,
+        output_dir: str,
+        params: dict=None,
+        **kwargs,
+    ) -> dict(fluo=FluoData):
+      import numpy as np
+      info = {
+          "fluo": FluoData(
+            np.random.rand(100, 20), file_name="fluo"
+            meta=PlotMetaData(
+              title="my fluo",
+              xlabel="my xlabel",
+              ylabel="my ylabel",
+          ),
+          "image": ImageData(np.random.rand(10, 100, 100), file_name="image"),
+          "heatmap": HeatMapData(
+            np.random.rand(20, 20),
+            file_name="heatmap",
+            meta=PlotMetaData(
+              title="my heatmap",  # You don't have to set all attributes
+            )
+          )
+      }
+      return info
+    ```
+
+    ```{eval-rst}
+    .. note::
+        Following dataclasses are not supported to visualize these metadata.
+
+        - CsvData
+        - HTMLData
+    ```

@@ -26,20 +26,20 @@ Pull the latest docker image from docker hub.
 docker pull oistncu/optinist
 ```
 Start docker container.
-```
-docker run -it --shm-size=2G --name optinist_container -d -p 8000:8000 --restart=unless-stopped oistncu/optinist:latest python main.py --host 0.0.0.0 --port 8000
-```
-
-Execute in terminal
-```
-docker exec -it optinist_container /bin/bash
-```
-
-### Set saving directory
-
-Optinist default saving directory is `/tmp/stuido`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
 ```bash
-export OPTINIST_DIR="your_saving_dir"
+docker run -it --shm-size=2G \
+-v /your/saving/dir:/app/studio_data \  # Please set your saving directory
+--env OPTINIST_DIR="/app/studio_data" \
+--name optinist_container -d -p 8000:8000 --restart=unless-stopped \
+oistncu/optinist:latest \
+python main.py --host 0.0.0.0 --port 8000
+```
+
+```{eval-rst}
+.. note::
+    Please set ``/your/saving/dir`` to your local directory.
+    Without this, OptiNiSt's data will lost when you stop docker container or reboot your PC.
+    By the command above (``-v`` option), you can mount your local directory to docker container.
 ```
 
 ## 2. Access to backend

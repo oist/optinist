@@ -1,3 +1,4 @@
+(each-platforms-for-developer)=
 Each Platforms for Developer
 =================
 

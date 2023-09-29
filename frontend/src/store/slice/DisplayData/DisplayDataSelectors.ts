@@ -245,6 +245,9 @@ export const selectHTMLDataIsFulfilled =
 export const selectHistogramData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).histogram[filePath].data
 
+export const selectHistogramMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).histogram[filePath].meta
+
 export const selectHistogramDataIsInitialized =
   (filePath: string) => (state: RootState) =>
     Object.keys(selectDisplayData(state).histogram).includes(filePath)
@@ -266,6 +269,9 @@ export const selectHistogramDataError =
       : null
 export const selectLineData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).line[filePath].data
+
+export const selectLineMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).line[filePath].meta
 
 export const selectLineColumns = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).line[filePath].columns
@@ -295,6 +301,9 @@ export const selectLineDataError = (filePath: string) => (state: RootState) =>
 export const selectPieData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).pie[filePath].data
 
+export const selectPieMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).pie[filePath].meta
+
 export const selectPieColumns = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).pie[filePath].columns
 
@@ -319,6 +328,9 @@ export const selectPieDataError = (filePath: string) => (state: RootState) =>
 
 export const selectPolarData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).polar[filePath].data
+
+export const selectPolarMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).polar[filePath].meta
 
 export const selectPolarColumns = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).polar[filePath].columns
