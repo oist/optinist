@@ -4,7 +4,7 @@ from studio.app.optinist.dataclass import RoiData
 
 
 def caiman_mc(
-    image: ImageData, output_dir: str, params: dict = None
+    image: ImageData, output_dir: str, params: dict = None, **kwargs
 ) -> dict(mc_images=ImageData):
     import numpy as np
     from caiman import load_memmap, save_memmap, stop_server
@@ -12,6 +12,9 @@ def caiman_mc(
     from caiman.cluster import setup_cluster
     from caiman.motion_correction import MotionCorrect
     from caiman.source_extraction.cnmf.params import CNMFParams
+
+    function_id = output_dir.split("/")[-1]
+    print("start caiman motion_correction:", function_id)
 
     opts = CNMFParams()
 
@@ -67,7 +70,7 @@ def caiman_mc(
 
     nwbfile = {}
     nwbfile[NWBDATASET.MOTION_CORRECTION] = {
-        "caiman_mc": {
+        function_id: {
             "mc_data": mc_images,
             "xy_trans_data": xy_trans_data,
         }

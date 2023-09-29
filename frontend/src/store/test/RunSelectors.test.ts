@@ -35,14 +35,22 @@ describe('RunSelectors', () => {
             value: 1,
             path: 'threshold_scaling',
           },
-          max_iterations: { type: 'child', value: 20, path: 'max_iterations' },
+          max_iterations: {
+            type: 'child',
+            value: 20,
+            path: 'max_iterations',
+          },
           spatial_hp_detect: {
             type: 'child',
             value: 25,
             path: 'spatial_hp_detect',
           },
           preclassify: { type: 'child', value: 0, path: 'preclassify' },
-          allow_overlap: { type: 'child', value: false, path: 'allow_overlap' },
+          allow_overlap: {
+            type: 'child',
+            value: false,
+            path: 'allow_overlap',
+          },
           inner_neuropil_radius: {
             type: 'child',
             value: 2,
@@ -63,15 +71,23 @@ describe('RunSelectors', () => {
         params: {
           nplanes: { type: 'child', value: 1, path: 'nplanes' },
           nchannels: { type: 'child', value: 1, path: 'nchannels' },
-          force_sktiff: { type: 'child', value: false, path: 'force_sktiff' },
+          force_sktiff: {
+            type: 'child',
+            value: false,
+            path: 'force_sktiff',
+          },
           batch_size: { type: 'child', value: 500, path: 'batch_size' },
-          do_registration: { type: 'child', value: 1, path: 'do_registration' },
+          do_registration: {
+            type: 'child',
+            value: 1,
+            path: 'do_registration',
+          },
         },
         isUpdated: false,
       },
     },
     flowElement: {
-      flowElements: [
+      flowNodes: [
         {
           id: 'input_0',
           type: 'ImageFileNode',
@@ -97,6 +113,8 @@ describe('RunSelectors', () => {
           sourcePosition: 'right',
           position: { x: 413, y: 169.6170204394443 },
         },
+      ],
+      flowEdges: [
         {
           source: 'input_0',
           sourceHandle: 'input_0--image--ImageData',
@@ -118,7 +136,7 @@ describe('RunSelectors', () => {
           id: 'reactflow__edge-suite2p_file_convert_m58owcejm0suite2p_file_convert_m58owcejm0--ops--Suite2pData-suite2p_roi_16ffq69kkcsuite2p_roi_16ffq69kkc--ops--Suite2pData',
         },
       ],
-      flowPosition: { x: 0, y: 0, zoom: 0.7 },
+      flowPosition: [0, 0, 0.7],
       elementCoord: { x: 600, y: 158.6170204394443 },
     },
     inputNode: {
@@ -556,15 +574,23 @@ describe('RunSelectors', () => {
         params: {
           nplanes: { type: 'child', value: 2, path: 'nplanes' },
           nchannels: { type: 'child', value: 1, path: 'nchannels' },
-          force_sktiff: { type: 'child', value: true, path: 'force_sktiff' },
+          force_sktiff: {
+            type: 'child',
+            value: true,
+            path: 'force_sktiff',
+          },
           batch_size: { type: 'child', value: 500, path: 'batch_size' },
-          do_registration: { type: 'child', value: 1, path: 'do_registration' },
+          do_registration: {
+            type: 'child',
+            value: 1,
+            path: 'do_registration',
+          },
         },
         isUpdated: true,
       },
     },
     flowElement: {
-      flowElements: [
+      flowNodes: [
         {
           id: 'input_0',
           type: 'ImageFileNode',
@@ -581,6 +607,8 @@ describe('RunSelectors', () => {
           sourcePosition: 'right',
           position: { x: 350, y: 153.52022229668373 },
         },
+      ],
+      flowEdges: [
         {
           source: 'input_0',
           sourceHandle: 'input_0--image--ImageData',
@@ -592,7 +620,7 @@ describe('RunSelectors', () => {
           id: 'reactflow__edge-input_0input_0--image--ImageData-suite2p_file_convert_6fn2k01zphsuite2p_file_convert_6fn2k01zph--image--ImageData',
         },
       ],
-      flowPosition: { x: 0, y: 0, zoom: 0.7 },
+      flowPosition: [0, 0, 0.7],
       elementCoord: { x: 350, y: 153.52022229668373 },
     },
     inputNode: {

@@ -1,11 +1,21 @@
-p: 1
-nb: 2
-merge_thr: 0.85
-rf:
-stride: 6
-K: 4
-gSig: [4, 4]
-method_init: 'greedy_roi'
-ssub: 1
-tsub: 1
-thr: 0.9
+init_params:
+  # Ain: null  # TBD: need to support 2D array type.
+  do_refit: False
+
+  K: 4
+  gSig: [4, 4]
+  ssub: 1
+  tsub: 1
+  nb: 2
+  method_init: "greedy_roi"
+
+preprocess_params:
+  p: 1
+
+patch_params:
+  rf:
+  stride: 6
+
+merge_params:
+  thr: 0.9
+  merge_thr: 0.85

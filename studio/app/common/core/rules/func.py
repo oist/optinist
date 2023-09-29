@@ -3,8 +3,11 @@
 # This file is executed by snakemake and cause the following lint errors
 # - E402: sys.path.append is required to import optinist modules
 # - F821: do not import snakemake
+import json
+import os
 import sys
 from os.path import abspath, dirname
+from pathlib import Path
 
 ROOT_DIRPATH = dirname(dirname(dirname(dirname(dirname(dirname(abspath(__file__)))))))
 
@@ -24,5 +27,10 @@ if __name__ == "__main__":
 
     rule_config.input = snakemake.input
     rule_config.output = snakemake.output[0]
+
+    # save snakemake script file path and PID of current running algo function
+    pid_data = {"last_pid": os.getpid(), "last_script_file": sys.argv[0]}
+    with open(Path(rule_config.output).parent.parent / "pid.json", "w") as f:
+        json.dump(pid_data, f)
 
     Runner.run(rule_config, last_output)

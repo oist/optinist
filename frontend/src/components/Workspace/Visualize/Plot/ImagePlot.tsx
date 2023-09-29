@@ -73,6 +73,7 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemActions'
 import { addRoiApi, deleteRoiApi, mergeRoiApi } from 'api/outputs/Outputs'
 import { isTimeSeriesItem } from 'store/slice/VisualizeItem/VisualizeItemUtils'
+import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
 
 interface PointClick {
   x: number
@@ -102,6 +103,7 @@ const sChart = 320
 export const ImagePlot = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
 
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const startIndex = useSelector(selectImageItemStartIndex(itemId))
   const endIndex = useSelector(selectImageItemEndIndex(itemId))
   const isPending = useSelector(selectImageDataIsPending(path))
@@ -113,19 +115,30 @@ export const ImagePlot = React.memo(() => {
 
   const dispatch = useDispatch<AppDispatch>()
   React.useEffect(() => {
-    if (!isInitialized) {
-      dispatch(
-        getImageData({
-          path,
-          startIndex: startIndex ?? 1,
-          endIndex: endIndex ?? 10,
-        }),
-      )
+    if (workspaceId) {
+      if (!isInitialized) {
+        dispatch(
+          getImageData({
+            path,
+            workspaceId,
+            startIndex: startIndex ?? 1,
+            endIndex: endIndex ?? 10,
+          }),
+        )
+      }
+      if (roiFilePath != null) {
+        dispatch(getRoiData({ path: roiFilePath, workspaceId }))
+      }
     }
-    if (roiFilePath != null) {
-      dispatch(getRoiData({ path: roiFilePath }))
-    }
-  }, [dispatch, isInitialized, path, startIndex, endIndex, roiFilePath])
+  }, [
+    dispatch,
+    isInitialized,
+    path,
+    workspaceId,
+    startIndex,
+    endIndex,
+    roiFilePath,
+  ])
   if (isPending) {
     return <LinearProgress />
   } else if (error != null) {
@@ -147,6 +160,7 @@ const ImagePlotChart = React.memo<{
   activeIndex: number
 }>(({ activeIndex }) => {
   const dispatch = useDispatch<AppDispatch>()
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
   const imageData = useSelector(
     selectActiveImageData(path, activeIndex),
@@ -353,12 +367,12 @@ const ImagePlotChart = React.memo<{
   }
 
   const setSelectRoi = (point: PointClick) => {
-    if (typeof point.z !== 'number' || point.z === -1) return
+    if (!point.z) return
     const newPoints = [...pointClick, point]
     const newRoi = roiDataState.map((roi) => {
       return roi.map((element) => {
         if (newPoints.some((p) => p.z === element)) {
-          return -1
+          return 0
         }
         return element
       })
@@ -456,7 +470,7 @@ const ImagePlotChart = React.memo<{
     } catch {}
     setLoadingApi(false)
     onCancelAdd()
-    dispatch(getRoiData({ path: roiFilePath }))
+    workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     resetTimeSeries()
   }
 
@@ -466,12 +480,12 @@ const ImagePlotChart = React.memo<{
     dispatch(resetAllOrderList())
     try {
       await mergeRoiApi(roiFilePath, {
-        ids: pointClick.map((point) => point.z),
+        ids: pointClick.map((point) => point.z - 1),
       })
     } catch {}
     setLoadingApi(false)
     onCancel()
-    dispatch(getRoiData({ path: roiFilePath }))
+    workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     resetTimeSeries()
   }
 
@@ -481,12 +495,12 @@ const ImagePlotChart = React.memo<{
     dispatch(resetAllOrderList())
     try {
       await deleteRoiApi(roiFilePath, {
-        ids: pointClick.map((point) => point.z),
+        ids: pointClick.map((point) => point.z - 1),
       })
     } catch {}
     setLoadingApi(false)
     onCancel()
-    dispatch(getRoiData({ path: roiFilePath }))
+    workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     resetTimeSeries()
   }
 

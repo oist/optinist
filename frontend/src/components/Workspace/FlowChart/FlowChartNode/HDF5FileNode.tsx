@@ -32,6 +32,7 @@ import {
 import { getHDF5Tree } from 'store/slice/HDF5/HDF5Action'
 import { HDF5TreeNodeType } from 'store/slice/HDF5/HDF5Type'
 import { Typography } from '@mui/material'
+import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
 import { AppDispatch } from "../../../../store/store";
 
 const sourceHandleStyle: CSSProperties = {
@@ -224,10 +225,11 @@ function useHDF5Tree(
   const tree = useSelector(selectHDF5Nodes())
   const isLoading = useSelector(selectHDF5IsLoading())
   const filePath = useSelector(selectHDF5InputNodeSelectedFilePath(nodeId))
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
   React.useEffect(() => {
-    if (!isLoading && filePath) {
-      dispatch(getHDF5Tree({ path: filePath }))
+    if (workspaceId && !isLoading && filePath) {
+      dispatch(getHDF5Tree({ path: filePath, workspaceId }))
     }
-  }, [isLoading, filePath, dispatch])
+  }, [workspaceId, isLoading, filePath, dispatch])
   return [tree, isLoading]
 }

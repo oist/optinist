@@ -33,7 +33,9 @@ class SmkRule:
 
         self.builder = RuleBuilder()
         (
-            self.builder.set_input(self._node.data.path)
+            self.builder.set_input(
+                self._node.data.path, workspace_id=self._workspace_id
+            )
             .set_return_arg(_return_name)
             .set_params(self._node.data.param)
             .set_output(_output_file)

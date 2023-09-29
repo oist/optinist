@@ -1,4 +1,4 @@
-import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction, isAnyOf } from '@reduxjs/toolkit'
 import {
   Node,
   NodeChange,
@@ -23,6 +23,7 @@ import {
   INITIAL_IMAGE_ELEMENT_NAME,
   REACT_FLOW_NODE_TYPE_KEY,
 } from 'const/flowchart'
+import { fetchExperiment } from '../Experiments/ExperimentsActions'
 import {
   reproduceWorkflow,
   importWorkflowConfig,
@@ -102,6 +103,18 @@ export const flowElementSlice = createSlice({
         state.flowNodes = applyNodeChanges(
           [{ id: element.id, type: 'remove' }],
           state.flowNodes,
+        )
+        state.flowEdges = applyEdgeChanges(
+          state.flowEdges
+            .filter((edge) => {
+              return (
+                edge.source === action.payload || edge.target === action.payload
+              )
+            })
+            .map((edge) => {
+              return { id: edge.id, type: 'remove' }
+            }),
+          state.flowEdges,
         )
       }
     },
@@ -184,8 +197,13 @@ export const flowElementSlice = createSlice({
           }
         }
       })
+      .addCase(fetchExperiment.rejected, () => initialState)
       .addMatcher(
-        isAnyOf(reproduceWorkflow.fulfilled, importWorkflowConfig.fulfilled),
+        isAnyOf(
+          reproduceWorkflow.fulfilled,
+          importWorkflowConfig.fulfilled,
+          fetchExperiment.fulfilled,
+        ),
         (state, action) => {
           state.flowPosition = initialFlowPosition
           state.elementCoord = initialElementCoord

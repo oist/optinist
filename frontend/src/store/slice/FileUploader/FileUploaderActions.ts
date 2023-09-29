@@ -15,6 +15,7 @@ export const uploadFile = createAsyncThunk<
     resultPath: string
   },
   {
+    workspaceId: number
     requestId: string
     nodeId?: string
     fileName: string
@@ -23,7 +24,7 @@ export const uploadFile = createAsyncThunk<
   }
 >(
   `${FILE_UPLOADER_SLICE_NAME}/uploadFile`,
-  async ({ requestId, fileName, formData }, thunkAPI) => {
+  async ({ workspaceId, requestId, fileName, formData }, thunkAPI) => {
     try {
       const config = getUploadConfig((percent, total) => {
         thunkAPI.dispatch(
@@ -34,7 +35,12 @@ export const uploadFile = createAsyncThunk<
           }),
         )
       })
-      const response = await uploadFileApi(fileName, config, formData)
+      const response = await uploadFileApi(
+        workspaceId,
+        fileName,
+        config,
+        formData,
+      )
       return {
         resultPath: response.file_path,
       }

@@ -38,6 +38,7 @@ import {
 import { getCsvData } from 'store/slice/DisplayData/DisplayDataActions'
 import { PresentationalCsvPlot } from 'components/Workspace/Visualize/Plot/CsvPlot'
 import { AppDispatch } from "../../../../store/store";
+import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
 
 const sourceHandleStyle: CSSProperties = {
   width: 8,
@@ -215,11 +216,13 @@ const CsvPreview = React.memo<{
   const isFulfilled = useSelector(selectCsvDataIsFulfilled(path))
   const error = useSelector(selectCsvDataError(path))
   const dispatch = useDispatch<AppDispatch>()
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const dispatch = useDispatch()
   React.useEffect(() => {
-    if (!isInitialized) {
-      dispatch(getCsvData({ path }))
+    if (workspaceId && !isInitialized) {
+      dispatch(getCsvData({ path, workspaceId }))
     }
-  }, [dispatch, isInitialized, path])
+  }, [dispatch, isInitialized, path, workspaceId])
   if (isPending) {
     return <LinearProgress />
   } else if (error != null) {

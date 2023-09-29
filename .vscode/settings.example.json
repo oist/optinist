@@ -1,0 +1,17 @@
+{
+  "search.exclude": {
+    "frontend/build/**": true,
+    "build/**": true
+  },
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+    }
+  },
+  "flake8.args": ["--config=.flake8"],
+  // NOTE: Uncomment following line and fix "optinist_dev" to your conda env name
+  // "flake8.path": ["conda", "run", "-n", "optinist_dev", "python", "-m", "flake8"],
+  "esbonio.sphinx.confDir": ""
+}

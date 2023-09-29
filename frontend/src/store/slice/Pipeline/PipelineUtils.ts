@@ -67,6 +67,11 @@ export function convertToRunResult(dto: RunResultDTO) {
         name: nodeResultDto.name,
         outputPaths: convertToOutputPath(outputPath),
       }
+    } else if (nodeResultDto.status === 'running') {
+      result[nodeId] = {
+        status: NODE_RESULT_STATUS.PENDING,
+        name: nodeResultDto.name,
+      }
     } else {
       result[nodeId] = {
         status: NODE_RESULT_STATUS.ERROR,

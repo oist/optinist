@@ -31,7 +31,7 @@ build_frontend:
 .PHONY: docs
 docs:
 	rm -rf docs/_build/
-	pip install -e '.[doc]'
+	# pip install -e '.[doc]'
 	# sphinx-apidoc -f -o ./docs/_build/modules ./studio
 	sphinx-autobuild -b html docs docs/_build --port 8001
 

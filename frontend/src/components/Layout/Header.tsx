@@ -12,6 +12,7 @@ import Tooltips from 'components/Layout/Tooltips'
 import WorkspaceTabs from 'components/Workspace/WorkspaceTabs'
 import { IS_STANDALONE } from 'const/Mode'
 import Profile from './Profile'
+import { APP_BAR_HEIGHT } from 'const/Layout'
 
 const Header: FC<{
   handleDrawerOpen: () => void
@@ -40,7 +41,7 @@ const StandaloneHeader: FC = () => {
 const MultiUserHeader: FC<{ handleDrawerOpen: () => void }> = ({
   handleDrawerOpen,
 }) => {
-  const showTabsRegex = /^\/workspaces\/.+$/
+  const showTabsRegex = /^\/console\/workspaces\/.+$/
   const location = useLocation()
 
   return (
@@ -68,6 +69,7 @@ const StyledAppBar = styled(MuiAppBar)({
   position: 'fixed',
   backgroundColor: '#E1DEDB',
   color: '#000000',
+  height: APP_BAR_HEIGHT,
 })
 
 const TitleLogo = styled(Typography)({

@@ -2,8 +2,8 @@
 __pycache__
 .ipynb_checkpoints
 .vscode/*
-!.vscode/settings.json
 !.vscode/extensions.json
+!.vscode/settings.example.json
 dist
 /build
 

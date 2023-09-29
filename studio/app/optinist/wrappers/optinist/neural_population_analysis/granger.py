@@ -9,6 +9,7 @@ def Granger(
     output_dir: str,
     iscell: IscellData = None,
     params: dict = None,
+    **kwargs,
 ) -> dict():
     # modules specific to function
     # from sklearn.preprocessing import StandardScaler
@@ -17,6 +18,9 @@ def Granger(
     import numpy as np
     from statsmodels.tsa.stattools import adfuller, coint, grangercausalitytests
     from tqdm import tqdm
+
+    function_id = output_dir.split("/")[-1]
+    print("start granger:", function_id)
 
     neural_data = neural_data.data
 
@@ -158,14 +162,16 @@ def Granger(
     # NWB追加
     nwbfile = {}
     nwbfile[NWBDATASET.POSTPROCESS] = {
-        "Granger_fval_mat": GC["Granger_fval_mat"][0],
-        "gc_combinations": GC["gc_combinations"],
-        "gc_ssr_ftest": GC["gc_ssr_ftest"],
-        "gc_ssr_chi2test": GC["gc_ssr_chi2test"],
-        "gc_lrtest": GC["gc_lrtest"],
-        "gc_params_ftest": GC["gc_params_ftest"],
-        "cit_pvalue": cit["cit_pvalue"],
-        "adf_pvalue": adf["adf_pvalue"],
+        function_id: {
+            "Granger_fval_mat": GC["Granger_fval_mat"][0],
+            "gc_combinations": GC["gc_combinations"],
+            "gc_ssr_ftest": GC["gc_ssr_ftest"],
+            "gc_ssr_chi2test": GC["gc_ssr_chi2test"],
+            "gc_lrtest": GC["gc_lrtest"],
+            "gc_params_ftest": GC["gc_params_ftest"],
+            "cit_pvalue": cit["cit_pvalue"],
+            "adf_pvalue": adf["adf_pvalue"],
+        }
     }
 
     info["nwbfile"] = nwbfile

@@ -10,9 +10,13 @@ def CCA(
     output_dir: str,
     iscell: IscellData = None,
     params: dict = None,
+    **kwargs,
 ) -> dict():
     import numpy as np
     from sklearn.cross_decomposition import CCA
+
+    function_id = output_dir.split("/")[-1]
+    print("start cca:", function_id)
 
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data
@@ -54,14 +58,16 @@ def CCA(
     # NWB追加
     nwbfile = {}
     nwbfile[NWBDATASET.POSTPROCESS] = {
-        "projectedNd": proj,
-        "x_weights": cca.x_weights_,  # singular vectors
-        "y_weights": cca.y_weights_,
-        "x_loadings_": cca.x_rotations_,
-        "y_loadings_": cca.x_rotations_,
-        "coef": cca.coef_,
-        "n_iter_": cca.n_iter_,
-        # 'n_features_in_': [cca.n_features_in_],
+        function_id: {
+            "projectedNd": proj,
+            "x_weights": cca.x_weights_,  # singular vectors
+            "y_weights": cca.y_weights_,
+            "x_loadings_": cca.x_rotations_,
+            "y_loadings_": cca.x_rotations_,
+            "coef": cca.coef_,
+            "n_iter_": cca.n_iter_,
+            # 'n_features_in_': [cca.n_features_in_],
+        }
     }
 
     info = {

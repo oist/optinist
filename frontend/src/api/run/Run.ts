@@ -43,7 +43,7 @@ export interface AlgorithmNodePostData extends AlgorithmNodeData {
 }
 
 export async function runApi(
-  workspaceId: string,
+  workspaceId: number,
   data: RunPostData,
 ): Promise<string> {
   const response = await axios.post(`${BASE_URL}/run/${workspaceId}`, data)
@@ -51,7 +51,7 @@ export async function runApi(
 }
 
 export async function runByUidApi(
-  workspaceId: string,
+  workspaceId: number,
   uid: string,
   data: Omit<RunPostData, 'name'>,
 ): Promise<string> {
@@ -79,7 +79,7 @@ export type OutputPathsDTO = {
 }
 
 export async function runResult(data: {
-  workspaceId: string
+  workspaceId: number
   uid: string
   pendingNodeIdList: string[]
 }): Promise<RunResultDTO> {
@@ -89,6 +89,17 @@ export async function runResult(data: {
     {
       pendingNodeIdList,
     },
+  )
+  return response.data
+}
+
+export async function cancelResultApi(data: {
+  workspaceId: number
+  uid: string
+}): Promise<RunResultDTO> {
+  const { workspaceId, uid } = data
+  const response = await axios.post(
+    `${BASE_URL}/run/cancel/${workspaceId}/${uid}`,
   )
   return response.data
 }
