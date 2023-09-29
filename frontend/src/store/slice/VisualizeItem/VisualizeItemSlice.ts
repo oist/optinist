@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
 import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 import {
   deleteDisplayItem,
@@ -39,6 +39,7 @@ import {
   isLineItem,
   isPolarItem,
 } from './VisualizeItemUtils'
+import { run, runByCurrentUid } from '../Pipeline/PipelineActions'
 
 export const initialState: VisualaizeItem = {
   items: {},
@@ -923,6 +924,10 @@ export const visualaizeItemSlice = createSlice({
           }
         })
       })
+      .addMatcher(
+        isAnyOf(run.fulfilled, runByCurrentUid.fulfilled),
+        (state, action) => initialState,
+      )
   },
 })
 
