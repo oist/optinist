@@ -121,6 +121,12 @@ class NWBCreater:
         if "TwoPhotonSeries" in nwbfile.acquisition:
             reference_images = nwbfile.acquisition["TwoPhotonSeries"]
 
+            try:
+                image_seg.plane_segmentations.pop(function_id)
+                nwbfile.processing["ophys"].data_interfaces.pop(function_id)
+            except KeyError:
+                pass
+
             image_seg.create_plane_segmentation(
                 name=function_id,
                 description="output",
@@ -248,14 +254,15 @@ class NWBCreater:
 
     @classmethod
     def postprocess(cls, nwbfile, function_id, data):
-        nwbfile.create_processing_module(name=function_id, description="description")
-
         for key, value in data.items():
-            postprocess = PostProcess(
-                name=key,
-                data=value,
-            )
-            nwbfile.processing[function_id].add_container(postprocess)
+            process_name = f"{function_id}_{key}"
+            postprocess = PostProcess(name=process_name, data=value)
+
+            try:
+                nwbfile.processing["optinist"].add_container(postprocess)
+            except ValueError:
+                nwbfile.processing["optinist"].data_interfaces.pop(process_name)
+                nwbfile.processing["optinist"].add_container(postprocess)
 
         return nwbfile
 

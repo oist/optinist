@@ -114,13 +114,10 @@ class Runner:
         timeout = 30  # ロック取得のタイムアウト時間（秒）
         with FileLock(lock_path, timeout=timeout):
             # ロックが取得できたら、ファイルに書き込みを行う
-            try:
-                if os.path.exists(save_path):
-                    overwrite_nwbfile(save_path, nwbconfig)
-                else:
-                    save_nwb(save_path, input_nwbfile, nwbconfig)
-            except Exception as e:
-                print(e)
+            if os.path.exists(save_path):
+                overwrite_nwbfile(save_path, nwbconfig)
+            else:
+                save_nwb(save_path, input_nwbfile, nwbconfig)
 
     @classmethod
     def execute_function(cls, path, params, nwb_params, output_dir, input_info):
