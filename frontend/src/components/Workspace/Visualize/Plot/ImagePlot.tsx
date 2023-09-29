@@ -33,6 +33,7 @@ import {
   selectActiveImageData,
   selectRoiData,
   selectImageDataMaxSize,
+  selectImageMeta,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import {
   getImageData,
@@ -166,6 +167,7 @@ const ImagePlotChart = React.memo<{
     selectActiveImageData(path, activeIndex),
     imageDataEqualtyFn,
   )
+  const meta = useSelector(selectImageMeta(path))
   const roiFilePath = useSelector(selectRoiItemFilePath(itemId))
 
   const roiData = useSelector(
@@ -299,6 +301,10 @@ const ImagePlotChart = React.memo<{
   })
   const layout = React.useMemo(
     () => ({
+      title: {
+        text: meta?.title,
+        x: 0.1,
+      },
       width: width,
       height: height - 130,
       margin: {
@@ -308,6 +314,7 @@ const ImagePlotChart = React.memo<{
       },
       dragmode: selectMode ? 'select' : 'pan',
       xaxis: {
+        title: meta?.xlabel,
         autorange: true,
         showgrid: showgrid,
         showline: showline,
@@ -317,6 +324,7 @@ const ImagePlotChart = React.memo<{
         showticklabels: showticklabels,
       },
       yaxis: {
+        title: meta?.ylabel,
         automargin: true,
         autorange: 'reversed',
         showgrid: showgrid,
@@ -328,7 +336,7 @@ const ImagePlotChart = React.memo<{
       },
     }),
     //eslint-disable-next-line react-hooks/exhaustive-deps
-    [showgrid, showline, showticklabels, width, height, selectMode, isAddRoi],
+    [meta, showgrid, showline, showticklabels, width, height, selectMode, isAddRoi],
   )
 
   const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))

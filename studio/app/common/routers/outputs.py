@@ -18,6 +18,18 @@ from studio.app.dir_path import DIRPATH
 router = APIRouter(prefix="/outputs", tags=["outputs"])
 
 
+def get_initial_timeseries_data(dirpath) -> JsonTimeSeriesData:
+    plot_meta_path = f"{dirpath}.plot-meta.json"
+    plot_meta = JsonReader.read_as_plot_meta(plot_meta_path)
+
+    return JsonTimeSeriesData(
+        xrange=[],
+        data={},
+        std={},
+        meta=plot_meta,
+    )
+
+
 @router.get("/inittimedata/{dirpath:path}", response_model=JsonTimeSeriesData)
 async def get_inittimedata(dirpath: str):
     file_numbers = sorted(
@@ -34,12 +46,6 @@ async def get_inittimedata(dirpath: str):
         join_filepath([dirpath, f"{str(index)}.json"])
     )
 
-    return_data = JsonTimeSeriesData(
-        xrange=[],
-        data={},
-        std={},
-    )
-
     data = {
         str(i): {json_data.xrange[0]: json_data.data[json_data.xrange[0]]}
         for i in file_numbers
@@ -51,12 +57,12 @@ async def get_inittimedata(dirpath: str):
             for i in file_numbers
         }
 
-    return_data = JsonTimeSeriesData(
-        xrange=json_data.xrange,
-        data=data,
-        std=std if json_data.std is not None else {},
-    )
+    return_data = get_initial_timeseries_data(dirpath)
+    return_data.xrange = json_data.xrange
+    if json_data.std is not None:
+        return_data.std = std
 
+    return_data.data = data
     return_data.data[str_index] = json_data.data
     if json_data.std is not None:
         return_data.std[str_index] = json_data.std
@@ -70,11 +76,7 @@ async def get_timedata(dirpath: str, index: int):
         join_filepath([dirpath, f"{str(index)}.json"])
     )
 
-    return_data = JsonTimeSeriesData(
-        xrange=[],
-        data={},
-        std={},
-    )
+    return_data = get_initial_timeseries_data(dirpath)
 
     str_index = str(index)
     return_data.data[str_index] = json_data.data
@@ -86,11 +88,7 @@ async def get_timedata(dirpath: str, index: int):
 
 @router.get("/alltimedata/{dirpath:path}", response_model=JsonTimeSeriesData)
 async def get_alltimedata(dirpath: str):
-    return_data = JsonTimeSeriesData(
-        xrange=[],
-        data={},
-        std={},
-    )
+    return_data = get_initial_timeseries_data(dirpath)
 
     for i, path in enumerate(glob(join_filepath([dirpath, "*.json"]))):
         str_idx = str(os.path.splitext(os.path.basename(path))[0])

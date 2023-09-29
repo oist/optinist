@@ -77,9 +77,16 @@ export const DATA_TYPE_SET = {
 
 export type DATA_TYPE = typeof DATA_TYPE_SET[keyof typeof DATA_TYPE_SET]
 
+export type PlotMetaData = {
+  xlabel?: string
+  ylabel?: string
+  title?: string
+}
+
 interface BaseDisplay<T extends DATA_TYPE, Data> {
   type: T
   data: Data
+  meta?: PlotMetaData
   pending: boolean
   error: string | null
   fulfilled: boolean
