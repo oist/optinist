@@ -36,10 +36,11 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import createColormap from 'colormap'
 import { setTimeSeriesItemDrawOrderList } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { AppDispatch } from "../../../../store/store";
 
 export const TimeSeriesPlot = React.memo(() => {
   const { itemId, filePath: path } = React.useContext(DisplayDataContext)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const isPending = useSelector(selectTimeSeriesDataIsPending(path))
   const isInitialized = useSelector(selectTimeSeriesDataIsInitialized(path))
   const error = useSelector(selectTimeSeriesDataError(path))
@@ -66,7 +67,7 @@ const TimeSeriesPlotImple = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
 
   // 0番のデータとkeysだけをとってくる
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const timeSeriesData = useSelector(
     selectTimeSeriesData(path),
     timeSeriesDataEqualityFn,

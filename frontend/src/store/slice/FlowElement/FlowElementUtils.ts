@@ -1,4 +1,4 @@
-import { isNode, Node } from 'react-flow-renderer'
+import { isNode, Node } from 'reactflow'
 import {
   AlgorithmNodeData,
   NodeData,

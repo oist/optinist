@@ -9,6 +9,7 @@ import { getMe } from 'store/slice/User/UserActions'
 import Header from './Header'
 import LeftMenu from './LeftMenu'
 import { IS_STANDALONE } from 'const/Mode'
+import { AppDispatch } from "../../store/store";
 
 const ignorePaths = ['/login', '/account-delete', '/reset-password']
 const loginPaths = ['/login', '/reset-password']
@@ -18,7 +19,7 @@ const Layout: FC = ({ children }) => {
   const location = useLocation()
   const [open, setOpen] = useState(false)
   const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   const handleDrawerOpen = () => {
     setOpen(true)

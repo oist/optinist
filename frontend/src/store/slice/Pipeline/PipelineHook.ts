@@ -15,13 +15,14 @@ import { selectAlgorithmNodeNotExist } from '../AlgorithmNode/AlgorithmNodeSelec
 import { getExperiments } from '../Experiments/ExperimentsActions'
 import { useSnackbar } from 'notistack'
 import { RUN_STATUS } from './PipelineType'
+import { AppDispatch } from "../../store";
 
 const POLLING_INTERVAL = 5000
 
 export type UseRunPipelineReturnType = ReturnType<typeof useRunPipeline>
 
 export function useRunPipeline() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const uid = useSelector(selectPipelineLatestUid)
   const isCanceled = useSelector(selectPipelineIsCanceled)
   const isStartedSuccess = useSelector(selectPipelineIsStartedSuccess)

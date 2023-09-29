@@ -36,7 +36,7 @@ export const DeleteButton = React.memo(() => {
   }
   const onClickOk = () => {
     setOpen(false)
-    dispatch(deleteExperimentByUid(uid))
+    dispatch(deleteExperimentByUid(uid) as any)
     uid === currentPipelineUid && dispatch(clearCurrentPipeline())
   }
   return (

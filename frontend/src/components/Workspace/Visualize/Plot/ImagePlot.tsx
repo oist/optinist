@@ -7,7 +7,7 @@ import React, {
 } from 'react'
 import PlotlyChart from 'react-plotlyjs-ts'
 import { useSelector, useDispatch } from 'react-redux'
-import { RootState } from 'store/store'
+import { AppDispatch, RootState } from 'store/store'
 import {
   Datum,
   LayoutAxis,
@@ -111,7 +111,7 @@ export const ImagePlot = React.memo(() => {
 
   const roiFilePath = useSelector(selectRoiItemFilePath(itemId))
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   React.useEffect(() => {
     if (!isInitialized) {
       dispatch(
@@ -146,7 +146,7 @@ const ImagePlotImple = React.memo(() => {
 const ImagePlotChart = React.memo<{
   activeIndex: number
 }>(({ activeIndex }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
   const imageData = useSelector(
     selectActiveImageData(path, activeIndex),

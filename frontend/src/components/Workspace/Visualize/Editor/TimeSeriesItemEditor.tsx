@@ -43,6 +43,7 @@ import { arrayEqualityFn } from 'utils/EqualityUtils'
 import { Accordion } from 'components/common/Accordion'
 
 import { SaveFig } from './SaveFig'
+import { AppDispatch } from "../../../../store/store";
 
 export const TimeSeriesItemEditor: React.FC = () => {
   return (
@@ -230,7 +231,7 @@ const Xrange: React.FC = () => {
 
 const LegendSelect: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   // const drawIndexMap = useSelector(selectTimeSeriesItemDrawIndexMap(itemId))
   const dataKeys = useSelector(
     selectTimeSeriesItemKeys(itemId),

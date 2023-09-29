@@ -20,6 +20,7 @@ import {
   selectVisualizeSaveFilename,
   selectVisualizeSaveFormat,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import { AppDispatch } from "../../../../store/store";
 
 export const RoiPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -28,7 +29,7 @@ export const RoiPlot = React.memo(() => {
   const isFulfilled = useSelector(selectRoiDataIsFulfilled(path))
   const error = useSelector(selectRoiDataError(path))
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   React.useEffect(() => {
     if (!isInitialized) {
       dispatch(getRoiData({ path }))

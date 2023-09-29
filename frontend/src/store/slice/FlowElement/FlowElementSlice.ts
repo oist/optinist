@@ -8,7 +8,7 @@ import {
   applyEdgeChanges,
   Position,
   Transform,
-} from 'react-flow-renderer'
+} from 'reactflow'
 import {
   FLOW_ELEMENT_SLICE_NAME,
   FlowElement,

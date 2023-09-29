@@ -50,6 +50,7 @@ import Button from '@mui/material/Button'
 import { getImageData } from 'store/slice/DisplayData/DisplayDataActions'
 import { setNewDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemActions'
 import { SaveFig } from './SaveFig'
+import { AppDispatch } from "../../../../store/store";
 
 export const ImageItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
@@ -271,7 +272,7 @@ const StartEndIndex: React.FC = () => {
     useSelector(selectImageItemEndIndex(itemId)),
   )
   const inputError = !(startIndex > 0)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const onStartChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue = event.target.value === '' ? '' : Number(event.target.value)
     if (typeof newValue === 'number') {

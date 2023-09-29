@@ -15,10 +15,11 @@ import { createParamFormItemComponent } from 'components/common/ParamFormItemCre
 import { arrayEqualityFn } from 'utils/EqualityUtils'
 
 import { ParamFormContext } from './RightDrawer'
+import { AppDispatch } from "../../../store/store";
 
 export const AlgorithmParamForm = React.memo(() => {
   const nodeId = React.useContext(ParamFormContext)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const algoName = useSelector(selectAlgorithmName(nodeId))
   const algoParamIsLoaded = useSelector(selectAlgorithmParamsExit(nodeId))
   const paramKeyList = useSelector(

@@ -8,9 +8,10 @@ import { useNavigate } from "react-router-dom";
 import { updateMePasswordApi } from 'api/users/UsersMe'
 import { deleteMe } from 'store/slice/User/UserActions'
 import { selectCurrentUser } from 'store/slice/User/UserSelector'
+import { AppDispatch } from "../../store/store";
 const Account = () => {
   const user = useSelector(selectCurrentUser)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] = useState(false)
   const [isChangePwModalOpen, setIsChangePwModalOpen] = useState(false)

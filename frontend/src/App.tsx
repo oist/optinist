@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import IconButton from '@mui/material/IconButton'
 import Close from '@mui/icons-material/Close'
-import { SnackbarProvider, SnackbarKey, useSnackbar } from 'notistack'
+import { SnackbarProvider, SnackbarKey, useSnackbar, SnackbarProviderProps } from 'notistack'
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
 import Layout from 'components/Layout'
 import Dashboard from 'pages/Dashboard'
@@ -13,9 +13,11 @@ import Workspaces from 'pages/Workspace'
 import Workspace from 'pages/Workspace/Workspace'
 import { IS_STANDALONE } from 'const/Mode'
 
+const SnackbarProviderComponent = SnackbarProvider as unknown as  React.FC<SnackbarProviderProps & {children: ReactNode}>
+
 const App: React.FC = () => {
   return (
-    <SnackbarProvider
+    <SnackbarProviderComponent
       maxSnack={5}
       action={(snackbarKey) => (
         <SnackbarCloseButton snackbarKey={snackbarKey} />
@@ -44,7 +46,7 @@ const App: React.FC = () => {
           )}
         </Layout>
       </BrowserRouter>
-    </SnackbarProvider>
+    </SnackbarProviderComponent>
   )
 }
 

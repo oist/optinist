@@ -1,4 +1,4 @@
-import { Connection } from 'react-flow-renderer'
+import { Connection } from 'reactflow'
 
 export function toHandleId(nodeId: string, name: string, type: string) {
   return `${nodeId}--${name}--${type}`

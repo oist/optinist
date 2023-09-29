@@ -11,10 +11,11 @@ import {
   selectHTMLDataIsPending,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getHTMLData } from 'store/slice/DisplayData/DisplayDataActions'
+import { AppDispatch } from "../../../../store/store";
 
 export const HTMLPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const isPending = useSelector(selectHTMLDataIsPending(path))
   const isInitialized = useSelector(selectHTMLDataIsInitialized(path))
   const error = useSelector(selectHTMLDataError(path))
