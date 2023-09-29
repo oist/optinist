@@ -1,7 +1,7 @@
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 
 
-def set_nwbfile(cnmf_data):
+def set_nwbfile(cnmf_data, function_id):
     im = cnmf_data.get("im")
     is_cell = cnmf_data.get("is_cell")
     fluorescence = cnmf_data.get("fluorescence")
@@ -16,11 +16,11 @@ def set_nwbfile(cnmf_data):
         kargs["image_mask"] = im[i, :]
         roi_list.append(kargs)
 
-    nwbfile[NWBDATASET.ROI] = {"roi_list": roi_list}
+    nwbfile[NWBDATASET.ROI] = {function_id: roi_list}
 
     # iscellを追加
     nwbfile[NWBDATASET.COLUMN] = {
-        "roi_column": {
+        function_id: {
             "name": "iscell",
             "discription": "two columns - iscell & probcell",
             "data": is_cell,
@@ -30,20 +30,24 @@ def set_nwbfile(cnmf_data):
     # Fluorescence
 
     nwbfile[NWBDATASET.FLUORESCENCE] = {
-        "RoiResponseSeries": {
-            "table_name": "ROIs",
-            "region": list(range(n_cells)),
-            "name": "RoiResponseSeries",
-            "data": fluorescence.T,
-            "unit": "lumens",
-        },
+        function_id: {
+            "Fluorescence": {
+                "table_name": "ROIs",
+                "region": list(range(n_cells)),
+                "name": "Fluorescence",
+                "data": fluorescence.T,
+                "unit": "lumens",
+            },
+        }
     }
 
     # NWB追加
     nwbfile[NWBDATASET.POSTPROCESS] = {
-        "add_roi": cnmf_data.get("add_roi", []),
-        "delete_roi": cnmf_data.get("delete_roi", []),
-        "merge_roi": cnmf_data.get("merge_roi", []),
+        function_id: {
+            "add_roi": cnmf_data.get("add_roi", []),
+            "delete_roi": cnmf_data.get("delete_roi", []),
+            "merge_roi": cnmf_data.get("merge_roi", []),
+        }
     }
 
     return nwbfile

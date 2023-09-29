@@ -163,7 +163,7 @@ class NWBCreater:
         )
 
         function_process = nwbfile.create_processing_module(
-            name=function_id, description="prcesssed by " + function_id
+            name=function_id, description="processsed by " + function_id
         )
         function_process.add(motion_correction)
 
@@ -411,8 +411,8 @@ def overwrite_nwb(config, save_path, nwb_file_name):
         new_nwbfile = NWBCreater.reaqcuisition(nwbfile)
         new_nwbfile = set_nwbconfig(new_nwbfile, config)
 
-    with NWBHDF5IO(tmp_nwb_path, "w") as io:
-        io.write(new_nwbfile)
+        with NWBHDF5IO(tmp_nwb_path, "w") as io:
+            io.write(new_nwbfile)
     shutil.copyfile(tmp_nwb_path, nwb_path)
     os.remove(tmp_nwb_path)
 
