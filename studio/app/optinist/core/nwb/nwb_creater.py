@@ -183,7 +183,6 @@ class NWBCreater:
 
         if roi_list:
             for col in roi_list[0]:
-                # NOTE: そもそもcolがdictなのでこのコードだと意味がない?
                 if col != "pixel_mask" and col not in plane_seg.colnames:
                     plane_seg.add_column(col, f"{col} list")
 
