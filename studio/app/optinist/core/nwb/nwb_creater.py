@@ -255,23 +255,15 @@ class NWBCreater:
 
     @classmethod
     def postprocess(cls, nwbfile, function_id, data):
-        try:
-            nwbfile.get_processing_module(function_id)
-        except KeyError:
-            nwbfile.create_processing_module(
-                name=function_id, description="description"
-            )
-
         for key, value in data.items():
-            postprocess = PostProcess(
-                name=key,
-                data=value,
-            )
+            process_name = f"{function_id}_{key}"
+            postprocess = PostProcess(name=process_name, data=value)
+
             try:
-                nwbfile.processing[function_id].add_container(postprocess)
+                nwbfile.processing["optinist"].add_container(postprocess)
             except ValueError:
-                nwbfile.processing[function_id].data_interfaces.pop(key)
-                nwbfile.processing[function_id].add_container(postprocess)
+                nwbfile.processing["optinist"].data_interfaces.pop(process_name)
+                nwbfile.processing["optinist"].add_container(postprocess)
 
         return nwbfile
 
