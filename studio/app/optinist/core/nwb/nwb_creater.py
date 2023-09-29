@@ -122,14 +122,17 @@ class NWBCreater:
             reference_images = nwbfile.acquisition["TwoPhotonSeries"]
 
             try:
-                image_seg.get_plane_segmentation(function_id)
+                image_seg.plane_segmentations.pop(function_id)
+                nwbfile.processing["ophys"].data_interfaces.pop(function_id)
             except KeyError:
-                image_seg.create_plane_segmentation(
-                    name=function_id,
-                    description="output",
-                    imaging_plane=nwbfile.imaging_planes["ImagingPlane"],
-                    reference_images=reference_images,
-                )
+                pass
+
+            image_seg.create_plane_segmentation(
+                name=function_id,
+                description="output",
+                imaging_plane=nwbfile.imaging_planes["ImagingPlane"],
+                reference_images=reference_images,
+            )
 
         return nwbfile
 
