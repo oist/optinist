@@ -17,7 +17,6 @@ import {
   updateMe,
   updateMePassword,
 } from 'store/slice/User/UserActions'
-import { updateMePasswordApi } from 'api/users/UsersMe'
 import { selectCurrentUser, selectLoading } from 'store/slice/User/UserSelector'
 import { ROLE } from '../../@types'
 import { useSnackbar, VariantType } from 'notistack'

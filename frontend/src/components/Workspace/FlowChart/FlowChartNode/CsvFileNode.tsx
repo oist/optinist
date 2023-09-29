@@ -217,7 +217,6 @@ const CsvPreview = React.memo<{
   const error = useSelector(selectCsvDataError(path))
   const dispatch = useDispatch<AppDispatch>()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
-  const dispatch = useDispatch()
   React.useEffect(() => {
     if (workspaceId && !isInitialized) {
       dispatch(getCsvData({ path, workspaceId }))
