@@ -258,9 +258,9 @@ const ImagePlotChart = React.memo<{
         name: 'roi',
         hovertemplate: isAddRoi ? 'none' : 'cell id: %{z}',
         // hoverinfo: isAddRoi || pointClick.length ? 'none' : undefined,
-        colorscale: [...Array(timeDataMaxIndex)].map((_, i) => {
+        colorscale: [...Array(timeDataMaxIndex + 1)].map((_, i) => {
           const new_i = Math.floor(((i % 10) * 10 + i / 10) % 100)
-          const offset: number = i / (timeDataMaxIndex - 1)
+          const offset: number = i / timeDataMaxIndex
           const rgba = colorscaleRoi[new_i]
           const hex = rgba2hex(rgba, roiAlpha)
           return [offset, hex]
@@ -356,7 +356,7 @@ const ImagePlotChart = React.memo<{
         z: Number(point.z),
       })
     }
-    if (point.curveNumber >= 1 && point.z > 0) {
+    if (point.curveNumber >= 1 && point.z >= 0) {
       dispatch(
         setImageItemClikedDataId({
           itemId,
@@ -367,12 +367,12 @@ const ImagePlotChart = React.memo<{
   }
 
   const setSelectRoi = (point: PointClick) => {
-    if (!point.z) return
+    if (typeof point.z !== 'number' || point.z === -1) return
     const newPoints = [...pointClick, point]
     const newRoi = roiDataState.map((roi) => {
       return roi.map((element) => {
         if (newPoints.some((p) => p.z === element)) {
-          return 0
+          return -1
         }
         return element
       })
@@ -480,7 +480,7 @@ const ImagePlotChart = React.memo<{
     dispatch(resetAllOrderList())
     try {
       await mergeRoiApi(roiFilePath, {
-        ids: pointClick.map((point) => point.z - 1),
+        ids: pointClick.map((point) => point.z),
       })
     } catch {}
     setLoadingApi(false)
@@ -495,7 +495,7 @@ const ImagePlotChart = React.memo<{
     dispatch(resetAllOrderList())
     try {
       await deleteRoiApi(roiFilePath, {
-        ids: pointClick.map((point) => point.z - 1),
+        ids: pointClick.map((point) => point.z),
       })
     } catch {}
     setLoadingApi(false)

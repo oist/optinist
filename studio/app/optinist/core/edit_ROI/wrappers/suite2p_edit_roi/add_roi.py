@@ -13,6 +13,9 @@ from studio.app.optinist.dataclass import FluoData, RoiData, Suite2pData
 def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
     from suite2p import ROI
 
+    function_id = node_dirpath.split("/")[-1]
+    print("start suite2p add_roi:", function_id)
+
     ops = np.load(os.path.join(node_dirpath, "suite2p.npy"), allow_pickle=True).item()
     iscell = ops.get("iscell")
     stat = ops.get("stat")
@@ -59,6 +62,6 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
         "cell_roi": RoiData(
             np.nanmax(im[iscell], axis=0), output_dir=node_dirpath, file_name="cell_roi"
         ),
-        "nwbfile": set_nwbfile(ops),
+        "nwbfile": set_nwbfile(ops, function_id),
     }
     return info
