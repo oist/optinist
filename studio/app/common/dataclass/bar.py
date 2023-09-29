@@ -1,3 +1,5 @@
+from typing import Optional
+
 import numpy as np
 import pandas as pd
 
@@ -5,11 +7,15 @@ from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.utils.json_writer import JsonWriter
 from studio.app.common.core.workflow.workflow import OutputPath, OutputType
 from studio.app.common.dataclass.base import BaseData
+from studio.app.common.schemas.outputs import PlotMetaData
 
 
 class BarData(BaseData):
-    def __init__(self, data, index=None, file_name="bar"):
+    def __init__(
+        self, data, index=None, file_name="bar", meta: Optional[PlotMetaData] = None
+    ):
         super().__init__(file_name)
+        self.meta = meta
         data = np.array(data)
 
         assert data.ndim <= 2, "Bar Dimension Error"
@@ -34,6 +40,7 @@ class BarData(BaseData):
             index=self.index,
         )
         JsonWriter.write_as_split(self.json_path, df)
+        JsonWriter.write_plot_meta(json_dir, self.file_name, self.meta)
 
     @property
     def output_path(self) -> OutputPath:
