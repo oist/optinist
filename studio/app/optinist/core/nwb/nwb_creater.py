@@ -168,6 +168,11 @@ class NWBCreater:
             corrected_image_stacks=corrected_image_stack
         )
 
+        try:
+            nwbfile.processing.pop(function_id)
+        except KeyError:
+            pass
+
         function_process = nwbfile.create_processing_module(
             name=function_id, description="processsed by " + function_id
         )
