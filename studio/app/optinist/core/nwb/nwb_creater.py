@@ -121,12 +121,15 @@ class NWBCreater:
         if "TwoPhotonSeries" in nwbfile.acquisition:
             reference_images = nwbfile.acquisition["TwoPhotonSeries"]
 
-            image_seg.create_plane_segmentation(
-                name=function_id,
-                description="output",
-                imaging_plane=nwbfile.imaging_planes["ImagingPlane"],
-                reference_images=reference_images,
-            )
+            try:
+                image_seg.get_plane_segmentation(function_id)
+            except KeyError:
+                image_seg.create_plane_segmentation(
+                    name=function_id,
+                    description="output",
+                    imaging_plane=nwbfile.imaging_planes["ImagingPlane"],
+                    reference_images=reference_images,
+                )
 
         return nwbfile
 
@@ -177,6 +180,7 @@ class NWBCreater:
 
         if roi_list:
             for col in roi_list[0]:
+                # NOTE: そもそもcolがdictなのでこのコードだと意味がない?
                 if col != "pixel_mask" and col not in plane_seg.colnames:
                     plane_seg.add_column(col, f"{col} list")
 
@@ -248,14 +252,23 @@ class NWBCreater:
 
     @classmethod
     def postprocess(cls, nwbfile, function_id, data):
-        nwbfile.create_processing_module(name=function_id, description="description")
+        try:
+            nwbfile.get_processing_module(function_id)
+        except KeyError:
+            nwbfile.create_processing_module(
+                name=function_id, description="description"
+            )
 
         for key, value in data.items():
             postprocess = PostProcess(
                 name=key,
                 data=value,
             )
-            nwbfile.processing[function_id].add_container(postprocess)
+            try:
+                nwbfile.processing[function_id].add_container(postprocess)
+            except ValueError:
+                nwbfile.processing[function_id].data_interfaces.pop(key)
+                nwbfile.processing[function_id].add_container(postprocess)
 
         return nwbfile
 
