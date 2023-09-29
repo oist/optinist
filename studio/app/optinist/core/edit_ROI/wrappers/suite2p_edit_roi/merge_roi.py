@@ -12,6 +12,9 @@ def execute_merge_roi(node_dirpath, ids):
     from suite2p import ROI
     from suite2p.detection.stats import median_pix, roi_stats
 
+    function_id = node_dirpath.split("/")[-1]
+    print("start suite2p merge_roi:", function_id)
+
     ops = np.load(os.path.join(node_dirpath, "suite2p.npy"), allow_pickle=True).item()
     iscell = ops.get("iscell")
     stat_orig = ops.get("stat")
@@ -127,6 +130,6 @@ def execute_merge_roi(node_dirpath, ids):
         "cell_roi": RoiData(
             np.nanmax(im[iscell], axis=0), output_dir=node_dirpath, file_name="cell_roi"
         ),
-        "nwbfile": set_nwbfile(ops),
+        "nwbfile": set_nwbfile(ops, function_id),
     }
     return info

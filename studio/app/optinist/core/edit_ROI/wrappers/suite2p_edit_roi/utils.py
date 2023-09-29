@@ -119,7 +119,7 @@ def get_stat0_add_roi(ops, posx, posy, sizex, sizey):
     return [{"ypix": ypix, "xpix": xpix, "lam": lam, "npix": ypix.size, "med": med}]
 
 
-def set_nwbfile(ops):
+def set_nwbfile(ops, function_id):
     stat = ops.get("stat")
     iscell = ops.get("iscell")
     F = ops.get("F")
@@ -134,11 +134,11 @@ def set_nwbfile(ops):
         roi_list.append(kargs)
     nwbfile = {}
 
-    nwbfile[NWBDATASET.ROI] = {"roi_list": roi_list}
+    nwbfile[NWBDATASET.ROI] = {function_id: roi_list}
 
     # iscellを追加
     nwbfile[NWBDATASET.COLUMN] = {
-        "roi_column": {
+        function_id: {
             "name": "iscell",
             "discription": "two columns - iscell & probcell",
             "data": iscell,
@@ -146,22 +146,34 @@ def set_nwbfile(ops):
     }
 
     # Fluorenceを追加
-    nwbfile[NWBDATASET.FLUORESCENCE] = {}
-    for name, data in zip(["Fluorescence", "Neuropil"], [F, Fneu]):
-        nwbfile[NWBDATASET.FLUORESCENCE][name] = {
-            "table_name": name,
-            "region": list(range(len(data))),
-            "name": name,
-            "data": data,
-            "unit": "lumens",
-            "rate": ops["fs"],
+    nwbfile[NWBDATASET.FLUORESCENCE] = {
+        function_id: {
+            "Fluorescence": {
+                "table_name": "Fluorescence",
+                "region": list(range(len(F))),
+                "name": "Fluorescence",
+                "data": F,
+                "unit": "lumens",
+                "rate": ops["fs"],
+            },
+            "Neuropil": {
+                "table_name": "Neuropil",
+                "region": list(range(len(Fneu))),
+                "name": "Neuropil",
+                "data": Fneu,
+                "unit": "lumens",
+                "rate": ops["fs"],
+            },
         }
+    }
 
     # NWB追加
     nwbfile[NWBDATASET.POSTPROCESS] = {
-        "add_roi": ops.get("add_roi", []),
-        "delete_roi": ops.get("delete_roi", []),
-        "merge_roi": ops.get("merge_roi", []),
+        function_id: {
+            "add_roi": ops.get("add_roi", []),
+            "delete_roi": ops.get("delete_roi", []),
+            "merge_roi": ops.get("merge_roi", []),
+        }
     }
 
     return nwbfile

@@ -5,6 +5,9 @@ const selectDisplayData = (state: RootState) => state.displayData
 export const selectTimeSeriesData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).timeSeries[filePath].data
 
+export const selectTimesSeriesMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).timeSeries[filePath].meta
+
 export const selectTimeSeriesXrange =
   (filePath: string) => (state: RootState) =>
     selectDisplayData(state).timeSeries[filePath].xrange
@@ -35,6 +38,9 @@ export const selectTimeSeriesDataError =
 export const selectHeatMapData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).heatMap[filePath].data
 
+export const selectHeatMapMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).heatMap[filePath].meta
+
 export const selectHeatMapColumns = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).heatMap[filePath].columns
 
@@ -63,6 +69,9 @@ export const selectHeatMapDataError =
 
 export const selectImageData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).image[filePath]
+
+export const selectImageMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).image[filePath].meta
 
 export const selectImageDataIsInitialized =
   (filePath: string) => (state: RootState) =>
@@ -100,6 +109,9 @@ export const selectActiveImageData =
 export const selectCsvData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).csv[filePath].data
 
+export const selectCsvMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).csv[filePath].meta
+
 export const selectCsvDataIsInitialized =
   (filePath: string) => (state: RootState) =>
     Object.keys(selectDisplayData(state).csv).includes(filePath)
@@ -121,6 +133,9 @@ export const selectCsvDataIsFulfilled =
 
 export const selectRoiData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).roi[filePath]?.data[0] ?? []
+
+export const selectRoiMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).roi[filePath].meta
 
 export const selectRoiDataIsInitialized =
   (filePath: string) => (state: RootState) =>
@@ -151,6 +166,9 @@ export const selectRoiUniqueList = (filePath: string) => (state: RootState) => {
 export const selectScatterData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).scatter[filePath]?.data ?? []
 
+export const selectScatterMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).scatter[filePath]?.meta
+
 export const selectScatterDataIsInitialized =
   (filePath: string) => (state: RootState) =>
     Object.keys(selectDisplayData(state).scatter).includes(filePath)
@@ -173,6 +191,9 @@ export const selectScatterDataIsFulfilled =
 
 export const selectBarData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).bar[filePath]?.data ?? []
+
+export const selectBarMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).bar[filePath]?.meta
 
 export const selectBarIndex = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).bar[filePath]?.index ?? []
@@ -199,6 +220,9 @@ export const selectBarDataIsFulfilled =
 export const selectHTMLData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).html[filePath]?.data ?? ''
 
+export const selectHTMLMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).html[filePath].meta
+
 export const selectHTMLDataIsInitialized =
   (filePath: string) => (state: RootState) =>
     Object.keys(selectDisplayData(state).html).includes(filePath)
@@ -221,6 +245,9 @@ export const selectHTMLDataIsFulfilled =
 export const selectHistogramData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).histogram[filePath].data
 
+export const selectHistogramMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).histogram[filePath].meta
+
 export const selectHistogramDataIsInitialized =
   (filePath: string) => (state: RootState) =>
     Object.keys(selectDisplayData(state).histogram).includes(filePath)
@@ -242,6 +269,9 @@ export const selectHistogramDataError =
       : null
 export const selectLineData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).line[filePath].data
+
+export const selectLineMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).line[filePath].meta
 
 export const selectLineColumns = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).line[filePath].columns
@@ -271,6 +301,9 @@ export const selectLineDataError = (filePath: string) => (state: RootState) =>
 export const selectPieData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).pie[filePath].data
 
+export const selectPieMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).pie[filePath].meta
+
 export const selectPieColumns = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).pie[filePath].columns
 
@@ -295,6 +328,9 @@ export const selectPieDataError = (filePath: string) => (state: RootState) =>
 
 export const selectPolarData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).polar[filePath].data
+
+export const selectPolarMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).polar[filePath].meta
 
 export const selectPolarColumns = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).polar[filePath].columns
