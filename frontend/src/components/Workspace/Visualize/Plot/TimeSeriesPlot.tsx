@@ -13,6 +13,7 @@ import {
   selectTimeSeriesDataIsPending,
   selectTimeSeriesStd,
   selectTimeSeriesXrange,
+  selectTimesSeriesMeta,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import {
   getTimeSeriesDataById,
@@ -75,6 +76,7 @@ const TimeSeriesPlotImple = React.memo(() => {
     timeSeriesDataEqualityFn,
   )
 
+  const meta = useSelector(selectTimesSeriesMeta(path))
   const dataXrange = useSelector(selectTimeSeriesXrange(path))
   const dataStd = useSelector(selectTimeSeriesStd(path))
   const rangeUnit = useSelector(selectImageItemRangeUnit(itemId))
@@ -130,7 +132,7 @@ const TimeSeriesPlotImple = React.memo(() => {
     return Object.fromEntries(
       dataKeys.map((key) => {
       let y = newDataXrange.map((x) => newTimeSeriesData[key]?.[x])
-      const i = Number(key) - 1
+      const i = Number(key)
       const new_i = Math.floor((i % 10) * 10 + i / 10) % 100
       if (drawOrderList.includes(key) && offset) {
         const activeIdx: number = drawOrderList.findIndex((v) => v === key)
@@ -190,6 +192,10 @@ const TimeSeriesPlotImple = React.memo(() => {
 
   const layout = React.useMemo(
     () => ({
+      title: {
+        text: meta?.title,
+        x: 0.1,
+      },
       margin: {
         t: 60, // top
         l: 50, // left
@@ -201,7 +207,7 @@ const TimeSeriesPlotImple = React.memo(() => {
       height: height - 50,
       xaxis: {
         title: {
-          text: rangeUnit,
+          text: meta?.xlabel ?? rangeUnit,
         },
         titlefont: {
           size: 12,
@@ -220,6 +226,7 @@ const TimeSeriesPlotImple = React.memo(() => {
         zeroline: zeroline,
       },
       yaxis: {
+        title: meta?.ylabel,
         showgrid: showgrid,
         showline: showline,
         showticklabels: showticklabels,
@@ -228,6 +235,7 @@ const TimeSeriesPlotImple = React.memo(() => {
       annotations: annotations,
     }),
     [
+      meta,
       xrange,
       showgrid,
       showline,

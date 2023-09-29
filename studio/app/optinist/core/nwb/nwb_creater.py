@@ -121,6 +121,12 @@ class NWBCreater:
         if "TwoPhotonSeries" in nwbfile.acquisition:
             reference_images = nwbfile.acquisition["TwoPhotonSeries"]
 
+            try:
+                image_seg.plane_segmentations.pop(function_id)
+                nwbfile.processing["ophys"].data_interfaces.pop(function_id)
+            except KeyError:
+                pass
+
             image_seg.create_plane_segmentation(
                 name=function_id,
                 description="output",
@@ -162,8 +168,13 @@ class NWBCreater:
             corrected_image_stacks=corrected_image_stack
         )
 
+        try:
+            nwbfile.processing.pop(function_id)
+        except KeyError:
+            pass
+
         function_process = nwbfile.create_processing_module(
-            name=function_id, description="prcesssed by " + function_id
+            name=function_id, description="processsed by " + function_id
         )
         function_process.add(motion_correction)
 
@@ -248,14 +259,15 @@ class NWBCreater:
 
     @classmethod
     def postprocess(cls, nwbfile, function_id, data):
-        nwbfile.create_processing_module(name=function_id, description="description")
-
         for key, value in data.items():
-            postprocess = PostProcess(
-                name=key,
-                data=value,
-            )
-            nwbfile.processing[function_id].add_container(postprocess)
+            process_name = f"{function_id}_{key}"
+            postprocess = PostProcess(name=process_name, data=value)
+
+            try:
+                nwbfile.processing["optinist"].add_container(postprocess)
+            except ValueError:
+                nwbfile.processing["optinist"].data_interfaces.pop(process_name)
+                nwbfile.processing["optinist"].add_container(postprocess)
 
         return nwbfile
 
@@ -411,8 +423,8 @@ def overwrite_nwb(config, save_path, nwb_file_name):
         new_nwbfile = NWBCreater.reaqcuisition(nwbfile)
         new_nwbfile = set_nwbconfig(new_nwbfile, config)
 
-    with NWBHDF5IO(tmp_nwb_path, "w") as io:
-        io.write(new_nwbfile)
+        with NWBHDF5IO(tmp_nwb_path, "w") as io:
+            io.write(new_nwbfile)
     shutil.copyfile(tmp_nwb_path, nwb_path)
     os.remove(tmp_nwb_path)
 

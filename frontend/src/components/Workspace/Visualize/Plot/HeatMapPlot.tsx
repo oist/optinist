@@ -13,6 +13,7 @@ import {
   selectHeatMapDataIsInitialized,
   selectHeatMapDataIsPending,
   selectHeatMapIndex,
+  selectHeatMapMeta,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getHeatMapData } from 'store/slice/DisplayData/DisplayDataActions'
 import {
@@ -50,6 +51,7 @@ export const HeatMapPlot = React.memo(() => {
 const HeatMapImple = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
   const heatMapData = useSelector(selectHeatMapData(path), heatMapDataEqualtyFn)
+  const meta = useSelector(selectHeatMapMeta(path))
   const columns = useSelector(selectHeatMapColumns(path))
   const index = useSelector(selectHeatMapIndex(path))
   const showscale = useSelector(selectHeatMapItemShowScale(itemId))
@@ -92,17 +94,27 @@ const HeatMapImple = React.memo(() => {
 
   const layout = React.useMemo(
     () => ({
+      title: {
+        text: meta?.title,
+        x: 0.1,
+      },
       width: width,
       height: height - 50,
       dragmode: 'pan',
       margin: {
-        t: 60, // top
+        t: 50, // top
         l: 50, // left
-        b: 30, // bottom
+        b: 40, // bottom
       },
       autosize: true,
+      xaxis: {
+        title: meta?.xlabel,
+      },
+      yaxis: {
+        title: meta?.ylabel,
+      },
     }),
-    [width, height],
+    [meta, width, height],
   )
 
   const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))
