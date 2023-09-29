@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "optinist"
 description = "Calcium Imaging Pipeline Tool"
-version = "1.0.0"
+version = "1.0.1"
 readme = "README.md"
 requires-python = "==3.8.*"
 license = {file = "LICENSE"}
