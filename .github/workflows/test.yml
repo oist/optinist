@@ -1,10 +1,12 @@
-name: CI
+name: Tests
 
 on:
-  push:
-    branches: [ main ]
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
+      - develop-main
+    paths-ignore:
+      - 'docs/**'
 
   workflow_dispatch:
 
@@ -17,7 +19,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run a one-line script
+      - name: Run test_run command
         shell: bash
         run: |
           make test_run
