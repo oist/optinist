@@ -266,9 +266,10 @@ const ImagePlotChart = React.memo<{
           const new_i = Math.floor(((i % 10) * 10 + i / 10) % 100)
           const offset: number = i / timeDataMaxIndex
           const rgba = colorscaleRoi[new_i]
+          // const rgba = [52, 113, 235, 1]
           const hex = rgba2hex(rgba, roiAlpha)
           if(pointClick.find(e => e.z === i)) {
-            return [offset, '#ffffff']
+            return [offset, action === 'Delete ROI' ? '#ffffff' : '#e134eb']
           }
           return [offset, hex]
         }),
@@ -290,11 +291,10 @@ const ImagePlotChart = React.memo<{
       roiAlpha,
       alpha,
       isAddRoi,
-      pointClick
+      pointClick,
+      action
     ],
   )
-
-  console.log('data', data)
 
   const [selectMode, setSelectMode] = React.useState(false)
   const [edit, setEdit] = React.useState(false)
@@ -365,6 +365,7 @@ const ImagePlotChart = React.memo<{
   }
 
   const onChartClick = (event: PlotMouseEvent) => {
+    if(!['Merge ROI', 'Delete ROI'].includes(action)) return
     const point: PlotDatum = event.points[0] as PlotDatum
     if (point.curveNumber >= 1 && outputKey === 'cell_roi') {
       setSelectRoi({
@@ -384,6 +385,7 @@ const ImagePlotChart = React.memo<{
   }
 
   const setSelectRoi = (point: PointClick) => {
+    if(!['Merge ROI', 'Delete ROI'].includes(action)) return
     if (isNaN(Number(point.z))) return
     let newPoints
     const check = pointClick.findIndex(item => item.z === point.z)
@@ -428,6 +430,7 @@ const ImagePlotChart = React.memo<{
     setIsAddRoi(false)
     setSizeDrag(initSizeDrag)
     setChangeSize(undefined)
+    setPointClick([])
   }
 
   const onMouseDownDragAddRoi = () => {
@@ -452,7 +455,6 @@ const ImagePlotChart = React.memo<{
       const { y } = event.currentTarget.getBoundingClientRect()
       let newX = sizeDrag.left + (pageX - refPageXSize.current)
       let newY = Math.ceil(pageY - y - 15) - window.scrollY
-
       if (newX < 0) newX = 0
       else if (newX + sizeDrag.width > sChart) newX = sChart - sizeDrag.width
       if (newY < 0) newY = 0
@@ -482,7 +484,7 @@ const ImagePlotChart = React.memo<{
     refPageYSize.current = pageY
   }
 
-  const addRoiSubmit = async () => {
+  const addOrSelectRoi = async () => {
     if (!roiFilePath || loadingApi) return
     setEdit(false)
     if(isAddRoi) {
@@ -522,7 +524,7 @@ const ImagePlotChart = React.memo<{
       onCancel()
       workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     }
-    if(action === 'Delete ROI') {
+    else if(action === 'Delete ROI') {
       if(!pointClick.length) return
       setLoadingApi(true)
       dispatch(resetAllOrderList())
@@ -602,7 +604,7 @@ const ImagePlotChart = React.memo<{
                 opacity: (pointClick.length < 2 && action === 'Merge ROI') || (pointClick.length < 1 && action === 'Delete ROI') ? 0.5 : 1,
                 cursor: (pointClick.length < 2 && action === 'Merge ROI') || (pointClick.length < 1 && action === 'Delete ROI') ? 'default' : 'pointer',
               }}
-              onClick={addRoiSubmit}
+              onClick={addOrSelectRoi}
             >
               OK
             </LinkDiv>
