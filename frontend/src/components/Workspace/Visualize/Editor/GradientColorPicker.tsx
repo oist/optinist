@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 
 import { GradientPickerPopover } from 'react-linear-gradient-picker'
-import {SketchPicker, SketchPickerProps } from 'react-color'
+import { SketchPicker } from 'react-color'
 import { PALETTE_COLOR_SHAPE_TYPE } from 'react-linear-gradient-picker'
 import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
 
-const GradientPickerPopoverComponent = GradientPickerPopover as unknown as  React.FC<any>
-const SketchPickerComponent = SketchPicker as unknown as  React.FC<SketchPickerProps>
+const GradientPickerPopoverComponent =
+  GradientPickerPopover as unknown as React.FC<any>
 
 export const GradientColorPicker = React.memo<{
   colors: { rgb: string; offset: string }[]
@@ -65,7 +65,7 @@ const WrappedSketchPicker: React.FC<WrapperPropTypes> = ({
   color,
 }) => {
   return (
-    <SketchPickerComponent
+    <SketchPicker
       color={color}
       width="150px"
       // styles={{width: "10px"}}
