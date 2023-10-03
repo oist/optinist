@@ -16,6 +16,7 @@ import {
   selectScatterDataIsFulfilled,
   selectScatterDataIsInitialized,
   selectScatterDataIsPending,
+  selectScatterMeta,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getScatterData } from 'store/slice/DisplayData/DisplayDataActions'
 import { ScatterData } from 'api/outputs/Outputs'
@@ -63,7 +64,7 @@ const ScatterPlotImple = React.memo(() => {
     selectScatterData(path),
     scatterDataEqualityFn,
   )
-
+  const meta = useSelector(selectScatterMeta(path))
   const xIndex = useSelector(selectScatterItemXIndex(itemId))
   const yIndex = useSelector(selectScatterItemYIndex(itemId))
   const width = useSelector(selectVisualizeItemWidth(itemId))
@@ -92,18 +93,22 @@ const ScatterPlotImple = React.memo(() => {
 
   const layout = React.useMemo(
     () => ({
+      title: {
+        text: meta?.title,
+        x: 0.1,
+      },
       width: width,
       height: height - 120,
       margin: {
-        t: 60, // top
+        t: 50, // top
         l: 50, // left
-        b: 30, // bottom
+        b: 40, // bottom
       },
       dragmode: 'pan',
       autosize: true,
       xaxis: {
         title: {
-          text: `x: ${xIndex}`,
+          text: meta?.xlabel ?? `x: ${xIndex}`,
           font: {
             family: 'Courier New, monospace',
             size: 18,
@@ -113,7 +118,7 @@ const ScatterPlotImple = React.memo(() => {
       },
       yaxis: {
         title: {
-          text: `y: ${yIndex}`,
+          text: meta?.ylabel ?? `y: ${yIndex}`,
           font: {
             family: 'Courier New, monospace',
             size: 18,
@@ -122,7 +127,7 @@ const ScatterPlotImple = React.memo(() => {
         },
       },
     }),
-    [xIndex, yIndex, width, height],
+    [meta, xIndex, yIndex, width, height],
   )
 
   const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))

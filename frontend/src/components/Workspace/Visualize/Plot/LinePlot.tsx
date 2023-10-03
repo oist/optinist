@@ -10,6 +10,7 @@ import {
   selectLineDataIsInitialized,
   selectLineDataIsPending,
   selectLineIndex,
+  selectLineMeta,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getLineData } from 'store/slice/DisplayData/DisplayDataActions'
 import {
@@ -57,6 +58,7 @@ export const LinePlot = React.memo(() => {
 const LinePlotImple = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
   const lineData = useSelector(selectLineData(path))
+  const meta = useSelector(selectLineMeta(path))
   const columns = useSelector(selectLineColumns(path))
   const index = useSelector(selectLineIndex(path))
   const selectedIndex = useSelector(selectLineItemSelectedIndex(itemId))
@@ -78,20 +80,28 @@ const LinePlotImple = React.memo(() => {
 
   const layout = React.useMemo(
     () => ({
+      title: {
+        text: meta?.title,
+        x: 0.1,
+      },
       width: width,
       height: height - 120,
       dragmode: 'pan',
       margin: {
-        t: 60, // top
+        t: 50, // top
         l: 50, // left
-        b: 30, // bottom
+        b: 40, // bottom
       },
       autosize: true,
       xaxis: {
+        title: meta?.xlabel,
         tickvals: columns,
       },
+      yaxis: {
+        title: meta?.ylabel,
+      },
     }),
-    [width, height, columns],
+    [meta, width, height, columns],
   )
 
   return (

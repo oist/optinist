@@ -1,5 +1,5 @@
 import axios from 'utils/axios'
-
+import { PlotMetaData } from 'store/slice/DisplayData/DisplayDataType'
 import { BASE_URL } from 'const/API'
 
 export type TimeSeriesData = {
@@ -8,9 +8,12 @@ export type TimeSeriesData = {
   }
 }
 
-export async function getTimeSeriesInitDataApi(
-  path: string,
-): Promise<{ data: TimeSeriesData; xrange: string[]; std: TimeSeriesData }> {
+export async function getTimeSeriesInitDataApi(path: string): Promise<{
+  data: TimeSeriesData
+  xrange: string[]
+  std: TimeSeriesData
+  meta?: PlotMetaData
+}> {
   const response = await axios.get(`${BASE_URL}/outputs/inittimedata/${path}`)
   return response.data
 }
@@ -18,7 +21,12 @@ export async function getTimeSeriesInitDataApi(
 export async function getTimeSeriesDataByIdApi(
   path: string,
   index: string,
-): Promise<{ data: TimeSeriesData; xrange: string[]; std: TimeSeriesData }> {
+): Promise<{
+  data: TimeSeriesData
+  xrange: string[]
+  std: TimeSeriesData
+  meta?: PlotMetaData
+}> {
   const response = await axios.get(`${BASE_URL}/outputs/timedata/${path}`, {
     params: {
       index: index,
@@ -27,18 +35,24 @@ export async function getTimeSeriesDataByIdApi(
   return response.data
 }
 
-export async function getTimeSeriesAllDataApi(
-  path: string,
-): Promise<{ data: TimeSeriesData; xrange: string[]; std: TimeSeriesData }> {
+export async function getTimeSeriesAllDataApi(path: string): Promise<{
+  data: TimeSeriesData
+  xrange: string[]
+  std: TimeSeriesData
+  meta?: PlotMetaData
+}> {
   const response = await axios.get(`${BASE_URL}/outputs/alltimedata/${path}`)
   return response.data
 }
 
 export type HeatMapData = number[][]
 
-export async function getHeatMapDataApi(
-  path: string,
-): Promise<{ data: HeatMapData; columns: string[]; index: string[] }> {
+export async function getHeatMapDataApi(path: string): Promise<{
+  data: HeatMapData
+  columns: string[]
+  index: string[]
+  meta?: PlotMetaData
+}> {
   const response = await axios.get(`${BASE_URL}/outputs/data/${path}`)
   return response.data
 }
@@ -52,7 +66,7 @@ export async function getImageDataApi(
     startIndex?: number
     endIndex?: number
   },
-): Promise<{ data: ImageData }> {
+): Promise<{ data: ImageData; meta?: PlotMetaData }> {
   const response = await axios.get(`${BASE_URL}/outputs/image/${path}`, {
     params: {
       workspace_id: params.workspaceId,
@@ -68,7 +82,7 @@ export type CsvData = number[][]
 export async function getCsvDataApi(
   path: string,
   params: { workspaceId: number },
-): Promise<{ data: CsvData }> {
+): Promise<{ data: CsvData; meta?: PlotMetaData }> {
   const response = await axios.get(`${BASE_URL}/outputs/csv/${path}`, {
     params: { workspace_id: params.workspaceId },
   })
@@ -81,7 +95,7 @@ export type RoiData = number[][][]
 export async function getRoiDataApi(
   path: string,
   params: { workspaceId: number },
-): Promise<{ data: RoiData }> {
+): Promise<{ data: RoiData; meta?: PlotMetaData }> {
   const response = await axios.get(`${BASE_URL}/outputs/image/${path}`, {
     params: { workspace_id: params.workspaceId },
   })
@@ -96,7 +110,7 @@ export type ScatterData = {
 
 export async function getScatterDataApi(
   path: string,
-): Promise<{ data: ScatterData }> {
+): Promise<{ data: ScatterData; meta?: PlotMetaData }> {
   const response = await axios.get(`${BASE_URL}/outputs/data/${path}`, {})
   return response.data
 }
@@ -107,9 +121,12 @@ export type BarData = {
   }
 }
 
-export async function getBarDataApi(
-  path: string,
-): Promise<{ data: BarData; columns: string[]; index: string[] }> {
+export async function getBarDataApi(path: string): Promise<{
+  data: BarData
+  columns: string[]
+  index: string[]
+  meta?: PlotMetaData
+}> {
   const response = await axios.get(`${BASE_URL}/outputs/data/${path}`, {})
   return response.data
 }
@@ -118,7 +135,7 @@ export type HTMLData = string
 
 export async function getHTMLDataApi(
   path: string,
-): Promise<{ data: HTMLData }> {
+): Promise<{ data: HTMLData; meta?: PlotMetaData }> {
   const response = await axios.get(`${BASE_URL}/outputs/html/${path}`, {})
   return response.data
 }
@@ -126,7 +143,7 @@ export async function getHTMLDataApi(
 export async function addRoiApi(
   path: string,
   data: { posx: number; posy: number; sizex: number; sizey: number },
-): Promise<{ data: HTMLData }> {
+): Promise<{ data: HTMLData; meta?: PlotMetaData }> {
   const response = await axios.post(
     `${BASE_URL}/outputs/image/${path}/add_roi`,
     data,
@@ -137,7 +154,7 @@ export async function addRoiApi(
 export async function mergeRoiApi(
   path: string,
   data: { ids: number[] },
-): Promise<{ data: HTMLData }> {
+): Promise<{ data: HTMLData; meta?: PlotMetaData }> {
   const response = await axios.post(
     `${BASE_URL}/outputs/image/${path}/merge_roi`,
     data,
@@ -148,7 +165,7 @@ export async function mergeRoiApi(
 export async function deleteRoiApi(
   path: string,
   data: { ids: number[] },
-): Promise<{ data: HTMLData }> {
+): Promise<{ data: HTMLData; meta?: PlotMetaData }> {
   const response = await axios.post(
     `${BASE_URL}/outputs/image/${path}/delete_roi`,
     data,

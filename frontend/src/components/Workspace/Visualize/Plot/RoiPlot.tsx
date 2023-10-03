@@ -9,6 +9,7 @@ import {
   selectRoiDataIsFulfilled,
   selectRoiDataIsInitialized,
   selectRoiDataIsPending,
+  selectRoiMeta,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { LinearProgress, Typography } from '@mui/material'
 import { getRoiData } from 'store/slice/DisplayData/DisplayDataActions'
@@ -51,6 +52,7 @@ export const RoiPlot = React.memo(() => {
 const RoiPlotImple = React.memo<{}>(() => {
   const { itemId, filePath: path } = React.useContext(DisplayDataContext)
   const imageData = useSelector(selectRoiData(path), imageDataEqualtyFn)
+  const meta = useSelector(selectRoiMeta(path))
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
 
@@ -94,6 +96,10 @@ const RoiPlotImple = React.memo<{}>(() => {
 
   const layout = React.useMemo(
     () => ({
+      title: {
+        text: meta?.title,
+        x: 0.1,
+      },
       width: width,
       height: height - 50,
       margin: {
@@ -103,19 +109,21 @@ const RoiPlotImple = React.memo<{}>(() => {
       },
       dragmode: 'pan',
       xaxis: {
+        title: meta?.xlabel,
         autorange: true,
         zeroline: false,
         autotick: true,
         ticks: '',
       },
       yaxis: {
+        title: meta?.ylabel,
         autorange: 'reversed',
         zeroline: false,
         autotick: true, // todo
         ticks: '',
       },
     }),
-    [width, height],
+    [meta, width, height],
   )
 
   const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))

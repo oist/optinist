@@ -10,6 +10,7 @@ import {
   selectPolarDataIsInitialized,
   selectPolarDataIsPending,
   selectPolarIndex,
+  selectPolarMeta,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getPolarData } from 'store/slice/DisplayData/DisplayDataActions'
 import {
@@ -58,6 +59,7 @@ export const PolarPlot = React.memo(() => {
 const PolarPlotImple = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
   const polarData = useSelector(selectPolarData(path))
+  const meta = useSelector(selectPolarMeta(path))
   const columns = useSelector(selectPolarColumns(path))
   const index = useSelector(selectPolarIndex(path))
   const selectedIndex = useSelector(selectPolarItemSelectedIndex(itemId))
@@ -81,20 +83,28 @@ const PolarPlotImple = React.memo(() => {
 
   const layout = React.useMemo(
     () => ({
+      title: {
+        text: meta?.title,
+        x: 0.1,
+      },
       width: width,
       height: height - 120,
       dragmode: 'pan',
       margin: {
-        t: 60, // top
+        t: 50, // top
         l: 50, // left
-        b: 30, // bottom
+        b: 40, // bottom
       },
       autosize: true,
       xaxis: {
         tickvals: columns,
+        title: meta?.xlabel,
+      },
+      yaxis: {
+        title: meta?.ylabel,
       },
     }),
-    [width, height, columns],
+    [meta, width, height, columns],
   )
 
   return (

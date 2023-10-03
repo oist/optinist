@@ -9,6 +9,7 @@ import {
   selectPieDataIsFulfilled,
   selectPieDataIsInitialized,
   selectPieDataIsPending,
+  selectPieMeta,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getPieData } from 'store/slice/DisplayData/DisplayDataActions'
 import { LinearProgress, Typography } from '@mui/material'
@@ -46,6 +47,7 @@ export const PiePlot = React.memo(() => {
 const PiePlotImple = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
   const pieData = useSelector(selectPieData(path))
+  const meta = useSelector(selectPieMeta(path))
   const columns = useSelector(selectPieColumns(path))
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
@@ -68,6 +70,10 @@ const PiePlotImple = React.memo(() => {
 
   const layout = React.useMemo(
     () => ({
+      title: {
+        text: meta?.title,
+        x: 0.1,
+      },
       width: width,
       height: height - 120,
       dragmode: 'pan',
@@ -79,9 +85,13 @@ const PiePlotImple = React.memo(() => {
       autosize: true,
       xaxis: {
         tickvals: columns,
+        title: meta?.xlabel,
+      },
+      yaxis: {
+        title: meta?.ylabel,
       },
     }),
-    [width, height, columns],
+    [meta, width, height, columns],
   )
 
   return <PlotlyChart data={data} layout={layout} />

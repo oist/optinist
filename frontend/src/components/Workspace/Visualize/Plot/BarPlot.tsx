@@ -17,6 +17,7 @@ import {
   selectBarDataIsInitialized,
   selectBarDataIsPending,
   selectBarIndex,
+  selectBarMeta,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getBarData } from 'store/slice/DisplayData/DisplayDataActions'
 import { BarData } from 'api/outputs/Outputs'
@@ -56,6 +57,7 @@ export const BarPlot = React.memo(() => {
 const BarPlotImple = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
   const barData = useSelector(selectBarData(path), barDataEqualityFn)
+  const meta = useSelector(selectBarMeta(path))
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
   const index = useSelector(selectBarItemIndex(itemId))
@@ -74,17 +76,27 @@ const BarPlotImple = React.memo(() => {
 
   const layout = React.useMemo(
     () => ({
+      title: {
+        text: meta?.title,
+        x: 0.1,
+      },
       width: width,
       height: height - 120,
       margin: {
-        t: 60, // top
+        t: 50, // top
         l: 50, // left
-        b: 30, // bottom
+        b: 40, // bottom
       },
       dragmode: 'pan',
       autosize: true,
+      xaxis: {
+        title: meta?.xlabel,
+      },
+      yaxis: {
+        title: meta?.ylabel,
+      },
     }),
-    [width, height],
+    [meta, width, height],
   )
 
   const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))

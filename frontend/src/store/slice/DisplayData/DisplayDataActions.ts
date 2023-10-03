@@ -27,10 +27,16 @@ import {
   getPieDataApi,
   getPolarDataApi,
 } from 'api/outputs/Outputs'
+import { PlotMetaData } from './DisplayDataType'
 import { DISPLAY_DATA_SLICE_NAME } from './DisplayDataType'
 
 export const getTimeSeriesInitData = createAsyncThunk<
-  { data: TimeSeriesData; xrange: string[]; std: TimeSeriesData },
+  {
+    data: TimeSeriesData
+    xrange: string[]
+    std: TimeSeriesData
+    meta?: PlotMetaData
+  },
   { path: string; itemId: number }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesInitData`,
@@ -45,7 +51,12 @@ export const getTimeSeriesInitData = createAsyncThunk<
 )
 
 export const getTimeSeriesDataById = createAsyncThunk<
-  { data: TimeSeriesData; xrange: string[]; std: TimeSeriesData },
+  {
+    data: TimeSeriesData
+    xrange: string[]
+    std: TimeSeriesData
+    meta?: PlotMetaData
+  },
   { path: string; index: string }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesDataById`,
@@ -60,7 +71,12 @@ export const getTimeSeriesDataById = createAsyncThunk<
 )
 
 export const getTimeSeriesAllData = createAsyncThunk<
-  { data: TimeSeriesData; xrange: string[]; std: TimeSeriesData },
+  {
+    data: TimeSeriesData
+    xrange: string[]
+    std: TimeSeriesData
+    meta?: PlotMetaData
+  },
   { path: string }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getTimeSeriesAllData`,
@@ -75,7 +91,12 @@ export const getTimeSeriesAllData = createAsyncThunk<
 )
 
 export const getHeatMapData = createAsyncThunk<
-  { data: HeatMapData; columns: string[]; index: string[] },
+  {
+    data: HeatMapData
+    columns: string[]
+    index: string[]
+    meta?: PlotMetaData
+  },
   { path: string }
 >(`${DISPLAY_DATA_SLICE_NAME}/getHeatMapData`, async ({ path }, thunkAPI) => {
   try {
@@ -87,7 +108,7 @@ export const getHeatMapData = createAsyncThunk<
 })
 
 export const getImageData = createAsyncThunk<
-  { data: ImageData },
+  { data: ImageData; meta?: PlotMetaData },
   { path: string; workspaceId: number; startIndex?: number; endIndex?: number }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getImageData`,
@@ -106,9 +127,7 @@ export const getImageData = createAsyncThunk<
 )
 
 export const getCsvData = createAsyncThunk<
-  {
-    data: CsvData
-  },
+  { data: CsvData; meta?: PlotMetaData },
   { path: string; workspaceId: number }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getCsvData`,
@@ -123,7 +142,7 @@ export const getCsvData = createAsyncThunk<
 )
 
 export const getRoiData = createAsyncThunk<
-  { data: RoiData },
+  { data: RoiData; meta?: PlotMetaData },
   { path: string; workspaceId: number }
 >(
   `${DISPLAY_DATA_SLICE_NAME}/getRoiData`,
@@ -138,7 +157,7 @@ export const getRoiData = createAsyncThunk<
 )
 
 export const getScatterData = createAsyncThunk<
-  { data: ScatterData },
+  { data: ScatterData; meta?: PlotMetaData },
   { path: string }
 >(`${DISPLAY_DATA_SLICE_NAME}/getScatterData`, async ({ path }, thunkAPI) => {
   try {
@@ -150,7 +169,7 @@ export const getScatterData = createAsyncThunk<
 })
 
 export const getBarData = createAsyncThunk<
-  { data: BarData; columns: string[]; index: string[] },
+  { data: BarData; columns: string[]; index: string[]; meta?: PlotMetaData },
   { path: string }
 >(`${DISPLAY_DATA_SLICE_NAME}/getBarData`, async ({ path }, thunkAPI) => {
   try {
@@ -162,7 +181,7 @@ export const getBarData = createAsyncThunk<
 })
 
 export const getHTMLData = createAsyncThunk<
-  { data: HTMLData },
+  { data: HTMLData; meta?: PlotMetaData },
   { path: string }
 >(`${DISPLAY_DATA_SLICE_NAME}/getHTMLData`, async ({ path }, thunkAPI) => {
   try {
@@ -174,7 +193,7 @@ export const getHTMLData = createAsyncThunk<
 })
 
 export const getHistogramData = createAsyncThunk<
-  { data: HistogramData },
+  { data: HistogramData; meta?: PlotMetaData },
   { path: string }
 >(`${DISPLAY_DATA_SLICE_NAME}/getHistogramData`, async ({ path }, thunkAPI) => {
   try {
@@ -186,7 +205,7 @@ export const getHistogramData = createAsyncThunk<
 })
 
 export const getLineData = createAsyncThunk<
-  { data: LineData; columns: number[]; index: number[] },
+  { data: LineData; columns: number[]; index: number[]; meta?: PlotMetaData },
   { path: string }
 >(`${DISPLAY_DATA_SLICE_NAME}/getLineData`, async ({ path }, thunkAPI) => {
   try {
@@ -198,7 +217,7 @@ export const getLineData = createAsyncThunk<
 })
 
 export const getPieData = createAsyncThunk<
-  { data: PieData; columns: string[] },
+  { data: PieData; columns: string[]; meta?: PlotMetaData },
   { path: string }
 >(`${DISPLAY_DATA_SLICE_NAME}/getPieData`, async ({ path }, thunkAPI) => {
   try {
@@ -210,7 +229,7 @@ export const getPieData = createAsyncThunk<
 })
 
 export const getPolarData = createAsyncThunk<
-  { data: PolarData; columns: number[]; index: number[] },
+  { data: PolarData; columns: number[]; index: number[]; meta?: PlotMetaData },
   { path: string }
 >(`${DISPLAY_DATA_SLICE_NAME}/getPolarData`, async ({ path }, thunkAPI) => {
   try {
