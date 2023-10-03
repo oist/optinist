@@ -52,9 +52,9 @@
   },
   "scripts": {
     "start": "react-app-rewired start --scripts-version react-scripts",
-    "build": "BUILD_PATH='./build' react-scripts --openssl-legacy-provider build",
-    "test": "react-scripts test",
-    "test:ci": "CI=true react-scripts test",
+    "build": "BUILD_PATH='./build' react-app-rewired build --openssl-legacy-provider build",
+    "test": "react-app-rewired test",
+    "test:ci": "CI=true react-app-rewired test",
     "eject": "react-scripts eject",
     "lint-staged": "lint-staged"
   },
@@ -80,7 +80,8 @@
     "@types/plotly.js": "^1.54.16",
     "@types/react-redux": "^7.1.25",
     "lint-staged": "^11.1.2",
-    "prettier": "^2.3.2"
+    "prettier": "^2.3.2",
+    "process": "^0.11.10"
   },
   "lint-staged": {
     "*.{ts,tsx}": [

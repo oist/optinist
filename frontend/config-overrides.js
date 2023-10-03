@@ -1,5 +1,5 @@
 module.exports = function override(config) {
-    okv = {
+    const okv = {
         fallback: {
             stream: require.resolve('stream-browserify'),
         },
