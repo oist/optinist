@@ -8,6 +8,7 @@ def cross_correlation(
     output_dir: str,
     iscell: IscellData = None,
     params: dict = None,
+    **kwargs,
 ) -> dict():
     import itertools
 
@@ -15,6 +16,9 @@ def cross_correlation(
     import scipy.signal as ss
     import scipy.stats as stats
     from tqdm import tqdm
+
+    function_id = output_dir.split("/")[-1]
+    print("start cross_correlation:", function_id)
 
     neural_data = neural_data.data
 
@@ -77,9 +81,11 @@ def cross_correlation(
     # NWB追加
     nwbfile = {}
     nwbfile[NWBDATASET.POSTPROCESS] = {
-        "mat": mat,
-        "baseline": s_mean,
-        "base_confint": s_confint,
+        function_id: {
+            "mat": mat,
+            "baseline": s_mean,
+            "base_confint": s_confint,
+        }
     }
 
     info = {

@@ -116,7 +116,28 @@ class NWBCreater:
         return nwbfile
 
     @classmethod
-    def motion_correction(cls, nwbfile, mc_data, xy_trans_data):
+    def add_plane_segmentation(cls, nwbfile, function_id):
+        image_seg = nwbfile.processing["ophys"].data_interfaces["ImageSegmentation"]
+        if "TwoPhotonSeries" in nwbfile.acquisition:
+            reference_images = nwbfile.acquisition["TwoPhotonSeries"]
+
+            try:
+                image_seg.plane_segmentations.pop(function_id)
+                nwbfile.processing["ophys"].data_interfaces.pop(function_id)
+            except KeyError:
+                pass
+
+            image_seg.create_plane_segmentation(
+                name=function_id,
+                description="output",
+                imaging_plane=nwbfile.imaging_planes["ImagingPlane"],
+                reference_images=reference_images,
+            )
+
+        return nwbfile
+
+    @classmethod
+    def motion_correction(cls, nwbfile, function_id, mc_data, xy_trans_data):
         # image_data = mc_data.data
         image_path = mc_data.path
         corrected = ImageSeries(
@@ -146,30 +167,29 @@ class NWBCreater:
         motion_correction = MotionCorrection(
             corrected_image_stacks=corrected_image_stack
         )
-        nwbfile.processing["ophys"].add(motion_correction)
+
+        try:
+            nwbfile.processing.pop(function_id)
+        except KeyError:
+            pass
+
+        function_process = nwbfile.create_processing_module(
+            name=function_id, description="processsed by " + function_id
+        )
+        function_process.add(motion_correction)
 
         return nwbfile
 
     @classmethod
-    def column(cls, nwbfile, name, discription, data):
-        data_interfaces = nwbfile.processing["ophys"].data_interfaces
-        plane_seg = data_interfaces["ImageSegmentation"].plane_segmentations[
-            "PlaneSegmentation"
-        ]
-        plane_seg.add_column(name, discription, data)
+    def roi(cls, nwbfile, function_id, roi_list):
+        image_seg = nwbfile.processing["ophys"].data_interfaces["ImageSegmentation"]
+        nwbfile = cls.add_plane_segmentation(nwbfile, function_id)
+        plane_seg = image_seg.plane_segmentations[function_id]
 
-        return nwbfile
-
-    @classmethod
-    def roi(cls, nwbfile, roi_list):
-        data_interfaces = nwbfile.processing["ophys"].data_interfaces
-        plane_seg = data_interfaces["ImageSegmentation"].plane_segmentations[
-            "PlaneSegmentation"
-        ]
-
-        for col in roi_list[0]:
-            if col != "pixel_mask" and col not in plane_seg.colnames:
-                plane_seg.add_column(col, f"{col} list")
+        if roi_list:
+            for col in roi_list[0]:
+                if col != "pixel_mask" and col not in plane_seg.colnames:
+                    plane_seg.add_column(col, f"{col} list")
 
         for col in roi_list:
             plane_seg.add_roi(**col)
@@ -177,26 +197,33 @@ class NWBCreater:
         return nwbfile
 
     @classmethod
-    def fluorescence(
-        cls, nwbfile, table_name, region, name, data, unit, timestamps=None, rate=0.0
-    ):
-        data_interfaces = nwbfile.processing["ophys"].data_interfaces
-        plane_seg = data_interfaces["ImageSegmentation"].plane_segmentations[
-            "PlaneSegmentation"
-        ]
+    def column(cls, nwbfile, function_id, name, discription, data):
+        image_seg = nwbfile.processing["ophys"].data_interfaces["ImageSegmentation"]
+        plane_seg = image_seg.plane_segmentations[function_id]
+        plane_seg.add_column(name, discription, data)
 
-        region_roi = plane_seg.create_roi_table_region(table_name, region=region)
+        return nwbfile
 
-        roi_resp_series = RoiResponseSeries(
-            name=name,
-            data=data,
-            rois=region_roi,
-            unit=unit,
-            timestamps=timestamps,
-            rate=float(rate),
-        )
+    @classmethod
+    def fluorescence(cls, nwbfile, function_id, roi_list):
+        image_seg = nwbfile.processing["ophys"].data_interfaces["ImageSegmentation"]
+        plane_seg = image_seg.plane_segmentations[function_id]
+        fluo = Fluorescence(name=function_id)
+        for key in roi_list.keys():
+            roi = roi_list[key]
+            region_roi = plane_seg.create_roi_table_region(
+                roi["table_name"], region=roi["region"]
+            )
 
-        fluo = Fluorescence(name=name, roi_response_series=roi_resp_series)
+            roi_resp_series = RoiResponseSeries(
+                name=roi["name"],
+                data=roi["data"],
+                rois=region_roi,
+                unit=roi["unit"],
+                timestamps=roi.get("timestamps"),
+                rate=float(roi.get("rate", 0.0)),
+            )
+            fluo.add_roi_response_series(roi_resp_series)
 
         nwbfile.processing["ophys"].add(fluo)
 
@@ -231,13 +258,16 @@ class NWBCreater:
         return nwbfile
 
     @classmethod
-    def postprocess(cls, nwbfile, key, value):
-        postprocess = PostProcess(
-            name=key,
-            data=value,
-        )
+    def postprocess(cls, nwbfile, function_id, data):
+        for key, value in data.items():
+            process_name = f"{function_id}_{key}"
+            postprocess = PostProcess(name=process_name, data=value)
 
-        nwbfile.processing["optinist"].add_container(postprocess)
+            try:
+                nwbfile.processing["optinist"].add_container(postprocess)
+            except ValueError:
+                nwbfile.processing["optinist"].data_interfaces.pop(process_name)
+                nwbfile.processing["optinist"].add_container(postprocess)
 
         return nwbfile
 
@@ -311,12 +341,12 @@ class NWBCreater:
         return new_nwbfile
 
 
-def save_nwb(save_path, input_config, config):
-    nwbfile = NWBCreater.acquisition(input_config)
-
+def set_nwbconfig(nwbfile, config):
     if NWBDATASET.POSTPROCESS in config:
-        for key, value in config[NWBDATASET.POSTPROCESS].items():
-            NWBCreater.postprocess(nwbfile, key, value)
+        for function_key in config[NWBDATASET.POSTPROCESS]:
+            NWBCreater.postprocess(
+                nwbfile, function_key, config[NWBDATASET.POSTPROCESS][function_key]
+            )
 
     if NWBDATASET.TIMESERIES in config:
         for key, value in config[NWBDATASET.TIMESERIES].items():
@@ -327,23 +357,58 @@ def save_nwb(save_path, input_config, config):
             NWBCreater.behavior(nwbfile, key, value)
 
     if NWBDATASET.MOTION_CORRECTION in config:
-        for mc in config[NWBDATASET.MOTION_CORRECTION].values():
-            nwbfile = NWBCreater.motion_correction(nwbfile, **mc)
+        for function_key in config[NWBDATASET.MOTION_CORRECTION]:
+            nwbfile = NWBCreater.motion_correction(
+                nwbfile,
+                function_key,
+                **config[NWBDATASET.MOTION_CORRECTION][function_key],
+            )
 
     if NWBDATASET.ROI in config:
-        for roi_list in config[NWBDATASET.ROI].values():
-            NWBCreater.roi(nwbfile, roi_list)
+        for function_key in config[NWBDATASET.ROI]:
+            nwbfile = NWBCreater.roi(
+                nwbfile, function_key, config[NWBDATASET.ROI][function_key]
+            )
 
     if NWBDATASET.COLUMN in config:
-        for value in config[NWBDATASET.COLUMN].values():
-            nwbfile = NWBCreater.column(nwbfile, **value)
+        for function_key in config[NWBDATASET.COLUMN]:
+            nwbfile = NWBCreater.column(
+                nwbfile, function_key, **config[NWBDATASET.COLUMN][function_key]
+            )
 
     if NWBDATASET.FLUORESCENCE in config:
-        for value in config[NWBDATASET.FLUORESCENCE].values():
-            nwbfile = NWBCreater.fluorescence(nwbfile, **value)
+        for function_key in config[NWBDATASET.FLUORESCENCE]:
+            nwbfile = NWBCreater.fluorescence(
+                nwbfile,
+                function_key,
+                config[NWBDATASET.FLUORESCENCE][function_key],
+            )
+
+    return nwbfile
+
+
+def save_nwb(save_path, input_config, config):
+    nwbfile = NWBCreater.acquisition(input_config)
+
+    nwbfile = set_nwbconfig(nwbfile, config)
 
     with NWBHDF5IO(save_path, "w") as f:
         f.write(nwbfile)
+
+
+def overwrite_nwbfile(save_path, config):
+    tmp_save_path = os.path.join(
+        os.path.dirname(save_path),
+        "tmp_" + os.path.basename(save_path),
+    )
+    with NWBHDF5IO(save_path, "r") as src_io:
+        old_nwbfile = src_io.read()
+        nwbfile = set_nwbconfig(old_nwbfile, config)
+        nwbfile.set_modified()
+        with NWBHDF5IO(tmp_save_path, mode="w") as io:
+            io.export(src_io=src_io, nwbfile=nwbfile)
+    shutil.copyfile(tmp_save_path, save_path)
+    os.remove(tmp_save_path)
 
 
 def overwrite_nwb(config, save_path, nwb_file_name):
@@ -356,34 +421,7 @@ def overwrite_nwb(config, save_path, nwb_file_name):
         nwbfile = io.read()
         # acquisition を元ファイルから作成する
         new_nwbfile = NWBCreater.reaqcuisition(nwbfile)
-
-        if NWBDATASET.POSTPROCESS in config:
-            for key, value in config[NWBDATASET.POSTPROCESS].items():
-                new_nwbfile = NWBCreater.postprocess(new_nwbfile, key, value)
-
-        if NWBDATASET.TIMESERIES in config:
-            for key, value in config[NWBDATASET.TIMESERIES].items():
-                new_nwbfile = NWBCreater.timeseries(new_nwbfile, key, value)
-
-        if NWBDATASET.BEHAVIOR in config:
-            for key, value in config[NWBDATASET.BEHAVIOR].items():
-                new_nwbfile = NWBCreater.behavior(new_nwbfile, key, value)
-
-        if NWBDATASET.MOTION_CORRECTION in config:
-            for mc in config[NWBDATASET.MOTION_CORRECTION].values():
-                new_nwbfile = NWBCreater.motion_correction(new_nwbfile, **mc)
-
-        if NWBDATASET.ROI in config:
-            for roi_list in config[NWBDATASET.ROI].values():
-                new_nwbfile = NWBCreater.roi(new_nwbfile, roi_list)
-
-        if NWBDATASET.COLUMN in config:
-            for value in config[NWBDATASET.COLUMN].values():
-                new_nwbfile = nwbfile = NWBCreater.column(new_nwbfile, **value)
-
-        if NWBDATASET.FLUORESCENCE in config:
-            for value in config[NWBDATASET.FLUORESCENCE].values():
-                new_nwbfile = NWBCreater.fluorescence(new_nwbfile, **value)
+        new_nwbfile = set_nwbconfig(new_nwbfile, config)
 
         with NWBHDF5IO(tmp_nwb_path, "w") as io:
             io.write(new_nwbfile)
@@ -403,7 +441,15 @@ def merge_nwbfile(old_nwbfile, new_nwbfile):
         NWBDATASET.IMAGE_SERIES,
     ]:
         if pattern in old_nwbfile and pattern in new_nwbfile:
-            old_nwbfile[pattern].update(new_nwbfile[pattern])
+            for function_id in new_nwbfile[pattern]:
+                if function_id in old_nwbfile[pattern]:
+                    old_nwbfile[pattern][function_id].update(
+                        new_nwbfile[pattern][function_id]
+                    )
+                else:
+                    old_nwbfile[pattern][function_id] = new_nwbfile[pattern][
+                        function_id
+                    ]
         elif pattern in new_nwbfile:
             old_nwbfile[pattern] = new_nwbfile[pattern]
 

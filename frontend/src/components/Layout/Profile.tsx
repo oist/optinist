@@ -28,7 +28,7 @@ const Profile: FC = () => {
 
   const onClickAccount = () => {
     setAnchorEl(null)
-    navigate('/account')
+    navigate('/console/account')
   }
 
   return (

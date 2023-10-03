@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
 import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
 import {
   deleteDisplayItem,
@@ -21,6 +21,10 @@ import {
   HTMLItem,
   FluoItem,
   BehaviorItem,
+  HistogramItem,
+  LineItem,
+  PieItem,
+  PolarItem,
   VISUALIZE_ITEM_SLICE_NAME,
 } from './VisualizeItemType'
 import {
@@ -31,7 +35,11 @@ import {
   isCsvItem,
   isScatterItem,
   isBarItem,
+  isHistogramItem,
+  isLineItem,
+  isPolarItem,
 } from './VisualizeItemUtils'
+import { run, runByCurrentUid } from '../Pipeline/PipelineActions'
 
 export const initialState: VisualaizeItem = {
   items: {},
@@ -81,6 +89,7 @@ const timeSeriesItemInitialValue: TimeSeriesItem = {
     left: undefined,
     right: undefined,
   },
+  rangeUnit: 'frames',
   maxIndex: 0,
   drawOrderList: [],
   refImageItemId: null,
@@ -133,6 +142,25 @@ const behaviorItemInitialValue: BehaviorItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.BEHAVIOR,
 }
+const histogramItemInitialValue: HistogramItem = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.HISTOGRAM,
+  bins: 20,
+}
+const lineItemInitialValue: LineItem = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.LINE,
+  selectedIndex: 0,
+}
+const pieItemInitialValue: PieItem = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.PIE,
+}
+const polarItemInitialValue: PolarItem = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.POLAR,
+  selectedIndex: 0,
+}
 
 function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
   switch (dataType) {
@@ -158,6 +186,14 @@ function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
       return fluoItemInitialValue
     case DATA_TYPE_SET.BEHAVIOR:
       return behaviorItemInitialValue
+    case DATA_TYPE_SET.HISTOGRAM:
+      return histogramItemInitialValue
+    case DATA_TYPE_SET.LINE:
+      return lineItemInitialValue
+    case DATA_TYPE_SET.PIE:
+      return pieItemInitialValue
+    case DATA_TYPE_SET.POLAR:
+      return polarItemInitialValue
   }
 }
 
@@ -165,6 +201,12 @@ export const visualaizeItemSlice = createSlice({
   name: VISUALIZE_ITEM_SLICE_NAME,
   initialState,
   reducers: {
+    changeRangeUnit: (state, action) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isTimeSeriesItem(targetItem)) {
+        targetItem.rangeUnit = action.payload.rangeUnit
+      }
+    },
     pushInitialItemToNewRow: (state) => {
       const newItemId = addInitialItemFn(state)
       state.layout.push([newItemId])
@@ -765,6 +807,42 @@ export const visualaizeItemSlice = createSlice({
         targetItem.index = action.payload.index
       }
     },
+    setHistogramItemBins: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        bins: number
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isHistogramItem(targetItem)) {
+        targetItem.bins = action.payload.bins
+      }
+    },
+    setLineItemSelectedIndex: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        selectedIndex: number
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isLineItem(targetItem)) {
+        targetItem.selectedIndex = action.payload.selectedIndex
+      }
+    },
+    setPolartemItemSelectedIndex: (
+      state,
+      action: PayloadAction<{
+        itemId: number
+        selectedIndex: number
+      }>,
+    ) => {
+      const targetItem = state.items[action.payload.itemId]
+      if (isPolarItem(targetItem)) {
+        targetItem.selectedIndex = action.payload.selectedIndex
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -846,6 +924,10 @@ export const visualaizeItemSlice = createSlice({
           }
         })
       })
+      .addMatcher(
+        isAnyOf(run.fulfilled, runByCurrentUid.fulfilled),
+        (state, action) => initialState,
+      )
   },
 })
 
@@ -878,6 +960,7 @@ function resetImageActiveIndexFn(
 }
 
 export const {
+  changeRangeUnit,
   pushInitialItemToNewRow,
   insertInitialItemToNextColumn,
   addItemForWorkflowDialog,
@@ -925,6 +1008,9 @@ export const {
   setScatterItemXIndex,
   setScatterItemYIndex,
   setBarItemIndex,
+  setHistogramItemBins,
+  setLineItemSelectedIndex,
+  setPolartemItemSelectedIndex,
   resetAllOrderList,
   reset,
 } = visualaizeItemSlice.actions

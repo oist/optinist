@@ -19,6 +19,10 @@ import { CsvPlot } from './Plot/CsvPlot'
 import { TimeSeriesPlot } from './Plot/TimeSeriesPlot'
 import { BarPlot } from './Plot/BarPlot'
 import { HTMLPlot } from './Plot/HTMLPlot'
+import { HistogramPlot } from './Plot/HistogramPlot'
+import { LinePlot } from './Plot/LinePlot'
+import { PiePlot } from './Plot/PiePlot'
+import { PolarPlot } from './Plot/PolarPlot'
 
 export const DisplayDataItem = React.memo<{
   itemId: number
@@ -59,6 +63,14 @@ const DisplayPlot = React.memo<{
       return <BarPlot />
     case DATA_TYPE_SET.HTML:
       return <HTMLPlot />
+    case DATA_TYPE_SET.HISTOGRAM:
+      return <HistogramPlot />
+    case DATA_TYPE_SET.LINE:
+      return <LinePlot />
+    case DATA_TYPE_SET.PIE:
+      return <PiePlot />
+    case DATA_TYPE_SET.POLAR:
+      return <PolarPlot />
     default:
       return null
   }

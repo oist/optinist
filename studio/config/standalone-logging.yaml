@@ -1,0 +1,22 @@
+version: 1
+disable_existing_loggers: false
+formatters:
+  default:
+    (): "uvicorn.logging.DefaultFormatter"
+    fmt: "%(asctime)s %(levelprefix)s %(funcName)s():%(lineno)d - %(message)s"
+  access:
+    (): "uvicorn.logging.AccessFormatter"
+    fmt: "%(asctime)s %(levelprefix)s %(funcName)s():%(lineno)d - %(message)s"
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: DEBUG
+    formatter: default
+loggers:
+  snakemake:
+    level: INFO
+    handlers: [console]
+    propagate: false
+root:
+  level: INFO
+  handlers: [console]

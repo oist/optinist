@@ -43,7 +43,6 @@ extensions = [
     "sphinxcontrib.apidoc",
     "sphinx_autodoc_typehints",
     "myst_parser",
-    "sphinx.ext.autosectionlabel",
     "sphinx.ext.autosummary",
     "sphinx.ext.extlinks",
     "sphinx.ext.autodoc.typehints",

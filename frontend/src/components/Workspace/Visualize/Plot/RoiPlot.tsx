@@ -9,6 +9,7 @@ import {
   selectRoiDataIsFulfilled,
   selectRoiDataIsInitialized,
   selectRoiDataIsPending,
+  selectRoiMeta,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { LinearProgress, Typography } from '@mui/material'
 import { getRoiData } from 'store/slice/DisplayData/DisplayDataActions'
@@ -20,6 +21,7 @@ import {
   selectVisualizeSaveFilename,
   selectVisualizeSaveFormat,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
 
 export const RoiPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -27,13 +29,14 @@ export const RoiPlot = React.memo(() => {
   const isInitialized = useSelector(selectRoiDataIsInitialized(path))
   const isFulfilled = useSelector(selectRoiDataIsFulfilled(path))
   const error = useSelector(selectRoiDataError(path))
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
 
   const dispatch = useDispatch()
   React.useEffect(() => {
-    if (!isInitialized) {
-      dispatch(getRoiData({ path }))
+    if (workspaceId && !isInitialized) {
+      dispatch(getRoiData({ path, workspaceId }))
     }
-  }, [dispatch, isInitialized, path])
+  }, [dispatch, isInitialized, path, workspaceId])
   if (isPending) {
     return <LinearProgress />
   } else if (error != null) {
@@ -48,6 +51,7 @@ export const RoiPlot = React.memo(() => {
 const RoiPlotImple = React.memo<{}>(() => {
   const { itemId, filePath: path } = React.useContext(DisplayDataContext)
   const imageData = useSelector(selectRoiData(path), imageDataEqualtyFn)
+  const meta = useSelector(selectRoiMeta(path))
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
 
@@ -91,6 +95,10 @@ const RoiPlotImple = React.memo<{}>(() => {
 
   const layout = React.useMemo(
     () => ({
+      title: {
+        text: meta?.title,
+        x: 0.1,
+      },
       width: width,
       height: height - 50,
       margin: {
@@ -100,19 +108,21 @@ const RoiPlotImple = React.memo<{}>(() => {
       },
       dragmode: 'pan',
       xaxis: {
+        title: meta?.xlabel,
         autorange: true,
         zeroline: false,
         autotick: true,
         ticks: '',
       },
       yaxis: {
+        title: meta?.ylabel,
         autorange: 'reversed',
         zeroline: false,
         autotick: true, // todo
         ticks: '',
       },
     }),
-    [width, height],
+    [meta, width, height],
   )
 
   const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))

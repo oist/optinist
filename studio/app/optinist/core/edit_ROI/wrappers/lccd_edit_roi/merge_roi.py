@@ -7,6 +7,9 @@ from studio.app.optinist.dataclass import FluoData, LccdData, RoiData
 def execute_merge_roi(node_dirpath, ids):
     import numpy as np
 
+    function_id = node_dirpath.split("/")[-1]
+    print("start lccd merge_roi:", function_id)
+
     lccd_data = np.load(
         os.path.join(node_dirpath, "lccd.npy"), allow_pickle=True
     ).item()
@@ -73,7 +76,9 @@ def execute_merge_roi(node_dirpath, ids):
         ),
         "fluorescence": FluoData(timeseries, file_name="fluorescence"),
         "dff": FluoData(timeseries_dff, file_name="dff"),
-        "nwbfile": set_nwbfile(lccd_data, roi_list, fluorescence=timeseries),
+        "nwbfile": set_nwbfile(
+            lccd_data, roi_list, function_id, fluorescence=timeseries
+        ),
     }
 
     return info

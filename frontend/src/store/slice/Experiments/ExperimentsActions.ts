@@ -1,9 +1,11 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 import {
   ExperimentsDTO,
+  FetchExperimentDTO,
   getExperimentsApi,
   deleteExperimentByUidApi,
   deleteExperimentByListApi,
+  fetchExperimentApi,
 } from 'api/experiments/Experiments'
 import { EXPERIMENTS_SLICE_NAME } from './ExperimentsType'
 import { selectCurrentWorkspaceId } from '../Workspace/WorkspaceSelector'
@@ -62,3 +64,15 @@ export const deleteExperimentByList = createAsyncThunk<
     return thunkAPI.rejectWithValue('workspace id does not exist.')
   }
 })
+
+export const fetchExperiment = createAsyncThunk<FetchExperimentDTO, number>(
+  `${EXPERIMENTS_SLICE_NAME}/fetchExperiment`,
+  async (workspaceId, thunkAPI) => {
+    try {
+      const response = await fetchExperimentApi(workspaceId)
+      return response
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)

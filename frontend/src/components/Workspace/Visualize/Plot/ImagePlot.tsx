@@ -33,6 +33,7 @@ import {
   selectActiveImageData,
   selectRoiData,
   selectImageDataMaxSize,
+  selectImageMeta,
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import {
   getImageData,
@@ -73,6 +74,7 @@ import {
 } from 'store/slice/VisualizeItem/VisualizeItemActions'
 import { addRoiApi, deleteRoiApi, mergeRoiApi } from 'api/outputs/Outputs'
 import { isTimeSeriesItem } from 'store/slice/VisualizeItem/VisualizeItemUtils'
+import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
 import Loading from "../../../common/Loading";
 
 interface PointClick {
@@ -103,6 +105,7 @@ const sChart = 320
 export const ImagePlot = React.memo(() => {
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
 
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const startIndex = useSelector(selectImageItemStartIndex(itemId))
   const endIndex = useSelector(selectImageItemEndIndex(itemId))
   const isPending = useSelector(selectImageDataIsPending(path))
@@ -114,19 +117,30 @@ export const ImagePlot = React.memo(() => {
 
   const dispatch = useDispatch()
   React.useEffect(() => {
-    if (!isInitialized) {
-      dispatch(
-        getImageData({
-          path,
-          startIndex: startIndex ?? 1,
-          endIndex: endIndex ?? 10,
-        }),
-      )
+    if (workspaceId) {
+      if (!isInitialized) {
+        dispatch(
+          getImageData({
+            path,
+            workspaceId,
+            startIndex: startIndex ?? 1,
+            endIndex: endIndex ?? 10,
+          }),
+        )
+      }
+      if (roiFilePath != null) {
+        dispatch(getRoiData({ path: roiFilePath, workspaceId }))
+      }
     }
-    if (roiFilePath != null) {
-      dispatch(getRoiData({ path: roiFilePath }))
-    }
-  }, [dispatch, isInitialized, path, startIndex, endIndex, roiFilePath])
+  }, [
+    dispatch,
+    isInitialized,
+    path,
+    workspaceId,
+    startIndex,
+    endIndex,
+    roiFilePath,
+  ])
   if (isPending) {
     return <LinearProgress />
   } else if (error != null) {
@@ -148,11 +162,13 @@ const ImagePlotChart = React.memo<{
   activeIndex: number
 }>(({ activeIndex }) => {
   const dispatch = useDispatch()
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const { filePath: path, itemId } = React.useContext(DisplayDataContext)
   const imageData = useSelector(
     selectActiveImageData(path, activeIndex),
     imageDataEqualtyFn,
   )
+  const meta = useSelector(selectImageMeta(path))
   const roiFilePath = useSelector(selectRoiItemFilePath(itemId))
 
   const roiData = useSelector(
@@ -160,8 +176,6 @@ const ImagePlotChart = React.memo<{
       roiFilePath != null ? selectRoiData(roiFilePath)(state) : [],
     imageDataEqualtyFn,
   )
-
-  // console.log("roiData", roiData)
 
   const [isAddRoi, setIsAddRoi] = useState(false)
   const [loadingApi, setLoadingApi] = useState(false)
@@ -247,32 +261,17 @@ const ImagePlotChart = React.memo<{
         type: 'heatmap',
         name: 'roi',
         hovertemplate: isAddRoi ? 'none' : 'cell id: %{z}',
-        hoverinfo: isAddRoi || pointClick.length ? 'none' : undefined,
-        colorscale: [...Array(timeDataMaxIndex)].map((_, i) => {
-        //   const new_i = Math.floor(((i % 10) * 10 + i / 10) % 100)
-        //   const offset: number = i / (timeDataMaxIndex - 1)
-        //   const rgba = colorscaleRoi[new_i]
-        //   const hex = rgba2hex(rgba, roiAlpha)
-        //   if(pointClick.find(e => {
-        //     console.log(e.z, 'i', i)
-        //     return e.z === i - 1
-        //   })) {
-        //     return [offset, '#ffffff']
-        //   }
-        //   return [offset, hex]
-        // })
-          console.log('i', i)
-      const new_i = Math.floor(((i % 10) * 10 + i / 10) % 100)
-          // console.log('new_i',new_i, pointClick)
-      const offset: number = i / (timeDataMaxIndex - 1)
-          // console.log("offset", offset)
-      const rgba = colorscaleRoi[new_i]
-      const hex = rgba2hex(rgba, roiAlpha)
-      if(pointClick.find(e => e.z === i)) {
-          return [offset, '#ffffff']
-      }
-      return [offset, hex]
-    }),
+        // hoverinfo: isAddRoi || pointClick.length ? 'none' : undefined,
+        colorscale: [...Array(timeDataMaxIndex + 1)].map((_, i) => {
+          const new_i = Math.floor(((i % 10) * 10 + i / 10) % 100)
+          const offset: number = i / timeDataMaxIndex
+          const rgba = colorscaleRoi[new_i]
+          const hex = rgba2hex(rgba, roiAlpha)
+          if(pointClick.find(e => e.z === i)) {
+            return [offset, '#ffffff']
+          }
+          return [offset, hex]
+        }),
         zmin: 0,
         zmax: timeDataMaxIndex,
         hoverongaps: false,
@@ -311,6 +310,10 @@ const ImagePlotChart = React.memo<{
   })
   const layout = React.useMemo(
     () => ({
+      title: {
+        text: meta?.title,
+        x: 0.1,
+      },
       width: width,
       height: height - 130,
       margin: {
@@ -320,6 +323,7 @@ const ImagePlotChart = React.memo<{
       },
       dragmode: selectMode ? 'select' : 'pan',
       xaxis: {
+        title: meta?.xlabel,
         autorange: true,
         showgrid: showgrid,
         showline: showline,
@@ -329,6 +333,7 @@ const ImagePlotChart = React.memo<{
         showticklabels: showticklabels,
       },
       yaxis: {
+        title: meta?.ylabel,
         automargin: true,
         autorange: 'reversed',
         showgrid: showgrid,
@@ -340,7 +345,7 @@ const ImagePlotChart = React.memo<{
       },
     }),
     //eslint-disable-next-line react-hooks/exhaustive-deps
-    [showgrid, showline, showticklabels, width, height, selectMode, isAddRoi],
+    [meta, showgrid, showline, showticklabels, width, height, selectMode, isAddRoi],
   )
 
   const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))
@@ -368,7 +373,7 @@ const ImagePlotChart = React.memo<{
         z: Number(point.z),
       })
     }
-    if (point.curveNumber >= 1 && point.z > 0) {
+    if (point.curveNumber >= 1 && point.z >= 0) {
       dispatch(
         setImageItemClikedDataId({
           itemId,
@@ -502,7 +507,7 @@ const ImagePlotChart = React.memo<{
       } catch {}
       setLoadingApi(false)
       onCancelAdd()
-      dispatch(getRoiData({ path: roiFilePath }))
+      workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     }
     if(action === 'Merge ROI') {
       if(pointClick.length < 2) return
@@ -515,7 +520,7 @@ const ImagePlotChart = React.memo<{
       } catch {}
       setLoadingApi(false)
       onCancel()
-      dispatch(getRoiData({ path: roiFilePath }))
+      workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     }
     if(action === 'Delete ROI') {
       if(!pointClick.length) return
@@ -528,7 +533,7 @@ const ImagePlotChart = React.memo<{
       } catch {}
       setLoadingApi(false)
       onCancel()
-      dispatch(getRoiData({ path: roiFilePath }))
+      workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     }
     resetTimeSeries()
   }

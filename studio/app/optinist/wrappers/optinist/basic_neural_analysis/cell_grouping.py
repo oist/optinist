@@ -7,6 +7,7 @@ def cell_grouping(
     output_dir: str,
     nwbfile: NWBFile = None,
     params: dict = None,
+    **kwargs,
 ) -> dict():
     import numpy as np
 

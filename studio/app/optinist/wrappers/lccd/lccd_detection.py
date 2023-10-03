@@ -6,9 +6,12 @@ from studio.app.optinist.dataclass import FluoData, LccdData, RoiData
 
 
 def lccd_detect(
-    mc_images: ImageData, output_dir: str, params: dict = None
+    mc_images: ImageData, output_dir: str, params: dict = None, **kwargs
 ) -> dict(fluorescence=FluoData, cell_roi=RoiData):
     from studio.app.optinist.wrappers.lccd.lccd_python.lccd import LCCD
+
+    function_id = output_dir.split("/")[-1]
+    print("start lccd_detect:", function_id)
 
     print("params: ", params)
     lccd = LCCD(params)
@@ -44,26 +47,28 @@ def lccd_detect(
                 )
                 timeseries_dff[i, k] = (timeseries[i, k] - f0) / f0
 
-    nwbfile = {}
-
     roi_list = [{"image_mask": roi[:, i].reshape(D.shape[:2])} for i in range(num_cell)]
-    nwbfile[NWBDATASET.ROI] = {"roi_list": roi_list}
 
+    nwbfile = {}
+    nwbfile[NWBDATASET.ROI] = {function_id: roi_list}
     nwbfile[NWBDATASET.COLUMN] = {
-        "roi_column": {
+        function_id: {
             "name": "iscell",
             "discription": "two columns - iscell & probcell",
             "data": is_cell,
         }
     }
 
-    nwbfile[NWBDATASET.FLUORESCENCE] = {}
-    nwbfile[NWBDATASET.FLUORESCENCE]["Fluorescence"] = {
-        "table_name": "Fluorescence",
-        "region": list(range(len(timeseries))),
-        "name": "Fluorescence",
-        "data": timeseries,
-        "unit": "lumens",
+    nwbfile[NWBDATASET.FLUORESCENCE] = {
+        function_id: {
+            "Fluorescence": {
+                "table_name": "Fluorescence",
+                "region": list(range(len(timeseries))),
+                "name": "Fluorescence",
+                "data": timeseries,
+                "unit": "lumens",
+            }
+        }
     }
 
     lccd_data = {}

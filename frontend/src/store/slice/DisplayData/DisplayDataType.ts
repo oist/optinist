@@ -7,6 +7,10 @@ import {
   ImageData,
   ScatterData,
   HTMLData,
+  HistogramData,
+  LineData,
+  PieData,
+  PolarData,
 } from 'api/outputs/Outputs'
 
 export const DISPLAY_DATA_SLICE_NAME = 'displayData'
@@ -39,6 +43,18 @@ export type DisplayData = {
   html: {
     [filePath: string]: HTMLDisplayData
   }
+  histogram: {
+    [filePath: string]: HistogramDisplayData
+  }
+  line: {
+    [filePath: string]: LineDisplayData
+  }
+  pie: {
+    [filepath: string]: PieDisplayData
+  }
+  polar: {
+    [filePath: string]: PolarDisplayData
+  }
 }
 
 export const DATA_TYPE_SET = {
@@ -53,13 +69,24 @@ export const DATA_TYPE_SET = {
   HTML: 'html',
   FLUO: 'fluo',
   BEHAVIOR: 'behavior',
+  HISTOGRAM: 'histogram',
+  LINE: 'line',
+  PIE: 'pie',
+  POLAR: 'polar',
 } as const
 
 export type DATA_TYPE = typeof DATA_TYPE_SET[keyof typeof DATA_TYPE_SET]
 
+export type PlotMetaData = {
+  xlabel?: string
+  ylabel?: string
+  title?: string
+}
+
 interface BaseDisplay<T extends DATA_TYPE, Data> {
   type: T
   data: Data
+  meta?: PlotMetaData
   pending: boolean
   error: string | null
   fulfilled: boolean
@@ -67,7 +94,7 @@ interface BaseDisplay<T extends DATA_TYPE, Data> {
 
 export interface TimeSeriesDisplayData
   extends BaseDisplay<'timeSeries', TimeSeriesData> {
-  xrange: number[]
+  xrange: string[]
   std: TimeSeriesData
 }
 
@@ -96,3 +123,20 @@ export interface BarDisplayData extends BaseDisplay<'bar', BarData> {
 }
 
 export interface HTMLDisplayData extends BaseDisplay<'html', HTMLData> {}
+
+export interface HistogramDisplayData
+  extends BaseDisplay<'histogram', HistogramData> {}
+
+export interface LineDisplayData extends BaseDisplay<'line', LineData> {
+  columns: number[]
+  index: number[]
+}
+
+export interface PieDisplayData extends BaseDisplay<'pie', PieData> {
+  columns: string[]
+}
+
+export interface PolarDisplayData extends BaseDisplay<'polar', PolarData> {
+  columns: number[]
+  index: number[]
+}

@@ -5,7 +5,7 @@ Workflow
 <p align="center">
 <img width="400px" src="../_static/workflow/whole.png" alt="workflow" />
 <br/>
-  
+
   - OptiNiSt makes it easy to create analysis pipelines using the GUI.
 - In the workflow field, you can:
     - Select the data and the algorithms or analysis methods (nodes).
@@ -14,12 +14,12 @@ Workflow
 
 ## Creating workflow
 ### Setting Input data
-  
-  
+
+
 <br>
 <p align="center">
-<img width="200px" src="../_static/tutorials/fig3_imagenode.png" alt="imageNode" />
-<img width="200px" src="../_static/workflow/components/imageList.png" alt="imageNode" />
+<img width="250px" src="../_static/tutorials/fig3_imagenode.png" alt="imageNode" />
+<img width="250px" src="../_static/workflow/components/imageList.png" alt="imageNode" />
 </p>
 <br/>
 
@@ -30,19 +30,43 @@ Once the data is accessible, you can view it by following these steps:
 1. Click on the SELECT IMAGE button on the Image node.
 2. Select a file or a folder. Choosing a folder makes all the TIFF files in the shown sequence an input set of continuous frames.
 
-  
+
 **Note:** Currently, image files with {.tif, .TIF, .tiff, .TIFF} extensions are accepted. Other extensions will be added on request.
 
 #### Directory Setting
-OptiNiSt uses `OPTINIST_DIR` for retrieving data and saving results. OptiNiSt searches for input data in the 'input' directory within `OPTINIST_DIR`. The default `OPTINIST_DIR` is `/tmp/optinist` on your computer.
+OptiNiSt uses `OPTINIST_DIR` for retrieving data and saving results. OptiNiSt searches for input data in the 'input' directory within `OPTINIST_DIR`. The default `OPTINIST_DIR` is `/tmp/studio` on your computer.
 
 Choosing a folder makes all the TIFF files in the shown sequence an input set of continuous frames.
 
 You may not want to modify your original data folder, or you may want to make your data folder visible and accessible to OptiNiSt because imaging data can be large and take time to copy. You can take either strategy in assigning your data path:
 
-1. **Copy your original data file to `OPTINIST_DIR` ** To copy the data to `OPTINIST_DIR`, click on the LOAD button on the node. The LOAD button copies the selected file to your `OPTINIST_DIR/input`. This can be done from the GUI.
+1. **Upload from GUI**
 
-2. **Change the setting of `OPTINIST_DIR` ** `OPTINIST_DIR` is defined in `optinist/optinist/api/dir_path.py`. Change line for `OPTINIST_DIR`, INPUT_DIR, and OUTPUT_DIR according to your demand. Changing `dir_path.py` may also be necessary when running the pipeline on your cluster computers. Also, you can quickly change OPTINIST_DIR by changing the environment variable before launching. The change is effective after relaunching.
+    Click on the LOAD button on the node. The LOAD button copies the selected file to your `OPTINIST_DIR/input`.
+
+    **By this method, you cannot upload multiple files or folder at once**.
+    - If you want to upload multiple files or folder at once, use the method below.
+
+2. **Copy files to `OPTINIST_DIR`**
+
+    Copy your raw data to `OPTINIST_DIR/input/1/` by your OS's file manager or command lines.
+      ```{eval-rst}
+      .. warning::
+          Be sure to copy under ``input/1/``. ``1`` is the default workspace id for :ref:`standalone mode <about-multiuser-mode>`.
+          If you copy under ``input/`` directly, the file cannot be found from GUI.
+      ```
+
+    You can copy folder into the input directory.
+    - If you put folder, you can see the folder from GUI, SELECT IMAGE dialog like this.
+      <br>
+      <p align="center">
+      <img width="400px" src="../_static/workflow/components/put_folder_to_input_dir.png" alt="Put Folder to Input Dir" />
+      </p>
+
+3. **Change the setting of `OPTINIST_DIR`**
+
+    This requires modifying source codes. See [](each-platforms-for-developer) installation guide section.
+    `OPTINIST_DIR` is defined in `optinist/studio/app/dir_path.py`. Change line for `OPTINIST_DIR`, `INPUT_DIR`, and `OUTPUT_DIR` according to your demand. Changing `dir_path.py` may also be necessary when running the pipeline on your cluster computers. Also, you can quickly change `OPTINIST_DIR` by changing the environment variable before launching. The change is effective after relaunching.
 
 #### Other Data Formats As The Input
 
@@ -51,16 +75,16 @@ You may not want to modify your original data folder, or you may want to make yo
 <img width="300px" src="../_static/workflow/components/csv_connect.png" alt="CSV Connect" />
 </p>
 
-eta, cca, correlation, cross_correlation, granger, glm, lda, and svm assume the input neural data shape is frames x cells matrix. 
-Because the output of CaImAn and Suite2P on the pipeline is cell x frames, the default setting for neural data for these analyses is set to transpose. 
-Pca and tsne can be done in either direction depending on your purpose. 
-The function assumes their input to be samples x features.  
-Rows and columns can be specified by `settings` appearing after selecting the csv data. 
-Note that the number of data points has to be the same as the number of frames of image data. 
-Fluo data node is for cell's fluorescence timecourse data given as .csv. 
+eta, cca, correlation, cross_correlation, granger, glm, lda, and svm assume the input neural data shape is frames x cells matrix.
+Because the output of CaImAn and Suite2P on the pipeline is cell x frames, the default setting for neural data for these analyses is set to transpose.
+Pca and tsne can be done in either direction depending on your purpose.
+The function assumes their input to be samples x features.
+Rows and columns can be specified by `settings` appearing after selecting the csv data.
+Note that the number of data points has to be the same as the number of frames of image data.
+Fluo data node is for cell's fluorescence timecourse data given as .csv.
 
 Another data format prepared is hdf5. This format is compatible with the nwb data format.
-CSV and hdf5 nodes have black output connectors. 
+CSV and hdf5 nodes have black output connectors.
 The edge connected to the black output connector can be connected to any input connector. Be careful; this means that it does not check the format correspondence between input and output.
 
 
@@ -71,12 +95,12 @@ The edge connected to the black output connector can be connected to any input c
 </p>
 <br>
 
-Select algorithms or analysis methods from the treeview on the left by clicking "+" button. 
+Select algorithms or analysis methods from the treeview on the left by clicking "+" button.
 
 The left side of the window displays all available analysis methods. Clicking on the + mark adds the analysis nodes to the Workflow field. ROI detection tools (currently Suite2P, CaImAn and LCCD) are in the "Algorithm" category, and all other pre-installed analyses are in the "optinist" category.
 
-Let's start with sample TIFF data (`mouse2p_2_long.tiff`) and try Suite2P ROI detection. 
-First, you need to determine the image you will use. Select your image as explained [above](#assigning-input-data-path). 
+Let's start with sample TIFF data (`mouse2p_2_long.tiff`) and try Suite2P ROI detection.
+First, you need to determine the image you will use. Select your image as explained [above](#assigning-input-data-path).
 Once it is selected, the name of the files is shown in the Image node.
 
 ### Parameter button and output button on the node
@@ -87,13 +111,13 @@ Once it is selected, the name of the files is shown in the Image node.
 </p>
 <br/>
 
-Each node has PARAM button and OUTPUT button. 
+Each node has PARAM button and OUTPUT button.
 
 - **Editing Parameters:** Click on the PARAM button to view the parameters. You can edit them as needed. The names, types, and default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters. The link list is available at [Implemented Analysis](https://optinist.readthedocs.io/en/latest/utils/implemented_analysis.html).
 
 - **Checking Results:** The OUTPUT button is for a quick check of the results. The button becomes active after the successful execution of the pipeline. For details about the charts, see [Inspecting the Images and the Plots on Visualize](#inspecting-the-images-and-the-plots-on-visualize).
 
-### Connecting Nodes 
+### Connecting Nodes
 
 <br>
 <p align="center">
@@ -102,7 +126,7 @@ Each node has PARAM button and OUTPUT button.
 <br/>
 
 Connect colored connectors of the nodes by dragging your cursor from the output connector to the next input connector to create connecting edges. The color of the connector indicates the data type of the input and the output.
-You can only connect the input and output connectors of the same color. 
+You can only connect the input and output connectors of the same color.
 
 **DataType List**
 - <span style="color: red; ">ImageData</span>
@@ -113,7 +137,31 @@ You can only connect the input and output connectors of the same color.
 
 
 ### Removing Nodes or Connects
-Clicking on the x mark on a node or on an edge removes it from the workflow field. 
+Clicking on the x mark on a node or on an edge removes it from the workflow field.
+
+
+### Import existing workflow
+You can create same workflow by importing workflow config file.
+
+By clicking the IMPORT button, You can import workflow config file in YAML format.
+
+<br>
+<p align="center">
+<img width="600px" src="../_static/tutorials/import_workflow.png" alt="ImportWorkflow" />
+</p>
+<br/>
+
+The file can be downloaded in RECORD tab.
+
+<br>
+<p align="center">
+<img width="600px" src="../_static/tutorials/download_workflow_config.png" alt="DownloadWorkflowConfig" />
+</p>
+<br/>
+
+
+This feature is like "Reproduce" in RECORD tab, but useful to share workflow with other devices.
+Because import workflow config exclude the input node file path, which maybe different from each devices.
 
 
 ## Running pipelines
@@ -123,7 +171,7 @@ Clicking on the x mark on a node or on an edge removes it from the workflow fiel
 </p>
 <br/>
 
-Click the RUN button at the top right to see two dropdown choices: RUNALL and RUN. 
+Click the RUN button at the top right to see two dropdown choices: RUNALL and RUN.
 
 - **RUNALL:**
     - Runs the entire process.
@@ -152,9 +200,9 @@ SNAKEMAKE and NWB SETTING buttons are for parameters for snakemake and output NW
     - OptiNiSt's pipeline construction is based on [Snakemake](https://snakemake.readthedocs.io/en/stable/), a pipeline controlling tool for Python scripts.
     - The Snakemake parameter setting is following.
       - use_conda: If this is on, snakemake uses conda environment.
-      - cores: Specifies the number of cores to use. If not specified, snakemake uses number of available cores in the machine. 
+      - cores: Specifies the number of cores to use. If not specified, snakemake uses number of available cores in the machine.
       - forceall: Flag to indicate the execution of the target regardless of already created output.
-      - forcetargets: Users may not want to change this. 
+      - forcetargets: Users may not want to change this.
       - lock: Users may not want to change this.
     - For details about snakemake parameters please refer to [here](https://snakemake.readthedocs.io/en/stable/executing/cli.html)
 
@@ -173,4 +221,3 @@ SNAKEMAKE and NWB SETTING buttons are for parameters for snakemake and output NW
       - image_serises: information about imaing time
       - ophys: general information about imaging
     - For general information about NWB, refer to the [official documentation](https://www.nwb.org/getting-started/).
-

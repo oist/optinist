@@ -3,9 +3,12 @@ from studio.app.optinist.dataclass import Suite2pData
 
 
 def suite2p_registration(
-    ops: Suite2pData, output_dir: str, params: dict = None
+    ops: Suite2pData, output_dir: str, params: dict = None, **kwargs
 ) -> dict(ops=Suite2pData):
     from suite2p import default_ops, registration
+
+    function_id = output_dir.split("/")[-1]
+    print("start suite2p registration:", function_id)
 
     ops = ops.data
     refImg = ops["meanImg"]

@@ -19,10 +19,14 @@ class ExptConfigWriter:
         workspace_id: str,
         unique_id: str,
         name: str,
+        nwbfile: Dict = {},
+        snakemake: Dict = {},
     ) -> None:
         self.workspace_id = workspace_id
         self.unique_id = unique_id
         self.name = name
+        self.nwbfile = nwbfile
+        self.snakemake = snakemake
         self.builder = ExptConfigBuilder()
 
     def write(self) -> None:
@@ -58,6 +62,8 @@ class ExptConfigWriter:
             .set_name(self.name)
             .set_started_at(datetime.now().strftime(DATE_FORMAT))
             .set_success("running")
+            .set_nwbfile(self.nwbfile)
+            .set_snakemake(self.snakemake)
             .build()
         )
 

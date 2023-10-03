@@ -8,6 +8,9 @@ from studio.app.optinist.dataclass import FluoData, LccdData, RoiData
 def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
     import numpy as np
 
+    function_id = node_dirpath.split("/")[-1]
+    print("start lccd add_roi:", function_id)
+
     lccd_data = np.load(
         os.path.join(node_dirpath, "lccd.npy"), allow_pickle=True
     ).item()
@@ -67,7 +70,9 @@ def execute_add_ROI(node_dirpath, posx, posy, sizex, sizey):
         ),
         "fluorescence": FluoData(timeseries, file_name="fluorescence"),
         "dff": FluoData(timeseries_dff, file_name="dff"),
-        "nwbfile": set_nwbfile(lccd_data, roi_list, fluorescence=timeseries),
+        "nwbfile": set_nwbfile(
+            lccd_data, roi_list, function_id, fluorescence=timeseries
+        ),
     }
 
     return info

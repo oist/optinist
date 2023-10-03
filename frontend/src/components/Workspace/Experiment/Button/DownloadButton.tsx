@@ -77,7 +77,7 @@ export const SnakemakeDownloadButton = React.memo(() => {
       </IconButton>
       <a
         href={url}
-        download={`snakemake_${workspaceId}.yaml`}
+        download={`snakemake_${uid}.yaml`}
         className="hidden"
         ref={ref}
       >
@@ -113,7 +113,7 @@ export const WorkflowDownloadButton = React.memo(() => {
       </IconButton>
       <a
         href={url}
-        download={`workflow_${workspaceId}.yaml`}
+        download={`workflow_${uid}.yaml`}
         className="hidden"
         ref={ref}
       >

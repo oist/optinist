@@ -10,11 +10,15 @@ def LDA(
     output_dir: str,
     iscell: IscellData = None,
     params: dict = None,
+    **kwargs,
 ) -> dict():
     # modules specific to function
     import numpy as np
     from sklearn.discriminant_analysis import LinearDiscriminantAnalysis as LDA
     from sklearn.model_selection import StratifiedKFold
+
+    function_id = output_dir.split("/")[-1]
+    print("start LDA:", function_id)
 
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data
@@ -66,7 +70,9 @@ def LDA(
     # NWB追加
     nwbfile = {}
     nwbfile[NWBDATASET.POSTPROCESS] = {
-        "score": score,
+        function_id: {
+            "score": score,
+        }
     }
 
     info = {"score": BarData(score, file_name="score"), "nwbfile": nwbfile}

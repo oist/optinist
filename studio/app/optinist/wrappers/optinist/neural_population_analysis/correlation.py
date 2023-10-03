@@ -8,8 +8,12 @@ def correlation(
     output_dir: str,
     iscell: IscellData = None,
     params: dict = None,
+    **kwargs,
 ) -> dict():
     import numpy as np
+
+    function_id = output_dir.split("/")[-1]
+    print("start correlation:", function_id)
 
     neural_data = neural_data.data
 
@@ -34,7 +38,9 @@ def correlation(
     # NWB追加
     nwbfile = {}
     nwbfile[NWBDATASET.POSTPROCESS] = {
-        "corr": corr,
+        function_id: {
+            "corr": corr,
+        }
     }
 
     info = {
