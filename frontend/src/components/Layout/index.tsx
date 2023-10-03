@@ -1,4 +1,4 @@
-import { FC, ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Box } from '@mui/material'
@@ -62,7 +62,7 @@ const Layout = ({ children }: { children?: ReactNode }) => {
   )
 }
 
-const AuthedLayout: FC = ({ children }) => {
+const AuthedLayout: React.FC<{children: ReactNode}> = ({ children }) => {
   const [open, setOpen] = useState(false)
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -82,7 +82,7 @@ const AuthedLayout: FC = ({ children }) => {
   )
 }
 
-const UnauthedLayout: FC = ({ children }) => {
+const UnauthedLayout: React.FC<{children: ReactNode}>= ({ children }) => {
   return (
     <LayoutWrapper>
       <ContentBodyWrapper>
