@@ -1,6 +1,12 @@
 from studio.app.common.dataclass import ImageData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
-from studio.app.optinist.dataclass import FluoData, IscellData, RoiData, Suite2pData
+from studio.app.optinist.dataclass import (
+    EditRoiData,
+    FluoData,
+    IscellData,
+    RoiData,
+    Suite2pData,
+)
 
 
 def suite2p_roi(
@@ -40,7 +46,7 @@ def suite2p_roi(
 
     # ROI CLASSIFICATION
     iscell = classification.classify(stat=stat, classfile=classfile)
-    iscell = iscell[:, 0].astype(bool)
+    iscell = iscell[:, 0].astype(int)
 
     arrays = []
     for i, s in enumerate(stat):
@@ -99,12 +105,6 @@ def suite2p_roi(
         }
     }
 
-    ops["stat"] = stat
-    ops["F"] = F
-    ops["Fneu"] = Fneu
-    ops["iscell"] = iscell
-    ops["im"] = im
-
     info = {
         "ops": Suite2pData(ops),
         "max_proj": ImageData(
@@ -117,13 +117,16 @@ def suite2p_roi(
             np.nanmax(im, axis=0), output_dir=output_dir, file_name="all_roi"
         ),
         "non_cell_roi": RoiData(
-            np.nanmax(im[~iscell], axis=0),
+            np.nanmax(im[iscell == 0], axis=0),
             output_dir=output_dir,
             file_name="noncell_roi",
         ),
         "cell_roi": RoiData(
-            np.nanmax(im[iscell], axis=0), output_dir=output_dir, file_name="cell_roi"
+            np.nanmax(im[iscell != 0], axis=0),
+            output_dir=output_dir,
+            file_name="cell_roi",
         ),
+        "edit_roi_data": EditRoiData(images=ImageData(ops["filelist"]).data, im=im),
         "nwbfile": nwbfile,
     }
 

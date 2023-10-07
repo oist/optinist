@@ -54,3 +54,13 @@ class RoiData(BaseData):
     @property
     def output_path(self) -> OutputPath:
         return OutputPath(path=self.json_path, type=OutputType.ROI)
+
+
+class EditRoiData(BaseData):
+    temp_add_roi = []
+    temp_merge_roi = []
+    temp_delete_roi = []
+
+    def __init__(self, images, im):
+        self.images = images
+        self.im = im

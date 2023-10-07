@@ -16,4 +16,5 @@ __all__ = [
     "NWBFile",
     "RoiData",
     "Suite2pData",
+    "EditRoiData",
 ]
