@@ -114,6 +114,25 @@ class EditROI:
         self.__update_pickle_for_roi_edition(self.pickle_file_path, info)
         self.__save_json(info)
 
+    def commit(self):
+        new_fluorescences = np.zeros((self.num_cell, self.data.images.shape[0]))
+        new_fluorescences[: len(self.fluorescence)] = self.fluorescence
+
+        for i in range(self.num_cell):
+            if self.iscell[i] == CellType.TEMP_ROI:
+                new_fluorescences[i] = np.mean(
+                    self.data.images[:, ~np.isnan(self.data.im[i])], axis=1
+                )
+
+        nwbfile = {}
+        info = {
+            "fluorescence": FluoData(new_fluorescences, file_name="fluorescence"),
+            "nwbfile": nwbfile,
+        }
+        self.__update_pickle_for_roi_edition(self.pickle_file_path, info)
+        self.__save_json(info)
+        self.__update_whole_nwb(info)
+
     def __update_whole_nwb(self, output_info):
         workflow_dirpath = os.path.dirname(self.node_dirpath)
         smk_config_file = join_filepath(
