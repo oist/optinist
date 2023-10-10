@@ -1,5 +1,5 @@
-from dataclasses import dataclass
 import os
+from dataclasses import dataclass
 from glob import glob
 from typing import List, Tuple
 
@@ -11,16 +11,18 @@ from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.utils.pickle_handler import PickleReader, PickleWriter
 from studio.app.common.dataclass.base import BaseData
 from studio.app.dir_path import DIRPATH
+from studio.app.optinist.core.edit_ROI.utils import set_nwbfile
 from studio.app.optinist.core.nwb.nwb_creater import overwrite_nwb
-from studio.app.optinist.dataclass import IscellData, RoiData, FluoData, EditRoiData
-from studio.app.optinist.schemas.roi import RoiPos
+from studio.app.optinist.dataclass import EditRoiData, FluoData, IscellData, RoiData
+from studio.app.optinist.schemas.roi import RoiPos, RoiStatus
 
 
 @dataclass
 class CellType:
     ROI = 1
     NON_ROI = 0
-    TEMP_ROI = -1
+    TEMP_ADD = -1
+    TEMP_DELETE = -2
 
 
 class EditROI:
@@ -50,11 +52,19 @@ class EditROI:
     def num_cell(self):
         return self.data.im.shape[0]
 
+    def get_status(self) -> RoiStatus:
+        return RoiStatus(
+            temp_add_roi=self.data.temp_add_roi,
+            temp_delete_roi=self.data.temp_delete_roi,
+            temp_merge_roi=self.data.temp_merge_roi,
+        )
+
     def add(self, roi_pos):
         new_roi = self.create_ellipse_mask(self.shape, roi_pos)
         new_roi = new_roi[np.newaxis, :, :] * self.num_cell
 
-        self.iscell = np.append(self.iscell, CellType.TEMP_ROI)
+        self.data.temp_add_roi += [self.num_cell]
+        self.iscell = np.append(self.iscell, CellType.TEMP_ADD)
         self.data.im = np.vstack((self.data.im, new_roi))
 
         info = {
@@ -75,12 +85,12 @@ class EditROI:
         merged_roi = np.maximum.reduce(merging_rois)
         merged_roi = np.where(merged_roi == -np.inf, np.nan, self.num_cell)
 
+        self.data.temp_merge_roi.append(float(self.num_cell))
         self.data.im = np.vstack((self.data.im, merged_roi[np.newaxis, :, :]))
 
-        self.iscell[ids] = CellType.NON_ROI
-        self.iscell = np.append(self.iscell, CellType.TEMP_ROI)
+        self.iscell[ids] = CellType.TEMP_DELETE
+        self.iscell = np.append(self.iscell, CellType.TEMP_ADD)
 
-        self.data.temp_merge_roi.append(float(self.num_cell))
         self.data.temp_merge_roi += ids
         self.data.temp_merge_roi.append((-1.0))
 
@@ -98,14 +108,14 @@ class EditROI:
         self.__save_json(info)
 
     def delele(self, ids: List[int]):
-        self.iscell[ids] = CellType.NON_ROI
+        self.iscell[ids] = CellType.TEMP_DELETE
 
         info = {
-            "cell_roi": RoiData(
-                np.nanmax(self.data.im[self.iscell != CellType.NON_ROI], axis=0),
-                output_dir=self.node_dirpath,
-                file_name="cell_roi",
-            ),
+            # "cell_roi": RoiData(
+            #     np.nanmax(self.data.im[self.iscell != CellType.NON_ROI], axis=0),
+            #     output_dir=self.node_dirpath,
+            #     file_name="cell_roi",
+            # ),
             "iscell": IscellData(self.iscell),
             "edit_roi_data": self.data,
         }
@@ -115,20 +125,40 @@ class EditROI:
         self.__save_json(info)
 
     def commit(self):
-        new_fluorescences = np.zeros((self.num_cell, self.data.images.shape[0]))
+        new_fluorescences = np.zeros((self.num_cell, self.fluorescence.shape[1]))
         new_fluorescences[: len(self.fluorescence)] = self.fluorescence
 
+        self.iscell[self.iscell == CellType.TEMP_DELETE] = CellType.NON_ROI
         for i in range(self.num_cell):
-            if self.iscell[i] == CellType.TEMP_ROI:
+            if self.iscell[i] == CellType.TEMP_ADD:
                 new_fluorescences[i] = np.mean(
                     self.data.images[:, ~np.isnan(self.data.im[i])], axis=1
                 )
+                self.iscell[i] = CellType.ROI
 
-        nwbfile = {}
+        self.output_info["fluorescence"] = FluoData(
+            new_fluorescences, file_name="fluorescence"
+        )
+
+        self.data.add_roi += self.data.temp_add_roi
+        self.data.delete_roi += self.data.temp_delete_roi
+        self.data.merge_roi += self.data.temp_merge_roi
+        self.data.temp_add_roi = []
+        self.data.temp_delete_roi = []
+        self.data.temp_merge_roi = []
+
         info = {
-            "fluorescence": FluoData(new_fluorescences, file_name="fluorescence"),
-            "nwbfile": nwbfile,
+            "cell_roi": RoiData(
+                np.nanmax(self.data.im[self.iscell != CellType.NON_ROI], axis=0),
+                output_dir=self.node_dirpath,
+                file_name="cell_roi",
+            ),
+            "fluorescence": self.output_info["fluorescence"],
+            "iscell": IscellData(self.iscell),
+            "nwbfile": set_nwbfile(self.output_info, self.function_id),
+            "edit_roi_data": self.data,
         }
+
         self.__update_pickle_for_roi_edition(self.pickle_file_path, info)
         self.__save_json(info)
         self.__update_whole_nwb(info)

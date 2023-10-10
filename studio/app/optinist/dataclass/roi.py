@@ -57,6 +57,10 @@ class RoiData(BaseData):
 
 
 class EditRoiData(BaseData):
+    add_roi = []
+    merge_roi = []
+    delete_roi = []
+
     temp_add_roi = []
     temp_merge_roi = []
     temp_delete_roi = []

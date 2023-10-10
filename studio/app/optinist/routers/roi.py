@@ -2,9 +2,18 @@ from fastapi import APIRouter, Depends
 
 from studio.app.common.core.workspace.workspace_dependencies import is_workspace_owner
 from studio.app.optinist.core.edit_ROI import EditROI
-from studio.app.optinist.schemas.roi import RoiList, RoiPos
+from studio.app.optinist.schemas.roi import RoiList, RoiPos, RoiStatus
 
 router = APIRouter(prefix="/outputs", tags=["outputs"])
+
+
+@router.post(
+    "/image/{filepath:path}/status",
+    response_model=RoiStatus,
+    dependencies=[Depends(is_workspace_owner)],
+)
+async def status(filepath: str):
+    return EditROI(file_path=filepath).get_status()
 
 
 @router.post(
