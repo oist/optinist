@@ -54,3 +54,13 @@ async def delete_roi(filepath: str, roi_list: RoiList):
 async def commit_edit(filepath: str):
     EditROI(file_path=filepath).commit()
     return True
+
+
+@router.post(
+    "/image/{filepath:path}/cancel_edit",
+    response_model=bool,
+    dependencies=[Depends(is_workspace_owner)],
+)
+async def cancel(filepath: str):
+    EditROI(file_path=filepath).cancel()
+    return True

@@ -163,6 +163,26 @@ class EditROI:
         self.__save_json(info)
         self.__update_whole_nwb(info)
 
+    def cancel(self):
+        original_num_cell = len(self.fluorescence)
+        self.data.im = self.data.im[:original_num_cell]
+        self.iscell = self.iscell[:original_num_cell]
+        self.data.temp_add_roi = []
+        self.data.temp_delete_roi = []
+        self.data.temp_merge_roi = []
+
+        info = {
+            "cell_roi": RoiData(
+                np.nanmax(self.data.im[self.iscell != CellType.NON_ROI], axis=0),
+                output_dir=self.node_dirpath,
+                file_name="cell_roi",
+            ),
+            "iscell": IscellData(self.iscell),
+            "edit_roi_data": self.data,
+        }
+        self.__save_json(info)
+        self.__update_pickle_for_roi_edition(self.pickle_file_path, info)
+
     def __update_whole_nwb(self, output_info):
         workflow_dirpath = os.path.dirname(self.node_dirpath)
         smk_config_file = join_filepath(
