@@ -29,9 +29,10 @@ import {
   selectVisualizeItemWidth,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { setLineItemSelectedIndex } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { AppDispatch } from "../../../../store/store";
 export const LinePlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const isPending = useSelector(selectLineDataIsPending(path))
   const isInitialized = useSelector(selectLineDataIsInitialized(path))
   const error = useSelector(selectLineDataError(path))

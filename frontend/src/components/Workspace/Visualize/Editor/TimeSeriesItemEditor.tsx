@@ -48,7 +48,8 @@ import { Accordion } from 'components/common/Accordion'
 
 import { SaveFig } from './SaveFig'
 import { selectFrameRate }  from "../../../../store/slice/Experiments/ExperimentsSelectors";
-import {selectPipelineLatestUid} from "../../../../store/slice/Pipeline/PipelineSelectors";
+import { selectPipelineLatestUid } from "../../../../store/slice/Pipeline/PipelineSelectors";
+import { AppDispatch } from "../../../../store/store";
 
 export const TimeSeriesItemEditor: React.FC = () => {
   return (
@@ -269,7 +270,7 @@ const Xrange: React.FC = () => {
 
 const LegendSelect: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   // const drawIndexMap = useSelector(selectTimeSeriesItemDrawIndexMap(itemId))
   const dataKeys = useSelector(
     selectTimeSeriesItemKeys(itemId),

@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Handle, Position, NodeProps } from 'react-flow-renderer'
+import { Handle, Position, NodeProps } from 'reactflow'
 import { alpha, useTheme } from '@mui/material/styles'
 import {
   Button,
@@ -37,6 +37,7 @@ import {
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getCsvData } from 'store/slice/DisplayData/DisplayDataActions'
 import { PresentationalCsvPlot } from 'components/Workspace/Visualize/Plot/CsvPlot'
+import { AppDispatch } from "../../../../store/store";
 import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
 
 const sourceHandleStyle: CSSProperties = {
@@ -58,7 +59,7 @@ export const CsvFileNode = React.memo<NodeProps>((element) => {
 })
 
 const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const filePath = useSelector(selectCsvInputNodeSelectedFilePath(nodeId))
   const onChangeFilePath = (path: string) => {
     dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
@@ -123,7 +124,7 @@ export const ParamSettingDialog = React.memo<{
   const [transpose, setTranspose] = React.useState(
     useSelector(selectCsvInputNodeParamTranspose(nodeId)),
   )
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const onClickCancel = () => {
     setOpen(false)
   }
@@ -214,8 +215,8 @@ const CsvPreview = React.memo<{
   const isPending = useSelector(selectCsvDataIsPending(path))
   const isFulfilled = useSelector(selectCsvDataIsFulfilled(path))
   const error = useSelector(selectCsvDataError(path))
+  const dispatch = useDispatch<AppDispatch>()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
-  const dispatch = useDispatch()
   React.useEffect(() => {
     if (workspaceId && !isInitialized) {
       dispatch(getCsvData({ path, workspaceId }))

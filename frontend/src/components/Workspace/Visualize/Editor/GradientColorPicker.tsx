@@ -5,6 +5,9 @@ import { SketchPicker } from 'react-color'
 import { PALETTE_COLOR_SHAPE_TYPE } from 'react-linear-gradient-picker'
 import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
 
+const GradientPickerPopoverComponent =
+  GradientPickerPopover as unknown as React.FC<any>
+
 export const GradientColorPicker = React.memo<{
   colors: { rgb: string; offset: string }[]
   dispatchSetColor: (colorCode: ColorType[]) => void
@@ -36,7 +39,7 @@ export const GradientColorPicker = React.memo<{
   const [open, setOpen] = useState(false)
 
   return (
-    <GradientPickerPopover
+    <GradientPickerPopoverComponent
       open={open}
       setOpen={() => setOpen(!open)}
       // showAnglePicker={true}
@@ -48,7 +51,7 @@ export const GradientColorPicker = React.memo<{
       flatStyle={true}
     >
       <WrappedSketchPicker />
-    </GradientPickerPopover>
+    </GradientPickerPopoverComponent>
   )
 })
 

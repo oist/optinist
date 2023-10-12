@@ -1,4 +1,4 @@
-import { FC, ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { Box } from '@mui/material'
@@ -11,6 +11,7 @@ import LeftMenu from './LeftMenu'
 import { IS_STANDALONE } from 'const/Mode'
 import Loading from 'components/common/Loading'
 import { APP_BAR_HEIGHT } from 'const/Layout'
+import { AppDispatch } from "../../store/store";
 
 const authRequiredPathRegex = /^\/console\/?.*/
 
@@ -18,7 +19,7 @@ const Layout = ({ children }: { children?: ReactNode }) => {
   const user = useSelector(selectCurrentUser)
   const location = useLocation()
   const navigate = useNavigate()
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   const [loading, setLoadingAuth] = useState(
     !IS_STANDALONE && authRequiredPathRegex.test(location.pathname),
@@ -61,7 +62,7 @@ const Layout = ({ children }: { children?: ReactNode }) => {
   )
 }
 
-const AuthedLayout: FC = ({ children }) => {
+const AuthedLayout: React.FC<{children: ReactNode}> = ({ children }) => {
   const [open, setOpen] = useState(false)
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -81,7 +82,7 @@ const AuthedLayout: FC = ({ children }) => {
   )
 }
 
-const UnauthedLayout: FC = ({ children }) => {
+const UnauthedLayout: React.FC<{children: ReactNode}>= ({ children }) => {
   return (
     <LayoutWrapper>
       <ContentBodyWrapper>

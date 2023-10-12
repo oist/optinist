@@ -30,16 +30,16 @@ import {
   setCurrentWorkspace,
 } from '../Workspace/WorkspaceSlice'
 import { clearExperiments } from '../Experiments/ExperimentsSlice'
-import { AppDispatch } from 'store/store'
 import { getWorkspace } from 'store/slice/Workspace/WorkspaceActions'
 import { selectIsWorkspaceOwner } from '../Workspace/WorkspaceSelector'
+import { AppDispatch } from "../../store";
 
 const POLLING_INTERVAL = 5000
 
 export type UseRunPipelineReturnType = ReturnType<typeof useRunPipeline>
 
 export function useRunPipeline() {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const appDispatch: AppDispatch = useDispatch()
   const navigate = useNavigate()
   const location = useLocation()

@@ -1,4 +1,4 @@
-import { Transform, Node, Edge } from 'react-flow-renderer'
+import { Transform, Node, Edge } from 'reactflow'
 
 export const FLOW_ELEMENT_SLICE_NAME = 'flowElement'
 

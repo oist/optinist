@@ -285,7 +285,7 @@ describe('RunSelectors', () => {
         lock: { type: 'child', value: false, path: 'lock' },
       },
     },
-  } as RootState
+  } as any
 
   const expectRunPostData = {
     // name: 'post data test', // nameはomitされているので含めない
@@ -632,7 +632,7 @@ describe('RunSelectors', () => {
     },
     nwb: { params: {} },
     snakemake: { params: {} },
-  } as RootState
+  } as any
 
   const expectRunPostDataForceRunList = {
     nwbParam: {},

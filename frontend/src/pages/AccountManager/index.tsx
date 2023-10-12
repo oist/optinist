@@ -47,6 +47,7 @@ import InputError from 'components/common/InputError'
 import SelectError from 'components/common/SelectError'
 import PaginationCustom from 'components/common/PaginationCustom'
 import { useSnackbar, VariantType } from 'notistack'
+import { AppDispatch } from "../../store/store";
 
 let timeout: NodeJS.Timeout | undefined = undefined
 
@@ -278,7 +279,7 @@ const PopupDelete = ({ open, handleClose, handleOkDel, name }: PopupType) => {
 }
 
 const AccountManager = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   const navigate = useNavigate()
 

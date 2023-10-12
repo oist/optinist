@@ -25,10 +25,11 @@ import {
   selectVisualizeItemWidth,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { setHistogramItemBins } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { AppDispatch } from "../../../../store/store";
 
 export const HistogramPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const isPending = useSelector(selectHistogramDataIsPending(path))
   const isInitialized = useSelector(selectHistogramDataIsInitialized(path))
   const error = useSelector(selectHistogramDataError(path))

@@ -1,6 +1,7 @@
-import React, { DragEvent, MouseEvent, useState } from 'react'
+import React, {DragEvent, FC, MouseEvent, ReactNode, useState} from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import ReactFlow, {
+  isNode,
   ReactFlowProvider,
   addEdge,
   Controls,
@@ -12,7 +13,8 @@ import ReactFlow, {
   ReactFlowInstance,
   OnMove,
   Viewport,
-} from 'react-flow-renderer'
+} from 'reactflow'
+import 'reactflow/dist/style.css'
 import { useDrop } from 'react-dnd'
 
 import 'style/flow.css'
@@ -48,6 +50,7 @@ import {
 } from 'components/Workspace/FlowChart/DialogContext'
 import { FileSelectDialog } from 'components/common/FileSelectDialog'
 import { FormHelperText, Popover } from '@mui/material'
+import { NodeData } from "../../../store/slice/FlowElement/FlowElementType";
 
 const initDialogFile = {
   filePath: '',
@@ -57,10 +60,17 @@ const initDialogFile = {
   onSelectFile: () => null,
 }
 
+const ReactFlowProviderComponent = ReactFlowProvider as FC<{
+  children: ReactNode
+}>
+
 export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
   (props) => {
     const flowNodes = useSelector(selectFlowNodes)
     const flowEdges = useSelector(selectFlowEdges)
+    const egdes = flowEdges.filter(
+        (item) => !isNode(item),
+    ) as Edge<NodeData>[]
     const dispatch = useDispatch()
     const [dialogNodeId, setDialogNodeId] = useState('')
     const [dialogFile, setDialogFile] =
@@ -72,17 +82,17 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
 
     const onConnect = (params: Connection | Edge) => {
       dispatch(
-        setFlowEdges(
-          addEdge(
-            {
-              ...params,
-              animated: false,
-              style: { width: 5 },
-              type: 'buttonedge',
-            },
-            flowEdges,
+        setFlowEdges([
+        ...addEdge(
+          {
+            ...params,
+            animated: false,
+            style: { width: 5 },
+            type: 'buttonedge',
+          },
+            egdes,
           ),
-        ),
+        ]),
       )
     }
 
@@ -154,7 +164,7 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
             onMessageError: setMessageError,
           }}
         >
-          <ReactFlowProvider>
+          <ReactFlowProviderComponent>
             <div className="reactflow-wrapper" ref={wrapparRef}>
               <ReactFlow
                 ref={drop}
@@ -168,15 +178,14 @@ export const ReactFlowComponent = React.memo<UseRunPipelineReturnType>(
                 onNodeDragStop={onNodeDragStop}
                 nodeTypes={reactFlowNodeTypes}
                 edgeTypes={reactFlowEdgeTypes}
-                defaultPosition={[flowPosition[0], flowPosition[1]]}
-                defaultZoom={flowPosition[2]}
+                defaultViewport={{x: flowPosition[0], y: flowPosition[1], zoom: flowPosition[2]}}
                 onMoveEnd={onMoveEnd}
               >
                 <ToolBar {...props} />
                 <Controls />
               </ReactFlow>
             </div>
-          </ReactFlowProvider>
+          </ReactFlowProviderComponent>
           {dialogNodeId && (
             <AlgorithmOutputDialog
               nodeId={dialogNodeId}

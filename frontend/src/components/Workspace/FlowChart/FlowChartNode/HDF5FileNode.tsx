@@ -1,6 +1,6 @@
 import React, { CSSProperties } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { Handle, Position, NodeProps } from 'react-flow-renderer'
+import { Handle, Position, NodeProps } from 'reactflow'
 
 import { alpha, useTheme } from '@mui/material/styles'
 import Dialog from '@mui/material/Dialog'
@@ -33,6 +33,7 @@ import { getHDF5Tree } from 'store/slice/HDF5/HDF5Action'
 import { HDF5TreeNodeType } from 'store/slice/HDF5/HDF5Type'
 import { Typography } from '@mui/material'
 import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
+import { AppDispatch } from "../../../../store/store";
 
 const sourceHandleStyle: CSSProperties = {
   width: 8,
@@ -220,7 +221,7 @@ const TreeNode = React.memo<{
 function useHDF5Tree(
   nodeId: string,
 ): [HDF5TreeNodeType[] | undefined, boolean] {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const tree = useSelector(selectHDF5Nodes())
   const isLoading = useSelector(selectHDF5IsLoading())
   const filePath = useSelector(selectHDF5InputNodeSelectedFilePath(nodeId))
