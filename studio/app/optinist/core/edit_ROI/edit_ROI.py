@@ -1,7 +1,7 @@
 import os
 from dataclasses import dataclass
 from glob import glob
-from typing import List, Tuple
+from typing import List
 
 import numpy as np
 
@@ -11,10 +11,10 @@ from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.utils.pickle_handler import PickleReader, PickleWriter
 from studio.app.common.dataclass.base import BaseData
 from studio.app.dir_path import DIRPATH
-from studio.app.optinist.core.edit_ROI.utils import set_nwbfile
+from studio.app.optinist.core.edit_ROI.utils import create_ellipse_mask, set_nwbfile
 from studio.app.optinist.core.nwb.nwb_creater import overwrite_nwb
 from studio.app.optinist.dataclass import EditRoiData, FluoData, IscellData, RoiData
-from studio.app.optinist.schemas.roi import RoiPos, RoiStatus
+from studio.app.optinist.schemas.roi import RoiStatus
 
 
 @dataclass
@@ -60,7 +60,7 @@ class EditROI:
         )
 
     def add(self, roi_pos):
-        new_roi = self.create_ellipse_mask(self.shape, roi_pos)
+        new_roi = create_ellipse_mask(self.shape, roi_pos)
         new_roi = new_roi[np.newaxis, :, :] * self.num_cell
 
         self.data.temp_add_roi += [self.num_cell]
@@ -223,30 +223,3 @@ class EditROI:
                 self.output_info[k] = v
         PickleWriter.write(pickle_path=file_path, info=self.output_info)
         return self.output_info
-
-    @classmethod
-    def create_ellipse_mask(cls, shape: Tuple[int, int], roi_pos: RoiPos):
-        import numpy as np
-
-        x, y, width, height = (
-            round(roi_pos.posx),
-            round(roi_pos.posy),
-            round(roi_pos.sizex),
-            round(roi_pos.sizey),
-        )
-
-        x_coords = np.arange(0, shape[0])
-        y_coords = np.arange(0, shape[1])
-        xx, yy = np.meshgrid(x_coords, y_coords)
-
-        # Calculate the distance of each pixel from the center of the ellipse
-        a = width / 2
-        b = height / 2
-        distance = ((xx - x) / a) ** 2 + ((yy - y) / b) ** 2
-
-        # Set the pixels within the ellipse to 1 and the pixels outside to NaN
-        ellipse = np.empty(shape)
-        ellipse[:] = np.nan
-        ellipse[distance <= 1] = 1
-
-        return ellipse
