@@ -1,6 +1,7 @@
 import axios from 'utils/axios'
 import { PlotMetaData } from 'store/slice/DisplayData/DisplayDataType'
 import { BASE_URL } from 'const/API'
+import {StatusROI} from "../../components/Workspace/Visualize/Plot/ImagePlot";
 
 export type TimeSeriesData = {
   [key: string]: {
@@ -169,6 +170,36 @@ export async function deleteRoiApi(
   const response = await axios.post(
     `${BASE_URL}/outputs/image/${path}/delete_roi`,
     data,
+  )
+  return response.data
+}
+
+export async function commitRoiApi(
+    path: string,
+    workspace_id: number,
+): Promise<{ data: HTMLData; meta?: PlotMetaData }> {
+  const response = await axios.post(
+      `${BASE_URL}/outputs/image/${path}/commit_edit?workspace_id=${workspace_id}`
+  )
+  return response.data
+}
+
+export async function cancelRoiApi(
+    path: string,
+    workspace_id: number,
+): Promise<{ data: HTMLData; meta?: PlotMetaData }> {
+  const response = await axios.post(
+      `${BASE_URL}/outputs/image/${path}/cancel_edit?workspace_id=${workspace_id}`
+  )
+  return response.data
+}
+
+export async function getStatusRoi(
+    path: string,
+    workspace_id: number,
+): Promise<StatusROI> {
+  const response = await axios.post(
+      `${BASE_URL}/outputs/image/${path}/status?workspace_id=${workspace_id}`
   )
   return response.data
 }

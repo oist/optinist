@@ -72,7 +72,7 @@ import {
   selectingImageArea,
   setImageItemClikedDataId,
 } from 'store/slice/VisualizeItem/VisualizeItemActions'
-import { addRoiApi, deleteRoiApi, mergeRoiApi } from 'api/outputs/Outputs'
+import {addRoiApi, cancelRoiApi, commitRoiApi, deleteRoiApi, getStatusRoi, mergeRoiApi} from 'api/outputs/Outputs'
 import { isTimeSeriesItem } from 'store/slice/VisualizeItem/VisualizeItemUtils'
 import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
 import Loading from "../../../common/Loading";
@@ -81,6 +81,12 @@ interface PointClick {
   x: number
   y: number
   z: number
+}
+
+export type StatusROI = {
+  temp_add_roi: number[]
+  temp_delete_roi: number[]
+  temp_merge_roi: number[]
 }
 
 const WIDTH_CHARTJS = 321
@@ -177,15 +183,11 @@ const ImagePlotChart = React.memo<{
     imageDataEqualtyFn,
   )
 
-  const [isAddRoi, setIsAddRoi] = useState(false)
   const [loadingApi, setLoadingApi] = useState(false)
-
   const [roiDataState, setRoiDataState] = useState(roiData)
-
   const [pointClick, setPointClick] = useState<PointClick[]>([])
 
   const itemsVisual = useSelector(selectVisualizeItems)
-
   const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
   const showline = useSelector(selectImageItemShowLine(itemId))
   const zsmooth = useSelector(selectImageItemZsmooth(itemId))
@@ -199,10 +201,14 @@ const ImagePlotChart = React.memo<{
   const height = useSelector(selectVisualizeItemHeight(itemId))
 
   const [sizeDrag, setSizeDrag] = useState(initSizeDrag)
-
   const [startDragAddRoi, setStartDragAddRoi] = useState(false)
   const [action, setAction] = React.useState('')
   const [positionDrag, setChangeSize] = useState<PositionDrag | undefined>()
+  const [statusRoi, setStatusRoi] = useState<StatusROI>({
+    temp_add_roi: [],
+    temp_delete_roi: [],
+    temp_merge_roi: []
+  })
 
   const outputKey: string | null = useSelector(selectRoiItemOutputKeys(itemId))
 
@@ -219,12 +225,6 @@ const ImagePlotChart = React.memo<{
   useEffect(() => {
     setRoiDataState(roiData)
   }, [roiData])
-
-  // useEffect(() => {
-  //   onCancel()
-  //   onCancelAdd()
-  //   //eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [outputKey, roiFilePath])
 
   const data = React.useMemo(
     () => [
@@ -260,16 +260,32 @@ const ImagePlotChart = React.memo<{
         z: roiDataState,
         type: 'heatmap',
         name: 'roi',
-        hovertemplate: isAddRoi ? 'none' : 'cell id: %{z}',
+        hovertemplate: action === 'Add ROI' ? 'none' : 'cell id: %{z}',
         // hoverinfo: isAddRoi || pointClick.length ? 'none' : undefined,
         colorscale: [...Array(timeDataMaxIndex + 1)].map((_, i) => {
           const new_i = Math.floor(((i % 10) * 10 + i / 10) % 100)
           const offset: number = i / timeDataMaxIndex
           const rgba = colorscaleRoi[new_i]
-          // const rgba = [52, 113, 235, 1]
           const hex = rgba2hex(rgba, roiAlpha)
-          if(pointClick.find(e => e.z === i)) {
-            return [offset, action === 'Delete ROI' ? '#ffffff' : '#e134eb']
+          if(!action) {
+            if(statusRoi.temp_delete_roi.includes(i)) return [offset, '#ffffff']
+            if(statusRoi.temp_merge_roi.includes(i)) return [offset, '#e134eb']
+            if(statusRoi.temp_add_roi.includes(i)) return [offset, '#3483eb']
+          }
+          if(action === 'Add ROI' ) {
+            if(statusRoi.temp_delete_roi.includes(i)) return [offset, '#ffffff']
+            if(statusRoi.temp_add_roi.includes(i)) return [offset, '#3483eb']
+            if(statusRoi.temp_merge_roi.includes(i)) return [offset, '#e134eb']
+          }
+          if(action === 'Delete ROI') {
+            if(pointClick.find(e => e.z === i) || statusRoi.temp_delete_roi.includes(i)) return [offset, '#ffffff']
+            if(statusRoi.temp_add_roi.includes(i)) return [offset, '#3483eb']
+            if(statusRoi.temp_merge_roi.includes(i)) return [offset, '#e134eb']
+          }
+          if(action === 'Merge ROI') {
+            if(statusRoi.temp_delete_roi.includes(i)) return [offset, '#ffffff']
+            if(pointClick.find(e => e.z === i) || statusRoi.temp_merge_roi.includes(i)) return [offset, '#e134eb']
+            if(statusRoi.temp_add_roi.includes(i)) return [offset, '#3483eb']
           }
           return [offset, hex]
         }),
@@ -290,14 +306,28 @@ const ImagePlotChart = React.memo<{
       timeDataMaxIndex,
       roiAlpha,
       alpha,
-      isAddRoi,
       pointClick,
-      action
+      action,
+      statusRoi,
     ],
   )
 
-  const [selectMode, setSelectMode] = React.useState(false)
-  const [edit, setEdit] = React.useState(false)
+  const [selectMode, setSelectMode] = useState(false)
+  const [edit, setEdit] = useState(false)
+
+  const fetchStatusRoi = async () => {
+    if(!roiFilePath || workspaceId === undefined) return
+    try {
+      const data = await getStatusRoi(roiFilePath, workspaceId)
+      setStatusRoi(data as StatusROI)
+    }
+    catch{}
+  }
+
+  useEffect(() => {
+    fetchStatusRoi()
+    //eslint-disable-next-line
+  }, [roiFilePath, workspaceId, edit])
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectMode(event.target.checked)
@@ -345,7 +375,7 @@ const ImagePlotChart = React.memo<{
       },
     }),
     //eslint-disable-next-line react-hooks/exhaustive-deps
-    [meta, showgrid, showline, showticklabels, width, height, selectMode, isAddRoi],
+    [meta, showgrid, showline, showticklabels, width, height, selectMode, action],
   )
 
   const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))
@@ -387,7 +417,11 @@ const ImagePlotChart = React.memo<{
   const setSelectRoi = (point: PointClick) => {
     if(!['Merge ROI', 'Delete ROI'].includes(action)) return
     if (isNaN(Number(point.z))) return
+
     let newPoints
+    if(statusRoi.temp_delete_roi.includes(point.z)) {
+      return
+    }
     const check = pointClick.findIndex(item => item.z === point.z)
     if(check < 0) {
       newPoints = [...pointClick, point]
@@ -395,29 +429,32 @@ const ImagePlotChart = React.memo<{
     else {
       newPoints = pointClick.filter(item => item.z !== point.z)
     }
-
-    // const newRoi = roiDataState.map((roi) => {
-    //   return roi.map((element) => {
-    //     if (newPoints.some((p) => p.z === element)) {
-    //       return -1
-    //     }
-    //     return element
-    //   })
-    // })
     setPointClick(newPoints)
-    // setRoiDataState(newRoi)
   }
 
-  const onCancel = () => {
+  const onCancel = async () => {
+    if(!roiFilePath || workspaceId === undefined) return
     setEdit(false)
+    setAction('')
     setPointClick([])
-    setRoiDataState(roiData)
+    setLoadingApi(true)
+    try {
+      await cancelRoiApi(roiFilePath, workspaceId)
+    }
+    finally {
+      workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
+      setStatusRoi({
+        temp_add_roi: [],
+        temp_delete_roi: [],
+        temp_merge_roi: []
+      })
+      setLoadingApi(false)
+    }
   }
 
   const addRoi = () => {
     setEdit(false)
-    setAction('')
-    setIsAddRoi(true)
+    setAction('Add ROI')
   }
 
   const editRoi = () => {
@@ -427,7 +464,6 @@ const ImagePlotChart = React.memo<{
   const onCancelAdd = () => {
     setAction('')
     setEdit(true)
-    setIsAddRoi(false)
     setSizeDrag(initSizeDrag)
     setChangeSize(undefined)
     setPointClick([])
@@ -486,9 +522,7 @@ const ImagePlotChart = React.memo<{
 
   const addOrSelectRoi = async () => {
     if (!roiFilePath || loadingApi) return
-    setEdit(false)
-    if(isAddRoi) {
-      setAction('')
+    if(action === 'Add ROI') {
       setLoadingApi(true)
       const sizeX = roiDataState[0].length - 1
       const sizeY = roiDataState.length - 1
@@ -521,7 +555,7 @@ const ImagePlotChart = React.memo<{
         })
       } catch {}
       setLoadingApi(false)
-      onCancel()
+      setPointClick([])
       workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     }
     else if(action === 'Delete ROI') {
@@ -534,10 +568,11 @@ const ImagePlotChart = React.memo<{
         })
       } catch {}
       setLoadingApi(false)
-      onCancel()
+      setPointClick([])
       workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     }
     resetTimeSeries()
+    setEdit(true)
   }
 
   const onMergeRoi = async () => {
@@ -550,6 +585,24 @@ const ImagePlotChart = React.memo<{
     if (!roiFilePath || loadingApi) return
     setEdit(false)
     setAction('Delete ROI')
+  }
+
+  const onCommitRoi = async () => {
+    if(!roiFilePath || workspaceId === undefined) return
+    setLoadingApi(true)
+    try {
+      await commitRoiApi(roiFilePath, workspaceId)
+    }
+    catch {}
+    finally {
+      workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
+      setStatusRoi({
+        temp_add_roi: [],
+        temp_delete_roi: [],
+        temp_merge_roi: []
+      })
+      setLoadingApi(false)
+    }
   }
 
   const resetTimeSeries = () => {
@@ -568,15 +621,11 @@ const ImagePlotChart = React.memo<{
   }
 
   const renderActionRoi = () => {
-    // if (!roiDataState?.length || outputKey !== 'cell_roi') return null
-    // if (!isAddRoi) {
-    //   return <LinkDiv onClick={addRoi}>Add ROI</LinkDiv>
-    // }
 
-    if(isAddRoi || action) {
+    if(action) {
       return (
         <>
-          {!isAddRoi ?
+          { action !== 'Add ROI' ?
             <BoxDiv>
               ROI Selecteds: [{pointClick.map(item => item.z).join(',')}]
             </BoxDiv>
@@ -587,12 +636,12 @@ const ImagePlotChart = React.memo<{
           >
             <LinkDiv
               sx={{
-                color: action ? action === 'Delete ROI' ?  '#F84E1B' : '#6619A9' : 'default',
+                color: action === 'Delete ROI' ? '#F84E1B' : action === 'Merge ROI' ? '#6619A9' : 'default',
                 display: 'flex',
                 gap: 1
               }}
             >
-              {isAddRoi ? '[Add ROI]' : `[${action}]`}
+              {`[${action}]`}
             </LinkDiv>
             <LinkDiv
               onClick={onCancelAdd}
@@ -616,6 +665,8 @@ const ImagePlotChart = React.memo<{
     if(!edit) return <LinkDiv onClick={editRoi}>Edit ROI</LinkDiv>
     return null
   }
+
+  if(!statusRoi) return null
 
   return (
     <div>
@@ -659,6 +710,7 @@ const ImagePlotChart = React.memo<{
               <BoxWrapper>
                 <LinkDiv
                   sx={{ color: '#32A919', opacity: loadingApi ? 0.5 : 1 }}
+                  onClick={onCommitRoi}
                 >
                   Commit Edit
                 </LinkDiv>
@@ -683,7 +735,7 @@ const ImagePlotChart = React.memo<{
           onClick={onChartClick}
           onSelecting={onSelecting}
         />
-        {isAddRoi ? (
+        {action === 'Add ROI' ? (
           <DivAddRoi>
             <DivSvg
               onMouseLeave={onMouseUpDragAddRoi}
