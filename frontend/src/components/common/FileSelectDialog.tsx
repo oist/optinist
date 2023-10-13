@@ -1,7 +1,6 @@
 import Dialog from '@mui/material/Dialog'
 import { useDispatch, useSelector } from 'react-redux'
-import TreeView from '@mui/lab/TreeView'
-import TreeItem from '@mui/lab/TreeItem'
+import { TreeView, TreeItem } from '@mui/x-tree-view'
 import FolderIcon from '@mui/icons-material/Folder'
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined'
 import DialogActions from '@mui/material/DialogActions'
