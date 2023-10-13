@@ -325,6 +325,7 @@ const ImagePlotChart = React.memo<{
   }
 
   useEffect(() => {
+    if(!edit) return
     fetchStatusRoi()
     //eslint-disable-next-line
   }, [roiFilePath, workspaceId, edit])
@@ -601,7 +602,8 @@ const ImagePlotChart = React.memo<{
         temp_delete_roi: [],
         temp_merge_roi: []
       })
-      onCancel()
+      setEdit(false)
+      setAction('')
       setLoadingApi(false)
     }
   }
