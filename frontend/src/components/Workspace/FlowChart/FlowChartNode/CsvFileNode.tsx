@@ -1,7 +1,6 @@
-import React, { CSSProperties } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Handle, Position, NodeProps } from 'reactflow'
-import { alpha, useTheme } from '@mui/material/styles'
 import {
   Button,
   Dialog,
@@ -37,17 +36,10 @@ import {
 } from 'store/slice/DisplayData/DisplayDataSelectors'
 import { getCsvData } from 'store/slice/DisplayData/DisplayDataActions'
 import { PresentationalCsvPlot } from 'components/Workspace/Visualize/Plot/CsvPlot'
-import { AppDispatch } from "../../../../store/store";
+import { AppDispatch } from '../../../../store/store'
 import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
-
-const sourceHandleStyle: CSSProperties = {
-  width: 8,
-  height: 15,
-  top: 15,
-  border: '1px solid',
-  borderColor: '#555',
-  borderRadius: 0,
-}
+import { HANDLE_STYLE } from 'const/flowchart'
+import { NodeContainer } from 'components/Workspace/FlowChart/FlowChartNode/NodeContainer'
 
 export const CsvFileNode = React.memo<NodeProps>((element) => {
   const defined = useSelector(selectInputNodeDefined(element.id))
@@ -64,22 +56,13 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   const onChangeFilePath = (path: string) => {
     dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
   }
-  const theme = useTheme()
 
   const onClickDeleteIcon = () => {
     dispatch(deleteFlowNodeById(nodeId))
   }
 
   return (
-    <div
-      style={{
-        height: '100%',
-        width: '230px',
-        background: selected
-          ? alpha(theme.palette.primary.light, 0.1)
-          : undefined,
-      }}
-    >
+    <NodeContainer selected={selected}>
       <button
         className="flowbutton"
         onClick={onClickDeleteIcon}
@@ -102,9 +85,9 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
         type="source"
         position={Position.Right}
         id={toHandleId(nodeId, 'csv', 'CsvData')}
-        style={sourceHandleStyle}
+        style={{ ...HANDLE_STYLE }}
       />
-    </div>
+    </NodeContainer>
   )
 })
 

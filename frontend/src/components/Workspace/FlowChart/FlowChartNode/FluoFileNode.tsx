@@ -1,7 +1,6 @@
-import React, { CSSProperties } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Handle, Position, NodeProps } from 'reactflow'
-import { alpha, useTheme } from '@mui/material/styles'
 
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import {
@@ -14,15 +13,8 @@ import { FileSelect } from './FileSelect'
 import { deleteFlowNodeById } from 'store/slice/FlowElement/FlowElementSlice'
 import { useHandleColor } from './HandleColorHook'
 import { ParamSettingDialog } from './CsvFileNode'
-
-const sourceHandleStyle: CSSProperties = {
-  width: 8,
-  height: 15,
-  top: 15,
-  border: '1px solid',
-  borderColor: '#555',
-  borderRadius: 0,
-}
+import { HANDLE_STYLE } from 'const/flowchart'
+import { NodeContainer } from 'components/Workspace/FlowChart/FlowChartNode/NodeContainer'
 
 export const FluoFileNode = React.memo<NodeProps>((element) => {
   const defined = useSelector(selectInputNodeDefined(element.id))
@@ -39,7 +31,6 @@ const FluoFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   const onChangeFilePath = (path: string) => {
     dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
   }
-  const theme = useTheme()
   const returnType = 'FluoData'
   const fluoColor = useHandleColor(returnType)
 
@@ -48,15 +39,7 @@ const FluoFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   }
 
   return (
-    <div
-      style={{
-        height: '100%',
-        width: '230px',
-        background: selected
-          ? alpha(theme.palette.primary.light, 0.1)
-          : undefined,
-      }}
-    >
+    <NodeContainer selected={selected}>
       <button
         className="flowbutton"
         onClick={onClickDeleteIcon}
@@ -80,10 +63,10 @@ const FluoFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
         position={Position.Right}
         id={toHandleId(nodeId, 'fluo', returnType)}
         style={{
-          ...sourceHandleStyle,
+          ...HANDLE_STYLE,
           background: fluoColor,
         }}
       />
-    </div>
+    </NodeContainer>
   )
 })

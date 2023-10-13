@@ -1,7 +1,6 @@
-import React, { CSSProperties } from 'react'
+import React from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { Handle, Position, NodeProps } from 'reactflow'
-import { alpha, useTheme } from '@mui/material/styles'
 
 import {
   selectImageInputNodeSelectedFilePath,
@@ -15,16 +14,8 @@ import { toHandleId, isValidConnection } from './FlowChartUtils'
 import { deleteFlowNodeById } from 'store/slice/FlowElement/FlowElementSlice'
 import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
 import { arrayEqualityFn } from 'utils/EqualityUtils'
-
-// Connection部分のレイアウト
-const sourceHandleStyle: CSSProperties = {
-  width: '4%',
-  height: '13%',
-  top: 15,
-  border: '1px solid',
-  // borderColor: '#555',
-  borderRadius: 0,
-}
+import { HANDLE_STYLE } from 'const/flowchart'
+import { NodeContainer } from 'components/Workspace/FlowChart/FlowChartNode/NodeContainer'
 
 export const ImageFileNode = React.memo<NodeProps>((element) => {
   const defined = useSelector(selectInputNodeDefined(element.id))
@@ -46,7 +37,6 @@ const ImageFileNodeImple = React.memo<NodeProps>(
       dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
     }
 
-    const theme = useTheme()
     const returnType = 'ImageData'
     const imageColor = useHandleColor(returnType)
 
@@ -55,15 +45,7 @@ const ImageFileNodeImple = React.memo<NodeProps>(
     }
 
     return (
-      <div
-        style={{
-          height: '100%',
-          width: '250px',
-          background: elementSelected
-            ? alpha(theme.palette.primary.light, 0.1)
-            : undefined,
-        }}
-      >
+      <NodeContainer selected={elementSelected}>
         <button
           className="flowbutton"
           onClick={onClickDeleteIcon}
@@ -87,12 +69,12 @@ const ImageFileNodeImple = React.memo<NodeProps>(
           position={Position.Right}
           id={toHandleId(nodeId, 'image', returnType)}
           style={{
-            ...sourceHandleStyle,
+            ...HANDLE_STYLE,
             background: imageColor,
           }}
           isValidConnection={isValidConnection}
         />
-      </div>
+      </NodeContainer>
     )
   },
 )

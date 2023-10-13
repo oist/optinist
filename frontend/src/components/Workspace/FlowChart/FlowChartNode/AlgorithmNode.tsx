@@ -1,8 +1,7 @@
-import React, { CSSProperties, useContext } from 'react'
+import React, { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Handle, Position, NodeProps } from 'reactflow'
 import {
-  alpha,
   Typography,
   useTheme,
   Tooltip,
@@ -37,20 +36,9 @@ import {
   NODE_RESULT_STATUS,
   RUN_STATUS,
 } from 'store/slice/Pipeline/PipelineType'
+import { HANDLE_STYLE } from 'const/flowchart'
 import { DialogContext } from 'components/Workspace/FlowChart/DialogContext'
-
-const leftHandleStyle: CSSProperties = {
-  width: '4%',
-  height: '13%',
-  border: '1px solid',
-  borderRadius: 0,
-}
-const rightHandleStyle: CSSProperties = {
-  width: '4%',
-  height: '13%',
-  border: '1px solid',
-  borderRadius: 0,
-}
+import { NodeContainer } from 'components/Workspace/FlowChart/FlowChartNode/NodeContainer'
 
 export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
   const defined = useSelector(selectAlgorithmNodeDefined(element.id))
@@ -64,7 +52,6 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
 const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
   ({ id: nodeId, selected: elementSelected, isConnectable, data }) => {
     const { onOpen } = useContext(DialogContext)
-    const theme = useTheme()
     const dispatch = useDispatch()
 
     const onClickParamButton = () => {
@@ -82,17 +69,7 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
     const status = useStatus(nodeId)
 
     return (
-      <div
-        tabIndex={0}
-        style={{
-          width: '100%',
-          height: '110%',
-          background: elementSelected
-            ? alpha(theme.palette.primary.light, 0.15)
-            : undefined,
-          border: '1px solid',
-        }}
-      >
+      <NodeContainer selected={elementSelected}>
         <button
           className="flowbutton"
           onClick={onClickDeleteIcon}
@@ -116,7 +93,7 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
         <AlgoArgs nodeId={nodeId} />
         <AlgoReturns nodeId={nodeId} isConnectable={isConnectable} />
         <Message nodeId={nodeId} />
-      </div>
+      </NodeContainer>
     )
   },
 )
@@ -193,8 +170,7 @@ const AlgoReturns = React.memo<{
           position={Position.Right}
           id={`${nodeId}`}
           style={{
-            ...rightHandleStyle,
-            top: 15,
+            ...HANDLE_STYLE,
           }}
           isConnectable={isConnectable}
         />
@@ -247,7 +223,7 @@ const ArgHandle = React.memo<HandleProps>(
         position={Position.Left}
         id={id}
         style={{
-          ...leftHandleStyle,
+          ...HANDLE_STYLE,
           background: rgb_color,
           top: i * 25 + 15,
         }}
@@ -285,7 +261,7 @@ const ReturnHandle = React.memo<HandleProps>(
         position={Position.Right}
         id={id}
         style={{
-          ...rightHandleStyle,
+          ...HANDLE_STYLE,
           background: color,
           top: i * 25 + 15,
         }}
