@@ -601,6 +601,7 @@ const ImagePlotChart = React.memo<{
         temp_delete_roi: [],
         temp_merge_roi: []
       })
+      onCancel()
       setLoadingApi(false)
     }
   }
