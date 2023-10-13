@@ -708,12 +708,15 @@ const ImagePlotChart = React.memo<{
                 </LinkDiv>
               </BoxWrapper>
               <BoxWrapper>
-                <LinkDiv
-                  sx={{ color: '#32A919', opacity: loadingApi ? 0.5 : 1 }}
-                  onClick={onCommitRoi}
-                >
-                  Commit Edit
-                </LinkDiv>
+                {
+                  Object.keys(statusRoi).some(key => statusRoi[key as keyof StatusROI].length > 0) ?
+                    (<LinkDiv
+                      sx={{ color: '#32A919', opacity: loadingApi ? 0.5 : 1 }}
+                      onClick={onCommitRoi}
+                    >
+                      Commit Edit
+                    </LinkDiv>) : null
+                }
                 <LinkDiv
                   sx={{ opacity: loadingApi ? 0.5 : 1 }}
                   onClick={onCancel}
