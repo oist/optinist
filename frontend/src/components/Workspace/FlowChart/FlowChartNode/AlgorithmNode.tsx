@@ -9,7 +9,9 @@ import {
   Button,
   LinearProgress,
   ButtonGroup,
+  Grid,
 } from '@mui/material'
+import { grey } from '@mui/material/colors'
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import ErrorIcon from '@mui/icons-material/Error'
 
@@ -78,21 +80,38 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
           ×
         </button>
         <AlgoName nodeId={nodeId} data={data} />
-        <ButtonGroup sx={{ mx: 1 }}>
-          <Button size="small" onClick={onClickParamButton}>
-            Param
-          </Button>
-          <Button
-            size="small"
-            onClick={onClickOutputButton}
-            disabled={status !== NODE_RESULT_STATUS.SUCCESS}
-          >
-            Output
-          </Button>
-        </ButtonGroup>
+        <Typography
+          marginX={1}
+          marginBottom={1}
+          color={grey[600]}
+          fontSize={13}
+          paragraph
+          variant="body2"
+          sx={{ overflowWrap: 'break-word' }}
+        >
+          {nodeId}
+        </Typography>
+        <Grid container paddingX={1} paddingBottom={1} alignItems="center">
+          <Grid item xs={10}>
+            <ButtonGroup>
+              <Button size="small" onClick={onClickParamButton}>
+                Param
+              </Button>
+              <Button
+                size="small"
+                onClick={onClickOutputButton}
+                disabled={status !== NODE_RESULT_STATUS.SUCCESS}
+              >
+                Output
+              </Button>
+            </ButtonGroup>
+          </Grid>
+          <Grid item xs={2}>
+            <Message nodeId={nodeId} />
+          </Grid>
+        </Grid>
         <AlgoArgs nodeId={nodeId} />
         <AlgoReturns nodeId={nodeId} isConnectable={isConnectable} />
-        <Message nodeId={nodeId} />
       </NodeContainer>
     )
   },
@@ -308,13 +327,18 @@ const Message = React.memo<{
           onMessageError({ anchorElRef, message: errorMsg as string })
         }}
         size="small"
-        style={{ color: theme.palette.error.main, float: 'right' }}
+        style={{ color: theme.palette.error.main }}
       >
         <ErrorIcon />
       </IconButton>
     )
   } else if (status === NODE_RESULT_STATUS.SUCCESS) {
-    return <CheckCircleRoundedIcon color="success" sx={{ float: 'right' }} />
+    return (
+      <CheckCircleRoundedIcon
+        color="success"
+        style={{ verticalAlign: 'middle' }}
+      />
+    )
   } else {
     return null
   }
