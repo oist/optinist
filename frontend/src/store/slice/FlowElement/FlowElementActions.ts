@@ -1,5 +1,5 @@
 import { createAction, createAsyncThunk } from '@reduxjs/toolkit'
-import { Node } from 'react-flow-renderer'
+import { Node } from 'reactflow'
 import { ParamDTO } from 'utils/param/ParamType'
 import { FILE_TYPE } from '../InputNode/InputNodeType'
 import { FLOW_ELEMENT_SLICE_NAME, NodeData } from './FlowElementType'

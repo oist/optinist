@@ -42,6 +42,7 @@ import { UserDTO } from 'api/users/UsersApiDTO'
 import { isMine } from 'store/slice/Workspace/WorkspaceUtils'
 import PaginationCustom from 'components/common/PaginationCustom'
 import { useSnackbar, VariantType } from 'notistack'
+import { AppDispatch } from "../../store/store";
 
 type PopupType = {
   open: boolean
@@ -283,7 +284,7 @@ const PopupDelete = ({
 }
 
 const Workspaces = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const loading = useSelector(selectIsLoadingWorkspaceList)
   const listUserShare = useSelector(selectWorkspaceListUserShare)

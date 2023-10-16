@@ -36,9 +36,10 @@ import {
   TreeItemDragObject,
   TreeItemDropResult,
 } from './DnDItemType'
+import { AppDispatch } from "../../../store/store";
 
 export const AlgorithmTreeView = React.memo(() => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const algoList = useSelector(selectAlgorithmListTree)
   const isLatest = useSelector(selectAlgorithmListIsLated)
 

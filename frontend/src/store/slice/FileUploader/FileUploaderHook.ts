@@ -12,6 +12,7 @@ import {
 } from './FileUploaderSelectors'
 import { FILE_TYPE } from '../InputNode/InputNodeType'
 import { selectCurrentWorkspaceId } from '../Workspace/WorkspaceSelector'
+import { AppDispatch } from "../../store";
 
 type UseFileUploaderProps = {
   fileType?: FILE_TYPE
@@ -19,7 +20,7 @@ type UseFileUploaderProps = {
 }
 
 export function useFileUploader({ fileType, nodeId }: UseFileUploaderProps) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const id = React.useRef(nanoid())
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const onUploadFile = React.useCallback(

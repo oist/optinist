@@ -14,10 +14,10 @@ import {
   selectPipelineLatestUid,
   selectPipelineIsStartedSuccess,
 } from 'store/slice/Pipeline/PipelineSelectors'
-import { RootState } from 'store/store'
+import { AppDispatch, RootState } from 'store/store'
 
 export const DeleteButton = React.memo(() => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const currentPipelineUid = useSelector(selectPipelineLatestUid)
   const uid = React.useContext(ExperimentUidContext)
   const isRunning = useSelector((state: RootState) => {

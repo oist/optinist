@@ -30,6 +30,7 @@ import Loading from 'components/common/Loading'
 import { UserDTO } from 'api/users/UsersApiDTO'
 import CheckIcon from '@mui/icons-material/Check'
 import { resetUserSearch } from 'store/slice/User/UserSlice'
+import { AppDispatch } from "../../store/store";
 
 type PopupType = {
   open: boolean
@@ -107,7 +108,7 @@ const PopupShare = ({
   const loading = useSelector(selectLoading)
   const [textSearch, setTextSearch] = useState('')
   const [stateUserShare, setStateUserShare] = useState(usersShare || undefined)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   let timeout = useRef<NodeJS.Timeout | undefined>()
 
   useEffect(() => {

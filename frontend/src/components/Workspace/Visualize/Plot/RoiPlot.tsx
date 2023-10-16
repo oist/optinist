@@ -22,6 +22,7 @@ import {
   selectVisualizeSaveFormat,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
+import { AppDispatch } from "../../../../store/store";
 
 export const RoiPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -31,7 +32,7 @@ export const RoiPlot = React.memo(() => {
   const error = useSelector(selectRoiDataError(path))
   const workspaceId = useSelector(selectCurrentWorkspaceId)
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   React.useEffect(() => {
     if (workspaceId && !isInitialized) {
       dispatch(getRoiData({ path, workspaceId }))

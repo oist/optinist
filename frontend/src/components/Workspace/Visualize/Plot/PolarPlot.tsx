@@ -29,10 +29,11 @@ import {
   selectVisualizeItemWidth,
 } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
 import { setPolartemItemSelectedIndex } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import { AppDispatch } from "../../../../store/store";
 
 export const PolarPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const isPending = useSelector(selectPolarDataIsPending(path))
   const isInitialized = useSelector(selectPolarDataIsInitialized(path))
   const error = useSelector(selectPolarDataError(path))

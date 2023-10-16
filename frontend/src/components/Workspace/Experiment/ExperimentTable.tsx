@@ -58,6 +58,7 @@ import {
   selectCurrentWorkspaceId,
   selectIsWorkspaceOwner,
 } from 'store/slice/Workspace/WorkspaceSelector'
+import { AppDispatch } from "../../../store/store";
 
 export const ExperimentUidContext = React.createContext<string>('')
 
@@ -65,7 +66,7 @@ export const ExperimentTable: React.FC = () => {
   const isUninitialized = useSelector(selectExperimentsStatusIsUninitialized)
   const isFulfilled = useSelector(selectExperimentsStatusIsFulfilled)
   const isError = useSelector(selectExperimentsStatusIsError)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   React.useEffect(() => {
     if (isUninitialized) {
       dispatch(getExperiments())
@@ -99,7 +100,7 @@ const TableImple = React.memo(() => {
   const experimentList = useSelector(selectExperimentList)
   const experimentListValues = Object.values(experimentList)
   const experimentListKeys = Object.keys(experimentList)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const onClickReload = () => {
     dispatch(getExperiments())
   }
@@ -395,7 +396,7 @@ const RowItem = React.memo<{
   const [isEdit, setEdit] = useState(false)
   const [errorEdit, setErrorEdit] = useState('')
   const [valueEdit, setValueEdit] = useState(name)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   const onBlurEdit = (event: any) => {
     event.preventDefault()

@@ -2,13 +2,14 @@ import { Link } from 'react-router-dom'
 import { Box, styled, Typography } from '@mui/material'
 import ManageAccountsIcon from '@mui/icons-material/ManageAccounts';
 import AnalyticsIcon from '@mui/icons-material/Analytics'
-import {useDispatch, useSelector} from 'react-redux'
-import {isAdmin, selectCurrentUser} from 'store/slice/User/UserSelector'
-import {useEffect} from "react";
-import {getMe} from "../../store/slice/User/UserActions";
+import { useDispatch, useSelector } from 'react-redux'
+import { isAdmin, selectCurrentUser } from 'store/slice/User/UserSelector'
+import { useEffect } from "react";
+import { getMe } from "../../store/slice/User/UserActions";
+import { AppDispatch } from "../../store/store";
 
 const Dashboard = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const admin = useSelector(isAdmin)
   const user = useSelector(selectCurrentUser)
   useEffect(() => {

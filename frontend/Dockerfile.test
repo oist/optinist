@@ -1,4 +1,4 @@
-FROM node:16 as node
+FROM node:20 as node
 
 RUN mkdir /react-app
 WORKDIR /react-app

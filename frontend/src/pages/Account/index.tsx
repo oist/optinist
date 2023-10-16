@@ -21,10 +21,12 @@ import { selectCurrentUser, selectLoading } from 'store/slice/User/UserSelector'
 import { ROLE } from '../../@types'
 import { useSnackbar, VariantType } from 'notistack'
 import Edit from '@mui/icons-material/Edit'
+import { AppDispatch } from "../../store/store";
+
 const Account = () => {
   const user = useSelector(selectCurrentUser)
   const loading = useSelector(selectLoading)
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const [isDeleteConfirmModalOpen, setIsDeleteConfirmModalOpen] =
     useState(false)
