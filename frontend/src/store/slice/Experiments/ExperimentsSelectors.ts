@@ -39,8 +39,11 @@ export const selectExperimentUidList = (state: RootState) =>
 export const selectExperiment = (uid: string) => (state: RootState) =>
   selectExperimentList(state)[uid]
 
-export const selectExperimentTimeStamp = (uid: string) => (state: RootState) =>
-  selectExperiment(uid)(state).timestamp
+export const selectExperimentStartedAt = (uid: string) => (state: RootState) =>
+  selectExperiment(uid)(state).startedAt
+
+export const selectExperimentFinishedAt = (uid: string) => (state: RootState) =>
+  selectExperiment(uid)(state).finishedAt
 
 export const selectExperimentName = (uid: string) => (state: RootState) =>
   selectExperiment(uid)(state).name
@@ -91,7 +94,8 @@ export const selectExperimentFunctionHasNWB =
   (uid: string, nodeId: string) => (state: RootState) =>
     selectExperimentFunction(uid, nodeId)(state).hasNWB
 
-export const selectFrameRate = (currentPipelineUid?: string) => (state: RootState) => {
-  if(!currentPipelineUid) return 50
-  return selectExperiment(currentPipelineUid)(state).frameRate || 50
-}
+export const selectFrameRate =
+  (currentPipelineUid?: string) => (state: RootState) => {
+    if (!currentPipelineUid) return 50
+    return selectExperiment(currentPipelineUid)(state).frameRate || 50
+  }

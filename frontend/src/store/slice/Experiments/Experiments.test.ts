@@ -105,7 +105,8 @@ describe('Experiments', () => {
       experimentList: {
         [uid1]: {
           uid: uid1,
-          timestamp: '2022-05-07 05:26:54',
+          startedAt: '2022-05-07 05:26:54',
+          finishedAt: '2022-05-07 05:26:55',
           frameRate: 30,
           name: 'record test',
           hasNWB: true,
@@ -133,7 +134,8 @@ describe('Experiments', () => {
         },
         [uid2]: {
           uid: uid2,
-          timestamp: '2022-05-07 05:54:53',
+          startedAt: '2022-05-07 05:54:53',
+          finishedAt: '2022-05-07 05:54:54',
           frameRate: 30,
           name: 'New flow',
           hasNWB: true,
