@@ -1,5 +1,6 @@
 export const INITIAL_IMAGE_ELEMENT_ID = 'input_0'
 export const INITIAL_IMAGE_ELEMENT_NAME = 'NoName'
+export const NANO_ID_LENGTH = 10
 export const ALGO_NODE_STYLE: React.CSSProperties = {
   border: '1px solid #777',
   height: 120,
