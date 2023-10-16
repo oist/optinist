@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 
-import Button from '@mui/material/Button'
 import TuneIcon from '@mui/icons-material/Tune'
 import { updateParam } from 'store/slice/NWB/NWBSlice'
 import { getNWBParams } from 'store/slice/NWB/NWBAction'
@@ -13,7 +12,8 @@ import {
   selectNwbParamsValue,
 } from 'store/slice/NWB/NWBSelectors'
 import { createParamFormItemComponent } from 'components/common/ParamFormItemCreator'
-import { AppDispatch } from "../../../store/store";
+import { AppDispatch } from '../../../../store/store'
+import { IconButton, Tooltip } from '@mui/material'
 
 export const NWBSettingButton = React.memo(() => {
   const dispatch = useDispatch()
@@ -21,16 +21,11 @@ export const NWBSettingButton = React.memo(() => {
     dispatch(toggleNwb())
   }
   return (
-    <Button
-      variant="outlined"
-      onClick={handleClick}
-      sx={{
-        margin: (theme) => theme.spacing(1),
-      }}
-      endIcon={<TuneIcon />}
-    >
-      NWB setting
-    </Button>
+    <Tooltip title="NWB settings">
+      <IconButton onClick={handleClick}>
+        <TuneIcon color="primary" />
+      </IconButton>
+    </Tooltip>
   )
 })
 
