@@ -42,7 +42,7 @@
   text-underline-offset: 3px;
   word-break: break-all;
   display: inline-block;
-  max-width: 75%;
+  max-width: 95%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;

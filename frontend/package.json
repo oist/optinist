@@ -18,6 +18,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "@types/colormap": "^2.3.1",
+    "@types/glob": "^8.1.0",
     "@types/jest": "^26.0.15",
     "@types/node": "^16.0.0",
     "@types/qs": "^6.9.7",
