@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-import { Button, Typography } from '@mui/material'
+import { Button, Tooltip, Typography } from '@mui/material'
 import ButtonGroup from '@mui/material/ButtonGroup'
 
 import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from 'api/files/Files'
@@ -124,9 +124,11 @@ export const FileSelectImple = React.memo<FileSelectImpleProps>(
               height: 0,
             }}
           />
-          <Typography className="selectFilePath" variant="caption">
-            {!!fileName ? fileName : 'No file is selected.'}
-          </Typography>
+          <Tooltip title={!!fileName ? fileName : null}>
+            <Typography className="selectFilePath" variant="body2">
+              {!!fileName ? fileName : 'No file is selected.'}
+            </Typography>
+          </Tooltip>
         </div>
       </div>
     )
