@@ -90,6 +90,10 @@ export const selectExperimentFunctionStatus =
   (uid: string, nodeId: string) => (state: RootState) =>
     selectExperimentFunction(uid, nodeId)(state).status
 
+export const selectExperimentFunctionMessage =
+  (uid: string, nodeId: string) => (state: RootState) =>
+    selectExperimentFunction(uid, nodeId)(state).message
+
 export const selectExperimentFunctionHasNWB =
   (uid: string, nodeId: string) => (state: RootState) =>
     selectExperimentFunction(uid, nodeId)(state).hasNWB
