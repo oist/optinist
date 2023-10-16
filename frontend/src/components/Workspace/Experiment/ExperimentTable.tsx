@@ -104,7 +104,7 @@ const TableImple = React.memo(() => {
   const onClickReload = () => {
     dispatch(getExperiments())
   }
-  const [order, setOrder] = React.useState<Order>('asc')
+  const [order, setOrder] = React.useState<Order>('desc')
   const [sortTarget, setSortTarget] =
     React.useState<keyof Experiment>('timestamp')
   const sortHandler =
