@@ -438,6 +438,7 @@ const ImagePlotChart = React.memo<{
     setEdit(false)
     setAction('')
     setPointClick([])
+    if(Object.keys(statusRoi).every(key => statusRoi[key as keyof StatusROI].length < 1)) return
     setLoadingApi(true)
     try {
       await cancelRoiApi(roiFilePath, workspaceId)
@@ -641,7 +642,9 @@ const ImagePlotChart = React.memo<{
               sx={{
                 color: action === 'Delete ROI' ? '#F84E1B' : action === 'Merge ROI' ? '#6619A9' : 'default',
                 display: 'flex',
-                gap: 1
+                gap: 1,
+                textDecoration: 'none',
+                cursor: 'default'
               }}
             >
               {`[${action}]`}
@@ -665,7 +668,7 @@ const ImagePlotChart = React.memo<{
       )
     }
 
-    if(!edit) return <LinkDiv onClick={editRoi}>Edit ROI</LinkDiv>
+    if(!edit) return <LinkDiv sx={{ width: 'fit-content'}} onClick={editRoi}>Edit ROI</LinkDiv>
     return null
   }
 
@@ -690,7 +693,9 @@ const ImagePlotChart = React.memo<{
         {edit ? (
           <>
             <BoxDiv>
-              <BoxWrapper>
+              <BoxWrapper
+              sx={{ marginBottom: 2}}
+              >
                 <LinkDiv
                   sx={{ opacity: loadingApi ? 0.5 : 1 }}
                   onClick={addRoi}
