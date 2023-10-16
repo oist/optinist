@@ -11,7 +11,6 @@ import {
   ButtonGroup,
   Grid,
 } from '@mui/material'
-import { grey } from '@mui/material/colors'
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import ErrorIcon from '@mui/icons-material/Error'
 
@@ -71,7 +70,7 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
     const status = useStatus(nodeId)
 
     return (
-      <NodeContainer selected={elementSelected}>
+      <NodeContainer nodeId={nodeId} selected={elementSelected}>
         <button
           className="flowbutton"
           onClick={onClickDeleteIcon}
@@ -79,43 +78,56 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
         >
           ×
         </button>
-        <AlgoName nodeId={nodeId} data={data} />
-        <Typography
-          marginX={1}
-          marginBottom={1}
-          color={grey[600]}
-          fontSize={13}
-          paragraph
-          variant="body2"
-          sx={{ overflowWrap: 'break-word' }}
+        <AlgoProgress nodeId={nodeId} />
+        <Grid
+          container
+          paddingBottom={1}
+          paddingRight={1}
+          justifyContent="space-between"
         >
-          {nodeId}
-        </Typography>
-        <Grid container paddingX={1} paddingBottom={1} alignItems="center">
-          <Grid item xs={10}>
-            <ButtonGroup>
-              <Button size="small" onClick={onClickParamButton}>
-                Param
-              </Button>
-              <Button
-                size="small"
-                onClick={onClickOutputButton}
-                disabled={status !== NODE_RESULT_STATUS.SUCCESS}
-              >
-                Output
-              </Button>
-            </ButtonGroup>
-          </Grid>
+          <Grid item xs={10}></Grid>
+          <AlgoName nodeId={nodeId} data={data} />
           <Grid item xs={2}>
             <Message nodeId={nodeId} />
           </Grid>
         </Grid>
+        <ButtonGroup>
+          <Button size="small" onClick={onClickParamButton}>
+            Param
+          </Button>
+          <Button
+            size="small"
+            onClick={onClickOutputButton}
+            disabled={status !== NODE_RESULT_STATUS.SUCCESS}
+          >
+            Output
+          </Button>
+        </ButtonGroup>
         <AlgoArgs nodeId={nodeId} />
         <AlgoReturns nodeId={nodeId} isConnectable={isConnectable} />
       </NodeContainer>
     )
   },
 )
+const AlgoProgress = React.memo<{
+  nodeId: string
+}>(({ nodeId }) => {
+  const status = useStatus(nodeId)
+  const pipelineStatus = useSelector(selectPipelineStatus)
+
+  if (
+    pipelineStatus === RUN_STATUS.START_SUCCESS &&
+    status === NODE_RESULT_STATUS.PENDING
+  ) {
+    return (
+      <div style={{ paddingLeft: 8, paddingRight: 8 }}>
+        <LinearProgress />
+      </div>
+    )
+  } else {
+    return null
+  }
+})
 
 const AlgoName = React.memo<{
   nodeId: string
@@ -123,18 +135,8 @@ const AlgoName = React.memo<{
 }>(({ nodeId, data }) => {
   const theme = useTheme()
   const status = useStatus(nodeId)
-  const pipelineStatus = useSelector(selectPipelineStatus)
   return (
-    <div
-      style={{
-        padding: 8,
-        paddingLeft: 8,
-        width: '100%',
-      }}
-      className="algoName"
-    >
-      {pipelineStatus === RUN_STATUS.START_SUCCESS &&
-        status === NODE_RESULT_STATUS.PENDING && <LinearProgress />}
+    <div className="algoName">
       <Typography
         style={{
           textAlign: 'left',
@@ -327,7 +329,7 @@ const Message = React.memo<{
           onMessageError({ anchorElRef, message: errorMsg as string })
         }}
         size="small"
-        style={{ color: theme.palette.error.main }}
+        style={{ color: theme.palette.error.main, padding: 0 }}
       >
         <ErrorIcon />
       </IconButton>

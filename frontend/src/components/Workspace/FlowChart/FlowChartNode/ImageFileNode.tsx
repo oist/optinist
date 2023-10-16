@@ -45,7 +45,7 @@ const ImageFileNodeImple = React.memo<NodeProps>(
     }
 
     return (
-      <NodeContainer selected={elementSelected}>
+      <NodeContainer nodeId={nodeId} selected={elementSelected}>
         <button
           className="flowbutton"
           onClick={onClickDeleteIcon}

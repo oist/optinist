@@ -40,7 +40,7 @@ const BehaviorFileNodeImple = React.memo<NodeProps>(
     }
 
     return (
-      <NodeContainer selected={selected}>
+      <NodeContainer nodeId={nodeId} selected={selected}>
         <button
           className="flowbutton"
           onClick={onClickDeleteIcon}

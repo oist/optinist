@@ -39,7 +39,7 @@ const FluoFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   }
 
   return (
-    <NodeContainer selected={selected}>
+    <NodeContainer nodeId={nodeId} selected={selected}>
       <button
         className="flowbutton"
         onClick={onClickDeleteIcon}

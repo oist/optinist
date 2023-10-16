@@ -92,11 +92,7 @@ export const FileSelectImple = React.memo<FileSelectImpleProps>(
     const accept = getFileInputAccept(fileTreeType)
     const fileName = getLabelByPath(filePath)
     return (
-      <div
-        style={{
-          padding: 5,
-        }}
-      >
+      <div>
         <ButtonGroup size="small" style={{ marginRight: 4 }}>
           <Button
             variant="outlined"
