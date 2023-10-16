@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { getNWBParams } from './NWBAction'
 import { NWBType, NWB_SLICE_NAME } from './NWBType'
 import { convertToParamMap, getChildParam } from 'utils/param/ParamUtils'
-
+import { clearFlowElements } from '../FlowElement/FlowElementSlice'
 const initialState: NWBType = {
   params: {},
 }
@@ -26,9 +26,11 @@ export const nwbSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getNWBParams.fulfilled, (state, action) => {
-      state.params = convertToParamMap(action.payload)
-    })
+    builder
+      .addCase(getNWBParams.fulfilled, (state, action) => {
+        state.params = convertToParamMap(action.payload)
+      })
+      .addCase(clearFlowElements, () => initialState)
   },
 })
 

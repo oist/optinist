@@ -65,6 +65,23 @@ export const flowElementSlice = createSlice({
   name: FLOW_ELEMENT_SLICE_NAME,
   initialState,
   reducers: {
+    clearFlowElements: (state) => {
+      state.flowNodes = applyNodeChanges(
+        state.flowNodes.map((node) => {
+          return { id: node.id, type: 'remove' }
+        }),
+        state.flowNodes,
+      )
+      state.flowNodes = initialNodes
+      state.flowEdges = applyEdgeChanges(
+        state.flowEdges.map((edge) => {
+          return { id: edge.id, type: 'remove' }
+        }),
+        state.flowEdges,
+      )
+      state.flowPosition = initialFlowPosition
+      state.elementCoord = initialElementCoord
+    },
     setFlowPosition: (state, action: PayloadAction<Transform>) => {
       state.flowPosition = action.payload
     },
@@ -249,6 +266,7 @@ function updateElementCoord(state: FlowElement) {
 }
 
 export const {
+  clearFlowElements,
   setNodesChange,
   setEdgesChange,
   setFlowPosition,

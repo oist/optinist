@@ -17,7 +17,7 @@ import {
   RUN_BTN_TYPE,
   RUN_STATUS,
 } from './PipelineType'
-
+import { clearFlowElements } from '../FlowElement/FlowElementSlice'
 import {
   getInitialRunResult,
   convertToRunResult,
@@ -82,7 +82,6 @@ export const pipelineSlice = createSlice({
           status: RUN_STATUS.START_UNINITIALIZED,
         }
       })
-      .addCase(fetchExperiment.rejected, () => initialState)
       .addCase(fetchExperiment.fulfilled, (state, action) => {
         state.currentPipeline = {
           uid: action.payload.unique_id,
@@ -147,6 +146,10 @@ export const pipelineSlice = createSlice({
             status: RUN_STATUS.START_ERROR,
           }
         },
+      )
+      .addMatcher(
+        isAnyOf(fetchExperiment.rejected, clearFlowElements),
+        () => initialState,
       )
   },
 })

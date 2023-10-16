@@ -5,6 +5,7 @@ import {
   importWorkflowConfig,
 } from 'store/slice/Workflow/WorkflowActions'
 import {
+  clearFlowElements,
   deleteFlowNodes,
   deleteFlowNodeById,
 } from '../FlowElement/FlowElementSlice'
@@ -23,7 +24,7 @@ export const RIGHT_DRAWER_MODE = {
 } as const
 
 export type RIGHT_DRAWER_MODE_TYPE =
-  typeof RIGHT_DRAWER_MODE[keyof typeof RIGHT_DRAWER_MODE]
+  (typeof RIGHT_DRAWER_MODE)[keyof typeof RIGHT_DRAWER_MODE]
 
 const initialState: RightDrawer = {
   open: false,
@@ -95,6 +96,7 @@ export const rightDrawerSlice = createSlice({
 
       .addMatcher(
         isAnyOf(
+          clearFlowElements,
           reproduceWorkflow.fulfilled,
           importWorkflowConfig.fulfilled,
           fetchExperiment.fulfilled,
