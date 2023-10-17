@@ -163,7 +163,7 @@ const AlgoArgs = React.memo<{
         ? algoArgs
             .filter((info) => info.type !== 'params')
             .map((algoInfo, i) => {
-              return <ArgHandle algoInfo={algoInfo} i={i} nodeId={nodeId} />
+              return <ArgHandle key={`${nodeId}_args_${i.toFixed()}`} algoInfo={algoInfo} i={i} nodeId={nodeId} />
             })
         : null}
     </>
@@ -182,7 +182,7 @@ const AlgoReturns = React.memo<{
     <>
       {algoReturns != null ? (
         algoReturns?.map((algoInfo, i) => {
-          return <ReturnHandle algoInfo={algoInfo} i={i} nodeId={nodeId} />
+          return <ReturnHandle key={`${nodeId}_returns_${i.toFixed()}`} algoInfo={algoInfo} i={i} nodeId={nodeId} />
         })
       ) : (
         // algoReturns.lengthが0の場合の応急処置
