@@ -14,10 +14,10 @@ export const FlexItemList: React.FC = () => {
   const layout = useSelector(selectVisualizeItemLayout, twoDimarrayEqualityFn)
   return (
     <Box display="flex" flexWrap="wrap" flexDirection="column" p={1} m={1}>
-      {layout.map((row) => (
-        <Box display="flex" flexDirection="row">
+      {layout.map((row, row_idx) => (
+        <Box key={`flex_item_box_${row_idx.toFixed()}`} display="flex" flexDirection="row">
           {row.map((itemId) => (
-            <VisualizeItem itemId={itemId} key={itemId} />
+            <VisualizeItem itemId={itemId} key={`visualize_item_${itemId.toFixed()}`} />
           ))}
         </Box>
       ))}

@@ -127,7 +127,7 @@ export const FilePathSelect: React.FC<{
     }
   })
   algorithmNodeOutputPathInfoList.forEach((pathInfo) => {
-    menuItemList.push(<ListSubheader>{pathInfo.nodeName}</ListSubheader>)
+    menuItemList.push(<ListSubheader key={pathInfo.nodeName}>{pathInfo.nodeName}</ListSubheader>)
     pathInfo.paths.forEach((outputPath, i) => {
       menuItemList.push(
         <MenuItem

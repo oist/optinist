@@ -13,7 +13,7 @@ export const VisualizeItemAddButton: React.FC = () => {
     dispatch(pushInitialItemToNewRow())
   }
   return (
-    <StyledPaper elevation={1} variant="outlined">
+    <StyledPaper elevation={0} variant="outlined">
       <Box
         display="flex"
         justifyContent="center"
