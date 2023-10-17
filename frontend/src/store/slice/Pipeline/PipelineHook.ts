@@ -16,10 +16,8 @@ import {
 } from './PipelineActions'
 import { selectFilePathIsUndefined } from '../InputNode/InputNodeSelectors'
 import { selectAlgorithmNodeNotExist } from '../AlgorithmNode/AlgorithmNodeSelectors'
-import {
-  fetchExperiment,
-  getExperiments,
-} from '../Experiments/ExperimentsActions'
+import { getExperiments } from '../Experiments/ExperimentsActions'
+import { fetchWorkflow } from '../Workflow/WorkflowActions'
 import { useSnackbar, VariantType } from 'notistack'
 import { RUN_STATUS } from './PipelineType'
 import { useLocation, useNavigate, useParams } from 'react-router-dom'
@@ -32,7 +30,7 @@ import {
 import { clearExperiments } from '../Experiments/ExperimentsSlice'
 import { getWorkspace } from 'store/slice/Workspace/WorkspaceActions'
 import { selectIsWorkspaceOwner } from '../Workspace/WorkspaceSelector'
-import { AppDispatch } from "../../store";
+import { AppDispatch } from '../../store'
 
 const POLLING_INTERVAL = 5000
 
@@ -50,12 +48,12 @@ export function useRunPipeline() {
   React.useEffect(() => {
     if (IS_STANDALONE) {
       dispatch(setCurrentWorkspace(STANDALONE_WORKSPACE_ID))
-      dispatch(fetchExperiment(STANDALONE_WORKSPACE_ID))
+      dispatch(fetchWorkflow(STANDALONE_WORKSPACE_ID))
     } else {
       appDispatch(getWorkspace({ id: _workspaceId }))
         .unwrap()
         .then((_) => {
-          dispatch(fetchExperiment(_workspaceId))
+          dispatch(fetchWorkflow(_workspaceId))
           const selectedTab = location.state?.tab
           selectedTab && dispatch(setActiveTab(selectedTab))
         })

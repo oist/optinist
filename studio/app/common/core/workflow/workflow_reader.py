@@ -8,8 +8,8 @@ from studio.app.common.core.workflow.workflow import (
     NodeData,
     NodePosition,
     Style,
-    WorkflowConfig,
 )
+from studio.app.common.schemas.workflow import WorkflowConfig
 
 
 class WorkflowConfigReader:
