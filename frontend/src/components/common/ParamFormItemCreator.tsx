@@ -163,7 +163,7 @@ export function createParamFormItemComponent({
           <AccordionDetails>
             <div>
               {Object.entries(param.children).map(([paramKey, param], i) => (
-                <ParamItem param={param} paramKey={paramKey} />
+                <ParamItem key={paramKey} param={param} paramKey={paramKey} />
               ))}
             </div>
           </AccordionDetails>
