@@ -64,7 +64,7 @@ const Body = React.memo(() => {
   return (
     <TableBody>
       {nodeIdList.map((nodeId) => (
-        <TableRowOfFunction nodeId={nodeId} />
+        <TableRowOfFunction key={nodeId} nodeId={nodeId} />
       ))}
     </TableBody>
   )
