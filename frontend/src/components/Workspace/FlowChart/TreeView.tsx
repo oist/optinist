@@ -270,8 +270,8 @@ const AddButton = React.memo<{
 }>(({ name, onClick }) => {
   return (
     <>
-      <IconButton aria-label="add" style={{ padding: 2 }} size="large">
-        <AddIcon onClick={() => onClick()} />
+      <IconButton aria-label="add" style={{ padding: 2 }} size="large" onClick={onClick}>
+        <AddIcon />
       </IconButton>
       <Typography
         variant="inherit"
