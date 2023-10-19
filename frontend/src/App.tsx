@@ -1,11 +1,10 @@
-import React from "react"
+import { FC } from "react"
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 
 import { SnackbarProvider, SnackbarKey, useSnackbar } from "notistack"
 
 import Close from "@mui/icons-material/Close"
 import IconButton from "@mui/material/IconButton"
-
 
 import Layout from "components/Layout"
 import { IS_STANDALONE } from "const/Mode"
@@ -18,7 +17,7 @@ import ResetPassword from "pages/ResetPassword"
 import Workspaces from "pages/Workspace"
 import Workspace from "pages/Workspace/Workspace"
 
-const App: React.FC = () => {
+const App: FC = () => {
   return (
     <SnackbarProvider
       maxSnack={5}
@@ -62,7 +61,7 @@ const App: React.FC = () => {
   )
 }
 
-const SnackbarCloseButton: React.FC<{ snackbarKey: SnackbarKey }> = ({
+const SnackbarCloseButton: FC<{ snackbarKey: SnackbarKey }> = ({
   snackbarKey,
 }) => {
   const { closeSnackbar } = useSnackbar()

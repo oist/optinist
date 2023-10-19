@@ -33,3 +33,7 @@ export interface FlowElement {
   flowPosition: Transform
   elementCoord: ElementCoord
 }
+
+export interface NodeIdProps {
+  nodeId: string
+}

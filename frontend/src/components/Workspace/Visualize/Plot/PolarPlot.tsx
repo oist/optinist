@@ -1,4 +1,4 @@
-import React from "react"
+import { memo, useContext, useEffect, useMemo } from "react"
 import PlotlyChart from "react-plotlyjs-ts"
 import { useSelector, useDispatch } from "react-redux"
 
@@ -33,15 +33,15 @@ import {
 import { setPolartemItemSelectedIndex } from "store/slice/VisualizeItem/VisualizeItemSlice"
 import { AppDispatch } from "store/store"
 
-export const PolarPlot = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataContext)
+export const PolarPlot = memo(function PolarPlot() {
+  const { filePath: path } = useContext(DisplayDataContext)
   const dispatch = useDispatch<AppDispatch>()
   const isPending = useSelector(selectPolarDataIsPending(path))
   const isInitialized = useSelector(selectPolarDataIsInitialized(path))
   const error = useSelector(selectPolarDataError(path))
   const isFulfilled = useSelector(selectPolarDataIsFulfilled(path))
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isInitialized) {
       dispatch(getPolarData({ path }))
     }
@@ -58,8 +58,8 @@ export const PolarPlot = React.memo(() => {
   }
 })
 
-const PolarPlotImple = React.memo(() => {
-  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+const PolarPlotImple = memo(function PolarPlotImple() {
+  const { filePath: path, itemId } = useContext(DisplayDataContext)
   const polarData = useSelector(selectPolarData(path))
   const meta = useSelector(selectPolarMeta(path))
   const columns = useSelector(selectPolarColumns(path))
@@ -68,7 +68,7 @@ const PolarPlotImple = React.memo(() => {
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
 
-  const data = React.useMemo(
+  const data = useMemo(
     () =>
       polarData != null
         ? [
@@ -83,7 +83,7 @@ const PolarPlotImple = React.memo(() => {
     [polarData, columns, selectedIndex],
   )
 
-  const layout = React.useMemo(
+  const layout = useMemo(
     () => ({
       title: {
         text: meta?.title,
@@ -121,8 +121,14 @@ const PolarPlotImple = React.memo(() => {
   )
 })
 
-const PolarItemIndexSelect = React.memo<{ index: number[] }>(({ index }) => {
-  const { itemId } = React.useContext(DisplayDataContext)
+interface PolarItemIndexSelectProps {
+  index: number[]
+}
+
+const PolarItemIndexSelect = memo(function PolarItemIndexSelect({
+  index,
+}: PolarItemIndexSelectProps) {
+  const { itemId } = useContext(DisplayDataContext)
   const dispatch = useDispatch()
   const selectedIndex = useSelector(selectPolarItemSelectedIndex(itemId))
 

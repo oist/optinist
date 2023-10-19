@@ -1,4 +1,4 @@
-import React from "react"
+import { memo, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Handle, Position, NodeProps } from "reactflow"
 
@@ -14,9 +14,12 @@ import LinearProgress from "@mui/material/LinearProgress"
 import { useTheme } from "@mui/material/styles"
 import { TreeView, TreeItem } from "@mui/x-tree-view"
 
+import { FileSelect } from "components/Workspace/FlowChart/FlowChartNode/FileSelect"
+import { toHandleId } from "components/Workspace/FlowChart/FlowChartNode/FlowChartUtils"
 import { NodeContainer } from "components/Workspace/FlowChart/FlowChartNode/NodeContainer"
 import { HANDLE_STYLE } from "const/flowchart"
 import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
+import { NodeIdProps } from "store/slice/FlowElement/FlowElementType"
 import { getHDF5Tree } from "store/slice/HDF5/HDF5Action"
 import {
   selectHDF5IsLoading,
@@ -31,14 +34,10 @@ import {
 } from "store/slice/InputNode/InputNodeSelectors"
 import { setInputNodeHDF5Path } from "store/slice/InputNode/InputNodeSlice"
 import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
-
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
-
 import { AppDispatch } from "store/store"
-import { FileSelect } from "./FileSelect"
-import { toHandleId } from "./FlowChartUtils"
 
-export const HDF5FileNode = React.memo<NodeProps>((element) => {
+export const HDF5FileNode = memo(function HDF5FileNode(element: NodeProps) {
   const defined = useSelector(selectInputNodeDefined(element.id))
   if (defined) {
     return <HDF5FileNodeImple {...element} />
@@ -47,7 +46,10 @@ export const HDF5FileNode = React.memo<NodeProps>((element) => {
   }
 })
 
-const HDF5FileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
+const HDF5FileNodeImple = memo(function HDF5FileNodeImple({
+  id: nodeId,
+  selected,
+}: NodeProps) {
   const dispatch = useDispatch()
   const filePath = useSelector(selectHDF5InputNodeSelectedFilePath(nodeId))
   const onChangeFilePath = (path: string) => {
@@ -88,10 +90,8 @@ const HDF5FileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   )
 })
 
-const ItemSelect = React.memo<{
-  nodeId: string
-}>(({ nodeId }) => {
-  const [open, setOpen] = React.useState(false)
+const ItemSelect = memo(function ItemSelect({ nodeId }: NodeIdProps) {
+  const [open, setOpen] = useState(false)
 
   const structureFileName = useSelector(selectInputNodeHDF5Path(nodeId))
 
@@ -129,9 +129,7 @@ const ItemSelect = React.memo<{
   )
 })
 
-const Structure = React.memo<{
-  nodeId: string
-}>(({ nodeId }) => {
+const Structure = memo(function Structure({ nodeId }: NodeIdProps) {
   const theme = useTheme()
   return (
     <DialogContent dividers>
@@ -151,24 +149,25 @@ const Structure = React.memo<{
   )
 })
 
-const FileTreeView = React.memo<{
-  nodeId: string
-}>(({ nodeId }) => {
+const FileTreeView = memo(function FileTreeView({ nodeId }: NodeIdProps) {
   const [tree, isLoading] = useHDF5Tree(nodeId)
   return (
     <div>
       {isLoading && <LinearProgress />}
       <TreeView>
-        {tree?.map((node) => <TreeNode node={node} nodeId={nodeId} />)}
+        {tree?.map((node) => (
+          <TreeNode key={nodeId} node={node} nodeId={nodeId} />
+        ))}
       </TreeView>
     </div>
   )
 })
 
-const TreeNode = React.memo<{
+interface TreeNodeProps extends NodeIdProps {
   node: HDF5TreeNodeType
-  nodeId: string
-}>(({ node, nodeId }) => {
+}
+
+const TreeNode = memo(function TreeNode({ node, nodeId }: TreeNodeProps) {
   const dispatch = useDispatch()
 
   const onClickFile = (path: string) => {
@@ -209,7 +208,7 @@ function useHDF5Tree(
   const isLoading = useSelector(selectHDF5IsLoading())
   const filePath = useSelector(selectHDF5InputNodeSelectedFilePath(nodeId))
   const workspaceId = useSelector(selectCurrentWorkspaceId)
-  React.useEffect(() => {
+  useEffect(() => {
     if (workspaceId && !isLoading && filePath) {
       dispatch(getHDF5Tree({ path: filePath, workspaceId }))
     }

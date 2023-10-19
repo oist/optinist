@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import { memo, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
 import TuneIcon from "@mui/icons-material/Tune"
@@ -16,9 +16,7 @@ import { toggleNwb } from "store/slice/RightDrawer/RightDrawerSlice"
 import { AppDispatch } from "store/store"
 import { arrayEqualityFn } from "utils/EqualityUtils"
 
-
-
-export const NWBSettingButton = React.memo(() => {
+export const NWBSettingButton = memo(function NWBSettingButton() {
   const dispatch = useDispatch()
   const handleClick = () => {
     dispatch(toggleNwb())
@@ -32,7 +30,7 @@ export const NWBSettingButton = React.memo(() => {
   )
 })
 
-export const NWBSettingContents = React.memo(() => {
+export const NWBSettingContents = memo(function NWBSettingContents() {
   const dispatch = useDispatch<AppDispatch>()
 
   const paramKeyList = useSelector(selectNwbParamsKeyList, arrayEqualityFn)
@@ -51,7 +49,11 @@ export const NWBSettingContents = React.memo(() => {
   )
 })
 
-const ParamItem = React.memo<{ paramKey: string }>(({ paramKey }) => {
+interface ParamItemProps {
+  paramKey: string
+}
+
+const ParamItem = memo(function ParamItem({ paramKey }: ParamItemProps) {
   const Component = createParamFormItemComponent({
     paramSelector: selectNwbParam,
     paramValueSelector: selectNwbParamsValue,

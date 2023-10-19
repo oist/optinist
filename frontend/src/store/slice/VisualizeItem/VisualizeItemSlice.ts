@@ -1,6 +1,9 @@
 import { createSlice, isAnyOf, PayloadAction } from "@reduxjs/toolkit"
 
-import { DATA_TYPE, DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
+import {
+  DATA_TYPE,
+  DATA_TYPE_SET,
+} from "store/slice/DisplayData/DisplayDataType"
 import { clearFlowElements } from "store/slice/FlowElement/FlowElementSlice"
 import { run, runByCurrentUid } from "store/slice/Pipeline/PipelineActions"
 import {
@@ -242,8 +245,8 @@ export const visualaizeItemSlice = createSlice({
     },
     deleteAllItemForWorkflowDialog: (state) => {
       const targetItemIdList = Object.entries(state.items)
-        .filter(([itemId, value]) => value.isWorkflowDialog)
-        .map(([itemId, value]) => Number(itemId))
+        .filter(([_, value]) => value.isWorkflowDialog)
+        .map(([itemId, _]) => Number(itemId))
       targetItemIdList.forEach(
         (targetItemId) => delete state.items[targetItemId],
       )
@@ -927,7 +930,7 @@ export const visualaizeItemSlice = createSlice({
       })
       .addMatcher(
         isAnyOf(clearFlowElements, run.fulfilled, runByCurrentUid.fulfilled),
-        (state, action) => initialState,
+        () => initialState,
       )
   },
 })

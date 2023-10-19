@@ -1,4 +1,4 @@
-import React from "react"
+import { memo } from "react"
 import { useSelector } from "react-redux"
 
 import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
@@ -13,7 +13,6 @@ import { PiePlot } from "components/Workspace/Visualize/Plot/PiePlot"
 import { PolarPlot } from "components/Workspace/Visualize/Plot/PolarPlot"
 import { RoiPlot } from "components/Workspace/Visualize/Plot/RoiPlot"
 import { ScatterPlot } from "components/Workspace/Visualize/Plot/ScatterPlot"
-
 import { TimeSeriesPlot } from "components/Workspace/Visualize/Plot/TimeSeriesPlot"
 import {
   DATA_TYPE,
@@ -25,9 +24,13 @@ import {
   selectVisualizeDataType,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
 
-export const DisplayDataItem = React.memo<{
+interface DisplayDataContextType {
   itemId: number
-}>(({ itemId }) => {
+}
+
+export const DisplayDataItem = memo(function DisplayDataItem({
+  itemId,
+}: DisplayDataContextType) {
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
   const nodeId = useSelector(selectVisualizeDataNodeId(itemId))
   const dataType = useSelector(selectVisualizeDataType(itemId))
@@ -44,9 +47,11 @@ export const DisplayDataItem = React.memo<{
   }
 })
 
-const DisplayPlot = React.memo<{
+interface DataTypeProps {
   dataType: DATA_TYPE
-}>(({ dataType }) => {
+}
+
+const DisplayPlot = memo(function DisplayPlot({ dataType }: DataTypeProps) {
   switch (dataType) {
     case DATA_TYPE_SET.CSV:
       return <CsvPlot />

@@ -1,4 +1,4 @@
-import React, { useContext } from "react"
+import { memo, useContext, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Handle, Position, NodeProps } from "reactflow"
 
@@ -17,7 +17,10 @@ import {
 
 import { AlgorithmInfo } from "api/algolist/AlgoList"
 import { DialogContext } from "components/Workspace/FlowChart/DialogContext"
-import { toHandleId, isValidConnection } from "components/Workspace/FlowChart/FlowChartNode/FlowChartUtils"
+import {
+  toHandleId,
+  isValidConnection,
+} from "components/Workspace/FlowChart/FlowChartNode/FlowChartUtils"
 import { useHandleColor } from "components/Workspace/FlowChart/FlowChartNode/HandleColorHook"
 import { NodeContainer } from "components/Workspace/FlowChart/FlowChartNode/NodeContainer"
 import { HANDLE_STYLE } from "const/flowchart"
@@ -27,7 +30,7 @@ import {
 } from "store/slice/AlgorithmList/AlgorithmListSelectors"
 import { selectAlgorithmNodeDefined } from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
 import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
-import { NodeData } from "store/slice/FlowElement/FlowElementType"
+import { NodeData, NodeIdProps } from "store/slice/FlowElement/FlowElementType"
 import {
   selectPipelineLatestUid,
   selectPipelineNodeResultMessage,
@@ -41,8 +44,9 @@ import {
 import { toggleParamForm } from "store/slice/RightDrawer/RightDrawerSlice"
 import { RootState } from "store/store"
 
-
-export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
+export const AlgorithmNode = memo(function AlgorithmNode(
+  element: NodeProps<NodeData>,
+) {
   const defined = useSelector(selectAlgorithmNodeDefined(element.id))
   if (defined) {
     return <AlgorithmNodeImple {...element} />
@@ -51,68 +55,70 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
   }
 })
 
-const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
-  ({ id: nodeId, selected: elementSelected, isConnectable, data }) => {
-    const { onOpen } = useContext(DialogContext)
-    const dispatch = useDispatch()
+const AlgorithmNodeImple = memo(function AlgorithmNodeImple({
+  id: nodeId,
+  selected: elementSelected,
+  isConnectable,
+  data,
+}: NodeProps<NodeData>) {
+  const { onOpen } = useContext(DialogContext)
+  const dispatch = useDispatch()
 
-    const onClickParamButton = () => {
-      dispatch(toggleParamForm(nodeId))
-    }
+  const onClickParamButton = () => {
+    dispatch(toggleParamForm(nodeId))
+  }
 
-    const onClickDeleteIcon = () => {
-      dispatch(deleteFlowNodeById(nodeId))
-    }
+  const onClickDeleteIcon = () => {
+    dispatch(deleteFlowNodeById(nodeId))
+  }
 
-    const onClickOutputButton = () => {
-      onOpen(nodeId)
-    }
+  const onClickOutputButton = () => {
+    onOpen(nodeId)
+  }
 
-    const status = useStatus(nodeId)
+  const status = useStatus(nodeId)
 
-    return (
-      <NodeContainer nodeId={nodeId} selected={elementSelected}>
-        <button
-          className="flowbutton"
-          onClick={onClickDeleteIcon}
-          style={{ color: "black", position: "absolute", top: -10, right: 10 }}
-        >
-          ×
-        </button>
-        <AlgoProgress nodeId={nodeId} />
-        <Grid
-          container
-          paddingBottom={1}
-          paddingRight={1}
-          justifyContent="space-between"
-        >
-          <Grid item xs={10}></Grid>
-          <AlgoName nodeId={nodeId} data={data} />
-          <Grid item xs={2}>
-            <Message nodeId={nodeId} />
-          </Grid>
+  return (
+    <NodeContainer nodeId={nodeId} selected={elementSelected}>
+      <button
+        className="flowbutton"
+        onClick={onClickDeleteIcon}
+        style={{ color: "black", position: "absolute", top: -10, right: 10 }}
+      >
+        ×
+      </button>
+      <AlgoProgress nodeId={nodeId} />
+      <Grid
+        container
+        paddingBottom={1}
+        paddingRight={1}
+        justifyContent="space-between"
+      >
+        <Grid item xs={10}></Grid>
+        <AlgoName nodeId={nodeId} data={data} />
+        <Grid item xs={2}>
+          <Message nodeId={nodeId} />
         </Grid>
-        <ButtonGroup>
-          <Button size="small" onClick={onClickParamButton}>
-            Param
-          </Button>
-          <Button
-            size="small"
-            onClick={onClickOutputButton}
-            disabled={status !== NODE_RESULT_STATUS.SUCCESS}
-          >
-            Output
-          </Button>
-        </ButtonGroup>
-        <AlgoArgs nodeId={nodeId} />
-        <AlgoReturns nodeId={nodeId} isConnectable={isConnectable} />
-      </NodeContainer>
-    )
-  },
-)
-const AlgoProgress = React.memo<{
-  nodeId: string
-}>(({ nodeId }) => {
+      </Grid>
+      <ButtonGroup>
+        <Button size="small" onClick={onClickParamButton}>
+          Param
+        </Button>
+        <Button
+          size="small"
+          onClick={onClickOutputButton}
+          disabled={status !== NODE_RESULT_STATUS.SUCCESS}
+        >
+          Output
+        </Button>
+      </ButtonGroup>
+      <AlgoArgs nodeId={nodeId} />
+      <AlgoReturns nodeId={nodeId} isConnectable={isConnectable} />
+    </NodeContainer>
+  )
+})
+
+const AlgoProgress = memo(function AlgoProgress({ nodeId }: NodeIdProps) {
   const status = useStatus(nodeId)
   const pipelineStatus = useSelector(selectPipelineStatus)
 
@@ -130,10 +136,11 @@ const AlgoProgress = React.memo<{
   }
 })
 
-const AlgoName = React.memo<{
-  nodeId: string
+interface AlgoNameProps extends NodeIdProps {
   data: NodeData
-}>(({ nodeId, data }) => {
+}
+
+const AlgoName = function AlgoName({ nodeId, data }: AlgoNameProps) {
   const theme = useTheme()
   const status = useStatus(nodeId)
   return (
@@ -151,11 +158,9 @@ const AlgoName = React.memo<{
       </Typography>
     </div>
   )
-})
+}
 
-const AlgoArgs = React.memo<{
-  nodeId: string
-}>(({ nodeId }) => {
+const AlgoArgs = memo(function AlgoArgs({ nodeId }: NodeIdProps) {
   const algoArgs = useSelector(selectAlgoArgs(nodeId), algoInfoListEqualtyFn)
 
   return (
@@ -164,17 +169,28 @@ const AlgoArgs = React.memo<{
         ? algoArgs
             .filter((info) => info.type !== "params")
             .map((algoInfo, i) => {
-              return <ArgHandle algoInfo={algoInfo} i={i} nodeId={nodeId} />
+              return (
+                <ArgHandle
+                  key={nodeId}
+                  algoInfo={algoInfo}
+                  i={i}
+                  nodeId={nodeId}
+                />
+              )
             })
         : null}
     </>
   )
 })
 
-const AlgoReturns = React.memo<{
-  nodeId: string
+interface AlgoReturnsProps extends NodeIdProps {
   isConnectable: boolean
-}>(({ nodeId, isConnectable }) => {
+}
+
+const AlgoReturns = memo(function AlgoReturns({
+  nodeId,
+  isConnectable,
+}: AlgoReturnsProps) {
   const algoReturns = useSelector(
     selectAlgoReturns(nodeId),
     algoInfoListEqualtyFn,
@@ -183,7 +199,14 @@ const AlgoReturns = React.memo<{
     <>
       {algoReturns != null ? (
         algoReturns?.map((algoInfo, i) => {
-          return <ReturnHandle algoInfo={algoInfo} i={i} nodeId={nodeId} />
+          return (
+            <ReturnHandle
+              key={nodeId}
+              algoInfo={algoInfo}
+              i={i}
+              nodeId={nodeId}
+            />
+          )
         })
       ) : (
         // algoReturns.lengthが0の場合の応急処置
@@ -230,86 +253,88 @@ function hexToRgb(hex: string | undefined, isNone: boolean | undefined) {
   }
 }
 
-const ArgHandle = React.memo<HandleProps>(
-  ({ algoInfo: { name, type, isNone }, nodeId, i }) => {
-    const hex_color = useHandleColor(type)
-    const id = toHandleId(nodeId, name, type)
-    const [isHover, setHover] = React.useState(false)
-    const rgb_color = hexToRgb(hex_color, isNone)
-    return (
-      <Handle
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        key={i.toFixed()}
-        type="target"
-        position={Position.Left}
-        id={id}
-        style={{
-          ...HANDLE_STYLE,
-          background: rgb_color,
-          top: i * 25 + 15,
-        }}
-        isValidConnection={isValidConnection}
+const ArgHandle = memo(function ArgHandle({
+  algoInfo: { name, type, isNone },
+  nodeId,
+  i,
+}: HandleProps) {
+  const hex_color = useHandleColor(type)
+  const id = toHandleId(nodeId, name, type)
+  const [isHover, setHover] = useState(false)
+  const rgb_color = hexToRgb(hex_color, isNone)
+  return (
+    <Handle
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      key={i.toFixed()}
+      type="target"
+      position={Position.Left}
+      id={id}
+      style={{
+        ...HANDLE_STYLE,
+        background: rgb_color,
+        top: i * 25 + 15,
+      }}
+      isValidConnection={isValidConnection}
+    >
+      <Tooltip
+        title={
+          <>
+            <Typography color="inherit">name: {name}</Typography>
+            <Typography color="inherit">type: {type}</Typography>
+          </>
+        }
+        open={isHover}
+        placement="left-end"
+        arrow
       >
-        <Tooltip
-          title={
-            <>
-              <Typography color="inherit">name: {name}</Typography>
-              <Typography color="inherit">type: {type}</Typography>
-            </>
-          }
-          open={isHover}
-          placement="left-end"
-          arrow
-        >
-          <div />
-        </Tooltip>
-      </Handle>
-    )
-  },
-)
+        <div />
+      </Tooltip>
+    </Handle>
+  )
+})
 
-const ReturnHandle = React.memo<HandleProps>(
-  ({ algoInfo: { name, type }, nodeId, i }) => {
-    const color = useHandleColor(type)
-    const id = toHandleId(nodeId, name, type)
-    const [isHover, setHover] = React.useState(false)
-    return (
-      <Handle
-        onMouseEnter={() => setHover(true)}
-        onMouseLeave={() => setHover(false)}
-        key={i.toFixed()}
-        type="source"
-        position={Position.Right}
-        id={id}
-        style={{
-          ...HANDLE_STYLE,
-          background: color,
-          top: i * 25 + 15,
-        }}
-        isValidConnection={isValidConnection}
+const ReturnHandle = memo<HandleProps>(function ReturnHandle({
+  algoInfo: { name, type },
+  nodeId,
+  i,
+}: HandleProps) {
+  const color = useHandleColor(type)
+  const id = toHandleId(nodeId, name, type)
+  const [isHover, setHover] = useState(false)
+  return (
+    <Handle
+      onMouseEnter={() => setHover(true)}
+      onMouseLeave={() => setHover(false)}
+      key={i.toFixed()}
+      type="source"
+      position={Position.Right}
+      id={id}
+      style={{
+        ...HANDLE_STYLE,
+        background: color,
+        top: i * 25 + 15,
+      }}
+      isValidConnection={isValidConnection}
+    >
+      <Tooltip
+        title={
+          <>
+            <Typography color="inherit">name: {name}</Typography>
+            <Typography color="inherit">type: {type}</Typography>
+          </>
+        }
+        open={isHover}
+        placement="right-end"
+        arrow
       >
-        <Tooltip
-          title={
-            <>
-              <Typography color="inherit">name: {name}</Typography>
-              <Typography color="inherit">type: {type}</Typography>
-            </>
-          }
-          open={isHover}
-          placement="right-end"
-          arrow
-        >
-          <div />
-        </Tooltip>
-      </Handle>
-    )
-  },
-)
+        <div />
+      </Tooltip>
+    </Handle>
+  )
+})
 
-const Message = React.memo<{
-  nodeId: string
-}>(({ nodeId }) => {
+const Message = memo(function Message({ nodeId }: NodeIdProps) {
   const status = useStatus(nodeId)
   const latestUid = useSelector(selectPipelineLatestUid)
   const errorMsg = useSelector((state: RootState) =>
@@ -318,7 +343,7 @@ const Message = React.memo<{
       : null,
   )
 
-  const anchorElRef = React.useRef<HTMLButtonElement | null>(null)
+  const anchorElRef = useRef<HTMLButtonElement | null>(null)
   const theme = useTheme()
   const { onMessageError } = useContext(DialogContext)
 

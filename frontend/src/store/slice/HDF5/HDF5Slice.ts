@@ -14,12 +14,7 @@ export const HDF5Slice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getHDF5Tree.pending, (state, action) => {
-        state = {
-          isLoading: true,
-          tree: [],
-        }
-      })
+      .addCase(getHDF5Tree.pending, () => initialState)
       .addCase(getHDF5Tree.fulfilled, (state, action) => {
         state.tree = convertToTreeNodeType(action.payload)
         state.isLoading = false

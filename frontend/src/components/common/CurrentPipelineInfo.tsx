@@ -1,4 +1,4 @@
-import React from "react"
+import { FC, memo } from "react"
 import { useSelector } from "react-redux"
 
 import { Divider, Typography, Grid } from "@mui/material"
@@ -9,7 +9,7 @@ import {
 } from "store/slice/Experiments/ExperimentsSelectors"
 import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
 
-export const CurrentPipelineInfo: React.FC = () => {
+export const CurrentPipelineInfo: FC = () => {
   const uid = useSelector(selectPipelineLatestUid)
   const isFulFilled = useSelector(selectExperimentsStatusIsFulfilled)
 
@@ -28,30 +28,40 @@ export const CurrentPipelineInfo: React.FC = () => {
   )
 }
 
-const ExperimentUidInfo = React.memo<{ uid: string }>(({ uid }) => {
+interface UidProps {
+  uid: string
+}
+
+const ExperimentUidInfo = memo(function ExperimentUidInfo({ uid }: UidProps) {
   return <LabelValueGridRow label="ID" value={uid} />
 })
 
-const ExperimentNameInfo = React.memo<{ uid: string }>(({ uid }) => {
+const ExperimentNameInfo = memo(function ExperimentNameInfo({ uid }: UidProps) {
   const name = useSelector(selectExperimentName(uid))
   return <LabelValueGridRow label="NAME" value={name} />
 })
 
-const LabelValueGridRow = React.memo<{ label: string; value: string }>(
-  ({ label, value }) => {
-    return (
-      <>
-        <Grid item xs={4}>
-          <Typography variant="body2" color="textSecondary">
-            {label}:
-          </Typography>
-        </Grid>
-        <Grid item xs={8}>
-          <Typography variant="body2" color="textSecondary">
-            {value}
-          </Typography>
-        </Grid>
-      </>
-    )
-  },
-)
+interface LabelValueGridRowProps {
+  label: string
+  value: string
+}
+
+const LabelValueGridRow = memo(function LabelValueGridRow({
+  label,
+  value,
+}: LabelValueGridRowProps) {
+  return (
+    <>
+      <Grid item xs={4}>
+        <Typography variant="body2" color="textSecondary">
+          {label}:
+        </Typography>
+      </Grid>
+      <Grid item xs={8}>
+        <Typography variant="body2" color="textSecondary">
+          {value}
+        </Typography>
+      </Grid>
+    </>
+  )
+})

@@ -1,4 +1,4 @@
-import React from "react"
+import { memo, useCallback, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import Box from "@mui/material/Box"
@@ -39,7 +39,13 @@ import {
 import { RootState } from "store/store"
 import { arrayEqualityFn } from "utils/EqualityUtils"
 
-export const VisualizeItem = React.memo<{ itemId: number }>(({ itemId }) => {
+interface ItemIdProps {
+  itemId: number
+}
+
+export const VisualizeItem = memo(function VisualizeItem({
+  itemId,
+}: ItemIdProps) {
   const dispatch = useDispatch()
   const onClick = () => {
     dispatch(selectItem(itemId))
@@ -130,7 +136,7 @@ export const VisualizeItem = React.memo<{ itemId: number }>(({ itemId }) => {
   )
 })
 
-const ItemHeader = React.memo<{ itemId: number }>(({ itemId }) => {
+const ItemHeader = memo(function ItemHeader({ itemId }: ItemIdProps) {
   const itemDataType = useSelector(selectVisualizeDataType(itemId))
   return (
     <Box display="flex" justifyContent="flex-end">
@@ -155,9 +161,9 @@ const ItemHeader = React.memo<{ itemId: number }>(({ itemId }) => {
   )
 })
 
-const FilePathSelectItem = React.memo<{
-  itemId: number
-}>(({ itemId }) => {
+const FilePathSelectItem = memo(function FilePathSelectItem({
+  itemId,
+}: ItemIdProps) {
   const dispatch = useDispatch()
   const dataType = useSelector(selectVisualizeDataType(itemId))
   const selectedNodeId = useSelector(selectVisualizeDataNodeId(itemId))
@@ -201,9 +207,9 @@ const FilePathSelectItem = React.memo<{
   )
 })
 
-const RefImageItemIdSelect = React.memo<{
-  itemId: number
-}>(({ itemId }) => {
+const RefImageItemIdSelect = memo(function RefImageItemIdSelect({
+  itemId,
+}: ItemIdProps) {
   const dispatch = useDispatch()
   const itemIdList = useSelector(
     selectVisualizeImageItemIdList,
@@ -230,7 +236,9 @@ const RefImageItemIdSelect = React.memo<{
       >
         <MenuItem value={undefined}>{"None"}</MenuItem>
         {itemIdList.map((value) => (
-          <MenuItem value={value}>{value}</MenuItem>
+          <MenuItem key={value} value={value}>
+            {value}
+          </MenuItem>
         ))}
       </Select>
     </FormControl>
@@ -244,8 +252,8 @@ function useItemDragResize(itemId: number) {
   const dispatch = useDispatch()
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
-  const [movingSize, setMovingSize] = React.useState({ width, height })
-  const onCommitSize = React.useCallback(
+  const [movingSize, setMovingSize] = useState({ width, height })
+  const onCommitSize = useCallback(
     (size: { width: number; height: number }) =>
       dispatch(setItemSize({ itemId, ...size })),
     [dispatch, itemId],
@@ -317,9 +325,7 @@ function useItemDragResize(itemId: number) {
   }
 }
 
-const RoiSelect = React.memo<{
-  itemId: number
-}>(({ itemId }) => {
+const RoiSelect = memo(function RoiSelect({ itemId }: ItemIdProps) {
   const dispatch = useDispatch()
   const roiItemNodeId = useSelector(selectRoiItemNodeId(itemId))
   const roiItemFilePath = useSelector(selectRoiItemFilePath(itemId))

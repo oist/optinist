@@ -1,4 +1,4 @@
-import React from "react"
+import { memo, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Handle, Position, NodeProps } from "reactflow"
 
@@ -16,6 +16,8 @@ import {
   Typography,
 } from "@mui/material"
 
+import { FileSelect } from "components/Workspace/FlowChart/FlowChartNode/FileSelect"
+import { toHandleId } from "components/Workspace/FlowChart/FlowChartNode/FlowChartUtils"
 import { NodeContainer } from "components/Workspace/FlowChart/FlowChartNode/NodeContainer"
 import { PresentationalCsvPlot } from "components/Workspace/Visualize/Plot/CsvPlot"
 import { HANDLE_STYLE } from "const/flowchart"
@@ -27,6 +29,7 @@ import {
   selectCsvDataIsPending,
 } from "store/slice/DisplayData/DisplayDataSelectors"
 import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
+import { NodeIdProps } from "store/slice/FlowElement/FlowElementType"
 import { setInputNodeFilePath } from "store/slice/InputNode/InputNodeActions"
 import {
   selectCsvInputNodeParamSetHeader,
@@ -40,10 +43,7 @@ import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
 import { AppDispatch } from "store/store"
 
-import { FileSelect } from "components/Workspace/FlowChart/FlowChartNode/FileSelect"
-import { toHandleId } from "components/Workspace/FlowChart/FlowChartNode/FlowChartUtils"
-
-export const CsvFileNode = React.memo<NodeProps>((element) => {
+export const CsvFileNode = memo(function CsvFileNode(element: NodeProps) {
   const defined = useSelector(selectInputNodeDefined(element.id))
   if (defined) {
     return <CsvFileNodeImple {...element} />
@@ -52,7 +52,10 @@ export const CsvFileNode = React.memo<NodeProps>((element) => {
   }
 })
 
-const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
+const CsvFileNodeImple = memo(function CsvFileNodeImple({
+  id: nodeId,
+  selected,
+}: NodeProps) {
   const dispatch = useDispatch<AppDispatch>()
   const filePath = useSelector(selectCsvInputNodeSelectedFilePath(nodeId))
   const onChangeFilePath = (path: string) => {
@@ -74,7 +77,7 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
       </button>
       <FileSelect
         nodeId={nodeId}
-        onChangeFilePath={(path) => {
+        onChangeFilePath={(path: string | string[]) => {
           if (!Array.isArray(path)) {
             onChangeFilePath(path)
           }
@@ -93,20 +96,24 @@ const CsvFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   )
 })
 
-export const ParamSettingDialog = React.memo<{
-  nodeId: string
+interface ParamSettingDialogProps extends NodeIdProps {
   filePath: string
-}>(({ nodeId, filePath }) => {
-  const [open, setOpen] = React.useState(false)
+}
+
+export const ParamSettingDialog = memo(function ParamSettingDialog({
+  nodeId,
+  filePath,
+}: ParamSettingDialogProps) {
+  const [open, setOpen] = useState(false)
   // OK時のみStoreに反映させるため一時的な値をuseStateで保持しておく。
   // useStateの初期値はselectorで取得。
-  const [setHeader, setSetHeader] = React.useState(
+  const [setHeader, setSetHeader] = useState(
     useSelector(selectCsvInputNodeParamSetHeader(nodeId)),
   )
-  const [setIndex, setSetIndex] = React.useState(
+  const [setIndex, setSetIndex] = useState(
     useSelector(selectCsvInputNodeParamSetIndex(nodeId)),
   )
-  const [transpose, setTranspose] = React.useState(
+  const [transpose, setTranspose] = useState(
     useSelector(selectCsvInputNodeParamTranspose(nodeId)),
   )
   const dispatch = useDispatch<AppDispatch>()
@@ -190,19 +197,24 @@ export const ParamSettingDialog = React.memo<{
   )
 })
 
-const CsvPreview = React.memo<{
+interface CsvPreviewProps {
   filePath: string
   transpose: boolean
   setHeader: number | null
   setIndex: boolean
-}>(({ filePath: path, ...otherProps }) => {
+}
+
+const CsvPreview = memo(function CsvPreview({
+  filePath: path,
+  ...otherProps
+}: CsvPreviewProps) {
   const isInitialized = useSelector(selectCsvDataIsInitialized(path))
   const isPending = useSelector(selectCsvDataIsPending(path))
   const isFulfilled = useSelector(selectCsvDataIsFulfilled(path))
   const error = useSelector(selectCsvDataError(path))
   const dispatch = useDispatch<AppDispatch>()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
-  React.useEffect(() => {
+  useEffect(() => {
     if (workspaceId && !isInitialized) {
       dispatch(getCsvData({ path, workspaceId }))
     }

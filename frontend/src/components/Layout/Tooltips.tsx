@@ -1,9 +1,11 @@
+import { FC } from "react"
+
 import GitHubIcon from "@mui/icons-material/GitHub"
 import MenuBookIcon from "@mui/icons-material/MenuBook"
 import { Tooltip } from "@mui/material"
 import IconButton from "@mui/material/IconButton"
 
-const Tooltips: React.FC = () => {
+const Tooltips: FC = () => {
   return (
     <>
       <Tooltip title="GitHub repository">

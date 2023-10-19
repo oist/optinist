@@ -9,11 +9,8 @@ import {
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useSearchParams } from "react-router-dom"
 
-import { regexEmail, regexIgnoreS, regexPassword } from "const/Auth"
-import InputError from "components/common/InputError"
-import SelectError from "components/common/SelectError"
-import PaginationCustom from "components/common/PaginationCustom"
 import { useSnackbar, VariantType } from "notistack"
+
 import DeleteIcon from "@mui/icons-material/Delete"
 import EditIcon from "@mui/icons-material/Edit"
 import {
@@ -33,9 +30,14 @@ import {
   GridSortItem,
   GridSortModel,
 } from "@mui/x-data-grid"
+
 import { ROLE } from "@types"
 import { AddUserDTO, UserDTO } from "api/users/UsersApiDTO"
+import InputError from "components/common/InputError"
 import Loading from "components/common/Loading"
+import PaginationCustom from "components/common/PaginationCustom"
+import SelectError from "components/common/SelectError"
+import { regexEmail, regexIgnoreS, regexPassword } from "const/Auth"
 import {
   deleteUser,
   createUser,

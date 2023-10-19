@@ -1,4 +1,4 @@
-import React, { SetStateAction } from "react"
+import { Dispatch, memo, SetStateAction, useState } from "react"
 import { useDispatch } from "react-redux"
 
 import DeleteIcon from "@mui/icons-material/Delete"
@@ -14,8 +14,8 @@ import {
 
 import { clearFlowElements } from "store/slice/FlowElement/FlowElementSlice"
 
-export const ClearWorkflowButton = React.memo(() => {
-  const [open, setOpen] = React.useState(false)
+export const ClearWorkflowButton = memo(function ClearWorkflowButton() {
+  const [open, setOpen] = useState(false)
   const openDialog = () => {
     setOpen(true)
   }
@@ -32,10 +32,15 @@ export const ClearWorkflowButton = React.memo(() => {
   )
 })
 
-const ConfirmClearDialog = React.memo<{
+interface ConfirmClearDialogProps {
   open: boolean
-  setOpen: React.Dispatch<SetStateAction<boolean>>
-}>(({ open, setOpen }) => {
+  setOpen: Dispatch<SetStateAction<boolean>>
+}
+
+const ConfirmClearDialog = memo(function ConfirmClearDialog({
+  open,
+  setOpen,
+}: ConfirmClearDialogProps) {
   const dispatch = useDispatch()
   const handleClose = () => {
     setOpen(false)

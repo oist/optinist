@@ -1,4 +1,4 @@
-import React from "react"
+import { FC, useContext } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
 import { FormControlLabel, Switch } from "@mui/material"
@@ -16,10 +16,8 @@ import {
 } from "store/slice/VisualizeItem/VisualizeItemSlice"
 import { ColorType } from "store/slice/VisualizeItem/VisualizeItemType"
 
-
-
-export const HeatmapItemEditor: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+export const HeatmapItemEditor: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
   const colors = useSelector(selectHeatMapItemColors(itemId))
   const dispathSetColor = (colorCode: ColorType[]) => {
@@ -34,8 +32,8 @@ export const HeatmapItemEditor: React.FC = () => {
   )
 }
 
-const ShowScale: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const ShowScale: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const showscale = useSelector(selectHeatMapItemShowScale(itemId))
   const dispatch = useDispatch()
   const toggleChecked = () => {

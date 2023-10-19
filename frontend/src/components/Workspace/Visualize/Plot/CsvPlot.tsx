@@ -1,4 +1,4 @@
-import React from "react"
+import { memo, useContext, useEffect, useMemo } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
 import { LinearProgress, Typography } from "@mui/material"
@@ -23,17 +23,15 @@ import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelecto
 import { AppDispatch } from "store/store"
 import { twoDimarrayEqualityFn } from "utils/EqualityUtils"
 
-
-
-export const CsvPlot = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataContext)
+export const CsvPlot = memo(function CsvPlot() {
+  const { filePath: path } = useContext(DisplayDataContext)
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const isInitialized = useSelector(selectCsvDataIsInitialized(path))
   const isPending = useSelector(selectCsvDataIsPending(path))
   const isFulfilled = useSelector(selectCsvDataIsFulfilled(path))
   const error = useSelector(selectCsvDataError(path))
   const dispatch = useDispatch<AppDispatch>()
-  React.useEffect(() => {
+  useEffect(() => {
     if (workspaceId && !isInitialized) {
       dispatch(getCsvData({ path, workspaceId }))
     }
@@ -49,8 +47,8 @@ export const CsvPlot = React.memo(() => {
   }
 })
 
-const CsvPlotImple = React.memo(() => {
-  const { itemId, filePath: path } = React.useContext(DisplayDataContext)
+const CsvPlotImple = memo(function CsvPlotImple() {
+  const { itemId, filePath: path } = useContext(DisplayDataContext)
   const transpose = useSelector(selectCsvItemTranspose(itemId))
   const setHeader = useSelector(selectCsvItemSetHeader(itemId))
   const setIndex = useSelector(selectCsvItemSetIndex(itemId))
@@ -69,12 +67,19 @@ const CsvPlotImple = React.memo(() => {
  *
  * DisplayDataContextに依存しない
  */
-export const PresentationalCsvPlot = React.memo<{
+interface PresentationalCsvPlotProps {
   path: string
   transpose: boolean
   setHeader: number | null
   setIndex: boolean
-}>(({ path, transpose, setIndex, setHeader }) => {
+}
+
+export const PresentationalCsvPlot = memo(function PresentationalCsvPlot({
+  path,
+  transpose,
+  setIndex,
+  setHeader,
+}: PresentationalCsvPlotProps) {
   const data = useSelector(
     selectCsvData(path),
     (a: CsvData | undefined, b: CsvData | undefined) => {
@@ -86,14 +91,14 @@ export const PresentationalCsvPlot = React.memo<{
     },
   )
 
-  const csvData = React.useMemo(() => {
+  const csvData = useMemo(() => {
     if (transpose) {
       return data[0].map((col, i) => data.map((row) => row[i]))
     }
     return data
   }, [data, transpose])
 
-  const header: GridColDef[] = React.useMemo(() => {
+  const header: GridColDef[] = useMemo(() => {
     const headerData = () => {
       if (setHeader === null) {
         return csvData[0]

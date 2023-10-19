@@ -1,7 +1,9 @@
+import { CSSProperties } from "react"
+
 export const INITIAL_IMAGE_ELEMENT_ID = "input_0"
 export const INITIAL_IMAGE_ELEMENT_NAME = "NoName"
 export const NANO_ID_LENGTH = 10
-export const ALGO_NODE_STYLE: React.CSSProperties = {
+export const ALGO_NODE_STYLE: CSSProperties = {
   border: "1px solid #777",
   height: 120,
   width: 230,
@@ -9,13 +11,13 @@ export const ALGO_NODE_STYLE: React.CSSProperties = {
   borderRadius: 0,
 } as const
 
-export const DATA_NODE_STYLE: React.CSSProperties = {
+export const DATA_NODE_STYLE: CSSProperties = {
   border: "1px solid #777",
   height: 120,
   width: 230,
 } as const
 
-export const HANDLE_STYLE: React.CSSProperties = {
+export const HANDLE_STYLE: CSSProperties = {
   height: "13%",
   width: "3%",
   border: "1px solid",

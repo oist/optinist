@@ -1,4 +1,4 @@
-import React from "react"
+import { memo, useContext, useEffect, useMemo } from "react"
 import PlotlyChart from "react-plotlyjs-ts"
 import { useSelector, useDispatch } from "react-redux"
 
@@ -27,8 +27,8 @@ import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelecto
 import { AppDispatch } from "store/store"
 import { twoDimarrayEqualityFn } from "utils/EqualityUtils"
 
-export const RoiPlot = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataContext)
+export const RoiPlot = memo(function RoiPlot() {
+  const { filePath: path } = useContext(DisplayDataContext)
   const isPending = useSelector(selectRoiDataIsPending(path))
   const isInitialized = useSelector(selectRoiDataIsInitialized(path))
   const isFulfilled = useSelector(selectRoiDataIsFulfilled(path))
@@ -36,7 +36,7 @@ export const RoiPlot = React.memo(() => {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
 
   const dispatch = useDispatch<AppDispatch>()
-  React.useEffect(() => {
+  useEffect(() => {
     if (workspaceId && !isInitialized) {
       dispatch(getRoiData({ path, workspaceId }))
     }
@@ -52,8 +52,8 @@ export const RoiPlot = React.memo(() => {
   }
 })
 
-const RoiPlotImple = React.memo<{}>(() => {
-  const { itemId, filePath: path } = React.useContext(DisplayDataContext)
+const RoiPlotImple = memo(function RoiPlotImple() {
+  const { itemId, filePath: path } = useContext(DisplayDataContext)
   const imageData = useSelector(selectRoiData(path), imageDataEqualtyFn)
   const meta = useSelector(selectRoiMeta(path))
   const width = useSelector(selectVisualizeItemWidth(itemId))
@@ -68,7 +68,7 @@ const RoiPlotImple = React.memo<{}>(() => {
     return { rgb: v, offset: String(idx / 9) }
   })
 
-  const data = React.useMemo(
+  const data = useMemo(
     () => [
       {
         z: imageData,
@@ -97,7 +97,7 @@ const RoiPlotImple = React.memo<{}>(() => {
     [imageData, colorscale],
   )
 
-  const layout = React.useMemo(
+  const layout = useMemo(
     () => ({
       title: {
         text: meta?.title,

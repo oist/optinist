@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react"
+import { memo, useContext, useEffect, useMemo, useState } from "react"
 import PlotlyChart from "react-plotlyjs-ts"
 import { useSelector, useDispatch } from "react-redux"
-
-
 
 import createColormap from "colormap"
 import { LegendClickEvent } from "plotly.js"
@@ -15,9 +13,6 @@ import {
   getTimeSeriesDataById,
   getTimeSeriesInitData,
 } from "store/slice/DisplayData/DisplayDataActions"
-
-
-
 import {
   selectTimeSeriesData,
   selectTimeSeriesDataError,
@@ -49,15 +44,15 @@ import {
 import { setTimeSeriesItemDrawOrderList } from "store/slice/VisualizeItem/VisualizeItemSlice"
 import { AppDispatch } from "store/store"
 
-export const TimeSeriesPlot = React.memo(() => {
-  const { itemId, filePath: path } = React.useContext(DisplayDataContext)
+export const TimeSeriesPlot = memo(function TimeSeriesPlot() {
+  const { itemId, filePath: path } = useContext(DisplayDataContext)
   const dispatch = useDispatch<AppDispatch>()
   const isPending = useSelector(selectTimeSeriesDataIsPending(path))
   const isInitialized = useSelector(selectTimeSeriesDataIsInitialized(path))
   const error = useSelector(selectTimeSeriesDataError(path))
   const isFulfilled = useSelector(selectTimeSeriesDataIsFulfilled(path))
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isInitialized) {
       dispatch(getTimeSeriesInitData({ path, itemId }))
     }
@@ -74,8 +69,8 @@ export const TimeSeriesPlot = React.memo(() => {
   }
 })
 
-const TimeSeriesPlotImple = React.memo(() => {
-  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+const TimeSeriesPlotImple = memo(function TimeSeriesPlotImple() {
+  const { filePath: path, itemId } = useContext(DisplayDataContext)
 
   // 0番のデータとkeysだけをとってくる
   const dispatch = useDispatch<AppDispatch>()
@@ -141,7 +136,7 @@ const TimeSeriesPlotImple = React.memo(() => {
     alpha: 1,
   })
 
-  const data = React.useMemo(() => {
+  const data = useMemo(() => {
     return Object.fromEntries(
       dataKeys.map((key) => {
         let y = newDataXrange.map((x) => newTimeSeriesData[key]?.[x])
@@ -187,7 +182,7 @@ const TimeSeriesPlotImple = React.memo(() => {
     newTimeSeriesData,
   ])
 
-  const annotations = React.useMemo(() => {
+  const annotations = useMemo(() => {
     const range = rangeUnit === "time" ? frameRate : 1
     return drawOrderList.map((value) => {
       return {
@@ -205,7 +200,7 @@ const TimeSeriesPlotImple = React.memo(() => {
     })
   }, [data, drawOrderList, newDataXrange, rangeUnit, frameRate])
 
-  const layout = React.useMemo(
+  const layout = useMemo(
     () => ({
       title: {
         text: meta?.title,

@@ -1,4 +1,4 @@
-import React from "react"
+import { FC } from "react"
 import { useDispatch } from "react-redux"
 
 import AddIcon from "@mui/icons-material/Add"
@@ -9,7 +9,7 @@ import { styled } from "@mui/material/styles"
 
 import { pushInitialItemToNewRow } from "store/slice/VisualizeItem/VisualizeItemSlice"
 
-export const VisualizeItemAddButton: React.FC = () => {
+export const VisualizeItemAddButton: FC = () => {
   const dispatch = useDispatch()
   const onClick = () => {
     dispatch(pushInitialItemToNewRow())

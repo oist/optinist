@@ -12,7 +12,7 @@ import {
   createUser,
   updateUser,
 } from "store/slice/User/UserActions"
-import { USER_SLICE_NAME , User } from "store/slice/User/UserType"
+import { USER_SLICE_NAME, User } from "store/slice/User/UserType"
 import {
   removeExToken,
   removeToken,
@@ -20,7 +20,6 @@ import {
   saveRefreshToken,
   saveToken,
 } from "utils/auth/AuthUtils"
-
 
 const initialState: User = {
   currentUser: undefined,
@@ -33,10 +32,10 @@ export const userSlice = createSlice({
   name: USER_SLICE_NAME,
   initialState,
   reducers: {
-    logout: (state) => {
+    logout: () => {
       removeToken()
       removeExToken()
-      state = initialState
+      return initialState
     },
     resetUserSearch: (state) => {
       state.listUserSearch = []
@@ -95,10 +94,10 @@ export const userSlice = createSlice({
       )
       .addMatcher(
         isAnyOf(login.rejected, getMe.rejected, deleteMe.fulfilled),
-        (state) => {
+        () => {
           removeToken()
           removeExToken()
-          state = initialState
+          return initialState
         },
       )
   },

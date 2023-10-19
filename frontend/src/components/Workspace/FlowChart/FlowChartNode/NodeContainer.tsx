@@ -1,11 +1,11 @@
-import React from "react"
+import { FC, ReactNode } from "react"
 
 import { Box, Typography } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import { alpha, useTheme } from "@mui/material/styles"
 
-export const NodeContainer: React.FC<{
-  children: React.ReactNode
+export const NodeContainer: FC<{
+  children: ReactNode
   nodeId: string
   selected: boolean
 }> = ({ children, nodeId, selected }) => {

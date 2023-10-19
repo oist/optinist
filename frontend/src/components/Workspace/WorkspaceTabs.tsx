@@ -1,4 +1,4 @@
-import { FC } from "react"
+import { FC, SyntheticEvent } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import Tab from "@mui/material/Tab"
@@ -10,7 +10,7 @@ import { setActiveTab } from "store/slice/Workspace/WorkspaceSlice"
 const WorkspaceTabs: FC = () => {
   const dispatch = useDispatch()
   const activeTab = useSelector(selectActiveTab)
-  const handleChange = (event: React.ChangeEvent<{}>, newValue: number) => {
+  const handleChange = (event: SyntheticEvent, newValue: number) => {
     dispatch(setActiveTab(newValue))
   }
 

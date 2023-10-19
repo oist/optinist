@@ -1,4 +1,4 @@
-import React from "react"
+import { FC, useState, ReactElement } from "react"
 import { useSelector } from "react-redux"
 
 import FormControl from "@mui/material/FormControl"
@@ -15,14 +15,14 @@ import {
 import { selectNodeLabelById } from "store/slice/FlowElement/FlowElementSelectors"
 import { getFileName } from "store/slice/FlowElement/FlowElementUtils"
 import { selectInputNode } from "store/slice/InputNode/InputNodeSelectors"
-import { FILE_TYPE , FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
+import { FILE_TYPE, FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
 import {
   selectPipelineLatestUid,
   selectPipelineNodeResultSuccessList,
 } from "store/slice/Pipeline/PipelineSelectors"
 import { RootState } from "store/store"
 
-export const FilePathSelect: React.FC<{
+export const FilePathSelect: FC<{
   dataType?: DATA_TYPE
   selectedNodeId: string | null
   selectedFilePath: string | null
@@ -80,7 +80,7 @@ export const FilePathSelect: React.FC<{
     }
   })
 
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useState(false)
   const handleClose = () => {
     setOpen(false)
   }
@@ -99,7 +99,7 @@ export const FilePathSelect: React.FC<{
     handleClose()
   }
 
-  const menuItemList: React.ReactElement[] = []
+  const menuItemList: ReactElement[] = []
   inputNodeFilePathInfoList.forEach((pathInfo) => {
     const filePath = pathInfo.filePath
     if (Array.isArray(filePath)) {
@@ -132,7 +132,7 @@ export const FilePathSelect: React.FC<{
   })
   algorithmNodeOutputPathInfoList.forEach((pathInfo) => {
     menuItemList.push(<ListSubheader>{pathInfo.nodeName}</ListSubheader>)
-    pathInfo.paths.forEach((outputPath, i) => {
+    pathInfo.paths.forEach((outputPath) => {
       menuItemList.push(
         <MenuItem
           value={`${pathInfo.nodeId}/${outputPath.filePath}`}

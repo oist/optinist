@@ -1,4 +1,4 @@
-import React from "react"
+import { ChangeEvent, memo, useContext, useEffect, useMemo } from "react"
 import PlotlyChart from "react-plotlyjs-ts"
 import { useSelector, useDispatch } from "react-redux"
 
@@ -29,15 +29,15 @@ import {
 import { setHistogramItemBins } from "store/slice/VisualizeItem/VisualizeItemSlice"
 import { AppDispatch } from "store/store"
 
-export const HistogramPlot = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataContext)
+export const HistogramPlot = memo(function HistogramPlot() {
+  const { filePath: path } = useContext(DisplayDataContext)
   const dispatch = useDispatch<AppDispatch>()
   const isPending = useSelector(selectHistogramDataIsPending(path))
   const isInitialized = useSelector(selectHistogramDataIsInitialized(path))
   const error = useSelector(selectHistogramDataError(path))
   const isFulfilled = useSelector(selectHistogramDataIsFulfilled(path))
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isInitialized) {
       dispatch(getHistogramData({ path }))
     }
@@ -54,15 +54,15 @@ export const HistogramPlot = React.memo(() => {
   }
 })
 
-const HistogramPlotImple = React.memo(() => {
-  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+const HistogramPlotImple = memo(function HistogramPlotImple() {
+  const { filePath: path, itemId } = useContext(DisplayDataContext)
   const histogramData = useSelector(selectHistogramData(path))
   const meta = useSelector(selectHistogramMeta(path))
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
   const bins = useSelector(selectHistogramItemBins(itemId))
 
-  const data = React.useMemo(
+  const data = useMemo(
     () =>
       histogramData != null
         ? [
@@ -82,7 +82,7 @@ const HistogramPlotImple = React.memo(() => {
     [histogramData, bins],
   )
 
-  const layout = React.useMemo(
+  const layout = useMemo(
     () => ({
       title: {
         text: meta?.title,
@@ -119,12 +119,12 @@ const HistogramPlotImple = React.memo(() => {
   )
 })
 
-const InputBins = React.memo(() => {
-  const { itemId } = React.useContext(DisplayDataContext)
+const InputBins = memo(function InputBins() {
+  const { itemId } = useContext(DisplayDataContext)
   const dispatch = useDispatch()
   const bins = useSelector(selectHistogramItemBins(itemId))
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     dispatch(
       setHistogramItemBins({ itemId, bins: parseInt(event.target.value) }),
     )

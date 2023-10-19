@@ -10,7 +10,7 @@ import {
 
 type SelectErrorProps = {
   value?: string
-  onChange?: (value: SelectChangeEvent, child: React.ReactNode) => void
+  onChange?: (value: SelectChangeEvent, child: ReactNode) => void
   onBlur?: (event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => void
   errorMessage: string
   name?: string
@@ -33,7 +33,7 @@ const SelectError: FC<SelectErrorProps> = ({
         onChange={
           onChange as (
             value: SelectChangeEvent<unknown>,
-            child: React.ReactNode,
+            child: ReactNode,
           ) => void
         }
         onBlur={onBlur}

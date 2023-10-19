@@ -1,4 +1,4 @@
-import React from "react"
+import { memo } from "react"
 import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { useSelector } from "react-redux"
@@ -15,7 +15,7 @@ import { CONTENT_HEIGHT, DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from "const/Layout"
 import { UseRunPipelineReturnType } from "store/slice/Pipeline/PipelineHook"
 import { selectRightDrawerIsOpen } from "store/slice/RightDrawer/RightDrawerSelectors"
 
-const FlowChart = React.memo<UseRunPipelineReturnType>((props) => {
+const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
   const open = useSelector(selectRightDrawerIsOpen)
   return (
     <RootDiv>

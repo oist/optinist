@@ -1,4 +1,4 @@
-import React from "react"
+import { ChangeEvent, memo, MouseEvent, useState, useRef } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
 import { useSnackbar } from "notistack"
@@ -22,7 +22,6 @@ import Paper from "@mui/material/Paper"
 import Popper from "@mui/material/Popper"
 import TextField from "@mui/material/TextField"
 
-
 import { UseRunPipelineReturnType } from "store/slice/Pipeline/PipelineHook"
 import {
   selectPipelineIsStartedSuccess,
@@ -35,8 +34,9 @@ import {
   RUN_BTN_TYPE,
 } from "store/slice/Pipeline/PipelineType"
 
-
-export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
+export const RunButtons = memo(function RunButtons(
+  props: UseRunPipelineReturnType,
+) {
   const {
     uid,
     runDisabled,
@@ -52,7 +52,7 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
   const runBtnOption = useSelector(selectPipelineRunBtn)
   const isStartedSuccess = useSelector(selectPipelineIsStartedSuccess)
 
-  const [dialogOpen, setDialogOpen] = React.useState(false)
+  const [dialogOpen, setDialogOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const handleClick = () => {
     let errorMessage: string | null = null
@@ -81,11 +81,11 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
   const onClickCancel = () => {
     handleCancelPipeline()
   }
-  const [menuOpen, setMenuOpen] = React.useState(false)
-  const anchorRef = React.useRef<HTMLDivElement>(null)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const anchorRef = useRef<HTMLDivElement>(null)
 
   const handleMenuItemClick = (
-    event: React.MouseEvent<HTMLLIElement, MouseEvent>,
+    event: MouseEvent<HTMLLIElement>,
     option: RUN_BTN_TYPE,
   ) => {
     dispatch(setRunBtnOption({ runBtnOption: option }))
@@ -182,50 +182,56 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
   )
 })
 
-const RunDialog = React.memo<{
+interface RunDialogProps {
   open: boolean
   handleRun: (name: string) => void
   handleClose: () => void
-    }>(({ open, handleClose, handleRun }) => {
-      const [name, setName] = React.useState("New flow")
-      const [error, setError] = React.useState<string | null>(null)
-      const onClickRun = () => {
-        if (name !== "") {
-          handleRun(name)
-        } else {
-          setError("name is empty")
-        }
-      }
-      const onChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setName(event.target.value)
-        if (event.target.value !== "") {
-          setError(null)
-        }
-      }
-      return (
-        <Dialog open={open} onClose={handleClose}>
-          <DialogTitle>Name and run flowchart</DialogTitle>
-          <DialogContent>
-            <TextField
-              label="name"
-              autoFocus
-              margin="dense"
-              fullWidth
-              variant="standard"
-              onChange={onChangeName}
-              error={error != null}
-              helperText={error}
-              value={name}
-            />
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={handleClose} color="inherit" variant="outlined">
+}
+
+const RunDialog = memo(function RunDialog({
+  open,
+  handleClose,
+  handleRun,
+}: RunDialogProps) {
+  const [name, setName] = useState("New flow")
+  const [error, setError] = useState<string | null>(null)
+  const onClickRun = () => {
+    if (name !== "") {
+      handleRun(name)
+    } else {
+      setError("name is empty")
+    }
+  }
+  const onChangeName = (event: ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value)
+    if (event.target.value !== "") {
+      setError(null)
+    }
+  }
+  return (
+    <Dialog open={open} onClose={handleClose}>
+      <DialogTitle>Name and run flowchart</DialogTitle>
+      <DialogContent>
+        <TextField
+          label="name"
+          autoFocus
+          margin="dense"
+          fullWidth
+          variant="standard"
+          onChange={onChangeName}
+          error={error != null}
+          helperText={error}
+          value={name}
+        />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={handleClose} color="inherit" variant="outlined">
           Cancel
-            </Button>
-            <Button onClick={onClickRun} color="primary" variant="outlined">
+        </Button>
+        <Button onClick={onClickRun} color="primary" variant="outlined">
           Run
-            </Button>
-          </DialogActions>
-        </Dialog>
-      )
-    })
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
+})

@@ -1,4 +1,4 @@
-import React from "react"
+import { ChangeEvent, FC, useContext } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import FormControl from "@mui/material/FormControl"
@@ -17,19 +17,17 @@ import {
   setSaveFormat,
 } from "store/slice/VisualizeItem/VisualizeItemSlice"
 
-
-
 import "react-linear-gradient-picker/dist/index.css"
 
-export const SaveFig: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+export const SaveFig: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))
   const saveFormat = useSelector(selectVisualizeSaveFormat(itemId))
   const dispatch = useDispatch()
   const handleChange = (event: SelectChangeEvent<string>) => {
     dispatch(setSaveFormat({ itemId, saveFormat: event.target.value }))
   }
-  const onChangeFileName = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeFileName = (event: ChangeEvent<HTMLInputElement>) => {
     dispatch(setSaveFileName({ itemId, saveFileName: event.target.value }))
   }
 

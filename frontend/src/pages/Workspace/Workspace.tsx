@@ -10,7 +10,7 @@ import Visualize from "components/Workspace/Visualize/Visualize"
 import { useRunPipeline } from "store/slice/Pipeline/PipelineHook"
 import { selectActiveTab } from "store/slice/Workspace/WorkspaceSelector"
 
-const Workspace: React.FC = () => {
+const Workspace: FC = () => {
   const runPipeline = useRunPipeline() // タブ切り替えによって結果取得処理が止まってしまうのを回避するため、タブの親レイヤーで呼び出している
   const activeTab = useSelector(selectActiveTab)
 
@@ -36,7 +36,7 @@ const RootDiv = styled("div")(({ theme }) => ({
 }))
 
 interface TabPanelProps {
-  children?: React.ReactNode
+  children?: ReactNode
   index: number
   value: number
 }

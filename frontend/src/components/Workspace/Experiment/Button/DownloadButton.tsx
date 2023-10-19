@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react"
+import { memo, useContext, useState, useRef } from "react"
 import { useSelector } from "react-redux"
 
 import { useSnackbar } from "notistack"
@@ -14,16 +14,19 @@ import { downloadWorkflowConfigApi } from "api/workflow/Workflow"
 import { ExperimentUidContext } from "components/Workspace/Experiment/ExperimentTable"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
 
-
-
-
-export const NWBDownloadButton = React.memo<{
+interface NWBDownloadButtonProps {
   name: string
   nodeId?: string
   hasNWB: boolean
-}>(({ name, nodeId, hasNWB }) => {
+}
+
+export const NWBDownloadButton = memo(function NWBDownloadButton({
+  name,
+  nodeId,
+  hasNWB,
+}: NWBDownloadButtonProps) {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
-  const uid = React.useContext(ExperimentUidContext)
+  const uid = useContext(ExperimentUidContext)
   const ref = useRef<HTMLAnchorElement | null>(null)
   const [url, setFileUrl] = useState<string>()
   const { enqueueSnackbar } = useSnackbar()
@@ -56,9 +59,9 @@ export const NWBDownloadButton = React.memo<{
   )
 })
 
-export const SnakemakeDownloadButton = React.memo(() => {
+export const SnakemakeDownloadButton = memo(function SnakemakeDownloadButton() {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
-  const uid = React.useContext(ExperimentUidContext)
+  const uid = useContext(ExperimentUidContext)
   const ref = useRef<HTMLAnchorElement | null>(null)
   const [url, setFileUrl] = useState<string>()
   const { enqueueSnackbar } = useSnackbar()
@@ -92,9 +95,9 @@ export const SnakemakeDownloadButton = React.memo(() => {
   )
 })
 
-export const WorkflowDownloadButton = React.memo(() => {
+export const WorkflowDownloadButton = memo(function WorkflowDownloadButton() {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
-  const uid = React.useContext(ExperimentUidContext)
+  const uid = useContext(ExperimentUidContext)
   const ref = useRef<HTMLAnchorElement | null>(null)
   const [url, setFileUrl] = useState<string>()
   const { enqueueSnackbar } = useSnackbar()

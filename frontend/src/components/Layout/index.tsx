@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect, useState } from "react"
+import { FC, ReactNode, useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { useLocation, useNavigate } from "react-router-dom"
 
@@ -14,8 +14,6 @@ import { getMe } from "store/slice/User/UserActions"
 import { selectCurrentUser } from "store/slice/User/UserSelector"
 import { AppDispatch } from "store/store"
 import { getToken } from "utils/auth/AuthUtils"
-
-
 
 const authRequiredPathRegex = /^\/console\/?.*/
 
@@ -66,7 +64,7 @@ const Layout = ({ children }: { children?: ReactNode }) => {
   )
 }
 
-const AuthedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
+const AuthedLayout: FC<{ children: ReactNode }> = ({ children }) => {
   const [open, setOpen] = useState(false)
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -86,7 +84,7 @@ const AuthedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   )
 }
 
-const UnauthedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
+const UnauthedLayout: FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <LayoutWrapper>
       <ContentBodyWrapper>
@@ -112,7 +110,7 @@ const ContentBodyWrapper = styled(Box)(() => ({
 
 const ChildrenWrapper = styled("main", {
   shouldForwardProp: (prop) => prop !== "open",
-})<{}>(({ theme }) => ({
+})(({ theme }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
   transition: theme.transitions.create("margin", {

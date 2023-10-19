@@ -1,4 +1,4 @@
-import React from "react"
+import { createContext, FC } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
@@ -25,8 +25,7 @@ import {
 } from "store/slice/RightDrawer/RightDrawerSlice"
 import { RootState } from "store/store"
 
-
-const RightDrawer: React.FC = () => {
+const RightDrawer: FC = () => {
   const open = useSelector(selectRightDrawerIsOpen)
   const dispatch = useDispatch()
   const onClick = () => dispatch(closeRightDrawer())
@@ -60,7 +59,7 @@ const RightDrawer: React.FC = () => {
   )
 }
 
-const Contents: React.FC = () => {
+const Contents: FC = () => {
   const mode = useSelector(selectRightDrawerMode)
   switch (mode) {
     case RIGHT_DRAWER_MODE.NWB:
@@ -77,9 +76,9 @@ const Contents: React.FC = () => {
 /**
  * nodeId
  */
-export const ParamFormContext = React.createContext<string>("")
+export const ParamFormContext = createContext<string>("")
 
-const ParamFormConetent: React.FC = () => {
+const ParamFormConetent: FC = () => {
   const nodeId = useSelector(selectRightDrawerCurrentNodeId)
   if (nodeId != null) {
     return (

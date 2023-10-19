@@ -1,4 +1,4 @@
-import React from "react"
+import { memo, useContext, useEffect, useMemo } from "react"
 import PlotlyChart from "react-plotlyjs-ts"
 import { useSelector, useDispatch } from "react-redux"
 
@@ -32,14 +32,14 @@ import {
 import { setBarItemIndex } from "store/slice/VisualizeItem/VisualizeItemSlice"
 import { AppDispatch } from "store/store"
 
-export const BarPlot = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataContext)
+export const BarPlot = memo(function BarPlot() {
+  const { filePath: path } = useContext(DisplayDataContext)
   const dispatch = useDispatch<AppDispatch>()
   const isPending = useSelector(selectBarDataIsPending(path))
   const isInitialized = useSelector(selectBarDataIsInitialized(path))
   const error = useSelector(selectBarDataError(path))
   const isFulfilled = useSelector(selectBarDataIsFulfilled(path))
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isInitialized) {
       dispatch(getBarData({ path }))
     }
@@ -55,8 +55,8 @@ export const BarPlot = React.memo(() => {
   }
 })
 
-const BarPlotImple = React.memo(() => {
-  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+const BarPlotImple = memo(function BarPlotImple() {
+  const { filePath: path, itemId } = useContext(DisplayDataContext)
   const barData = useSelector(selectBarData(path), barDataEqualityFn)
   const meta = useSelector(selectBarMeta(path))
   const width = useSelector(selectVisualizeItemWidth(itemId))
@@ -64,7 +64,7 @@ const BarPlotImple = React.memo(() => {
   const index = useSelector(selectBarItemIndex(itemId))
   const dataKeys = useSelector(selectBarIndex(path))
 
-  const data = React.useMemo(
+  const data = useMemo(
     () => [
       {
         x: Object.keys(barData[index]),
@@ -75,7 +75,7 @@ const BarPlotImple = React.memo(() => {
     [barData, index],
   )
 
-  const layout = React.useMemo(
+  const layout = useMemo(
     () => ({
       title: {
         text: meta?.title,
@@ -125,10 +125,12 @@ const BarPlotImple = React.memo(() => {
   )
 })
 
-const SelectIndex = React.memo<{
+interface SelectIndexProps {
   dataKeys: string[]
-}>(({ dataKeys }) => {
-  const { itemId } = React.useContext(DisplayDataContext)
+}
+
+const SelectIndex = memo(function SelectIndex({ dataKeys }: SelectIndexProps) {
+  const { itemId } = useContext(DisplayDataContext)
   const dispatch = useDispatch()
   const index = useSelector(selectBarItemIndex(itemId))
 
@@ -145,7 +147,9 @@ const SelectIndex = React.memo<{
       <InputLabel>index</InputLabel>
       <Select label="smooth" value={`${index}`} onChange={handleChange}>
         {dataKeys.map((v, i) => (
-          <MenuItem value={i}>{v}</MenuItem>
+          <MenuItem key={i} value={i}>
+            {v}
+          </MenuItem>
         ))}
       </Select>
     </FormControl>

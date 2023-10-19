@@ -1,4 +1,13 @@
-import React, { ChangeEvent, useState } from "react"
+import {
+  ChangeEvent,
+  createContext,
+  useContext,
+  FC,
+  Fragment,
+  memo,
+  useEffect,
+  useState,
+} from "react"
 import { useSelector, useDispatch } from "react-redux"
 
 import DeleteIcon from "@mui/icons-material/Delete"
@@ -21,8 +30,8 @@ import TableBody from "@mui/material/TableBody"
 import TableCell, { tableCellClasses } from "@mui/material/TableCell"
 import TableContainer from "@mui/material/TableContainer"
 import TableHead from "@mui/material/TableHead"
-import TableRow from "@mui/material/TableRow"
 import TablePagination from "@mui/material/TablePagination"
+import TableRow from "@mui/material/TableRow"
 import TableSortLabel from "@mui/material/TableSortLabel"
 import Typography from "@mui/material/Typography"
 
@@ -35,6 +44,7 @@ import {
   WorkflowDownloadButton,
 } from "components/Workspace/Experiment/Button/DownloadButton"
 import { ReproduceButton } from "components/Workspace/Experiment/Button/ReproduceButton"
+import { CollapsibleTable } from "components/Workspace/Experiment/CollapsibleTable"
 import { ExperimentStatusIcon } from "components/Workspace/Experiment/ExperimentStatusIcon"
 import {
   deleteExperimentByList,
@@ -52,12 +62,7 @@ import {
   selectExperimentList,
   selectExperimentHasNWB,
 } from "store/slice/Experiments/ExperimentsSelectors"
-
 import { ExperimentSortKeys } from "store/slice/Experiments/ExperimentsType"
-import { CollapsibleTable } from "./CollapsibleTable"
-
-
-
 import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
 import { clearCurrentPipeline } from "store/slice/Pipeline/PipelineSlice"
 import {
@@ -66,14 +71,14 @@ import {
 } from "store/slice/Workspace/WorkspaceSelector"
 import { AppDispatch } from "store/store"
 
-export const ExperimentUidContext = React.createContext<string>("")
+export const ExperimentUidContext = createContext<string>("")
 
-export const ExperimentTable: React.FC = () => {
+export const ExperimentTable: FC = () => {
   const isUninitialized = useSelector(selectExperimentsStatusIsUninitialized)
   const isFulfilled = useSelector(selectExperimentsStatusIsFulfilled)
   const isError = useSelector(selectExperimentsStatusIsError)
   const dispatch = useDispatch<AppDispatch>()
-  React.useEffect(() => {
+  useEffect(() => {
     if (isUninitialized) {
       dispatch(getExperiments())
     }
@@ -88,7 +93,7 @@ export const ExperimentTable: React.FC = () => {
   }
 }
 
-const ExperimentsErrorView: React.FC = () => {
+const ExperimentsErrorView: FC = () => {
   const message = useSelector(selectExperimentsErrorMessage)
   return (
     <Alert severity="error">
@@ -100,7 +105,7 @@ const ExperimentsErrorView: React.FC = () => {
 
 const LOCAL_STORAGE_KEY_PER_PAGE = "optinist_experiment_table_per_page"
 
-const TableImple = React.memo(() => {
+const TableImple = memo(function TableImple() {
   const isOwner = useSelector(selectIsWorkspaceOwner)
   const currentPipelineUid = useSelector(selectPipelineLatestUid)
   const experimentList = useSelector(selectExperimentList)
@@ -110,19 +115,17 @@ const TableImple = React.memo(() => {
   const onClickReload = () => {
     dispatch(getExperiments())
   }
-  const [order, setOrder] = React.useState<Order>("desc")
+  const [order, setOrder] = useState<Order>("desc")
   const [sortTarget, setSortTarget] =
-    React.useState<keyof ExperimentSortKeys>("startedAt")
-  const sortHandler =
-    (property: keyof ExperimentSortKeys) =>
-      (event: React.MouseEvent<unknown>) => {
-        const isAsc = sortTarget === property && order === "asc"
-        setOrder(isAsc ? "desc" : "asc")
-        setSortTarget(property)
-      }
+    useState<keyof ExperimentSortKeys>("startedAt")
+  const sortHandler = (property: keyof ExperimentSortKeys) => () => {
+    const isAsc = sortTarget === property && order === "asc"
+    setOrder(isAsc ? "desc" : "asc")
+    setSortTarget(property)
+  }
 
   const [checkedList, setCheckedList] = useState<string[]>([])
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useState(false)
 
   const onCheckBoxClick = (uid: string) => {
     if (checkedList.includes(uid)) {
@@ -156,7 +159,7 @@ const TableImple = React.memo(() => {
     setOpen(false)
   }
 
-  const [page, setPage] = React.useState(0)
+  const [page, setPage] = useState(0)
 
   const handleChangePage = (event: unknown, newPage: number) => {
     setPage(newPage)
@@ -170,9 +173,7 @@ const TableImple = React.memo(() => {
       return isNaN(valueNum) ? 10 : valueNum
     },
   )
-  const handleChangeRowsPerPage = (
-    event: React.ChangeEvent<HTMLInputElement>,
-  ) => {
+  const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue = parseInt(event.target.value, 10)
     setRowsPerPage(newValue)
     setPage(0)
@@ -319,7 +320,7 @@ const TableImple = React.memo(() => {
   )
 })
 
-const HeadItem = React.memo<{
+interface HeadItemProps {
   order: Order
   sortHandler: any
   allChecked: boolean
@@ -327,147 +328,149 @@ const HeadItem = React.memo<{
   allCheckIndeterminate: boolean
   checkboxVisible: boolean
   isOwner: boolean
-    }>(
-    ({
-      order,
-      sortHandler,
-      allChecked,
-      onChangeAllCheck,
-      allCheckIndeterminate,
-      checkboxVisible,
-      isOwner,
-    }) => {
-      return (
-        <TableHead>
-          <TableRow>
-            <TableCell padding="checkbox">
-              <Checkbox
-                sx={{ visibility: checkboxVisible ? "visible" : "hidden" }}
-                checked={allChecked}
-                indeterminate={allCheckIndeterminate}
-                onChange={(e) => onChangeAllCheck(e.target.checked)}
-              />
-            </TableCell>
-            <TableCell />
-            <TableCell>
-              <TableSortLabel
-                active
-                direction={order}
-                onClick={sortHandler("startedAt")}
-              >
-              Timestamp
-              </TableSortLabel>
-            </TableCell>
-            <TableCell>
-              <TableSortLabel
-                active
-                direction={order}
-                onClick={sortHandler("uid")}
-              >
-              ID
-              </TableSortLabel>
-            </TableCell>
-            <TableCell>
-              <TableSortLabel
-                active
-                direction={order}
-                onClick={sortHandler("name")}
-              >
-              Name
-              </TableSortLabel>
-            </TableCell>
-            <TableCell>Success</TableCell>
-            <TableCell>Reproduce</TableCell>
-            <TableCell>Workflow</TableCell>
-            <TableCell>Snakemake</TableCell>
-            <TableCell>NWB</TableCell>
-            {isOwner && <TableCell>Delete</TableCell>}
-          </TableRow>
-        </TableHead>
-      )
-    },
-    )
+}
 
-const RowItem = React.memo<{
+const HeadItem = memo(function HeadItem({
+  order,
+  sortHandler,
+  allChecked,
+  onChangeAllCheck,
+  allCheckIndeterminate,
+  checkboxVisible,
+  isOwner,
+}: HeadItemProps) {
+  return (
+    <TableHead>
+      <TableRow>
+        <TableCell padding="checkbox">
+          <Checkbox
+            sx={{ visibility: checkboxVisible ? "visible" : "hidden" }}
+            checked={allChecked}
+            indeterminate={allCheckIndeterminate}
+            onChange={(e) => onChangeAllCheck(e.target.checked)}
+          />
+        </TableCell>
+        <TableCell />
+        <TableCell>
+          <TableSortLabel
+            active
+            direction={order}
+            onClick={sortHandler("startedAt")}
+          >
+            Timestamp
+          </TableSortLabel>
+        </TableCell>
+        <TableCell>
+          <TableSortLabel active direction={order} onClick={sortHandler("uid")}>
+            ID
+          </TableSortLabel>
+        </TableCell>
+        <TableCell>
+          <TableSortLabel
+            active
+            direction={order}
+            onClick={sortHandler("name")}
+          >
+            Name
+          </TableSortLabel>
+        </TableCell>
+        <TableCell>Success</TableCell>
+        <TableCell>Reproduce</TableCell>
+        <TableCell>Workflow</TableCell>
+        <TableCell>Snakemake</TableCell>
+        <TableCell>NWB</TableCell>
+        {isOwner && <TableCell>Delete</TableCell>}
+      </TableRow>
+    </TableHead>
+  )
+})
+
+interface RowItemProps {
   onCheckBoxClick: (uid: string) => void
   checked: boolean
   isOwner: boolean
-    }>(({ onCheckBoxClick, checked, isOwner }) => {
-      const workspaceId = useSelector(selectCurrentWorkspaceId)
-      const uid = React.useContext(ExperimentUidContext)
-      const startedAt = useSelector(selectExperimentStartedAt(uid))
-      const finishedAt = useSelector(selectExperimentFinishedAt(uid))
-      const status = useSelector(selectExperimentStatus(uid))
-      const name = useSelector(selectExperimentName(uid))
-      const hasNWB = useSelector(selectExperimentHasNWB(uid))
-      const [open, setOpen] = React.useState(false)
-      const [isEdit, setEdit] = useState(false)
-      const [errorEdit, setErrorEdit] = useState("")
-      const [valueEdit, setValueEdit] = useState(name)
-      const dispatch = useDispatch<AppDispatch>()
+}
 
-      const onBlurEdit = (event: any) => {
-        event.preventDefault()
-        if (errorEdit) return
-        setTimeout(() => {
-          setEdit(false)
-          onSaveNewName()
-        }, 300)
-      }
+const RowItem = memo(function RowItem({
+  onCheckBoxClick,
+  checked,
+  isOwner,
+}: RowItemProps) {
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const uid = useContext(ExperimentUidContext)
+  const startedAt = useSelector(selectExperimentStartedAt(uid))
+  const finishedAt = useSelector(selectExperimentFinishedAt(uid))
+  const status = useSelector(selectExperimentStatus(uid))
+  const name = useSelector(selectExperimentName(uid))
+  const hasNWB = useSelector(selectExperimentHasNWB(uid))
+  const [open, setOpen] = useState(false)
+  const [isEdit, setEdit] = useState(false)
+  const [errorEdit, setErrorEdit] = useState("")
+  const [valueEdit, setValueEdit] = useState(name)
+  const dispatch = useDispatch<AppDispatch>()
 
-      const onEdit = (event: any) => {
-        if (isEdit || errorEdit) return
-        event.preventDefault()
-        setEdit(true)
-      }
+  const onBlurEdit = (event: any) => {
+    event.preventDefault()
+    if (errorEdit) return
+    setTimeout(() => {
+      setEdit(false)
+      onSaveNewName()
+    }, 300)
+  }
 
-      const onChangeName = (event: ChangeEvent<HTMLInputElement>) => {
-        let errorEdit = ""
-        if (!event.target.value.trim()) {
-          errorEdit = "Name is empty"
-        }
-        setErrorEdit(errorEdit)
-        setValueEdit(event.target.value)
-      }
+  const onEdit = (event: any) => {
+    if (isEdit || errorEdit) return
+    event.preventDefault()
+    setEdit(true)
+  }
 
-      const onSaveNewName = async () => {
-        if (valueEdit === name || workspaceId === void 0) return
-        await renameExperiment(workspaceId, uid, valueEdit)
-        dispatch(getExperiments())
-      }
+  const onChangeName = (event: ChangeEvent<HTMLInputElement>) => {
+    let errorEdit = ""
+    if (!event.target.value.trim()) {
+      errorEdit = "Name is empty"
+    }
+    setErrorEdit(errorEdit)
+    setValueEdit(event.target.value)
+  }
 
-      return (
-        <React.Fragment>
-          <TableRow
-            sx={{
-              "& > *": {
-                borderBottom: "unset",
-              },
-              [`& .${tableCellClasses.root}`]: {
-                borderBottomWidth: 0,
-              },
-            }}
+  const onSaveNewName = async () => {
+    if (valueEdit === name || workspaceId === void 0) return
+    await renameExperiment(workspaceId, uid, valueEdit)
+    dispatch(getExperiments())
+  }
+
+  return (
+    <Fragment>
+      <TableRow
+        sx={{
+          "& > *": {
+            borderBottom: "unset",
+          },
+          [`& .${tableCellClasses.root}`]: {
+            borderBottomWidth: 0,
+          },
+        }}
+      >
+        <TableCell padding="checkbox">
+          <Checkbox onChange={() => onCheckBoxClick(uid)} checked={checked} />
+        </TableCell>
+        <TableCell>
+          <IconButton
+            aria-label="expand row"
+            size="small"
+            onClick={() => setOpen((prevOpen) => !prevOpen)}
           >
-            <TableCell padding="checkbox">
-              <Checkbox onChange={() => onCheckBoxClick(uid)} checked={checked} />
-            </TableCell>
-            <TableCell>
-              <IconButton
-                aria-label="expand row"
-                size="small"
-                onClick={() => setOpen((prevOpen) => !prevOpen)}
-              >
-                {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-              </IconButton>
-            </TableCell>
-            <TableCell
-              sx={{ minWidth: 210, width: 210 }}
-              component="th"
-              scope="row"
-            >
-              {finishedAt == null ? (
+            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          </IconButton>
+        </TableCell>
+        <TableCell
+          sx={{ minWidth: 210, width: 210 }}
+          component="th"
+          scope="row"
+        >
+          {finishedAt == null ? (
             startedAt
-              ) : (
+          ) : (
             <>
               {/* date string format is YYYY-MM-DD HH:mm:ss */}
               <Typography variant="body2">{`${startedAt} - ${
@@ -481,13 +484,13 @@ const RowItem = React.memo<{
                 sec)
               </Typography>
             </>
-              )}
-            </TableCell>
-            <TableCell>{uid}</TableCell>
-            <TableCell sx={{ width: 160, position: "relative" }} onClick={onEdit}>
-              {!isEdit ? (
+          )}
+        </TableCell>
+        <TableCell>{uid}</TableCell>
+        <TableCell sx={{ width: 160, position: "relative" }} onClick={onEdit}>
+          {!isEdit ? (
             valueEdit
-              ) : (
+          ) : (
             <>
               <Input
                 placeholder="Name"
@@ -499,34 +502,34 @@ const RowItem = React.memo<{
               />
               {errorEdit ? <TextError>{errorEdit}</TextError> : null}
             </>
-              )}
-            </TableCell>
-            <TableCell>
-              <ExperimentStatusIcon status={status} />
-            </TableCell>
-            <TableCell>
-              <ReproduceButton />
-            </TableCell>
-            <TableCell>
-              <WorkflowDownloadButton />
-            </TableCell>
-            <TableCell>
-              <SnakemakeDownloadButton />
-            </TableCell>
-            <TableCell>
-              <NWBDownloadButton name={uid} hasNWB={hasNWB} />
-            </TableCell>
-            {isOwner && (
-              <TableCell>
-                {" "}
-                <DeleteButton />
-              </TableCell>
-            )}
-          </TableRow>
-          <CollapsibleTable open={open} />
-        </React.Fragment>
-      )
-    })
+          )}
+        </TableCell>
+        <TableCell>
+          <ExperimentStatusIcon status={status} />
+        </TableCell>
+        <TableCell>
+          <ReproduceButton />
+        </TableCell>
+        <TableCell>
+          <WorkflowDownloadButton />
+        </TableCell>
+        <TableCell>
+          <SnakemakeDownloadButton />
+        </TableCell>
+        <TableCell>
+          <NWBDownloadButton name={uid} hasNWB={hasNWB} />
+        </TableCell>
+        {isOwner && (
+          <TableCell>
+            {" "}
+            <DeleteButton />
+          </TableCell>
+        )}
+      </TableRow>
+      <CollapsibleTable open={open} />
+    </Fragment>
+  )
+})
 
 const Input = styled("input")<{ error: boolean }>(({ error }) => ({
   width: "100%",

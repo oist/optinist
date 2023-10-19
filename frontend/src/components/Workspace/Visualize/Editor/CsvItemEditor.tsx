@@ -1,4 +1,4 @@
-import React from "react"
+import { ChangeEvent, FC, useContext } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
 import { FormControlLabel, Switch, TextField } from "@mui/material"
@@ -23,9 +23,8 @@ import {
   setCsvItemTranspose,
 } from "store/slice/VisualizeItem/VisualizeItemSlice"
 
-
-export const CsvItemEditor: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+export const CsvItemEditor: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
   const dispatch = useDispatch()
   const isSingleData = useSelector(selectDisplayDataIsSingle(itemId))
@@ -72,8 +71,8 @@ export const CsvItemEditor: React.FC = () => {
   )
 }
 
-const Transpose: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const Transpose: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const transpose = useSelector(selectCsvItemTranspose(itemId))
   const dispatch = useDispatch()
   const toggleChecked = () => {
@@ -87,12 +86,12 @@ const Transpose: React.FC = () => {
   )
 }
 
-const SetHeader: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const SetHeader: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const setHeader = useSelector(selectCsvItemSetHeader(itemId))
 
   const dispatch = useDispatch()
-  const onChangeSetHeader = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeSetHeader = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue =
       event.target.value === "" ? null : Number(event.target.value)
     if (newValue === null || newValue >= 0) {
@@ -119,8 +118,8 @@ const SetHeader: React.FC = () => {
   )
 }
 
-const SetIndex: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const SetIndex: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const setIndex = useSelector(selectCsvItemSetIndex(itemId))
   const dispatch = useDispatch()
   const toggleChecked = () => {

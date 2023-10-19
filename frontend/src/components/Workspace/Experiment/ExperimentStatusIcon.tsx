@@ -1,4 +1,4 @@
-import React from "react"
+import { memo, MouseEvent, useState } from "react"
 
 import DoneIcon from "@mui/icons-material/Done"
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline"
@@ -7,10 +7,15 @@ import { IconButton, Popover, Typography } from "@mui/material"
 
 import { EXPERIMENTS_STATUS } from "store/slice/Experiments/ExperimentsType"
 
-export const ExperimentStatusIcon = React.memo<{
+interface ExperimentStatusIconProps {
   status: EXPERIMENTS_STATUS
   message?: string
-}>(({ status, message }) => {
+}
+
+export const ExperimentStatusIcon = memo(function ExperimentStatusIcon({
+  status,
+  message,
+}: ExperimentStatusIconProps) {
   switch (status) {
     case "error":
       return <ErrorIcon message={message} />
@@ -21,9 +26,13 @@ export const ExperimentStatusIcon = React.memo<{
   }
 })
 
-const ErrorIcon = React.memo<{ message?: string }>(({ message }) => {
-  const [anchorEl, setAnchorEl] = React.useState<HTMLButtonElement | null>(null)
-  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+interface ErrorIconProps {
+  message?: string
+}
+
+const ErrorIcon = memo(function ErrorIcon({ message }: ErrorIconProps) {
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null)
+  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget)
   }
   const handleClose = () => {

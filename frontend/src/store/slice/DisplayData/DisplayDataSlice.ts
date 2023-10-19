@@ -28,7 +28,6 @@ import {
   setNewDisplayDataPath,
 } from "store/slice/VisualizeItem/VisualizeItemActions"
 
-
 const initialState: DisplayData = {
   timeSeries: {},
   heatMap: {},
@@ -573,7 +572,7 @@ export const displayDataSlice = createSlice({
       })
       .addMatcher(
         isAnyOf(run.fulfilled, runByCurrentUid.fulfilled),
-        (state, action) => initialState,
+        () => initialState,
       )
   },
 })

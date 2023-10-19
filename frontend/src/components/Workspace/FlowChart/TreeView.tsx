@@ -1,4 +1,4 @@
-import React, { useEffect } from "react"
+import { memo, useCallback, useEffect } from "react"
 import { useDrag } from "react-dnd"
 import { useSelector, useDispatch } from "react-redux"
 
@@ -38,9 +38,7 @@ import { FILE_TYPE, FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
 import { AppDispatch } from "store/store"
 import { getNanoId } from "utils/nanoid/NanoIdUtils"
 
-
-
-export const AlgorithmTreeView = React.memo(() => {
+export const AlgorithmTreeView = memo(function AlgorithmTreeView() {
   const dispatch = useDispatch<AppDispatch>()
   const algoList = useSelector(selectAlgorithmListTree)
   const isLatest = useSelector(selectAlgorithmListIsLated)
@@ -51,7 +49,7 @@ export const AlgorithmTreeView = React.memo(() => {
     }
   }, [dispatch, isLatest])
 
-  const onAddAlgoNode = React.useCallback(
+  const onAddAlgoNode = useCallback(
     (
       nodeName: string,
       functionPath: string,
@@ -125,14 +123,20 @@ export const AlgorithmTreeView = React.memo(() => {
   )
 })
 
-const InputNodeComponent = React.memo<{
+interface InputNodeComponentProps {
   fileName: string
   nodeName: string
   fileType: FILE_TYPE
-}>(({ fileName, nodeName, fileType }) => {
+}
+
+const InputNodeComponent = memo(function InputNodeComponent({
+  fileName,
+  nodeName,
+  fileType,
+}: InputNodeComponentProps) {
   const dispatch = useDispatch()
 
-  const onAddDataNode = React.useCallback(
+  const onAddDataNode = useCallback(
     (
       nodeType: NODE_TYPE,
       nodeName: string,
@@ -173,7 +177,7 @@ const InputNodeComponent = React.memo<{
   )
 
   const { isDragging, dragRef } = useLeafItemDrag(
-    React.useCallback(
+    useCallback(
       (position) => {
         onAddDataNode(NODE_TYPE_SET.INPUT, nodeName, fileType, position)
       },
@@ -199,97 +203,108 @@ const InputNodeComponent = React.memo<{
   )
 })
 
-const AlgoNodeComponentRecursive = React.memo<{
+interface AlgoNodeComponentBaseProps {
   name: string
-  node: AlgorithmNodeType
   onAddAlgoNode: (
     nodeName: string,
     functionPath: string,
     position?: { x: number; y: number },
   ) => void
-    }>(({ name, node, onAddAlgoNode }) => {
-      if (isAlgoChild(node)) {
-        return (
-          <AlgoNodeComponent
+}
+
+interface AlgoNodeComponentRecursiveProps extends AlgoNodeComponentBaseProps {
+  node: AlgorithmNodeType
+}
+
+const AlgoNodeComponentRecursive = memo(function AlgoNodeComponentRecursive({
+  name,
+  node,
+  onAddAlgoNode,
+}: AlgoNodeComponentRecursiveProps) {
+  if (isAlgoChild(node)) {
+    return (
+      <AlgoNodeComponent
+        name={name}
+        node={node}
+        onAddAlgoNode={onAddAlgoNode}
+      />
+    )
+  } else {
+    return (
+      <TreeItem nodeId={name} label={name}>
+        {Object.entries(node.children).map(([name, node], i) => (
+          <AlgoNodeComponentRecursive
             name={name}
             node={node}
+            key={i.toFixed()}
             onAddAlgoNode={onAddAlgoNode}
           />
-        )
-      } else {
-        return (
-          <TreeItem nodeId={name} label={name}>
-            {Object.entries(node.children).map(([name, node], i) => (
-              <AlgoNodeComponentRecursive
-                name={name}
-                node={node}
-                key={i.toFixed()}
-                onAddAlgoNode={onAddAlgoNode}
-              />
-            ))}
-          </TreeItem>
-        )
-      }
-    })
+        ))}
+      </TreeItem>
+    )
+  }
+})
 
-const AlgoNodeComponent = React.memo<{
-  name: string
+interface AlgoNodeComponentProps extends AlgoNodeComponentBaseProps {
   node: AlgorithmChild
-  onAddAlgoNode: (
-    nodeName: string,
-    functionPath: string,
-    position?: { x: number; y: number },
-  ) => void
-    }>(({ name, node, onAddAlgoNode }) => {
-      const { isDragging, dragRef } = useLeafItemDrag(
-        React.useCallback(
-          (position) => {
-            onAddAlgoNode(name, node.functionPath, position)
-          },
-          [onAddAlgoNode, name, node],
-        ),
-      )
-      return (
-        <LeafItem
-          ref={dragRef}
-          style={{
-            opacity: isDragging ? 0.6 : 1,
-          }}
-          onFocusCapture={(e) => e.stopPropagation()}
-          nodeId={name}
-          label={
-            <AddButton
-              name={name}
-              onClick={() => onAddAlgoNode(name, node.functionPath)}
-            />
-          }
-        />
-      )
-    })
+}
 
-const AddButton = React.memo<{
+const AlgoNodeComponent = memo(function AlgoNodeComponent({
+  name,
+  node,
+  onAddAlgoNode,
+}: AlgoNodeComponentProps) {
+  const { isDragging, dragRef } = useLeafItemDrag(
+    useCallback(
+      (position) => {
+        onAddAlgoNode(name, node.functionPath, position)
+      },
+      [onAddAlgoNode, name, node],
+    ),
+  )
+  return (
+    <LeafItem
+      ref={dragRef}
+      style={{
+        opacity: isDragging ? 0.6 : 1,
+      }}
+      onFocusCapture={(e) => e.stopPropagation()}
+      nodeId={name}
+      label={
+        <AddButton
+          name={name}
+          onClick={() => onAddAlgoNode(name, node.functionPath)}
+        />
+      }
+    />
+  )
+})
+
+interface AddButtonProps {
   name: string
   onClick: () => void
-    }>(({ name, onClick }) => {
-      return (
-        <>
-          <IconButton aria-label="add" style={{ padding: 2 }} size="large">
-            <AddIcon onClick={() => onClick()} />
-          </IconButton>
-          <Typography
-            variant="inherit"
-            style={{
-              textOverflow: "ellipsis",
-              overflow: "visible",
-              width: "8rem",
-              display: "inline-block",
-            }}
-          >
-            {name}
-          </Typography>
-        </>
-      )
-    })
+}
+
+const AddButton = memo(function AddButton({ name, onClick }: AddButtonProps) {
+  return (
+    <>
+      <IconButton aria-label="add" style={{ padding: 2 }} size="large">
+        <AddIcon onClick={() => onClick()} />
+      </IconButton>
+      <Typography
+        variant="inherit"
+        style={{
+          textOverflow: "ellipsis",
+          overflow: "visible",
+          width: "8rem",
+          display: "inline-block",
+        }}
+      >
+        {name}
+      </Typography>
+    </>
+  )
+})
 
 // 未使用icon分の幅を消す
 const LeafItem = styled(TreeItem)({

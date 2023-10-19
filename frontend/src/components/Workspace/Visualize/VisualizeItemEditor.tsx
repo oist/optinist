@@ -1,4 +1,4 @@
-import React from "react"
+import { createContext, FC, useContext } from "react"
 import { useSelector } from "react-redux"
 
 import Box from "@mui/material/Box"
@@ -13,6 +13,7 @@ import { PieItemEditor } from "components/Workspace/Visualize/Editor/PieItemEdit
 import { PolarItemEditor } from "components/Workspace/Visualize/Editor/PolarItemEditor"
 import { RoiItemEditor } from "components/Workspace/Visualize/Editor/RoiItemEditor"
 import { ScatterItemEditor } from "components/Workspace/Visualize/Editor/ScatterItemEditor"
+import { TimeSeriesItemEditor } from "components/Workspace/Visualize/Editor/TimeSeriesItemEditor"
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
@@ -21,8 +22,6 @@ import {
   selectSelectedVisualizeItemId,
   selectVisualizeDataType,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
-
-import { TimeSeriesItemEditor } from "components/Workspace/Visualize/Editor/TimeSeriesItemEditor"
 
 export const VisualizeItemEditor = () => {
   const selectedItemId = useSelector(selectSelectedVisualizeItemId)
@@ -41,10 +40,10 @@ export const VisualizeItemEditor = () => {
   )
 }
 
-export const SelectedItemIdContext = React.createContext<number>(NaN)
+export const SelectedItemIdContext = createContext<number>(NaN)
 
-const DisplayDataItemEditor: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const DisplayDataItemEditor: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const dataType = useSelector(selectVisualizeDataType(itemId))
   return (
     <div style={{ marginTop: 8 }}>
@@ -53,7 +52,7 @@ const DisplayDataItemEditor: React.FC = () => {
   )
 }
 
-const DisplayEditor: React.FC<{
+const DisplayEditor: FC<{
   dataType: DATA_TYPE | null
 }> = ({ dataType }) => {
   /* 他のtypeのEditorも必要になったら追加する */

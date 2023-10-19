@@ -1,4 +1,4 @@
-import React from "react"
+import { memo, useContext } from "react"
 import { useSelector } from "react-redux"
 
 import Box from "@mui/material/Box"
@@ -22,10 +22,13 @@ import {
 } from "store/slice/Experiments/ExperimentsSelectors"
 import { arrayEqualityFn } from "utils/EqualityUtils"
 
-
-export const CollapsibleTable = React.memo<{
+interface CollapsibleTableProps {
   open: boolean
-}>(({ open }) => {
+}
+
+export const CollapsibleTable = memo(function CollapsibleTable({
+  open,
+}: CollapsibleTableProps) {
   return (
     <TableRow>
       <TableCell sx={{ paddingBottom: 0, paddingTop: 0 }} colSpan={11}>
@@ -45,7 +48,7 @@ export const CollapsibleTable = React.memo<{
   )
 })
 
-const Head = React.memo(() => {
+const Head = memo(function Head() {
   return (
     <TableHead>
       <TableRow>
@@ -58,8 +61,8 @@ const Head = React.memo(() => {
   )
 })
 
-const Body = React.memo(() => {
-  const uid = React.useContext(ExperimentUidContext)
+const Body = memo(function Body() {
+  const uid = useContext(ExperimentUidContext)
   const nodeIdList = useSelector(
     selectExperimentFunctionNodeIdList(uid),
     arrayEqualityFn,
@@ -67,16 +70,20 @@ const Body = React.memo(() => {
   return (
     <TableBody>
       {nodeIdList.map((nodeId) => (
-        <TableRowOfFunction nodeId={nodeId} />
+        <TableRowOfFunction key={nodeId} nodeId={nodeId} />
       ))}
     </TableBody>
   )
 })
 
-const TableRowOfFunction = React.memo<{
+interface TableRowOfFunctionProps {
   nodeId: string
-}>(({ nodeId }) => {
-  const uid = React.useContext(ExperimentUidContext)
+}
+
+const TableRowOfFunction = memo(function TableRowOfFunction({
+  nodeId,
+}: TableRowOfFunctionProps) {
+  const uid = useContext(ExperimentUidContext)
   const name = useSelector(selectExperimentFunctionName(uid, nodeId))
   const status = useSelector(selectExperimentFunctionStatus(uid, nodeId))
   const hasNWB = useSelector(selectExperimentFunctionHasNWB(uid, nodeId))

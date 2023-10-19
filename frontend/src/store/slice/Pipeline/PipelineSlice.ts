@@ -65,7 +65,7 @@ export const pipelineSlice = createSlice({
           }
         }
       })
-      .addCase(pollRunResult.rejected, (state, action) => {
+      .addCase(pollRunResult.rejected, (state) => {
         state.run.status = RUN_STATUS.ABORTED
       })
       .addCase(reproduceWorkflow.fulfilled, (state, action) => {
@@ -77,14 +77,14 @@ export const pipelineSlice = createSlice({
           status: RUN_STATUS.START_UNINITIALIZED,
         }
       })
-      .addCase(importWorkflowConfig.fulfilled, (state, action) => {
+      .addCase(importWorkflowConfig.fulfilled, (state) => {
         state.currentPipeline = undefined
         state.runBtn = RUN_BTN_OPTIONS.RUN_NEW
         state.run = {
           status: RUN_STATUS.START_UNINITIALIZED,
         }
       })
-      .addCase(cancelResult.fulfilled, (state, action) => {
+      .addCase(cancelResult.fulfilled, (state) => {
         state.run.status = RUN_STATUS.CANCELED
       })
       .addMatcher(
@@ -122,7 +122,7 @@ export const pipelineSlice = createSlice({
       )
       .addMatcher(
         isAnyOf(run.pending, runByCurrentUid.pending),
-        (state, action) => {
+        (state) => {
           state.run = {
             status: RUN_STATUS.START_PENDING,
           }
@@ -146,7 +146,7 @@ export const pipelineSlice = createSlice({
       )
       .addMatcher(
         isAnyOf(run.rejected, runByCurrentUid.rejected),
-        (state, action) => {
+        (state) => {
           state.run = {
             status: RUN_STATUS.START_ERROR,
           }

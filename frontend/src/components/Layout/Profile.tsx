@@ -1,4 +1,4 @@
-import { FC, useState } from "react"
+import { FC, useState, MouseEvent } from "react"
 import { useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
@@ -15,7 +15,7 @@ const Profile: FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
 

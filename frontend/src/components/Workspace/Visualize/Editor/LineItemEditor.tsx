@@ -1,8 +1,8 @@
-import React from "react"
+import { FC } from "react"
 
 import { SaveFig } from "components/Workspace/Visualize/Editor/SaveFig"
 
-export const LineItemEditor: React.FC = () => {
+export const LineItemEditor: FC = () => {
   return (
     <div style={{ margin: "10px", padding: 10 }}>
       <SaveFig />

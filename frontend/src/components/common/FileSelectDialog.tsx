@@ -1,4 +1,4 @@
-import React from "react"
+import { memo, SyntheticEvent, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import FolderIcon from "@mui/icons-material/Folder"
@@ -14,7 +14,6 @@ import LinearProgress from "@mui/material/LinearProgress"
 import { useTheme } from "@mui/material/styles"
 import Typography from "@mui/material/Typography"
 import { TreeView, TreeItem } from "@mui/x-tree-view"
-
 
 import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from "api/files/Files"
 import { getFilesTree } from "store/slice/FilesTree/FilesTreeAction"
@@ -41,167 +40,180 @@ type FileSelectDialogProps = {
   multiSelect: boolean
 }
 
-export const FileSelectDialog = React.memo<FileSelectDialogProps>(
-  function FileSelectDialog({
-    open,
-    initialFilePath,
-    onClickCancel,
-    onClickOk,
-    title,
-    fileType = FILE_TREE_TYPE_SET.ALL,
-    multiSelect,
-  }) {
-    React.useEffect(() => {
-      setSelectedFilePath(initialFilePath)
-    }, [initialFilePath])
-    const [selectedFilePath, setSelectedFilePath] =
-      React.useState(initialFilePath)
-    const onCancel = () => {
-      setSelectedFilePath(initialFilePath) // 選択内容を反映させない
-      onClickCancel()
-    }
-    const onOk = () => {
-      onClickOk(selectedFilePath)
-    }
-    const theme = useTheme()
-    return (
-      <Dialog open={open} fullWidth>
-        <DialogTitle>{title ?? "Select File"}</DialogTitle>
-        <DialogContent dividers>
-          <div
-            style={{
-              height: 300,
-              overflow: "auto",
-              marginBottom: theme.spacing(1),
-              border: "1px solid",
-              padding: theme.spacing(1),
-              borderColor: theme.palette.divider,
-            }}
-          >
-            <FileTreeView
-              setSelectedFilePath={setSelectedFilePath}
-              multiSelect={multiSelect}
-              fileType={fileType}
-              selectedFilePath={selectedFilePath}
-            />
-          </div>
-          <Typography variant="subtitle1">Select File</Typography>
-          <FilePathSelectedListView path={selectedFilePath} />
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={onCancel} variant="outlined" color="inherit">
-            cancel
-          </Button>
-          <Button onClick={onOk} color="primary" variant="outlined">
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
-    )
-  },
-)
+export const FileSelectDialog = memo(function FileSelectDialog({
+  open,
+  initialFilePath,
+  onClickCancel,
+  onClickOk,
+  title,
+  fileType = FILE_TREE_TYPE_SET.ALL,
+  multiSelect,
+}: FileSelectDialogProps) {
+  useEffect(() => {
+    setSelectedFilePath(initialFilePath)
+  }, [initialFilePath])
+  const [selectedFilePath, setSelectedFilePath] = useState(initialFilePath)
+  const onCancel = () => {
+    setSelectedFilePath(initialFilePath) // 選択内容を反映させない
+    onClickCancel()
+  }
+  const onOk = () => {
+    onClickOk(selectedFilePath)
+  }
+  const theme = useTheme()
+  return (
+    <Dialog open={open} fullWidth>
+      <DialogTitle>{title ?? "Select File"}</DialogTitle>
+      <DialogContent dividers>
+        <div
+          style={{
+            height: 300,
+            overflow: "auto",
+            marginBottom: theme.spacing(1),
+            border: "1px solid",
+            padding: theme.spacing(1),
+            borderColor: theme.palette.divider,
+          }}
+        >
+          <FileTreeView
+            setSelectedFilePath={setSelectedFilePath}
+            multiSelect={multiSelect}
+            fileType={fileType}
+            selectedFilePath={selectedFilePath}
+          />
+        </div>
+        <Typography variant="subtitle1">Select File</Typography>
+        <FilePathSelectedListView path={selectedFilePath} />
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onCancel} variant="outlined" color="inherit">
+          cancel
+        </Button>
+        <Button onClick={onOk} color="primary" variant="outlined">
+          OK
+        </Button>
+      </DialogActions>
+    </Dialog>
+  )
+})
 
-const FileTreeView = React.memo<{
+interface FileTreeViewProps {
   setSelectedFilePath: (path: string[] | string) => void
   selectedFilePath: string[] | string
   multiSelect: boolean
   fileType: FILE_TREE_TYPE
-    }>(({ setSelectedFilePath, selectedFilePath, fileType, multiSelect }) => {
-      const [tree, isLoading] = useFileTree(fileType)
-      const onNodeSelectHandler = (
-        event: React.SyntheticEvent,
-        nodeIds: Array<string> | string,
-      ) => {
-        if (!multiSelect && tree != null) {
-          // multiSelectがfalseの場合、ディレクトリは選択しない
-          const path = nodeIds as string
-          if (!isDirNodeByPath(path, tree)) {
-            setSelectedFilePath(path)
-          }
-        }
-      }
-      // multiSelectでチェックボックスを使用する時用のハンドラ
-      const onCheckFile = (path: string) => {
-        if (Array.isArray(selectedFilePath)) {
-          if (selectedFilePath.includes(path)) {
-            setSelectedFilePath(
-              selectedFilePath.filter((selectedPath) => path !== selectedPath),
-            )
-          } else {
-            setSelectedFilePath(selectedFilePath.concat(path))
-          }
-        }
-      }
-      const onCheckDir = (path: string, checked: boolean) => {
-        if (tree != null && Array.isArray(selectedFilePath)) {
-          const node = getNodeByPath(path, tree)
-          if (node != null && node.isDir) {
-            const childrenFilePathList = node.nodes
-              .filter((node) => !node.isDir)
-              .map((node) => node.path)
-            if (checked) {
-              setSelectedFilePath(
-                // concat時の重複を削除
-                Array.from(new Set(selectedFilePath.concat(childrenFilePathList))),
-              )
-            } else {
-              setSelectedFilePath(
-                selectedFilePath.filter(
-                  (selectedPath) => !childrenFilePathList.includes(selectedPath),
-                ),
-              )
-            }
-          }
-        }
-      }
-      return (
-        <div>
-          {isLoading && <LinearProgress />}
-          <TreeView
-            disableSelection={multiSelect}
-            multiSelect={multiSelect}
-            onNodeSelect={onNodeSelectHandler}
-          >
-            {tree?.map((node) => (
-              <TreeNode
-                node={node}
-                selectedFilePath={selectedFilePath}
-                multiSelect={multiSelect}
-                onCheckDir={onCheckDir}
-                onCheckFile={onCheckFile}
-              />
-            ))}
-          </TreeView>
-        </div>
-      )
-    })
+}
 
-const TreeNode = React.memo<{
+const FileTreeView = memo(function FileTreeView({
+  setSelectedFilePath,
+  selectedFilePath,
+  fileType,
+  multiSelect,
+}: FileTreeViewProps) {
+  const [tree, isLoading] = useFileTree(fileType)
+  const onNodeSelectHandler = (
+    event: SyntheticEvent,
+    nodeIds: Array<string> | string,
+  ) => {
+    if (!multiSelect && tree != null) {
+      // multiSelectがfalseの場合、ディレクトリは選択しない
+      const path = nodeIds as string
+      if (!isDirNodeByPath(path, tree)) {
+        setSelectedFilePath(path)
+      }
+    }
+  }
+  // multiSelectでチェックボックスを使用する時用のハンドラ
+  const onCheckFile = (path: string) => {
+    if (Array.isArray(selectedFilePath)) {
+      if (selectedFilePath.includes(path)) {
+        setSelectedFilePath(
+          selectedFilePath.filter((selectedPath) => path !== selectedPath),
+        )
+      } else {
+        setSelectedFilePath(selectedFilePath.concat(path))
+      }
+    }
+  }
+  const onCheckDir = (path: string, checked: boolean) => {
+    if (tree != null && Array.isArray(selectedFilePath)) {
+      const node = getNodeByPath(path, tree)
+      if (node != null && node.isDir) {
+        const childrenFilePathList = node.nodes
+          .filter((node) => !node.isDir)
+          .map((node) => node.path)
+        if (checked) {
+          setSelectedFilePath(
+            // concat時の重複を削除
+            Array.from(new Set(selectedFilePath.concat(childrenFilePathList))),
+          )
+        } else {
+          setSelectedFilePath(
+            selectedFilePath.filter(
+              (selectedPath) => !childrenFilePathList.includes(selectedPath),
+            ),
+          )
+        }
+      }
+    }
+  }
+  return (
+    <div>
+      {isLoading && <LinearProgress />}
+      <TreeView
+        disableSelection={multiSelect}
+        multiSelect={multiSelect}
+        onNodeSelect={onNodeSelectHandler}
+      >
+        {tree?.map((node) => (
+          <TreeNode
+            key={node.name}
+            node={node}
+            selectedFilePath={selectedFilePath}
+            multiSelect={multiSelect}
+            onCheckDir={onCheckDir}
+            onCheckFile={onCheckFile}
+          />
+        ))}
+      </TreeView>
+    </div>
+  )
+})
+
+interface TreeNodeProps {
   node: TreeNodeType
   selectedFilePath: string[] | string
   multiSelect: boolean
-  onCheckFile: (path: string) => void
   onCheckDir: (path: string, checked: boolean) => void
-    }>(({ node, selectedFilePath, multiSelect, onCheckDir, onCheckFile }) => {
-      if (node.isDir) {
-        const allChecked =
+  onCheckFile: (path: string) => void
+}
+
+const TreeNode = memo(function TreeNode({
+  node,
+  selectedFilePath,
+  multiSelect,
+  onCheckDir,
+  onCheckFile,
+}: TreeNodeProps) {
+  if (node.isDir) {
+    const allChecked =
       Array.isArray(selectedFilePath) &&
       node.nodes
         .filter((node) => !node.isDir)
         .map((node) => node.path)
         .every((filePath) => selectedFilePath.includes(filePath))
-        const allNotChecked =
+    const allNotChecked =
       Array.isArray(selectedFilePath) &&
       node.nodes
         .filter((node) => !node.isDir)
         .map((node) => node.path)
         .every((filePath) => !selectedFilePath.includes(filePath))
-        const indeterminate = !(allChecked || allNotChecked)
-        return (
-          <TreeItem
-            icon={<FolderIcon htmlColor="skyblue" />}
-            nodeId={node.path}
-            label={
+    const indeterminate = !(allChecked || allNotChecked)
+    return (
+      <TreeItem
+        icon={<FolderIcon htmlColor="skyblue" />}
+        nodeId={node.path}
+        label={
           multiSelect && node.nodes.filter((node) => !node.isDir).length > 0 ? (
             <TreeItemLabel
               label={node.name}
@@ -217,26 +229,26 @@ const TreeNode = React.memo<{
           ) : (
             node.name
           )
-            }
-          >
-            {node.nodes.map((childNode, i) => (
-              <TreeNode
-                node={childNode}
-                selectedFilePath={selectedFilePath}
-                key={i}
-                multiSelect={multiSelect}
-                onCheckDir={onCheckDir}
-                onCheckFile={onCheckFile}
-              />
-            ))}
-          </TreeItem>
-        )
-      } else {
-        return (
-          <TreeItem
-            icon={<InsertDriveFileOutlinedIcon fontSize="small" />}
-            nodeId={node.path}
-            label={
+        }
+      >
+        {node.nodes.map((childNode, i) => (
+          <TreeNode
+            node={childNode}
+            selectedFilePath={selectedFilePath}
+            key={i}
+            multiSelect={multiSelect}
+            onCheckDir={onCheckDir}
+            onCheckFile={onCheckFile}
+          />
+        ))}
+      </TreeItem>
+    )
+  } else {
+    return (
+      <TreeItem
+        icon={<InsertDriveFileOutlinedIcon fontSize="small" />}
+        nodeId={node.path}
+        label={
           multiSelect ? (
             <TreeItemLabel
               label={node.name}
@@ -250,17 +262,22 @@ const TreeNode = React.memo<{
           ) : (
             node.name
           )
-            }
-            onClick={() => onCheckFile(node.path)}
-          />
-        )
-      }
-    })
+        }
+        onClick={() => onCheckFile(node.path)}
+      />
+    )
+  }
+})
 
-const TreeItemLabel = React.memo<{
+interface TreeItemLabelProps {
   label: string
   checkboxProps: CheckboxProps
-}>(({ label, checkboxProps }) => {
+}
+
+const TreeItemLabel = memo(function TreeItemLabel({
+  label,
+  checkboxProps,
+}: TreeItemLabelProps) {
   return (
     <Box display="flex" alignItems="center">
       <Box flexGrow={1}>{label}</Box>
@@ -279,19 +296,23 @@ const TreeItemLabel = React.memo<{
   )
 })
 
-const FilePathSelectedListView = React.memo<{ path: string | string[] }>(
-  ({ path }) => {
-    return (
-      <Typography variant="subtitle2">
-        {path
-          ? Array.isArray(path)
-            ? path.map((text) => <li>{text}</li>)
-            : path
-          : "---"}
-      </Typography>
-    )
-  },
-)
+interface FilePathProps {
+  path: string | string[]
+}
+
+const FilePathSelectedListView = memo(function FilePathSelectedListView({
+  path,
+}: FilePathProps) {
+  return (
+    <Typography variant="subtitle2">
+      {path
+        ? Array.isArray(path)
+          ? path.map((text) => <li key={text}>{text}</li>)
+          : path
+        : "---"}
+    </Typography>
+  )
+})
 
 function useFileTree(
   fileType: FILE_TREE_TYPE,
@@ -301,7 +322,7 @@ function useFileTree(
   const isLatest = useSelector(selectFilesIsLatest(fileType))
   const isLoading = useSelector(selectFilesIsLoading(fileType))
   const workspaceId = useSelector(selectCurrentWorkspaceId)
-  React.useEffect(() => {
+  useEffect(() => {
     if (workspaceId && !isLatest && !isLoading) {
       dispatch(getFilesTree({ workspaceId, fileType }))
     }

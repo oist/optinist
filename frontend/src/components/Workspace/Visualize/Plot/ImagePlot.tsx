@@ -1,9 +1,13 @@
-import React, {
+import {
+  memo,
+  useContext,
   useCallback,
   useEffect,
   useState,
   MouseEvent,
   useRef,
+  useMemo,
+  ChangeEvent,
 } from "react"
 import PlotlyChart from "react-plotlyjs-ts"
 import { useSelector, useDispatch } from "react-redux"
@@ -23,7 +27,6 @@ import FormControlLabel from "@mui/material/FormControlLabel"
 import Slider from "@mui/material/Slider"
 import { styled } from "@mui/material/styles"
 import Switch from "@mui/material/Switch"
-
 
 import { addRoiApi, deleteRoiApi, mergeRoiApi } from "api/outputs/Outputs"
 import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
@@ -104,8 +107,8 @@ enum PositionDrag {
 
 const sChart = 320
 
-export const ImagePlot = React.memo(() => {
-  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+export const ImagePlot = memo(function ImagePlot() {
+  const { filePath: path, itemId } = useContext(DisplayDataContext)
 
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const startIndex = useSelector(selectImageItemStartIndex(itemId))
@@ -118,7 +121,7 @@ export const ImagePlot = React.memo(() => {
   const roiFilePath = useSelector(selectRoiItemFilePath(itemId))
 
   const dispatch = useDispatch<AppDispatch>()
-  React.useEffect(() => {
+  useEffect(() => {
     if (workspaceId) {
       if (!isInitialized) {
         dispatch(
@@ -154,18 +157,22 @@ export const ImagePlot = React.memo(() => {
   }
 })
 
-const ImagePlotImple = React.memo(() => {
-  const { itemId } = React.useContext(DisplayDataContext)
+const ImagePlotImple = memo(function ImagePlotImple() {
+  const { itemId } = useContext(DisplayDataContext)
   const activeIndex = useSelector(selectImageItemActiveIndex(itemId))
   return <ImagePlotChart activeIndex={activeIndex} />
 })
 
-const ImagePlotChart = React.memo<{
+interface ActiveIndexProps {
   activeIndex: number
-}>(({ activeIndex }) => {
+}
+
+const ImagePlotChart = memo(function ImagePlotChart({
+  activeIndex,
+}: ActiveIndexProps) {
   const dispatch = useDispatch<AppDispatch>()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
-  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+  const { filePath: path, itemId } = useContext(DisplayDataContext)
   const imageData = useSelector(
     selectActiveImageData(path, activeIndex),
     imageDataEqualtyFn,
@@ -227,7 +234,7 @@ const ImagePlotChart = React.memo<{
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [outputKey, roiFilePath])
 
-  const data = React.useMemo(
+  const data = useMemo(
     () => [
       {
         z: imageData,
@@ -291,9 +298,9 @@ const ImagePlotChart = React.memo<{
     ],
   )
 
-  const [selectMode, setSelectMode] = React.useState(false)
+  const [selectMode, setSelectMode] = useState(false)
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectMode(event.target.checked)
   }
   // debounceでイベントを間引きする。onSelectedはそれっぽい名前だが動かなかった。
@@ -302,7 +309,7 @@ const ImagePlotChart = React.memo<{
       dispatch(selectingImageArea({ itemId, range: event.range }))
     }
   })
-  const layout = React.useMemo(
+  const layout = useMemo(
     () => ({
       title: {
         text: meta?.title,
@@ -487,7 +494,9 @@ const ImagePlotChart = React.memo<{
     dispatch(resetAllOrderList())
     try {
       await addRoiApi(roiFilePath, pointCenter)
-    } catch {}
+    } catch {
+      // TODO: add error message
+    }
     setLoadingApi(false)
     onCancelAdd()
     workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
@@ -502,7 +511,9 @@ const ImagePlotChart = React.memo<{
       await mergeRoiApi(roiFilePath, {
         ids: pointClick.map((point) => point.z),
       })
-    } catch {}
+    } catch {
+      // TODO: add error message
+    }
     setLoadingApi(false)
     onCancel()
     workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
@@ -517,7 +528,9 @@ const ImagePlotChart = React.memo<{
       await deleteRoiApi(roiFilePath, {
         ids: pointClick.map((point) => point.z),
       })
-    } catch {}
+    } catch {
+      // TODO: add error message
+    }
     setLoadingApi(false)
     onCancel()
     workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
@@ -666,9 +679,9 @@ const ImagePlotChart = React.memo<{
   )
 })
 
-const PlayBack = React.memo<{ activeIndex: number }>(({ activeIndex }) => {
+const PlayBack = memo(function PlayBack({ activeIndex }: ActiveIndexProps) {
   const dispatch = useDispatch()
-  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+  const { filePath: path, itemId } = useContext(DisplayDataContext)
 
   const maxSize = useSelector(selectImageDataMaxSize(path))
   const startIndex = useSelector(selectImageItemStartIndex(itemId))
@@ -678,7 +691,6 @@ const PlayBack = React.memo<{ activeIndex: number }>(({ activeIndex }) => {
   const onSliderChange = (
     event: Event,
     value: number | number[],
-    activeThumb: number,
   ) => {
     if (typeof value === "number") {
       const newIndex = value - startIndex
@@ -688,7 +700,7 @@ const PlayBack = React.memo<{ activeIndex: number }>(({ activeIndex }) => {
     }
   }
 
-  const intervalRef = React.useRef<null | NodeJS.Timeout>(null)
+  const intervalRef = useRef<null | NodeJS.Timeout>(null)
 
   useEffect(() => {
     if (intervalRef.current !== null) {
@@ -718,7 +730,7 @@ const PlayBack = React.memo<{ activeIndex: number }>(({ activeIndex }) => {
   }
 
   const onDurationChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       const newValue =
         event.target.value === "" ? "" : Number(event.target.value)
       if (typeof newValue === "number") {

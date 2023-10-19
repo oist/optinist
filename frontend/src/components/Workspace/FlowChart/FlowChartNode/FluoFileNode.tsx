@@ -1,4 +1,4 @@
-import React from "react"
+import { memo } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Handle, Position, NodeProps } from "reactflow"
 
@@ -16,8 +16,7 @@ import {
 } from "store/slice/InputNode/InputNodeSelectors"
 import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
 
-
-export const FluoFileNode = React.memo<NodeProps>((element) => {
+export const FluoFileNode = memo(function FluoFileNode(element: NodeProps) {
   const defined = useSelector(selectInputNodeDefined(element.id))
   if (defined) {
     return <FluoFileNodeImple {...element} />
@@ -26,7 +25,10 @@ export const FluoFileNode = React.memo<NodeProps>((element) => {
   }
 })
 
-const FluoFileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
+const FluoFileNodeImple = memo(function FluoFileNodeImple({
+  id: nodeId,
+  selected,
+}: NodeProps) {
   const dispatch = useDispatch()
   const filePath = useSelector(selectCsvInputNodeSelectedFilePath(nodeId))
   const onChangeFilePath = (path: string) => {

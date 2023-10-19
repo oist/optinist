@@ -1,4 +1,4 @@
-import React from "react"
+import { memo } from "react"
 import { useNavigate } from "react-router-dom"
 
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos"
@@ -13,10 +13,7 @@ import { SnakemakeButton } from "components/Workspace/FlowChart/Buttons/Snakemak
 import { IS_STANDALONE } from "const/Mode"
 import { UseRunPipelineReturnType } from "store/slice/Pipeline/PipelineHook"
 
-
-
-
-export const ToolBar = React.memo<UseRunPipelineReturnType>((props) => {
+export const ToolBar = memo(function ToolBar(props: UseRunPipelineReturnType) {
   const navigate = useNavigate()
   return (
     <Box

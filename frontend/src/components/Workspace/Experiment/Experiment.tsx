@@ -1,10 +1,9 @@
-import React from "react"
+import { memo } from "react"
 
 import { ExperimentTable } from "components/Workspace/Experiment/ExperimentTable"
 import { CONTENT_HEIGHT } from "const/Layout"
 
-
-const Experiment = React.memo(() => {
+const Experiment = memo(function Experiment() {
   return (
     <div style={{ display: "flex" }}>
       <main

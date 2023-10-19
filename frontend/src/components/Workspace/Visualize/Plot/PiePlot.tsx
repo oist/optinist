@@ -1,4 +1,4 @@
-import React from "react"
+import { memo, useContext, useEffect, useMemo } from "react"
 import PlotlyChart from "react-plotlyjs-ts"
 import { useSelector, useDispatch } from "react-redux"
 
@@ -21,15 +21,15 @@ import {
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import { AppDispatch } from "store/store"
 
-export const PiePlot = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataContext)
+export const PiePlot = memo(function PiePlot() {
+  const { filePath: path } = useContext(DisplayDataContext)
   const dispatch = useDispatch<AppDispatch>()
   const isPending = useSelector(selectPieDataIsPending(path))
   const isInitialized = useSelector(selectPieDataIsInitialized(path))
   const error = useSelector(selectPieDataError(path))
   const isFulfilled = useSelector(selectPieDataIsFulfilled(path))
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isInitialized) {
       dispatch(getPieData({ path }))
     }
@@ -46,15 +46,15 @@ export const PiePlot = React.memo(() => {
   }
 })
 
-const PiePlotImple = React.memo(() => {
-  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+const PiePlotImple = memo(function PiePlotImple() {
+  const { filePath: path, itemId } = useContext(DisplayDataContext)
   const pieData = useSelector(selectPieData(path))
   const meta = useSelector(selectPieMeta(path))
   const columns = useSelector(selectPieColumns(path))
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
 
-  const data = React.useMemo(
+  const data = useMemo(
     () =>
       pieData != null
         ? [
@@ -70,7 +70,7 @@ const PiePlotImple = React.memo(() => {
     [pieData, columns],
   )
 
-  const layout = React.useMemo(
+  const layout = useMemo(
     () => ({
       title: {
         text: meta?.title,

@@ -31,6 +31,7 @@ import { UserDTO } from "api/users/UsersApiDTO"
 import Loading from "components/common/Loading"
 import PaginationCustom from "components/common/PaginationCustom"
 import PopupShare from "components/Workspace/PopupShare"
+import { selectCurrentUser } from "store/slice/User/UserSelector"
 import {
   delWorkspace,
   getListUserShareWorkSpaces,
@@ -43,10 +44,6 @@ import {
   selectWorkspaceData,
   selectWorkspaceListUserShare,
 } from "store/slice/Workspace/WorkspaceSelector"
-
-
-
-import { selectCurrentUser } from "store/slice/User/UserSelector"
 import { isMine } from "store/slice/Workspace/WorkspaceUtils"
 import { AppDispatch } from "store/store"
 

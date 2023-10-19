@@ -1,4 +1,4 @@
-import React from "react"
+import { memo, useContext, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
 import { LinearProgress, Typography } from "@mui/material"
@@ -14,14 +14,14 @@ import {
 } from "store/slice/DisplayData/DisplayDataSelectors"
 import { AppDispatch } from "store/store"
 
-export const HTMLPlot = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataContext)
+export const HTMLPlot = memo(function HTMLPlot() {
+  const { filePath: path } = useContext(DisplayDataContext)
   const dispatch = useDispatch<AppDispatch>()
   const isPending = useSelector(selectHTMLDataIsPending(path))
   const isInitialized = useSelector(selectHTMLDataIsInitialized(path))
   const error = useSelector(selectHTMLDataError(path))
   const isFulfilled = useSelector(selectHTMLDataIsFulfilled(path))
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isInitialized) {
       dispatch(getHTMLData({ path }))
     }
@@ -37,8 +37,8 @@ export const HTMLPlot = React.memo(() => {
   }
 })
 
-const HTMLPlotImple = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataContext)
+const HTMLPlotImple = memo(function HTMLPlotImple() {
+  const { filePath: path } = useContext(DisplayDataContext)
   const htmlData = useSelector(selectHTMLData(path))
 
   return (

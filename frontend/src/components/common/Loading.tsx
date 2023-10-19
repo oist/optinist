@@ -8,7 +8,7 @@ const Loading = () => {
   )
 }
 
-const LoaderWrapper = styled(Box)(({ theme }) => ({
+const LoaderWrapper = styled(Box)(() => ({
   top: 0,
   bottom: 0,
   left: 0,
@@ -30,7 +30,7 @@ const prixClipFix = keyframes`
   100% {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,0 100%,0 0)}
 `
 
-const Loader = styled("span")(({ theme }) => ({
+const Loader = styled("span")(() => ({
   display: "block",
   width: 48,
   height: 48,

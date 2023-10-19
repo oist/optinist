@@ -32,7 +32,7 @@ export function createParamFormItemComponent({
   paramSelector,
   paramValueSelector,
   paramUpdateActionCreator,
-}: CreateParamFormItemComponentProps): React.FC<{ paramKey: string }> {
+}: CreateParamFormItemComponentProps): FC<{ paramKey: string }> {
   function useParamValueUpdate(
     path: string,
   ): [unknown, (newValue: unknown) => AnyAction] {
@@ -42,19 +42,19 @@ export function createParamFormItemComponent({
     }
     return [value, updateParamAction]
   }
-  const ParamItemForString = React.memo<ParamChildItemProps>(({ path }) => {
+  const ParamItemForString = memo<ParamChildItemProps>(({ path }) => {
     const dispatch = useDispatch()
     const [value, updateParamAction] = useParamValueUpdate(path)
     const isArray = useRef(Array.isArray(value))
     const onChange = (
-      e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+      e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
     ) => {
       const newValue = e.target.value as string
       dispatch(updateParamAction(newValue))
     }
 
     const onBlur = (
-      e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+      e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
     ) => {
       const newValue = e.target.value as string
       dispatch(
@@ -75,11 +75,11 @@ export function createParamFormItemComponent({
       />
     )
   })
-  const ParamItemForNumber = React.memo<ParamChildItemProps>(({ path }) => {
+  const ParamItemForNumber = memo<ParamChildItemProps>(({ path }) => {
     const dispatch = useDispatch()
     const [value, updateParamAction] = useParamValueUpdate(path)
     if (typeof value === "number") {
-      const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         const newValue =
           event.target.value === "" ? "" : Number(event.target.value)
         if (typeof newValue === "number") {
@@ -100,7 +100,7 @@ export function createParamFormItemComponent({
       return null
     }
   })
-  const ParamItemForBoolean = React.memo<ParamChildItemProps>(({ path }) => {
+  const ParamItemForBoolean = memo<ParamChildItemProps>(({ path }) => {
     const dispatch = useDispatch()
     const [value, updateParamAction] = useParamValueUpdate(path)
     if (typeof value === "boolean") {
@@ -112,7 +112,7 @@ export function createParamFormItemComponent({
       return null
     }
   })
-  const ParamItemForValueType = React.memo<ParamChildItemProps>(({ path }) => {
+  const ParamItemForValueType = memo<ParamChildItemProps>(({ path }) => {
     const [value] = useParamValueUpdate(path)
     if (typeof value === "number") {
       return <ParamItemForNumber path={path} />
@@ -124,7 +124,7 @@ export function createParamFormItemComponent({
       return <ParamItemForString path={path} />
     }
   })
-  const ParamChildItem = React.memo<ParamChildItemProps & { name: string }>(
+  const ParamChildItem = memo<ParamChildItemProps & { name: string }>(
     ({ path, name }) => {
       return (
         <Box
@@ -152,7 +152,7 @@ export function createParamFormItemComponent({
       )
     },
   )
-  const ParamItem = React.memo<ParamItemProps>(({ paramKey, param }) => {
+  const ParamItem = memo<ParamItemProps>(({ paramKey, param }) => {
     if (isParamChild(param)) {
       return <ParamChildItem path={param.path} name={paramKey} />
     } else {
@@ -172,7 +172,7 @@ export function createParamFormItemComponent({
       )
     }
   })
-  return React.memo<{ paramKey: string }>(({ paramKey }) => {
+  return memo<{ paramKey: string }>(({ paramKey }) => {
     const param = useSelector(paramSelector(paramKey)) // 一階層目
     return <ParamItem paramKey={paramKey} param={param} />
   })

@@ -1,4 +1,4 @@
-import React from "react"
+import { memo, useContext } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import { useSnackbar } from "notistack"
@@ -12,11 +12,10 @@ import { reproduceWorkflow } from "store/slice/Workflow/WorkflowActions"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
 import { AppDispatch } from "store/store"
 
-
-export const ReproduceButton = React.memo(() => {
+export const ReproduceButton = memo(function ReproduceButton() {
   const dispatch: AppDispatch = useDispatch()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
-  const uid = React.useContext(ExperimentUidContext)
+  const uid = useContext(ExperimentUidContext)
   const { enqueueSnackbar } = useSnackbar()
 
   const onClick = () => {

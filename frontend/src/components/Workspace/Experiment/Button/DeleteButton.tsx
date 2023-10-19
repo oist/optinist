@@ -1,4 +1,4 @@
-import React from "react"
+import { memo, useContext, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
@@ -18,18 +18,17 @@ import {
 import { clearCurrentPipeline } from "store/slice/Pipeline/PipelineSlice"
 import { AppDispatch, RootState } from "store/store"
 
-
-export const DeleteButton = React.memo(() => {
+export const DeleteButton = memo(function DeleteButton() {
   const dispatch = useDispatch<AppDispatch>()
   const currentPipelineUid = useSelector(selectPipelineLatestUid)
-  const uid = React.useContext(ExperimentUidContext)
+  const uid = useContext(ExperimentUidContext)
   const isRunning = useSelector((state: RootState) => {
     const currentUid = selectPipelineLatestUid(state)
     const isPending = selectPipelineIsStartedSuccess(state)
     return uid === currentUid && isPending
   })
   const name = useSelector(selectExperimentName(uid))
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useState(false)
 
   const onClickOpen = () => {
     setOpen(true)

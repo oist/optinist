@@ -283,7 +283,7 @@ const PopupShare = ({
   )
 }
 
-const DialogCustom = styled(Dialog)(({ theme }) => ({
+const DialogCustom = styled(Dialog)(() => ({
   "& .MuiDialog-container": {
     "& .MuiPaper-root": {
       width: "70%",
@@ -292,7 +292,7 @@ const DialogCustom = styled(Dialog)(({ theme }) => ({
   },
 }))
 
-const TableListSearchWrapper = styled(Box)(({ theme }) => ({
+const TableListSearchWrapper = styled(Box)(() => ({
   position: "absolute",
   background: "#fff",
   zIndex: 100,
@@ -305,7 +305,7 @@ const TableListSearchWrapper = styled(Box)(({ theme }) => ({
   overflow: "auto",
 }))
 
-const UlCustom = styled("ul")(({ theme }) => ({
+const UlCustom = styled("ul")(() => ({
   listStyle: "none",
   padding: 0,
   margin: 0,

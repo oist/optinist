@@ -1,4 +1,4 @@
-import React from "react"
+import { FC } from "react"
 
 import { Box } from "@mui/material"
 import { grey } from "@mui/material/colors"
@@ -9,7 +9,7 @@ import { FlexItemList } from "components/Workspace/Visualize/FlexItemList"
 import { VisualizeItemEditor } from "components/Workspace/Visualize/VisualizeItemEditor"
 import { CONTENT_HEIGHT, DRAWER_WIDTH } from "const/Layout"
 
-const Visualize: React.FC = () => {
+const Visualize: FC = () => {
   return (
     <RootDiv>
       <Box
