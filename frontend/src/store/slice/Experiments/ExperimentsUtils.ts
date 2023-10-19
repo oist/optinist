@@ -37,12 +37,13 @@ export function convertToExperimentType(dto: ExperimentDTO): ExperimentType {
   })
   return {
     uid: dto.unique_id,
-    timestamp: dto.started_at,
+    startedAt: dto.started_at,
+    finishedAt: dto.finished_at,
     status: dto.success,
     name: dto.name,
     hasNWB: dto.hasNWB,
     functions,
-    frameRate: dto.nwb?.imaging_plane.imaging_rate
+    frameRate: dto.nwb?.imaging_plane.imaging_rate,
   }
 }
 

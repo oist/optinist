@@ -1,10 +1,10 @@
 import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
 import { isInputNodePostData } from 'api/run/RunUtils'
 import { INITIAL_IMAGE_ELEMENT_ID } from 'const/flowchart'
-import { fetchExperiment } from '../Experiments/ExperimentsActions'
 import {
   reproduceWorkflow,
   importWorkflowConfig,
+  fetchWorkflow,
 } from 'store/slice/Workflow/WorkflowActions'
 import { uploadFile } from '../FileUploader/FileUploaderActions'
 import { addInputNode } from '../FlowElement/FlowElementActions'
@@ -148,7 +148,7 @@ export const inputNodeSlice = createSlice({
           }
         }
       })
-      .addCase(fetchExperiment.rejected, () => initialState)
+      .addCase(fetchWorkflow.rejected, () => initialState)
       .addCase(importWorkflowConfig.fulfilled, (_, action) => {
         const newState: InputNode = {}
         Object.values(action.payload.nodeDict)
@@ -176,7 +176,7 @@ export const inputNodeSlice = createSlice({
         return newState
       })
       .addMatcher(
-        isAnyOf(reproduceWorkflow.fulfilled, fetchExperiment.fulfilled),
+        isAnyOf(fetchWorkflow.fulfilled, reproduceWorkflow.fulfilled),
         (_, action) => {
           const newState: InputNode = {}
           Object.values(action.payload.nodeDict)

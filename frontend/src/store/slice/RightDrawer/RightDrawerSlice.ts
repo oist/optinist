@@ -1,8 +1,8 @@
 import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
-import { fetchExperiment } from '../Experiments/ExperimentsActions'
 import {
   reproduceWorkflow,
   importWorkflowConfig,
+  fetchWorkflow,
 } from 'store/slice/Workflow/WorkflowActions'
 import {
   clearFlowElements,
@@ -99,8 +99,8 @@ export const rightDrawerSlice = createSlice({
           clearFlowElements,
           reproduceWorkflow.fulfilled,
           importWorkflowConfig.fulfilled,
-          fetchExperiment.fulfilled,
-          fetchExperiment.rejected,
+          fetchWorkflow.fulfilled,
+          fetchWorkflow.rejected,
         ),
         () => initialState,
       )

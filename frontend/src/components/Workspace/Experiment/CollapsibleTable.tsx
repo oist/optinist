@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography'
 import { ExperimentUidContext } from './ExperimentTable'
 import {
   selectExperimentFunctionHasNWB,
+  selectExperimentFunctionMessage,
   selectExperimentFunctionName,
   selectExperimentFunctionNodeIdList,
   selectExperimentFunctionStatus,
@@ -77,6 +78,7 @@ const TableRowOfFunction = React.memo<{
   const name = useSelector(selectExperimentFunctionName(uid, nodeId))
   const status = useSelector(selectExperimentFunctionStatus(uid, nodeId))
   const hasNWB = useSelector(selectExperimentFunctionHasNWB(uid, nodeId))
+  const message = useSelector(selectExperimentFunctionMessage(uid, nodeId))
 
   return (
     <TableRow key={nodeId}>
@@ -85,7 +87,7 @@ const TableRowOfFunction = React.memo<{
       </TableCell>
       <TableCell>{nodeId}</TableCell>
       <TableCell>
-        <ExperimentStatusIcon status={status} />
+        <ExperimentStatusIcon status={status} message={message} />
       </TableCell>
       <TableCell>
         <NWBDownloadButton name={name} nodeId={nodeId} hasNWB={hasNWB} />

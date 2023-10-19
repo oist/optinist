@@ -27,7 +27,8 @@ export type ExperimentType = {
   }
   status?: EXPERIMENTS_STATUS
   name: string
-  timestamp: string
+  startedAt: string
+  finishedAt?: string
   hasNWB: boolean
   frameRate?: number
 }
@@ -42,8 +43,8 @@ export type ExperimentFunction = {
 
 export type EXPERIMENTS_STATUS = 'success' | 'error' | 'running'
 
-export interface Experiment {
+export interface ExperimentSortKeys {
   uid: string
   name: string
-  timestamp: string
+  startedAt: string
 }

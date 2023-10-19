@@ -28,7 +28,8 @@ import { CollapsibleTable } from './CollapsibleTable'
 import {
   selectExperimentsStatusIsUninitialized,
   selectExperimentsStatusIsFulfilled,
-  selectExperimentTimeStamp,
+  selectExperimentStartedAt,
+  selectExperimentFinishedAt,
   selectExperimentName,
   selectExperimentStatus,
   selectExperimentsStatusIsError,
@@ -41,7 +42,7 @@ import {
   getExperiments,
 } from 'store/slice/Experiments/ExperimentsActions'
 import { ExperimentStatusIcon } from './ExperimentStatusIcon'
-import { Experiment } from 'store/slice/Experiments/ExperimentsType'
+import { ExperimentSortKeys } from 'store/slice/Experiments/ExperimentsType'
 import { DeleteButton } from './Button/DeleteButton'
 import {
   NWBDownloadButton,
@@ -58,7 +59,7 @@ import {
   selectCurrentWorkspaceId,
   selectIsWorkspaceOwner,
 } from 'store/slice/Workspace/WorkspaceSelector'
-import { AppDispatch } from "../../../store/store";
+import { AppDispatch } from '../../../store/store'
 
 export const ExperimentUidContext = React.createContext<string>('')
 
@@ -104,11 +105,12 @@ const TableImple = React.memo(() => {
   const onClickReload = () => {
     dispatch(getExperiments())
   }
-  const [order, setOrder] = React.useState<Order>('asc')
+  const [order, setOrder] = React.useState<Order>('desc')
   const [sortTarget, setSortTarget] =
-    React.useState<keyof Experiment>('timestamp')
+    React.useState<keyof ExperimentSortKeys>('startedAt')
   const sortHandler =
-    (property: keyof Experiment) => (event: React.MouseEvent<unknown>) => {
+    (property: keyof ExperimentSortKeys) =>
+    (event: React.MouseEvent<unknown>) => {
       const isAsc = sortTarget === property && order === 'asc'
       setOrder(isAsc ? 'desc' : 'asc')
       setSortTarget(property)
@@ -346,7 +348,7 @@ const HeadItem = React.memo<{
             <TableSortLabel
               active
               direction={order}
-              onClick={sortHandler('timestamp')}
+              onClick={sortHandler('startedAt')}
             >
               Timestamp
             </TableSortLabel>
@@ -388,7 +390,8 @@ const RowItem = React.memo<{
 }>(({ onCheckBoxClick, checked, isOwner }) => {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const uid = React.useContext(ExperimentUidContext)
-  const timestamp = useSelector(selectExperimentTimeStamp(uid))
+  const startedAt = useSelector(selectExperimentStartedAt(uid))
+  const finishedAt = useSelector(selectExperimentFinishedAt(uid))
   const status = useSelector(selectExperimentStatus(uid))
   const name = useSelector(selectExperimentName(uid))
   const hasNWB = useSelector(selectExperimentHasNWB(uid))
@@ -452,8 +455,26 @@ const RowItem = React.memo<{
             {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
         </TableCell>
-        <TableCell component="th" scope="row">
-          {timestamp}
+        <TableCell
+          sx={{ minWidth: 210, width: 210 }}
+          component="th"
+          scope="row"
+        >
+          {finishedAt == null ? (
+            startedAt
+          ) : (
+            <>
+              {/* date string format is YYYY-MM-DD HH:mm:ss */}
+              <Typography variant="body2">{`${startedAt} - ${finishedAt.split(" ")[1]}`}</Typography>
+              <Typography variant="body2">
+                (elapsed{" "}
+                {(new Date(finishedAt).getTime() -
+                  new Date(startedAt).getTime()) /
+                  1000}{" "}
+                sec)
+              </Typography>
+            </>
+          )}
         </TableCell>
         <TableCell>{uid}</TableCell>
         <TableCell sx={{ width: 160, position: 'relative' }} onClick={onEdit}>

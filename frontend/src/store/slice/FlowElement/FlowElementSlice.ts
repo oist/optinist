@@ -23,10 +23,10 @@ import {
   INITIAL_IMAGE_ELEMENT_NAME,
   REACT_FLOW_NODE_TYPE_KEY,
 } from 'const/flowchart'
-import { fetchExperiment } from '../Experiments/ExperimentsActions'
 import {
   reproduceWorkflow,
   importWorkflowConfig,
+  fetchWorkflow,
 } from 'store/slice/Workflow/WorkflowActions'
 import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
 import { isInputNodePostData } from 'api/run/RunUtils'
@@ -214,12 +214,12 @@ export const flowElementSlice = createSlice({
           }
         }
       })
-      .addCase(fetchExperiment.rejected, () => initialState)
+      .addCase(fetchWorkflow.rejected, () => initialState)
       .addMatcher(
         isAnyOf(
           reproduceWorkflow.fulfilled,
           importWorkflowConfig.fulfilled,
-          fetchExperiment.fulfilled,
+          fetchWorkflow.fulfilled,
         ),
         (state, action) => {
           state.flowPosition = initialFlowPosition
