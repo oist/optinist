@@ -1,13 +1,19 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { styled } from "@mui/material/styles"
-import Drawer, { drawerClasses } from "@mui/material/Drawer"
-import Toolbar from "@mui/material/Toolbar"
-import Typography from "@mui/material/Typography"
-import Divider from "@mui/material/Divider"
-import IconButton from "@mui/material/IconButton"
+
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 import Box from "@mui/material/Box"
+import Divider from "@mui/material/Divider"
+import Drawer, { drawerClasses } from "@mui/material/Drawer"
+import IconButton from "@mui/material/IconButton"
+import { styled } from "@mui/material/styles"
+import Toolbar from "@mui/material/Toolbar"
+import Typography from "@mui/material/Typography"
+
+import { AlgorithmParamForm } from "components/Workspace/FlowChart/AlgorithmParamForm"
+import { NWBSettingContents } from "components/Workspace/FlowChart/Buttons/NWB"
+import { SnakemakeContents } from "components/Workspace/FlowChart/Buttons/Snakemake"
+import { RIGHT_DRAWER_WIDTH } from "const/Layout"
 import {
   selectRightDrawerCurrentNodeId,
   selectRightDrawerIsOpen,
@@ -17,11 +23,8 @@ import {
   closeRightDrawer,
   RIGHT_DRAWER_MODE,
 } from "store/slice/RightDrawer/RightDrawerSlice"
-import { NWBSettingContents } from "./Buttons/NWB"
 import { RootState } from "store/store"
-import { AlgorithmParamForm } from "./AlgorithmParamForm"
-import { SnakemakeContents } from "./Buttons/Snakemake"
-import { RIGHT_DRAWER_WIDTH } from "const/Layout"
+
 
 const RightDrawer: React.FC = () => {
   const open = useSelector(selectRightDrawerIsOpen)

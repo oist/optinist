@@ -1,10 +1,5 @@
-import { store, rootReducer } from "store/store"
-import {
-  pushInitialItemToNewRow,
-  insertInitialItemToNextColumn,
-  addItemForWorkflowDialog,
-  deleteAllItemForWorkflowDialog,
-} from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { selectImageData } from "store/slice/DisplayData/DisplayDataSelectors"
+import { DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
 import {
   deleteDisplayItem,
   setNewDisplayDataPath,
@@ -14,12 +9,17 @@ import {
   selectVisualizeItemLayout,
   selectSelectedVisualizeItemId,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
-import { DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
+import {
+  pushInitialItemToNewRow,
+  insertInitialItemToNextColumn,
+  addItemForWorkflowDialog,
+  deleteAllItemForWorkflowDialog,
+} from "store/slice/VisualizeItem/VisualizeItemSlice"
 import {
   isCsvItem,
   isImageItem,
 } from "store/slice/VisualizeItem/VisualizeItemUtils"
-import { selectImageData } from "store/slice/DisplayData/DisplayDataSelectors"
+import { store, rootReducer } from "store/store"
 
 describe("Visualize", () => {
   const initialRootState = store.getState()

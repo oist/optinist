@@ -1,4 +1,10 @@
+import { ChangeEvent, useEffect, useRef, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
+import { useNavigate } from "react-router-dom"
+
+import { useSnackbar, VariantType } from "notistack"
+
+import Edit from "@mui/icons-material/Edit"
 import {
   Box,
   Button,
@@ -7,21 +13,18 @@ import {
   styled,
   Typography,
 } from "@mui/material"
-import Loading from "components/common/Loading"
+
+import { ROLE } from "@types"
 import ChangePasswordModal from "components/Account/ChangePasswordModal"
 import DeleteConfirmModal from "components/common/DeleteConfirmModal"
-import { ChangeEvent, useEffect, useRef, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import Loading from "components/common/Loading"
 import {
   deleteMe,
   updateMe,
   updateMePassword,
 } from "store/slice/User/UserActions"
 import { selectCurrentUser, selectLoading } from "store/slice/User/UserSelector"
-import { ROLE } from "../../@types"
-import { useSnackbar, VariantType } from "notistack"
-import Edit from "@mui/icons-material/Edit"
-import { AppDispatch } from "../../store/store"
+import { AppDispatch } from "store/store"
 
 const Account = () => {
   const user = useSelector(selectCurrentUser)

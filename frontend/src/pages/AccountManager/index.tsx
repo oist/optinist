@@ -1,6 +1,3 @@
-import EditIcon from "@mui/icons-material/Edit"
-import DeleteIcon from "@mui/icons-material/Delete"
-import { SelectChangeEvent } from "@mui/material/Select"
 import {
   ChangeEvent,
   useCallback,
@@ -9,6 +6,16 @@ import {
   useState,
   MouseEvent,
 } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useNavigate, useSearchParams } from "react-router-dom"
+
+import { regexEmail, regexIgnoreS, regexPassword } from "const/Auth"
+import InputError from "components/common/InputError"
+import SelectError from "components/common/SelectError"
+import PaginationCustom from "components/common/PaginationCustom"
+import { useSnackbar, VariantType } from "notistack"
+import DeleteIcon from "@mui/icons-material/Delete"
+import EditIcon from "@mui/icons-material/Edit"
 import {
   Box,
   Button,
@@ -18,23 +25,7 @@ import {
   Input,
   styled,
 } from "@mui/material"
-import { useDispatch, useSelector } from "react-redux"
-import {
-  isAdmin,
-  selectCurrentUser,
-  selectListUser,
-  selectLoading,
-} from "store/slice/User/UserSelector"
-import { useNavigate, useSearchParams } from "react-router-dom"
-import {
-  deleteUser,
-  createUser,
-  getListUser,
-  updateUser,
-} from "store/slice/User/UserActions"
-import Loading from "components/common/Loading"
-import { AddUserDTO, UserDTO } from "api/users/UsersApiDTO"
-import { ROLE } from "@types"
+import { SelectChangeEvent } from "@mui/material/Select"
 import {
   DataGrid,
   GridFilterModel,
@@ -42,12 +33,22 @@ import {
   GridSortItem,
   GridSortModel,
 } from "@mui/x-data-grid"
-import { regexEmail, regexIgnoreS, regexPassword } from "const/Auth"
-import InputError from "components/common/InputError"
-import SelectError from "components/common/SelectError"
-import PaginationCustom from "components/common/PaginationCustom"
-import { useSnackbar, VariantType } from "notistack"
-import { AppDispatch } from "../../store/store"
+import { ROLE } from "@types"
+import { AddUserDTO, UserDTO } from "api/users/UsersApiDTO"
+import Loading from "components/common/Loading"
+import {
+  deleteUser,
+  createUser,
+  getListUser,
+  updateUser,
+} from "store/slice/User/UserActions"
+import {
+  isAdmin,
+  selectCurrentUser,
+  selectListUser,
+  selectLoading,
+} from "store/slice/User/UserSelector"
+import { AppDispatch } from "store/store"
 
 let timeout: NodeJS.Timeout | undefined = undefined
 
@@ -107,7 +108,7 @@ const ModalComponent = ({
     if (errorLength) {
       return errorLength
     }
-    let datas = values || formData
+    const datas = values || formData
     if (!regexPassword.test(value) && value) {
       return "Your password must be at least 6 characters long and must contain at least one letter, number, and special character"
     }
@@ -433,7 +434,7 @@ const AccountManager = () => {
       } else {
         param = `${filter}${
           rowSelectionModel[0]
-            ? `${filter ? `&` : ""}sort=${rowSelectionModel[0].field.replace(
+            ? `${filter ? "&" : ""}sort=${rowSelectionModel[0].field.replace(
                 "_id",
                 "",
               )}&sort=${rowSelectionModel[0].sort}`
@@ -452,7 +453,7 @@ const AccountManager = () => {
       filter: modelFilter,
     })
     let filter = ""
-    if (!!modelFilter.items[0]?.value) {
+    if (modelFilter.items[0]?.value) {
       filter = modelFilter.items
         .filter((item) => item.value)
         .map((item: any) => `${item.field}=${item?.value}`)

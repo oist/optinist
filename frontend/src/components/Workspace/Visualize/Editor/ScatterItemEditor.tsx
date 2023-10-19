@@ -1,5 +1,6 @@
 import React from "react"
-import { SaveFig } from "./SaveFig"
+
+import { SaveFig } from "components/Workspace/Visualize/Editor/SaveFig"
 
 export const ScatterItemEditor: React.FC = () => {
   return (

@@ -1,29 +1,31 @@
 import { createSlice, isAnyOf, PayloadAction } from "@reduxjs/toolkit"
-import {
-  reproduceWorkflow,
-  importWorkflowConfig,
-  fetchWorkflow,
-} from "store/slice/Workflow/WorkflowActions"
+
+import { convertFunctionsToRunResultDTO } from "store/slice/Experiments/ExperimentsUtils"
+import { clearFlowElements } from "store/slice/FlowElement/FlowElementSlice"
 import {
   cancelResult,
   pollRunResult,
   run,
   runByCurrentUid,
-} from "./PipelineActions"
+} from "store/slice/Pipeline/PipelineActions"
 import {
   Pipeline,
   PIPELINE_SLICE_NAME,
   RUN_BTN_OPTIONS,
   RUN_BTN_TYPE,
   RUN_STATUS,
-} from "./PipelineType"
-import { clearFlowElements } from "../FlowElement/FlowElementSlice"
+} from "store/slice/Pipeline/PipelineType"
 import {
   getInitialRunResult,
   convertToRunResult,
   isNodeResultPending,
-} from "./PipelineUtils"
-import { convertFunctionsToRunResultDTO } from "../Experiments/ExperimentsUtils"
+} from "store/slice/Pipeline/PipelineUtils"
+import {
+  reproduceWorkflow,
+  importWorkflowConfig,
+  fetchWorkflow,
+} from "store/slice/Workflow/WorkflowActions"
+
 
 const initialState: Pipeline = {
   run: {

@@ -1,5 +1,5 @@
 import { RunPostData } from "api/run/Run"
-import { DATA_TYPE } from "../DisplayData/DisplayDataType"
+import { DATA_TYPE } from "store/slice/DisplayData/DisplayDataType"
 
 export const PIPELINE_SLICE_NAME = "pipeline"
 

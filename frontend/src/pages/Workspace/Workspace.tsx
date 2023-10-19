@@ -1,11 +1,13 @@
 import React from "react"
 import { useSelector } from "react-redux"
+
 import { Box } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import { useRunPipeline } from "store/slice/Pipeline/PipelineHook"
+
 import Experiment from "components/Workspace/Experiment/Experiment"
 import FlowChart from "components/Workspace/FlowChart/FlowChart"
 import Visualize from "components/Workspace/Visualize/Visualize"
+import { useRunPipeline } from "store/slice/Pipeline/PipelineHook"
 import { selectActiveTab } from "store/slice/Workspace/WorkspaceSelector"
 
 const Workspace: React.FC = () => {

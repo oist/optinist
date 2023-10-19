@@ -1,6 +1,5 @@
-import axios from "utils/axios"
-
 import { BASE_URL } from "const/API"
+import axios from "utils/axios"
 import { ParamDTO } from "utils/param/ParamType"
 
 export async function getNWBParamsApi(): Promise<ParamDTO> {

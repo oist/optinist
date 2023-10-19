@@ -1,6 +1,11 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
+
 import { FormControlLabel, Switch } from "@mui/material"
+
+import { GradientColorPicker } from "components/Workspace/Visualize/Editor/GradientColorPicker"
+import { SaveFig } from "components/Workspace/Visualize/Editor/SaveFig"
+import { SelectedItemIdContext } from "components/Workspace/Visualize/VisualizeItemEditor"
 import {
   selectHeatMapItemColors,
   selectHeatMapItemShowScale,
@@ -9,10 +14,9 @@ import {
   setHeatMapItemColors,
   setHeatMapItemShowScale,
 } from "store/slice/VisualizeItem/VisualizeItemSlice"
-import { SelectedItemIdContext } from "../VisualizeItemEditor"
-import { GradientColorPicker } from "./GradientColorPicker"
 import { ColorType } from "store/slice/VisualizeItem/VisualizeItemType"
-import { SaveFig } from "./SaveFig"
+
+
 
 export const HeatmapItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)

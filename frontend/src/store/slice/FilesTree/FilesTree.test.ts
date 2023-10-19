@@ -1,7 +1,7 @@
-import reducer, { initialState } from "./FilesTreeSlice"
-import { FilesTree } from "./FilesTreeType"
-import { getFilesTree } from "./FilesTreeAction"
 import { TreeNodeTypeDTO } from "api/files/Files"
+import { getFilesTree } from "store/slice/FilesTree/FilesTreeAction"
+import reducer, { initialState } from "store/slice/FilesTree/FilesTreeSlice"
+import { FilesTree } from "store/slice/FilesTree/FilesTreeType"
 
 describe("FilesTree", () => {
   const mockPayload: TreeNodeTypeDTO[] = [

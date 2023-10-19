@@ -1,5 +1,5 @@
 import { TreeNodeTypeDTO } from "api/files/Files"
-import { TreeNodeType } from "./FilesTreeType"
+import { TreeNodeType } from "store/slice/FilesTree/FilesTreeType"
 
 export function convertToTreeNodeType(dto: TreeNodeTypeDTO[]): TreeNodeType[] {
   return dto.map((node) =>

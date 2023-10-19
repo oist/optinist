@@ -1,9 +1,12 @@
 import React from "react"
-import { LinearProgress, Typography } from "@mui/material"
 import { useSelector, useDispatch } from "react-redux"
 
-import { DisplayDataContext } from "../DataContext"
-import { twoDimarrayEqualityFn } from "utils/EqualityUtils"
+import { LinearProgress, Typography } from "@mui/material"
+import { DataGrid, GridColDef } from "@mui/x-data-grid"
+
+import { CsvData } from "api/outputs/Outputs"
+import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
+import { getCsvData } from "store/slice/DisplayData/DisplayDataActions"
 import {
   selectCsvData,
   selectCsvDataError,
@@ -11,16 +14,16 @@ import {
   selectCsvDataIsInitialized,
   selectCsvDataIsPending,
 } from "store/slice/DisplayData/DisplayDataSelectors"
-import { getCsvData } from "store/slice/DisplayData/DisplayDataActions"
-import { CsvData } from "api/outputs/Outputs"
-import { DataGrid, GridColDef } from "@mui/x-data-grid"
 import {
   selectCsvItemSetHeader,
   selectCsvItemSetIndex,
   selectCsvItemTranspose,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
-import { AppDispatch } from "../../../../store/store"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
+import { AppDispatch } from "store/store"
+import { twoDimarrayEqualityFn } from "utils/EqualityUtils"
+
+
 
 export const CsvPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -126,7 +129,7 @@ export const PresentationalCsvPlot = React.memo<{
   }, [csvData, setHeader, setIndex])
   const rows = csvData
     .map((row, row_id) => {
-      let rowObj = Object.fromEntries(
+      const rowObj = Object.fromEntries(
         [row_id, ...row].map((value, index) => {
           return [`col${index}`, value]
         }),

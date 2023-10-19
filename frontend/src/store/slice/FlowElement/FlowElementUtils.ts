@@ -1,10 +1,11 @@
 import { isNode, Node } from "reactflow"
+
 import {
   AlgorithmNodeData,
   NodeData,
   NODE_TYPE_SET,
   InputNodeData,
-} from "./FlowElementType"
+} from "store/slice/FlowElement/FlowElementType"
 
 export function isNodeData(
   node: Node<NodeData> | undefined,

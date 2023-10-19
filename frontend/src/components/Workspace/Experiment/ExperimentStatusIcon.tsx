@@ -1,10 +1,11 @@
 import React from "react"
+
 import DoneIcon from "@mui/icons-material/Done"
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline"
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule"
+import { IconButton, Popover, Typography } from "@mui/material"
 
 import { EXPERIMENTS_STATUS } from "store/slice/Experiments/ExperimentsType"
-import { IconButton, Popover, Typography } from "@mui/material"
 
 export const ExperimentStatusIcon = React.memo<{
   status: EXPERIMENTS_STATUS

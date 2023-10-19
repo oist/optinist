@@ -1,11 +1,11 @@
-import { RootState } from "store/store"
+
 import {
   selectRoiData,
   selectRoiUniqueList,
   selectTimeSeriesData,
   selectTimeSeriesDataIsInitialized,
-} from "../DisplayData/DisplayDataSelectors"
-import { DATA_TYPE } from "../DisplayData/DisplayDataType"
+} from "store/slice/DisplayData/DisplayDataSelectors"
+import { DATA_TYPE } from "store/slice/DisplayData/DisplayDataType"
 import {
   isDisplayDataItem,
   isImageItem,
@@ -17,7 +17,8 @@ import {
   isHistogramItem,
   isLineItem,
   isPolarItem,
-} from "./VisualizeItemUtils"
+} from "store/slice/VisualizeItem/VisualizeItemUtils"
+import { RootState } from "store/store"
 
 export const selectSelectedVisualizeItemId = (state: RootState) =>
   state.visualaizeItem.selectedItemId
@@ -46,21 +47,21 @@ export const selectVisualizeItemIsWorkflowDialog =
 
 export const selectVisualizeItemIdForWorkflowDialog =
   (nodeId: string, filePath: string, dataType: DATA_TYPE) =>
-  (state: RootState) => {
-    const items = selectVisualizeItems(state)
-    let targetItemId: null | number = null
-    for (const [itemId, value] of Object.entries(items)) {
-      if (
-        value.nodeId === nodeId &&
+    (state: RootState) => {
+      const items = selectVisualizeItems(state)
+      let targetItemId: null | number = null
+      for (const [itemId, value] of Object.entries(items)) {
+        if (
+          value.nodeId === nodeId &&
         value.filePath === filePath &&
         value.dataType === dataType &&
         value.isWorkflowDialog
-      ) {
-        targetItemId = Number(itemId)
+        ) {
+          targetItemId = Number(itemId)
+        }
       }
+      return targetItemId
     }
-    return targetItemId
-  }
 
 export const selectVisualizeItemWidth =
   (itemId: number) => (state: RootState) => {

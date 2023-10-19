@@ -1,17 +1,21 @@
 import React, { ReactNode, useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { useLocation, useNavigate } from "react-router-dom"
+
 import { Box } from "@mui/material"
 import { styled } from "@mui/material/styles"
-import { getToken } from "utils/auth/AuthUtils"
-import { selectCurrentUser } from "store/slice/User/UserSelector"
-import { getMe } from "store/slice/User/UserActions"
-import Header from "./Header"
-import LeftMenu from "./LeftMenu"
-import { IS_STANDALONE } from "const/Mode"
+
 import Loading from "components/common/Loading"
+import Header from "components/Layout/Header"
+import LeftMenu from "components/Layout/LeftMenu"
 import { APP_BAR_HEIGHT } from "const/Layout"
-import { AppDispatch } from "../../store/store"
+import { IS_STANDALONE } from "const/Mode"
+import { getMe } from "store/slice/User/UserActions"
+import { selectCurrentUser } from "store/slice/User/UserSelector"
+import { AppDispatch } from "store/store"
+import { getToken } from "utils/auth/AuthUtils"
+
+
 
 const authRequiredPathRegex = /^\/console\/?.*/
 

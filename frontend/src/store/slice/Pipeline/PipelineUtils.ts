@@ -1,7 +1,6 @@
 import { RunPostData, RunResultDTO, OutputPathsDTO } from "api/run/Run"
-
-import { toDataType } from "../DisplayData/DisplayDataUtils"
-import { NODE_TYPE_SET } from "../FlowElement/FlowElementType"
+import { toDataType } from "store/slice/DisplayData/DisplayDataUtils"
+import { NODE_TYPE_SET } from "store/slice/FlowElement/FlowElementType"
 import {
   RunResult,
   OutputPaths,
@@ -13,7 +12,7 @@ import {
   NodeResultError,
   NodeResultSuccess,
   NodeResult,
-} from "./PipelineType"
+} from "store/slice/Pipeline/PipelineType"
 
 export function isNodeResultPending(
   nodeResult: NodeResult,

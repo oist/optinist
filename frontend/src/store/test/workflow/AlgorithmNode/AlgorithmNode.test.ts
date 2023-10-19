@@ -1,14 +1,14 @@
-import { store, rootReducer } from "store/store"
 import { REACT_FLOW_NODE_TYPE_KEY } from "const/flowchart"
-import { NODE_TYPE_SET } from "store/slice/FlowElement/FlowElementType"
-import { selectNodeById } from "store/slice/FlowElement/FlowElementSelectors"
-import { addAlgorithmNode } from "store/slice/FlowElement/FlowElementActions"
 import {
   selectAlgorithmNodeById,
   selectAlgorithmParamsValue,
 } from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
 import { updateParam } from "store/slice/AlgorithmNode/AlgorithmNodeSlice"
+import { addAlgorithmNode } from "store/slice/FlowElement/FlowElementActions"
+import { selectNodeById } from "store/slice/FlowElement/FlowElementSelectors"
 import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
+import { NODE_TYPE_SET } from "store/slice/FlowElement/FlowElementType"
+import { store, rootReducer } from "store/store"
 
 describe("AlgorithmNode", () => {
   const initialRootState = store.getState()

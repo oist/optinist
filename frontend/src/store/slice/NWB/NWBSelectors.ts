@@ -1,5 +1,6 @@
+import { RootState } from "store/store"
 import { getChildParam } from "utils/param/ParamUtils"
-import { RootState } from "../../store"
+
 
 export const selectNwb = (state: RootState) => state.nwb
 

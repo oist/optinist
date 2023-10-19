@@ -1,9 +1,10 @@
-import { RootState } from "store/store"
 import {
   isHDF5InputNode,
   isCsvInputNode,
   isImageInputNode,
-} from "./InputNodeUtils"
+} from "store/slice/InputNode/InputNodeUtils"
+import { RootState } from "store/store"
+
 
 export const selectInputNode = (state: RootState) => state.inputNode
 

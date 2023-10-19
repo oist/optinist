@@ -1,6 +1,9 @@
 import React, { useContext } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Handle, Position, NodeProps } from "reactflow"
+
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded"
+import ErrorIcon from "@mui/icons-material/Error"
 import {
   Typography,
   useTheme,
@@ -11,35 +14,33 @@ import {
   ButtonGroup,
   Grid,
 } from "@mui/material"
-import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded"
-import ErrorIcon from "@mui/icons-material/Error"
 
 import { AlgorithmInfo } from "api/algolist/AlgoList"
+import { DialogContext } from "components/Workspace/FlowChart/DialogContext"
+import { toHandleId, isValidConnection } from "components/Workspace/FlowChart/FlowChartNode/FlowChartUtils"
+import { useHandleColor } from "components/Workspace/FlowChart/FlowChartNode/HandleColorHook"
+import { NodeContainer } from "components/Workspace/FlowChart/FlowChartNode/NodeContainer"
+import { HANDLE_STYLE } from "const/flowchart"
 import {
   selectAlgoArgs,
   selectAlgoReturns,
 } from "store/slice/AlgorithmList/AlgorithmListSelectors"
 import { selectAlgorithmNodeDefined } from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
-import { NodeData } from "store/slice/FlowElement/FlowElementType"
-
-import { useHandleColor } from "./HandleColorHook"
-import { toHandleId, isValidConnection } from "./FlowChartUtils"
-import { toggleParamForm } from "store/slice/RightDrawer/RightDrawerSlice"
 import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
+import { NodeData } from "store/slice/FlowElement/FlowElementType"
 import {
   selectPipelineLatestUid,
   selectPipelineNodeResultMessage,
   selectPipelineNodeResultStatus,
   selectPipelineStatus,
 } from "store/slice/Pipeline/PipelineSelectors"
-import { RootState } from "store/store"
 import {
   NODE_RESULT_STATUS,
   RUN_STATUS,
 } from "store/slice/Pipeline/PipelineType"
-import { HANDLE_STYLE } from "const/flowchart"
-import { DialogContext } from "components/Workspace/FlowChart/DialogContext"
-import { NodeContainer } from "components/Workspace/FlowChart/FlowChartNode/NodeContainer"
+import { toggleParamForm } from "store/slice/RightDrawer/RightDrawerSlice"
+import { RootState } from "store/store"
+
 
 export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
   const defined = useSelector(selectAlgorithmNodeDefined(element.id))
@@ -208,7 +209,7 @@ type HandleProps = {
 
 function hexToRgb(hex: string | undefined, isNone: boolean | undefined) {
   if (hex !== undefined) {
-    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
+    const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex)
     if (result !== null) {
       if (isNone) {
         return `rgba(${parseInt(result[1], 16)}, ${parseInt(

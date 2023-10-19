@@ -7,7 +7,8 @@ import React, {
 } from "react"
 import PlotlyChart from "react-plotlyjs-ts"
 import { useSelector, useDispatch } from "react-redux"
-import { AppDispatch, RootState } from "store/store"
+
+import createColormap from "colormap"
 import {
   Datum,
   LayoutAxis,
@@ -15,16 +16,22 @@ import {
   PlotMouseEvent,
   PlotSelectionEvent,
 } from "plotly.js"
-import createColormap from "colormap"
-import { Button, LinearProgress, TextField, Typography } from "@mui/material"
-import FormControlLabel from "@mui/material/FormControlLabel"
-import Switch from "@mui/material/Switch"
-import Slider from "@mui/material/Slider"
-import Box from "@mui/material/Box"
-import { styled } from "@mui/material/styles"
-import { twoDimarrayEqualityFn } from "utils/EqualityUtils"
-import { DisplayDataContext } from "../DataContext"
 
+import { Button, LinearProgress, TextField, Typography } from "@mui/material"
+import Box from "@mui/material/Box"
+import FormControlLabel from "@mui/material/FormControlLabel"
+import Slider from "@mui/material/Slider"
+import { styled } from "@mui/material/styles"
+import Switch from "@mui/material/Switch"
+
+
+import { addRoiApi, deleteRoiApi, mergeRoiApi } from "api/outputs/Outputs"
+import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
+import {
+  getImageData,
+  getRoiData,
+  getTimeSeriesInitData,
+} from "store/slice/DisplayData/DisplayDataActions"
 import {
   selectImageDataError,
   selectImageDataIsInitialized,
@@ -36,10 +43,9 @@ import {
   selectImageMeta,
 } from "store/slice/DisplayData/DisplayDataSelectors"
 import {
-  getImageData,
-  getRoiData,
-  getTimeSeriesInitData,
-} from "store/slice/DisplayData/DisplayDataActions"
+  selectingImageArea,
+  setImageItemClikedDataId,
+} from "store/slice/VisualizeItem/VisualizeItemActions"
 import {
   selectImageItemShowticklabels,
   selectImageItemZsmooth,
@@ -68,13 +74,10 @@ import {
   setImageActiveIndex,
   setImageItemDuration,
 } from "store/slice/VisualizeItem/VisualizeItemSlice"
-import {
-  selectingImageArea,
-  setImageItemClikedDataId,
-} from "store/slice/VisualizeItem/VisualizeItemActions"
-import { addRoiApi, deleteRoiApi, mergeRoiApi } from "api/outputs/Outputs"
 import { isTimeSeriesItem } from "store/slice/VisualizeItem/VisualizeItemUtils"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
+import { AppDispatch, RootState } from "store/store"
+import { twoDimarrayEqualityFn } from "utils/EqualityUtils"
 
 interface PointClick {
   x: number
@@ -792,7 +795,7 @@ function rgba2hex(rgba: number[], alpha: number) {
   const b = rgba[2]
   const a = alpha
 
-  var outParts = [
+  const outParts = [
     r.toString(16),
     g.toString(16),
     b.toString(16),
@@ -877,25 +880,25 @@ const DragSize = styled("div")({
 })
 
 const DragSizeLeft = styled(DragSize)({
-  top: `calc(50% - 1px)`,
+  top: "calc(50% - 1px)",
   left: -2,
   cursor: "ew-resize",
 })
 
 const DragSizeRight = styled(DragSize)({
-  top: `calc(50% - 1px)`,
+  top: "calc(50% - 1px)",
   right: -2,
   cursor: "ew-resize",
 })
 
 const DragSizeTop = styled(DragSize)({
   top: -2,
-  right: `calc(50% - 1px)`,
+  right: "calc(50% - 1px)",
   cursor: "ns-resize",
 })
 
 const DragSizeBottom = styled(DragSize)({
   bottom: -2,
-  right: `calc(50% - 1px)`,
+  right: "calc(50% - 1px)",
   cursor: "ns-resize",
 })

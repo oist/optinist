@@ -1,6 +1,7 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Handle, Position, NodeProps } from "reactflow"
+
 import {
   Button,
   Dialog,
@@ -15,7 +16,18 @@ import {
   Typography,
 } from "@mui/material"
 
-import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
+import { NodeContainer } from "components/Workspace/FlowChart/FlowChartNode/NodeContainer"
+import { PresentationalCsvPlot } from "components/Workspace/Visualize/Plot/CsvPlot"
+import { HANDLE_STYLE } from "const/flowchart"
+import { getCsvData } from "store/slice/DisplayData/DisplayDataActions"
+import {
+  selectCsvDataError,
+  selectCsvDataIsFulfilled,
+  selectCsvDataIsInitialized,
+  selectCsvDataIsPending,
+} from "store/slice/DisplayData/DisplayDataSelectors"
+import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
+import { setInputNodeFilePath } from "store/slice/InputNode/InputNodeActions"
 import {
   selectCsvInputNodeParamSetHeader,
   selectCsvInputNodeParamSetIndex,
@@ -24,22 +36,12 @@ import {
   selectInputNodeDefined,
 } from "store/slice/InputNode/InputNodeSelectors"
 import { setCsvInputNodeParam } from "store/slice/InputNode/InputNodeSlice"
-import { setInputNodeFilePath } from "store/slice/InputNode/InputNodeActions"
-import { toHandleId } from "./FlowChartUtils"
-import { FileSelect } from "./FileSelect"
-import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
-import {
-  selectCsvDataError,
-  selectCsvDataIsFulfilled,
-  selectCsvDataIsInitialized,
-  selectCsvDataIsPending,
-} from "store/slice/DisplayData/DisplayDataSelectors"
-import { getCsvData } from "store/slice/DisplayData/DisplayDataActions"
-import { PresentationalCsvPlot } from "components/Workspace/Visualize/Plot/CsvPlot"
-import { AppDispatch } from "../../../../store/store"
+import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
-import { HANDLE_STYLE } from "const/flowchart"
-import { NodeContainer } from "components/Workspace/FlowChart/FlowChartNode/NodeContainer"
+import { AppDispatch } from "store/store"
+
+import { FileSelect } from "components/Workspace/FlowChart/FlowChartNode/FileSelect"
+import { toHandleId } from "components/Workspace/FlowChart/FlowChartNode/FlowChartUtils"
 
 export const CsvFileNode = React.memo<NodeProps>((element) => {
   const defined = useSelector(selectInputNodeDefined(element.id))

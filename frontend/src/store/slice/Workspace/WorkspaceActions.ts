@@ -1,4 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
+
 import {
   WorkspacePostDataDTO,
   delWorkspaceApi,
@@ -15,7 +16,7 @@ import {
   WorkspaceParams,
   ListUserShareWorkspaceDTO,
   WORKSPACE_SLICE_NAME,
-} from "./WorkspaceType"
+} from "store/slice/Workspace/WorkspaceType"
 
 export const getWorkspace = createAsyncThunk<ItemsWorkspace, { id: number }>(
   `${WORKSPACE_SLICE_NAME}/getWorkspace`,

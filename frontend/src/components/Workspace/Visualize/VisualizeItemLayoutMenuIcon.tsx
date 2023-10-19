@@ -1,20 +1,22 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
+
+import AddIcon from "@mui/icons-material/Add"
+import DeleteIcon from "@mui/icons-material/Delete"
+import MoreVertIcon from "@mui/icons-material/MoreVert"
 import IconButton from "@mui/material/IconButton"
+import ListItemIcon from "@mui/material/ListItemIcon"
+import ListItemText from "@mui/material/ListItemText"
 import Menu from "@mui/material/Menu"
 import MenuItem from "@mui/material/MenuItem"
-import ListItemText from "@mui/material/ListItemText"
-import ListItemIcon from "@mui/material/ListItemIcon"
-import MoreVertIcon from "@mui/icons-material/MoreVert"
-import DeleteIcon from "@mui/icons-material/Delete"
-import AddIcon from "@mui/icons-material/Add"
+
+import { deleteDisplayItem } from "store/slice/VisualizeItem/VisualizeItemActions"
 import {
   selectDisplayDataIsSingle,
   selectVisualizeDataFilePath,
   selectVisualizeDataType,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import { insertInitialItemToNextColumn } from "store/slice/VisualizeItem/VisualizeItemSlice"
-import { deleteDisplayItem } from "store/slice/VisualizeItem/VisualizeItemActions"
 
 export const DisplayDataItemLayoutMenuIcon = React.memo<{
   itemId: number
@@ -47,45 +49,45 @@ export const DisplayDataItemLayoutMenuIcon = React.memo<{
 const PresentationalLayoutMenuIcon = React.memo<{
   onClickDeleteMenu: () => void
   onClickInsertMenu: () => void
-}>(({ onClickDeleteMenu, onClickInsertMenu }) => {
-  const [open, setOpen] = React.useState(false)
-  const anchorRef = React.useRef<HTMLButtonElement>(null)
-  const onClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
-    e.stopPropagation() // 親divのonClickを反応させないため
-    setOpen((prevOpen) => !prevOpen)
-  }
-  const onClose = () => {
-    setOpen(false)
-  }
-  const onClickDeleteMenuFn: React.MouseEventHandler<HTMLLIElement> = (e) => {
-    e.stopPropagation()
-    onClickDeleteMenu()
-    setOpen(false)
-  }
-  const onClickInsertMenuFn: React.MouseEventHandler<HTMLLIElement> = (e) => {
-    e.stopPropagation()
-    onClickInsertMenu()
-    setOpen(false)
-  }
-  return (
-    <>
-      <IconButton ref={anchorRef} onClick={onClick}>
-        <MoreVertIcon />
-      </IconButton>
-      <Menu anchorEl={anchorRef.current} open={open} onClose={onClose}>
-        <MenuItem onClick={onClickInsertMenuFn}>
-          <ListItemIcon>
-            <AddIcon />
-          </ListItemIcon>
-          <ListItemText>Insert into next column</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={onClickDeleteMenuFn}>
-          <ListItemIcon>
-            <DeleteIcon />
-          </ListItemIcon>
-          <ListItemText>Delete</ListItemText>
-        </MenuItem>
-      </Menu>
-    </>
-  )
-})
+    }>(({ onClickDeleteMenu, onClickInsertMenu }) => {
+      const [open, setOpen] = React.useState(false)
+      const anchorRef = React.useRef<HTMLButtonElement>(null)
+      const onClick: React.MouseEventHandler<HTMLButtonElement> = (e) => {
+        e.stopPropagation() // 親divのonClickを反応させないため
+        setOpen((prevOpen) => !prevOpen)
+      }
+      const onClose = () => {
+        setOpen(false)
+      }
+      const onClickDeleteMenuFn: React.MouseEventHandler<HTMLLIElement> = (e) => {
+        e.stopPropagation()
+        onClickDeleteMenu()
+        setOpen(false)
+      }
+      const onClickInsertMenuFn: React.MouseEventHandler<HTMLLIElement> = (e) => {
+        e.stopPropagation()
+        onClickInsertMenu()
+        setOpen(false)
+      }
+      return (
+        <>
+          <IconButton ref={anchorRef} onClick={onClick}>
+            <MoreVertIcon />
+          </IconButton>
+          <Menu anchorEl={anchorRef.current} open={open} onClose={onClose}>
+            <MenuItem onClick={onClickInsertMenuFn}>
+              <ListItemIcon>
+                <AddIcon />
+              </ListItemIcon>
+              <ListItemText>Insert into next column</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={onClickDeleteMenuFn}>
+              <ListItemIcon>
+                <DeleteIcon />
+              </ListItemIcon>
+              <ListItemText>Delete</ListItemText>
+            </MenuItem>
+          </Menu>
+        </>
+      )
+    })

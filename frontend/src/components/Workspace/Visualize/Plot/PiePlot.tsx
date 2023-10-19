@@ -1,7 +1,11 @@
 import React from "react"
-import { useSelector, useDispatch } from "react-redux"
 import PlotlyChart from "react-plotlyjs-ts"
-import { DisplayDataContext } from "../DataContext"
+import { useSelector, useDispatch } from "react-redux"
+
+import { LinearProgress, Typography } from "@mui/material"
+
+import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
+import { getPieData } from "store/slice/DisplayData/DisplayDataActions"
 import {
   selectPieColumns,
   selectPieData,
@@ -11,13 +15,11 @@ import {
   selectPieDataIsPending,
   selectPieMeta,
 } from "store/slice/DisplayData/DisplayDataSelectors"
-import { getPieData } from "store/slice/DisplayData/DisplayDataActions"
-import { LinearProgress, Typography } from "@mui/material"
 import {
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
-import { AppDispatch } from "../../../../store/store"
+import { AppDispatch } from "store/store"
 
 export const PiePlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)

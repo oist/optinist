@@ -1,11 +1,13 @@
 import React from "react"
-import { styled } from "@mui/material/styles"
-import { FlexItemList } from "./FlexItemList"
-import { VisualizeItemEditor } from "./VisualizeItemEditor"
-import { CurrentPipelineInfo } from "components/common/CurrentPipelineInfo"
-import { CONTENT_HEIGHT, DRAWER_WIDTH } from "const/Layout"
+
 import { Box } from "@mui/material"
 import { grey } from "@mui/material/colors"
+import { styled } from "@mui/material/styles"
+
+import { CurrentPipelineInfo } from "components/common/CurrentPipelineInfo"
+import { FlexItemList } from "components/Workspace/Visualize/FlexItemList"
+import { VisualizeItemEditor } from "components/Workspace/Visualize/VisualizeItemEditor"
+import { CONTENT_HEIGHT, DRAWER_WIDTH } from "const/Layout"
 
 const Visualize: React.FC = () => {
   return (

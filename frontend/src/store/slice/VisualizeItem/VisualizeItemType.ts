@@ -1,4 +1,4 @@
-import { DATA_TYPE, DATA_TYPE_SET } from "../DisplayData/DisplayDataType"
+import { DATA_TYPE, DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
 
 export const VISUALIZE_ITEM_SLICE_NAME = "visualaizeItem"
 

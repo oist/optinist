@@ -1,12 +1,14 @@
-import { Link } from "react-router-dom"
-import { Box, styled, Typography } from "@mui/material"
-import ManageAccountsIcon from "@mui/icons-material/ManageAccounts"
-import AnalyticsIcon from "@mui/icons-material/Analytics"
-import { useDispatch, useSelector } from "react-redux"
-import { isAdmin, selectCurrentUser } from "store/slice/User/UserSelector"
 import { useEffect } from "react"
-import { getMe } from "../../store/slice/User/UserActions"
-import { AppDispatch } from "../../store/store"
+import { useDispatch, useSelector } from "react-redux"
+import { Link } from "react-router-dom"
+
+import AnalyticsIcon from "@mui/icons-material/Analytics"
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts"
+import { Box, styled, Typography } from "@mui/material"
+
+import { getMe } from "store/slice/User/UserActions"
+import { isAdmin, selectCurrentUser } from "store/slice/User/UserSelector"
+import { AppDispatch } from "store/store"
 
 const Dashboard = () => {
   const dispatch = useDispatch<AppDispatch>()

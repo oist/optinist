@@ -1,15 +1,18 @@
 import React from "react"
-import { useSelector, useDispatch } from "react-redux"
 import PlotlyChart from "react-plotlyjs-ts"
-import LinearProgress from "@mui/material/LinearProgress"
-import Typography from "@mui/material/Typography"
-import Box from "@mui/material/Box"
-import InputLabel from "@mui/material/InputLabel"
-import MenuItem from "@mui/material/MenuItem"
-import FormControl from "@mui/material/FormControl"
-import Select, { SelectChangeEvent } from "@mui/material/Select"
+import { useSelector, useDispatch } from "react-redux"
 
-import { DisplayDataContext } from "../DataContext"
+import Box from "@mui/material/Box"
+import FormControl from "@mui/material/FormControl"
+import InputLabel from "@mui/material/InputLabel"
+import LinearProgress from "@mui/material/LinearProgress"
+import MenuItem from "@mui/material/MenuItem"
+import Select, { SelectChangeEvent } from "@mui/material/Select"
+import Typography from "@mui/material/Typography"
+
+import { ScatterData } from "api/outputs/Outputs"
+import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
+import { getScatterData } from "store/slice/DisplayData/DisplayDataActions"
 import {
   selectScatterData,
   selectScatterDataError,
@@ -18,8 +21,6 @@ import {
   selectScatterDataIsPending,
   selectScatterMeta,
 } from "store/slice/DisplayData/DisplayDataSelectors"
-import { getScatterData } from "store/slice/DisplayData/DisplayDataActions"
-import { ScatterData } from "api/outputs/Outputs"
 import {
   selectScatterItemXIndex,
   selectScatterItemYIndex,
@@ -32,7 +33,7 @@ import {
   setScatterItemXIndex,
   setScatterItemYIndex,
 } from "store/slice/VisualizeItem/VisualizeItemSlice"
-import { AppDispatch } from "../../../../store/store"
+import { AppDispatch } from "store/store"
 
 export const ScatterPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)

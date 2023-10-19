@@ -13,8 +13,8 @@ export const DialogContext = createContext<{
     anchorElRef: { current: Element | null }
     message: string
   }) => any
-}>({
-  onOpen: () => null,
-  onOpenDialogFile: () => null,
-  onMessageError: () => null,
-})
+    }>({
+      onOpen: () => null,
+      onOpenDialogFile: () => null,
+      onMessageError: () => null,
+    })

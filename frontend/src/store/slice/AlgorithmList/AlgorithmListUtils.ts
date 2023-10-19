@@ -4,7 +4,7 @@ import {
   AlgorithmChild,
   AlgorithmParent,
   AlgorithmListTree,
-} from "./AlgorithmListType"
+} from "store/slice/AlgorithmList/AlgorithmListType"
 
 export function isAlgoChild(
   algoNode: AlgorithmNodeType,

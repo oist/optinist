@@ -1,6 +1,6 @@
+import { selectRunPostData } from "store/slice/Run/RunSelectors"
 import { RootState, store } from "store/store"
 
-import { selectRunPostData } from "../slice/Run/RunSelectors"
 
 describe("RunSelectors", () => {
   const initialRootState = store.getState()

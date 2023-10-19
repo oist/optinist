@@ -1,38 +1,40 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
 
-import Button from "@mui/material/Button"
-import ButtonGroup from "@mui/material/ButtonGroup"
+import { useSnackbar } from "notistack"
+
+import { PlayArrow } from "@mui/icons-material"
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown"
 import BlockIcon from "@mui/icons-material/Block"
+import ReplayIcon from "@mui/icons-material/Replay"
+import { IconButton, Tooltip } from "@mui/material"
+import Button from "@mui/material/Button"
+import ButtonGroup from "@mui/material/ButtonGroup"
 import ClickAwayListener from "@mui/material/ClickAwayListener"
-import Grow from "@mui/material/Grow"
-import Paper from "@mui/material/Paper"
-import Popper from "@mui/material/Popper"
-import MenuItem from "@mui/material/MenuItem"
-import MenuList from "@mui/material/MenuList"
-import TextField from "@mui/material/TextField"
 import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
 import DialogTitle from "@mui/material/DialogTitle"
+import Grow from "@mui/material/Grow"
+import MenuItem from "@mui/material/MenuItem"
+import MenuList from "@mui/material/MenuList"
+import Paper from "@mui/material/Paper"
+import Popper from "@mui/material/Popper"
+import TextField from "@mui/material/TextField"
 
-import { useSnackbar } from "notistack"
 
 import { UseRunPipelineReturnType } from "store/slice/Pipeline/PipelineHook"
-import {
-  RUN_BTN_LABELS,
-  RUN_BTN_OPTIONS,
-  RUN_BTN_TYPE,
-} from "store/slice/Pipeline/PipelineType"
 import {
   selectPipelineIsStartedSuccess,
   selectPipelineRunBtn,
 } from "store/slice/Pipeline/PipelineSelectors"
 import { setRunBtnOption } from "store/slice/Pipeline/PipelineSlice"
-import { IconButton, Tooltip } from "@mui/material"
-import { PlayArrow } from "@mui/icons-material"
-import ReplayIcon from "@mui/icons-material/Replay"
+import {
+  RUN_BTN_LABELS,
+  RUN_BTN_OPTIONS,
+  RUN_BTN_TYPE,
+} from "store/slice/Pipeline/PipelineType"
+
 
 export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
   const {
@@ -184,46 +186,46 @@ const RunDialog = React.memo<{
   open: boolean
   handleRun: (name: string) => void
   handleClose: () => void
-}>(({ open, handleClose, handleRun }) => {
-  const [name, setName] = React.useState("New flow")
-  const [error, setError] = React.useState<string | null>(null)
-  const onClickRun = () => {
-    if (name !== "") {
-      handleRun(name)
-    } else {
-      setError("name is empty")
-    }
-  }
-  const onChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value)
-    if (event.target.value !== "") {
-      setError(null)
-    }
-  }
-  return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Name and run flowchart</DialogTitle>
-      <DialogContent>
-        <TextField
-          label="name"
-          autoFocus
-          margin="dense"
-          fullWidth
-          variant="standard"
-          onChange={onChangeName}
-          error={error != null}
-          helperText={error}
-          value={name}
-        />
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleClose} color="inherit" variant="outlined">
+    }>(({ open, handleClose, handleRun }) => {
+      const [name, setName] = React.useState("New flow")
+      const [error, setError] = React.useState<string | null>(null)
+      const onClickRun = () => {
+        if (name !== "") {
+          handleRun(name)
+        } else {
+          setError("name is empty")
+        }
+      }
+      const onChangeName = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setName(event.target.value)
+        if (event.target.value !== "") {
+          setError(null)
+        }
+      }
+      return (
+        <Dialog open={open} onClose={handleClose}>
+          <DialogTitle>Name and run flowchart</DialogTitle>
+          <DialogContent>
+            <TextField
+              label="name"
+              autoFocus
+              margin="dense"
+              fullWidth
+              variant="standard"
+              onChange={onChangeName}
+              error={error != null}
+              helperText={error}
+              value={name}
+            />
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleClose} color="inherit" variant="outlined">
           Cancel
-        </Button>
-        <Button onClick={onClickRun} color="primary" variant="outlined">
+            </Button>
+            <Button onClick={onClickRun} color="primary" variant="outlined">
           Run
-        </Button>
-      </DialogActions>
-    </Dialog>
-  )
-})
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )
+    })

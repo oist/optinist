@@ -1,6 +1,8 @@
 import { ChangeEvent, FormEvent, useState } from "react"
 import { useNavigate } from "react-router-dom"
+
 import { Box, Stack, styled, Typography, Link } from "@mui/material"
+
 import { sendResetPasswordMailApi } from "api/auth/Auth"
 import Loading from "components/common/Loading"
 import { regexEmail } from "const/Auth"
@@ -46,7 +48,7 @@ const ResetPassword = () => {
   }
 
   const validateSubmit = () => {
-    let errors = { email: "" }
+    const errors = { email: "" }
     errors.email = validateEmail(values.email)
     setErrors(errors)
     return errors.email

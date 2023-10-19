@@ -1,7 +1,15 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
+
+import { FormControlLabel, Switch, TextField } from "@mui/material"
+
+import { FILE_TREE_TYPE_SET } from "api/files/Files"
 import { FileSelectImple } from "components/Workspace/FlowChart/FlowChartNode/FileSelect"
-import { SelectedItemIdContext } from "../VisualizeItemEditor"
+import { SelectedItemIdContext } from "components/Workspace/Visualize/VisualizeItemEditor"
+import { DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
+import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
+import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
+import { setNewDisplayDataPath } from "store/slice/VisualizeItem/VisualizeItemActions"
 import {
   selectCsvItemSetHeader,
   selectCsvItemSetIndex,
@@ -14,12 +22,7 @@ import {
   setCsvItemSetIndex,
   setCsvItemTranspose,
 } from "store/slice/VisualizeItem/VisualizeItemSlice"
-import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
-import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
-import { FILE_TREE_TYPE_SET } from "api/files/Files"
-import { FormControlLabel, Switch, TextField } from "@mui/material"
-import { setNewDisplayDataPath } from "store/slice/VisualizeItem/VisualizeItemActions"
-import { DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
+
 
 export const CsvItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)

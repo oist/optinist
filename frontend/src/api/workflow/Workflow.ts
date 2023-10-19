@@ -1,8 +1,8 @@
-import axios from "utils/axios"
-
+import { ExperimentDTO } from "api/experiments/Experiments"
 import { EdgeDict, NodeDict } from "api/run/Run"
 import { BASE_URL } from "const/API"
-import { ExperimentDTO } from "api/experiments/Experiments"
+import axios from "utils/axios"
+
 
 export type WorkflowConfigDTO = {
   nodeDict: NodeDict

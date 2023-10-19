@@ -1,7 +1,8 @@
 import React from "react"
-import { alpha, useTheme } from "@mui/material/styles"
+
 import { Box, Typography } from "@mui/material"
 import { grey } from "@mui/material/colors"
+import { alpha, useTheme } from "@mui/material/styles"
 
 export const NodeContainer: React.FC<{
   children: React.ReactNode

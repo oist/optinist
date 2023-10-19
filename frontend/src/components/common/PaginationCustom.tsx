@@ -1,3 +1,5 @@
+import { ChangeEvent } from "react"
+
 import {
   Box,
   FormControl,
@@ -5,9 +7,9 @@ import {
   Pagination,
   styled,
 } from "@mui/material"
-import { WorkspaceDataDTO } from "../../store/slice/Workspace/WorkspaceType"
-import { ChangeEvent } from "react"
-import { UserListDTO } from "../../api/users/UsersApiDTO"
+
+import { UserListDTO } from "api/users/UsersApiDTO"
+import { WorkspaceDataDTO } from "store/slice/Workspace/WorkspaceType"
 
 type PagiProps = {
   data: WorkspaceDataDTO | UserListDTO

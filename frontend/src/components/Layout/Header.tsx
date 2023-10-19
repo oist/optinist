@@ -1,18 +1,21 @@
 import { FC } from "react"
 import { useLocation } from "react-router-dom"
-import { styled } from "@mui/material/styles"
+
+import MenuIcon from "@mui/icons-material/Menu"
 import MuiAppBar from "@mui/material/AppBar"
 import Box from "@mui/material/Box"
+import IconButton from "@mui/material/IconButton"
+import { styled } from "@mui/material/styles"
 import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
-import IconButton from "@mui/material/IconButton"
-import MenuIcon from "@mui/icons-material/Menu"
-import Logo from "components/logo.png"
+
+import Profile from "components/Layout/Profile"
 import Tooltips from "components/Layout/Tooltips"
+import Logo from "components/logo.png"
 import WorkspaceTabs from "components/Workspace/WorkspaceTabs"
-import { IS_STANDALONE } from "const/Mode"
-import Profile from "./Profile"
 import { APP_BAR_HEIGHT } from "const/Layout"
+import { IS_STANDALONE } from "const/Mode"
+
 
 const Header: FC<{
   handleDrawerOpen: () => void

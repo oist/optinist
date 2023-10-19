@@ -1,4 +1,4 @@
-import { UserDTO } from "../../../api/users/UsersApiDTO"
+import { UserDTO } from "api/users/UsersApiDTO"
 
 export const WORKSPACE_SLICE_NAME = "workspace"
 

@@ -1,16 +1,21 @@
 import React, { useState, useRef } from "react"
-import IconButton from "@mui/material/IconButton"
-import SimCardDownloadOutlinedIcon from "@mui/icons-material/SimCardDownloadOutlined"
 import { useSelector } from "react-redux"
+
+import { useSnackbar } from "notistack"
+
+import SimCardDownloadOutlinedIcon from "@mui/icons-material/SimCardDownloadOutlined"
+import IconButton from "@mui/material/IconButton"
+
 import {
   downloadExperimentConfigApi,
   downloadExperimentNwbApi,
 } from "api/experiments/Experiments"
-
-import { ExperimentUidContext } from "../ExperimentTable"
-import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
 import { downloadWorkflowConfigApi } from "api/workflow/Workflow"
-import { useSnackbar } from "notistack"
+import { ExperimentUidContext } from "components/Workspace/Experiment/ExperimentTable"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
+
+
+
 
 export const NWBDownloadButton = React.memo<{
   name: string

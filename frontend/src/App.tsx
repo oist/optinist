@@ -1,18 +1,22 @@
 import React from "react"
-import IconButton from "@mui/material/IconButton"
-import Close from "@mui/icons-material/Close"
-import { SnackbarProvider, SnackbarKey, useSnackbar } from "notistack"
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
+
+import { SnackbarProvider, SnackbarKey, useSnackbar } from "notistack"
+
+import Close from "@mui/icons-material/Close"
+import IconButton from "@mui/material/IconButton"
+
+
 import Layout from "components/Layout"
-import Dashboard from "pages/Dashboard"
+import { IS_STANDALONE } from "const/Mode"
 import Account from "pages/Account"
-import AccountManager from "pages/AccountManager"
 import AccountDelete from "pages/AccountDelete"
+import AccountManager from "pages/AccountManager"
+import Dashboard from "pages/Dashboard"
 import Login from "pages/Login"
 import ResetPassword from "pages/ResetPassword"
 import Workspaces from "pages/Workspace"
 import Workspace from "pages/Workspace/Workspace"
-import { IS_STANDALONE } from "const/Mode"
 
 const App: React.FC = () => {
   return (

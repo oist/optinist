@@ -1,11 +1,14 @@
 import { FC, useState } from "react"
-import AccountCircleIcon from "@mui/icons-material/AccountCircle"
-import { Menu, MenuItem } from "@mui/material"
 import { useDispatch } from "react-redux"
-import IconButton from "@mui/material/IconButton"
-import PortraitIcon from "@mui/icons-material/Portrait"
-import Logout from "@mui/icons-material/Logout"
 import { useNavigate } from "react-router-dom"
+
+import AccountCircleIcon from "@mui/icons-material/AccountCircle"
+import Logout from "@mui/icons-material/Logout"
+import PortraitIcon from "@mui/icons-material/Portrait"
+import { Menu, MenuItem } from "@mui/material"
+import IconButton from "@mui/material/IconButton"
+
+
 import { logout } from "store/slice/User/UserSlice"
 
 const Profile: FC = () => {

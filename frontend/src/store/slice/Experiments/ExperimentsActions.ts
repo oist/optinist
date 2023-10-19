@@ -1,13 +1,16 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
+
 import {
   ExperimentsDTO,
   getExperimentsApi,
   deleteExperimentByUidApi,
   deleteExperimentByListApi,
 } from "api/experiments/Experiments"
-import { EXPERIMENTS_SLICE_NAME } from "./ExperimentsType"
-import { selectCurrentWorkspaceId } from "../Workspace/WorkspaceSelector"
+import { EXPERIMENTS_SLICE_NAME } from "store/slice/Experiments/ExperimentsType"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
 import { ThunkApiConfig } from "store/store"
+
+
 
 export const getExperiments = createAsyncThunk<
   ExperimentsDTO,

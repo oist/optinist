@@ -1,12 +1,32 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
-import Switch from "@mui/material/Switch"
+
+
+
+
+import "react-linear-gradient-picker/dist/index.css"
+import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
+import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
+import { FILE_TREE_TYPE_SET } from "api/files/Files"
+import { Box, TextField } from "@mui/material"
+import { GradientColorPicker } from "./GradientColorPicker"
+import { ColorType } from "store/slice/VisualizeItem/VisualizeItemType"
+import { DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
+import Button from "@mui/material/Button"
+import FormControl from "@mui/material/FormControl"
 import FormControlLabel from "@mui/material/FormControlLabel"
-import Select, { SelectChangeEvent } from "@mui/material/Select"
 import InputLabel from "@mui/material/InputLabel"
 import MenuItem from "@mui/material/MenuItem"
-import FormControl from "@mui/material/FormControl"
+import Select, { SelectChangeEvent } from "@mui/material/Select"
+import Switch from "@mui/material/Switch"
+import { FileSelectImple } from "components/Workspace/FlowChart/FlowChartNode/FileSelect"
 
+
+
+import { SaveFig } from "components/Workspace/Visualize/Editor/SaveFig"
+import { SelectedItemIdContext } from "components/Workspace/Visualize/VisualizeItemEditor"
+import { getImageData } from "store/slice/DisplayData/DisplayDataActions"
+import { setNewDisplayDataPath } from "store/slice/VisualizeItem/VisualizeItemActions"
 import {
   selectImageItemShowGrid,
   selectImageItemShowLine,
@@ -21,8 +41,6 @@ import {
   selectDisplayDataIsSingle,
   selectImageItemAlpha,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
-import { SelectedItemIdContext } from "../VisualizeItemEditor"
-
 import {
   setImageItemShowGrid,
   setImageItemShowLine,
@@ -36,22 +54,8 @@ import {
   setImageItemRoiAlpha,
   setImageItemAlpha,
 } from "store/slice/VisualizeItem/VisualizeItemSlice"
-
-import "react-linear-gradient-picker/dist/index.css"
-import { FileSelectImple } from "components/Workspace/FlowChart/FlowChartNode/FileSelect"
-import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
-import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
-import { FILE_TREE_TYPE_SET } from "api/files/Files"
-import { Box, TextField } from "@mui/material"
-import { GradientColorPicker } from "./GradientColorPicker"
-import { ColorType } from "store/slice/VisualizeItem/VisualizeItemType"
-import { DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
-import Button from "@mui/material/Button"
-import { getImageData } from "store/slice/DisplayData/DisplayDataActions"
-import { setNewDisplayDataPath } from "store/slice/VisualizeItem/VisualizeItemActions"
-import { SaveFig } from "./SaveFig"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
-import { AppDispatch } from "../../../../store/store"
+import { AppDispatch } from "store/store"
 
 export const ImageItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)

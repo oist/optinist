@@ -1,6 +1,6 @@
+import { BASE_URL } from "const/API"
 import axios from "utils/axios"
 
-import { BASE_URL } from "const/API"
 
 export const FILE_TREE_TYPE_SET = {
   IMAGE: "image",

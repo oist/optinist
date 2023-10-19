@@ -1,7 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 
-import { ThunkApiConfig } from "store/store"
-import { PIPELINE_SLICE_NAME } from "./PipelineType"
 import {
   runApi,
   runByUidApi,
@@ -13,8 +11,12 @@ import {
 import {
   selectPipelineLatestUid,
   selectRunResultPendingNodeIdList,
-} from "./PipelineSelectors"
-import { selectCurrentWorkspaceId } from "../Workspace/WorkspaceSelector"
+} from "store/slice/Pipeline/PipelineSelectors"
+import { PIPELINE_SLICE_NAME } from "store/slice/Pipeline/PipelineType"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
+import { ThunkApiConfig } from "store/store"
+
+
 
 export const run = createAsyncThunk<
   string,

@@ -1,5 +1,4 @@
 import { RootState } from "store/store"
-
 import { getChildParam } from "utils/param/ParamUtils"
 
 export const selectAlgorithmNode = (state: RootState) => state.algorithmNode

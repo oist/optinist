@@ -1,6 +1,6 @@
-import { store, rootReducer } from "store/store"
-import { reproduceWorkflow } from "store/slice/Workflow/WorkflowActions"
 import { RUN_BTN_OPTIONS } from "store/slice/Pipeline/PipelineType"
+import { reproduceWorkflow } from "store/slice/Workflow/WorkflowActions"
+import { store, rootReducer } from "store/store"
 
 describe("RecordReproduce", () => {
   const initialState = store.getState()

@@ -1,6 +1,8 @@
 import React from "react"
-import { ExperimentTable } from "./ExperimentTable"
+
+import { ExperimentTable } from "components/Workspace/Experiment/ExperimentTable"
 import { CONTENT_HEIGHT } from "const/Layout"
+
 
 const Experiment = React.memo(() => {
   return (

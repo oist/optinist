@@ -1,3 +1,7 @@
+import React, { SetStateAction } from "react"
+import { useDispatch } from "react-redux"
+
+import DeleteIcon from "@mui/icons-material/Delete"
 import {
   Button,
   Dialog,
@@ -7,10 +11,8 @@ import {
   IconButton,
   Tooltip,
 } from "@mui/material"
-import React, { SetStateAction } from "react"
-import { useDispatch } from "react-redux"
+
 import { clearFlowElements } from "store/slice/FlowElement/FlowElementSlice"
-import DeleteIcon from "@mui/icons-material/Delete"
 
 export const ClearWorkflowButton = React.memo(() => {
   const [open, setOpen] = React.useState(false)

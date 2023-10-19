@@ -1,5 +1,5 @@
-import axios from "utils/axios"
 import { getRefreshToken } from "utils/auth/AuthUtils"
+import axios from "utils/axios"
 
 export type LoginDTO = {
   email: string

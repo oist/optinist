@@ -2,26 +2,25 @@ import React from "react"
 import { useSelector } from "react-redux"
 
 import FormControl from "@mui/material/FormControl"
-import MenuItem from "@mui/material/MenuItem"
-import InputLabel from "@mui/material/InputLabel"
 import FormHelperText from "@mui/material/FormHelperText"
-import Select from "@mui/material/Select"
+import InputLabel from "@mui/material/InputLabel"
 import ListSubheader from "@mui/material/ListSubheader"
+import MenuItem from "@mui/material/MenuItem"
+import Select from "@mui/material/Select"
 
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
 } from "store/slice/DisplayData/DisplayDataType"
-import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
-import { RootState } from "store/store"
-import { selectInputNode } from "store/slice/InputNode/InputNodeSelectors"
-import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
 import { selectNodeLabelById } from "store/slice/FlowElement/FlowElementSelectors"
+import { getFileName } from "store/slice/FlowElement/FlowElementUtils"
+import { selectInputNode } from "store/slice/InputNode/InputNodeSelectors"
+import { FILE_TYPE , FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
 import {
   selectPipelineLatestUid,
   selectPipelineNodeResultSuccessList,
 } from "store/slice/Pipeline/PipelineSelectors"
-import { getFileName } from "store/slice/FlowElement/FlowElementUtils"
+import { RootState } from "store/store"
 
 export const FilePathSelect: React.FC<{
   dataType?: DATA_TYPE
@@ -155,7 +154,7 @@ export const FilePathSelect: React.FC<{
 
   return (
     <FormControl style={{ minWidth: 150, maxWidth: 220 }} variant="standard">
-      <InputLabel>{!!label ? label : "Select Item"}</InputLabel>
+      <InputLabel>{label ? label : "Select Item"}</InputLabel>
       <Select
         value={`${selectedNodeId}/${selectedFilePath}`}
         open={open}

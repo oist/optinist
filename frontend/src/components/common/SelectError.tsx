@@ -1,3 +1,5 @@
+import { FC, FocusEvent } from "react"
+
 import {
   MenuItem,
   Select,
@@ -5,7 +7,6 @@ import {
   styled,
   Typography,
 } from "@mui/material"
-import { FC, FocusEvent } from "react"
 
 type SelectErrorProps = {
   value?: string

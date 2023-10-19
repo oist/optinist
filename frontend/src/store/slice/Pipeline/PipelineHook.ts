@@ -1,36 +1,40 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
 
+
+
+import { RUN_STATUS } from "./PipelineType"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { useSnackbar, VariantType } from "notistack"
+import { IS_STANDALONE, STANDALONE_WORKSPACE_ID } from "const/Mode"
 import { selectRunPostData } from "store/slice/Run/RunSelectors"
-import {
-  selectPipelineIsCanceled,
-  selectPipelineIsStartedSuccess,
-  selectPipelineLatestUid,
-  selectPipelineStatus,
-} from "./PipelineSelectors"
+import { getWorkspace } from "store/slice/Workspace/WorkspaceActions"
+import { AppDispatch } from "store/store"
+import { clearExperiments } from "store/slice/Experiments/ExperimentsSlice"
+
 import {
   run,
   pollRunResult,
   runByCurrentUid,
   cancelResult,
-} from "./PipelineActions"
-import { selectFilePathIsUndefined } from "../InputNode/InputNodeSelectors"
-import { selectAlgorithmNodeNotExist } from "../AlgorithmNode/AlgorithmNodeSelectors"
-import { getExperiments } from "../Experiments/ExperimentsActions"
-import { fetchWorkflow } from "../Workflow/WorkflowActions"
-import { useSnackbar, VariantType } from "notistack"
-import { RUN_STATUS } from "./PipelineType"
-import { useLocation, useNavigate, useParams } from "react-router-dom"
-import { IS_STANDALONE, STANDALONE_WORKSPACE_ID } from "const/Mode"
+} from "store/slice/Pipeline/PipelineActions"
+
+import {
+  selectPipelineIsCanceled,
+  selectPipelineIsStartedSuccess,
+  selectPipelineLatestUid,
+  selectPipelineStatus,
+} from "store/slice/Pipeline/PipelineSelectors"
 import {
   clearCurrentWorkspace,
   setActiveTab,
   setCurrentWorkspace,
-} from "../Workspace/WorkspaceSlice"
-import { clearExperiments } from "../Experiments/ExperimentsSlice"
-import { getWorkspace } from "store/slice/Workspace/WorkspaceActions"
+} from "store/slice/Workspace/WorkspaceSlice"
+import { selectAlgorithmNodeNotExist } from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
+import { getExperiments } from "store/slice/Experiments/ExperimentsActions"
+import { selectFilePathIsUndefined } from "store/slice/InputNode/InputNodeSelectors"
+import { fetchWorkflow } from "store/slice/Workflow/WorkflowActions"
 import { selectIsWorkspaceOwner } from "../Workspace/WorkspaceSelector"
-import { AppDispatch } from "../../store"
 
 const POLLING_INTERVAL = 5000
 

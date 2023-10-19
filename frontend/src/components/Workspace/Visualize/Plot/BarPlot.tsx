@@ -1,15 +1,18 @@
 import React from "react"
-import { useSelector, useDispatch } from "react-redux"
 import PlotlyChart from "react-plotlyjs-ts"
-import LinearProgress from "@mui/material/LinearProgress"
-import Typography from "@mui/material/Typography"
-import Box from "@mui/material/Box"
-import InputLabel from "@mui/material/InputLabel"
-import MenuItem from "@mui/material/MenuItem"
-import FormControl from "@mui/material/FormControl"
-import Select, { SelectChangeEvent } from "@mui/material/Select"
+import { useSelector, useDispatch } from "react-redux"
 
-import { DisplayDataContext } from "../DataContext"
+import Box from "@mui/material/Box"
+import FormControl from "@mui/material/FormControl"
+import InputLabel from "@mui/material/InputLabel"
+import LinearProgress from "@mui/material/LinearProgress"
+import MenuItem from "@mui/material/MenuItem"
+import Select, { SelectChangeEvent } from "@mui/material/Select"
+import Typography from "@mui/material/Typography"
+
+import { BarData } from "api/outputs/Outputs"
+import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
+import { getBarData } from "store/slice/DisplayData/DisplayDataActions"
 import {
   selectBarData,
   selectBarDataError,
@@ -19,8 +22,6 @@ import {
   selectBarIndex,
   selectBarMeta,
 } from "store/slice/DisplayData/DisplayDataSelectors"
-import { getBarData } from "store/slice/DisplayData/DisplayDataActions"
-import { BarData } from "api/outputs/Outputs"
 import {
   selectBarItemIndex,
   selectVisualizeItemHeight,
@@ -29,7 +30,7 @@ import {
   selectVisualizeSaveFormat,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import { setBarItemIndex } from "store/slice/VisualizeItem/VisualizeItemSlice"
-import { AppDispatch } from "../../../../store/store"
+import { AppDispatch } from "store/store"
 
 export const BarPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)

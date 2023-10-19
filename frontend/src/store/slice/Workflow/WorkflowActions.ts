@@ -1,5 +1,5 @@
-import { WORKFLOW_SLICE_NAME } from "./WorkflowType"
 import { createAsyncThunk } from "@reduxjs/toolkit"
+
 import {
   fetchWorkflowApi,
   reproduceWorkflowApi,
@@ -7,6 +7,7 @@ import {
   WorkflowConfigDTO,
   WorkflowWithResultDTO,
 } from "api/workflow/Workflow"
+import { WORKFLOW_SLICE_NAME } from "store/slice/Workflow/WorkflowType"
 
 export const fetchWorkflow = createAsyncThunk<WorkflowWithResultDTO, number>(
   `${WORKFLOW_SLICE_NAME}/fetchExperiment`,

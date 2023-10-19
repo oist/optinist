@@ -2,14 +2,21 @@ import React from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import Box from "@mui/material/Box"
-import Paper from "@mui/material/Paper"
+import FormControl from "@mui/material/FormControl"
 import InputLabel from "@mui/material/InputLabel"
 import MenuItem from "@mui/material/MenuItem"
+import Paper from "@mui/material/Paper"
 import Select, { SelectChangeEvent } from "@mui/material/Select"
-import FormControl from "@mui/material/FormControl"
 
-import { arrayEqualityFn } from "utils/EqualityUtils"
-import { RootState } from "store/store"
+import { useMouseDragHandler } from "components/utils/MouseDragUtil"
+import { DisplayDataItem } from "components/Workspace/Visualize/DisplayDataItem"
+import { FilePathSelect } from "components/Workspace/Visualize/FilePathSelect"
+import { DisplayDataItemLayoutMenuIcon } from "components/Workspace/Visualize/VisualizeItemLayoutMenuIcon"
+import {
+  DATA_TYPE,
+  DATA_TYPE_SET,
+} from "store/slice/DisplayData/DisplayDataType"
+import { setNewDisplayDataPath } from "store/slice/VisualizeItem/VisualizeItemActions"
 import {
   selectDisplayDataIsSingle,
   selectImageItemFilePath,
@@ -29,15 +36,8 @@ import {
   setRoiItemFilePath,
   setTimeSeriesRefImageItemId,
 } from "store/slice/VisualizeItem/VisualizeItemSlice"
-import {
-  DATA_TYPE,
-  DATA_TYPE_SET,
-} from "store/slice/DisplayData/DisplayDataType"
-import { setNewDisplayDataPath } from "store/slice/VisualizeItem/VisualizeItemActions"
-import { useMouseDragHandler } from "components/utils/MouseDragUtil"
-import { DisplayDataItemLayoutMenuIcon } from "./VisualizeItemLayoutMenuIcon"
-import { DisplayDataItem } from "./DisplayDataItem"
-import { FilePathSelect } from "./FilePathSelect"
+import { RootState } from "store/store"
+import { arrayEqualityFn } from "utils/EqualityUtils"
 
 export const VisualizeItem = React.memo<{ itemId: number }>(({ itemId }) => {
   const dispatch = useDispatch()

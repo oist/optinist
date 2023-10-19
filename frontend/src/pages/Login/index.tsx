@@ -1,10 +1,14 @@
-import { Box, Stack, styled, Typography } from "@mui/material"
+import { ChangeEvent, FormEvent, useState } from "react"
 import { useDispatch } from "react-redux"
+import { Link, useNavigate } from "react-router-dom"
+
+import { Box, Stack, styled, Typography } from "@mui/material"
+
+import Loading from "components/common/Loading"
 import { getMe, login } from "store/slice/User/UserActions"
 import { AppDispatch } from "store/store"
-import { ChangeEvent, FormEvent, useState } from "react"
-import { Link, useNavigate } from "react-router-dom"
-import Loading from "components/common/Loading"
+
+
 
 const Login = () => {
   const navigate = useNavigate()
@@ -40,7 +44,7 @@ const Login = () => {
   }
 
   const validateSubmit = () => {
-    let errors = { email: "", password: "" }
+    const errors = { email: "", password: "" }
     if (!values.email) {
       errors.email = "This field is required"
     }

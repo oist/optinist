@@ -1,7 +1,9 @@
 import { FC, useState } from "react"
+
 import { Box, Button, Modal, styled, Typography } from "@mui/material"
+
 import Input from "components/common/Input"
-import Loading from "../common/Loading"
+import Loading from "components/common/Loading"
 
 type DeleteConfirmModalProps = {
   onClose: () => void

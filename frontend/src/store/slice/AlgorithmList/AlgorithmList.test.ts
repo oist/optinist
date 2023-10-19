@@ -1,6 +1,6 @@
-import { getAlgoList } from "./AlgorithmListActions"
-import reducer, { initialState } from "./AlgorithmListSlice"
-import { AlgorithmListType } from "./AlgorithmListType"
+import { getAlgoList } from "store/slice/AlgorithmList/AlgorithmListActions"
+import reducer, { initialState } from "store/slice/AlgorithmList/AlgorithmListSlice"
+import { AlgorithmListType } from "store/slice/AlgorithmList/AlgorithmListType"
 
 describe("getAlgoList", () => {
   test(getAlgoList.fulfilled.type, () => {

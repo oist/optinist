@@ -4,6 +4,7 @@ import {
   Action,
   combineReducers,
 } from "@reduxjs/toolkit"
+
 import {
   algorithmListReducer,
   algorithmNodeReducer,
@@ -22,7 +23,7 @@ import {
   experimentsReducer,
   workspaceReducer,
   userReducer,
-} from "./slice"
+} from "store/slice"
 
 export const rootReducer = combineReducers({
   algorithmList: algorithmListReducer,

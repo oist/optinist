@@ -1,4 +1,16 @@
 import {
+  ChangeEvent,
+  MouseEvent as MouseEventReact,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
+import { useDispatch, useSelector } from "react-redux"
+
+import CancelIcon from "@mui/icons-material/Cancel"
+import CheckIcon from "@mui/icons-material/Check"
+import {
   Box,
   Button,
   Dialog,
@@ -13,24 +25,14 @@ import {
   GridRenderCellParams,
   GridValidRowModel,
 } from "@mui/x-data-grid"
-import {
-  ChangeEvent,
-  MouseEvent as MouseEventReact,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-} from "react"
-import { useDispatch, useSelector } from "react-redux"
-import CancelIcon from "@mui/icons-material/Cancel"
-import { postListUserShareWorkspaces } from "store/slice/Workspace/WorkspaceActions"
-import { selectListSearch, selectLoading } from "store/slice/User/UserSelector"
-import { getListSearch } from "store/slice/User/UserActions"
-import Loading from "components/common/Loading"
+
 import { UserDTO } from "api/users/UsersApiDTO"
-import CheckIcon from "@mui/icons-material/Check"
+import Loading from "components/common/Loading"
+import { getListSearch } from "store/slice/User/UserActions"
+import { selectListSearch, selectLoading } from "store/slice/User/UserSelector"
 import { resetUserSearch } from "store/slice/User/UserSlice"
-import { AppDispatch } from "../../store/store"
+import { postListUserShareWorkspaces } from "store/slice/Workspace/WorkspaceActions"
+import { AppDispatch } from "store/store"
 
 type PopupType = {
   open: boolean
@@ -109,7 +111,7 @@ const PopupShare = ({
   const [textSearch, setTextSearch] = useState("")
   const [stateUserShare, setStateUserShare] = useState(usersShare || undefined)
   const dispatch = useDispatch<AppDispatch>()
-  let timeout = useRef<NodeJS.Timeout | undefined>()
+  const timeout = useRef<NodeJS.Timeout | undefined>()
 
   useEffect(() => {
     if (usersShare) {
@@ -191,7 +193,7 @@ const PopupShare = ({
 
   const handleOke = async () => {
     if (!stateUserShare) return
-    let newUserIds = stateUserShare.users.map((user) => user.id)
+    const newUserIds = stateUserShare.users.map((user) => user.id)
     await dispatch(
       postListUserShareWorkspaces({
         id,

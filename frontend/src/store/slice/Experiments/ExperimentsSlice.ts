@@ -1,20 +1,22 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit"
-import { EXPERIMENTS_SLICE_NAME, Experiments } from "./ExperimentsType"
+
 import {
   getExperiments,
   deleteExperimentByUid,
   deleteExperimentByList,
-} from "./ExperimentsActions"
+} from "store/slice/Experiments/ExperimentsActions"
+import { EXPERIMENTS_SLICE_NAME, Experiments } from "store/slice/Experiments/ExperimentsType"
 import {
   convertToExperimentListType,
   convertToExperimentType,
-} from "./ExperimentsUtils"
+} from "store/slice/Experiments/ExperimentsUtils"
 import {
   pollRunResult,
   run,
   runByCurrentUid,
-} from "../Pipeline/PipelineActions"
-import { fetchWorkflow, reproduceWorkflow } from "../Workflow/WorkflowActions"
+} from "store/slice/Pipeline/PipelineActions"
+import { fetchWorkflow, reproduceWorkflow } from "store/slice/Workflow/WorkflowActions"
+
 
 export const initialState: Experiments = {
   status: "uninitialized",

@@ -1,4 +1,4 @@
-import { FileUploaderType } from "./FileUploaderType"
+import { FileUploaderType } from "store/slice/FileUploader/FileUploaderType"
 
 export const inistialUploaderState: FileUploaderType = {
   path: undefined,

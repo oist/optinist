@@ -1,4 +1,4 @@
-import { DATA_TYPE, DATA_TYPE_SET } from "./DisplayDataType"
+import { DATA_TYPE, DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
 
 /**
  * サーバーサイドの値をマッピング

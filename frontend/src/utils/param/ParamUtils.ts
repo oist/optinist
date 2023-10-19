@@ -4,7 +4,7 @@ import {
   ParamParent,
   ParamType,
   ParamMap,
-} from "./ParamType"
+} from "utils/param/ParamType"
 
 export function getChildParam(
   path: string,

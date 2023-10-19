@@ -1,8 +1,9 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 
 import { getNWBParamsApi } from "api/nwb/NWB"
+import { NWB_SLICE_NAME } from "store/slice/NWB/NWBType"
 import { ParamDTO } from "utils/param/ParamType"
-import { NWB_SLICE_NAME } from "./NWBType"
+
 
 export const getNWBParams = createAsyncThunk<ParamDTO, void>(
   `${NWB_SLICE_NAME}/getNWBParams`,

@@ -1,13 +1,14 @@
 import React, { useContext } from "react"
+
 import { Button, Tooltip, Typography } from "@mui/material"
 import ButtonGroup from "@mui/material/ButtonGroup"
 
 import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from "api/files/Files"
-import { LinearProgressWithLabel } from "./LinerProgressWithLabel"
-import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
+import { DialogContext } from "components/Workspace/FlowChart/DialogContext"
+import { LinearProgressWithLabel } from "components/Workspace/FlowChart/FlowChartNode/LinerProgressWithLabel"
 import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
 import { getLabelByPath } from "store/slice/FlowElement/FlowElementUtils"
-import { DialogContext } from "components/Workspace/FlowChart/DialogContext"
+import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
 
 export const FileSelect = React.memo<{
   multiSelect?: boolean
@@ -15,41 +16,41 @@ export const FileSelect = React.memo<{
   fileType: FILE_TYPE
   nodeId?: string
   onChangeFilePath: (path: string | string[]) => void
-}>(({ multiSelect = false, filePath, nodeId, fileType, onChangeFilePath }) => {
-  const {
-    // filePath: uploadedFilePath,
-    onUploadFile,
-    pending,
-    uninitialized,
-    progress,
-    error,
-  } = useFileUploader({ fileType, nodeId })
-  const onUploadFileHandle = (formData: FormData, fileName: string) => {
-    onUploadFile(formData, fileName)
-  }
-  return (
-    <>
-      {!uninitialized && pending && progress != null && (
-        <div style={{ marginLeft: 2, marginRight: 2 }}>
-          <LinearProgressWithLabel value={progress} />
-        </div>
-      )}
-      <FileSelectImple
-        multiSelect={multiSelect}
-        filePath={filePath}
-        onSelectFile={onChangeFilePath}
-        onUploadFile={onUploadFileHandle}
-        fileTreeType={fileType}
-        selectButtonLabel={`Select ${fileType}`}
-      />
-      {error != null && (
-        <Typography variant="caption" color="error">
-          {error}
-        </Typography>
-      )}
-    </>
-  )
-})
+    }>(({ multiSelect = false, filePath, nodeId, fileType, onChangeFilePath }) => {
+      const {
+        // filePath: uploadedFilePath,
+        onUploadFile,
+        pending,
+        uninitialized,
+        progress,
+        error,
+      } = useFileUploader({ fileType, nodeId })
+      const onUploadFileHandle = (formData: FormData, fileName: string) => {
+        onUploadFile(formData, fileName)
+      }
+      return (
+        <>
+          {!uninitialized && pending && progress != null && (
+            <div style={{ marginLeft: 2, marginRight: 2 }}>
+              <LinearProgressWithLabel value={progress} />
+            </div>
+          )}
+          <FileSelectImple
+            multiSelect={multiSelect}
+            filePath={filePath}
+            onSelectFile={onChangeFilePath}
+            onUploadFile={onUploadFileHandle}
+            fileTreeType={fileType}
+            selectButtonLabel={`Select ${fileType}`}
+          />
+          {error != null && (
+            <Typography variant="caption" color="error">
+              {error}
+            </Typography>
+          )}
+        </>
+      )
+    })
 
 type FileSelectImpleProps = {
   multiSelect?: boolean
@@ -106,10 +107,10 @@ export const FileSelectImple = React.memo<FileSelectImpleProps>(
               })
             }}
           >
-            {!!selectButtonLabel ? selectButtonLabel : "Select File"}
+            {selectButtonLabel ? selectButtonLabel : "Select File"}
           </Button>
           <Button onClick={onClick} variant="outlined">
-            {!!uploadButtonLabel ? uploadButtonLabel : "Load"}
+            {uploadButtonLabel ? uploadButtonLabel : "Load"}
           </Button>
         </ButtonGroup>
         <div>
@@ -124,9 +125,9 @@ export const FileSelectImple = React.memo<FileSelectImpleProps>(
               height: 0,
             }}
           />
-          <Tooltip title={!!fileName ? fileName : null}>
+          <Tooltip title={fileName ? fileName : null}>
             <Typography className="selectFilePath" variant="body2">
-              {!!fileName ? fileName : "No file is selected."}
+              {fileName ? fileName : "No file is selected."}
             </Typography>
           </Tooltip>
         </div>

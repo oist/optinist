@@ -1,10 +1,11 @@
-import axios from "utils/axios"
 import qs from "qs"
+
 import {
   ItemsWorkspace,
   WorkspaceDataDTO,
   ListUserShareWorkspaceDTO,
 } from "store/slice/Workspace/WorkspaceType"
+import axios from "utils/axios"
 
 export type WorkspacePostDataDTO = { name: string; id?: number }
 
@@ -29,7 +30,7 @@ export const delWorkspaceApi = async (id: number): Promise<boolean> => {
 export const postWorkspaceApi = async (
   data: WorkspacePostDataDTO,
 ): Promise<ItemsWorkspace> => {
-  const response = await axios.post(`/workspace`, data)
+  const response = await axios.post("/workspace", data)
   return response.data
 }
 

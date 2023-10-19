@@ -2,8 +2,8 @@ import {
   deleteExperimentByList,
   deleteExperimentByUid,
   getExperiments,
-} from "./ExperimentsActions"
-import reducer, { initialState } from "./ExperimentsSlice"
+} from "store/slice/Experiments/ExperimentsActions"
+import reducer, { initialState } from "store/slice/Experiments/ExperimentsSlice"
 
 describe("Experiments", () => {
   const uid1 = "96844a59"

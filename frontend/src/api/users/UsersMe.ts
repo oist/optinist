@@ -1,5 +1,6 @@
+import { UserDTO, UpdateUserDTO, UpdateUserPasswordDTO } from "api/users/UsersApiDTO"
 import axios from "utils/axios"
-import { UserDTO, UpdateUserDTO, UpdateUserPasswordDTO } from "./UsersApiDTO"
+
 
 export const getMeApi = async (): Promise<UserDTO> => {
   const response = await axios.get("/users/me")

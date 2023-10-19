@@ -1,6 +1,20 @@
 import React from "react"
-
 import { useSelector } from "react-redux"
+
+import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
+import { BarPlot } from "components/Workspace/Visualize/Plot/BarPlot"
+import { CsvPlot } from "components/Workspace/Visualize/Plot/CsvPlot"
+import { HeatMapPlot } from "components/Workspace/Visualize/Plot/HeatMapPlot"
+import { HistogramPlot } from "components/Workspace/Visualize/Plot/HistogramPlot"
+import { HTMLPlot } from "components/Workspace/Visualize/Plot/HTMLPlot"
+import { ImagePlot } from "components/Workspace/Visualize/Plot/ImagePlot"
+import { LinePlot } from "components/Workspace/Visualize/Plot/LinePlot"
+import { PiePlot } from "components/Workspace/Visualize/Plot/PiePlot"
+import { PolarPlot } from "components/Workspace/Visualize/Plot/PolarPlot"
+import { RoiPlot } from "components/Workspace/Visualize/Plot/RoiPlot"
+import { ScatterPlot } from "components/Workspace/Visualize/Plot/ScatterPlot"
+
+import { TimeSeriesPlot } from "components/Workspace/Visualize/Plot/TimeSeriesPlot"
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
@@ -10,19 +24,6 @@ import {
   selectVisualizeDataNodeId,
   selectVisualizeDataType,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
-import { DisplayDataContext } from "./DataContext"
-import { HeatMapPlot } from "./Plot/HeatMapPlot"
-import { ImagePlot } from "./Plot/ImagePlot"
-import { RoiPlot } from "./Plot/RoiPlot"
-import { ScatterPlot } from "./Plot/ScatterPlot"
-import { CsvPlot } from "./Plot/CsvPlot"
-import { TimeSeriesPlot } from "./Plot/TimeSeriesPlot"
-import { BarPlot } from "./Plot/BarPlot"
-import { HTMLPlot } from "./Plot/HTMLPlot"
-import { HistogramPlot } from "./Plot/HistogramPlot"
-import { LinePlot } from "./Plot/LinePlot"
-import { PiePlot } from "./Plot/PiePlot"
-import { PolarPlot } from "./Plot/PolarPlot"
 
 export const DisplayDataItem = React.memo<{
   itemId: number

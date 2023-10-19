@@ -18,6 +18,31 @@ import "reactflow/dist/style.css"
 import { useDrop } from "react-dnd"
 
 import "style/flow.css"
+import { FormHelperText, Popover } from "@mui/material"
+
+import { FileSelectDialog } from "components/common/FileSelectDialog"
+import {
+  DialogContext,
+  ErrorDialogValue,
+  OpenDialogValue,
+} from "components/Workspace/FlowChart/DialogContext"
+import {
+  DND_ITEM_TYPE_SET,
+  TreeItemCollectedProps,
+  TreeItemDragObject,
+  TreeItemDropResult,
+} from "components/Workspace/FlowChart/DnDItemType"
+import { AlgorithmOutputDialog } from "components/Workspace/FlowChart/FlowChartNode/AlgorithmOutputDialog"
+import {
+  reactFlowEdgeTypes,
+  reactFlowNodeTypes,
+} from "components/Workspace/FlowChart/FlowChartNode/ReactFlowNodeTypesConst"
+import { ToolBar } from "components/Workspace/ToolBar"
+import {
+  selectFlowEdges,
+  selectFlowNodes,
+  selectFlowPosition,
+} from "store/slice/FlowElement/FlowElementSelectors"
 import {
   editFlowNodePositionById,
   setEdgesChange,
@@ -25,32 +50,9 @@ import {
   setFlowPosition,
   setNodesChange,
 } from "store/slice/FlowElement/FlowElementSlice"
-import {
-  selectFlowEdges,
-  selectFlowNodes,
-  selectFlowPosition,
-} from "store/slice/FlowElement/FlowElementSelectors"
+import { NodeData } from "store/slice/FlowElement/FlowElementType"
 import { UseRunPipelineReturnType } from "store/slice/Pipeline/PipelineHook"
-import { ToolBar } from "components/Workspace/ToolBar"
-import {
-  reactFlowEdgeTypes,
-  reactFlowNodeTypes,
-} from "./FlowChartNode/ReactFlowNodeTypesConst"
-import {
-  DND_ITEM_TYPE_SET,
-  TreeItemCollectedProps,
-  TreeItemDragObject,
-  TreeItemDropResult,
-} from "./DnDItemType"
-import { AlgorithmOutputDialog } from "./FlowChartNode/AlgorithmOutputDialog"
-import {
-  DialogContext,
-  ErrorDialogValue,
-  OpenDialogValue,
-} from "components/Workspace/FlowChart/DialogContext"
-import { FileSelectDialog } from "components/common/FileSelectDialog"
-import { FormHelperText, Popover } from "@mui/material"
-import { NodeData } from "../../../store/slice/FlowElement/FlowElementType"
+
 
 const initDialogFile = {
   filePath: "",

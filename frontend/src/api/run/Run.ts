@@ -1,4 +1,3 @@
-import axios from "utils/axios"
 import type { Edge, Node } from "reactflow"
 
 import { BASE_URL } from "const/API"
@@ -7,6 +6,7 @@ import type {
   InputNodeData,
 } from "store/slice/FlowElement/FlowElementType"
 import type { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
+import axios from "utils/axios"
 import type { ParamMap } from "utils/param/ParamType"
 
 export type RunPostData = {

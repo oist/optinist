@@ -1,7 +1,9 @@
-import { Box, Button, Modal, styled, Typography } from "@mui/material"
 import { ChangeEvent, FC, useState } from "react"
-import { regexIgnoreS, regexPassword } from "const/Auth"
+
+import { Box, Button, Modal, styled, Typography } from "@mui/material"
+
 import InputPassword from "components/Account/InputPassword"
+import { regexIgnoreS, regexPassword } from "const/Auth"
 
 type ChangePasswordModalProps = {
   onClose: () => void

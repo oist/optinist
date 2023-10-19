@@ -1,8 +1,7 @@
 import React, { useState } from "react"
-
-import { GradientPickerPopover } from "react-linear-gradient-picker"
 import { SketchPicker } from "react-color"
-import { PALETTE_COLOR_SHAPE_TYPE } from "react-linear-gradient-picker"
+import { GradientPickerPopover , PALETTE_COLOR_SHAPE_TYPE } from "react-linear-gradient-picker"
+
 import { ColorType } from "store/slice/VisualizeItem/VisualizeItemType"
 
 const GradientPickerPopoverComponent =
@@ -11,49 +10,49 @@ const GradientPickerPopoverComponent =
 export const GradientColorPicker = React.memo<{
   colors: { rgb: string; offset: string }[]
   dispatchSetColor: (colorCode: ColorType[]) => void
-}>(({ colors, dispatchSetColor }) => {
-  const palette: PALETTE_COLOR_SHAPE_TYPE[] = colors.map((value) => {
-    return {
-      offset: value.offset,
-      color: value.rgb,
-    }
-  })
+    }>(({ colors, dispatchSetColor }) => {
+      const palette: PALETTE_COLOR_SHAPE_TYPE[] = colors.map((value) => {
+        return {
+          offset: value.offset,
+          color: value.rgb,
+        }
+      })
 
-  const onPaletteChange = (palette: PALETTE_COLOR_SHAPE_TYPE[]) => {
-    const colorCode = palette.map((value) => {
-      const color = value.color
-      const rgbStr = color.replace(/[^0-9,]/g, "").split(",")
-      const rgb = {
-        r: Number(rgbStr[0]),
-        g: Number(rgbStr[1]),
-        b: Number(rgbStr[2]),
+      const onPaletteChange = (palette: PALETTE_COLOR_SHAPE_TYPE[]) => {
+        const colorCode = palette.map((value) => {
+          const color = value.color
+          const rgbStr = color.replace(/[^0-9,]/g, "").split(",")
+          const rgb = {
+            r: Number(rgbStr[0]),
+            g: Number(rgbStr[1]),
+            b: Number(rgbStr[2]),
+          }
+          return {
+            rgb: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
+            offset: value.offset,
+          }
+        })
+        dispatchSetColor(colorCode)
       }
-      return {
-        rgb: `rgb(${rgb.r}, ${rgb.g}, ${rgb.b})`,
-        offset: value.offset,
-      }
+
+      const [open, setOpen] = useState(false)
+
+      return (
+        <GradientPickerPopoverComponent
+          open={open}
+          setOpen={() => setOpen(!open)}
+          // showAnglePicker={true}
+          width={150}
+          maxStops={10}
+          paletteHeight={25}
+          palette={palette}
+          onPaletteChange={onPaletteChange}
+          flatStyle={true}
+        >
+          <WrappedSketchPicker />
+        </GradientPickerPopoverComponent>
+      )
     })
-    dispatchSetColor(colorCode)
-  }
-
-  const [open, setOpen] = useState(false)
-
-  return (
-    <GradientPickerPopoverComponent
-      open={open}
-      setOpen={() => setOpen(!open)}
-      // showAnglePicker={true}
-      width={150}
-      maxStops={10}
-      paletteHeight={25}
-      palette={palette}
-      onPaletteChange={onPaletteChange}
-      flatStyle={true}
-    >
-      <WrappedSketchPicker />
-    </GradientPickerPopoverComponent>
-  )
-})
 
 type WrapperPropTypes = {
   onSelect?: (color: string, opacity?: number) => void

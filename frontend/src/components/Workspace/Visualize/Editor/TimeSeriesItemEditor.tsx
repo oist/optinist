@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
+
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import {
   AccordionDetails,
   AccordionSummary,
@@ -11,8 +13,16 @@ import {
 } from "@mui/material"
 import Box from "@mui/material/Box"
 import Checkbox from "@mui/material/Checkbox"
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 
+import { Accordion } from "components/common/Accordion"
+import { SaveFig } from "components/Workspace/Visualize/Editor/SaveFig"
+import { SelectedItemIdContext } from "components/Workspace/Visualize/VisualizeItemEditor"
+import {
+  getTimeSeriesAllData,
+  getTimeSeriesDataById,
+} from "store/slice/DisplayData/DisplayDataActions"
+import { selectFrameRate } from "store/slice/Experiments/ExperimentsSelectors"
+import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
 import {
   selectTimeSeriesItemDrawOrderList,
   selectTimeSeriesItemOffset,
@@ -26,7 +36,6 @@ import {
   selectTimeSeriesItemKeys,
   selectImageItemRangeUnit,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
-import { SelectedItemIdContext } from "../VisualizeItemEditor"
 import {
   setTimeSeriesItemOffset,
   setTimeSeriesItemShowGrid,
@@ -39,17 +48,8 @@ import {
   setTimeSeriesItemDrawOrderList,
   changeRangeUnit,
 } from "store/slice/VisualizeItem/VisualizeItemSlice"
-import {
-  getTimeSeriesAllData,
-  getTimeSeriesDataById,
-} from "store/slice/DisplayData/DisplayDataActions"
+import { AppDispatch } from "store/store"
 import { arrayEqualityFn } from "utils/EqualityUtils"
-import { Accordion } from "components/common/Accordion"
-
-import { SaveFig } from "./SaveFig"
-import { selectFrameRate } from "../../../../store/slice/Experiments/ExperimentsSelectors"
-import { selectPipelineLatestUid } from "../../../../store/slice/Pipeline/PipelineSelectors"
-import { AppDispatch } from "../../../../store/store"
 
 export const TimeSeriesItemEditor: React.FC = () => {
   return (

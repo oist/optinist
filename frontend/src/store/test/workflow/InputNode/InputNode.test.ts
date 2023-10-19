@@ -1,12 +1,12 @@
-import { store, rootReducer } from "store/store"
 import { REACT_FLOW_NODE_TYPE_KEY } from "const/flowchart"
-import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
 import { addInputNode } from "store/slice/FlowElement/FlowElementActions"
-import { NODE_TYPE_SET } from "store/slice/FlowElement/FlowElementType"
 import { selectNodeById } from "store/slice/FlowElement/FlowElementSelectors"
-import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
-import { selectInputNodeById } from "store/slice/InputNode/InputNodeSelectors"
+import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
+import { NODE_TYPE_SET } from "store/slice/FlowElement/FlowElementType"
 import { setInputNodeFilePath } from "store/slice/InputNode/InputNodeActions"
+import { selectInputNodeById } from "store/slice/InputNode/InputNodeSelectors"
+import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
+import { store, rootReducer } from "store/store"
 
 describe("InputNode", () => {
   const initialRootState = store.getState()

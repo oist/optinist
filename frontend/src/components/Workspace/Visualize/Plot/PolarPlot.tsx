@@ -1,18 +1,7 @@
 import React from "react"
-import { useSelector, useDispatch } from "react-redux"
 import PlotlyChart from "react-plotlyjs-ts"
-import { DisplayDataContext } from "../DataContext"
-import {
-  selectPolarColumns,
-  selectPolarData,
-  selectPolarDataError,
-  selectPolarDataIsFulfilled,
-  selectPolarDataIsInitialized,
-  selectPolarDataIsPending,
-  selectPolarIndex,
-  selectPolarMeta,
-} from "store/slice/DisplayData/DisplayDataSelectors"
-import { getPolarData } from "store/slice/DisplayData/DisplayDataActions"
+import { useSelector, useDispatch } from "react-redux"
+
 import {
   Box,
   FormControl,
@@ -23,13 +12,26 @@ import {
   SelectChangeEvent,
   Typography,
 } from "@mui/material"
+
+import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
+import { getPolarData } from "store/slice/DisplayData/DisplayDataActions"
+import {
+  selectPolarColumns,
+  selectPolarData,
+  selectPolarDataError,
+  selectPolarDataIsFulfilled,
+  selectPolarDataIsInitialized,
+  selectPolarDataIsPending,
+  selectPolarIndex,
+  selectPolarMeta,
+} from "store/slice/DisplayData/DisplayDataSelectors"
 import {
   selectPolarItemSelectedIndex,
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import { setPolartemItemSelectedIndex } from "store/slice/VisualizeItem/VisualizeItemSlice"
-import { AppDispatch } from "../../../../store/store"
+import { AppDispatch } from "store/store"
 
 export const PolarPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)

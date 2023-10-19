@@ -1,8 +1,13 @@
 import React from "react"
 import PlotlyChart from "react-plotlyjs-ts"
 import { useSelector, useDispatch } from "react-redux"
-import { DisplayDataContext } from "../DataContext"
-import { twoDimarrayEqualityFn } from "utils/EqualityUtils"
+
+import createColormap from "colormap"
+
+import { LinearProgress, Typography } from "@mui/material"
+
+import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
+import { getRoiData } from "store/slice/DisplayData/DisplayDataActions"
 import {
   selectRoiData,
   selectRoiDataError,
@@ -11,18 +16,16 @@ import {
   selectRoiDataIsPending,
   selectRoiMeta,
 } from "store/slice/DisplayData/DisplayDataSelectors"
-import { LinearProgress, Typography } from "@mui/material"
-import { getRoiData } from "store/slice/DisplayData/DisplayDataActions"
-import createColormap from "colormap"
-import { ColorType } from "store/slice/VisualizeItem/VisualizeItemType"
 import {
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
   selectVisualizeSaveFilename,
   selectVisualizeSaveFormat,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
+import { ColorType } from "store/slice/VisualizeItem/VisualizeItemType"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
-import { AppDispatch } from "../../../../store/store"
+import { AppDispatch } from "store/store"
+import { twoDimarrayEqualityFn } from "utils/EqualityUtils"
 
 export const RoiPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)

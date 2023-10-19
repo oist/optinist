@@ -1,16 +1,20 @@
 import React from "react"
+import { useNavigate } from "react-router-dom"
+
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos"
+import { Button } from "@mui/material"
 import Box from "@mui/material/Box"
 
-import { UseRunPipelineReturnType } from "store/slice/Pipeline/PipelineHook"
-import { NWBSettingButton } from "./FlowChart/Buttons/NWB"
-import { SnakemakeButton } from "./FlowChart/Buttons/Snakemake"
-import { RunButtons } from "./FlowChart/Buttons/RunButtons"
-import { Button } from "@mui/material"
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos"
-import { useNavigate } from "react-router-dom"
+import { ClearWorkflowButton } from "components/Workspace/FlowChart/Buttons/ClearWorkflow"
+import { ImportWorkflowConfigButton } from "components/Workspace/FlowChart/Buttons/ImportWorkflowConfig"
+import { NWBSettingButton } from "components/Workspace/FlowChart/Buttons/NWB"
+import { RunButtons } from "components/Workspace/FlowChart/Buttons/RunButtons"
+import { SnakemakeButton } from "components/Workspace/FlowChart/Buttons/Snakemake"
 import { IS_STANDALONE } from "const/Mode"
-import { ImportWorkflowConfigButton } from "./FlowChart/Buttons/ImportWorkflowConfig"
-import { ClearWorkflowButton } from "./FlowChart/Buttons/ClearWorkflow"
+import { UseRunPipelineReturnType } from "store/slice/Pipeline/PipelineHook"
+
+
+
 
 export const ToolBar = React.memo<UseRunPipelineReturnType>((props) => {
   const navigate = useNavigate()

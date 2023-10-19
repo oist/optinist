@@ -1,5 +1,6 @@
 import React from "react"
 import { useSelector } from "react-redux"
+
 import Box from "@mui/material/Box"
 import Collapse from "@mui/material/Collapse"
 import Table from "@mui/material/Table"
@@ -9,7 +10,9 @@ import TableHead from "@mui/material/TableHead"
 import TableRow from "@mui/material/TableRow"
 import Typography from "@mui/material/Typography"
 
-import { ExperimentUidContext } from "./ExperimentTable"
+import { NWBDownloadButton } from "components/Workspace/Experiment/Button/DownloadButton"
+import { ExperimentStatusIcon } from "components/Workspace/Experiment/ExperimentStatusIcon"
+import { ExperimentUidContext } from "components/Workspace/Experiment/ExperimentTable"
 import {
   selectExperimentFunctionHasNWB,
   selectExperimentFunctionMessage,
@@ -17,9 +20,8 @@ import {
   selectExperimentFunctionNodeIdList,
   selectExperimentFunctionStatus,
 } from "store/slice/Experiments/ExperimentsSelectors"
-import { ExperimentStatusIcon } from "./ExperimentStatusIcon"
 import { arrayEqualityFn } from "utils/EqualityUtils"
-import { NWBDownloadButton } from "./Button/DownloadButton"
+
 
 export const CollapsibleTable = React.memo<{
   open: boolean

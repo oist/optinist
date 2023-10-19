@@ -1,14 +1,16 @@
 import { createSlice, isAnyOf, PayloadAction } from "@reduxjs/toolkit"
+
+import {
+  clearFlowElements,
+  deleteFlowNodes,
+  deleteFlowNodeById,
+} from "store/slice/FlowElement/FlowElementSlice"
 import {
   reproduceWorkflow,
   importWorkflowConfig,
   fetchWorkflow,
 } from "store/slice/Workflow/WorkflowActions"
-import {
-  clearFlowElements,
-  deleteFlowNodes,
-  deleteFlowNodeById,
-} from "../FlowElement/FlowElementSlice"
+
 
 type RightDrawer = {
   open: boolean

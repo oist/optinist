@@ -1,12 +1,14 @@
 import { createSlice, isAnyOf, PayloadAction } from "@reduxjs/toolkit"
-import { DATA_TYPE, DATA_TYPE_SET } from "../DisplayData/DisplayDataType"
+
+import { DATA_TYPE, DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
+import { clearFlowElements } from "store/slice/FlowElement/FlowElementSlice"
+import { run, runByCurrentUid } from "store/slice/Pipeline/PipelineActions"
 import {
   deleteDisplayItem,
   selectingImageArea,
   setImageItemClikedDataId,
   setNewDisplayDataPath,
-} from "./VisualizeItemActions"
-
+} from "store/slice/VisualizeItem/VisualizeItemActions"
 import {
   HeatMapItem,
   ImageItem,
@@ -26,7 +28,7 @@ import {
   PieItem,
   PolarItem,
   VISUALIZE_ITEM_SLICE_NAME,
-} from "./VisualizeItemType"
+} from "store/slice/VisualizeItem/VisualizeItemType"
 import {
   isDisplayDataItem,
   isHeatMapItem,
@@ -38,9 +40,7 @@ import {
   isHistogramItem,
   isLineItem,
   isPolarItem,
-} from "./VisualizeItemUtils"
-import { run, runByCurrentUid } from "../Pipeline/PipelineActions"
-import { clearFlowElements } from "../FlowElement/FlowElementSlice"
+} from "store/slice/VisualizeItem/VisualizeItemUtils"
 
 export const initialState: VisualaizeItem = {
   items: {},
@@ -68,8 +68,8 @@ const imageItemInitialValue: ImageItem = {
   showgrid: false,
   showscale: false,
   colors: [
-    { rgb: `rgb(0, 0, 0)`, offset: "0" },
-    { rgb: `rgb(255, 255, 255)`, offset: "1.0" },
+    { rgb: "rgb(0, 0, 0)", offset: "0" },
+    { rgb: "rgb(255, 255, 255)", offset: "1.0" },
   ],
   activeIndex: 0,
   alpha: 1.0,
@@ -100,9 +100,9 @@ const heatMapItemInitialValue: HeatMapItem = {
   dataType: DATA_TYPE_SET.HEAT_MAP,
   showscale: true,
   colors: [
-    { rgb: `rgb(0, 0, 255)`, offset: "0" },
-    { rgb: `rgb(200, 200, 200)`, offset: "0.5" },
-    { rgb: `rgb(255, 0, 0)`, offset: "1.0" },
+    { rgb: "rgb(0, 0, 255)", offset: "0" },
+    { rgb: "rgb(200, 200, 200)", offset: "0.5" },
+    { rgb: "rgb(255, 0, 0)", offset: "1.0" },
   ],
 }
 const csvItemInitialValue: CsvItem = {

@@ -1,8 +1,8 @@
 import { createAsyncThunk, createAction } from "@reduxjs/toolkit"
-import { uploadFileApi } from "api/files/Files"
-import { FILE_TYPE } from "../InputNode/InputNodeType"
 
-import { FILE_UPLOADER_SLICE_NAME } from "./FileUploaderType"
+import { uploadFileApi } from "api/files/Files"
+import { FILE_UPLOADER_SLICE_NAME } from "store/slice/FileUploader/FileUploaderType"
+import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
 
 export const setUploadProgress = createAction<{
   requestId: string

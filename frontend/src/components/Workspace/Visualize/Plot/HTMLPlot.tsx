@@ -1,8 +1,10 @@
 import React from "react"
 import { useSelector, useDispatch } from "react-redux"
+
 import { LinearProgress, Typography } from "@mui/material"
 
-import { DisplayDataContext } from "../DataContext"
+import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
+import { getHTMLData } from "store/slice/DisplayData/DisplayDataActions"
 import {
   selectHTMLData,
   selectHTMLDataError,
@@ -10,8 +12,7 @@ import {
   selectHTMLDataIsInitialized,
   selectHTMLDataIsPending,
 } from "store/slice/DisplayData/DisplayDataSelectors"
-import { getHTMLData } from "store/slice/DisplayData/DisplayDataActions"
-import { AppDispatch } from "../../../../store/store"
+import { AppDispatch } from "store/store"
 
 export const HTMLPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)

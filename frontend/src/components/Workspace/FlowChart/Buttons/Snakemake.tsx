@@ -1,18 +1,22 @@
 import React, { useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
+
 import RouteIcon from "@mui/icons-material/Route"
-import { updateParam } from "store/slice/Snakemake/SnakemakeSlice"
-import { getSnakemakeParams } from "store/slice/Snakemake/SnakemakeAction"
+import { IconButton, Tooltip } from "@mui/material"
+
+import { createParamFormItemComponent } from "components/common/ParamFormItemCreator"
 import { toggleSnakemake } from "store/slice/RightDrawer/RightDrawerSlice"
+import { getSnakemakeParams } from "store/slice/Snakemake/SnakemakeAction"
 import {
   selectSnakemakeParam,
   selectSnakemakeParamsKeyList,
   selectSnakemakeParamsValue,
 } from "store/slice/Snakemake/SnakemakeSelectors"
+import { updateParam } from "store/slice/Snakemake/SnakemakeSlice"
+import { AppDispatch } from "store/store"
 import { arrayEqualityFn } from "utils/EqualityUtils"
-import { createParamFormItemComponent } from "components/common/ParamFormItemCreator"
-import { AppDispatch } from "../../../../store/store"
-import { IconButton, Tooltip } from "@mui/material"
+
+
 
 export const SnakemakeButton = React.memo(() => {
   const dispatch = useDispatch()

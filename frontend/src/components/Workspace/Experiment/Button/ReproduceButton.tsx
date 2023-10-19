@@ -1,13 +1,17 @@
 import React from "react"
 import { useDispatch, useSelector } from "react-redux"
-import IconButton from "@mui/material/IconButton"
+
 import { useSnackbar } from "notistack"
-import { reproduceWorkflow } from "store/slice/Workflow/WorkflowActions"
-import { AppDispatch } from "store/store"
-import { ExperimentUidContext } from "../ExperimentTable"
+
 import ReplyIcon from "@mui/icons-material/Reply"
+import IconButton from "@mui/material/IconButton"
+
+import { ExperimentUidContext } from "components/Workspace/Experiment/ExperimentTable"
 import { reset } from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { reproduceWorkflow } from "store/slice/Workflow/WorkflowActions"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
+import { AppDispatch } from "store/store"
+
 
 export const ReproduceButton = React.memo(() => {
   const dispatch: AppDispatch = useDispatch()

@@ -1,12 +1,14 @@
-import axios from "utils/axios"
+import qs from "qs"
+
 import {
   AddUserDTO,
   UserDTO,
   ListUsersQueryDTO,
   UpdateUserDTO,
   UserListDTO,
-} from "./UsersApiDTO"
-import qs from "qs"
+} from "api/users/UsersApiDTO"
+import axios from "utils/axios"
+
 
 export const createUserApi = async (data: AddUserDTO): Promise<UserDTO> => {
   const response = await axios.post("/admin/users", data)

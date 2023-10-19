@@ -1,10 +1,11 @@
 import React from "react"
-import { useSelector, useDispatch } from "react-redux"
 import PlotlyChart from "react-plotlyjs-ts"
+import { useSelector, useDispatch } from "react-redux"
+
 import { LinearProgress, Typography } from "@mui/material"
 
-import { DisplayDataContext } from "../DataContext"
-import { twoDimarrayEqualityFn } from "utils/EqualityUtils"
+import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
+import { getHeatMapData } from "store/slice/DisplayData/DisplayDataActions"
 import {
   selectHeatMapColumns,
   selectHeatMapData,
@@ -15,7 +16,6 @@ import {
   selectHeatMapIndex,
   selectHeatMapMeta,
 } from "store/slice/DisplayData/DisplayDataSelectors"
-import { getHeatMapData } from "store/slice/DisplayData/DisplayDataActions"
 import {
   selectHeatMapItemColors,
   selectHeatMapItemShowScale,
@@ -24,7 +24,8 @@ import {
   selectVisualizeSaveFilename,
   selectVisualizeSaveFormat,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
-import { AppDispatch } from "../../../../store/store"
+import { AppDispatch } from "store/store"
+import { twoDimarrayEqualityFn } from "utils/EqualityUtils"
 
 export const HeatMapPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)

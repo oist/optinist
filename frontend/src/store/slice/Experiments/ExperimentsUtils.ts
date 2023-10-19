@@ -9,7 +9,7 @@ import type {
   ExperimentType,
   ExperimentFunction,
   EXPERIMENTS_STATUS,
-} from "./ExperimentsType"
+} from "store/slice/Experiments/ExperimentsType"
 
 export function convertToExperimentListType(
   dto: ExperimentsDTO,

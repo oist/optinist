@@ -1,10 +1,5 @@
 import { createSlice, isAnyOf } from "@reduxjs/toolkit"
-import {
-  DATA_TYPE,
-  DATA_TYPE_SET,
-  DisplayData,
-  DISPLAY_DATA_SLICE_NAME,
-} from "./DisplayDataType"
+
 import {
   getCsvData,
   getHeatMapData,
@@ -20,12 +15,20 @@ import {
   getLineData,
   getPieData,
   getPolarData,
-} from "./DisplayDataActions"
+} from "store/slice/DisplayData/DisplayDataActions"
+import {
+  DATA_TYPE,
+  DATA_TYPE_SET,
+  DisplayData,
+  DISPLAY_DATA_SLICE_NAME,
+} from "store/slice/DisplayData/DisplayDataType"
+import { run, runByCurrentUid } from "store/slice/Pipeline/PipelineActions"
 import {
   deleteDisplayItem,
   setNewDisplayDataPath,
-} from "../VisualizeItem/VisualizeItemActions"
-import { run, runByCurrentUid } from "store/slice/Pipeline/PipelineActions"
+} from "store/slice/VisualizeItem/VisualizeItemActions"
+
+
 const initialState: DisplayData = {
   timeSeries: {},
   heatMap: {},

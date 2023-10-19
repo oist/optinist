@@ -1,10 +1,23 @@
 import React, { useEffect, useState } from "react"
-import { useSelector, useDispatch } from "react-redux"
 import PlotlyChart from "react-plotlyjs-ts"
+import { useSelector, useDispatch } from "react-redux"
+
+
+
+import createColormap from "colormap"
 import { LegendClickEvent } from "plotly.js"
+
 import { LinearProgress, Typography } from "@mui/material"
 
-import { DisplayDataContext } from "../DataContext"
+import { TimeSeriesData } from "api/outputs/Outputs"
+import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
+import {
+  getTimeSeriesDataById,
+  getTimeSeriesInitData,
+} from "store/slice/DisplayData/DisplayDataActions"
+
+
+
 import {
   selectTimeSeriesData,
   selectTimeSeriesDataError,
@@ -15,11 +28,8 @@ import {
   selectTimeSeriesXrange,
   selectTimesSeriesMeta,
 } from "store/slice/DisplayData/DisplayDataSelectors"
-import {
-  getTimeSeriesDataById,
-  getTimeSeriesInitData,
-} from "store/slice/DisplayData/DisplayDataActions"
-import { TimeSeriesData } from "api/outputs/Outputs"
+import { selectFrameRate } from "store/slice/Experiments/ExperimentsSelectors"
+import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
 import {
   selectTimeSeriesItemDrawOrderList,
   selectTimeSeriesItemOffset,
@@ -36,11 +46,8 @@ import {
   selectVisualizeSaveFormat,
   selectImageItemRangeUnit,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
-import createColormap from "colormap"
 import { setTimeSeriesItemDrawOrderList } from "store/slice/VisualizeItem/VisualizeItemSlice"
-import { selectFrameRate } from "../../../../store/slice/Experiments/ExperimentsSelectors"
-import { selectPipelineLatestUid } from "../../../../store/slice/Pipeline/PipelineSelectors"
-import { AppDispatch } from "../../../../store/store"
+import { AppDispatch } from "store/store"
 
 export const TimeSeriesPlot = React.memo(() => {
   const { itemId, filePath: path } = React.useContext(DisplayDataContext)
@@ -99,7 +106,7 @@ const TimeSeriesPlotImple = React.memo(() => {
   const frameRate = useSelector(selectFrameRate(currentPipelineUid))
 
   useEffect(() => {
-    let seriesData: any = {}
+    const seriesData: any = {}
     drawOrderList.forEach((key) => {
       seriesData[key] = timeSeriesData[key]
     })
@@ -108,7 +115,7 @@ const TimeSeriesPlotImple = React.memo(() => {
       timeSeriesData &&
       Object.keys(timeSeriesData).length > 0
     ) {
-      let newSeriesData: any = {}
+      const newSeriesData: any = {}
       Object.keys(seriesData).forEach((key) => {
         newSeriesData[key] = {}
         Object.keys(seriesData[key]).forEach((keyTime) => {

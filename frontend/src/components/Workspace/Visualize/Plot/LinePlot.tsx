@@ -1,18 +1,7 @@
 import React from "react"
-import { useSelector, useDispatch } from "react-redux"
 import PlotlyChart from "react-plotlyjs-ts"
-import { DisplayDataContext } from "../DataContext"
-import {
-  selectLineColumns,
-  selectLineData,
-  selectLineDataError,
-  selectLineDataIsFulfilled,
-  selectLineDataIsInitialized,
-  selectLineDataIsPending,
-  selectLineIndex,
-  selectLineMeta,
-} from "store/slice/DisplayData/DisplayDataSelectors"
-import { getLineData } from "store/slice/DisplayData/DisplayDataActions"
+import { useSelector, useDispatch } from "react-redux"
+
 import {
   Box,
   FormControl,
@@ -23,13 +12,26 @@ import {
   SelectChangeEvent,
   Typography,
 } from "@mui/material"
+
+import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
+import { getLineData } from "store/slice/DisplayData/DisplayDataActions"
+import {
+  selectLineColumns,
+  selectLineData,
+  selectLineDataError,
+  selectLineDataIsFulfilled,
+  selectLineDataIsInitialized,
+  selectLineDataIsPending,
+  selectLineIndex,
+  selectLineMeta,
+} from "store/slice/DisplayData/DisplayDataSelectors"
 import {
   selectLineItemSelectedIndex,
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import { setLineItemSelectedIndex } from "store/slice/VisualizeItem/VisualizeItemSlice"
-import { AppDispatch } from "../../../../store/store"
+import { AppDispatch } from "store/store"
 export const LinePlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
   const dispatch = useDispatch<AppDispatch>()

@@ -1,16 +1,7 @@
 import React from "react"
-import { useSelector, useDispatch } from "react-redux"
 import PlotlyChart from "react-plotlyjs-ts"
-import { DisplayDataContext } from "../DataContext"
-import {
-  selectHistogramData,
-  selectHistogramDataError,
-  selectHistogramDataIsFulfilled,
-  selectHistogramDataIsInitialized,
-  selectHistogramDataIsPending,
-  selectHistogramMeta,
-} from "store/slice/DisplayData/DisplayDataSelectors"
-import { getHistogramData } from "store/slice/DisplayData/DisplayDataActions"
+import { useSelector, useDispatch } from "react-redux"
+
 import {
   Box,
   FormControl,
@@ -19,13 +10,24 @@ import {
   LinearProgress,
   Typography,
 } from "@mui/material"
+
+import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
+import { getHistogramData } from "store/slice/DisplayData/DisplayDataActions"
+import {
+  selectHistogramData,
+  selectHistogramDataError,
+  selectHistogramDataIsFulfilled,
+  selectHistogramDataIsInitialized,
+  selectHistogramDataIsPending,
+  selectHistogramMeta,
+} from "store/slice/DisplayData/DisplayDataSelectors"
 import {
   selectHistogramItemBins,
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import { setHistogramItemBins } from "store/slice/VisualizeItem/VisualizeItemSlice"
-import { AppDispatch } from "../../../../store/store"
+import { AppDispatch } from "store/store"
 
 export const HistogramPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)

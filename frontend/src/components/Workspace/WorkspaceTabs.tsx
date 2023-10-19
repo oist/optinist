@@ -1,7 +1,9 @@
 import { FC } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import Tabs from "@mui/material/Tabs"
+
 import Tab from "@mui/material/Tab"
+import Tabs from "@mui/material/Tabs"
+
 import { selectActiveTab } from "store/slice/Workspace/WorkspaceSelector"
 import { setActiveTab } from "store/slice/Workspace/WorkspaceSlice"
 

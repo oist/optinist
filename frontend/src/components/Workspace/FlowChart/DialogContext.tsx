@@ -1,5 +1,6 @@
-import { FILE_TREE_TYPE } from "api/files/Files"
 import { createContext } from "react"
+
+import { FILE_TREE_TYPE } from "api/files/Files"
 
 export declare type OpenDialogValue = {
   filePath: string | string[]
@@ -18,8 +19,8 @@ export const DialogContext = createContext<{
   onOpen: (nodeId: string) => void
   onOpenDialogFile: (value: OpenDialogValue) => void
   onMessageError: (value: ErrorDialogValue) => void
-}>({
-  onOpen: () => null,
-  onOpenDialogFile: () => null,
-  onMessageError: () => null,
-})
+    }>({
+      onOpen: () => null,
+      onOpenDialogFile: () => null,
+      onMessageError: () => null,
+    })

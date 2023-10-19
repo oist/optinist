@@ -7,9 +7,6 @@ import {
   NodeDict,
   RunPostData,
 } from "api/run/Run"
-
-import { RootState } from "store/store"
-
 import {
   selectAlgorithmFunctionPath,
   selectAlgorithmIsUpdated,
@@ -20,18 +17,19 @@ import {
   selectFlowEdges,
   selectFlowNodes,
 } from "store/slice/FlowElement/FlowElementSelectors"
-import { isAlgorithmNodeData } from "store/slice/FlowElement/FlowElementUtils"
-import { selectNwbParams } from "store/slice/NWB/NWBSelectors"
-import { selectPipelineNodeResultStatus } from "store/slice/Pipeline/PipelineSelectors"
-import { NODE_RESULT_STATUS } from "store/slice/Pipeline/PipelineType"
-import { selectSnakemakeParams } from "store/slice/Snakemake/SnakemakeSelectors"
 import { NODE_TYPE_SET } from "store/slice/FlowElement/FlowElementType"
+import { isAlgorithmNodeData } from "store/slice/FlowElement/FlowElementUtils"
 import {
   selectInputNodeFileType,
   selectInputNodeHDF5Path,
   selectInputNodeParam,
   selectInputNodeSelectedFilePath,
 } from "store/slice/InputNode/InputNodeSelectors"
+import { selectNwbParams } from "store/slice/NWB/NWBSelectors"
+import { selectPipelineNodeResultStatus } from "store/slice/Pipeline/PipelineSelectors"
+import { NODE_RESULT_STATUS } from "store/slice/Pipeline/PipelineType"
+import { selectSnakemakeParams } from "store/slice/Snakemake/SnakemakeSelectors"
+import { RootState } from "store/store"
 
 export const selectRunPostData = (state: RootState) => {
   const nwbParam = selectNwbParams(state)

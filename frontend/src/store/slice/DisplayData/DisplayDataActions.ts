@@ -1,4 +1,5 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
+
 import {
   TimeSeriesData,
   CsvData,
@@ -27,8 +28,7 @@ import {
   getPieDataApi,
   getPolarDataApi,
 } from "api/outputs/Outputs"
-import { PlotMetaData } from "./DisplayDataType"
-import { DISPLAY_DATA_SLICE_NAME } from "./DisplayDataType"
+import { PlotMetaData , DISPLAY_DATA_SLICE_NAME } from "store/slice/DisplayData/DisplayDataType"
 
 export const getTimeSeriesInitData = createAsyncThunk<
   {
