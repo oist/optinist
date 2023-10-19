@@ -1,8 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import Button from '@mui/material/Button'
-import TuneIcon from '@mui/icons-material/Tune'
-
+import RouteIcon from '@mui/icons-material/Route'
 import { updateParam } from 'store/slice/Snakemake/SnakemakeSlice'
 import { getSnakemakeParams } from 'store/slice/Snakemake/SnakemakeAction'
 import { toggleSnakemake } from 'store/slice/RightDrawer/RightDrawerSlice'
@@ -13,7 +11,8 @@ import {
 } from 'store/slice/Snakemake/SnakemakeSelectors'
 import { arrayEqualityFn } from 'utils/EqualityUtils'
 import { createParamFormItemComponent } from 'components/common/ParamFormItemCreator'
-import { AppDispatch } from "../../../store/store";
+import { AppDispatch } from '../../../../store/store'
+import { IconButton, Tooltip } from '@mui/material'
 
 export const SnakemakeButton = React.memo(() => {
   const dispatch = useDispatch()
@@ -21,16 +20,11 @@ export const SnakemakeButton = React.memo(() => {
     dispatch(toggleSnakemake())
   }
   return (
-    <Button
-      variant="outlined"
-      onClick={handleClick}
-      sx={{
-        margin: (theme) => theme.spacing(1),
-      }}
-      endIcon={<TuneIcon />}
-    >
-      Snakemake
-    </Button>
+    <Tooltip title="Snakemake settings">
+      <IconButton onClick={handleClick}>
+        <RouteIcon color="primary" />
+      </IconButton>
+    </Tooltip>
   )
 })
 

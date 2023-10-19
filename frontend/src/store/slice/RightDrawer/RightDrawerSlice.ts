@@ -5,6 +5,7 @@ import {
   fetchWorkflow,
 } from 'store/slice/Workflow/WorkflowActions'
 import {
+  clearFlowElements,
   deleteFlowNodes,
   deleteFlowNodeById,
 } from '../FlowElement/FlowElementSlice'
@@ -95,6 +96,7 @@ export const rightDrawerSlice = createSlice({
 
       .addMatcher(
         isAnyOf(
+          clearFlowElements,
           reproduceWorkflow.fulfilled,
           importWorkflowConfig.fulfilled,
           fetchWorkflow.fulfilled,

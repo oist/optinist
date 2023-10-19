@@ -2,6 +2,7 @@ import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
 
 import { convertToParamMap, getChildParam } from 'utils/param/ParamUtils'
 import {
+  clearFlowElements,
   deleteFlowNodes,
   deleteFlowNodeById,
 } from '../FlowElement/FlowElementSlice'
@@ -60,6 +61,7 @@ export const algorithmNodeSlice = createSlice({
           }
         }
       })
+      .addCase(clearFlowElements, () => initialState)
       .addCase(deleteFlowNodes, (state, action) => {
         action.payload.forEach((node) => {
           if (node.data?.type === NODE_TYPE_SET.ALGORITHM) {

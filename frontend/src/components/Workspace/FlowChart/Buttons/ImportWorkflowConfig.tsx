@@ -1,5 +1,5 @@
 import { UploadFile } from '@mui/icons-material'
-import { Button } from '@mui/material'
+import { IconButton, Tooltip } from '@mui/material'
 import { useSnackbar } from 'notistack'
 import React from 'react'
 import { useDispatch } from 'react-redux'
@@ -35,20 +35,17 @@ export const ImportWorkflowConfigButton = React.memo(() => {
   }
 
   return (
-    <Button
-      variant="outlined"
-      onClick={onClick}
-      sx={{ margin: (theme) => theme.spacing(1) }}
-      endIcon={<UploadFile />}
-    >
-      Import
-      <input
-        hidden
-        ref={inputRef}
-        type="file"
-        accept=".yaml,.yml"
-        onChange={onChange}
-      />
-    </Button>
+    <Tooltip title="Import workflow from config file">
+      <IconButton onClick={onClick}>
+        <UploadFile color="primary" />
+        <input
+          hidden
+          ref={inputRef}
+          type="file"
+          accept=".yaml,.yml"
+          onChange={onChange}
+        />
+      </IconButton>
+    </Tooltip>
   )
 })

@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import Button from '@mui/material/Button'
 import ButtonGroup from '@mui/material/ButtonGroup'
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown'
-import CloseIcon from '@mui/icons-material/Close'
+import BlockIcon from '@mui/icons-material/Block'
 import ClickAwayListener from '@mui/material/ClickAwayListener'
 import Grow from '@mui/material/Grow'
 import Paper from '@mui/material/Paper'
@@ -30,6 +30,9 @@ import {
   selectPipelineRunBtn,
 } from 'store/slice/Pipeline/PipelineSelectors'
 import { setRunBtnOption } from 'store/slice/Pipeline/PipelineSlice'
+import { IconButton, Tooltip } from '@mui/material'
+import { PlayArrow } from '@mui/icons-material'
+import ReplayIcon from '@mui/icons-material/Replay'
 
 export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
   const {
@@ -109,7 +112,18 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
         ref={anchorRef}
         disabled={runDisabled}
       >
-        <Button onClick={handleClick}>{RUN_BTN_LABELS[runBtnOption]}</Button>
+        <Button
+          onClick={handleClick}
+          startIcon={
+            runBtnOption === RUN_BTN_OPTIONS.RUN_ALREADY ? (
+              <ReplayIcon />
+            ) : (
+              <PlayArrow />
+            )
+          }
+        >
+          {RUN_BTN_LABELS[runBtnOption]}
+        </Button>
         <Button size="small" onClick={handleToggle}>
           <ArrowDropDownIcon />
         </Button>
@@ -150,18 +164,13 @@ export const RunButtons = React.memo<UseRunPipelineReturnType>((props) => {
           </Grow>
         )}
       </Popper>
-      <Button
-        disabled={!isStartedSuccess}
-        variant="outlined"
-        endIcon={<CloseIcon />}
-        onClick={onClickCancel}
-        sx={{
-          margin: 1,
-          marginRight: 4,
-        }}
-      >
-        Cancel
-      </Button>
+      {isStartedSuccess && (
+        <Tooltip title="Cancel Workflow">
+          <IconButton onClick={onClickCancel}>
+            <BlockIcon color="error" />
+          </IconButton>
+        </Tooltip>
+      )}
       <RunDialog
         open={dialogOpen}
         handleRun={onClickDialogRun}

@@ -2,20 +2,23 @@ import React from 'react'
 import Box from '@mui/material/Box'
 
 import { UseRunPipelineReturnType } from 'store/slice/Pipeline/PipelineHook'
-import { NWBSettingButton } from './FlowChart/NWB'
-import { SnakemakeButton } from './FlowChart/Snakemake'
-import { RunButtons } from './RunButtons'
+import { NWBSettingButton } from './FlowChart/Buttons/NWB'
+import { SnakemakeButton } from './FlowChart/Buttons/Snakemake'
+import { RunButtons } from './FlowChart/Buttons/RunButtons'
 import { Button } from '@mui/material'
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
 import { useNavigate } from 'react-router-dom'
 import { IS_STANDALONE } from 'const/Mode'
-import { ImportWorkflowConfigButton } from './FlowChart/ImportWorkflowConfigButton'
+import { ImportWorkflowConfigButton } from './FlowChart/Buttons/ImportWorkflowConfig'
+import { ClearWorkflowButton } from './FlowChart/Buttons/ClearWorkflow'
 
 export const ToolBar = React.memo<UseRunPipelineReturnType>((props) => {
   const navigate = useNavigate()
   return (
     <Box
       style={{
+        display: 'flex',
+        alignItems: 'center',
         position: 'absolute',
         float: 'right',
         textAlign: 'right',
@@ -35,6 +38,7 @@ export const ToolBar = React.memo<UseRunPipelineReturnType>((props) => {
         )
       }
       <ImportWorkflowConfigButton />
+      <ClearWorkflowButton />
       <SnakemakeButton />
       <NWBSettingButton />
       <RunButtons {...props} />

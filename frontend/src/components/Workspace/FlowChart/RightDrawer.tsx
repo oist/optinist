@@ -17,10 +17,10 @@ import {
   closeRightDrawer,
   RIGHT_DRAWER_MODE,
 } from 'store/slice/RightDrawer/RightDrawerSlice'
-import { NWBSettingContents } from './NWB'
+import { NWBSettingContents } from './Buttons/NWB'
 import { RootState } from 'store/store'
 import { AlgorithmParamForm } from './AlgorithmParamForm'
-import { SnakemakeContents } from './Snakemake'
+import { SnakemakeContents } from './Buttons/Snakemake'
 import { RIGHT_DRAWER_WIDTH } from 'const/Layout'
 
 const RightDrawer: React.FC = () => {

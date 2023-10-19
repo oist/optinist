@@ -9,6 +9,7 @@ import {
 import { uploadFile } from '../FileUploader/FileUploaderActions'
 import { addInputNode } from '../FlowElement/FlowElementActions'
 import {
+  clearFlowElements,
   deleteFlowNodes,
   deleteFlowNodeById,
 } from '../FlowElement/FlowElementSlice'
@@ -122,6 +123,7 @@ export const inputNodeSlice = createSlice({
           }
         }
       })
+      .addCase(clearFlowElements, () => initialState)
       .addCase(deleteFlowNodes, (state, action) => {
         action.payload.forEach((node) => {
           if (node.data?.type === NODE_TYPE_SET.INPUT) {

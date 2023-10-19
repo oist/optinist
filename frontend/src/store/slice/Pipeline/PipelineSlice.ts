@@ -17,7 +17,7 @@ import {
   RUN_BTN_TYPE,
   RUN_STATUS,
 } from './PipelineType'
-
+import { clearFlowElements } from '../FlowElement/FlowElementSlice'
 import {
   getInitialRunResult,
   convertToRunResult,
@@ -82,7 +82,6 @@ export const pipelineSlice = createSlice({
           status: RUN_STATUS.START_UNINITIALIZED,
         }
       })
-      .addCase(fetchWorkflow.rejected, () => initialState)
       .addCase(cancelResult.fulfilled, (state, action) => {
         state.run.status = RUN_STATUS.CANCELED
       })
@@ -150,6 +149,10 @@ export const pipelineSlice = createSlice({
             status: RUN_STATUS.START_ERROR,
           }
         },
+      )
+      .addMatcher(
+        isAnyOf(fetchWorkflow.rejected, clearFlowElements),
+        () => initialState,
       )
   },
 })

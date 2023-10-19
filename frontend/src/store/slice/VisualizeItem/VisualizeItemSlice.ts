@@ -40,6 +40,7 @@ import {
   isPolarItem,
 } from './VisualizeItemUtils'
 import { run, runByCurrentUid } from '../Pipeline/PipelineActions'
+import { clearFlowElements } from '../FlowElement/FlowElementSlice'
 
 export const initialState: VisualaizeItem = {
   items: {},
@@ -925,7 +926,7 @@ export const visualaizeItemSlice = createSlice({
         })
       })
       .addMatcher(
-        isAnyOf(run.fulfilled, runByCurrentUid.fulfilled),
+        isAnyOf(clearFlowElements, run.fulfilled, runByCurrentUid.fulfilled),
         (state, action) => initialState,
       )
   },
