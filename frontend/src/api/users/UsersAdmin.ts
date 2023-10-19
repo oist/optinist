@@ -1,4 +1,4 @@
-import qs from "qs"
+import { stringify } from "qs"
 
 import {
   AddUserDTO,
@@ -8,7 +8,6 @@ import {
   UserListDTO,
 } from "api/users/UsersApiDTO"
 import axios from "utils/axios"
-
 
 export const createUserApi = async (data: AddUserDTO): Promise<UserDTO> => {
   const response = await axios.post("/admin/users", data)
@@ -23,7 +22,7 @@ export const getUserApi = async (uid: string): Promise<UserDTO> => {
 export const listUsersApi = async (
   data: ListUsersQueryDTO,
 ): Promise<UserListDTO> => {
-  const paramsNew = qs.stringify(data, { indices: false })
+  const paramsNew = stringify(data, { indices: false })
   const response = await axios.get(`/admin/users?${paramsNew}`)
   return response.data
 }
