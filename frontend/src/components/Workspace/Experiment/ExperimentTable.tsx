@@ -456,7 +456,7 @@ const RowItem = React.memo<{
           </IconButton>
         </TableCell>
         <TableCell
-          sx={{ minWidth: 150, width: 150 }}
+          sx={{ minWidth: 210, width: 210 }}
           component="th"
           scope="row"
         >
@@ -464,13 +464,13 @@ const RowItem = React.memo<{
             startedAt
           ) : (
             <>
-              <Typography variant="body2">{startedAt} -</Typography>
-              <Typography variant="body2">{finishedAt}</Typography>
+              {/* date string format is YYYY-MM-DD HH:mm:ss */}
+              <Typography variant="body2">{`${startedAt} - ${finishedAt.split(" ")[1]}`}</Typography>
               <Typography variant="body2">
-                (elapsed{' '}
+                (elapsed{" "}
                 {(new Date(finishedAt).getTime() -
                   new Date(startedAt).getTime()) /
-                  1000}{' '}
+                  1000}{" "}
                 sec)
               </Typography>
             </>
