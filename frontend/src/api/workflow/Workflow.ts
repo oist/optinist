@@ -2,16 +2,25 @@ import axios from 'utils/axios'
 
 import { EdgeDict, NodeDict } from 'api/run/Run'
 import { BASE_URL } from 'const/API'
+import { ExperimentDTO } from 'api/experiments/Experiments'
 
 export type WorkflowConfigDTO = {
   nodeDict: NodeDict
   edgeDict: EdgeDict
 }
+export type WorkflowWithResultDTO = ExperimentDTO & WorkflowConfigDTO
+
+export async function fetchWorkflowApi(
+  workspace_id: number,
+): Promise<WorkflowWithResultDTO> {
+  const response = await axios.get(`${BASE_URL}/workflow/fetch/${workspace_id}`)
+  return response.data
+}
 
 export async function reproduceWorkflowApi(
   workspaceId: number,
   uid: string,
-): Promise<WorkflowConfigDTO> {
+): Promise<WorkflowWithResultDTO> {
   const response = await axios.get(
     `${BASE_URL}/workflow/reproduce/${workspaceId}/${uid}`,
   )

@@ -4,7 +4,6 @@ import {
   getExperiments,
   deleteExperimentByUid,
   deleteExperimentByList,
-  fetchExperiment,
 } from './ExperimentsActions'
 import {
   convertToExperimentListType,
@@ -15,6 +14,7 @@ import {
   run,
   runByCurrentUid,
 } from '../Pipeline/PipelineActions'
+import { fetchWorkflow, reproduceWorkflow } from '../Workflow/WorkflowActions'
 
 export const initialState: Experiments = {
   status: 'uninitialized',
@@ -69,12 +69,15 @@ export const experimentsSlice = createSlice({
           })
         }
       })
-      .addCase(fetchExperiment.fulfilled, (state, action) => {
-        if (state.status === 'fulfilled') {
-          state.experimentList[action.payload.unique_id] =
-            convertToExperimentType(action.payload)
-        }
-      })
+      .addMatcher(
+        isAnyOf(fetchWorkflow.fulfilled, reproduceWorkflow.fulfilled),
+        (state, action) => {
+          if (state.status === 'fulfilled') {
+            state.experimentList[action.payload.unique_id] =
+              convertToExperimentType(action.payload)
+          }
+        },
+      )
       .addMatcher(isAnyOf(run.fulfilled, runByCurrentUid.fulfilled), () => {
         return {
           status: 'uninitialized',

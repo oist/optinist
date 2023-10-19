@@ -1,8 +1,8 @@
 import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
-import { fetchExperiment } from '../Experiments/ExperimentsActions'
 import {
   reproduceWorkflow,
   importWorkflowConfig,
+  fetchWorkflow,
 } from 'store/slice/Workflow/WorkflowActions'
 import {
   deleteFlowNodes,
@@ -23,7 +23,7 @@ export const RIGHT_DRAWER_MODE = {
 } as const
 
 export type RIGHT_DRAWER_MODE_TYPE =
-  typeof RIGHT_DRAWER_MODE[keyof typeof RIGHT_DRAWER_MODE]
+  (typeof RIGHT_DRAWER_MODE)[keyof typeof RIGHT_DRAWER_MODE]
 
 const initialState: RightDrawer = {
   open: false,
@@ -97,8 +97,8 @@ export const rightDrawerSlice = createSlice({
         isAnyOf(
           reproduceWorkflow.fulfilled,
           importWorkflowConfig.fulfilled,
-          fetchExperiment.fulfilled,
-          fetchExperiment.rejected,
+          fetchWorkflow.fulfilled,
+          fetchWorkflow.rejected,
         ),
         () => initialState,
       )
