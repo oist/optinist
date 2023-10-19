@@ -7,7 +7,6 @@ import {
   IconButton,
   Tooltip,
 } from '@mui/material'
-import ClearIcon from '@mui/icons-material/Clear'
 import React, { SetStateAction } from 'react'
 import { useDispatch } from 'react-redux'
 import { clearFlowElements } from 'store/slice/FlowElement/FlowElementSlice'
