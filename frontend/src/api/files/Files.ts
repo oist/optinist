@@ -1,7 +1,6 @@
 import { BASE_URL } from "const/API"
 import axios from "utils/axios"
 
-
 export const FILE_TREE_TYPE_SET = {
   IMAGE: "image",
   CSV: "csv",
@@ -47,7 +46,7 @@ export async function uploadFileApi(
   workspaceId: number,
   fileName: string,
   config: {
-    onUploadProgress: (progressEvent: any) => void
+    onUploadProgress: (progressEvent: ProgressEvent) => void
   },
   formData: FormData,
 ): Promise<{ file_path: string }> {

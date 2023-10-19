@@ -54,7 +54,7 @@ function getUploadConfig(
   onUpdateProgressFn: (percent: number, totalSize: number) => void,
 ) {
   return {
-    onUploadProgress: function (progressEvent: any) {
+    onUploadProgress: function (progressEvent: ProgressEvent) {
       const percentCompleted = Math.round(
         (progressEvent.loaded * 100) / progressEvent.total,
       )
