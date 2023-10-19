@@ -1,7 +1,7 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import PlotlyChart from 'react-plotlyjs-ts'
-import { DisplayDataContext } from '../DataContext'
+import React from "react"
+import { useSelector, useDispatch } from "react-redux"
+import PlotlyChart from "react-plotlyjs-ts"
+import { DisplayDataContext } from "../DataContext"
 import {
   selectPolarColumns,
   selectPolarData,
@@ -11,8 +11,8 @@ import {
   selectPolarDataIsPending,
   selectPolarIndex,
   selectPolarMeta,
-} from 'store/slice/DisplayData/DisplayDataSelectors'
-import { getPolarData } from 'store/slice/DisplayData/DisplayDataActions'
+} from "store/slice/DisplayData/DisplayDataSelectors"
+import { getPolarData } from "store/slice/DisplayData/DisplayDataActions"
 import {
   Box,
   FormControl,
@@ -22,14 +22,14 @@ import {
   Select,
   SelectChangeEvent,
   Typography,
-} from '@mui/material'
+} from "@mui/material"
 import {
   selectPolarItemSelectedIndex,
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { setPolartemItemSelectedIndex } from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { AppDispatch } from "../../../../store/store";
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
+import { setPolartemItemSelectedIndex } from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { AppDispatch } from "../../../../store/store"
 
 export const PolarPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -71,8 +71,8 @@ const PolarPlotImple = React.memo(() => {
       polarData != null
         ? [
             {
-              type: 'scatterpolar',
-              mode: 'lines+markae',
+              type: "scatterpolar",
+              mode: "lines+markae",
               theta: [...columns, columns[0]],
               r: [...polarData[selectedIndex], polarData[selectedIndex][0]],
             },
@@ -89,7 +89,7 @@ const PolarPlotImple = React.memo(() => {
       },
       width: width,
       height: height - 120,
-      dragmode: 'pan',
+      dragmode: "pan",
       margin: {
         t: 50, // top
         l: 50, // left
@@ -109,7 +109,7 @@ const PolarPlotImple = React.memo(() => {
 
   return (
     <>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: "flex" }}>
         <Box sx={{ flexGrow: 1, ml: 1 }}>
           <PolarItemIndexSelect index={index} />
         </Box>

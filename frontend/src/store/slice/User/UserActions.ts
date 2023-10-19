@@ -1,26 +1,26 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
-import { USER_SLICE_NAME } from './UserType'
+import { createAsyncThunk } from "@reduxjs/toolkit"
+import { USER_SLICE_NAME } from "./UserType"
 import {
   deleteMeApi,
   getMeApi,
   updateMeApi,
   updateMePasswordApi,
-} from 'api/users/UsersMe'
+} from "api/users/UsersMe"
 import {
   AddUserDTO,
   ListUsersQueryDTO,
   UpdateUserDTO,
   UpdateUserPasswordDTO,
   UserDTO,
-} from 'api/users/UsersApiDTO'
-import { LoginDTO, loginApi } from 'api/auth/Auth'
+} from "api/users/UsersApiDTO"
+import { LoginDTO, loginApi } from "api/auth/Auth"
 import {
   deleteUserApi,
   createUserApi,
   listUsersApi,
   updateUserApi,
-} from 'api/users/UsersAdmin'
-import { getListSearchApi } from 'api/users/UsersAdmin'
+} from "api/users/UsersAdmin"
+import { getListSearchApi } from "api/users/UsersAdmin"
 
 export const login = createAsyncThunk(
   `${USER_SLICE_NAME}/login`,

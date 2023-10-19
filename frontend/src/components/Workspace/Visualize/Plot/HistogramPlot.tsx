@@ -1,7 +1,7 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import PlotlyChart from 'react-plotlyjs-ts'
-import { DisplayDataContext } from '../DataContext'
+import React from "react"
+import { useSelector, useDispatch } from "react-redux"
+import PlotlyChart from "react-plotlyjs-ts"
+import { DisplayDataContext } from "../DataContext"
 import {
   selectHistogramData,
   selectHistogramDataError,
@@ -9,8 +9,8 @@ import {
   selectHistogramDataIsInitialized,
   selectHistogramDataIsPending,
   selectHistogramMeta,
-} from 'store/slice/DisplayData/DisplayDataSelectors'
-import { getHistogramData } from 'store/slice/DisplayData/DisplayDataActions'
+} from "store/slice/DisplayData/DisplayDataSelectors"
+import { getHistogramData } from "store/slice/DisplayData/DisplayDataActions"
 import {
   Box,
   FormControl,
@@ -18,14 +18,14 @@ import {
   InputLabel,
   LinearProgress,
   Typography,
-} from '@mui/material'
+} from "@mui/material"
 import {
   selectHistogramItemBins,
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { setHistogramItemBins } from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { AppDispatch } from "../../../../store/store";
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
+import { setHistogramItemBins } from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { AppDispatch } from "../../../../store/store"
 
 export const HistogramPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -66,7 +66,7 @@ const HistogramPlotImple = React.memo(() => {
         ? [
             {
               x: histogramData[0],
-              type: 'histogram',
+              type: "histogram",
               autobinx: false,
               xbins: {
                 size:
@@ -88,7 +88,7 @@ const HistogramPlotImple = React.memo(() => {
       },
       width: width,
       height: height - 120,
-      dragmode: 'pan',
+      dragmode: "pan",
       margin: {
         t: 50, // top
         l: 50, // left
@@ -107,7 +107,7 @@ const HistogramPlotImple = React.memo(() => {
 
   return (
     <div>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: "flex" }}>
         <Box sx={{ flexGrow: 1, ml: 1 }}>
           <InputBins />
         </Box>

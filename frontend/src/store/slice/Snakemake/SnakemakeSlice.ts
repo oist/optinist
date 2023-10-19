@@ -1,8 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { convertToParamMap, getChildParam } from 'utils/param/ParamUtils'
-import { getSnakemakeParams } from './SnakemakeAction'
-import { SnakemakeType, SNAKEMAKE_SLICE_NAME } from './SnakemakeType'
-import { clearFlowElements } from '../FlowElement/FlowElementSlice'
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { convertToParamMap, getChildParam } from "utils/param/ParamUtils"
+import { getSnakemakeParams } from "./SnakemakeAction"
+import { SnakemakeType, SNAKEMAKE_SLICE_NAME } from "./SnakemakeType"
+import { clearFlowElements } from "../FlowElement/FlowElementSlice"
 
 const initialState: SnakemakeType = {
   params: {},

@@ -1,8 +1,8 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit"
 
-import { getHDF5Tree } from './HDF5Action'
-import { HDF5Tree, HDF5_SLICE_NAME } from './HDF5Type'
-import { convertToTreeNodeType } from './HDF5Utils'
+import { getHDF5Tree } from "./HDF5Action"
+import { HDF5Tree, HDF5_SLICE_NAME } from "./HDF5Type"
+import { convertToTreeNodeType } from "./HDF5Utils"
 
 const initialState: HDF5Tree = {
   isLoading: false,

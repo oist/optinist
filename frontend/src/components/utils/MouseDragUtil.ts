@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react"
 
 export function useMouseDragHandler(
   onMouseDown: (event: React.MouseEvent) => {
@@ -10,11 +10,11 @@ export function useMouseDragHandler(
   return React.useCallback(
     (event: React.MouseEvent) => {
       const { onMouseMove, onMouseUp } = onMouseDown(event)
-      document.addEventListener('mousemove', onMouseMove)
+      document.addEventListener("mousemove", onMouseMove)
       document.addEventListener(
-        'mouseup',
+        "mouseup",
         (event) => {
-          document.removeEventListener('mousemove', onMouseMove)
+          document.removeEventListener("mousemove", onMouseMove)
           onMouseUp.call(document, event)
         },
         { once: true },

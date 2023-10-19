@@ -1,21 +1,21 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { Handle, Position, NodeProps } from 'reactflow'
+import React from "react"
+import { useSelector, useDispatch } from "react-redux"
+import { Handle, Position, NodeProps } from "reactflow"
 
 import {
   selectImageInputNodeSelectedFilePath,
   selectInputNodeDefined,
-} from 'store/slice/InputNode/InputNodeSelectors'
-import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
+} from "store/slice/InputNode/InputNodeSelectors"
+import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
 
-import { useHandleColor } from './HandleColorHook'
-import { FileSelect } from './FileSelect'
-import { toHandleId, isValidConnection } from './FlowChartUtils'
-import { deleteFlowNodeById } from 'store/slice/FlowElement/FlowElementSlice'
-import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
-import { arrayEqualityFn } from 'utils/EqualityUtils'
-import { HANDLE_STYLE } from 'const/flowchart'
-import { NodeContainer } from 'components/Workspace/FlowChart/FlowChartNode/NodeContainer'
+import { useHandleColor } from "./HandleColorHook"
+import { FileSelect } from "./FileSelect"
+import { toHandleId, isValidConnection } from "./FlowChartUtils"
+import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
+import { setInputNodeFilePath } from "store/slice/InputNode/InputNodeActions"
+import { arrayEqualityFn } from "utils/EqualityUtils"
+import { HANDLE_STYLE } from "const/flowchart"
+import { NodeContainer } from "components/Workspace/FlowChart/FlowChartNode/NodeContainer"
 
 export const ImageFileNode = React.memo<NodeProps>((element) => {
   const defined = useSelector(selectInputNodeDefined(element.id))
@@ -37,7 +37,7 @@ const ImageFileNodeImple = React.memo<NodeProps>(
       dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
     }
 
-    const returnType = 'ImageData'
+    const returnType = "ImageData"
     const imageColor = useHandleColor(returnType)
 
     const onClickDeleteIcon = () => {
@@ -49,7 +49,7 @@ const ImageFileNodeImple = React.memo<NodeProps>(
         <button
           className="flowbutton"
           onClick={onClickDeleteIcon}
-          style={{ color: 'black', position: 'absolute', top: -10, right: 10 }}
+          style={{ color: "black", position: "absolute", top: -10, right: 10 }}
         >
           ×
         </button>
@@ -67,7 +67,7 @@ const ImageFileNodeImple = React.memo<NodeProps>(
         <Handle
           type="source"
           position={Position.Right}
-          id={toHandleId(nodeId, 'image', returnType)}
+          id={toHandleId(nodeId, "image", returnType)}
           style={{
             ...HANDLE_STYLE,
             background: imageColor,

@@ -1,8 +1,8 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { getNWBParams } from './NWBAction'
-import { NWBType, NWB_SLICE_NAME } from './NWBType'
-import { convertToParamMap, getChildParam } from 'utils/param/ParamUtils'
-import { clearFlowElements } from '../FlowElement/FlowElementSlice'
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+import { getNWBParams } from "./NWBAction"
+import { NWBType, NWB_SLICE_NAME } from "./NWBType"
+import { convertToParamMap, getChildParam } from "utils/param/ParamUtils"
+import { clearFlowElements } from "../FlowElement/FlowElementSlice"
 const initialState: NWBType = {
   params: {},
 }

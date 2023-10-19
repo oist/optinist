@@ -1,18 +1,18 @@
-import axios from 'utils/axios'
+import axios from "utils/axios"
 
-import { BASE_URL } from 'const/API'
+import { BASE_URL } from "const/API"
 
 export const FILE_TREE_TYPE_SET = {
-  IMAGE: 'image',
-  CSV: 'csv',
-  HDF5: 'hdf5',
-  FLUO: 'fluo',
-  BEHAVIOR: 'behavior',
-  ALL: 'all',
+  IMAGE: "image",
+  CSV: "csv",
+  HDF5: "hdf5",
+  FLUO: "fluo",
+  BEHAVIOR: "behavior",
+  ALL: "all",
 } as const
 
 export type FILE_TREE_TYPE =
-  typeof FILE_TREE_TYPE_SET[keyof typeof FILE_TREE_TYPE_SET]
+  (typeof FILE_TREE_TYPE_SET)[keyof typeof FILE_TREE_TYPE_SET]
 
 export type TreeNodeTypeDTO = DirNodeDTO | FileNodeDTO
 

@@ -1,6 +1,6 @@
-import { RootState } from 'store/store'
+import { RootState } from "store/store"
 
-import { getChildParam } from 'utils/param/ParamUtils'
+import { getChildParam } from "utils/param/ParamUtils"
 
 export const selectAlgorithmNode = (state: RootState) => state.algorithmNode
 
@@ -40,7 +40,7 @@ export const selectAlgorithmParamsValue =
       const target = getChildParam(path, params)
       return target?.value
     } else {
-      throw new Error('AlgorithmParam is null')
+      throw new Error("AlgorithmParam is null")
     }
   }
 
@@ -50,7 +50,7 @@ export const selectAlgorithmParam =
     if (params != null) {
       return params[paramKey]
     } else {
-      throw new Error('AlgorithmParam is null')
+      throw new Error("AlgorithmParam is null")
     }
   }
 

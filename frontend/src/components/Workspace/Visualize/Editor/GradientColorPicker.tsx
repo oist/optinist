@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useState } from "react"
 
-import { GradientPickerPopover } from 'react-linear-gradient-picker'
-import { SketchPicker } from 'react-color'
-import { PALETTE_COLOR_SHAPE_TYPE } from 'react-linear-gradient-picker'
-import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
+import { GradientPickerPopover } from "react-linear-gradient-picker"
+import { SketchPicker } from "react-color"
+import { PALETTE_COLOR_SHAPE_TYPE } from "react-linear-gradient-picker"
+import { ColorType } from "store/slice/VisualizeItem/VisualizeItemType"
 
 const GradientPickerPopoverComponent =
   GradientPickerPopover as unknown as React.FC<any>
@@ -22,7 +22,7 @@ export const GradientColorPicker = React.memo<{
   const onPaletteChange = (palette: PALETTE_COLOR_SHAPE_TYPE[]) => {
     const colorCode = palette.map((value) => {
       const color = value.color
-      const rgbStr = color.replace(/[^0-9,]/g, '').split(',')
+      const rgbStr = color.replace(/[^0-9,]/g, "").split(",")
       const rgb = {
         r: Number(rgbStr[0]),
         g: Number(rgbStr[1]),

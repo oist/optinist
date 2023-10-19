@@ -1,6 +1,6 @@
-import { UserDTO } from '../../../api/users/UsersApiDTO'
+import { UserDTO } from "../../../api/users/UsersApiDTO"
 
-export const WORKSPACE_SLICE_NAME = 'workspace'
+export const WORKSPACE_SLICE_NAME = "workspace"
 
 export type ItemsWorkspace = {
   id: number

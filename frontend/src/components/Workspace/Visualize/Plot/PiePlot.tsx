@@ -1,7 +1,7 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import PlotlyChart from 'react-plotlyjs-ts'
-import { DisplayDataContext } from '../DataContext'
+import React from "react"
+import { useSelector, useDispatch } from "react-redux"
+import PlotlyChart from "react-plotlyjs-ts"
+import { DisplayDataContext } from "../DataContext"
 import {
   selectPieColumns,
   selectPieData,
@@ -10,14 +10,14 @@ import {
   selectPieDataIsInitialized,
   selectPieDataIsPending,
   selectPieMeta,
-} from 'store/slice/DisplayData/DisplayDataSelectors'
-import { getPieData } from 'store/slice/DisplayData/DisplayDataActions'
-import { LinearProgress, Typography } from '@mui/material'
+} from "store/slice/DisplayData/DisplayDataSelectors"
+import { getPieData } from "store/slice/DisplayData/DisplayDataActions"
+import { LinearProgress, Typography } from "@mui/material"
 import {
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { AppDispatch } from "../../../../store/store";
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
+import { AppDispatch } from "../../../../store/store"
 
 export const PiePlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -59,9 +59,9 @@ const PiePlotImple = React.memo(() => {
             {
               values: pieData[0],
               labels: columns,
-              type: 'pie',
+              type: "pie",
               sort: false,
-              direction: 'clockwise',
+              direction: "clockwise",
             },
           ]
         : [],
@@ -76,7 +76,7 @@ const PiePlotImple = React.memo(() => {
       },
       width: width,
       height: height - 120,
-      dragmode: 'pan',
+      dragmode: "pan",
       margin: {
         t: 60, // top
         l: 50, // left

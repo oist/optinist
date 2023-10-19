@@ -1,5 +1,5 @@
-import { getChildParam } from 'utils/param/ParamUtils'
-import { RootState } from '../../store'
+import { getChildParam } from "utils/param/ParamUtils"
+import { RootState } from "../../store"
 
 const selectSnakemake = (state: RootState) => state.snakemake
 export const selectSnakemakeParams = (state: RootState) =>
@@ -18,6 +18,6 @@ export const selectSnakemakeParamsValue =
       const target = getChildParam(path, params)
       return target?.value
     } else {
-      throw new Error('Param is null')
+      throw new Error("Param is null")
     }
   }

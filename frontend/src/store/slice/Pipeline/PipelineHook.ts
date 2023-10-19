@@ -1,36 +1,36 @@
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React from "react"
+import { useDispatch, useSelector } from "react-redux"
 
-import { selectRunPostData } from 'store/slice/Run/RunSelectors'
+import { selectRunPostData } from "store/slice/Run/RunSelectors"
 import {
   selectPipelineIsCanceled,
   selectPipelineIsStartedSuccess,
   selectPipelineLatestUid,
   selectPipelineStatus,
-} from './PipelineSelectors'
+} from "./PipelineSelectors"
 import {
   run,
   pollRunResult,
   runByCurrentUid,
   cancelResult,
-} from './PipelineActions'
-import { selectFilePathIsUndefined } from '../InputNode/InputNodeSelectors'
-import { selectAlgorithmNodeNotExist } from '../AlgorithmNode/AlgorithmNodeSelectors'
-import { getExperiments } from '../Experiments/ExperimentsActions'
-import { fetchWorkflow } from '../Workflow/WorkflowActions'
-import { useSnackbar, VariantType } from 'notistack'
-import { RUN_STATUS } from './PipelineType'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { IS_STANDALONE, STANDALONE_WORKSPACE_ID } from 'const/Mode'
+} from "./PipelineActions"
+import { selectFilePathIsUndefined } from "../InputNode/InputNodeSelectors"
+import { selectAlgorithmNodeNotExist } from "../AlgorithmNode/AlgorithmNodeSelectors"
+import { getExperiments } from "../Experiments/ExperimentsActions"
+import { fetchWorkflow } from "../Workflow/WorkflowActions"
+import { useSnackbar, VariantType } from "notistack"
+import { RUN_STATUS } from "./PipelineType"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
+import { IS_STANDALONE, STANDALONE_WORKSPACE_ID } from "const/Mode"
 import {
   clearCurrentWorkspace,
   setActiveTab,
   setCurrentWorkspace,
-} from '../Workspace/WorkspaceSlice'
-import { clearExperiments } from '../Experiments/ExperimentsSlice'
-import { getWorkspace } from 'store/slice/Workspace/WorkspaceActions'
-import { selectIsWorkspaceOwner } from '../Workspace/WorkspaceSelector'
-import { AppDispatch } from '../../store'
+} from "../Workspace/WorkspaceSlice"
+import { clearExperiments } from "../Experiments/ExperimentsSlice"
+import { getWorkspace } from "store/slice/Workspace/WorkspaceActions"
+import { selectIsWorkspaceOwner } from "../Workspace/WorkspaceSelector"
+import { AppDispatch } from "../../store"
 
 const POLLING_INTERVAL = 5000
 
@@ -58,7 +58,7 @@ export function useRunPipeline() {
           selectedTab && dispatch(setActiveTab(selectedTab))
         })
         .catch((_) => {
-          navigate('/console/workspaces')
+          navigate("/console/workspaces")
         })
     }
     return () => {
@@ -93,8 +93,8 @@ export function useRunPipeline() {
       const data = await dispatch(cancelResult({ uid }))
       if ((data as any).error) {
         handleClickVariant(
-          'error',
-          'Failed to cancel workflow. Please try again.',
+          "error",
+          "Failed to cancel workflow. Please try again.",
         )
       }
     }
@@ -117,15 +117,15 @@ export function useRunPipeline() {
   React.useEffect(() => {
     if (prevStatus !== status) {
       if (status === RUN_STATUS.FINISHED) {
-        enqueueSnackbar('Finished', { variant: 'success' })
+        enqueueSnackbar("Finished", { variant: "success" })
         dispatch(getExperiments())
       } else if (status === RUN_STATUS.START_SUCCESS) {
         dispatch(getExperiments())
       } else if (status === RUN_STATUS.ABORTED) {
-        enqueueSnackbar('Aborted', { variant: 'error' })
+        enqueueSnackbar("Aborted", { variant: "error" })
         dispatch(getExperiments())
       } else if (status === RUN_STATUS.CANCELED) {
-        enqueueSnackbar('Workflow canceled.', { variant: 'success' })
+        enqueueSnackbar("Workflow canceled.", { variant: "success" })
         dispatch(getExperiments())
       }
       setPrevStatus(status)

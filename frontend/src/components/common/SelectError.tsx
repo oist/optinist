@@ -4,8 +4,8 @@ import {
   SelectChangeEvent,
   styled,
   Typography,
-} from '@mui/material'
-import { FC, FocusEvent } from 'react'
+} from "@mui/material"
+import { FC, FocusEvent } from "react"
 
 type SelectErrorProps = {
   value?: string
@@ -52,21 +52,21 @@ const SelectError: FC<SelectErrorProps> = ({
 }
 
 const SelectModal = styled(Select, {
-  shouldForwardProp: (props) => props !== 'error',
+  shouldForwardProp: (props) => props !== "error",
 })<{ error: boolean }>(({ theme, error }) => ({
   width: 272,
-  marginBottom: '15px',
-  border: '1px solid #d9d9d9',
-  borderColor: error ? 'red' : '#d9d9d9',
+  marginBottom: "15px",
+  border: "1px solid #d9d9d9",
+  borderColor: error ? "red" : "#d9d9d9",
   borderRadius: 4,
 }))
 
 const TextError = styled(Typography)({
   fontSize: 12,
   minHeight: 18,
-  color: 'red',
-  lineHeight: '14px',
-  margin: '-14px 0px 0px 305px',
-  wordBreak: 'break-word',
+  color: "red",
+  lineHeight: "14px",
+  margin: "-14px 0px 0px 305px",
+  wordBreak: "break-word",
 })
 export default SelectError

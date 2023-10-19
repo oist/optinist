@@ -1,18 +1,18 @@
-export const EXPERIMENTS_SLICE_NAME = 'experiments'
+export const EXPERIMENTS_SLICE_NAME = "experiments"
 
 export type Experiments =
   | {
-      status: 'fulfilled'
+      status: "fulfilled"
       experimentList: ExperimentListType
     }
   | {
-      status: 'uninitialized'
+      status: "uninitialized"
     }
   | {
-      status: 'pending'
+      status: "pending"
     }
   | {
-      status: 'error'
+      status: "error"
       message?: string
     }
 
@@ -41,7 +41,7 @@ export type ExperimentFunction = {
   message?: string
 }
 
-export type EXPERIMENTS_STATUS = 'success' | 'error' | 'running'
+export type EXPERIMENTS_STATUS = "success" | "error" | "running"
 
 export interface ExperimentSortKeys {
   uid: string

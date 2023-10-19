@@ -1,7 +1,7 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import PlotlyChart from 'react-plotlyjs-ts'
-import { DisplayDataContext } from '../DataContext'
+import React from "react"
+import { useSelector, useDispatch } from "react-redux"
+import PlotlyChart from "react-plotlyjs-ts"
+import { DisplayDataContext } from "../DataContext"
 import {
   selectLineColumns,
   selectLineData,
@@ -11,8 +11,8 @@ import {
   selectLineDataIsPending,
   selectLineIndex,
   selectLineMeta,
-} from 'store/slice/DisplayData/DisplayDataSelectors'
-import { getLineData } from 'store/slice/DisplayData/DisplayDataActions'
+} from "store/slice/DisplayData/DisplayDataSelectors"
+import { getLineData } from "store/slice/DisplayData/DisplayDataActions"
 import {
   Box,
   FormControl,
@@ -22,14 +22,14 @@ import {
   Select,
   SelectChangeEvent,
   Typography,
-} from '@mui/material'
+} from "@mui/material"
 import {
   selectLineItemSelectedIndex,
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { setLineItemSelectedIndex } from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { AppDispatch } from "../../../../store/store";
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
+import { setLineItemSelectedIndex } from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { AppDispatch } from "../../../../store/store"
 export const LinePlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
   const dispatch = useDispatch<AppDispatch>()
@@ -86,7 +86,7 @@ const LinePlotImple = React.memo(() => {
       },
       width: width,
       height: height - 120,
-      dragmode: 'pan',
+      dragmode: "pan",
       margin: {
         t: 50, // top
         l: 50, // left
@@ -106,7 +106,7 @@ const LinePlotImple = React.memo(() => {
 
   return (
     <>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: "flex" }}>
         <Box sx={{ flexGrow: 1, ml: 1 }}>
           <LineItemIndexSelect index={index} />
         </Box>

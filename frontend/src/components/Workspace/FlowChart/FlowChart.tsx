@@ -1,18 +1,18 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { styled } from '@mui/material/styles'
-import { DndProvider } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
+import React from "react"
+import { useSelector } from "react-redux"
+import { styled } from "@mui/material/styles"
+import { DndProvider } from "react-dnd"
+import { HTML5Backend } from "react-dnd-html5-backend"
 
-import { AlgorithmTreeView } from './TreeView'
-import { ReactFlowComponent } from './ReactFlowComponent'
-import RightDrawer from './RightDrawer'
-import { selectRightDrawerIsOpen } from 'store/slice/RightDrawer/RightDrawerSelectors'
-import { UseRunPipelineReturnType } from 'store/slice/Pipeline/PipelineHook'
-import { CurrentPipelineInfo } from 'components/common/CurrentPipelineInfo'
-import { CONTENT_HEIGHT, DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from 'const/Layout'
-import { Box } from '@mui/material'
-import { grey } from '@mui/material/colors'
+import { AlgorithmTreeView } from "./TreeView"
+import { ReactFlowComponent } from "./ReactFlowComponent"
+import RightDrawer from "./RightDrawer"
+import { selectRightDrawerIsOpen } from "store/slice/RightDrawer/RightDrawerSelectors"
+import { UseRunPipelineReturnType } from "store/slice/Pipeline/PipelineHook"
+import { CurrentPipelineInfo } from "components/common/CurrentPipelineInfo"
+import { CONTENT_HEIGHT, DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from "const/Layout"
+import { Box } from "@mui/material"
+import { grey } from "@mui/material/colors"
 
 const FlowChart = React.memo<UseRunPipelineReturnType>((props) => {
   const open = useSelector(selectRightDrawerIsOpen)
@@ -41,20 +41,20 @@ const FlowChart = React.memo<UseRunPipelineReturnType>((props) => {
   )
 })
 
-const RootDiv = styled('div')({
-  display: 'flex',
+const RootDiv = styled("div")({
+  display: "flex",
 })
 
-const DrawerContents = styled('div')({
-  overflow: 'auto',
+const DrawerContents = styled("div")({
+  overflow: "auto",
 })
 
-const MainContents = styled('main')<{ open: boolean }>(
+const MainContents = styled("main")<{ open: boolean }>(
   ({ theme }) => ({
-    flexDirection: 'column',
+    flexDirection: "column",
     flexGrow: 1,
     minHeight: CONTENT_HEIGHT,
-    transition: theme.transitions.create('margin', {
+    transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
@@ -63,7 +63,7 @@ const MainContents = styled('main')<{ open: boolean }>(
   ({ open, theme }) =>
     open
       ? {
-          transition: theme.transitions.create('margin', {
+          transition: theme.transitions.create("margin", {
             easing: theme.transitions.easing.easeOut,
             duration: theme.transitions.duration.enteringScreen,
           }),

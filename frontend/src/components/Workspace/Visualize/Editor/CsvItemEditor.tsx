@@ -1,25 +1,25 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { FileSelectImple } from 'components/Workspace/FlowChart/FlowChartNode/FileSelect'
-import { SelectedItemIdContext } from '../VisualizeItemEditor'
+import React from "react"
+import { useSelector, useDispatch } from "react-redux"
+import { FileSelectImple } from "components/Workspace/FlowChart/FlowChartNode/FileSelect"
+import { SelectedItemIdContext } from "../VisualizeItemEditor"
 import {
   selectCsvItemSetHeader,
   selectCsvItemSetIndex,
   selectCsvItemTranspose,
   selectDisplayDataIsSingle,
   selectVisualizeDataFilePath,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import {
   setCsvItemSetHeader,
   setCsvItemSetIndex,
   setCsvItemTranspose,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
-import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
-import { FILE_TREE_TYPE_SET } from 'api/files/Files'
-import { FormControlLabel, Switch, TextField } from '@mui/material'
-import { setNewDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemActions'
-import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
+} from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
+import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
+import { FILE_TREE_TYPE_SET } from "api/files/Files"
+import { FormControlLabel, Switch, TextField } from "@mui/material"
+import { setNewDisplayDataPath } from "store/slice/VisualizeItem/VisualizeItemActions"
+import { DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
 
 export const CsvItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
@@ -54,9 +54,9 @@ export const CsvItemEditor: React.FC = () => {
   }
 
   return (
-    <div style={{ margin: '10px', padding: 10 }}>
+    <div style={{ margin: "10px", padding: 10 }}>
       <FileSelectImple
-        filePath={filePath ?? ''}
+        filePath={filePath ?? ""}
         onSelectFile={(path) => !Array.isArray(path) && onSelectFile(path)}
         onUploadFile={onUploadFileHandle}
         fileTreeType={FILE_TREE_TYPE_SET.CSV}
@@ -91,7 +91,7 @@ const SetHeader: React.FC = () => {
   const dispatch = useDispatch()
   const onChangeSetHeader = (event: React.ChangeEvent<HTMLInputElement>) => {
     const newValue =
-      event.target.value === '' ? null : Number(event.target.value)
+      event.target.value === "" ? null : Number(event.target.value)
     if (newValue === null || newValue >= 0) {
       dispatch(setCsvItemSetHeader({ itemId, setHeader: newValue }))
     }

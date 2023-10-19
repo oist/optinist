@@ -1,25 +1,25 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import Box from '@mui/material/Box'
-import Collapse from '@mui/material/Collapse'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell from '@mui/material/TableCell'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import Typography from '@mui/material/Typography'
+import React from "react"
+import { useSelector } from "react-redux"
+import Box from "@mui/material/Box"
+import Collapse from "@mui/material/Collapse"
+import Table from "@mui/material/Table"
+import TableBody from "@mui/material/TableBody"
+import TableCell from "@mui/material/TableCell"
+import TableHead from "@mui/material/TableHead"
+import TableRow from "@mui/material/TableRow"
+import Typography from "@mui/material/Typography"
 
-import { ExperimentUidContext } from './ExperimentTable'
+import { ExperimentUidContext } from "./ExperimentTable"
 import {
   selectExperimentFunctionHasNWB,
   selectExperimentFunctionMessage,
   selectExperimentFunctionName,
   selectExperimentFunctionNodeIdList,
   selectExperimentFunctionStatus,
-} from 'store/slice/Experiments/ExperimentsSelectors'
-import { ExperimentStatusIcon } from './ExperimentStatusIcon'
-import { arrayEqualityFn } from 'utils/EqualityUtils'
-import { NWBDownloadButton } from './Button/DownloadButton'
+} from "store/slice/Experiments/ExperimentsSelectors"
+import { ExperimentStatusIcon } from "./ExperimentStatusIcon"
+import { arrayEqualityFn } from "utils/EqualityUtils"
+import { NWBDownloadButton } from "./Button/DownloadButton"
 
 export const CollapsibleTable = React.memo<{
   open: boolean

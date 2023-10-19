@@ -1,25 +1,25 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import Box from '@mui/material/Box'
+import React from "react"
+import { useSelector } from "react-redux"
+import Box from "@mui/material/Box"
 import {
   selectSelectedVisualizeItemId,
   selectVisualizeDataType,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
-} from 'store/slice/DisplayData/DisplayDataType'
-import { ImageItemEditor } from './Editor/ImageItemEditor'
-import { CsvItemEditor } from './Editor/CsvItemEditor'
-import { HeatmapItemEditor } from './Editor/HeatmapItemEditor'
-import { TimeSeriesItemEditor } from './Editor/TimeSeriesItemEditor'
-import { RoiItemEditor } from './Editor/RoiItemEditor'
-import { ScatterItemEditor } from './Editor/ScatterItemEditor'
-import { BarItemEditor } from './Editor/BarItemEditor'
-import { HistogramItemEditor } from './Editor/HistogramItemEditor'
-import { LineItemEditor } from './Editor/LineItemEditor'
-import { PieItemEditor } from './Editor/PieItemEditor'
-import { PolarItemEditor } from './Editor/PolarItemEditor'
+} from "store/slice/DisplayData/DisplayDataType"
+import { ImageItemEditor } from "./Editor/ImageItemEditor"
+import { CsvItemEditor } from "./Editor/CsvItemEditor"
+import { HeatmapItemEditor } from "./Editor/HeatmapItemEditor"
+import { TimeSeriesItemEditor } from "./Editor/TimeSeriesItemEditor"
+import { RoiItemEditor } from "./Editor/RoiItemEditor"
+import { ScatterItemEditor } from "./Editor/ScatterItemEditor"
+import { BarItemEditor } from "./Editor/BarItemEditor"
+import { HistogramItemEditor } from "./Editor/HistogramItemEditor"
+import { LineItemEditor } from "./Editor/LineItemEditor"
+import { PieItemEditor } from "./Editor/PieItemEditor"
+import { PolarItemEditor } from "./Editor/PolarItemEditor"
 
 export const VisualizeItemEditor = () => {
   const selectedItemId = useSelector(selectSelectedVisualizeItemId)
@@ -32,7 +32,7 @@ export const VisualizeItemEditor = () => {
           </Box>
         </SelectedItemIdContext.Provider>
       ) : (
-        'Please select item...'
+        "Please select item..."
       )}
     </>
   )

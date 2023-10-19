@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import Typography from '@mui/material/Typography'
+import React, { useEffect } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import Typography from "@mui/material/Typography"
 
 import {
   selectAlgorithmName,
@@ -8,14 +8,14 @@ import {
   selectAlgorithmParamsKeyList,
   selectAlgorithmParamsValue,
   selectAlgorithmParam,
-} from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
-import { updateParam } from 'store/slice/AlgorithmNode/AlgorithmNodeSlice'
-import { getAlgoParams } from 'store/slice/AlgorithmNode/AlgorithmNodeActions'
-import { createParamFormItemComponent } from 'components/common/ParamFormItemCreator'
-import { arrayEqualityFn } from 'utils/EqualityUtils'
+} from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
+import { updateParam } from "store/slice/AlgorithmNode/AlgorithmNodeSlice"
+import { getAlgoParams } from "store/slice/AlgorithmNode/AlgorithmNodeActions"
+import { createParamFormItemComponent } from "components/common/ParamFormItemCreator"
+import { arrayEqualityFn } from "utils/EqualityUtils"
 
-import { ParamFormContext } from './RightDrawer'
-import { AppDispatch } from "../../../store/store";
+import { ParamFormContext } from "./RightDrawer"
+import { AppDispatch } from "../../../store/store"
 
 export const AlgorithmParamForm = React.memo(() => {
   const nodeId = React.useContext(ParamFormContext)

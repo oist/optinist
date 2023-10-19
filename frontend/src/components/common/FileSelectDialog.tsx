@@ -1,34 +1,34 @@
-import Dialog from '@mui/material/Dialog'
-import { useDispatch, useSelector } from 'react-redux'
-import { TreeView, TreeItem } from '@mui/x-tree-view'
-import FolderIcon from '@mui/icons-material/Folder'
-import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogTitle from '@mui/material/DialogTitle'
-import Typography from '@mui/material/Typography'
-import LinearProgress from '@mui/material/LinearProgress'
-import Button from '@mui/material/Button'
-import Checkbox, { CheckboxProps } from '@mui/material/Checkbox'
+import Dialog from "@mui/material/Dialog"
+import { useDispatch, useSelector } from "react-redux"
+import { TreeView, TreeItem } from "@mui/x-tree-view"
+import FolderIcon from "@mui/icons-material/Folder"
+import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogTitle from "@mui/material/DialogTitle"
+import Typography from "@mui/material/Typography"
+import LinearProgress from "@mui/material/LinearProgress"
+import Button from "@mui/material/Button"
+import Checkbox, { CheckboxProps } from "@mui/material/Checkbox"
 
-import Box from '@mui/material/Box'
-import { useTheme } from '@mui/material/styles'
-import React from 'react'
+import Box from "@mui/material/Box"
+import { useTheme } from "@mui/material/styles"
+import React from "react"
 
 import {
   selectFilesIsLatest,
   selectFilesIsLoading,
   selectFilesTreeNodes,
-} from 'store/slice/FilesTree/FilesTreeSelectors'
-import { getFilesTree } from 'store/slice/FilesTree/FilesTreeAction'
-import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from 'api/files/Files'
-import { TreeNodeType } from 'store/slice/FilesTree/FilesTreeType'
+} from "store/slice/FilesTree/FilesTreeSelectors"
+import { getFilesTree } from "store/slice/FilesTree/FilesTreeAction"
+import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from "api/files/Files"
+import { TreeNodeType } from "store/slice/FilesTree/FilesTreeType"
 import {
   getNodeByPath,
   isDirNodeByPath,
-} from 'store/slice/FilesTree/FilesTreeUtils'
-import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
-import { AppDispatch } from "../../store/store";
+} from "store/slice/FilesTree/FilesTreeUtils"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
+import { AppDispatch } from "../../store/store"
 
 type FileSelectDialogProps = {
   initialFilePath: string[] | string
@@ -65,14 +65,14 @@ export const FileSelectDialog = React.memo<FileSelectDialogProps>(
     const theme = useTheme()
     return (
       <Dialog open={open} fullWidth>
-        <DialogTitle>{title ?? 'Select File'}</DialogTitle>
+        <DialogTitle>{title ?? "Select File"}</DialogTitle>
         <DialogContent dividers>
           <div
             style={{
               height: 300,
-              overflow: 'auto',
+              overflow: "auto",
               marginBottom: theme.spacing(1),
-              border: '1px solid',
+              border: "1px solid",
               padding: theme.spacing(1),
               borderColor: theme.palette.divider,
             }}
@@ -269,8 +269,8 @@ const TreeItemLabel = React.memo<{
           disableRipple
           size="small"
           sx={{
-            marginRight: '4px',
-            padding: '2px',
+            marginRight: "4px",
+            padding: "2px",
           }}
         />
       </Box>
@@ -286,7 +286,7 @@ const FilePathSelectedListView = React.memo<{ path: string | string[] }>(
           ? Array.isArray(path)
             ? path.map((text) => <li>{text}</li>)
             : path
-          : '---'}
+          : "---"}
       </Typography>
     )
   },
@@ -302,7 +302,7 @@ function useFileTree(
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   React.useEffect(() => {
     if (workspaceId && !isLatest && !isLoading) {
-      dispatch(getFilesTree({workspaceId, fileType}))
+      dispatch(getFilesTree({ workspaceId, fileType }))
     }
   }, [workspaceId, isLatest, isLoading, fileType, dispatch])
   return [tree, isLoading]

@@ -1,9 +1,9 @@
-import React from 'react'
+import React from "react"
 import LinearProgress, {
   LinearProgressProps,
-} from '@mui/material/LinearProgress'
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
+} from "@mui/material/LinearProgress"
+import Typography from "@mui/material/Typography"
+import Box from "@mui/material/Box"
 
 export const LinearProgressWithLabel = React.memo<
   LinearProgressProps & { value: number }

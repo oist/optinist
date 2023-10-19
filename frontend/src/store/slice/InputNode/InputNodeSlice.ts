@@ -1,27 +1,27 @@
-import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
-import { isInputNodePostData } from 'api/run/RunUtils'
-import { INITIAL_IMAGE_ELEMENT_ID } from 'const/flowchart'
+import { createSlice, isAnyOf, PayloadAction } from "@reduxjs/toolkit"
+import { isInputNodePostData } from "api/run/RunUtils"
+import { INITIAL_IMAGE_ELEMENT_ID } from "const/flowchart"
 import {
   reproduceWorkflow,
   importWorkflowConfig,
   fetchWorkflow,
-} from 'store/slice/Workflow/WorkflowActions'
-import { uploadFile } from '../FileUploader/FileUploaderActions'
-import { addInputNode } from '../FlowElement/FlowElementActions'
+} from "store/slice/Workflow/WorkflowActions"
+import { uploadFile } from "../FileUploader/FileUploaderActions"
+import { addInputNode } from "../FlowElement/FlowElementActions"
 import {
   clearFlowElements,
   deleteFlowNodes,
   deleteFlowNodeById,
-} from '../FlowElement/FlowElementSlice'
-import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
-import { setInputNodeFilePath } from './InputNodeActions'
+} from "../FlowElement/FlowElementSlice"
+import { NODE_TYPE_SET } from "../FlowElement/FlowElementType"
+import { setInputNodeFilePath } from "./InputNodeActions"
 import {
   CsvInputParamType,
   FILE_TYPE_SET,
   InputNode,
   INPUT_NODE_SLICE_NAME,
-} from './InputNodeType'
-import { isCsvInputNode, isHDF5InputNode } from './InputNodeUtils'
+} from "./InputNodeType"
+import { isCsvInputNode, isHDF5InputNode } from "./InputNodeUtils"
 
 const initialState: InputNode = {
   [INITIAL_IMAGE_ELEMENT_ID]: {

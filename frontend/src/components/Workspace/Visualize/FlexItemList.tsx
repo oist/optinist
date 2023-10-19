@@ -1,14 +1,14 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React from "react"
+import { useSelector } from "react-redux"
 
-import Box from '@mui/material/Box'
+import Box from "@mui/material/Box"
 
-import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
+import { twoDimarrayEqualityFn } from "utils/EqualityUtils"
 
-import { selectVisualizeItemLayout } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import { selectVisualizeItemLayout } from "store/slice/VisualizeItem/VisualizeItemSelectors"
 
-import { VisualizeItemAddButton } from './VisualizeItemAddButton'
-import { VisualizeItem } from './VisualizeItem'
+import { VisualizeItemAddButton } from "./VisualizeItemAddButton"
+import { VisualizeItem } from "./VisualizeItem"
 
 export const FlexItemList: React.FC = () => {
   const layout = useSelector(selectVisualizeItemLayout, twoDimarrayEqualityFn)

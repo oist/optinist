@@ -1,31 +1,31 @@
-import { DATA_TYPE, DATA_TYPE_SET } from './DisplayDataType'
+import { DATA_TYPE, DATA_TYPE_SET } from "./DisplayDataType"
 
 /**
  * サーバーサイドの値をマッピング
  */
 export function toDataType(value: string): DATA_TYPE {
   switch (value) {
-    case 'images':
+    case "images":
       return DATA_TYPE_SET.IMAGE
-    case 'timeseries':
+    case "timeseries":
       return DATA_TYPE_SET.TIME_SERIES
-    case 'heatmap':
+    case "heatmap":
       return DATA_TYPE_SET.HEAT_MAP
-    case 'roi':
+    case "roi":
       return DATA_TYPE_SET.ROI
-    case 'scatter':
+    case "scatter":
       return DATA_TYPE_SET.SCATTER
-    case 'bar':
+    case "bar":
       return DATA_TYPE_SET.BAR
-    case 'html':
+    case "html":
       return DATA_TYPE_SET.HTML
-    case 'histogram':
+    case "histogram":
       return DATA_TYPE_SET.HISTOGRAM
-    case 'line':
+    case "line":
       return DATA_TYPE_SET.LINE
-    case 'pie':
+    case "pie":
       return DATA_TYPE_SET.PIE
-    case 'polar':
+    case "polar":
       return DATA_TYPE_SET.POLAR
     default:
       throw new Error(`failed to map dataType: ${value}`)

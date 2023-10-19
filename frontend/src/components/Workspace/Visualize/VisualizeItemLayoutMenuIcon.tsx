@@ -1,20 +1,20 @@
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import IconButton from '@mui/material/IconButton'
-import Menu from '@mui/material/Menu'
-import MenuItem from '@mui/material/MenuItem'
-import ListItemText from '@mui/material/ListItemText'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import MoreVertIcon from '@mui/icons-material/MoreVert'
-import DeleteIcon from '@mui/icons-material/Delete'
-import AddIcon from '@mui/icons-material/Add'
+import React from "react"
+import { useDispatch, useSelector } from "react-redux"
+import IconButton from "@mui/material/IconButton"
+import Menu from "@mui/material/Menu"
+import MenuItem from "@mui/material/MenuItem"
+import ListItemText from "@mui/material/ListItemText"
+import ListItemIcon from "@mui/material/ListItemIcon"
+import MoreVertIcon from "@mui/icons-material/MoreVert"
+import DeleteIcon from "@mui/icons-material/Delete"
+import AddIcon from "@mui/icons-material/Add"
 import {
   selectDisplayDataIsSingle,
   selectVisualizeDataFilePath,
   selectVisualizeDataType,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { insertInitialItemToNextColumn } from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { deleteDisplayItem } from 'store/slice/VisualizeItem/VisualizeItemActions'
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
+import { insertInitialItemToNextColumn } from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { deleteDisplayItem } from "store/slice/VisualizeItem/VisualizeItemActions"
 
 export const DisplayDataItemLayoutMenuIcon = React.memo<{
   itemId: number

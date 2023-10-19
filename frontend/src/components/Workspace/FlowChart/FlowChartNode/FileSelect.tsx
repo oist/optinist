@@ -1,13 +1,13 @@
-import React, { useContext } from 'react'
-import { Button, Tooltip, Typography } from '@mui/material'
-import ButtonGroup from '@mui/material/ButtonGroup'
+import React, { useContext } from "react"
+import { Button, Tooltip, Typography } from "@mui/material"
+import ButtonGroup from "@mui/material/ButtonGroup"
 
-import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from 'api/files/Files'
-import { LinearProgressWithLabel } from './LinerProgressWithLabel'
-import { FILE_TYPE } from 'store/slice/InputNode/InputNodeType'
-import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
-import { getLabelByPath } from 'store/slice/FlowElement/FlowElementUtils'
-import { DialogContext } from 'components/Workspace/FlowChart/DialogContext'
+import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from "api/files/Files"
+import { LinearProgressWithLabel } from "./LinerProgressWithLabel"
+import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
+import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
+import { getLabelByPath } from "store/slice/FlowElement/FlowElementUtils"
+import { DialogContext } from "components/Workspace/FlowChart/DialogContext"
 
 export const FileSelect = React.memo<{
   multiSelect?: boolean
@@ -78,7 +78,7 @@ export const FileSelectImple = React.memo<FileSelectImpleProps>(
       if (event.target.files != null && event.target.files[0] != null) {
         const file = event.target.files[0]
         const formData = new FormData()
-        formData.append('file', file)
+        formData.append("file", file)
         const fileName = file.name
         onUploadFile(formData, fileName)
       }
@@ -106,10 +106,10 @@ export const FileSelectImple = React.memo<FileSelectImpleProps>(
               })
             }}
           >
-            {!!selectButtonLabel ? selectButtonLabel : 'Select File'}
+            {!!selectButtonLabel ? selectButtonLabel : "Select File"}
           </Button>
           <Button onClick={onClick} variant="outlined">
-            {!!uploadButtonLabel ? uploadButtonLabel : 'Load'}
+            {!!uploadButtonLabel ? uploadButtonLabel : "Load"}
           </Button>
         </ButtonGroup>
         <div>
@@ -119,14 +119,14 @@ export const FileSelectImple = React.memo<FileSelectImpleProps>(
             onChange={onFileInputChange}
             accept={accept}
             style={{
-              visibility: 'hidden',
+              visibility: "hidden",
               width: 0,
               height: 0,
             }}
           />
           <Tooltip title={!!fileName ? fileName : null}>
             <Typography className="selectFilePath" variant="body2">
-              {!!fileName ? fileName : 'No file is selected.'}
+              {!!fileName ? fileName : "No file is selected."}
             </Typography>
           </Tooltip>
         </div>
@@ -138,11 +138,11 @@ export const FileSelectImple = React.memo<FileSelectImpleProps>(
 function getFileInputAccept(fileType: FILE_TREE_TYPE | undefined) {
   switch (fileType) {
     case FILE_TREE_TYPE_SET.IMAGE:
-      return '.tif,.tiff'
+      return ".tif,.tiff"
     case FILE_TREE_TYPE_SET.CSV:
-      return '.csv'
+      return ".csv"
     case FILE_TREE_TYPE_SET.HDF5:
-      return '.hdf5,.nwb'
+      return ".hdf5,.nwb"
     default:
       return undefined
   }

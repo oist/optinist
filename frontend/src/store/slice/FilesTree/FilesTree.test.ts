@@ -1,30 +1,30 @@
-import reducer, { initialState } from './FilesTreeSlice'
-import { FilesTree } from './FilesTreeType'
-import { getFilesTree } from './FilesTreeAction'
-import { TreeNodeTypeDTO } from 'api/files/Files'
+import reducer, { initialState } from "./FilesTreeSlice"
+import { FilesTree } from "./FilesTreeType"
+import { getFilesTree } from "./FilesTreeAction"
+import { TreeNodeTypeDTO } from "api/files/Files"
 
-describe('FilesTree', () => {
+describe("FilesTree", () => {
   const mockPayload: TreeNodeTypeDTO[] = [
     {
-      path: '/tmp/optinist/input/hoge',
-      name: 'hoge',
+      path: "/tmp/optinist/input/hoge",
+      name: "hoge",
       isdir: true,
       nodes: [
         {
-          path: '/tmp/optinist/input/hoge/hoge.tif',
-          name: 'hoge.tif',
+          path: "/tmp/optinist/input/hoge/hoge.tif",
+          name: "hoge.tif",
           isdir: false,
         },
       ],
     },
     {
-      path: '/tmp/optinist/input/copy_image1',
-      name: 'copy_image1',
+      path: "/tmp/optinist/input/copy_image1",
+      name: "copy_image1",
       isdir: true,
       nodes: [
         {
-          path: '/tmp/optinist/input/copy_image1/copy_image1.tif',
-          name: 'copy_image1.tif',
+          path: "/tmp/optinist/input/copy_image1/copy_image1.tif",
+          name: "copy_image1.tif",
           isdir: false,
         },
       ],
@@ -37,25 +37,25 @@ describe('FilesTree', () => {
       isLatest: true,
       tree: [
         {
-          path: '/tmp/optinist/input/hoge',
-          name: 'hoge',
+          path: "/tmp/optinist/input/hoge",
+          name: "hoge",
           isDir: true,
           nodes: [
             {
-              path: '/tmp/optinist/input/hoge/hoge.tif',
-              name: 'hoge.tif',
+              path: "/tmp/optinist/input/hoge/hoge.tif",
+              name: "hoge.tif",
               isDir: false,
             },
           ],
         },
         {
-          path: '/tmp/optinist/input/copy_image1',
-          name: 'copy_image1',
+          path: "/tmp/optinist/input/copy_image1",
+          name: "copy_image1",
           isDir: true,
           nodes: [
             {
-              path: '/tmp/optinist/input/copy_image1/copy_image1.tif',
-              name: 'copy_image1.tif',
+              path: "/tmp/optinist/input/copy_image1/copy_image1.tif",
+              name: "copy_image1.tif",
               isDir: false,
             },
           ],
@@ -70,18 +70,18 @@ describe('FilesTree', () => {
         reducer(initialState, {
           type: getFilesTree.pending.type,
           meta: {
-            arg: { fileType: 'image' },
-            requestId: 'F0QeIMS-KV132B2q79qaz',
-            requestStatus: 'pending',
+            arg: { fileType: "image" },
+            requestId: "F0QeIMS-KV132B2q79qaz",
+            requestStatus: "pending",
           },
         }),
         {
           type: getFilesTree.fulfilled.type,
           payload: mockPayload,
           meta: {
-            arg: { fileType: 'image' },
-            requestId: 'F0QeIMS-KV132B2q79qaz',
-            requestStatus: 'fulfilled',
+            arg: { fileType: "image" },
+            requestId: "F0QeIMS-KV132B2q79qaz",
+            requestStatus: "fulfilled",
           },
         },
       ),

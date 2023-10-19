@@ -1,15 +1,15 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import PlotlyChart from 'react-plotlyjs-ts'
-import LinearProgress from '@mui/material/LinearProgress'
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
+import React from "react"
+import { useSelector, useDispatch } from "react-redux"
+import PlotlyChart from "react-plotlyjs-ts"
+import LinearProgress from "@mui/material/LinearProgress"
+import Typography from "@mui/material/Typography"
+import Box from "@mui/material/Box"
+import InputLabel from "@mui/material/InputLabel"
+import MenuItem from "@mui/material/MenuItem"
+import FormControl from "@mui/material/FormControl"
+import Select, { SelectChangeEvent } from "@mui/material/Select"
 
-import { DisplayDataContext } from '../DataContext'
+import { DisplayDataContext } from "../DataContext"
 import {
   selectScatterData,
   selectScatterDataError,
@@ -17,9 +17,9 @@ import {
   selectScatterDataIsInitialized,
   selectScatterDataIsPending,
   selectScatterMeta,
-} from 'store/slice/DisplayData/DisplayDataSelectors'
-import { getScatterData } from 'store/slice/DisplayData/DisplayDataActions'
-import { ScatterData } from 'api/outputs/Outputs'
+} from "store/slice/DisplayData/DisplayDataSelectors"
+import { getScatterData } from "store/slice/DisplayData/DisplayDataActions"
+import { ScatterData } from "api/outputs/Outputs"
 import {
   selectScatterItemXIndex,
   selectScatterItemYIndex,
@@ -27,12 +27,12 @@ import {
   selectVisualizeItemWidth,
   selectVisualizeSaveFilename,
   selectVisualizeSaveFormat,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import {
   setScatterItemXIndex,
   setScatterItemYIndex,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { AppDispatch } from "../../../../store/store";
+} from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { AppDispatch } from "../../../../store/store"
 
 export const ScatterPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -75,12 +75,12 @@ const ScatterPlotImple = React.memo(() => {
       {
         x: scatterData[xIndex],
         y: scatterData[yIndex],
-        type: 'scatter',
-        mode: 'markers', //'markers+text',
+        type: "scatter",
+        mode: "markers", //'markers+text',
         text: Object.keys(scatterData[xIndex]),
-        textposition: 'top center',
+        textposition: "top center",
         textfont: {
-          family: 'Raleway, sans-serif',
+          family: "Raleway, sans-serif",
         },
         marker: {
           size: 5,
@@ -104,15 +104,15 @@ const ScatterPlotImple = React.memo(() => {
         l: 50, // left
         b: 40, // bottom
       },
-      dragmode: 'pan',
+      dragmode: "pan",
       autosize: true,
       xaxis: {
         title: {
           text: meta?.xlabel ?? `x: ${xIndex}`,
           font: {
-            family: 'Courier New, monospace',
+            family: "Courier New, monospace",
             size: 18,
-            color: '#7f7f7f',
+            color: "#7f7f7f",
           },
         },
       },
@@ -120,9 +120,9 @@ const ScatterPlotImple = React.memo(() => {
         title: {
           text: meta?.ylabel ?? `y: ${yIndex}`,
           font: {
-            family: 'Courier New, monospace',
+            family: "Courier New, monospace",
             size: 18,
-            color: '#7f7f7f',
+            color: "#7f7f7f",
           },
         },
       },
@@ -144,7 +144,7 @@ const ScatterPlotImple = React.memo(() => {
 
   return (
     <div>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: "flex" }}>
         <Box sx={{ flexGrow: 1, ml: 1 }}>
           <XIndex dataKeys={Object.keys(scatterData)} />
           <YIndex dataKeys={Object.keys(scatterData)} />

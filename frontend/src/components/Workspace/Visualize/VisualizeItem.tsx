@@ -1,15 +1,15 @@
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import React from "react"
+import { useDispatch, useSelector } from "react-redux"
 
-import Box from '@mui/material/Box'
-import Paper from '@mui/material/Paper'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import FormControl from '@mui/material/FormControl'
+import Box from "@mui/material/Box"
+import Paper from "@mui/material/Paper"
+import InputLabel from "@mui/material/InputLabel"
+import MenuItem from "@mui/material/MenuItem"
+import Select, { SelectChangeEvent } from "@mui/material/Select"
+import FormControl from "@mui/material/FormControl"
 
-import { arrayEqualityFn } from 'utils/EqualityUtils'
-import { RootState } from 'store/store'
+import { arrayEqualityFn } from "utils/EqualityUtils"
+import { RootState } from "store/store"
 import {
   selectDisplayDataIsSingle,
   selectImageItemFilePath,
@@ -22,22 +22,22 @@ import {
   selectVisualizeImageItemIdList,
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import {
   selectItem,
   setItemSize,
   setRoiItemFilePath,
   setTimeSeriesRefImageItemId,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
+} from "store/slice/VisualizeItem/VisualizeItemSlice"
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
-} from 'store/slice/DisplayData/DisplayDataType'
-import { setNewDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemActions'
-import { useMouseDragHandler } from 'components/utils/MouseDragUtil'
-import { DisplayDataItemLayoutMenuIcon } from './VisualizeItemLayoutMenuIcon'
-import { DisplayDataItem } from './DisplayDataItem'
-import { FilePathSelect } from './FilePathSelect'
+} from "store/slice/DisplayData/DisplayDataType"
+import { setNewDisplayDataPath } from "store/slice/VisualizeItem/VisualizeItemActions"
+import { useMouseDragHandler } from "components/utils/MouseDragUtil"
+import { DisplayDataItemLayoutMenuIcon } from "./VisualizeItemLayoutMenuIcon"
+import { DisplayDataItem } from "./DisplayDataItem"
+import { FilePathSelect } from "./FilePathSelect"
 
 export const VisualizeItem = React.memo<{ itemId: number }>(({ itemId }) => {
   const dispatch = useDispatch()
@@ -50,11 +50,11 @@ export const VisualizeItem = React.memo<{ itemId: number }>(({ itemId }) => {
   const { size, onMouseDownX, onMouseDownY, onMouseDownXY } =
     useItemDragResize(itemId)
   return (
-    <Box sx={{ m: 1, display: 'flex', flexDirection: 'row' }}>
+    <Box sx={{ m: 1, display: "flex", flexDirection: "row" }}>
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
+          display: "flex",
+          flexDirection: "column",
         }}
       >
         <Paper
@@ -74,26 +74,26 @@ export const VisualizeItem = React.memo<{ itemId: number }>(({ itemId }) => {
         </Paper>
         <Box
           sx={{
-            display: 'flex',
+            display: "flex",
           }}
         >
           <Box
             sx={{
               flexGrow: 1,
-              position: 'relative',
-              top: '-2px',
-              height: '4px',
-              cursor: 'row-resize',
+              position: "relative",
+              top: "-2px",
+              height: "4px",
+              cursor: "row-resize",
             }}
             onMouseDown={onMouseDownY}
           />
           <Box
             sx={{
-              position: 'relative',
-              top: '-2px',
-              height: '4px',
-              width: '12px',
-              cursor: 'nwse-resize',
+              position: "relative",
+              top: "-2px",
+              height: "4px",
+              width: "12px",
+              cursor: "nwse-resize",
             }}
             onMouseDown={onMouseDownXY}
           />
@@ -101,27 +101,27 @@ export const VisualizeItem = React.memo<{ itemId: number }>(({ itemId }) => {
       </Box>
       <Box
         sx={{
-          display: 'flex',
-          flexDirection: 'column',
+          display: "flex",
+          flexDirection: "column",
         }}
       >
         <Box
           sx={{
             flexGrow: 1,
-            position: 'relative',
-            left: '-2px',
-            width: '4px',
-            cursor: 'col-resize',
+            position: "relative",
+            left: "-2px",
+            width: "4px",
+            cursor: "col-resize",
           }}
           onMouseDown={onMouseDownX}
         />
         <Box
           sx={{
-            position: 'relative',
-            height: '12px',
-            width: '4px',
-            left: '-2px',
-            cursor: 'nwse-resize',
+            position: "relative",
+            height: "12px",
+            width: "4px",
+            left: "-2px",
+            cursor: "nwse-resize",
           }}
           onMouseDown={onMouseDownXY}
         />
@@ -179,15 +179,15 @@ const FilePathSelectItem = React.memo<{
       setNewDisplayDataPath(
         isSingleData && selectedFilePath != null
           ? {
-            ...basePayload,
-            deleteData: true,
-            prevDataType: dataType,
-            prevFilePath: selectedFilePath,
-          }
+              ...basePayload,
+              deleteData: true,
+              prevDataType: dataType,
+              prevFilePath: selectedFilePath,
+            }
           : {
-            ...basePayload,
-            deleteData: false,
-          },
+              ...basePayload,
+              deleteData: false,
+            },
       ),
     )
   }
@@ -228,7 +228,7 @@ const RefImageItemIdSelect = React.memo<{
         value={String(selectedRefImageItemId)}
         onChange={onChangeRefImageItemId}
       >
-        <MenuItem value={undefined}>{'None'}</MenuItem>
+        <MenuItem value={undefined}>{"None"}</MenuItem>
         {itemIdList.map((value) => (
           <MenuItem value={value}>{value}</MenuItem>
         ))}
@@ -323,7 +323,12 @@ const RoiSelect = React.memo<{
   const dispatch = useDispatch()
   const roiItemNodeId = useSelector(selectRoiItemNodeId(itemId))
   const roiItemFilePath = useSelector(selectRoiItemFilePath(itemId))
-  const onSelectRoiFilePath = (nodeId: string, filePath: string, dataType: string, outputKey?: string) => {
+  const onSelectRoiFilePath = (
+    nodeId: string,
+    filePath: string,
+    dataType: string,
+    outputKey?: string,
+  ) => {
     dispatch(setRoiItemFilePath({ itemId, nodeId, filePath, outputKey }))
   }
   return (
@@ -332,7 +337,7 @@ const RoiSelect = React.memo<{
       selectedNodeId={roiItemNodeId}
       onSelect={onSelectRoiFilePath}
       dataType={DATA_TYPE_SET.ROI}
-      label={'Select Roi'}
+      label={"Select Roi"}
     />
   )
 })

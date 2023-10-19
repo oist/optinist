@@ -1,30 +1,30 @@
-import React, { ChangeEvent, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import Button from '@mui/material/Button'
-import Box from '@mui/material/Box'
-import Alert from '@mui/material/Alert'
-import AlertTitle from '@mui/material/AlertTitle'
-import IconButton from '@mui/material/IconButton'
-import Table from '@mui/material/Table'
-import TableBody from '@mui/material/TableBody'
-import TableCell, { tableCellClasses } from '@mui/material/TableCell'
-import TableContainer from '@mui/material/TableContainer'
-import TableHead from '@mui/material/TableHead'
-import TableRow from '@mui/material/TableRow'
-import TablePagination from '@mui/material/TablePagination'
-import Paper from '@mui/material/Paper'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp'
-import ReplayIcon from '@mui/icons-material/Replay'
-import DeleteIcon from '@mui/icons-material/Delete'
-import Checkbox from '@mui/material/Checkbox'
-import Dialog from '@mui/material/Dialog'
-import DialogActions from '@mui/material/DialogActions'
-import DialogTitle from '@mui/material/DialogTitle'
-import TableSortLabel from '@mui/material/TableSortLabel'
-import Typography from '@mui/material/Typography'
+import React, { ChangeEvent, useState } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import Button from "@mui/material/Button"
+import Box from "@mui/material/Box"
+import Alert from "@mui/material/Alert"
+import AlertTitle from "@mui/material/AlertTitle"
+import IconButton from "@mui/material/IconButton"
+import Table from "@mui/material/Table"
+import TableBody from "@mui/material/TableBody"
+import TableCell, { tableCellClasses } from "@mui/material/TableCell"
+import TableContainer from "@mui/material/TableContainer"
+import TableHead from "@mui/material/TableHead"
+import TableRow from "@mui/material/TableRow"
+import TablePagination from "@mui/material/TablePagination"
+import Paper from "@mui/material/Paper"
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
+import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
+import ReplayIcon from "@mui/icons-material/Replay"
+import DeleteIcon from "@mui/icons-material/Delete"
+import Checkbox from "@mui/material/Checkbox"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogTitle from "@mui/material/DialogTitle"
+import TableSortLabel from "@mui/material/TableSortLabel"
+import Typography from "@mui/material/Typography"
 
-import { CollapsibleTable } from './CollapsibleTable'
+import { CollapsibleTable } from "./CollapsibleTable"
 import {
   selectExperimentsStatusIsUninitialized,
   selectExperimentsStatusIsFulfilled,
@@ -36,32 +36,32 @@ import {
   selectExperimentsErrorMessage,
   selectExperimentList,
   selectExperimentHasNWB,
-} from 'store/slice/Experiments/ExperimentsSelectors'
+} from "store/slice/Experiments/ExperimentsSelectors"
 import {
   deleteExperimentByList,
   getExperiments,
-} from 'store/slice/Experiments/ExperimentsActions'
-import { ExperimentStatusIcon } from './ExperimentStatusIcon'
-import { ExperimentSortKeys } from 'store/slice/Experiments/ExperimentsType'
-import { DeleteButton } from './Button/DeleteButton'
+} from "store/slice/Experiments/ExperimentsActions"
+import { ExperimentStatusIcon } from "./ExperimentStatusIcon"
+import { ExperimentSortKeys } from "store/slice/Experiments/ExperimentsType"
+import { DeleteButton } from "./Button/DeleteButton"
 import {
   NWBDownloadButton,
   SnakemakeDownloadButton,
   WorkflowDownloadButton,
-} from './Button/DownloadButton'
-import { ReproduceButton } from './Button/ReproduceButton'
-import { useLocalStorage } from 'components/utils/LocalStorageUtil'
-import { styled } from '@mui/material/styles'
-import { renameExperiment } from 'api/experiments/Experiments'
-import { selectPipelineLatestUid } from 'store/slice/Pipeline/PipelineSelectors'
-import { clearCurrentPipeline } from 'store/slice/Pipeline/PipelineSlice'
+} from "./Button/DownloadButton"
+import { ReproduceButton } from "./Button/ReproduceButton"
+import { useLocalStorage } from "components/utils/LocalStorageUtil"
+import { styled } from "@mui/material/styles"
+import { renameExperiment } from "api/experiments/Experiments"
+import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
+import { clearCurrentPipeline } from "store/slice/Pipeline/PipelineSlice"
 import {
   selectCurrentWorkspaceId,
   selectIsWorkspaceOwner,
-} from 'store/slice/Workspace/WorkspaceSelector'
-import { AppDispatch } from '../../../store/store'
+} from "store/slice/Workspace/WorkspaceSelector"
+import { AppDispatch } from "../../../store/store"
 
-export const ExperimentUidContext = React.createContext<string>('')
+export const ExperimentUidContext = React.createContext<string>("")
 
 export const ExperimentTable: React.FC = () => {
   const isUninitialized = useSelector(selectExperimentsStatusIsUninitialized)
@@ -93,7 +93,7 @@ const ExperimentsErrorView: React.FC = () => {
   )
 }
 
-const LOCAL_STORAGE_KEY_PER_PAGE = 'optinist_experiment_table_per_page'
+const LOCAL_STORAGE_KEY_PER_PAGE = "optinist_experiment_table_per_page"
 
 const TableImple = React.memo(() => {
   const isOwner = useSelector(selectIsWorkspaceOwner)
@@ -105,14 +105,14 @@ const TableImple = React.memo(() => {
   const onClickReload = () => {
     dispatch(getExperiments())
   }
-  const [order, setOrder] = React.useState<Order>('desc')
+  const [order, setOrder] = React.useState<Order>("desc")
   const [sortTarget, setSortTarget] =
-    React.useState<keyof ExperimentSortKeys>('startedAt')
+    React.useState<keyof ExperimentSortKeys>("startedAt")
   const sortHandler =
     (property: keyof ExperimentSortKeys) =>
     (event: React.MouseEvent<unknown>) => {
-      const isAsc = sortTarget === property && order === 'asc'
-      setOrder(isAsc ? 'desc' : 'asc')
+      const isAsc = sortTarget === property && order === "asc"
+      setOrder(isAsc ? "desc" : "asc")
       setSortTarget(property)
     }
 
@@ -180,12 +180,12 @@ const TableImple = React.memo(() => {
       : 0
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+    <Box sx={{ display: "flex", flexDirection: "column" }}>
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'flex-end',
-          alignItems: 'center',
+          display: "flex",
+          justifyContent: "flex-end",
+          alignItems: "center",
         }}
       >
         {!recordsIsEmpty && (
@@ -234,7 +234,7 @@ const TableImple = React.memo(() => {
         variant="outlined"
         sx={{
           flexGlow: 1,
-          height: '100%',
+          height: "100%",
         }}
       >
         <TableContainer component={Paper} elevation={0}>
@@ -284,11 +284,11 @@ const TableImple = React.memo(() => {
                     <Typography
                       sx={{
                         color: (theme) => theme.palette.text.secondary,
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        height: '300px',
-                        textAlign: 'center',
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        height: "300px",
+                        textAlign: "center",
                       }}
                       variant="h6"
                     >
@@ -337,7 +337,7 @@ const HeadItem = React.memo<{
         <TableRow>
           <TableCell padding="checkbox">
             <Checkbox
-              sx={{ visibility: checkboxVisible ? 'visible' : 'hidden' }}
+              sx={{ visibility: checkboxVisible ? "visible" : "hidden" }}
               checked={allChecked}
               indeterminate={allCheckIndeterminate}
               onChange={(e) => onChangeAllCheck(e.target.checked)}
@@ -348,7 +348,7 @@ const HeadItem = React.memo<{
             <TableSortLabel
               active
               direction={order}
-              onClick={sortHandler('startedAt')}
+              onClick={sortHandler("startedAt")}
             >
               Timestamp
             </TableSortLabel>
@@ -357,7 +357,7 @@ const HeadItem = React.memo<{
             <TableSortLabel
               active
               direction={order}
-              onClick={sortHandler('uid')}
+              onClick={sortHandler("uid")}
             >
               ID
             </TableSortLabel>
@@ -366,7 +366,7 @@ const HeadItem = React.memo<{
             <TableSortLabel
               active
               direction={order}
-              onClick={sortHandler('name')}
+              onClick={sortHandler("name")}
             >
               Name
             </TableSortLabel>
@@ -397,7 +397,7 @@ const RowItem = React.memo<{
   const hasNWB = useSelector(selectExperimentHasNWB(uid))
   const [open, setOpen] = React.useState(false)
   const [isEdit, setEdit] = useState(false)
-  const [errorEdit, setErrorEdit] = useState('')
+  const [errorEdit, setErrorEdit] = useState("")
   const [valueEdit, setValueEdit] = useState(name)
   const dispatch = useDispatch<AppDispatch>()
 
@@ -417,9 +417,9 @@ const RowItem = React.memo<{
   }
 
   const onChangeName = (event: ChangeEvent<HTMLInputElement>) => {
-    let errorEdit = ''
+    let errorEdit = ""
     if (!event.target.value.trim()) {
-      errorEdit = 'Name is empty'
+      errorEdit = "Name is empty"
     }
     setErrorEdit(errorEdit)
     setValueEdit(event.target.value)
@@ -435,8 +435,8 @@ const RowItem = React.memo<{
     <React.Fragment>
       <TableRow
         sx={{
-          '& > *': {
-            borderBottom: 'unset',
+          "& > *": {
+            borderBottom: "unset",
           },
           [`& .${tableCellClasses.root}`]: {
             borderBottomWidth: 0,
@@ -465,7 +465,9 @@ const RowItem = React.memo<{
           ) : (
             <>
               {/* date string format is YYYY-MM-DD HH:mm:ss */}
-              <Typography variant="body2">{`${startedAt} - ${finishedAt.split(" ")[1]}`}</Typography>
+              <Typography variant="body2">{`${startedAt} - ${
+                finishedAt.split(" ")[1]
+              }`}</Typography>
               <Typography variant="body2">
                 (elapsed{" "}
                 {(new Date(finishedAt).getTime() -
@@ -477,7 +479,7 @@ const RowItem = React.memo<{
           )}
         </TableCell>
         <TableCell>{uid}</TableCell>
-        <TableCell sx={{ width: 160, position: 'relative' }} onClick={onEdit}>
+        <TableCell sx={{ width: 160, position: "relative" }} onClick={onEdit}>
           {!isEdit ? (
             valueEdit
           ) : (
@@ -509,31 +511,36 @@ const RowItem = React.memo<{
         <TableCell>
           <NWBDownloadButton name={uid} hasNWB={hasNWB} />
         </TableCell>
-        {isOwner &&<TableCell> <DeleteButton /></TableCell>}
+        {isOwner && (
+          <TableCell>
+            {" "}
+            <DeleteButton />
+          </TableCell>
+        )}
       </TableRow>
       <CollapsibleTable open={open} />
     </React.Fragment>
   )
 })
 
-const Input = styled('input')<{ error: boolean }>(({ error }) => ({
-  width: '100%',
-  border: 'none',
-  borderBottom: '1px solid',
-  outline: 'none',
-  color: error ? '#d32f2f' : '',
-  borderColor: error ? '#d32f2f' : '',
+const Input = styled("input")<{ error: boolean }>(({ error }) => ({
+  width: "100%",
+  border: "none",
+  borderBottom: "1px solid",
+  outline: "none",
+  color: error ? "#d32f2f" : "",
+  borderColor: error ? "#d32f2f" : "",
 }))
 
 const TextError = styled(Typography)(() => ({
-  color: '#d32f2f',
+  color: "#d32f2f",
   fontSize: 12,
   height: 12,
-  position: 'absolute',
+  position: "absolute",
   bottom: 12,
 }))
 
-type Order = 'asc' | 'desc'
+type Order = "asc" | "desc"
 
 function getComparator<Key extends keyof any>(
   order: Order,
@@ -542,7 +549,7 @@ function getComparator<Key extends keyof any>(
   a: { [key in Key]: number | string },
   b: { [key in Key]: number | string },
 ) => number {
-  return order === 'desc'
+  return order === "desc"
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy)
 }

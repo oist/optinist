@@ -1,15 +1,15 @@
-import axios from 'utils/axios'
+import axios from "utils/axios"
 import {
   AddUserDTO,
   UserDTO,
   ListUsersQueryDTO,
   UpdateUserDTO,
   UserListDTO,
-} from './UsersApiDTO'
-import qs from 'qs'
+} from "./UsersApiDTO"
+import qs from "qs"
 
 export const createUserApi = async (data: AddUserDTO): Promise<UserDTO> => {
-  const response = await axios.post('/admin/users', data)
+  const response = await axios.post("/admin/users", data)
   return response.data
 }
 
@@ -44,7 +44,7 @@ export const getListSearchApi = async (data: {
 }): Promise<UserDTO[]> => {
   const response = await axios.get(
     `/users/search/share_users${
-      data.keyword ? `?keyword=${data.keyword}` : ''
+      data.keyword ? `?keyword=${data.keyword}` : ""
     }`,
   )
   return response.data

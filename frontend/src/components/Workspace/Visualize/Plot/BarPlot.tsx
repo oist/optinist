@@ -1,15 +1,15 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import PlotlyChart from 'react-plotlyjs-ts'
-import LinearProgress from '@mui/material/LinearProgress'
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
+import React from "react"
+import { useSelector, useDispatch } from "react-redux"
+import PlotlyChart from "react-plotlyjs-ts"
+import LinearProgress from "@mui/material/LinearProgress"
+import Typography from "@mui/material/Typography"
+import Box from "@mui/material/Box"
+import InputLabel from "@mui/material/InputLabel"
+import MenuItem from "@mui/material/MenuItem"
+import FormControl from "@mui/material/FormControl"
+import Select, { SelectChangeEvent } from "@mui/material/Select"
 
-import { DisplayDataContext } from '../DataContext'
+import { DisplayDataContext } from "../DataContext"
 import {
   selectBarData,
   selectBarDataError,
@@ -18,18 +18,18 @@ import {
   selectBarDataIsPending,
   selectBarIndex,
   selectBarMeta,
-} from 'store/slice/DisplayData/DisplayDataSelectors'
-import { getBarData } from 'store/slice/DisplayData/DisplayDataActions'
-import { BarData } from 'api/outputs/Outputs'
+} from "store/slice/DisplayData/DisplayDataSelectors"
+import { getBarData } from "store/slice/DisplayData/DisplayDataActions"
+import { BarData } from "api/outputs/Outputs"
 import {
   selectBarItemIndex,
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
   selectVisualizeSaveFilename,
   selectVisualizeSaveFormat,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { setBarItemIndex } from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { AppDispatch } from "../../../../store/store";
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
+import { setBarItemIndex } from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { AppDispatch } from "../../../../store/store"
 
 export const BarPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -68,7 +68,7 @@ const BarPlotImple = React.memo(() => {
       {
         x: Object.keys(barData[index]),
         y: Object.values(barData[index]),
-        type: 'bar',
+        type: "bar",
       },
     ],
     [barData, index],
@@ -87,7 +87,7 @@ const BarPlotImple = React.memo(() => {
         l: 50, // left
         b: 40, // bottom
       },
-      dragmode: 'pan',
+      dragmode: "pan",
       autosize: true,
       xaxis: {
         title: meta?.xlabel,
@@ -114,7 +114,7 @@ const BarPlotImple = React.memo(() => {
 
   return (
     <div>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: "flex" }}>
         <Box sx={{ flexGrow: 1, ml: 1 }}>
           <SelectIndex dataKeys={dataKeys} />
         </Box>

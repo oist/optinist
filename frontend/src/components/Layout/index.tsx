@@ -1,17 +1,17 @@
-import React, { ReactNode, useEffect, useState } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { Box } from '@mui/material'
-import { styled } from '@mui/material/styles'
-import { getToken } from 'utils/auth/AuthUtils'
-import { selectCurrentUser } from 'store/slice/User/UserSelector'
-import { getMe } from 'store/slice/User/UserActions'
-import Header from './Header'
-import LeftMenu from './LeftMenu'
-import { IS_STANDALONE } from 'const/Mode'
-import Loading from 'components/common/Loading'
-import { APP_BAR_HEIGHT } from 'const/Layout'
-import { AppDispatch } from "../../store/store";
+import React, { ReactNode, useEffect, useState } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import { useLocation, useNavigate } from "react-router-dom"
+import { Box } from "@mui/material"
+import { styled } from "@mui/material/styles"
+import { getToken } from "utils/auth/AuthUtils"
+import { selectCurrentUser } from "store/slice/User/UserSelector"
+import { getMe } from "store/slice/User/UserActions"
+import Header from "./Header"
+import LeftMenu from "./LeftMenu"
+import { IS_STANDALONE } from "const/Mode"
+import Loading from "components/common/Loading"
+import { APP_BAR_HEIGHT } from "const/Layout"
+import { AppDispatch } from "../../store/store"
 
 const authRequiredPathRegex = /^\/console\/?.*/
 
@@ -38,16 +38,16 @@ const Layout = ({ children }: { children?: ReactNode }) => {
       return
     }
     const token = getToken()
-    const isLogin = location.pathname === '/login'
+    const isLogin = location.pathname === "/login"
 
     try {
       if (token) {
         await dispatch(getMe())
-        if (isLogin) navigate('/console')
+        if (isLogin) navigate("/console")
         return
-      } else if (!isLogin) throw new Error('fail auth')
+      } else if (!isLogin) throw new Error("fail auth")
     } catch {
-      navigate('/login', { replace: true })
+      navigate("/login", { replace: true })
     } finally {
       if (loading) setLoadingAuth(false)
     }
@@ -62,7 +62,7 @@ const Layout = ({ children }: { children?: ReactNode }) => {
   )
 }
 
-const AuthedLayout: React.FC<{children: ReactNode}> = ({ children }) => {
+const AuthedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [open, setOpen] = useState(false)
   const handleDrawerOpen = () => {
     setOpen(true)
@@ -82,7 +82,7 @@ const AuthedLayout: React.FC<{children: ReactNode}> = ({ children }) => {
   )
 }
 
-const UnauthedLayout: React.FC<{children: ReactNode}>= ({ children }) => {
+const UnauthedLayout: React.FC<{ children: ReactNode }> = ({ children }) => {
   return (
     <LayoutWrapper>
       <ContentBodyWrapper>
@@ -93,25 +93,25 @@ const UnauthedLayout: React.FC<{children: ReactNode}>= ({ children }) => {
 }
 
 const LayoutWrapper = styled(Box)({
-  height: '100%',
-  width: '100%',
+  height: "100%",
+  width: "100%",
 })
 
 const ContentBodyWrapper = styled(Box)(() => ({
-  backgroundColor: '#ffffff',
-  display: 'flex',
+  backgroundColor: "#ffffff",
+  display: "flex",
   paddingTop: APP_BAR_HEIGHT,
   height: `calc(100% - ${APP_BAR_HEIGHT}px)`,
   paddingRight: 10,
-  overflow: 'auto',
+  overflow: "auto",
 }))
 
-const ChildrenWrapper = styled('main', {
-  shouldForwardProp: (prop) => prop !== 'open',
+const ChildrenWrapper = styled("main", {
+  shouldForwardProp: (prop) => prop !== "open",
 })<{}>(({ theme }) => ({
   flexGrow: 1,
   padding: theme.spacing(3),
-  transition: theme.transitions.create('margin', {
+  transition: theme.transitions.create("margin", {
     easing: theme.transitions.easing.sharp,
     duration: theme.transitions.duration.leavingScreen,
   }),

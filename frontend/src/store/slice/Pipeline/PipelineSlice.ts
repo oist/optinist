@@ -1,29 +1,29 @@
-import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, isAnyOf, PayloadAction } from "@reduxjs/toolkit"
 import {
   reproduceWorkflow,
   importWorkflowConfig,
   fetchWorkflow,
-} from 'store/slice/Workflow/WorkflowActions'
+} from "store/slice/Workflow/WorkflowActions"
 import {
   cancelResult,
   pollRunResult,
   run,
   runByCurrentUid,
-} from './PipelineActions'
+} from "./PipelineActions"
 import {
   Pipeline,
   PIPELINE_SLICE_NAME,
   RUN_BTN_OPTIONS,
   RUN_BTN_TYPE,
   RUN_STATUS,
-} from './PipelineType'
-import { clearFlowElements } from '../FlowElement/FlowElementSlice'
+} from "./PipelineType"
+import { clearFlowElements } from "../FlowElement/FlowElementSlice"
 import {
   getInitialRunResult,
   convertToRunResult,
   isNodeResultPending,
-} from './PipelineUtils'
-import { convertFunctionsToRunResultDTO } from '../Experiments/ExperimentsUtils'
+} from "./PipelineUtils"
+import { convertFunctionsToRunResultDTO } from "../Experiments/ExperimentsUtils"
 
 const initialState: Pipeline = {
   run: {
@@ -134,8 +134,8 @@ export const pipelineSlice = createSlice({
           state.run = {
             uid,
             status: RUN_STATUS.START_SUCCESS,
-            runResult: getInitialRunResult({ name: '', ...runPostData }),
-            runPostData: { name: '', ...runPostData },
+            runResult: getInitialRunResult({ name: "", ...runPostData }),
+            runPostData: { name: "", ...runPostData },
           }
           state.currentPipeline = {
             uid: action.payload,

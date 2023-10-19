@@ -1,18 +1,18 @@
-import { FC } from 'react'
-import { useNavigate } from 'react-router-dom'
-import Drawer from '@mui/material/Drawer'
-import List from '@mui/material/List'
-import ListItem from '@mui/material/ListItem'
-import ListItemButton from '@mui/material/ListItemButton'
-import ListItemIcon from '@mui/material/ListItemIcon'
-import ListItemText from '@mui/material/ListItemText'
-import DashboardIcon from '@mui/icons-material/Dashboard'
-import ManageAccountsIcon from '@mui/icons-material/ManageAccounts'
-import AnalyticsIcon from '@mui/icons-material/Analytics'
-import { DRAWER_WIDTH } from 'const/Layout'
-import { Box } from '@mui/material'
-import { useSelector } from 'react-redux'
-import { isAdmin } from '../../store/slice/User/UserSelector'
+import { FC } from "react"
+import { useNavigate } from "react-router-dom"
+import Drawer from "@mui/material/Drawer"
+import List from "@mui/material/List"
+import ListItem from "@mui/material/ListItem"
+import ListItemButton from "@mui/material/ListItemButton"
+import ListItemIcon from "@mui/material/ListItemIcon"
+import ListItemText from "@mui/material/ListItemText"
+import DashboardIcon from "@mui/icons-material/Dashboard"
+import ManageAccountsIcon from "@mui/icons-material/ManageAccounts"
+import AnalyticsIcon from "@mui/icons-material/Analytics"
+import { DRAWER_WIDTH } from "const/Layout"
+import { Box } from "@mui/material"
+import { useSelector } from "react-redux"
+import { isAdmin } from "../../store/slice/User/UserSelector"
 
 const LeftMenu: FC<{ open: boolean; handleDrawerClose: () => void }> = ({
   open,
@@ -23,17 +23,17 @@ const LeftMenu: FC<{ open: boolean; handleDrawerClose: () => void }> = ({
 
   const onClickDashboard = () => {
     handleDrawerClose()
-    navigate('/console')
+    navigate("/console")
   }
 
   const onClickWorkspaces = () => {
     handleDrawerClose()
-    navigate('/console/workspaces')
+    navigate("/console/workspaces")
   }
 
   const onClickAccountManager = () => {
     handleDrawerClose()
-    navigate('/console/account-manager')
+    navigate("/console/account-manager")
   }
 
   return (

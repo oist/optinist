@@ -1,18 +1,18 @@
-import React, { useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { AnyAction } from '@reduxjs/toolkit'
-import Switch from '@mui/material/Switch'
-import TextField from '@mui/material/TextField'
-import Box from '@mui/material/Box'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import AccordionDetails from '@mui/material/AccordionDetails'
-import AccordionSummary from '@mui/material/AccordionSummary'
-import Typography from '@mui/material/Typography'
+import React, { useRef } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { AnyAction } from "@reduxjs/toolkit"
+import Switch from "@mui/material/Switch"
+import TextField from "@mui/material/TextField"
+import Box from "@mui/material/Box"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import AccordionDetails from "@mui/material/AccordionDetails"
+import AccordionSummary from "@mui/material/AccordionSummary"
+import Typography from "@mui/material/Typography"
 
-import { isParamChild } from 'utils/param/ParamUtils'
-import { ParamType } from 'utils/param/ParamType'
-import { RootState } from 'store/store'
-import { Accordion } from 'components/common/Accordion'
+import { isParamChild } from "utils/param/ParamUtils"
+import { ParamType } from "utils/param/ParamType"
+import { RootState } from "store/store"
+import { Accordion } from "components/common/Accordion"
 
 type ParamSelectorType = (paramKey: string) => (state: RootState) => ParamType
 type ParamValueSelectorType = (path: string) => (state: RootState) => unknown
@@ -59,7 +59,7 @@ export function createParamFormItemComponent({
       dispatch(
         updateParamAction(
           newValue
-            .split(',')
+            .split(",")
             .filter(Boolean)
             .map((e) => Number(e)),
         ),
@@ -77,11 +77,11 @@ export function createParamFormItemComponent({
   const ParamItemForNumber = React.memo<ParamChildItemProps>(({ path }) => {
     const dispatch = useDispatch()
     const [value, updateParamAction] = useParamValueUpdate(path)
-    if (typeof value === 'number') {
+    if (typeof value === "number") {
       const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const newValue =
-          event.target.value === '' ? '' : Number(event.target.value)
-        if (typeof newValue === 'number') {
+          event.target.value === "" ? "" : Number(event.target.value)
+        if (typeof newValue === "number") {
           dispatch(updateParamAction(newValue))
         }
       }
@@ -102,7 +102,7 @@ export function createParamFormItemComponent({
   const ParamItemForBoolean = React.memo<ParamChildItemProps>(({ path }) => {
     const dispatch = useDispatch()
     const [value, updateParamAction] = useParamValueUpdate(path)
-    if (typeof value === 'boolean') {
+    if (typeof value === "boolean") {
       const onChange = () => {
         dispatch(updateParamAction(!value))
       }
@@ -113,11 +113,11 @@ export function createParamFormItemComponent({
   })
   const ParamItemForValueType = React.memo<ParamChildItemProps>(({ path }) => {
     const [value] = useParamValueUpdate(path)
-    if (typeof value === 'number') {
+    if (typeof value === "number") {
       return <ParamItemForNumber path={path} />
-    } else if (typeof value === 'string') {
+    } else if (typeof value === "string") {
       return <ParamItemForString path={path} />
-    } else if (typeof value === 'boolean') {
+    } else if (typeof value === "boolean") {
       return <ParamItemForBoolean path={path} />
     } else {
       return <ParamItemForString path={path} />
@@ -128,23 +128,23 @@ export function createParamFormItemComponent({
       return (
         <Box
           sx={{
-            display: 'flex',
+            display: "flex",
             marginTop: (theme) => theme.spacing(2),
             marginBottom: (theme) => theme.spacing(2),
-            alignItems: 'center',
-            overflow: 'scroll',
+            alignItems: "center",
+            overflow: "scroll",
           }}
         >
           <Box
-            style={{ verticalAlign: 'middle' }}
+            style={{ verticalAlign: "middle" }}
             sx={{
               flexGrow: 1,
-              width: '50%',
+              width: "50%",
             }}
           >
-            <Typography style={{ overflow: 'scroll' }}>{name}</Typography>
+            <Typography style={{ overflow: "scroll" }}>{name}</Typography>
           </Box>
-          <Box sx={{ width: '50%' }}>
+          <Box sx={{ width: "50%" }}>
             <ParamItemForValueType path={path} />
           </Box>
         </Box>

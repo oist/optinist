@@ -1,33 +1,38 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React from "react"
+import { useSelector } from "react-redux"
 
-import FormControl from '@mui/material/FormControl'
-import MenuItem from '@mui/material/MenuItem'
-import InputLabel from '@mui/material/InputLabel'
-import FormHelperText from '@mui/material/FormHelperText'
-import Select from '@mui/material/Select'
-import ListSubheader from '@mui/material/ListSubheader'
+import FormControl from "@mui/material/FormControl"
+import MenuItem from "@mui/material/MenuItem"
+import InputLabel from "@mui/material/InputLabel"
+import FormHelperText from "@mui/material/FormHelperText"
+import Select from "@mui/material/Select"
+import ListSubheader from "@mui/material/ListSubheader"
 
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
-} from 'store/slice/DisplayData/DisplayDataType'
-import { FILE_TYPE } from 'store/slice/InputNode/InputNodeType'
-import { RootState } from 'store/store'
-import { selectInputNode } from 'store/slice/InputNode/InputNodeSelectors'
-import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
-import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
+} from "store/slice/DisplayData/DisplayDataType"
+import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
+import { RootState } from "store/store"
+import { selectInputNode } from "store/slice/InputNode/InputNodeSelectors"
+import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
+import { selectNodeLabelById } from "store/slice/FlowElement/FlowElementSelectors"
 import {
   selectPipelineLatestUid,
   selectPipelineNodeResultSuccessList,
-} from 'store/slice/Pipeline/PipelineSelectors'
-import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
+} from "store/slice/Pipeline/PipelineSelectors"
+import { getFileName } from "store/slice/FlowElement/FlowElementUtils"
 
 export const FilePathSelect: React.FC<{
   dataType?: DATA_TYPE
   selectedNodeId: string | null
   selectedFilePath: string | null
-  onSelect: (nodeId: string, filePath: string, dataType: DATA_TYPE, outputKey?: string) => void
+  onSelect: (
+    nodeId: string,
+    filePath: string,
+    dataType: DATA_TYPE,
+    outputKey?: string,
+  ) => void
   label?: string
 }> = ({ dataType, selectedNodeId, selectedFilePath, onSelect, label }) => {
   const inputNodeFilePathInfoList = useSelector(
@@ -89,7 +94,7 @@ export const FilePathSelect: React.FC<{
     nodeId: string,
     filePath: string,
     dataType: DATA_TYPE,
-    outputKey?: string
+    outputKey?: string,
   ) => {
     onSelect(nodeId, filePath, dataType, outputKey)
     handleClose()
@@ -104,7 +109,7 @@ export const FilePathSelect: React.FC<{
           <MenuItem
             value={`${pathInfo.nodeId}/${pathElm}`}
             onClick={() =>
-              onSelectHandle(pathInfo.nodeId, pathElm ?? '', pathInfo.dataType)
+              onSelectHandle(pathInfo.nodeId, pathElm ?? "", pathInfo.dataType)
             }
             key={pathInfo.nodeId}
           >
@@ -117,7 +122,7 @@ export const FilePathSelect: React.FC<{
         <MenuItem
           value={`${pathInfo.nodeId}/${pathInfo.filePath}`}
           onClick={() =>
-            onSelectHandle(pathInfo.nodeId, filePath ?? '', pathInfo.dataType)
+            onSelectHandle(pathInfo.nodeId, filePath ?? "", pathInfo.dataType)
           }
           key={pathInfo.nodeId}
         >
@@ -137,7 +142,7 @@ export const FilePathSelect: React.FC<{
               pathInfo.nodeId,
               outputPath.filePath,
               outputPath.type,
-              outputPath.outputKey
+              outputPath.outputKey,
             )
           }
           key={`${pathInfo.nodeId}/${outputPath.filePath}`}
@@ -150,7 +155,7 @@ export const FilePathSelect: React.FC<{
 
   return (
     <FormControl style={{ minWidth: 150, maxWidth: 220 }} variant="standard">
-      <InputLabel>{!!label ? label : 'Select Item'}</InputLabel>
+      <InputLabel>{!!label ? label : "Select Item"}</InputLabel>
       <Select
         value={`${selectedNodeId}/${selectedFilePath}`}
         open={open}

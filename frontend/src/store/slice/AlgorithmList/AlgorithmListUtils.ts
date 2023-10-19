@@ -1,21 +1,21 @@
-import { AlgoListDTO, AlgorithmInfo } from 'api/algolist/AlgoList'
+import { AlgoListDTO, AlgorithmInfo } from "api/algolist/AlgoList"
 import {
   AlgorithmNodeType,
   AlgorithmChild,
   AlgorithmParent,
   AlgorithmListTree,
-} from './AlgorithmListType'
+} from "./AlgorithmListType"
 
 export function isAlgoChild(
   algoNode: AlgorithmNodeType,
 ): algoNode is AlgorithmChild {
-  return algoNode.type === 'child'
+  return algoNode.type === "child"
 }
 
 export function isAlgoParent(
   algoNode: AlgorithmNodeType,
 ): algoNode is AlgorithmParent {
-  return algoNode.type === 'parent'
+  return algoNode.type === "parent"
 }
 
 export function getAlgoChild(
@@ -41,9 +41,9 @@ export function getAlgoChild(
 export function convertToAlgoListType(dto: AlgoListDTO) {
   const algoList: AlgorithmListTree = {}
   Object.entries(dto).forEach(([name, value]) => {
-    if (Object.prototype.hasOwnProperty.call(value, 'children')) {
+    if (Object.prototype.hasOwnProperty.call(value, "children")) {
       algoList[name] = {
-        type: 'parent',
+        type: "parent",
         children: convertToAlgoListType(
           (
             value as {
@@ -59,7 +59,7 @@ export function convertToAlgoListType(dto: AlgoListDTO) {
         path: string
       }
       algoList[name] = {
-        type: 'child',
+        type: "child",
         functionPath: dto.path,
         args: dto.args,
         returns: dto.returns,

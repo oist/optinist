@@ -1,5 +1,5 @@
-import { FILE_TREE_TYPE } from 'api/files/Files'
-import { createContext } from 'react'
+import { FILE_TREE_TYPE } from "api/files/Files"
+import { createContext } from "react"
 
 export declare type OpenDialogValue = {
   filePath: string | string[]

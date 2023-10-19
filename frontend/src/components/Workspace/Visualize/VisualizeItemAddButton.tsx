@@ -1,11 +1,11 @@
-import React from 'react'
-import { useDispatch } from 'react-redux'
-import { styled } from '@mui/material/styles'
-import Box from '@mui/material/Box'
-import Paper from '@mui/material/Paper'
-import AddIcon from '@mui/icons-material/Add'
-import Button from '@mui/material/Button'
-import { pushInitialItemToNewRow } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+import React from "react"
+import { useDispatch } from "react-redux"
+import { styled } from "@mui/material/styles"
+import Box from "@mui/material/Box"
+import Paper from "@mui/material/Paper"
+import AddIcon from "@mui/icons-material/Add"
+import Button from "@mui/material/Button"
+import { pushInitialItemToNewRow } from "store/slice/VisualizeItem/VisualizeItemSlice"
 
 export const VisualizeItemAddButton: React.FC = () => {
   const dispatch = useDispatch()
@@ -31,13 +31,13 @@ export const VisualizeItemAddButton: React.FC = () => {
 const StyledPaper = styled(Paper)(({ theme }) => ({
   width: 260,
   height: 255,
-  border: 'dashed',
+  border: "dashed",
   borderWidth: 2,
   borderColor: theme.palette.divider,
   margin: theme.spacing(1),
 }))
 
 const StyledButton = styled(Button)({
-  width: '100%',
-  height: '100%',
+  width: "100%",
+  height: "100%",
 })

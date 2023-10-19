@@ -1,11 +1,11 @@
-import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
-import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
+import { createSlice, isAnyOf, PayloadAction } from "@reduxjs/toolkit"
+import { DATA_TYPE, DATA_TYPE_SET } from "../DisplayData/DisplayDataType"
 import {
   deleteDisplayItem,
   selectingImageArea,
   setImageItemClikedDataId,
   setNewDisplayDataPath,
-} from './VisualizeItemActions'
+} from "./VisualizeItemActions"
 
 import {
   HeatMapItem,
@@ -26,7 +26,7 @@ import {
   PieItem,
   PolarItem,
   VISUALIZE_ITEM_SLICE_NAME,
-} from './VisualizeItemType'
+} from "./VisualizeItemType"
 import {
   isDisplayDataItem,
   isHeatMapItem,
@@ -38,9 +38,9 @@ import {
   isHistogramItem,
   isLineItem,
   isPolarItem,
-} from './VisualizeItemUtils'
-import { run, runByCurrentUid } from '../Pipeline/PipelineActions'
-import { clearFlowElements } from '../FlowElement/FlowElementSlice'
+} from "./VisualizeItemUtils"
+import { run, runByCurrentUid } from "../Pipeline/PipelineActions"
+import { clearFlowElements } from "../FlowElement/FlowElementSlice"
 
 export const initialState: VisualaizeItem = {
   items: {},
@@ -54,8 +54,8 @@ const displayDataCommonInitialValue = {
   width: 500,
   height: 500,
   isWorkflowDialog: false,
-  saveFileName: 'newPlot',
-  saveFormat: 'png',
+  saveFileName: "newPlot",
+  saveFormat: "png",
 }
 const imageItemInitialValue: ImageItem = {
   ...displayDataCommonInitialValue,
@@ -64,12 +64,12 @@ const imageItemInitialValue: ImageItem = {
   endIndex: 10,
   showticklabels: false,
   showline: true,
-  zsmooth: 'best',
+  zsmooth: "best",
   showgrid: false,
   showscale: false,
   colors: [
-    { rgb: `rgb(0, 0, 0)`, offset: '0' },
-    { rgb: `rgb(255, 255, 255)`, offset: '1.0' },
+    { rgb: `rgb(0, 0, 0)`, offset: "0" },
+    { rgb: `rgb(255, 255, 255)`, offset: "1.0" },
   ],
   activeIndex: 0,
   alpha: 1.0,
@@ -90,7 +90,7 @@ const timeSeriesItemInitialValue: TimeSeriesItem = {
     left: undefined,
     right: undefined,
   },
-  rangeUnit: 'frames',
+  rangeUnit: "frames",
   maxIndex: 0,
   drawOrderList: [],
   refImageItemId: null,
@@ -100,9 +100,9 @@ const heatMapItemInitialValue: HeatMapItem = {
   dataType: DATA_TYPE_SET.HEAT_MAP,
   showscale: true,
   colors: [
-    { rgb: `rgb(0, 0, 255)`, offset: '0' },
-    { rgb: `rgb(200, 200, 200)`, offset: '0.5' },
-    { rgb: `rgb(255, 0, 0)`, offset: '1.0' },
+    { rgb: `rgb(0, 0, 255)`, offset: "0" },
+    { rgb: `rgb(200, 200, 200)`, offset: "0.5" },
+    { rgb: `rgb(255, 0, 0)`, offset: "1.0" },
   ],
 }
 const csvItemInitialValue: CsvItem = {
@@ -119,13 +119,13 @@ const roiItemInitialValue: RoiItem = {
 const scatterItemInitialValue: ScatterItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.SCATTER,
-  xIndex: '0',
-  yIndex: '1',
+  xIndex: "0",
+  yIndex: "1",
 }
 const barItemInitialValue: BarItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.BAR,
-  index: '0',
+  index: "0",
 }
 const hdf5ItemInitialValue: HDF5Item = {
   ...displayDataCommonInitialValue,
@@ -319,7 +319,7 @@ export const visualaizeItemSlice = createSlice({
         targetItem.filePath = filePath
         targetItem.nodeId = nodeId
       } else {
-        throw new Error('error')
+        throw new Error("error")
       }
     },
     setSaveFormat: (
@@ -889,7 +889,7 @@ export const visualaizeItemSlice = createSlice({
             targetItem.nodeId = nodeId
           }
         } else {
-          throw new Error('invalid VisualaizeItemType')
+          throw new Error("invalid VisualaizeItemType")
         }
         resetImageActiveIndexFn(state, { itemId })
       })

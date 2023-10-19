@@ -1,7 +1,7 @@
-import { RunPostData } from 'api/run/Run'
-import { DATA_TYPE } from '../DisplayData/DisplayDataType'
+import { RunPostData } from "api/run/Run"
+import { DATA_TYPE } from "../DisplayData/DisplayDataType"
 
-export const PIPELINE_SLICE_NAME = 'pipeline'
+export const PIPELINE_SLICE_NAME = "pipeline"
 
 export type Pipeline = {
   run: PipelineType
@@ -15,34 +15,34 @@ export const RUN_STATUS = {
   /**
    * 未実行
    */
-  START_UNINITIALIZED: 'StartUninitialized',
+  START_UNINITIALIZED: "StartUninitialized",
   /**
    * 開始リクエスト中
    */
-  START_PENDING: 'StartPending',
+  START_PENDING: "StartPending",
   /**
    * 開始できなかった
    */
-  START_ERROR: 'StartError',
+  START_ERROR: "StartError",
   /**
    * 正常に開始した
    */
-  START_SUCCESS: 'StartSuccess',
+  START_SUCCESS: "StartSuccess",
   /**
    * 全て終了
    */
-  FINISHED: 'Finished',
+  FINISHED: "Finished",
   /**
    * 途中終了
    */
-  ABORTED: 'Aborted',
+  ABORTED: "Aborted",
   /**
    * キャンセルされた
    */
-  CANCELED: 'Canceled',
+  CANCELED: "Canceled",
 } as const
 
-export type RUN_STATUS_TYPE = typeof RUN_STATUS[keyof typeof RUN_STATUS]
+export type RUN_STATUS_TYPE = (typeof RUN_STATUS)[keyof typeof RUN_STATUS]
 
 export type PipelineType =
   | StartedPipeline
@@ -71,13 +71,13 @@ export type RunResult = {
 export type NodeResult = NodeResultPending | NodeResultSuccess | NodeResultError
 
 export const NODE_RESULT_STATUS = {
-  SUCCESS: 'success',
-  ERROR: 'error',
-  PENDING: 'pending',
+  SUCCESS: "success",
+  ERROR: "error",
+  PENDING: "pending",
 } as const
 
 export type NODE_RESULT_STATUS_TYPE =
-  typeof NODE_RESULT_STATUS[keyof typeof NODE_RESULT_STATUS]
+  (typeof NODE_RESULT_STATUS)[keyof typeof NODE_RESULT_STATUS]
 
 export interface NodeResultBaseType<T extends NODE_RESULT_STATUS_TYPE> {
   status: T
@@ -110,9 +110,10 @@ export const RUN_BTN_OPTIONS = {
   RUN_ALREADY: 2,
 } as const
 
-export type RUN_BTN_TYPE = typeof RUN_BTN_OPTIONS[keyof typeof RUN_BTN_OPTIONS]
+export type RUN_BTN_TYPE =
+  (typeof RUN_BTN_OPTIONS)[keyof typeof RUN_BTN_OPTIONS]
 
 export const RUN_BTN_LABELS = {
-  [RUN_BTN_OPTIONS.RUN_NEW]: 'RUN ALL',
-  [RUN_BTN_OPTIONS.RUN_ALREADY]: 'RUN',
+  [RUN_BTN_OPTIONS.RUN_NEW]: "RUN ALL",
+  [RUN_BTN_OPTIONS.RUN_ALREADY]: "RUN",
 } as const

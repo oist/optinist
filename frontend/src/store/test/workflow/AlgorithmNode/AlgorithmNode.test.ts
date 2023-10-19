@@ -1,27 +1,27 @@
-import { store, rootReducer } from 'store/store'
-import { REACT_FLOW_NODE_TYPE_KEY } from 'const/flowchart'
-import { NODE_TYPE_SET } from 'store/slice/FlowElement/FlowElementType'
-import { selectNodeById } from 'store/slice/FlowElement/FlowElementSelectors'
-import { addAlgorithmNode } from 'store/slice/FlowElement/FlowElementActions'
+import { store, rootReducer } from "store/store"
+import { REACT_FLOW_NODE_TYPE_KEY } from "const/flowchart"
+import { NODE_TYPE_SET } from "store/slice/FlowElement/FlowElementType"
+import { selectNodeById } from "store/slice/FlowElement/FlowElementSelectors"
+import { addAlgorithmNode } from "store/slice/FlowElement/FlowElementActions"
 import {
   selectAlgorithmNodeById,
   selectAlgorithmParamsValue,
-} from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
-import { updateParam } from 'store/slice/AlgorithmNode/AlgorithmNodeSlice'
-import { deleteFlowNodeById } from 'store/slice/FlowElement/FlowElementSlice'
+} from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
+import { updateParam } from "store/slice/AlgorithmNode/AlgorithmNodeSlice"
+import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
 
-describe('AlgorithmNode', () => {
+describe("AlgorithmNode", () => {
   const initialRootState = store.getState()
 
-  const nodeId = 'suite2p_roi_7tkgtwjw4x'
+  const nodeId = "suite2p_roi_7tkgtwjw4x"
   const nodeType = REACT_FLOW_NODE_TYPE_KEY.AlgorithmNode
-  const label = 'suite2p_roi'
+  const label = "suite2p_roi"
   const nodeDataType = NODE_TYPE_SET.ALGORITHM
-  const name = 'suite2p_roi'
-  const functionPath = 'suite2p/suite2p_roi'
+  const name = "suite2p_roi"
+  const functionPath = "suite2p/suite2p_roi"
   const algorithmParams = {
     param1: 1,
-    param2: 'param2',
+    param2: "param2",
     param3: {
       param4: 4,
     },
@@ -38,8 +38,8 @@ describe('AlgorithmNode', () => {
         name,
         functionPath,
       },
-      requestId: 'tXOx5oiVyChyZ1hEsqdcR',
-      requestStatus: 'fulfilled',
+      requestId: "tXOx5oiVyChyZ1hEsqdcR",
+      requestStatus: "fulfilled",
     },
     payload: algorithmParams,
   }
@@ -63,22 +63,22 @@ describe('AlgorithmNode', () => {
     expect(selectAlgorithmNodeById(nodeId)(targetState).isUpdated).toBe(false)
     expect(selectAlgorithmNodeById(nodeId)(targetState).params).toEqual({
       param1: {
-        type: 'child',
+        type: "child",
         value: algorithmParams.param1,
-        path: 'param1',
+        path: "param1",
       },
       param2: {
-        type: 'child',
+        type: "child",
         value: algorithmParams.param2,
-        path: 'param2',
+        path: "param2",
       },
       param3: {
-        type: 'parent',
+        type: "parent",
         children: {
           param4: {
-            type: 'child',
+            type: "child",
             value: algorithmParams.param3.param4,
-            path: 'param3/param4',
+            path: "param3/param4",
           },
         },
       },
@@ -100,7 +100,7 @@ describe('AlgorithmNode', () => {
 
   // params編集
   test(updateParam.type, () => {
-    const path = 'param3/param4'
+    const path = "param3/param4"
     const newValue = 10
     const updateParamAction = updateParam({ nodeId, path, newValue })
     const targetState = rootReducer(

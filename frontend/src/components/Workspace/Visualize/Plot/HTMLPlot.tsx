@@ -1,17 +1,17 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { LinearProgress, Typography } from '@mui/material'
+import React from "react"
+import { useSelector, useDispatch } from "react-redux"
+import { LinearProgress, Typography } from "@mui/material"
 
-import { DisplayDataContext } from '../DataContext'
+import { DisplayDataContext } from "../DataContext"
 import {
   selectHTMLData,
   selectHTMLDataError,
   selectHTMLDataIsFulfilled,
   selectHTMLDataIsInitialized,
   selectHTMLDataIsPending,
-} from 'store/slice/DisplayData/DisplayDataSelectors'
-import { getHTMLData } from 'store/slice/DisplayData/DisplayDataActions'
-import { AppDispatch } from "../../../../store/store";
+} from "store/slice/DisplayData/DisplayDataSelectors"
+import { getHTMLData } from "store/slice/DisplayData/DisplayDataActions"
+import { AppDispatch } from "../../../../store/store"
 
 export const HTMLPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -44,9 +44,9 @@ const HTMLPlotImple = React.memo(() => {
     <div
       dangerouslySetInnerHTML={{ __html: htmlData }}
       style={{
-        overflow: 'scroll',
-        display: 'flex',
-        height: '90%',
+        overflow: "scroll",
+        display: "flex",
+        height: "90%",
       }}
     />
   )

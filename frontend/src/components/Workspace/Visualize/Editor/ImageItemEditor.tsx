@@ -1,11 +1,11 @@
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import Switch from '@mui/material/Switch'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
+import React from "react"
+import { useDispatch, useSelector } from "react-redux"
+import Switch from "@mui/material/Switch"
+import FormControlLabel from "@mui/material/FormControlLabel"
+import Select, { SelectChangeEvent } from "@mui/material/Select"
+import InputLabel from "@mui/material/InputLabel"
+import MenuItem from "@mui/material/MenuItem"
+import FormControl from "@mui/material/FormControl"
 
 import {
   selectImageItemShowGrid,
@@ -20,8 +20,8 @@ import {
   selectImageItemFilePath,
   selectDisplayDataIsSingle,
   selectImageItemAlpha,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { SelectedItemIdContext } from '../VisualizeItemEditor'
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
+import { SelectedItemIdContext } from "../VisualizeItemEditor"
 
 import {
   setImageItemShowGrid,
@@ -35,23 +35,23 @@ import {
   resetImageActiveIndex,
   setImageItemRoiAlpha,
   setImageItemAlpha,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
+} from "store/slice/VisualizeItem/VisualizeItemSlice"
 
-import 'react-linear-gradient-picker/dist/index.css'
-import { FileSelectImple } from 'components/Workspace/FlowChart/FlowChartNode/FileSelect'
-import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
-import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
-import { FILE_TREE_TYPE_SET } from 'api/files/Files'
-import { Box, TextField } from '@mui/material'
-import { GradientColorPicker } from './GradientColorPicker'
-import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
-import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
-import Button from '@mui/material/Button'
-import { getImageData } from 'store/slice/DisplayData/DisplayDataActions'
-import { setNewDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemActions'
-import { SaveFig } from './SaveFig'
-import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
-import { AppDispatch } from "../../../../store/store";
+import "react-linear-gradient-picker/dist/index.css"
+import { FileSelectImple } from "components/Workspace/FlowChart/FlowChartNode/FileSelect"
+import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
+import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
+import { FILE_TREE_TYPE_SET } from "api/files/Files"
+import { Box, TextField } from "@mui/material"
+import { GradientColorPicker } from "./GradientColorPicker"
+import { ColorType } from "store/slice/VisualizeItem/VisualizeItemType"
+import { DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
+import Button from "@mui/material/Button"
+import { getImageData } from "store/slice/DisplayData/DisplayDataActions"
+import { setNewDisplayDataPath } from "store/slice/VisualizeItem/VisualizeItemActions"
+import { SaveFig } from "./SaveFig"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
+import { AppDispatch } from "../../../../store/store"
 
 export const ImageItemEditor: React.FC = () => {
   const itemId = React.useContext(SelectedItemIdContext)
@@ -93,9 +93,9 @@ export const ImageItemEditor: React.FC = () => {
   }
 
   return (
-    <div style={{ margin: '10px', padding: 10 }}>
+    <div style={{ margin: "10px", padding: 10 }}>
       <FileSelectImple
-        filePath={filePath ?? ''}
+        filePath={filePath ?? ""}
         onSelectFile={(path) => !Array.isArray(path) && onSelectImageFile(path)}
         onUploadFile={onUploadFileHandle}
         fileTreeType={FILE_TREE_TYPE_SET.IMAGE}
@@ -188,9 +188,9 @@ const Zsmooth: React.FC = () => {
     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
       <InputLabel>smooth</InputLabel>
       <Select label="smooth" value={zsmooth} onChange={handleChange}>
-        <MenuItem value={'best'}>best</MenuItem>
-        <MenuItem value={'fast'}>fast</MenuItem>
-        <MenuItem value={'false'}>False</MenuItem>
+        <MenuItem value={"best"}>best</MenuItem>
+        <MenuItem value={"fast"}>fast</MenuItem>
+        <MenuItem value={"false"}>False</MenuItem>
       </Select>
     </FormControl>
   )
@@ -202,16 +202,16 @@ const Alpha: React.FC = () => {
   const alpha = useSelector(selectImageItemAlpha(itemId))
   const inputError = !(alpha > 0)
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value === '' ? '' : Number(event.target.value)
-    if (typeof newValue === 'number') {
+    const newValue = event.target.value === "" ? "" : Number(event.target.value)
+    if (typeof newValue === "number") {
       dispatch(setImageItemAlpha({ itemId, alpha: newValue }))
     }
   }
   return (
     <>
       <TextField
-        style={{ width: '100%' }}
-        label={'image alpha'}
+        style={{ width: "100%" }}
+        label={"image alpha"}
         error={inputError}
         type="number"
         inputProps={{
@@ -224,7 +224,7 @@ const Alpha: React.FC = () => {
         }}
         onChange={onChange}
         value={alpha}
-        helperText={inputError ? 'index > 0' : undefined}
+        helperText={inputError ? "index > 0" : undefined}
       />
     </>
   )
@@ -236,16 +236,16 @@ const RoiAlpha: React.FC = () => {
   const roiAlpha = useSelector(selectImageItemRoiAlpha(itemId))
   const inputError = !(roiAlpha > 0)
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value === '' ? '' : Number(event.target.value)
-    if (typeof newValue === 'number') {
+    const newValue = event.target.value === "" ? "" : Number(event.target.value)
+    if (typeof newValue === "number") {
       dispatch(setImageItemRoiAlpha({ itemId, roiAlpha: newValue }))
     }
   }
   return (
     <>
       <TextField
-        style={{ width: '100%' }}
-        label={'roi alpha'}
+        style={{ width: "100%" }}
+        label={"roi alpha"}
         error={inputError}
         type="number"
         inputProps={{
@@ -258,7 +258,7 @@ const RoiAlpha: React.FC = () => {
         }}
         onChange={onChange}
         value={roiAlpha}
-        helperText={inputError ? 'index > 0' : undefined}
+        helperText={inputError ? "index > 0" : undefined}
       />
     </>
   )
@@ -276,14 +276,14 @@ const StartEndIndex: React.FC = () => {
   const inputError = !(startIndex > 0)
   const dispatch = useDispatch<AppDispatch>()
   const onStartChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value === '' ? '' : Number(event.target.value)
-    if (typeof newValue === 'number') {
+    const newValue = event.target.value === "" ? "" : Number(event.target.value)
+    if (typeof newValue === "number") {
       onChangeStartIndex(newValue)
     }
   }
   const onEndChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value === '' ? '' : Number(event.target.value)
-    if (typeof newValue === 'number') {
+    const newValue = event.target.value === "" ? "" : Number(event.target.value)
+    if (typeof newValue === "number") {
       onChangeEndIndex(newValue)
     }
   }
@@ -308,7 +308,7 @@ const StartEndIndex: React.FC = () => {
   }
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+    <Box sx={{ display: "flex", alignItems: "flex-start" }}>
       <TextField
         error={inputError}
         type="number"
@@ -321,7 +321,7 @@ const StartEndIndex: React.FC = () => {
         }}
         onChange={onStartChange}
         value={startIndex}
-        helperText={inputError ? 'index > 0' : undefined}
+        helperText={inputError ? "index > 0" : undefined}
       />
       ~
       <TextField

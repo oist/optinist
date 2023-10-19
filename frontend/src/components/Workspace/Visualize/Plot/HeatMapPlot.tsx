@@ -1,10 +1,10 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import PlotlyChart from 'react-plotlyjs-ts'
-import { LinearProgress, Typography } from '@mui/material'
+import React from "react"
+import { useSelector, useDispatch } from "react-redux"
+import PlotlyChart from "react-plotlyjs-ts"
+import { LinearProgress, Typography } from "@mui/material"
 
-import { DisplayDataContext } from '../DataContext'
-import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
+import { DisplayDataContext } from "../DataContext"
+import { twoDimarrayEqualityFn } from "utils/EqualityUtils"
 import {
   selectHeatMapColumns,
   selectHeatMapData,
@@ -14,8 +14,8 @@ import {
   selectHeatMapDataIsPending,
   selectHeatMapIndex,
   selectHeatMapMeta,
-} from 'store/slice/DisplayData/DisplayDataSelectors'
-import { getHeatMapData } from 'store/slice/DisplayData/DisplayDataActions'
+} from "store/slice/DisplayData/DisplayDataSelectors"
+import { getHeatMapData } from "store/slice/DisplayData/DisplayDataActions"
 import {
   selectHeatMapItemColors,
   selectHeatMapItemShowScale,
@@ -23,8 +23,8 @@ import {
   selectVisualizeItemWidth,
   selectVisualizeSaveFilename,
   selectVisualizeSaveFormat,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { AppDispatch } from "../../../../store/store";
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
+import { AppDispatch } from "../../../../store/store"
 
 export const HeatMapPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -68,8 +68,8 @@ const HeatMapImple = React.memo(() => {
               z: heatMapData,
               x: columns,
               y: index,
-              type: 'heatmap',
-              name: 'heatmap',
+              type: "heatmap",
+              name: "heatmap",
               colorscale: colorscale.map((value) => {
                 let offset: number = parseFloat(value.offset)
                 const offsets: number[] = colorscale.map((v) => {
@@ -101,7 +101,7 @@ const HeatMapImple = React.memo(() => {
       },
       width: width,
       height: height - 50,
-      dragmode: 'pan',
+      dragmode: "pan",
       margin: {
         t: 50, // top
         l: 50, // left

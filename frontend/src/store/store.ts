@@ -3,7 +3,7 @@ import {
   ThunkAction,
   Action,
   combineReducers,
-} from '@reduxjs/toolkit'
+} from "@reduxjs/toolkit"
 import {
   algorithmListReducer,
   algorithmNodeReducer,
@@ -22,7 +22,7 @@ import {
   experimentsReducer,
   workspaceReducer,
   userReducer,
-} from './slice'
+} from "./slice"
 
 export const rootReducer = combineReducers({
   algorithmList: algorithmListReducer,

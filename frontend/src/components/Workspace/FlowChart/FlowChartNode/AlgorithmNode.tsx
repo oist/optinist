@@ -1,6 +1,6 @@
-import React, { useContext } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Handle, Position, NodeProps } from 'reactflow'
+import React, { useContext } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { Handle, Position, NodeProps } from "reactflow"
 import {
   Typography,
   useTheme,
@@ -10,36 +10,36 @@ import {
   LinearProgress,
   ButtonGroup,
   Grid,
-} from '@mui/material'
-import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
-import ErrorIcon from '@mui/icons-material/Error'
+} from "@mui/material"
+import CheckCircleRoundedIcon from "@mui/icons-material/CheckCircleRounded"
+import ErrorIcon from "@mui/icons-material/Error"
 
-import { AlgorithmInfo } from 'api/algolist/AlgoList'
+import { AlgorithmInfo } from "api/algolist/AlgoList"
 import {
   selectAlgoArgs,
   selectAlgoReturns,
-} from 'store/slice/AlgorithmList/AlgorithmListSelectors'
-import { selectAlgorithmNodeDefined } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
-import { NodeData } from 'store/slice/FlowElement/FlowElementType'
+} from "store/slice/AlgorithmList/AlgorithmListSelectors"
+import { selectAlgorithmNodeDefined } from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
+import { NodeData } from "store/slice/FlowElement/FlowElementType"
 
-import { useHandleColor } from './HandleColorHook'
-import { toHandleId, isValidConnection } from './FlowChartUtils'
-import { toggleParamForm } from 'store/slice/RightDrawer/RightDrawerSlice'
-import { deleteFlowNodeById } from 'store/slice/FlowElement/FlowElementSlice'
+import { useHandleColor } from "./HandleColorHook"
+import { toHandleId, isValidConnection } from "./FlowChartUtils"
+import { toggleParamForm } from "store/slice/RightDrawer/RightDrawerSlice"
+import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
 import {
   selectPipelineLatestUid,
   selectPipelineNodeResultMessage,
   selectPipelineNodeResultStatus,
   selectPipelineStatus,
-} from 'store/slice/Pipeline/PipelineSelectors'
-import { RootState } from 'store/store'
+} from "store/slice/Pipeline/PipelineSelectors"
+import { RootState } from "store/store"
 import {
   NODE_RESULT_STATUS,
   RUN_STATUS,
-} from 'store/slice/Pipeline/PipelineType'
-import { HANDLE_STYLE } from 'const/flowchart'
-import { DialogContext } from 'components/Workspace/FlowChart/DialogContext'
-import { NodeContainer } from 'components/Workspace/FlowChart/FlowChartNode/NodeContainer'
+} from "store/slice/Pipeline/PipelineType"
+import { HANDLE_STYLE } from "const/flowchart"
+import { DialogContext } from "components/Workspace/FlowChart/DialogContext"
+import { NodeContainer } from "components/Workspace/FlowChart/FlowChartNode/NodeContainer"
 
 export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
   const defined = useSelector(selectAlgorithmNodeDefined(element.id))
@@ -74,7 +74,7 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
         <button
           className="flowbutton"
           onClick={onClickDeleteIcon}
-          style={{ color: 'black', position: 'absolute', top: -10, right: 10 }}
+          style={{ color: "black", position: "absolute", top: -10, right: 10 }}
         >
           ×
         </button>
@@ -139,7 +139,7 @@ const AlgoName = React.memo<{
     <div className="algoName">
       <Typography
         style={{
-          textAlign: 'left',
+          textAlign: "left",
           color:
             status === NODE_RESULT_STATUS.ERROR
               ? theme.palette.error.main
@@ -161,7 +161,7 @@ const AlgoArgs = React.memo<{
     <>
       {algoArgs != null
         ? algoArgs
-            .filter((info) => info.type !== 'params')
+            .filter((info) => info.type !== "params")
             .map((algoInfo, i) => {
               return <ArgHandle algoInfo={algoInfo} i={i} nodeId={nodeId} />
             })
@@ -338,7 +338,7 @@ const Message = React.memo<{
     return (
       <CheckCircleRoundedIcon
         color="success"
-        style={{ verticalAlign: 'middle' }}
+        style={{ verticalAlign: "middle" }}
       />
     )
   } else {
@@ -366,7 +366,7 @@ function useStatus(nodeId: string) {
   const status = useSelector((state: RootState) =>
     latestUid != null
       ? selectPipelineNodeResultStatus(nodeId)(state)
-      : 'uninitialized',
+      : "uninitialized",
   )
   return status
 }

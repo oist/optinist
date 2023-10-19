@@ -4,10 +4,10 @@ import {
   NativeSelect,
   Pagination,
   styled,
-} from '@mui/material'
-import { WorkspaceDataDTO } from '../../store/slice/Workspace/WorkspaceType'
-import { ChangeEvent } from 'react'
-import { UserListDTO } from '../../api/users/UsersApiDTO'
+} from "@mui/material"
+import { WorkspaceDataDTO } from "../../store/slice/Workspace/WorkspaceType"
+import { ChangeEvent } from "react"
+import { UserListDTO } from "../../api/users/UsersApiDTO"
 
 type PagiProps = {
   data: WorkspaceDataDTO | UserListDTO
@@ -25,13 +25,13 @@ const PaginationCustom = ({
   return (
     <PaginationCustomWrapper>
       <span>Rows per page: </span>
-      <FormControl sx={{ width: 'max-content', margin: '4px 16px 0 12px' }}>
+      <FormControl sx={{ width: "max-content", margin: "4px 16px 0 12px" }}>
         <NativeSelect
           value={limit || 50}
           onChange={handleLimit}
           inputProps={{
-            name: 'limit',
-            id: 'uncontrolled-native',
+            name: "limit",
+            id: "uncontrolled-native",
           }}
         >
           <option value={10}>10</option>
@@ -52,9 +52,9 @@ const PaginationCustom = ({
 }
 
 const PaginationCustomWrapper = styled(Box)(({ theme }) => ({
-  display: 'flex',
-  justifyContent: 'end',
-  alignItems: 'center',
+  display: "flex",
+  justifyContent: "end",
+  alignItems: "center",
   marginTop: theme.spacing(2),
   gap: 2,
 }))

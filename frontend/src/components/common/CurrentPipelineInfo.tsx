@@ -1,11 +1,11 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { selectPipelineLatestUid } from 'store/slice/Pipeline/PipelineSelectors'
-import { Divider, Typography, Grid } from '@mui/material'
+import React from "react"
+import { useSelector } from "react-redux"
+import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
+import { Divider, Typography, Grid } from "@mui/material"
 import {
   selectExperimentName,
   selectExperimentsStatusIsFulfilled,
-} from 'store/slice/Experiments/ExperimentsSelectors'
+} from "store/slice/Experiments/ExperimentsSelectors"
 
 export const CurrentPipelineInfo: React.FC = () => {
   const uid = useSelector(selectPipelineLatestUid)

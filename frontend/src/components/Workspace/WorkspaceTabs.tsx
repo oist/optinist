@@ -1,9 +1,9 @@
-import { FC } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import Tabs from '@mui/material/Tabs'
-import Tab from '@mui/material/Tab'
-import { selectActiveTab } from 'store/slice/Workspace/WorkspaceSelector'
-import { setActiveTab } from 'store/slice/Workspace/WorkspaceSlice'
+import { FC } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import Tabs from "@mui/material/Tabs"
+import Tab from "@mui/material/Tab"
+import { selectActiveTab } from "store/slice/Workspace/WorkspaceSelector"
+import { setActiveTab } from "store/slice/Workspace/WorkspaceSlice"
 
 const WorkspaceTabs: FC = () => {
   const dispatch = useDispatch()
@@ -14,7 +14,7 @@ const WorkspaceTabs: FC = () => {
 
   return (
     <Tabs
-      sx={{ width: '100%' }}
+      sx={{ width: "100%" }}
       value={activeTab}
       onChange={handleChange}
       centered
@@ -30,7 +30,7 @@ const WorkspaceTabs: FC = () => {
 function a11yProps(index: number | string) {
   return {
     id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
+    "aria-controls": `simple-tabpanel-${index}`,
   }
 }
 

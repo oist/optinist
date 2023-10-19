@@ -1,11 +1,11 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk } from "@reduxjs/toolkit"
 import {
   FILE_TREE_TYPE,
   getFilesTreeApi,
   TreeNodeTypeDTO,
-} from 'api/files/Files'
+} from "api/files/Files"
 
-import { FILES_TREE_SLICE_NAME } from './FilesTreeType'
+import { FILES_TREE_SLICE_NAME } from "./FilesTreeType"
 
 export const getFilesTree = createAsyncThunk<
   TreeNodeTypeDTO[],

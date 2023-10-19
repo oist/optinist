@@ -6,11 +6,11 @@ import {
   DialogTitle,
   IconButton,
   Tooltip,
-} from '@mui/material'
-import React, { SetStateAction } from 'react'
-import { useDispatch } from 'react-redux'
-import { clearFlowElements } from 'store/slice/FlowElement/FlowElementSlice'
-import DeleteIcon from '@mui/icons-material/Delete'
+} from "@mui/material"
+import React, { SetStateAction } from "react"
+import { useDispatch } from "react-redux"
+import { clearFlowElements } from "store/slice/FlowElement/FlowElementSlice"
+import DeleteIcon from "@mui/icons-material/Delete"
 
 export const ClearWorkflowButton = React.memo(() => {
   const [open, setOpen] = React.useState(false)
@@ -50,8 +50,12 @@ const ConfirmClearDialog = React.memo<{
         Are you sure you want to clear the current workflow?
       </DialogContent>
       <DialogActions>
-        <Button variant="outlined" onClick={handleClose}>Cancel</Button>
-        <Button variant="contained" onClick={handleClear}>Clear</Button>
+        <Button variant="outlined" onClick={handleClose}>
+          Cancel
+        </Button>
+        <Button variant="contained" onClick={handleClear}>
+          Clear
+        </Button>
       </DialogActions>
     </Dialog>
   )

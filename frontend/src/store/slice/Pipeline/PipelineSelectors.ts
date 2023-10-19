@@ -1,16 +1,16 @@
-import { RootState } from 'store/store'
+import { RootState } from "store/store"
 
 import {
   NodeResult,
   NodeResultPending,
   NodeResultSuccess,
   RUN_STATUS,
-} from './PipelineType'
+} from "./PipelineType"
 import {
   isNodeResultPending,
   isStartedPipeline,
   isNodeResultSuccess,
-} from './PipelineUtils'
+} from "./PipelineUtils"
 
 export const selectPipelineLatestUid = (state: RootState) => {
   return state.pipeline.currentPipeline?.uid

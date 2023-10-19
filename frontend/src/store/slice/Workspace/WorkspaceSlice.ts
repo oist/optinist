@@ -1,6 +1,6 @@
-import { PayloadAction, createSlice, isAnyOf } from '@reduxjs/toolkit'
-import { WORKSPACE_SLICE_NAME, Workspace } from './WorkspaceType'
-import { reproduceWorkflow } from '../Workflow/WorkflowActions'
+import { PayloadAction, createSlice, isAnyOf } from "@reduxjs/toolkit"
+import { WORKSPACE_SLICE_NAME, Workspace } from "./WorkspaceType"
+import { reproduceWorkflow } from "../Workflow/WorkflowActions"
 import {
   delWorkspace,
   getListUserShareWorkSpaces,
@@ -9,7 +9,7 @@ import {
   postListUserShareWorkspaces,
   postWorkspace,
   putWorkspace,
-} from './WorkspaceActions'
+} from "./WorkspaceActions"
 
 const initialState: Workspace = {
   currentWorkspace: {

@@ -1,26 +1,26 @@
-import React from 'react'
-import { LinearProgress, Typography } from '@mui/material'
-import { useSelector, useDispatch } from 'react-redux'
+import React from "react"
+import { LinearProgress, Typography } from "@mui/material"
+import { useSelector, useDispatch } from "react-redux"
 
-import { DisplayDataContext } from '../DataContext'
-import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
+import { DisplayDataContext } from "../DataContext"
+import { twoDimarrayEqualityFn } from "utils/EqualityUtils"
 import {
   selectCsvData,
   selectCsvDataError,
   selectCsvDataIsFulfilled,
   selectCsvDataIsInitialized,
   selectCsvDataIsPending,
-} from 'store/slice/DisplayData/DisplayDataSelectors'
-import { getCsvData } from 'store/slice/DisplayData/DisplayDataActions'
-import { CsvData } from 'api/outputs/Outputs'
-import { DataGrid, GridColDef } from '@mui/x-data-grid'
+} from "store/slice/DisplayData/DisplayDataSelectors"
+import { getCsvData } from "store/slice/DisplayData/DisplayDataActions"
+import { CsvData } from "api/outputs/Outputs"
+import { DataGrid, GridColDef } from "@mui/x-data-grid"
 import {
   selectCsvItemSetHeader,
   selectCsvItemSetIndex,
   selectCsvItemTranspose,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { AppDispatch } from "../../../../store/store";
-import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
+import { AppDispatch } from "../../../../store/store"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
 
 export const CsvPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -105,7 +105,7 @@ export const PresentationalCsvPlot = React.memo<{
 
     if (setIndex) {
       return [
-        { field: 'col0', headerName: 'index', width: 150 },
+        { field: "col0", headerName: "index", width: 150 },
         ...headerData().map((value, idx) => {
           return {
             field: `col${idx + 1}`,
@@ -131,7 +131,7 @@ export const PresentationalCsvPlot = React.memo<{
           return [`col${index}`, value]
         }),
       )
-      rowObj['id'] = row_id
+      rowObj["id"] = row_id
       return rowObj
     })
     .filter(
@@ -140,7 +140,7 @@ export const PresentationalCsvPlot = React.memo<{
     )
 
   return (
-    <div style={{ height: 300, width: '100%' }}>
+    <div style={{ height: 300, width: "100%" }}>
       <DataGrid rows={rows} columns={header} />
     </div>
   )

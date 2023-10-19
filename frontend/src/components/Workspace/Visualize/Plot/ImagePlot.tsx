@@ -4,26 +4,26 @@ import React, {
   useState,
   MouseEvent,
   useRef,
-} from 'react'
-import PlotlyChart from 'react-plotlyjs-ts'
-import { useSelector, useDispatch } from 'react-redux'
-import { AppDispatch, RootState } from 'store/store'
+} from "react"
+import PlotlyChart from "react-plotlyjs-ts"
+import { useSelector, useDispatch } from "react-redux"
+import { AppDispatch, RootState } from "store/store"
 import {
   Datum,
   LayoutAxis,
   PlotData,
   PlotMouseEvent,
   PlotSelectionEvent,
-} from 'plotly.js'
-import createColormap from 'colormap'
-import { Button, LinearProgress, TextField, Typography } from '@mui/material'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Switch from '@mui/material/Switch'
-import Slider from '@mui/material/Slider'
-import Box from '@mui/material/Box'
-import { styled } from '@mui/material/styles'
-import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
-import { DisplayDataContext } from '../DataContext'
+} from "plotly.js"
+import createColormap from "colormap"
+import { Button, LinearProgress, TextField, Typography } from "@mui/material"
+import FormControlLabel from "@mui/material/FormControlLabel"
+import Switch from "@mui/material/Switch"
+import Slider from "@mui/material/Slider"
+import Box from "@mui/material/Box"
+import { styled } from "@mui/material/styles"
+import { twoDimarrayEqualityFn } from "utils/EqualityUtils"
+import { DisplayDataContext } from "../DataContext"
 
 import {
   selectImageDataError,
@@ -34,12 +34,12 @@ import {
   selectRoiData,
   selectImageDataMaxSize,
   selectImageMeta,
-} from 'store/slice/DisplayData/DisplayDataSelectors'
+} from "store/slice/DisplayData/DisplayDataSelectors"
 import {
   getImageData,
   getRoiData,
   getTimeSeriesInitData,
-} from 'store/slice/DisplayData/DisplayDataActions'
+} from "store/slice/DisplayData/DisplayDataActions"
 import {
   selectImageItemShowticklabels,
   selectImageItemZsmooth,
@@ -61,20 +61,20 @@ import {
   selectImageItemAlpha,
   selectRoiItemOutputKeys,
   selectVisualizeItems,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import {
   incrementImageActiveIndex,
   resetAllOrderList,
   setImageActiveIndex,
   setImageItemDuration,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
+} from "store/slice/VisualizeItem/VisualizeItemSlice"
 import {
   selectingImageArea,
   setImageItemClikedDataId,
-} from 'store/slice/VisualizeItem/VisualizeItemActions'
-import { addRoiApi, deleteRoiApi, mergeRoiApi } from 'api/outputs/Outputs'
-import { isTimeSeriesItem } from 'store/slice/VisualizeItem/VisualizeItemUtils'
-import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
+} from "store/slice/VisualizeItem/VisualizeItemActions"
+import { addRoiApi, deleteRoiApi, mergeRoiApi } from "api/outputs/Outputs"
+import { isTimeSeriesItem } from "store/slice/VisualizeItem/VisualizeItemUtils"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
 
 interface PointClick {
   x: number
@@ -93,10 +93,10 @@ const initSizeDrag = {
 }
 
 enum PositionDrag {
-  'LEFT' = 'LEFT',
-  'RIGHT' = 'RIGHT',
-  'BOTTOM' = 'BOTTOM',
-  'TOP' = 'TOP',
+  "LEFT" = "LEFT",
+  "RIGHT" = "RIGHT",
+  "BOTTOM" = "BOTTOM",
+  "TOP" = "TOP",
 }
 
 const sChart = 320
@@ -208,9 +208,9 @@ const ImagePlotChart = React.memo<{
   const refPageYSize = useRef(0)
 
   const colorscaleRoi = createColormap({
-    colormap: 'jet',
+    colormap: "jet",
     nshades: 100, //timeDataMaxIndex >= 6 ? timeDataMaxIndex : 6,
-    format: 'rgba',
+    format: "rgba",
     alpha: 1.0,
   })
 
@@ -228,8 +228,8 @@ const ImagePlotChart = React.memo<{
     () => [
       {
         z: imageData,
-        type: 'heatmap',
-        name: 'images',
+        type: "heatmap",
+        name: "images",
         colorscale: colorscale.map((value) => {
           let offset: number = parseFloat(value.offset)
           const offsets: number[] = colorscale.map((v) => {
@@ -243,8 +243,8 @@ const ImagePlotChart = React.memo<{
             offset = 0.0
           }
           const rgb = value.rgb
-            .replace(/[^0-9,]/g, '')
-            .split(',')
+            .replace(/[^0-9,]/g, "")
+            .split(",")
             .map((x) => Number(x))
           const hex = rgba2hex(rgb, alpha)
           return [offset, hex]
@@ -256,9 +256,9 @@ const ImagePlotChart = React.memo<{
       },
       {
         z: roiDataState,
-        type: 'heatmap',
-        name: 'roi',
-        hovertemplate: isAddRoi ? 'none' : 'cell id: %{z}',
+        type: "heatmap",
+        name: "roi",
+        hovertemplate: isAddRoi ? "none" : "cell id: %{z}",
         // hoverinfo: isAddRoi || pointClick.length ? 'none' : undefined,
         colorscale: [...Array(timeDataMaxIndex + 1)].map((_, i) => {
           const new_i = Math.floor(((i % 10) * 10 + i / 10) % 100)
@@ -312,7 +312,7 @@ const ImagePlotChart = React.memo<{
         l: 100, // left
         b: 20, // bottom
       },
-      dragmode: selectMode ? 'select' : 'pan',
+      dragmode: selectMode ? "select" : "pan",
       xaxis: {
         title: meta?.xlabel,
         autorange: true,
@@ -320,23 +320,32 @@ const ImagePlotChart = React.memo<{
         showline: showline,
         zeroline: false,
         autotick: true,
-        ticks: '',
+        ticks: "",
         showticklabels: showticklabels,
       },
       yaxis: {
         title: meta?.ylabel,
         automargin: true,
-        autorange: 'reversed',
+        autorange: "reversed",
         showgrid: showgrid,
         showline: showline,
         zeroline: false,
         autotick: true, // todo
-        ticks: '',
+        ticks: "",
         showticklabels: showticklabels, // todo
       },
     }),
     //eslint-disable-next-line react-hooks/exhaustive-deps
-    [meta, showgrid, showline, showticklabels, width, height, selectMode, isAddRoi],
+    [
+      meta,
+      showgrid,
+      showline,
+      showticklabels,
+      width,
+      height,
+      selectMode,
+      isAddRoi,
+    ],
   )
 
   const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))
@@ -357,7 +366,7 @@ const ImagePlotChart = React.memo<{
 
   const onChartClick = (event: PlotMouseEvent) => {
     const point: PlotDatum = event.points[0] as PlotDatum
-    if (point.curveNumber >= 1 && outputKey === 'cell_roi') {
+    if (point.curveNumber >= 1 && outputKey === "cell_roi") {
       setSelectRoi({
         x: Number(point.x),
         y: Number(point.y),
@@ -375,7 +384,7 @@ const ImagePlotChart = React.memo<{
   }
 
   const setSelectRoi = (point: PointClick) => {
-    if (typeof point.z !== 'number' || point.z === -1) return
+    if (typeof point.z !== "number" || point.z === -1) return
     const newPoints = [...pointClick, point]
     const newRoi = roiDataState.map((roi) => {
       return roi.map((element) => {
@@ -528,7 +537,7 @@ const ImagePlotChart = React.memo<{
   }
 
   const renderActionRoi = () => {
-    if (!roiDataState?.length || outputKey !== 'cell_roi') return null
+    if (!roiDataState?.length || outputKey !== "cell_roi") return null
     if (!isAddRoi) {
       return <LinkDiv onClick={addRoi}>Add ROI</LinkDiv>
     }
@@ -537,7 +546,7 @@ const ImagePlotChart = React.memo<{
         <LinkDiv
           style={{
             opacity: loadingApi ? 0.5 : 1,
-            cursor: loadingApi ? 'progress' : 'pointer',
+            cursor: loadingApi ? "progress" : "pointer",
           }}
           onClick={addRoiSubmit}
         >
@@ -546,7 +555,7 @@ const ImagePlotChart = React.memo<{
         <LinkDiv
           style={{
             opacity: loadingApi ? 0.5 : 1,
-            cursor: loadingApi ? 'progress' : 'pointer',
+            cursor: loadingApi ? "progress" : "pointer",
           }}
           onClick={onCancelAdd}
         >
@@ -558,7 +567,7 @@ const ImagePlotChart = React.memo<{
 
   return (
     <div>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: "flex" }}>
         <Box sx={{ flexGrow: 1, mt: 1 }}>
           <PlayBack activeIndex={activeIndex} />
         </Box>
@@ -584,7 +593,7 @@ const ImagePlotChart = React.memo<{
                 </LinkDiv>
               ) : null}
               <LinkDiv
-                sx={{ color: '#F84E1B', opacity: loadingApi ? 0.5 : 1 }}
+                sx={{ color: "#F84E1B", opacity: loadingApi ? 0.5 : 1 }}
                 onClick={onDeleteRoi}
               >
                 Delete ROI
@@ -601,7 +610,7 @@ const ImagePlotChart = React.memo<{
           renderActionRoi()
         )}
       </Box>
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: "relative" }}>
         <PlotlyChart
           data={data}
           layout={layout}
@@ -622,7 +631,7 @@ const ImagePlotChart = React.memo<{
                   style={{
                     width: sizeDrag.width - 1,
                     height: sizeDrag.height - 1,
-                    cursor: !startDragAddRoi ? 'grab' : 'grabbing',
+                    cursor: !startDragAddRoi ? "grab" : "grabbing",
                   }}
                 />
                 <DragSizeLeft
@@ -668,7 +677,7 @@ const PlayBack = React.memo<{ activeIndex: number }>(({ activeIndex }) => {
     value: number | number[],
     activeThumb: number,
   ) => {
-    if (typeof value === 'number') {
+    if (typeof value === "number") {
       const newIndex = value - startIndex
       if (newIndex >= 0 && newIndex !== activeIndex) {
         dispatch(setImageActiveIndex({ itemId, activeIndex: newIndex }))
@@ -708,8 +717,8 @@ const PlayBack = React.memo<{ activeIndex: number }>(({ activeIndex }) => {
   const onDurationChange = useCallback(
     (event: React.ChangeEvent<HTMLInputElement>) => {
       const newValue =
-        event.target.value === '' ? '' : Number(event.target.value)
-      if (typeof newValue === 'number') {
+        event.target.value === "" ? "" : Number(event.target.value)
+      if (typeof newValue === "number") {
         dispatch(setImageItemDuration({ itemId, duration: newValue }))
       }
     },
@@ -795,11 +804,11 @@ function rgba2hex(rgba: number[], alpha: number) {
   // Pad single-digit output values
   outParts.forEach(function (part, i) {
     if (part.length === 1) {
-      outParts[i] = '0' + part
+      outParts[i] = "0" + part
     }
   })
 
-  return `#${outParts.join('')}`
+  return `#${outParts.join("")}`
 }
 
 function debounce<T extends (...args: any[]) => unknown>(
@@ -813,80 +822,80 @@ function debounce<T extends (...args: any[]) => unknown>(
   }
 }
 
-const BoxDiv = styled('div')({
+const BoxDiv = styled("div")({
   mt: 1,
-  display: 'flex',
-  alignItems: 'center',
-  listStyle: 'none',
+  display: "flex",
+  alignItems: "center",
+  listStyle: "none",
   padding: 0,
   margin: 0,
 })
 
-const LinkDiv = styled('div')({
+const LinkDiv = styled("div")({
   marginLeft: 16,
-  textDecoration: 'underline',
-  cursor: 'pointer',
-  color: '#1155cc',
+  textDecoration: "underline",
+  cursor: "pointer",
+  color: "#1155cc",
   zIndex: 999,
-  position: 'relative',
+  position: "relative",
 })
 
-const DivAddRoi = styled('div')({
-  width: '100%',
-  height: '100%',
-  position: 'absolute',
+const DivAddRoi = styled("div")({
+  width: "100%",
+  height: "100%",
+  position: "absolute",
   left: 0,
   top: 0,
   borderRadius: 100,
 })
 
-const DivSvg = styled('div')({
+const DivSvg = styled("div")({
   width: 321,
   height: 321,
   marginTop: 30,
   marginLeft: 99,
-  position: 'relative',
+  position: "relative",
 })
 
-const DivDrag = styled('div')({
-  border: '1px solid #ffffff',
-  position: 'absolute',
+const DivDrag = styled("div")({
+  border: "1px solid #ffffff",
+  position: "absolute",
   borderRadius: 100,
 })
 
-const DragCenter = styled('div')({
+const DragCenter = styled("div")({
   borderRadius: 100,
-  cursor: 'grab',
+  cursor: "grab",
 })
 
-const DragSize = styled('div')({
+const DragSize = styled("div")({
   width: 3,
   height: 3,
   borderRadius: 100,
-  position: 'absolute',
-  background: '#fff',
+  position: "absolute",
+  background: "#fff",
 })
 
 const DragSizeLeft = styled(DragSize)({
   top: `calc(50% - 1px)`,
   left: -2,
-  cursor: 'ew-resize',
+  cursor: "ew-resize",
 })
 
 const DragSizeRight = styled(DragSize)({
   top: `calc(50% - 1px)`,
   right: -2,
-  cursor: 'ew-resize',
+  cursor: "ew-resize",
 })
 
 const DragSizeTop = styled(DragSize)({
   top: -2,
   right: `calc(50% - 1px)`,
-  cursor: 'ns-resize',
+  cursor: "ns-resize",
 })
 
 const DragSizeBottom = styled(DragSize)({
   bottom: -2,
   right: `calc(50% - 1px)`,
-  cursor: 'ns-resize',
+  cursor: "ns-resize",
 })

@@ -1,11 +1,11 @@
-import { createAsyncThunk, createAction } from '@reduxjs/toolkit'
-import { ThunkApiConfig } from 'store/store'
-import { getTimeSeriesDataById } from '../DisplayData/DisplayDataActions'
-import { selectRoiData } from '../DisplayData/DisplayDataSelectors'
-import { DATA_TYPE } from '../DisplayData/DisplayDataType'
-import { selectVisualizeItems } from './VisualizeItemSelectors'
-import { VISUALIZE_ITEM_SLICE_NAME } from './VisualizeItemType'
-import { isImageItem, isTimeSeriesItem } from './VisualizeItemUtils'
+import { createAsyncThunk, createAction } from "@reduxjs/toolkit"
+import { ThunkApiConfig } from "store/store"
+import { getTimeSeriesDataById } from "../DisplayData/DisplayDataActions"
+import { selectRoiData } from "../DisplayData/DisplayDataSelectors"
+import { DATA_TYPE } from "../DisplayData/DisplayDataType"
+import { selectVisualizeItems } from "./VisualizeItemSelectors"
+import { VISUALIZE_ITEM_SLICE_NAME } from "./VisualizeItemType"
+import { isImageItem, isTimeSeriesItem } from "./VisualizeItemUtils"
 
 export const setImageItemClikedDataId = createAsyncThunk<
   void,

@@ -2,50 +2,50 @@ import {
   deleteExperimentByList,
   deleteExperimentByUid,
   getExperiments,
-} from './ExperimentsActions'
-import reducer, { initialState } from './ExperimentsSlice'
+} from "./ExperimentsActions"
+import reducer, { initialState } from "./ExperimentsSlice"
 
-describe('Experiments', () => {
-  const uid1 = '96844a59'
-  const uid2 = 'eee981f0'
+describe("Experiments", () => {
+  const uid1 = "96844a59"
+  const uid2 = "eee981f0"
   const getExperimentsPendingAction = {
     type: getExperiments.pending.type,
     meta: {
-      requestId: 'FmYmw6sCHA2Ll5JJfPuJN',
-      requestStatus: 'pending',
+      requestId: "FmYmw6sCHA2Ll5JJfPuJN",
+      requestStatus: "pending",
     },
   }
   const getExperimentsFulfilledAction = {
     type: getExperiments.fulfilled.type,
     meta: {
-      requestId: 'FmYmw6sCHA2Ll5JJfPuJN',
-      requestStatus: 'pending',
+      requestId: "FmYmw6sCHA2Ll5JJfPuJN",
+      requestStatus: "pending",
     },
     payload: {
       [uid1]: {
-        started_at: '2022-05-07 05:26:54',
-        finished_at: '2022-05-07 05:26:55',
-        name: 'record test',
+        started_at: "2022-05-07 05:26:54",
+        finished_at: "2022-05-07 05:26:55",
+        name: "record test",
         unique_id: uid1,
         hasNWB: true,
-        success: 'success',
+        success: "success",
         function: {
           dummy_image2image8time_4mrz8h7hyk: {
-            unique_id: 'dummy_image2image8time_4mrz8h7hyk',
-            name: 'dummy_image2image8time',
-            success: 'success',
+            unique_id: "dummy_image2image8time_4mrz8h7hyk",
+            name: "dummy_image2image8time",
+            success: "success",
             hasNWB: true,
           },
           dummy_image2image_c8tqfxw0mq: {
-            unique_id: 'dummy_image2image_c8tqfxw0mq',
-            name: 'dummy_image2image',
-            success: 'success',
+            unique_id: "dummy_image2image_c8tqfxw0mq",
+            name: "dummy_image2image",
+            success: "success",
             hasNWB: true,
           },
           input_0: {
-            unique_id: 'input_0',
-            name: 'hoge.tif',
-            success: 'success',
+            unique_id: "input_0",
+            name: "hoge.tif",
+            success: "success",
             hasNWB: false,
           },
         },
@@ -58,29 +58,29 @@ describe('Experiments', () => {
         },
       },
       [uid2]: {
-        started_at: '2022-05-07 05:54:53',
-        finished_at: '2022-05-07 05:54:54',
-        name: 'New flow',
+        started_at: "2022-05-07 05:54:53",
+        finished_at: "2022-05-07 05:54:54",
+        name: "New flow",
         unique_id: uid2,
         hasNWB: true,
-        success: 'success',
+        success: "success",
         function: {
           dummy_image2image8time_4mrz8h7hyk: {
-            unique_id: 'dummy_image2image8time_4mrz8h7hyk',
-            name: 'dummy_image2image8time',
-            success: 'success',
+            unique_id: "dummy_image2image8time_4mrz8h7hyk",
+            name: "dummy_image2image8time",
+            success: "success",
             hasNWB: true,
           },
           dummy_image2image_c8tqfxw0mq: {
-            unique_id: 'dummy_image2image_c8tqfxw0mq',
-            name: 'dummy_image2image',
-            success: 'success',
+            unique_id: "dummy_image2image_c8tqfxw0mq",
+            name: "dummy_image2image",
+            success: "success",
             hasNWB: true,
           },
           input_0: {
-            unique_id: 'input_0',
-            name: 'hoge.tif',
-            success: 'success',
+            unique_id: "input_0",
+            name: "hoge.tif",
+            success: "success",
             hasNWB: false,
           },
         },
@@ -101,62 +101,62 @@ describe('Experiments', () => {
       getExperimentsFulfilledAction,
     )
     const expectState = {
-      status: 'fulfilled',
+      status: "fulfilled",
       experimentList: {
         [uid1]: {
           uid: uid1,
-          startedAt: '2022-05-07 05:26:54',
-          finishedAt: '2022-05-07 05:26:55',
+          startedAt: "2022-05-07 05:26:54",
+          finishedAt: "2022-05-07 05:26:55",
           frameRate: 30,
-          name: 'record test',
+          name: "record test",
           hasNWB: true,
-          status: 'success',
+          status: "success",
           functions: {
             dummy_image2image8time_4mrz8h7hyk: {
-              name: 'dummy_image2image8time',
-              nodeId: 'dummy_image2image8time_4mrz8h7hyk',
-              status: 'success',
+              name: "dummy_image2image8time",
+              nodeId: "dummy_image2image8time_4mrz8h7hyk",
+              status: "success",
               hasNWB: true,
             },
             dummy_image2image_c8tqfxw0mq: {
-              name: 'dummy_image2image',
-              nodeId: 'dummy_image2image_c8tqfxw0mq',
-              status: 'success',
+              name: "dummy_image2image",
+              nodeId: "dummy_image2image_c8tqfxw0mq",
+              status: "success",
               hasNWB: true,
             },
             input_0: {
-              name: 'hoge.tif',
-              nodeId: 'input_0',
-              status: 'success',
+              name: "hoge.tif",
+              nodeId: "input_0",
+              status: "success",
               hasNWB: false,
             },
           },
         },
         [uid2]: {
           uid: uid2,
-          startedAt: '2022-05-07 05:54:53',
-          finishedAt: '2022-05-07 05:54:54',
+          startedAt: "2022-05-07 05:54:53",
+          finishedAt: "2022-05-07 05:54:54",
           frameRate: 30,
-          name: 'New flow',
+          name: "New flow",
           hasNWB: true,
-          status: 'success',
+          status: "success",
           functions: {
             dummy_image2image8time_4mrz8h7hyk: {
-              name: 'dummy_image2image8time',
-              nodeId: 'dummy_image2image8time_4mrz8h7hyk',
-              status: 'success',
+              name: "dummy_image2image8time",
+              nodeId: "dummy_image2image8time_4mrz8h7hyk",
+              status: "success",
               hasNWB: true,
             },
             dummy_image2image_c8tqfxw0mq: {
-              name: 'dummy_image2image',
-              nodeId: 'dummy_image2image_c8tqfxw0mq',
-              status: 'success',
+              name: "dummy_image2image",
+              nodeId: "dummy_image2image_c8tqfxw0mq",
+              status: "success",
               hasNWB: true,
             },
             input_0: {
-              name: 'hoge.tif',
-              nodeId: 'input_0',
-              status: 'success',
+              name: "hoge.tif",
+              nodeId: "input_0",
+              status: "success",
               hasNWB: false,
             },
           },
@@ -178,13 +178,13 @@ describe('Experiments', () => {
       payload: true,
       meta: {
         arg: uid2,
-        requestId: 'FZcujcGG38JPwbQDR6c-J',
-        requestStatus: 'fulfilled',
+        requestId: "FZcujcGG38JPwbQDR6c-J",
+        requestStatus: "fulfilled",
       },
     }
     const targetState = reducer(prevState, deleteExperimentByUidFulfilledAction)
     expect(
-      targetState.status === 'fulfilled' &&
+      targetState.status === "fulfilled" &&
         !Object.keys(targetState.experimentList).includes(uid2),
     ).toBe(true)
   })
@@ -200,8 +200,8 @@ describe('Experiments', () => {
       payload: true,
       meta: {
         arg: [uid1, uid2],
-        requestId: 'faNrL5ZV3SRODugFlJM20',
-        requestStatus: 'fulfilled',
+        requestId: "faNrL5ZV3SRODugFlJM20",
+        requestStatus: "fulfilled",
       },
     }
     const targetState = reducer(
@@ -209,7 +209,7 @@ describe('Experiments', () => {
       deleteExperimentByListFulfilledAction,
     )
     expect(
-      targetState.status === 'fulfilled' && targetState.experimentList,
+      targetState.status === "fulfilled" && targetState.experimentList,
     ).toEqual({})
   })
 })

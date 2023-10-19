@@ -1,4 +1,4 @@
-import { Node } from 'reactflow'
+import { Node } from "reactflow"
 
 import {
   AlgorithmNodePostData,
@@ -6,32 +6,32 @@ import {
   InputNodePostData,
   NodeDict,
   RunPostData,
-} from 'api/run/Run'
+} from "api/run/Run"
 
-import { RootState } from 'store/store'
+import { RootState } from "store/store"
 
 import {
   selectAlgorithmFunctionPath,
   selectAlgorithmIsUpdated,
   selectAlgorithmName,
   selectAlgorithmParams,
-} from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
+} from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
 import {
   selectFlowEdges,
   selectFlowNodes,
-} from 'store/slice/FlowElement/FlowElementSelectors'
-import { isAlgorithmNodeData } from 'store/slice/FlowElement/FlowElementUtils'
-import { selectNwbParams } from 'store/slice/NWB/NWBSelectors'
-import { selectPipelineNodeResultStatus } from 'store/slice/Pipeline/PipelineSelectors'
-import { NODE_RESULT_STATUS } from 'store/slice/Pipeline/PipelineType'
-import { selectSnakemakeParams } from 'store/slice/Snakemake/SnakemakeSelectors'
-import { NODE_TYPE_SET } from 'store/slice/FlowElement/FlowElementType'
+} from "store/slice/FlowElement/FlowElementSelectors"
+import { isAlgorithmNodeData } from "store/slice/FlowElement/FlowElementUtils"
+import { selectNwbParams } from "store/slice/NWB/NWBSelectors"
+import { selectPipelineNodeResultStatus } from "store/slice/Pipeline/PipelineSelectors"
+import { NODE_RESULT_STATUS } from "store/slice/Pipeline/PipelineType"
+import { selectSnakemakeParams } from "store/slice/Snakemake/SnakemakeSelectors"
+import { NODE_TYPE_SET } from "store/slice/FlowElement/FlowElementType"
 import {
   selectInputNodeFileType,
   selectInputNodeHDF5Path,
   selectInputNodeParam,
   selectInputNodeSelectedFilePath,
-} from 'store/slice/InputNode/InputNodeSelectors'
+} from "store/slice/InputNode/InputNodeSelectors"
 
 export const selectRunPostData = (state: RootState) => {
   const nwbParam = selectNwbParams(state)
@@ -39,7 +39,7 @@ export const selectRunPostData = (state: RootState) => {
   const edgeDictForRun = selectEdgeDictForRun(state)
   const nodeDictForRun = selectNodeDictForRun(state)
   const forceRunList = selectForceRunList(state)
-  const runPostData: Omit<RunPostData, 'name'> = {
+  const runPostData: Omit<RunPostData, "name"> = {
     nwbParam,
     snakemakeParam,
     edgeDict: edgeDictForRun,
@@ -78,7 +78,7 @@ const selectNodeDictForRun = (state: RootState): NodeDict => {
         ...node,
         data: {
           ...node.data,
-          label: node.data?.label ?? '',
+          label: node.data?.label ?? "",
           type: NODE_TYPE_SET.ALGORITHM,
           path: functionPath,
           param,
@@ -94,9 +94,9 @@ const selectNodeDictForRun = (state: RootState): NodeDict => {
         ...node,
         data: {
           ...node.data,
-          label: node.data?.label ?? '',
+          label: node.data?.label ?? "",
           type: NODE_TYPE_SET.INPUT,
-          path: filePath ?? '',
+          path: filePath ?? "",
           param,
           hdf5Path: hdf5Path,
           fileType,

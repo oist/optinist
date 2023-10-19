@@ -1,5 +1,5 @@
-import { RootState } from 'store/store'
-import { inistialUploaderState } from './FileUploaderInitlalState'
+import { RootState } from "store/store"
+import { inistialUploaderState } from "./FileUploaderInitlalState"
 
 export const selectFileUploader = (id: string) => (state: RootState) => {
   if (Object.keys(state.fileUploader).includes(id)) {

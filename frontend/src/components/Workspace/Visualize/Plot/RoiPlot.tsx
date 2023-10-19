@@ -1,8 +1,8 @@
-import React from 'react'
-import PlotlyChart from 'react-plotlyjs-ts'
-import { useSelector, useDispatch } from 'react-redux'
-import { DisplayDataContext } from '../DataContext'
-import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
+import React from "react"
+import PlotlyChart from "react-plotlyjs-ts"
+import { useSelector, useDispatch } from "react-redux"
+import { DisplayDataContext } from "../DataContext"
+import { twoDimarrayEqualityFn } from "utils/EqualityUtils"
 import {
   selectRoiData,
   selectRoiDataError,
@@ -10,19 +10,19 @@ import {
   selectRoiDataIsInitialized,
   selectRoiDataIsPending,
   selectRoiMeta,
-} from 'store/slice/DisplayData/DisplayDataSelectors'
-import { LinearProgress, Typography } from '@mui/material'
-import { getRoiData } from 'store/slice/DisplayData/DisplayDataActions'
-import createColormap from 'colormap'
-import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
+} from "store/slice/DisplayData/DisplayDataSelectors"
+import { LinearProgress, Typography } from "@mui/material"
+import { getRoiData } from "store/slice/DisplayData/DisplayDataActions"
+import createColormap from "colormap"
+import { ColorType } from "store/slice/VisualizeItem/VisualizeItemType"
 import {
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
   selectVisualizeSaveFilename,
   selectVisualizeSaveFormat,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
-import { AppDispatch } from "../../../../store/store";
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
+import { AppDispatch } from "../../../../store/store"
 
 export const RoiPlot = React.memo(() => {
   const { filePath: path } = React.useContext(DisplayDataContext)
@@ -57,9 +57,9 @@ const RoiPlotImple = React.memo<{}>(() => {
   const height = useSelector(selectVisualizeItemHeight(itemId))
 
   const colorscale: ColorType[] = createColormap({
-    colormap: 'jet',
+    colormap: "jet",
     nshades: 10,
-    format: 'hex',
+    format: "hex",
     alpha: 1,
   }).map((v, idx) => {
     return { rgb: v, offset: String(idx / 9) }
@@ -69,8 +69,8 @@ const RoiPlotImple = React.memo<{}>(() => {
     () => [
       {
         z: imageData,
-        type: 'heatmap',
-        name: 'roi',
+        type: "heatmap",
+        name: "roi",
         colorscale: colorscale.map((value) => {
           let offset: number = parseFloat(value.offset)
           const offsets: number[] = colorscale.map((v) => {
@@ -107,20 +107,20 @@ const RoiPlotImple = React.memo<{}>(() => {
         l: 120, // left
         b: 30, // bottom
       },
-      dragmode: 'pan',
+      dragmode: "pan",
       xaxis: {
         title: meta?.xlabel,
         autorange: true,
         zeroline: false,
         autotick: true,
-        ticks: '',
+        ticks: "",
       },
       yaxis: {
         title: meta?.ylabel,
-        autorange: 'reversed',
+        autorange: "reversed",
         zeroline: false,
         autotick: true, // todo
-        ticks: '',
+        ticks: "",
       },
     }),
     [meta, width, height],

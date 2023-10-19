@@ -1,11 +1,11 @@
-import { UploadFile } from '@mui/icons-material'
-import { IconButton, Tooltip } from '@mui/material'
-import { useSnackbar } from 'notistack'
-import React from 'react'
-import { useDispatch } from 'react-redux'
-import { reset } from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { importWorkflowConfig } from 'store/slice/Workflow/WorkflowActions'
-import { AppDispatch } from 'store/store'
+import { UploadFile } from "@mui/icons-material"
+import { IconButton, Tooltip } from "@mui/material"
+import { useSnackbar } from "notistack"
+import React from "react"
+import { useDispatch } from "react-redux"
+import { reset } from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { importWorkflowConfig } from "store/slice/Workflow/WorkflowActions"
+import { AppDispatch } from "store/store"
 
 export const ImportWorkflowConfigButton = React.memo(() => {
   const dispatch: AppDispatch = useDispatch()
@@ -21,15 +21,15 @@ export const ImportWorkflowConfigButton = React.memo(() => {
     if (event.target.files != null && event.target.files[0] != null) {
       const file = event.target.files[0]
       const formData = new FormData()
-      formData.append('file', file)
+      formData.append("file", file)
       dispatch(importWorkflowConfig({ formData }))
         .unwrap()
         .then(() => {
-          enqueueSnackbar('Import success', { variant: 'success' })
+          enqueueSnackbar("Import success", { variant: "success" })
           dispatch(reset())
         })
         .catch(() => {
-          enqueueSnackbar('Invalid yaml file', { variant: 'error' })
+          enqueueSnackbar("Invalid yaml file", { variant: "error" })
         })
     }
   }

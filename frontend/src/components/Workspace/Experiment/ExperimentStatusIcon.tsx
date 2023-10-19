@@ -1,21 +1,21 @@
-import React from 'react'
-import DoneIcon from '@mui/icons-material/Done'
-import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline'
-import HorizontalRuleIcon from '@mui/icons-material/HorizontalRule'
+import React from "react"
+import DoneIcon from "@mui/icons-material/Done"
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline"
+import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule"
 
-import { EXPERIMENTS_STATUS } from 'store/slice/Experiments/ExperimentsType'
-import { IconButton, Popover, Typography } from '@mui/material'
+import { EXPERIMENTS_STATUS } from "store/slice/Experiments/ExperimentsType"
+import { IconButton, Popover, Typography } from "@mui/material"
 
 export const ExperimentStatusIcon = React.memo<{
   status: EXPERIMENTS_STATUS
   message?: string
 }>(({ status, message }) => {
   switch (status) {
-    case 'error':
+    case "error":
       return <ErrorIcon message={message} />
-    case 'success':
+    case "success":
       return <DoneIcon color="success" />
-    case 'running':
+    case "running":
       return <HorizontalRuleIcon color="inherit" />
   }
 })
@@ -30,7 +30,7 @@ const ErrorIcon = React.memo<{ message?: string }>(({ message }) => {
   }
 
   const open = Boolean(anchorEl)
-  const id = open ? 'error-message-popover' : undefined
+  const id = open ? "error-message-popover" : undefined
 
   return message == null ? (
     <ErrorOutlineIcon color="error" />
@@ -51,10 +51,10 @@ const ErrorIcon = React.memo<{ message?: string }>(({ message }) => {
         anchorEl={anchorEl}
         onClose={handleClose}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'center',
+          vertical: "bottom",
+          horizontal: "center",
         }}
-        slotProps={{ paper: { sx: { width: '60%' } } }}
+        slotProps={{ paper: { sx: { width: "60%" } } }}
       >
         <Typography
           variant="body2"

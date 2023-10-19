@@ -1,5 +1,5 @@
-declare module 'react-linear-gradient-picker' {
-  import React from 'react'
+declare module "react-linear-gradient-picker" {
+  import React from "react"
   export declare type PALETTE_COLOR_SHAPE_TYPE = {
     id?: number
     color: string

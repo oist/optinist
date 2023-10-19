@@ -1,18 +1,18 @@
-import { FC } from 'react'
-import { useLocation } from 'react-router-dom'
-import { styled } from '@mui/material/styles'
-import MuiAppBar from '@mui/material/AppBar'
-import Box from '@mui/material/Box'
-import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
-import IconButton from '@mui/material/IconButton'
-import MenuIcon from '@mui/icons-material/Menu'
-import Logo from 'components/logo.png'
-import Tooltips from 'components/Layout/Tooltips'
-import WorkspaceTabs from 'components/Workspace/WorkspaceTabs'
-import { IS_STANDALONE } from 'const/Mode'
-import Profile from './Profile'
-import { APP_BAR_HEIGHT } from 'const/Layout'
+import { FC } from "react"
+import { useLocation } from "react-router-dom"
+import { styled } from "@mui/material/styles"
+import MuiAppBar from "@mui/material/AppBar"
+import Box from "@mui/material/Box"
+import Toolbar from "@mui/material/Toolbar"
+import Typography from "@mui/material/Typography"
+import IconButton from "@mui/material/IconButton"
+import MenuIcon from "@mui/icons-material/Menu"
+import Logo from "components/logo.png"
+import Tooltips from "components/Layout/Tooltips"
+import WorkspaceTabs from "components/Workspace/WorkspaceTabs"
+import { IS_STANDALONE } from "const/Mode"
+import Profile from "./Profile"
+import { APP_BAR_HEIGHT } from "const/Layout"
 
 const Header: FC<{
   handleDrawerOpen: () => void
@@ -66,9 +66,9 @@ const MultiUserHeader: FC<{ handleDrawerOpen: () => void }> = ({
 }
 
 const StyledAppBar = styled(MuiAppBar)({
-  position: 'fixed',
-  backgroundColor: '#E1DEDB',
-  color: '#000000',
+  position: "fixed",
+  backgroundColor: "#E1DEDB",
+  color: "#000000",
   height: APP_BAR_HEIGHT,
 })
 

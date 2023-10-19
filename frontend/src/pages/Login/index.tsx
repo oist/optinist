@@ -1,10 +1,10 @@
-import { Box, Stack, styled, Typography } from '@mui/material'
-import { useDispatch } from 'react-redux'
-import { getMe, login } from 'store/slice/User/UserActions'
-import { AppDispatch } from 'store/store'
-import { ChangeEvent, FormEvent, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
-import Loading from 'components/common/Loading'
+import { Box, Stack, styled, Typography } from "@mui/material"
+import { useDispatch } from "react-redux"
+import { getMe, login } from "store/slice/User/UserActions"
+import { AppDispatch } from "store/store"
+import { ChangeEvent, FormEvent, useState } from "react"
+import { Link, useNavigate } from "react-router-dom"
+import Loading from "components/common/Loading"
 
 const Login = () => {
   const navigate = useNavigate()
@@ -12,12 +12,12 @@ const Login = () => {
 
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState<{ [key: string]: string }>({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   })
   const [values, setValues] = useState<{ email: string; password: string }>({
-    email: '',
-    password: '',
+    email: "",
+    password: "",
   })
 
   const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -29,10 +29,10 @@ const Login = () => {
       .unwrap()
       .then(async (_) => {
         await dispatch(getMe())
-        navigate('/console')
+        navigate("/console")
       })
       .catch((_) => {
-        setErrors({ email: 'Email or password is wrong', password: '' })
+        setErrors({ email: "Email or password is wrong", password: "" })
       })
       .finally(() => {
         setIsLoading(false)
@@ -40,12 +40,12 @@ const Login = () => {
   }
 
   const validateSubmit = () => {
-    let errors = { email: '', password: '' }
+    let errors = { email: "", password: "" }
     if (!values.email) {
-      errors.email = 'This field is required'
+      errors.email = "This field is required"
     }
     if (!values.password) {
-      errors.password = 'This field is required'
+      errors.password = "This field is required"
     }
     setErrors(errors)
     return errors.password || errors.email
@@ -54,7 +54,7 @@ const Login = () => {
   const onChangeValue = (event: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target
     setValues({ ...values, [name]: value })
-    setErrors({ ...errors, [name]: !value ? 'This field is required' : '' })
+    setErrors({ ...errors, [name]: !value ? "This field is required" : "" })
   }
 
   return (
@@ -62,7 +62,7 @@ const Login = () => {
       <LoginContent>
         <Title data-testid="title">Sign in to your account</Title>
         <FormSignUp autoComplete="off" onSubmit={onSubmit}>
-          <Box sx={{ position: 'relative' }}>
+          <Box sx={{ position: "relative" }}>
             <LabelField>
               Email<LableRequired>*</LableRequired>
             </LabelField>
@@ -77,7 +77,7 @@ const Login = () => {
             />
             <TextError data-testid="error-email">{errors.email}</TextError>
           </Box>
-          <Box sx={{ position: 'relative' }}>
+          <Box sx={{ position: "relative" }}>
             <LabelField>
               Password<LableRequired>*</LableRequired>
             </LabelField>
@@ -118,16 +118,16 @@ const Login = () => {
 }
 
 const LoginWrapper = styled(Box)({
-  width: '100%',
-  height: '100%',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
+  width: "100%",
+  height: "100%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
 })
 
 const LoginContent = styled(Box)({
   padding: 30,
-  boxShadow: '2px 1px 3px 1px rgba(0,0,0,0.1)',
+  boxShadow: "2px 1px 3px 1px rgba(0,0,0,0.1)",
   borderRadius: 4,
 })
 
@@ -137,62 +137,62 @@ const Title = styled(Typography)({
   marginBottom: 24,
 })
 
-const FormSignUp = styled('form')({})
+const FormSignUp = styled("form")({})
 
 const LabelField = styled(Typography)({
   fontSize: 14,
 })
 
-const LableRequired = styled('span')({
-  color: 'red',
+const LableRequired = styled("span")({
+  color: "red",
   fontSize: 14,
   marginLeft: 2,
 })
 
-const Input = styled('input', {
-  shouldForwardProp: (props) => props !== 'error',
+const Input = styled("input", {
+  shouldForwardProp: (props) => props !== "error",
 })<{ error: boolean }>(({ error }) => {
   return {
     width: 250,
     height: 24,
     borderRadius: 4,
-    border: '1px solid',
-    borderColor: error ? 'red' : '#d9d9d9',
-    padding: '5px 10px',
+    border: "1px solid",
+    borderColor: error ? "red" : "#d9d9d9",
+    padding: "5px 10px",
     marginBottom: 22,
-    transition: 'all 0.3s',
-    outline: 'none',
-    ':focus, :hover': {
-      borderColor: '#1677ff',
+    transition: "all 0.3s",
+    outline: "none",
+    ":focus, :hover": {
+      borderColor: "#1677ff",
     },
   }
 })
 
 const Description = styled(Typography)(({ theme }) => ({
   fontSize: 12,
-  color: 'rgba(0, 0, 0, 0.65)',
+  color: "rgba(0, 0, 0, 0.65)",
   marginTop: theme.spacing(1),
 }))
 
 const LinkWrappper = styled(Link)({
   marginLeft: 6,
-  color: '#1892d1',
+  color: "#1892d1",
 })
 
-const ButtonLogin = styled('button')({
-  backgroundColor: '#283237',
-  color: '#ffffff',
+const ButtonLogin = styled("button")({
+  backgroundColor: "#283237",
+  color: "#ffffff",
   borderRadius: 4,
-  border: 'none',
-  outline: 'none',
-  padding: '10px 20px',
-  cursor: 'pointer',
+  border: "none",
+  outline: "none",
+  padding: "10px 20px",
+  cursor: "pointer",
 })
 
 const TextError = styled(Typography)({
   fontSize: 12,
-  color: 'red',
-  position: 'absolute',
+  color: "red",
+  position: "absolute",
   bottom: 4,
 })
 

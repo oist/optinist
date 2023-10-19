@@ -4,7 +4,7 @@ import {
   ParamParent,
   ParamType,
   ParamMap,
-} from './ParamType'
+} from "./ParamType"
 
 export function getChildParam(
   path: string,
@@ -27,18 +27,18 @@ export function getChildParam(
 }
 
 export function isParamChild(param: ParamType): param is ParamChild {
-  return param.type === 'child'
+  return param.type === "child"
 }
 
 export function isParamParent(param: ParamType): param is ParamParent {
-  return param.type === 'parent'
+  return param.type === "parent"
 }
 
 function isDictObject(value: unknown): value is { [key: string]: unknown } {
-  return value !== null && typeof value === 'object' && !Array.isArray(value)
+  return value !== null && typeof value === "object" && !Array.isArray(value)
 }
 
-const PATH_SEPARATOR = '/'
+const PATH_SEPARATOR = "/"
 
 export function convertToParamMap(dto: ParamDTO, keyList?: string[]): ParamMap {
   const ParamMap: ParamMap = {}
@@ -47,12 +47,12 @@ export function convertToParamMap(dto: ParamDTO, keyList?: string[]): ParamMap {
     if (isDictObject(value)) {
       kList.push(name)
       ParamMap[name] = {
-        type: 'parent',
+        type: "parent",
         children: convertToParamMap(value, kList),
       }
     } else {
       ParamMap[name] = {
-        type: 'child',
+        type: "child",
         value,
         path: kList.concat([name]).join(PATH_SEPARATOR),
       }

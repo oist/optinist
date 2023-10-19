@@ -1,4 +1,4 @@
-export const FILES_TREE_SLICE_NAME = 'filesTree'
+export const FILES_TREE_SLICE_NAME = "filesTree"
 
 export type TreeNodeType = DirNode | FileNode
 

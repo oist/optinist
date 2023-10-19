@@ -1,19 +1,19 @@
-import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
+import React, { useEffect } from "react"
+import { useSelector, useDispatch } from "react-redux"
 
-import TuneIcon from '@mui/icons-material/Tune'
-import { updateParam } from 'store/slice/NWB/NWBSlice'
-import { getNWBParams } from 'store/slice/NWB/NWBAction'
-import { toggleNwb } from 'store/slice/RightDrawer/RightDrawerSlice'
-import { arrayEqualityFn } from 'utils/EqualityUtils'
+import TuneIcon from "@mui/icons-material/Tune"
+import { updateParam } from "store/slice/NWB/NWBSlice"
+import { getNWBParams } from "store/slice/NWB/NWBAction"
+import { toggleNwb } from "store/slice/RightDrawer/RightDrawerSlice"
+import { arrayEqualityFn } from "utils/EqualityUtils"
 import {
   selectNwbParam,
   selectNwbParamsKeyList,
   selectNwbParamsValue,
-} from 'store/slice/NWB/NWBSelectors'
-import { createParamFormItemComponent } from 'components/common/ParamFormItemCreator'
-import { AppDispatch } from '../../../../store/store'
-import { IconButton, Tooltip } from '@mui/material'
+} from "store/slice/NWB/NWBSelectors"
+import { createParamFormItemComponent } from "components/common/ParamFormItemCreator"
+import { AppDispatch } from "../../../../store/store"
+import { IconButton, Tooltip } from "@mui/material"
 
 export const NWBSettingButton = React.memo(() => {
   const dispatch = useDispatch()

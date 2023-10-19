@@ -1,4 +1,4 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { useSelector, useDispatch } from "react-redux"
 import {
   Box,
   Button,
@@ -6,22 +6,22 @@ import {
   Input,
   styled,
   Typography,
-} from '@mui/material'
-import Loading from 'components/common/Loading'
-import ChangePasswordModal from 'components/Account/ChangePasswordModal'
-import DeleteConfirmModal from 'components/common/DeleteConfirmModal'
-import { ChangeEvent, useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+} from "@mui/material"
+import Loading from "components/common/Loading"
+import ChangePasswordModal from "components/Account/ChangePasswordModal"
+import DeleteConfirmModal from "components/common/DeleteConfirmModal"
+import { ChangeEvent, useEffect, useRef, useState } from "react"
+import { useNavigate } from "react-router-dom"
 import {
   deleteMe,
   updateMe,
   updateMePassword,
-} from 'store/slice/User/UserActions'
-import { selectCurrentUser, selectLoading } from 'store/slice/User/UserSelector'
-import { ROLE } from '../../@types'
-import { useSnackbar, VariantType } from 'notistack'
-import Edit from '@mui/icons-material/Edit'
-import { AppDispatch } from "../../store/store";
+} from "store/slice/User/UserActions"
+import { selectCurrentUser, selectLoading } from "store/slice/User/UserSelector"
+import { ROLE } from "../../@types"
+import { useSnackbar, VariantType } from "notistack"
+import Edit from "@mui/icons-material/Edit"
+import { AppDispatch } from "../../store/store"
 
 const Account = () => {
   const user = useSelector(selectCurrentUser)
@@ -60,9 +60,9 @@ const Account = () => {
     if (!user) return
     const data = await dispatch(deleteMe())
     if ((data as any).error) {
-      handleClickVariant('error', 'Account deleted failed!')
+      handleClickVariant("error", "Account deleted failed!")
     } else {
-      navigate('/login')
+      navigate("/login")
     }
     handleCloseDeleteComfirmModal()
   }
@@ -80,11 +80,11 @@ const Account = () => {
       updateMePassword({ old_password: oldPass, new_password: newPass }),
     )
     if ((data as any).error) {
-      handleClickVariant('error', 'Failed to Change Password!')
+      handleClickVariant("error", "Failed to Change Password!")
     } else {
       handleClickVariant(
-        'success',
-        'Your password has been successfully changed!',
+        "success",
+        "Your password has been successfully changed!",
       )
     }
     handleCloseChangePw()
@@ -101,7 +101,7 @@ const Account = () => {
       return
     }
     if (!e.target.value) {
-      handleClickVariant('error', "Full name cann't empty!")
+      handleClickVariant("error", "Full name cann't empty!")
       setIsName(user?.name)
     } else {
       const data = await dispatch(
@@ -111,9 +111,9 @@ const Account = () => {
         }),
       )
       if ((data as any).error) {
-        handleClickVariant('error', 'Full name edited failed!')
+        handleClickVariant("error", "Full name edited failed!")
       } else {
-        handleClickVariant('success', 'Full name edited successfully!')
+        handleClickVariant("success", "Full name edited successfully!")
       }
     }
     setIsEditName(false)
@@ -121,26 +121,26 @@ const Account = () => {
 
   const getRole = (role?: number) => {
     if (!role) return
-    let newRole = ''
+    let newRole = ""
     switch (role) {
       case ROLE.ADMIN:
-        newRole = 'Admin'
+        newRole = "Admin"
         break
       case ROLE.OPERATOR:
-        newRole = 'Operator'
+        newRole = "Operator"
         break
     }
     return newRole
   }
 
   const handleName = (event: any) => {
-    if (event.key === 'Escape') {
+    if (event.key === "Escape") {
       setIsName(user?.name)
       setIsEditName(false)
       return
     }
-    if (event.key === 'Enter') {
-      if (ref.current) ref.current?.querySelector('input')?.blur?.()
+    if (event.key === "Enter") {
+      if (ref.current) ref.current?.querySelector("input")?.blur?.()
       return
     }
   }
@@ -194,7 +194,7 @@ const Account = () => {
         <TitleData>Role</TitleData>
         <BoxData>{getRole(user?.role_id)}</BoxData>
       </BoxFlex>
-      <BoxFlex sx={{ justifyContent: 'space-between', mt: 10, maxWidth: 600 }}>
+      <BoxFlex sx={{ justifyContent: "space-between", mt: 10, maxWidth: 600 }}>
         <Button variant="contained" color="primary" onClick={onChangePwClick}>
           Change Password
         </Button>
@@ -212,17 +212,17 @@ const Account = () => {
 }
 
 const AccountWrapper = styled(Box)({
-  padding: '0 20px',
+  padding: "0 20px",
 })
 
 const BoxFlex = styled(Box)({
-  display: 'flex',
-  margin: '20px 0 10px 0',
-  alignItems: 'center',
+  display: "flex",
+  margin: "20px 0 10px 0",
+  alignItems: "center",
   maxWidth: 1000,
 })
 
-const Title = styled('h2')({
+const Title = styled("h2")({
   marginBottom: 40,
 })
 

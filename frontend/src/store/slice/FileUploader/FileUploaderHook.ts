@@ -1,7 +1,7 @@
-import { nanoid } from '@reduxjs/toolkit'
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { uploadFile } from './FileUploaderActions'
+import { nanoid } from "@reduxjs/toolkit"
+import React from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { uploadFile } from "./FileUploaderActions"
 import {
   selectFileUploadIsPending,
   selectUploadFilePath,
@@ -9,10 +9,10 @@ import {
   selectFileUploadProgress,
   selectFileUploadIsUninitialized,
   selectFileUploadError,
-} from './FileUploaderSelectors'
-import { FILE_TYPE } from '../InputNode/InputNodeType'
-import { selectCurrentWorkspaceId } from '../Workspace/WorkspaceSelector'
-import { AppDispatch } from "../../store";
+} from "./FileUploaderSelectors"
+import { FILE_TYPE } from "../InputNode/InputNodeType"
+import { selectCurrentWorkspaceId } from "../Workspace/WorkspaceSelector"
+import { AppDispatch } from "../../store"
 
 type UseFileUploaderProps = {
   fileType?: FILE_TYPE
@@ -37,7 +37,7 @@ export function useFileUploader({ fileType, nodeId }: UseFileUploaderProps) {
           }),
         )
       } else {
-        throw new Error('workspaceId is undefined')
+        throw new Error("workspaceId is undefined")
       }
     },
     [dispatch, workspaceId, fileType, nodeId],

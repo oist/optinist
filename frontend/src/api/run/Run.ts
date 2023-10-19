@@ -1,13 +1,13 @@
-import axios from 'utils/axios'
-import type { Edge, Node } from 'reactflow'
+import axios from "utils/axios"
+import type { Edge, Node } from "reactflow"
 
-import { BASE_URL } from 'const/API'
+import { BASE_URL } from "const/API"
 import type {
   AlgorithmNodeData,
   InputNodeData,
-} from 'store/slice/FlowElement/FlowElementType'
-import type { FILE_TYPE } from 'store/slice/InputNode/InputNodeType'
-import type { ParamMap } from 'utils/param/ParamType'
+} from "store/slice/FlowElement/FlowElementType"
+import type { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
+import type { ParamMap } from "utils/param/ParamType"
 
 export type RunPostData = {
   name: string
@@ -53,7 +53,7 @@ export async function runApi(
 export async function runByUidApi(
   workspaceId: number,
   uid: string,
-  data: Omit<RunPostData, 'name'>,
+  data: Omit<RunPostData, "name">,
 ): Promise<string> {
   const response = await axios.post(
     `${BASE_URL}/run/${workspaceId}/${uid}`,

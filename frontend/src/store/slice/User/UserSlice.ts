@@ -1,6 +1,6 @@
-import { createSlice, isAnyOf } from '@reduxjs/toolkit'
-import { USER_SLICE_NAME } from './UserType'
-import { User } from './UserType'
+import { createSlice, isAnyOf } from "@reduxjs/toolkit"
+import { USER_SLICE_NAME } from "./UserType"
+import { User } from "./UserType"
 import {
   deleteMe,
   getListUser,
@@ -12,14 +12,14 @@ import {
   deleteUser,
   createUser,
   updateUser,
-} from './UserActions'
+} from "./UserActions"
 import {
   removeExToken,
   removeToken,
   saveExToken,
   saveRefreshToken,
   saveToken,
-} from 'utils/auth/AuthUtils'
+} from "utils/auth/AuthUtils"
 
 const initialState: User = {
   currentUser: undefined,

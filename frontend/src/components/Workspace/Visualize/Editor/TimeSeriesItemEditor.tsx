@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react'
-import {useSelector, useDispatch} from 'react-redux'
+import React, { useEffect, useState } from "react"
+import { useSelector, useDispatch } from "react-redux"
 import {
   AccordionDetails,
   AccordionSummary,
@@ -8,10 +8,10 @@ import {
   Select,
   Switch,
   TextField,
-} from '@mui/material'
-import Box from '@mui/material/Box'
-import Checkbox from '@mui/material/Checkbox'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
+} from "@mui/material"
+import Box from "@mui/material/Box"
+import Checkbox from "@mui/material/Checkbox"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 
 import {
   selectTimeSeriesItemDrawOrderList,
@@ -25,8 +25,8 @@ import {
   selectTimeSeriesItemFilePath,
   selectTimeSeriesItemKeys,
   selectImageItemRangeUnit,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { SelectedItemIdContext } from '../VisualizeItemEditor'
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
+import { SelectedItemIdContext } from "../VisualizeItemEditor"
 import {
   setTimeSeriesItemOffset,
   setTimeSeriesItemShowGrid,
@@ -38,22 +38,22 @@ import {
   setTimeSeriesItemZeroLine,
   setTimeSeriesItemDrawOrderList,
   changeRangeUnit,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
+} from "store/slice/VisualizeItem/VisualizeItemSlice"
 import {
   getTimeSeriesAllData,
   getTimeSeriesDataById,
-} from 'store/slice/DisplayData/DisplayDataActions'
-import { arrayEqualityFn } from 'utils/EqualityUtils'
-import { Accordion } from 'components/common/Accordion'
+} from "store/slice/DisplayData/DisplayDataActions"
+import { arrayEqualityFn } from "utils/EqualityUtils"
+import { Accordion } from "components/common/Accordion"
 
-import { SaveFig } from './SaveFig'
-import { selectFrameRate }  from "../../../../store/slice/Experiments/ExperimentsSelectors";
-import { selectPipelineLatestUid } from "../../../../store/slice/Pipeline/PipelineSelectors";
-import { AppDispatch } from "../../../../store/store";
+import { SaveFig } from "./SaveFig"
+import { selectFrameRate } from "../../../../store/slice/Experiments/ExperimentsSelectors"
+import { selectPipelineLatestUid } from "../../../../store/slice/Pipeline/PipelineSelectors"
+import { AppDispatch } from "../../../../store/store"
 
 export const TimeSeriesItemEditor: React.FC = () => {
   return (
-    <div style={{ margin: '10px', padding: 10 }}>
+    <div style={{ margin: "10px", padding: 10 }}>
       <Offset />
       <Span />
       <ShowGrid />
@@ -89,8 +89,8 @@ const Span: React.FC = () => {
 
   const dispatch = useDispatch()
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value === '' ? '' : Number(event.target.value)
-    if (typeof newValue === 'number' && newValue > 0) {
+    const newValue = event.target.value === "" ? "" : Number(event.target.value)
+    if (typeof newValue === "number" && newValue > 0) {
       dispatch(setTimeSeriesItemSpan({ itemId, span: newValue }))
     }
   }
@@ -99,7 +99,7 @@ const Span: React.FC = () => {
       control={
         <TextField
           type="number"
-          style={{ width: '6vw' }}
+          style={{ width: "6vw" }}
           InputLabelProps={{
             shrink: true,
           }}
@@ -186,18 +186,14 @@ const SelectValue: React.FC = () => {
   const value = useSelector(selectImageItemRangeUnit(itemId))
   const dispatch = useDispatch()
   const onChangeValue = async (e: any) => {
-    dispatch(changeRangeUnit({itemId: itemId, rangeUnit: e.target.value}))
+    dispatch(changeRangeUnit({ itemId: itemId, rangeUnit: e.target.value }))
   }
   return (
-    <Box sx={{marginBottom: 2}}>
+    <Box sx={{ marginBottom: 2 }}>
       <p>range unit</p>
-      <Select
-        sx={{width: '100%'}}
-        value={value}
-        onChange={onChangeValue}
-      >
-        <MenuItem value={'frames'}>Frames</MenuItem>
-        <MenuItem value={'time'}>Time</MenuItem>
+      <Select sx={{ width: "100%" }} value={value} onChange={onChangeValue}>
+        <MenuItem value={"frames"}>Frames</MenuItem>
+        <MenuItem value={"time"}>Time</MenuItem>
       </Select>
     </Box>
   )
@@ -213,22 +209,37 @@ const Xrange: React.FC = () => {
   const [xrange, setXrange] = useState(xrangeSelector)
 
   useEffect(() => {
-    if(Object.keys(xrange).length < 1) return
-    rangeUnit === 'frames' ? setXrange(xrangeSelector) : setXrange({left: Number(xrangeSelector.left)/ frameRate, right: Number(xrangeSelector.right) / frameRate})
-  //eslint-disable-next-line
+    if (Object.keys(xrange).length < 1) return
+    rangeUnit === "frames"
+      ? setXrange(xrangeSelector)
+      : setXrange({
+          left: Number(xrangeSelector.left) / frameRate,
+          right: Number(xrangeSelector.right) / frameRate,
+        })
+    //eslint-disable-next-line
   }, [JSON.stringify(rangeUnit), JSON.stringify(xrangeSelector)])
 
   const dispatch = useDispatch()
   const onChangeLeft = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newLeft = event.target.value === '' ? '' : Number(event.target.value)
-    if (typeof newLeft === 'number') {
-      dispatch(setTimeSeriesItemXrangeLeft({ itemId, left: rangeUnit === 'frames' ? newLeft : newLeft * frameRate }))
+    const newLeft = event.target.value === "" ? "" : Number(event.target.value)
+    if (typeof newLeft === "number") {
+      dispatch(
+        setTimeSeriesItemXrangeLeft({
+          itemId,
+          left: rangeUnit === "frames" ? newLeft : newLeft * frameRate,
+        }),
+      )
     }
   }
   const onChangeRight = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newRight = event.target.value === '' ? '' : Number(event.target.value)
-    if (typeof newRight === 'number') {
-      dispatch(setTimeSeriesItemXrangeRight({ itemId, right: rangeUnit === 'frames' ? newRight : newRight * frameRate }))
+    const newRight = event.target.value === "" ? "" : Number(event.target.value)
+    if (typeof newRight === "number") {
+      dispatch(
+        setTimeSeriesItemXrangeRight({
+          itemId,
+          right: rangeUnit === "frames" ? newRight : newRight * frameRate,
+        }),
+      )
     }
   }
 
@@ -248,7 +259,7 @@ const Xrange: React.FC = () => {
               shrink: true,
             }}
             onChange={onChangeLeft}
-            value={xrange.left ?? ''}
+            value={xrange.left ?? ""}
             defaultValue={undefined}
           />
           <TextField
@@ -259,7 +270,7 @@ const Xrange: React.FC = () => {
               shrink: true,
             }}
             onChange={onChangeRight}
-            value={xrange.right ?? ''}
+            value={xrange.right ?? ""}
           />
         </>
       }
@@ -324,7 +335,7 @@ const LegendSelect: React.FC = () => {
   )
 
   const children = (
-    <Box sx={{ display: 'flex', flexDirection: 'column', ml: 3 }}>
+    <Box sx={{ display: "flex", flexDirection: "column", ml: 3 }}>
       {dataKeys.map((key) => (
         <FormControlLabel
           key={`${key}`}

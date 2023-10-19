@@ -1,7 +1,7 @@
-import axiosLibrary from 'axios'
-import { refreshTokenApi } from 'api/auth/Auth'
-import { BASE_URL } from 'const/API'
-import { getExToken, getToken, logout, saveToken } from 'utils/auth/AuthUtils'
+import axiosLibrary from "axios"
+import { refreshTokenApi } from "api/auth/Auth"
+import { BASE_URL } from "const/API"
+import { getExToken, getToken, logout, saveToken } from "utils/auth/AuthUtils"
 
 const axios = axiosLibrary.create({
   baseURL: BASE_URL,

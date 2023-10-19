@@ -1,10 +1,10 @@
-import axios from 'utils/axios'
-import qs from 'qs'
+import axios from "utils/axios"
+import qs from "qs"
 import {
   ItemsWorkspace,
   WorkspaceDataDTO,
   ListUserShareWorkspaceDTO,
-} from 'store/slice/Workspace/WorkspaceType'
+} from "store/slice/Workspace/WorkspaceType"
 
 export type WorkspacePostDataDTO = { name: string; id?: number }
 

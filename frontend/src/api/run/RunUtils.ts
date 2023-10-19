@@ -1,13 +1,13 @@
-import type { Node } from 'reactflow'
+import type { Node } from "reactflow"
 import {
   isInputNodeData,
   isAlgorithmNodeData,
-} from 'store/slice/FlowElement/FlowElementUtils'
+} from "store/slice/FlowElement/FlowElementUtils"
 import type {
   NodePostDataType,
   InputNodePostData,
   AlgorithmNodePostData,
-} from './Run'
+} from "./Run"
 
 export function isInputNodePostData(
   node: Node<NodePostDataType>,

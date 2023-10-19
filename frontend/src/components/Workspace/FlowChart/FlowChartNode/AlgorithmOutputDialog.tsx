@@ -1,27 +1,27 @@
-import { useDispatch, useSelector } from 'react-redux'
-import Tabs, { tabsClasses } from '@mui/material/Tabs'
-import Tab from '@mui/material/Tab'
-import Dialog from '@mui/material/Dialog'
-import DialogTitle from '@mui/material/DialogTitle'
-import DialogContent from '@mui/material/DialogContent'
-import IconButton from '@mui/material/IconButton'
-import CloseIcon from '@mui/icons-material/Close'
-import Box from '@mui/material/Box'
-import React from 'react'
+import { useDispatch, useSelector } from "react-redux"
+import Tabs, { tabsClasses } from "@mui/material/Tabs"
+import Tab from "@mui/material/Tab"
+import Dialog from "@mui/material/Dialog"
+import DialogTitle from "@mui/material/DialogTitle"
+import DialogContent from "@mui/material/DialogContent"
+import IconButton from "@mui/material/IconButton"
+import CloseIcon from "@mui/icons-material/Close"
+import Box from "@mui/material/Box"
+import React from "react"
 
-import { arrayEqualityFn } from 'utils/EqualityUtils'
-import { selectAlgorithmName } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
+import { arrayEqualityFn } from "utils/EqualityUtils"
+import { selectAlgorithmName } from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
 import {
   selectPipelineNodeResultOutputKeyList,
   selectPipelineNodeResultOutputFileDataType,
   selectPipelineNodeResultOutputFilePath,
-} from 'store/slice/Pipeline/PipelineSelectors'
-import { selectVisualizeItemIdForWorkflowDialog } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+} from "store/slice/Pipeline/PipelineSelectors"
+import { selectVisualizeItemIdForWorkflowDialog } from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import {
   addItemForWorkflowDialog,
   deleteAllItemForWorkflowDialog,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { DisplayDataItem } from 'components/Workspace/Visualize/DisplayDataItem'
+} from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { DisplayDataItem } from "components/Workspace/Visualize/DisplayDataItem"
 
 export const AlgorithmOutputDialog = React.memo<{
   open: boolean
@@ -60,7 +60,7 @@ const TitleWithCloseButton = React.memo<{
       <IconButton
         onClick={onClose}
         sx={{
-          position: 'absolute',
+          position: "absolute",
           right: 8,
           top: 10,
         }}
@@ -107,7 +107,7 @@ const OutputSelectTabs = React.memo<{
       scrollButtons="auto"
       sx={{
         [`& .${tabsClasses.scrollButtons}`]: {
-          '&.Mui-disabled': { opacity: 0.3 },
+          "&.Mui-disabled": { opacity: 0.3 },
         },
       }}
     >
@@ -116,7 +116,7 @@ const OutputSelectTabs = React.memo<{
           value={outputKey}
           label={outputKey}
           sx={{
-            textTransform: 'none',
+            textTransform: "none",
           }}
         />
       ))}

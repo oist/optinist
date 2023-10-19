@@ -1,41 +1,41 @@
-import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { TreeView, TreeItem, treeItemClasses } from '@mui/x-tree-view'
-import { styled, Typography } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import IconButton from '@mui/material/IconButton'
-import AddIcon from '@mui/icons-material/Add'
-import { useDrag } from 'react-dnd'
+import React, { useEffect } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import { TreeView, TreeItem, treeItemClasses } from "@mui/x-tree-view"
+import { styled, Typography } from "@mui/material"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import ChevronRightIcon from "@mui/icons-material/ChevronRight"
+import IconButton from "@mui/material/IconButton"
+import AddIcon from "@mui/icons-material/Add"
+import { useDrag } from "react-dnd"
 
 import {
   selectAlgorithmListIsLated,
   selectAlgorithmListTree,
-} from 'store/slice/AlgorithmList/AlgorithmListSelectors'
+} from "store/slice/AlgorithmList/AlgorithmListSelectors"
 import {
   AlgorithmChild,
   AlgorithmNodeType,
-} from 'store/slice/AlgorithmList/AlgorithmListType'
-import { isAlgoChild } from 'store/slice/AlgorithmList/AlgorithmListUtils'
-import { getAlgoList } from 'store/slice/AlgorithmList/AlgorithmListActions'
-import { FILE_TYPE, FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
+} from "store/slice/AlgorithmList/AlgorithmListType"
+import { isAlgoChild } from "store/slice/AlgorithmList/AlgorithmListUtils"
+import { getAlgoList } from "store/slice/AlgorithmList/AlgorithmListActions"
+import { FILE_TYPE, FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
 import {
   NODE_TYPE,
   NODE_TYPE_SET,
-} from 'store/slice/FlowElement/FlowElementType'
+} from "store/slice/FlowElement/FlowElementType"
 import {
   addAlgorithmNode,
   addInputNode,
-} from 'store/slice/FlowElement/FlowElementActions'
-import { getNanoId } from 'utils/nanoid/NanoIdUtils'
-import { REACT_FLOW_NODE_TYPE, REACT_FLOW_NODE_TYPE_KEY } from 'const/flowchart'
+} from "store/slice/FlowElement/FlowElementActions"
+import { getNanoId } from "utils/nanoid/NanoIdUtils"
+import { REACT_FLOW_NODE_TYPE, REACT_FLOW_NODE_TYPE_KEY } from "const/flowchart"
 import {
   DND_ITEM_TYPE_SET,
   TreeItemCollectedProps,
   TreeItemDragObject,
   TreeItemDropResult,
-} from './DnDItemType'
-import { AppDispatch } from "../../../store/store";
+} from "./DnDItemType"
+import { AppDispatch } from "../../../store/store"
 
 export const AlgorithmTreeView = React.memo(() => {
   const dispatch = useDispatch<AppDispatch>()
@@ -76,35 +76,35 @@ export const AlgorithmTreeView = React.memo(() => {
     <TreeView
       sx={{
         flexGrow: 1,
-        height: '100%',
+        height: "100%",
       }}
       defaultCollapseIcon={<ExpandMoreIcon />}
       defaultExpandIcon={<ChevronRightIcon />}
     >
       <TreeItem nodeId="Data" label="Data">
         <InputNodeComponent
-          fileName={'image'}
-          nodeName={'imageData'}
+          fileName={"image"}
+          nodeName={"imageData"}
           fileType={FILE_TYPE_SET.IMAGE}
         />
         <InputNodeComponent
-          fileName={'csv'}
-          nodeName={'csvData'}
+          fileName={"csv"}
+          nodeName={"csvData"}
           fileType={FILE_TYPE_SET.CSV}
         />
         <InputNodeComponent
-          fileName={'hdf5'}
-          nodeName={'hdf5Data'}
+          fileName={"hdf5"}
+          nodeName={"hdf5Data"}
           fileType={FILE_TYPE_SET.HDF5}
         />
         <InputNodeComponent
-          fileName={'fluo'}
-          nodeName={'fluoData'}
+          fileName={"fluo"}
+          nodeName={"fluoData"}
           fileType={FILE_TYPE_SET.FLUO}
         />
         <InputNodeComponent
-          fileName={'behavior'}
-          nodeName={'behaviorData'}
+          fileName={"behavior"}
+          nodeName={"behaviorData"}
           fileType={FILE_TYPE_SET.BEHAVIOR}
         />
       </TreeItem>
@@ -136,7 +136,7 @@ const InputNodeComponent = React.memo<{
       fileType: FILE_TYPE,
       position?: { x: number; y: number },
     ) => {
-      let reactFlowNodeType: REACT_FLOW_NODE_TYPE | '' = ''
+      let reactFlowNodeType: REACT_FLOW_NODE_TYPE | "" = ""
       switch (fileType) {
         case FILE_TYPE_SET.CSV:
           reactFlowNodeType = REACT_FLOW_NODE_TYPE_KEY.CsvFileNode
@@ -276,10 +276,10 @@ const AddButton = React.memo<{
       <Typography
         variant="inherit"
         style={{
-          textOverflow: 'ellipsis',
-          overflow: 'visible',
-          width: '8rem',
-          display: 'inline-block',
+          textOverflow: "ellipsis",
+          overflow: "visible",
+          width: "8rem",
+          display: "inline-block",
         }}
       >
         {name}
