@@ -1,11 +1,10 @@
-import React, { CSSProperties } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Handle, Position, NodeProps } from 'reactflow'
 
-import { alpha, useTheme } from '@mui/material/styles'
+import { useTheme } from '@mui/material/styles'
 import Dialog from '@mui/material/Dialog'
-import TreeView from '@mui/lab/TreeView'
-import TreeItem from '@mui/lab/TreeItem'
+import { TreeView, TreeItem } from '@mui/x-tree-view'
 import FolderIcon from '@mui/icons-material/Folder'
 import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined'
 import DialogActions from '@mui/material/DialogActions'
@@ -33,16 +32,9 @@ import { getHDF5Tree } from 'store/slice/HDF5/HDF5Action'
 import { HDF5TreeNodeType } from 'store/slice/HDF5/HDF5Type'
 import { Typography } from '@mui/material'
 import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
-import { AppDispatch } from "../../../../store/store";
-
-const sourceHandleStyle: CSSProperties = {
-  width: 8,
-  height: 15,
-  top: 15,
-  border: '1px solid',
-  borderColor: '#555',
-  borderRadius: 0,
-}
+import { AppDispatch } from '../../../../store/store'
+import { HANDLE_STYLE } from 'const/flowchart'
+import { NodeContainer } from 'components/Workspace/FlowChart/FlowChartNode/NodeContainer'
 
 export const HDF5FileNode = React.memo<NodeProps>((element) => {
   const defined = useSelector(selectInputNodeDefined(element.id))
@@ -59,22 +51,13 @@ const HDF5FileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
   const onChangeFilePath = (path: string) => {
     dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
   }
-  const theme = useTheme()
 
   const onClickDeleteIcon = () => {
     dispatch(deleteFlowNodeById(nodeId))
   }
 
   return (
-    <div
-      style={{
-        height: '100%',
-        width: '230px',
-        background: selected
-          ? alpha(theme.palette.primary.light, 0.1)
-          : undefined,
-      }}
-    >
+    <NodeContainer nodeId={nodeId} selected={selected}>
       <button
         className="flowbutton"
         onClick={onClickDeleteIcon}
@@ -97,9 +80,9 @@ const HDF5FileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
         type="source"
         position={Position.Right}
         id={toHandleId(nodeId, 'hdf5', 'HDF5Data')}
-        style={sourceHandleStyle}
+        style={{ ...HANDLE_STYLE }}
       />
-    </div>
+    </NodeContainer>
   )
 })
 

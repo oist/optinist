@@ -1,8 +1,7 @@
-import React, { CSSProperties, useContext } from 'react'
+import React, { useContext } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Handle, Position, NodeProps } from 'reactflow'
 import {
-  alpha,
   Typography,
   useTheme,
   Tooltip,
@@ -10,6 +9,7 @@ import {
   Button,
   LinearProgress,
   ButtonGroup,
+  Grid,
 } from '@mui/material'
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded'
 import ErrorIcon from '@mui/icons-material/Error'
@@ -37,20 +37,9 @@ import {
   NODE_RESULT_STATUS,
   RUN_STATUS,
 } from 'store/slice/Pipeline/PipelineType'
+import { HANDLE_STYLE } from 'const/flowchart'
 import { DialogContext } from 'components/Workspace/FlowChart/DialogContext'
-
-const leftHandleStyle: CSSProperties = {
-  width: '4%',
-  height: '13%',
-  border: '1px solid',
-  borderRadius: 0,
-}
-const rightHandleStyle: CSSProperties = {
-  width: '4%',
-  height: '13%',
-  border: '1px solid',
-  borderRadius: 0,
-}
+import { NodeContainer } from 'components/Workspace/FlowChart/FlowChartNode/NodeContainer'
 
 export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
   const defined = useSelector(selectAlgorithmNodeDefined(element.id))
@@ -64,7 +53,6 @@ export const AlgorithmNode = React.memo<NodeProps<NodeData>>((element) => {
 const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
   ({ id: nodeId, selected: elementSelected, isConnectable, data }) => {
     const { onOpen } = useContext(DialogContext)
-    const theme = useTheme()
     const dispatch = useDispatch()
 
     const onClickParamButton = () => {
@@ -82,17 +70,7 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
     const status = useStatus(nodeId)
 
     return (
-      <div
-        tabIndex={0}
-        style={{
-          width: '100%',
-          height: '110%',
-          background: elementSelected
-            ? alpha(theme.palette.primary.light, 0.15)
-            : undefined,
-          border: '1px solid',
-        }}
-      >
+      <NodeContainer nodeId={nodeId} selected={elementSelected}>
         <button
           className="flowbutton"
           onClick={onClickDeleteIcon}
@@ -100,8 +78,20 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
         >
           ×
         </button>
-        <AlgoName nodeId={nodeId} data={data} />
-        <ButtonGroup sx={{ mx: 1 }}>
+        <AlgoProgress nodeId={nodeId} />
+        <Grid
+          container
+          paddingBottom={1}
+          paddingRight={1}
+          justifyContent="space-between"
+        >
+          <Grid item xs={10}></Grid>
+          <AlgoName nodeId={nodeId} data={data} />
+          <Grid item xs={2}>
+            <Message nodeId={nodeId} />
+          </Grid>
+        </Grid>
+        <ButtonGroup>
           <Button size="small" onClick={onClickParamButton}>
             Param
           </Button>
@@ -115,11 +105,29 @@ const AlgorithmNodeImple = React.memo<NodeProps<NodeData>>(
         </ButtonGroup>
         <AlgoArgs nodeId={nodeId} />
         <AlgoReturns nodeId={nodeId} isConnectable={isConnectable} />
-        <Message nodeId={nodeId} />
-      </div>
+      </NodeContainer>
     )
   },
 )
+const AlgoProgress = React.memo<{
+  nodeId: string
+}>(({ nodeId }) => {
+  const status = useStatus(nodeId)
+  const pipelineStatus = useSelector(selectPipelineStatus)
+
+  if (
+    pipelineStatus === RUN_STATUS.START_SUCCESS &&
+    status === NODE_RESULT_STATUS.PENDING
+  ) {
+    return (
+      <div style={{ paddingLeft: 8, paddingRight: 8 }}>
+        <LinearProgress />
+      </div>
+    )
+  } else {
+    return null
+  }
+})
 
 const AlgoName = React.memo<{
   nodeId: string
@@ -127,18 +135,8 @@ const AlgoName = React.memo<{
 }>(({ nodeId, data }) => {
   const theme = useTheme()
   const status = useStatus(nodeId)
-  const pipelineStatus = useSelector(selectPipelineStatus)
   return (
-    <div
-      style={{
-        padding: 8,
-        paddingLeft: 8,
-        width: '100%',
-      }}
-      className="algoName"
-    >
-      {pipelineStatus === RUN_STATUS.START_SUCCESS &&
-        status === NODE_RESULT_STATUS.PENDING && <LinearProgress />}
+    <div className="algoName">
       <Typography
         style={{
           textAlign: 'left',
@@ -193,8 +191,7 @@ const AlgoReturns = React.memo<{
           position={Position.Right}
           id={`${nodeId}`}
           style={{
-            ...rightHandleStyle,
-            top: 15,
+            ...HANDLE_STYLE,
           }}
           isConnectable={isConnectable}
         />
@@ -247,7 +244,7 @@ const ArgHandle = React.memo<HandleProps>(
         position={Position.Left}
         id={id}
         style={{
-          ...leftHandleStyle,
+          ...HANDLE_STYLE,
           background: rgb_color,
           top: i * 25 + 15,
         }}
@@ -285,7 +282,7 @@ const ReturnHandle = React.memo<HandleProps>(
         position={Position.Right}
         id={id}
         style={{
-          ...rightHandleStyle,
+          ...HANDLE_STYLE,
           background: color,
           top: i * 25 + 15,
         }}
@@ -332,13 +329,18 @@ const Message = React.memo<{
           onMessageError({ anchorElRef, message: errorMsg as string })
         }}
         size="small"
-        style={{ color: theme.palette.error.main, float: 'right' }}
+        style={{ color: theme.palette.error.main, padding: 0 }}
       >
         <ErrorIcon />
       </IconButton>
     )
   } else if (status === NODE_RESULT_STATUS.SUCCESS) {
-    return <CheckCircleRoundedIcon color="success" sx={{ float: 'right' }} />
+    return (
+      <CheckCircleRoundedIcon
+        color="success"
+        style={{ verticalAlign: 'middle' }}
+      />
+    )
   } else {
     return null
   }

@@ -17,8 +17,8 @@ import {
   ElementCoord,
 } from './FlowElementType'
 import {
-  INITIAL_ALGO_STYLE,
-  INITIAL_DATA_STYLE,
+  ALGO_NODE_STYLE,
+  DATA_NODE_STYLE,
   INITIAL_IMAGE_ELEMENT_ID,
   INITIAL_IMAGE_ELEMENT_NAME,
   REACT_FLOW_NODE_TYPE_KEY,
@@ -42,7 +42,7 @@ const initialNodes: Node<NodeData>[] = [
       type: NODE_TYPE_SET.INPUT,
       label: INITIAL_IMAGE_ELEMENT_NAME,
     },
-    style: INITIAL_DATA_STYLE,
+    style: DATA_NODE_STYLE,
     position: { x: 50, y: 150 },
   },
 ]
@@ -160,7 +160,7 @@ export const flowElementSlice = createSlice({
             ...node,
             style: {
               ...node.style,
-              ...INITIAL_ALGO_STYLE,
+              ...ALGO_NODE_STYLE,
             },
             targetPosition: Position.Left,
             sourcePosition: Position.Right,
@@ -180,7 +180,7 @@ export const flowElementSlice = createSlice({
             ...node,
             style: {
               ...node.style,
-              ...INITIAL_DATA_STYLE,
+              ...DATA_NODE_STYLE,
             },
             targetPosition: Position.Left,
             sourcePosition: Position.Right,
@@ -233,6 +233,7 @@ export const flowElementSlice = createSlice({
                     label: node.data?.label ?? '',
                     type: node.data?.type ?? 'input',
                   },
+                  style: DATA_NODE_STYLE,
                 }
               } else {
                 return {
@@ -241,6 +242,7 @@ export const flowElementSlice = createSlice({
                     label: node.data?.label ?? '',
                     type: node.data?.type ?? 'algorithm',
                   },
+                  style: ALGO_NODE_STYLE,
                 }
               }
             },

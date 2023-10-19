@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import TreeView from '@mui/lab/TreeView'
-import TreeItem, { treeItemClasses } from '@mui/lab/TreeItem'
+import { TreeView, TreeItem, treeItemClasses } from '@mui/x-tree-view'
 import { styled, Typography } from '@mui/material'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
 import ChevronRightIcon from '@mui/icons-material/ChevronRight'

@@ -1,7 +1,6 @@
-import React, { CSSProperties } from 'react'
+import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Handle, Position, NodeProps } from 'reactflow'
-import { alpha, useTheme } from '@mui/material/styles'
 
 import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
 import {
@@ -14,15 +13,8 @@ import { FileSelect } from './FileSelect'
 import { deleteFlowNodeById } from 'store/slice/FlowElement/FlowElementSlice'
 import { useHandleColor } from './HandleColorHook'
 import { ParamSettingDialog } from './CsvFileNode'
-
-const sourceHandleStyle: CSSProperties = {
-  width: 8,
-  height: 15,
-  top: 15,
-  border: '1px solid',
-  borderColor: '#555',
-  borderRadius: 0,
-}
+import { HANDLE_STYLE } from 'const/flowchart'
+import { NodeContainer } from 'components/Workspace/FlowChart/FlowChartNode/NodeContainer'
 
 export const BehaviorFileNode = React.memo<NodeProps>((element) => {
   const defined = useSelector(selectInputNodeDefined(element.id))
@@ -40,7 +32,6 @@ const BehaviorFileNodeImple = React.memo<NodeProps>(
     const onChangeFilePath = (path: string) => {
       dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
     }
-    const theme = useTheme()
     const returnType = 'BehaviorData'
     const behaviorColor = useHandleColor(returnType)
 
@@ -49,15 +40,7 @@ const BehaviorFileNodeImple = React.memo<NodeProps>(
     }
 
     return (
-      <div
-        style={{
-          height: '100%',
-          width: '230px',
-          background: selected
-            ? alpha(theme.palette.primary.light, 0.1)
-            : undefined,
-        }}
-      >
+      <NodeContainer nodeId={nodeId} selected={selected}>
         <button
           className="flowbutton"
           onClick={onClickDeleteIcon}
@@ -83,11 +66,11 @@ const BehaviorFileNodeImple = React.memo<NodeProps>(
           position={Position.Right}
           id={toHandleId(nodeId, 'behavior', returnType)}
           style={{
-            ...sourceHandleStyle,
+            ...HANDLE_STYLE,
             background: behaviorColor,
           }}
         />
-      </div>
+      </NodeContainer>
     )
   },
 )

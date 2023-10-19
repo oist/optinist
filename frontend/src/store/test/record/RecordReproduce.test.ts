@@ -168,9 +168,7 @@ describe('RecordReproduce', () => {
           style: {
             border: '1px solid #777',
             height: 120,
-            padding: null,
-            width: null,
-            borderRadius: null,
+            width: 230,
           },
         },
         {
@@ -179,10 +177,10 @@ describe('RecordReproduce', () => {
           data: { label: 'dummy_image2image', type: 'algorithm' },
           position: { x: 350, y: 151.3534781075913 },
           style: {
-            border: null,
-            height: 100,
+            border: '1px solid #777',
+            height: 120,
+            width: 230,
             padding: 0,
-            width: 180,
             borderRadius: 0,
           },
         },
@@ -192,10 +190,10 @@ describe('RecordReproduce', () => {
           data: { label: 'dummy_image2image8time', type: 'algorithm' },
           position: { x: 600, y: 164.03341976235507 },
           style: {
-            border: null,
-            height: 100,
+            border: '1px solid #777',
+            height: 120,
+            width: 230,
             padding: 0,
-            width: 180,
             borderRadius: 0,
           },
         },
