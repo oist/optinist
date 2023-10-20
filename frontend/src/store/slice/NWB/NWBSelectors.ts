@@ -1,7 +1,6 @@
 import { RootState } from "store/store"
 import { getChildParam } from "utils/param/ParamUtils"
 
-
 export const selectNwb = (state: RootState) => state.nwb
 
 export const selectNwbParams = (state: RootState) => selectNwb(state).params

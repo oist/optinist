@@ -1,7 +1,6 @@
 import { EXPERIMENTS_STATUS } from "store/slice/Experiments/ExperimentsType"
 import { RootState } from "store/store"
 
-
 const selectExperiments = (state: RootState) => state.experiments
 
 export const selectExperimentsStatusIsUninitialized = (state: RootState) =>
@@ -54,22 +53,22 @@ export const selectExperimentHasNWB = (uid: string) => (state: RootState) =>
 
 export const selectExperimentStatus =
   (uid: string) =>
-    (state: RootState): EXPERIMENTS_STATUS => {
-      const experiment = selectExperimentList(state)[uid]
-      if (experiment.status) {
-        return experiment.status
-      }
-
-      const functions = selectExperimentList(state)[uid].functions
-      const statusList = Object.values(functions).map((f) => f.status)
-      if (statusList.findIndex((status) => status === "error") >= 0) {
-        return "error"
-      } else if (statusList.findIndex((status) => status === "running") >= 0) {
-        return "running"
-      } else {
-        return "success"
-      }
+  (state: RootState): EXPERIMENTS_STATUS => {
+    const experiment = selectExperimentList(state)[uid]
+    if (experiment.status) {
+      return experiment.status
     }
+
+    const functions = selectExperimentList(state)[uid].functions
+    const statusList = Object.values(functions).map((f) => f.status)
+    if (statusList.findIndex((status) => status === "error") >= 0) {
+      return "error"
+    } else if (statusList.findIndex((status) => status === "running") >= 0) {
+      return "running"
+    } else {
+      return "success"
+    }
+  }
 
 export const selectExperimentCheckList =
   (uid: string, nodeId: string) => (state: RootState) =>

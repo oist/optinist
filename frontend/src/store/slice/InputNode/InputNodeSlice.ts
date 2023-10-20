@@ -17,7 +17,10 @@ import {
   InputNode,
   INPUT_NODE_SLICE_NAME,
 } from "store/slice/InputNode/InputNodeType"
-import { isCsvInputNode, isHDF5InputNode } from "store/slice/InputNode/InputNodeUtils"
+import {
+  isCsvInputNode,
+  isHDF5InputNode,
+} from "store/slice/InputNode/InputNodeUtils"
 import {
   reproduceWorkflow,
   importWorkflowConfig,

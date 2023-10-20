@@ -16,7 +16,6 @@ import WorkspaceTabs from "components/Workspace/WorkspaceTabs"
 import { APP_BAR_HEIGHT } from "const/Layout"
 import { IS_STANDALONE } from "const/Mode"
 
-
 const Header: FC<{
   handleDrawerOpen: () => void
 }> = ({ handleDrawerOpen }) => {

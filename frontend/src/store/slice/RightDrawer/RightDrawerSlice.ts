@@ -11,7 +11,6 @@ import {
   fetchWorkflow,
 } from "store/slice/Workflow/WorkflowActions"
 
-
 type RightDrawer = {
   open: boolean
   mode: RIGHT_DRAWER_MODE_TYPE

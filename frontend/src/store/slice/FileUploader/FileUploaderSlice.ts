@@ -1,8 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
-import { setUploadProgress, uploadFile } from "store/slice/FileUploader/FileUploaderActions"
+import {
+  setUploadProgress,
+  uploadFile,
+} from "store/slice/FileUploader/FileUploaderActions"
 import { inistialUploaderState } from "store/slice/FileUploader/FileUploaderInitlalState"
-import { FileUploader, FILE_UPLOADER_SLICE_NAME } from "store/slice/FileUploader/FileUploaderType"
+import {
+  FileUploader,
+  FILE_UPLOADER_SLICE_NAME,
+} from "store/slice/FileUploader/FileUploaderType"
 
 const initialState: FileUploader = {}
 

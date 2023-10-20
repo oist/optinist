@@ -1,7 +1,6 @@
 import { inistialUploaderState } from "store/slice/FileUploader/FileUploaderInitlalState"
 import { RootState } from "store/store"
 
-
 export const selectFileUploader = (id: string) => (state: RootState) => {
   if (Object.keys(state.fileUploader).includes(id)) {
     return state.fileUploader[id]

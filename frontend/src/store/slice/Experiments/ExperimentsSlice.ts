@@ -5,7 +5,10 @@ import {
   deleteExperimentByUid,
   deleteExperimentByList,
 } from "store/slice/Experiments/ExperimentsActions"
-import { EXPERIMENTS_SLICE_NAME, Experiments } from "store/slice/Experiments/ExperimentsType"
+import {
+  EXPERIMENTS_SLICE_NAME,
+  Experiments,
+} from "store/slice/Experiments/ExperimentsType"
 import {
   convertToExperimentListType,
   convertToExperimentType,
@@ -15,8 +18,10 @@ import {
   run,
   runByCurrentUid,
 } from "store/slice/Pipeline/PipelineActions"
-import { fetchWorkflow, reproduceWorkflow } from "store/slice/Workflow/WorkflowActions"
-
+import {
+  fetchWorkflow,
+  reproduceWorkflow,
+} from "store/slice/Workflow/WorkflowActions"
 
 export const initialState: Experiments = {
   status: "uninitialized",

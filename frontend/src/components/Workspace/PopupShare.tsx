@@ -71,10 +71,7 @@ const TableListSearch = ({
 
   const onMouseDown = (event: MouseEvent) => {
     const target = event.target as HTMLLIElement
-    if (
-      ref.current?.contains(target) || target.id === "inputSearch"
-    )
-      return
+    if (ref.current?.contains(target) || target.id === "inputSearch") return
     onClose?.()
   }
 

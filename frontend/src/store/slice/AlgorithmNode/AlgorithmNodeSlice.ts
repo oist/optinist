@@ -2,7 +2,10 @@ import { createSlice, isAnyOf, PayloadAction } from "@reduxjs/toolkit"
 
 import { isAlgorithmNodePostData } from "api/run/RunUtils"
 import { getAlgoParams } from "store/slice/AlgorithmNode/AlgorithmNodeActions"
-import { ALGORITHM_NODE_SLICE_NAME, AlgorithmNode } from "store/slice/AlgorithmNode/AlgorithmNodeType"
+import {
+  ALGORITHM_NODE_SLICE_NAME,
+  AlgorithmNode,
+} from "store/slice/AlgorithmNode/AlgorithmNodeType"
 import { addAlgorithmNode } from "store/slice/FlowElement/FlowElementActions"
 import {
   clearFlowElements,
@@ -17,7 +20,6 @@ import {
   fetchWorkflow,
 } from "store/slice/Workflow/WorkflowActions"
 import { convertToParamMap, getChildParam } from "utils/param/ParamUtils"
-
 
 const initialState: AlgorithmNode = {}
 

@@ -20,7 +20,10 @@ import {
   REACT_FLOW_NODE_TYPE_KEY,
 } from "const/flowchart"
 import { uploadFile } from "store/slice/FileUploader/FileUploaderActions"
-import { addAlgorithmNode, addInputNode } from "store/slice/FlowElement/FlowElementActions"
+import {
+  addAlgorithmNode,
+  addInputNode,
+} from "store/slice/FlowElement/FlowElementActions"
 import {
   FLOW_ELEMENT_SLICE_NAME,
   FlowElement,

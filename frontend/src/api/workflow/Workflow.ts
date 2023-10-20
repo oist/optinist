@@ -3,7 +3,6 @@ import { EdgeDict, NodeDict } from "api/run/Run"
 import { BASE_URL } from "const/API"
 import axios from "utils/axios"
 
-
 export type WorkflowConfigDTO = {
   nodeDict: NodeDict
   edgeDict: EdgeDict

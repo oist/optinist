@@ -16,8 +16,6 @@ import { PIPELINE_SLICE_NAME } from "store/slice/Pipeline/PipelineType"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
 import { ThunkApiConfig } from "store/store"
 
-
-
 export const run = createAsyncThunk<
   string,
   { runPostData: RunPostData },

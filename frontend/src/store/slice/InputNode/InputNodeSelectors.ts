@@ -5,7 +5,6 @@ import {
 } from "store/slice/InputNode/InputNodeUtils"
 import { RootState } from "store/store"
 
-
 export const selectInputNode = (state: RootState) => state.inputNode
 
 export const selectInputNodeById = (nodeId: string) => (state: RootState) =>

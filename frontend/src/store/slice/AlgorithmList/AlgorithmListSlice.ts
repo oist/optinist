@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-
 import { getAlgoList } from "store/slice/AlgorithmList/AlgorithmListActions"
 import {
   ALGORITHM_LIST_SLICE_NAME,

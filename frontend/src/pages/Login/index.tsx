@@ -8,8 +8,6 @@ import Loading from "components/common/Loading"
 import { getMe, login } from "store/slice/User/UserActions"
 import { AppDispatch } from "store/store"
 
-
-
 const Login = () => {
   const navigate = useNavigate()
   const dispatch: AppDispatch = useDispatch()

@@ -19,8 +19,8 @@ export const DialogContext = createContext<{
   onOpen: (nodeId: string) => void
   onOpenDialogFile: (value: OpenDialogValue) => void
   onMessageError: (value: ErrorDialogValue) => void
-    }>({
-      onOpen: () => null,
-      onOpenDialogFile: () => null,
-      onMessageError: () => null,
-    })
+}>({
+  onOpen: () => null,
+  onOpenDialogFile: () => null,
+  onMessageError: () => null,
+})

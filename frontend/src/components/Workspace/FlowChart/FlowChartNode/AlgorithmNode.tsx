@@ -88,11 +88,7 @@ const AlgorithmNodeImple = memo(function AlgorithmNodeImple({
         ×
       </button>
       <AlgoProgress nodeId={nodeId} />
-      <Grid
-        container
-        paddingBottom={1}
-        justifyContent="space-between"
-      >
+      <Grid container paddingBottom={1} justifyContent="space-between">
         <Grid item xs={10}>
           <AlgoName nodeId={nodeId} data={data} />
         </Grid>
@@ -170,12 +166,7 @@ const AlgoArgs = memo(function AlgoArgs({ nodeId }: NodeIdProps) {
             .filter((info) => info.type !== "params")
             .map((algoInfo, i) => {
               return (
-                <ArgHandle
-                  key={i}
-                  algoInfo={algoInfo}
-                  i={i}
-                  nodeId={nodeId}
-                />
+                <ArgHandle key={i} algoInfo={algoInfo} i={i} nodeId={nodeId} />
               )
             })
         : null}
@@ -200,12 +191,7 @@ const AlgoReturns = memo(function AlgoReturns({
       {algoReturns != null ? (
         algoReturns?.map((algoInfo, i) => {
           return (
-            <ReturnHandle
-              key={i}
-              algoInfo={algoInfo}
-              i={i}
-              nodeId={nodeId}
-            />
+            <ReturnHandle key={i} algoInfo={algoInfo} i={i} nodeId={nodeId} />
           )
         })
       ) : (

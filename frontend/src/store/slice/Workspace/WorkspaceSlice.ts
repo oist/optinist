@@ -10,7 +10,10 @@ import {
   postWorkspace,
   putWorkspace,
 } from "store/slice/Workspace/WorkspaceActions"
-import { WORKSPACE_SLICE_NAME, Workspace } from "store/slice/Workspace/WorkspaceType"
+import {
+  WORKSPACE_SLICE_NAME,
+  Workspace,
+} from "store/slice/Workspace/WorkspaceType"
 
 const initialState: Workspace = {
   currentWorkspace: {

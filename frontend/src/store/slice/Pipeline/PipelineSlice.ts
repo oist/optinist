@@ -26,7 +26,6 @@ import {
   fetchWorkflow,
 } from "store/slice/Workflow/WorkflowActions"
 
-
 const initialState: Pipeline = {
   run: {
     status: RUN_STATUS.START_UNINITIALIZED,
@@ -120,14 +119,11 @@ export const pipelineSlice = createSlice({
           }
         },
       )
-      .addMatcher(
-        isAnyOf(run.pending, runByCurrentUid.pending),
-        (state) => {
-          state.run = {
-            status: RUN_STATUS.START_PENDING,
-          }
-        },
-      )
+      .addMatcher(isAnyOf(run.pending, runByCurrentUid.pending), (state) => {
+        state.run = {
+          status: RUN_STATUS.START_PENDING,
+        }
+      })
       .addMatcher(
         isAnyOf(run.fulfilled, runByCurrentUid.fulfilled),
         (state, action) => {
@@ -144,14 +140,11 @@ export const pipelineSlice = createSlice({
           }
         },
       )
-      .addMatcher(
-        isAnyOf(run.rejected, runByCurrentUid.rejected),
-        (state) => {
-          state.run = {
-            status: RUN_STATUS.START_ERROR,
-          }
-        },
-      )
+      .addMatcher(isAnyOf(run.rejected, runByCurrentUid.rejected), (state) => {
+        state.run = {
+          status: RUN_STATUS.START_ERROR,
+        }
+      })
       .addMatcher(
         isAnyOf(fetchWorkflow.rejected, clearFlowElements),
         () => initialState,

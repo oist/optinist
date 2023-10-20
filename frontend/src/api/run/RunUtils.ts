@@ -10,7 +10,6 @@ import {
   isAlgorithmNodeData,
 } from "store/slice/FlowElement/FlowElementUtils"
 
-
 export function isInputNodePostData(
   node: Node<NodePostDataType>,
 ): node is Node<InputNodePostData> {

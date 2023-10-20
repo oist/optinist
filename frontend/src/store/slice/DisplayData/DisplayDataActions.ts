@@ -28,7 +28,10 @@ import {
   getPieDataApi,
   getPolarDataApi,
 } from "api/outputs/Outputs"
-import { PlotMetaData , DISPLAY_DATA_SLICE_NAME } from "store/slice/DisplayData/DisplayDataType"
+import {
+  PlotMetaData,
+  DISPLAY_DATA_SLICE_NAME,
+} from "store/slice/DisplayData/DisplayDataType"
 
 export const getTimeSeriesInitData = createAsyncThunk<
   {

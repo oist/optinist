@@ -8,7 +8,6 @@ import PortraitIcon from "@mui/icons-material/Portrait"
 import { Menu, MenuItem } from "@mui/material"
 import IconButton from "@mui/material/IconButton"
 
-
 import { logout } from "store/slice/User/UserSlice"
 
 const Profile: FC = () => {

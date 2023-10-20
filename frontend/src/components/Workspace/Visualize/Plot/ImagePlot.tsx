@@ -688,10 +688,7 @@ const PlayBack = memo(function PlayBack({ activeIndex }: ActiveIndexProps) {
   const endIndex = useSelector(selectImageItemEndIndex(itemId))
   const duration = useSelector(selectImageItemDuration(itemId))
 
-  const onSliderChange = (
-    event: Event,
-    value: number | number[],
-  ) => {
+  const onSliderChange = (event: Event, value: number | number[]) => {
     if (typeof value === "number") {
       const newIndex = value - startIndex
       if (newIndex >= 0 && newIndex !== activeIndex) {

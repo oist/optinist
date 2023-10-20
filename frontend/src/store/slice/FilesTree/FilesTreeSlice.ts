@@ -2,7 +2,10 @@ import { createSlice } from "@reduxjs/toolkit"
 
 import { FILE_TREE_TYPE_SET } from "api/files/Files"
 import { getFilesTree } from "store/slice/FilesTree/FilesTreeAction"
-import { FilesTree, FILES_TREE_SLICE_NAME } from "store/slice/FilesTree/FilesTreeType"
+import {
+  FilesTree,
+  FILES_TREE_SLICE_NAME,
+} from "store/slice/FilesTree/FilesTreeType"
 import { convertToTreeNodeType } from "store/slice/FilesTree/FilesTreeUtils"
 import { uploadFile } from "store/slice/FileUploader/FileUploaderActions"
 import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
