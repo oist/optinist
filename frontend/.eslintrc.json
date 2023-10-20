@@ -38,11 +38,6 @@
   },
   "ignorePatterns": ["build/", "config-overrides.js"],
   "rules": {
-    "indent": [
-      "error",
-      2,
-      { "SwitchCase": 1, "ignoredNodes": ["ConditionalExpression *"] }
-    ],
     "quotes": ["error", "double"],
     "semi": ["error", "never"],
     "no-undef": "warn",
