@@ -20,24 +20,26 @@ const ChangePasswordModal: FC<ChangePasswordModalProps> = ({
   const [values, setValues] = useState<{ [key: string]: string }>({})
   const onChangeValue = (
     event: ChangeEvent<HTMLInputElement>,
-    validate?: Function,
+    validate?: (value: string) => string,
   ) => {
     const { name, value } = event.target
     setValues({ ...values, [name]: value })
     if (name === "new_password" && values.confirm_password) {
-      if (!validate?.(value)) {
-        setErrors({
-          ...errors,
-          [name]: validate?.(value),
-          confirm_password:
-            value !== values.confirm_password ? "Passwords do not match" : "",
-        })
-        return
+      const newErrors: { [key: string]: string } = {}
+      const errorNewPass = validate?.(value) || ""
+      const errorConfirmPass = validateReEnter(values.confirm_password)
+      if (!errorNewPass) {
+        newErrors[name] = errorNewPass
+        newErrors["confirm_password"] =
+          value !== values.confirm_password ? "Passwords do not match" : ""
+      } else {
+        newErrors[name] = errorNewPass
+        newErrors["confirm_password"] = errorConfirmPass
       }
-      setErrors({ ...errors, [name]: validate?.(value), confirm_password: "" })
+      setErrors({ ...errors, ...newErrors })
       return
     }
-    setErrors({ ...errors, [name]: validate?.(value) })
+    setErrors({ ...errors, [name]: validate?.(value) || "" })
   }
 
   const validatePassword = (value: string): string => {

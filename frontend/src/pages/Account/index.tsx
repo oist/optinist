@@ -1,4 +1,11 @@
-import { ChangeEvent, useEffect, useRef, useState } from "react"
+import {
+  ChangeEvent,
+  FocusEvent,
+  KeyboardEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
@@ -59,15 +66,18 @@ const Account = () => {
     setIsDeleteConfirmModalOpen(true)
   }
 
-  const onConfirmDelete = async () => {
+  const onConfirmDelete = () => {
     if (!user) return
-    const data = await dispatch(deleteMe())
-    if ((data as any).error) {
-      handleClickVariant("error", "Account deleted failed!")
-    } else {
-      navigate("/login")
-    }
-    handleCloseDeleteComfirmModal()
+    dispatch(deleteMe())
+      .then(() => {
+        navigate("/login")
+      })
+      .catch(() => {
+        handleClickVariant("error", "Account deleted failed!")
+      })
+      .finally(() => {
+        handleCloseDeleteComfirmModal()
+      })
   }
 
   const handleCloseChangePw = () => {
@@ -78,46 +88,49 @@ const Account = () => {
     setIsChangePwModalOpen(true)
   }
 
-  const onConfirmChangePw = async (oldPass: string, newPass: string) => {
-    const data = await dispatch(
-      updateMePassword({ old_password: oldPass, new_password: newPass }),
-    )
-    if ((data as any).error) {
-      handleClickVariant("error", "Failed to Change Password!")
-    } else {
-      handleClickVariant(
-        "success",
-        "Your password has been successfully changed!",
-      )
-    }
-    handleCloseChangePw()
+  const onConfirmChangePw = (oldPass: string, newPass: string) => {
+    dispatch(updateMePassword({ old_password: oldPass, new_password: newPass }))
+      .then(() => {
+        handleClickVariant(
+          "success",
+          "Your password has been successfully changed!",
+        )
+      })
+      .catch(() => {
+        handleClickVariant("error", "Failed to Change Password!")
+      })
+      .finally(() => {
+        handleCloseChangePw()
+      })
   }
 
   const onEditName = (e: ChangeEvent<HTMLInputElement>) => {
     setIsName(e.target.value)
   }
 
-  const onSubmit = async (e: any) => {
+  const onBlur = (event: FocusEvent) => {
     if (!user || !user.name || !user.email) return
     if (isName === user.name) {
       setIsEditName(false)
       return
     }
-    if (!e.target.value) {
-      handleClickVariant("error", "Full name cann't empty!")
+    const target = event.target as HTMLInputElement | HTMLTextAreaElement
+    if (!target.value) {
+      handleClickVariant("error", "Full name can't be empty!")
       setIsName(user?.name)
     } else {
-      const data = await dispatch(
+      dispatch(
         updateMe({
-          name: e.target.value,
+          name: target.value,
           email: user.email,
         }),
       )
-      if ((data as any).error) {
-        handleClickVariant("error", "Full name edited failed!")
-      } else {
-        handleClickVariant("success", "Full name edited successfully!")
-      }
+        .then(() => {
+          handleClickVariant("success", "Full name edited successfully!")
+        })
+        .catch(() => {
+          handleClickVariant("error", "Full name edited failed!")
+        })
     }
     setIsEditName(false)
   }
@@ -136,7 +149,7 @@ const Account = () => {
     return newRole
   }
 
-  const handleName = (event: any) => {
+  const handleName = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
       setIsName(user?.name)
       setIsEditName(false)
@@ -173,7 +186,7 @@ const Account = () => {
           <Input
             sx={{ width: 400 }}
             autoFocus
-            onBlur={onSubmit}
+            onBlur={onBlur}
             placeholder="Name"
             value={isName}
             onChange={onEditName}

@@ -8,6 +8,7 @@ import {
   FormControlLabel,
   MenuItem,
   Select,
+  SelectChangeEvent,
   Switch,
   TextField,
 } from "@mui/material"
@@ -185,7 +186,7 @@ const SelectValue: FC = () => {
   const itemId = useContext(SelectedItemIdContext)
   const value = useSelector(selectImageItemRangeUnit(itemId))
   const dispatch = useDispatch()
-  const onChangeValue = async (e: any) => {
+  const onChangeValue = async (e: SelectChangeEvent) => {
     dispatch(changeRangeUnit({ itemId: itemId, rangeUnit: e.target.value }))
   }
   return (

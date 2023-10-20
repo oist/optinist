@@ -1,6 +1,7 @@
 import {
   ChangeEvent,
-  MouseEvent as MouseEventReact,
+  MouseEvent as ReactMouseEvent,
+  KeyboardEvent,
   useCallback,
   useEffect,
   useRef,
@@ -65,20 +66,20 @@ const TableListSearch = ({
     return () => {
       window.removeEventListener("mousedown", onMouseDown)
     }
-    //eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const onMouseDown = (event: MouseEvent) => {
+    const target = event.target as HTMLLIElement
     if (
-      ref.current?.contains((event as any).target) ||
-      (event as any).target.id === "inputSearch"
+      ref.current?.contains(target) || target.id === "inputSearch"
     )
       return
     onClose?.()
   }
 
   return (
-    <TableListSearchWrapper ref={ref} onBlur={() => console.log(123)}>
+    <TableListSearchWrapper ref={ref}>
       <UlCustom>
         {usersSuggest.map((item) => {
           const isSelected = stateUserShare.some((i) => i.id === item.id)
@@ -129,11 +130,11 @@ const PopupShare = ({
     timeout.current = setTimeout(() => {
       dispatch(getListSearch({ keyword: textSearch }))
     }, 300)
-    //eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [textSearch])
 
   const handleShareFalse = (
-    e: any,
+    e: ReactMouseEvent<HTMLButtonElement>,
     params: GridRenderCellParams<GridValidRowModel>,
   ) => {
     e.preventDefault()
@@ -151,7 +152,7 @@ const PopupShare = ({
   const columnsShare = useCallback(
     (
       handleShareFalse: (
-        e: MouseEventReact<HTMLButtonElement>,
+        e: ReactMouseEvent<HTMLButtonElement>,
         parmas: GridRenderCellParams<GridValidRowModel>,
       ) => void,
     ) => [
@@ -187,7 +188,7 @@ const PopupShare = ({
         },
       },
     ],
-    //eslint-disable-next-line
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [JSON.stringify(stateUserShare?.users)],
   )
 
@@ -212,7 +213,7 @@ const PopupShare = ({
     dispatch(resetUserSearch())
   }
 
-  const handleAddListUser = (user: any) => {
+  const handleAddListUser = (user: UserDTO) => {
     if (!usersSuggest || !stateUserShare) return
     if (!stateUserShare.users.find((item) => item.id === user.id)) {
       setStateUserShare({
@@ -222,7 +223,7 @@ const PopupShare = ({
     }
   }
 
-  const handleClosePopup = (event: any) => {
+  const handleClosePopup = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
       handleClose(false)
     }
@@ -263,7 +264,7 @@ const PopupShare = ({
               <DataGrid
                 sx={{ minHeight: 400 }}
                 // onRowClick={handleShareTrue}
-                rows={stateUserShare?.users.map((user: any) => ({
+                rows={stateUserShare?.users.map((user: UserDTO) => ({
                   ...user,
                   share: true,
                 }))}

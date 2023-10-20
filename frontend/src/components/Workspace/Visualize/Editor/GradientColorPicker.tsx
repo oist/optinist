@@ -8,6 +8,8 @@ import {
 import { ColorType } from "store/slice/VisualizeItem/VisualizeItemType"
 
 const GradientPickerPopoverComponent =
+  // NOTE: use any because GradientPickerPopover type definition is not provided
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   GradientPickerPopover as unknown as FC<any>
 
 interface GradientColorPickerProps {

@@ -1,3 +1,5 @@
+import { expect, describe, test } from "@jest/globals"
+
 import { RUN_BTN_OPTIONS } from "store/slice/Pipeline/PipelineType"
 import { reproduceWorkflow } from "store/slice/Workflow/WorkflowActions"
 import { store, rootReducer } from "store/store"
@@ -217,8 +219,8 @@ describe("RecordReproduce", () => {
           position: { x: 51, y: 150 },
           style: {
             border: "1px solid #777",
-            height: 120,
-            width: 230,
+            height: 125,
+            width: 250,
           },
         },
         {
@@ -228,8 +230,8 @@ describe("RecordReproduce", () => {
           position: { x: 350, y: 151.3534781075913 },
           style: {
             border: "1px solid #777",
-            height: 120,
-            width: 230,
+            height: 125,
+            width: 250,
             padding: 0,
             borderRadius: 0,
           },
@@ -241,8 +243,8 @@ describe("RecordReproduce", () => {
           position: { x: 600, y: 164.03341976235507 },
           style: {
             border: "1px solid #777",
-            height: 120,
-            width: 230,
+            height: 125,
+            width: 250,
             padding: 0,
             borderRadius: 0,
           },

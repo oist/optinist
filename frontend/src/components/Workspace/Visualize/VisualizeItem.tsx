@@ -246,7 +246,7 @@ const RefImageItemIdSelect = memo(function RefImageItemIdSelect({
 })
 
 const MIN_WIDTH = 200
-const MIN_HEIFHT = 150
+const MIN_HEIGHT = 150
 
 function useItemDragResize(itemId: number) {
   const dispatch = useDispatch()
@@ -283,7 +283,7 @@ function useItemDragResize(itemId: number) {
       return {
         onMouseMove: (moveEvent) => {
           const newHeight = movingHeight + (moveEvent.screenY - movingY)
-          movingHeight = newHeight >= MIN_HEIFHT ? newHeight : MIN_HEIFHT
+          movingHeight = newHeight >= MIN_HEIGHT ? newHeight : MIN_HEIGHT
           setMovingSize((size) => ({ ...size, height: movingHeight }))
           movingY = moveEvent.screenY
         },
@@ -305,7 +305,7 @@ function useItemDragResize(itemId: number) {
           const newWidth = movingWidth + (moveEvent.screenX - movingX)
           movingWidth = newWidth >= MIN_WIDTH ? newWidth : MIN_WIDTH
           const newHeight = movingHeight + (moveEvent.screenY - movingY)
-          movingHeight = newHeight >= MIN_HEIFHT ? newHeight : MIN_HEIFHT
+          movingHeight = newHeight >= MIN_HEIGHT ? newHeight : MIN_HEIGHT
           setMovingSize({ width: movingWidth, height: movingHeight })
           movingX = moveEvent.screenX
           movingY = moveEvent.screenY

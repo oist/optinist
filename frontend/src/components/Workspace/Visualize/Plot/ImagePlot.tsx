@@ -826,7 +826,7 @@ function rgba2hex(rgba: number[], alpha: number) {
   return `#${outParts.join("")}`
 }
 
-function debounce<T extends (...args: any[]) => unknown>(
+function debounce<T extends (...args: PlotSelectionEvent[]) => unknown>(
   callback: T,
   delay = 500,
 ): (...args: Parameters<T>) => void {

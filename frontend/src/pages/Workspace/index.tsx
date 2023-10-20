@@ -23,8 +23,10 @@ import {
   GridEventListener,
   GridRenderCellParams,
   GridRowModes,
+  GridRowModesModel,
   GridValidRowModel,
   DataGrid,
+  GridCellParams,
 } from "@mui/x-data-grid"
 
 import { UserDTO } from "api/users/UsersApiDTO"
@@ -44,6 +46,7 @@ import {
   selectWorkspaceData,
   selectWorkspaceListUserShare,
 } from "store/slice/Workspace/WorkspaceSelector"
+import { ItemsWorkspace } from "store/slice/Workspace/WorkspaceType"
 import { isMine } from "store/slice/Workspace/WorkspaceUtils"
 import { AppDispatch } from "store/store"
 
@@ -275,7 +278,7 @@ const PopupDelete = ({
     <Box>
       <Dialog open={open} onClose={handleClose} sx={{ margin: 0 }}>
         <DialogTitle>
-          Do you want delete Workspace "{nameWorkspace}"?
+          {`Do you want delete Workspace "${nameWorkspace}"?`}
         </DialogTitle>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
@@ -306,7 +309,7 @@ const Workspaces = () => {
   const [newWorkspace, setNewWorkSpace] = useState<string>()
   const [error, setError] = useState("")
   const [initName, setInitName] = useState("")
-  const [rowModesModel, setRowModesModel] = useState<any>({})
+  const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({})
   const [searchParams, setParams] = useSearchParams()
 
   const { enqueueSnackbar } = useSnackbar()
@@ -350,20 +353,21 @@ const Workspaces = () => {
     setOpen({ ...open, del: true })
   }
 
-  const handleOkDel = async () => {
+  const handleOkDel = () => {
     if (!workspaceDel) return
-    const data = await dispatch(
-      delWorkspace({ id: workspaceDel.id, params: dataParams }),
-    )
-    if ((data as any).error) {
-      handleClickVariant("error", "Workspace deletion failed!")
-    } else {
-      handleClickVariant(
-        "success",
-        "The workspace has been deleted successfully!",
-      )
-    }
-    setOpen({ ...open, del: false })
+    dispatch(delWorkspace({ id: workspaceDel.id, params: dataParams }))
+      .then(() => {
+        handleClickVariant(
+          "success",
+          "The workspace has been deleted successfully!",
+        )
+      })
+      .catch(() => {
+        handleClickVariant("error", "Workspace deletion failed!")
+      })
+      .finally(() => {
+        setOpen({ ...open, del: false })
+      })
   }
 
   const handleClosePopupDel = () => {
@@ -388,33 +392,36 @@ const Workspaces = () => {
   }
 
   const onEditName = (id: number) => {
-    setRowModesModel((pre: any) => ({
+    setRowModesModel((pre: GridRowModesModel) => ({
       ...pre,
       [id]: { mode: GridRowModes.Edit },
     }))
   }
 
-  const handleOkNew = async () => {
+  const handleOkNew = () => {
     if (!newWorkspace) {
       setError("Workspace Name cann't empty")
       return
     }
-    const data = await dispatch(postWorkspace({ name: newWorkspace }))
-    if ((data as any).error) {
-      handleClickVariant("error", "Workspace creation failed!")
-    } else {
-      handleClickVariant(
-        "success",
-        "The workspace has been created successfully!",
-      )
-    }
-    await dispatch(getWorkspaceList(dataParams))
-    setOpen({ ...open, new: false })
-    setError("")
-    setNewWorkSpace("")
+    dispatch(postWorkspace({ name: newWorkspace }))
+      .then(() => {
+        handleClickVariant(
+          "success",
+          "The workspace has been created successfully!",
+        )
+      })
+      .catch(() => {
+        handleClickVariant("error", "Workspace creation failed!")
+      })
+      .finally(async () => {
+        await dispatch(getWorkspaceList(dataParams))
+        setOpen({ ...open, new: false })
+        setError("")
+        setNewWorkSpace("")
+      })
   }
 
-  const onProcessRowUpdateError = (newRow: any) => {
+  const onProcessRowUpdateError = (newRow: unknown) => {
     return newRow
   }
 
@@ -431,20 +438,20 @@ const Workspaces = () => {
     setParams(`&${pagi(page)}`)
   }
 
-  const handleRowModesModelChange = (newRowModesModel: any) => {
+  const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
     setRowModesModel(newRowModesModel)
   }
 
-  const onRowEditStop: GridEventListener<"rowEditStop"> = (params, event) => {
+  const onRowEditStop: GridEventListener<"rowEditStop"> = (params) => {
     setInitName(params.row.name)
   }
 
   const onCellClick: GridEventListener<"cellClick"> | undefined = (
-    event: any,
+    params: GridCellParams,
   ) => {
-    if (event.field === "name") return
-    setRowModesModel((pre: any) => {
-      const object: any = {}
+    if (params.field === "name") return
+    setRowModesModel((pre: GridRowModesModel) => {
+      const object: GridRowModesModel = {}
       Object.keys(pre).forEach((key) => {
         object[key] = {
           mode: GridRowModes.View,
@@ -455,21 +462,22 @@ const Workspaces = () => {
     })
   }
 
-  const processRowUpdate = async (newRow: any) => {
+  const processRowUpdate = (newRow: ItemsWorkspace) => {
     if (!newRow.name) {
       handleClickVariant("error", "Workspace Name cann't empty")
       return { ...newRow, name: initName }
     }
     if (newRow.name === initName) return newRow
-    const data = await dispatch(
-      putWorkspace({ name: newRow.name, id: newRow.id }),
-    )
-    if ((data as any).error) {
-      handleClickVariant("error", "Workspace name edit failed!")
-    } else {
-      handleClickVariant("success", "Workspace name edited successfully!")
-    }
-    await dispatch(getWorkspaceList(dataParams))
+    dispatch(putWorkspace({ name: newRow.name, id: newRow.id }))
+      .then(() => {
+        handleClickVariant("success", "Workspace name edited successfully!")
+      })
+      .catch(() => {
+        handleClickVariant("error", "Workspace name edit failed!")
+      })
+      .finally(async () => {
+        await dispatch(getWorkspaceList(dataParams))
+      })
     return newRow
   }
 
@@ -511,21 +519,19 @@ const Workspaces = () => {
             rows={data?.items}
             editMode="row"
             rowModesModel={rowModesModel}
-            columns={
-              columns(
-                handleOpenPopupShare,
-                handleOpenPopupDel,
-                handleNavWorkflow,
-                handleNavRecords,
-                user,
-                onEditName,
-              ).filter(Boolean) as any
-            }
+            columns={columns(
+              handleOpenPopupShare,
+              handleOpenPopupDel,
+              handleNavWorkflow,
+              handleNavRecords,
+              user,
+              onEditName,
+            ).filter(Boolean)}
             onRowModesModelChange={handleRowModesModelChange}
             isCellEditable={(params) => isMine(user, params.row.user?.id)}
             onProcessRowUpdateError={onProcessRowUpdateError}
             onRowEditStop={onRowEditStop}
-            processRowUpdate={processRowUpdate as any}
+            processRowUpdate={processRowUpdate}
             hideFooter={true}
           />
         </Box>
@@ -578,9 +584,9 @@ const WorkspacesWrapper = styled(Box)(({ theme }) => ({
   overflow: "auto",
 }))
 
-const WorkspacesTitle = styled("h1")(({ theme }) => ({}))
+const WorkspacesTitle = styled("h1")(() => ({}))
 
-const ButtonIcon = styled("button")(({ theme }) => ({
+const ButtonIcon = styled("button")(() => ({
   minWidth: "32px",
   minHeight: "32px",
   width: "32px",

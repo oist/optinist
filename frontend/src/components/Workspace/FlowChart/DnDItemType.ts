@@ -5,7 +5,7 @@ export const DND_ITEM_TYPE_SET = {
 export type DND_ITEM_TYPE =
   (typeof DND_ITEM_TYPE_SET)[keyof typeof DND_ITEM_TYPE_SET]
 
-export type TreeItemDragObject = {}
+export type TreeItemDragObject = Record<never, never>
 
 export type TreeItemDropResult = {
   position?: { x: number; y: number }

@@ -678,7 +678,7 @@ export const visualaizeItemSlice = createSlice({
       }
     },
     resetAllOrderList: (state) => {
-      Object.keys(state.items).forEach((id: any) => {
+      Object.keys(state.items).forEach((id: string | number) => {
         const targetItem = state.items[id]
         if (isTimeSeriesItem(targetItem)) {
           targetItem.drawOrderList = []

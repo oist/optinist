@@ -1,14 +1,18 @@
-import React from "react"
+import {
+  useCallback,
+  DependencyList,
+  MouseEvent as ReactMouseEvent,
+} from "react"
 
 export function useMouseDragHandler(
-  onMouseDown: (event: MouseEvent) => {
+  onMouseDown: (event: ReactMouseEvent) => {
     onMouseMove: (this: Document, event: MouseEvent) => void
     onMouseUp: (this: Document, event: MouseEvent) => void
   },
   dependencies: DependencyList,
 ) {
   return useCallback(
-    (event: MouseEvent) => {
+    (event: ReactMouseEvent) => {
       const { onMouseMove, onMouseUp } = onMouseDown(event)
       document.addEventListener("mousemove", onMouseMove)
       document.addEventListener(

@@ -6,7 +6,8 @@ import {
   createUserApi,
   listUsersApi,
   updateUserApi,
-  getListSearchApi } from "api/users/UsersAdmin"
+  getListSearchApi,
+} from "api/users/UsersAdmin"
 import {
   AddUserDTO,
   ListUsersQueryDTO,

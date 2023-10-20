@@ -91,13 +91,12 @@ export function useRunPipeline() {
   }, [dispatch, runPostData])
   const handleCancelPipeline = useCallback(async () => {
     if (uid != null) {
-      const data = await dispatch(cancelResult({ uid }))
-      if ((data as any).error) {
+      dispatch(cancelResult({ uid })).catch(() => {
         handleClickVariant(
           "error",
           "Failed to cancel workflow. Please try again.",
         )
-      }
+      })
     }
     //eslint-disable-next-line
   }, [dispatch, uid])

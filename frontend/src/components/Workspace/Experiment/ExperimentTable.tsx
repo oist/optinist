@@ -7,6 +7,8 @@ import {
   memo,
   useEffect,
   useState,
+  FocusEvent,
+  MouseEvent,
 } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
@@ -169,8 +171,7 @@ const TableImple = memo(function TableImple() {
     LOCAL_STORAGE_KEY_PER_PAGE,
     10,
     (value) => {
-      const valueNum = Number(value)
-      return isNaN(valueNum) ? 10 : valueNum
+      return isNaN(value) ? 10 : value
     },
   )
   const handleChangeRowsPerPage = (event: ChangeEvent<HTMLInputElement>) => {
@@ -322,7 +323,7 @@ const TableImple = memo(function TableImple() {
 
 interface HeadItemProps {
   order: Order
-  sortHandler: any
+  sortHandler: (property: keyof ExperimentSortKeys) => () => void
   allChecked: boolean
   onChangeAllCheck: (checked: boolean) => void
   allCheckIndeterminate: boolean
@@ -409,7 +410,7 @@ const RowItem = memo(function RowItem({
   const [valueEdit, setValueEdit] = useState(name)
   const dispatch = useDispatch<AppDispatch>()
 
-  const onBlurEdit = (event: any) => {
+  const onBlurEdit = (event: FocusEvent) => {
     event.preventDefault()
     if (errorEdit) return
     setTimeout(() => {
@@ -418,7 +419,7 @@ const RowItem = memo(function RowItem({
     }, 300)
   }
 
-  const onEdit = (event: any) => {
+  const onEdit = (event: MouseEvent) => {
     if (isEdit || errorEdit) return
     event.preventDefault()
     setEdit(true)
@@ -550,7 +551,7 @@ const TextError = styled(Typography)(() => ({
 
 type Order = "asc" | "desc"
 
-function getComparator<Key extends keyof any>(
+function getComparator<Key extends keyof ExperimentSortKeys>(
   order: Order,
   orderBy: Key,
 ): (

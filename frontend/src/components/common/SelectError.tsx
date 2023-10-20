@@ -1,4 +1,4 @@
-import { FC, FocusEvent } from "react"
+import { FC, FocusEvent, ReactNode } from "react"
 
 import {
   MenuItem,
@@ -54,7 +54,7 @@ const SelectError: FC<SelectErrorProps> = ({
 
 const SelectModal = styled(Select, {
   shouldForwardProp: (props) => props !== "error",
-})<{ error: boolean }>(({ theme, error }) => ({
+})<{ error: boolean }>(({ error }) => ({
   width: 272,
   marginBottom: "15px",
   border: "1px solid #d9d9d9",

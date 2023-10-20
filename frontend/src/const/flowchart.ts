@@ -5,16 +5,16 @@ export const INITIAL_IMAGE_ELEMENT_NAME = "NoName"
 export const NANO_ID_LENGTH = 10
 export const ALGO_NODE_STYLE: CSSProperties = {
   border: "1px solid #777",
-  height: 120,
-  width: 230,
+  height: 125,
+  width: 250,
   padding: 0,
   borderRadius: 0,
 } as const
 
 export const DATA_NODE_STYLE: CSSProperties = {
   border: "1px solid #777",
-  height: 120,
-  width: 230,
+  height: 125,
+  width: 250,
 } as const
 
 export const HANDLE_STYLE: CSSProperties = {

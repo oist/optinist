@@ -36,11 +36,13 @@ export interface CsvInputNode
   selectedFilePath?: string
 }
 
-export interface ImageInputNode extends InputNodeBaseType<"image", {}> {
+export interface ImageInputNode
+  extends InputNodeBaseType<"image", Record<never, never>> {
   selectedFilePath?: string[]
 }
 
-export interface HDF5InputNode extends InputNodeBaseType<"hdf5", {}> {
+export interface HDF5InputNode
+  extends InputNodeBaseType<"hdf5", Record<never, never>> {
   selectedFilePath?: string
   hdf5Path?: string
 }

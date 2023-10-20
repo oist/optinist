@@ -91,11 +91,11 @@ const AlgorithmNodeImple = memo(function AlgorithmNodeImple({
       <Grid
         container
         paddingBottom={1}
-        paddingRight={1}
         justifyContent="space-between"
       >
-        <Grid item xs={10}></Grid>
-        <AlgoName nodeId={nodeId} data={data} />
+        <Grid item xs={10}>
+          <AlgoName nodeId={nodeId} data={data} />
+        </Grid>
         <Grid item xs={2}>
           <Message nodeId={nodeId} />
         </Grid>
@@ -171,7 +171,7 @@ const AlgoArgs = memo(function AlgoArgs({ nodeId }: NodeIdProps) {
             .map((algoInfo, i) => {
               return (
                 <ArgHandle
-                  key={nodeId}
+                  key={i}
                   algoInfo={algoInfo}
                   i={i}
                   nodeId={nodeId}
@@ -201,7 +201,7 @@ const AlgoReturns = memo(function AlgoReturns({
         algoReturns?.map((algoInfo, i) => {
           return (
             <ReturnHandle
-              key={nodeId}
+              key={i}
               algoInfo={algoInfo}
               i={i}
               nodeId={nodeId}

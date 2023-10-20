@@ -22,14 +22,19 @@ import {
   Input,
   styled,
 } from "@mui/material"
+import IconButton from "@mui/material/IconButton"
 import { SelectChangeEvent } from "@mui/material/Select"
 import {
   DataGrid,
+  GridColDef,
+  GridFilterInputValueProps,
   GridFilterModel,
+  GridRenderCellParams,
   GridSortDirection,
   GridSortItem,
   GridSortModel,
 } from "@mui/x-data-grid"
+import { isRejectedWithValue } from "@reduxjs/toolkit"
 
 import { ROLE } from "@types"
 import { AddUserDTO, UserDTO } from "api/users/UsersApiDTO"
@@ -271,7 +276,7 @@ const PopupDelete = ({ open, handleClose, handleOkDel, name }: PopupType) => {
   return (
     <Box>
       <Dialog open={open} onClose={handleClose} sx={{ margin: 0 }}>
-        <DialogTitle>Do you want delete User "{name}"?</DialogTitle>
+        <DialogTitle>{`Do you want delete User "${name}"?`}</DialogTitle>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={handleOkDel}>Ok</Button>
@@ -283,7 +288,6 @@ const PopupDelete = ({ open, handleClose, handleOkDel, name }: PopupType) => {
 
 const AccountManager = () => {
   const dispatch = useDispatch<AppDispatch>()
-
   const navigate = useNavigate()
 
   const listUser = useSelector(selectListUser)
@@ -291,24 +295,23 @@ const AccountManager = () => {
   const user = useSelector(selectCurrentUser)
   const admin = useSelector(isAdmin)
 
-  const [searchParams, setParams] = useSearchParams()
-
   const [openModal, setOpenModal] = useState(false)
   const [dataEdit, setDataEdit] = useState({})
   const [newParams, setNewParams] = useState(
     window.location.search.replace("?", ""),
   )
-
-  const limit = searchParams.get("limit") || 50
-  const offset = searchParams.get("offset") || 0
-  const name = searchParams.get("name") || undefined
-  const email = searchParams.get("email") || undefined
-  const sort = searchParams.getAll("sort") || []
   const [openDel, setOpenDel] = useState<{
     id?: number
     name?: string
     open: boolean
   }>()
+
+  const [searchParams, setParams] = useSearchParams()
+  const limit = searchParams.get("limit") || 50
+  const offset = searchParams.get("offset") || 0
+  const name = searchParams.get("name") || undefined
+  const email = searchParams.get("email") || undefined
+  const sort = searchParams.getAll("sort") || []
 
   const filterParams = useMemo(() => {
     return {
@@ -331,13 +334,16 @@ const AccountManager = () => {
     }
   }, [limit, offset])
 
-  const [model, setModel] = useState<{ filter: GridFilterModel; sort: any }>({
+  const [model, setModel] = useState<{
+    filter: GridFilterModel
+    sort: GridSortModel
+  }>({
     filter: {
       items: [
         {
           field:
             Object.keys(filterParams).find(
-              (key) => (filterParams as any)[key],
+              (key) => filterParams[key as keyof typeof filterParams],
             ) || "",
           operator: "contains",
           value: Object.values(filterParams).find((value) => value) || null,
@@ -370,7 +376,7 @@ const AccountManager = () => {
           {
             field:
               Object.keys(filterParams).find(
-                (key) => (filterParams as any)[key],
+                (key) => filterParams[key as keyof typeof filterParams],
               ) || "",
             operator: "contains",
             value: Object.values(filterParams).find((value) => value) || null,
@@ -407,8 +413,8 @@ const AccountManager = () => {
 
   const getParamsData = () => {
     const dataFilter = Object.keys(filterParams)
-      .filter((key) => (filterParams as any)[key])
-      .map((key) => `${key}=${(filterParams as any)[key]}`)
+      .filter((key) => filterParams[key as keyof typeof filterParams])
+      .map((key) => `${key}=${filterParams[key as keyof typeof filterParams]}`)
       .join("&")
     return dataFilter
   }
@@ -458,7 +464,7 @@ const AccountManager = () => {
     if (modelFilter.items[0]?.value) {
       filter = modelFilter.items
         .filter((item) => item.value)
-        .map((item: any) => `${item.field}=${item?.value}`)
+        .map((item) => `${item.field}=${item?.value}`)
         .join("&")
     }
     const { sort } = sortParams
@@ -475,7 +481,14 @@ const AccountManager = () => {
     setOpenModal(true)
   }
 
-  const handleEdit = (dataEdit: UserDTO) => {
+  type UserFormDTO = {
+    id?: number
+    name?: string
+    email: string
+    // temporarily use role's name (like "ADMIN") for select modal
+    role_id?: string
+  }
+  const handleEdit = (dataEdit: UserFormDTO) => {
     setOpenModal(true)
     setDataEdit(dataEdit)
   }
@@ -484,7 +497,7 @@ const AccountManager = () => {
     id: number | string | undefined,
     data: { [key: string]: string },
   ) => {
-    const { confirmPassword, role_id, ...newData } = data
+    const { role_id, ...newData } = data
     let newRole
     switch (role_id) {
       case "ADMIN":
@@ -502,12 +515,9 @@ const AccountManager = () => {
           params: { ...filterParams, ...sortParams, ...params },
         }),
       )
-      if ((data as any).error) {
-        if (!navigator.onLine) {
-          handleClickVariant("error", "Account update failed!")
-          return
-        }
-        handleClickVariant("error", "This email already exists!")
+      if (isRejectedWithValue(data)) {
+        handleClickVariant("error", "Account update failed!")
+        return
       } else {
         handleClickVariant(
           "success",
@@ -521,20 +531,21 @@ const AccountManager = () => {
           params: { ...filterParams, ...sortParams, ...params },
         }),
       )
-      if (!(data as any).error) {
-        handleClickVariant(
-          "success",
-          "Your account has been created successfully!",
-        )
-      } else {
+      if (isRejectedWithValue(data)) {
         if (!navigator.onLine) {
           handleClickVariant("error", "Account creation failed!")
           return
         }
         handleClickVariant("error", "This email already exists!")
+        return
+      } else {
+        handleClickVariant(
+          "success",
+          "Your account has been created successfully!",
+        )
       }
     }
-    return undefined
+    return
   }
 
   const handleOpenPopupDel = (id?: number, name?: string) => {
@@ -554,7 +565,7 @@ const AccountManager = () => {
         params: { ...filterParams, ...sortParams, ...params },
       }),
     )
-    if ((data as any).error) {
+    if (isRejectedWithValue(data)) {
       handleClickVariant("error", "Delete user failed!")
     } else {
       handleClickVariant("success", "Account deleted successfully!")
@@ -565,8 +576,8 @@ const AccountManager = () => {
   const handleLimit = (event: ChangeEvent<HTMLSelectElement>) => {
     let filter = ""
     filter = Object.keys(filterParams)
-      .filter((key) => (filterParams as any)[key])
-      .map((item: any) => `${item}=${(filterParams as any)[item]}`)
+      .filter((key) => filterParams[key as keyof typeof filterParams])
+      .map((key) => `${key}=${filterParams[key as keyof typeof filterParams]}`)
       .join("&")
     const { sort } = sortParams
     const param = `${filter}${
@@ -579,8 +590,8 @@ const AccountManager = () => {
     if (!listUser) return
     let filter = ""
     filter = Object.keys(filterParams)
-      .filter((key) => (filterParams as any)[key])
-      .map((item: any) => `${item}=${(filterParams as any)[item]}`)
+      .filter((key) => filterParams[key as keyof typeof filterParams])
+      .map((key) => `${key}=${filterParams[key as keyof typeof filterParams]}`)
       .join("&")
     const { sort } = sortParams
     const param = `${filter}${
@@ -589,7 +600,7 @@ const AccountManager = () => {
     setNewParams(param)
   }
 
-  const columns = [
+  const columns: GridColDef[] = [
     {
       headerName: "ID",
       field: "id",
@@ -600,13 +611,15 @@ const AccountManager = () => {
     {
       headerName: "Name",
       field: "name",
+      type: "string",
       minWidth: 100,
       flex: 2,
       filterOperators: [
         {
           label: "Contains",
           value: "contains",
-          InputComponent: ({ applyValue, item }: any) => {
+          getApplyFilterFn: () => null,
+          InputComponent: ({ applyValue, item }: GridFilterInputValueProps) => {
             return (
               <Input
                 sx={{ paddingTop: "16px" }}
@@ -622,7 +635,6 @@ const AccountManager = () => {
           },
         },
       ],
-      type: "string",
     },
     {
       headerName: "Role",
@@ -630,8 +642,8 @@ const AccountManager = () => {
       filterable: false,
       minWidth: 100,
       flex: 1,
-      renderCell: (params: { value: number }) => {
-        let role
+      renderCell: (params: GridRenderCellParams) => {
+        let role: string = ""
         switch (params.value) {
           case ROLE.ADMIN:
             role = "Admin"
@@ -646,13 +658,15 @@ const AccountManager = () => {
     {
       headerName: "Mail",
       field: "email",
+      type: "string",
       minWidth: 100,
       flex: 2,
       filterOperators: [
         {
           label: "Contains",
           value: "contains",
-          InputComponent: ({ applyValue, item }: any) => {
+          getApplyFilterFn: () => null,
+          InputComponent: ({ applyValue, item }: GridFilterInputValueProps) => {
             return (
               <Input
                 sx={{ paddingTop: "16px" }}
@@ -668,7 +682,6 @@ const AccountManager = () => {
           },
         },
       ],
-      type: "string",
     },
     {
       headerName: "",
@@ -680,7 +693,7 @@ const AccountManager = () => {
       renderCell: (params: { row: UserDTO }) => {
         const { id, role_id, name, email } = params.row
         if (!id || !role_id || !name || !email) return null
-        let role: any
+        let role: string
         switch (role_id) {
           case ROLE.ADMIN:
             role = "ADMIN"
@@ -692,23 +705,23 @@ const AccountManager = () => {
 
         return (
           <>
-            <ALink
+            <IconButton
               sx={{ color: "red" }}
               onClick={() =>
-                handleEdit({ id, role_id: role, name, email } as UserDTO)
+                handleEdit({ id, role_id: role, name, email } as UserFormDTO)
               }
             >
               <EditIcon sx={{ color: "black" }} />
-            </ALink>
+            </IconButton>
             {!(params.row?.id === user?.id) ? (
-              <ALink
+              <IconButton
                 sx={{ ml: 1.25 }}
                 onClick={() =>
                   handleOpenPopupDel(params.row?.id, params.row?.name)
                 }
               >
                 <DeleteIcon sx={{ color: "red" }} />
-              </ALink>
+              </IconButton>
             ) : null}
           </>
         )
@@ -739,7 +752,7 @@ const AccountManager = () => {
       </Box>
       <DataGrid
         sx={{ minHeight: 400, height: "calc(100vh - 300px)" }}
-        columns={columns as any}
+        columns={columns}
         rows={listUser?.items || []}
         filterMode={"server"}
         sortingMode={"server"}
@@ -747,7 +760,7 @@ const AccountManager = () => {
         onSortModelChange={handleSort}
         filterModel={model.filter}
         sortModel={model.sort as GridSortItem[]}
-        onFilterModelChange={handleFilter as any}
+        onFilterModelChange={handleFilter}
       />
       {listUser && listUser.items.length > 0 ? (
         <PaginationCustom
@@ -785,14 +798,7 @@ const AccountManagerWrapper = styled(Box)(({ theme }) => ({
   margin: theme.spacing(5, "auto"),
 }))
 
-const ALink = styled("a")({
-  color: "#1677ff",
-  textDecoration: "none",
-  cursor: "pointer",
-  userSelect: "none",
-})
-
-const Modal = styled(Box)(({ theme }) => ({
+const Modal = styled(Box)(() => ({
   position: "fixed",
   top: 0,
   left: 0,
@@ -804,7 +810,7 @@ const Modal = styled(Box)(({ theme }) => ({
   backgroundColor: "#cccccc80",
 }))
 
-const ModalBox = styled(Box)(({ theme }) => ({
+const ModalBox = styled(Box)(() => ({
   width: 800,
   backgroundColor: "white",
   border: "1px solid black",
@@ -815,7 +821,7 @@ const TitleModal = styled(Box)(({ theme }) => ({
   margin: theme.spacing(5),
 }))
 
-const BoxData = styled(Box)(({ theme }) => ({
+const BoxData = styled(Box)(() => ({
   marginTop: 35,
 }))
 

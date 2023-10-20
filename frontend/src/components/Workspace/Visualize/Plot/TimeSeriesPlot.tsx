@@ -101,7 +101,7 @@ const TimeSeriesPlotImple = memo(function TimeSeriesPlotImple() {
   const frameRate = useSelector(selectFrameRate(currentPipelineUid))
 
   useEffect(() => {
-    const seriesData: any = {}
+    const seriesData: TimeSeriesData = {}
     drawOrderList.forEach((key) => {
       seriesData[key] = timeSeriesData[key]
     })
@@ -110,7 +110,7 @@ const TimeSeriesPlotImple = memo(function TimeSeriesPlotImple() {
       timeSeriesData &&
       Object.keys(timeSeriesData).length > 0
     ) {
-      const newSeriesData: any = {}
+      const newSeriesData: TimeSeriesData = {}
       Object.keys(seriesData).forEach((key) => {
         newSeriesData[key] = {}
         Object.keys(seriesData[key]).forEach((keyTime) => {

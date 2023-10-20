@@ -1,6 +1,7 @@
+import { expect, describe, test } from "@jest/globals"
+
 import { selectRunPostData } from "store/slice/Run/RunSelectors"
 import { RootState, store } from "store/store"
-
 
 describe("RunSelectors", () => {
   const initialRootState = store.getState()
@@ -285,7 +286,7 @@ describe("RunSelectors", () => {
         lock: { type: "child", value: false, path: "lock" },
       },
     },
-  } as any
+  } as RootState
 
   const expectRunPostData = {
     // name: 'post data test', // nameはomitされているので含めない
@@ -632,7 +633,7 @@ describe("RunSelectors", () => {
     },
     nwb: { params: {} },
     snakemake: { params: {} },
-  } as any
+  } as RootState
 
   const expectRunPostDataForceRunList = {
     nwbParam: {},

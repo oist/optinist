@@ -40,8 +40,8 @@ const DeleteConfirmModal: FC<DeleteConfirmModalProps> = ({
         <ContentDelete>
           <Typography style={{ whiteSpace: "pre-wrap" }}>
             {description}
-            This operation cannot be undone. To continue, type "
-            <span style={{ fontWeight: 600 }}>DELETE</span>" in the box below:
+            This operation cannot be undone. To continue, type
+            <span style={{ fontWeight: 600 }}>DELETE</span> in the box below:
           </Typography>
           <BoxConfirm>
             <Input

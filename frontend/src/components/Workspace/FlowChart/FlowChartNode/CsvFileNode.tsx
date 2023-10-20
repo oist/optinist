@@ -132,7 +132,7 @@ export const ParamSettingDialog = memo(function ParamSettingDialog({
 
   return (
     <>
-      <Button onClick={() => setOpen(true)}>Settings</Button>
+      <Button onClick={() => setOpen(true)} sx={{padding: 0}}>Settings</Button>
       <Dialog open={open}>
         <DialogTitle>Csv Setting</DialogTitle>
         <DialogContent dividers>

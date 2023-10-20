@@ -40,8 +40,10 @@ export const NWBDownloadButton = memo(function NWBDownloadButton({
       )
       const url = URL.createObjectURL(new Blob([responseData]))
       setFileUrl(url)
-      ref.current?.click()
-      URL.revokeObjectURL(url)
+      setTimeout(() => {
+        ref.current?.click()
+        URL.revokeObjectURL(url)
+      }, 100)
     } catch (error) {
       enqueueSnackbar("File not found", { variant: "error" })
     }
@@ -71,8 +73,10 @@ export const SnakemakeDownloadButton = memo(function SnakemakeDownloadButton() {
       const responseData = await downloadExperimentConfigApi(workspaceId!, uid)
       const url = URL.createObjectURL(new Blob([responseData]))
       setFileUrl(url)
-      ref.current?.click()
-      URL.revokeObjectURL(url)
+      setTimeout(() => {
+        ref.current?.click()
+        URL.revokeObjectURL(url)
+      }, 100)
     } catch (error) {
       enqueueSnackbar("File not found", { variant: "error" })
     }
@@ -107,8 +111,10 @@ export const WorkflowDownloadButton = memo(function WorkflowDownloadButton() {
       const responseData = await downloadWorkflowConfigApi(workspaceId!, uid)
       const url = URL.createObjectURL(new Blob([responseData]))
       setFileUrl(url)
-      ref.current?.click()
-      URL.revokeObjectURL(url)
+      setTimeout(() => {
+        ref.current?.click()
+        URL.revokeObjectURL(url)
+      }, 100)
     } catch (error) {
       enqueueSnackbar("File not found", { variant: "error" })
     }

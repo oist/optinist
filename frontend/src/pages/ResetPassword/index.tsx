@@ -65,7 +65,7 @@ const ResetPassword = () => {
     <LoginWrapper>
       <LoginContent>
         <Heading>Forgot password?</Heading>
-        <Title>No worries, we'll send you reset instructions.</Title>
+        <Title>{"No worries, we'll send you reset instructions."}</Title>
         <FormSignUp autoComplete="off" onSubmit={onReset}>
           <Box sx={{ position: "relative" }}>
             <LabelField>
