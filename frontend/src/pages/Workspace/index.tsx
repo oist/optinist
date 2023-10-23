@@ -28,6 +28,7 @@ import {
   DataGrid,
   GridCellParams,
 } from "@mui/x-data-grid"
+import { isRejectedWithValue } from "@reduxjs/toolkit"
 
 import { UserDTO } from "api/users/UsersApiDTO"
 import Loading from "components/common/Loading"
@@ -353,21 +354,20 @@ const Workspaces = () => {
     setOpen({ ...open, del: true })
   }
 
-  const handleOkDel = () => {
+  const handleOkDel = async () => {
     if (!workspaceDel) return
-    dispatch(delWorkspace({ id: workspaceDel.id, params: dataParams }))
-      .then(() => {
-        handleClickVariant(
-          "success",
-          "The workspace has been deleted successfully!",
-        )
-      })
-      .catch(() => {
-        handleClickVariant("error", "Workspace deletion failed!")
-      })
-      .finally(() => {
-        setOpen({ ...open, del: false })
-      })
+    const data = await dispatch(
+      delWorkspace({ id: workspaceDel.id, params: dataParams }),
+    )
+    if (isRejectedWithValue(data)) {
+      handleClickVariant("error", "Workspace deletion failed!")
+    } else {
+      handleClickVariant(
+        "success",
+        "The workspace has been deleted successfully!",
+      )
+    }
+    setOpen({ ...open, del: false })
   }
 
   const handleClosePopupDel = () => {
@@ -398,27 +398,24 @@ const Workspaces = () => {
     }))
   }
 
-  const handleOkNew = () => {
+  const handleOkNew = async () => {
     if (!newWorkspace) {
       setError("Workspace Name cann't empty")
       return
     }
-    dispatch(postWorkspace({ name: newWorkspace }))
-      .then(() => {
-        handleClickVariant(
-          "success",
-          "The workspace has been created successfully!",
-        )
-      })
-      .catch(() => {
-        handleClickVariant("error", "Workspace creation failed!")
-      })
-      .finally(async () => {
-        await dispatch(getWorkspaceList(dataParams))
-        setOpen({ ...open, new: false })
-        setError("")
-        setNewWorkSpace("")
-      })
+    const data = await dispatch(postWorkspace({ name: newWorkspace }))
+    if (isRejectedWithValue(data)) {
+      handleClickVariant("error", "Workspace creation failed!")
+    } else {
+      handleClickVariant(
+        "success",
+        "The workspace has been created successfully!",
+      )
+    }
+    await dispatch(getWorkspaceList(dataParams))
+    setOpen({ ...open, new: false })
+    setError("")
+    setNewWorkSpace("")
   }
 
   const onProcessRowUpdateError = (newRow: unknown) => {
@@ -462,22 +459,21 @@ const Workspaces = () => {
     })
   }
 
-  const processRowUpdate = (newRow: ItemsWorkspace) => {
+  const processRowUpdate = async (newRow: ItemsWorkspace) => {
     if (!newRow.name) {
       handleClickVariant("error", "Workspace Name cann't empty")
       return { ...newRow, name: initName }
     }
     if (newRow.name === initName) return newRow
-    dispatch(putWorkspace({ name: newRow.name, id: newRow.id }))
-      .then(() => {
-        handleClickVariant("success", "Workspace name edited successfully!")
-      })
-      .catch(() => {
-        handleClickVariant("error", "Workspace name edit failed!")
-      })
-      .finally(async () => {
-        await dispatch(getWorkspaceList(dataParams))
-      })
+    const data = await dispatch(
+      putWorkspace({ name: newRow.name, id: newRow.id }),
+    )
+    if (isRejectedWithValue(data)) {
+      handleClickVariant("error", "Workspace name edit failed!")
+    } else {
+      handleClickVariant("success", "Workspace name edited successfully!")
+    }
+    await dispatch(getWorkspaceList(dataParams))
     return newRow
   }
 

@@ -4,6 +4,8 @@ import { useLocation, useNavigate, useParams } from "react-router-dom"
 
 import { useSnackbar, VariantType } from "notistack"
 
+import { isRejected } from "@reduxjs/toolkit"
+
 import { IS_STANDALONE, STANDALONE_WORKSPACE_ID } from "const/Mode"
 import { selectAlgorithmNodeNotExist } from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
 import { getExperiments } from "store/slice/Experiments/ExperimentsActions"
@@ -91,12 +93,13 @@ export function useRunPipeline() {
   }, [dispatch, runPostData])
   const handleCancelPipeline = useCallback(async () => {
     if (uid != null) {
-      dispatch(cancelResult({ uid })).catch(() => {
+      const data = await dispatch(cancelResult({ uid }))
+      if (isRejected(data)) {
         handleClickVariant(
           "error",
           "Failed to cancel workflow. Please try again.",
         )
-      })
+      }
     }
     //eslint-disable-next-line
   }, [dispatch, uid])

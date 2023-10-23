@@ -20,6 +20,7 @@ import {
   styled,
   Typography,
 } from "@mui/material"
+import { isRejectedWithValue } from "@reduxjs/toolkit"
 
 import { ROLE } from "@types"
 import ChangePasswordModal from "components/Account/ChangePasswordModal"
@@ -66,18 +67,15 @@ const Account = () => {
     setIsDeleteConfirmModalOpen(true)
   }
 
-  const onConfirmDelete = () => {
+  const onConfirmDelete = async () => {
     if (!user) return
-    dispatch(deleteMe())
-      .then(() => {
-        navigate("/login")
-      })
-      .catch(() => {
-        handleClickVariant("error", "Account deleted failed!")
-      })
-      .finally(() => {
-        handleCloseDeleteComfirmModal()
-      })
+    const data = await dispatch(deleteMe())
+    if (isRejectedWithValue(data)) {
+      handleClickVariant("error", "Account deleted failed!")
+    } else {
+      navigate("/login")
+    }
+    handleCloseDeleteComfirmModal()
   }
 
   const handleCloseChangePw = () => {
@@ -88,27 +86,26 @@ const Account = () => {
     setIsChangePwModalOpen(true)
   }
 
-  const onConfirmChangePw = (oldPass: string, newPass: string) => {
-    dispatch(updateMePassword({ old_password: oldPass, new_password: newPass }))
-      .then(() => {
-        handleClickVariant(
-          "success",
-          "Your password has been successfully changed!",
-        )
-      })
-      .catch(() => {
-        handleClickVariant("error", "Failed to Change Password!")
-      })
-      .finally(() => {
-        handleCloseChangePw()
-      })
+  const onConfirmChangePw = async (oldPass: string, newPass: string) => {
+    const data = await dispatch(
+      updateMePassword({ old_password: oldPass, new_password: newPass }),
+    )
+    if (isRejectedWithValue(data)) {
+      handleClickVariant("error", "Failed to Change Password!")
+    } else {
+      handleClickVariant(
+        "success",
+        "Your password has been successfully changed!",
+      )
+    }
+    handleCloseChangePw()
   }
 
   const onEditName = (e: ChangeEvent<HTMLInputElement>) => {
     setIsName(e.target.value)
   }
 
-  const onBlur = (event: FocusEvent) => {
+  const onBlur = async (event: FocusEvent) => {
     if (!user || !user.name || !user.email) return
     if (isName === user.name) {
       setIsEditName(false)
@@ -119,18 +116,17 @@ const Account = () => {
       handleClickVariant("error", "Full name can't be empty!")
       setIsName(user?.name)
     } else {
-      dispatch(
+      const data = await dispatch(
         updateMe({
           name: target.value,
           email: user.email,
         }),
       )
-        .then(() => {
-          handleClickVariant("success", "Full name edited successfully!")
-        })
-        .catch(() => {
-          handleClickVariant("error", "Full name edited failed!")
-        })
+      if (isRejectedWithValue(data)) {
+        handleClickVariant("error", "Full name edited failed!")
+      } else {
+        handleClickVariant("success", "Full name edited successfully!")
+      }
     }
     setIsEditName(false)
   }

@@ -107,7 +107,7 @@ const ModalComponent = ({
 
   const validatePassword = (
     value: string,
-    isConfirm: boolean = false,
+    isConfirm = false,
     values?: { [key: string]: string },
   ): string => {
     if (!value && !dataEdit?.uid) return "This field is required"
@@ -643,7 +643,7 @@ const AccountManager = () => {
       minWidth: 100,
       flex: 1,
       renderCell: (params: GridRenderCellParams) => {
-        let role: string = ""
+        let role = ""
         switch (params.value) {
           case ROLE.ADMIN:
             role = "Admin"
