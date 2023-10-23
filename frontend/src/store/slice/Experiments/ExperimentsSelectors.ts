@@ -1,35 +1,35 @@
-import { RootState } from 'store/store'
-import { EXPERIMENTS_STATUS } from './ExperimentsType'
+import { EXPERIMENTS_STATUS } from "store/slice/Experiments/ExperimentsType"
+import { RootState } from "store/store"
 
 const selectExperiments = (state: RootState) => state.experiments
 
 export const selectExperimentsStatusIsUninitialized = (state: RootState) =>
-  selectExperiments(state).status === 'uninitialized'
+  selectExperiments(state).status === "uninitialized"
 
 export const selectExperimentsStatusIsPending = (state: RootState) =>
-  selectExperiments(state).status === 'pending'
+  selectExperiments(state).status === "pending"
 
 export const selectExperimentsStatusIsFulfilled = (state: RootState) =>
-  selectExperiments(state).status === 'fulfilled'
+  selectExperiments(state).status === "fulfilled"
 
 export const selectExperimentsStatusIsError = (state: RootState) =>
-  selectExperiments(state).status === 'error'
+  selectExperiments(state).status === "error"
 
 export const selectExperimentsErrorMessage = (state: RootState) => {
   const experiments = selectExperiments(state)
-  if (experiments.status === 'error') {
+  if (experiments.status === "error") {
     return experiments.message
   } else {
-    throw new Error('experiments status is not error')
+    throw new Error("experiments status is not error")
   }
 }
 
 export const selectExperimentList = (state: RootState) => {
   const experiments = selectExperiments(state)
-  if (experiments.status === 'fulfilled') {
+  if (experiments.status === "fulfilled") {
     return experiments.experimentList
   } else {
-    throw new Error('experiments status is not fulfilled')
+    throw new Error("experiments status is not fulfilled")
   }
 }
 
@@ -61,12 +61,12 @@ export const selectExperimentStatus =
 
     const functions = selectExperimentList(state)[uid].functions
     const statusList = Object.values(functions).map((f) => f.status)
-    if (statusList.findIndex((status) => status === 'error') >= 0) {
-      return 'error'
-    } else if (statusList.findIndex((status) => status === 'running') >= 0) {
-      return 'running'
+    if (statusList.findIndex((status) => status === "error") >= 0) {
+      return "error"
+    } else if (statusList.findIndex((status) => status === "running") >= 0) {
+      return "running"
     } else {
-      return 'success'
+      return "success"
     }
   }
 

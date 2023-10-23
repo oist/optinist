@@ -1,10 +1,11 @@
-import React from 'react'
-import { alpha, useTheme } from '@mui/material/styles'
-import { Box, Typography } from '@mui/material'
-import { grey } from '@mui/material/colors'
+import { FC, ReactNode } from "react"
 
-export const NodeContainer: React.FC<{
-  children: React.ReactNode
+import { Box, Typography } from "@mui/material"
+import { grey } from "@mui/material/colors"
+import { alpha, useTheme } from "@mui/material/styles"
+
+export const NodeContainer: FC<{
+  children: ReactNode
   nodeId: string
   selected: boolean
 }> = ({ children, nodeId, selected }) => {
@@ -12,18 +13,16 @@ export const NodeContainer: React.FC<{
   return (
     <div
       style={{
-        height: '100%',
-        width: '100%',
+        height: "100%",
+        width: "100%",
         background: selected
           ? alpha(theme.palette.primary.light, 0.1)
           : undefined,
-        display: 'flex',
-        flexDirection: 'column',
+        display: "flex",
+        flexDirection: "column",
       }}
     >
-      <Box margin={1}>
-        {children}
-      </Box>
+      <Box margin={1}>{children}</Box>
       <Typography
         marginX={1}
         marginTop="auto"
@@ -32,7 +31,7 @@ export const NodeContainer: React.FC<{
         fontSize={13}
         paragraph
         variant="body2"
-        sx={{ overflowWrap: 'break-word' }}
+        sx={{ overflowWrap: "break-word" }}
       >
         {nodeId}
       </Typography>

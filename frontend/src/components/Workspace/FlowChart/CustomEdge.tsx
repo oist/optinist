@@ -1,11 +1,13 @@
-import { useDispatch } from 'react-redux'
-import { EdgeProps, getBezierPath } from 'reactflow'
-import { deleteFlowEdgeById } from 'store/slice/FlowElement/FlowElementSlice'
-import 'style/flowbutton.css'
+import { FC } from "react"
+import { useDispatch } from "react-redux"
+import { EdgeProps, getBezierPath } from "reactflow"
+
+import { deleteFlowEdgeById } from "store/slice/FlowElement/FlowElementSlice"
+import "style/flowbutton.css"
 
 const foreignObjectSize = 40
 
-export const CustomEdge: React.FC<EdgeProps> = ({
+export const CustomEdge: FC<EdgeProps> = ({
   id,
   sourceX,
   sourceY,
@@ -14,10 +16,8 @@ export const CustomEdge: React.FC<EdgeProps> = ({
   sourcePosition,
   targetPosition,
   style = {},
-  data,
   markerEnd,
 }) => {
-
   const [path, labelX, labelY] = getBezierPath({
     sourceX,
     sourceY,

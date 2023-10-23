@@ -1,29 +1,31 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { styled } from '@mui/material/styles'
-import Drawer, { drawerClasses } from '@mui/material/Drawer'
-import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
-import Divider from '@mui/material/Divider'
-import IconButton from '@mui/material/IconButton'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import Box from '@mui/material/Box'
+import { createContext, FC } from "react"
+import { useSelector, useDispatch } from "react-redux"
+
+import ChevronRightIcon from "@mui/icons-material/ChevronRight"
+import Box from "@mui/material/Box"
+import Divider from "@mui/material/Divider"
+import Drawer, { drawerClasses } from "@mui/material/Drawer"
+import IconButton from "@mui/material/IconButton"
+import { styled } from "@mui/material/styles"
+import Toolbar from "@mui/material/Toolbar"
+import Typography from "@mui/material/Typography"
+
+import { AlgorithmParamForm } from "components/Workspace/FlowChart/AlgorithmParamForm"
+import { NWBSettingContents } from "components/Workspace/FlowChart/Buttons/NWB"
+import { SnakemakeContents } from "components/Workspace/FlowChart/Buttons/Snakemake"
+import { RIGHT_DRAWER_WIDTH } from "const/Layout"
 import {
   selectRightDrawerCurrentNodeId,
   selectRightDrawerIsOpen,
   selectRightDrawerMode,
-} from 'store/slice/RightDrawer/RightDrawerSelectors'
+} from "store/slice/RightDrawer/RightDrawerSelectors"
 import {
   closeRightDrawer,
   RIGHT_DRAWER_MODE,
-} from 'store/slice/RightDrawer/RightDrawerSlice'
-import { NWBSettingContents } from './Buttons/NWB'
-import { RootState } from 'store/store'
-import { AlgorithmParamForm } from './AlgorithmParamForm'
-import { SnakemakeContents } from './Buttons/Snakemake'
-import { RIGHT_DRAWER_WIDTH } from 'const/Layout'
+} from "store/slice/RightDrawer/RightDrawerSlice"
+import { RootState } from "store/store"
 
-const RightDrawer: React.FC = () => {
+const RightDrawer: FC = () => {
   const open = useSelector(selectRightDrawerIsOpen)
   const dispatch = useDispatch()
   const onClick = () => dispatch(closeRightDrawer())
@@ -31,13 +33,13 @@ const RightDrawer: React.FC = () => {
     const mode = selectRightDrawerMode(state)
     switch (mode) {
       case RIGHT_DRAWER_MODE.NWB:
-        return 'NWB Setting'
+        return "NWB Setting"
       case RIGHT_DRAWER_MODE.PARAM_FORM:
-        return 'Param From'
+        return "Param From"
       case RIGHT_DRAWER_MODE.SNAKEMAKE:
-        return 'Snakemake'
+        return "Snakemake"
       default:
-        return 'none'
+        return "none"
     }
   })
   return (
@@ -57,7 +59,7 @@ const RightDrawer: React.FC = () => {
   )
 }
 
-const Contents: React.FC = () => {
+const Contents: FC = () => {
   const mode = useSelector(selectRightDrawerMode)
   switch (mode) {
     case RIGHT_DRAWER_MODE.NWB:
@@ -74,9 +76,9 @@ const Contents: React.FC = () => {
 /**
  * nodeId
  */
-export const ParamFormContext = React.createContext<string>('')
+export const ParamFormContext = createContext<string>("")
 
-const ParamFormConetent: React.FC = () => {
+const ParamFormConetent: FC = () => {
   const nodeId = useSelector(selectRightDrawerCurrentNodeId)
   if (nodeId != null) {
     return (
@@ -97,8 +99,8 @@ const StyledDrawer = styled(Drawer)({
   },
 })
 
-const MainContents = styled('main')({
-  height: '100%',
+const MainContents = styled("main")({
+  height: "100%",
 })
 
 export default RightDrawer

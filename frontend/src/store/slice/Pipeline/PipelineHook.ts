@@ -1,36 +1,39 @@
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
+import { useCallback, useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useLocation, useNavigate, useParams } from "react-router-dom"
 
-import { selectRunPostData } from 'store/slice/Run/RunSelectors'
-import {
-  selectPipelineIsCanceled,
-  selectPipelineIsStartedSuccess,
-  selectPipelineLatestUid,
-  selectPipelineStatus,
-} from './PipelineSelectors'
+import { useSnackbar, VariantType } from "notistack"
+
+import { isRejected } from "@reduxjs/toolkit"
+
+import { IS_STANDALONE, STANDALONE_WORKSPACE_ID } from "const/Mode"
+import { selectAlgorithmNodeNotExist } from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
+import { getExperiments } from "store/slice/Experiments/ExperimentsActions"
+import { clearExperiments } from "store/slice/Experiments/ExperimentsSlice"
+import { selectFilePathIsUndefined } from "store/slice/InputNode/InputNodeSelectors"
 import {
   run,
   pollRunResult,
   runByCurrentUid,
   cancelResult,
-} from './PipelineActions'
-import { selectFilePathIsUndefined } from '../InputNode/InputNodeSelectors'
-import { selectAlgorithmNodeNotExist } from '../AlgorithmNode/AlgorithmNodeSelectors'
-import { getExperiments } from '../Experiments/ExperimentsActions'
-import { fetchWorkflow } from '../Workflow/WorkflowActions'
-import { useSnackbar, VariantType } from 'notistack'
-import { RUN_STATUS } from './PipelineType'
-import { useLocation, useNavigate, useParams } from 'react-router-dom'
-import { IS_STANDALONE, STANDALONE_WORKSPACE_ID } from 'const/Mode'
+} from "store/slice/Pipeline/PipelineActions"
+import {
+  selectPipelineIsCanceled,
+  selectPipelineIsStartedSuccess,
+  selectPipelineLatestUid,
+  selectPipelineStatus,
+} from "store/slice/Pipeline/PipelineSelectors"
+import { RUN_STATUS } from "store/slice/Pipeline/PipelineType"
+import { selectRunPostData } from "store/slice/Run/RunSelectors"
+import { fetchWorkflow } from "store/slice/Workflow/WorkflowActions"
+import { getWorkspace } from "store/slice/Workspace/WorkspaceActions"
+import { selectIsWorkspaceOwner } from "store/slice/Workspace/WorkspaceSelector"
 import {
   clearCurrentWorkspace,
   setActiveTab,
   setCurrentWorkspace,
-} from '../Workspace/WorkspaceSlice'
-import { clearExperiments } from '../Experiments/ExperimentsSlice'
-import { getWorkspace } from 'store/slice/Workspace/WorkspaceActions'
-import { selectIsWorkspaceOwner } from '../Workspace/WorkspaceSelector'
-import { AppDispatch } from '../../store'
+} from "store/slice/Workspace/WorkspaceSlice"
+import { AppDispatch } from "store/store"
 
 const POLLING_INTERVAL = 5000
 
@@ -45,7 +48,7 @@ export function useRunPipeline() {
   const { workspaceId } = useParams<{ workspaceId: string }>()
   const _workspaceId = Number(workspaceId)
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (IS_STANDALONE) {
       dispatch(setCurrentWorkspace(STANDALONE_WORKSPACE_ID))
       dispatch(fetchWorkflow(STANDALONE_WORKSPACE_ID))
@@ -58,7 +61,7 @@ export function useRunPipeline() {
           selectedTab && dispatch(setActiveTab(selectedTab))
         })
         .catch((_) => {
-          navigate('/console/workspaces')
+          navigate("/console/workspaces")
         })
     }
     return () => {
@@ -76,7 +79,7 @@ export function useRunPipeline() {
   const filePathIsUndefined = useSelector(selectFilePathIsUndefined)
   const algorithmNodeNotExist = useSelector(selectAlgorithmNodeNotExist)
   const runPostData = useSelector(selectRunPostData)
-  const handleRunPipeline = React.useCallback(
+  const handleRunPipeline = useCallback(
     (name: string) => {
       dispatch(run({ runPostData: { name, ...runPostData, forceRunList: [] } }))
     },
@@ -85,22 +88,22 @@ export function useRunPipeline() {
   const handleClickVariant = (variant: VariantType, mess: string) => {
     enqueueSnackbar(mess, { variant })
   }
-  const handleRunPipelineByUid = React.useCallback(() => {
+  const handleRunPipelineByUid = useCallback(() => {
     dispatch(runByCurrentUid({ runPostData }))
   }, [dispatch, runPostData])
-  const handleCancelPipeline = React.useCallback(async () => {
+  const handleCancelPipeline = useCallback(async () => {
     if (uid != null) {
       const data = await dispatch(cancelResult({ uid }))
-      if ((data as any).error) {
+      if (isRejected(data)) {
         handleClickVariant(
-          'error',
-          'Failed to cancel workflow. Please try again.',
+          "error",
+          "Failed to cancel workflow. Please try again.",
         )
       }
     }
     //eslint-disable-next-line
   }, [dispatch, uid])
-  React.useEffect(() => {
+  useEffect(() => {
     const intervalId = setInterval(() => {
       if (isStartedSuccess && !isCanceled && uid != null) {
         dispatch(pollRunResult({ uid: uid }))
@@ -113,19 +116,19 @@ export function useRunPipeline() {
   const status = useSelector(selectPipelineStatus)
   const { enqueueSnackbar } = useSnackbar()
   // タブ移動による再レンダリングするたびにスナックバーが実行されてしまう挙動を回避するために前回の値を保持
-  const [prevStatus, setPrevStatus] = React.useState(status)
-  React.useEffect(() => {
+  const [prevStatus, setPrevStatus] = useState(status)
+  useEffect(() => {
     if (prevStatus !== status) {
       if (status === RUN_STATUS.FINISHED) {
-        enqueueSnackbar('Finished', { variant: 'success' })
+        enqueueSnackbar("Finished", { variant: "success" })
         dispatch(getExperiments())
       } else if (status === RUN_STATUS.START_SUCCESS) {
         dispatch(getExperiments())
       } else if (status === RUN_STATUS.ABORTED) {
-        enqueueSnackbar('Aborted', { variant: 'error' })
+        enqueueSnackbar("Aborted", { variant: "error" })
         dispatch(getExperiments())
       } else if (status === RUN_STATUS.CANCELED) {
-        enqueueSnackbar('Workflow canceled.', { variant: 'success' })
+        enqueueSnackbar("Workflow canceled.", { variant: "success" })
         dispatch(getExperiments())
       }
       setPrevStatus(status)

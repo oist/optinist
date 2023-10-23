@@ -1,4 +1,4 @@
-import { RootState } from 'store/store'
+import { RootState } from "store/store"
 
 const selectDisplayData = (state: RootState) => state.displayData
 
@@ -218,7 +218,7 @@ export const selectBarDataIsFulfilled =
     selectDisplayData(state).bar[filePath].fulfilled
 
 export const selectHTMLData = (filePath: string) => (state: RootState) =>
-  selectDisplayData(state).html[filePath]?.data ?? ''
+  selectDisplayData(state).html[filePath]?.data ?? ""
 
 export const selectHTMLMeta = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).html[filePath].meta

@@ -1,14 +1,15 @@
-import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
-import {
-  reproduceWorkflow,
-  importWorkflowConfig,
-  fetchWorkflow,
-} from 'store/slice/Workflow/WorkflowActions'
+import { createSlice, isAnyOf, PayloadAction } from "@reduxjs/toolkit"
+
 import {
   clearFlowElements,
   deleteFlowNodes,
   deleteFlowNodeById,
-} from '../FlowElement/FlowElementSlice'
+} from "store/slice/FlowElement/FlowElementSlice"
+import {
+  reproduceWorkflow,
+  importWorkflowConfig,
+  fetchWorkflow,
+} from "store/slice/Workflow/WorkflowActions"
 
 type RightDrawer = {
   open: boolean
@@ -17,10 +18,10 @@ type RightDrawer = {
 }
 
 export const RIGHT_DRAWER_MODE = {
-  NONE: 'none',
-  NWB: 'nwb',
-  PARAM_FORM: 'paramForm',
-  SNAKEMAKE: 'snakemake',
+  NONE: "none",
+  NWB: "nwb",
+  PARAM_FORM: "paramForm",
+  SNAKEMAKE: "snakemake",
 } as const
 
 export type RIGHT_DRAWER_MODE_TYPE =
@@ -32,7 +33,7 @@ const initialState: RightDrawer = {
   currendNodeId: null,
 }
 export const rightDrawerSlice = createSlice({
-  name: 'rightDrawer',
+  name: "rightDrawer",
   initialState,
   reducers: {
     openRightDrawer: (state, action: PayloadAction<RIGHT_DRAWER_MODE_TYPE>) => {

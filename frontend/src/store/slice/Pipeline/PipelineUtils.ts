@@ -1,7 +1,6 @@
-import { RunPostData, RunResultDTO, OutputPathsDTO } from 'api/run/Run'
-
-import { toDataType } from '../DisplayData/DisplayDataUtils'
-import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
+import { RunPostData, RunResultDTO, OutputPathsDTO } from "api/run/Run"
+import { toDataType } from "store/slice/DisplayData/DisplayDataUtils"
+import { NODE_TYPE_SET } from "store/slice/FlowElement/FlowElementType"
 import {
   RunResult,
   OutputPaths,
@@ -13,7 +12,7 @@ import {
   NodeResultError,
   NodeResultSuccess,
   NodeResult,
-} from './PipelineType'
+} from "store/slice/Pipeline/PipelineType"
 
 export function isNodeResultPending(
   nodeResult: NodeResult,
@@ -50,7 +49,7 @@ export function getInitialRunResult(runPostData: RunPostData) {
     .forEach(({ id, data }) => {
       initialResult[id] = {
         status: NODE_RESULT_STATUS.PENDING,
-        name: data?.label ?? '',
+        name: data?.label ?? "",
       }
     })
   return initialResult
@@ -60,14 +59,14 @@ export function convertToRunResult(dto: RunResultDTO) {
   const result: RunResult = {}
   Object.entries(dto).forEach(([nodeId, nodeResultDto]) => {
     const outputPath = nodeResultDto.outputPaths
-    if (nodeResultDto.status === 'success' && outputPath != null) {
+    if (nodeResultDto.status === "success" && outputPath != null) {
       result[nodeId] = {
         status: NODE_RESULT_STATUS.SUCCESS,
         message: nodeResultDto.message,
         name: nodeResultDto.name,
         outputPaths: convertToOutputPath(outputPath),
       }
-    } else if (nodeResultDto.status === 'running') {
+    } else if (nodeResultDto.status === "running") {
       result[nodeId] = {
         status: NODE_RESULT_STATUS.PENDING,
         name: nodeResultDto.name,

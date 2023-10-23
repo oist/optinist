@@ -1,6 +1,6 @@
-import { RootState } from 'store/store'
-import { selectAlgorithmName } from '../AlgorithmNode/AlgorithmNodeSelectors'
-import { getAlgoChild } from './AlgorithmListUtils'
+import { getAlgoChild } from "store/slice/AlgorithmList/AlgorithmListUtils"
+import { selectAlgorithmName } from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
+import { RootState } from "store/store"
 
 export const selectAlgorithmList = (state: RootState) => state.algorithmList
 

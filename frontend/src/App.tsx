@@ -1,20 +1,23 @@
-import React from 'react'
-import IconButton from '@mui/material/IconButton'
-import Close from '@mui/icons-material/Close'
-import { SnackbarProvider, SnackbarKey, useSnackbar } from 'notistack'
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
-import Layout from 'components/Layout'
-import Dashboard from 'pages/Dashboard'
-import Account from 'pages/Account'
-import AccountManager from 'pages/AccountManager'
-import AccountDelete from 'pages/AccountDelete'
-import Login from 'pages/Login'
-import ResetPassword from 'pages/ResetPassword'
-import Workspaces from 'pages/Workspace'
-import Workspace from 'pages/Workspace/Workspace'
-import { IS_STANDALONE } from 'const/Mode'
+import { FC } from "react"
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 
-const App: React.FC = () => {
+import { SnackbarProvider, SnackbarKey, useSnackbar } from "notistack"
+
+import Close from "@mui/icons-material/Close"
+import IconButton from "@mui/material/IconButton"
+
+import Layout from "components/Layout"
+import { IS_STANDALONE } from "const/Mode"
+import Account from "pages/Account"
+import AccountDelete from "pages/AccountDelete"
+import AccountManager from "pages/AccountManager"
+import Dashboard from "pages/Dashboard"
+import Login from "pages/Login"
+import ResetPassword from "pages/ResetPassword"
+import Workspaces from "pages/Workspace"
+import Workspace from "pages/Workspace/Workspace"
+
+const App: FC = () => {
   return (
     <SnackbarProvider
       maxSnack={5}
@@ -37,12 +40,18 @@ const App: React.FC = () => {
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/console" element={<Dashboard />} />
               <Route path="/console/account" element={<Account />} />
-              <Route path="/console/account-manager" element={<AccountManager />} />
+              <Route
+                path="/console/account-manager"
+                element={<AccountManager />}
+              />
               <Route path="/console/workspaces">
                 <Route path="" element={<Workspaces />} />
                 <Route path=":workspaceId" element={<Workspace />} />
               </Route>
-              <Route path="/console/*" element={<Navigate replace to="/console" />} />
+              <Route
+                path="/console/*"
+                element={<Navigate replace to="/console" />}
+              />
               <Route path="*" element={<Navigate replace to="/" />} />
             </Routes>
           )}
@@ -52,13 +61,13 @@ const App: React.FC = () => {
   )
 }
 
-const SnackbarCloseButton: React.FC<{ snackbarKey: SnackbarKey }> = ({
+const SnackbarCloseButton: FC<{ snackbarKey: SnackbarKey }> = ({
   snackbarKey,
 }) => {
   const { closeSnackbar } = useSnackbar()
   return (
     <IconButton onClick={() => closeSnackbar(snackbarKey)} size="large">
-      <Close style={{ color: 'white' }} />
+      <Close style={{ color: "white" }} />
     </IconButton>
   )
 }

@@ -1,20 +1,23 @@
-import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import RouteIcon from '@mui/icons-material/Route'
-import { updateParam } from 'store/slice/Snakemake/SnakemakeSlice'
-import { getSnakemakeParams } from 'store/slice/Snakemake/SnakemakeAction'
-import { toggleSnakemake } from 'store/slice/RightDrawer/RightDrawerSlice'
+import { memo, useEffect } from "react"
+import { useSelector, useDispatch } from "react-redux"
+
+import RouteIcon from "@mui/icons-material/Route"
+import { IconButton, Tooltip } from "@mui/material"
+
+import { createParamFormItemComponent } from "components/common/ParamFormItemCreator"
+import { toggleSnakemake } from "store/slice/RightDrawer/RightDrawerSlice"
+import { ParamItemProps } from "store/slice/RightDrawer/RightDrawerType"
+import { getSnakemakeParams } from "store/slice/Snakemake/SnakemakeAction"
 import {
   selectSnakemakeParam,
   selectSnakemakeParamsKeyList,
   selectSnakemakeParamsValue,
-} from 'store/slice/Snakemake/SnakemakeSelectors'
-import { arrayEqualityFn } from 'utils/EqualityUtils'
-import { createParamFormItemComponent } from 'components/common/ParamFormItemCreator'
-import { AppDispatch } from '../../../../store/store'
-import { IconButton, Tooltip } from '@mui/material'
+} from "store/slice/Snakemake/SnakemakeSelectors"
+import { updateParam } from "store/slice/Snakemake/SnakemakeSlice"
+import { AppDispatch } from "store/store"
+import { arrayEqualityFn } from "utils/EqualityUtils"
 
-export const SnakemakeButton = React.memo(() => {
+export const SnakemakeButton = memo(function SnakemakeButton() {
   const dispatch = useDispatch()
   const handleClick = () => {
     dispatch(toggleSnakemake())
@@ -28,7 +31,7 @@ export const SnakemakeButton = React.memo(() => {
   )
 })
 
-export const SnakemakeContents = React.memo(() => {
+export const SnakemakeContents = memo(function SnakemakeContents() {
   const dispatch = useDispatch<AppDispatch>()
   const paramKeyList = useSelector(
     selectSnakemakeParamsKeyList,
@@ -48,7 +51,7 @@ export const SnakemakeContents = React.memo(() => {
   )
 })
 
-const ParamItem = React.memo<{ paramKey: string }>(({ paramKey }) => {
+const ParamItem = memo(function ParamItem({ paramKey }: ParamItemProps) {
   const Component = createParamFormItemComponent({
     paramSelector: selectSnakemakeParam,
     paramValueSelector: selectSnakemakeParamsValue,

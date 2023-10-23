@@ -1,22 +1,25 @@
-import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, isAnyOf, PayloadAction } from "@reduxjs/toolkit"
 
-import { convertToParamMap, getChildParam } from 'utils/param/ParamUtils'
+import { isAlgorithmNodePostData } from "api/run/RunUtils"
+import { getAlgoParams } from "store/slice/AlgorithmNode/AlgorithmNodeActions"
+import {
+  ALGORITHM_NODE_SLICE_NAME,
+  AlgorithmNode,
+} from "store/slice/AlgorithmNode/AlgorithmNodeType"
+import { addAlgorithmNode } from "store/slice/FlowElement/FlowElementActions"
 import {
   clearFlowElements,
   deleteFlowNodes,
   deleteFlowNodeById,
-} from '../FlowElement/FlowElementSlice'
-import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
+} from "store/slice/FlowElement/FlowElementSlice"
+import { NODE_TYPE_SET } from "store/slice/FlowElement/FlowElementType"
+import { run, runByCurrentUid } from "store/slice/Pipeline/PipelineActions"
 import {
   reproduceWorkflow,
   importWorkflowConfig,
   fetchWorkflow,
-} from 'store/slice/Workflow/WorkflowActions'
-import { getAlgoParams } from './AlgorithmNodeActions'
-import { ALGORITHM_NODE_SLICE_NAME, AlgorithmNode } from './AlgorithmNodeType'
-import { isAlgorithmNodePostData } from 'api/run/RunUtils'
-import { run, runByCurrentUid } from '../Pipeline/PipelineActions'
-import { addAlgorithmNode } from '../FlowElement/FlowElementActions'
+} from "store/slice/Workflow/WorkflowActions"
+import { convertToParamMap, getChildParam } from "utils/param/ParamUtils"
 
 const initialState: AlgorithmNode = {}
 

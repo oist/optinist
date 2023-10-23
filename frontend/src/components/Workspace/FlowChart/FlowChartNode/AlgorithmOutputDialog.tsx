@@ -1,33 +1,41 @@
-import { useDispatch, useSelector } from 'react-redux'
-import Tabs, { tabsClasses } from '@mui/material/Tabs'
-import Tab from '@mui/material/Tab'
-import Dialog from '@mui/material/Dialog'
-import DialogTitle from '@mui/material/DialogTitle'
-import DialogContent from '@mui/material/DialogContent'
-import IconButton from '@mui/material/IconButton'
-import CloseIcon from '@mui/icons-material/Close'
-import Box from '@mui/material/Box'
-import React from 'react'
+import { memo, SyntheticEvent, useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
 
-import { arrayEqualityFn } from 'utils/EqualityUtils'
-import { selectAlgorithmName } from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
+import CloseIcon from "@mui/icons-material/Close"
+import Box from "@mui/material/Box"
+import Dialog from "@mui/material/Dialog"
+import DialogContent from "@mui/material/DialogContent"
+import DialogTitle from "@mui/material/DialogTitle"
+import IconButton from "@mui/material/IconButton"
+import Tab from "@mui/material/Tab"
+import Tabs, { tabsClasses } from "@mui/material/Tabs"
+
+import { DisplayDataItem } from "components/Workspace/Visualize/DisplayDataItem"
+import { selectAlgorithmName } from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
+import { NodeIdProps } from "store/slice/FlowElement/FlowElementType"
 import {
   selectPipelineNodeResultOutputKeyList,
   selectPipelineNodeResultOutputFileDataType,
   selectPipelineNodeResultOutputFilePath,
-} from 'store/slice/Pipeline/PipelineSelectors'
-import { selectVisualizeItemIdForWorkflowDialog } from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+} from "store/slice/Pipeline/PipelineSelectors"
+import { selectVisualizeItemIdForWorkflowDialog } from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import {
   addItemForWorkflowDialog,
   deleteAllItemForWorkflowDialog,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { DisplayDataItem } from 'components/Workspace/Visualize/DisplayDataItem'
+} from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { arrayEqualityFn } from "utils/EqualityUtils"
 
-export const AlgorithmOutputDialog = React.memo<{
+interface AlgorithmOutputDialogProps {
   open: boolean
   onClose: () => void
   nodeId: string
-}>(({ open, onClose, nodeId }) => {
+}
+
+export const AlgorithmOutputDialog = memo(function AlgorithmOutputDialog({
+  open,
+  onClose,
+  nodeId,
+}: AlgorithmOutputDialogProps) {
   const dispatch = useDispatch()
   const closeFn = () => {
     onClose()
@@ -49,10 +57,14 @@ export const AlgorithmOutputDialog = React.memo<{
   )
 })
 
-const TitleWithCloseButton = React.memo<{
+interface TitleWithCloseButtonProps extends NodeIdProps {
   onClose: () => void
-  nodeId: string
-}>(({ nodeId, onClose }) => {
+}
+
+const TitleWithCloseButton = memo(function TitleWithCloseButtonProps({
+  nodeId,
+  onClose,
+}: TitleWithCloseButtonProps) {
   const nodeName = useSelector(selectAlgorithmName(nodeId))
   return (
     <DialogTitle sx={{ m: 0, p: 2 }}>
@@ -60,7 +72,7 @@ const TitleWithCloseButton = React.memo<{
       <IconButton
         onClick={onClose}
         sx={{
-          position: 'absolute',
+          position: "absolute",
           right: 8,
           top: 10,
         }}
@@ -71,14 +83,12 @@ const TitleWithCloseButton = React.memo<{
   )
 })
 
-const OutputViewer = React.memo<{ nodeId: string }>(({ nodeId }) => {
+const OutputViewer = memo(function OutputViewer({ nodeId }: NodeIdProps) {
   const outputKeyList = useSelector(
     selectPipelineNodeResultOutputKeyList(nodeId),
     arrayEqualityFn,
   )
-  const [selectedOutoutKey, setSelectedOutputKey] = React.useState(
-    outputKeyList[0],
-  )
+  const [selectedOutoutKey, setSelectedOutputKey] = useState(outputKeyList[0])
   return (
     <>
       <OutputSelectTabs
@@ -91,12 +101,18 @@ const OutputViewer = React.memo<{ nodeId: string }>(({ nodeId }) => {
   )
 })
 
-const OutputSelectTabs = React.memo<{
+interface OutputSelectTabsProps {
   selectedOutoutKey: string
   outputKeyList: string[]
   onSelectOutput: (selectedKey: string) => void
-}>(({ selectedOutoutKey, outputKeyList, onSelectOutput }) => {
-  const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+}
+
+const OutputSelectTabs = memo(function OutputSelectTabs({
+  selectedOutoutKey,
+  outputKeyList,
+  onSelectOutput,
+}: OutputSelectTabsProps) {
+  const handleChange = (event: SyntheticEvent, newValue: string) => {
     onSelectOutput(newValue)
   }
   return (
@@ -107,16 +123,17 @@ const OutputSelectTabs = React.memo<{
       scrollButtons="auto"
       sx={{
         [`& .${tabsClasses.scrollButtons}`]: {
-          '&.Mui-disabled': { opacity: 0.3 },
+          "&.Mui-disabled": { opacity: 0.3 },
         },
       }}
     >
       {outputKeyList.map((outputKey) => (
         <Tab
+          key={outputKey}
           value={outputKey}
           label={outputKey}
           sx={{
-            textTransform: 'none',
+            textTransform: "none",
           }}
         />
       ))}
@@ -124,32 +141,37 @@ const OutputSelectTabs = React.memo<{
   )
 })
 
-const DisplayDataView = React.memo<{ nodeId: string; outputKey: string }>(
-  ({ nodeId, outputKey }) => {
-    const dispatch = useDispatch()
-    const filePath = useSelector(
-      selectPipelineNodeResultOutputFilePath(nodeId, outputKey),
-    )
-    const dataType = useSelector(
-      selectPipelineNodeResultOutputFileDataType(nodeId, outputKey),
-    )
-    const itemId = useSelector(
-      selectVisualizeItemIdForWorkflowDialog(nodeId, filePath, dataType),
-    )
-    React.useEffect(() => {
-      if (itemId === null) {
-        dispatch(addItemForWorkflowDialog({ nodeId, filePath, dataType }))
-      }
-    }, [dispatch, nodeId, filePath, dataType, itemId])
-    return (
-      <Box
-        sx={{
-          mx: 1,
-          my: 2,
-        }}
-      >
-        {itemId != null && <DisplayDataItem itemId={itemId} />}
-      </Box>
-    )
-  },
-)
+interface DisplayDataViewProps extends NodeIdProps {
+  outputKey: string
+}
+
+const DisplayDataView = memo(function DisplayDataView({
+  nodeId,
+  outputKey,
+}: DisplayDataViewProps) {
+  const dispatch = useDispatch()
+  const filePath = useSelector(
+    selectPipelineNodeResultOutputFilePath(nodeId, outputKey),
+  )
+  const dataType = useSelector(
+    selectPipelineNodeResultOutputFileDataType(nodeId, outputKey),
+  )
+  const itemId = useSelector(
+    selectVisualizeItemIdForWorkflowDialog(nodeId, filePath, dataType),
+  )
+  useEffect(() => {
+    if (itemId === null) {
+      dispatch(addItemForWorkflowDialog({ nodeId, filePath, dataType }))
+    }
+  }, [dispatch, nodeId, filePath, dataType, itemId])
+  return (
+    <Box
+      sx={{
+        mx: 1,
+        my: 2,
+      }}
+    >
+      {itemId != null && <DisplayDataItem itemId={itemId} />}
+    </Box>
+  )
+})
