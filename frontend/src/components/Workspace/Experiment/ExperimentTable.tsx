@@ -248,6 +248,7 @@ const TableImple = memo(function TableImple() {
           <Table aria-label="collapsible table">
             <HeadItem
               order={order}
+              sortTarget={sortTarget}
               sortHandler={sortHandler}
               allCheckIndeterminate={
                 checkedList.length !== 0 &&
@@ -323,6 +324,7 @@ const TableImple = memo(function TableImple() {
 
 interface HeadItemProps {
   order: Order
+  sortTarget: keyof ExperimentSortKeys
   sortHandler: (property: keyof ExperimentSortKeys) => () => void
   allChecked: boolean
   onChangeAllCheck: (checked: boolean) => void
@@ -333,6 +335,7 @@ interface HeadItemProps {
 
 const HeadItem = memo(function HeadItem({
   order,
+  sortTarget,
   sortHandler,
   allChecked,
   onChangeAllCheck,
@@ -354,7 +357,7 @@ const HeadItem = memo(function HeadItem({
         <TableCell />
         <TableCell>
           <TableSortLabel
-            active
+            active={sortTarget === "startedAt"}
             direction={order}
             onClick={sortHandler("startedAt")}
           >
@@ -362,13 +365,17 @@ const HeadItem = memo(function HeadItem({
           </TableSortLabel>
         </TableCell>
         <TableCell>
-          <TableSortLabel active direction={order} onClick={sortHandler("uid")}>
+          <TableSortLabel
+            active={sortTarget === "uid"}
+            direction={order}
+            onClick={sortHandler("uid")}
+          >
             ID
           </TableSortLabel>
         </TableCell>
         <TableCell>
           <TableSortLabel
-            active
+            active={sortTarget === "name"}
             direction={order}
             onClick={sortHandler("name")}
           >
