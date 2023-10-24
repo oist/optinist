@@ -28,7 +28,11 @@ import {
   selectAlgoArgs,
   selectAlgoReturns,
 } from "store/slice/AlgorithmList/AlgorithmListSelectors"
-import { selectAlgorithmNodeDefined } from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
+import {
+  selectAlgorithmIsUpdated,
+  selectAlgorithmNodeDefined,
+} from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
+import { selectAncestorNodesIsUpdatedById } from "store/slice/FlowElement/FlowElementSelectors"
 import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
 import { NodeData, NodeIdProps } from "store/slice/FlowElement/FlowElementType"
 import {
@@ -77,9 +81,17 @@ const AlgorithmNodeImple = memo(function AlgorithmNodeImple({
   }
 
   const status = useStatus(nodeId)
+  const workflowId = useSelector(selectPipelineLatestUid)
+  const selfIsUpdated = useSelector(selectAlgorithmIsUpdated(nodeId))
+  const ancestorIsUpdated = useSelector(
+    selectAncestorNodesIsUpdatedById(nodeId),
+  )
+
+  const updated =
+    typeof workflowId !== "undefined" && (selfIsUpdated || ancestorIsUpdated)
 
   return (
-    <NodeContainer nodeId={nodeId} selected={elementSelected}>
+    <NodeContainer nodeId={nodeId} selected={elementSelected} updated={updated}>
       <button
         className="flowbutton"
         onClick={onClickDeleteIcon}

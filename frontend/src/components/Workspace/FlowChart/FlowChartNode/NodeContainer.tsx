@@ -8,16 +8,29 @@ export const NodeContainer: FC<{
   children: ReactNode
   nodeId: string
   selected: boolean
-}> = ({ children, nodeId, selected }) => {
+  updated?: boolean
+}> = ({ children, nodeId, selected, updated }) => {
   const theme = useTheme()
+
+  let backgroundColor
+  if (updated) {
+    if (selected) {
+      backgroundColor = alpha(theme.palette.warning.light, 0.3)
+    } else {
+      backgroundColor = alpha(theme.palette.warning.light, 0.1)
+    }
+  } else {
+    if (selected) {
+      backgroundColor = alpha(theme.palette.primary.light, 0.2)
+    }
+  }
+
   return (
     <div
       style={{
         height: "100%",
         width: "100%",
-        background: selected
-          ? alpha(theme.palette.primary.light, 0.1)
-          : undefined,
+        background: backgroundColor,
         display: "flex",
         flexDirection: "column",
       }}
