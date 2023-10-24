@@ -19,6 +19,7 @@ export const addAlgorithmNode = createAsyncThunk<
     node: AddingNodeData
     functionPath: string
     name: string
+    runAlready?: boolean
   }
 >(`${FLOW_ELEMENT_SLICE_NAME}/addAlgorithmNode`, async ({ name }, thunkAPI) => {
   try {

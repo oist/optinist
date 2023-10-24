@@ -35,6 +35,7 @@ import {
   NODE_TYPE_SET,
 } from "store/slice/FlowElement/FlowElementType"
 import { FILE_TYPE, FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
+import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
 import { AppDispatch } from "store/store"
 import { getNanoId } from "utils/nanoid/NanoIdUtils"
 
@@ -42,6 +43,8 @@ export const AlgorithmTreeView = memo(function AlgorithmTreeView() {
   const dispatch = useDispatch<AppDispatch>()
   const algoList = useSelector(selectAlgorithmListTree)
   const isLatest = useSelector(selectAlgorithmListIsLated)
+  const workflowId = useSelector(selectPipelineLatestUid)
+  const runAlready = typeof workflowId !== "undefined"
 
   useEffect(() => {
     if (!isLatest) {
@@ -67,10 +70,11 @@ export const AlgorithmTreeView = memo(function AlgorithmTreeView() {
           node: newNode,
           name,
           functionPath,
+          runAlready,
         }),
       )
     },
-    [dispatch],
+    [dispatch, runAlready],
   )
 
   return (

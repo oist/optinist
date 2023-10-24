@@ -53,14 +53,14 @@ export const algorithmNodeSlice = createSlice({
         state[nodeId].params = convertToParamMap(action.payload)
       })
       .addCase(addAlgorithmNode.fulfilled, (state, action) => {
-        const { node, functionPath, name } = action.meta.arg
+        const { node, functionPath, name, runAlready } = action.meta.arg
         const params = action.payload
         if (node.data?.type === NODE_TYPE_SET.ALGORITHM) {
           state[node.id] = {
             functionPath,
             name,
             params: convertToParamMap(params),
-            isUpdated: false,
+            isUpdated: runAlready ?? false,
           }
         }
       })
