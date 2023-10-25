@@ -29,19 +29,19 @@ import "reactflow/dist/style.css"
 import "style/flow.css"
 import { FormHelperText, Popover } from "@mui/material"
 
-import { FileSelectDialog } from "components/common/FileSelectDialog"
+import { AlgorithmOutputDialog } from "components/Workspace/FlowChart/Dialog/AlgorithmOutputDialog"
 import {
   DialogContext,
   ErrorDialogValue,
   FileSelectDialogValue,
-} from "components/Workspace/FlowChart/DialogContext"
+} from "components/Workspace/FlowChart/Dialog/DialogContext"
+import { FileSelectDialog } from "components/Workspace/FlowChart/Dialog/FileSelectDialog"
 import {
   DND_ITEM_TYPE_SET,
   TreeItemCollectedProps,
   TreeItemDragObject,
   TreeItemDropResult,
 } from "components/Workspace/FlowChart/DnDItemType"
-import { AlgorithmOutputDialog } from "components/Workspace/FlowChart/FlowChartNode/AlgorithmOutputDialog"
 import {
   reactFlowEdgeTypes,
   reactFlowNodeTypes,

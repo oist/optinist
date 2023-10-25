@@ -16,7 +16,7 @@ import {
 } from "@mui/material"
 
 import { AlgorithmInfo } from "api/algolist/AlgoList"
-import { DialogContext } from "components/Workspace/FlowChart/DialogContext"
+import { DialogContext } from "components/Workspace/FlowChart/Dialog/DialogContext"
 import {
   toHandleId,
   isValidConnection,

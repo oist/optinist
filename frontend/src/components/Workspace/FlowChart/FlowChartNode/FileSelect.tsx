@@ -4,7 +4,7 @@ import { Button, Tooltip, Typography } from "@mui/material"
 import ButtonGroup from "@mui/material/ButtonGroup"
 
 import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from "api/files/Files"
-import { DialogContext } from "components/Workspace/FlowChart/DialogContext"
+import { DialogContext } from "components/Workspace/FlowChart/Dialog/DialogContext"
 import { LinearProgressWithLabel } from "components/Workspace/FlowChart/FlowChartNode/LinerProgressWithLabel"
 import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
 import { getLabelByPath } from "store/slice/FlowElement/FlowElementUtils"
