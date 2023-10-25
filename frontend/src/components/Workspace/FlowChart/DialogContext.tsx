@@ -2,7 +2,7 @@ import { createContext } from "react"
 
 import { FILE_TREE_TYPE } from "api/files/Files"
 
-export declare type OpenDialogValue = {
+export declare type FileSelectDialogValue = {
   filePath: string | string[]
   open: boolean
   fileTreeType?: FILE_TREE_TYPE
@@ -16,11 +16,11 @@ export declare type ErrorDialogValue = {
 }
 
 export const DialogContext = createContext<{
-  onOpen: (nodeId: string) => void
-  onOpenDialogFile: (value: OpenDialogValue) => void
+  onOpenOutputDialog: (nodeId: string) => void
+  onOpenFileSelectDialog: (value: FileSelectDialogValue) => void
   onMessageError: (value: ErrorDialogValue) => void
 }>({
-  onOpen: () => null,
-  onOpenDialogFile: () => null,
+  onOpenOutputDialog: () => null,
+  onOpenFileSelectDialog: () => null,
   onMessageError: () => null,
 })

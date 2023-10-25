@@ -79,7 +79,7 @@ export const FileSelectImple = memo(function FileSelectImple({
   selectButtonLabel,
   uploadButtonLabel,
 }: FileSelectImpleProps) {
-  const { onOpenDialogFile } = useContext(DialogContext)
+  const { onOpenFileSelectDialog } = useContext(DialogContext)
 
   const onFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
@@ -105,7 +105,7 @@ export const FileSelectImple = memo(function FileSelectImple({
         <Button
           variant="outlined"
           onClick={() => {
-            onOpenDialogFile({
+            onOpenFileSelectDialog({
               open: true,
               multiSelect,
               filePath,

@@ -33,7 +33,7 @@ import { FileSelectDialog } from "components/common/FileSelectDialog"
 import {
   DialogContext,
   ErrorDialogValue,
-  OpenDialogValue,
+  FileSelectDialogValue,
 } from "components/Workspace/FlowChart/DialogContext"
 import {
   DND_ITEM_TYPE_SET,
@@ -82,7 +82,8 @@ export const ReactFlowComponent = memo(function ReactFlowComponent(
   const egdes = flowEdges.filter((item) => !isNode(item)) as Edge<NodeData>[]
   const dispatch = useDispatch()
   const [dialogNodeId, setDialogNodeId] = useState("")
-  const [dialogFile, setDialogFile] = useState<OpenDialogValue>(initDialogFile)
+  const [dialogFile, setDialogFile] =
+    useState<FileSelectDialogValue>(initDialogFile)
   const [messageError, setMessageError] = useState<ErrorDialogValue>({
     anchorElRef: { current: null },
     message: "",
@@ -167,8 +168,8 @@ export const ReactFlowComponent = memo(function ReactFlowComponent(
     <div className="flow">
       <DialogContext.Provider
         value={{
-          onOpen: setDialogNodeId,
-          onOpenDialogFile: setDialogFile,
+          onOpenOutputDialog: setDialogNodeId,
+          onOpenFileSelectDialog: setDialogFile,
           onMessageError: setMessageError,
         }}
       >

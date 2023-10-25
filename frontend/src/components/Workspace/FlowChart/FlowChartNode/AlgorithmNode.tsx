@@ -65,7 +65,7 @@ const AlgorithmNodeImple = memo(function AlgorithmNodeImple({
   isConnectable,
   data,
 }: NodeProps<NodeData>) {
-  const { onOpen } = useContext(DialogContext)
+  const { onOpenOutputDialog } = useContext(DialogContext)
   const dispatch = useDispatch()
 
   const onClickParamButton = () => {
@@ -77,7 +77,7 @@ const AlgorithmNodeImple = memo(function AlgorithmNodeImple({
   }
 
   const onClickOutputButton = () => {
-    onOpen(nodeId)
+    onOpenOutputDialog(nodeId)
   }
 
   const status = useStatus(nodeId)
