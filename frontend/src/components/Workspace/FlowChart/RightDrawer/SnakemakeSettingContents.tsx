@@ -41,6 +41,7 @@ const ParamItem = memo(function ParamItem({ paramKey }: ParamItemProps) {
     paramValueSelector: selectSnakemakeParamsValue,
     paramUpdateActionCreator: (path, newValue) =>
       updateParam({ path, newValue }),
+    requireConfirm: true,
   })
   return <Component paramKey={paramKey} />
 })

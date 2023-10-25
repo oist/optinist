@@ -1,4 +1,4 @@
-import { ChangeEvent, FC, memo, useRef } from "react"
+import { ChangeEvent, FC, memo, useContext, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
@@ -11,6 +11,8 @@ import Typography from "@mui/material/Typography"
 import { AnyAction } from "@reduxjs/toolkit"
 
 import { Accordion } from "components/common/Accordion"
+import { DialogContext } from "components/Workspace/FlowChart/Dialog/DialogContext"
+import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
 import { RootState } from "store/store"
 import { ParamType } from "utils/param/ParamType"
 import { isParamChild } from "utils/param/ParamUtils"
@@ -26,12 +28,14 @@ export type CreateParamFormItemComponentProps = {
   paramSelector: ParamSelectorType
   paramValueSelector: ParamValueSelectorType
   paramUpdateActionCreator: ParamUpdateActionCreatorType
+  requireConfirm?: boolean
 }
 
 export function createParamFormItemComponent({
   paramSelector,
   paramValueSelector,
   paramUpdateActionCreator,
+  requireConfirm,
 }: CreateParamFormItemComponentProps): FC<{ paramKey: string }> {
   function useParamValueUpdate(
     path: string,
@@ -42,29 +46,52 @@ export function createParamFormItemComponent({
     }
     return [value, updateParamAction]
   }
+
   const ParamItemForString = memo(function ParamItemForString({
     path,
   }: ParamChildItemProps) {
     const dispatch = useDispatch()
     const [value, updateParamAction] = useParamValueUpdate(path)
     const isArray = useRef(Array.isArray(value))
+    const currentWorkflowId = useSelector(selectPipelineLatestUid)
+    const { onOpenClearWorkflowIdDialog } = useContext(DialogContext)
+
     const onChange = (
       e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
     ) => {
       const newValue = e.target.value as string
-      dispatch(updateParamAction(newValue))
+      if (requireConfirm && currentWorkflowId != null) {
+        onOpenClearWorkflowIdDialog({
+          open: true,
+          handleOk: () => {
+            dispatch(updateParamAction(newValue))
+          },
+          handleCancel: () => null,
+        })
+      } else {
+        dispatch(updateParamAction(newValue))
+      }
     }
+
+    const splitValue = (value: string) =>
+      value
+        .split(",")
+        .filter(Boolean)
+        .map((e) => Number(e))
 
     const onBlur = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
       const newValue = e.target.value as string
-      dispatch(
-        updateParamAction(
-          newValue
-            .split(",")
-            .filter(Boolean)
-            .map((e) => Number(e)),
-        ),
-      )
+      if (requireConfirm && currentWorkflowId != null) {
+        onOpenClearWorkflowIdDialog({
+          open: true,
+          handleOk: () => {
+            dispatch(updateParamAction(splitValue(newValue)))
+          },
+          handleCancel: () => null,
+        })
+      } else {
+        dispatch(updateParamAction(splitValue(newValue)))
+      }
     }
     return (
       <TextField
@@ -75,17 +102,31 @@ export function createParamFormItemComponent({
       />
     )
   })
+
   const ParamItemForNumber = memo(function ParamItemForNumber({
     path,
   }: ParamChildItemProps) {
     const dispatch = useDispatch()
     const [value, updateParamAction] = useParamValueUpdate(path)
+    const currentWorkflowId = useSelector(selectPipelineLatestUid)
+    const { onOpenClearWorkflowIdDialog } = useContext(DialogContext)
+
     if (typeof value === "number") {
       const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         const newValue =
           event.target.value === "" ? "" : Number(event.target.value)
         if (typeof newValue === "number") {
-          dispatch(updateParamAction(newValue))
+          if (requireConfirm && currentWorkflowId != null) {
+            onOpenClearWorkflowIdDialog({
+              open: true,
+              handleOk: () => {
+                dispatch(updateParamAction(newValue))
+              },
+              handleCancel: () => null,
+            })
+          } else {
+            dispatch(updateParamAction(newValue))
+          }
         }
       }
       return (
@@ -102,20 +143,35 @@ export function createParamFormItemComponent({
       return null
     }
   })
+
   const ParamItemForBoolean = memo(function ParamItemForBoolean({
     path,
   }: ParamChildItemProps) {
     const dispatch = useDispatch()
     const [value, updateParamAction] = useParamValueUpdate(path)
+    const currentWorkflowId = useSelector(selectPipelineLatestUid)
+    const { onOpenClearWorkflowIdDialog } = useContext(DialogContext)
+
     if (typeof value === "boolean") {
       const onChange = () => {
-        dispatch(updateParamAction(!value))
+        if (requireConfirm && currentWorkflowId != null) {
+          onOpenClearWorkflowIdDialog({
+            open: true,
+            handleOk: () => {
+              dispatch(updateParamAction(!value))
+            },
+            handleCancel: () => null,
+          })
+        } else {
+          dispatch(updateParamAction(!value))
+        }
       }
       return <Switch checked={value} onChange={onChange} />
     } else {
       return null
     }
   })
+
   const ParamItemForValueType = memo(function ParamItemForValueType({
     path,
   }: ParamChildItemProps) {
@@ -130,6 +186,7 @@ export function createParamFormItemComponent({
       return <ParamItemForString path={path} />
     }
   })
+
   const ParamChildItem = memo(function ParamChildItem({
     path,
     name,
@@ -159,6 +216,7 @@ export function createParamFormItemComponent({
       </Box>
     )
   })
+
   const ParamItem = memo(function ParamItem({
     paramKey,
     param,
@@ -182,6 +240,7 @@ export function createParamFormItemComponent({
       )
     }
   })
+
   return memo(function CreateParamFormItemComponen({
     paramKey,
   }: ParamKeyProps) {
