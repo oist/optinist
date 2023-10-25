@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux"
 import Typography from "@mui/material/Typography"
 
 import { createParamFormItemComponent } from "components/common/ParamFormItemCreator"
-import { ParamFormContext } from "components/Workspace/FlowChart/RightDrawer"
+import { ParamFormContext } from "components/Workspace/FlowChart/RightDrawer/ParamFormContents"
 import { getAlgoParams } from "store/slice/AlgorithmNode/AlgorithmNodeActions"
 import {
   selectAlgorithmName,
