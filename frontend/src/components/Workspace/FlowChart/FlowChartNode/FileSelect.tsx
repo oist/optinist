@@ -1,4 +1,5 @@
 import { ChangeEvent, memo, useContext, useRef } from "react"
+import { useSelector } from "react-redux"
 
 import { Button, Tooltip, Typography } from "@mui/material"
 import ButtonGroup from "@mui/material/ButtonGroup"
@@ -9,6 +10,7 @@ import { LinearProgressWithLabel } from "components/Workspace/FlowChart/FlowChar
 import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
 import { getLabelByPath } from "store/slice/FlowElement/FlowElementUtils"
 import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
+import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
 
 interface FileSelectProps {
   multiSelect?: boolean
@@ -79,7 +81,9 @@ export const FileSelectImple = memo(function FileSelectImple({
   selectButtonLabel,
   uploadButtonLabel,
 }: FileSelectImpleProps) {
-  const { onOpenFileSelectDialog } = useContext(DialogContext)
+  const { onOpenFileSelectDialog, onOpenClearWorkflowIdDialog } =
+    useContext(DialogContext)
+  const currentWorkflowId = useSelector(selectPipelineLatestUid)
 
   const onFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
@@ -92,9 +96,23 @@ export const FileSelectImple = memo(function FileSelectImple({
     }
   }
   const inputRef = useRef<HTMLInputElement>(null)
-  const onClick = () => {
+  const clickInput = () => {
     if (inputRef.current != null) {
       inputRef.current.click()
+    }
+  }
+
+  const onClick = () => {
+    if (currentWorkflowId != null) {
+      onOpenClearWorkflowIdDialog({
+        open: true,
+        handleOk: () => {
+          clickInput()
+        },
+        handleCancel: () => {},
+      })
+    } else {
+      clickInput()
     }
   }
   const accept = getFileInputAccept(fileTreeType)

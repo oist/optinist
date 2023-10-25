@@ -10,6 +10,12 @@ export declare type FileSelectDialogValue = {
   onSelectFile: (path: string | string[]) => void
 }
 
+export declare type ClearWorkflowIdDialogValue = {
+  open: boolean
+  handleOk: () => void
+  handleCancel: () => void
+}
+
 export declare type ErrorDialogValue = {
   anchorElRef: { current: Element | null }
   message: string
@@ -18,9 +24,11 @@ export declare type ErrorDialogValue = {
 export const DialogContext = createContext<{
   onOpenOutputDialog: (nodeId: string) => void
   onOpenFileSelectDialog: (value: FileSelectDialogValue) => void
+  onOpenClearWorkflowIdDialog: (value: ClearWorkflowIdDialogValue) => void
   onMessageError: (value: ErrorDialogValue) => void
 }>({
   onOpenOutputDialog: () => null,
   onOpenFileSelectDialog: () => null,
+  onOpenClearWorkflowIdDialog: () => null,
   onMessageError: () => null,
 })

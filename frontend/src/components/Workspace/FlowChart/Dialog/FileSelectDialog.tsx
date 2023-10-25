@@ -1,4 +1,4 @@
-import { memo, SyntheticEvent, useEffect, useState } from "react"
+import { memo, SyntheticEvent, useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import FolderIcon from "@mui/icons-material/Folder"
@@ -16,6 +16,7 @@ import Typography from "@mui/material/Typography"
 import { TreeView, TreeItem } from "@mui/x-tree-view"
 
 import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from "api/files/Files"
+import { DialogContext } from "components/Workspace/FlowChart/Dialog/DialogContext"
 import { getFilesTree } from "store/slice/FilesTree/FilesTreeAction"
 import {
   selectFilesIsLatest,
@@ -27,6 +28,7 @@ import {
   getNodeByPath,
   isDirNodeByPath,
 } from "store/slice/FilesTree/FilesTreeUtils"
+import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
 import { AppDispatch } from "store/store"
 
@@ -52,13 +54,26 @@ export const FileSelectDialog = memo(function FileSelectDialog({
   useEffect(() => {
     setSelectedFilePath(initialFilePath)
   }, [initialFilePath])
+  const { onOpenClearWorkflowIdDialog } = useContext(DialogContext)
+  const currentWorkflowId = useSelector(selectPipelineLatestUid)
   const [selectedFilePath, setSelectedFilePath] = useState(initialFilePath)
+
   const onCancel = () => {
     setSelectedFilePath(initialFilePath) // 選択内容を反映させない
     onClickCancel()
   }
   const onOk = () => {
-    onClickOk(selectedFilePath)
+    if (currentWorkflowId != null) {
+      onOpenClearWorkflowIdDialog({
+        open: true,
+        handleOk: () => {
+          onClickOk(selectedFilePath)
+        },
+        handleCancel: () => onCancel(),
+      })
+    } else {
+      onClickOk(selectedFilePath)
+    }
   }
   const theme = useTheme()
   return (

@@ -30,7 +30,9 @@ import "style/flow.css"
 import { FormHelperText, Popover } from "@mui/material"
 
 import { AlgorithmOutputDialog } from "components/Workspace/FlowChart/Dialog/AlgorithmOutputDialog"
+import { ClearWorkflowIdDialog } from "components/Workspace/FlowChart/Dialog/ClearWorkflowIdDialog"
 import {
+  ClearWorkflowIdDialogValue,
   DialogContext,
   ErrorDialogValue,
   FileSelectDialogValue,
@@ -61,6 +63,7 @@ import {
 } from "store/slice/FlowElement/FlowElementSlice"
 import { NodeData } from "store/slice/FlowElement/FlowElementType"
 import { UseRunPipelineReturnType } from "store/slice/Pipeline/PipelineHook"
+import { clearCurrentPipeline } from "store/slice/Pipeline/PipelineSlice"
 
 const initDialogFile = {
   filePath: "",
@@ -68,6 +71,12 @@ const initDialogFile = {
   fileTreeType: undefined,
   multiSelect: false,
   onSelectFile: () => null,
+}
+
+const initClearWorkflow = {
+  open: false,
+  handleOk: () => null,
+  handleCancel: () => null,
 }
 
 const ReactFlowProviderComponent = ReactFlowProvider as FC<{
@@ -84,6 +93,8 @@ export const ReactFlowComponent = memo(function ReactFlowComponent(
   const [dialogNodeId, setDialogNodeId] = useState("")
   const [dialogFile, setDialogFile] =
     useState<FileSelectDialogValue>(initDialogFile)
+  const [dialogClearWorkflowId, setDialogClearWorkflowId] =
+    useState<ClearWorkflowIdDialogValue>(initClearWorkflow)
   const [messageError, setMessageError] = useState<ErrorDialogValue>({
     anchorElRef: { current: null },
     message: "",
@@ -170,6 +181,7 @@ export const ReactFlowComponent = memo(function ReactFlowComponent(
         value={{
           onOpenOutputDialog: setDialogNodeId,
           onOpenFileSelectDialog: setDialogFile,
+          onOpenClearWorkflowIdDialog: setDialogClearWorkflowId,
           onMessageError: setMessageError,
         }}
       >
@@ -219,6 +231,20 @@ export const ReactFlowComponent = memo(function ReactFlowComponent(
               setDialogFile(initDialogFile)
             }}
             fileType={dialogFile.fileTreeType}
+          />
+        )}
+        {dialogClearWorkflowId.open && (
+          <ClearWorkflowIdDialog
+            open={dialogClearWorkflowId.open}
+            handleOk={() => {
+              dispatch(clearCurrentPipeline())
+              dialogClearWorkflowId.handleOk()
+              setDialogClearWorkflowId(initClearWorkflow)
+            }}
+            handleCancel={() => {
+              dialogClearWorkflowId.handleCancel()
+              setDialogClearWorkflowId(initClearWorkflow)
+            }}
           />
         )}
         {messageError?.message && (
