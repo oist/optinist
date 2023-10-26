@@ -18,3 +18,28 @@ export const selectNodeTypeById = (nodeId: string) => (state: RootState) =>
 
 export const selectNodeLabelById = (nodeId: string) => (state: RootState) =>
   selectNodeById(nodeId)(state)?.data?.label
+
+const selectParentNodeIdsById = (nodeId: string) => (state: RootState) =>
+  selectFlowEdges(state)
+    .filter((edge) => edge.target === nodeId)
+    .map((edge) => edge.source)
+
+const selectNodeIsUpdated = (nodeId: string) => (state: RootState) =>
+  state.algorithmNode[nodeId]?.isUpdated ?? false
+
+export const selectAncestorNodesIsUpdatedById =
+  (nodeId: string) =>
+  (state: RootState): boolean => {
+    const parentNodes = selectParentNodeIdsById(nodeId)(state)
+    if (parentNodes.length === 0) {
+      return false
+    } else {
+      if (parentNodes.some((id) => selectNodeIsUpdated(id)(state))) {
+        return true
+      } else {
+        return parentNodes.some((id) =>
+          selectAncestorNodesIsUpdatedById(id)(state),
+        )
+      }
+    }
+  }

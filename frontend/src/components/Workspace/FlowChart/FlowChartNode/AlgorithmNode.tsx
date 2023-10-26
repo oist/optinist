@@ -16,7 +16,7 @@ import {
 } from "@mui/material"
 
 import { AlgorithmInfo } from "api/algolist/AlgoList"
-import { DialogContext } from "components/Workspace/FlowChart/DialogContext"
+import { DialogContext } from "components/Workspace/FlowChart/Dialog/DialogContext"
 import {
   toHandleId,
   isValidConnection,
@@ -28,7 +28,11 @@ import {
   selectAlgoArgs,
   selectAlgoReturns,
 } from "store/slice/AlgorithmList/AlgorithmListSelectors"
-import { selectAlgorithmNodeDefined } from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
+import {
+  selectAlgorithmIsUpdated,
+  selectAlgorithmNodeDefined,
+} from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
+import { selectAncestorNodesIsUpdatedById } from "store/slice/FlowElement/FlowElementSelectors"
 import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
 import { NodeData, NodeIdProps } from "store/slice/FlowElement/FlowElementType"
 import {
@@ -61,7 +65,7 @@ const AlgorithmNodeImple = memo(function AlgorithmNodeImple({
   isConnectable,
   data,
 }: NodeProps<NodeData>) {
-  const { onOpen } = useContext(DialogContext)
+  const { onOpenOutputDialog } = useContext(DialogContext)
   const dispatch = useDispatch()
 
   const onClickParamButton = () => {
@@ -73,13 +77,21 @@ const AlgorithmNodeImple = memo(function AlgorithmNodeImple({
   }
 
   const onClickOutputButton = () => {
-    onOpen(nodeId)
+    onOpenOutputDialog(nodeId)
   }
 
   const status = useStatus(nodeId)
+  const workflowId = useSelector(selectPipelineLatestUid)
+  const selfIsUpdated = useSelector(selectAlgorithmIsUpdated(nodeId))
+  const ancestorIsUpdated = useSelector(
+    selectAncestorNodesIsUpdatedById(nodeId),
+  )
+
+  const updated =
+    typeof workflowId !== "undefined" && (selfIsUpdated || ancestorIsUpdated)
 
   return (
-    <NodeContainer nodeId={nodeId} selected={elementSelected}>
+    <NodeContainer nodeId={nodeId} selected={elementSelected} updated={updated}>
       <button
         className="flowbutton"
         onClick={onClickDeleteIcon}

@@ -1,14 +1,16 @@
 import { ChangeEvent, memo, useContext, useRef } from "react"
+import { useSelector } from "react-redux"
 
 import { Button, Tooltip, Typography } from "@mui/material"
 import ButtonGroup from "@mui/material/ButtonGroup"
 
 import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from "api/files/Files"
-import { DialogContext } from "components/Workspace/FlowChart/DialogContext"
+import { DialogContext } from "components/Workspace/FlowChart/Dialog/DialogContext"
 import { LinearProgressWithLabel } from "components/Workspace/FlowChart/FlowChartNode/LinerProgressWithLabel"
 import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
 import { getLabelByPath } from "store/slice/FlowElement/FlowElementUtils"
 import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
+import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
 
 interface FileSelectProps {
   multiSelect?: boolean
@@ -79,7 +81,9 @@ export const FileSelectImple = memo(function FileSelectImple({
   selectButtonLabel,
   uploadButtonLabel,
 }: FileSelectImpleProps) {
-  const { onOpenDialogFile } = useContext(DialogContext)
+  const { onOpenFileSelectDialog, onOpenClearWorkflowIdDialog } =
+    useContext(DialogContext)
+  const currentWorkflowId = useSelector(selectPipelineLatestUid)
 
   const onFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
@@ -92,9 +96,23 @@ export const FileSelectImple = memo(function FileSelectImple({
     }
   }
   const inputRef = useRef<HTMLInputElement>(null)
-  const onClick = () => {
+  const clickInput = () => {
     if (inputRef.current != null) {
       inputRef.current.click()
+    }
+  }
+
+  const onClick = () => {
+    if (currentWorkflowId != null) {
+      onOpenClearWorkflowIdDialog({
+        open: true,
+        handleOk: () => {
+          clickInput()
+        },
+        handleCancel: () => {},
+      })
+    } else {
+      clickInput()
     }
   }
   const accept = getFileInputAccept(fileTreeType)
@@ -105,7 +123,7 @@ export const FileSelectImple = memo(function FileSelectImple({
         <Button
           variant="outlined"
           onClick={() => {
-            onOpenDialogFile({
+            onOpenFileSelectDialog({
               open: true,
               multiSelect,
               filePath,

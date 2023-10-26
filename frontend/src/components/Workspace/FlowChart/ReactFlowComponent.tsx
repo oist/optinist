@@ -27,21 +27,12 @@ import {
 import "reactflow/dist/style.css"
 
 import "style/flow.css"
-import { FormHelperText, Popover } from "@mui/material"
-
-import { FileSelectDialog } from "components/common/FileSelectDialog"
-import {
-  DialogContext,
-  ErrorDialogValue,
-  OpenDialogValue,
-} from "components/Workspace/FlowChart/DialogContext"
 import {
   DND_ITEM_TYPE_SET,
   TreeItemCollectedProps,
   TreeItemDragObject,
   TreeItemDropResult,
 } from "components/Workspace/FlowChart/DnDItemType"
-import { AlgorithmOutputDialog } from "components/Workspace/FlowChart/FlowChartNode/AlgorithmOutputDialog"
 import {
   reactFlowEdgeTypes,
   reactFlowNodeTypes,
@@ -62,14 +53,6 @@ import {
 import { NodeData } from "store/slice/FlowElement/FlowElementType"
 import { UseRunPipelineReturnType } from "store/slice/Pipeline/PipelineHook"
 
-const initDialogFile = {
-  filePath: "",
-  open: false,
-  fileTreeType: undefined,
-  multiSelect: false,
-  onSelectFile: () => null,
-}
-
 const ReactFlowProviderComponent = ReactFlowProvider as FC<{
   children: ReactNode
 }>
@@ -81,12 +64,6 @@ export const ReactFlowComponent = memo(function ReactFlowComponent(
   const flowEdges = useSelector(selectFlowEdges)
   const egdes = flowEdges.filter((item) => !isNode(item)) as Edge<NodeData>[]
   const dispatch = useDispatch()
-  const [dialogNodeId, setDialogNodeId] = useState("")
-  const [dialogFile, setDialogFile] = useState<OpenDialogValue>(initDialogFile)
-  const [messageError, setMessageError] = useState<ErrorDialogValue>({
-    anchorElRef: { current: null },
-    message: "",
-  })
 
   const onConnect = (params: Connection | Edge) => {
     dispatch(
@@ -165,88 +142,32 @@ export const ReactFlowComponent = memo(function ReactFlowComponent(
   )
   return (
     <div className="flow">
-      <DialogContext.Provider
-        value={{
-          onOpen: setDialogNodeId,
-          onOpenDialogFile: setDialogFile,
-          onMessageError: setMessageError,
-        }}
-      >
-        <ReactFlowProviderComponent>
-          <div className="reactflow-wrapper" ref={wrapparRef}>
-            <ReactFlow
-              ref={drop}
-              nodes={flowNodes}
-              edges={flowEdges}
-              onNodesChange={onNodesChange}
-              onEdgesChange={onEdgesChange}
-              onConnect={onConnect}
-              onInit={onInit}
-              onDragOver={onDragOver}
-              onNodeDragStop={onNodeDragStop}
-              nodeTypes={reactFlowNodeTypes}
-              edgeTypes={reactFlowEdgeTypes}
-              defaultViewport={{
-                x: flowPosition[0],
-                y: flowPosition[1],
-                zoom: flowPosition[2],
-              }}
-              onMoveEnd={onMoveEnd}
-            >
-              <ToolBar {...props} />
-              <Controls />
-            </ReactFlow>
-          </div>
-        </ReactFlowProviderComponent>
-        {dialogNodeId && (
-          <AlgorithmOutputDialog
-            nodeId={dialogNodeId}
-            open
-            onClose={() => setDialogNodeId("")}
-          />
-        )}
-        {dialogFile.open && (
-          <FileSelectDialog
-            multiSelect={dialogFile.multiSelect}
-            initialFilePath={dialogFile.filePath}
-            open={dialogFile.open}
-            onClickOk={(path: string | string[]) => {
-              dialogFile.onSelectFile(path)
-              setDialogFile(initDialogFile)
+      <ReactFlowProviderComponent>
+        <div className="reactflow-wrapper" ref={wrapparRef}>
+          <ReactFlow
+            ref={drop}
+            nodes={flowNodes}
+            edges={flowEdges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onInit={onInit}
+            onDragOver={onDragOver}
+            onNodeDragStop={onNodeDragStop}
+            nodeTypes={reactFlowNodeTypes}
+            edgeTypes={reactFlowEdgeTypes}
+            defaultViewport={{
+              x: flowPosition[0],
+              y: flowPosition[1],
+              zoom: flowPosition[2],
             }}
-            onClickCancel={() => {
-              setDialogFile(initDialogFile)
-            }}
-            fileType={dialogFile.fileTreeType}
-          />
-        )}
-        {messageError?.message && (
-          <Popover
-            open
-            anchorEl={messageError.anchorElRef.current}
-            onClose={() =>
-              setMessageError({
-                anchorElRef: { current: null },
-                message: "",
-              })
-            }
-            anchorOrigin={{
-              vertical: "top",
-              horizontal: "right",
-            }}
-            transformOrigin={{
-              vertical: "bottom",
-              horizontal: "left",
-            }}
+            onMoveEnd={onMoveEnd}
           >
-            <div style={{ margin: 8 }}>
-              <FormHelperText error={true}>
-                {messageError.message}
-              </FormHelperText>
-            </div>
-          </Popover>
-        )}
-      </DialogContext.Provider>
+            <ToolBar {...props} />
+            <Controls />
+          </ReactFlow>
+        </div>
+      </ReactFlowProviderComponent>
     </div>
   )
 })

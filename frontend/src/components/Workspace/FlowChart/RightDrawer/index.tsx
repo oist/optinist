@@ -1,4 +1,4 @@
-import { createContext, FC } from "react"
+import { FC } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
 import ChevronRightIcon from "@mui/icons-material/ChevronRight"
@@ -10,12 +10,11 @@ import { styled } from "@mui/material/styles"
 import Toolbar from "@mui/material/Toolbar"
 import Typography from "@mui/material/Typography"
 
-import { AlgorithmParamForm } from "components/Workspace/FlowChart/AlgorithmParamForm"
-import { NWBSettingContents } from "components/Workspace/FlowChart/Buttons/NWB"
-import { SnakemakeContents } from "components/Workspace/FlowChart/Buttons/Snakemake"
+import { NWBSettingContents } from "components/Workspace/FlowChart/RightDrawer/NWBSettingContents"
+import { ParamFormContents } from "components/Workspace/FlowChart/RightDrawer/ParamFormContents"
+import { SnakemakeSettingContents } from "components/Workspace/FlowChart/RightDrawer/SnakemakeSettingContents"
 import { RIGHT_DRAWER_WIDTH } from "const/Layout"
 import {
-  selectRightDrawerCurrentNodeId,
   selectRightDrawerIsOpen,
   selectRightDrawerMode,
 } from "store/slice/RightDrawer/RightDrawerSelectors"
@@ -65,29 +64,11 @@ const Contents: FC = () => {
     case RIGHT_DRAWER_MODE.NWB:
       return <NWBSettingContents />
     case RIGHT_DRAWER_MODE.PARAM_FORM:
-      return <ParamFormConetent />
+      return <ParamFormContents />
     case RIGHT_DRAWER_MODE.SNAKEMAKE:
-      return <SnakemakeContents />
+      return <SnakemakeSettingContents />
     default:
       return null
-  }
-}
-
-/**
- * nodeId
- */
-export const ParamFormContext = createContext<string>("")
-
-const ParamFormConetent: FC = () => {
-  const nodeId = useSelector(selectRightDrawerCurrentNodeId)
-  if (nodeId != null) {
-    return (
-      <ParamFormContext.Provider value={nodeId}>
-        <AlgorithmParamForm />
-      </ParamFormContext.Provider>
-    )
-  } else {
-    return null
   }
 }
 
