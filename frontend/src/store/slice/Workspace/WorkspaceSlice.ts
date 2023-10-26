@@ -53,6 +53,7 @@ export const workspaceSlice = createSlice({
       })
       .addCase(getWorkspace.fulfilled, (state, action) => {
         state.currentWorkspace.workspaceId = action.payload.id
+        state.currentWorkspace.workspaceName = action.payload.name
         state.currentWorkspace.ownerId = action.payload.user.id
         state.loading = false
       })

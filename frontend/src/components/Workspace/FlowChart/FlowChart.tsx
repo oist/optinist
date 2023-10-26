@@ -3,7 +3,7 @@ import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { useDispatch, useSelector } from "react-redux"
 
-import { Box, FormHelperText, Popover } from "@mui/material"
+import { Box, FormHelperText, Popover, Typography } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import { styled } from "@mui/material/styles"
 
@@ -72,6 +72,9 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
             borderColor={grey[300]}
           >
             <CurrentPipelineInfo />
+            <Typography variant="body2" color="textSecondary">
+              NODES
+            </Typography>
             <DrawerContents>
               <AlgorithmTreeView />
             </DrawerContents>
