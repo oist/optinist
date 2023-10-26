@@ -15,6 +15,7 @@ import {
 import IconButton from "@mui/material/IconButton"
 
 import { ExperimentUidContext } from "components/Workspace/Experiment/ExperimentTable"
+import { selectExperimentName } from "store/slice/Experiments/ExperimentsSelectors"
 import { reset } from "store/slice/VisualizeItem/VisualizeItemSlice"
 import { reproduceWorkflow } from "store/slice/Workflow/WorkflowActions"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
@@ -48,6 +49,7 @@ const ConfirmReprodceDialog = memo(function ConfirmReprodceDialog({
   const dispatch: AppDispatch = useDispatch()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const uid = useContext(ExperimentUidContext)
+  const workflowName = useSelector(selectExperimentName(uid))
   const { enqueueSnackbar } = useSnackbar()
 
   const handleClose = () => {
@@ -74,10 +76,8 @@ const ConfirmReprodceDialog = memo(function ConfirmReprodceDialog({
       <DialogTitle>Confirm reproduce workflow</DialogTitle>
       <DialogContent>
         <Typography>
-          Are you sure you want to reproduce workflow: {uid}?
-        </Typography>
-        <Typography>
-          Existing workflow in workflow window will be replaced.
+          Reproduce <span style={{ fontWeight: "bold" }}>{workflowName}</span> (
+          {uid})?
         </Typography>
       </DialogContent>
       <DialogActions>
