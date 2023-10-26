@@ -49,6 +49,7 @@ export const workspaceSlice = createSlice({
     builder
       .addCase(reproduceWorkflow.fulfilled, (state, action) => {
         state.currentWorkspace.workspaceId = action.meta.arg.workspaceId
+        state.currentWorkspace.selectedTab = 0
       })
       .addCase(getWorkspace.fulfilled, (state, action) => {
         state.currentWorkspace.workspaceId = action.payload.id
