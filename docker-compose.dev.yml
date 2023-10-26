@@ -9,7 +9,7 @@ services:
     volumes:
       - .:/app
     ports:
-      - "8000:8000"
+      - "127.0.0.1:8000:8000"
     command: python main.py --reload --host 0.0.0.0 --port 8000
     environment:
       PYTHONPATH: /app/
@@ -21,7 +21,7 @@ services:
     volumes:
       - ./frontend/:/app/frontend/
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
     command: ash -c 'yarn install && yarn start'
     environment:
       TZ: Asia/Tokyo
