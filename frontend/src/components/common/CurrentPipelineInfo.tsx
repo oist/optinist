@@ -1,7 +1,7 @@
 import { FC, memo, MouseEvent, useEffect, useRef, useState } from "react"
 import { useSelector } from "react-redux"
 
-import { Divider, Typography, Grid, Popover } from "@mui/material"
+import { Typography, Grid, Popover } from "@mui/material"
 
 import { IS_STANDALONE } from "const/Mode"
 import {
@@ -28,7 +28,7 @@ export const CurrentPipelineInfo: FC = () => {
               <Typography variant="body2" color="textSecondary">
                 WORKSPACE
               </Typography>
-              <Grid container paddingBottom={1} paddingX={1}>
+              <Grid container paddingBottom={2} paddingX={1}>
                 {workspaceId && (
                   <LabelValueGridRow
                     label="ID"
@@ -44,12 +44,12 @@ export const CurrentPipelineInfo: FC = () => {
                   />
                 )}
               </Grid>
-              <Typography variant="body2" color="textSecondary">
-                WORKFLOW
-              </Typography>
             </>
           )}
-          <Grid container paddingBottom={1} paddingX={1}>
+          <Typography variant="body2" color="textSecondary">
+            WORKFLOW
+          </Typography>
+          <Grid container paddingBottom={2} paddingX={1}>
             <LabelValueGridRow
               label="ID"
               value={workflowId}
@@ -63,7 +63,6 @@ export const CurrentPipelineInfo: FC = () => {
               />
             )}
           </Grid>
-          <Divider />
         </>
       )}
     </>
