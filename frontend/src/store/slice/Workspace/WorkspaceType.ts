@@ -27,6 +27,7 @@ export type Workspace = {
   workspace: WorkspaceDataDTO
   currentWorkspace: {
     workspaceId?: number
+    workspaceName?: string
     selectedTab: number
     ownerId?: number
   }

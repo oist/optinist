@@ -17,6 +17,9 @@ export const selectActiveTab = (state: RootState) =>
 export const selectCurrentWorkspaceId = (state: RootState) =>
   state.workspace.currentWorkspace.workspaceId
 
+export const selectCurrentWorkspaceName = (state: RootState) =>
+  state.workspace.currentWorkspace.workspaceName
+
 export const selectCurrentWorkspaceOwnerId = (state: RootState) =>
   state.workspace.currentWorkspace.ownerId
 

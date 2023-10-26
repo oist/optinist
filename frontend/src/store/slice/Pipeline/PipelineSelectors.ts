@@ -15,6 +15,20 @@ export const selectPipelineLatestUid = (state: RootState) => {
   return state.pipeline.currentPipeline?.uid
 }
 
+export const selectCurrentPipelineName = (state: RootState) => {
+  const uid = selectPipelineLatestUid(state)
+  if (uid) {
+    const experiments = state.experiments
+    if (experiments.status === "fulfilled") {
+      return experiments.experimentList[uid].name
+    } else {
+      return undefined
+    }
+  } else {
+    return undefined
+  }
+}
+
 export const selectStartedPipeline = (state: RootState) => {
   return state.pipeline.run
 }
