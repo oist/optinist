@@ -32,7 +32,7 @@ def caiman_mc(
 
     # memory mapping
     fname_new = save_memmap(
-        mc.mmap_file, base_name="memmap_", order="C", border_to_0=border_to_0
+        mc.mmap_file, base_name=function_id, order="C", border_to_0=border_to_0
     )
 
     stop_server(dview=dview)
