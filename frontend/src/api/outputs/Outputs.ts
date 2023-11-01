@@ -1,7 +1,7 @@
+import { StatusROI } from "components/Workspace/Visualize/Plot/ImagePlot"
 import { BASE_URL } from "const/API"
 import { PlotMetaData } from "store/slice/DisplayData/DisplayDataType"
 import axios from "utils/axios"
-import {StatusROI} from "../../components/Workspace/Visualize/Plot/ImagePlot";
 
 export type TimeSeriesData = {
   [key: string]: {
@@ -175,31 +175,31 @@ export async function deleteRoiApi(
 }
 
 export async function commitRoiApi(
-    path: string,
-    workspace_id: number,
+  path: string,
+  workspace_id: number,
 ): Promise<{ data: HTMLData; meta?: PlotMetaData }> {
   const response = await axios.post(
-      `${BASE_URL}/outputs/image/${path}/commit_edit?workspace_id=${workspace_id}`
+    `${BASE_URL}/outputs/image/${path}/commit_edit?workspace_id=${workspace_id}`,
   )
   return response.data
 }
 
 export async function cancelRoiApi(
-    path: string,
-    workspace_id: number,
+  path: string,
+  workspace_id: number,
 ): Promise<{ data: HTMLData; meta?: PlotMetaData }> {
   const response = await axios.post(
-      `${BASE_URL}/outputs/image/${path}/cancel_edit?workspace_id=${workspace_id}`
+    `${BASE_URL}/outputs/image/${path}/cancel_edit?workspace_id=${workspace_id}`,
   )
   return response.data
 }
 
 export async function getStatusRoi(
-    path: string,
-    workspace_id: number,
+  path: string,
+  workspace_id: number,
 ): Promise<StatusROI> {
   const response = await axios.post(
-      `${BASE_URL}/outputs/image/${path}/status?workspace_id=${workspace_id}`
+    `${BASE_URL}/outputs/image/${path}/status?workspace_id=${workspace_id}`,
   )
   return response.data
 }
