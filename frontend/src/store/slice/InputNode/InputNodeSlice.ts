@@ -1,26 +1,31 @@
-import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
-import { isInputNodePostData } from 'api/run/RunUtils'
-import { INITIAL_IMAGE_ELEMENT_ID } from 'const/flowchart'
-import { fetchExperiment } from '../Experiments/ExperimentsActions'
+import { createSlice, isAnyOf, PayloadAction } from "@reduxjs/toolkit"
+
+import { isInputNodePostData } from "api/run/RunUtils"
+import { INITIAL_IMAGE_ELEMENT_ID } from "const/flowchart"
+import { uploadFile } from "store/slice/FileUploader/FileUploaderActions"
+import { addInputNode } from "store/slice/FlowElement/FlowElementActions"
 import {
-  reproduceWorkflow,
-  importWorkflowConfig,
-} from 'store/slice/Workflow/WorkflowActions'
-import { uploadFile } from '../FileUploader/FileUploaderActions'
-import { addInputNode } from '../FlowElement/FlowElementActions'
-import {
+  clearFlowElements,
   deleteFlowNodes,
   deleteFlowNodeById,
-} from '../FlowElement/FlowElementSlice'
-import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
-import { setInputNodeFilePath } from './InputNodeActions'
+} from "store/slice/FlowElement/FlowElementSlice"
+import { NODE_TYPE_SET } from "store/slice/FlowElement/FlowElementType"
+import { setInputNodeFilePath } from "store/slice/InputNode/InputNodeActions"
 import {
   CsvInputParamType,
   FILE_TYPE_SET,
   InputNode,
   INPUT_NODE_SLICE_NAME,
-} from './InputNodeType'
-import { isCsvInputNode, isHDF5InputNode } from './InputNodeUtils'
+} from "store/slice/InputNode/InputNodeType"
+import {
+  isCsvInputNode,
+  isHDF5InputNode,
+} from "store/slice/InputNode/InputNodeUtils"
+import {
+  reproduceWorkflow,
+  importWorkflowConfig,
+  fetchWorkflow,
+} from "store/slice/Workflow/WorkflowActions"
 
 const initialState: InputNode = {
   [INITIAL_IMAGE_ELEMENT_ID]: {
@@ -122,6 +127,7 @@ export const inputNodeSlice = createSlice({
           }
         }
       })
+      .addCase(clearFlowElements, () => initialState)
       .addCase(deleteFlowNodes, (state, action) => {
         action.payload.forEach((node) => {
           if (node.data?.type === NODE_TYPE_SET.INPUT) {
@@ -146,7 +152,7 @@ export const inputNodeSlice = createSlice({
           }
         }
       })
-      .addCase(fetchExperiment.rejected, () => initialState)
+      .addCase(fetchWorkflow.rejected, () => initialState)
       .addCase(importWorkflowConfig.fulfilled, (_, action) => {
         const newState: InputNode = {}
         Object.values(action.payload.nodeDict)
@@ -174,7 +180,7 @@ export const inputNodeSlice = createSlice({
         return newState
       })
       .addMatcher(
-        isAnyOf(reproduceWorkflow.fulfilled, fetchExperiment.fulfilled),
+        isAnyOf(fetchWorkflow.fulfilled, reproduceWorkflow.fulfilled),
         (_, action) => {
           const newState: InputNode = {}
           Object.values(action.payload.nodeDict)

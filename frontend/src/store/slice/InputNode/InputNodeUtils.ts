@@ -4,7 +4,7 @@ import {
   HDF5InputNode,
   InputNodeType,
   FILE_TYPE_SET,
-} from './InputNodeType'
+} from "store/slice/InputNode/InputNodeType"
 
 export function isImageInputNode(
   inputNode: InputNodeType,

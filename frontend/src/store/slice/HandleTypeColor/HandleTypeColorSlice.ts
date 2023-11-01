@@ -1,5 +1,5 @@
-import { createSlice } from '@reduxjs/toolkit'
-import * as MuiColors from '@mui/material/colors'
+import * as MuiColors from "@mui/material/colors"
+import { createSlice } from "@reduxjs/toolkit"
 
 export type HandleTypeColor = {
   colorMap: { [type: string]: string }
@@ -21,7 +21,7 @@ const initialState: HandleTypeColor = {
   nextKey: 0,
 }
 
-const SLICE_NAME = 'handleTypeColor'
+const SLICE_NAME = "handleTypeColor"
 
 export const handleTypeColorSlice = createSlice({
   name: SLICE_NAME,

@@ -1,4 +1,4 @@
-export const FILE_UPLOADER_SLICE_NAME = 'fileUploader'
+export const FILE_UPLOADER_SLICE_NAME = "fileUploader"
 
 export type FileUploader = {
   [id: string]: FileUploaderType

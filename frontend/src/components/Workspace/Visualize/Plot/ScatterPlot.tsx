@@ -1,15 +1,18 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import PlotlyChart from 'react-plotlyjs-ts'
-import LinearProgress from '@mui/material/LinearProgress'
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
+import { memo, useContext, useEffect, useMemo } from "react"
+import PlotlyChart from "react-plotlyjs-ts"
+import { useSelector, useDispatch } from "react-redux"
 
-import { DisplayDataContext } from '../DataContext'
+import Box from "@mui/material/Box"
+import FormControl from "@mui/material/FormControl"
+import InputLabel from "@mui/material/InputLabel"
+import LinearProgress from "@mui/material/LinearProgress"
+import MenuItem from "@mui/material/MenuItem"
+import Select, { SelectChangeEvent } from "@mui/material/Select"
+import Typography from "@mui/material/Typography"
+
+import { ScatterData } from "api/outputs/Outputs"
+import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
+import { getScatterData } from "store/slice/DisplayData/DisplayDataActions"
 import {
   selectScatterData,
   selectScatterDataError,
@@ -17,9 +20,7 @@ import {
   selectScatterDataIsInitialized,
   selectScatterDataIsPending,
   selectScatterMeta,
-} from 'store/slice/DisplayData/DisplayDataSelectors'
-import { getScatterData } from 'store/slice/DisplayData/DisplayDataActions'
-import { ScatterData } from 'api/outputs/Outputs'
+} from "store/slice/DisplayData/DisplayDataSelectors"
 import {
   selectScatterItemXIndex,
   selectScatterItemYIndex,
@@ -27,21 +28,21 @@ import {
   selectVisualizeItemWidth,
   selectVisualizeSaveFilename,
   selectVisualizeSaveFormat,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import {
   setScatterItemXIndex,
   setScatterItemYIndex,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { AppDispatch } from "../../../../store/store";
+} from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { AppDispatch } from "store/store"
 
-export const ScatterPlot = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataContext)
+export const ScatterPlot = memo(function ScatterPlot() {
+  const { filePath: path } = useContext(DisplayDataContext)
   const dispatch = useDispatch<AppDispatch>()
   const isPending = useSelector(selectScatterDataIsPending(path))
   const isInitialized = useSelector(selectScatterDataIsInitialized(path))
   const error = useSelector(selectScatterDataError(path))
   const isFulfilled = useSelector(selectScatterDataIsFulfilled(path))
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isInitialized) {
       dispatch(getScatterData({ path }))
     }
@@ -57,8 +58,8 @@ export const ScatterPlot = React.memo(() => {
   }
 })
 
-const ScatterPlotImple = React.memo(() => {
-  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+const ScatterPlotImple = memo(function ScatterPlotImple() {
+  const { filePath: path, itemId } = useContext(DisplayDataContext)
 
   const scatterData = useSelector(
     selectScatterData(path),
@@ -70,17 +71,17 @@ const ScatterPlotImple = React.memo(() => {
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
 
-  const data = React.useMemo(
+  const data = useMemo(
     () => [
       {
         x: scatterData[xIndex],
         y: scatterData[yIndex],
-        type: 'scatter',
-        mode: 'markers', //'markers+text',
+        type: "scatter",
+        mode: "markers", //'markers+text',
         text: Object.keys(scatterData[xIndex]),
-        textposition: 'top center',
+        textposition: "top center",
         textfont: {
-          family: 'Raleway, sans-serif',
+          family: "Raleway, sans-serif",
         },
         marker: {
           size: 5,
@@ -91,7 +92,7 @@ const ScatterPlotImple = React.memo(() => {
     [scatterData, xIndex, yIndex],
   )
 
-  const layout = React.useMemo(
+  const layout = useMemo(
     () => ({
       title: {
         text: meta?.title,
@@ -104,15 +105,15 @@ const ScatterPlotImple = React.memo(() => {
         l: 50, // left
         b: 40, // bottom
       },
-      dragmode: 'pan',
+      dragmode: "pan",
       autosize: true,
       xaxis: {
         title: {
           text: meta?.xlabel ?? `x: ${xIndex}`,
           font: {
-            family: 'Courier New, monospace',
+            family: "Courier New, monospace",
             size: 18,
-            color: '#7f7f7f',
+            color: "#7f7f7f",
           },
         },
       },
@@ -120,9 +121,9 @@ const ScatterPlotImple = React.memo(() => {
         title: {
           text: meta?.ylabel ?? `y: ${yIndex}`,
           font: {
-            family: 'Courier New, monospace',
+            family: "Courier New, monospace",
             size: 18,
-            color: '#7f7f7f',
+            color: "#7f7f7f",
           },
         },
       },
@@ -144,7 +145,7 @@ const ScatterPlotImple = React.memo(() => {
 
   return (
     <div>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: "flex" }}>
         <Box sx={{ flexGrow: 1, ml: 1 }}>
           <XIndex dataKeys={Object.keys(scatterData)} />
           <YIndex dataKeys={Object.keys(scatterData)} />
@@ -155,10 +156,12 @@ const ScatterPlotImple = React.memo(() => {
   )
 })
 
-const XIndex = React.memo<{
+interface DataKeysProps {
   dataKeys: string[]
-}>(({ dataKeys }) => {
-  const { itemId } = React.useContext(DisplayDataContext)
+}
+
+const XIndex = memo(function XIndex({ dataKeys }: DataKeysProps) {
+  const { itemId } = useContext(DisplayDataContext)
   const dispatch = useDispatch()
   const xIndex = useSelector(selectScatterItemXIndex(itemId))
 
@@ -176,17 +179,17 @@ const XIndex = React.memo<{
       <InputLabel>xIndex</InputLabel>
       <Select label="smooth" value={xIndex} onChange={handleChange}>
         {dataKeys.map((x) => (
-          <MenuItem value={x}>{x}</MenuItem>
+          <MenuItem key={x} value={x}>
+            {x}
+          </MenuItem>
         ))}
       </Select>
     </FormControl>
   )
 })
 
-const YIndex = React.memo<{
-  dataKeys: string[]
-}>(({ dataKeys }) => {
-  const { itemId } = React.useContext(DisplayDataContext)
+const YIndex = memo(function YIndex({ dataKeys }: DataKeysProps) {
+  const { itemId } = useContext(DisplayDataContext)
   const dispatch = useDispatch()
   const yIndex = useSelector(selectScatterItemYIndex(itemId))
 
@@ -204,7 +207,9 @@ const YIndex = React.memo<{
       <InputLabel>yIndex</InputLabel>
       <Select label="smooth" value={yIndex} onChange={handleChange}>
         {dataKeys.map((x) => (
-          <MenuItem value={x}>{x}</MenuItem>
+          <MenuItem key={x} value={x}>
+            {x}
+          </MenuItem>
         ))}
       </Select>
     </FormControl>

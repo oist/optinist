@@ -1,5 +1,6 @@
-const HOST = process.env.REACT_APP_SERVER_HOST ?? 'localhost'
+const HOST = process.env.REACT_APP_SERVER_HOST ?? "localhost"
 const PORT = process.env.REACT_APP_SERVER_PORT ?? 8000
+const PROTO = process.env.REACT_APP_SERVER_PROTO ?? "http"
 
-export const BASE_URL = `http://${HOST}:${PORT}`
-export const WS_BASE_URL = `ws://${HOST}:${PORT}`
+export const BASE_URL =
+  PORT == null ? `${PROTO}://${HOST}` : `${PROTO}://${HOST}:${PORT}`

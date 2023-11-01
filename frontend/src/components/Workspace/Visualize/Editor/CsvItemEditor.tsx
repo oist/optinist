@@ -1,28 +1,30 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { FileSelectImple } from 'components/Workspace/FlowChart/FlowChartNode/FileSelect'
-import { SelectedItemIdContext } from '../VisualizeItemEditor'
+import { ChangeEvent, FC, useContext } from "react"
+import { useSelector, useDispatch } from "react-redux"
+
+import { FormControlLabel, Switch, TextField } from "@mui/material"
+
+import { FILE_TREE_TYPE_SET } from "api/files/Files"
+import { FileSelectImple } from "components/Workspace/FlowChart/FlowChartNode/FileSelect"
+import { SelectedItemIdContext } from "components/Workspace/Visualize/VisualizeItemEditor"
+import { DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
+import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
+import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
+import { setNewDisplayDataPath } from "store/slice/VisualizeItem/VisualizeItemActions"
 import {
   selectCsvItemSetHeader,
   selectCsvItemSetIndex,
   selectCsvItemTranspose,
   selectDisplayDataIsSingle,
   selectVisualizeDataFilePath,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import {
   setCsvItemSetHeader,
   setCsvItemSetIndex,
   setCsvItemTranspose,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
-import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
-import { FILE_TREE_TYPE_SET } from 'api/files/Files'
-import { FormControlLabel, Switch, TextField } from '@mui/material'
-import { setNewDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemActions'
-import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
+} from "store/slice/VisualizeItem/VisualizeItemSlice"
 
-export const CsvItemEditor: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+export const CsvItemEditor: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
   const dispatch = useDispatch()
   const isSingleData = useSelector(selectDisplayDataIsSingle(itemId))
@@ -54,9 +56,9 @@ export const CsvItemEditor: React.FC = () => {
   }
 
   return (
-    <div style={{ margin: '10px', padding: 10 }}>
+    <div style={{ margin: "10px", padding: 10 }}>
       <FileSelectImple
-        filePath={filePath ?? ''}
+        filePath={filePath ?? ""}
         onSelectFile={(path) => !Array.isArray(path) && onSelectFile(path)}
         onUploadFile={onUploadFileHandle}
         fileTreeType={FILE_TREE_TYPE_SET.CSV}
@@ -69,8 +71,8 @@ export const CsvItemEditor: React.FC = () => {
   )
 }
 
-const Transpose: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const Transpose: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const transpose = useSelector(selectCsvItemTranspose(itemId))
   const dispatch = useDispatch()
   const toggleChecked = () => {
@@ -84,14 +86,14 @@ const Transpose: React.FC = () => {
   )
 }
 
-const SetHeader: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const SetHeader: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const setHeader = useSelector(selectCsvItemSetHeader(itemId))
 
   const dispatch = useDispatch()
-  const onChangeSetHeader = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const onChangeSetHeader = (event: ChangeEvent<HTMLInputElement>) => {
     const newValue =
-      event.target.value === '' ? null : Number(event.target.value)
+      event.target.value === "" ? null : Number(event.target.value)
     if (newValue === null || newValue >= 0) {
       dispatch(setCsvItemSetHeader({ itemId, setHeader: newValue }))
     }
@@ -116,8 +118,8 @@ const SetHeader: React.FC = () => {
   )
 }
 
-const SetIndex: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const SetIndex: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const setIndex = useSelector(selectCsvItemSetIndex(itemId))
   const dispatch = useDispatch()
   const toggleChecked = () => {

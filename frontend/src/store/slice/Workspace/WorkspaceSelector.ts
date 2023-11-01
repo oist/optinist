@@ -1,5 +1,5 @@
-import { IS_STANDALONE } from 'const/Mode'
-import { RootState } from 'store/store'
+import { IS_STANDALONE } from "const/Mode"
+import { RootState } from "store/store"
 
 export const selectWorkspace = (state: RootState) => state.workspace
 export const selectWorkspaceListUserShare = (state: RootState) =>
@@ -16,6 +16,9 @@ export const selectActiveTab = (state: RootState) =>
 
 export const selectCurrentWorkspaceId = (state: RootState) =>
   state.workspace.currentWorkspace.workspaceId
+
+export const selectCurrentWorkspaceName = (state: RootState) =>
+  state.workspace.currentWorkspace.workspaceName
 
 export const selectCurrentWorkspaceOwnerId = (state: RootState) =>
   state.workspace.currentWorkspace.ownerId

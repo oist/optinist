@@ -1,12 +1,17 @@
-import { createAction, createAsyncThunk } from '@reduxjs/toolkit'
-import { Node } from 'reactflow'
-import { ParamDTO } from 'utils/param/ParamType'
-import { FILE_TYPE } from '../InputNode/InputNodeType'
-import { FLOW_ELEMENT_SLICE_NAME, NodeData } from './FlowElementType'
-import { getAlgoParamsApi } from 'api/params/Params'
+import { Node } from "reactflow"
 
-export type AddingNodeData = Omit<Node<NodeData>, 'position'> &
-  Partial<Pick<Node<NodeData>, 'position'>>
+import { createAction, createAsyncThunk } from "@reduxjs/toolkit"
+
+import { getAlgoParamsApi } from "api/params/Params"
+import {
+  FLOW_ELEMENT_SLICE_NAME,
+  NodeData,
+} from "store/slice/FlowElement/FlowElementType"
+import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
+import { ParamDTO } from "utils/param/ParamType"
+
+export type AddingNodeData = Omit<Node<NodeData>, "position"> &
+  Partial<Pick<Node<NodeData>, "position">>
 
 export const addAlgorithmNode = createAsyncThunk<
   ParamDTO,
@@ -14,6 +19,7 @@ export const addAlgorithmNode = createAsyncThunk<
     node: AddingNodeData
     functionPath: string
     name: string
+    runAlready?: boolean
   }
 >(`${FLOW_ELEMENT_SLICE_NAME}/addAlgorithmNode`, async ({ name }, thunkAPI) => {
   try {

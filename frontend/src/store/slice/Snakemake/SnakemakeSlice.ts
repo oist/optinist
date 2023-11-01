@@ -1,7 +1,12 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { convertToParamMap, getChildParam } from 'utils/param/ParamUtils'
-import { getSnakemakeParams } from './SnakemakeAction'
-import { SnakemakeType, SNAKEMAKE_SLICE_NAME } from './SnakemakeType'
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+
+import { clearFlowElements } from "store/slice/FlowElement/FlowElementSlice"
+import { getSnakemakeParams } from "store/slice/Snakemake/SnakemakeAction"
+import {
+  SnakemakeType,
+  SNAKEMAKE_SLICE_NAME,
+} from "store/slice/Snakemake/SnakemakeType"
+import { convertToParamMap, getChildParam } from "utils/param/ParamUtils"
 
 const initialState: SnakemakeType = {
   params: {},
@@ -26,9 +31,11 @@ export const SnakemakeSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(getSnakemakeParams.fulfilled, (state, action) => {
-      state.params = convertToParamMap(action.payload)
-    })
+    builder
+      .addCase(getSnakemakeParams.fulfilled, (state, action) => {
+        state.params = convertToParamMap(action.payload)
+      })
+      .addCase(clearFlowElements, () => initialState)
   },
 })
 

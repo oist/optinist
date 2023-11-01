@@ -1,18 +1,18 @@
-export const EXPERIMENTS_SLICE_NAME = 'experiments'
+export const EXPERIMENTS_SLICE_NAME = "experiments"
 
 export type Experiments =
   | {
-      status: 'fulfilled'
+      status: "fulfilled"
       experimentList: ExperimentListType
     }
   | {
-      status: 'uninitialized'
+      status: "uninitialized"
     }
   | {
-      status: 'pending'
+      status: "pending"
     }
   | {
-      status: 'error'
+      status: "error"
       message?: string
     }
 
@@ -27,7 +27,8 @@ export type ExperimentType = {
   }
   status?: EXPERIMENTS_STATUS
   name: string
-  timestamp: string
+  startedAt: string
+  finishedAt?: string
   hasNWB: boolean
   frameRate?: number
 }
@@ -40,10 +41,10 @@ export type ExperimentFunction = {
   message?: string
 }
 
-export type EXPERIMENTS_STATUS = 'success' | 'error' | 'running'
+export type EXPERIMENTS_STATUS = "success" | "error" | "running"
 
-export interface Experiment {
+export interface ExperimentSortKeys {
   uid: string
   name: string
-  timestamp: string
+  startedAt: string
 }

@@ -1,18 +1,20 @@
-import { FC, useState } from 'react'
-import AccountCircleIcon from '@mui/icons-material/AccountCircle'
-import { Menu, MenuItem } from '@mui/material'
-import { useDispatch } from 'react-redux'
-import IconButton from '@mui/material/IconButton'
-import PortraitIcon from '@mui/icons-material/Portrait'
-import Logout from '@mui/icons-material/Logout'
-import { useNavigate } from 'react-router-dom'
-import { logout } from 'store/slice/User/UserSlice'
+import { FC, useState, MouseEvent } from "react"
+import { useDispatch } from "react-redux"
+import { useNavigate } from "react-router-dom"
+
+import AccountCircleIcon from "@mui/icons-material/AccountCircle"
+import Logout from "@mui/icons-material/Logout"
+import PortraitIcon from "@mui/icons-material/Portrait"
+import { Menu, MenuItem } from "@mui/material"
+import IconButton from "@mui/material/IconButton"
+
+import { logout } from "store/slice/User/UserSlice"
 
 const Profile: FC = () => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
   const navigate = useNavigate()
   const dispatch = useDispatch()
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
+  const handleMenu = (event: MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget)
   }
 
@@ -23,12 +25,12 @@ const Profile: FC = () => {
   const onClickLogout = () => {
     setAnchorEl(null)
     dispatch(logout())
-    navigate('/login')
+    navigate("/login")
   }
 
   const onClickAccount = () => {
     setAnchorEl(null)
-    navigate('/console/account')
+    navigate("/console/account")
   }
 
   return (
@@ -45,13 +47,13 @@ const Profile: FC = () => {
         id="profile-menu"
         anchorEl={anchorEl}
         anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
+          vertical: "top",
+          horizontal: "right",
         }}
         keepMounted
         transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
+          vertical: "top",
+          horizontal: "right",
         }}
         open={Boolean(anchorEl)}
         onClose={handleCloseMenu}

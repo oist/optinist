@@ -1,11 +1,11 @@
-import { Connection } from 'reactflow'
+import { Connection } from "reactflow"
 
 export function toHandleId(nodeId: string, name: string, type: string) {
   return `${nodeId}--${name}--${type}`
 }
 
 export function getHandleType(handleId: string) {
-  return handleId.split('--')[2]
+  return handleId.split("--")[2]
 }
 
 export function isValidConnection(connection: Connection) {

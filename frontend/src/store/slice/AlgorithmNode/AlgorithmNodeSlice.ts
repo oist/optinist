@@ -1,21 +1,25 @@
-import { createSlice, isAnyOf, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, isAnyOf, PayloadAction } from "@reduxjs/toolkit"
 
-import { convertToParamMap, getChildParam } from 'utils/param/ParamUtils'
+import { isAlgorithmNodePostData } from "api/run/RunUtils"
+import { getAlgoParams } from "store/slice/AlgorithmNode/AlgorithmNodeActions"
 import {
+  ALGORITHM_NODE_SLICE_NAME,
+  AlgorithmNode,
+} from "store/slice/AlgorithmNode/AlgorithmNodeType"
+import { addAlgorithmNode } from "store/slice/FlowElement/FlowElementActions"
+import {
+  clearFlowElements,
   deleteFlowNodes,
   deleteFlowNodeById,
-} from '../FlowElement/FlowElementSlice'
-import { NODE_TYPE_SET } from '../FlowElement/FlowElementType'
-import { fetchExperiment } from '../Experiments/ExperimentsActions'
+} from "store/slice/FlowElement/FlowElementSlice"
+import { NODE_TYPE_SET } from "store/slice/FlowElement/FlowElementType"
+import { run, runByCurrentUid } from "store/slice/Pipeline/PipelineActions"
 import {
   reproduceWorkflow,
   importWorkflowConfig,
-} from 'store/slice/Workflow/WorkflowActions'
-import { getAlgoParams } from './AlgorithmNodeActions'
-import { ALGORITHM_NODE_SLICE_NAME, AlgorithmNode } from './AlgorithmNodeType'
-import { isAlgorithmNodePostData } from 'api/run/RunUtils'
-import { run, runByCurrentUid } from '../Pipeline/PipelineActions'
-import { addAlgorithmNode } from '../FlowElement/FlowElementActions'
+  fetchWorkflow,
+} from "store/slice/Workflow/WorkflowActions"
+import { convertToParamMap, getChildParam } from "utils/param/ParamUtils"
 
 const initialState: AlgorithmNode = {}
 
@@ -49,17 +53,18 @@ export const algorithmNodeSlice = createSlice({
         state[nodeId].params = convertToParamMap(action.payload)
       })
       .addCase(addAlgorithmNode.fulfilled, (state, action) => {
-        const { node, functionPath, name } = action.meta.arg
+        const { node, functionPath, name, runAlready } = action.meta.arg
         const params = action.payload
         if (node.data?.type === NODE_TYPE_SET.ALGORITHM) {
           state[node.id] = {
             functionPath,
             name,
             params: convertToParamMap(params),
-            isUpdated: false,
+            isUpdated: runAlready ?? false,
           }
         }
       })
+      .addCase(clearFlowElements, () => initialState)
       .addCase(deleteFlowNodes, (state, action) => {
         action.payload.forEach((node) => {
           if (node.data?.type === NODE_TYPE_SET.ALGORITHM) {
@@ -74,9 +79,9 @@ export const algorithmNodeSlice = createSlice({
       })
       .addMatcher(
         isAnyOf(
+          fetchWorkflow.fulfilled,
           reproduceWorkflow.fulfilled,
           importWorkflowConfig.fulfilled,
-          fetchExperiment.fulfilled,
         ),
         (_, action) => {
           const newState: AlgorithmNode = {}

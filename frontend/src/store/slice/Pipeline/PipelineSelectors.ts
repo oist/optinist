@@ -1,19 +1,32 @@
-import { RootState } from 'store/store'
-
 import {
   NodeResult,
   NodeResultPending,
   NodeResultSuccess,
   RUN_STATUS,
-} from './PipelineType'
+} from "store/slice/Pipeline/PipelineType"
 import {
   isNodeResultPending,
   isStartedPipeline,
   isNodeResultSuccess,
-} from './PipelineUtils'
+} from "store/slice/Pipeline/PipelineUtils"
+import { RootState } from "store/store"
 
 export const selectPipelineLatestUid = (state: RootState) => {
   return state.pipeline.currentPipeline?.uid
+}
+
+export const selectCurrentPipelineName = (state: RootState) => {
+  const uid = selectPipelineLatestUid(state)
+  if (uid) {
+    const experiments = state.experiments
+    if (experiments.status === "fulfilled") {
+      return experiments.experimentList[uid].name
+    } else {
+      return undefined
+    }
+  } else {
+    return undefined
+  }
 }
 
 export const selectStartedPipeline = (state: RootState) => {

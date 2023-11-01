@@ -1,30 +1,40 @@
-import React, {
+import {
+  memo,
+  useContext,
   useCallback,
   useEffect,
   useState,
   MouseEvent,
   useRef,
-} from 'react'
-import PlotlyChart from 'react-plotlyjs-ts'
-import { useSelector, useDispatch } from 'react-redux'
-import { AppDispatch, RootState } from 'store/store'
+  useMemo,
+  ChangeEvent,
+} from "react"
+import PlotlyChart from "react-plotlyjs-ts"
+import { useSelector, useDispatch } from "react-redux"
+
+import createColormap from "colormap"
 import {
   Datum,
   LayoutAxis,
   PlotData,
   PlotMouseEvent,
   PlotSelectionEvent,
-} from 'plotly.js'
-import createColormap from 'colormap'
-import { Button, LinearProgress, TextField, Typography } from '@mui/material'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Switch from '@mui/material/Switch'
-import Slider from '@mui/material/Slider'
-import Box from '@mui/material/Box'
-import { styled } from '@mui/material/styles'
-import { twoDimarrayEqualityFn } from 'utils/EqualityUtils'
-import { DisplayDataContext } from '../DataContext'
+} from "plotly.js"
 
+import { Button, LinearProgress, TextField, Typography } from "@mui/material"
+import Box from "@mui/material/Box"
+import FormControlLabel from "@mui/material/FormControlLabel"
+import Slider from "@mui/material/Slider"
+import { styled } from "@mui/material/styles"
+import Switch from "@mui/material/Switch"
+
+import { addRoiApi, deleteRoiApi, mergeRoiApi } from "api/outputs/Outputs"
+import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
+import {
+  getImageData,
+  getRoiData,
+  getTimeSeriesInitData,
+} from "store/slice/DisplayData/DisplayDataActions"
 import {
   selectImageDataError,
   selectImageDataIsInitialized,
@@ -34,12 +44,11 @@ import {
   selectRoiData,
   selectImageDataMaxSize,
   selectImageMeta,
-} from 'store/slice/DisplayData/DisplayDataSelectors'
+} from "store/slice/DisplayData/DisplayDataSelectors"
 import {
-  getImageData,
-  getRoiData,
-  getTimeSeriesInitData,
-} from 'store/slice/DisplayData/DisplayDataActions'
+  selectingImageArea,
+  setImageItemClikedDataId,
+} from "store/slice/VisualizeItem/VisualizeItemActions"
 import {
   selectImageItemShowticklabels,
   selectImageItemZsmooth,
@@ -61,17 +70,17 @@ import {
   selectImageItemAlpha,
   selectRoiItemOutputKeys,
   selectVisualizeItems,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import {
   incrementImageActiveIndex,
   resetAllOrderList,
   setImageActiveIndex,
   setImageItemDuration,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import {
-  selectingImageArea,
-  setImageItemClikedDataId,
-} from 'store/slice/VisualizeItem/VisualizeItemActions'
+} from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { isTimeSeriesItem } from "store/slice/VisualizeItem/VisualizeItemUtils"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
+import { AppDispatch, RootState } from "store/store"
+import { twoDimarrayEqualityFn } from "utils/EqualityUtils"
 import {addRoiApi, cancelRoiApi, commitRoiApi, deleteRoiApi, getStatusRoi, mergeRoiApi} from 'api/outputs/Outputs'
 import { isTimeSeriesItem } from 'store/slice/VisualizeItem/VisualizeItemUtils'
 import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
@@ -100,16 +109,16 @@ const initSizeDrag = {
 }
 
 enum PositionDrag {
-  'LEFT' = 'LEFT',
-  'RIGHT' = 'RIGHT',
-  'BOTTOM' = 'BOTTOM',
-  'TOP' = 'TOP',
+  "LEFT" = "LEFT",
+  "RIGHT" = "RIGHT",
+  "BOTTOM" = "BOTTOM",
+  "TOP" = "TOP",
 }
 
 const sChart = 320
 
-export const ImagePlot = React.memo(() => {
-  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+export const ImagePlot = memo(function ImagePlot() {
+  const { filePath: path, itemId } = useContext(DisplayDataContext)
 
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const startIndex = useSelector(selectImageItemStartIndex(itemId))
@@ -122,7 +131,7 @@ export const ImagePlot = React.memo(() => {
   const roiFilePath = useSelector(selectRoiItemFilePath(itemId))
 
   const dispatch = useDispatch<AppDispatch>()
-  React.useEffect(() => {
+  useEffect(() => {
     if (workspaceId) {
       if (!isInitialized) {
         dispatch(
@@ -158,18 +167,22 @@ export const ImagePlot = React.memo(() => {
   }
 })
 
-const ImagePlotImple = React.memo(() => {
-  const { itemId } = React.useContext(DisplayDataContext)
+const ImagePlotImple = memo(function ImagePlotImple() {
+  const { itemId } = useContext(DisplayDataContext)
   const activeIndex = useSelector(selectImageItemActiveIndex(itemId))
   return <ImagePlotChart activeIndex={activeIndex} />
 })
 
-const ImagePlotChart = React.memo<{
+interface ActiveIndexProps {
   activeIndex: number
-}>(({ activeIndex }) => {
+}
+
+const ImagePlotChart = memo(function ImagePlotChart({
+  activeIndex,
+}: ActiveIndexProps) {
   const dispatch = useDispatch<AppDispatch>()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
-  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+  const { filePath: path, itemId } = useContext(DisplayDataContext)
   const imageData = useSelector(
     selectActiveImageData(path, activeIndex),
     imageDataEqualtyFn,
@@ -202,7 +215,7 @@ const ImagePlotChart = React.memo<{
 
   const [sizeDrag, setSizeDrag] = useState(initSizeDrag)
   const [startDragAddRoi, setStartDragAddRoi] = useState(false)
-  const [action, setAction] = React.useState('')
+  const [action, setAction] = useState('')
   const [positionDrag, setChangeSize] = useState<PositionDrag | undefined>()
   const [statusRoi, setStatusRoi] = useState<StatusROI>({
     temp_add_roi: [],
@@ -216,9 +229,9 @@ const ImagePlotChart = React.memo<{
   const refPageYSize = useRef(0)
 
   const colorscaleRoi = createColormap({
-    colormap: 'jet',
+    colormap: "jet",
     nshades: 100, //timeDataMaxIndex >= 6 ? timeDataMaxIndex : 6,
-    format: 'rgba',
+    format: "rgba",
     alpha: 1.0,
   })
 
@@ -226,12 +239,12 @@ const ImagePlotChart = React.memo<{
     setRoiDataState(roiData)
   }, [roiData])
 
-  const data = React.useMemo(
+  const data = useMemo(
     () => [
       {
         z: imageData,
-        type: 'heatmap',
-        name: 'images',
+        type: "heatmap",
+        name: "images",
         colorscale: colorscale.map((value) => {
           let offset: number = parseFloat(value.offset)
           const offsets: number[] = colorscale.map((v) => {
@@ -245,8 +258,8 @@ const ImagePlotChart = React.memo<{
             offset = 0.0
           }
           const rgb = value.rgb
-            .replace(/[^0-9,]/g, '')
-            .split(',')
+            .replace(/[^0-9,]/g, "")
+            .split(",")
             .map((x) => Number(x))
           const hex = rgba2hex(rgb, alpha)
           return [offset, hex]
@@ -330,7 +343,7 @@ const ImagePlotChart = React.memo<{
     //eslint-disable-next-line
   }, [roiFilePath, workspaceId, edit])
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectMode(event.target.checked)
   }
   // debounceでイベントを間引きする。onSelectedはそれっぽい名前だが動かなかった。
@@ -339,7 +352,7 @@ const ImagePlotChart = React.memo<{
       dispatch(selectingImageArea({ itemId, range: event.range }))
     }
   })
-  const layout = React.useMemo(
+  const layout = useMemo(
     () => ({
       title: {
         text: meta?.title,
@@ -352,7 +365,7 @@ const ImagePlotChart = React.memo<{
         l: 100, // left
         b: 20, // bottom
       },
-      dragmode: selectMode ? 'select' : 'pan',
+      dragmode: selectMode ? "select" : "pan",
       xaxis: {
         title: meta?.xlabel,
         autorange: true,
@@ -360,23 +373,32 @@ const ImagePlotChart = React.memo<{
         showline: showline,
         zeroline: false,
         autotick: true,
-        ticks: '',
+        ticks: "",
         showticklabels: showticklabels,
       },
       yaxis: {
         title: meta?.ylabel,
         automargin: true,
-        autorange: 'reversed',
+        autorange: "reversed",
         showgrid: showgrid,
         showline: showline,
         zeroline: false,
         autotick: true, // todo
-        ticks: '',
+        ticks: "",
         showticklabels: showticklabels, // todo
       },
     }),
     //eslint-disable-next-line react-hooks/exhaustive-deps
-    [meta, showgrid, showline, showticklabels, width, height, selectMode, action],
+    [
+      meta,
+      showgrid,
+      showline,
+      showticklabels,
+      width,
+      height,
+      selectMode,
+      action
+    ],
   )
 
   const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))
@@ -398,7 +420,7 @@ const ImagePlotChart = React.memo<{
   const onChartClick = (event: PlotMouseEvent) => {
     if(!['Merge ROI', 'Delete ROI'].includes(action)) return
     const point: PlotDatum = event.points[0] as PlotDatum
-    if (point.curveNumber >= 1 && outputKey === 'cell_roi') {
+    if (point.curveNumber >= 1 && outputKey === "cell_roi") {
       setSelectRoi({
         x: Number(point.x),
         y: Number(point.y),
@@ -679,7 +701,7 @@ const ImagePlotChart = React.memo<{
       {
         loadingApi ? <Loading /> : null
       }
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: "flex" }}>
         <Box sx={{ flexGrow: 1, mt: 1 }}>
           <PlayBack activeIndex={activeIndex} />
         </Box>
@@ -738,7 +760,7 @@ const ImagePlotChart = React.memo<{
           renderActionRoi()
         )}
       </Box>
-      <div style={{ position: 'relative' }}>
+      <div style={{ position: "relative" }}>
         <PlotlyChart
           data={data}
           layout={layout}
@@ -759,7 +781,7 @@ const ImagePlotChart = React.memo<{
                   style={{
                     width: sizeDrag.width - 1,
                     height: sizeDrag.height - 1,
-                    cursor: !startDragAddRoi ? 'grab' : 'grabbing',
+                    cursor: !startDragAddRoi ? "grab" : "grabbing",
                   }}
                 />
                 <DragSizeLeft
@@ -791,21 +813,17 @@ const ImagePlotChart = React.memo<{
   )
 })
 
-const PlayBack = React.memo<{ activeIndex: number }>(({ activeIndex }) => {
+const PlayBack = memo(function PlayBack({ activeIndex }: ActiveIndexProps) {
   const dispatch = useDispatch()
-  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+  const { filePath: path, itemId } = useContext(DisplayDataContext)
 
   const maxSize = useSelector(selectImageDataMaxSize(path))
   const startIndex = useSelector(selectImageItemStartIndex(itemId))
   const endIndex = useSelector(selectImageItemEndIndex(itemId))
   const duration = useSelector(selectImageItemDuration(itemId))
 
-  const onSliderChange = (
-    event: Event,
-    value: number | number[],
-    activeThumb: number,
-  ) => {
-    if (typeof value === 'number') {
+  const onSliderChange = (event: Event, value: number | number[]) => {
+    if (typeof value === "number") {
       const newIndex = value - startIndex
       if (newIndex >= 0 && newIndex !== activeIndex) {
         dispatch(setImageActiveIndex({ itemId, activeIndex: newIndex }))
@@ -813,7 +831,7 @@ const PlayBack = React.memo<{ activeIndex: number }>(({ activeIndex }) => {
     }
   }
 
-  const intervalRef = React.useRef<null | NodeJS.Timeout>(null)
+  const intervalRef = useRef<null | NodeJS.Timeout>(null)
 
   useEffect(() => {
     if (intervalRef.current !== null) {
@@ -843,10 +861,10 @@ const PlayBack = React.memo<{ activeIndex: number }>(({ activeIndex }) => {
   }
 
   const onDurationChange = useCallback(
-    (event: React.ChangeEvent<HTMLInputElement>) => {
+    (event: ChangeEvent<HTMLInputElement>) => {
       const newValue =
-        event.target.value === '' ? '' : Number(event.target.value)
-      if (typeof newValue === 'number') {
+        event.target.value === "" ? "" : Number(event.target.value)
+      if (typeof newValue === "number") {
         dispatch(setImageItemDuration({ itemId, duration: newValue }))
       }
     },
@@ -920,7 +938,7 @@ function rgba2hex(rgba: number[], alpha: number) {
   const b = rgba[2]
   const a = alpha
 
-  var outParts = [
+  const outParts = [
     r.toString(16),
     g.toString(16),
     b.toString(16),
@@ -932,14 +950,14 @@ function rgba2hex(rgba: number[], alpha: number) {
   // Pad single-digit output values
   outParts.forEach(function (part, i) {
     if (part.length === 1) {
-      outParts[i] = '0' + part
+      outParts[i] = "0" + part
     }
   })
 
-  return `#${outParts.join('')}`
+  return `#${outParts.join("")}`
 }
 
-function debounce<T extends (...args: any[]) => unknown>(
+function debounce<T extends (...args: PlotSelectionEvent[]) => unknown>(
   callback: T,
   delay = 500,
 ): (...args: Parameters<T>) => void {
@@ -950,10 +968,11 @@ function debounce<T extends (...args: any[]) => unknown>(
   }
 }
 
-const BoxDiv = styled('div')({
+const BoxDiv = styled("div")({
   mt: 1,
-  alignItems: 'center',
-  listStyle: 'none',
+  display: "flex",
+  alignItems: "center",
+  listStyle: "none",
   padding: 0,
   margin: 0,
 })
@@ -963,70 +982,71 @@ const BoxWrapper = styled('div')({
   gap: 12
 })
 
-const LinkDiv = styled('div')({
-  textDecoration: 'underline',
-  cursor: 'pointer',
-  color: '#1155cc',
+const LinkDiv = styled("div")({
+  marginLeft: 16,
+  textDecoration: "underline",
+  cursor: "pointer",
+  color: "#1155cc",
   zIndex: 999,
-  position: 'relative',
+  position: "relative",
 })
 
-const DivAddRoi = styled('div')({
-  width: '100%',
-  height: '100%',
-  position: 'absolute',
+const DivAddRoi = styled("div")({
+  width: "100%",
+  height: "100%",
+  position: "absolute",
   left: 0,
   top: 0,
   borderRadius: 100,
 })
 
-const DivSvg = styled('div')({
+const DivSvg = styled("div")({
   width: 321,
   height: 321,
   marginTop: 30,
   marginLeft: 99,
-  position: 'relative',
+  position: "relative",
 })
 
-const DivDrag = styled('div')({
-  border: '1px solid #ffffff',
-  position: 'absolute',
+const DivDrag = styled("div")({
+  border: "1px solid #ffffff",
+  position: "absolute",
   borderRadius: 100,
 })
 
-const DragCenter = styled('div')({
+const DragCenter = styled("div")({
   borderRadius: 100,
-  cursor: 'grab',
+  cursor: "grab",
 })
 
-const DragSize = styled('div')({
+const DragSize = styled("div")({
   width: 3,
   height: 3,
   borderRadius: 100,
-  position: 'absolute',
-  background: '#fff',
+  position: "absolute",
+  background: "#fff",
 })
 
 const DragSizeLeft = styled(DragSize)({
-  top: `calc(50% - 1px)`,
+  top: "calc(50% - 1px)",
   left: -2,
-  cursor: 'ew-resize',
+  cursor: "ew-resize",
 })
 
 const DragSizeRight = styled(DragSize)({
-  top: `calc(50% - 1px)`,
+  top: "calc(50% - 1px)",
   right: -2,
-  cursor: 'ew-resize',
+  cursor: "ew-resize",
 })
 
 const DragSizeTop = styled(DragSize)({
   top: -2,
-  right: `calc(50% - 1px)`,
-  cursor: 'ns-resize',
+  right: "calc(50% - 1px)",
+  cursor: "ns-resize",
 })
 
 const DragSizeBottom = styled(DragSize)({
   bottom: -2,
-  right: `calc(50% - 1px)`,
-  cursor: 'ns-resize',
+  right: "calc(50% - 1px)",
+  cursor: "ns-resize",
 })

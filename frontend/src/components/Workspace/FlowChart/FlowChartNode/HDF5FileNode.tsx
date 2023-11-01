@@ -1,50 +1,43 @@
-import React, { CSSProperties } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { Handle, Position, NodeProps } from 'reactflow'
+import { memo, useEffect, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { Handle, Position, NodeProps } from "reactflow"
 
-import { alpha, useTheme } from '@mui/material/styles'
-import Dialog from '@mui/material/Dialog'
-import TreeView from '@mui/lab/TreeView'
-import TreeItem from '@mui/lab/TreeItem'
-import FolderIcon from '@mui/icons-material/Folder'
-import InsertDriveFileOutlinedIcon from '@mui/icons-material/InsertDriveFileOutlined'
-import DialogActions from '@mui/material/DialogActions'
-import DialogContent from '@mui/material/DialogContent'
-import DialogTitle from '@mui/material/DialogTitle'
-import LinearProgress from '@mui/material/LinearProgress'
-import Button from '@mui/material/Button'
+import FolderIcon from "@mui/icons-material/Folder"
+import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined"
+import { Typography } from "@mui/material"
+import Button from "@mui/material/Button"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogTitle from "@mui/material/DialogTitle"
+import LinearProgress from "@mui/material/LinearProgress"
+import { useTheme } from "@mui/material/styles"
+import { TreeView, TreeItem } from "@mui/x-tree-view"
 
-import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
+import { FileSelect } from "components/Workspace/FlowChart/FlowChartNode/FileSelect"
+import { toHandleId } from "components/Workspace/FlowChart/FlowChartNode/FlowChartUtils"
+import { NodeContainer } from "components/Workspace/FlowChart/FlowChartNode/NodeContainer"
+import { HANDLE_STYLE } from "const/flowchart"
+import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
+import { NodeIdProps } from "store/slice/FlowElement/FlowElementType"
+import { getHDF5Tree } from "store/slice/HDF5/HDF5Action"
+import {
+  selectHDF5IsLoading,
+  selectHDF5Nodes,
+} from "store/slice/HDF5/HDF5Selectors"
+import { HDF5TreeNodeType } from "store/slice/HDF5/HDF5Type"
+import { setInputNodeFilePath } from "store/slice/InputNode/InputNodeActions"
 import {
   selectHDF5InputNodeSelectedFilePath,
   selectInputNodeDefined,
   selectInputNodeHDF5Path,
-} from 'store/slice/InputNode/InputNodeSelectors'
-import { setInputNodeHDF5Path } from 'store/slice/InputNode/InputNodeSlice'
-import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
-import { toHandleId } from './FlowChartUtils'
-import { FileSelect } from './FileSelect'
-import { deleteFlowNodeById } from 'store/slice/FlowElement/FlowElementSlice'
-import {
-  selectHDF5IsLoading,
-  selectHDF5Nodes,
-} from 'store/slice/HDF5/HDF5Selectors'
-import { getHDF5Tree } from 'store/slice/HDF5/HDF5Action'
-import { HDF5TreeNodeType } from 'store/slice/HDF5/HDF5Type'
-import { Typography } from '@mui/material'
-import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
-import { AppDispatch } from "../../../../store/store";
+} from "store/slice/InputNode/InputNodeSelectors"
+import { setInputNodeHDF5Path } from "store/slice/InputNode/InputNodeSlice"
+import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
+import { AppDispatch } from "store/store"
 
-const sourceHandleStyle: CSSProperties = {
-  width: 8,
-  height: 15,
-  top: 15,
-  border: '1px solid',
-  borderColor: '#555',
-  borderRadius: 0,
-}
-
-export const HDF5FileNode = React.memo<NodeProps>((element) => {
+export const HDF5FileNode = memo(function HDF5FileNode(element: NodeProps) {
   const defined = useSelector(selectInputNodeDefined(element.id))
   if (defined) {
     return <HDF5FileNodeImple {...element} />
@@ -53,32 +46,26 @@ export const HDF5FileNode = React.memo<NodeProps>((element) => {
   }
 })
 
-const HDF5FileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
+const HDF5FileNodeImple = memo(function HDF5FileNodeImple({
+  id: nodeId,
+  selected,
+}: NodeProps) {
   const dispatch = useDispatch()
   const filePath = useSelector(selectHDF5InputNodeSelectedFilePath(nodeId))
   const onChangeFilePath = (path: string) => {
     dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
   }
-  const theme = useTheme()
 
   const onClickDeleteIcon = () => {
     dispatch(deleteFlowNodeById(nodeId))
   }
 
   return (
-    <div
-      style={{
-        height: '100%',
-        width: '230px',
-        background: selected
-          ? alpha(theme.palette.primary.light, 0.1)
-          : undefined,
-      }}
-    >
+    <NodeContainer nodeId={nodeId} selected={selected}>
       <button
         className="flowbutton"
         onClick={onClickDeleteIcon}
-        style={{ color: 'black', position: 'absolute', top: -10, right: 10 }}
+        style={{ color: "black", position: "absolute", top: -10, right: 10 }}
       >
         ×
       </button>
@@ -90,37 +77,35 @@ const HDF5FileNodeImple = React.memo<NodeProps>(({ id: nodeId, selected }) => {
           }
         }}
         fileType={FILE_TYPE_SET.HDF5}
-        filePath={filePath ?? ''}
+        filePath={filePath ?? ""}
       />
       {filePath !== undefined && <ItemSelect nodeId={nodeId} />}
       <Handle
         type="source"
         position={Position.Right}
-        id={toHandleId(nodeId, 'hdf5', 'HDF5Data')}
-        style={sourceHandleStyle}
+        id={toHandleId(nodeId, "hdf5", "HDF5Data")}
+        style={{ ...HANDLE_STYLE }}
       />
-    </div>
+    </NodeContainer>
   )
 })
 
-const ItemSelect = React.memo<{
-  nodeId: string
-}>(({ nodeId }) => {
-  const [open, setOpen] = React.useState(false)
+const ItemSelect = memo(function ItemSelect({ nodeId }: NodeIdProps) {
+  const [open, setOpen] = useState(false)
 
   const structureFileName = useSelector(selectInputNodeHDF5Path(nodeId))
 
   return (
     <>
       <Button variant="outlined" size="small" onClick={() => setOpen(true)}>
-        {'Structure'}
+        {"Structure"}
       </Button>
       <Typography className="selectFilePath" variant="caption">
-        {!!structureFileName ? structureFileName : 'No structure is selected.'}
+        {structureFileName ? structureFileName : "No structure is selected."}
       </Typography>
 
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
-        <DialogTitle>{'Select File'}</DialogTitle>
+        <DialogTitle>{"Select File"}</DialogTitle>
         <Structure nodeId={nodeId} />
         <DialogActions>
           <Button
@@ -144,18 +129,16 @@ const ItemSelect = React.memo<{
   )
 })
 
-const Structure = React.memo<{
-  nodeId: string
-}>(({ nodeId }) => {
+const Structure = memo(function Structure({ nodeId }: NodeIdProps) {
   const theme = useTheme()
   return (
     <DialogContent dividers>
       <div
         style={{
           height: 300,
-          overflow: 'auto',
+          overflow: "auto",
           marginBottom: theme.spacing(1),
-          border: '1px solid',
+          border: "1px solid",
           padding: theme.spacing(1),
           borderColor: theme.palette.divider,
         }}
@@ -166,26 +149,25 @@ const Structure = React.memo<{
   )
 })
 
-const FileTreeView = React.memo<{
-  nodeId: string
-}>(({ nodeId }) => {
+const FileTreeView = memo(function FileTreeView({ nodeId }: NodeIdProps) {
   const [tree, isLoading] = useHDF5Tree(nodeId)
   return (
     <div>
       {isLoading && <LinearProgress />}
       <TreeView>
         {tree?.map((node) => (
-          <TreeNode node={node} nodeId={nodeId} />
+          <TreeNode key={nodeId} node={node} nodeId={nodeId} />
         ))}
       </TreeView>
     </div>
   )
 })
 
-const TreeNode = React.memo<{
+interface TreeNodeProps extends NodeIdProps {
   node: HDF5TreeNodeType
-  nodeId: string
-}>(({ node, nodeId }) => {
+}
+
+const TreeNode = memo(function TreeNode({ node, nodeId }: TreeNodeProps) {
   const dispatch = useDispatch()
 
   const onClickFile = (path: string) => {
@@ -226,7 +208,7 @@ function useHDF5Tree(
   const isLoading = useSelector(selectHDF5IsLoading())
   const filePath = useSelector(selectHDF5InputNodeSelectedFilePath(nodeId))
   const workspaceId = useSelector(selectCurrentWorkspaceId)
-  React.useEffect(() => {
+  useEffect(() => {
     if (workspaceId && !isLoading && filePath) {
       dispatch(getHDF5Tree({ path: filePath, workspaceId }))
     }

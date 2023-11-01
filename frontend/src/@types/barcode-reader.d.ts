@@ -1,5 +1,5 @@
-declare module 'react-linear-gradient-picker' {
-  import React from 'react'
+declare module "react-linear-gradient-picker" {
+  import { FC } from "react"
   export declare type PALETTE_COLOR_SHAPE_TYPE = {
     id?: number
     color: string
@@ -27,8 +27,8 @@ declare module 'react-linear-gradient-picker' {
       showAnglePicker?: boolean
       open: boolean
       setOpen: (open: boolean) => void
-      trigger?: Function
+      trigger?: () => void
     }
-  export declare const GradientPicker: React.FC<GRADIENT_PICKER_PROP>
-  export declare const GradientPickerPopover: React.FC<GRADIENT_PICKER_POPOVER_PROP>
+  export declare const GradientPicker: FC<GRADIENT_PICKER_PROP>
+  export declare const GradientPickerPopover: FC<GRADIENT_PICKER_POPOVER_PROP>
 }

@@ -1,10 +1,11 @@
-import { isNode, Node } from 'reactflow'
+import { isNode, Node } from "reactflow"
+
 import {
   AlgorithmNodeData,
   NodeData,
   NODE_TYPE_SET,
   InputNodeData,
-} from './FlowElementType'
+} from "store/slice/FlowElement/FlowElementType"
 
 export function isNodeData(
   node: Node<NodeData> | undefined,
@@ -27,7 +28,7 @@ export function isInputNodeData(
 export function getLabelByPath(filePath: string | string[]) {
   if (Array.isArray(filePath)) {
     if (filePath.length === 0) {
-      return ''
+      return ""
     } else if (filePath.length === 1) {
       return getFileName(filePath[0])
     } else {
@@ -39,5 +40,5 @@ export function getLabelByPath(filePath: string | string[]) {
 }
 
 export function getFileName(filePath: string) {
-  return filePath.split('/').reverse()[0]
+  return filePath.split("/").reverse()[0]
 }

@@ -1,18 +1,18 @@
-import React from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from "react"
 
 export function useLocalStorage<T>(
   storageKey: string,
   initialValue: T,
-  parseFn: (value: any) => T,
-): [T, React.Dispatch<React.SetStateAction<T>>] {
-  const [value, setValue] = React.useState(() => {
+  parseFn: (value: number) => T,
+): [T, Dispatch<SetStateAction<T>>] {
+  const [value, setValue] = useState(() => {
     const savedStr = localStorage.getItem(storageKey)
     if (savedStr != null) {
       return parseFn(JSON.parse(savedStr))
     }
     return initialValue
   })
-  React.useEffect(() => {
+  useEffect(() => {
     localStorage.setItem(storageKey, JSON.stringify(value))
   }, [value, storageKey])
   return [value, setValue]

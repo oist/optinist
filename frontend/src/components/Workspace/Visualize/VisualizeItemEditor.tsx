@@ -1,25 +1,27 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import Box from '@mui/material/Box'
-import {
-  selectSelectedVisualizeItemId,
-  selectVisualizeDataType,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+import { createContext, FC, useContext } from "react"
+import { useSelector } from "react-redux"
+
+import Box from "@mui/material/Box"
+
+import { BarItemEditor } from "components/Workspace/Visualize/Editor/BarItemEditor"
+import { CsvItemEditor } from "components/Workspace/Visualize/Editor/CsvItemEditor"
+import { HeatmapItemEditor } from "components/Workspace/Visualize/Editor/HeatmapItemEditor"
+import { HistogramItemEditor } from "components/Workspace/Visualize/Editor/HistogramItemEditor"
+import { ImageItemEditor } from "components/Workspace/Visualize/Editor/ImageItemEditor"
+import { LineItemEditor } from "components/Workspace/Visualize/Editor/LineItemEditor"
+import { PieItemEditor } from "components/Workspace/Visualize/Editor/PieItemEditor"
+import { PolarItemEditor } from "components/Workspace/Visualize/Editor/PolarItemEditor"
+import { RoiItemEditor } from "components/Workspace/Visualize/Editor/RoiItemEditor"
+import { ScatterItemEditor } from "components/Workspace/Visualize/Editor/ScatterItemEditor"
+import { TimeSeriesItemEditor } from "components/Workspace/Visualize/Editor/TimeSeriesItemEditor"
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
-} from 'store/slice/DisplayData/DisplayDataType'
-import { ImageItemEditor } from './Editor/ImageItemEditor'
-import { CsvItemEditor } from './Editor/CsvItemEditor'
-import { HeatmapItemEditor } from './Editor/HeatmapItemEditor'
-import { TimeSeriesItemEditor } from './Editor/TimeSeriesItemEditor'
-import { RoiItemEditor } from './Editor/RoiItemEditor'
-import { ScatterItemEditor } from './Editor/ScatterItemEditor'
-import { BarItemEditor } from './Editor/BarItemEditor'
-import { HistogramItemEditor } from './Editor/HistogramItemEditor'
-import { LineItemEditor } from './Editor/LineItemEditor'
-import { PieItemEditor } from './Editor/PieItemEditor'
-import { PolarItemEditor } from './Editor/PolarItemEditor'
+} from "store/slice/DisplayData/DisplayDataType"
+import {
+  selectSelectedVisualizeItemId,
+  selectVisualizeDataType,
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
 
 export const VisualizeItemEditor = () => {
   const selectedItemId = useSelector(selectSelectedVisualizeItemId)
@@ -32,16 +34,16 @@ export const VisualizeItemEditor = () => {
           </Box>
         </SelectedItemIdContext.Provider>
       ) : (
-        'Please select item...'
+        "Please select item..."
       )}
     </>
   )
 }
 
-export const SelectedItemIdContext = React.createContext<number>(NaN)
+export const SelectedItemIdContext = createContext<number>(NaN)
 
-const DisplayDataItemEditor: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const DisplayDataItemEditor: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const dataType = useSelector(selectVisualizeDataType(itemId))
   return (
     <div style={{ marginTop: 8 }}>
@@ -50,7 +52,7 @@ const DisplayDataItemEditor: React.FC = () => {
   )
 }
 
-const DisplayEditor: React.FC<{
+const DisplayEditor: FC<{
   dataType: DATA_TYPE | null
 }> = ({ dataType }) => {
   /* 他のtypeのEditorも必要になったら追加する */
