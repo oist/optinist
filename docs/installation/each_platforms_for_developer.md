@@ -49,7 +49,7 @@ cd ./optinist
 ### Create anaconda environment
 
 ```
-conda create -n optinist_dev python=3.8
+conda create -n optinist_dev python=3.8 poetry
 conda activate optinist_dev
 ```
 
@@ -60,7 +60,7 @@ conda config --set channel_priority strict
 ### Install requirements
 
 ```
-pip install -e '.[dev]'
+poetry install --with dev
 ```
 
 If you will make PRs, please see the [](Contributing) section.

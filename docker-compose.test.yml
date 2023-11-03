@@ -10,11 +10,9 @@ services:
     environment:
       PYTHONPATH: .
       TZ: Asia/Tokyo
+    command: bash -c "poetry install --with test && poetry run python3 -m pytest -s ."
     volumes:
-      - ./studio:/app/studio
-      - ./conda/yaml:/app/conda/yaml
-      - ./studio/test_data:/tmp/studio
-      - ./frontend/build:/app/frontend/build
+      - .:/app
 
   test_studio_frontend:
     image: test_studio_frontend

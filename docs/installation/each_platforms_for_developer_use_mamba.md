@@ -78,7 +78,7 @@ mamba create -c conda-forge -c bioconda -n optinist_dev python=3.8 snakemake
 -->
 
 ```
-mamba create -n optinist_dev python=3.8
+mamba create -n optinist_dev python=3.8 poetry
 conda activate optinist_dev
 ```
 
@@ -93,7 +93,7 @@ conda config --set channel_priority strict
 ### Install requirements
 
 ```
-pip install -e '.[dev]'
+poetry install --with dev
 ```
 
 ### Set saving directory
