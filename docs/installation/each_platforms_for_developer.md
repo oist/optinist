@@ -60,7 +60,7 @@ conda config --set channel_priority strict
 ### Install requirements
 
 ```
-poetry install --with dev
+poetry install --no-root --with dev
 ```
 
 If you will make PRs, please see the [](Contributing) section.

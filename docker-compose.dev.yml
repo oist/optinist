@@ -10,7 +10,7 @@ services:
       - .:/app
     ports:
       - "127.0.0.1:8000:8000"
-    command: bash -c "poetry install --with dev && poetry run python main.py --reload --host 0.0.0.0 --port 8000"
+    command: bash -c "poetry install --no-root --with dev && poetry run python main.py --reload --host 0.0.0.0 --port 8000"
     environment:
       PYTHONPATH: /app/
       TZ: Asia/Tokyo

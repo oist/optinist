@@ -93,7 +93,7 @@ conda config --set channel_priority strict
 ### Install requirements
 
 ```
-poetry install --with dev
+poetry install --no-root --with dev
 ```
 
 ### Set saving directory

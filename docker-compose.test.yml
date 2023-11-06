@@ -10,7 +10,7 @@ services:
     environment:
       PYTHONPATH: .
       TZ: Asia/Tokyo
-    command: bash -c "poetry install --with test && poetry run python3 -m pytest -s ."
+    command: bash -c "poetry install --no-root --with test && poetry run python3 -m pytest -s ."
     volumes:
       - .:/app
 
