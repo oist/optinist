@@ -1,3 +1,9 @@
+import shutil
+
+from studio.app.common.core.utils.filepath_creater import (
+    create_directory,
+    join_filepath,
+)
 from studio.app.common.dataclass import ImageData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import RoiData
@@ -82,5 +88,12 @@ def caiman_mc(
         "rois": RoiData(rois, output_dir=output_dir, file_name="rois"),
         "nwbfile": nwbfile,
     }
+
+    # Clean up temporary files
+    mmap_output_dir = join_filepath([output_dir, "mmap"])
+    create_directory(mmap_output_dir)
+    for mmap_file in mc.mmap_file:
+        shutil.move(mmap_file, mmap_output_dir)
+    shutil.move(fname_new, mmap_output_dir)
 
     return info
