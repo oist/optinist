@@ -144,7 +144,7 @@ const SelectIndex = React.memo<{
       <InputLabel>index</InputLabel>
       <Select label="smooth" value={`${index}`} onChange={handleChange}>
         {dataKeys.map((v, i) => (
-          <MenuItem value={i}>{v}</MenuItem>
+          <MenuItem key={index} value={i}>{v}</MenuItem>
         ))}
       </Select>
     </FormControl>

@@ -229,8 +229,8 @@ const RefImageItemIdSelect = React.memo<{
         onChange={onChangeRefImageItemId}
       >
         <MenuItem value={undefined}>{'None'}</MenuItem>
-        {itemIdList.map((value) => (
-          <MenuItem value={value}>{value}</MenuItem>
+        {itemIdList.map((value, index) => (
+          <MenuItem key={index} value={value}>{value}</MenuItem>
         ))}
       </Select>
     </FormControl>

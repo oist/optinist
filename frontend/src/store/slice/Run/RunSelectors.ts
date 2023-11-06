@@ -32,22 +32,7 @@ import {
   selectInputNodeParam,
   selectInputNodeSelectedFilePath,
 } from 'store/slice/InputNode/InputNodeSelectors'
-
-export const selectRunPostData = (state: RootState) => {
-  const nwbParam = selectNwbParams(state)
-  const snakemakeParam = selectSnakemakeParams(state)
-  const edgeDictForRun = selectEdgeDictForRun(state)
-  const nodeDictForRun = selectNodeDictForRun(state)
-  const forceRunList = selectForceRunList(state)
-  const runPostData: Omit<RunPostData, 'name'> = {
-    nwbParam,
-    snakemakeParam,
-    edgeDict: edgeDictForRun,
-    nodeDict: nodeDictForRun,
-    forceRunList,
-  }
-  return runPostData
-}
+import { createSelector } from "reselect";
 
 /**
  * 前回の結果で、エラーまたはParamに変更があるnodeのリストを返す
@@ -115,3 +100,21 @@ const selectEdgeDictForRun = (state: RootState) => {
   })
   return edgeDict
 }
+
+export const selectRunPostData = createSelector(
+    selectNwbParams,
+    selectSnakemakeParams,
+    selectEdgeDictForRun,
+    selectNodeDictForRun,
+    selectForceRunList,
+    (nwbParams, snakemakeParams, edgeDictForRun, nodeDictForRun, forceRunList) => {
+      const runPostData: Omit<RunPostData, 'name'> = {
+        nwbParam: nwbParams,
+        snakemakeParam: snakemakeParams,
+        edgeDict: edgeDictForRun,
+        nodeDict: nodeDictForRun,
+        forceRunList,
+      };
+      return runPostData;
+    }
+);

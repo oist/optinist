@@ -31,50 +31,76 @@ export const FilePathSelect: React.FC<{
   label?: string
 }> = ({ dataType, selectedNodeId, selectedFilePath, onSelect, label }) => {
   const inputNodeFilePathInfoList = useSelector(
-    (state: RootState) => {
-      const inputNodes = selectInputNode(state)
-      return Object.entries(inputNodes)
-        .map(([nodeId, inputNode]) => ({
-          nodeId,
-          filePath: inputNode.selectedFilePath,
-          fileType: inputNode.fileType,
-          dataType: toDataTypeFromFileType(inputNode.fileType),
-          nodeName: selectNodeLabelById(nodeId)(state),
-        }))
-        .filter(({ filePath }) => filePath != null)
-        .filter(({ dataType: inputNodeDataType }) =>
-          dataType != null ? inputNodeDataType === dataType : true,
-        )
-    },
-    // todo 比較関数
-  )
+      (state: RootState) => {
+        const inputNodes = selectInputNode(state);
+        return Object.entries(inputNodes)
+            .map(([nodeId, inputNode]) => ({
+              nodeId,
+              filePath: inputNode.selectedFilePath,
+              fileType: inputNode.fileType,
+              dataType: toDataTypeFromFileType(inputNode.fileType),
+              nodeName: selectNodeLabelById(nodeId)(state),
+            }))
+            .filter(({ filePath }) => filePath != null)
+            .filter(({ dataType: inputNodeDataType }) =>
+                dataType != null ? inputNodeDataType === dataType : true
+            );
+      },
+      (prevFilePathInfoList, nextFilePathInfoList) =>
+          prevFilePathInfoList.length === nextFilePathInfoList.length &&
+          prevFilePathInfoList.every(
+              (prevInfo, index) =>
+                  prevInfo.filePath === nextFilePathInfoList[index].filePath &&
+                  prevInfo.fileType === nextFilePathInfoList[index].fileType &&
+                  prevInfo.dataType === nextFilePathInfoList[index].dataType &&
+                  prevInfo.nodeName === nextFilePathInfoList[index].nodeName
+          )
+  );
 
   const latestUid = useSelector(selectPipelineLatestUid)
 
-  const algorithmNodeOutputPathInfoList = useSelector((state: RootState) => {
-    if (latestUid != null) {
-      const runResult = selectPipelineNodeResultSuccessList(state)
-      return runResult.map(({ nodeId, nodeResult }) => {
-        return {
-          nodeId,
-          nodeName: selectNodeLabelById(nodeId)(state),
-          paths: Object.entries(nodeResult.outputPaths)
-            .map(([outputKey, value]) => {
-              return {
-                outputKey,
-                filePath: value.path,
-                type: value.type,
-              }
-            })
-            .filter(({ type }) =>
-              dataType != null ? type === dataType : true,
-            ),
+  const algorithmNodeOutputPathInfoList = useSelector(
+      (state: RootState) => {
+        if (latestUid != null) {
+          const runResult = selectPipelineNodeResultSuccessList(state);
+          return runResult.map(({ nodeId, nodeResult }) => {
+            return {
+              nodeId,
+              nodeName: selectNodeLabelById(nodeId)(state),
+              paths: Object.entries(nodeResult.outputPaths)
+                  .map(([outputKey, value]) => {
+                    return {
+                      outputKey,
+                      filePath: value.path,
+                      type: value.type,
+                    };
+                  })
+                  .filter(({ type }) =>
+                      dataType != null ? type === dataType : true
+                  ),
+            };
+          });
+        } else {
+          return [];
         }
-      })
-    } else {
-      return []
-    }
-  })
+      },
+      (prevPathInfoList, nextPathInfoList) =>
+          prevPathInfoList.length === nextPathInfoList.length &&
+          prevPathInfoList.every((prevInfo, index) => {
+            const nextInfo = nextPathInfoList[index];
+            return (
+                prevInfo.nodeId === nextInfo.nodeId &&
+                prevInfo.nodeName === nextInfo.nodeName &&
+                prevInfo.paths.length === nextInfo.paths.length &&
+                prevInfo.paths.every(
+                    (prevPath, pathIndex) =>
+                        prevPath.outputKey === nextInfo.paths[pathIndex].outputKey &&
+                        prevPath.filePath === nextInfo.paths[pathIndex].filePath &&
+                        prevPath.type === nextInfo.paths[pathIndex].type
+                )
+            );
+          })
+  );
 
   const [open, setOpen] = React.useState(false)
   const handleClose = () => {
@@ -102,7 +128,7 @@ export const FilePathSelect: React.FC<{
       filePath.forEach((pathElm) => {
         menuItemList.push(
           <MenuItem
-            value={`${pathInfo.nodeId}/${pathElm}`}
+            value={pathInfo.nodeId && pathElm ? `${pathInfo.nodeId}/${pathElm}` : ''}
             onClick={() =>
               onSelectHandle(pathInfo.nodeId, pathElm ?? '', pathInfo.dataType)
             }
@@ -115,7 +141,7 @@ export const FilePathSelect: React.FC<{
     } else {
       menuItemList.push(
         <MenuItem
-          value={`${pathInfo.nodeId}/${pathInfo.filePath}`}
+          value={pathInfo.nodeId && pathInfo.filePath ? `${pathInfo.nodeId}/${pathInfo.filePath}` : ''}
           onClick={() =>
             onSelectHandle(pathInfo.nodeId, filePath ?? '', pathInfo.dataType)
           }
@@ -131,7 +157,7 @@ export const FilePathSelect: React.FC<{
     pathInfo.paths.forEach((outputPath, i) => {
       menuItemList.push(
         <MenuItem
-          value={`${pathInfo.nodeId}/${outputPath.filePath}`}
+          value={pathInfo.nodeId && outputPath.filePath ? `${pathInfo.nodeId}/${outputPath.filePath}` : ''}
           onClick={() =>
             onSelectHandle(
               pathInfo.nodeId,
@@ -152,7 +178,7 @@ export const FilePathSelect: React.FC<{
     <FormControl style={{ minWidth: 150, maxWidth: 220 }} variant="standard">
       <InputLabel>{!!label ? label : 'Select Item'}</InputLabel>
       <Select
-        value={`${selectedNodeId}/${selectedFilePath}`}
+        value={selectedNodeId && selectedFilePath ? `${selectedNodeId}/${selectedFilePath}` : ''}
         open={open}
         onClose={handleClose}
         onOpen={handleOpen}

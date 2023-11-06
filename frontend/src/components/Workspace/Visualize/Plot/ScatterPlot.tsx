@@ -175,8 +175,8 @@ const XIndex = React.memo<{
     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
       <InputLabel>xIndex</InputLabel>
       <Select label="smooth" value={xIndex} onChange={handleChange}>
-        {dataKeys.map((x) => (
-          <MenuItem value={x}>{x}</MenuItem>
+        {dataKeys.map((x, index) => (
+          <MenuItem key={index} value={x}>{x}</MenuItem>
         ))}
       </Select>
     </FormControl>
@@ -203,8 +203,8 @@ const YIndex = React.memo<{
     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
       <InputLabel>yIndex</InputLabel>
       <Select label="smooth" value={yIndex} onChange={handleChange}>
-        {dataKeys.map((x) => (
-          <MenuItem value={x}>{x}</MenuItem>
+        {dataKeys.map((x, index) => (
+          <MenuItem key={index} value={x}>{x}</MenuItem>
         ))}
       </Select>
     </FormControl>

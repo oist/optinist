@@ -27,7 +27,7 @@ export function getChildParam(
 }
 
 export function isParamChild(param: ParamType): param is ParamChild {
-  return param.type === 'child'
+  return param?.type === 'child'
 }
 
 export function isParamParent(param: ParamType): param is ParamParent {
