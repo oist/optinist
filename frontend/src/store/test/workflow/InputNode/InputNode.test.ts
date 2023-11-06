@@ -1,19 +1,21 @@
-import { store, rootReducer } from 'store/store'
-import { REACT_FLOW_NODE_TYPE_KEY } from 'const/flowchart'
-import { deleteFlowNodeById } from 'store/slice/FlowElement/FlowElementSlice'
-import { addInputNode } from 'store/slice/FlowElement/FlowElementActions'
-import { NODE_TYPE_SET } from 'store/slice/FlowElement/FlowElementType'
-import { selectNodeById } from 'store/slice/FlowElement/FlowElementSelectors'
-import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
-import { selectInputNodeById } from 'store/slice/InputNode/InputNodeSelectors'
-import { setInputNodeFilePath } from 'store/slice/InputNode/InputNodeActions'
+import { expect, describe, test } from "@jest/globals"
 
-describe('InputNode', () => {
+import { REACT_FLOW_NODE_TYPE_KEY } from "const/flowchart"
+import { addInputNode } from "store/slice/FlowElement/FlowElementActions"
+import { selectNodeById } from "store/slice/FlowElement/FlowElementSelectors"
+import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
+import { NODE_TYPE_SET } from "store/slice/FlowElement/FlowElementType"
+import { setInputNodeFilePath } from "store/slice/InputNode/InputNodeActions"
+import { selectInputNodeById } from "store/slice/InputNode/InputNodeSelectors"
+import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
+import { store, rootReducer } from "store/store"
+
+describe("InputNode", () => {
   const initialRootState = store.getState()
 
-  const nodeId = 'input_cxg72pynkd'
+  const nodeId = "input_cxg72pynkd"
   const nodeType = REACT_FLOW_NODE_TYPE_KEY.ImageFileNode
-  const label = 'image node'
+  const label = "image node"
   const nodeDataType = NODE_TYPE_SET.INPUT
   const fileType = FILE_TYPE_SET.IMAGE
 
@@ -57,8 +59,8 @@ describe('InputNode', () => {
   // filePath変更
   test(`${setInputNodeFilePath.type} by image`, () => {
     const filePath = [
-      '/tmp/optinist/input/hoge/hoge.tif',
-      '/tmp/optinist/input/copy_image1/copy_image1.tif',
+      "/tmp/optinist/input/hoge/hoge.tif",
+      "/tmp/optinist/input/copy_image1/copy_image1.tif",
     ]
     const setInputNodeFilePathAction = setInputNodeFilePath({
       nodeId,

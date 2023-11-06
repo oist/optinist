@@ -1,21 +1,23 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import { FormControlLabel, Switch } from '@mui/material'
+import { FC, useContext } from "react"
+import { useSelector, useDispatch } from "react-redux"
+
+import { FormControlLabel, Switch } from "@mui/material"
+
+import { GradientColorPicker } from "components/Workspace/Visualize/Editor/GradientColorPicker"
+import { SaveFig } from "components/Workspace/Visualize/Editor/SaveFig"
+import { SelectedItemIdContext } from "components/Workspace/Visualize/VisualizeItemEditor"
 import {
   selectHeatMapItemColors,
   selectHeatMapItemShowScale,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import {
   setHeatMapItemColors,
   setHeatMapItemShowScale,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import { SelectedItemIdContext } from '../VisualizeItemEditor'
-import { GradientColorPicker } from './GradientColorPicker'
-import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
-import { SaveFig } from './SaveFig'
+} from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { ColorType } from "store/slice/VisualizeItem/VisualizeItemType"
 
-export const HeatmapItemEditor: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+export const HeatmapItemEditor: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
   const colors = useSelector(selectHeatMapItemColors(itemId))
   const dispathSetColor = (colorCode: ColorType[]) => {
@@ -30,8 +32,8 @@ export const HeatmapItemEditor: React.FC = () => {
   )
 }
 
-const ShowScale: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const ShowScale: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const showscale = useSelector(selectHeatMapItemShowScale(itemId))
   const dispatch = useDispatch()
   const toggleChecked = () => {

@@ -58,13 +58,8 @@
     "test": "react-app-rewired test",
     "test:ci": "CI=true react-app-rewired test",
     "eject": "react-scripts eject",
-    "lint-staged": "lint-staged"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
+    "format": "prettier --write .",
+    "prepare": "cd .. && husky install frontend/.husky && chmod ug+x frontend/.husky/pre-commit"
   },
   "browserslist": {
     "production": [
@@ -81,20 +76,26 @@
   "devDependencies": {
     "@types/plotly.js": "^1.54.16",
     "@types/react-redux": "^7.1.25",
+    "@typescript-eslint/eslint-plugin": "^6.8.0",
+    "@typescript-eslint/parser": "^6.8.0",
+    "eslint": "^8.51.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-config-react-app": "^7.0.1",
+    "eslint-import-resolver-typescript": "^3.6.1",
+    "eslint-plugin-import": "^2.28.1",
+    "eslint-plugin-no-relative-import-paths": "^1.5.3",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "husky": "^8.0.3",
     "lint-staged": "^11.1.2",
-    "prettier": "^2.3.2",
+    "prettier": "^3.0.3",
     "process": "^0.11.10"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
-      "prettier --write"
+      "prettier --write",
+      "eslint --fix"
     ]
-  },
-  "prettier": {
-    "semi": false,
-    "singleQuote": true,
-    "tabWidth": 2,
-    "trailingComma": "all"
   },
   "resolutions": {
     "react-error-overlay": "6.0.11"

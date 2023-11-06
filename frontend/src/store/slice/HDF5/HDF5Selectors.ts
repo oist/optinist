@@ -1,4 +1,4 @@
-import { RootState } from '../../store'
+import { RootState } from "store/store"
 
 export const selectHDF5 = (state: RootState) => {
   if (state.hdf5 != null) {

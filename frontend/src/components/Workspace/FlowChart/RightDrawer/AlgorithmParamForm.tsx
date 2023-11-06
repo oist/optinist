@@ -1,24 +1,25 @@
-import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import Typography from '@mui/material/Typography'
+import { memo, useContext, useEffect } from "react"
+import { useSelector, useDispatch } from "react-redux"
 
+import Typography from "@mui/material/Typography"
+
+import { createParamFormItemComponent } from "components/common/ParamFormItemCreator"
+import { ParamFormContext } from "components/Workspace/FlowChart/RightDrawer/ParamFormContents"
+import { getAlgoParams } from "store/slice/AlgorithmNode/AlgorithmNodeActions"
 import {
   selectAlgorithmName,
   selectAlgorithmParamsExit,
   selectAlgorithmParamsKeyList,
   selectAlgorithmParamsValue,
   selectAlgorithmParam,
-} from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
-import { updateParam } from 'store/slice/AlgorithmNode/AlgorithmNodeSlice'
-import { getAlgoParams } from 'store/slice/AlgorithmNode/AlgorithmNodeActions'
-import { createParamFormItemComponent } from 'components/common/ParamFormItemCreator'
-import { arrayEqualityFn } from 'utils/EqualityUtils'
+} from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
+import { updateParam } from "store/slice/AlgorithmNode/AlgorithmNodeSlice"
+import { ParamItemProps } from "store/slice/RightDrawer/RightDrawerType"
+import { AppDispatch } from "store/store"
+import { arrayEqualityFn } from "utils/EqualityUtils"
 
-import { ParamFormContext } from './RightDrawer'
-import { AppDispatch } from "../../../store/store";
-
-export const AlgorithmParamForm = React.memo(() => {
-  const nodeId = React.useContext(ParamFormContext)
+export const AlgorithmParamForm = memo(function AlgorithmParamForm() {
+  const nodeId = useContext<string>(ParamFormContext)
   const dispatch = useDispatch<AppDispatch>()
   const algoName = useSelector(selectAlgorithmName(nodeId))
   const algoParamIsLoaded = useSelector(selectAlgorithmParamsExit(nodeId))
@@ -43,8 +44,8 @@ export const AlgorithmParamForm = React.memo(() => {
   )
 })
 
-const ParamItem = React.memo<{ paramKey: string }>(({ paramKey }) => {
-  const nodeId = React.useContext(ParamFormContext)
+const ParamItem = memo(function ParamItem({ paramKey }: ParamItemProps) {
+  const nodeId = useContext(ParamFormContext)
   const Component = createParamFormItemComponent({
     paramSelector: (paramKey) => selectAlgorithmParam(nodeId, paramKey),
     paramValueSelector: (path) => selectAlgorithmParamsValue(nodeId, path),

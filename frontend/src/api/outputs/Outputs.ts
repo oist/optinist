@@ -1,6 +1,6 @@
-import axios from 'utils/axios'
-import { PlotMetaData } from 'store/slice/DisplayData/DisplayDataType'
-import { BASE_URL } from 'const/API'
+import { BASE_URL } from "const/API"
+import { PlotMetaData } from "store/slice/DisplayData/DisplayDataType"
+import axios from "utils/axios"
 
 export type TimeSeriesData = {
   [key: string]: {

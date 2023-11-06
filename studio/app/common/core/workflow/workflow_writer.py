@@ -3,8 +3,9 @@ from typing import Dict
 
 from studio.app.common.core.utils.config_handler import ConfigWriter
 from studio.app.common.core.utils.filepath_creater import join_filepath
-from studio.app.common.core.workflow.workflow import Edge, Node, WorkflowConfig
+from studio.app.common.core.workflow.workflow import Edge, Node
 from studio.app.common.core.workflow.workflow_builder import WorkflowConfigBuilder
+from studio.app.common.schemas.workflow import WorkflowConfig
 from studio.app.dir_path import DIRPATH
 
 

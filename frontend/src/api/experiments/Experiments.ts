@@ -1,9 +1,7 @@
-import axios from 'utils/axios'
-
-import { BASE_URL } from 'const/API'
-import { OutputPathsDTO } from 'api/run/Run'
-import { EXPERIMENTS_STATUS } from 'store/slice/Experiments/ExperimentsType'
-import { WorkflowConfigDTO } from 'api/workflow/Workflow'
+import { OutputPathsDTO } from "api/run/Run"
+import { BASE_URL } from "const/API"
+import { EXPERIMENTS_STATUS } from "store/slice/Experiments/ExperimentsType"
+import axios from "utils/axios"
 
 export type ExperimentsDTO = {
   [uid: string]: ExperimentDTO
@@ -39,8 +37,6 @@ export type ExperimentDTO = {
   hasNWB: boolean
   nwb: NWBType
 }
-
-export type FetchExperimentDTO = ExperimentDTO & WorkflowConfigDTO
 
 export async function getExperimentsApi(
   workspaceId: number,
@@ -82,7 +78,7 @@ export async function downloadExperimentNwbApi(
       ? `${BASE_URL}/experiments/download/nwb/${workspaceId}/${uid}/${nodeId}`
       : `${BASE_URL}/experiments/download/nwb/${workspaceId}/${uid}`
   const response = await axios.get(path, {
-    responseType: 'blob',
+    responseType: "blob",
   })
   return response.data
 }
@@ -94,17 +90,8 @@ export async function downloadExperimentConfigApi(
   const response = await axios.get(
     `${BASE_URL}/experiments/download/config/${workspaceId}/${uid}`,
     {
-      responseType: 'blob',
+      responseType: "blob",
     },
-  )
-  return response.data
-}
-
-export async function fetchExperimentApi(
-  workspace_id: number,
-): Promise<FetchExperimentDTO> {
-  const response = await axios.get(
-    `${BASE_URL}/experiments/fetch/${workspace_id}`,
   )
   return response.data
 }

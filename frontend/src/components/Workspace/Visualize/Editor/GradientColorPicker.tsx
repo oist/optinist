@@ -1,17 +1,26 @@
-import React, { useState } from 'react'
+import { FC, memo, useState } from "react"
+import { SketchPicker } from "react-color"
+import {
+  GradientPickerPopover,
+  PALETTE_COLOR_SHAPE_TYPE,
+} from "react-linear-gradient-picker"
 
-import { GradientPickerPopover } from 'react-linear-gradient-picker'
-import { SketchPicker } from 'react-color'
-import { PALETTE_COLOR_SHAPE_TYPE } from 'react-linear-gradient-picker'
-import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
+import { ColorType } from "store/slice/VisualizeItem/VisualizeItemType"
 
 const GradientPickerPopoverComponent =
-  GradientPickerPopover as unknown as React.FC<any>
+  // NOTE: use any because GradientPickerPopover type definition is not provided
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  GradientPickerPopover as unknown as FC<any>
 
-export const GradientColorPicker = React.memo<{
+interface GradientColorPickerProps {
   colors: { rgb: string; offset: string }[]
   dispatchSetColor: (colorCode: ColorType[]) => void
-}>(({ colors, dispatchSetColor }) => {
+}
+
+export const GradientColorPicker = memo(function GradientColorPicker({
+  colors,
+  dispatchSetColor,
+}: GradientColorPickerProps) {
   const palette: PALETTE_COLOR_SHAPE_TYPE[] = colors.map((value) => {
     return {
       offset: value.offset,
@@ -22,7 +31,7 @@ export const GradientColorPicker = React.memo<{
   const onPaletteChange = (palette: PALETTE_COLOR_SHAPE_TYPE[]) => {
     const colorCode = palette.map((value) => {
       const color = value.color
-      const rgbStr = color.replace(/[^0-9,]/g, '').split(',')
+      const rgbStr = color.replace(/[^0-9,]/g, "").split(",")
       const rgb = {
         r: Number(rgbStr[0]),
         g: Number(rgbStr[1]),
@@ -60,10 +69,7 @@ type WrapperPropTypes = {
   color?: string
 }
 
-const WrappedSketchPicker: React.FC<WrapperPropTypes> = ({
-  onSelect,
-  color,
-}) => {
+const WrappedSketchPicker: FC<WrapperPropTypes> = ({ onSelect, color }) => {
   return (
     <SketchPicker
       color={color}

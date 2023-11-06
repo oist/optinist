@@ -1,4 +1,6 @@
-import { Node } from 'reactflow'
+import { Node } from "reactflow"
+
+import { createSelector } from "reselect"
 
 import {
   AlgorithmNodePostData,
@@ -6,33 +8,30 @@ import {
   InputNodePostData,
   NodeDict,
   RunPostData,
-} from 'api/run/Run'
-
-import { RootState } from 'store/store'
-
+} from "api/run/Run"
 import {
   selectAlgorithmFunctionPath,
   selectAlgorithmIsUpdated,
   selectAlgorithmName,
   selectAlgorithmParams,
-} from 'store/slice/AlgorithmNode/AlgorithmNodeSelectors'
+} from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
 import {
   selectFlowEdges,
   selectFlowNodes,
-} from 'store/slice/FlowElement/FlowElementSelectors'
-import { isAlgorithmNodeData } from 'store/slice/FlowElement/FlowElementUtils'
-import { selectNwbParams } from 'store/slice/NWB/NWBSelectors'
-import { selectPipelineNodeResultStatus } from 'store/slice/Pipeline/PipelineSelectors'
-import { NODE_RESULT_STATUS } from 'store/slice/Pipeline/PipelineType'
-import { selectSnakemakeParams } from 'store/slice/Snakemake/SnakemakeSelectors'
-import { NODE_TYPE_SET } from 'store/slice/FlowElement/FlowElementType'
+} from "store/slice/FlowElement/FlowElementSelectors"
+import { NODE_TYPE_SET } from "store/slice/FlowElement/FlowElementType"
+import { isAlgorithmNodeData } from "store/slice/FlowElement/FlowElementUtils"
 import {
   selectInputNodeFileType,
   selectInputNodeHDF5Path,
   selectInputNodeParam,
   selectInputNodeSelectedFilePath,
-} from 'store/slice/InputNode/InputNodeSelectors'
-import { createSelector } from "reselect";
+} from "store/slice/InputNode/InputNodeSelectors"
+import { selectNwbParams } from "store/slice/NWB/NWBSelectors"
+import { selectPipelineNodeResultStatus } from "store/slice/Pipeline/PipelineSelectors"
+import { NODE_RESULT_STATUS } from "store/slice/Pipeline/PipelineType"
+import { selectSnakemakeParams } from "store/slice/Snakemake/SnakemakeSelectors"
+import { RootState } from "store/store"
 
 /**
  * 前回の結果で、エラーまたはParamに変更があるnodeのリストを返す
@@ -63,7 +62,7 @@ const selectNodeDictForRun = (state: RootState): NodeDict => {
         ...node,
         data: {
           ...node.data,
-          label: node.data?.label ?? '',
+          label: node.data?.label ?? "",
           type: NODE_TYPE_SET.ALGORITHM,
           path: functionPath,
           param,
@@ -79,9 +78,9 @@ const selectNodeDictForRun = (state: RootState): NodeDict => {
         ...node,
         data: {
           ...node.data,
-          label: node.data?.label ?? '',
+          label: node.data?.label ?? "",
           type: NODE_TYPE_SET.INPUT,
-          path: filePath ?? '',
+          path: filePath ?? "",
           param,
           hdf5Path: hdf5Path,
           fileType,
@@ -102,19 +101,25 @@ const selectEdgeDictForRun = (state: RootState) => {
 }
 
 export const selectRunPostData = createSelector(
-    selectNwbParams,
-    selectSnakemakeParams,
-    selectEdgeDictForRun,
-    selectNodeDictForRun,
-    selectForceRunList,
-    (nwbParams, snakemakeParams, edgeDictForRun, nodeDictForRun, forceRunList) => {
-      const runPostData: Omit<RunPostData, 'name'> = {
-        nwbParam: nwbParams,
-        snakemakeParam: snakemakeParams,
-        edgeDict: edgeDictForRun,
-        nodeDict: nodeDictForRun,
-        forceRunList,
-      };
-      return runPostData;
+  selectNwbParams,
+  selectSnakemakeParams,
+  selectEdgeDictForRun,
+  selectNodeDictForRun,
+  selectForceRunList,
+  (
+    nwbParams,
+    snakemakeParams,
+    edgeDictForRun,
+    nodeDictForRun,
+    forceRunList,
+  ) => {
+    const runPostData: Omit<RunPostData, "name"> = {
+      nwbParam: nwbParams,
+      snakemakeParam: snakemakeParams,
+      edgeDict: edgeDictForRun,
+      nodeDict: nodeDictForRun,
+      forceRunList,
     }
-);
+    return runPostData
+  },
+)

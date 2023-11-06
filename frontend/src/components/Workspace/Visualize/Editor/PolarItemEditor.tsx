@@ -1,9 +1,10 @@
-import React from 'react'
-import { SaveFig } from './SaveFig'
+import { FC } from "react"
 
-export const PolarItemEditor: React.FC = () => {
+import { SaveFig } from "components/Workspace/Visualize/Editor/SaveFig"
+
+export const PolarItemEditor: FC = () => {
   return (
-    <div style={{ margin: '10px', padding: 10 }}>
+    <div style={{ margin: "10px", padding: 10 }}>
       <SaveFig />
     </div>
   )

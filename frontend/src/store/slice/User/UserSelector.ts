@@ -1,5 +1,5 @@
-import { ROLE } from '@types'
-import { RootState } from 'store/store'
+import { ROLE } from "@types"
+import { RootState } from "store/store"
 
 export const selectCurrentUser = (state: RootState) => state.user.currentUser
 export const selectCurrentUserId = (state: RootState) =>

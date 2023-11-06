@@ -1,5 +1,5 @@
-import { getChildParam } from 'utils/param/ParamUtils'
-import { RootState } from '../../store'
+import { RootState } from "store/store"
+import { getChildParam } from "utils/param/ParamUtils"
 
 export const selectNwb = (state: RootState) => state.nwb
 
@@ -17,6 +17,6 @@ export const selectNwbParamsValue = (path: string) => (state: RootState) => {
     const target = getChildParam(path, params)
     return target?.value
   } else {
-    throw new Error('Param is null')
+    throw new Error("Param is null")
   }
 }

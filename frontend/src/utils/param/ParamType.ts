@@ -5,14 +5,14 @@ export type ParamMap = {
 export type ParamType = ParamParent | ParamChild
 
 export type ParamParent = {
-  type: 'parent'
+  type: "parent"
   children: {
     [key: string]: ParamType
   }
 }
 
 export type ParamChild = {
-  type: 'child'
+  type: "child"
   value: unknown
   path: string
 }

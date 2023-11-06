@@ -1,108 +1,112 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import { FC, useState, ReactElement } from "react"
+import { useSelector } from "react-redux"
 
-import FormControl from '@mui/material/FormControl'
-import MenuItem from '@mui/material/MenuItem'
-import InputLabel from '@mui/material/InputLabel'
-import FormHelperText from '@mui/material/FormHelperText'
-import Select from '@mui/material/Select'
-import ListSubheader from '@mui/material/ListSubheader'
+import FormControl from "@mui/material/FormControl"
+import FormHelperText from "@mui/material/FormHelperText"
+import InputLabel from "@mui/material/InputLabel"
+import ListSubheader from "@mui/material/ListSubheader"
+import MenuItem from "@mui/material/MenuItem"
+import Select from "@mui/material/Select"
 
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
-} from 'store/slice/DisplayData/DisplayDataType'
-import { FILE_TYPE } from 'store/slice/InputNode/InputNodeType'
-import { RootState } from 'store/store'
-import { selectInputNode } from 'store/slice/InputNode/InputNodeSelectors'
-import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
-import { selectNodeLabelById } from 'store/slice/FlowElement/FlowElementSelectors'
+} from "store/slice/DisplayData/DisplayDataType"
+import { selectNodeLabelById } from "store/slice/FlowElement/FlowElementSelectors"
+import { getFileName } from "store/slice/FlowElement/FlowElementUtils"
+import { selectInputNode } from "store/slice/InputNode/InputNodeSelectors"
+import { FILE_TYPE, FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
 import {
   selectPipelineLatestUid,
   selectPipelineNodeResultSuccessList,
-} from 'store/slice/Pipeline/PipelineSelectors'
-import { getFileName } from 'store/slice/FlowElement/FlowElementUtils'
+} from "store/slice/Pipeline/PipelineSelectors"
+import { RootState } from "store/store"
 
-export const FilePathSelect: React.FC<{
+export const FilePathSelect: FC<{
   dataType?: DATA_TYPE
   selectedNodeId: string | null
   selectedFilePath: string | null
-  onSelect: (nodeId: string, filePath: string, dataType: DATA_TYPE, outputKey?: string) => void
+  onSelect: (
+    nodeId: string,
+    filePath: string,
+    dataType: DATA_TYPE,
+    outputKey?: string,
+  ) => void
   label?: string
 }> = ({ dataType, selectedNodeId, selectedFilePath, onSelect, label }) => {
   const inputNodeFilePathInfoList = useSelector(
-      (state: RootState) => {
-        const inputNodes = selectInputNode(state);
-        return Object.entries(inputNodes)
-            .map(([nodeId, inputNode]) => ({
-              nodeId,
-              filePath: inputNode.selectedFilePath,
-              fileType: inputNode.fileType,
-              dataType: toDataTypeFromFileType(inputNode.fileType),
-              nodeName: selectNodeLabelById(nodeId)(state),
-            }))
-            .filter(({ filePath }) => filePath != null)
-            .filter(({ dataType: inputNodeDataType }) =>
-                dataType != null ? inputNodeDataType === dataType : true
-            );
-      },
-      (prevFilePathInfoList, nextFilePathInfoList) =>
-          prevFilePathInfoList.length === nextFilePathInfoList.length &&
-          prevFilePathInfoList.every(
-              (prevInfo, index) =>
-                  prevInfo.filePath === nextFilePathInfoList[index].filePath &&
-                  prevInfo.fileType === nextFilePathInfoList[index].fileType &&
-                  prevInfo.dataType === nextFilePathInfoList[index].dataType &&
-                  prevInfo.nodeName === nextFilePathInfoList[index].nodeName
-          )
-  );
+    (state: RootState) => {
+      const inputNodes = selectInputNode(state)
+      return Object.entries(inputNodes)
+        .map(([nodeId, inputNode]) => ({
+          nodeId,
+          filePath: inputNode.selectedFilePath,
+          fileType: inputNode.fileType,
+          dataType: toDataTypeFromFileType(inputNode.fileType),
+          nodeName: selectNodeLabelById(nodeId)(state),
+        }))
+        .filter(({ filePath }) => filePath != null)
+        .filter(({ dataType: inputNodeDataType }) =>
+          dataType != null ? inputNodeDataType === dataType : true,
+        )
+    },
+    (prevFilePathInfoList, nextFilePathInfoList) =>
+      prevFilePathInfoList.length === nextFilePathInfoList.length &&
+      prevFilePathInfoList.every(
+        (prevInfo, index) =>
+          prevInfo.filePath === nextFilePathInfoList[index].filePath &&
+          prevInfo.fileType === nextFilePathInfoList[index].fileType &&
+          prevInfo.dataType === nextFilePathInfoList[index].dataType &&
+          prevInfo.nodeName === nextFilePathInfoList[index].nodeName,
+      ),
+  )
 
   const latestUid = useSelector(selectPipelineLatestUid)
 
   const algorithmNodeOutputPathInfoList = useSelector(
-      (state: RootState) => {
-        if (latestUid != null) {
-          const runResult = selectPipelineNodeResultSuccessList(state);
-          return runResult.map(({ nodeId, nodeResult }) => {
-            return {
-              nodeId,
-              nodeName: selectNodeLabelById(nodeId)(state),
-              paths: Object.entries(nodeResult.outputPaths)
-                  .map(([outputKey, value]) => {
-                    return {
-                      outputKey,
-                      filePath: value.path,
-                      type: value.type,
-                    };
-                  })
-                  .filter(({ type }) =>
-                      dataType != null ? type === dataType : true
-                  ),
-            };
-          });
-        } else {
-          return [];
-        }
-      },
-      (prevPathInfoList, nextPathInfoList) =>
-          prevPathInfoList.length === nextPathInfoList.length &&
-          prevPathInfoList.every((prevInfo, index) => {
-            const nextInfo = nextPathInfoList[index];
-            return (
-                prevInfo.nodeId === nextInfo.nodeId &&
-                prevInfo.nodeName === nextInfo.nodeName &&
-                prevInfo.paths.length === nextInfo.paths.length &&
-                prevInfo.paths.every(
-                    (prevPath, pathIndex) =>
-                        prevPath.outputKey === nextInfo.paths[pathIndex].outputKey &&
-                        prevPath.filePath === nextInfo.paths[pathIndex].filePath &&
-                        prevPath.type === nextInfo.paths[pathIndex].type
-                )
-            );
-          })
-  );
+    (state: RootState) => {
+      if (latestUid != null) {
+        const runResult = selectPipelineNodeResultSuccessList(state)
+        return runResult.map(({ nodeId, nodeResult }) => {
+          return {
+            nodeId,
+            nodeName: selectNodeLabelById(nodeId)(state),
+            paths: Object.entries(nodeResult.outputPaths)
+              .map(([outputKey, value]) => {
+                return {
+                  outputKey,
+                  filePath: value.path,
+                  type: value.type,
+                }
+              })
+              .filter(({ type }) =>
+                dataType != null ? type === dataType : true,
+              ),
+          }
+        })
+      } else {
+        return []
+      }
+    },
+    (prevPathInfoList, nextPathInfoList) =>
+      prevPathInfoList.length === nextPathInfoList.length &&
+      prevPathInfoList.every((prevInfo, index) => {
+        const nextInfo = nextPathInfoList[index]
+        return (
+          prevInfo.nodeId === nextInfo.nodeId &&
+          prevInfo.nodeName === nextInfo.nodeName &&
+          prevInfo.paths.length === nextInfo.paths.length &&
+          prevInfo.paths.every(
+            (prevPath, pathIndex) =>
+              prevPath.outputKey === nextInfo.paths[pathIndex].outputKey &&
+              prevPath.filePath === nextInfo.paths[pathIndex].filePath &&
+              prevPath.type === nextInfo.paths[pathIndex].type,
+          )
+        )
+      }),
+  )
 
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = useState(false)
   const handleClose = () => {
     setOpen(false)
   }
@@ -115,22 +119,24 @@ export const FilePathSelect: React.FC<{
     nodeId: string,
     filePath: string,
     dataType: DATA_TYPE,
-    outputKey?: string
+    outputKey?: string,
   ) => {
     onSelect(nodeId, filePath, dataType, outputKey)
     handleClose()
   }
 
-  const menuItemList: React.ReactElement[] = []
+  const menuItemList: ReactElement[] = []
   inputNodeFilePathInfoList.forEach((pathInfo) => {
     const filePath = pathInfo.filePath
     if (Array.isArray(filePath)) {
       filePath.forEach((pathElm) => {
         menuItemList.push(
           <MenuItem
-            value={pathInfo.nodeId && pathElm ? `${pathInfo.nodeId}/${pathElm}` : ''}
+            value={
+              pathInfo.nodeId && pathElm ? `${pathInfo.nodeId}/${pathElm}` : ""
+            }
             onClick={() =>
-              onSelectHandle(pathInfo.nodeId, pathElm ?? '', pathInfo.dataType)
+              onSelectHandle(pathInfo.nodeId, pathElm ?? "", pathInfo.dataType)
             }
             key={pathInfo.nodeId}
           >
@@ -141,9 +147,13 @@ export const FilePathSelect: React.FC<{
     } else {
       menuItemList.push(
         <MenuItem
-          value={pathInfo.nodeId && pathInfo.filePath ? `${pathInfo.nodeId}/${pathInfo.filePath}` : ''}
+          value={
+            pathInfo.nodeId && pathInfo.filePath
+              ? `${pathInfo.nodeId}/${pathInfo.filePath}`
+              : ""
+          }
           onClick={() =>
-            onSelectHandle(pathInfo.nodeId, filePath ?? '', pathInfo.dataType)
+            onSelectHandle(pathInfo.nodeId, filePath ?? "", pathInfo.dataType)
           }
           key={pathInfo.nodeId}
         >
@@ -153,17 +163,21 @@ export const FilePathSelect: React.FC<{
     }
   })
   algorithmNodeOutputPathInfoList.forEach((pathInfo) => {
-    menuItemList.push(<ListSubheader key={pathInfo.nodeName}>{pathInfo.nodeName}</ListSubheader>)
-    pathInfo.paths.forEach((outputPath, i) => {
+    menuItemList.push(<ListSubheader>{pathInfo.nodeName}</ListSubheader>)
+    pathInfo.paths.forEach((outputPath) => {
       menuItemList.push(
         <MenuItem
-          value={pathInfo.nodeId && outputPath.filePath ? `${pathInfo.nodeId}/${outputPath.filePath}` : ''}
+          value={
+            pathInfo.nodeId && outputPath.filePath
+              ? `${pathInfo.nodeId}/${outputPath.filePath}`
+              : ""
+          }
           onClick={() =>
             onSelectHandle(
               pathInfo.nodeId,
               outputPath.filePath,
               outputPath.type,
-              outputPath.outputKey
+              outputPath.outputKey,
             )
           }
           key={`${pathInfo.nodeId}/${outputPath.filePath}`}
@@ -176,9 +190,13 @@ export const FilePathSelect: React.FC<{
 
   return (
     <FormControl style={{ minWidth: 150, maxWidth: 220 }} variant="standard">
-      <InputLabel>{!!label ? label : 'Select Item'}</InputLabel>
+      <InputLabel>{label ? label : "Select Item"}</InputLabel>
       <Select
-        value={selectedNodeId && selectedFilePath ? `${selectedNodeId}/${selectedFilePath}` : ''}
+        value={
+          selectedNodeId && selectedFilePath
+            ? `${selectedNodeId}/${selectedFilePath}`
+            : ""
+        }
         open={open}
         onClose={handleClose}
         onOpen={handleOpen}

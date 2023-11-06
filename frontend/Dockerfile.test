@@ -5,4 +5,4 @@ WORKDIR /react-app
 
 COPY . ./
 ENV GENERATE_SOURCEMAP false
-RUN yarn install
+RUN yarn install --ignore-scripts
