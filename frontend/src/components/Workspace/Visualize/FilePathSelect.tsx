@@ -162,8 +162,10 @@ export const FilePathSelect: FC<{
       )
     }
   })
-  algorithmNodeOutputPathInfoList.forEach((pathInfo) => {
-    menuItemList.push(<ListSubheader>{pathInfo.nodeName}</ListSubheader>)
+  algorithmNodeOutputPathInfoList.forEach((pathInfo, index) => {
+    menuItemList.push(
+      <ListSubheader key={index}>{pathInfo.nodeName}</ListSubheader>,
+    )
     pathInfo.paths.forEach((outputPath) => {
       menuItemList.push(
         <MenuItem
