@@ -11,7 +11,10 @@ We introduce how to install optinist.
 We have developed optinist python(backend) and typescript(frontend), so you need to make both environment.
 Please follow instructions below.
 
-**CAUTION**: We confirmed them on Ubuntu 18.04/20.04/22.04.
+```{eval-rst}
+.. caution::
+    We confirmed them on Ubuntu 18.04/20.04/22.04.
+```
 
 ## 1. Make backend environment
 

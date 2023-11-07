@@ -13,7 +13,10 @@ Please follow instructions below.
 
 <br />
 
-**CAUTION**: For WSL2, we confirmed them on Ubuntu 20.04/22.04.
+```{eval-rst}
+.. caution::
+   For WSL2, we confirmed them on Ubuntu 20.04/22.04.
+```
 
 
 ## For Windows (PowerShell)

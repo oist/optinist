@@ -26,9 +26,11 @@ Please follow instructions below.
     - Anaconda3-\*.\*-MacOSX-x86_64.pkg
       - *The latest version of the module is ok.
 
-- **CAUTION**
-  - On mac, you must use the x86_64 version.
-    - The arm64 version has some modules that cannot be installed by conda install or pip install.
+```{eval-rst}
+.. caution::
+   Even if you're using arm64 (Apple Sillicon, M1, M2...) architecture's Mac, x86_64 version is required.
+   Some modules cannot be installed by conda install or pip install in arm64 version.
+```
 
 ### Create anaconda environment
 
