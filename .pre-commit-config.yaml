@@ -33,5 +33,5 @@ repos:
       name: 'Spell checker'
       entry: codespell
       language: python
-      exclude: '^studio/frontend/(build|node_modules)/'
+      exclude: '^frontend/(build|node_modules)/|.*\.lock$'
       args: ['--ignore-words', '.codespellignore']
