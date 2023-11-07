@@ -45,19 +45,7 @@ conda create -n optinist python=3.8
 conda activate optinist
 ```
 
-<!-- ```
-conda config --set channel_priority strict
-``` -->
 
-<!--
-#### Install mamba
-
-We use snakemake library, and it requires mamba.
-On the Anaconda PowerShell Prompt(anaconda3),
-```
-conda install -n base -c conda-forge mamba
-```
--->
 
 #### Install library
 
@@ -65,22 +53,7 @@ conda install -n base -c conda-forge mamba
 pip install optinist
 ```
 
-<!--
-On the Anaconda PowerShell Prompt(anaconda3),
-```
-pip install optinist
-# for suite2p
-pip install "PyQt5<=5.15.1" "PyQt5-sip<=12.8.1" "pyqtgraph<=0.11.0" "pandas" "suite2p<=0.10.3" "tifffile<=v2022.3.25"
-# for GLM
-pip install "sklearn" "statsmodels<=0.13.1" "pynwb"
-# for CaImAn
-pip install "cython" "opencv-python" "matplotlib" "scikit-image==0.18.0" "scikit-learn" "ipyparallel" "holoviews" "watershed" "tensorflow"
-git clone https://github.com/flatironinstitute/CaImAn.git
-cd CaImAn
-pip install -e .
-cd ..
-```
--->
+
 
 #### Set saving directory
 
@@ -142,18 +115,6 @@ conda create -n optinist python=3.8
 conda activate optinist
 ```
 
-<!-- ```
-conda config --set channel_priority strict
-``` -->
-
-<!--
-#### Install mamba
-
-We use snakemake library, and it requires mamba.
-```
-conda install -n base -c conda-forge mamba
-```
--->
 
 #### Install library
 
@@ -168,19 +129,6 @@ Optinist default saving directory is `/tmp/studio`. If you reboot your PC, this 
 export OPTINIST_DIR="your_saving_dir"
 ```
 
-<!--
-## 2. Create virtualenv
-
-Under maintenance...
--->
-<!--
-In snakemake used by optinist, a virtual environment is created and executed for each function.
-The procedure for first creating a virtual environment for processing suite2p, caiman, pca, etc. is described in the following link.
-
-*It is possible to run snakemake without creating a virtual environment in advance, but it is recommended to create a virtual environment in advance because of the higher possibility of errors during execution.
-
-Follow this [link](create_virtualenv.md).
--->
 
 ### 2. Run backend
 
