@@ -33,4 +33,3 @@ repos:
         name: 'Spell checker'
         entry: codespell
         language: python
-
