@@ -119,3 +119,7 @@ pythonpath = "."
 env = [
   "OPTINIST_DIR=studio/test_data",
 ]
+
+[tool.codespell]
+exclude = '^frontend/(build|node_modules)/|.*\.lock$'
+ignore-words = '.codespellignore'
