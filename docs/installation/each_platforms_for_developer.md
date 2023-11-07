@@ -29,7 +29,7 @@ Please follow instructions below.
 #### Install Node.js
 
 Get node with version 20
-- [Node.js Official](https://nodejs.org/ja)
+- [Node.js Official](https://nodejs.org)
 
 You can also install node via [nvm](https://github.com/nvm-sh/nvm)
 
