@@ -122,5 +122,5 @@ env = [
 ]
 
 [tool.codespell]
-skip = './frontend/build,./frontend/node_modules,.*.lock,.*log,.*.egg-info'
+skip = './frontend/build,./frontend/node_modules,./docs/_build,.*.lock,.*log,.*.egg-info'
 ignore-words = '.codespellignore'
