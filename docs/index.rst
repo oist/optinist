@@ -36,3 +36,4 @@ Main Features
   gui/index
   host_for_multiuser/index
   utils/index
+  for_developers/index
