@@ -2,6 +2,7 @@ import { ChangeEvent, FC, memo, useContext, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import { Tooltip } from "@mui/material"
 import AccordionDetails from "@mui/material/AccordionDetails"
 import AccordionSummary from "@mui/material/AccordionSummary"
 import Box from "@mui/material/Box"
@@ -98,7 +99,7 @@ export function createParamFormItemComponent({
         value={value}
         onChange={onChange}
         multiline
-        onBlur={isArray ? onBlur : undefined}
+        onBlur={isArray.current ? onBlur : undefined}
       />
     )
   })
@@ -206,9 +207,23 @@ export function createParamFormItemComponent({
           sx={{
             flexGrow: 1,
             width: "50%",
+            cursor: "default",
           }}
         >
-          <Typography style={{ overflow: "scroll" }}>{name}</Typography>
+          <Tooltip
+            title={<span style={{ fontSize: 16 }}>{name}</span>}
+            placement={"top"}
+          >
+            <Typography
+              style={{
+                overflow: "hidden",
+                width: "90%",
+                textOverflow: "ellipsis",
+              }}
+            >
+              {name}
+            </Typography>
+          </Tooltip>
         </Box>
         <Box sx={{ width: "50%" }}>
           <ParamItemForValueType path={path} />
