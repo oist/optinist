@@ -52,6 +52,8 @@ export const RunButtons = memo(function RunButtons(
   const runBtnOption = useSelector(selectPipelineRunBtn)
   const isStartedSuccess = useSelector(selectPipelineIsStartedSuccess)
 
+  const sendingRunRequest = useRef(false)
+
   const [dialogOpen, setDialogOpen] = useState(false)
   const { enqueueSnackbar } = useSnackbar()
   const handleClick = () => {
@@ -70,12 +72,22 @@ export const RunButtons = memo(function RunButtons(
       if (runBtnOption === RUN_BTN_OPTIONS.RUN_NEW) {
         setDialogOpen(true)
       } else {
+        if (sendingRunRequest.current) return
+        sendingRunRequest.current = true
         handleRunPipelineByUid()
+        setTimeout(() => {
+          sendingRunRequest.current = false
+        }, 3000)
       }
     }
   }
   const onClickDialogRun = (name: string) => {
+    if (sendingRunRequest.current) return
+    sendingRunRequest.current = true
     handleRunPipeline(name)
+    setTimeout(() => {
+      sendingRunRequest.current = false
+    }, 3000)
     setDialogOpen(false)
   }
   const onClickCancel = () => {

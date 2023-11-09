@@ -22,7 +22,7 @@ def set_nwbfile(cnmf_data, function_id):
     nwbfile[NWBDATASET.COLUMN] = {
         function_id: {
             "name": "iscell",
-            "discription": "two columns - iscell & probcell",
+            "description": "two columns - iscell & probcell",
             "data": is_cell,
         }
     }

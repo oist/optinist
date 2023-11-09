@@ -13,8 +13,8 @@ imaging_plane:
     name: 'ImagingPlane'
     description: 'standard'
     imaging_rate: 30.0
-    excitation_lambda: 600.0
-    indicator: 'GCaMap'
+    excitation_lambda: 900.0
+    indicator: 'GCaMP'
     location: 'V1'
 image_series:
     starting_time: 0

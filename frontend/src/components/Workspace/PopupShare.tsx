@@ -150,7 +150,7 @@ const PopupShare = ({
     (
       handleShareFalse: (
         e: ReactMouseEvent<HTMLButtonElement>,
-        parmas: GridRenderCellParams<GridValidRowModel>,
+        params: GridRenderCellParams<GridValidRowModel>,
       ) => void,
     ) => [
       {

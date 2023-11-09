@@ -6,7 +6,7 @@ import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
 
 export const setUploadProgress = createAction<{
   requestId: string
-  progess: number
+  progress: number
   total: number
 }>(`${FILE_UPLOADER_SLICE_NAME}/setUploadProgress`)
 
@@ -30,7 +30,7 @@ export const uploadFile = createAsyncThunk<
         thunkAPI.dispatch(
           setUploadProgress({
             requestId,
-            progess: percent,
+            progress: percent,
             total,
           }),
         )
