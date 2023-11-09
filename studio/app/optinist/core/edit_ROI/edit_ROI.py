@@ -52,7 +52,7 @@ class EditROI:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
         return algo
 
-    def excute(self):
+    def execute(self):
         snakemake(
             DIRPATH.SNAKEMAKE_FILEPATH,
             use_conda=True,
@@ -79,7 +79,7 @@ class EditRoiUtils:
         return None
 
     @classmethod
-    def excute(cls, config):
+    def execute(cls, config):
         algo = config["algo"]
         node_dirpath = config["node_dirpath"]
         action = config["action"]

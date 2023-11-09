@@ -22,7 +22,7 @@ def set_nwbfile(lccd_data, roi_list, function_id, fluorescence=None):
     nwbfile[NWBDATASET.COLUMN] = {
         function_id: {
             "name": "iscell",
-            "discription": "two columns - iscell & probcell",
+            "description": "two columns - iscell & probcell",
             "data": lccd_data.get("is_cell"),
         }
     }

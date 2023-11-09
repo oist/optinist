@@ -62,7 +62,7 @@ export const ReactFlowComponent = memo(function ReactFlowComponent(
 ) {
   const flowNodes = useSelector(selectFlowNodes)
   const flowEdges = useSelector(selectFlowEdges)
-  const egdes = flowEdges.filter((item) => !isNode(item)) as Edge<NodeData>[]
+  const edges = flowEdges.filter((item) => !isNode(item)) as Edge<NodeData>[]
   const dispatch = useDispatch()
 
   const onConnect = (params: Connection | Edge) => {
@@ -75,7 +75,7 @@ export const ReactFlowComponent = memo(function ReactFlowComponent(
             style: { width: 5 },
             type: "buttonedge",
           },
-          egdes,
+          edges,
         ),
       ]),
     )

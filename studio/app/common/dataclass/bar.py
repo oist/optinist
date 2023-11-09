@@ -23,7 +23,7 @@ class BarData(BaseData):
         if data.ndim == 1:
             data = data[np.newaxis]
 
-        assert data.ndim == 2, "Bar Dimesion is not 2"
+        assert data.ndim == 2, "Bar Dimension is not 2"
 
         self.data = data
 
