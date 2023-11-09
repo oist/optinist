@@ -4,16 +4,20 @@ from glob import glob
 from typing import List
 
 import numpy as np
+from fastapi import HTTPException, status
+from snakemake import snakemake
 
 from studio.app.common.core.rules.runner import Runner
 from studio.app.common.core.utils.config_handler import ConfigReader
 from studio.app.common.core.utils.filepath_creater import join_filepath
+from studio.app.common.core.utils.filepath_finder import find_condaenv_filepath
 from studio.app.common.core.utils.pickle_handler import PickleReader, PickleWriter
 from studio.app.common.dataclass.base import BaseData
 from studio.app.dir_path import DIRPATH
-from studio.app.optinist.core.edit_ROI.utils import create_ellipse_mask, set_nwbfile
+from studio.app.optinist.core.edit_ROI.utils import create_ellipse_mask
+from studio.app.optinist.core.edit_ROI.wrappers import edit_roi_wrapper_dict
 from studio.app.optinist.core.nwb.nwb_creater import overwrite_nwb
-from studio.app.optinist.dataclass import EditRoiData, FluoData, IscellData, RoiData
+from studio.app.optinist.dataclass import *
 from studio.app.optinist.schemas.roi import RoiStatus
 
 
@@ -25,6 +29,40 @@ class CellType:
     TEMP_DELETE = -2
 
 
+class EditRoiUtils:
+    @classmethod
+    def conda(cls, config):
+        algo = config["algo"]
+        if "conda_name" in edit_roi_wrapper_dict[algo]:
+            conda_name = edit_roi_wrapper_dict[algo]["conda_name"]
+            return find_condaenv_filepath(conda_name) if conda_name else None
+
+        return None
+
+    @classmethod
+    def get_algo(cls, filepath):
+        algo_list = edit_roi_wrapper_dict.keys()
+
+        algo = next((algo for algo in algo_list if algo in filepath), None)
+        if not algo:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+        return algo
+
+    @classmethod
+    def execute(cls, filepath):
+        snakemake(
+            DIRPATH.SNAKEMAKE_FILEPATH,
+            use_conda=True,
+            cores=2,
+            workdir=f"{os.path.dirname(DIRPATH.STUDIO_DIR)}",
+            config={
+                "type": "EDIT_ROI",
+                "algo": cls.get_algo(filepath),
+                "file_path": filepath,
+            },
+        )
+
+
 class EditROI:
     def __init__(self, file_path):
         self.node_dirpath = os.path.dirname(file_path)
@@ -32,7 +70,7 @@ class EditROI:
         self.output_info = self.__read_output_info()
         self.data: EditRoiData = self.output_info.get("edit_roi_data")
         self.iscell = self.output_info.get("iscell").data
-        self.fluorescence = self.output_info.get("fluorescence").data
+        self.fluorescence = self.output_info.get("fluorescence")
 
         print("start edit roi:", self.function_id)
 
@@ -53,17 +91,13 @@ class EditROI:
         return self.data.im.shape[0]
 
     def get_status(self) -> RoiStatus:
-        return RoiStatus(
-            temp_add_roi=self.data.temp_add_roi,
-            temp_delete_roi=self.data.temp_delete_roi,
-            temp_merge_roi=self.data.temp_merge_roi,
-        )
+        return self.data.status()
 
     def add(self, roi_pos):
         new_roi = create_ellipse_mask(self.shape, roi_pos)
         new_roi = new_roi[np.newaxis, :, :] * self.num_cell
 
-        self.data.temp_add_roi += [self.num_cell]
+        self.data.temp_add_roi[self.num_cell] = roi_pos
         self.iscell = np.append(self.iscell, CellType.TEMP_ADD)
         self.data.im = np.vstack((self.data.im, new_roi))
 
@@ -85,14 +119,11 @@ class EditROI:
         merged_roi = np.maximum.reduce(merging_rois)
         merged_roi = np.where(merged_roi == -np.inf, np.nan, self.num_cell)
 
-        self.data.temp_merge_roi.append(float(self.num_cell))
+        self.data.temp_merge_roi[float(self.num_cell)] = ids
         self.data.im = np.vstack((self.data.im, merged_roi[np.newaxis, :, :]))
 
         self.iscell[ids] = CellType.TEMP_DELETE
         self.iscell = np.append(self.iscell, CellType.TEMP_ADD)
-
-        self.data.temp_merge_roi += ids
-        self.data.temp_merge_roi.append((-1.0))
 
         info = {
             "cell_roi": RoiData(
@@ -110,66 +141,65 @@ class EditROI:
     def delele(self, ids: List[int]):
         self.iscell[ids] = CellType.TEMP_DELETE
 
+        for id in ids:
+            self.data.temp_delete_roi[id] = None
+
         info = {
-            # "cell_roi": RoiData(
-            #     np.nanmax(self.data.im[self.iscell != CellType.NON_ROI], axis=0),
-            #     output_dir=self.node_dirpath,
-            #     file_name="cell_roi",
-            # ),
             "iscell": IscellData(self.iscell),
             "edit_roi_data": self.data,
         }
-        self.data.temp_delete_roi += ids
 
         self.__update_pickle_for_roi_edition(self.pickle_file_path, info)
         self.__save_json(info)
 
     def commit(self):
-        new_fluorescences = np.zeros((self.num_cell, self.fluorescence.shape[1]))
-        new_fluorescences[: len(self.fluorescence)] = self.fluorescence
+        if "suite2p" in self.function_id:
+            from studio.app.optinist.core.edit_ROI.wrappers.suite2p_edit_roi import (
+                commit_edit as suite2p_commit,
+            )
 
-        self.iscell[self.iscell == CellType.TEMP_DELETE] = CellType.NON_ROI
-        for i in range(self.num_cell):
-            if self.iscell[i] == CellType.TEMP_ADD:
-                new_fluorescences[i] = np.mean(
-                    self.data.images[:, ~np.isnan(self.data.im[i])], axis=1
-                )
-                self.iscell[i] = CellType.ROI
+            info = suite2p_commit(
+                self.data,
+                self.output_info["ops"],
+                self.iscell,
+                self.node_dirpath,
+                self.function_id,
+            )
+        elif "lccd" in self.function_id:
+            from studio.app.optinist.core.edit_ROI.wrappers.lccd_edit_roi import (
+                commit_edit as lccd_commit,
+            )
 
-        self.output_info["fluorescence"] = FluoData(
-            new_fluorescences, file_name="fluorescence"
-        )
+            info = lccd_commit(
+                self.data,
+                self.fluorescence,
+                self.iscell,
+                self.node_dirpath,
+                self.function_id,
+            )
 
-        self.data.add_roi += self.data.temp_add_roi
-        self.data.delete_roi += self.data.temp_delete_roi
-        self.data.merge_roi += self.data.temp_merge_roi
-        self.data.temp_add_roi = []
-        self.data.temp_delete_roi = []
-        self.data.temp_merge_roi = []
+        elif "caiman" in self.function_id:
+            from studio.app.optinist.core.edit_ROI.wrappers.caiman_edit_roi import (
+                commit_edit as caiman_commit,
+            )
 
-        info = {
-            "cell_roi": RoiData(
-                np.nanmax(self.data.im[self.iscell != CellType.NON_ROI], axis=0),
-                output_dir=self.node_dirpath,
-                file_name="cell_roi",
-            ),
-            "fluorescence": self.output_info["fluorescence"],
-            "iscell": IscellData(self.iscell),
-            "nwbfile": set_nwbfile(self.output_info, self.function_id),
-            "edit_roi_data": self.data,
-        }
+            info = caiman_commit(
+                self.data,
+                self.fluorescence,
+                self.iscell,
+                self.node_dirpath,
+                self.function_id,
+            )
 
         self.__update_pickle_for_roi_edition(self.pickle_file_path, info)
         self.__save_json(info)
         self.__update_whole_nwb(info)
 
     def cancel(self):
-        original_num_cell = len(self.fluorescence)
+        original_num_cell = len(self.fluorescence.data)
         self.data.im = self.data.im[:original_num_cell]
         self.iscell = self.iscell[:original_num_cell]
-        self.data.temp_add_roi = []
-        self.data.temp_delete_roi = []
-        self.data.temp_merge_roi = []
+        self.data.cancel()
 
         info = {
             "cell_roi": RoiData(

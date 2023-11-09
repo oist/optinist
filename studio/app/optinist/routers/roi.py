@@ -1,7 +1,9 @@
+import os
+
 from fastapi import APIRouter, Depends
 
 from studio.app.common.core.workspace.workspace_dependencies import is_workspace_owner
-from studio.app.optinist.core.edit_ROI import EditROI
+from studio.app.optinist.core.edit_ROI import EditROI, EditRoiUtils
 from studio.app.optinist.schemas.roi import RoiList, RoiPos, RoiStatus
 
 router = APIRouter(prefix="/outputs", tags=["outputs"])
@@ -52,7 +54,7 @@ async def delete_roi(filepath: str, roi_list: RoiList):
     dependencies=[Depends(is_workspace_owner)],
 )
 async def commit_edit(filepath: str):
-    EditROI(file_path=filepath).commit()
+    EditRoiUtils.execute(filepath)
     return True
 
 

@@ -1,5 +1,5 @@
 import gc
-from typing import Optional
+from typing import Dict, List, Optional
 
 import imageio
 import numpy as np
@@ -15,6 +15,7 @@ from studio.app.common.dataclass.base import BaseData
 from studio.app.common.dataclass.utils import create_images_list
 from studio.app.common.schemas.outputs import PlotMetaData
 from studio.app.dir_path import DIRPATH
+from studio.app.optinist.schemas.roi import RoiPos, RoiStatus
 
 
 class RoiData(BaseData):
@@ -57,14 +58,38 @@ class RoiData(BaseData):
 
 
 class EditRoiData(BaseData):
-    add_roi = []
-    merge_roi = []
-    delete_roi = []
-
-    temp_add_roi = []
-    temp_merge_roi = []
-    temp_delete_roi = []
-
     def __init__(self, images, im):
         self.images = images
         self.im = im
+        self.temp_add_roi: Dict[int, RoiPos] = {}
+        self.temp_merge_roi: Dict[float, List[int]] = {}
+        self.temp_delete_roi: Dict[float, None] = {}
+        self.add_roi = []
+        self.merge_roi = []
+        self.delete_roi = []
+
+    @property
+    def temp_merge_roi_list(self) -> list:
+        merge_roi = [(k, *v, -1.0) for k, v in self.temp_merge_roi.items()]
+        return [id for ids in merge_roi for id in ids]
+
+    def status(self):
+        return RoiStatus(
+            temp_add_roi=list(self.temp_add_roi.keys()),
+            temp_merge_roi=self.temp_merge_roi_list,
+            temp_delete_roi=list(self.temp_delete_roi.keys()),
+        )
+
+    def commit(self):
+        self.add_roi += self.temp_add_roi.keys()
+        self.delete_roi += self.temp_delete_roi.keys()
+        self.merge_roi += self.temp_merge_roi_list
+
+        self.temp_add_roi = {}
+        self.temp_merge_roi = {}
+        self.temp_delete_roi = {}
+
+    def cancel(self):
+        self.temp_add_roi = {}
+        self.temp_merge_roi = {}
+        self.temp_delete_roi = {}
