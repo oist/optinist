@@ -1,6 +1,5 @@
-import { createSlice, isAnyOf } from '@reduxjs/toolkit'
-import { USER_SLICE_NAME } from './UserType'
-import { User } from './UserType'
+import { createSlice, isAnyOf } from "@reduxjs/toolkit"
+
 import {
   deleteMe,
   getListUser,
@@ -12,14 +11,15 @@ import {
   deleteUser,
   createUser,
   updateUser,
-} from './UserActions'
+} from "store/slice/User/UserActions"
+import { USER_SLICE_NAME, User } from "store/slice/User/UserType"
 import {
   removeExToken,
   removeToken,
   saveExToken,
   saveRefreshToken,
   saveToken,
-} from 'utils/auth/AuthUtils'
+} from "utils/auth/AuthUtils"
 
 const initialState: User = {
   currentUser: undefined,
@@ -32,10 +32,10 @@ export const userSlice = createSlice({
   name: USER_SLICE_NAME,
   initialState,
   reducers: {
-    logout: (state) => {
+    logout: () => {
       removeToken()
       removeExToken()
-      state = initialState
+      return initialState
     },
     resetUserSearch: (state) => {
       state.listUserSearch = []
@@ -94,10 +94,10 @@ export const userSlice = createSlice({
       )
       .addMatcher(
         isAnyOf(login.rejected, getMe.rejected, deleteMe.fulfilled),
-        (state) => {
+        () => {
           removeToken()
           removeExToken()
-          state = initialState
+          return initialState
         },
       )
   },

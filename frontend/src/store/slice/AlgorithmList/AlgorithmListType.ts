@@ -1,6 +1,6 @@
-import { AlgorithmInfo } from 'api/algolist/AlgoList'
+import { AlgorithmInfo } from "api/algolist/AlgoList"
 
-export const ALGORITHM_LIST_SLICE_NAME = 'algorithmList'
+export const ALGORITHM_LIST_SLICE_NAME = "algorithmList"
 
 export type AlgorithmListType = {
   isLatest: boolean
@@ -13,13 +13,13 @@ export type AlgorithmListTree = {
 
 export type AlgorithmNodeType = AlgorithmChild | AlgorithmParent
 export type AlgorithmChild = {
-  type: 'child'
+  type: "child"
   args: AlgorithmInfo[]
   returns: AlgorithmInfo[]
   functionPath: string
 }
 export type AlgorithmParent = {
-  type: 'parent'
+  type: "parent"
   children: {
     [name: string]: AlgorithmNodeType
   }

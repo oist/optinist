@@ -147,7 +147,7 @@ def dpca_fit(
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data
 
-    # neural data shold be time x cells
+    # neural data should be time x cells
     if params["transpose"]:
         X = neural_data.transpose()
     else:

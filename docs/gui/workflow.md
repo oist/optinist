@@ -211,11 +211,11 @@ SNAKEMAKE and NWB SETTING buttons are for parameters for snakemake and output NW
     - By configuring this, the output NWB file includes the information set here.
     - The parameter you set here is only for your record and is not used for calculations within OptiNiSt.
     - You can leave this setting as the default.
-    - The details of NWB setting in OptiNiSt are folling.
+    - The details of NWB setting in OptiNiSt are following.
       - session_description: a description of the session where this data was generated
       - identifier: a unique text identifier for the file
       - experiment_description: general description of the experiment
-      - device: device used to aquire the data (information such as manufacturer, firmware version, model etc.)
+      - device: device used to acquire the data (information such as manufacturer, firmware version, model etc.)
       - optical_channel: information about the optical channel used to acquire the data
       - imaging_plane: information about imaging such as sampling rate, excitation wave length, calcium indicator.
       - image_serises: information about imaing time

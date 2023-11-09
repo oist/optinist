@@ -1,4 +1,13 @@
-import { useSelector, useDispatch } from 'react-redux'
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react"
+import { useSelector, useDispatch } from "react-redux"
+import { useNavigate, useSearchParams } from "react-router-dom"
+
+import moment from "moment"
+import { useSnackbar, VariantType } from "notistack"
+
+import DeleteIcon from "@mui/icons-material/Delete"
+import EditIcon from "@mui/icons-material/Edit"
+import GroupsIcon from "@mui/icons-material/Groups"
 import {
   Box,
   styled,
@@ -9,39 +18,38 @@ import {
   DialogActions,
   Input,
   Tooltip,
-} from '@mui/material'
+} from "@mui/material"
 import {
   GridEventListener,
   GridRenderCellParams,
   GridRowModes,
+  GridRowModesModel,
   GridValidRowModel,
   DataGrid,
-} from '@mui/x-data-grid'
-import { useNavigate, useSearchParams } from 'react-router-dom'
-import Loading from 'components/common/Loading'
-import {
-  selectIsLoadingWorkspaceList,
-  selectWorkspaceData,
-  selectWorkspaceListUserShare,
-} from 'store/slice/Workspace/WorkspaceSelector'
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from 'react'
+  GridCellParams,
+} from "@mui/x-data-grid"
+import { isRejectedWithValue } from "@reduxjs/toolkit"
+
+import { UserDTO } from "api/users/UsersApiDTO"
+import Loading from "components/common/Loading"
+import PaginationCustom from "components/common/PaginationCustom"
+import PopupShare from "components/Workspace/PopupShare"
+import { selectCurrentUser } from "store/slice/User/UserSelector"
 import {
   delWorkspace,
   getListUserShareWorkSpaces,
   getWorkspaceList,
   postWorkspace,
   putWorkspace,
-} from 'store/slice/Workspace/WorkspaceActions'
-import PopupShare from 'components/Workspace/PopupShare'
-import moment from 'moment'
-import GroupsIcon from '@mui/icons-material/Groups'
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
-import { selectCurrentUser } from 'store/slice/User/UserSelector'
-import { UserDTO } from 'api/users/UsersApiDTO'
-import { isMine } from 'store/slice/Workspace/WorkspaceUtils'
-import PaginationCustom from 'components/common/PaginationCustom'
-import { useSnackbar, VariantType } from 'notistack'
+} from "store/slice/Workspace/WorkspaceActions"
+import {
+  selectIsLoadingWorkspaceList,
+  selectWorkspaceData,
+  selectWorkspaceListUserShare,
+} from "store/slice/Workspace/WorkspaceSelector"
+import { ItemsWorkspace } from "store/slice/Workspace/WorkspaceType"
+import { isMine } from "store/slice/Workspace/WorkspaceUtils"
+import { AppDispatch } from "store/store"
 
 type PopupType = {
   open: boolean
@@ -64,8 +72,8 @@ const columns = (
   onEdit?: (id: number) => void,
 ) => [
   {
-    field: 'id',
-    headerName: 'ID',
+    field: "id",
+    headerName: "ID",
     filterable: false, // todo enable when api complete
     sortable: false, // todo enable when api complete
     flex: 1,
@@ -75,8 +83,8 @@ const columns = (
     ),
   },
   {
-    field: 'name',
-    headerName: 'Workspace Name',
+    field: "name",
+    headerName: "Workspace Name",
     flex: 2,
     minWidth: 100,
     editable: true,
@@ -87,20 +95,20 @@ const columns = (
       return (
         <Box
           sx={{
-            display: 'flex',
-            alignItems: 'center',
+            display: "flex",
+            alignItems: "center",
             gap: 2,
-            justifyContent: 'space-between',
-            width: '100%',
+            justifyContent: "space-between",
+            width: "100%",
           }}
         >
           <Tooltip title={value} placement="top">
             <span
               style={{
-                whiteSpace: 'nowrap',
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                width: '100%',
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                width: "100%",
               }}
             >
               {value}
@@ -116,8 +124,8 @@ const columns = (
     },
   },
   {
-    field: 'user',
-    headerName: 'Owner',
+    field: "user",
+    headerName: "Owner",
     filterable: false, // todo enable when api complete
     sortable: false, // todo enable when api complete
     flex: 2,
@@ -125,19 +133,19 @@ const columns = (
     renderCell: (
       params: GridRenderCellParams<{ name: string; id: number }>,
     ) => (
-      <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
         {params.value ? (
           <>
             <span>{params.value?.name}</span>
-            {!isMine(user, params?.value.id) ? <GroupsIcon /> : ''}
+            {!isMine(user, params?.value.id) ? <GroupsIcon /> : ""}
           </>
         ) : null}
       </Box>
     ),
   },
   {
-    field: 'created_at',
-    headerName: 'Created',
+    field: "created_at",
+    headerName: "Created",
     flex: 2,
     minWidth: 100,
     filterable: false, // todo enable when api complete
@@ -145,18 +153,18 @@ const columns = (
     renderCell: (params: GridRenderCellParams<GridValidRowModel>) => (
       <span
         style={{
-          whiteSpace: 'normal',
-          wordBreak: 'break-all',
-          overflowWrap: 'break-word',
+          whiteSpace: "normal",
+          wordBreak: "break-all",
+          overflowWrap: "break-word",
         }}
       >
-        {moment(params.value).format('YYYY/MM/DD hh:mm')}
+        {moment(params.value).format("YYYY/MM/DD hh:mm")}
       </span>
     ),
   },
   {
-    field: 'workflow',
-    headerName: '',
+    field: "workflow",
+    headerName: "",
     flex: 1,
     minWidth: 160,
     filterable: false, // todo enable when api complete
@@ -173,8 +181,8 @@ const columns = (
     ),
   },
   {
-    field: 'records',
-    headerName: '',
+    field: "records",
+    headerName: "",
     flex: 1,
     minWidth: 100,
     filterable: false, // todo enable when api complete
@@ -193,8 +201,8 @@ const columns = (
     },
   },
   {
-    field: 'share',
-    headerName: '',
+    field: "share",
+    headerName: "",
     flex: 1,
     minWidth: 70,
     filterable: false, // todo enable when api complete
@@ -202,13 +210,13 @@ const columns = (
     renderCell: (params: GridRenderCellParams<GridValidRowModel>) =>
       isMine(user, params.row?.user?.id) ? (
         <ButtonIcon onClick={() => handleOpenPopupShare(params.row.id)}>
-          <GroupsIcon color={params.row.shared_count ? 'primary' : 'inherit'} />
+          <GroupsIcon color={params.row.shared_count ? "primary" : "inherit"} />
         </ButtonIcon>
       ) : null,
   },
   {
-    field: 'delete',
-    headerName: '',
+    field: "delete",
+    headerName: "",
     flex: 1,
     minWidth: 70,
     filterable: false, // todo enable when api complete
@@ -243,13 +251,13 @@ const PopupNew = ({
         <DialogTitle>New Workspace</DialogTitle>
         <DialogContent sx={{ minWidth: 300 }}>
           <Input
-            sx={{ width: '80%' }}
-            placeholder={'Workspace Name'}
-            value={value || ''}
+            sx={{ width: "80%" }}
+            placeholder={"Workspace Name"}
+            value={value || ""}
             onChange={handleName}
           />
           <br />
-          {error ? <span style={{ color: 'red' }}>{error}</span> : null}
+          {error ? <span style={{ color: "red" }}>{error}</span> : null}
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
@@ -271,7 +279,7 @@ const PopupDelete = ({
     <Box>
       <Dialog open={open} onClose={handleClose} sx={{ margin: 0 }}>
         <DialogTitle>
-          Do you want delete Workspace "{nameWorkspace}"?
+          {`Do you want delete Workspace "${nameWorkspace}"?`}
         </DialogTitle>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
@@ -283,7 +291,7 @@ const PopupDelete = ({
 }
 
 const Workspaces = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   const loading = useSelector(selectIsLoadingWorkspaceList)
   const listUserShare = useSelector(selectWorkspaceListUserShare)
@@ -295,12 +303,14 @@ const Workspaces = () => {
     new: false,
     shareId: 0,
   })
-  const [workspaceDel, setWorkspaceDel] =
-    useState<{ id: number; name: string }>()
+  const [workspaceDel, setWorkspaceDel] = useState<{
+    id: number
+    name: string
+  }>()
   const [newWorkspace, setNewWorkSpace] = useState<string>()
-  const [error, setError] = useState('')
-  const [initName, setInitName] = useState('')
-  const [rowModesModel, setRowModesModel] = useState<any>({})
+  const [error, setError] = useState("")
+  const [initName, setInitName] = useState("")
+  const [rowModesModel, setRowModesModel] = useState<GridRowModesModel>({})
   const [searchParams, setParams] = useSearchParams()
 
   const { enqueueSnackbar } = useSnackbar()
@@ -309,8 +319,8 @@ const Workspaces = () => {
     enqueueSnackbar(mess, { variant })
   }
 
-  const offset = searchParams.get('offset')
-  const limit = searchParams.get('limit')
+  const offset = searchParams.get("offset")
+  const limit = searchParams.get("limit")
 
   const dataParams = useMemo(() => {
     return {
@@ -349,12 +359,12 @@ const Workspaces = () => {
     const data = await dispatch(
       delWorkspace({ id: workspaceDel.id, params: dataParams }),
     )
-    if ((data as any).error) {
-      handleClickVariant('error', 'Workspace deletion failed!')
+    if (isRejectedWithValue(data)) {
+      handleClickVariant("error", "Workspace deletion failed!")
     } else {
       handleClickVariant(
-        'success',
-        'The workspace has been deleted successfully!',
+        "success",
+        "The workspace has been deleted successfully!",
       )
     }
     setOpen({ ...open, del: false })
@@ -370,7 +380,7 @@ const Workspaces = () => {
 
   const handleClosePopupNew = () => {
     setOpen({ ...open, new: false })
-    setError('')
+    setError("")
   }
 
   const handleNavWorkflow = (id: number) => {
@@ -382,7 +392,7 @@ const Workspaces = () => {
   }
 
   const onEditName = (id: number) => {
-    setRowModesModel((pre: any) => ({
+    setRowModesModel((pre: GridRowModesModel) => ({
       ...pre,
       [id]: { mode: GridRowModes.Edit },
     }))
@@ -390,25 +400,25 @@ const Workspaces = () => {
 
   const handleOkNew = async () => {
     if (!newWorkspace) {
-      setError("Workspace Name cann't empty")
+      setError("Workspace Name can't empty")
       return
     }
     const data = await dispatch(postWorkspace({ name: newWorkspace }))
-    if ((data as any).error) {
-      handleClickVariant('error', 'Workspace creation failed!')
+    if (isRejectedWithValue(data)) {
+      handleClickVariant("error", "Workspace creation failed!")
     } else {
       handleClickVariant(
-        'success',
-        'The workspace has been created successfully!',
+        "success",
+        "The workspace has been created successfully!",
       )
     }
     await dispatch(getWorkspaceList(dataParams))
     setOpen({ ...open, new: false })
-    setError('')
-    setNewWorkSpace('')
+    setError("")
+    setNewWorkSpace("")
   }
 
-  const onProcessRowUpdateError = (newRow: any) => {
+  const onProcessRowUpdateError = (newRow: unknown) => {
     return newRow
   }
 
@@ -425,20 +435,20 @@ const Workspaces = () => {
     setParams(`&${pagi(page)}`)
   }
 
-  const handleRowModesModelChange = (newRowModesModel: any) => {
+  const handleRowModesModelChange = (newRowModesModel: GridRowModesModel) => {
     setRowModesModel(newRowModesModel)
   }
 
-  const onRowEditStop: GridEventListener<'rowEditStop'> = (params, event) => {
+  const onRowEditStop: GridEventListener<"rowEditStop"> = (params) => {
     setInitName(params.row.name)
   }
 
-  const onCellClick: GridEventListener<'cellClick'> | undefined = (
-    event: any,
+  const onCellClick: GridEventListener<"cellClick"> | undefined = (
+    params: GridCellParams,
   ) => {
-    if (event.field === 'name') return
-    setRowModesModel((pre: any) => {
-      const object: any = {}
+    if (params.field === "name") return
+    setRowModesModel((pre: GridRowModesModel) => {
+      const object: GridRowModesModel = {}
       Object.keys(pre).forEach((key) => {
         object[key] = {
           mode: GridRowModes.View,
@@ -449,19 +459,19 @@ const Workspaces = () => {
     })
   }
 
-  const processRowUpdate = async (newRow: any) => {
+  const processRowUpdate = async (newRow: ItemsWorkspace) => {
     if (!newRow.name) {
-      handleClickVariant('error', "Workspace Name cann't empty")
+      handleClickVariant("error", "Workspace Name can't empty")
       return { ...newRow, name: initName }
     }
     if (newRow.name === initName) return newRow
     const data = await dispatch(
       putWorkspace({ name: newRow.name, id: newRow.id }),
     )
-    if ((data as any).error) {
-      handleClickVariant('error', 'Workspace name edit failed!')
+    if (isRejectedWithValue(data)) {
+      handleClickVariant("error", "Workspace name edit failed!")
     } else {
-      handleClickVariant('success', 'Workspace name edited successfully!')
+      handleClickVariant("success", "Workspace name edited successfully!")
     }
     await dispatch(getWorkspaceList(dataParams))
     return newRow
@@ -476,16 +486,16 @@ const Workspaces = () => {
       <WorkspacesTitle>Workspaces</WorkspacesTitle>
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'flex-end',
+          display: "flex",
+          justifyContent: "flex-end",
           gap: 2,
           marginBottom: 2,
         }}
       >
         <Button
           sx={{
-            background: '#000000c4',
-            '&:hover': { backgroundColor: '#00000090' },
+            background: "#000000c4",
+            "&:hover": { backgroundColor: "#00000090" },
           }}
           variant="contained"
           onClick={handleOpenPopupNew}
@@ -497,7 +507,7 @@ const Workspaces = () => {
         <Box
           sx={{
             minHeight: 500,
-            height: 'calc(100vh - 350px)',
+            height: "calc(100vh - 350px)",
           }}
         >
           <DataGrid
@@ -505,21 +515,19 @@ const Workspaces = () => {
             rows={data?.items}
             editMode="row"
             rowModesModel={rowModesModel}
-            columns={
-              columns(
-                handleOpenPopupShare,
-                handleOpenPopupDel,
-                handleNavWorkflow,
-                handleNavRecords,
-                user,
-                onEditName,
-              ).filter(Boolean) as any
-            }
+            columns={columns(
+              handleOpenPopupShare,
+              handleOpenPopupDel,
+              handleNavWorkflow,
+              handleNavRecords,
+              user,
+              onEditName,
+            ).filter(Boolean)}
             onRowModesModelChange={handleRowModesModelChange}
             isCellEditable={(params) => isMine(user, params.row.user?.id)}
             onProcessRowUpdateError={onProcessRowUpdateError}
             onRowEditStop={onRowEditStop}
-            processRowUpdate={processRowUpdate as any}
+            processRowUpdate={processRowUpdate}
             hideFooter={true}
           />
         </Box>
@@ -566,29 +574,29 @@ const Workspaces = () => {
 }
 
 const WorkspacesWrapper = styled(Box)(({ theme }) => ({
-  margin: 'auto',
-  width: '90vw',
+  margin: "auto",
+  width: "90vw",
   padding: theme.spacing(2),
-  overflow: 'auto',
+  overflow: "auto",
 }))
 
-const WorkspacesTitle = styled('h1')(({ theme }) => ({}))
+const WorkspacesTitle = styled("h1")(() => ({}))
 
-const ButtonIcon = styled('button')(({ theme }) => ({
-  minWidth: '32px',
-  minHeight: '32px',
-  width: '32px',
-  height: '32px',
-  color: '#444',
-  border: 'none',
-  borderRadius: '50%',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center',
-  cursor: 'pointer',
-  background: 'transparent',
-  '&:hover': {
-    background: 'rgb(239 239 239)',
+const ButtonIcon = styled("button")(() => ({
+  minWidth: "32px",
+  minHeight: "32px",
+  width: "32px",
+  height: "32px",
+  color: "#444",
+  border: "none",
+  borderRadius: "50%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  cursor: "pointer",
+  background: "transparent",
+  "&:hover": {
+    background: "rgb(239 239 239)",
   },
 }))
 

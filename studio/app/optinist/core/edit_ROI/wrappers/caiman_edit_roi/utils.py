@@ -14,24 +14,25 @@ def set_nwbfile(edit_roi_data, iscell, function_id, fluorescence=None):
         roi_list.append(kargs)
     nwbfile[NWBDATASET.ROI] = {function_id: roi_list}
 
-    if fluorescence is not None:
-        nwbfile[NWBDATASET.FLUORESCENCE] = {
-            function_id: {
-                "Fluorescence": {
-                    "table_name": "ROIs",
-                    "region": list(range(len(fluorescence))),
-                    "name": "Fluorescence",
-                    "data": fluorescence,
-                    "unit": "lumens",
-                }
-            }
-        }
-
     nwbfile[NWBDATASET.COLUMN] = {
         function_id: {
             "name": "iscell",
-            "discription": "two columns - iscell & probcell",
+            "description": "two columns - iscell & probcell",
             "data": iscell,
+        }
+    }
+
+    # Fluorescence
+
+    nwbfile[NWBDATASET.FLUORESCENCE] = {
+        function_id: {
+            "Fluorescence": {
+                "table_name": "ROIs",
+                "region": list(range(n_cells)),
+                "name": "Fluorescence",
+                "data": fluorescence.T,
+                "unit": "lumens",
+            },
         }
     }
 

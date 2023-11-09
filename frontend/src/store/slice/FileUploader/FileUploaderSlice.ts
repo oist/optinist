@@ -1,7 +1,14 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { FileUploader, FILE_UPLOADER_SLICE_NAME } from './FileUploaderType'
-import { setUploadProgress, uploadFile } from './FileUploaderActions'
-import { inistialUploaderState } from './FileUploaderInitlalState'
+import { createSlice, PayloadAction } from "@reduxjs/toolkit"
+
+import {
+  setUploadProgress,
+  uploadFile,
+} from "store/slice/FileUploader/FileUploaderActions"
+import { inistialUploaderState } from "store/slice/FileUploader/FileUploaderInitlalState"
+import {
+  FileUploader,
+  FILE_UPLOADER_SLICE_NAME,
+} from "store/slice/FileUploader/FileUploaderType"
 
 const initialState: FileUploader = {}
 
@@ -16,8 +23,8 @@ export const fileUploaderSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(setUploadProgress, (state, action) => {
-        const { progess, requestId } = action.payload
-        state[requestId].uploadingProgress = progess
+        const { progress, requestId } = action.payload
+        state[requestId].uploadingProgress = progress
       })
       .addCase(uploadFile.pending, (state, action) => {
         const { fileName, requestId } = action.meta.arg

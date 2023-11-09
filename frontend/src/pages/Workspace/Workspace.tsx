@@ -1,14 +1,16 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
-import { Box } from '@mui/material'
-import { styled } from '@mui/material/styles'
-import { useRunPipeline } from 'store/slice/Pipeline/PipelineHook'
-import Experiment from 'components/Workspace/Experiment/Experiment'
-import FlowChart from 'components/Workspace/FlowChart/FlowChart'
-import Visualize from 'components/Workspace/Visualize/Visualize'
-import { selectActiveTab } from 'store/slice/Workspace/WorkspaceSelector'
+import { FC, ReactNode } from "react"
+import { useSelector } from "react-redux"
 
-const Workspace: React.FC = () => {
+import { Box } from "@mui/material"
+import { styled } from "@mui/material/styles"
+
+import Experiment from "components/Workspace/Experiment/Experiment"
+import FlowChart from "components/Workspace/FlowChart/FlowChart"
+import Visualize from "components/Workspace/Visualize/Visualize"
+import { useRunPipeline } from "store/slice/Pipeline/PipelineHook"
+import { selectActiveTab } from "store/slice/Workspace/WorkspaceSelector"
+
+const Workspace: FC = () => {
   const runPipeline = useRunPipeline() // タブ切り替えによって結果取得処理が止まってしまうのを回避するため、タブの親レイヤーで呼び出している
   const activeTab = useSelector(selectActiveTab)
 
@@ -27,14 +29,14 @@ const Workspace: React.FC = () => {
   )
 }
 
-const RootDiv = styled('div')(({ theme }) => ({
+const RootDiv = styled("div")(({ theme }) => ({
   flexGrow: 1,
   backgroundColor: theme.palette.background.paper,
-  height: '100%',
+  height: "100%",
 }))
 
 interface TabPanelProps {
-  children?: React.ReactNode
+  children?: ReactNode
   index: number
   value: number
 }
@@ -44,14 +46,14 @@ function TabPanel(props: TabPanelProps) {
 
   return (
     <div
-      style={{ height: 'calc(100% - 58px)' }}
+      style={{ height: "calc(100% - 58px)" }}
       role="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
       aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
-      {value === index && <Box sx={{ height: '100%' }}>{children}</Box>}
+      {value === index && <Box sx={{ height: "100%" }}>{children}</Box>}
     </div>
   )
 }

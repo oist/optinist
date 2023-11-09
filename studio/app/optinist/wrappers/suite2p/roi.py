@@ -78,7 +78,7 @@ def suite2p_roi(
     nwbfile[NWBDATASET.COLUMN] = {
         function_id: {
             "name": "iscell",
-            "discription": "two columns - iscell & probcell",
+            "description": "two columns - iscell & probcell",
             "data": iscell,
         }
     }

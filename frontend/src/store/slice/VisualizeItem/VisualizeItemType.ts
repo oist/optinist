@@ -1,6 +1,9 @@
-import { DATA_TYPE, DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
+import {
+  DATA_TYPE,
+  DATA_TYPE_SET,
+} from "store/slice/DisplayData/DisplayDataType"
 
-export const VISUALIZE_ITEM_SLICE_NAME = 'visualaizeItem'
+export const VISUALIZE_ITEM_SLICE_NAME = "visualaizeItem"
 
 export type VisualaizeItem = {
   selectedItemId: number | null
@@ -26,11 +29,11 @@ export type ColorType = {
 }
 
 export const VISUALIZE_ITEM_TYPE_SET = {
-  DISPLAY_DATA: 'displayData',
+  DISPLAY_DATA: "displayData",
 } as const
 
 export type VISUALIZE_ITEM_TYPE =
-  typeof VISUALIZE_ITEM_TYPE_SET[keyof typeof VISUALIZE_ITEM_TYPE_SET]
+  (typeof VISUALIZE_ITEM_TYPE_SET)[keyof typeof VISUALIZE_ITEM_TYPE_SET]
 
 export type DisplayDataItem =
   | ImageItem
@@ -49,7 +52,7 @@ export type DisplayDataItem =
   | PieItem
   | PolarItem
 
-export interface DisplayDataItemBaseType extends ItemBaseType<'displayData'> {
+export interface DisplayDataItemBaseType extends ItemBaseType<"displayData"> {
   filePath: string | null
   nodeId: string | null
   dataType: DATA_TYPE | null
@@ -88,7 +91,7 @@ export interface TimeSeriesItem extends DisplayDataItemBaseType {
     left: number | undefined
     right: number | undefined
   }
-  rangeUnit: 'frames' | 'time'
+  rangeUnit: "frames" | "time"
   maxIndex: number
   refImageItemId: number | null
   drawOrderList: string[]

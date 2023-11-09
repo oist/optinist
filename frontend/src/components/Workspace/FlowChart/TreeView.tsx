@@ -1,46 +1,50 @@
-import React, { useEffect } from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import TreeView from '@mui/lab/TreeView'
-import TreeItem, { treeItemClasses } from '@mui/lab/TreeItem'
-import { styled, Typography } from '@mui/material'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import ChevronRightIcon from '@mui/icons-material/ChevronRight'
-import IconButton from '@mui/material/IconButton'
-import AddIcon from '@mui/icons-material/Add'
-import { useDrag } from 'react-dnd'
+import { memo, useCallback, useEffect } from "react"
+import { useDrag } from "react-dnd"
+import { useSelector, useDispatch } from "react-redux"
 
-import {
-  selectAlgorithmListIsLated,
-  selectAlgorithmListTree,
-} from 'store/slice/AlgorithmList/AlgorithmListSelectors'
-import {
-  AlgorithmChild,
-  AlgorithmNodeType,
-} from 'store/slice/AlgorithmList/AlgorithmListType'
-import { isAlgoChild } from 'store/slice/AlgorithmList/AlgorithmListUtils'
-import { getAlgoList } from 'store/slice/AlgorithmList/AlgorithmListActions'
-import { FILE_TYPE, FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
-import {
-  NODE_TYPE,
-  NODE_TYPE_SET,
-} from 'store/slice/FlowElement/FlowElementType'
-import {
-  addAlgorithmNode,
-  addInputNode,
-} from 'store/slice/FlowElement/FlowElementActions'
-import { getNanoId } from 'utils/nanoid/NanoIdUtils'
-import { REACT_FLOW_NODE_TYPE, REACT_FLOW_NODE_TYPE_KEY } from 'const/flowchart'
+import AddIcon from "@mui/icons-material/Add"
+import ChevronRightIcon from "@mui/icons-material/ChevronRight"
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import { styled, Typography } from "@mui/material"
+import IconButton from "@mui/material/IconButton"
+import { TreeView, TreeItem, treeItemClasses } from "@mui/x-tree-view"
+
 import {
   DND_ITEM_TYPE_SET,
   TreeItemCollectedProps,
   TreeItemDragObject,
   TreeItemDropResult,
-} from './DnDItemType'
+} from "components/Workspace/FlowChart/DnDItemType"
+import { REACT_FLOW_NODE_TYPE, REACT_FLOW_NODE_TYPE_KEY } from "const/flowchart"
+import { getAlgoList } from "store/slice/AlgorithmList/AlgorithmListActions"
+import {
+  selectAlgorithmListIsLated,
+  selectAlgorithmListTree,
+} from "store/slice/AlgorithmList/AlgorithmListSelectors"
+import {
+  AlgorithmChild,
+  AlgorithmNodeType,
+} from "store/slice/AlgorithmList/AlgorithmListType"
+import { isAlgoChild } from "store/slice/AlgorithmList/AlgorithmListUtils"
+import {
+  addAlgorithmNode,
+  addInputNode,
+} from "store/slice/FlowElement/FlowElementActions"
+import {
+  NODE_TYPE,
+  NODE_TYPE_SET,
+} from "store/slice/FlowElement/FlowElementType"
+import { FILE_TYPE, FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
+import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
+import { AppDispatch } from "store/store"
+import { getNanoId } from "utils/nanoid/NanoIdUtils"
 
-export const AlgorithmTreeView = React.memo(() => {
-  const dispatch = useDispatch()
+export const AlgorithmTreeView = memo(function AlgorithmTreeView() {
+  const dispatch = useDispatch<AppDispatch>()
   const algoList = useSelector(selectAlgorithmListTree)
   const isLatest = useSelector(selectAlgorithmListIsLated)
+  const workflowId = useSelector(selectPipelineLatestUid)
+  const runAlready = typeof workflowId !== "undefined"
 
   useEffect(() => {
     if (!isLatest) {
@@ -48,7 +52,7 @@ export const AlgorithmTreeView = React.memo(() => {
     }
   }, [dispatch, isLatest])
 
-  const onAddAlgoNode = React.useCallback(
+  const onAddAlgoNode = useCallback(
     (
       nodeName: string,
       functionPath: string,
@@ -66,45 +70,46 @@ export const AlgorithmTreeView = React.memo(() => {
           node: newNode,
           name,
           functionPath,
+          runAlready,
         }),
       )
     },
-    [dispatch],
+    [dispatch, runAlready],
   )
 
   return (
     <TreeView
       sx={{
         flexGrow: 1,
-        height: '100%',
+        height: "100%",
       }}
       defaultCollapseIcon={<ExpandMoreIcon />}
       defaultExpandIcon={<ChevronRightIcon />}
     >
       <TreeItem nodeId="Data" label="Data">
         <InputNodeComponent
-          fileName={'image'}
-          nodeName={'imageData'}
+          fileName={"image"}
+          nodeName={"imageData"}
           fileType={FILE_TYPE_SET.IMAGE}
         />
         <InputNodeComponent
-          fileName={'csv'}
-          nodeName={'csvData'}
+          fileName={"csv"}
+          nodeName={"csvData"}
           fileType={FILE_TYPE_SET.CSV}
         />
         <InputNodeComponent
-          fileName={'hdf5'}
-          nodeName={'hdf5Data'}
+          fileName={"hdf5"}
+          nodeName={"hdf5Data"}
           fileType={FILE_TYPE_SET.HDF5}
         />
         <InputNodeComponent
-          fileName={'fluo'}
-          nodeName={'fluoData'}
+          fileName={"fluo"}
+          nodeName={"fluoData"}
           fileType={FILE_TYPE_SET.FLUO}
         />
         <InputNodeComponent
-          fileName={'behavior'}
-          nodeName={'behaviorData'}
+          fileName={"behavior"}
+          nodeName={"behaviorData"}
           fileType={FILE_TYPE_SET.BEHAVIOR}
         />
       </TreeItem>
@@ -122,21 +127,27 @@ export const AlgorithmTreeView = React.memo(() => {
   )
 })
 
-const InputNodeComponent = React.memo<{
+interface InputNodeComponentProps {
   fileName: string
   nodeName: string
   fileType: FILE_TYPE
-}>(({ fileName, nodeName, fileType }) => {
+}
+
+const InputNodeComponent = memo(function InputNodeComponent({
+  fileName,
+  nodeName,
+  fileType,
+}: InputNodeComponentProps) {
   const dispatch = useDispatch()
 
-  const onAddDataNode = React.useCallback(
+  const onAddDataNode = useCallback(
     (
       nodeType: NODE_TYPE,
       nodeName: string,
       fileType: FILE_TYPE,
       position?: { x: number; y: number },
     ) => {
-      let reactFlowNodeType: REACT_FLOW_NODE_TYPE | '' = ''
+      let reactFlowNodeType: REACT_FLOW_NODE_TYPE | "" = ""
       switch (fileType) {
         case FILE_TYPE_SET.CSV:
           reactFlowNodeType = REACT_FLOW_NODE_TYPE_KEY.CsvFileNode
@@ -170,7 +181,7 @@ const InputNodeComponent = React.memo<{
   )
 
   const { isDragging, dragRef } = useLeafItemDrag(
-    React.useCallback(
+    useCallback(
       (position) => {
         onAddDataNode(NODE_TYPE_SET.INPUT, nodeName, fileType, position)
       },
@@ -196,15 +207,24 @@ const InputNodeComponent = React.memo<{
   )
 })
 
-const AlgoNodeComponentRecursive = React.memo<{
+interface AlgoNodeComponentBaseProps {
   name: string
-  node: AlgorithmNodeType
   onAddAlgoNode: (
     nodeName: string,
     functionPath: string,
     position?: { x: number; y: number },
   ) => void
-}>(({ name, node, onAddAlgoNode }) => {
+}
+
+interface AlgoNodeComponentRecursiveProps extends AlgoNodeComponentBaseProps {
+  node: AlgorithmNodeType
+}
+
+const AlgoNodeComponentRecursive = memo(function AlgoNodeComponentRecursive({
+  name,
+  node,
+  onAddAlgoNode,
+}: AlgoNodeComponentRecursiveProps) {
   if (isAlgoChild(node)) {
     return (
       <AlgoNodeComponent
@@ -229,17 +249,17 @@ const AlgoNodeComponentRecursive = React.memo<{
   }
 })
 
-const AlgoNodeComponent = React.memo<{
-  name: string
+interface AlgoNodeComponentProps extends AlgoNodeComponentBaseProps {
   node: AlgorithmChild
-  onAddAlgoNode: (
-    nodeName: string,
-    functionPath: string,
-    position?: { x: number; y: number },
-  ) => void
-}>(({ name, node, onAddAlgoNode }) => {
+}
+
+const AlgoNodeComponent = memo(function AlgoNodeComponent({
+  name,
+  node,
+  onAddAlgoNode,
+}: AlgoNodeComponentProps) {
   const { isDragging, dragRef } = useLeafItemDrag(
-    React.useCallback(
+    useCallback(
       (position) => {
         onAddAlgoNode(name, node.functionPath, position)
       },
@@ -264,10 +284,12 @@ const AlgoNodeComponent = React.memo<{
   )
 })
 
-const AddButton = React.memo<{
+interface AddButtonProps {
   name: string
   onClick: () => void
-}>(({ name, onClick }) => {
+}
+
+const AddButton = memo(function AddButton({ name, onClick }: AddButtonProps) {
   return (
     <>
       <IconButton aria-label="add" style={{ padding: 2 }} size="large">
@@ -276,10 +298,10 @@ const AddButton = React.memo<{
       <Typography
         variant="inherit"
         style={{
-          textOverflow: 'ellipsis',
-          overflow: 'visible',
-          width: '8rem',
-          display: 'inline-block',
+          textOverflow: "ellipsis",
+          overflow: "visible",
+          width: "8rem",
+          display: "inline-block",
         }}
       >
         {name}
@@ -298,7 +320,7 @@ const LeafItem = styled(TreeItem)({
 })
 
 function useLeafItemDrag(
-  onDragEnd: (positon: { x: number; y: number }) => void,
+  onDragEnd: (position: { x: number; y: number }) => void,
 ) {
   const [{ isDragging }, dragRef] = useDrag<
     TreeItemDragObject,

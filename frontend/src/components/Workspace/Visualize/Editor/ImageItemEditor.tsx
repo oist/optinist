@@ -1,12 +1,26 @@
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import Switch from '@mui/material/Switch'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
+import { ChangeEvent, FC, useContext, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
 
+import "react-linear-gradient-picker/dist/index.css"
+import { Box, TextField } from "@mui/material"
+import Button from "@mui/material/Button"
+import FormControl from "@mui/material/FormControl"
+import FormControlLabel from "@mui/material/FormControlLabel"
+import InputLabel from "@mui/material/InputLabel"
+import MenuItem from "@mui/material/MenuItem"
+import Select, { SelectChangeEvent } from "@mui/material/Select"
+import Switch from "@mui/material/Switch"
+
+import { FILE_TREE_TYPE_SET } from "api/files/Files"
+import { FileSelectImple } from "components/Workspace/FlowChart/FlowChartNode/FileSelect"
+import { GradientColorPicker } from "components/Workspace/Visualize/Editor/GradientColorPicker"
+import { SaveFig } from "components/Workspace/Visualize/Editor/SaveFig"
+import { SelectedItemIdContext } from "components/Workspace/Visualize/VisualizeItemEditor"
+import { getImageData } from "store/slice/DisplayData/DisplayDataActions"
+import { DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
+import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
+import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
+import { setNewDisplayDataPath } from "store/slice/VisualizeItem/VisualizeItemActions"
 import {
   selectImageItemShowGrid,
   selectImageItemShowLine,
@@ -20,9 +34,7 @@ import {
   selectImageItemFilePath,
   selectDisplayDataIsSingle,
   selectImageItemAlpha,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { SelectedItemIdContext } from '../VisualizeItemEditor'
-
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import {
   setImageItemShowGrid,
   setImageItemShowLine,
@@ -35,25 +47,13 @@ import {
   resetImageActiveIndex,
   setImageItemRoiAlpha,
   setImageItemAlpha,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
+} from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { ColorType } from "store/slice/VisualizeItem/VisualizeItemType"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
+import { AppDispatch } from "store/store"
 
-import 'react-linear-gradient-picker/dist/index.css'
-import { FileSelectImple } from 'components/Workspace/FlowChart/FlowChartNode/FileSelect'
-import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
-import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
-import { FILE_TREE_TYPE_SET } from 'api/files/Files'
-import { Box, TextField } from '@mui/material'
-import { GradientColorPicker } from './GradientColorPicker'
-import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
-import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
-import Button from '@mui/material/Button'
-import { getImageData } from 'store/slice/DisplayData/DisplayDataActions'
-import { setNewDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemActions'
-import { SaveFig } from './SaveFig'
-import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
-
-export const ImageItemEditor: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+export const ImageItemEditor: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
   const filePath = useSelector(selectImageItemFilePath(itemId))
 
@@ -92,9 +92,9 @@ export const ImageItemEditor: React.FC = () => {
   }
 
   return (
-    <div style={{ margin: '10px', padding: 10 }}>
+    <div style={{ margin: "10px", padding: 10 }}>
       <FileSelectImple
-        filePath={filePath ?? ''}
+        filePath={filePath ?? ""}
         onSelectFile={(path) => !Array.isArray(path) && onSelectImageFile(path)}
         onUploadFile={onUploadFileHandle}
         fileTreeType={FILE_TREE_TYPE_SET.IMAGE}
@@ -114,8 +114,8 @@ export const ImageItemEditor: React.FC = () => {
   )
 }
 
-const Showticklabels: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const Showticklabels: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
   const dispatch = useDispatch()
   const toggleChecked = () => {
@@ -131,8 +131,8 @@ const Showticklabels: React.FC = () => {
   )
 }
 
-const ShowLine: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const ShowLine: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const showline = useSelector(selectImageItemShowLine(itemId))
   const dispatch = useDispatch()
   const toggleChecked = () => {
@@ -146,8 +146,8 @@ const ShowLine: React.FC = () => {
   )
 }
 
-const ShowGrid: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const ShowGrid: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const showgrid = useSelector(selectImageItemShowGrid(itemId))
   const dispatch = useDispatch()
   const toggleChecked = () => {
@@ -161,8 +161,8 @@ const ShowGrid: React.FC = () => {
   )
 }
 
-const ShowScale: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const ShowScale: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const showscale = useSelector(selectImageItemShowScale(itemId))
   const dispatch = useDispatch()
   const toggleChecked = () => {
@@ -176,8 +176,8 @@ const ShowScale: React.FC = () => {
   )
 }
 
-const Zsmooth: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const Zsmooth: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const zsmooth = useSelector(selectImageItemZsmooth(itemId))
   const dispatch = useDispatch()
   const handleChange = (event: SelectChangeEvent<string | boolean>) => {
@@ -187,30 +187,30 @@ const Zsmooth: React.FC = () => {
     <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
       <InputLabel>smooth</InputLabel>
       <Select label="smooth" value={zsmooth} onChange={handleChange}>
-        <MenuItem value={'best'}>best</MenuItem>
-        <MenuItem value={'fast'}>fast</MenuItem>
-        <MenuItem value={'false'}>False</MenuItem>
+        <MenuItem value={"best"}>best</MenuItem>
+        <MenuItem value={"fast"}>fast</MenuItem>
+        <MenuItem value={"false"}>False</MenuItem>
       </Select>
     </FormControl>
   )
 }
 
-const Alpha: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const Alpha: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
   const alpha = useSelector(selectImageItemAlpha(itemId))
   const inputError = !(alpha > 0)
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value === '' ? '' : Number(event.target.value)
-    if (typeof newValue === 'number') {
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value === "" ? "" : Number(event.target.value)
+    if (typeof newValue === "number") {
       dispatch(setImageItemAlpha({ itemId, alpha: newValue }))
     }
   }
   return (
     <>
       <TextField
-        style={{ width: '100%' }}
-        label={'image alpha'}
+        style={{ width: "100%" }}
+        label={"image alpha"}
         error={inputError}
         type="number"
         inputProps={{
@@ -223,28 +223,28 @@ const Alpha: React.FC = () => {
         }}
         onChange={onChange}
         value={alpha}
-        helperText={inputError ? 'index > 0' : undefined}
+        helperText={inputError ? "index > 0" : undefined}
       />
     </>
   )
 }
 
-const RoiAlpha: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const RoiAlpha: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
   const roiAlpha = useSelector(selectImageItemRoiAlpha(itemId))
   const inputError = !(roiAlpha > 0)
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value === '' ? '' : Number(event.target.value)
-    if (typeof newValue === 'number') {
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value === "" ? "" : Number(event.target.value)
+    if (typeof newValue === "number") {
       dispatch(setImageItemRoiAlpha({ itemId, roiAlpha: newValue }))
     }
   }
   return (
     <>
       <TextField
-        style={{ width: '100%' }}
-        label={'roi alpha'}
+        style={{ width: "100%" }}
+        label={"roi alpha"}
         error={inputError}
         type="number"
         inputProps={{
@@ -257,32 +257,32 @@ const RoiAlpha: React.FC = () => {
         }}
         onChange={onChange}
         value={roiAlpha}
-        helperText={inputError ? 'index > 0' : undefined}
+        helperText={inputError ? "index > 0" : undefined}
       />
     </>
   )
 }
 
-const StartEndIndex: React.FC = () => {
+const StartEndIndex: FC = () => {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
-  const itemId = React.useContext(SelectedItemIdContext)
-  const [startIndex, onChangeStartIndex] = React.useState(
+  const itemId = useContext(SelectedItemIdContext)
+  const [startIndex, onChangeStartIndex] = useState(
     useSelector(selectImageItemStartIndex(itemId)),
   )
-  const [endIndex, onChangeEndIndex] = React.useState(
+  const [endIndex, onChangeEndIndex] = useState(
     useSelector(selectImageItemEndIndex(itemId)),
   )
   const inputError = !(startIndex > 0)
-  const dispatch = useDispatch()
-  const onStartChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value === '' ? '' : Number(event.target.value)
-    if (typeof newValue === 'number') {
+  const dispatch = useDispatch<AppDispatch>()
+  const onStartChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value === "" ? "" : Number(event.target.value)
+    if (typeof newValue === "number") {
       onChangeStartIndex(newValue)
     }
   }
-  const onEndChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value === '' ? '' : Number(event.target.value)
-    if (typeof newValue === 'number') {
+  const onEndChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value === "" ? "" : Number(event.target.value)
+    if (typeof newValue === "number") {
       onChangeEndIndex(newValue)
     }
   }
@@ -307,7 +307,7 @@ const StartEndIndex: React.FC = () => {
   }
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
+    <Box sx={{ display: "flex", alignItems: "flex-start" }}>
       <TextField
         error={inputError}
         type="number"
@@ -320,7 +320,7 @@ const StartEndIndex: React.FC = () => {
         }}
         onChange={onStartChange}
         value={startIndex}
-        helperText={inputError ? 'index > 0' : undefined}
+        helperText={inputError ? "index > 0" : undefined}
       />
       ~
       <TextField

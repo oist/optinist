@@ -63,6 +63,7 @@ dev = [
   "build",
   "twine",
   "pre-commit",
+  "codespell",
 ]
 doc = [
   "sphinx==7.1.2",
@@ -119,3 +120,7 @@ pythonpath = "."
 env = [
   "OPTINIST_DIR=studio/test_data",
 ]
+
+[tool.codespell]
+skip = './frontend/build,./frontend/node_modules,./docs/_build,*.lock,*log,*.egg-info'
+ignore-words = '.codespellignore'

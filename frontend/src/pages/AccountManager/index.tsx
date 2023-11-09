@@ -1,6 +1,3 @@
-import EditIcon from '@mui/icons-material/Edit'
-import DeleteIcon from '@mui/icons-material/Delete'
-import { SelectChangeEvent } from '@mui/material/Select'
 import {
   ChangeEvent,
   useCallback,
@@ -8,7 +5,14 @@ import {
   useMemo,
   useState,
   MouseEvent,
-} from 'react'
+} from "react"
+import { useDispatch, useSelector } from "react-redux"
+import { useNavigate, useSearchParams } from "react-router-dom"
+
+import { useSnackbar, VariantType } from "notistack"
+
+import DeleteIcon from "@mui/icons-material/Delete"
+import EditIcon from "@mui/icons-material/Edit"
 import {
   Box,
   Button,
@@ -17,36 +21,41 @@ import {
   DialogTitle,
   Input,
   styled,
-} from '@mui/material'
-import { useDispatch, useSelector } from 'react-redux'
+} from "@mui/material"
+import IconButton from "@mui/material/IconButton"
+import { SelectChangeEvent } from "@mui/material/Select"
 import {
-  isAdmin,
-  selectCurrentUser,
-  selectListUser,
-  selectLoading,
-} from 'store/slice/User/UserSelector'
-import { useNavigate, useSearchParams } from 'react-router-dom'
+  DataGrid,
+  GridColDef,
+  GridFilterInputValueProps,
+  GridFilterModel,
+  GridRenderCellParams,
+  GridSortDirection,
+  GridSortItem,
+  GridSortModel,
+} from "@mui/x-data-grid"
+import { isRejectedWithValue } from "@reduxjs/toolkit"
+
+import { ROLE } from "@types"
+import { AddUserDTO, UserDTO } from "api/users/UsersApiDTO"
+import InputError from "components/common/InputError"
+import Loading from "components/common/Loading"
+import PaginationCustom from "components/common/PaginationCustom"
+import SelectError from "components/common/SelectError"
+import { regexEmail, regexIgnoreS, regexPassword } from "const/Auth"
 import {
   deleteUser,
   createUser,
   getListUser,
   updateUser,
-} from 'store/slice/User/UserActions'
-import Loading from 'components/common/Loading'
-import { AddUserDTO, UserDTO } from 'api/users/UsersApiDTO'
-import { ROLE } from '@types'
+} from "store/slice/User/UserActions"
 import {
-  DataGrid,
-  GridFilterModel,
-  GridSortDirection,
-  GridSortItem,
-  GridSortModel,
-} from '@mui/x-data-grid'
-import { regexEmail, regexIgnoreS, regexPassword } from 'const/Auth'
-import InputError from 'components/common/InputError'
-import SelectError from 'components/common/SelectError'
-import PaginationCustom from 'components/common/PaginationCustom'
-import { useSnackbar, VariantType } from 'notistack'
+  isAdmin,
+  selectCurrentUser,
+  selectListUser,
+  selectLoading,
+} from "store/slice/User/UserSelector"
+import { AppDispatch } from "store/store"
 
 let timeout: NodeJS.Timeout | undefined = undefined
 
@@ -69,11 +78,11 @@ type PopupType = {
 }
 
 const initState = {
-  email: '',
-  password: '',
-  role_id: '',
-  name: '',
-  confirmPassword: '',
+  email: "",
+  password: "",
+  role_id: "",
+  name: "",
+  confirmPassword: "",
 }
 
 const ModalComponent = ({
@@ -88,39 +97,39 @@ const ModalComponent = ({
   const [errors, setErrors] = useState<{ [key: string]: string }>(initState)
 
   const validateEmail = (value: string): string => {
-    const error = validateField('email', 255, value)
+    const error = validateField("email", 255, value)
     if (error) return error
     if (!regexEmail.test(value)) {
-      return 'Invalid email format'
+      return "Invalid email format"
     }
-    return ''
+    return ""
   }
 
   const validatePassword = (
     value: string,
-    isConfirm: boolean = false,
+    isConfirm = false,
     values?: { [key: string]: string },
   ): string => {
-    if (!value && !dataEdit?.uid) return 'This field is required'
-    const errorLength = validateLength('password', 255, value)
+    if (!value && !dataEdit?.uid) return "This field is required"
+    const errorLength = validateLength("password", 255, value)
     if (errorLength) {
       return errorLength
     }
-    let datas = values || formData
+    const data = values || formData
     if (!regexPassword.test(value) && value) {
-      return 'Your password must be at least 6 characters long and must contain at least one letter, number, and special character'
+      return "Your password must be at least 6 characters long and must contain at least one letter, number, and special character"
     }
     if (regexIgnoreS.test(value)) {
-      return 'Allowed special characters (!#$%&()*+,-./@_|)'
+      return "Allowed special characters (!#$%&()*+,-./@_|)"
     }
-    if (isConfirm && datas.password !== value && value) {
-      return 'password is not match'
+    if (isConfirm && data.password !== value && value) {
+      return "password is not match"
     }
-    return ''
+    return ""
   }
 
   const validateField = (name: string, length: number, value?: string) => {
-    if (!value) return 'This field is required'
+    if (!value) return "This field is required"
     return validateLength(name, length, value)
   }
 
@@ -130,18 +139,18 @@ const ModalComponent = ({
     if (formData[name]?.length && value && value.length > length) {
       return `The text may not be longer than ${length} characters`
     }
-    return ''
+    return ""
   }
 
   const validateForm = (): { [key: string]: string } => {
-    const errorName = validateField('name', 100, formData.name)
+    const errorName = validateField("name", 100, formData.name)
     const errorEmail = validateEmail(formData.email)
-    const errorRole = validateField('role_id', 50, formData.role_id)
+    const errorRole = validateField("role_id", 50, formData.role_id)
     const errorPassword = dataEdit?.id
-      ? ''
+      ? ""
       : validatePassword(formData.password)
     const errorConfirmPassword = dataEdit?.id
-      ? ''
+      ? ""
       : validatePassword(formData.confirmPassword, true)
     return {
       email: errorEmail,
@@ -157,21 +166,17 @@ const ModalComponent = ({
     length: number,
   ) => {
     const { value, name } = e.target
-    const newDatas = { ...formData, [name]: value }
-    setFormData(newDatas)
+    const newData = { ...formData, [name]: value }
+    setFormData(newData)
     let error: string =
-      name === 'email'
+      name === "email"
         ? validateEmail(value)
         : validateField(name, length, value)
     let errorConfirm = errors.confirmPassword
-    if (name.toLowerCase().includes('password')) {
-      error = validatePassword(value, name === 'confirmPassword', newDatas)
-      if (name !== 'confirmPassword' && formData.confirmPassword) {
-        errorConfirm = validatePassword(
-          newDatas.confirmPassword,
-          true,
-          newDatas,
-        )
+    if (name.toLowerCase().includes("password")) {
+      error = validatePassword(value, name === "confirmPassword", newData)
+      if (name !== "confirmPassword" && formData.confirmPassword) {
+        errorConfirm = validatePassword(newData.confirmPassword, true, newData)
       }
     }
     setErrors({ ...errors, confirmPassword: errorConfirm, [name]: error })
@@ -200,19 +205,19 @@ const ModalComponent = ({
   return (
     <Modal>
       <ModalBox>
-        <TitleModal>{dataEdit?.id ? 'Edit' : 'Add'} Account</TitleModal>
+        <TitleModal>{dataEdit?.id ? "Edit" : "Add"} Account</TitleModal>
         <BoxData>
           <LabelModal>Name: </LabelModal>
           <InputError
             name="name"
-            value={formData?.name || ''}
+            value={formData?.name || ""}
             onChange={(e) => onChangeData(e, 100)}
             onBlur={(e) => onChangeData(e, 100)}
             errorMessage={errors.name}
           />
           <LabelModal>Role: </LabelModal>
           <SelectError
-            value={formData?.role_id || ''}
+            value={formData?.role_id || ""}
             options={Object.keys(ROLE).filter((key) => !Number(key))}
             name="role_id"
             onChange={(e) => onChangeData(e, 50)}
@@ -222,7 +227,7 @@ const ModalComponent = ({
           <LabelModal>e-mail: </LabelModal>
           <InputError
             name="email"
-            value={formData?.email || ''}
+            value={formData?.email || ""}
             onChange={(e) => onChangeData(e, 255)}
             onBlur={(e) => onChangeData(e, 255)}
             errorMessage={errors.email}
@@ -232,19 +237,19 @@ const ModalComponent = ({
               <LabelModal>Password: </LabelModal>
               <InputError
                 name="password"
-                value={formData?.password || ''}
+                value={formData?.password || ""}
                 onChange={(e) => onChangeData(e, 255)}
                 onBlur={(e) => onChangeData(e, 255)}
-                type={'password'}
+                type={"password"}
                 errorMessage={errors.password}
               />
               <LabelModal>Confirm Password: </LabelModal>
               <InputError
                 name="confirmPassword"
-                value={formData?.confirmPassword || ''}
+                value={formData?.confirmPassword || ""}
                 onChange={(e) => onChangeData(e, 255)}
                 onBlur={(e) => onChangeData(e, 255)}
-                type={'password'}
+                type={"password"}
                 errorMessage={errors.confirmPassword}
               />
             </>
@@ -267,7 +272,7 @@ const PopupDelete = ({ open, handleClose, handleOkDel, name }: PopupType) => {
   return (
     <Box>
       <Dialog open={open} onClose={handleClose} sx={{ margin: 0 }}>
-        <DialogTitle>Do you want delete User "{name}"?</DialogTitle>
+        <DialogTitle>{`Do you want delete User "${name}"?`}</DialogTitle>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
           <Button onClick={handleOkDel}>Ok</Button>
@@ -278,8 +283,7 @@ const PopupDelete = ({ open, handleClose, handleOkDel, name }: PopupType) => {
 }
 
 const AccountManager = () => {
-  const dispatch = useDispatch()
-
+  const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
 
   const listUser = useSelector(selectListUser)
@@ -287,21 +291,23 @@ const AccountManager = () => {
   const user = useSelector(selectCurrentUser)
   const admin = useSelector(isAdmin)
 
-  const [searchParams, setParams] = useSearchParams()
-
   const [openModal, setOpenModal] = useState(false)
   const [dataEdit, setDataEdit] = useState({})
   const [newParams, setNewParams] = useState(
-    window.location.search.replace('?', ''),
+    window.location.search.replace("?", ""),
   )
+  const [openDel, setOpenDel] = useState<{
+    id?: number
+    name?: string
+    open: boolean
+  }>()
 
-  const limit = searchParams.get('limit') || 50
-  const offset = searchParams.get('offset') || 0
-  const name = searchParams.get('name') || undefined
-  const email = searchParams.get('email') || undefined
-  const sort = searchParams.getAll('sort') || []
-  const [openDel, setOpenDel] =
-    useState<{ id?: number; name?: string; open: boolean }>()
+  const [searchParams, setParams] = useSearchParams()
+  const limit = searchParams.get("limit") || 50
+  const offset = searchParams.get("offset") || 0
+  const name = searchParams.get("name") || undefined
+  const email = searchParams.get("email") || undefined
+  const sort = searchParams.getAll("sort") || []
 
   const filterParams = useMemo(() => {
     return {
@@ -324,22 +330,25 @@ const AccountManager = () => {
     }
   }, [limit, offset])
 
-  const [model, setModel] = useState<{ filter: GridFilterModel; sort: any }>({
+  const [model, setModel] = useState<{
+    filter: GridFilterModel
+    sort: GridSortModel
+  }>({
     filter: {
       items: [
         {
           field:
             Object.keys(filterParams).find(
-              (key) => (filterParams as any)[key],
-            ) || '',
-          operator: 'contains',
+              (key) => filterParams[key as keyof typeof filterParams],
+            ) || "",
+          operator: "contains",
           value: Object.values(filterParams).find((value) => value) || null,
         },
       ],
     },
     sort: [
       {
-        field: sortParams.sort[0]?.replace('role', 'role_id') || '',
+        field: sortParams.sort[0]?.replace("role", "role_id") || "",
         sort: sortParams.sort[1] as GridSortDirection,
       },
     ],
@@ -352,7 +361,7 @@ const AccountManager = () => {
   }
 
   useEffect(() => {
-    if (!admin) navigate('/console')
+    if (!admin) navigate("/console")
     //eslint-disable-next-line
   }, [JSON.stringify(admin)])
 
@@ -363,16 +372,16 @@ const AccountManager = () => {
           {
             field:
               Object.keys(filterParams).find(
-                (key) => (filterParams as any)[key],
-              ) || '',
-            operator: 'contains',
+                (key) => filterParams[key as keyof typeof filterParams],
+              ) || "",
+            operator: "contains",
             value: Object.values(filterParams).find((value) => value) || null,
           },
         ],
       },
       sort: [
         {
-          field: sortParams.sort[0]?.replace('role', 'role_id') || '',
+          field: sortParams.sort[0]?.replace("role", "role_id") || "",
           sort: sortParams.sort[1] as GridSortDirection,
         },
       ],
@@ -381,14 +390,14 @@ const AccountManager = () => {
   }, [sortParams, filterParams])
 
   useEffect(() => {
-    if (newParams && newParams !== window.location.search.replace('?', '')) {
-      setNewParams(window.location.search.replace('?', ''))
+    if (newParams && newParams !== window.location.search.replace("?", "")) {
+      setNewParams(window.location.search.replace("?", ""))
     }
     //eslint-disable-next-line
   }, [searchParams])
 
   useEffect(() => {
-    if (newParams === window.location.search.replace('?', '')) return
+    if (newParams === window.location.search.replace("?", "")) return
     setParams(newParams)
     //eslint-disable-next-line
   }, [newParams])
@@ -400,9 +409,9 @@ const AccountManager = () => {
 
   const getParamsData = () => {
     const dataFilter = Object.keys(filterParams)
-      .filter((key) => (filterParams as any)[key])
-      .map((key) => `${key}=${(filterParams as any)[key]}`)
-      .join('&')
+      .filter((key) => filterParams[key as keyof typeof filterParams])
+      .map((key) => `${key}=${filterParams[key as keyof typeof filterParams]}`)
+      .join("&")
     return dataFilter
   }
 
@@ -424,16 +433,16 @@ const AccountManager = () => {
       if (!rowSelectionModel[0]) {
         param =
           filter || sortParams.sort[0] || offset
-            ? `${filter ? `${filter}&` : ''}${paramsManager()}`
-            : ''
+            ? `${filter ? `${filter}&` : ""}${paramsManager()}`
+            : ""
       } else {
         param = `${filter}${
           rowSelectionModel[0]
-            ? `${filter ? `&` : ''}sort=${rowSelectionModel[0].field.replace(
-                '_id',
-                '',
+            ? `${filter ? "&" : ""}sort=${rowSelectionModel[0].field.replace(
+                "_id",
+                "",
               )}&sort=${rowSelectionModel[0].sort}`
-            : ''
+            : ""
         }&${paramsManager()}`
       }
       setNewParams(param)
@@ -447,20 +456,20 @@ const AccountManager = () => {
       ...model,
       filter: modelFilter,
     })
-    let filter = ''
-    if (!!modelFilter.items[0]?.value) {
+    let filter = ""
+    if (modelFilter.items[0]?.value) {
       filter = modelFilter.items
         .filter((item) => item.value)
-        .map((item: any) => `${item.field}=${item?.value}`)
-        .join('&')
+        .map((item) => `${item.field}=${item?.value}`)
+        .join("&")
     }
     const { sort } = sortParams
     const param =
       sort[0] || filter || offset
         ? `${filter}${
-            sort[0] ? `${filter ? '&' : ''}sort=${sort[0]}&sort=${sort[1]}` : ''
+            sort[0] ? `${filter ? "&" : ""}sort=${sort[0]}&sort=${sort[1]}` : ""
           }&${paramsManager()}`
-        : ''
+        : ""
     setNewParams(param)
   }
 
@@ -468,7 +477,14 @@ const AccountManager = () => {
     setOpenModal(true)
   }
 
-  const handleEdit = (dataEdit: UserDTO) => {
+  type UserFormDTO = {
+    id?: number
+    name?: string
+    email: string
+    // temporarily use role's name (like "ADMIN") for select modal
+    role_id?: string
+  }
+  const handleEdit = (dataEdit: UserFormDTO) => {
     setOpenModal(true)
     setDataEdit(dataEdit)
   }
@@ -477,13 +493,13 @@ const AccountManager = () => {
     id: number | string | undefined,
     data: { [key: string]: string },
   ) => {
-    const { confirmPassword, role_id, ...newData } = data
+    const { role_id, ...newData } = data
     let newRole
     switch (role_id) {
-      case 'ADMIN':
+      case "ADMIN":
         newRole = ROLE.ADMIN
         break
-      case 'OPERATOR':
+      case "OPERATOR":
         newRole = ROLE.OPERATOR
         break
     }
@@ -495,16 +511,13 @@ const AccountManager = () => {
           params: { ...filterParams, ...sortParams, ...params },
         }),
       )
-      if ((data as any).error) {
-        if (!navigator.onLine) {
-          handleClickVariant('error', 'Account update failed!')
-          return
-        }
-        handleClickVariant('error', 'This email already exists!')
+      if (isRejectedWithValue(data)) {
+        handleClickVariant("error", "Account update failed!")
+        return
       } else {
         handleClickVariant(
-          'success',
-          'Your account has been edited successfully!',
+          "success",
+          "Your account has been edited successfully!",
         )
       }
     } else {
@@ -514,20 +527,21 @@ const AccountManager = () => {
           params: { ...filterParams, ...sortParams, ...params },
         }),
       )
-      if (!(data as any).error) {
-        handleClickVariant(
-          'success',
-          'Your account has been created successfully!',
-        )
-      } else {
+      if (isRejectedWithValue(data)) {
         if (!navigator.onLine) {
-          handleClickVariant('error', 'Account creation failed!')
+          handleClickVariant("error", "Account creation failed!")
           return
         }
-        handleClickVariant('error', 'This email already exists!')
+        handleClickVariant("error", "This email already exists!")
+        return
+      } else {
+        handleClickVariant(
+          "success",
+          "Your account has been created successfully!",
+        )
       }
     }
-    return undefined
+    return
   }
 
   const handleOpenPopupDel = (id?: number, name?: string) => {
@@ -547,63 +561,65 @@ const AccountManager = () => {
         params: { ...filterParams, ...sortParams, ...params },
       }),
     )
-    if ((data as any).error) {
-      handleClickVariant('error', 'Delete user failed!')
+    if (isRejectedWithValue(data)) {
+      handleClickVariant("error", "Delete user failed!")
     } else {
-      handleClickVariant('success', 'Account deleted successfully!')
+      handleClickVariant("success", "Account deleted successfully!")
     }
     setOpenDel({ ...openDel, open: false })
   }
 
   const handleLimit = (event: ChangeEvent<HTMLSelectElement>) => {
-    let filter = ''
+    let filter = ""
     filter = Object.keys(filterParams)
-      .filter((key) => (filterParams as any)[key])
-      .map((item: any) => `${item}=${(filterParams as any)[item]}`)
-      .join('&')
+      .filter((key) => filterParams[key as keyof typeof filterParams])
+      .map((key) => `${key}=${filterParams[key as keyof typeof filterParams]}`)
+      .join("&")
     const { sort } = sortParams
     const param = `${filter}${
-      sort[0] ? `${filter ? '&' : ''}sort=${sort[0]}&sort=${sort[1]}` : ''
+      sort[0] ? `${filter ? "&" : ""}sort=${sort[0]}&sort=${sort[1]}` : ""
     }&limit=${Number(event.target.value)}&offset=0`
     setNewParams(param)
   }
 
   const handlePage = (event: ChangeEvent<unknown>, page: number) => {
     if (!listUser) return
-    let filter = ''
+    let filter = ""
     filter = Object.keys(filterParams)
-      .filter((key) => (filterParams as any)[key])
-      .map((item: any) => `${item}=${(filterParams as any)[item]}`)
-      .join('&')
+      .filter((key) => filterParams[key as keyof typeof filterParams])
+      .map((key) => `${key}=${filterParams[key as keyof typeof filterParams]}`)
+      .join("&")
     const { sort } = sortParams
     const param = `${filter}${
-      sort[0] ? `${filter ? '&' : ''}sort=${sort[0]}&sort=${sort[1]}` : ''
+      sort[0] ? `${filter ? "&" : ""}sort=${sort[0]}&sort=${sort[1]}` : ""
     }&limit=${listUser.limit}&offset=${(page - 1) * Number(limit)}`
     setNewParams(param)
   }
 
-  const columns = [
+  const columns: GridColDef[] = [
     {
-      headerName: 'ID',
-      field: 'id',
+      headerName: "ID",
+      field: "id",
       filterable: false,
       minWidth: 100,
       flex: 1,
     },
     {
-      headerName: 'Name',
-      field: 'name',
+      headerName: "Name",
+      field: "name",
+      type: "string",
       minWidth: 100,
       flex: 2,
       filterOperators: [
         {
-          label: 'Contains',
-          value: 'contains',
-          InputComponent: ({ applyValue, item }: any) => {
+          label: "Contains",
+          value: "contains",
+          getApplyFilterFn: () => null,
+          InputComponent: ({ applyValue, item }: GridFilterInputValueProps) => {
             return (
               <Input
-                sx={{ paddingTop: '16px' }}
-                defaultValue={item.value || ''}
+                sx={{ paddingTop: "16px" }}
+                defaultValue={item.value || ""}
                 onChange={(e) => {
                   if (timeout) clearTimeout(timeout)
                   timeout = setTimeout(() => {
@@ -615,41 +631,42 @@ const AccountManager = () => {
           },
         },
       ],
-      type: 'string',
     },
     {
-      headerName: 'Role',
-      field: 'role_id',
+      headerName: "Role",
+      field: "role_id",
       filterable: false,
       minWidth: 100,
       flex: 1,
-      renderCell: (params: { value: number }) => {
-        let role
+      renderCell: (params: GridRenderCellParams) => {
+        let role = ""
         switch (params.value) {
           case ROLE.ADMIN:
-            role = 'Admin'
+            role = "Admin"
             break
           case ROLE.OPERATOR:
-            role = 'OPERATOR'
+            role = "OPERATOR"
             break
         }
         return <span>{role}</span>
       },
     },
     {
-      headerName: 'Mail',
-      field: 'email',
+      headerName: "Mail",
+      field: "email",
+      type: "string",
       minWidth: 100,
       flex: 2,
       filterOperators: [
         {
-          label: 'Contains',
-          value: 'contains',
-          InputComponent: ({ applyValue, item }: any) => {
+          label: "Contains",
+          value: "contains",
+          getApplyFilterFn: () => null,
+          InputComponent: ({ applyValue, item }: GridFilterInputValueProps) => {
             return (
               <Input
-                sx={{ paddingTop: '16px' }}
-                defaultValue={item.value || ''}
+                sx={{ paddingTop: "16px" }}
+                defaultValue={item.value || ""}
                 onChange={(e) => {
                   if (timeout) clearTimeout(timeout)
                   timeout = setTimeout(() => {
@@ -661,11 +678,10 @@ const AccountManager = () => {
           },
         },
       ],
-      type: 'string',
     },
     {
-      headerName: '',
-      field: 'action',
+      headerName: "",
+      field: "action",
       sortable: false,
       filterable: false,
       minWidth: 100,
@@ -673,35 +689,35 @@ const AccountManager = () => {
       renderCell: (params: { row: UserDTO }) => {
         const { id, role_id, name, email } = params.row
         if (!id || !role_id || !name || !email) return null
-        let role: any
+        let role: string
         switch (role_id) {
           case ROLE.ADMIN:
-            role = 'ADMIN'
+            role = "ADMIN"
             break
           case ROLE.OPERATOR:
-            role = 'OPERATOR'
+            role = "OPERATOR"
             break
         }
 
         return (
           <>
-            <ALink
-              sx={{ color: 'red' }}
+            <IconButton
+              sx={{ color: "red" }}
               onClick={() =>
-                handleEdit({ id, role_id: role, name, email } as UserDTO)
+                handleEdit({ id, role_id: role, name, email } as UserFormDTO)
               }
             >
-              <EditIcon sx={{ color: 'black' }} />
-            </ALink>
+              <EditIcon sx={{ color: "black" }} />
+            </IconButton>
             {!(params.row?.id === user?.id) ? (
-              <ALink
+              <IconButton
                 sx={{ ml: 1.25 }}
                 onClick={() =>
                   handleOpenPopupDel(params.row?.id, params.row?.name)
                 }
               >
-                <DeleteIcon sx={{ color: 'red' }} />
-              </ALink>
+                <DeleteIcon sx={{ color: "red" }} />
+              </IconButton>
             ) : null}
           </>
         )
@@ -713,16 +729,16 @@ const AccountManager = () => {
     <AccountManagerWrapper>
       <Box
         sx={{
-          display: 'flex',
-          justifyContent: 'flex-end',
+          display: "flex",
+          justifyContent: "flex-end",
           gap: 2,
           marginBottom: 2,
         }}
       >
         <Button
           sx={{
-            background: '#000000c4',
-            '&:hover': { backgroundColor: '#00000090' },
+            background: "#000000c4",
+            "&:hover": { backgroundColor: "#00000090" },
           }}
           variant="contained"
           onClick={handleOpenModal}
@@ -731,16 +747,16 @@ const AccountManager = () => {
         </Button>
       </Box>
       <DataGrid
-        sx={{ minHeight: 400, height: 'calc(100vh - 300px)' }}
-        columns={columns as any}
+        sx={{ minHeight: 400, height: "calc(100vh - 300px)" }}
+        columns={columns}
         rows={listUser?.items || []}
-        filterMode={'server'}
-        sortingMode={'server'}
+        filterMode={"server"}
+        sortingMode={"server"}
         hideFooter
         onSortModelChange={handleSort}
         filterModel={model.filter}
         sortModel={model.sort as GridSortItem[]}
-        onFilterModelChange={handleFilter as any}
+        onFilterModelChange={handleFilter}
       />
       {listUser && listUser.items.length > 0 ? (
         <PaginationCustom
@@ -774,33 +790,26 @@ const AccountManager = () => {
 }
 
 const AccountManagerWrapper = styled(Box)(({ theme }) => ({
-  width: '80%',
-  margin: theme.spacing(5, 'auto'),
+  width: "80%",
+  margin: theme.spacing(5, "auto"),
 }))
 
-const ALink = styled('a')({
-  color: '#1677ff',
-  textDecoration: 'none',
-  cursor: 'pointer',
-  userSelect: 'none',
-})
-
-const Modal = styled(Box)(({ theme }) => ({
-  position: 'fixed',
+const Modal = styled(Box)(() => ({
+  position: "fixed",
   top: 0,
   left: 0,
-  width: '100%',
-  height: '100vh',
-  display: 'flex',
-  justifyContent: 'center',
-  alignItems: 'center',
-  backgroundColor: '#cccccc80',
+  width: "100%",
+  height: "100vh",
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  backgroundColor: "#cccccc80",
 }))
 
-const ModalBox = styled(Box)(({ theme }) => ({
+const ModalBox = styled(Box)(() => ({
   width: 800,
-  backgroundColor: 'white',
-  border: '1px solid black',
+  backgroundColor: "white",
+  border: "1px solid black",
 }))
 
 const TitleModal = styled(Box)(({ theme }) => ({
@@ -808,14 +817,14 @@ const TitleModal = styled(Box)(({ theme }) => ({
   margin: theme.spacing(5),
 }))
 
-const BoxData = styled(Box)(({ theme }) => ({
+const BoxData = styled(Box)(() => ({
   marginTop: 35,
 }))
 
 const LabelModal = styled(Box)(({ theme }) => ({
   width: 300,
-  display: 'inline-block',
-  textAlign: 'end',
+  display: "inline-block",
+  textAlign: "end",
   marginRight: theme.spacing(0.5),
 }))
 
@@ -823,8 +832,8 @@ const ButtonModal = styled(Box)(({ theme }) => ({
   button: {
     fontSize: 20,
   },
-  display: 'flex',
-  justifyContent: 'end',
+  display: "flex",
+  justifyContent: "end",
   margin: theme.spacing(5),
 }))
 

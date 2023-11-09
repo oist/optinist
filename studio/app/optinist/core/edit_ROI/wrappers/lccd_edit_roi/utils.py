@@ -30,7 +30,7 @@ def set_nwbfile(edit_roi_data, iscell, function_id, fluorescence=None):
     nwbfile[NWBDATASET.COLUMN] = {
         function_id: {
             "name": "iscell",
-            "discription": "two columns - iscell & probcell",
+            "description": "two columns - iscell & probcell",
             "data": iscell,
         }
     }

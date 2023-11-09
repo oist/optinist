@@ -9,7 +9,7 @@ See the following guidelines before submitting Pull Requests.
   ```
   pre-commit install
   ```
-  - Once installed, it automatically checkes your code style on every commits.
+  - Once installed, it automatically checks your code style on every commits.
 
 ### Python
 - Format all files using [black](https://black.readthedocs.io/en/stable/#).

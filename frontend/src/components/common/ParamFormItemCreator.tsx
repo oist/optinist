@@ -1,18 +1,21 @@
-import React, { useRef } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { AnyAction } from '@reduxjs/toolkit'
-import Switch from '@mui/material/Switch'
-import TextField from '@mui/material/TextField'
-import Box from '@mui/material/Box'
-import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import AccordionDetails from '@mui/material/AccordionDetails'
-import AccordionSummary from '@mui/material/AccordionSummary'
-import Typography from '@mui/material/Typography'
+import { ChangeEvent, FC, memo, useContext, useRef } from "react"
+import { useDispatch, useSelector } from "react-redux"
 
-import { isParamChild } from 'utils/param/ParamUtils'
-import { ParamType } from 'utils/param/ParamType'
-import { RootState } from 'store/store'
-import { Accordion } from 'components/common/Accordion'
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
+import AccordionDetails from "@mui/material/AccordionDetails"
+import AccordionSummary from "@mui/material/AccordionSummary"
+import Box from "@mui/material/Box"
+import Switch from "@mui/material/Switch"
+import TextField from "@mui/material/TextField"
+import Typography from "@mui/material/Typography"
+import { AnyAction } from "@reduxjs/toolkit"
+
+import { Accordion } from "components/common/Accordion"
+import { DialogContext } from "components/Workspace/FlowChart/Dialog/DialogContext"
+import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
+import { RootState } from "store/store"
+import { ParamType } from "utils/param/ParamType"
+import { isParamChild } from "utils/param/ParamUtils"
 
 type ParamSelectorType = (paramKey: string) => (state: RootState) => ParamType
 type ParamValueSelectorType = (path: string) => (state: RootState) => unknown
@@ -25,13 +28,15 @@ export type CreateParamFormItemComponentProps = {
   paramSelector: ParamSelectorType
   paramValueSelector: ParamValueSelectorType
   paramUpdateActionCreator: ParamUpdateActionCreatorType
+  requireConfirm?: boolean
 }
 
 export function createParamFormItemComponent({
   paramSelector,
   paramValueSelector,
   paramUpdateActionCreator,
-}: CreateParamFormItemComponentProps): React.FC<{ paramKey: string }> {
+  requireConfirm,
+}: CreateParamFormItemComponentProps): FC<{ paramKey: string }> {
   function useParamValueUpdate(
     path: string,
   ): [unknown, (newValue: unknown) => AnyAction] {
@@ -41,29 +46,52 @@ export function createParamFormItemComponent({
     }
     return [value, updateParamAction]
   }
-  const ParamItemForString = React.memo<ParamChildItemProps>(({ path }) => {
+
+  const ParamItemForString = memo(function ParamItemForString({
+    path,
+  }: ParamChildItemProps) {
     const dispatch = useDispatch()
     const [value, updateParamAction] = useParamValueUpdate(path)
     const isArray = useRef(Array.isArray(value))
+    const currentWorkflowId = useSelector(selectPipelineLatestUid)
+    const { onOpenClearWorkflowIdDialog } = useContext(DialogContext)
+
     const onChange = (
-      e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
+      e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
     ) => {
       const newValue = e.target.value as string
-      dispatch(updateParamAction(newValue))
+      if (requireConfirm && currentWorkflowId != null) {
+        onOpenClearWorkflowIdDialog({
+          open: true,
+          handleOk: () => {
+            dispatch(updateParamAction(newValue))
+          },
+          handleCancel: () => null,
+        })
+      } else {
+        dispatch(updateParamAction(newValue))
+      }
     }
 
-    const onBlur = (
-      e: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
-    ) => {
+    const splitValue = (value: string) =>
+      value
+        .split(",")
+        .filter(Boolean)
+        .map((e) => Number(e))
+
+    const onBlur = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
       const newValue = e.target.value as string
-      dispatch(
-        updateParamAction(
-          newValue
-            .split(',')
-            .filter(Boolean)
-            .map((e) => Number(e)),
-        ),
-      )
+      if (requireConfirm && currentWorkflowId != null) {
+        onOpenClearWorkflowIdDialog({
+          open: true,
+          handleOk: () => {
+            dispatch(updateParamAction(splitValue(newValue)))
+          },
+          handleCancel: () => null,
+        })
+      } else {
+        dispatch(updateParamAction(splitValue(newValue)))
+      }
     }
     return (
       <TextField
@@ -74,15 +102,31 @@ export function createParamFormItemComponent({
       />
     )
   })
-  const ParamItemForNumber = React.memo<ParamChildItemProps>(({ path }) => {
+
+  const ParamItemForNumber = memo(function ParamItemForNumber({
+    path,
+  }: ParamChildItemProps) {
     const dispatch = useDispatch()
     const [value, updateParamAction] = useParamValueUpdate(path)
-    if (typeof value === 'number') {
-      const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const currentWorkflowId = useSelector(selectPipelineLatestUid)
+    const { onOpenClearWorkflowIdDialog } = useContext(DialogContext)
+
+    if (typeof value === "number") {
+      const onChange = (event: ChangeEvent<HTMLInputElement>) => {
         const newValue =
-          event.target.value === '' ? '' : Number(event.target.value)
-        if (typeof newValue === 'number') {
-          dispatch(updateParamAction(newValue))
+          event.target.value === "" ? "" : Number(event.target.value)
+        if (typeof newValue === "number") {
+          if (requireConfirm && currentWorkflowId != null) {
+            onOpenClearWorkflowIdDialog({
+              open: true,
+              handleOk: () => {
+                dispatch(updateParamAction(newValue))
+              },
+              handleCancel: () => null,
+            })
+          } else {
+            dispatch(updateParamAction(newValue))
+          }
         }
       }
       return (
@@ -99,59 +143,84 @@ export function createParamFormItemComponent({
       return null
     }
   })
-  const ParamItemForBoolean = React.memo<ParamChildItemProps>(({ path }) => {
+
+  const ParamItemForBoolean = memo(function ParamItemForBoolean({
+    path,
+  }: ParamChildItemProps) {
     const dispatch = useDispatch()
     const [value, updateParamAction] = useParamValueUpdate(path)
-    if (typeof value === 'boolean') {
+    const currentWorkflowId = useSelector(selectPipelineLatestUid)
+    const { onOpenClearWorkflowIdDialog } = useContext(DialogContext)
+
+    if (typeof value === "boolean") {
       const onChange = () => {
-        dispatch(updateParamAction(!value))
+        if (requireConfirm && currentWorkflowId != null) {
+          onOpenClearWorkflowIdDialog({
+            open: true,
+            handleOk: () => {
+              dispatch(updateParamAction(!value))
+            },
+            handleCancel: () => null,
+          })
+        } else {
+          dispatch(updateParamAction(!value))
+        }
       }
       return <Switch checked={value} onChange={onChange} />
     } else {
       return null
     }
   })
-  const ParamItemForValueType = React.memo<ParamChildItemProps>(({ path }) => {
+
+  const ParamItemForValueType = memo(function ParamItemForValueType({
+    path,
+  }: ParamChildItemProps) {
     const [value] = useParamValueUpdate(path)
-    if (typeof value === 'number') {
+    if (typeof value === "number") {
       return <ParamItemForNumber path={path} />
-    } else if (typeof value === 'string') {
+    } else if (typeof value === "string") {
       return <ParamItemForString path={path} />
-    } else if (typeof value === 'boolean') {
+    } else if (typeof value === "boolean") {
       return <ParamItemForBoolean path={path} />
     } else {
       return <ParamItemForString path={path} />
     }
   })
-  const ParamChildItem = React.memo<ParamChildItemProps & { name: string }>(
-    ({ path, name }) => {
-      return (
+
+  const ParamChildItem = memo(function ParamChildItem({
+    path,
+    name,
+  }: ParamChildItemWithNameProps) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          marginTop: (theme) => theme.spacing(2),
+          marginBottom: (theme) => theme.spacing(2),
+          alignItems: "center",
+          overflow: "scroll",
+        }}
+      >
         <Box
+          style={{ verticalAlign: "middle" }}
           sx={{
-            display: 'flex',
-            marginTop: (theme) => theme.spacing(2),
-            marginBottom: (theme) => theme.spacing(2),
-            alignItems: 'center',
-            overflow: 'scroll',
+            flexGrow: 1,
+            width: "50%",
           }}
         >
-          <Box
-            style={{ verticalAlign: 'middle' }}
-            sx={{
-              flexGrow: 1,
-              width: '50%',
-            }}
-          >
-            <Typography style={{ overflow: 'scroll' }}>{name}</Typography>
-          </Box>
-          <Box sx={{ width: '50%' }}>
-            <ParamItemForValueType path={path} />
-          </Box>
+          <Typography style={{ overflow: "scroll" }}>{name}</Typography>
         </Box>
-      )
-    },
-  )
-  const ParamItem = React.memo<ParamItemProps>(({ paramKey, param }) => {
+        <Box sx={{ width: "50%" }}>
+          <ParamItemForValueType path={path} />
+        </Box>
+      </Box>
+    )
+  })
+
+  const ParamItem = memo(function ParamItem({
+    paramKey,
+    param,
+  }: ParamItemProps) {
     if (isParamChild(param)) {
       return <ParamChildItem path={param.path} name={paramKey} />
     } else {
@@ -162,8 +231,8 @@ export function createParamFormItemComponent({
           </AccordionSummary>
           <AccordionDetails>
             <div>
-              {Object.entries(param.children).map(([paramKey, param], i) => (
-                <ParamItem param={param} paramKey={paramKey} />
+              {Object.entries(param.children).map(([paramKey, param]) => (
+                <ParamItem key={paramKey} param={param} paramKey={paramKey} />
               ))}
             </div>
           </AccordionDetails>
@@ -171,17 +240,27 @@ export function createParamFormItemComponent({
       )
     }
   })
-  return React.memo<{ paramKey: string }>(({ paramKey }) => {
+
+  return memo(function CreateParamFormItemComponen({
+    paramKey,
+  }: ParamKeyProps) {
     const param = useSelector(paramSelector(paramKey)) // 一階層目
     return <ParamItem paramKey={paramKey} param={param} />
   })
 }
 
-type ParamItemProps = {
+interface ParamKeyProps {
   paramKey: string
+}
+
+interface ParamItemProps extends ParamKeyProps {
   param: ParamType
 }
 
-type ParamChildItemProps = {
+interface ParamChildItemProps {
   path: string
+}
+
+interface ParamChildItemWithNameProps extends ParamChildItemProps {
+  name: string
 }
