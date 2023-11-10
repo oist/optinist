@@ -1,18 +1,14 @@
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
-
-[project]
+[tool.poetry]
 name = "optinist"
 description = "Calcium Imaging Pipeline Tool"
 version = "1.0.1"
+license = "GPL-3.0"
+authors = ["OIST <email@example.com>"]
 readme = "README.md"
-requires-python = "==3.8.*"
-license = {file = "LICENSE"}
-authors = [
-  {name = "OIST"},
-]
-classifiers=[
+documentation = "https://optinist.readthedocs.io"
+repository = "https://github.com/oist/optinist"
+keywords = ["optinist"]
+classifiers = [
   "Intended Audience :: Developers",
   "Intended Audience :: Education",
   "Intended Audience :: Science/Research",
@@ -24,98 +20,99 @@ classifiers=[
   "Operating System :: Microsoft :: Windows",
   "Operating System :: MacOS :: MacOS X",
 ]
-dependencies = [
-  "fastapi==0.99.*",
-  "uvicorn==0.22.*",
-  "numpy>=1.23,<1.26",
-  "aiofiles",
-  "tqdm",
-  "pyyaml",
-  "imageio",
-  "tifffile",
-  "python-multipart",
-  "future",
-  "pynwb==2.2.0",
-  "psutil",
-  "nbstripout",
-  "snakemake>=7.24,<7.31",
-  "jinja2==3.1.*",
-  "httpx",
-  "firebase_admin",
-  "pyrebase4==4.7.1",
-  "pydantic[email]",
-  "pydantic[dotenv]",
-  "python-jose[cryptography]",
-  "alembic==1.9.2",
-  "sqlmodel==0.0.8",
-  "pymysql==1.0.2",
-  "fastapi_pagination==0.12.5",
-  "plotly==5.15.0",
-  "kaleido==0.2.1",
-  "filelock",
-]
+packages = [{ include = "studio" }]
 
-[project.optional-dependencies]
-dev = [
-  "black",
-  "flake8==6.1.*",
-  "isort",
-  "build",
-  "twine",
-  "pre-commit",
+include = [
+  "frontend/build/*",
+  "frontend/build/static/*",
+  "frontend/build/static/css/*",
+  "frontend/build/static/js/*",
+  "frontend/build/static/media/*",
+  "studio/app/optinist/core/nwb/nwb.yaml",
+  "studio/app/common/core/snakemake/snakemake.yaml",
+  "studio/app/*/wrappers/**/*.yaml",
+  "studio/app/Snakefile",
+  "studio/config/*.yaml",
 ]
-doc = [
-  "sphinx==7.1.2",
-  "sphinxcontrib-apidoc",
-  "sphinx_rtd_theme",
-  "sphinx-prompt",
-  "sphinx-pyproject",
-  "sphinx-autodoc-typehints",
-  "sphinx-copybutton==0.5.2",
-  "sphinx-autobuild==2021.3.14",
-  "myst-parser",
-]
-test = [
-  "pytest",
-  "pytest-env",
-]
+exclude = ["studio/tests/*", "conda.env.*"]
 
-[project.urls]
-Documentation = "https://optinist.readthedocs.io"
-Repository = "https://github.com/oist/optinist"
+[tool.poetry.dependencies]
+python = "^3.8.1"
+fastapi = "0.104.*"
+uvicorn = "0.24.*"
+numpy = { version = ">=1.23, <1.27" }
+aiofiles = "*"
+tqdm = "*"
+pyyaml = "*"
+imageio = "*"
+tifffile = "*"
+python-multipart = "*"
+future = "*"
+pynwb = "2.2.0"
+psutil = "*"
+nbstripout = "*"
+snakemake = { version = ">=7.24, <7.31" }
+jinja2 = "3.1.*"
+httpx = "*"
+firebase_admin = "*"
+pyrebase4 = "4.7.1"
+pydantic = { version = "1.10.13", extras = ["email", "dotenv"] }
+python-jose = { version = "*", extras = ["cryptography"] }
+alembic = "1.9.2"
+sqlmodel = "0.0.8"
+pymysql = "1.1.0"
+fastapi_pagination = "0.12.5"
+plotly = "5.18.0"
+kaleido = "0.2.1"
+filelock = "*"
+ruamel-yaml = "^0.18.5"
 
-[project.scripts]
+[tool.poetry.group.dev]
+optional = true
+
+[tool.poetry.group.dev.dependencies]
+black = "*"
+flake8 = "6.1.*"
+isort = "*"
+build = "<0.11.0,>=0.10.0"
+twine = "*"
+pre-commit = "*"
+codespell = "*"
+
+[tool.poetry.group.doc]
+optional = true
+
+[tool.poetry.group.doc.dependencies]
+sphinx = "7.1.2"
+sphinxcontrib-apidoc = "*"
+sphinx-rtd-theme = "*"
+sphinx-prompt = "*"
+sphinx-autodoc-typehints = "*"
+sphinx-copybutton = "0.5.2"
+sphinx-autobuild = "2021.3.14"
+myst-parser = "*"
+
+[tool.poetry.group.test]
+optional = true
+
+[tool.poetry.group.test.dependencies]
+pytest = "*"
+pytest-env = "*"
+
+[tool.poetry.scripts]
 run_optinist = "studio.__main__:main"
 
-[tool.setuptools]
-include-package-data = true
-zip-safe = false
-py-modules = ["Snakefile"]
-
-[tool.setuptools.packages.find]
-exclude = ["studio.tests.*", "conda.env.*"]
-
-[tool.setuptools.package-data]
-frontend = [
-  "build/*",
-  "build/static/*",
-  "build/static/css/*",
-  "build/static/js/*",
-  "build/static/media/*",
-]
-studio = [
-  "app/optinist/core/nwb/nwb.yaml",
-  "app/common/core/snakemake/snakemake.yaml",
-  "app/*/wrappers/**/*.yaml",
-  "app/Snakefile",
-  "config/*.yaml",
-]
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.isort]
 profile = "black"
 
 [tool.pytest.ini_options]
 pythonpath = "."
-env = [
-  "OPTINIST_DIR=studio/test_data",
-]
+env = ["OPTINIST_DIR=studio/test_data"]
+
+[tool.codespell]
+skip = './frontend/build,./frontend/node_modules,./docs/_build,*.lock,*log,*.egg-info'
+ignore-words = '.codespellignore'

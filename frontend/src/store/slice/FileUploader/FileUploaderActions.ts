@@ -1,3 +1,5 @@
+import { AxiosProgressEvent } from "axios"
+
 import { createAsyncThunk, createAction } from "@reduxjs/toolkit"
 
 import { uploadFileApi } from "api/files/Files"
@@ -6,7 +8,7 @@ import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
 
 export const setUploadProgress = createAction<{
   requestId: string
-  progess: number
+  progress: number
   total: number
 }>(`${FILE_UPLOADER_SLICE_NAME}/setUploadProgress`)
 
@@ -30,7 +32,7 @@ export const uploadFile = createAsyncThunk<
         thunkAPI.dispatch(
           setUploadProgress({
             requestId,
-            progess: percent,
+            progress: percent,
             total,
           }),
         )
@@ -54,11 +56,15 @@ function getUploadConfig(
   onUpdateProgressFn: (percent: number, totalSize: number) => void,
 ) {
   return {
-    onUploadProgress: function (progressEvent: ProgressEvent) {
-      const percentCompleted = Math.round(
-        (progressEvent.loaded * 100) / progressEvent.total,
-      )
-      onUpdateProgressFn(percentCompleted, progressEvent.total)
+    onUploadProgress: function (progressEvent: AxiosProgressEvent) {
+      if (!progressEvent.total) {
+        onUpdateProgressFn(0, 100)
+      } else {
+        const percentCompleted = Math.round(
+          (progressEvent.loaded * 100) / progressEvent.total,
+        )
+        onUpdateProgressFn(percentCompleted, progressEvent.total)
+      }
     },
   }
 }

@@ -115,14 +115,14 @@ const ModalComponent = ({
     if (errorLength) {
       return errorLength
     }
-    const datas = values || formData
+    const data = values || formData
     if (!regexPassword.test(value) && value) {
       return "Your password must be at least 6 characters long and must contain at least one letter, number, and special character"
     }
     if (regexIgnoreS.test(value)) {
       return "Allowed special characters (!#$%&()*+,-./@_|)"
     }
-    if (isConfirm && datas.password !== value && value) {
+    if (isConfirm && data.password !== value && value) {
       return "password is not match"
     }
     return ""
@@ -166,21 +166,17 @@ const ModalComponent = ({
     length: number,
   ) => {
     const { value, name } = e.target
-    const newDatas = { ...formData, [name]: value }
-    setFormData(newDatas)
+    const newData = { ...formData, [name]: value }
+    setFormData(newData)
     let error: string =
       name === "email"
         ? validateEmail(value)
         : validateField(name, length, value)
     let errorConfirm = errors.confirmPassword
     if (name.toLowerCase().includes("password")) {
-      error = validatePassword(value, name === "confirmPassword", newDatas)
+      error = validatePassword(value, name === "confirmPassword", newData)
       if (name !== "confirmPassword" && formData.confirmPassword) {
-        errorConfirm = validatePassword(
-          newDatas.confirmPassword,
-          true,
-          newDatas,
-        )
+        errorConfirm = validatePassword(newData.confirmPassword, true, newData)
       }
     }
     setErrors({ ...errors, confirmPassword: errorConfirm, [name]: error })

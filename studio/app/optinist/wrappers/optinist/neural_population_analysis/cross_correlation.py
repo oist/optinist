@@ -22,7 +22,7 @@ def cross_correlation(
 
     neural_data = neural_data.data
 
-    # data shold be time x component matrix
+    # data should be time x component matrix
     if params["transpose"]:
         X = neural_data.transpose()
     else:

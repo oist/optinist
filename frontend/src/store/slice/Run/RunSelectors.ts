@@ -1,5 +1,7 @@
 import { Node } from "reactflow"
 
+import { createSelector } from "reselect"
+
 import {
   AlgorithmNodePostData,
   EdgeDict,
@@ -30,22 +32,6 @@ import { selectPipelineNodeResultStatus } from "store/slice/Pipeline/PipelineSel
 import { NODE_RESULT_STATUS } from "store/slice/Pipeline/PipelineType"
 import { selectSnakemakeParams } from "store/slice/Snakemake/SnakemakeSelectors"
 import { RootState } from "store/store"
-
-export const selectRunPostData = (state: RootState) => {
-  const nwbParam = selectNwbParams(state)
-  const snakemakeParam = selectSnakemakeParams(state)
-  const edgeDictForRun = selectEdgeDictForRun(state)
-  const nodeDictForRun = selectNodeDictForRun(state)
-  const forceRunList = selectForceRunList(state)
-  const runPostData: Omit<RunPostData, "name"> = {
-    nwbParam,
-    snakemakeParam,
-    edgeDict: edgeDictForRun,
-    nodeDict: nodeDictForRun,
-    forceRunList,
-  }
-  return runPostData
-}
 
 /**
  * 前回の結果で、エラーまたはParamに変更があるnodeのリストを返す
@@ -113,3 +99,27 @@ const selectEdgeDictForRun = (state: RootState) => {
   })
   return edgeDict
 }
+
+export const selectRunPostData = createSelector(
+  selectNwbParams,
+  selectSnakemakeParams,
+  selectEdgeDictForRun,
+  selectNodeDictForRun,
+  selectForceRunList,
+  (
+    nwbParams,
+    snakemakeParams,
+    edgeDictForRun,
+    nodeDictForRun,
+    forceRunList,
+  ) => {
+    const runPostData: Omit<RunPostData, "name"> = {
+      nwbParam: nwbParams,
+      snakemakeParam: snakemakeParams,
+      edgeDict: edgeDictForRun,
+      nodeDict: nodeDictForRun,
+      forceRunList,
+    }
+    return runPostData
+  },
+)

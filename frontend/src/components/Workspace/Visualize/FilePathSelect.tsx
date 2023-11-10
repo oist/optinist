@@ -50,35 +50,61 @@ export const FilePathSelect: FC<{
           dataType != null ? inputNodeDataType === dataType : true,
         )
     },
-    // todo 比較関数
+    (prevFilePathInfoList, nextFilePathInfoList) =>
+      prevFilePathInfoList.length === nextFilePathInfoList.length &&
+      prevFilePathInfoList.every(
+        (prevInfo, index) =>
+          prevInfo.filePath === nextFilePathInfoList[index].filePath &&
+          prevInfo.fileType === nextFilePathInfoList[index].fileType &&
+          prevInfo.dataType === nextFilePathInfoList[index].dataType &&
+          prevInfo.nodeName === nextFilePathInfoList[index].nodeName,
+      ),
   )
 
   const latestUid = useSelector(selectPipelineLatestUid)
 
-  const algorithmNodeOutputPathInfoList = useSelector((state: RootState) => {
-    if (latestUid != null) {
-      const runResult = selectPipelineNodeResultSuccessList(state)
-      return runResult.map(({ nodeId, nodeResult }) => {
-        return {
-          nodeId,
-          nodeName: selectNodeLabelById(nodeId)(state),
-          paths: Object.entries(nodeResult.outputPaths)
-            .map(([outputKey, value]) => {
-              return {
-                outputKey,
-                filePath: value.path,
-                type: value.type,
-              }
-            })
-            .filter(({ type }) =>
-              dataType != null ? type === dataType : true,
-            ),
-        }
-      })
-    } else {
-      return []
-    }
-  })
+  const algorithmNodeOutputPathInfoList = useSelector(
+    (state: RootState) => {
+      if (latestUid != null) {
+        const runResult = selectPipelineNodeResultSuccessList(state)
+        return runResult.map(({ nodeId, nodeResult }) => {
+          return {
+            nodeId,
+            nodeName: selectNodeLabelById(nodeId)(state),
+            paths: Object.entries(nodeResult.outputPaths)
+              .map(([outputKey, value]) => {
+                return {
+                  outputKey,
+                  filePath: value.path,
+                  type: value.type,
+                }
+              })
+              .filter(({ type }) =>
+                dataType != null ? type === dataType : true,
+              ),
+          }
+        })
+      } else {
+        return []
+      }
+    },
+    (prevPathInfoList, nextPathInfoList) =>
+      prevPathInfoList.length === nextPathInfoList.length &&
+      prevPathInfoList.every((prevInfo, index) => {
+        const nextInfo = nextPathInfoList[index]
+        return (
+          prevInfo.nodeId === nextInfo.nodeId &&
+          prevInfo.nodeName === nextInfo.nodeName &&
+          prevInfo.paths.length === nextInfo.paths.length &&
+          prevInfo.paths.every(
+            (prevPath, pathIndex) =>
+              prevPath.outputKey === nextInfo.paths[pathIndex].outputKey &&
+              prevPath.filePath === nextInfo.paths[pathIndex].filePath &&
+              prevPath.type === nextInfo.paths[pathIndex].type,
+          )
+        )
+      }),
+  )
 
   const [open, setOpen] = useState(false)
   const handleClose = () => {
@@ -106,7 +132,9 @@ export const FilePathSelect: FC<{
       filePath.forEach((pathElm) => {
         menuItemList.push(
           <MenuItem
-            value={`${pathInfo.nodeId}/${pathElm}`}
+            value={
+              pathInfo.nodeId && pathElm ? `${pathInfo.nodeId}/${pathElm}` : ""
+            }
             onClick={() =>
               onSelectHandle(pathInfo.nodeId, pathElm ?? "", pathInfo.dataType)
             }
@@ -119,7 +147,11 @@ export const FilePathSelect: FC<{
     } else {
       menuItemList.push(
         <MenuItem
-          value={`${pathInfo.nodeId}/${pathInfo.filePath}`}
+          value={
+            pathInfo.nodeId && pathInfo.filePath
+              ? `${pathInfo.nodeId}/${pathInfo.filePath}`
+              : ""
+          }
           onClick={() =>
             onSelectHandle(pathInfo.nodeId, filePath ?? "", pathInfo.dataType)
           }
@@ -130,12 +162,18 @@ export const FilePathSelect: FC<{
       )
     }
   })
-  algorithmNodeOutputPathInfoList.forEach((pathInfo) => {
-    menuItemList.push(<ListSubheader>{pathInfo.nodeName}</ListSubheader>)
+  algorithmNodeOutputPathInfoList.forEach((pathInfo, index) => {
+    menuItemList.push(
+      <ListSubheader key={index}>{pathInfo.nodeName}</ListSubheader>,
+    )
     pathInfo.paths.forEach((outputPath) => {
       menuItemList.push(
         <MenuItem
-          value={`${pathInfo.nodeId}/${outputPath.filePath}`}
+          value={
+            pathInfo.nodeId && outputPath.filePath
+              ? `${pathInfo.nodeId}/${outputPath.filePath}`
+              : ""
+          }
           onClick={() =>
             onSelectHandle(
               pathInfo.nodeId,
@@ -156,7 +194,11 @@ export const FilePathSelect: FC<{
     <FormControl style={{ minWidth: 150, maxWidth: 220 }} variant="standard">
       <InputLabel>{label ? label : "Select Item"}</InputLabel>
       <Select
-        value={`${selectedNodeId}/${selectedFilePath}`}
+        value={
+          selectedNodeId && selectedFilePath
+            ? `${selectedNodeId}/${selectedFilePath}`
+            : ""
+        }
         open={open}
         onClose={handleClose}
         onOpen={handleOpen}

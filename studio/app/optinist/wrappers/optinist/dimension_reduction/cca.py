@@ -21,7 +21,7 @@ def CCA(
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data
 
-    # data shold be time x component matrix
+    # data should be time x component matrix
     if params["transpose_x"]:
         X = neural_data.transpose()
     else:

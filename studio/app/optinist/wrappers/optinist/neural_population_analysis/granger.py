@@ -24,7 +24,7 @@ def Granger(
 
     neural_data = neural_data.data
 
-    # data shold be time x component matrix
+    # data should be time x component matrix
     if params["transpose"]:
         X = neural_data.transpose()
     else:
@@ -119,7 +119,7 @@ def Granger(
         # The Null hypothesis for grangercausalitytests is
         # that the time series in the second column1,
         # does NOT Granger cause the time series in the first column0
-        # column 1 -> colum 0
+        # column 1 -> column 0
         tp = grangercausalitytests(
             tX[:, [comb[i][0], comb[i][1]]],
             params["Granger_maxlag"],
