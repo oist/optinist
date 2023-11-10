@@ -7,7 +7,9 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import { styled, Typography } from "@mui/material"
 import IconButton from "@mui/material/IconButton"
-import { TreeView, TreeItem, treeItemClasses } from "@mui/x-tree-view"
+import { treeItemClasses } from "@mui/x-tree-view"
+import { TreeItem } from "@mui/x-tree-view/TreeItem"
+import { TreeView } from "@mui/x-tree-view/TreeView"
 
 import {
   DND_ITEM_TYPE_SET,
