@@ -93,9 +93,10 @@ export function createParamFormItemComponent({
         dispatch(updateParamAction(splitValue(newValue)))
       }
     }
+    const valueField = Array.isArray(value) ? value[0] : (value as string) || ""
     return (
       <TextField
-        value={value}
+        value={valueField === undefined ? "" : valueField}
         onChange={onChange}
         multiline
         onBlur={isArray ? onBlur : undefined}
