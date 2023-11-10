@@ -1,3 +1,5 @@
+import { AxiosProgressEvent } from "axios"
+
 import { BASE_URL } from "const/API"
 import axios from "utils/axios"
 
@@ -46,7 +48,7 @@ export async function uploadFileApi(
   workspaceId: number,
   fileName: string,
   config: {
-    onUploadProgress: (progressEvent: ProgressEvent) => void
+    onUploadProgress: (progressEvent: AxiosProgressEvent) => void
   },
   formData: FormData,
 ): Promise<{ file_path: string }> {
