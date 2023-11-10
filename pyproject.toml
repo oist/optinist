@@ -38,9 +38,9 @@ exclude = ["studio/tests/*", "conda.env.*"]
 
 [tool.poetry.dependencies]
 python = "^3.8.1"
-fastapi = "0.99.*"
-uvicorn = "0.22.*"
-numpy = { version = ">=1.23, <1.26" }
+fastapi = "0.104.*"
+uvicorn = "0.24.*"
+numpy = { version = ">=1.23, <1.27" }
 aiofiles = "*"
 tqdm = "*"
 pyyaml = "*"
@@ -60,9 +60,9 @@ pydantic = { version = "1.10.13", extras = ["email", "dotenv"] }
 python-jose = { version = "*", extras = ["cryptography"] }
 alembic = "1.9.2"
 sqlmodel = "0.0.8"
-pymysql = "1.0.2"
+pymysql = "1.1.0"
 fastapi_pagination = "0.12.5"
-plotly = "5.15.0"
+plotly = "5.18.0"
 kaleido = "0.2.1"
 filelock = "*"
 ruamel-yaml = "^0.18.5"
