@@ -17,7 +17,7 @@ from studio.app.dir_path import DIRPATH
 from studio.app.optinist.core.edit_ROI.utils import create_ellipse_mask
 from studio.app.optinist.core.edit_ROI.wrappers import edit_roi_wrapper_dict
 from studio.app.optinist.core.nwb.nwb_creater import overwrite_nwb
-from studio.app.optinist.dataclass import *
+from studio.app.optinist.dataclass import EditRoiData, IscellData, RoiData
 from studio.app.optinist.schemas.roi import RoiStatus
 
 
@@ -138,7 +138,7 @@ class EditROI:
         self.__update_pickle_for_roi_edition(self.pickle_file_path, info)
         self.__save_json(info)
 
-    def delele(self, ids: List[int]):
+    def delete(self, ids: List[int]):
         self.iscell[ids] = CellType.TEMP_DELETE
 
         for id in ids:

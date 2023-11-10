@@ -5,7 +5,13 @@ from studio.app.optinist.core.edit_ROI.wrappers.suite2p_edit_roi.utils import (
     masks_and_traces,
     set_nwbfile,
 )
-from studio.app.optinist.dataclass import *
+from studio.app.optinist.dataclass import (
+    EditRoiData,
+    FluoData,
+    IscellData,
+    RoiData,
+    Suite2pData,
+)
 from studio.app.optinist.schemas.roi import RoiPos
 
 

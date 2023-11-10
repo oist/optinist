@@ -1,7 +1,7 @@
 import numpy as np
 
 from studio.app.optinist.core.edit_ROI.wrappers.lccd_edit_roi.utils import set_nwbfile
-from studio.app.optinist.dataclass import *
+from studio.app.optinist.dataclass import EditRoiData, FluoData, IscellData, RoiData
 
 
 def commit_edit(

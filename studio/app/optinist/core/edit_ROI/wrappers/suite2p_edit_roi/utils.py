@@ -4,7 +4,7 @@ import numpy as np
 from scipy import stats
 
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
-from studio.app.optinist.dataclass import *
+from studio.app.optinist.dataclass import EditRoiData
 
 
 def masks_and_traces(ops, stat_manual, stat_orig):

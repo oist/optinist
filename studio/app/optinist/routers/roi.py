@@ -1,5 +1,3 @@
-import os
-
 from fastapi import APIRouter, Depends
 
 from studio.app.common.core.workspace.workspace_dependencies import is_workspace_owner
@@ -44,7 +42,7 @@ async def merge_roi(filepath: str, roi_list: RoiList):
     dependencies=[Depends(is_workspace_owner)],
 )
 async def delete_roi(filepath: str, roi_list: RoiList):
-    EditROI(file_path=filepath).delele(roi_list.ids)
+    EditROI(file_path=filepath).delete(roi_list.ids)
     return True
 
 
