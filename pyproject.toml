@@ -60,7 +60,7 @@ pydantic = { version = "1.10.13", extras = ["email", "dotenv"] }
 python-jose = { version = "*", extras = ["cryptography"] }
 alembic = "1.9.2"
 sqlmodel = "0.0.8"
-pymysql = "1.0.2"
+pymysql = "1.1.0"
 fastapi_pagination = "0.12.5"
 plotly = "5.15.0"
 kaleido = "0.2.1"
