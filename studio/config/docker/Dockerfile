@@ -19,11 +19,15 @@ RUN mkdir -p /root/miniconda3 && \
 ENV PATH $PATH:/root/miniconda3/bin
 
 COPY frontend/build /app/frontend/build
-COPY studio /app/studio
-COPY main.py pyproject.toml ./
 
 RUN pip3 install --no-cache-dir --upgrade pip && \
-    pip3 install --no-cache-dir -e .
+    pip3 install poetry
+
+COPY main.py pyproject.toml poetry.lock ./
+
+RUN poetry install --no-root
+
+COPY studio /app/studio
 
 RUN echo 'alias ll="ls -la"' >> ~/.bashrc
 RUN echo 'set nu ic hls nowrap ts=4 sw=4 | syntax on' >> ~/.vimrc
