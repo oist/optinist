@@ -6,8 +6,8 @@ RUN apt-get --allow-releaseinfo-change update && \
     apt-get install --no-install-recommends -y git gcc g++ libgl1 && \
     apt-get purge git -y && apt-get autoremove -y && apt-get clean
 
-COPY pyproject.toml .
-RUN pip3 install --no-cache-dir --upgrade pip && \
-    pip3 install --no-cache-dir -e '.[test]'
 
-ENTRYPOINT ["python3", "-m", "pytest", "-s", "."]
+RUN pip3 install --no-cache-dir --upgrade pip && \
+    pip3 install poetry
+
+COPY pyproject.toml poetry.lock ./

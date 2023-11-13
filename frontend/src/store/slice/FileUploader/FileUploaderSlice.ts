@@ -23,8 +23,8 @@ export const fileUploaderSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(setUploadProgress, (state, action) => {
-        const { progess, requestId } = action.payload
-        state[requestId].uploadingProgress = progess
+        const { progress, requestId } = action.payload
+        state[requestId].uploadingProgress = progress
       })
       .addCase(uploadFile.pending, (state, action) => {
         const { fileName, requestId } = action.meta.arg

@@ -12,7 +12,8 @@ import DialogContent from "@mui/material/DialogContent"
 import DialogTitle from "@mui/material/DialogTitle"
 import LinearProgress from "@mui/material/LinearProgress"
 import { useTheme } from "@mui/material/styles"
-import { TreeView, TreeItem } from "@mui/x-tree-view"
+import { TreeItem } from "@mui/x-tree-view/TreeItem"
+import { TreeView } from "@mui/x-tree-view/TreeView"
 
 import { FileSelect } from "components/Workspace/FlowChart/FlowChartNode/FileSelect"
 import { toHandleId } from "components/Workspace/FlowChart/FlowChartNode/FlowChartUtils"
@@ -155,8 +156,12 @@ const FileTreeView = memo(function FileTreeView({ nodeId }: NodeIdProps) {
     <div>
       {isLoading && <LinearProgress />}
       <TreeView>
-        {tree?.map((node) => (
-          <TreeNode key={nodeId} node={node} nodeId={nodeId} />
+        {tree?.map((node, i) => (
+          <TreeNode
+            key={`hdf5tree-${nodeId}-${i}`}
+            node={node}
+            nodeId={nodeId}
+          />
         ))}
       </TreeView>
     </div>
@@ -212,6 +217,7 @@ function useHDF5Tree(
     if (workspaceId && !isLoading && filePath) {
       dispatch(getHDF5Tree({ path: filePath, workspaceId }))
     }
-  }, [workspaceId, isLoading, filePath, dispatch])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workspaceId, filePath])
   return [tree, isLoading]
 }

@@ -41,7 +41,7 @@ OptiNiSt also supports reproducibility of scientific research, standardization o
 
 ### Postprocessing
 - [x] Basic Neural Analysis(Event Trigger Average...)
-- [x] Dimenstion Reduction(PCA...)
+- [x] Dimension Reduction(PCA...)
 - [x] Neural Decoding(LDA...)
 - [x] Neural Population Analysis(Correlation...)
 
@@ -85,7 +85,7 @@ https://optinist.readthedocs.io/en/latest/
 
 ## Using GUI
 ### Workflow
-- OptiNiSt allows you to make your analysis pipelines by graph style using nodes and edges on GUI. Parameters for each analysis are easily changeable. 
+- OptiNiSt allows you to make your analysis pipelines by graph style using nodes and edges on GUI. Parameters for each analysis are easily changeable.
 <p align="center">
   <img width="400px" src="docs/_static/workflow/whole.png" alt="workflow" />
 </p>
@@ -99,7 +99,7 @@ https://optinist.readthedocs.io/en/latest/
 </p>
 
 ### Record
-- OptiNiSt supports you in recording and reproducing workflow pipelines in an organized manner. 
+- OptiNiSt supports you in recording and reproducing workflow pipelines in an organized manner.
 <p align="center">
   <img width="400px" src="docs/_static/record/whole.png" alt="record" />
 </p>
@@ -118,8 +118,8 @@ Kenji Doya, Yukako Yamane [OIST Neural Computation Unit](https://groups.oist.jp/
 
 
 ## References
-[[Suite2p]](https://github.com/MouseLand/suite2p) Marius Pachitariu, Carsen Stringer, Mario Dipoppa, Sylvia Schröder, L. Federico Rossi, Henry Dalgleish, Matteo Carandini, Kenneth D. Harris. "Suite2p: beyond 10,000 neurons with standard two-photon microscopy". 2017  
-[[CaImAn]](https://github.com/flatironinstitute/CaImAn) Andrea Giovannucci Is a corresponding author, Johannes Friedrich, Pat Gunn, Jérémie Kalfon, Brandon L Brown, Sue Ann Koay, Jiannis Taxidis, Farzaneh Najafi, Jeffrey L Gauthier, Pengcheng Zhou, Baljit S Khakh, David W Tank, Dmitri B Chklovskii, Eftychios A Pnevmatikakis. "CaImAn: An open source tool for scalable Calcium Imaging data Analysis". 2019  
+[[Suite2p]](https://github.com/MouseLand/suite2p) Marius Pachitariu, Carsen Stringer, Mario Dipoppa, Sylvia Schröder, L. Federico Rossi, Henry Dalgleish, Matteo Carandini, Kenneth D. Harris. "Suite2p: beyond 10,000 neurons with standard two-photon microscopy". 2017
+[[CaImAn]](https://github.com/flatironinstitute/CaImAn) Andrea Giovannucci Is a corresponding author, Johannes Friedrich, Pat Gunn, Jérémie Kalfon, Brandon L Brown, Sue Ann Koay, Jiannis Taxidis, Farzaneh Najafi, Jeffrey L Gauthier, Pengcheng Zhou, Baljit S Khakh, David W Tank, Dmitri B Chklovskii, Eftychios A Pnevmatikakis. "CaImAn: An open source tool for scalable Calcium Imaging data Analysis". 2019
 [[LCCD]](https://github.com/magnetizedCell/lccd-python) Tsubasa Ito, Keisuke Ota, Kanako Ueno, Yasuhiro Oisi, Chie Matsubara, Kenta Kobayashi, Masamichi Ohkura, Junichi Nakai, Masanori Murayama, Toru Aonishi, "Low computational-cost cell detection method for calcium imaging data", 2022
 [[PyNWB]](https://github.com/NeurodataWithoutBorders/pynwb) Oliver Rübel, Andrew Tritt, Ryan Ly, Benjamin K. Dichter, Satrajit Ghosh, Lawrence Niu, Ivan Soltesz, Karel Svoboda, Loren Frank, Kristofer E. Bouchard, "The Neurodata Without Borders ecosystem for neurophysiological data science", bioRxiv 2021.03.13.435173, March 15, 2021
 

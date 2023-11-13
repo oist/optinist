@@ -189,7 +189,7 @@ The plotting box (ID:0) shows the background image and detected cells.
 </p>
 
 
-You can click the <strong>Add ROI</strong> button then drag drop, resize the white cirle to change the new ROI position and size.
+You can click the <strong>Add ROI</strong> button then drag drop, resize the white circle to change the new ROI position and size.
 Press <strong>OK</strong> or <strong>Cancel</strong> button to Add or No
 
 <p align="center">
@@ -199,7 +199,7 @@ Press <strong>OK</strong> or <strong>Cancel</strong> button to Add or No
 Or click on each cell ROI to delete ROI or merge ROIs (when you select 2 or more ROI cells)
 Press <strong>Merge ROI</strong> or <strong>Delete ROI</strong> or <strong>Cancel</strong> button to Merge or Delete or No.
 
-NWB file is overwirtten with the ROI edit information.
+NWB file is overwritten with the ROI edit information.
 
 ```{eval-rst}
 .. note::

@@ -225,7 +225,7 @@ img { width: 50%; }
 
 #### Customize plot metadata
 
-You can set plot title and axis labels to some outpus.
+You can set plot title and axis labels to some output.
 
 ![](../_static/add_algorithm/heatmap_with_metadata.png)
 

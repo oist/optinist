@@ -400,7 +400,7 @@ const Workspaces = () => {
 
   const handleOkNew = async () => {
     if (!newWorkspace) {
-      setError("Workspace Name cann't empty")
+      setError("Workspace Name can't empty")
       return
     }
     const data = await dispatch(postWorkspace({ name: newWorkspace }))
@@ -461,7 +461,7 @@ const Workspaces = () => {
 
   const processRowUpdate = async (newRow: ItemsWorkspace) => {
     if (!newRow.name) {
-      handleClickVariant("error", "Workspace Name cann't empty")
+      handleClickVariant("error", "Workspace Name can't empty")
       return { ...newRow, name: initName }
     }
     if (newRow.name === initName) return newRow
