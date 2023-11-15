@@ -1,4 +1,7 @@
 ## Pull Request
+- GitHub Pull Request page
+  - [https://github.com/oist/optinist/pulls](https://github.com/oist/optinist/pulls)
+
 ### Pre Commit
 - run following command before your first commit
   ```
