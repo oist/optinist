@@ -1,6 +1,7 @@
 ## Architecture
 ### Frontend
 - language: TypeScript
+- environment: Node.js (v20)
 - framework: React (v18)
 - middleware: Redux, Redux Toolkit, React Router
 
@@ -27,7 +28,7 @@ Following is the summary of directory structure.
 - api, components, store/slice directories are separated by its domain.
 
 ### Backend
-- language: Python
+- language: Python (v3.8)
 - framework: FastAPI
 - handle workflow by snakemake.
 
@@ -39,7 +40,7 @@ Following is the summary of directory structure.
     - `Snakefile`: File read by snakemake. It defines how to run workflow by language like Python.
     - common: common modules(not for specific domain)
       - core: define core functions.
-      - dataclass: define [dataclasses](#dataclass) that are passed between nodes or used as visualize outputs.
+      - dataclass: define dataclasses that are passed between nodes or used as visualize outputs.
       - db: database general configuration.
       - models: database models.
       - routers: define fastapi routers.
@@ -47,6 +48,11 @@ Following is the summary of directory structure.
       - wrappers: functions for algorithm nodes.
     - optinist: modules specific to calcium imaging data processing domain. It has same structure as common.
   - config: configuration files.
+    - `standalone-logging.yaml`: logging config for standalone mode. In standalone mode, logs are sent to streams.
+    - `logging.yaml`: logging config for multi-user mode. In multi-user mode, logs are sent to file (in `logs` dir). log file rotation settings are included.
+      - you can manage log configurations by editing these files.
+    - auth: put Firebase authentication secret files.
+    - docker: backend Dockerfiles for each environment.
   - test_data: test data for unit tests.
   - tests: unit tests.
   - `__main__.py`: entry point of backend in production.
