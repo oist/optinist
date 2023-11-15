@@ -13,6 +13,10 @@ Please follow instructions below.
 
 <br />
 
+## Open Terminal
+
+<img width="674" alt="Terminal photo" src="https://github.com/josh-oloro/optinist/assets/72240796/651fcb9d-8ade-4be8-bda2-a53ff83ef083">
+
 ## 1. Make backend environment
 
 ### Install Tools
@@ -29,6 +33,10 @@ Please follow instructions below.
 - **CAUTION**
   - On mac, you must use the x86_64 version.
     - The arm64 version has some modules that cannot be installed by conda install or pip install.
+      
+  - For new Mac Silicon users, check if Anaconda and Python package are in Intel using Activity Monitor (while the program is running).
+    <img width="924" alt="Activity monitor check" src="https://github.com/josh-oloro/optinist/assets/72240796/ac0ea102-8478-4d97-ab1e-a429cd11052e">
+
 
 ### Create anaconda environment
 
@@ -85,6 +93,21 @@ INFO:   Application startup complete.
 ```
 - Launch browser, and go to http://localhost:8000
 
-It opens correctly!
+**It opens correctly!**
+
+<img width="1726" alt="Sample photo of OptiNiSt" src="https://github.com/josh-oloro/optinist/assets/72240796/fc686064-b6b7-491d-b8b8-b80ab43af31d">
+
 
 Done!
+
+## When restarting
+
+Open Terminal
+
+```
+run_optinist
+```
+<img width="906" alt="Restart prompt OptiNiSt" src="https://github.com/josh-oloro/optinist/assets/72240796/b5a1d1ee-7921-416c-afd0-4f5f087cf107">
+
+
+
