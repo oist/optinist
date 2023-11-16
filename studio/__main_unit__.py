@@ -92,6 +92,11 @@ async def startup_event():
     logging.info('"Studio" application startup complete.')
 
 
+@app.get("/is_standalone", response_model=bool)
+async def is_standalone():
+    return MODE.IS_STANDALONE
+
+
 @app.get("/")
 async def root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
