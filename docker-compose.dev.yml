@@ -8,12 +8,14 @@ services:
     working_dir: /app
     volumes:
       - .:/app
+      - ../optinist-docker-volumes/studio_data/:/app/studio_data
     ports:
       - "127.0.0.1:8000:8000"
-    command: bash -c "poetry install --no-root --with dev && poetry run python main.py --reload --host 0.0.0.0 --port 8000"
+    command: poetry run python main.py --reload --host 0.0.0.0 --port 8000
     environment:
       PYTHONPATH: /app/
       TZ: Asia/Tokyo
+      OPTINIST_DIR: /app/studio_data
 
   studio-dev-fe:
     image: node:20.8.0-alpine3.18
