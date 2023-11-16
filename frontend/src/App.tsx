@@ -1,4 +1,5 @@
-import { FC } from "react"
+import { FC, useEffect } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom"
 
 import { SnackbarProvider, SnackbarKey, useSnackbar } from "notistack"
@@ -7,7 +8,6 @@ import Close from "@mui/icons-material/Close"
 import IconButton from "@mui/material/IconButton"
 
 import Layout from "components/Layout"
-import { IS_STANDALONE } from "const/Mode"
 import Account from "pages/Account"
 import AccountDelete from "pages/AccountDelete"
 import AccountManager from "pages/AccountManager"
@@ -16,8 +16,16 @@ import Login from "pages/Login"
 import ResetPassword from "pages/ResetPassword"
 import Workspaces from "pages/Workspace"
 import Workspace from "pages/Workspace/Workspace"
+import { getModeStandalone } from "store/slice/Standalone/StandaloneActions"
+import { selectModeStandalone } from "store/slice/Standalone/StandaloneSeclector"
+import { AppDispatch } from "store/store"
 
 const App: FC = () => {
+  const dispatch = useDispatch<AppDispatch>()
+  const isStandalone = useSelector(selectModeStandalone)
+  useEffect(() => {
+    dispatch(getModeStandalone())
+  }, [])
   return (
     <SnackbarProvider
       maxSnack={5}
@@ -27,7 +35,7 @@ const App: FC = () => {
     >
       <BrowserRouter>
         <Layout>
-          {IS_STANDALONE ? (
+          {isStandalone ? (
             <Routes>
               <Route path="/" element={<Workspace />} />
               <Route path="*" element={<Navigate replace to="/" />} />

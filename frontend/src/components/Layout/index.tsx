@@ -9,7 +9,7 @@ import Loading from "components/common/Loading"
 import Header from "components/Layout/Header"
 import LeftMenu from "components/Layout/LeftMenu"
 import { APP_BAR_HEIGHT } from "const/Layout"
-import { IS_STANDALONE } from "const/Mode"
+import { selectModeStandalone } from "store/slice/Standalone/StandaloneSeclector"
 import { getMe } from "store/slice/User/UserActions"
 import { selectCurrentUser } from "store/slice/User/UserSelector"
 import { AppDispatch } from "store/store"
@@ -22,13 +22,16 @@ const Layout = ({ children }: { children?: ReactNode }) => {
   const location = useLocation()
   const navigate = useNavigate()
   const dispatch = useDispatch<AppDispatch>()
+  const isStandalone = useSelector(selectModeStandalone)
+
+  console.log("isStandalone", isStandalone)
 
   const [loading, setLoadingAuth] = useState(
-    !IS_STANDALONE && authRequiredPathRegex.test(location.pathname),
+    !isStandalone && authRequiredPathRegex.test(location.pathname),
   )
 
   useEffect(() => {
-    !IS_STANDALONE &&
+    !isStandalone &&
       authRequiredPathRegex.test(location.pathname) &&
       checkAuth()
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -57,7 +60,7 @@ const Layout = ({ children }: { children?: ReactNode }) => {
 
   if (loading) return <Loading />
 
-  return IS_STANDALONE || authRequiredPathRegex.test(location.pathname) ? (
+  return isStandalone || authRequiredPathRegex.test(location.pathname) ? (
     <AuthedLayout>{children}</AuthedLayout>
   ) : (
     <UnauthedLayout>{children}</UnauthedLayout>

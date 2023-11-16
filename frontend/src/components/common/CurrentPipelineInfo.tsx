@@ -3,11 +3,11 @@ import { useSelector } from "react-redux"
 
 import { Typography, Grid, Popover } from "@mui/material"
 
-import { IS_STANDALONE } from "const/Mode"
 import {
   selectCurrentPipelineName,
   selectPipelineLatestUid,
 } from "store/slice/Pipeline/PipelineSelectors"
+import { selectModeStandalone } from "store/slice/Standalone/StandaloneSeclector"
 import {
   selectCurrentWorkspaceId,
   selectCurrentWorkspaceName,
@@ -18,12 +18,13 @@ export const CurrentPipelineInfo: FC = () => {
   const workspaceName = useSelector(selectCurrentWorkspaceName)
   const workflowId = useSelector(selectPipelineLatestUid)
   const workflowName = useSelector(selectCurrentPipelineName)
+  const isStandalone = useSelector(selectModeStandalone)
 
   return (
     <>
       {workflowId && (
         <>
-          {!IS_STANDALONE && (
+          {!isStandalone && (
             <>
               <Typography variant="body2" color="textSecondary">
                 WORKSPACE

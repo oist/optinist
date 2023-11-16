@@ -23,6 +23,7 @@ import {
   experimentsReducer,
   workspaceReducer,
   userReducer,
+  modeStandalone,
 } from "store/slice"
 
 export const rootReducer = combineReducers({
@@ -43,6 +44,7 @@ export const rootReducer = combineReducers({
   experiments: experimentsReducer,
   workspace: workspaceReducer,
   user: userReducer,
+  mode: modeStandalone,
 })
 
 export const store = configureStore({
