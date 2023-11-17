@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit"
 import { getModeStandalone } from "store/slice/Standalone/StandaloneActions"
 
 const initialState = {
-  mode: true,
+  mode: false,
   loading: false,
 }
 
