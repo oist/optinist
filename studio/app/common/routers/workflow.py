@@ -1,4 +1,5 @@
 import os
+import shutil
 from dataclasses import asdict
 
 import yaml
@@ -87,3 +88,21 @@ async def import_workflow_config(file: UploadFile = File(...)):
         return WorkflowConfig(**contents)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Parsing yaml failed: {str(e)}")
+    
+@router.get(
+    "/sample_data",
+    dependencies=[Depends(is_workspace_available)],
+)
+async def copy_sample_data():
+    sample_data_dir = "sample_data"
+    sample_files = os.listdir(sample_data_dir)
+    for file_name in sample_files:
+        source_file = os.path.join(sample_data_dir, file_name)
+        destination_file = os.path.join(DIRPATH.INPUT_DIR, file_name)
+        if not os.path.isfile(destination_file):
+            try:
+                shutil.copy(source_file, destination_file)
+            except Exception as e:
+                raise HTTPException(status_code=500, detail=f"Failed to copy {file_name}: {e}")
+    all_files_copied = all(os.path.isfile(os.path.join(DIRPATH.INPUT_DIR, f)) for f in sample_files)
+    return all_files_copied

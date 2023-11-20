@@ -1,3 +1,5 @@
+import { AxiosProgressEvent } from "axios"
+
 import { ExperimentDTO } from "api/experiments/Experiments"
 import { EdgeDict, NodeDict } from "api/run/Run"
 import { BASE_URL } from "const/API"
@@ -43,5 +45,10 @@ export async function importWorkflowConfigApi(
   formData: FormData,
 ): Promise<WorkflowConfigDTO> {
   const response = await axios.post(`${BASE_URL}/workflow/import`, formData)
+  return response.data
+}
+
+export async function importSampleDataApi(): Promise<boolean> {
+  const response = await axios.get(`${BASE_URL}/sample_data`)
   return response.data
 }
