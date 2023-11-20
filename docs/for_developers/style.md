@@ -1,16 +1,4 @@
-(Contributing)=
-# Contributing to OptiNiSt
-OptiNiSt welcomes your contributions.
-See the following guidelines before submitting Pull Requests.
-
-## Coding Style
-### Pre Commit
-- run following command before your first commit
-  ```
-  pre-commit install
-  ```
-  - Once installed, it automatically checks your code style on every commits.
-
+## Style Guides
 ### Python
 - Format all files using [black](https://black.readthedocs.io/en/stable/#).
 - Check the code for problems using [flake8](https://pypi.org/project/flake8/).
@@ -19,7 +7,14 @@ See the following guidelines before submitting Pull Requests.
 - Sort your import using [isort](https://github.com/PyCQA/isort).
 - These guides are checked by pre-commits, github workflow on submitting Pull Requests.
 
-#### VSCode Settings
+### TypeScript
+- Format all files using [prettier](https://prettier.io/).
+  - Rules are defined in `frontend/.prettierrc.json`.
+- Check the code for problems using [eslint](https://eslint.org/).
+  - Rules are defined in `frontend/.eslintrc.json`.
+
+### Editor support
+#### VSCode
 - If you are using VSCode, you can use features (like format/lint on save) by installing and activating the extensions in `.vscode/extensions.json`.
 - For these extensions, we provide example settings in `.vscode/settings.example.json`
   - To use this,
