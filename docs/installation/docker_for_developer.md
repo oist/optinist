@@ -32,12 +32,6 @@ docker compose -f docker-compose.dev.yml up
 
 - add `-d` option to make container run in background
 
-<!--
-## 2. Create virtualenv
-
-Under maintenance...
--->
-
 ## 2. Access to backend
 
 - Launch browser, and go to http://localhost:3000
@@ -51,4 +45,4 @@ Under maintenance...
 
 Done!
 
-If you will make PRs, please see the [](Contributing) section.
+If you will make PRs, please see the [](for_developers) section.
