@@ -24,8 +24,6 @@ const Layout = ({ children }: { children?: ReactNode }) => {
   const dispatch = useDispatch<AppDispatch>()
   const isStandalone = useSelector(selectModeStandalone)
 
-  console.log("isStandalone", isStandalone)
-
   const [loading, setLoadingAuth] = useState(
     !isStandalone && authRequiredPathRegex.test(location.pathname),
   )

@@ -25,6 +25,7 @@ const App: FC = () => {
   const isStandalone = useSelector(selectModeStandalone)
   useEffect(() => {
     dispatch(getModeStandalone())
+    //eslint-disable-next-line
   }, [])
   return (
     <SnackbarProvider
