@@ -9,6 +9,7 @@ import {
 import { convertToTreeNodeType } from "store/slice/FilesTree/FilesTreeUtils"
 import { uploadFile } from "store/slice/FileUploader/FileUploaderActions"
 import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
+import { importSampleData } from "store/slice/Workflow/WorkflowActions"
 
 export const initialState: FilesTree = {}
 export const filesTreeSlice = createSlice({
@@ -86,6 +87,12 @@ export const filesTreeSlice = createSlice({
         } else {
           state[FILE_TREE_TYPE_SET.ALL].isLatest = false
         }
+      })
+      .addCase(importSampleData.fulfilled, (state) => {
+        state[FILE_TREE_TYPE_SET.IMAGE].isLatest = false
+        state[FILE_TREE_TYPE_SET.CSV].isLatest = false
+        state[FILE_TREE_TYPE_SET.HDF5].isLatest = false
+        state[FILE_TREE_TYPE_SET.ALL].isLatest = false
       })
   },
 })

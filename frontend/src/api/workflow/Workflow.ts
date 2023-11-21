@@ -1,5 +1,3 @@
-import { AxiosProgressEvent } from "axios"
-
 import { ExperimentDTO } from "api/experiments/Experiments"
 import { EdgeDict, NodeDict } from "api/run/Run"
 import { BASE_URL } from "const/API"

@@ -93,21 +93,23 @@ async def import_workflow_config(file: UploadFile = File(...)):
 @router.get(
     "/sample_data",
     dependencies=[Depends(is_workspace_available)],
-) 
-async def copy_sample_data():
-    sample_data_dir = "sample_data"
-    sample_files = os.listdir(sample_data_dir)
-    for file_name in sample_files:
-        source_file = os.path.join(sample_data_dir, file_name)
-        destination_file = os.path.join(DIRPATH.INPUT_DIR, file_name)
-        if not os.path.isfile(destination_file):
-            try:
-                shutil.copy(source_file, destination_file)
-            except Exception as e:
-                raise HTTPException(
-                    status_code=500, 
-                    detail=f"Failed to copy {file_name}: {e}")
-    all_files_copied = all(
-        os.path.isfile(os.path.join(DIRPATH.INPUT_DIR, f)) 
-        for f in sample_files)
+)
+async def copy_sample_data(workspace_id: str):
+    all_files_copied = True  # Initialize flag
+    folders = ["input", "output"]
+    for folder in folders:
+        sample_data_dir = os.path.join("sample_data", folder)
+        if folder == "input":
+            user_dir = os.path.join(DIRPATH.INPUT_DIR, workspace_id)
+        elif folder == "output":
+            user_dir = os.path.join(DIRPATH.OUTPUT_DIR, workspace_id)
+        if not os.path.exists(user_dir):
+            os.makedirs(user_dir)
+        try:
+            shutil.copytree(sample_data_dir, user_dir, dirs_exist_ok=True)
+        except Exception as e:
+            raise HTTPException(
+                status_code=500, detail=f"Failed to copy files from {folder}: {e}"
+            )
+            all_files_copied = False
     return all_files_copied

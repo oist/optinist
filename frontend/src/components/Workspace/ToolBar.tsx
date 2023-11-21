@@ -9,7 +9,6 @@ import { ClearWorkflowButton } from "components/Workspace/FlowChart/Buttons/Clea
 import { ImportWorkflowConfigButton } from "components/Workspace/FlowChart/Buttons/ImportWorkflowConfig"
 import { NWBSettingButton } from "components/Workspace/FlowChart/Buttons/NWB"
 import { RunButtons } from "components/Workspace/FlowChart/Buttons/RunButtons"
-import { ImportSampleDataButton } from "components/Workspace/FlowChart/Buttons/SampleData"
 import { SnakemakeButton } from "components/Workspace/FlowChart/Buttons/Snakemake"
 import { IS_STANDALONE } from "const/Mode"
 import { UseRunPipelineReturnType } from "store/slice/Pipeline/PipelineHook"
@@ -39,7 +38,6 @@ export const ToolBar = memo(function ToolBar(props: UseRunPipelineReturnType) {
       )}
       <ImportWorkflowConfigButton />
       <ClearWorkflowButton />
-      <ImportSampleDataButton />
       <SnakemakeButton />
       <NWBSettingButton />
       <RunButtons {...props} />

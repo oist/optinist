@@ -5,9 +5,14 @@ import MenuBookIcon from "@mui/icons-material/MenuBook"
 import { Tooltip } from "@mui/material"
 import IconButton from "@mui/material/IconButton"
 
+import { ImportSampleDataButton } from "components/common/SampleData"
+
 const Tooltips: FC = () => {
   return (
     <>
+      <Tooltip title="Example Data">
+        <ImportSampleDataButton />
+      </Tooltip>
       <Tooltip title="GitHub repository">
         <IconButton
           sx={{ mr: 1 }}

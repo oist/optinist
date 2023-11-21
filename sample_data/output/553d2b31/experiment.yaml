@@ -1,0 +1,407 @@
+edgeDict:
+  ? reactflow__edge-caiman_mc_ldvldnoirgcaiman_mc_ldvldnoirg--mc_images--ImageData-lccd_cell_detection_rafri53t4olccd_cell_detection_rafri53t4o--mc_images--ImageData
+  : animated: false
+    id: reactflow__edge-caiman_mc_ldvldnoirgcaiman_mc_ldvldnoirg--mc_images--ImageData-lccd_cell_detection_rafri53t4olccd_cell_detection_rafri53t4o--mc_images--ImageData
+    source: caiman_mc_ldvldnoirg
+    sourceHandle: caiman_mc_ldvldnoirg--mc_images--ImageData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: lccd_cell_detection_rafri53t4o
+    targetHandle: lccd_cell_detection_rafri53t4o--mc_images--ImageData
+    type: buttonedge
+  reactflow__edge-input_0input_0--image--ImageData-caiman_mc_ldvldnoirgcaiman_mc_ldvldnoirg--image--ImageData:
+    animated: false
+    id: reactflow__edge-input_0input_0--image--ImageData-caiman_mc_ldvldnoirgcaiman_mc_ldvldnoirg--image--ImageData
+    source: input_0
+    sourceHandle: input_0--image--ImageData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: caiman_mc_ldvldnoirg
+    targetHandle: caiman_mc_ldvldnoirg--image--ImageData
+    type: buttonedge
+  ? reactflow__edge-input_4llibbnlp6input_4llibbnlp6--behavior--BehaviorData-eta_5d8mle1u5oeta_5d8mle1u5o--behaviors_data--BehaviorData
+  : animated: false
+    id: reactflow__edge-input_4llibbnlp6input_4llibbnlp6--behavior--BehaviorData-eta_5d8mle1u5oeta_5d8mle1u5o--behaviors_data--BehaviorData
+    source: input_4llibbnlp6
+    sourceHandle: input_4llibbnlp6--behavior--BehaviorData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: eta_5d8mle1u5o
+    targetHandle: eta_5d8mle1u5o--behaviors_data--BehaviorData
+    type: buttonedge
+  ? reactflow__edge-lccd_cell_detection_rafri53t4olccd_cell_detection_rafri53t4o--fluorescence--FluoData-correlation_onyx5cah3acorrelation_onyx5cah3a--neural_data--FluoData
+  : animated: false
+    id: reactflow__edge-lccd_cell_detection_rafri53t4olccd_cell_detection_rafri53t4o--fluorescence--FluoData-correlation_onyx5cah3acorrelation_onyx5cah3a--neural_data--FluoData
+    source: lccd_cell_detection_rafri53t4o
+    sourceHandle: lccd_cell_detection_rafri53t4o--fluorescence--FluoData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: correlation_onyx5cah3a
+    targetHandle: correlation_onyx5cah3a--neural_data--FluoData
+    type: buttonedge
+  ? reactflow__edge-lccd_cell_detection_rafri53t4olccd_cell_detection_rafri53t4o--fluorescence--FluoData-eta_5d8mle1u5oeta_5d8mle1u5o--neural_data--FluoData
+  : animated: false
+    id: reactflow__edge-lccd_cell_detection_rafri53t4olccd_cell_detection_rafri53t4o--fluorescence--FluoData-eta_5d8mle1u5oeta_5d8mle1u5o--neural_data--FluoData
+    source: lccd_cell_detection_rafri53t4o
+    sourceHandle: lccd_cell_detection_rafri53t4o--fluorescence--FluoData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: eta_5d8mle1u5o
+    targetHandle: eta_5d8mle1u5o--neural_data--FluoData
+    type: buttonedge
+function:
+  caiman_mc_ldvldnoirg:
+    hasNWB: true
+    name: caiman_mc
+    success: success
+    unique_id: caiman_mc_ldvldnoirg
+  correlation_onyx5cah3a:
+    hasNWB: true
+    name: correlation
+    success: success
+    unique_id: correlation_onyx5cah3a
+  eta_5d8mle1u5o:
+    hasNWB: true
+    name: eta
+    success: success
+    unique_id: eta_5d8mle1u5o
+  input_0:
+    hasNWB: false
+    name: mouse2p.tiff
+    success: success
+    unique_id: input_0
+  input_4llibbnlp6:
+    hasNWB: false
+    name: mouse2p.csv
+    success: success
+    unique_id: input_4llibbnlp6
+  lccd_cell_detection_rafri53t4o:
+    hasNWB: false
+    name: lccd_cell_detection
+    success: success
+    unique_id: lccd_cell_detection_rafri53t4o
+hasNWB: true
+name: m2p_lccd_eta_corr_f
+nodeDict:
+  caiman_mc_ldvldnoirg:
+    data:
+      fileType: null
+      hdf5Path: null
+      label: caiman_mc
+      param:
+        border_nan:
+          path: border_nan
+          type: child
+          value: copy
+        gSig_filt:
+          path: gSig_filt
+          type: child
+          value: null
+        is3D:
+          path: is3D
+          type: child
+          value: false
+        max_deviation_rigid:
+          path: max_deviation_rigid
+          type: child
+          value: 3
+        max_shifts:
+          path: max_shifts
+          type: child
+          value:
+          - 6
+          - 6
+        min_mov:
+          path: min_mov
+          type: child
+          value: null
+        niter_rig:
+          path: niter_rig
+          type: child
+          value: 1
+        nonneg_movie:
+          path: nonneg_movie
+          type: child
+          value: true
+        num_frames_split:
+          path: num_frames_split
+          type: child
+          value: 80
+        num_splits_to_process_els:
+          path: num_splits_to_process_els
+          type: child
+          value: null
+        num_splits_to_process_rig:
+          path: num_splits_to_process_rig
+          type: child
+          value: null
+        overlaps:
+          path: overlaps
+          type: child
+          value:
+          - 32
+          - 32
+        pw_rigid:
+          path: pw_rigid
+          type: child
+          value: false
+        shifts_opencv:
+          path: shifts_opencv
+          type: child
+          value: true
+        splits_els:
+          path: splits_els
+          type: child
+          value: 14
+        splits_rig:
+          path: splits_rig
+          type: child
+          value: 14
+        strides:
+          path: strides
+          type: child
+          value:
+          - 96
+          - 96
+        upsample_factor_grid:
+          path: upsample_factor_grid
+          type: child
+          value: 4
+        use_cuda:
+          path: use_cuda
+          type: child
+          value: false
+      path: caiman/caiman_mc
+      type: algorithm
+    id: caiman_mc_ldvldnoirg
+    position:
+      x: 370
+      y: 148
+    style:
+      border: null
+      borderRadius: 0
+      height: 100
+      padding: 0
+      width: 180
+    type: AlgorithmNode
+  correlation_onyx5cah3a:
+    data:
+      fileType: null
+      hdf5Path: null
+      label: correlation
+      param:
+        transpose:
+          path: transpose
+          type: child
+          value: false
+      path: optinist/neural_population_analysis/correlation
+      type: algorithm
+    id: correlation_onyx5cah3a
+    position:
+      x: 967
+      y: 283
+    style:
+      border: null
+      borderRadius: 0
+      height: 100
+      padding: 0
+      width: 180
+    type: AlgorithmNode
+  eta_5d8mle1u5o:
+    data:
+      fileType: null
+      hdf5Path: null
+      label: eta
+      param:
+        end_time:
+          path: end_time
+          type: child
+          value: 50
+        start_time:
+          path: start_time
+          type: child
+          value: -30
+        target_index:
+          path: target_index
+          type: child
+          value: 1
+        transpose_x:
+          path: transpose_x
+          type: child
+          value: true
+        transpose_y:
+          path: transpose_y
+          type: child
+          value: false
+        trigger_threshold:
+          path: trigger_threshold
+          type: child
+          value: 0
+        trigger_type:
+          path: trigger_type
+          type: child
+          value: up
+      path: optinist/basic_neural_analysis/eta
+      type: algorithm
+    id: eta_5d8mle1u5o
+    position:
+      x: 950
+      y: 122
+    style:
+      border: null
+      borderRadius: 0
+      height: 100
+      padding: 0
+      width: 180
+    type: AlgorithmNode
+  input_0:
+    data:
+      fileType: image
+      hdf5Path: null
+      label: mouse2p.tiff
+      param: {}
+      path:
+      - mouse2p.tiff
+      type: input
+    id: input_0
+    position:
+      x: 50
+      y: 150
+    style:
+      border: '1px solid #777'
+      borderRadius: null
+      height: 120
+      padding: null
+      width: null
+    type: ImageFileNode
+  input_4llibbnlp6:
+    data:
+      fileType: csv
+      hdf5Path: null
+      label: mouse2p.csv
+      param:
+        setHeader: null
+        setIndex: false
+        transpose: false
+      path: mouse2p.csv
+      type: input
+    id: input_4llibbnlp6
+    position:
+      x: 596
+      y: -22
+    style:
+      border: '1px solid #777'
+      borderRadius: null
+      height: 120
+      padding: null
+      width: null
+    type: BehaviorFileNode
+  lccd_cell_detection_rafri53t4o:
+    data:
+      fileType: null
+      hdf5Path: null
+      label: lccd_cell_detection
+      param:
+        blob_detector:
+          children:
+            filtersize1:
+              path: blob_detector/filtersize1
+              type: child
+              value: 100
+            filtersize2:
+              path: blob_detector/filtersize2
+              type: child
+              value: 4
+            fsize:
+              path: blob_detector/fsize
+              type: child
+              value: 30
+            max_area:
+              path: blob_detector/max_area
+              type: child
+              value: 50
+            min_area:
+              path: blob_detector/min_area
+              type: child
+              value: 20
+            sigma:
+              path: blob_detector/sigma
+              type: child
+              value: 1.25
+            sparse:
+              path: blob_detector/sparse
+              type: child
+              value: false
+          type: parent
+        dff:
+          children:
+            f0_frames:
+              path: dff/f0_frames
+              type: child
+              value: 100
+            f0_percentile:
+              path: dff/f0_percentile
+              type: child
+              value: 8
+          type: parent
+        lccd:
+          children:
+            frame_divider:
+              path: lccd/frame_divider
+              type: child
+              value: 100
+          type: parent
+        roi_integration:
+          children:
+            max_area:
+              path: roi_integration/max_area
+              type: child
+              value: 100
+            min_area:
+              path: roi_integration/min_area
+              type: child
+              value: 20
+            overlap_threshold:
+              path: roi_integration/overlap_threshold
+              type: child
+              value: 0.4
+            sparse:
+              path: roi_integration/sparse
+              type: child
+              value: false
+          type: parent
+      path: lccd/lccd_cell_detection
+      type: algorithm
+    id: lccd_cell_detection_rafri53t4o
+    position:
+      x: 610
+      y: 149
+    style:
+      border: null
+      borderRadius: 0
+      height: 100
+      padding: 0
+      width: 180
+    type: AlgorithmNode
+timestamp: '2023-03-23 07:59:44'
+unique_id: 553d2b31
