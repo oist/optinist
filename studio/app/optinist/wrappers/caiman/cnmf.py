@@ -232,7 +232,7 @@ def caiman_cnmf(
                 "table_name": "ROIs",
                 "region": list(range(n_rois + n_bg)),
                 "name": "Fluorescence",
-                "data": fluorescence,
+                "data": fluorescence.T,
                 "unit": "lumens",
             }
         }

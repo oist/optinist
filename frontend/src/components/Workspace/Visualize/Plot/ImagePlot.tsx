@@ -375,7 +375,8 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }
 
   const onChartClick = (event: PlotMouseEvent) => {
-    const point: PlotDatum = event.points[0] as PlotDatum
+    // use as unknown because original PlotDatum does not have z property
+    const point: PlotDatum = event.points[0] as unknown as PlotDatum
     if (point.curveNumber >= 1 && outputKey === "cell_roi") {
       setSelectRoi({
         x: Number(point.x),

@@ -7,7 +7,9 @@ import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import { styled, Typography } from "@mui/material"
 import IconButton from "@mui/material/IconButton"
-import { TreeView, TreeItem, treeItemClasses } from "@mui/x-tree-view"
+import { treeItemClasses } from "@mui/x-tree-view"
+import { TreeItem } from "@mui/x-tree-view/TreeItem"
+import { TreeView } from "@mui/x-tree-view/TreeView"
 
 import {
   DND_ITEM_TYPE_SET,
@@ -292,8 +294,13 @@ interface AddButtonProps {
 const AddButton = memo(function AddButton({ name, onClick }: AddButtonProps) {
   return (
     <>
-      <IconButton aria-label="add" style={{ padding: 2 }} size="large">
-        <AddIcon onClick={() => onClick()} />
+      <IconButton
+        aria-label="add"
+        style={{ padding: 2 }}
+        size="large"
+        onClick={onClick}
+      >
+        <AddIcon />
       </IconButton>
       <Typography
         variant="inherit"
