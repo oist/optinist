@@ -13,6 +13,7 @@ import PlotlyChart from "react-plotlyjs-ts"
 import { useSelector, useDispatch } from "react-redux"
 
 import createColormap from "colormap"
+import { useSnackbar } from "notistack"
 import {
   Datum,
   LayoutAxis,
@@ -184,6 +185,7 @@ interface ActiveIndexProps {
 const ImagePlotChart = memo(function ImagePlotChart({
   activeIndex,
 }: ActiveIndexProps) {
+  const { enqueueSnackbar } = useSnackbar()
   const dispatch = useDispatch<AppDispatch>()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const { filePath: path, itemId } = useContext(DisplayDataContext)
@@ -623,16 +625,20 @@ const ImagePlotChart = memo(function ImagePlotChart({
   const onCommitRoi = async () => {
     if (!roiFilePath || workspaceId === undefined) return
     setLoadingApi(true)
-    await commitRoiApi(roiFilePath, workspaceId)
-    workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
-    setStatusRoi({
-      temp_add_roi: [],
-      temp_delete_roi: [],
-      temp_merge_roi: [],
-    })
-    setEdit(false)
-    setAction("")
-    setLoadingApi(false)
+    try {
+      await commitRoiApi(roiFilePath, workspaceId)
+      workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
+      setStatusRoi({
+        temp_add_roi: [],
+        temp_delete_roi: [],
+        temp_merge_roi: [],
+      })
+      enqueueSnackbar("Edit ROI Finished", { variant: "success" })
+    } finally {
+      setEdit(false)
+      setAction("")
+      setLoadingApi(false)
+    }
   }
 
   const resetTimeSeries = () => {
