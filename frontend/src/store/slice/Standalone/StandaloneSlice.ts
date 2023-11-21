@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 import { getModeStandalone } from "store/slice/Standalone/StandaloneActions"
+import { ModeType } from "store/slice/Standalone/StandaloneType"
 
-const initialState = {
+const initialState: ModeType = {
   mode: false,
   loading: false,
 }

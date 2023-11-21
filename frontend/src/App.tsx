@@ -7,6 +7,7 @@ import { SnackbarProvider, SnackbarKey, useSnackbar } from "notistack"
 import Close from "@mui/icons-material/Close"
 import IconButton from "@mui/material/IconButton"
 
+import Loading from "components/common/Loading"
 import Layout from "components/Layout"
 import Account from "pages/Account"
 import AccountDelete from "pages/AccountDelete"
@@ -17,12 +18,16 @@ import ResetPassword from "pages/ResetPassword"
 import Workspaces from "pages/Workspace"
 import Workspace from "pages/Workspace/Workspace"
 import { getModeStandalone } from "store/slice/Standalone/StandaloneActions"
-import { selectModeStandalone } from "store/slice/Standalone/StandaloneSeclector"
+import {
+  selectLoadingMode,
+  selectModeStandalone,
+} from "store/slice/Standalone/StandaloneSeclector"
 import { AppDispatch } from "store/store"
 
 const App: FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const isStandalone = useSelector(selectModeStandalone)
+  const loading = useSelector(selectLoadingMode)
   useEffect(() => {
     dispatch(getModeStandalone())
     //eslint-disable-next-line
@@ -66,6 +71,7 @@ const App: FC = () => {
           )}
         </Layout>
       </BrowserRouter>
+      {loading ? <Loading /> : null}
     </SnackbarProvider>
   )
 }
