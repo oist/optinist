@@ -26,9 +26,11 @@ Please follow instructions below.
     - Anaconda3-\*.\*-MacOSX-x86_64.pkg
       - *The latest version of the module is ok.
 
-- **CAUTION**
-  - On mac, you must use the x86_64 version.
-    - The arm64 version has some modules that cannot be installed by conda install or pip install.
+```{eval-rst}
+.. caution::
+   Even if you're using arm64 (Apple Sillicon, M1, M2...) architecture's Mac, x86_64 version is required.
+   Some modules cannot be installed by conda install or pip install in arm64 version.
+```
 
 ### Create anaconda environment
 
@@ -37,9 +39,6 @@ conda create -n optinist python=3.8
 conda activate optinist
 ```
 
-<!-- ```
-conda config --set channel_priority strict
-``` -->
 
 ### Install library
 
@@ -53,20 +52,6 @@ Optinist default saving directory is `/tmp/studio`. If you reboot your PC, this 
 ```
 export OPTINIST_DIR="your_saving_dir"
 ```
-
-<!--
-## 2. Create virtualenv
-
-Under maintenance...
--->
-<!--
-In snakemake used by optinist, a virtual environment is created and executed for each function.
-The procedure for first creating a virtual environment for processing suite2p, caiman, pca, etc. is described in the following link.
-
-*It is possible to run snakemake without creating a virtual environment in advance, but it is recommended to create a virtual environment in advance because of the higher possibility of errors during execution.
-
-Follow this [link](create_virtualenv.md).
--->
 
 ## 2. Run backend
 

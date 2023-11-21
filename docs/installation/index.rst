@@ -17,4 +17,3 @@ Installation
 
   docker_for_developer
   each_platforms_for_developer
-..  each_platforms_for_developer_use_mamba
