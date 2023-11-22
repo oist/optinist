@@ -1,11 +1,4 @@
-import {
-  KeyboardEvent,
-  memo,
-  SyntheticEvent,
-  useContext,
-  useEffect,
-  useState,
-} from "react"
+import { memo, SyntheticEvent, useContext, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import FolderIcon from "@mui/icons-material/Folder"
@@ -83,19 +76,9 @@ export const FileSelectDialog = memo(function FileSelectDialog({
       onClickOk(selectedFilePath)
     }
   }
-  const handleClosePopup = (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      onCancel()
-    }
-  }
   const theme = useTheme()
   return (
-    <Dialog
-      open={open}
-      onClose={onCancel}
-      onKeyDown={handleClosePopup}
-      fullWidth
-    >
+    <Dialog open={open} onClose={onCancel} fullWidth>
       <DialogTitle>{title ?? "Select File"}</DialogTitle>
       <DialogContent dividers>
         <div

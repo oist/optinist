@@ -1,4 +1,4 @@
-import { KeyboardEvent, memo } from "react"
+import { memo } from "react"
 
 import {
   Button,
@@ -20,18 +20,8 @@ export const ClearWorkflowIdDialog = memo(function ClearWorkflowIdDialog({
   handleOk,
   handleCancel,
 }: ClearWorkflowIdDialogProps) {
-  const handleClosePopup = (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      handleCancel()
-    }
-  }
   return (
-    <Dialog
-      open={open}
-      onClose={handleCancel}
-      onKeyDown={handleClosePopup}
-      fullWidth
-    >
+    <Dialog open={open} onClose={handleCancel} fullWidth>
       <DialogTitle>Confirm running as new workflow</DialogTitle>
       <DialogContent>
         <Typography>

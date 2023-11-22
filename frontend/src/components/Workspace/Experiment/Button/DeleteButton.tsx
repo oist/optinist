@@ -1,4 +1,4 @@
-import { KeyboardEvent, memo, useContext, useState } from "react"
+import { memo, useContext, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
@@ -41,17 +41,13 @@ export const DeleteButton = memo(function DeleteButton() {
     dispatch(deleteExperimentByUid(uid))
     uid === currentPipelineUid && dispatch(clearCurrentPipeline())
   }
-  const handleClosePopup = (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      onClickCancel()
-    }
-  }
+
   return (
     <>
       <IconButton onClick={onClickOpen} disabled={isRunning} color="error">
         <DeleteOutlineIcon />
       </IconButton>
-      <Dialog open={open} onClose={onClickCancel} onKeyDown={handleClosePopup}>
+      <Dialog open={open} onClose={onClickCancel}>
         <DialogTitle>Are you sure you want to delete {name}?</DialogTitle>
         <DialogActions>
           <Button onClick={onClickCancel} variant="outlined" color="inherit">

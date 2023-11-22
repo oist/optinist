@@ -220,22 +220,11 @@ const PopupShare = ({
     }
   }
 
-  const handleClosePopup = (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      handleClose(false)
-    }
-  }
-
   if (!usersShare) return null
 
   return (
     <Box>
-      <DialogCustom
-        open={open}
-        onClose={handleClose}
-        sx={{ margin: 0 }}
-        onKeyDown={handleClosePopup}
-      >
+      <DialogCustom open={open} onClose={handleClose} sx={{ margin: 0 }}>
         <DialogTitle>{title || "Share Database Record"}</DialogTitle>
         <DialogContent>
           <>

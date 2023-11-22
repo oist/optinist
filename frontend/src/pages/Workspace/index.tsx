@@ -1,11 +1,4 @@
-import {
-  ChangeEvent,
-  KeyboardEvent,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react"
+import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { useNavigate, useSearchParams } from "react-router-dom"
 
@@ -252,20 +245,9 @@ const PopupNew = ({
     setNewWorkSpace(event.target.value)
   }
 
-  const handleClosePopup = (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      handleClose()
-    }
-  }
-
   return (
     <Box>
-      <Dialog
-        open={open}
-        onClose={handleClose}
-        sx={{ margin: 0 }}
-        onKeyDown={handleClosePopup}
-      >
+      <Dialog open={open} onClose={handleClose} sx={{ margin: 0 }}>
         <DialogTitle>New Workspace</DialogTitle>
         <DialogContent sx={{ minWidth: 300 }}>
           <Input
@@ -296,22 +278,11 @@ const PopupDelete = ({
   handleOkDel,
   nameWorkspace,
 }: PopupType) => {
-  const handleClosePopup = (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      handleClose()
-    }
-  }
-
   if (!open) return null
 
   return (
     <Box>
-      <Dialog
-        onKeyDown={handleClosePopup}
-        open={open}
-        onClose={handleClose}
-        sx={{ margin: 0 }}
-      >
+      <Dialog open={open} onClose={handleClose} sx={{ margin: 0 }}>
         <DialogTitle>
           {`Do you want delete Workspace "${nameWorkspace}"?`}
         </DialogTitle>

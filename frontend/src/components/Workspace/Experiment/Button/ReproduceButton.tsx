@@ -1,11 +1,4 @@
-import {
-  Dispatch,
-  KeyboardEvent,
-  memo,
-  SetStateAction,
-  useContext,
-  useState,
-} from "react"
+import { Dispatch, memo, SetStateAction, useContext, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import { useSnackbar } from "notistack"
@@ -79,14 +72,8 @@ const ConfirmReprodceDialog = memo(function ConfirmReprodceDialog({
     }
   }
 
-  const handleClosePopup = (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      handleClose()
-    }
-  }
-
   return (
-    <Dialog open={open} onClose={handleClose} onKeyDown={handleClosePopup}>
+    <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Confirm reproduce workflow</DialogTitle>
       <DialogContent>
         <Typography>

@@ -1,4 +1,4 @@
-import { Dispatch, KeyboardEvent, memo, SetStateAction, useState } from "react"
+import { Dispatch, memo, SetStateAction, useState } from "react"
 import { useDispatch } from "react-redux"
 
 import DeleteIcon from "@mui/icons-material/Delete"
@@ -50,14 +50,8 @@ const ConfirmClearDialog = memo(function ConfirmClearDialog({
     setOpen(false)
   }
 
-  const handleClosePopup = (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      handleClose()
-    }
-  }
-
   return (
-    <Dialog open={open} onClose={handleClose} onKeyDown={handleClosePopup}>
+    <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Confirm clear workflow</DialogTitle>
       <DialogContent>
         Are you sure you want to clear the current workflow?

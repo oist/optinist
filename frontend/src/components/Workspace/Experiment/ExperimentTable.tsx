@@ -9,7 +9,6 @@ import {
   useState,
   FocusEvent,
   MouseEvent,
-  KeyboardEvent,
 } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
@@ -186,11 +185,6 @@ const TableImple = memo(function TableImple() {
     page > 0
       ? Math.max(0, (1 + page) * rowsPerPage - experimentListKeys.length)
       : 0
-  const handleClosePopup = (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      onClickCancel()
-    }
-  }
 
   return (
     <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -231,7 +225,7 @@ const TableImple = memo(function TableImple() {
           </Button>
         )}
       </Box>
-      <Dialog open={open} onClose={onClickCancel} onKeyDown={handleClosePopup}>
+      <Dialog open={open} onClose={onClickCancel}>
         <DialogTitle>Are you sure you want to delete?</DialogTitle>
         <DialogActions>
           <Button onClick={onClickCancel} variant="outlined" color="inherit">

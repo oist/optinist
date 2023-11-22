@@ -5,7 +5,6 @@ import {
   useMemo,
   useState,
   MouseEvent,
-  KeyboardEvent,
 } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useNavigate, useSearchParams } from "react-router-dom"
@@ -206,18 +205,8 @@ const ModalComponent = ({
     setOpenModal(false)
   }
 
-  const handleClosePopup = (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      setOpenModal(false)
-    }
-  }
-
   return (
-    <Modal
-      open={open}
-      onClose={() => setOpenModal(false)}
-      onKeyDown={handleClosePopup}
-    >
+    <Modal open={open} onClose={() => setOpenModal(false)}>
       <ModalBox>
         <TitleModal>{dataEdit?.id ? "Edit" : "Add"} Account</TitleModal>
         <BoxData>
@@ -288,22 +277,11 @@ const ModalComponent = ({
 }
 
 const PopupDelete = ({ open, handleClose, handleOkDel, name }: PopupType) => {
-  const handleClosePopup = (event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      handleClose()
-    }
-  }
-
   if (!open) return null
 
   return (
     <Box>
-      <Dialog
-        onKeyDown={handleClosePopup}
-        open={open}
-        onClose={handleClose}
-        sx={{ margin: 0 }}
-      >
+      <Dialog open={open} onClose={handleClose} sx={{ margin: 0 }}>
         <DialogTitle>{`Do you want delete User "${name}"?`}</DialogTitle>
         <DialogActions>
           <Button variant="outlined" onClick={handleClose}>
