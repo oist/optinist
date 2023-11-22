@@ -1,4 +1,4 @@
-import { memo, SyntheticEvent, useEffect, useState } from "react"
+import { KeyboardEvent, memo, SyntheticEvent, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import CloseIcon from "@mui/icons-material/Close"
@@ -41,8 +41,18 @@ export const AlgorithmOutputDialog = memo(function AlgorithmOutputDialog({
     onClose()
     dispatch(deleteAllItemForWorkflowDialog())
   }
+  const handleClosePopup = (event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      closeFn()
+    }
+  }
   return (
-    <Dialog open={open} onClose={closeFn} fullWidth>
+    <Dialog
+      open={open}
+      onClose={closeFn}
+      onKeyDown={handleClosePopup}
+      fullWidth
+    >
       <TitleWithCloseButton onClose={closeFn} nodeId={nodeId} />
       <DialogContent
         dividers

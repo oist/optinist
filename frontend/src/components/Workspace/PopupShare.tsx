@@ -272,8 +272,12 @@ const PopupShare = ({
           </>
         </DialogContent>
         <DialogActions>
-          <Button onClick={() => handleClose(false)}>Cancel</Button>
-          <Button onClick={handleOke}>Ok</Button>
+          <Button variant={"outlined"} onClick={() => handleClose(false)}>
+            Cancel
+          </Button>
+          <Button variant={"contained"} onClick={handleOke}>
+            Ok
+          </Button>
         </DialogActions>
       </DialogCustom>
       {loading ? <Loading /> : null}

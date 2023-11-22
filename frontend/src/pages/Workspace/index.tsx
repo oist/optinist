@@ -1,4 +1,11 @@
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react"
+import {
+  ChangeEvent,
+  KeyboardEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { useNavigate, useSearchParams } from "react-router-dom"
 
@@ -245,9 +252,20 @@ const PopupNew = ({
     setNewWorkSpace(event.target.value)
   }
 
+  const handleClosePopup = (event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      handleClose()
+    }
+  }
+
   return (
     <Box>
-      <Dialog open={open} onClose={handleClose} sx={{ margin: 0 }}>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        sx={{ margin: 0 }}
+        onKeyDown={handleClosePopup}
+      >
         <DialogTitle>New Workspace</DialogTitle>
         <DialogContent sx={{ minWidth: 300 }}>
           <Input
@@ -260,8 +278,12 @@ const PopupNew = ({
           {error ? <span style={{ color: "red" }}>{error}</span> : null}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleOkNew}>Ok</Button>
+          <Button variant={"outlined"} onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button variant={"contained"} onClick={handleOkNew}>
+            Ok
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
@@ -274,16 +296,32 @@ const PopupDelete = ({
   handleOkDel,
   nameWorkspace,
 }: PopupType) => {
+  const handleClosePopup = (event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      handleClose()
+    }
+  }
+
   if (!open) return null
+
   return (
     <Box>
-      <Dialog open={open} onClose={handleClose} sx={{ margin: 0 }}>
+      <Dialog
+        onKeyDown={handleClosePopup}
+        open={open}
+        onClose={handleClose}
+        sx={{ margin: 0 }}
+      >
         <DialogTitle>
           {`Do you want delete Workspace "${nameWorkspace}"?`}
         </DialogTitle>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleOkDel}>Ok</Button>
+          <Button variant={"outlined"} onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button variant={"contained"} onClick={handleOkDel}>
+            Ok
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>

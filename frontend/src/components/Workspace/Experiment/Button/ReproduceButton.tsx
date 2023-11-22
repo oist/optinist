@@ -1,4 +1,11 @@
-import { Dispatch, memo, SetStateAction, useContext, useState } from "react"
+import {
+  Dispatch,
+  KeyboardEvent,
+  memo,
+  SetStateAction,
+  useContext,
+  useState,
+} from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import { useSnackbar } from "notistack"
@@ -71,8 +78,15 @@ const ConfirmReprodceDialog = memo(function ConfirmReprodceDialog({
       enqueueSnackbar("Workspace id is missing", { variant: "error" })
     }
   }
+
+  const handleClosePopup = (event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      handleClose()
+    }
+  }
+
   return (
-    <Dialog open={open} onClose={handleClose}>
+    <Dialog open={open} onClose={handleClose} onKeyDown={handleClosePopup}>
       <DialogTitle>Confirm reproduce workflow</DialogTitle>
       <DialogContent>
         <Typography>
