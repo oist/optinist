@@ -352,6 +352,11 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }
 
   useEffect(() => {
+    onCancel()
+    //eslint-disabled-next-line
+  }, [])
+
+  useEffect(() => {
     if (!edit) return
     fetchStatusRoi()
     //eslint-disable-next-line
@@ -563,7 +568,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }
 
   const addOrSelectRoi = async () => {
-    if (!roiFilePath || loadingApi) return
+    if (!roiFilePath || loadingApi || !workspaceId) return
     if (action === "Add ROI") {
       setLoadingApi(true)
       const sizeX = roiDataState[0].length - 1
@@ -580,7 +585,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
         sizey: yAdd,
       }
       dispatch(resetAllOrderList())
-      await addRoiApi(roiFilePath, pointCenter)
+      await addRoiApi(roiFilePath, workspaceId, pointCenter)
       setLoadingApi(false)
       onCancelAdd()
       workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
@@ -589,7 +594,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
       if (pointClick.length < 2) return
       setLoadingApi(true)
       dispatch(resetAllOrderList())
-      await mergeRoiApi(roiFilePath, {
+      await mergeRoiApi(roiFilePath, workspaceId, {
         ids: pointClick.map((point) => point.z),
       })
       setLoadingApi(false)
@@ -599,7 +604,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
       if (!pointClick.length) return
       setLoadingApi(true)
       dispatch(resetAllOrderList())
-      await deleteRoiApi(roiFilePath, {
+      await deleteRoiApi(roiFilePath, workspaceId, {
         ids: pointClick.map((point) => point.z),
       })
       setLoadingApi(false)

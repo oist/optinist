@@ -143,10 +143,11 @@ export async function getHTMLDataApi(
 
 export async function addRoiApi(
   path: string,
+  workspaceId: number,
   data: { posx: number; posy: number; sizex: number; sizey: number },
 ): Promise<{ data: HTMLData; meta?: PlotMetaData }> {
   const response = await axios.post(
-    `${BASE_URL}/outputs/image/${path}/add_roi`,
+    `${BASE_URL}/outputs/image/${path}/add_roi?workspace_id=${workspaceId}`,
     data,
   )
   return response.data
@@ -154,10 +155,11 @@ export async function addRoiApi(
 
 export async function mergeRoiApi(
   path: string,
+  workspaceId: number,
   data: { ids: number[] },
 ): Promise<{ data: HTMLData; meta?: PlotMetaData }> {
   const response = await axios.post(
-    `${BASE_URL}/outputs/image/${path}/merge_roi`,
+    `${BASE_URL}/outputs/image/${path}/merge_roi?workspace_id=${workspaceId}`,
     data,
   )
   return response.data
@@ -165,10 +167,11 @@ export async function mergeRoiApi(
 
 export async function deleteRoiApi(
   path: string,
+  workspaceId: number,
   data: { ids: number[] },
 ): Promise<{ data: HTMLData; meta?: PlotMetaData }> {
   const response = await axios.post(
-    `${BASE_URL}/outputs/image/${path}/delete_roi`,
+    `${BASE_URL}/outputs/image/${path}/delete_roi?workspace_id=${workspaceId}`,
     data,
   )
   return response.data
