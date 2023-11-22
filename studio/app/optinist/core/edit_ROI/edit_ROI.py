@@ -1,7 +1,7 @@
 import os
 from dataclasses import dataclass
 from glob import glob
-from typing import List
+from typing import Dict, List
 
 import numpy as np
 from fastapi import HTTPException, status
@@ -66,90 +66,104 @@ class EditRoiUtils:
 class EditROI:
     def __init__(self, file_path):
         self.node_dirpath = os.path.dirname(file_path)
+        self.function_id = self.node_dirpath.split("/")[-1]
 
-        self.output_info = self.__read_output_info()
-        self.data: EditRoiData = self.output_info.get("edit_roi_data")
-        self.iscell = self.output_info.get("iscell").data
-        self.fluorescence = self.output_info.get("fluorescence")
+        self.output_info: Dict = PickleReader.read(self.pickle_file_path)
+        self.tmp_output_info: Dict = (
+            PickleReader.read(self.tmp_pickle_file_path)
+            if os.path.exists(self.tmp_pickle_file_path)
+            else {}
+        )
+
+        self.tmp_data: EditRoiData = self.tmp_output_info.get(
+            "edit_roi_data", self.output_info.get("edit_roi_data")
+        )
+        self.tmp_iscell = self.tmp_output_info.get(
+            "iscell", self.output_info.get("iscell")
+        ).data
 
         print("start edit roi:", self.function_id)
 
     @property
-    def function_id(self):
-        return self.node_dirpath.split("/")[-1]
+    def pickle_file_path(self):
+        return glob(join_filepath([self.node_dirpath, "[!tmp_]*.pkl"]))[0]
 
     @property
-    def pickle_file_path(self):
-        return glob(join_filepath([self.node_dirpath, "*.pkl"]))[0]
+    def tmp_pickle_file_path(self):
+        return join_filepath([self.node_dirpath, f"tmp_{self.function_id[:-11]}.pkl"])
 
     @property
     def shape(self):
-        return self.data.im.shape[1:]
+        return self.tmp_data.im.shape[1:]
 
     @property
     def num_cell(self):
-        return self.data.im.shape[0]
+        return self.tmp_data.im.shape[0]
 
     def get_status(self) -> RoiStatus:
-        return self.data.status()
+        return self.tmp_data.status()
 
     def add(self, roi_pos):
         new_roi = create_ellipse_mask(self.shape, roi_pos)
         new_roi = new_roi[np.newaxis, :, :] * self.num_cell
 
-        self.data.temp_add_roi[self.num_cell] = roi_pos
-        self.iscell = np.append(self.iscell, CellType.TEMP_ADD)
-        self.data.im = np.vstack((self.data.im, new_roi))
+        self.tmp_data.temp_add_roi[self.num_cell] = roi_pos
+        self.tmp_iscell = np.append(self.tmp_iscell, CellType.TEMP_ADD)
+        self.tmp_data.im = np.vstack((self.tmp_data.im, new_roi))
 
         info = {
             "cell_roi": RoiData(
-                np.nanmax(self.data.im[self.iscell != CellType.NON_ROI], axis=0),
+                np.nanmax(
+                    self.tmp_data.im[self.tmp_iscell != CellType.NON_ROI], axis=0
+                ),
                 output_dir=self.node_dirpath,
                 file_name="cell_roi",
             ),
-            "iscell": IscellData(self.iscell),
-            "edit_roi_data": self.data,
+            "iscell": IscellData(self.tmp_iscell),
+            "edit_roi_data": self.tmp_data,
         }
-        self.__update_pickle_for_roi_edition(self.pickle_file_path, info)
+        self.__update_pickle_for_roi_edition(self.tmp_pickle_file_path, info)
         self.__save_json(info)
 
     def merge(self, ids: List[int]):
-        merging_rois = self.data.im[ids, :, :]
+        merging_rois = self.tmp_data.im[ids, :, :]
         merging_rois[np.isnan(merging_rois)] = -np.inf
         merged_roi = np.maximum.reduce(merging_rois)
         merged_roi = np.where(merged_roi == -np.inf, np.nan, self.num_cell)
 
-        self.data.temp_merge_roi[float(self.num_cell)] = ids
-        self.data.im = np.vstack((self.data.im, merged_roi[np.newaxis, :, :]))
+        self.tmp_data.temp_merge_roi[float(self.num_cell)] = ids
+        self.tmp_data.im = np.vstack((self.tmp_data.im, merged_roi[np.newaxis, :, :]))
 
-        self.iscell[ids] = CellType.TEMP_DELETE
-        self.iscell = np.append(self.iscell, CellType.TEMP_ADD)
+        self.tmp_iscell[ids] = CellType.TEMP_DELETE
+        self.tmp_iscell = np.append(self.tmp_iscell, CellType.TEMP_ADD)
 
         info = {
             "cell_roi": RoiData(
-                np.nanmax(self.data.im[self.iscell != CellType.NON_ROI], axis=0),
+                np.nanmax(
+                    self.tmp_data.im[self.tmp_iscell != CellType.NON_ROI], axis=0
+                ),
                 output_dir=self.node_dirpath,
                 file_name="cell_roi",
             ),
-            "iscell": IscellData(self.iscell),
-            "edit_roi_data": self.data,
+            "iscell": IscellData(self.tmp_iscell),
+            "edit_roi_data": self.tmp_data,
         }
 
-        self.__update_pickle_for_roi_edition(self.pickle_file_path, info)
+        self.__update_pickle_for_roi_edition(self.tmp_pickle_file_path, info)
         self.__save_json(info)
 
     def delete(self, ids: List[int]):
-        self.iscell[ids] = CellType.TEMP_DELETE
+        self.tmp_iscell[ids] = CellType.TEMP_DELETE
 
         for id in ids:
-            self.data.temp_delete_roi[id] = None
+            self.tmp_data.temp_delete_roi[id] = None
 
         info = {
-            "iscell": IscellData(self.iscell),
-            "edit_roi_data": self.data,
+            "iscell": IscellData(self.tmp_iscell),
+            "edit_roi_data": self.tmp_data,
         }
 
-        self.__update_pickle_for_roi_edition(self.pickle_file_path, info)
+        self.__update_pickle_for_roi_edition(self.tmp_pickle_file_path, info)
         self.__save_json(info)
 
     def commit(self):
@@ -159,9 +173,9 @@ class EditROI:
             )
 
             info = suite2p_commit(
-                self.data,
+                self.tmp_data,
                 self.output_info["ops"],
-                self.iscell,
+                self.tmp_iscell,
                 self.node_dirpath,
                 self.function_id,
             )
@@ -171,9 +185,9 @@ class EditROI:
             )
 
             info = lccd_commit(
-                self.data,
-                self.fluorescence,
-                self.iscell,
+                self.tmp_data,
+                self.output_info.get("fluorescence"),
+                self.tmp_iscell,
                 self.node_dirpath,
                 self.function_id,
             )
@@ -184,9 +198,9 @@ class EditROI:
             )
 
             info = caiman_commit(
-                self.data,
-                self.fluorescence,
-                self.iscell,
+                self.tmp_data,
+                self.output_info.get("fluorescence"),
+                self.tmp_iscell,
                 self.node_dirpath,
                 self.function_id,
             )
@@ -194,24 +208,25 @@ class EditROI:
         self.__update_pickle_for_roi_edition(self.pickle_file_path, info)
         self.__save_json(info)
         self.__update_whole_nwb(info)
+        os.remove(self.tmp_pickle_file_path)
 
     def cancel(self):
-        original_num_cell = len(self.fluorescence.data)
-        self.data.im = self.data.im[:original_num_cell]
-        self.iscell = self.iscell[:original_num_cell]
-        self.data.cancel()
+        original_num_cell = len(self.output_info.get("fluorescence").data)
+        self.tmp_data.im = self.tmp_data.im[:original_num_cell]
+        self.tmp_iscell = self.tmp_iscell[:original_num_cell]
+        self.tmp_data.cancel()
 
         info = {
             "cell_roi": RoiData(
-                np.nanmax(self.data.im[self.iscell != CellType.NON_ROI], axis=0),
+                np.nanmax(
+                    self.tmp_data.im[self.tmp_iscell != CellType.NON_ROI], axis=0
+                ),
                 output_dir=self.node_dirpath,
                 file_name="cell_roi",
             ),
-            "iscell": IscellData(self.iscell),
-            "edit_roi_data": self.data,
         }
         self.__save_json(info)
-        self.__update_pickle_for_roi_edition(self.pickle_file_path, info)
+        os.remove(self.tmp_pickle_file_path)
 
     def __update_whole_nwb(self, output_info):
         workflow_dirpath = os.path.dirname(self.node_dirpath)
@@ -240,9 +255,6 @@ class EditROI:
 
                 if len(nwb_files) > 0:
                     overwrite_nwb(v, self.node_dirpath, os.path.basename(nwb_files[0]))
-
-    def __read_output_info(self) -> dict:
-        return PickleReader.read(self.pickle_file_path)
 
     def __update_pickle_for_roi_edition(self, file_path, new_output_info):
         func_name = os.path.splitext(os.path.basename(self.pickle_file_path))[0]

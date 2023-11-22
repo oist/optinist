@@ -1,7 +1,8 @@
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
+from studio.app.optinist.dataclass.roi import EditRoiData
 
 
-def set_nwbfile(edit_roi_data, iscell, function_id, fluorescence=None):
+def set_nwbfile(edit_roi_data: EditRoiData, iscell, function_id, fluorescence=None):
     # NWBの追加
     nwbfile = {}
 

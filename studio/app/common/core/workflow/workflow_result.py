@@ -47,7 +47,7 @@ class WorkflowResult:
                     )
 
             glob_pickle_filepath = join_filepath(
-                [self.workflow_dirpath, node_id, "*.pkl"]
+                [self.workflow_dirpath, node_id, "[!tmp_]*.pkl"]
             )
             for pickle_filepath in glob(glob_pickle_filepath):
                 results[node_id] = NodeResult(
