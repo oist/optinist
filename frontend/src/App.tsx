@@ -28,11 +28,27 @@ const App: FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const isStandalone = useSelector(selectModeStandalone)
   const loading = useSelector(selectLoadingMode)
-  useEffect(() => {
+  const getMode = (attempts: number) => {
+    attempts++
     dispatch(getModeStandalone())
+      .unwrap()
+      .catch(() => {
+        new Promise((resolve) =>
+          setTimeout(resolve, 1000 * 2 ** attempts),
+        ).then(() => {
+          getMode(attempts)
+        })
+      })
+  }
+
+  useEffect(() => {
+    getMode(0)
     //eslint-disable-next-line
   }, [])
-  return (
+
+  return loading ? (
+    <Loading />
+  ) : (
     <SnackbarProvider
       maxSnack={5}
       action={(snackbarKey) => (
@@ -71,7 +87,6 @@ const App: FC = () => {
           )}
         </Layout>
       </BrowserRouter>
-      {loading ? <Loading /> : null}
     </SnackbarProvider>
   )
 }
