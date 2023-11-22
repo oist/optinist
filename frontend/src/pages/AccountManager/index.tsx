@@ -810,7 +810,7 @@ const AccountManagerWrapper = styled(Box)(({ theme }) => ({
 }))
 
 const Modal = styled(Dialog)(() => ({
-  ".css-1t1j96h-MuiPaper-root-MuiDialog-paper": {
+  div: {
     maxWidth: "unset",
   },
 }))
