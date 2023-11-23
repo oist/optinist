@@ -352,13 +352,6 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }
 
   useEffect(() => {
-    if (!edit) return
-    onCancel()
-    //eslint-disabled-next-line
-  }, [edit])
-
-  useEffect(() => {
-    if (!edit) return
     fetchStatusRoi()
     //eslint-disable-next-line
   }, [roiFilePath, workspaceId, edit])
@@ -506,6 +499,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
 
   const editRoi = () => {
     setEdit(true)
+    onCancel()
   }
 
   const onCancelAdd = () => {
