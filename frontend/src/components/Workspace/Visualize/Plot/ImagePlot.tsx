@@ -472,12 +472,6 @@ const ImagePlotChart = memo(function ImagePlotChart({
     if (!roiFilePath || workspaceId === undefined) return
     setAction("")
     setPointClick([])
-    if (
-      Object.keys(statusRoi).every(
-        (key) => statusRoi[key as keyof StatusROI].length < 1,
-      )
-    )
-      return
     setLoadingApi(true)
     try {
       await cancelRoiApi(roiFilePath, workspaceId)
