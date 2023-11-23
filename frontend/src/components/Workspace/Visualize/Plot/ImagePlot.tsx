@@ -352,9 +352,10 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }
 
   useEffect(() => {
+    if (!edit) return
     onCancel()
     //eslint-disabled-next-line
-  }, [])
+  }, [edit])
 
   useEffect(() => {
     if (!edit) return
@@ -476,7 +477,6 @@ const ImagePlotChart = memo(function ImagePlotChart({
 
   const onCancel = async () => {
     if (!roiFilePath || workspaceId === undefined) return
-    setEdit(false)
     setAction("")
     setPointClick([])
     if (
@@ -775,7 +775,10 @@ const ImagePlotChart = memo(function ImagePlotChart({
                 ) : null}
                 <LinkDiv
                   sx={{ opacity: loadingApi ? 0.5 : 1 }}
-                  onClick={onCancel}
+                  onClick={() => {
+                    onCancel()
+                    setEdit(false)
+                  }}
                 >
                   Cancel
                 </LinkDiv>
