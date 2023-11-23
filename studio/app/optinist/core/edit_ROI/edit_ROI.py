@@ -208,7 +208,9 @@ class EditROI:
         self.__update_pickle_for_roi_edition(self.pickle_file_path, info)
         self.__save_json(info)
         self.__update_whole_nwb(info)
-        os.remove(self.tmp_pickle_file_path)
+        os.remove(self.tmp_pickle_file_path) if os.path.exists(
+            self.tmp_pickle_file_path
+        ) else None
 
     def cancel(self):
         original_num_cell = len(self.output_info.get("fluorescence").data)
@@ -226,7 +228,9 @@ class EditROI:
             ),
         }
         self.__save_json(info)
-        os.remove(self.tmp_pickle_file_path)
+        os.remove(self.tmp_pickle_file_path) if os.path.exists(
+            self.tmp_pickle_file_path
+        ) else None
 
     def __update_whole_nwb(self, output_info):
         workflow_dirpath = os.path.dirname(self.node_dirpath)
