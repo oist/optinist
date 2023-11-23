@@ -10,7 +10,10 @@ import { LinearProgressWithLabel } from "components/Workspace/FlowChart/FlowChar
 import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
 import { getLabelByPath } from "store/slice/FlowElement/FlowElementUtils"
 import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
-import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
+import {
+  selectPipelineIsStartedSuccess,
+  selectPipelineLatestUid,
+} from "store/slice/Pipeline/PipelineSelectors"
 
 interface FileSelectProps {
   multiSelect?: boolean
@@ -84,6 +87,7 @@ export const FileSelectImple = memo(function FileSelectImple({
   const { onOpenFileSelectDialog, onOpenClearWorkflowIdDialog } =
     useContext(DialogContext)
   const currentWorkflowId = useSelector(selectPipelineLatestUid)
+  const isPending = useSelector(selectPipelineIsStartedSuccess)
 
   const onFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
@@ -122,6 +126,7 @@ export const FileSelectImple = memo(function FileSelectImple({
       <ButtonGroup size="small" style={{ marginRight: 4 }}>
         <Button
           variant="outlined"
+          disabled={!!isPending}
           onClick={() => {
             onOpenFileSelectDialog({
               open: true,
@@ -134,7 +139,7 @@ export const FileSelectImple = memo(function FileSelectImple({
         >
           {selectButtonLabel ? selectButtonLabel : "Select File"}
         </Button>
-        <Button onClick={onClick} variant="outlined">
+        <Button onClick={onClick} variant="outlined" disabled={!!isPending}>
           {uploadButtonLabel ? uploadButtonLabel : "Load"}
         </Button>
       </ButtonGroup>

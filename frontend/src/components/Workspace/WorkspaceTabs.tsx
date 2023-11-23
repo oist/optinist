@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux"
 import Tab from "@mui/material/Tab"
 import Tabs from "@mui/material/Tabs"
 
+import { selectPipelineIsStartedSuccess } from "store/slice/Pipeline/PipelineSelectors"
 import { selectActiveTab } from "store/slice/Workspace/WorkspaceSelector"
 import { setActiveTab } from "store/slice/Workspace/WorkspaceSlice"
 
@@ -14,6 +15,8 @@ const WorkspaceTabs: FC = () => {
     dispatch(setActiveTab(newValue))
   }
 
+  const isPending = useSelector(selectPipelineIsStartedSuccess)
+
   return (
     <Tabs
       sx={{ width: "100%" }}
@@ -23,7 +26,7 @@ const WorkspaceTabs: FC = () => {
       textColor="primary"
     >
       <Tab label="Workflow" {...a11yProps(0)} />
-      <Tab label="Visualize" {...a11yProps(1)} />
+      <Tab disabled={!!isPending} label="Visualize" {...a11yProps(1)} />
       <Tab label="Record" {...a11yProps(2)} />
     </Tabs>
   )

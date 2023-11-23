@@ -1,5 +1,5 @@
 import { Dispatch, memo, SetStateAction, useState } from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
 import DeleteIcon from "@mui/icons-material/Delete"
 import {
@@ -13,6 +13,7 @@ import {
 } from "@mui/material"
 
 import { clearFlowElements } from "store/slice/FlowElement/FlowElementSlice"
+import { selectPipelineIsStartedSuccess } from "store/slice/Pipeline/PipelineSelectors"
 
 export const ClearWorkflowButton = memo(function ClearWorkflowButton() {
   const [open, setOpen] = useState(false)
@@ -20,11 +21,17 @@ export const ClearWorkflowButton = memo(function ClearWorkflowButton() {
     setOpen(true)
   }
 
+  const isPending = useSelector(selectPipelineIsStartedSuccess)
+
   return (
     <>
       <Tooltip title="Clear workflow">
-        <IconButton onClick={openDialog}>
-          <DeleteIcon color="primary" />
+        <IconButton
+          disabled={!!isPending}
+          onClick={openDialog}
+          color={"primary"}
+        >
+          <DeleteIcon />
         </IconButton>
       </Tooltip>
       <ConfirmClearDialog open={open} setOpen={setOpen} />
