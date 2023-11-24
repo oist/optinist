@@ -1,6 +1,16 @@
 import { FC, useState } from "react"
 
-import { Box, Button, Modal, styled, Typography } from "@mui/material"
+import {
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+  Modal,
+  styled,
+  Typography,
+} from "@mui/material"
 
 import Input from "components/common/Input"
 import Loading from "components/common/Loading"
@@ -31,44 +41,36 @@ const DeleteConfirmModal: FC<DeleteConfirmModalProps> = ({
 
   return (
     <>
-      <Modal
-        open={open}
-        onClose={onClose}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <ContentDelete>
+      <Dialog open={open} onClose={onClose} maxWidth={"xs"}>
+        <DialogTitle>
           <Typography style={{ whiteSpace: "pre-wrap" }}>
             {description}
             This operation cannot be undone. To continue, type
             <span style={{ fontWeight: 600 }}>DELETE</span> in the box below:
           </Typography>
+        </DialogTitle>
+        <DialogContent>
           <BoxConfirm>
             <Input
               placeholder="DELETE"
               value={textDelete}
               onChange={(e) => setTextDelete(e.target.value)}
+              sx={{ width: "calc(100% - 20px)" }}
             />
-            <ButtonConfirm
-              onClick={onConfirm}
-              sx={{ backgroundColor: "red !important" }}
-            >
-              {titleSubmit}
-            </ButtonConfirm>
           </BoxConfirm>
-          <Button onClick={onClose}>
-            <Typography
-              sx={{
-                textDecoration: "underline",
-                textTransform: "none",
-                lineHeight: "17px",
-              }}
-            >
-              Close
-            </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} variant={"outlined"}>
+            CANCEL
           </Button>
-        </ContentDelete>
-      </Modal>
+          <Button
+            onClick={onConfirm}
+            sx={{ backgroundColor: "red !important", color: "white" }}
+          >
+            {titleSubmit}
+          </Button>
+        </DialogActions>
+      </Dialog>
       {isLoading ? <Loading /> : null}
     </>
   )

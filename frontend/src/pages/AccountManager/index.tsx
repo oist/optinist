@@ -817,8 +817,6 @@ const Modal = styled(Dialog)(() => ({
 
 const ModalBox = styled(Box)(() => ({
   width: 800,
-  backgroundColor: "white",
-  border: "1px solid black",
 }))
 
 const TitleModal = styled(DialogTitle)(({ theme }) => ({

@@ -1,7 +1,6 @@
 import {
   ChangeEvent,
   MouseEvent as ReactMouseEvent,
-  KeyboardEvent,
   useCallback,
   useEffect,
   useRef,
