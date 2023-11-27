@@ -1,3 +1,4 @@
+import logging
 import os
 import shutil
 from dataclasses import asdict
@@ -8,7 +9,10 @@ from fastapi.responses import FileResponse
 
 from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
 from studio.app.common.core.experiment.experiment_utils import ExptUtils
-from studio.app.common.core.utils.filepath_creater import join_filepath
+from studio.app.common.core.utils.filepath_creater import (
+    create_directory,
+    join_filepath,
+)
 from studio.app.common.core.workflow.workflow_reader import WorkflowConfigReader
 from studio.app.common.core.workspace.workspace_dependencies import (
     is_workspace_available,
@@ -91,11 +95,10 @@ async def import_workflow_config(file: UploadFile = File(...)):
 
 
 @router.get(
-    "/sample_data",
+    "/sample_data/{workspace_id}",
     dependencies=[Depends(is_workspace_available)],
 )
 async def copy_sample_data(workspace_id: str):
-    all_files_copied = True  # Initialize flag
     folders = ["input", "output"]
     for folder in folders:
         sample_data_dir = os.path.join("sample_data", folder)
@@ -103,13 +106,21 @@ async def copy_sample_data(workspace_id: str):
             user_dir = os.path.join(DIRPATH.INPUT_DIR, workspace_id)
         elif folder == "output":
             user_dir = os.path.join(DIRPATH.OUTPUT_DIR, workspace_id)
-        if not os.path.exists(user_dir):
-            os.makedirs(user_dir)
+        create_directory(user_dir)
         try:
             shutil.copytree(sample_data_dir, user_dir, dirs_exist_ok=True)
+            logging.info(
+                f"Successfully copied files from {sample_data_dir} to {user_dir}"
+            )
+            all_files_copied = True
         except Exception as e:
             raise HTTPException(
                 status_code=500, detail=f"Failed to copy files from {folder}: {e}"
             )
-            all_files_copied = False
+    import_workflow_config(
+        os.path.join(DIRPATH.OUTPUT_DIR, workspace_id, "tutorial1", "workflow.yaml")
+    )
+    import_workflow_config(
+        os.path.join(DIRPATH.OUTPUT_DIR, workspace_id, "tutorial2", "workflow.yaml")
+    )
     return all_files_copied

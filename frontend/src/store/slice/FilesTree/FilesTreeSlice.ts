@@ -89,10 +89,16 @@ export const filesTreeSlice = createSlice({
         }
       })
       .addCase(importSampleData.fulfilled, (state) => {
-        state[FILE_TREE_TYPE_SET.IMAGE].isLatest = false
-        state[FILE_TREE_TYPE_SET.CSV].isLatest = false
-        state[FILE_TREE_TYPE_SET.HDF5].isLatest = false
-        state[FILE_TREE_TYPE_SET.ALL].isLatest = false
+        ;[
+          FILE_TREE_TYPE_SET.IMAGE,
+          FILE_TREE_TYPE_SET.CSV,
+          FILE_TREE_TYPE_SET.HDF5,
+          FILE_TREE_TYPE_SET.ALL,
+        ].forEach((fileType) => {
+          if (state[fileType] != null) {
+            state[fileType].isLatest = false
+          }
+        })
       })
   },
 })

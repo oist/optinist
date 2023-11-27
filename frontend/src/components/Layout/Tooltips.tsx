@@ -10,9 +10,7 @@ import { ImportSampleDataButton } from "components/common/SampleData"
 const Tooltips: FC = () => {
   return (
     <>
-      <Tooltip title="Example Data">
-        <ImportSampleDataButton />
-      </Tooltip>
+      <ImportSampleDataButton />
       <Tooltip title="GitHub repository">
         <IconButton
           sx={{ mr: 1 }}

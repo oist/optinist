@@ -46,7 +46,9 @@ export async function importWorkflowConfigApi(
   return response.data
 }
 
-export async function importSampleDataApi(): Promise<boolean> {
-  const response = await axios.get(`${BASE_URL}/sample_data`)
+export async function importSampleDataApi(
+  workspace_id: number
+): Promise<boolean> {
+  const response = await axios.get(`${BASE_URL}/workflow/sample_data/${workspace_id}`)
   return response.data
 }

@@ -1,0 +1,139 @@
+finished_at: '2023-11-22 16:09:08'
+function:
+  eta_jntqpbkvwv:
+    finished_at: '2023-11-22 16:09:08'
+    hasNWB: true
+    message: eta success
+    name: eta
+    outputPaths:
+      mean:
+        max_index: 45
+        path: /tmp/studio/output/1/tutorial1/eta_jntqpbkvwv/mean
+        type: timeseries
+      mean_heatmap:
+        max_index: null
+        path: /tmp/studio/output/1/tutorial1/eta_jntqpbkvwv/mean_heatmap.json
+        type: heatmap
+    started_at: '2023-11-22 16:09:06'
+    success: success
+    unique_id: eta_jntqpbkvwv
+  input_0:
+    finished_at: '2023-11-22 16:07:03'
+    hasNWB: false
+    message: null
+    name: sample_mouse2p_image.tiff
+    outputPaths: null
+    started_at: '2023-11-22 16:07:03'
+    success: success
+    unique_id: input_0
+  input_zdax4o54o0:
+    finished_at: '2023-11-22 16:07:03'
+    hasNWB: false
+    message: null
+    name: sample_mouse2p_behavior.csv
+    outputPaths: null
+    started_at: '2023-11-22 16:07:03'
+    success: success
+    unique_id: input_zdax4o54o0
+  suite2p_file_convert_axgpevzu10:
+    finished_at: '2023-11-22 16:07:43'
+    hasNWB: false
+    message: suite2p_file_convert success
+    name: suite2p_file_convert
+    outputPaths:
+      meanImg:
+        max_index: 1
+        path: /tmp/studio/output/1/tutorial1/suite2p_file_convert_axgpevzu10/meanImg.json
+        type: images
+    started_at: '2023-11-22 16:07:25'
+    success: success
+    unique_id: suite2p_file_convert_axgpevzu10
+  suite2p_registration_ktrkq5sa71:
+    finished_at: '2023-11-22 16:08:13'
+    hasNWB: false
+    message: suite2p_registration success
+    name: suite2p_registration
+    outputPaths:
+      meanImgE:
+        max_index: 1
+        path: /tmp/studio/output/1/tutorial1/suite2p_registration_ktrkq5sa71/meanImgE.json
+        type: images
+      refImg:
+        max_index: 1
+        path: /tmp/studio/output/1/tutorial1/suite2p_registration_ktrkq5sa71/refImg.json
+        type: images
+    started_at: '2023-11-22 16:07:54'
+    success: success
+    unique_id: suite2p_registration_ktrkq5sa71
+  suite2p_roi_rfau106shp:
+    finished_at: '2023-11-22 16:08:59'
+    hasNWB: true
+    message: suite2p_roi success
+    name: suite2p_roi
+    outputPaths:
+      Vcorr:
+        max_index: 1
+        path: /tmp/studio/output/1/tutorial1/suite2p_roi_rfau106shp/Vcorr.json
+        type: images
+      all_roi:
+        max_index: null
+        path: /tmp/studio/output/1/tutorial1/suite2p_roi_rfau106shp/all_roi.json
+        type: roi
+      cell_roi:
+        max_index: null
+        path: /tmp/studio/output/1/tutorial1/suite2p_roi_rfau106shp/cell_roi.json
+        type: roi
+      fluorescence:
+        max_index: 295
+        path: /tmp/studio/output/1/tutorial1/suite2p_roi_rfau106shp/fluorescence
+        type: timeseries
+      max_proj:
+        max_index: 1
+        path: /tmp/studio/output/1/tutorial1/suite2p_roi_rfau106shp/max_proj.json
+        type: images
+      non_cell_roi:
+        max_index: null
+        path: /tmp/studio/output/1/tutorial1/suite2p_roi_rfau106shp/noncell_roi.json
+        type: roi
+    started_at: '2023-11-22 16:08:24'
+    success: success
+    unique_id: suite2p_roi_rfau106shp
+hasNWB: true
+name: Tutorial1
+nwb:
+  device:
+    description: Microscope Information
+    manufacturer: Microscope Manufacture
+    name: Microscope device
+  experiment_description: None
+  identifier: optinist
+  image_series:
+    starting_frame:
+    - 0
+    starting_time: 0
+  imaging_plane:
+    description: standard
+    excitation_lambda: 900.0
+    imaging_rate: 30.0
+    indicator: GCaMP
+    location: V1
+    name: ImagingPlane
+  ophys:
+    plane_segmentation:
+      description: ''
+      name: PlaneSegmentation
+  optical_channel:
+    description: optical channel
+    emission_lambda: 500.0
+    name: OpticalChannel
+  session_description: optinist
+snakemake:
+  cores: 2
+  forceall: false
+  forcetargets: true
+  lock: false
+  use_conda: true
+started_at: '2023-11-22 16:07:03'
+success: success
+unique_id: tutorial1
+workspace_id: '1'
