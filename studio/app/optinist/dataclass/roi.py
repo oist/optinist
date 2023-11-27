@@ -12,6 +12,7 @@ from studio.app.common.core.utils.filepath_creater import (
 from studio.app.common.core.utils.json_writer import JsonWriter
 from studio.app.common.core.workflow.workflow import OutputPath, OutputType
 from studio.app.common.dataclass.base import BaseData
+from studio.app.common.dataclass.image import ImageData
 from studio.app.common.dataclass.utils import create_images_list
 from studio.app.common.schemas.outputs import PlotMetaData
 from studio.app.dir_path import DIRPATH
@@ -59,7 +60,7 @@ class RoiData(BaseData):
 
 class EditRoiData(BaseData):
     def __init__(self, images, im):
-        self.images = images
+        self.images: ImageData = images
         self.im = im
         self.temp_add_roi: Dict[int, RoiPos] = {}
         self.temp_merge_roi: Dict[float, List[int]] = {}

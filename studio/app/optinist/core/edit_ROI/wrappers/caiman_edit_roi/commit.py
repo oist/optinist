@@ -1,10 +1,12 @@
 import numpy as np
 
+from studio.app.common.dataclass.image import ImageData
 from studio.app.optinist.core.edit_ROI.wrappers.caiman_edit_roi.utils import set_nwbfile
 from studio.app.optinist.dataclass import EditRoiData, FluoData, IscellData, RoiData
 
 
 def commit_edit(
+    images: ImageData,
     data: EditRoiData,
     fluorescence: FluoData,
     iscell,
@@ -22,9 +24,7 @@ def commit_edit(
     iscell[iscell == CellType.TEMP_DELETE] = CellType.NON_ROI
     for i in range(num_cell):
         if iscell[i] == CellType.TEMP_ADD:
-            new_fluorescences[i] = np.mean(
-                data.images[:, ~np.isnan(data.im[i])], axis=1
-            )
+            new_fluorescences[i] = np.mean(images[:, ~np.isnan(data.im[i])], axis=1)
             iscell[i] = CellType.ROI
 
     data.commit()

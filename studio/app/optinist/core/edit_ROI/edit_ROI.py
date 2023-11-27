@@ -75,9 +75,12 @@ class EditROI:
             else {}
         )
 
+        self.data = self.output_info.get("edit_roi_data", {})
         self.tmp_data: EditRoiData = self.tmp_output_info.get(
-            "edit_roi_data", self.output_info.get("edit_roi_data")
+            "edit_roi_data", self.data
         )
+        self.tmp_data.images = None
+
         self.tmp_iscell = self.tmp_output_info.get(
             "iscell", self.output_info.get("iscell")
         ).data
@@ -185,6 +188,7 @@ class EditROI:
             )
 
             info = lccd_commit(
+                self.data.images,
                 self.tmp_data,
                 self.output_info.get("fluorescence"),
                 self.tmp_iscell,
@@ -198,6 +202,7 @@ class EditROI:
             )
 
             info = caiman_commit(
+                self.data.images,
                 self.tmp_data,
                 self.output_info.get("fluorescence"),
                 self.tmp_iscell,
