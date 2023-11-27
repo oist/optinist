@@ -5,7 +5,7 @@ import { ModeType } from "store/slice/Standalone/StandaloneType"
 
 const initialState: ModeType = {
   mode: undefined,
-  loading: false,
+  loading: true,
 }
 
 export const modeStandaloneSlice = createSlice({
@@ -16,9 +16,6 @@ export const modeStandaloneSlice = createSlice({
     build
       .addCase(getModeStandalone.pending, (state) => {
         state.loading = true
-      })
-      .addCase(getModeStandalone.rejected, (state) => {
-        state.loading = false
       })
       .addCase(getModeStandalone.fulfilled, (state, action) => {
         state.mode = action.payload
