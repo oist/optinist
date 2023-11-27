@@ -10,13 +10,16 @@ import ListItemText from "@mui/material/ListItemText"
 import Menu from "@mui/material/Menu"
 import MenuItem from "@mui/material/MenuItem"
 
+import { cancelRoiApi } from "api/outputs/Outputs"
 import { deleteDisplayItem } from "store/slice/VisualizeItem/VisualizeItemActions"
 import {
   selectDisplayDataIsSingle,
+  selectRoiItemFilePath,
   selectVisualizeDataFilePath,
   selectVisualizeDataType,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import { insertInitialItemToNextColumn } from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
 
 interface ItemIdProps {
   itemId: number
@@ -28,6 +31,9 @@ export const DisplayDataItemLayoutMenuIcon = memo(
     const dataType = useSelector(selectVisualizeDataType(itemId))
     const filePath = useSelector(selectVisualizeDataFilePath(itemId))
     const isSingleData = useSelector(selectDisplayDataIsSingle(itemId))
+    const roiFilePath = useSelector(selectRoiItemFilePath(0))
+    const workspaceId = useSelector(selectCurrentWorkspaceId)
+
     const onClickDeleteMenu = () => {
       // visualize Itemで同じpathのデータ個数を調べて、1だったら、displayも削除
       dispatch(
@@ -37,6 +43,8 @@ export const DisplayDataItemLayoutMenuIcon = memo(
             : { itemId, deleteData: false },
         ),
       )
+      if (!roiFilePath || !workspaceId) return
+      cancelRoiApi(roiFilePath, workspaceId)
     }
     const onClickInsertMenu = () => {
       dispatch(insertInitialItemToNextColumn(itemId))
@@ -79,6 +87,7 @@ const PresentationalLayoutMenuIcon = memo(
       onClickInsertMenu()
       setOpen(false)
     }
+
     return (
       <>
         <IconButton ref={anchorRef} onClick={onClick}>

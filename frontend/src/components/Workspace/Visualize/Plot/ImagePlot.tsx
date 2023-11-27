@@ -468,7 +468,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
     setPointClick(newPoints)
   }
 
-  const onCancel = async () => {
+  const onCancel = useCallback(async () => {
     if (!roiFilePath || workspaceId === undefined) return
     setAction("")
     setPointClick([])
@@ -484,7 +484,19 @@ const ImagePlotChart = memo(function ImagePlotChart({
       })
       setLoadingApi(false)
     }
-  }
+    //eslint-disable-next-line
+  }, [roiFilePath, workspaceId])
+
+  useEffect(() => {
+    window.addEventListener("beforeunload", onCancel)
+    return () => {
+      window.removeEventListener("beforeunload", onCancel)
+    }
+  }, [onCancel])
+
+  useEffect(() => {
+    onCancel()
+  }, [onCancel])
 
   const addRoi = () => {
     setEdit(false)
@@ -493,7 +505,6 @@ const ImagePlotChart = memo(function ImagePlotChart({
 
   const editRoi = () => {
     setEdit(true)
-    onCancel()
   }
 
   const onCancelAdd = () => {
