@@ -1,4 +1,3 @@
-import logging
 import os
 import shutil
 from dataclasses import asdict
@@ -109,9 +108,6 @@ async def copy_sample_data(workspace_id: str):
         create_directory(user_dir)
         try:
             shutil.copytree(sample_data_dir, user_dir, dirs_exist_ok=True)
-            logging.info(
-                f"Successfully copied files from {sample_data_dir} to {user_dir}"
-            )
             all_files_copied = True
         except Exception as e:
             raise HTTPException(
