@@ -9,6 +9,7 @@ import IconButton from "@mui/material/IconButton"
 
 import Loading from "components/common/Loading"
 import Layout from "components/Layout"
+import { RETRY_WAIT } from "const/Mode"
 import Account from "pages/Account"
 import AccountDelete from "pages/AccountDelete"
 import AccountManager from "pages/AccountManager"
@@ -28,21 +29,20 @@ const App: FC = () => {
   const dispatch = useDispatch<AppDispatch>()
   const isStandalone = useSelector(selectModeStandalone)
   const loading = useSelector(selectLoadingMode)
-  const getMode = (attempts: number) => {
-    attempts++
+  const getMode = () => {
     dispatch(getModeStandalone())
       .unwrap()
       .catch(() => {
         new Promise((resolve) =>
-          setTimeout(resolve, 1000 * 2 ** attempts),
+          setTimeout(resolve, RETRY_WAIT),
         ).then(() => {
-          getMode(attempts)
+          getMode()
         })
       })
   }
 
   useEffect(() => {
-    getMode(0)
+    getMode()
     //eslint-disable-next-line
   }, [])
 
