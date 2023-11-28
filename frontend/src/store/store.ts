@@ -47,6 +47,21 @@ export const rootReducer = combineReducers({
 
 export const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [
+          "user/deleteUser/rejected",
+          "user/updateUser/rejected",
+          "workflow/fetchExperiment/rejected",
+          "workflow/reproduceWorkflow/rejected",
+          "workspace/getWorkspace/rejected",
+          "workspace/getListUserShareWorkSpaces/rejected",
+          "workspace/putWorkspaceList/rejected",
+          "workspace/delWorkspaceList/rejected",
+        ],
+      },
+    }),
 })
 
 export type AppDispatch = typeof store.dispatch
