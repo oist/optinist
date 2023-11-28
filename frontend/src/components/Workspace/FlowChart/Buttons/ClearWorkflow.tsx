@@ -27,9 +27,10 @@ export const CreateWorkflowButton = memo(function CreateWorkflowButton() {
     <>
       <Tooltip title="Create new workflow">
         <IconButton
-          disabled={!!isPending} 
-          onClick={openDialog}>
+          disabled={!!isPending}
+          onClick={openDialog}
           color={"primary"}
+        >
           <AddToPhotos />
         </IconButton>
       </Tooltip>
@@ -60,9 +61,8 @@ const ConfirmClearDialog = memo(function ConfirmClearDialog({
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Confirm create new workflow</DialogTitle>
       <DialogContent>
-        To create new workflow, current workflow will be cleared.
-        The record will NOT be deleted if it has already been run.
-        Are you sure?
+        To create new workflow, current workflow will be cleared. The record
+        will NOT be deleted if it has already been run. Are you sure?
       </DialogContent>
       <DialogActions>
         <Button variant="outlined" onClick={handleClose}>
