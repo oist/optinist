@@ -36,8 +36,8 @@ export const ToolBar = memo(function ToolBar(props: UseRunPipelineReturnType) {
           Workspaces
         </Button>
       )}
-      <ImportWorkflowConfigButton />
       <CreateWorkflowButton />
+      <ImportWorkflowConfigButton />
       <SnakemakeButton />
       <NWBSettingButton />
       <RunButtons {...props} />
