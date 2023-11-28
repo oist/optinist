@@ -6,7 +6,7 @@ import { useSnackbar, VariantType } from "notistack"
 
 import { isRejected } from "@reduxjs/toolkit"
 
-import { IS_STANDALONE, STANDALONE_WORKSPACE_ID } from "const/Mode"
+import { STANDALONE_WORKSPACE_ID } from "const/Mode"
 import { selectAlgorithmNodeNotExist } from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
 import { getExperiments } from "store/slice/Experiments/ExperimentsActions"
 import { clearExperiments } from "store/slice/Experiments/ExperimentsSlice"
@@ -25,6 +25,7 @@ import {
 } from "store/slice/Pipeline/PipelineSelectors"
 import { RUN_STATUS } from "store/slice/Pipeline/PipelineType"
 import { selectRunPostData } from "store/slice/Run/RunSelectors"
+import { selectModeStandalone } from "store/slice/Standalone/StandaloneSeclector"
 import { fetchWorkflow } from "store/slice/Workflow/WorkflowActions"
 import { getWorkspace } from "store/slice/Workspace/WorkspaceActions"
 import { selectIsWorkspaceOwner } from "store/slice/Workspace/WorkspaceSelector"
@@ -42,6 +43,7 @@ export type UseRunPipelineReturnType = ReturnType<typeof useRunPipeline>
 export function useRunPipeline() {
   const dispatch = useDispatch<AppDispatch>()
   const appDispatch: AppDispatch = useDispatch()
+  const isStandalone = useSelector(selectModeStandalone)
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -49,7 +51,7 @@ export function useRunPipeline() {
   const _workspaceId = Number(workspaceId)
 
   useEffect(() => {
-    if (IS_STANDALONE) {
+    if (isStandalone) {
       dispatch(setCurrentWorkspace(STANDALONE_WORKSPACE_ID))
       dispatch(fetchWorkflow(STANDALONE_WORKSPACE_ID))
     } else {
@@ -68,7 +70,14 @@ export function useRunPipeline() {
       dispatch(clearExperiments())
       dispatch(clearCurrentWorkspace())
     }
-  }, [dispatch, appDispatch, navigate, _workspaceId, location.state])
+  }, [
+    dispatch,
+    appDispatch,
+    navigate,
+    _workspaceId,
+    location.state,
+    isStandalone,
+  ])
 
   const uid = useSelector(selectPipelineLatestUid)
   const isCanceled = useSelector(selectPipelineIsCanceled)
