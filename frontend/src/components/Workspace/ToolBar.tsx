@@ -5,7 +5,7 @@ import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos"
 import { Button } from "@mui/material"
 import Box from "@mui/material/Box"
 
-import { ClearWorkflowButton } from "components/Workspace/FlowChart/Buttons/ClearWorkflow"
+import { CreateWorkflowButton } from "components/Workspace/FlowChart/Buttons/ClearWorkflow"
 import { ImportWorkflowConfigButton } from "components/Workspace/FlowChart/Buttons/ImportWorkflowConfig"
 import { NWBSettingButton } from "components/Workspace/FlowChart/Buttons/NWB"
 import { RunButtons } from "components/Workspace/FlowChart/Buttons/RunButtons"
@@ -37,7 +37,7 @@ export const ToolBar = memo(function ToolBar(props: UseRunPipelineReturnType) {
         </Button>
       )}
       <ImportWorkflowConfigButton />
-      <ClearWorkflowButton />
+      <CreateWorkflowButton />
       <SnakemakeButton />
       <NWBSettingButton />
       <RunButtons {...props} />
