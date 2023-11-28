@@ -210,6 +210,8 @@ class EditROI:
                 self.function_id,
             )
 
+        info["edit_roi_data"].images = self.data.images
+
         self.__update_pickle_for_roi_edition(self.pickle_file_path, info)
         self.__save_json(info)
         self.__update_whole_nwb(info)
