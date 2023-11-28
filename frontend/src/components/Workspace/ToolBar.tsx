@@ -1,20 +1,22 @@
 import { memo } from "react"
+import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
 import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos"
 import { Button } from "@mui/material"
 import Box from "@mui/material/Box"
 
-import { ClearWorkflowButton } from "components/Workspace/FlowChart/Buttons/ClearWorkflow"
+import { CreateWorkflowButton } from "components/Workspace/FlowChart/Buttons/ClearWorkflow"
 import { ImportWorkflowConfigButton } from "components/Workspace/FlowChart/Buttons/ImportWorkflowConfig"
 import { NWBSettingButton } from "components/Workspace/FlowChart/Buttons/NWB"
 import { RunButtons } from "components/Workspace/FlowChart/Buttons/RunButtons"
 import { SnakemakeButton } from "components/Workspace/FlowChart/Buttons/Snakemake"
-import { IS_STANDALONE } from "const/Mode"
 import { UseRunPipelineReturnType } from "store/slice/Pipeline/PipelineHook"
+import { selectModeStandalone } from "store/slice/Standalone/StandaloneSeclector"
 
 export const ToolBar = memo(function ToolBar(props: UseRunPipelineReturnType) {
   const navigate = useNavigate()
+  const isStandalone = useSelector(selectModeStandalone)
   return (
     <Box
       style={{
@@ -30,14 +32,14 @@ export const ToolBar = memo(function ToolBar(props: UseRunPipelineReturnType) {
         fontSize: "1rem",
       }}
     >
-      {!IS_STANDALONE && (
+      {!isStandalone && (
         <Button onClick={() => navigate("/console/workspaces")}>
           <ArrowBackIosIcon />
           Workspaces
         </Button>
       )}
+      <CreateWorkflowButton />
       <ImportWorkflowConfigButton />
-      <ClearWorkflowButton />
       <SnakemakeButton />
       <NWBSettingButton />
       <RunButtons {...props} />
