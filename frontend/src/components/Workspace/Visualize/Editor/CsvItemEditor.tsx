@@ -56,7 +56,7 @@ export const CsvItemEditor: FC = () => {
   }
 
   return (
-    <div style={{ margin: "10px", padding: 10 }}>
+    <>
       <FileSelectImple
         filePath={filePath ?? ""}
         onSelectFile={(path) => !Array.isArray(path) && onSelectFile(path)}
@@ -67,7 +67,7 @@ export const CsvItemEditor: FC = () => {
       <Transpose />
       <SetHeader />
       <SetIndex />
-    </div>
+    </>
   )
 }
 

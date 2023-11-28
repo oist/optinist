@@ -54,7 +54,7 @@ import { arrayEqualityFn } from "utils/EqualityUtils"
 
 export const TimeSeriesItemEditor: FC = () => {
   return (
-    <div style={{ margin: "10px", padding: 10 }}>
+    <>
       <Offset />
       <Span />
       <ShowGrid />
@@ -65,7 +65,7 @@ export const TimeSeriesItemEditor: FC = () => {
       <Xrange />
       <LegendSelect />
       <SaveFig />
-    </div>
+    </>
   )
 }
 

@@ -92,7 +92,7 @@ export const ImageItemEditor: FC = () => {
   }
 
   return (
-    <div style={{ margin: "10px", padding: 10 }}>
+    <>
       <FileSelectImple
         filePath={filePath ?? ""}
         onSelectFile={(path) => !Array.isArray(path) && onSelectImageFile(path)}
@@ -110,7 +110,7 @@ export const ImageItemEditor: FC = () => {
       <Alpha />
       <RoiAlpha />
       <SaveFig />
-    </div>
+    </>
   )
 }
 
