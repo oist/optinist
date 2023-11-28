@@ -33,13 +33,13 @@ export const AlgorithmParamForm = memo(function AlgorithmParamForm() {
     }
   }, [dispatch, nodeId, algoName, algoParamIsLoaded])
   return (
-    <div style={{ padding: 8 }}>
-      <Typography variant="h5">{algoName}</Typography>
-      <div style={{ paddingLeft: 8 }}>
-        {paramKeyList.map((paramKey) => (
-          <ParamItem key={paramKey} paramKey={paramKey} />
-        ))}
-      </div>
+    <div style={{ padding: 24 }}>
+      <Typography variant="h6" paddingBottom={2}>
+        {algoName}
+      </Typography>
+      {paramKeyList.map((paramKey) => (
+        <ParamItem key={paramKey} paramKey={paramKey} />
+      ))}
     </div>
   )
 })
