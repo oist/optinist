@@ -63,7 +63,7 @@ const ConfirmClearDialog = memo(function ConfirmClearDialog({
           Cancel
         </Button>
         <Button variant="contained" onClick={handleClear}>
-          Clear
+          OK
         </Button>
       </DialogActions>
     </Dialog>
