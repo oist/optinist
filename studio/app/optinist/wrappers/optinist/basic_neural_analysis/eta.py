@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.stats import mode
 
 from studio.app.common.dataclass import HeatMapData, TimeSeriesData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
@@ -6,34 +7,60 @@ from studio.app.optinist.dataclass import BehaviorData, FluoData, IscellData
 
 
 def calc_trigger(behavior_data, trigger_type, trigger_threshold):
+    behavior_data = np.array(behavior_data, dtype=float)
     flg = np.array(behavior_data > trigger_threshold, dtype=int)
-    if trigger_type == "up":
-        trigger_idx = np.where(np.ediff1d(flg) == 1)[0]
-    elif trigger_type == "down":
-        trigger_idx = np.where(np.ediff1d(flg) == -1)[0]
-    elif trigger_type == "cross":
-        trigger_idx = np.where(np.ediff1d(flg) != 0)[0]
+    trigger_idx = []
+    trigger_lengths = []
+
+    def find_trigger_length(index, flag_value):
+        length = 0
+        while index < len(flg) and flg[index] == flag_value:
+            index += 1  # from initial trigger find subsequent end of trigger
+            length += 1  # record the length of each trigger
+        return length
+
+    i = 0
+    while i < len(flg):
+        if (
+            (trigger_type == "up" and flg[i] == 1 and (i == 0 or flg[i - 1] == 0))
+            or (trigger_type == "down" and flg[i] == 0 and i > 0 and flg[i - 1] == 1)
+            or (
+                trigger_type == "cross"
+                and (
+                    (flg[i] == 1 and (i == 0 or flg[i - 1] == 0))
+                    or (flg[i] == 0 and i > 0 and flg[i - 1] == 1)
+                )
+            )
+        ):
+            length = find_trigger_length(i, flg[i])
+            trigger_idx.append(i)
+            trigger_lengths.append(length)
+            i += length
+        else:
+            i += 1
+    if trigger_lengths:
+        trigger_len = mode(trigger_lengths).mode[0]  # find most common length
+        trigger_idx = [
+            idx
+            for idx, length in zip(trigger_idx, trigger_lengths)
+            if length == trigger_len  # if trigger_len is different (boundary cut-offs)
+        ]  # don't include
+        trigger_idx = np.array(trigger_idx)
+        return trigger_idx, trigger_len
     else:
-        trigger_idx = np.where(np.ediff1d(flg) == 0)[0]
-
-    return trigger_idx
+        return trigger_idx, 0
 
 
-def calc_trigger_average(neural_data, trigger_idx, pre_event, post_event):
+def calc_trigger_average(neural_data, trigger_idx, trigger_len, pre_event, post_event):
     num_frame = neural_data.shape[0]
-
-    ind = np.array(range(pre_event, post_event), dtype=int)
-
     event_trigger_data = []
-    for trigger in trigger_idx:
-        target_idx = ind + trigger
-
-        if np.min(target_idx) >= 0 and np.max(target_idx) < num_frame:
-            event_trigger_data.append(neural_data[target_idx])
-
-    # (num_event, cell_number, event_time_lambda)
+    for idx in trigger_idx:
+        event_start = idx - abs(pre_event)  # use abs to make sure neg value
+        event_end = idx + trigger_len + post_event
+        if event_end <= num_frame and event_start >= 0:
+            event_trigger_data.append(neural_data[event_start:event_end])
+    # Convert to numpy array (num_event, cell_number, event_time)
     event_trigger_data = np.array(event_trigger_data)
-
     return event_trigger_data
 
 
@@ -76,11 +103,13 @@ def ETA(
     Y = Y[:, params["event_col_index"]]
 
     # calculate Triggers
-    trigger_idx = calc_trigger(Y, params["trigger_type"], params["trigger_threshold"])
+    [trigger_idxs, trigger_len] = calc_trigger(
+        Y, params["trigger_type"], params["trigger_threshold"]
+    )
 
     # calculate Triggered average
     event_trigger_data = calc_trigger_average(
-        X, trigger_idx, params["pre_event"], params["post_event"]
+        X, trigger_idxs, trigger_len, params["pre_event"], params["post_event"]
     )
 
     # (cell_number, event_time_lambda)
@@ -92,7 +121,6 @@ def ETA(
     else:
         assert False, "Output data size is 0"
 
-    # NWB追加
     nwbfile = {}
     nwbfile[NWBDATASET.POSTPROCESS] = {
         function_id: {
@@ -101,7 +129,6 @@ def ETA(
             "num_sample": [len(mean)],
         }
     }
-
     min_value = np.min(mean, axis=1, keepdims=True)
     max_value = np.max(mean, axis=1, keepdims=True)
     norm_mean = (mean - min_value) / (max_value - min_value)
@@ -110,15 +137,16 @@ def ETA(
     info["mean"] = TimeSeriesData(
         mean,
         std=sem,
-        index=list(np.arange(params["pre_event"], params["post_event"])),
+        index=list(range(params["pre_event"], params["post_event"] + trigger_len)),
         cell_numbers=cell_numbers if iscell is not None else None,
         file_name="mean",
     )
     info["mean_heatmap"] = HeatMapData(
         norm_mean,
-        columns=list(np.arange(params["pre_event"], params["post_event"])),
+        columns=list(
+            np.arange(params["pre_event"], params["post_event"] + trigger_len)
+        ),
         file_name="mean_heatmap",
     )
     info["nwbfile"] = nwbfile
-
     return info
