@@ -7,7 +7,6 @@ import {
   DialogActions,
   DialogContent,
   DialogTitle,
-  Modal,
   styled,
   Typography,
 } from "@mui/material"
