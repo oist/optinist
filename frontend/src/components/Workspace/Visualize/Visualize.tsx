@@ -11,34 +11,25 @@ import { CONTENT_HEIGHT, DRAWER_WIDTH } from "const/Layout"
 
 const Visualize: FC = () => {
   return (
-    <RootDiv>
+    <Box display="flex">
       <Box
-        sx={{
-          width: DRAWER_WIDTH,
-        }}
+        width={DRAWER_WIDTH}
+        marginRight={3}
         borderRight={1}
         borderColor={grey[300]}
       >
-        <CurrentPipelineInfo />
-        <StyledDrawerContents>
+        <Box overflow="auto" marginRight={2}>
+          <CurrentPipelineInfo />
           <VisualizeItemEditor />
-        </StyledDrawerContents>
+        </Box>
       </Box>
 
       <MainContents>
         <FlexItemList />
       </MainContents>
-    </RootDiv>
+    </Box>
   )
 }
-
-const RootDiv = styled("div")({
-  display: "flex",
-})
-
-const StyledDrawerContents = styled("div")({
-  overflow: "auto",
-})
 
 const MainContents = styled("main")({
   display: "flex",

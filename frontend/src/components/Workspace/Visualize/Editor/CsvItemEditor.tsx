@@ -1,20 +1,17 @@
 import { ChangeEvent, FC, useContext } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
-import { FormControlLabel, Switch, TextField } from "@mui/material"
+import { Typography } from "@mui/material"
 
-import { FILE_TREE_TYPE_SET } from "api/files/Files"
-import { FileSelectImple } from "components/Workspace/FlowChart/FlowChartNode/FileSelect"
+import { FieldLabel } from "components/common/ParamSection"
+import { ParamSwitch } from "components/common/ParamSwitch"
+import { ParamTextField } from "components/common/ParamTextField"
 import { SelectedItemIdContext } from "components/Workspace/Visualize/VisualizeItemEditor"
-import { DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
-import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
-import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
-import { setNewDisplayDataPath } from "store/slice/VisualizeItem/VisualizeItemActions"
+import { getLabelByPath } from "store/slice/FlowElement/FlowElementUtils"
 import {
   selectCsvItemSetHeader,
   selectCsvItemSetIndex,
   selectCsvItemTranspose,
-  selectDisplayDataIsSingle,
   selectVisualizeDataFilePath,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import {
@@ -26,44 +23,16 @@ import {
 export const CsvItemEditor: FC = () => {
   const itemId = useContext(SelectedItemIdContext)
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
-  const dispatch = useDispatch()
-  const isSingleData = useSelector(selectDisplayDataIsSingle(itemId))
-  const onSelectFile = (newPath: string) => {
-    const basePayload = {
-      itemId,
-      nodeId: null,
-      filePath: newPath,
-    }
-    dispatch(
-      setNewDisplayDataPath(
-        isSingleData && filePath != null
-          ? {
-              ...basePayload,
-              deleteData: true,
-              prevDataType: DATA_TYPE_SET.CSV,
-              prevFilePath: filePath,
-            }
-          : {
-              ...basePayload,
-              deleteData: false,
-            },
-      ),
-    )
-  }
-  const { onUploadFile } = useFileUploader({ fileType: FILE_TYPE_SET.CSV })
-  const onUploadFileHandle = (formData: FormData, fileName: string) => {
-    onUploadFile(formData, fileName)
-  }
 
   return (
     <>
-      <FileSelectImple
-        filePath={filePath ?? ""}
-        onSelectFile={(path) => !Array.isArray(path) && onSelectFile(path)}
-        onUploadFile={onUploadFileHandle}
-        fileTreeType={FILE_TREE_TYPE_SET.CSV}
-        selectButtonLabel="Select CSV"
-      />
+      <Typography variant="h6" fontWeight="bold">
+        Csv
+      </Typography>
+      <FieldLabel>Selected File</FieldLabel>
+      <Typography marginBottom={2}>
+        {filePath ? getLabelByPath(filePath) : "No file is selected"}
+      </Typography>
       <Transpose />
       <SetHeader />
       <SetIndex />
@@ -79,9 +48,10 @@ const Transpose: FC = () => {
     dispatch(setCsvItemTranspose({ itemId, transpose: !transpose }))
   }
   return (
-    <FormControlLabel
-      control={<Switch checked={transpose} onChange={toggleChecked} />}
-      label="transpose"
+    <ParamSwitch
+      label={"Transpose"}
+      value={transpose}
+      onChange={toggleChecked}
     />
   )
 }
@@ -100,21 +70,12 @@ const SetHeader: FC = () => {
   }
 
   return (
-    <>
-      <TextField
-        label="header"
-        sx={{
-          width: 100,
-          margin: (theme) => theme.spacing(0, 1, 0, 1),
-        }}
-        type="number"
-        InputLabelProps={{
-          shrink: true,
-        }}
-        onChange={onChangeSetHeader}
-        value={setHeader}
-      />
-    </>
+    <ParamTextField
+      label="Header"
+      value={setHeader}
+      type="number"
+      onChange={onChangeSetHeader}
+    />
   )
 }
 
@@ -126,9 +87,6 @@ const SetIndex: FC = () => {
     dispatch(setCsvItemSetIndex({ itemId, setIndex: !setIndex }))
   }
   return (
-    <FormControlLabel
-      control={<Switch checked={setIndex} onChange={toggleChecked} />}
-      label="setIndex"
-    />
+    <ParamSwitch label={"SetIndex"} value={setIndex} onChange={toggleChecked} />
   )
 }

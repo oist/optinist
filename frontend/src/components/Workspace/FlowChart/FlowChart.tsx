@@ -3,11 +3,12 @@ import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { useDispatch, useSelector } from "react-redux"
 
-import { Box, FormHelperText, Popover, Typography } from "@mui/material"
+import { Box, FormHelperText, Popover } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import { styled } from "@mui/material/styles"
 
 import { CurrentPipelineInfo } from "components/common/CurrentPipelineInfo"
+import { SectionTitle } from "components/common/ParamSection"
 import { AlgorithmOutputDialog } from "components/Workspace/FlowChart/Dialog/AlgorithmOutputDialog"
 import { ClearWorkflowIdDialog } from "components/Workspace/FlowChart/Dialog/ClearWorkflowIdDialog"
 import {
@@ -54,7 +55,7 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
   })
 
   return (
-    <RootDiv>
+    <Box display="flex">
       <DialogContext.Provider
         value={{
           onOpenOutputDialog: setDialogNodeId,
@@ -64,20 +65,14 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
         }}
       >
         <DndProvider backend={HTML5Backend}>
-          <Box
-            sx={{
-              width: DRAWER_WIDTH,
-            }}
-            borderRight={1}
-            borderColor={grey[300]}
-          >
-            <CurrentPipelineInfo />
-            <Typography variant="body2" color="textSecondary">
-              NODES
-            </Typography>
-            <DrawerContents>
+          <Box width={DRAWER_WIDTH} borderRight={1} borderColor={grey[300]}>
+            <Box overflow="auto" marginRight={2}>
+              <CurrentPipelineInfo />
+            </Box>
+            <Box overflow="auto">
+              <SectionTitle>Nodes</SectionTitle>
               <AlgorithmTreeView />
-            </DrawerContents>
+            </Box>
           </Box>
           <MainContents open={open}>
             <ReactFlowComponent {...props} />
@@ -147,16 +142,8 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
         </DndProvider>
         <RightDrawer />
       </DialogContext.Provider>
-    </RootDiv>
+    </Box>
   )
-})
-
-const RootDiv = styled("div")({
-  display: "flex",
-})
-
-const DrawerContents = styled("div")({
-  overflow: "auto",
 })
 
 const MainContents = styled("main")<{ open: boolean }>(

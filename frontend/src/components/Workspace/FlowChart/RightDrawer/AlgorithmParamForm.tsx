@@ -34,7 +34,7 @@ export const AlgorithmParamForm = memo(function AlgorithmParamForm() {
   }, [dispatch, nodeId, algoName, algoParamIsLoaded])
   return (
     <div style={{ padding: 24 }}>
-      <Typography variant="h6" paddingBottom={2}>
+      <Typography variant="h6" fontWeight="bold">
         {algoName}
       </Typography>
       {paramKeyList.map((paramKey) => (

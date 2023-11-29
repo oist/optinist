@@ -1,8 +1,6 @@
 import { createContext, FC, useContext } from "react"
 import { useSelector } from "react-redux"
 
-import { Box } from "@mui/material"
-
 import { CsvItemEditor } from "components/Workspace/Visualize/Editor/CsvItemEditor"
 import { HeatmapItemEditor } from "components/Workspace/Visualize/Editor/HeatmapItemEditor"
 import { ImageItemEditor } from "components/Workspace/Visualize/Editor/ImageItemEditor"
@@ -38,11 +36,7 @@ export const SelectedItemIdContext = createContext<number>(NaN)
 const DisplayDataItemEditor: FC = () => {
   const itemId = useContext(SelectedItemIdContext)
   const dataType = useSelector(selectVisualizeDataType(itemId))
-  return (
-    <Box marginTop={2} marginRight={2}>
-      <DisplayEditor dataType={dataType} />
-    </Box>
-  )
+  return <DisplayEditor dataType={dataType} />
 }
 
 const DisplayEditor: FC<{
