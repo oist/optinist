@@ -188,7 +188,7 @@ export async function commitRoiApi(
 }
 
 export async function cancelRoiApi(
-  path: string,
+  path: string | string[],
   workspace_id: number,
 ): Promise<{ data: HTMLData; meta?: PlotMetaData }> {
   const response = await axios.post(

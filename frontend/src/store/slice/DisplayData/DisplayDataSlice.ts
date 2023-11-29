@@ -15,6 +15,7 @@ import {
   getLineData,
   getPieData,
   getPolarData,
+  cancelRoi,
 } from "store/slice/DisplayData/DisplayDataActions"
 import {
   DATA_TYPE,
@@ -41,6 +42,7 @@ const initialState: DisplayData = {
   line: {},
   pie: {},
   polar: {},
+  loading: false,
 }
 
 export const displayDataSlice = createSlice({
@@ -585,6 +587,15 @@ export const displayDataSlice = createSlice({
           error: action.error.message ?? "rejected",
         }
       })
+      .addCase(cancelRoi.pending, (state, action) => {
+        state.loading = true
+      })
+      .addMatcher(
+        isAnyOf(cancelRoi.rejected, cancelRoi.fulfilled),
+        (state, action) => {
+          state.loading = false
+        },
+      )
       .addMatcher(
         isAnyOf(run.fulfilled, runByCurrentUid.fulfilled),
         () => initialState,

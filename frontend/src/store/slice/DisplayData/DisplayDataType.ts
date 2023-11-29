@@ -55,6 +55,7 @@ export type DisplayData = {
   polar: {
     [filePath: string]: PolarDisplayData
   }
+  loading: boolean
 }
 
 export const DATA_TYPE_SET = {

@@ -40,6 +40,7 @@ import {
 import Loading from "components/common/Loading"
 import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
 import {
+  cancelRoi,
   getImageData,
   getRoiData,
   getTimeSeriesInitData,
@@ -474,7 +475,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
     setPointClick([])
     setLoadingApi(true)
     try {
-      await cancelRoiApi(roiFilePath, workspaceId)
+      await dispatch(cancelRoi({ path: roiFilePath, workspaceId }))
     } finally {
       workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
       setStatusRoi({
@@ -495,7 +496,16 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }, [onCancel])
 
   useEffect(() => {
-    onCancel()
+    if (
+      !Object.keys(statusRoi).every(
+        (key) => statusRoi[key as keyof StatusROI].length === 0,
+      )
+    ) {
+      onCancel()
+    }
+    return () => {
+      onCancel()
+    }
   }, [onCancel])
 
   const addRoi = () => {
