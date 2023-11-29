@@ -23,7 +23,7 @@ export const NWBSettingContents = memo(function NWBSettingContents() {
   })
 
   return (
-    <div className="nwbParam" style={{ padding: 24 }}>
+    <div className="nwbParam" style={{ margin: 24 }}>
       {paramKeyList.map((paramKey, i) => (
         <ParamItem key={i} paramKey={paramKey} />
       ))}
