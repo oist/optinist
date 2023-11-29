@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from "react-redux"
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
 import AccordionDetails from "@mui/material/AccordionDetails"
 import AccordionSummary from "@mui/material/AccordionSummary"
-import Box from "@mui/material/Box"
 import { AnyAction } from "@reduxjs/toolkit"
 
 import { Accordion } from "components/common/Accordion"
@@ -137,9 +136,6 @@ export function createParamFormItemComponent({
         <ParamTextField
           type="number"
           label={name}
-          InputLabelProps={{
-            shrink: true,
-          }}
           value={value}
           onChange={onChange}
         />
@@ -172,7 +168,7 @@ export function createParamFormItemComponent({
           dispatch(updateParamAction(!value))
         }
       }
-      return <ParamSwitch name={name} value={value} onChange={onChange} />
+      return <ParamSwitch label={name} value={value} onChange={onChange} />
     } else {
       return null
     }
@@ -198,11 +194,7 @@ export function createParamFormItemComponent({
     path,
     name,
   }: ParamChildItemProps) {
-    return (
-      <Box marginBottom={2} marginRight={1}>
-        <ParamItemForValueType name={name} path={path} />
-      </Box>
-    )
+    return <ParamItemForValueType name={name} path={path} />
   })
 
   const ParamItem = memo(function ParamItem({

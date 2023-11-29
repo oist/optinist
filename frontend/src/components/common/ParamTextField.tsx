@@ -1,8 +1,10 @@
-import { TextField, TextFieldProps } from "@mui/material"
+import { Box, TextField, TextFieldProps } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 export const ParamTextField = styled((props: TextFieldProps) => (
-  <TextField variant="outlined" fullWidth {...props} />
+  <Box marginBottom={2}>
+    <TextField variant="outlined" fullWidth {...props} />
+  </Box>
 ))(({ theme }) => ({
   "& .MuiInputLabel-root": {
     "&.MuiInputLabel-formControl": {
