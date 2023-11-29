@@ -587,15 +587,12 @@ export const displayDataSlice = createSlice({
           error: action.error.message ?? "rejected",
         }
       })
-      .addCase(cancelRoi.pending, (state, action) => {
+      .addCase(cancelRoi.pending, (state) => {
         state.loading = true
       })
-      .addMatcher(
-        isAnyOf(cancelRoi.rejected, cancelRoi.fulfilled),
-        (state, action) => {
-          state.loading = false
-        },
-      )
+      .addMatcher(isAnyOf(cancelRoi.rejected, cancelRoi.fulfilled), (state) => {
+        state.loading = false
+      })
       .addMatcher(
         isAnyOf(run.fulfilled, runByCurrentUid.fulfilled),
         () => initialState,

@@ -31,7 +31,6 @@ import Switch from "@mui/material/Switch"
 
 import {
   addRoiApi,
-  cancelRoiApi,
   commitRoiApi,
   deleteRoiApi,
   getStatusRoi,
@@ -485,27 +484,32 @@ const ImagePlotChart = memo(function ImagePlotChart({
       })
     }
     //eslint-disable-next-line
-  }, [roiFilePath, workspaceId])
+  }, [roiFilePath, workspaceId, JSON.stringify(statusRoi)])
+
+  const checkStatus = useCallback(() => {
+    return Object.keys(statusRoi).every(
+      (key) => statusRoi[key as keyof StatusROI].length === 0,
+    )
+    //eslint-disable-next-line
+  }, [JSON.stringify(statusRoi)])
 
   useEffect(() => {
     window.addEventListener("beforeunload", onCancel)
     return () => {
       window.removeEventListener("beforeunload", onCancel)
     }
-  }, [onCancel])
+  }, [onCancel, checkStatus])
 
   useEffect(() => {
-    if (
-      !Object.keys(statusRoi).every(
-        (key) => statusRoi[key as keyof StatusROI].length === 0,
-      )
-    ) {
-      onCancel()
-    }
+    !checkStatus() && onCancel()
+    //eslint-disable-next-line
+  }, [])
+
+  useEffect(() => {
     return () => {
-      onCancel()
+      !checkStatus() && onCancel()
     }
-  }, [onCancel])
+  }, [onCancel, checkStatus])
 
   const addRoi = () => {
     setEdit(false)
@@ -718,7 +722,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
       )
     }
 
-    if (!edit)
+    if (!edit && roiFilePath)
       return (
         <LinkDiv sx={{ width: "fit-content" }} onClick={editRoi}>
           Edit ROI
