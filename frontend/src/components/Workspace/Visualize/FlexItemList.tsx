@@ -17,6 +17,7 @@ export const FlexItemList: FC = () => {
           {row.map((itemId) => (
             <VisualizeItem itemId={itemId} key={itemId} />
           ))}
+          <VisualizeItemAddButton itemId={row[row.length - 1]} />
         </Box>
       ))}
       <VisualizeItemAddButton />
