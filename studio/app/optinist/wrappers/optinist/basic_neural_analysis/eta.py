@@ -19,10 +19,10 @@ def calc_trigger(behavior_data, trigger_type, trigger_threshold):
     return trigger_idx
 
 
-def calc_trigger_average(neural_data, trigger_idx, start_time, end_time):
+def calc_trigger_average(neural_data, trigger_idx, pre_event, post_event):
     num_frame = neural_data.shape[0]
 
-    ind = np.array(range(start_time, end_time), dtype=int)
+    ind = np.array(range(pre_event, post_event), dtype=int)
 
     event_trigger_data = []
     for trigger in trigger_idx:
@@ -73,14 +73,14 @@ def ETA(
         cell_numbers = ind
         X = X[:, ind]
 
-    Y = Y[:, params["target_index"]]
+    Y = Y[:, params["event_col_index"]]
 
     # calculate Triggers
     trigger_idx = calc_trigger(Y, params["trigger_type"], params["trigger_threshold"])
 
     # calculate Triggered average
     event_trigger_data = calc_trigger_average(
-        X, trigger_idx, params["start_time"], params["end_time"]
+        X, trigger_idx, params["pre_event"], params["post_event"]
     )
 
     # (cell_number, event_time_lambda)
@@ -110,13 +110,13 @@ def ETA(
     info["mean"] = TimeSeriesData(
         mean,
         std=sem,
-        index=list(np.arange(params["start_time"], params["end_time"])),
+        index=list(np.arange(params["pre_event"], params["post_event"])),
         cell_numbers=cell_numbers if iscell is not None else None,
         file_name="mean",
     )
     info["mean_heatmap"] = HeatMapData(
         norm_mean,
-        columns=list(np.arange(params["start_time"], params["end_time"])),
+        columns=list(np.arange(params["pre_event"], params["post_event"])),
         file_name="mean_heatmap",
     )
     info["nwbfile"] = nwbfile
