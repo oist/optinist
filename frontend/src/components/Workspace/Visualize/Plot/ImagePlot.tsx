@@ -473,7 +473,6 @@ const ImagePlotChart = memo(function ImagePlotChart({
     if (!roiFilePath || workspaceId === undefined) return
     setAction("")
     setPointClick([])
-    setLoadingApi(true)
     try {
       await dispatch(cancelRoi({ path: roiFilePath, workspaceId }))
     } finally {
@@ -483,7 +482,6 @@ const ImagePlotChart = memo(function ImagePlotChart({
         temp_delete_roi: [],
         temp_merge_roi: [],
       })
-      setLoadingApi(false)
     }
     //eslint-disable-next-line
   }, [roiFilePath, workspaceId])
