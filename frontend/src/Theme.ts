@@ -14,7 +14,7 @@ export const theme = createTheme({
     },
     MuiDialog: {
       defaultProps: {
-        disableEscapeKeyDown: true,
+        disableEscapeKeyDown: false,
       },
     },
   },

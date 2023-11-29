@@ -21,7 +21,7 @@ export const ClearWorkflowIdDialog = memo(function ClearWorkflowIdDialog({
   handleCancel,
 }: ClearWorkflowIdDialogProps) {
   return (
-    <Dialog open={open} fullWidth>
+    <Dialog open={open} onClose={handleCancel} fullWidth>
       <DialogTitle>Confirm running as new workflow</DialogTitle>
       <DialogContent>
         <Typography>

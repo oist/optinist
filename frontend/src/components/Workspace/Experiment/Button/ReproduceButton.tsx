@@ -71,6 +71,7 @@ const ConfirmReprodceDialog = memo(function ConfirmReprodceDialog({
       enqueueSnackbar("Workspace id is missing", { variant: "error" })
     }
   }
+
   return (
     <Dialog open={open} onClose={handleClose}>
       <DialogTitle>Confirm reproduce workflow</DialogTitle>

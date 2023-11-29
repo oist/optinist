@@ -237,10 +237,10 @@ const RunDialog = memo(function RunDialog({
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="inherit" variant="outlined">
+        <Button onClick={handleClose} variant="outlined">
           Cancel
         </Button>
-        <Button onClick={onClickRun} color="primary" variant="outlined">
+        <Button onClick={onClickRun} variant="contained">
           Run
         </Button>
       </DialogActions>
