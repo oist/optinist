@@ -470,8 +470,9 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }
 
   const onCancel = useCallback(async () => {
-    if (!roiFilePath || workspaceId === undefined) return
+    setEdit(false)
     setAction("")
+    if (!roiFilePath || workspaceId === undefined) return
     setPointClick([])
     try {
       await dispatch(cancelRoi({ path: roiFilePath, workspaceId }))
