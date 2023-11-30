@@ -99,24 +99,12 @@ async def import_workflow_config(file: UploadFile = File(...)):
 )
 async def copy_sample_data(workspace_id: str):
     folders = ["input", "output"]
+
     for folder in folders:
-        sample_data_dir = os.path.join("sample_data", folder)
-        if folder == "input":
-            user_dir = os.path.join(DIRPATH.INPUT_DIR, workspace_id)
-        elif folder == "output":
-            user_dir = os.path.join(DIRPATH.OUTPUT_DIR, workspace_id)
+        sample_data_dir = join_filepath([DIRPATH.ROOT_DIR, "sample_data", folder])
+        user_dir = join_filepath([DIRPATH.DATA_DIR, folder, workspace_id])
+
         create_directory(user_dir)
-        try:
-            shutil.copytree(sample_data_dir, user_dir, dirs_exist_ok=True)
-            all_files_copied = True
-        except Exception as e:
-            raise HTTPException(
-                status_code=500, detail=f"Failed to copy files from {folder}: {e}"
-            )
-    import_workflow_config(
-        os.path.join(DIRPATH.OUTPUT_DIR, workspace_id, "tutorial1", "workflow.yaml")
-    )
-    import_workflow_config(
-        os.path.join(DIRPATH.OUTPUT_DIR, workspace_id, "tutorial2", "workflow.yaml")
-    )
-    return all_files_copied
+        shutil.copytree(sample_data_dir, user_dir, dirs_exist_ok=True)
+
+    return True
