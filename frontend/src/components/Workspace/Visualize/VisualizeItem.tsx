@@ -1,8 +1,8 @@
 import { memo, useCallback, useState, MouseEvent } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
-import { Close } from "@mui/icons-material"
-import { IconButton } from "@mui/material"
+import { Close, Numbers } from "@mui/icons-material"
+import { Chip, IconButton } from "@mui/material"
 import Box from "@mui/material/Box"
 import FormControl from "@mui/material/FormControl"
 import InputLabel from "@mui/material/InputLabel"
@@ -159,8 +159,15 @@ const ItemHeader = memo(function ItemHeader({ itemId }: ItemIdProps) {
 
   return (
     <Box display="flex" justifyContent="flex-end">
-      <Box flexGrow={1}>
-        <>ID: {itemId}</>
+      <Box flexGrow={1} display="flex">
+        <Chip
+          icon={<Numbers />}
+          size="small"
+          label={itemId}
+          color="primary"
+          variant="outlined"
+          sx={{ marginRight: 2 }}
+        />
         <FilePathSelectItem itemId={itemId} />
       </Box>
       {dataType === DATA_TYPE_SET.TIME_SERIES && (
