@@ -87,7 +87,11 @@ import {
   setImageItemDuration,
 } from "store/slice/VisualizeItem/VisualizeItemSlice"
 import { isTimeSeriesItem } from "store/slice/VisualizeItem/VisualizeItemUtils"
-import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
+import {
+  selectActiveTab,
+  selectCurrentWorkspaceId,
+} from "store/slice/Workspace/WorkspaceSelector"
+import { setDataCancel } from "store/slice/Workspace/WorkspaceSlice"
 import { AppDispatch, RootState } from "store/store"
 import { twoDimarrayEqualityFn } from "utils/EqualityUtils"
 
@@ -469,7 +473,6 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }
 
   const onCancel = useCallback(async () => {
-    setEdit(false)
     setAction("")
     if (!roiFilePath || workspaceId === undefined) return
     setPointClick([])
@@ -501,15 +504,20 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }, [onCancel, checkStatus])
 
   useEffect(() => {
+    setEdit(false)
+    setAction("")
+    !checkStatus() && onCancel()
+  }, [roiFilePath])
+
+  useEffect(() => {
     !checkStatus() && onCancel()
     //eslint-disable-next-line
   }, [])
 
   useEffect(() => {
-    return () => {
-      !checkStatus() && onCancel()
-    }
-  }, [onCancel, checkStatus])
+    if (!roiFilePath || workspaceId === undefined) return
+    dispatch(setDataCancel({ roiFilePath, workspaceId, statusRoi }))
+  }, [roiFilePath, action, JSON.stringify(statusRoi)])
 
   const addRoi = () => {
     setEdit(false)
