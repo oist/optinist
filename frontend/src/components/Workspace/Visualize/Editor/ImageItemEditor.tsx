@@ -58,7 +58,6 @@ export const ImageItemEditor: FC = () => {
   return (
     <>
       <ParamSection title="Image">
-        <FieldLabel>Selected File</FieldLabel>
         <Typography marginBottom={2}>
           {filePath ? getLabelByPath(filePath) : "No file is selected"}
         </Typography>

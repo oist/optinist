@@ -3,7 +3,6 @@ import { useSelector, useDispatch } from "react-redux"
 
 import { Typography } from "@mui/material"
 
-import { FieldLabel } from "components/common/ParamSection"
 import { ParamSwitch } from "components/common/ParamSwitch"
 import { ParamTextField } from "components/common/ParamTextField"
 import { SelectedItemIdContext } from "components/Workspace/Visualize/VisualizeItemEditor"
@@ -29,7 +28,6 @@ export const CsvItemEditor: FC = () => {
       <Typography variant="h6" fontWeight="bold">
         Csv
       </Typography>
-      <FieldLabel>Selected File</FieldLabel>
       <Typography marginBottom={2}>
         {filePath ? getLabelByPath(filePath) : "No file is selected"}
       </Typography>
