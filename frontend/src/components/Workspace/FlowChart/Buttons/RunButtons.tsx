@@ -222,7 +222,7 @@ const RunDialog = memo(function RunDialog({
   }
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Name and run flowchart</DialogTitle>
+      <DialogTitle>Name and run workflow</DialogTitle>
       <DialogContent>
         <TextField
           label="name"

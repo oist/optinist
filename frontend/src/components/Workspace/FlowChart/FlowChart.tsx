@@ -106,12 +106,12 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
             {dialogClearWorkflowId.open && (
               <ClearWorkflowIdDialog
                 open={dialogClearWorkflowId.open}
-                handleOk={() => {
+                onConfirm={() => {
                   dispatch(clearCurrentPipeline())
                   dialogClearWorkflowId.handleOk()
                   setDialogClearWorkflowId(initClearWorkflow)
                 }}
-                handleCancel={() => {
+                onCancel={() => {
                   dialogClearWorkflowId.handleCancel()
                   setDialogClearWorkflowId(initClearWorkflow)
                 }}
