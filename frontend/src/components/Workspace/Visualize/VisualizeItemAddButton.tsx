@@ -7,12 +7,19 @@ import Button from "@mui/material/Button"
 import Paper from "@mui/material/Paper"
 import { styled } from "@mui/material/styles"
 
-import { pushInitialItemToNewRow } from "store/slice/VisualizeItem/VisualizeItemSlice"
+import {
+  insertInitialItemToNextColumn,
+  pushInitialItemToNewRow,
+} from "store/slice/VisualizeItem/VisualizeItemSlice"
 
-export const VisualizeItemAddButton: FC = () => {
+export const VisualizeItemAddButton: FC<{
+  itemId?: number
+}> = ({ itemId }) => {
   const dispatch = useDispatch()
   const onClick = () => {
-    dispatch(pushInitialItemToNewRow())
+    itemId != null
+      ? dispatch(insertInitialItemToNextColumn(itemId))
+      : dispatch(pushInitialItemToNewRow())
   }
   return (
     <StyledPaper elevation={0} variant="outlined">
