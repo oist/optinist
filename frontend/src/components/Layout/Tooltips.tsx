@@ -13,7 +13,6 @@ const Tooltips: FC = () => {
       <ImportSampleDataButton />
       <Tooltip title="GitHub repository">
         <IconButton
-          sx={{ mr: 1 }}
           href="https://github.com/oist/optinist"
           target="_blank"
         >
