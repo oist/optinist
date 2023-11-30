@@ -89,7 +89,13 @@ templates = Jinja2Templates(directory=f"{FRONTEND_DIRPATH}/build")
 
 @app.on_event("startup")
 async def startup_event():
-    logging.info('"Studio" application startup complete.')
+    mode = "standalone" if MODE.IS_STANDALONE else "multiuser"
+    logging.info(f'"Studio" application startup complete. [mode: {mode}]')
+
+
+@app.get("/is_standalone", response_model=bool, tags=["others"])
+async def is_standalone():
+    return MODE.IS_STANDALONE
 
 
 @app.get("/")

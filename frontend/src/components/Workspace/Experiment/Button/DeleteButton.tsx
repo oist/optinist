@@ -41,18 +41,19 @@ export const DeleteButton = memo(function DeleteButton() {
     dispatch(deleteExperimentByUid(uid))
     uid === currentPipelineUid && dispatch(clearCurrentPipeline())
   }
+
   return (
     <>
       <IconButton onClick={onClickOpen} disabled={isRunning} color="error">
         <DeleteOutlineIcon />
       </IconButton>
-      <Dialog open={open}>
+      <Dialog open={open} onClose={onClickCancel}>
         <DialogTitle>Are you sure you want to delete {name}?</DialogTitle>
         <DialogActions>
-          <Button onClick={onClickCancel} variant="outlined" color="inherit">
+          <Button onClick={onClickCancel} variant="outlined">
             Cancel
           </Button>
-          <Button onClick={onClickOk} variant="outlined" autoFocus>
+          <Button onClick={onClickOk} variant="contained" autoFocus>
             OK
           </Button>
         </DialogActions>

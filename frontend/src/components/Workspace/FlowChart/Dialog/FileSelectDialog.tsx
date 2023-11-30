@@ -78,7 +78,7 @@ export const FileSelectDialog = memo(function FileSelectDialog({
   }
   const theme = useTheme()
   return (
-    <Dialog open={open} fullWidth>
+    <Dialog open={open} onClose={onCancel} fullWidth>
       <DialogTitle>{title ?? "Select File"}</DialogTitle>
       <DialogContent dividers>
         <div
@@ -102,10 +102,10 @@ export const FileSelectDialog = memo(function FileSelectDialog({
         <FilePathSelectedListView path={selectedFilePath} />
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCancel} variant="outlined" color="inherit">
+        <Button onClick={onCancel} variant="outlined">
           cancel
         </Button>
-        <Button onClick={onOk} color="primary" variant="outlined">
+        <Button onClick={onOk} variant="contained">
           OK
         </Button>
       </DialogActions>
