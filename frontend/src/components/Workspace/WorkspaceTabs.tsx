@@ -35,6 +35,7 @@ const WorkspaceTabs: FC = () => {
         dispatch(cancelRoi({ path: roiFilePath, workspaceId }))
       }
     },
+    //eslint-disable-next-line
     [roiFilePath, workspaceId, statusRoi],
   )
 

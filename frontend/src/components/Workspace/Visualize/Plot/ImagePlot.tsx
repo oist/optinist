@@ -87,10 +87,7 @@ import {
   setImageItemDuration,
 } from "store/slice/VisualizeItem/VisualizeItemSlice"
 import { isTimeSeriesItem } from "store/slice/VisualizeItem/VisualizeItemUtils"
-import {
-  selectActiveTab,
-  selectCurrentWorkspaceId,
-} from "store/slice/Workspace/WorkspaceSelector"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
 import { setDataCancel } from "store/slice/Workspace/WorkspaceSlice"
 import { AppDispatch, RootState } from "store/store"
 import { twoDimarrayEqualityFn } from "utils/EqualityUtils"
@@ -507,6 +504,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
     setEdit(false)
     setAction("")
     !checkStatus() && onCancel()
+    //eslint-disable-next-line
   }, [roiFilePath])
 
   useEffect(() => {
@@ -517,6 +515,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
   useEffect(() => {
     if (!roiFilePath || workspaceId === undefined) return
     dispatch(setDataCancel({ roiFilePath, workspaceId, statusRoi }))
+    //eslint-disable-next-line
   }, [roiFilePath, action, JSON.stringify(statusRoi)])
 
   const addRoi = () => {
