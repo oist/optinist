@@ -98,8 +98,8 @@ Follow the steps below to setup `multiuser` mode.
     - `MYSQL_ROOT_PASSWORD` can be left commented.
 
 ### Setup Frontend
-1. Install node.js(version 18)
-    - https://nodejs.org/ja
+1. Install node.js(version 20)
+    - https://nodejs.org
 2. Install yarn
     ```bash
     npm install -g yarn

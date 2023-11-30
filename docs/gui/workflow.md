@@ -100,7 +100,7 @@ Select algorithms or analysis methods from the treeview on the left by clicking 
 The left side of the window displays all available analysis methods. Clicking on the + mark adds the analysis nodes to the Workflow field. ROI detection tools (currently Suite2P, CaImAn and LCCD) are in the "Algorithm" category, and all other pre-installed analyses are in the "optinist" category.
 
 Let's start with sample TIFF data (`mouse2p_2_long.tiff`) and try Suite2P ROI detection.
-First, you need to determine the image you will use. Select your image as explained [above](#assigning-input-data-path).
+First, you need to determine the image you will use. Select your image as explained [above](#setting-input-data).
 Once it is selected, the name of the files is shown in the Image node.
 
 ### Parameter button and output button on the node
@@ -115,7 +115,7 @@ Each node has PARAM button and OUTPUT button.
 
 - **Editing Parameters:** Click on the PARAM button to view the parameters. You can edit them as needed. The names, types, and default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters. The link list is available at [Implemented Analysis](https://optinist.readthedocs.io/en/latest/utils/implemented_analysis.html).
 
-- **Checking Results:** The OUTPUT button is for a quick check of the results. The button becomes active after the successful execution of the pipeline. For details about the charts, see [Inspecting the Images and the Plots on Visualize](#inspecting-the-images-and-the-plots-on-visualize).
+- **Checking Results:** The OUTPUT button is for a quick check of the results. The button becomes active after the successful execution of the pipeline. For details about the charts, see [](Visualize).
 
 ### Connecting Nodes
 

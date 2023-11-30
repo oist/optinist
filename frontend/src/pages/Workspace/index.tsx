@@ -260,8 +260,12 @@ const PopupNew = ({
           {error ? <span style={{ color: "red" }}>{error}</span> : null}
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleOkNew}>Ok</Button>
+          <Button variant={"outlined"} onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button variant={"contained"} onClick={handleOkNew}>
+            Ok
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
@@ -275,6 +279,7 @@ const PopupDelete = ({
   nameWorkspace,
 }: PopupType) => {
   if (!open) return null
+
   return (
     <Box>
       <Dialog open={open} onClose={handleClose} sx={{ margin: 0 }}>
@@ -282,8 +287,12 @@ const PopupDelete = ({
           {`Do you want delete Workspace "${nameWorkspace}"?`}
         </DialogTitle>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleOkDel}>Ok</Button>
+          <Button variant={"outlined"} onClick={handleClose}>
+            Cancel
+          </Button>
+          <Button variant={"contained"} onClick={handleOkDel}>
+            Ok
+          </Button>
         </DialogActions>
       </Dialog>
     </Box>
