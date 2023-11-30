@@ -13,6 +13,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select"
 import { useMouseDragHandler } from "components/utils/MouseDragUtil"
 import { DisplayDataItem } from "components/Workspace/Visualize/DisplayDataItem"
 import { FilePathSelect } from "components/Workspace/Visualize/FilePathSelect"
+import { cancelRoi } from "store/slice/DisplayData/DisplayDataActions"
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
@@ -41,7 +42,8 @@ import {
   setRoiItemFilePath,
   setTimeSeriesRefImageItemId,
 } from "store/slice/VisualizeItem/VisualizeItemSlice"
-import { RootState } from "store/store"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
+import { AppDispatch, RootState } from "store/store"
 import { arrayEqualityFn } from "utils/EqualityUtils"
 
 interface ItemIdProps {
@@ -144,18 +146,26 @@ export const VisualizeItem = memo(function VisualizeItem({
 const ItemHeader = memo(function ItemHeader({ itemId }: ItemIdProps) {
   const dataType = useSelector(selectVisualizeDataType(itemId))
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
+  const roiFilePath = useSelector(selectRoiItemFilePath(itemId))
   const isSingleData = useSelector(selectDisplayDataIsSingle(itemId))
-  const dispatch = useDispatch()
-  const handleClose = (e: MouseEvent) => {
-    e.stopPropagation()
-    dispatch(
-      deleteDisplayItem(
-        isSingleData && filePath != null && dataType != null
-          ? { itemId, deleteData: true, filePath, dataType }
-          : { itemId, deleteData: false },
-      ),
-    )
-  }
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const dispatch = useDispatch<AppDispatch>()
+  const handleClose = useCallback(
+    (e: MouseEvent) => {
+      e.stopPropagation()
+      dispatch(
+        deleteDisplayItem(
+          isSingleData && filePath != null && dataType != null
+            ? { itemId, deleteData: true, filePath, dataType }
+            : { itemId, deleteData: false },
+        ),
+      )
+      if (!roiFilePath || !workspaceId) return
+      dispatch(cancelRoi({ path: roiFilePath, workspaceId }))
+      //eslint-disable-next-line
+    },
+    [workspaceId, roiFilePath],
+  )
 
   return (
     <Box display="flex" justifyContent="flex-end">
