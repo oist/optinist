@@ -12,7 +12,7 @@ import { importSampleData } from "store/slice/Workflow/WorkflowActions"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
 import { AppDispatch } from "store/store"
 
-export const ImportSampleDataButton = memo( function ImportSampleDataButton() {
+export const ImportSampleDataButton = memo(function ImportSampleDataButton() {
   const dispatch: AppDispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
   const workspaceId = useSelector(selectCurrentWorkspaceId)

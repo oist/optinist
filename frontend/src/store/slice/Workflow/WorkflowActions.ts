@@ -64,5 +64,5 @@ export const importSampleData = createAsyncThunk<
     } catch (e) {
       return thunkAPI.rejectWithValue(e)
     }
-  }
+  },
 )
