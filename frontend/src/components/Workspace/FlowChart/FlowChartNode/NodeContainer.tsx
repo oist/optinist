@@ -1,6 +1,6 @@
 import { FC, ReactNode } from "react"
 
-import { Box, Typography } from "@mui/material"
+import { Box, Tooltip, Typography } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import { alpha, useTheme } from "@mui/material/styles"
 
@@ -36,18 +36,19 @@ export const NodeContainer: FC<{
       }}
     >
       <Box margin={1}>{children}</Box>
-      <Typography
-        marginX={1}
-        marginTop="auto"
-        marginBottom="4px"
-        color={grey[600]}
-        fontSize={13}
-        paragraph
-        variant="body2"
-        sx={{ overflowWrap: "break-word" }}
-      >
-        {nodeId}
-      </Typography>
+      <Tooltip title={nodeId} placement="bottom-start">
+        <Typography
+          marginX={1}
+          marginTop="auto"
+          marginBottom="4px"
+          color={grey[600]}
+          fontSize={14}
+          variant="body2"
+          overflow="ellipsis"
+        >
+          {nodeId}
+        </Typography>
+      </Tooltip>
     </div>
   )
 }
