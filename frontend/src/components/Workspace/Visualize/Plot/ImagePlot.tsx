@@ -345,6 +345,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
 
   const [selectMode, setSelectMode] = useState(false)
   const [edit, setEdit] = useState(false)
+  const [cancelFirst, setCancelFirst] = useState(true)
 
   const fetchStatusRoi = async () => {
     if (!roiFilePath || workspaceId === undefined) return
@@ -484,7 +485,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
       })
     }
     //eslint-disable-next-line
-  }, [roiFilePath, workspaceId, JSON.stringify(statusRoi)])
+  }, [roiFilePath, workspaceId])
 
   const checkStatus = useCallback(() => {
     return Object.keys(statusRoi).every(
@@ -498,19 +499,24 @@ const ImagePlotChart = memo(function ImagePlotChart({
     return () => {
       window.removeEventListener("beforeunload", onCancel)
     }
-  }, [onCancel, checkStatus])
+  }, [onCancel])
 
   useEffect(() => {
+    onCancel()
     setEdit(false)
     setAction("")
-    !checkStatus() && onCancel()
-    //eslint-disable-next-line
-  }, [roiFilePath])
+    return () => {
+      onCancel()
+    }
+  }, [onCancel])
 
   useEffect(() => {
-    !checkStatus() && onCancel()
+    if (!checkStatus && cancelFirst) {
+      setCancelFirst(false)
+      onCancel()
+    }
     //eslint-disable-next-line
-  }, [])
+  }, [JSON.stringify(statusRoi), cancelFirst])
 
   useEffect(() => {
     if (!roiFilePath || workspaceId === undefined) return

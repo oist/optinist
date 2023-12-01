@@ -13,7 +13,6 @@ import Select, { SelectChangeEvent } from "@mui/material/Select"
 import { useMouseDragHandler } from "components/utils/MouseDragUtil"
 import { DisplayDataItem } from "components/Workspace/Visualize/DisplayDataItem"
 import { FilePathSelect } from "components/Workspace/Visualize/FilePathSelect"
-import { cancelRoi } from "store/slice/DisplayData/DisplayDataActions"
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
@@ -146,7 +145,6 @@ export const VisualizeItem = memo(function VisualizeItem({
 const ItemHeader = memo(function ItemHeader({ itemId }: ItemIdProps) {
   const dataType = useSelector(selectVisualizeDataType(itemId))
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
-  const roiFilePath = useSelector(selectRoiItemFilePath(itemId))
   const isSingleData = useSelector(selectDisplayDataIsSingle(itemId))
   const workspaceId = useSelector(selectCurrentWorkspaceId)
   const dispatch = useDispatch<AppDispatch>()
@@ -160,11 +158,8 @@ const ItemHeader = memo(function ItemHeader({ itemId }: ItemIdProps) {
             : { itemId, deleteData: false },
         ),
       )
-      if (!roiFilePath || !workspaceId) return
-      dispatch(cancelRoi({ path: roiFilePath, workspaceId }))
-      //eslint-disable-next-line
     },
-    [workspaceId, roiFilePath],
+    [workspaceId],
   )
 
   return (
