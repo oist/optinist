@@ -636,7 +636,6 @@ const ImagePlotChart = memo(function ImagePlotChart({
       setPointClick([])
       workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     }
-    resetTimeSeries()
     setEdit(true)
   }
 
@@ -664,6 +663,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
         temp_merge_roi: [],
       })
       enqueueSnackbar("Edit ROI Finished", { variant: "success" })
+      resetTimeSeries()
     } finally {
       setEdit(false)
       setAction("")
