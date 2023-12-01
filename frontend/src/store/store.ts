@@ -49,6 +49,12 @@ export const rootReducer = combineReducers({
 
 export const store = configureStore({
   reducer: rootReducer,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      // Ignore serializable checks because serializing fails
+      // on rejectedWith value
+      serializableCheck: false,
+    }),
 })
 
 export type AppDispatch = typeof store.dispatch
