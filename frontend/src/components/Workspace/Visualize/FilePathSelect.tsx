@@ -1,6 +1,7 @@
 import { FC, useState, ReactElement } from "react"
 import { useSelector } from "react-redux"
 
+import { Divider } from "@mui/material"
 import FormControl from "@mui/material/FormControl"
 import FormHelperText from "@mui/material/FormHelperText"
 import InputLabel from "@mui/material/InputLabel"
@@ -164,7 +165,9 @@ export const FilePathSelect: FC<{
   })
   algorithmNodeOutputPathInfoList.forEach((pathInfo, index) => {
     menuItemList.push(
-      <ListSubheader key={index}>{pathInfo.nodeName}</ListSubheader>,
+      <ListSubheader key={index}>
+        <Divider textAlign="center">{pathInfo.nodeName}</Divider>
+      </ListSubheader>,
     )
     pathInfo.paths.forEach((outputPath) => {
       menuItemList.push(

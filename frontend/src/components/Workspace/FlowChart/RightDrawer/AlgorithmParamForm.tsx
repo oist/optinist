@@ -1,9 +1,8 @@
 import { memo, useContext, useEffect } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
-import Typography from "@mui/material/Typography"
-
 import { createParamFormItemComponent } from "components/common/ParamFormItemCreator"
+import { SectionTitle } from "components/common/ParamSection"
 import { ParamFormContext } from "components/Workspace/FlowChart/RightDrawer/ParamFormContents"
 import { getAlgoParams } from "store/slice/AlgorithmNode/AlgorithmNodeActions"
 import {
@@ -33,13 +32,11 @@ export const AlgorithmParamForm = memo(function AlgorithmParamForm() {
     }
   }, [dispatch, nodeId, algoName, algoParamIsLoaded])
   return (
-    <div style={{ padding: 8 }}>
-      <Typography variant="h5">{algoName}</Typography>
-      <div style={{ paddingLeft: 8 }}>
-        {paramKeyList.map((paramKey) => (
-          <ParamItem key={paramKey} paramKey={paramKey} />
-        ))}
-      </div>
+    <div style={{ padding: 24 }}>
+      <SectionTitle>{algoName}</SectionTitle>
+      {paramKeyList.map((paramKey) => (
+        <ParamItem key={paramKey} paramKey={paramKey} />
+      ))}
     </div>
   )
 })
