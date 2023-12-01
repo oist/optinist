@@ -1,6 +1,9 @@
 import { FC, ReactNode } from "react"
 
-import { Box, Typography } from "@mui/material"
+import { useSnackbar } from "notistack"
+
+import ContentCopyRoundedIcon from "@mui/icons-material/ContentCopyRounded"
+import { Box, IconButton, Tooltip, Typography } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import { alpha, useTheme } from "@mui/material/styles"
 
@@ -11,6 +14,12 @@ export const NodeContainer: FC<{
   updated?: boolean
 }> = ({ children, nodeId, selected, updated }) => {
   const theme = useTheme()
+  const { enqueueSnackbar } = useSnackbar()
+
+  const handleNodeIdClick = () => {
+    navigator.clipboard.writeText(nodeId)
+    enqueueSnackbar("Node ID copied to clipboard", { variant: "success" })
+  }
 
   let backgroundColor
   if (updated) {
@@ -36,18 +45,32 @@ export const NodeContainer: FC<{
       }}
     >
       <Box margin={1}>{children}</Box>
-      <Typography
-        marginX={1}
-        marginTop="auto"
-        marginBottom="4px"
-        color={grey[600]}
-        fontSize={13}
-        paragraph
-        variant="body2"
-        sx={{ overflowWrap: "break-word" }}
+      <div
+        style={{
+          marginLeft: 8,
+          marginRight: 8,
+          marginTop: "auto",
+          display: "flex",
+          flexDirection: "row",
+          alignItems: "center",
+        }}
       >
-        {nodeId}
-      </Typography>
+        <Typography
+          color={grey[600]}
+          fontSize={13}
+          paragraph
+          variant="body2"
+          marginBottom={0}
+          sx={{ overflowWrap: "break-word" }}
+        >
+          {nodeId}
+        </Typography>
+        <Tooltip title="copy node ID to clipboard">
+          <IconButton onClick={handleNodeIdClick} size="small">
+            <ContentCopyRoundedIcon fontSize="small" />
+          </IconButton>
+        </Tooltip>
+      </div>
     </div>
   )
 }
