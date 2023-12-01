@@ -32,7 +32,7 @@ export const CreateWorkflowButton = memo(function CreateWorkflowButton() {
         title="Create new workflow?"
         content={`Current workflow will be cleared.
         If the workflow has already been run, the record will NOT be deleted.`}
-        iconType="warning"
+        iconType="info"
       />
     </>
   )
