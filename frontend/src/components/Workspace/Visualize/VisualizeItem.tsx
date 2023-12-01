@@ -41,8 +41,7 @@ import {
   setRoiItemFilePath,
   setTimeSeriesRefImageItemId,
 } from "store/slice/VisualizeItem/VisualizeItemSlice"
-import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
-import { AppDispatch, RootState } from "store/store"
+import { RootState } from "store/store"
 import { arrayEqualityFn } from "utils/EqualityUtils"
 
 interface ItemIdProps {
@@ -146,21 +145,17 @@ const ItemHeader = memo(function ItemHeader({ itemId }: ItemIdProps) {
   const dataType = useSelector(selectVisualizeDataType(itemId))
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
   const isSingleData = useSelector(selectDisplayDataIsSingle(itemId))
-  const dispatch = useDispatch<AppDispatch>()
-
-  const handleClose = useCallback(
-    (e: MouseEvent) => {
-      e.stopPropagation()
-      dispatch(
-        deleteDisplayItem(
-          isSingleData && filePath != null && dataType != null
-            ? { itemId, deleteData: true, filePath, dataType }
-            : { itemId, deleteData: false },
-        ),
-      )
-    },
-    [filePath, dataType, isSingleData, itemId],
-  )
+  const dispatch = useDispatch()
+  const handleClose = (e: MouseEvent) => {
+    e.stopPropagation()
+    dispatch(
+      deleteDisplayItem(
+        isSingleData && filePath != null && dataType != null
+          ? { itemId, deleteData: true, filePath, dataType }
+          : { itemId, deleteData: false },
+      ),
+    )
+  }
 
   return (
     <Box display="flex" justifyContent="flex-end">
