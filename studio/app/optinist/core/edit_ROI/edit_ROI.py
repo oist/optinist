@@ -79,6 +79,10 @@ class EditROI:
         self.tmp_data: EditRoiData = self.tmp_output_info.get(
             "edit_roi_data", self.data
         )
+
+        if not isinstance(self.tmp_data, EditRoiData):
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+
         self.tmp_data.images = None
 
         self.tmp_iscell = self.tmp_output_info.get(
@@ -89,7 +93,10 @@ class EditROI:
 
     @property
     def pickle_file_path(self):
-        return glob(join_filepath([self.node_dirpath, "[!tmp_]*.pkl"]))[0]
+        files = glob(join_filepath([self.node_dirpath, "[!tmp_]*.pkl"]))
+        if len(files) == 0:
+            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
+        return files[0]
 
     @property
     def tmp_pickle_file_path(self):
