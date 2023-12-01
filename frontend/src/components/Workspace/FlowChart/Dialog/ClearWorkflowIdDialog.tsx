@@ -1,48 +1,25 @@
 import { memo } from "react"
 
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  Typography,
-} from "@mui/material"
-
-type ClearWorkflowIdDialogProps = {
-  open: boolean
-  handleOk: () => void
-  handleCancel: () => void
-}
+  ConfirmDialog,
+  ConfirmDialogProps,
+} from "components/common/ConfirmDialog"
 
 export const ClearWorkflowIdDialog = memo(function ClearWorkflowIdDialog({
   open,
-  handleOk,
-  handleCancel,
-}: ClearWorkflowIdDialogProps) {
+  onConfirm,
+  onCancel,
+}: Pick<ConfirmDialogProps, "open" | "onConfirm" | "onCancel">) {
   return (
-    <Dialog open={open} onClose={handleCancel} fullWidth>
-      <DialogTitle>Confirm running as new workflow</DialogTitle>
-      <DialogContent>
-        <Typography>
-          {"With this operation, all algorithms should be run again."}
-        </Typography>
-        <Typography>
-          {
-            "So, this workflow will be run as new workflow with new ID (RUN ALL)."
-          }
-        </Typography>
-        <Typography>{"Existing nodes are kept as they are."}</Typography>
-        <Typography>{"Are you sure?"}</Typography>
-      </DialogContent>
-      <DialogActions>
-        <Button onClick={handleCancel} variant="outlined">
-          cancel
-        </Button>
-        <Button onClick={handleOk} variant="contained">
-          ok
-        </Button>
-      </DialogActions>
-    </Dialog>
+    <ConfirmDialog
+      open={open}
+      onConfirm={onConfirm}
+      onCancel={onCancel}
+      title="Change this parameter?"
+      content={`Changing this parameter may affect whole workflow.
+      So, this workflow will be run as new workflow with new ID (RUN ALL).
+      Existing nodes are kept as they are.`}
+      iconType="warning"
+    />
   )
 })

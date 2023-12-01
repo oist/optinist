@@ -1,8 +1,10 @@
 import { FC, useContext } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
-import { FormControlLabel, Switch } from "@mui/material"
+import { Grid } from "@mui/material"
 
+import { FieldLabel, ParamSection } from "components/common/ParamSection"
+import { ParamSwitch } from "components/common/ParamSwitch"
 import { GradientColorPicker } from "components/Workspace/Visualize/Editor/GradientColorPicker"
 import { SaveFig } from "components/Workspace/Visualize/Editor/SaveFig"
 import { SelectedItemIdContext } from "components/Workspace/Visualize/VisualizeItemEditor"
@@ -25,8 +27,20 @@ export const HeatmapItemEditor: FC = () => {
   }
   return (
     <>
-      <ShowScale />
-      <GradientColorPicker colors={colors} dispatchSetColor={dispathSetColor} />
+      <ParamSection title="Heatmap">
+        <ShowScale />
+        <Grid container component="label" alignItems="center">
+          <Grid item xs={8}>
+            <FieldLabel>Pick Color</FieldLabel>
+          </Grid>
+          <Grid item xs={4}>
+            <GradientColorPicker
+              colors={colors}
+              dispatchSetColor={dispathSetColor}
+            />
+          </Grid>
+        </Grid>
+      </ParamSection>
       <SaveFig />
     </>
   )
@@ -40,9 +54,6 @@ const ShowScale: FC = () => {
     dispatch(setHeatMapItemShowScale({ itemId, showscale: !showscale }))
   }
   return (
-    <FormControlLabel
-      control={<Switch checked={showscale} onChange={toggleChecked} />}
-      label="showscale"
-    />
+    <ParamSwitch label="ShowScale" value={showscale} onChange={toggleChecked} />
   )
 }

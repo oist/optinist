@@ -2,16 +2,13 @@ import { ChangeEvent, FC, memo, useContext, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
-import { Tooltip } from "@mui/material"
 import AccordionDetails from "@mui/material/AccordionDetails"
 import AccordionSummary from "@mui/material/AccordionSummary"
-import Box from "@mui/material/Box"
-import Switch from "@mui/material/Switch"
-import TextField from "@mui/material/TextField"
-import Typography from "@mui/material/Typography"
 import { AnyAction } from "@reduxjs/toolkit"
 
 import { Accordion } from "components/common/Accordion"
+import { ParamSwitch } from "components/common/ParamSwitch"
+import { ParamTextField } from "components/common/ParamTextField"
 import { DialogContext } from "components/Workspace/FlowChart/Dialog/DialogContext"
 import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
 import { RootState } from "store/store"
@@ -49,6 +46,7 @@ export function createParamFormItemComponent({
   }
 
   const ParamItemForString = memo(function ParamItemForString({
+    name,
     path,
   }: ParamChildItemProps) {
     const dispatch = useDispatch()
@@ -98,16 +96,17 @@ export function createParamFormItemComponent({
       ? value.toLocaleString()
       : (value as string) || ""
     return (
-      <TextField
+      <ParamTextField
+        label={name}
         value={valueField === undefined ? "" : valueField}
         onChange={onChange}
-        multiline
         onBlur={isArray.current ? onBlur : undefined}
       />
     )
   })
 
   const ParamItemForNumber = memo(function ParamItemForNumber({
+    name,
     path,
   }: ParamChildItemProps) {
     const dispatch = useDispatch()
@@ -134,11 +133,9 @@ export function createParamFormItemComponent({
         }
       }
       return (
-        <TextField
+        <ParamTextField
           type="number"
-          InputLabelProps={{
-            shrink: true,
-          }}
+          label={name}
           value={value}
           onChange={onChange}
         />
@@ -149,6 +146,7 @@ export function createParamFormItemComponent({
   })
 
   const ParamItemForBoolean = memo(function ParamItemForBoolean({
+    name,
     path,
   }: ParamChildItemProps) {
     const dispatch = useDispatch()
@@ -170,69 +168,33 @@ export function createParamFormItemComponent({
           dispatch(updateParamAction(!value))
         }
       }
-      return <Switch checked={value} onChange={onChange} />
+      return <ParamSwitch label={name} value={value} onChange={onChange} />
     } else {
       return null
     }
   })
 
   const ParamItemForValueType = memo(function ParamItemForValueType({
+    name,
     path,
   }: ParamChildItemProps) {
     const [value] = useParamValueUpdate(path)
     if (typeof value === "number") {
-      return <ParamItemForNumber path={path} />
+      return <ParamItemForNumber name={name} path={path} />
     } else if (typeof value === "string") {
-      return <ParamItemForString path={path} />
+      return <ParamItemForString name={name} path={path} />
     } else if (typeof value === "boolean") {
-      return <ParamItemForBoolean path={path} />
+      return <ParamItemForBoolean name={name} path={path} />
     } else {
-      return <ParamItemForString path={path} />
+      return <ParamItemForString name={name} path={path} />
     }
   })
 
   const ParamChildItem = memo(function ParamChildItem({
     path,
     name,
-  }: ParamChildItemWithNameProps) {
-    return (
-      <Box
-        sx={{
-          display: "flex",
-          marginTop: (theme) => theme.spacing(2),
-          marginBottom: (theme) => theme.spacing(2),
-          alignItems: "center",
-          overflow: "scroll",
-        }}
-      >
-        <Box
-          style={{ verticalAlign: "middle" }}
-          sx={{
-            flexGrow: 1,
-            width: "50%",
-            cursor: "default",
-          }}
-        >
-          <Tooltip
-            title={<span style={{ fontSize: 16 }}>{name}</span>}
-            placement={"top"}
-          >
-            <Typography
-              style={{
-                overflow: "hidden",
-                width: "90%",
-                textOverflow: "ellipsis",
-              }}
-            >
-              {name}
-            </Typography>
-          </Tooltip>
-        </Box>
-        <Box sx={{ width: "50%" }}>
-          <ParamItemForValueType path={path} />
-        </Box>
-      </Box>
-    )
+  }: ParamChildItemProps) {
+    return <ParamItemForValueType name={name} path={path} />
   })
 
   const ParamItem = memo(function ParamItem({
@@ -276,9 +238,6 @@ interface ParamItemProps extends ParamKeyProps {
 }
 
 interface ParamChildItemProps {
-  path: string
-}
-
-interface ParamChildItemWithNameProps extends ParamChildItemProps {
   name: string
+  path: string
 }

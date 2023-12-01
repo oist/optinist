@@ -1,18 +1,11 @@
 import { createContext, FC, useContext } from "react"
 import { useSelector } from "react-redux"
 
-import Box from "@mui/material/Box"
-
-import { BarItemEditor } from "components/Workspace/Visualize/Editor/BarItemEditor"
 import { CsvItemEditor } from "components/Workspace/Visualize/Editor/CsvItemEditor"
 import { HeatmapItemEditor } from "components/Workspace/Visualize/Editor/HeatmapItemEditor"
-import { HistogramItemEditor } from "components/Workspace/Visualize/Editor/HistogramItemEditor"
 import { ImageItemEditor } from "components/Workspace/Visualize/Editor/ImageItemEditor"
-import { LineItemEditor } from "components/Workspace/Visualize/Editor/LineItemEditor"
-import { PieItemEditor } from "components/Workspace/Visualize/Editor/PieItemEditor"
-import { PolarItemEditor } from "components/Workspace/Visualize/Editor/PolarItemEditor"
 import { RoiItemEditor } from "components/Workspace/Visualize/Editor/RoiItemEditor"
-import { ScatterItemEditor } from "components/Workspace/Visualize/Editor/ScatterItemEditor"
+import { SaveFig } from "components/Workspace/Visualize/Editor/SaveFig"
 import { TimeSeriesItemEditor } from "components/Workspace/Visualize/Editor/TimeSeriesItemEditor"
 import {
   DATA_TYPE,
@@ -29,9 +22,7 @@ export const VisualizeItemEditor = () => {
     <>
       {selectedItemId != null ? (
         <SelectedItemIdContext.Provider value={selectedItemId}>
-          <Box m={1}>
-            <DisplayDataItemEditor />
-          </Box>
+          <DisplayDataItemEditor />
         </SelectedItemIdContext.Provider>
       ) : (
         "Please select item..."
@@ -45,11 +36,7 @@ export const SelectedItemIdContext = createContext<number>(NaN)
 const DisplayDataItemEditor: FC = () => {
   const itemId = useContext(SelectedItemIdContext)
   const dataType = useSelector(selectVisualizeDataType(itemId))
-  return (
-    <div style={{ marginTop: 8 }}>
-      <DisplayEditor dataType={dataType} />
-    </div>
-  )
+  return <DisplayEditor dataType={dataType} />
 }
 
 const DisplayEditor: FC<{
@@ -68,19 +55,14 @@ const DisplayEditor: FC<{
     case DATA_TYPE_SET.ROI:
       return <RoiItemEditor />
     case DATA_TYPE_SET.SCATTER:
-      return <ScatterItemEditor />
     case DATA_TYPE_SET.BAR:
-      return <BarItemEditor />
+    case DATA_TYPE_SET.HISTOGRAM:
+    case DATA_TYPE_SET.LINE:
+    case DATA_TYPE_SET.PIE:
+    case DATA_TYPE_SET.POLAR:
+      return <SaveFig />
     case DATA_TYPE_SET.HTML:
       return <div>html editor</div>
-    case DATA_TYPE_SET.HISTOGRAM:
-      return <HistogramItemEditor />
-    case DATA_TYPE_SET.LINE:
-      return <LineItemEditor />
-    case DATA_TYPE_SET.PIE:
-      return <PieItemEditor />
-    case DATA_TYPE_SET.POLAR:
-      return <PolarItemEditor />
     default:
       return null
   }

@@ -18,6 +18,8 @@ import {
   DialogActions,
   Input,
   Tooltip,
+  Typography,
+  IconButton,
 } from "@mui/material"
 import {
   GridEventListener,
@@ -31,6 +33,7 @@ import {
 import { isRejectedWithValue } from "@reduxjs/toolkit"
 
 import { UserDTO } from "api/users/UsersApiDTO"
+import { ConfirmDialog } from "components/common/ConfirmDialog"
 import Loading from "components/common/Loading"
 import PaginationCustom from "components/common/PaginationCustom"
 import PopupShare from "components/Workspace/PopupShare"
@@ -115,9 +118,9 @@ const columns = (
             </span>
           </Tooltip>
           {isMine(user, row?.user?.id) ? (
-            <ButtonIcon onClick={() => onEdit?.(row.id)}>
-              <EditIcon style={{ fontSize: 16 }} />
-            </ButtonIcon>
+            <IconButton onClick={() => onEdit?.(row.id)} size="small">
+              <EditIcon fontSize="small" />
+            </IconButton>
           ) : null}
         </Box>
       )
@@ -209,9 +212,12 @@ const columns = (
     sortable: false, // todo enable when api complete
     renderCell: (params: GridRenderCellParams<GridValidRowModel>) =>
       isMine(user, params.row?.user?.id) ? (
-        <ButtonIcon onClick={() => handleOpenPopupShare(params.row.id)}>
-          <GroupsIcon color={params.row.shared_count ? "primary" : "inherit"} />
-        </ButtonIcon>
+        <IconButton
+          onClick={() => handleOpenPopupShare(params.row.id)}
+          color={params.row.shared_count ? "primary" : "default"}
+        >
+          <GroupsIcon />
+        </IconButton>
       ) : null,
   },
   {
@@ -223,11 +229,12 @@ const columns = (
     sortable: false, // todo enable when api complete
     renderCell: (params: GridRenderCellParams<GridValidRowModel>) =>
       isMine(user, params.row?.user?.id) ? (
-        <ButtonIcon
+        <IconButton
           onClick={() => handleOpenPopupDel(params.row.id, params.row.name)}
+          color="error"
         >
-          <DeleteIcon color="error" />
-        </ButtonIcon>
+          <DeleteIcon />
+        </IconButton>
       ) : null,
   },
 ]
@@ -264,33 +271,6 @@ const PopupNew = ({
             Cancel
           </Button>
           <Button variant={"contained"} onClick={handleOkNew}>
-            Ok
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
-  )
-}
-
-const PopupDelete = ({
-  open,
-  handleClose,
-  handleOkDel,
-  nameWorkspace,
-}: PopupType) => {
-  if (!open) return null
-
-  return (
-    <Box>
-      <Dialog open={open} onClose={handleClose} sx={{ margin: 0 }}>
-        <DialogTitle>
-          {`Do you want delete Workspace "${nameWorkspace}"?`}
-        </DialogTitle>
-        <DialogActions>
-          <Button variant={"outlined"} onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button variant={"contained"} onClick={handleOkDel}>
             Ok
           </Button>
         </DialogActions>
@@ -563,11 +543,19 @@ const Workspaces = () => {
           id={open.shareId}
         />
       ) : null}
-      <PopupDelete
+      <ConfirmDialog
         open={open.del}
-        handleClose={handleClosePopupDel}
-        handleOkDel={handleOkDel}
-        nameWorkspace={workspaceDel?.name}
+        onCancel={handleClosePopupDel}
+        onConfirm={handleOkDel}
+        title={"Delete Workspace?"}
+        content={
+          <>
+            <Typography>ID: {workspaceDel?.id}</Typography>
+            <Typography>Name: {workspaceDel?.name}</Typography>
+          </>
+        }
+        iconType="warning"
+        confirmLabel="delete"
       />
       <PopupNew
         open={open.new}
@@ -590,23 +578,5 @@ const WorkspacesWrapper = styled(Box)(({ theme }) => ({
 }))
 
 const WorkspacesTitle = styled("h1")(() => ({}))
-
-const ButtonIcon = styled("button")(() => ({
-  minWidth: "32px",
-  minHeight: "32px",
-  width: "32px",
-  height: "32px",
-  color: "#444",
-  border: "none",
-  borderRadius: "50%",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  cursor: "pointer",
-  background: "transparent",
-  "&:hover": {
-    background: "rgb(239 239 239)",
-  },
-}))
 
 export default Workspaces
