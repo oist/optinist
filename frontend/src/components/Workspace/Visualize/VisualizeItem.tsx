@@ -146,8 +146,8 @@ const ItemHeader = memo(function ItemHeader({ itemId }: ItemIdProps) {
   const dataType = useSelector(selectVisualizeDataType(itemId))
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
   const isSingleData = useSelector(selectDisplayDataIsSingle(itemId))
-  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const dispatch = useDispatch<AppDispatch>()
+
   const handleClose = useCallback(
     (e: MouseEvent) => {
       e.stopPropagation()
@@ -159,7 +159,7 @@ const ItemHeader = memo(function ItemHeader({ itemId }: ItemIdProps) {
         ),
       )
     },
-    [workspaceId],
+    [filePath, dataType, isSingleData, itemId],
   )
 
   return (
