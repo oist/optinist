@@ -60,7 +60,7 @@ pyrebase4 = "4.7.1"
 pydantic = { version = "1.10.13", extras = ["email", "dotenv"] }
 python-jose = { version = "*", extras = ["cryptography"] }
 alembic = "1.9.2"
-sqlmodel = "0.0.8"
+sqlmodel = "0.0.12"
 pymysql = "1.1.0"
 fastapi_pagination = "0.12.13"
 plotly = "5.18.0"
