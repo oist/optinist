@@ -13,6 +13,7 @@ import {
 } from "@mui/material"
 import IconButton from "@mui/material/IconButton"
 
+import { ConfirmDialog } from "components/common/ConfirmDialog"
 import { getExperiments } from "store/slice/Experiments/ExperimentsActions"
 import { reset } from "store/slice/VisualizeItem/VisualizeItemSlice"
 import { importSampleData } from "store/slice/Workflow/WorkflowActions"
@@ -32,6 +33,8 @@ const Tooltips: FC = () => {
   const handleGoToDocClick = () => {
     window.open("https://optinist.readthedocs.io/en/latest/", "_blank")
   }
+
+  const [dialogOpen, setDialogOpen] = useState(false)
 
   const dispatch: AppDispatch = useDispatch()
   const { enqueueSnackbar } = useSnackbar()
@@ -79,13 +82,25 @@ const Tooltips: FC = () => {
           </ListItemIcon>
           <ListItemText>Go to documentation page</ListItemText>
         </MenuItem>
-        <MenuItem onClick={handleImportSampleDataClick}>
+        <MenuItem
+          onClick={() => {
+            setDialogOpen(true)
+          }}
+        >
           <ListItemIcon>
             <Addchart />
           </ListItemIcon>
           <ListItemText>Import sample data</ListItemText>
         </MenuItem>
       </Menu>
+      <ConfirmDialog
+        open={dialogOpen}
+        setOpen={setDialogOpen}
+        onConfirm={handleImportSampleDataClick}
+        title="Import sample data?"
+        content={"sample data files and tutorial records will be imported."}
+        iconType="info"
+      />
     </>
   )
 }
