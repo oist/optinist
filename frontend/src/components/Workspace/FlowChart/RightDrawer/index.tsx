@@ -34,7 +34,7 @@ const RightDrawer: FC = () => {
       case RIGHT_DRAWER_MODE.NWB:
         return "NWB Setting"
       case RIGHT_DRAWER_MODE.PARAM_FORM:
-        return "Param From"
+        return "Param Form"
       case RIGHT_DRAWER_MODE.SNAKEMAKE:
         return "Snakemake"
       default:

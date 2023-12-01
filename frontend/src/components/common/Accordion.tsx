@@ -7,9 +7,7 @@ export const Accordion = styled((props: AccordionProps) => (
   border: "1px solid",
   borderColor: theme.palette.divider,
   boxShadow: "none",
-  "&:not(:last-child)": {
-    borderBottom: 0,
-  },
+  overflow: "hidden",
   "&:before": {
     display: "none",
   },

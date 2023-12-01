@@ -3,6 +3,7 @@ import { useSelector } from "react-redux"
 
 import { Typography, Grid, Popover } from "@mui/material"
 
+import { ParamSection } from "components/common/ParamSection"
 import {
   selectCurrentPipelineName,
   selectPipelineLatestUid,
@@ -22,35 +23,29 @@ export const CurrentPipelineInfo: FC = () => {
 
   return (
     <>
+      {!isStandalone && (
+        <ParamSection title="Workspace">
+          <Grid container mb={1}>
+            {workspaceId && (
+              <LabelValueGridRow
+                label="ID"
+                value={workspaceId.toFixed()}
+                section="workspace"
+              />
+            )}
+            {workspaceName && (
+              <LabelValueGridRow
+                label="NAME"
+                value={workspaceName}
+                section="workspace"
+              />
+            )}
+          </Grid>
+        </ParamSection>
+      )}
       {workflowId && (
-        <>
-          {!isStandalone && (
-            <>
-              <Typography variant="body2" color="textSecondary">
-                WORKSPACE
-              </Typography>
-              <Grid container paddingBottom={2} paddingX={1}>
-                {workspaceId && (
-                  <LabelValueGridRow
-                    label="ID"
-                    value={workspaceId.toFixed()}
-                    section="workspace"
-                  />
-                )}
-                {workspaceName && (
-                  <LabelValueGridRow
-                    label="NAME"
-                    value={workspaceName}
-                    section="workspace"
-                  />
-                )}
-              </Grid>
-            </>
-          )}
-          <Typography variant="body2" color="textSecondary">
-            WORKFLOW
-          </Typography>
-          <Grid container paddingBottom={2} paddingX={1}>
+        <ParamSection title="Workflow">
+          <Grid container mb={1}>
             <LabelValueGridRow
               label="ID"
               value={workflowId}
@@ -64,7 +59,7 @@ export const CurrentPipelineInfo: FC = () => {
               />
             )}
           </Grid>
-        </>
+        </ParamSection>
       )}
     </>
   )
@@ -104,7 +99,9 @@ const LabelValueGridRow = memo(function LabelValueGridRow({
   return (
     <>
       <Grid item xs={3}>
-        <Typography variant="body2">{label}</Typography>
+        <Typography fontWeight="bold" fontSize="0.95rem" color="text.secondary">
+          {label}
+        </Typography>
       </Grid>
       <Grid item xs={9}>
         <div>

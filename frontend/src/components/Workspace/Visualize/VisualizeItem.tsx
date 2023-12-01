@@ -1,6 +1,8 @@
-import { memo, useCallback, useState } from "react"
+import { memo, useCallback, useState, MouseEvent } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
+import { Close, Numbers } from "@mui/icons-material"
+import { Chip, IconButton } from "@mui/material"
 import Box from "@mui/material/Box"
 import FormControl from "@mui/material/FormControl"
 import InputLabel from "@mui/material/InputLabel"
@@ -11,12 +13,14 @@ import Select, { SelectChangeEvent } from "@mui/material/Select"
 import { useMouseDragHandler } from "components/utils/MouseDragUtil"
 import { DisplayDataItem } from "components/Workspace/Visualize/DisplayDataItem"
 import { FilePathSelect } from "components/Workspace/Visualize/FilePathSelect"
-import { DisplayDataItemLayoutMenuIcon } from "components/Workspace/Visualize/VisualizeItemLayoutMenuIcon"
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
 } from "store/slice/DisplayData/DisplayDataType"
-import { setNewDisplayDataPath } from "store/slice/VisualizeItem/VisualizeItemActions"
+import {
+  deleteDisplayItem,
+  setNewDisplayDataPath,
+} from "store/slice/VisualizeItem/VisualizeItemActions"
 import {
   selectDisplayDataIsSingle,
   selectImageItemFilePath,
@@ -24,6 +28,7 @@ import {
   selectRoiItemNodeId,
   selectSelectedVisualizeItemId,
   selectTimeSeriesItemRefImageItemId,
+  selectVisualizeDataFilePath,
   selectVisualizeDataNodeId,
   selectVisualizeDataType,
   selectVisualizeImageItemIdList,
@@ -137,25 +142,48 @@ export const VisualizeItem = memo(function VisualizeItem({
 })
 
 const ItemHeader = memo(function ItemHeader({ itemId }: ItemIdProps) {
-  const itemDataType = useSelector(selectVisualizeDataType(itemId))
+  const dataType = useSelector(selectVisualizeDataType(itemId))
+  const filePath = useSelector(selectVisualizeDataFilePath(itemId))
+  const isSingleData = useSelector(selectDisplayDataIsSingle(itemId))
+  const dispatch = useDispatch()
+  const handleClose = (e: MouseEvent) => {
+    e.stopPropagation()
+    dispatch(
+      deleteDisplayItem(
+        isSingleData && filePath != null && dataType != null
+          ? { itemId, deleteData: true, filePath, dataType }
+          : { itemId, deleteData: false },
+      ),
+    )
+  }
+
   return (
     <Box display="flex" justifyContent="flex-end">
-      <Box flexGrow={1}>
-        <>ID: {itemId}</>
+      <Box flexGrow={1} display="flex">
+        <Chip
+          icon={<Numbers />}
+          size="small"
+          label={itemId}
+          color="primary"
+          variant="outlined"
+          sx={{ marginRight: 2 }}
+        />
         <FilePathSelectItem itemId={itemId} />
       </Box>
-      {itemDataType === DATA_TYPE_SET.TIME_SERIES && (
+      {dataType === DATA_TYPE_SET.TIME_SERIES && (
         <Box flexGrow={1}>
           <RefImageItemIdSelect itemId={itemId} />
         </Box>
       )}
-      {itemDataType === DATA_TYPE_SET.IMAGE && (
+      {dataType === DATA_TYPE_SET.IMAGE && (
         <Box flexGrow={1}>
           <RoiSelect itemId={itemId} />
         </Box>
       )}
       <Box>
-        <DisplayDataItemLayoutMenuIcon itemId={itemId} />
+        <IconButton onClick={handleClose}>
+          <Close />
+        </IconButton>
       </Box>
     </Box>
   )

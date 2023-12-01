@@ -2,25 +2,27 @@ import { ChangeEvent, FC, useContext, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import "react-linear-gradient-picker/dist/index.css"
-import { Box, TextField } from "@mui/material"
-import Button from "@mui/material/Button"
-import FormControl from "@mui/material/FormControl"
-import FormControlLabel from "@mui/material/FormControlLabel"
-import InputLabel from "@mui/material/InputLabel"
-import MenuItem from "@mui/material/MenuItem"
-import Select, { SelectChangeEvent } from "@mui/material/Select"
-import Switch from "@mui/material/Switch"
+import {
+  Box,
+  Button,
+  Grid,
+  MenuItem,
+  SelectChangeEvent,
+  TextField,
+} from "@mui/material"
 
-import { FILE_TREE_TYPE_SET } from "api/files/Files"
-import { FileSelectImple } from "components/Workspace/FlowChart/FlowChartNode/FileSelect"
+import {
+  ParamSection,
+  FieldLabel,
+  FileNameChip,
+} from "components/common/ParamSection"
+import { ParamSelect } from "components/common/ParamSelect"
+import { ParamSwitch } from "components/common/ParamSwitch"
+import { ParamTextField } from "components/common/ParamTextField"
 import { GradientColorPicker } from "components/Workspace/Visualize/Editor/GradientColorPicker"
 import { SaveFig } from "components/Workspace/Visualize/Editor/SaveFig"
 import { SelectedItemIdContext } from "components/Workspace/Visualize/VisualizeItemEditor"
 import { getImageData } from "store/slice/DisplayData/DisplayDataActions"
-import { DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
-import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
-import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
-import { setNewDisplayDataPath } from "store/slice/VisualizeItem/VisualizeItemActions"
 import {
   selectImageItemShowGrid,
   selectImageItemShowLine,
@@ -32,7 +34,6 @@ import {
   selectImageItemEndIndex,
   selectImageItemRoiAlpha,
   selectImageItemFilePath,
-  selectDisplayDataIsSingle,
   selectImageItemAlpha,
 } from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import {
@@ -56,61 +57,37 @@ export const ImageItemEditor: FC = () => {
   const itemId = useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
   const filePath = useSelector(selectImageItemFilePath(itemId))
-
-  const isSingleData = useSelector(selectDisplayDataIsSingle(itemId))
-  const onSelectImageFile = (newPath: string) => {
-    const basePayload = {
-      itemId,
-      nodeId: null,
-      filePath: newPath,
-    }
-    dispatch(
-      setNewDisplayDataPath(
-        isSingleData && filePath != null
-          ? {
-              ...basePayload,
-              deleteData: true,
-              prevDataType: DATA_TYPE_SET.IMAGE,
-              prevFilePath: filePath,
-            }
-          : {
-              ...basePayload,
-              deleteData: false,
-            },
-      ),
-    )
-  }
-
-  const { onUploadFile } = useFileUploader({ fileType: FILE_TYPE_SET.IMAGE })
-  const onUploadFileHandle = (formData: FormData, fileName: string) => {
-    onUploadFile(formData, fileName)
-  }
-
   const colors = useSelector(selectImageItemColors(itemId))
   const dispathSetColor = (colorCode: ColorType[]) => {
     dispatch(setImageItemColors({ itemId, colors: colorCode }))
   }
 
   return (
-    <div style={{ margin: "10px", padding: 10 }}>
-      <FileSelectImple
-        filePath={filePath ?? ""}
-        onSelectFile={(path) => !Array.isArray(path) && onSelectImageFile(path)}
-        onUploadFile={onUploadFileHandle}
-        fileTreeType={FILE_TREE_TYPE_SET.IMAGE}
-        selectButtonLabel="Select Image"
-      />
-      <StartEndIndex />
-      <Showticklabels />
-      <ShowLine />
-      <ShowGrid />
-      <ShowScale />
-      <Zsmooth />
-      <GradientColorPicker colors={colors} dispatchSetColor={dispathSetColor} />
-      <Alpha />
-      <RoiAlpha />
+    <>
+      <ParamSection title="Image">
+        <FileNameChip filePath={filePath} />
+        <StartEndIndex />
+        <Showticklabels />
+        <ShowLine />
+        <ShowGrid />
+        <ShowScale />
+        <Zsmooth />
+        <Grid container component="label" alignItems="center">
+          <Grid item xs={8}>
+            <FieldLabel>Pick Color</FieldLabel>
+          </Grid>
+          <Grid item xs={4}>
+            <GradientColorPicker
+              colors={colors}
+              dispatchSetColor={dispathSetColor}
+            />
+          </Grid>
+        </Grid>
+        <Alpha />
+        <RoiAlpha />
+      </ParamSection>
       <SaveFig />
-    </div>
+    </>
   )
 }
 
@@ -124,9 +101,10 @@ const Showticklabels: FC = () => {
     )
   }
   return (
-    <FormControlLabel
-      control={<Switch checked={showticklabels} onChange={toggleChecked} />}
-      label="Showticklabels"
+    <ParamSwitch
+      label={"ShowTickLabels"}
+      value={showticklabels}
+      onChange={toggleChecked}
     />
   )
 }
@@ -139,10 +117,7 @@ const ShowLine: FC = () => {
     dispatch(setImageItemShowLine({ itemId, showline: !showline }))
   }
   return (
-    <FormControlLabel
-      control={<Switch checked={showline} onChange={toggleChecked} />}
-      label="ShowLine"
-    />
+    <ParamSwitch label={"ShowLine"} value={showline} onChange={toggleChecked} />
   )
 }
 
@@ -154,10 +129,7 @@ const ShowGrid: FC = () => {
     dispatch(setImageItemShowGrid({ itemId, showgrid: !showgrid }))
   }
   return (
-    <FormControlLabel
-      control={<Switch checked={showgrid} onChange={toggleChecked} />}
-      label="ShowGrid"
-    />
+    <ParamSwitch label={"ShowGrid"} value={showgrid} onChange={toggleChecked} />
   )
 }
 
@@ -169,9 +141,10 @@ const ShowScale: FC = () => {
     dispatch(setImageItemShowScale({ itemId, showscale: !showscale }))
   }
   return (
-    <FormControlLabel
-      control={<Switch checked={showscale} onChange={toggleChecked} />}
-      label="ShowScale"
+    <ParamSwitch
+      label={"ShowScale"}
+      value={showscale}
+      onChange={toggleChecked}
     />
   )
 }
@@ -184,14 +157,15 @@ const Zsmooth: FC = () => {
     dispatch(setImageItemZsmooth({ itemId, zsmooth: event.target.value }))
   }
   return (
-    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-      <InputLabel>smooth</InputLabel>
-      <Select label="smooth" value={zsmooth} onChange={handleChange}>
-        <MenuItem value={"best"}>best</MenuItem>
-        <MenuItem value={"fast"}>fast</MenuItem>
-        <MenuItem value={"false"}>False</MenuItem>
-      </Select>
-    </FormControl>
+    <ParamSelect
+      label="Smooth"
+      onChange={handleChange}
+      value={zsmooth as string}
+    >
+      <MenuItem value={"best"}>best</MenuItem>
+      <MenuItem value={"fast"}>fast</MenuItem>
+      <MenuItem value={"false"}>False</MenuItem>
+    </ParamSelect>
   )
 }
 
@@ -207,25 +181,19 @@ const Alpha: FC = () => {
     }
   }
   return (
-    <>
-      <TextField
-        style={{ width: "100%" }}
-        label={"image alpha"}
-        error={inputError}
-        type="number"
-        inputProps={{
-          step: 0.1,
-          min: 0,
-          max: 1.0,
-        }}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        onChange={onChange}
-        value={alpha}
-        helperText={inputError ? "index > 0" : undefined}
-      />
-    </>
+    <ParamTextField
+      label={"Image Alpha"}
+      type="number"
+      value={alpha}
+      inputProps={{
+        step: 0.1,
+        min: 0,
+        max: 1.0,
+      }}
+      onChange={onChange}
+      error={inputError}
+      helperText={inputError ? "index > 0" : undefined}
+    />
   )
 }
 
@@ -241,25 +209,19 @@ const RoiAlpha: FC = () => {
     }
   }
   return (
-    <>
-      <TextField
-        style={{ width: "100%" }}
-        label={"roi alpha"}
-        error={inputError}
-        type="number"
-        inputProps={{
-          step: 0.1,
-          min: 0,
-          max: 1.0,
-        }}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        onChange={onChange}
-        value={roiAlpha}
-        helperText={inputError ? "index > 0" : undefined}
-      />
-    </>
+    <ParamTextField
+      label={"Roi Alpha"}
+      type="number"
+      value={roiAlpha}
+      inputProps={{
+        step: 0.1,
+        min: 0,
+        max: 1.0,
+      }}
+      onChange={onChange}
+      error={inputError}
+      helperText={inputError ? "index > 0" : undefined}
+    />
   )
 }
 
@@ -307,38 +269,43 @@ const StartEndIndex: FC = () => {
   }
 
   return (
-    <Box sx={{ display: "flex", alignItems: "flex-start" }}>
-      <TextField
-        error={inputError}
-        type="number"
-        inputProps={{
-          step: 1,
-          min: 0,
-        }}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        onChange={onStartChange}
-        value={startIndex}
-        helperText={inputError ? "index > 0" : undefined}
-      />
-      ~
-      <TextField
-        type="number"
-        InputLabelProps={{
-          shrink: true,
-        }}
-        onChange={onEndChange}
-        value={endIndex}
-      />
-      <Button
-        size="small"
-        className="ctrl_btn"
-        variant="contained"
-        onClick={onClickButton}
-      >
-        load
-      </Button>
+    <Box marginBottom={2}>
+      <FieldLabel>Start/End Index</FieldLabel>
+      <Box sx={{ display: "flex", alignItems: "flex-start" }}>
+        <TextField
+          error={inputError}
+          type="number"
+          inputProps={{
+            step: 1,
+            min: 0,
+          }}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          onChange={onStartChange}
+          value={startIndex}
+          helperText={inputError ? "index > 0" : undefined}
+          style={{ marginRight: 8 }}
+        />
+        ~
+        <TextField
+          type="number"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          onChange={onEndChange}
+          value={endIndex}
+          style={{ marginLeft: 8, marginRight: 8 }}
+        />
+        <Button
+          size="small"
+          className="ctrl_btn"
+          variant="contained"
+          onClick={onClickButton}
+        >
+          load
+        </Button>
+      </Box>
     </Box>
   )
 }

@@ -22,6 +22,7 @@ import {
   DialogTitle,
   Input,
   styled,
+  Typography,
 } from "@mui/material"
 import IconButton from "@mui/material/IconButton"
 import { SelectChangeEvent } from "@mui/material/Select"
@@ -39,6 +40,7 @@ import { isRejectedWithValue } from "@reduxjs/toolkit"
 
 import { ROLE } from "@types"
 import { AddUserDTO, UserDTO } from "api/users/UsersApiDTO"
+import { ConfirmDialog } from "components/common/ConfirmDialog"
 import InputError from "components/common/InputError"
 import Loading from "components/common/Loading"
 import PaginationCustom from "components/common/PaginationCustom"
@@ -70,13 +72,6 @@ type ModalComponentProps = {
   dataEdit?: {
     [key: string]: string
   }
-}
-
-type PopupType = {
-  open: boolean
-  handleClose: () => void
-  handleOkDel: () => void
-  name?: string
 }
 
 const initState = {
@@ -273,26 +268,6 @@ const ModalComponent = ({
       </ModalBox>
       {isDisabled ? <Loading /> : null}
     </Modal>
-  )
-}
-
-const PopupDelete = ({ open, handleClose, handleOkDel, name }: PopupType) => {
-  if (!open) return null
-
-  return (
-    <Box>
-      <Dialog open={open} onClose={handleClose} sx={{ margin: 0 }}>
-        <DialogTitle>{`Do you want delete User "${name}"?`}</DialogTitle>
-        <DialogActions>
-          <Button variant="outlined" onClick={handleClose}>
-            Cancel
-          </Button>
-          <Button variant="contained" onClick={handleOkDel}>
-            Ok
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
   )
 }
 
@@ -716,21 +691,21 @@ const AccountManager = () => {
         return (
           <>
             <IconButton
-              sx={{ color: "red" }}
               onClick={() =>
                 handleEdit({ id, role_id: role, name, email } as UserFormDTO)
               }
             >
-              <EditIcon sx={{ color: "black" }} />
+              <EditIcon />
             </IconButton>
             {!(params.row?.id === user?.id) ? (
               <IconButton
                 sx={{ ml: 1.25 }}
+                color="error"
                 onClick={() =>
                   handleOpenPopupDel(params.row?.id, params.row?.name)
                 }
               >
-                <DeleteIcon sx={{ color: "red" }} />
+                <DeleteIcon />
               </IconButton>
             ) : null}
           </>
@@ -780,11 +755,19 @@ const AccountManager = () => {
           limit={Number(limit)}
         />
       ) : null}
-      <PopupDelete
+      <ConfirmDialog
         open={openDel?.open || false}
-        handleClose={handleClosePopupDel}
-        handleOkDel={handleOkDel}
-        name={openDel?.name}
+        onCancel={handleClosePopupDel}
+        onConfirm={handleOkDel}
+        title="Delete user?"
+        content={
+          <>
+            <Typography>ID: {openDel?.id}</Typography>
+            <Typography>Name: {openDel?.name}</Typography>
+          </>
+        }
+        confirmLabel="delete"
+        iconType="warning"
       />
       {openModal ? (
         <ModalComponent
