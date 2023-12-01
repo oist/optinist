@@ -1,13 +1,18 @@
 import { memo, ReactNode } from "react"
 
+import { InsertDriveFileOutlined } from "@mui/icons-material"
 import {
   Box,
+  Chip,
   Divider,
   InputLabel,
+  styled,
+  Tooltip,
   Typography,
   TypographyProps,
 } from "@mui/material"
-import { styled } from "@mui/material/styles"
+
+import { getLabelByPath } from "store/slice/FlowElement/FlowElementUtils"
 
 interface SectionProps {
   title: string
@@ -39,4 +44,23 @@ export const FieldLabel = styled(InputLabel)({
   fontWeight: "bold",
   fontSize: "0.95rem",
   color: "text.secondary",
+})
+
+interface FileNameChipProps {
+  filePath: string | null
+}
+
+export const FileNameChip = memo(function FileNameChip({
+  filePath,
+}: FileNameChipProps) {
+  const label = filePath ? getLabelByPath(filePath) : "No file is selected"
+  return (
+    <Tooltip title={label}>
+      <Chip
+        icon={<InsertDriveFileOutlined />}
+        label={label}
+        sx={{ marginBottom: 2 }}
+      />
+    </Tooltip>
+  )
 })

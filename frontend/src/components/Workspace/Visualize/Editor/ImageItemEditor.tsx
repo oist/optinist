@@ -2,12 +2,20 @@ import { ChangeEvent, FC, useContext, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import "react-linear-gradient-picker/dist/index.css"
-import { Box, Grid, TextField, Typography } from "@mui/material"
-import Button from "@mui/material/Button"
-import MenuItem from "@mui/material/MenuItem"
-import { SelectChangeEvent } from "@mui/material/Select"
+import {
+  Box,
+  Button,
+  Grid,
+  MenuItem,
+  SelectChangeEvent,
+  TextField,
+} from "@mui/material"
 
-import { ParamSection, FieldLabel } from "components/common/ParamSection"
+import {
+  ParamSection,
+  FieldLabel,
+  FileNameChip,
+} from "components/common/ParamSection"
 import { ParamSelect } from "components/common/ParamSelect"
 import { ParamSwitch } from "components/common/ParamSwitch"
 import { ParamTextField } from "components/common/ParamTextField"
@@ -15,7 +23,6 @@ import { GradientColorPicker } from "components/Workspace/Visualize/Editor/Gradi
 import { SaveFig } from "components/Workspace/Visualize/Editor/SaveFig"
 import { SelectedItemIdContext } from "components/Workspace/Visualize/VisualizeItemEditor"
 import { getImageData } from "store/slice/DisplayData/DisplayDataActions"
-import { getLabelByPath } from "store/slice/FlowElement/FlowElementUtils"
 import {
   selectImageItemShowGrid,
   selectImageItemShowLine,
@@ -58,9 +65,7 @@ export const ImageItemEditor: FC = () => {
   return (
     <>
       <ParamSection title="Image">
-        <Typography marginBottom={2}>
-          {filePath ? getLabelByPath(filePath) : "No file is selected"}
-        </Typography>
+        <FileNameChip filePath={filePath} />
         <StartEndIndex />
         <Showticklabels />
         <ShowLine />

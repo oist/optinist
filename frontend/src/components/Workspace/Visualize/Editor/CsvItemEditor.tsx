@@ -3,10 +3,10 @@ import { useSelector, useDispatch } from "react-redux"
 
 import { Typography } from "@mui/material"
 
+import { FileNameChip } from "components/common/ParamSection"
 import { ParamSwitch } from "components/common/ParamSwitch"
 import { ParamTextField } from "components/common/ParamTextField"
 import { SelectedItemIdContext } from "components/Workspace/Visualize/VisualizeItemEditor"
-import { getLabelByPath } from "store/slice/FlowElement/FlowElementUtils"
 import {
   selectCsvItemSetHeader,
   selectCsvItemSetIndex,
@@ -28,9 +28,7 @@ export const CsvItemEditor: FC = () => {
       <Typography variant="h6" fontWeight="bold">
         Csv
       </Typography>
-      <Typography marginBottom={2}>
-        {filePath ? getLabelByPath(filePath) : "No file is selected"}
-      </Typography>
+      <FileNameChip filePath={filePath} />
       <Transpose />
       <SetHeader />
       <SetIndex />
