@@ -33,7 +33,8 @@ include = [
   "studio/app/*/wrappers/**/*.yaml",
   "studio/app/Snakefile",
   "studio/config/*.yaml",
-  "sample_data/*",
+  "sample_data/input/*",
+  "sample_data/output/*",
 ]
 exclude = ["studio/tests/*", "studio/test_data/*", "conda.env.*"]
 
