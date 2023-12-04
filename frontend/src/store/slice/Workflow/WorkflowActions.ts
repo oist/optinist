@@ -4,6 +4,7 @@ import {
   fetchWorkflowApi,
   reproduceWorkflowApi,
   importWorkflowConfigApi,
+  importSampleDataApi,
   WorkflowConfigDTO,
   WorkflowWithResultDTO,
 } from "api/workflow/Workflow"
@@ -44,6 +45,21 @@ export const importWorkflowConfig = createAsyncThunk<
   async ({ formData }, thunkAPI) => {
     try {
       const response = await importWorkflowConfigApi(formData)
+      return response
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
+
+export const importSampleData = createAsyncThunk<
+  boolean,
+  { workspaceId: number }
+>(
+  `${WORKFLOW_SLICE_NAME}/importSampleData`,
+  async ({ workspaceId }, thunkAPI) => {
+    try {
+      const response = await importSampleDataApi(workspaceId)
       return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)
