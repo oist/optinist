@@ -1,9 +1,15 @@
 import os
 import shutil
 from glob import glob
-from typing import List
+from pathlib import PurePath
+from typing import Dict, List
+from urllib.parse import urlparse
 
-from fastapi import APIRouter, Depends, File, UploadFile
+import requests
+from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile
+from pydantic.networks import AnyHttpUrl
+from requests.models import Response
+from tqdm import tqdm
 
 from studio.app.common.core.utils.filepath_creater import (
     create_directory,
@@ -13,7 +19,7 @@ from studio.app.common.core.workspace.workspace_dependencies import (
     is_workspace_available,
     is_workspace_owner,
 )
-from studio.app.common.schemas.files import FilePath, TreeNode
+from studio.app.common.schemas.files import DownloadStatus, FilePath, TreeNode
 from studio.app.const import ACCEPT_CSV_EXT, ACCEPT_HDF5_EXT, ACCEPT_TIFF_EXT, FILETYPE
 from studio.app.dir_path import DIRPATH
 
@@ -112,3 +118,65 @@ async def create_file(workspace_id: str, filename: str, file: UploadFile = File(
         shutil.copyfileobj(file.file, f)
 
     return {"file_path": filename}
+
+
+DOWNLOAD_STATUS: Dict[str, DownloadStatus] = {}
+
+
+@router.get(
+    "/{workspace_id}/download/status",
+    response_model=DownloadStatus,
+    dependencies=[Depends(is_workspace_available)],
+)
+async def get_download_status(workspace_id: str, file_name: str):
+    filepath = join_filepath([DIRPATH.INPUT_DIR, workspace_id, file_name])
+    try:
+        return DOWNLOAD_STATUS[filepath]
+    except:  # noqa
+        raise HTTPException(status_code=404)
+
+
+@router.get(
+    "/{workspace_id}/download/{url:path}",
+    dependencies=[Depends(is_workspace_owner)],
+)
+async def download_file(
+    workspace_id: str,
+    url: AnyHttpUrl,
+    background_tasks: BackgroundTasks,
+):
+    path = PurePath(urlparse(url).path)
+    if path.suffix not in {*ACCEPT_CSV_EXT, *ACCEPT_HDF5_EXT, *ACCEPT_TIFF_EXT}:
+        raise HTTPException(status_code=400, detail="Invalid url")
+
+    create_directory(join_filepath([DIRPATH.INPUT_DIR, workspace_id]))
+
+    try:
+        res = requests.get(url, stream=True)
+        res.raise_for_status()
+    except Exception as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    background_tasks.add_task(download, res, path.name, workspace_id)
+    return {"file_name": path.name}
+
+
+def download(res: Response, file_name: str, workspace_id: str, chunk_size=1024):
+    total = int(res.headers.get("content-length", 0))
+    filepath = join_filepath([DIRPATH.INPUT_DIR, workspace_id, file_name])
+
+    try:
+        with open(filepath, "wb") as file, tqdm(
+            desc=filepath,
+            total=total,
+            unit="iB",
+            unit_scale=True,
+            unit_divisor=1024,
+        ) as bar:
+            for data in res.iter_content(chunk_size=chunk_size):
+                size = file.write(data)
+                DOWNLOAD_STATUS[filepath] = DownloadStatus(
+                    total=total, current=os.fstat(file.fileno()).st_size
+                )
+                bar.update(size)
+    except Exception as e:
+        DOWNLOAD_STATUS[filepath] = DownloadStatus(error=str(e))
