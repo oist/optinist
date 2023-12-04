@@ -476,6 +476,8 @@ const ImagePlotChart = memo(function ImagePlotChart({
     setPointClick([])
     try {
       await dispatch(cancelRoi({ path: roiFilePath, workspaceId }))
+    } catch (e) {
+      console.error(e)
     } finally {
       workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
       setStatusRoi({
