@@ -18,9 +18,11 @@ import {
   Button,
   Dialog,
   DialogActions,
+  DialogContent,
   DialogTitle,
   Input,
   styled,
+  Typography,
 } from "@mui/material"
 import IconButton from "@mui/material/IconButton"
 import { SelectChangeEvent } from "@mui/material/Select"
@@ -38,6 +40,7 @@ import { isRejectedWithValue } from "@reduxjs/toolkit"
 
 import { ROLE } from "@types"
 import { AddUserDTO, UserDTO } from "api/users/UsersApiDTO"
+import { ConfirmDialog } from "components/common/ConfirmDialog"
 import InputError from "components/common/InputError"
 import Loading from "components/common/Loading"
 import PaginationCustom from "components/common/PaginationCustom"
@@ -60,6 +63,7 @@ import { AppDispatch } from "store/store"
 let timeout: NodeJS.Timeout | undefined = undefined
 
 type ModalComponentProps = {
+  open: boolean
   onSubmitEdit: (
     id: number | string | undefined,
     data: { [key: string]: string },
@@ -68,13 +72,6 @@ type ModalComponentProps = {
   dataEdit?: {
     [key: string]: string
   }
-}
-
-type PopupType = {
-  open: boolean
-  handleClose: () => void
-  handleOkDel: () => void
-  name?: string
 }
 
 const initState = {
@@ -86,6 +83,7 @@ const initState = {
 }
 
 const ModalComponent = ({
+  open,
   onSubmitEdit,
   setOpenModal,
   dataEdit,
@@ -203,7 +201,7 @@ const ModalComponent = ({
   }
 
   return (
-    <Modal>
+    <Modal open={open} onClose={() => setOpenModal(false)}>
       <ModalBox>
         <TitleModal>{dataEdit?.id ? "Edit" : "Add"} Account</TitleModal>
         <BoxData>
@@ -256,29 +254,20 @@ const ModalComponent = ({
           ) : null}
         </BoxData>
         <ButtonModal>
-          <Button onClick={() => onCancel()}>Cancel</Button>
-          <Button disabled={isDisabled} onClick={(e) => onSubmit(e)}>
+          <Button variant={"outlined"} onClick={() => onCancel()}>
+            Cancel
+          </Button>
+          <Button
+            variant={"contained"}
+            disabled={isDisabled}
+            onClick={(e) => onSubmit(e)}
+          >
             Ok
           </Button>
         </ButtonModal>
       </ModalBox>
       {isDisabled ? <Loading /> : null}
     </Modal>
-  )
-}
-
-const PopupDelete = ({ open, handleClose, handleOkDel, name }: PopupType) => {
-  if (!open) return null
-  return (
-    <Box>
-      <Dialog open={open} onClose={handleClose} sx={{ margin: 0 }}>
-        <DialogTitle>{`Do you want delete User "${name}"?`}</DialogTitle>
-        <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleOkDel}>Ok</Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
   )
 }
 
@@ -702,21 +691,21 @@ const AccountManager = () => {
         return (
           <>
             <IconButton
-              sx={{ color: "red" }}
               onClick={() =>
                 handleEdit({ id, role_id: role, name, email } as UserFormDTO)
               }
             >
-              <EditIcon sx={{ color: "black" }} />
+              <EditIcon />
             </IconButton>
             {!(params.row?.id === user?.id) ? (
               <IconButton
                 sx={{ ml: 1.25 }}
+                color="error"
                 onClick={() =>
                   handleOpenPopupDel(params.row?.id, params.row?.name)
                 }
               >
-                <DeleteIcon sx={{ color: "red" }} />
+                <DeleteIcon />
               </IconButton>
             ) : null}
           </>
@@ -766,14 +755,23 @@ const AccountManager = () => {
           limit={Number(limit)}
         />
       ) : null}
-      <PopupDelete
+      <ConfirmDialog
         open={openDel?.open || false}
-        handleClose={handleClosePopupDel}
-        handleOkDel={handleOkDel}
-        name={openDel?.name}
+        onCancel={handleClosePopupDel}
+        onConfirm={handleOkDel}
+        title="Delete user?"
+        content={
+          <>
+            <Typography>ID: {openDel?.id}</Typography>
+            <Typography>Name: {openDel?.name}</Typography>
+          </>
+        }
+        confirmLabel="delete"
+        iconType="warning"
       />
       {openModal ? (
         <ModalComponent
+          open={openModal}
           onSubmitEdit={onSubmitEdit}
           setOpenModal={(flag) => {
             setOpenModal(flag)
@@ -794,30 +792,22 @@ const AccountManagerWrapper = styled(Box)(({ theme }) => ({
   margin: theme.spacing(5, "auto"),
 }))
 
-const Modal = styled(Box)(() => ({
-  position: "fixed",
-  top: 0,
-  left: 0,
-  width: "100%",
-  height: "100vh",
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  backgroundColor: "#cccccc80",
+const Modal = styled(Dialog)(() => ({
+  div: {
+    maxWidth: "unset",
+  },
 }))
 
 const ModalBox = styled(Box)(() => ({
   width: 800,
-  backgroundColor: "white",
-  border: "1px solid black",
 }))
 
-const TitleModal = styled(Box)(({ theme }) => ({
+const TitleModal = styled(DialogTitle)(({ theme }) => ({
   fontSize: 25,
   margin: theme.spacing(5),
 }))
 
-const BoxData = styled(Box)(() => ({
+const BoxData = styled(DialogContent)(() => ({
   marginTop: 35,
 }))
 
@@ -828,12 +818,7 @@ const LabelModal = styled(Box)(({ theme }) => ({
   marginRight: theme.spacing(0.5),
 }))
 
-const ButtonModal = styled(Box)(({ theme }) => ({
-  button: {
-    fontSize: 20,
-  },
-  display: "flex",
-  justifyContent: "end",
+const ButtonModal = styled(DialogActions)(({ theme }) => ({
   margin: theme.spacing(5),
 }))
 

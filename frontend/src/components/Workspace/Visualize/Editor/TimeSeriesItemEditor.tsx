@@ -6,16 +6,18 @@ import {
   AccordionDetails,
   AccordionSummary,
   FormControlLabel,
+  Grid,
   MenuItem,
-  Select,
   SelectChangeEvent,
-  Switch,
-  TextField,
 } from "@mui/material"
 import Box from "@mui/material/Box"
 import Checkbox from "@mui/material/Checkbox"
 
 import { Accordion } from "components/common/Accordion"
+import { ParamSection } from "components/common/ParamSection"
+import { ParamSelect } from "components/common/ParamSelect"
+import { ParamSwitch } from "components/common/ParamSwitch"
+import { ParamTextField } from "components/common/ParamTextField"
 import { SaveFig } from "components/Workspace/Visualize/Editor/SaveFig"
 import { SelectedItemIdContext } from "components/Workspace/Visualize/VisualizeItemEditor"
 import {
@@ -54,18 +56,20 @@ import { arrayEqualityFn } from "utils/EqualityUtils"
 
 export const TimeSeriesItemEditor: FC = () => {
   return (
-    <div style={{ margin: "10px", padding: 10 }}>
-      <Offset />
-      <Span />
-      <ShowGrid />
-      <ShowLine />
-      <ShowTickLabels />
-      <ZeroLine />
-      <SelectValue />
-      <Xrange />
-      <LegendSelect />
+    <>
+      <ParamSection title="TimeSeries">
+        <Offset />
+        <Span />
+        <ShowGrid />
+        <ShowLine />
+        <ShowTickLabels />
+        <ZeroLine />
+        <SelectValue />
+        <Xrange />
+        <LegendSelect />
+      </ParamSection>
       <SaveFig />
-    </div>
+    </>
   )
 }
 
@@ -76,12 +80,7 @@ const Offset: FC = () => {
   const toggleChecked = () => {
     dispatch(setTimeSeriesItemOffset({ itemId, offset: !offset }))
   }
-  return (
-    <FormControlLabel
-      control={<Switch checked={offset} onChange={toggleChecked} />}
-      label="offset"
-    />
-  )
+  return <ParamSwitch label="Offset" value={offset} onChange={toggleChecked} />
 }
 
 const Span: FC = () => {
@@ -96,19 +95,11 @@ const Span: FC = () => {
     }
   }
   return (
-    <FormControlLabel
-      control={
-        <TextField
-          type="number"
-          style={{ width: "6vw" }}
-          InputLabelProps={{
-            shrink: true,
-          }}
-          onChange={onChange}
-          value={span}
-        />
-      }
-      label="offset std"
+    <ParamTextField
+      type="number"
+      label="Offset std"
+      value={span}
+      onChange={onChange}
     />
   )
 }
@@ -122,10 +113,7 @@ const ShowGrid: FC = () => {
     dispatch(setTimeSeriesItemShowGrid({ itemId, showgrid: !showgrid }))
   }
   return (
-    <FormControlLabel
-      control={<Switch checked={showgrid} onChange={toggleChecked} />}
-      label="showgrid"
-    />
+    <ParamSwitch label="ShowGrid" value={showgrid} onChange={toggleChecked} />
   )
 }
 
@@ -138,10 +126,7 @@ const ShowLine: FC = () => {
     dispatch(setTimeSeriesItemShowLine({ itemId, showline: !showline }))
   }
   return (
-    <FormControlLabel
-      control={<Switch checked={showline} onChange={toggleChecked} />}
-      label="showline"
-    />
+    <ParamSwitch label="ShowLine" value={showline} onChange={toggleChecked} />
   )
 }
 
@@ -159,9 +144,10 @@ const ShowTickLabels: FC = () => {
     )
   }
   return (
-    <FormControlLabel
-      control={<Switch checked={showticklabels} onChange={toggleChecked} />}
-      label="showticklabels"
+    <ParamSwitch
+      label="ShowTickLabels"
+      value={showticklabels}
+      onChange={toggleChecked}
     />
   )
 }
@@ -175,10 +161,7 @@ const ZeroLine: FC = () => {
     dispatch(setTimeSeriesItemZeroLine({ itemId, zeroline: !zeroline }))
   }
   return (
-    <FormControlLabel
-      control={<Switch checked={zeroline} onChange={toggleChecked} />}
-      label="zeroline"
-    />
+    <ParamSwitch label={"ZeroLine"} value={zeroline} onChange={toggleChecked} />
   )
 }
 
@@ -190,13 +173,10 @@ const SelectValue: FC = () => {
     dispatch(changeRangeUnit({ itemId: itemId, rangeUnit: e.target.value }))
   }
   return (
-    <Box sx={{ marginBottom: 2 }}>
-      <p>range unit</p>
-      <Select sx={{ width: "100%" }} value={value} onChange={onChangeValue}>
-        <MenuItem value={"frames"}>Frames</MenuItem>
-        <MenuItem value={"time"}>Time</MenuItem>
-      </Select>
-    </Box>
+    <ParamSelect label={"Range Unit"} value={value} onChange={onChangeValue}>
+      <MenuItem value={"frames"}>Frames</MenuItem>
+      <MenuItem value={"time"}>Time</MenuItem>
+    </ParamSelect>
   )
 }
 
@@ -245,38 +225,29 @@ const Xrange: FC = () => {
   }
 
   return (
-    <FormControlLabel
-      control={
-        <>
-          <TextField
-            label="left"
-            style={{ width: 50 }}
-            type="number"
-            inputProps={{
-              step: 1,
-              min: 0,
-            }}
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={onChangeLeft}
-            value={xrange.left ?? ""}
-            defaultValue={undefined}
-          />
-          <TextField
-            label="right"
-            style={{ width: 50 }}
-            type="number"
-            InputLabelProps={{
-              shrink: true,
-            }}
-            onChange={onChangeRight}
-            value={xrange.right ?? ""}
-          />
-        </>
-      }
-      label=""
-    />
+    <Grid container justifyContent="space-between">
+      <Grid item>
+        <ParamTextField
+          label="Left"
+          type="number"
+          inputProps={{
+            min: 0,
+          }}
+          style={{ width: 105 }}
+          onChange={onChangeLeft}
+          value={xrange.left ?? ""}
+        />
+      </Grid>
+      <Grid item>
+        <ParamTextField
+          label="Right"
+          type="number"
+          style={{ width: 105 }}
+          onChange={onChangeRight}
+          value={xrange.right ?? ""}
+        />
+      </Grid>
+    </Grid>
   )
 }
 
@@ -354,7 +325,7 @@ const LegendSelect: FC = () => {
   )
 
   return (
-    <Accordion sx={{ mt: 2 }} TransitionProps={{ unmountOnExit: true }}>
+    <Accordion sx={{ my: 2 }} TransitionProps={{ unmountOnExit: true }}>
       <AccordionSummary expandIcon={<ExpandMoreIcon />}>
         Legend select
       </AccordionSummary>

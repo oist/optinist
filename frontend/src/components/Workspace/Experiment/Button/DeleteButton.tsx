@@ -2,12 +2,9 @@ import { memo, useContext, useState } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline"
-import Button from "@mui/material/Button"
-import Dialog from "@mui/material/Dialog"
-import DialogActions from "@mui/material/DialogActions"
-import DialogTitle from "@mui/material/DialogTitle"
 import IconButton from "@mui/material/IconButton"
 
+import { ConfirmDialog } from "components/common/ConfirmDialog"
 import { ExperimentUidContext } from "components/Workspace/Experiment/ExperimentTable"
 import { deleteExperimentByUid } from "store/slice/Experiments/ExperimentsActions"
 import { selectExperimentName } from "store/slice/Experiments/ExperimentsSelectors"
@@ -30,33 +27,28 @@ export const DeleteButton = memo(function DeleteButton() {
   const name = useSelector(selectExperimentName(uid))
   const [open, setOpen] = useState(false)
 
-  const onClickOpen = () => {
+  const openDialog = () => {
     setOpen(true)
   }
-  const onClickCancel = () => {
-    setOpen(false)
-  }
-  const onClickOk = () => {
-    setOpen(false)
+  const handleDelete = () => {
     dispatch(deleteExperimentByUid(uid))
     uid === currentPipelineUid && dispatch(clearCurrentPipeline())
   }
+
   return (
     <>
-      <IconButton onClick={onClickOpen} disabled={isRunning} color="error">
+      <IconButton onClick={openDialog} disabled={isRunning} color="error">
         <DeleteOutlineIcon />
       </IconButton>
-      <Dialog open={open}>
-        <DialogTitle>Are you sure you want to delete {name}?</DialogTitle>
-        <DialogActions>
-          <Button onClick={onClickCancel} variant="outlined" color="inherit">
-            Cancel
-          </Button>
-          <Button onClick={onClickOk} variant="outlined" autoFocus>
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ConfirmDialog
+        open={open}
+        setOpen={setOpen}
+        onConfirm={handleDelete}
+        title="Delete record?"
+        content={`${name} (${uid})`}
+        confirmLabel="delete"
+        iconType="warning"
+      />
     </>
   )
 })

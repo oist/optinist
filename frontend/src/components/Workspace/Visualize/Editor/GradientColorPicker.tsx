@@ -51,7 +51,7 @@ export const GradientColorPicker = memo(function GradientColorPicker({
     <GradientPickerPopoverComponent
       open={open}
       setOpen={() => setOpen(!open)}
-      // showAnglePicker={true}
+      showAnglePicker={false}
       width={150}
       maxStops={10}
       paletteHeight={25}

@@ -21,9 +21,6 @@ import AlertTitle from "@mui/material/AlertTitle"
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 import Checkbox from "@mui/material/Checkbox"
-import Dialog from "@mui/material/Dialog"
-import DialogActions from "@mui/material/DialogActions"
-import DialogTitle from "@mui/material/DialogTitle"
 import IconButton from "@mui/material/IconButton"
 import Paper from "@mui/material/Paper"
 import { styled } from "@mui/material/styles"
@@ -38,6 +35,7 @@ import TableSortLabel from "@mui/material/TableSortLabel"
 import Typography from "@mui/material/Typography"
 
 import { renameExperiment } from "api/experiments/Experiments"
+import { ConfirmDialog } from "components/common/ConfirmDialog"
 import { useLocalStorage } from "components/utils/LocalStorageUtil"
 import { DeleteButton } from "components/Workspace/Experiment/Button/DeleteButton"
 import {
@@ -157,9 +155,6 @@ const TableImple = memo(function TableImple() {
   const onClickDelete = () => {
     setOpen(true)
   }
-  const onClickCancel = () => {
-    setOpen(false)
-  }
   const onClickOk = () => {
     dispatch(deleteExperimentByList(checkedList))
     checkedList.filter((v) => v === currentPipelineUid).length > 0 &&
@@ -232,17 +227,23 @@ const TableImple = memo(function TableImple() {
           </Button>
         )}
       </Box>
-      <Dialog open={open}>
-        <DialogTitle>Are you sure you want to delete?</DialogTitle>
-        <DialogActions>
-          <Button onClick={onClickCancel} variant="outlined" color="inherit">
-            Cancel
-          </Button>
-          <Button onClick={onClickOk} variant="outlined" autoFocus>
-            OK
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <ConfirmDialog
+        open={open}
+        setOpen={setOpen}
+        onConfirm={onClickOk}
+        title="Delete records?"
+        content={
+          <>
+            {checkedList.map((uid) => (
+              <Typography key={uid}>
+                ・{experimentList[uid].name} ({uid})
+              </Typography>
+            ))}
+          </>
+        }
+        iconType="warning"
+        confirmLabel="delete"
+      />
       <Paper
         elevation={0}
         variant="outlined"

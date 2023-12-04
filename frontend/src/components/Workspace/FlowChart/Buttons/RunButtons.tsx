@@ -222,7 +222,7 @@ const RunDialog = memo(function RunDialog({
   }
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>Name and run flowchart</DialogTitle>
+      <DialogTitle>Name and run workflow</DialogTitle>
       <DialogContent>
         <TextField
           label="name"
@@ -237,10 +237,10 @@ const RunDialog = memo(function RunDialog({
         />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="inherit" variant="outlined">
+        <Button onClick={handleClose} variant="outlined">
           Cancel
         </Button>
-        <Button onClick={onClickRun} color="primary" variant="outlined">
+        <Button onClick={onClickRun} variant="contained">
           Run
         </Button>
       </DialogActions>

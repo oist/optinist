@@ -26,7 +26,7 @@ export const SnakemakeSettingContents = memo(
       }
     })
     return (
-      <div className="SnakemakeParam" style={{ margin: 4 }}>
+      <div className="SnakemakeParam" style={{ margin: 24 }}>
         {paramKeyList.map((paramKey, i) => (
           <ParamItem key={i} paramKey={paramKey} />
         ))}
