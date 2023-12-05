@@ -176,7 +176,7 @@ You can only connect the input and output connectors of the same color.
 ### Removing Nodes or Connects
 Clicking on the x mark on a node or on an edge removes it from the workflow field.
 
-
+(ImportWorkflowYaml)=
 ### Import existing workflow by yaml file
 You can create same workflow by importing workflow config yaml format file. This feature is useful to share workflow template.
 
