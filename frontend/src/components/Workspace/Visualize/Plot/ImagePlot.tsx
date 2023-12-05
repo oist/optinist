@@ -838,8 +838,8 @@ function debounce<T extends (...args: PlotSelectionEvent[]) => unknown>(
 const ImagePlotContainer = styled("div")`
   .selectionlayer path {
     stroke: white !important;
-    stroke-dasharray: none !important;
-    stroke-width: 5px !important;
+    stroke-dasharray: 6 !important;
+    stroke-width: 2px !important;
     opacity: 1 !important;
   }
 `
