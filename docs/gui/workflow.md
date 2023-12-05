@@ -3,7 +3,7 @@ Workflow
 
 <br>
 <p align="center">
-<img width="400px" src="../_static/workflow/whole.png" alt="workflow" />
+<img width="600px" src="../_static/workflow/whole.png" alt="workflow" />
 <br/>
 
   - OptiNiSt makes it easy to create analysis pipelines using the GUI.
@@ -13,8 +13,21 @@ Workflow
 - The analysis pipeline can be parallel or bifurcating.
 
 ## Creating workflow
-### Setting Input data
+You can create a new workflow by clicking the + button.
 
+<br>
+<p align="center">
+  <img width="600px" src="../_static/workflow/components/create_new_workflow.png" alt="create workflow" />
+</p>
+<br>
+
+```{eval-rst}
+.. caution::
+   By creating workflow, existing workflow will be deleted. The records are kept if you have already run the workflow.
+```
+
+
+### Setting Input data
 
 <br>
 <p align="center">
@@ -31,7 +44,10 @@ Once the data is accessible, you can view it by following these steps:
 2. Select a file or a folder. Choosing a folder makes all the TIFF files in the shown sequence an input set of continuous frames.
 
 
-**Note:** Currently, image files with {.tif, .TIF, .tiff, .TIFF} extensions are accepted. Other extensions will be added on request.
+```{eval-rst}
+.. note::
+   Currently, only image files with {.tif, .TIF, .tiff, .TIFF} extensions are supported.
+```
 
 #### Directory Setting
 OptiNiSt uses `OPTINIST_DIR` for retrieving data and saving results. OptiNiSt searches for input data in the 'input' directory within `OPTINIST_DIR`. The default `OPTINIST_DIR` is `/tmp/studio` on your computer.
@@ -89,43 +105,64 @@ The edge connected to the black output connector can be connected to any input c
 
 
 ### Adding Nodes
+Select Data or Algorithm node from the treeview on the left.
+Clicking the + button adds the analysis nodes to the Workflow field.
+
 <br>
 <p align="center">
-  <img width="300px" src="../_static/workflow/components/add_algorithm.png" alt="Add Algorithm" />
+  <img width="600px" src="../_static/workflow/components/add_algorithm.png" alt="Add Algorithm" />
 </p>
 <br>
 
-Select algorithms or analysis methods from the treeview on the left by clicking "+" button.
+The left side of the window displays all available analysis methods. ROI detection tools (currently Suite2P, CaImAn and LCCD) are in the "Algorithm" category, and all other pre-installed analyses are in the "optinist" category.
 
-The left side of the window displays all available analysis methods. Clicking on the + mark adds the analysis nodes to the Workflow field. ROI detection tools (currently Suite2P, CaImAn and LCCD) are in the "Algorithm" category, and all other pre-installed analyses are in the "optinist" category.
+### Algorithm Nodes
 
-Let's start with sample TIFF data (`mouse2p_2_long.tiff`) and try Suite2P ROI detection.
-First, you need to determine the image you will use. Select your image as explained [above](#setting-input-data).
-Once it is selected, the name of the files is shown in the Image node.
-
-### Parameter button and output button on the node
+Each algorithm node has PARAM button and OUTPUT button.
 
 <br>
 <p align="center">
-<img width="300px" src="../_static/tutorials/fig10.1_buttons.png" alt="Set Parameter" />
+<img width="300px" src="../_static/workflow/components/algorithm_node_buttons.png" alt="Algo node buttons" />
 </p>
 <br/>
 
-Each node has PARAM button and OUTPUT button.
 
-- **Editing Parameters:** Click on the PARAM button to view the parameters. You can edit them as needed. The names, types, and default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters. The link list is available at [Implemented Analysis](https://optinist.readthedocs.io/en/latest/utils/implemented_analysis.html).
 
-- **Checking Results:** The OUTPUT button is for a quick check of the results. The button becomes active after the successful execution of the pipeline. For details about the charts, see [](Visualize).
+
+- **PARAM**
+
+  You can see or edit parameters for the algorithm.
+  Clicking param button, the parameters are dispalyed in the right side of the window.
+
+  <br>
+  <p align="center">
+  <img width="600px" src="../_static/workflow/components/algorithm_param_form.png" alt="algo node parameter form" />
+  </p>
+  <br/>
+
+  The names, types, and default values of the parameters are the same as the original algorithms. Refer to the original documentation to confirm the meaning of the parameters. The link list is available at [Implemented Analysis](https://optinist.readthedocs.io/en/latest/utils/implemented_analysis.html).
+
+- **OUTPUT**
+
+  You can check the results of algorithm quickly after the successful execution of the pipeline. For details about the charts, see [](Visualize).
+
+  <br>
+  <p align="center">
+  <img width="400px" src="../_static/workflow/components/algorithm_output.png" alt="algo node parameter form" />
+  </p>
+  <br/>
 
 ### Connecting Nodes
 
 <br>
 <p align="center">
-<img width="300px" src="../_static/workflow/components/connect_edge.png" alt="Connect Algorithm" />
+<img width="500px" src="../_static/workflow/components/connect_edge.png" alt="Connect Algorithm" />
 </p>
 <br/>
 
-Connect colored connectors of the nodes by dragging your cursor from the output connector to the next input connector to create connecting edges. The color of the connector indicates the data type of the input and the output.
+Connect colored connectors of the nodes by dragging your cursor from the output connector(right side of the nodes) to the next input connector(left side of the nodes) to create connecting edges.
+
+The color of the connector indicates the data type of the input and the output.
 You can only connect the input and output connectors of the same color.
 
 **DataType List**
@@ -140,84 +177,113 @@ You can only connect the input and output connectors of the same color.
 Clicking on the x mark on a node or on an edge removes it from the workflow field.
 
 
-### Import existing workflow
-You can create same workflow by importing workflow config file.
+### Import existing workflow by yaml file
+You can create same workflow by importing workflow config yaml format file. This feature is useful to share workflow template.
 
-By clicking the IMPORT button, You can import workflow config file in YAML format.
-
-<br>
-<p align="center">
-<img width="600px" src="../_static/tutorials/import_workflow.png" alt="ImportWorkflow" />
-</p>
-<br/>
-
-The file can be downloaded in RECORD tab.
+Workflow config file can be downloaded from RECORD tab's executed workflow.
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/tutorials/download_workflow_config.png" alt="DownloadWorkflowConfig" />
+<img width="600px" src="../_static/workflow/components/download_workflow_config.png" alt="DownloadWorkflowConfig" />
 </p>
 <br/>
 
+Clicking the import icon button and select shared workflow config yaml.
+Then you can create same workflow as the file's record.
+Input file selection will not reproduced because it may not be in your device.
 
-This feature is like "Reproduce" in RECORD tab, but useful to share workflow with other devices.
-Because import workflow config exclude the input node file path, which maybe different from each devices.
+<br>
+<p align="center">
+<img width="600px" src="../_static/workflow/components/import_workflow.png" alt="ImportWorkflow" />
+</p>
+<br/>
 
 
 ## Running pipelines
+Click the RUN button at the top right.
+There are 2 types of execution. You can select the type by clicking the dropdown button.
+
 <br>
-<p align="left">
-<img width="200px" src="../_static/tutorials/fig11_runall.png" alt="Whole" />
+<p align="center">
+<img width="600px" src="../_static/workflow/components/run_buttons.png" alt="run buttons" />
 </p>
 <br/>
 
-Click the RUN button at the top right to see two dropdown choices: RUNALL and RUN.
+### RUN ALL
+- Runs the entire process.
+- Assigns a new folder for saving the results. This folder name is only for the user’s convenience. The actual folder name is long digit random letter+number.
 
-- **RUNALL:**
-    - Runs the entire process.
-    - Assigns a new folder for saving the results.　This folder name is only for the user’s convenience. The actual folder name is long digit random letter+number. <!--Further information about the structure of the saved results is [here](https://optinist.readthedocs.io/en/latest/gui/record.html).)
--->
+### RUN
+- Available only when the pipeline has been executed.
+- Useful to re-run the workflow with different parameters.
+- By checking parameter changes and addition of new nodes, it would skip already executed processes.
+  - e.g. Let's say you have executed following workflow.
 
-- **RUN:**
-    - Skips already executed processes.
-    - Checks for differences from the previous pipeline, including the existence of results and parameter changes.
-    - If differences are detected, the downstream process is re-executed.
-    - Results are overwritten in the existing folder.
+    <br>
+    <p align="left">
+    <img src="../_static/workflow/components/run_before.png" alt="run buttons" />
+    </p>
+    <br/>
 
-- **Cancel:**
-    - Abort the running pipeline immediately.
+    Then you have changed the parameter "block_size" of suite2p_registration from 128,128 to 256,256.
+    With "RUN", only following nodes would be executed again.
+    - suite2p_registration: because you have changed parameter for this node
+    - suite2p_roi: because its upstream data (from suite2p_registration) would be changed.
 
-## SNAKEMANE and NWB SETTING
+    Nodes which would be executed by "RUN" are highlighted in yellow.
+
+    <br>
+    <p align="left">
+    <img src="../_static/workflow/components/run_after.png" alt="run buttons" />
+    </p>
+    <br/>
+
+  - Following changes would affect whole workflow. So you cannnot use "RUN" button after changing them.
+    - Input data
+    - NWB settings
+
+```{eval-rst}
+.. caution::
+   With RUN, results will be overwritten. To avoid this, use RUN ALL.
+```
+
+## SNAKEMANE settings
+OptiNiSt's pipeline construction is based on [Snakemake](https://snakemake.readthedocs.io/en/stable/), a pipeline controlling tool for Python scripts.
+
+- The Snakemake parameter setting is following.
+  - use_conda: If this is on, snakemake uses conda environment.
+  - cores: Specifies the number of cores to use. If not specified, snakemake uses number of available cores in the machine.
+  - forceall: Flag to indicate the execution of the target regardless of already created output.
+  - forcetargets: Users may not want to change this.
+  - lock: Users may not want to change this.
+- For details about snakemake parameters please refer to [here](https://snakemake.readthedocs.io/en/stable/executing/cli.html)
 
 <br>
-<p align="left">
-<img width="400px" src="../_static/tutorials/fig13_nwbsnakemake.png" alt="Whole" />
+<p align="center">
+<img width="600px" src="../_static/workflow/components/snakemake_settings.png" alt="run buttons" />
 </p>
+<br/>
 
-SNAKEMAKE and NWB SETTING buttons are for parameters for snakemake and output NWB file.
+## NWB setting
+Defines the metadata associated with the input data.
+By configuring this, the output NWB file includes the information set here.
+You can leave this setting as the default.
 
-- **SNAKEMAKE SETTING:**
-    - OptiNiSt's pipeline construction is based on [Snakemake](https://snakemake.readthedocs.io/en/stable/), a pipeline controlling tool for Python scripts.
-    - The Snakemake parameter setting is following.
-      - use_conda: If this is on, snakemake uses conda environment.
-      - cores: Specifies the number of cores to use. If not specified, snakemake uses number of available cores in the machine.
-      - forceall: Flag to indicate the execution of the target regardless of already created output.
-      - forcetargets: Users may not want to change this.
-      - lock: Users may not want to change this.
-    - For details about snakemake parameters please refer to [here](https://snakemake.readthedocs.io/en/stable/executing/cli.html)
+The details of NWB setting in OptiNiSt are following.
 
-- **NWB SETTING:**
-    - Defines the metadata associated with the input data.
-    - By configuring this, the output NWB file includes the information set here.
-    - The parameter you set here is only for your record and is not used for calculations within OptiNiSt.
-    - You can leave this setting as the default.
-    - The details of NWB setting in OptiNiSt are following.
-      - session_description: a description of the session where this data was generated
-      - identifier: a unique text identifier for the file
-      - experiment_description: general description of the experiment
-      - device: device used to acquire the data (information such as manufacturer, firmware version, model etc.)
-      - optical_channel: information about the optical channel used to acquire the data
-      - imaging_plane: information about imaging such as sampling rate, excitation wave length, calcium indicator.
-      - image_serises: information about imaing time
-      - ophys: general information about imaging
-    - For general information about NWB, refer to the [official documentation](https://www.nwb.org/getting-started/).
+- session_description: a description of the session where this data was generated
+- identifier: a unique text identifier for the file
+- experiment_description: general description of the experiment
+- device: device used to acquire the data (information such as manufacturer, firmware version, model etc.)
+- optical_channel: information about the optical channel used to acquire the data
+- imaging_plane: information about imaging such as sampling rate, excitation wave length, calcium indicator.
+- image_serises: information about imaing time
+- ophys: general information about imaging
+
+For general information about NWB, refer to the [official documentation](https://www.nwb.org/getting-started/).
+
+<br>
+<p align="center">
+<img width="600px" src="../_static/workflow/components/nwb_settings.png" alt="run buttons" />
+</p>
+<br/>
