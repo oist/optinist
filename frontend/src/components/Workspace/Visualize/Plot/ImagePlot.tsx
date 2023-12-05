@@ -374,15 +374,11 @@ const ImagePlotChart = memo(function ImagePlotChart({
       !roiFilePath ||
       !roiFilePath.includes(CELL_ROI) ||
       workspaceId === undefined
-    )
+    ) {
       return
-    setLoadingApi(true)
-    try {
-      const data = await getStatusRoi(roiFilePath, workspaceId)
-      setStatusRoi(data as StatusROI)
-    } finally {
-      setLoadingApi(false)
     }
+    const data = await getStatusRoi(roiFilePath, workspaceId)
+    setStatusRoi(data as StatusROI)
   }
 
   useEffect(() => {
