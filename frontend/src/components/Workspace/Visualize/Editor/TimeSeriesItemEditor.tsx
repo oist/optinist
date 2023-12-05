@@ -97,7 +97,7 @@ const Span: FC = () => {
   return (
     <ParamTextField
       type="number"
-      label="Scale Y axis"
+      label="vertical offset"
       value={span}
       onChange={onChange}
     />
