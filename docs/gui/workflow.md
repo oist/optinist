@@ -282,6 +282,15 @@ The details of NWB setting in OptiNiSt are following.
 
 For general information about NWB, refer to the [official documentation](https://www.nwb.org/getting-started/).
 
+```{eval-rst}
+.. note::
+   Basically, these parameters are description for your experiment.
+   So, they are not used for analysis.
+
+   But, only ``imaging_plane.imaging_rate`` is used as parameter for frame rate.
+   See details in :ref:`Switch time course plot units <SwitchTimeUnit>`.
+```
+
 <br>
 <p align="center">
 <img width="600px" src="../_static/workflow/components/nwb_settings.png" alt="run buttons" />
