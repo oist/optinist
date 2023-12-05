@@ -13,6 +13,7 @@ import Select, { SelectChangeEvent } from "@mui/material/Select"
 import { useMouseDragHandler } from "components/utils/MouseDragUtil"
 import { DisplayDataItem } from "components/Workspace/Visualize/DisplayDataItem"
 import { FilePathSelect } from "components/Workspace/Visualize/FilePathSelect"
+import { cancelRoi } from "store/slice/DisplayData/DisplayDataActions"
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
@@ -41,7 +42,8 @@ import {
   setRoiItemFilePath,
   setTimeSeriesRefImageItemId,
 } from "store/slice/VisualizeItem/VisualizeItemSlice"
-import { RootState } from "store/store"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
+import { AppDispatch, RootState } from "store/store"
 import { arrayEqualityFn } from "utils/EqualityUtils"
 
 interface ItemIdProps {
@@ -145,7 +147,9 @@ const ItemHeader = memo(function ItemHeader({ itemId }: ItemIdProps) {
   const dataType = useSelector(selectVisualizeDataType(itemId))
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
   const isSingleData = useSelector(selectDisplayDataIsSingle(itemId))
-  const dispatch = useDispatch()
+  const roiFilePath = useSelector(selectRoiItemFilePath(itemId))
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const dispatch = useDispatch<AppDispatch>()
   const handleClose = (e: MouseEvent) => {
     e.stopPropagation()
     dispatch(
@@ -155,6 +159,8 @@ const ItemHeader = memo(function ItemHeader({ itemId }: ItemIdProps) {
           : { itemId, deleteData: false },
       ),
     )
+    if (!roiFilePath || !workspaceId) return
+    dispatch(cancelRoi({ path: roiFilePath, workspaceId }))
   }
 
   return (

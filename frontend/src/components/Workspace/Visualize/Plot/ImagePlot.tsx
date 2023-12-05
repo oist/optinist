@@ -104,6 +104,7 @@ export type StatusROI = {
   temp_merge_roi: number[]
 }
 
+const CELL_ROI = "/cell_roi.json"
 const WIDTH_CHARTJS = 321
 const INIT_WIDTH_ROI = 30
 
@@ -344,19 +345,41 @@ const ImagePlotChart = memo(function ImagePlotChart({
   )
 
   const [selectMode, setSelectMode] = useState(false)
-  const [edit, setEdit] = useState(false)
   const [cancelFirst, setCancelFirst] = useState(true)
 
+  const checkStatus = useCallback(() => {
+    return Object.keys(statusRoi).every(
+      (key) => statusRoi[key as keyof StatusROI].length === 0,
+    )
+    //eslint-disable-next-line
+  }, [JSON.stringify(statusRoi)])
+
+  const [edit, setEdit] = useState<boolean>(!checkStatus())
+
   const fetchStatusRoi = async () => {
-    if (!roiFilePath || workspaceId === undefined) return
-    const data = await getStatusRoi(roiFilePath, workspaceId)
-    setStatusRoi(data as StatusROI)
+    if (
+      !roiFilePath ||
+      !roiFilePath.includes(CELL_ROI) ||
+      workspaceId === undefined
+    )
+      return
+    setLoadingApi(true)
+    try {
+      const data = await getStatusRoi(roiFilePath, workspaceId)
+      setStatusRoi(data as StatusROI)
+    } finally {
+      setLoadingApi(false)
+    }
   }
+
+  useEffect(() => {
+    setEdit(!checkStatus())
+  }, [checkStatus])
 
   useEffect(() => {
     fetchStatusRoi()
     //eslint-disable-next-line
-  }, [roiFilePath, workspaceId, edit])
+  }, [roiFilePath, workspaceId])
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectMode(event.target.checked)
@@ -472,12 +495,15 @@ const ImagePlotChart = memo(function ImagePlotChart({
 
   const onCancel = useCallback(async () => {
     setAction("")
-    if (!roiFilePath || workspaceId === undefined) return
+    if (
+      !roiFilePath ||
+      !roiFilePath.includes(CELL_ROI) ||
+      workspaceId === undefined
+    )
+      return
     setPointClick([])
     try {
       await dispatch(cancelRoi({ path: roiFilePath, workspaceId }))
-    } catch (e) {
-      console.error(e)
     } finally {
       workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
       setStatusRoi({
@@ -489,33 +515,9 @@ const ImagePlotChart = memo(function ImagePlotChart({
     //eslint-disable-next-line
   }, [roiFilePath, workspaceId])
 
-  const checkStatus = useCallback(() => {
-    return Object.keys(statusRoi).every(
-      (key) => statusRoi[key as keyof StatusROI].length === 0,
-    )
-    //eslint-disable-next-line
-  }, [JSON.stringify(statusRoi)])
-
-  useEffect(() => {
-    window.addEventListener("beforeunload", onCancel)
-    return () => {
-      window.removeEventListener("beforeunload", onCancel)
-    }
-  }, [onCancel])
-
-  useEffect(() => {
-    onCancel()
-    setEdit(false)
-    setAction("")
-    return () => {
-      onCancel()
-    }
-  }, [onCancel])
-
   useEffect(() => {
     if (!checkStatus && cancelFirst) {
       setCancelFirst(false)
-      onCancel()
     }
     //eslint-disable-next-line
   }, [JSON.stringify(statusRoi), cancelFirst])
@@ -527,7 +529,6 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }, [roiFilePath, action, JSON.stringify(statusRoi)])
 
   const addRoi = () => {
-    setEdit(false)
     setAction("Add ROI")
   }
 
@@ -639,17 +640,16 @@ const ImagePlotChart = memo(function ImagePlotChart({
       workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     }
     setEdit(true)
+    fetchStatusRoi()
   }
 
   const onMergeRoi = async () => {
     if (!roiFilePath || loadingApi) return
     setAction("Merge ROI")
-    setEdit(false)
   }
 
   const onDeleteRoi = async () => {
     if (!roiFilePath || loadingApi) return
-    setEdit(false)
     setAction("Delete ROI")
   }
 
@@ -689,6 +689,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }
 
   const renderActionRoi = () => {
+    if (!roiFilePath || !roiFilePath.includes(CELL_ROI)) return null
     if (action) {
       return (
         <>
@@ -737,7 +738,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
       )
     }
 
-    if (!edit && roiFilePath)
+    if (!edit)
       return (
         <LinkDiv sx={{ width: "fit-content" }} onClick={editRoi}>
           Edit ROI
@@ -762,7 +763,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
         />
       </Box>
       <Box sx={{ minHeight: 5.5 }}>
-        {edit ? (
+        {edit && !action && roiFilePath && roiFilePath.includes(CELL_ROI) ? (
           <>
             <BoxDiv sx={{ flexDirection: "column" }}>
               <BoxWrapper sx={{ marginBottom: 2 }}>
