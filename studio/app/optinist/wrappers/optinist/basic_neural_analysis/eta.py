@@ -115,8 +115,10 @@ def ETA(
     # (cell_number, event_time_lambda)
     if len(event_trigger_data) > 0:
         mean = np.mean(event_trigger_data, axis=0)
+        std = np.std(event_trigger_data, axis=0)
         sem = np.std(event_trigger_data, axis=0) / np.sqrt(len(event_trigger_data))
         mean = mean.transpose()
+        std = std.transpose()
         sem = sem.transpose()
     else:
         assert False, "Output data size is 0"
@@ -125,6 +127,7 @@ def ETA(
     nwbfile[NWBDATASET.POSTPROCESS] = {
         function_id: {
             "mean": mean,
+            "std": std,
             "sem": sem,
             "num_sample": [len(mean)],
         }
@@ -136,7 +139,8 @@ def ETA(
     info = {}
     info["mean"] = TimeSeriesData(
         mean,
-        std=sem,
+        std=std,
+        sem=sem,
         index=list(range(params["pre_event"], params["post_event"] + trigger_len)),
         cell_numbers=cell_numbers if iscell is not None else None,
         file_name="mean",
