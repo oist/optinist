@@ -198,6 +198,8 @@ const ImagePlotChart = memo(function ImagePlotChart({
   const meta = useSelector(selectImageMeta(path))
   const roiFilePath = useSelector(selectRoiItemFilePath(itemId))
 
+  const refRoiFilePath = useRef(roiFilePath)
+
   const roiData = useSelector(
     (state: RootState) =>
       roiFilePath != null ? selectRoiData(roiFilePath)(state) : [],
@@ -246,6 +248,17 @@ const ImagePlotChart = memo(function ImagePlotChart({
   useEffect(() => {
     setRoiDataState(roiData)
   }, [roiData])
+
+  useEffect(() => {
+    return () => {
+      onCancel()
+    }
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    refRoiFilePath.current = roiFilePath
+  }, [roiFilePath])
 
   const data = useMemo(
     () => [
@@ -493,27 +506,28 @@ const ImagePlotChart = memo(function ImagePlotChart({
     setPointClick(newPoints)
   }
 
-  const onCancel = useCallback(async () => {
+  const onCancel = async () => {
     setAction("")
     if (
-      !roiFilePath ||
-      !roiFilePath.includes(CELL_ROI) ||
+      !refRoiFilePath.current ||
+      !refRoiFilePath.current.includes(CELL_ROI) ||
       workspaceId === undefined
-    )
+    ) {
       return
+    }
     setPointClick([])
     try {
-      await dispatch(cancelRoi({ path: roiFilePath, workspaceId }))
+      await dispatch(cancelRoi({ path: refRoiFilePath.current, workspaceId }))
     } finally {
-      workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
+      workspaceId &&
+        dispatch(getRoiData({ path: refRoiFilePath.current, workspaceId }))
       setStatusRoi({
         temp_add_roi: [],
         temp_delete_roi: [],
         temp_merge_roi: [],
       })
     }
-    //eslint-disable-next-line
-  }, [roiFilePath, workspaceId])
+  }
 
   useEffect(() => {
     if (!checkStatus && cancelFirst) {
