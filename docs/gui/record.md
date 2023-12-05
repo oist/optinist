@@ -1,27 +1,24 @@
 Record
 =================
+In the RECORD field, you can check the workflow status in your `OPTINIST_DIR` and manage your analysis pipeline. The table lists all the pipelines in your `OPTINIST_DIR`.
+
 <br>
 <p align="center">
-<img width="600px" src="../_static/record/whole.png" alt="Whole"/>
+<img width="600px" src="../_static/record/whole.png" alt="Record window"/>
 </p>
 
-
-In the RECORD field, you can check the workflow status in your OPTINIST_DIR and manage your analysis pipeline. The table lists all the pipelines in your OPTINIST_DIR. By clicking on the mark on the 2nd column, you can show the details of each pipeline.
-
-OptiNiSt records and reproduces past workflow pipelines. It can download results in nwb format.
-
-
-OptiNiSt can:
-- Record past executed workflow
-- Reproduce past workflow
-- Download workflow config file
-- Download snakemake config file
-- Download results as NWB files
-
 ### Record Table
+In RECORD table, you can:
+- See past executed workflows
+- Reproduce past workflow
+- Download files
+    - Workflow config file
+    - Snakemake config file
+    - Results as NWB files
+- Delete workflow record
 
 <p align="center">
-<img width="600px" src="../_static/record/components/table.png" alt="Table"/>
+<img width="600px" src="../_static/record/table.png" alt="Record table"/>
 </p>
 
 | Header | Description |
@@ -37,10 +34,10 @@ OptiNiSt can:
 | Delete | Button to delete the workflow record from the OPTINIST_DIR. |
 
 ### Details
-You can check the results of each node by clicking arrow on the left of the table.
+You can check the results of each node by clicking arrow icon on the left of the table.
 
 <p align="center">
-<img width="600px" src="../_static/record/components/details.png" alt="Details"/>
+<img width="600px" src="../_static/record/details.png" alt="Record detail"/>
 </p>
 
 | Header | Description |
@@ -53,9 +50,10 @@ You can check the results of each node by clicking arrow on the left of the tabl
 If status is error, you can see the error message by clicking status icon.
 
 <p align="center">
-<img width="600px" src="../_static/record/components/error_message.png" alt="ErrorMsg"/>
+<img width="600px" src="../_static/record/error_message.png" alt="Error message"/>
 </p>
 
+(ReproduceButton)=
 ### Reproduce Button
 Clicking the Reproduce arrow retrieves the pipeline onto the workflow.
 
@@ -63,20 +61,20 @@ This function is convenient when you want to check the results of the past workf
 
 <br>
 <p align="left">
-<img width="100px" src="../_static/tutorials/fig41_reproduce.png" alt="Whole" />
+<img width="100px" src="../_static/record/reproduce_button.png" alt="Reproduce button" />
 </p>
 
 ```{eval-rst}
 .. note::
-   You needed to RUN the workflow to visualize the results until before version 1.1.0.
-   From version 1.1.0, you can visualize the results without running the workflow again.
+   You needed to RUN the reproduced workflow to visualize the results until version 1.1.0.
+   From version 1.1.0, you can visualize the results without running the workflow.
 ```
 
 ### Download Buttons
 
 <br>
 <p align="left">
-<img width="300px" src="../_static/tutorials/fig42_workflownwb.png" alt="Whole" />
+<img width="300px" src="../_static/record/download_buttons.png" alt="Download buttons" />
 </p>
 
 You can download 3 types of config files here.

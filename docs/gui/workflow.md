@@ -1,48 +1,57 @@
 Workflow
 =================
+OptiNiSt makes it easy to create analysis pipelines using the GUI.
+
+In the workflow field, you can:
+- Select the data and the algorithms or analysis methods (node).
+- Connect these nodes to define the order of processing (workflow).
+
+The analysis pipeline can be parallel or bifurcating.
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/workflow/whole.png" alt="workflow" />
+<img width="600px" src="../_static/workflow/whole.png" alt="Workflow window" />
 <br/>
 
-  - OptiNiSt makes it easy to create analysis pipelines using the GUI.
-- In the workflow field, you can:
-    - Select the data and the algorithms or analysis methods (nodes).
-    - Connect these nodes to define the order of processing (pipelines).
-- The analysis pipeline can be parallel or bifurcating.
 
 ## Creating workflow
 You can create a new workflow by clicking the + button.
 
 <br>
 <p align="center">
-  <img width="600px" src="../_static/workflow/components/create_new_workflow.png" alt="create workflow" />
+  <img width="600px" src="../_static/workflow/create_new_workflow.png" alt="Create workflow" />
 </p>
 <br>
 
 ```{eval-rst}
 .. caution::
-   By creating workflow, existing workflow will be deleted. The records are kept if you have already run the workflow.
+   By creating workflow, current workflow will be deleted.
+
+   The records are kept if you have already run the workflow. You can reproduce the workflow from RECORD tab. See details :ref:`here <ReproduceButton>`.
 ```
 
 
 ### Setting Input data
+By default, an Image node is displayed. This node defines the path to the data to use.
 
 <br>
 <p align="center">
-<img width="250px" src="../_static/tutorials/fig3_imagenode.png" alt="imageNode" />
-<img width="250px" src="../_static/workflow/components/imageList.png" alt="imageNode" />
+<img width="250px" src="../_static/workflow/image_node.png" alt="Image node" />
 </p>
 <br/>
 
-By default, an Image node is displayed. This node defines the path to the data to use.
-
-Once the data is accessible, you can view it by following these steps:
-
+To select the data, follow these steps:
 1. Click on the SELECT IMAGE button on the Image node.
 2. Select a file or a folder. Choosing a folder makes all the TIFF files in the shown sequence an input set of continuous frames.
 
+You can select files in `input` directory under `OPTINIST_DIR`.
+To put files there, see next [](DirectorySetting) section.
+
+<br>
+<p align="center">
+<img width="400px" src="../_static/workflow/imageList.png" alt="Image file selection" />
+</p>
+<br/>
 
 ```{eval-rst}
 .. note::
@@ -76,7 +85,7 @@ You may not want to modify your original data folder, or you may want to make yo
     - If you put folder, you can see the folder from GUI, SELECT IMAGE dialog like this.
       <br>
       <p align="center">
-      <img width="400px" src="../_static/workflow/components/put_folder_to_input_dir.png" alt="Put Folder to Input Dir" />
+      <img width="400px" src="../_static/workflow/put_folder_to_input_dir.png" alt="Put folder to input dir" />
       </p>
 
 3. **Change the setting of `OPTINIST_DIR`**
@@ -88,7 +97,7 @@ You may not want to modify your original data folder, or you may want to make yo
 
 <br>
 <p align="center">
-<img width="300px" src="../_static/workflow/components/csv_connect.png" alt="CSV Connect" />
+<img width="300px" src="../_static/workflow/csv_connect.png" alt="CSV Connect" />
 </p>
 
 eta, cca, correlation, cross_correlation, granger, glm, lda, and svm assume the input neural data shape is frames x cells matrix.
@@ -110,7 +119,7 @@ Clicking the + button adds the analysis nodes to the Workflow field.
 
 <br>
 <p align="center">
-  <img width="600px" src="../_static/workflow/components/add_algorithm.png" alt="Add Algorithm" />
+  <img width="600px" src="../_static/workflow/add_algorithm.png" alt="Add Algorithm" />
 </p>
 <br>
 
@@ -122,12 +131,9 @@ Each algorithm node has PARAM button and OUTPUT button.
 
 <br>
 <p align="center">
-<img width="300px" src="../_static/workflow/components/algorithm_node_buttons.png" alt="Algo node buttons" />
+<img width="300px" src="../_static/workflow/algorithm_node_buttons.png" alt="Algo node buttons" />
 </p>
 <br/>
-
-
-
 
 - **PARAM**
 
@@ -136,7 +142,7 @@ Each algorithm node has PARAM button and OUTPUT button.
 
   <br>
   <p align="center">
-  <img width="600px" src="../_static/workflow/components/algorithm_param_form.png" alt="algo node parameter form" />
+  <img width="600px" src="../_static/workflow/algorithm_param_form.png" alt="Algo node parameter form" />
   </p>
   <br/>
 
@@ -148,19 +154,18 @@ Each algorithm node has PARAM button and OUTPUT button.
 
   <br>
   <p align="center">
-  <img width="400px" src="../_static/workflow/components/algorithm_output.png" alt="algo node parameter form" />
+  <img width="400px" src="../_static/workflow/algorithm_output.png" alt="Algo node output viewer" />
   </p>
   <br/>
 
 ### Connecting Nodes
+Connect colored connectors of the nodes by dragging your cursor from the output connector(right side of the nodes) to the next input connector(left side of the nodes) to create connecting edges.
 
 <br>
 <p align="center">
-<img width="500px" src="../_static/workflow/components/connect_edge.png" alt="Connect Algorithm" />
+<img width="500px" src="../_static/workflow/connect_edge.png" alt="Connect nodes" />
 </p>
 <br/>
-
-Connect colored connectors of the nodes by dragging your cursor from the output connector(right side of the nodes) to the next input connector(left side of the nodes) to create connecting edges.
 
 The color of the connector indicates the data type of the input and the output.
 You can only connect the input and output connectors of the same color.
@@ -184,7 +189,7 @@ Workflow config file can be downloaded from RECORD tab's executed workflow.
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/workflow/components/download_workflow_config.png" alt="DownloadWorkflowConfig" />
+<img width="600px" src="../_static/workflow/download_workflow_config.png" alt="Download workflow config file" />
 </p>
 <br/>
 
@@ -194,7 +199,7 @@ Input file selection will not reproduced because it may not be in your device.
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/workflow/components/import_workflow.png" alt="ImportWorkflow" />
+<img width="600px" src="../_static/workflow/import_workflow.png" alt="Import workflow" />
 </p>
 <br/>
 
@@ -205,7 +210,7 @@ There are 2 types of execution. You can select the type by clicking the dropdown
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/workflow/components/run_buttons.png" alt="run buttons" />
+<img width="600px" src="../_static/workflow/run_buttons.png" alt="Run buttons" />
 </p>
 <br/>
 
@@ -221,7 +226,7 @@ There are 2 types of execution. You can select the type by clicking the dropdown
 
     <br>
     <p align="left">
-    <img src="../_static/workflow/components/run_before.png" alt="run buttons" />
+    <img src="../_static/workflow/run_before.png" alt="Run example before" />
     </p>
     <br/>
 
@@ -234,7 +239,7 @@ There are 2 types of execution. You can select the type by clicking the dropdown
 
     <br>
     <p align="left">
-    <img src="../_static/workflow/components/run_after.png" alt="run buttons" />
+    <img src="../_static/workflow/run_after.png" alt="Run example after" />
     </p>
     <br/>
 
@@ -250,24 +255,32 @@ There are 2 types of execution. You can select the type by clicking the dropdown
 ## SNAKEMANE settings
 OptiNiSt's pipeline construction is based on [Snakemake](https://snakemake.readthedocs.io/en/stable/), a pipeline controlling tool for Python scripts.
 
-- The Snakemake parameter setting is following.
-  - use_conda: If this is on, snakemake uses conda environment.
-  - cores: Specifies the number of cores to use. If not specified, snakemake uses number of available cores in the machine.
-  - forceall: Flag to indicate the execution of the target regardless of already created output.
-  - forcetargets: Users may not want to change this.
-  - lock: Users may not want to change this.
-- For details about snakemake parameters please refer to [here](https://snakemake.readthedocs.io/en/stable/executing/cli.html)
-
 <br>
 <p align="center">
-<img width="600px" src="../_static/workflow/components/snakemake_settings.png" alt="run buttons" />
+<img width="600px" src="../_static/workflow/snakemake_settings.png" alt="Snakemake settings" />
 </p>
 <br/>
+
+The Snakemake parameter setting is following.
+- use_conda: If this is on, snakemake uses conda environment.
+- cores: Specifies the number of cores to use. If not specified, snakemake uses number of available cores in the machine.
+- forceall: Flag to indicate the execution of the target regardless of already created output.
+- forcetargets: Users may not want to change this.
+- lock: Users may not want to change this.
+
+For details about snakemake parameters please refer to [snakemake official page](https://snakemake.readthedocs.io/en/stable/executing/cli.html).
+
 
 ## NWB setting
 Defines the metadata associated with the input data.
 By configuring this, the output NWB file includes the information set here.
 You can leave this setting as the default.
+
+<br>
+<p align="center">
+<img width="600px" src="../_static/workflow/nwb_settings.png" alt="NWB settings" />
+</p>
+<br/>
 
 The details of NWB setting in OptiNiSt are following.
 
@@ -280,7 +293,7 @@ The details of NWB setting in OptiNiSt are following.
 - image_serises: information about imaing time
 - ophys: general information about imaging
 
-For general information about NWB, refer to the [official documentation](https://www.nwb.org/getting-started/).
+For general information about NWB, refer to [NWB official page](https://www.nwb.org/getting-started/).
 
 ```{eval-rst}
 .. note::
@@ -290,9 +303,3 @@ For general information about NWB, refer to the [official documentation](https:/
    But, only ``imaging_plane.imaging_rate`` is used as parameter for frame rate.
    See details in :ref:`Switch time course plot units <SwitchTimeUnit>`.
 ```
-
-<br>
-<p align="center">
-<img width="600px" src="../_static/workflow/components/nwb_settings.png" alt="run buttons" />
-</p>
-<br/>
