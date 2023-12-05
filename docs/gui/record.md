@@ -46,7 +46,7 @@ You can check the results of each node by clicking arrow on the left of the tabl
 | Header | Description |
 | --- | --- |
 | Function | Name of the node. |
-| nodeID | Unique id of the node. <br>This is same as the directory name for the results of the node. |
+| nodeID | Unique id of the node. <br>This is same as the directory name for the results of the node. <br> This id is shown on the each node's bottom. |
 | Success | Node's status. Success, error or runnnig. |
 | NWB | Button to download the analysis results for the algorithm as NWB file. |
 
