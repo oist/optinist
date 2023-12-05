@@ -174,7 +174,7 @@ You can only connect the input and output connectors of the same color.
 - <span style="color: red; ">ImageData</span>
 - <span style="color: green; ">Suite2pData</span>
 - <span style="color: orange; ">Fluorescence</span>
-- <span style="color: yellow; ">Behavior</span>
+- <span style="color: #cfc22b; ">Behavior</span>
 - <span style="color: blue; ">Iscell</span>
 
 
