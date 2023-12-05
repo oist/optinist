@@ -138,7 +138,7 @@ Each algorithm node has PARAM button and OUTPUT button.
 - **PARAM**
 
   You can see or edit parameters for the algorithm.
-  Clicking param button, the parameters are dispalyed in the right side of the window.
+  Clicking param button, the parameters are displayed in the right side of the window.
 
   <br>
   <p align="center">
@@ -243,7 +243,7 @@ There are 2 types of execution. You can select the type by clicking the dropdown
     </p>
     <br/>
 
-  - Following changes would affect whole workflow. So you cannnot use "RUN" button after changing them.
+  - Following changes would affect whole workflow. So you cannot use "RUN" button after changing them.
     - Input data
     - NWB settings
 

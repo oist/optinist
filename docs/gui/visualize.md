@@ -177,7 +177,7 @@ In the same plotting box, select cell_roi from the Select Roi pull-downs.
 The plotting box (ID:0) shows the background image and detected cells.
 <br>
 <p align="center">
-<img width="400px" src="../_static/visualize/edit-roi/cell_roi_selected.png" alt="Overlayed roi" />
+<img width="400px" src="../_static/visualize/edit-roi/cell_roi_selected.png" alt="Overlaid roi" />
 </p>
 
 <p align="center">
