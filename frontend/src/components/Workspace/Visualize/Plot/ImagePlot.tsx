@@ -104,6 +104,9 @@ export type StatusROI = {
   temp_merge_roi: number[]
 }
 
+const ADD_ROI = "Add ROI"
+const DELETE_ROI = "Delete ROI"
+const MERGE_ROI = "Merge ROI"
 const CELL_ROI = "/cell_roi.json"
 const WIDTH_CHARTJS = 321
 const INIT_WIDTH_ROI = 30
@@ -294,7 +297,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
         z: roiDataState,
         type: "heatmap",
         name: "roi",
-        hovertemplate: action === "Add ROI" ? "none" : "cell id: %{z}",
+        hovertemplate: action === ADD_ROI ? "none" : "cell id: %{z}",
         // hoverinfo: isAddRoi || pointClick.length ? "none" : undefined,
         colorscale: [...Array(timeDataMaxIndex + 1)].map((_, i) => {
           const new_i = Math.floor(((i % 10) * 10 + i / 10) % 100)
@@ -307,13 +310,13 @@ const ImagePlotChart = memo(function ImagePlotChart({
             if (statusRoi.temp_merge_roi.includes(i)) return [offset, "#e134eb"]
             if (statusRoi.temp_add_roi.includes(i)) return [offset, "#3483eb"]
           }
-          if (action === "Add ROI") {
+          if (action === ADD_ROI) {
             if (statusRoi.temp_delete_roi.includes(i))
               return [offset, "#ffffff"]
             if (statusRoi.temp_add_roi.includes(i)) return [offset, "#3483eb"]
             if (statusRoi.temp_merge_roi.includes(i)) return [offset, "#e134eb"]
           }
-          if (action === "Delete ROI") {
+          if (action === DELETE_ROI) {
             if (
               pointClick.find((e) => e.z === i) ||
               statusRoi.temp_delete_roi.includes(i)
@@ -322,7 +325,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
             if (statusRoi.temp_add_roi.includes(i)) return [offset, "#3483eb"]
             if (statusRoi.temp_merge_roi.includes(i)) return [offset, "#e134eb"]
           }
-          if (action === "Merge ROI") {
+          if (action === MERGE_ROI) {
             if (statusRoi.temp_delete_roi.includes(i))
               return [offset, "#ffffff"]
             if (
@@ -465,7 +468,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }
 
   const onChartClick = (event: PlotMouseEvent) => {
-    if (!["Merge ROI", "Delete ROI"].includes(action)) return
+    if (![MERGE_ROI, DELETE_ROI].includes(action)) return
     // use as unknown because original PlotDatum does not have z property
     const point: PlotDatum = event.points[0] as unknown as PlotDatum
     if (point.curveNumber >= 1 && outputKey === "cell_roi") {
@@ -486,7 +489,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }
 
   const setSelectRoi = (point: PointClick) => {
-    if (!["Merge ROI", "Delete ROI"].includes(action)) return
+    if (![MERGE_ROI, DELETE_ROI].includes(action)) return
     if (isNaN(Number(point.z))) return
 
     let newPoints
@@ -539,7 +542,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }, [roiFilePath, action, JSON.stringify(statusRoi)])
 
   const addRoi = () => {
-    setAction("Add ROI")
+    setAction(ADD_ROI)
   }
 
   const editRoi = () => {
@@ -547,8 +550,6 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }
 
   const onCancelAdd = () => {
-    setAction("")
-    setEdit(true)
     setSizeDrag(initSizeDrag)
     setChangeSize(undefined)
     setPointClick([])
@@ -608,7 +609,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
 
   const addOrSelectRoi = async () => {
     if (!roiFilePath || loadingApi || !workspaceId) return
-    if (action === "Add ROI") {
+    if (action === ADD_ROI) {
       setLoadingApi(true)
       const sizeX = roiDataState[0].length - 1
       const sizeY = roiDataState.length - 1
@@ -629,7 +630,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
       onCancelAdd()
       workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     }
-    if (action === "Merge ROI") {
+    if (action === MERGE_ROI) {
       if (pointClick.length < 2) return
       setLoadingApi(true)
       dispatch(resetAllOrderList())
@@ -639,7 +640,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
       setLoadingApi(false)
       setPointClick([])
       workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
-    } else if (action === "Delete ROI") {
+    } else if (action === DELETE_ROI) {
       if (!pointClick.length) return
       setLoadingApi(true)
       dispatch(resetAllOrderList())
@@ -650,18 +651,20 @@ const ImagePlotChart = memo(function ImagePlotChart({
       setPointClick([])
       workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     }
+    setAction("")
+    setEdit(true)
     setEdit(true)
     fetchStatusRoi()
   }
 
   const onMergeRoi = async () => {
     if (!roiFilePath || loadingApi) return
-    setAction("Merge ROI")
+    setAction(MERGE_ROI)
   }
 
   const onDeleteRoi = async () => {
     if (!roiFilePath || loadingApi) return
-    setAction("Delete ROI")
+    setAction(DELETE_ROI)
   }
 
   const onCommitRoi = async () => {
@@ -704,7 +707,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
     if (action) {
       return (
         <>
-          {action !== "Add ROI" ? (
+          {action !== ADD_ROI ? (
             <BoxDiv>
               ROI Selecteds: [{pointClick.map((item) => item.z).join(",")}]
             </BoxDiv>
@@ -713,9 +716,9 @@ const ImagePlotChart = memo(function ImagePlotChart({
             <LinkDiv
               sx={{
                 color:
-                  action === "Delete ROI"
+                  action === DELETE_ROI
                     ? "#F84E1B"
-                    : action === "Merge ROI"
+                    : action === MERGE_ROI
                     ? "#6619A9"
                     : "default",
                 display: "flex",
@@ -730,13 +733,13 @@ const ImagePlotChart = memo(function ImagePlotChart({
             <LinkDiv
               style={{
                 opacity:
-                  (pointClick.length < 2 && action === "Merge ROI") ||
-                  (pointClick.length < 1 && action === "Delete ROI")
+                  (pointClick.length < 2 && action === MERGE_ROI) ||
+                  (pointClick.length < 1 && action === DELETE_ROI)
                     ? 0.5
                     : 1,
                 cursor:
-                  (pointClick.length < 2 && action === "Merge ROI") ||
-                  (pointClick.length < 1 && action === "Delete ROI")
+                  (pointClick.length < 2 && action === MERGE_ROI) ||
+                  (pointClick.length < 1 && action === DELETE_ROI)
                     ? "default"
                     : "pointer",
               }}
@@ -782,13 +785,13 @@ const ImagePlotChart = memo(function ImagePlotChart({
                   sx={{ opacity: loadingApi ? 0.5 : 1 }}
                   onClick={addRoi}
                 >
-                  Add ROI
+                  {ADD_ROI}
                 </LinkDiv>
                 <LinkDiv
                   sx={{ color: "#F84E1B", opacity: loadingApi ? 0.5 : 1 }}
                   onClick={onDeleteRoi}
                 >
-                  Delete ROI
+                  {DELETE_ROI}
                 </LinkDiv>
                 <LinkDiv
                   sx={{
@@ -798,7 +801,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
                   }}
                   onClick={onMergeRoi}
                 >
-                  Merge ROI
+                  {MERGE_ROI}
                 </LinkDiv>
               </BoxWrapper>
               <BoxWrapper>
@@ -836,7 +839,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
           onClick={onChartClick}
           onSelecting={onSelecting}
         />
-        {action === "Add ROI" ? (
+        {action === ADD_ROI ? (
           <DivAddRoi>
             <DivSvg
               onMouseLeave={onMouseUpDragAddRoi}
