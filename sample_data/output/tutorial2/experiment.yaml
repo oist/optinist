@@ -1,0 +1,125 @@
+finished_at: '2023-11-22 17:20:57'
+function:
+  caiman_cnmf_z6a16cmiwl:
+    finished_at: '2023-11-22 17:20:48'
+    hasNWB: true
+    message: caiman_cnmf success
+    name: caiman_cnmf
+    outputPaths:
+      all_roi:
+        max_index: null
+        path: /tmp/studio/output/1/tutorial2/caiman_cnmf_z6a16cmiwl/all_roi.json
+        type: roi
+      cell_roi:
+        max_index: null
+        path: /tmp/studio/output/1/tutorial2/caiman_cnmf_z6a16cmiwl/cell_roi.json
+        type: roi
+      fluorescence:
+        max_index: 6
+        path: /tmp/studio/output/1/tutorial2/caiman_cnmf_z6a16cmiwl/fluorescence
+        type: timeseries
+      images:
+        max_index: 1
+        path: /tmp/studio/output/1/tutorial2/caiman_cnmf_z6a16cmiwl/images.json
+        type: images
+      non_cell_roi:
+        max_index: null
+        path: /tmp/studio/output/1/tutorial2/caiman_cnmf_z6a16cmiwl/non_cell_roi.json
+        type: roi
+    started_at: null
+    success: success
+    unique_id: caiman_cnmf_z6a16cmiwl
+  caiman_mc_p4f6nsi9bh:
+    finished_at: '2023-11-22 17:20:50'
+    hasNWB: true
+    message: caiman_mc success
+    name: caiman_mc
+    outputPaths:
+      mc_images:
+        max_index: 2000
+        path: /tmp/studio/output/1/tutorial2/caiman_mc_p4f6nsi9bh/mc_images.json
+        type: images
+      meanImg:
+        max_index: 1
+        path: /tmp/studio/output/1/tutorial2/caiman_mc_p4f6nsi9bh/meanImg.json
+        type: images
+      rois:
+        max_index: null
+        path: /tmp/studio/output/1/tutorial2/caiman_mc_p4f6nsi9bh/rois.json
+        type: roi
+    started_at: null
+    success: success
+    unique_id: caiman_mc_p4f6nsi9bh
+  input_0:
+    finished_at: '2023-11-22 17:20:42'
+    hasNWB: false
+    message: null
+    name: sample_mouse2p_image.tiff
+    outputPaths: null
+    started_at: '2023-11-22 17:20:42'
+    success: success
+    unique_id: input_0
+  pca_xi0d87mbrk:
+    finished_at: '2023-11-22 17:20:57'
+    hasNWB: true
+    message: pca success
+    name: pca
+    outputPaths:
+      contribution:
+        max_index: null
+        path: /tmp/studio/output/1/tutorial2/pca_xi0d87mbrk/contribution.json
+        type: bar
+      cumsum_contribution:
+        max_index: null
+        path: /tmp/studio/output/1/tutorial2/pca_xi0d87mbrk/cumsum_contribution.json
+        type: bar
+      explained_variance:
+        max_index: null
+        path: /tmp/studio/output/1/tutorial2/pca_xi0d87mbrk/evr.json
+        type: bar
+      projectedNd:
+        max_index: null
+        path: /tmp/studio/output/1/tutorial2/pca_xi0d87mbrk/projectedNd.json
+        type: scatter
+    started_at: '2023-11-22 17:20:53'
+    success: success
+    unique_id: pca_xi0d87mbrk
+hasNWB: true
+name: Tutorial2
+nwb:
+  device:
+    description: Microscope Information
+    manufacturer: Microscope Manufacture
+    name: Microscope device
+  experiment_description: None
+  identifier: optinist
+  image_series:
+    starting_frame:
+    - 0
+    starting_time: 0
+  imaging_plane:
+    description: standard
+    excitation_lambda: 900.0
+    imaging_rate: 30.0
+    indicator: GCaMP
+    location: V1
+    name: ImagingPlane
+  ophys:
+    plane_segmentation:
+      description: ''
+      name: PlaneSegmentation
+  optical_channel:
+    description: optical channel
+    emission_lambda: 500.0
+    name: OpticalChannel
+  session_description: optinist
+snakemake:
+  cores: 2
+  forceall: false
+  forcetargets: true
+  lock: false
+  use_conda: true
+started_at: '2023-11-22 17:20:42'
+success: success
+unique_id: tutorial2
+workspace_id: '1'

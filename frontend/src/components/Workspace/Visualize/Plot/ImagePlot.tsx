@@ -576,6 +576,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
       const { y } = event.currentTarget.getBoundingClientRect()
       let newX = sizeDrag.left + (pageX - refPageXSize.current)
       let newY = Math.ceil(pageY - y - 15) - window.scrollY
+
       if (newX < 0) newX = 0
       else if (newX + sizeDrag.width > sChart) newX = sChart - sizeDrag.width
       if (newY < 0) newY = 0
@@ -760,7 +761,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
   if (!statusRoi) return null
 
   return (
-    <div>
+    <ImagePlotContainer>
       {loadingApi ? <Loading /> : null}
       <Box sx={{ display: "flex" }}>
         <Box sx={{ flexGrow: 1, mt: 1 }}>
@@ -876,7 +877,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
           </DivAddRoi>
         ) : null}
       </div>
-    </div>
+    </ImagePlotContainer>
   )
 })
 
@@ -1034,6 +1035,15 @@ function debounce<T extends (...args: PlotSelectionEvent[]) => unknown>(
     timeoutId = setTimeout(() => callback(...args), delay)
   }
 }
+
+const ImagePlotContainer = styled("div")`
+  .selectionlayer path {
+    stroke: white !important;
+    stroke-dasharray: 6 !important;
+    stroke-width: 2px !important;
+    opacity: 1 !important;
+  }
+`
 
 const BoxDiv = styled("div")({
   mt: 1,

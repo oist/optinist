@@ -1,0 +1,127 @@
+last_output:
+- 1/tutorial2/pca_xi0d87mbrk/pca.pkl
+rules:
+  caiman_cnmf_z6a16cmiwl:
+    hdf5Path: null
+    input:
+    - 1/tutorial2/caiman_mc_p4f6nsi9bh/caiman_mc.pkl
+    nwbfile: null
+    output: 1/tutorial2/caiman_cnmf_z6a16cmiwl/caiman_cnmf.pkl
+    params:
+      init_params:
+        K: 4
+        do_refit: false
+        gSig:
+        - 4
+        - 4
+        method_init: greedy_roi
+        nb: 2
+        ssub: 1
+        tsub: 1
+      merge_params:
+        merge_thr: 0.85
+        thr: 0.9
+      patch_params:
+        rf: null
+        stride: 6
+      preprocess_params:
+        p: 1
+    path: caiman/caiman_cnmf
+    return_arg:
+      mc_images: images
+    type: caiman_cnmf
+  caiman_mc_p4f6nsi9bh:
+    hdf5Path: null
+    input:
+    - 1/tutorial2/input_0/sample_mouse2p_image.pkl
+    nwbfile: null
+    output: 1/tutorial2/caiman_mc_p4f6nsi9bh/caiman_mc.pkl
+    params:
+      border_nan: copy
+      gSig_filt: null
+      is3D: false
+      max_deviation_rigid: 3
+      max_shifts:
+      - 6
+      - 6
+      min_mov: null
+      niter_rig: 1
+      nonneg_movie: true
+      num_frames_split: 80
+      num_splits_to_process_els: null
+      num_splits_to_process_rig: null
+      overlaps:
+      - 32
+      - 32
+      pw_rigid: false
+      shifts_opencv: true
+      splits_els: 14
+      splits_rig: 14
+      strides:
+      - 96
+      - 96
+      upsample_factor_grid: 4
+      use_cuda: false
+    path: caiman/caiman_mc
+    return_arg:
+      input_0: image
+    type: caiman_mc
+  input_0:
+    hdf5Path: null
+    input:
+    - 1/sample_mouse2p_image.tiff
+    nwbfile:
+      device:
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+        name: Microscope device
+      experiment_description: None
+      identifier: optinist
+      image_series:
+        starting_frame:
+        - 0
+        starting_time: 0
+      imaging_plane:
+        description: standard
+        excitation_lambda: 900.0
+        imaging_rate: 30.0
+        indicator: GCaMP
+        location: V1
+        name: ImagingPlane
+      ophys:
+        plane_segmentation:
+          description: ''
+          name: PlaneSegmentation
+      optical_channel:
+        description: optical channel
+        emission_lambda: 500.0
+        name: OpticalChannel
+      session_description: optinist
+    output: 1/tutorial2/input_0/sample_mouse2p_image.pkl
+    params: {}
+    path: null
+    return_arg: input_0
+    type: image
+  pca_xi0d87mbrk:
+    hdf5Path: null
+    input:
+    - 1/tutorial2/caiman_cnmf_z6a16cmiwl/caiman_cnmf.pkl
+    - 1/tutorial2/caiman_cnmf_z6a16cmiwl/caiman_cnmf.pkl
+    nwbfile: null
+    output: 1/tutorial2/pca_xi0d87mbrk/pca.pkl
+    params:
+      PCA:
+        copy: true
+        iterated_power: auto
+        n_components: 3
+        svd_solver: auto
+        tol: 0
+        whiten: false
+      standard_mean: true
+      standard_std: true
+      transpose: true
+    path: optinist/dimension_reduction/pca
+    return_arg:
+      fluorescence: neural_data
+      iscell: iscell
+    type: pca
