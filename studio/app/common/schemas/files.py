@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 from pydantic.dataclasses import dataclass as pydantic_dataclass
+from pydantic.networks import AnyHttpUrl
 
 
 @pydantic_dataclass
@@ -15,6 +16,11 @@ class TreeNode:
 @dataclass
 class FilePath:
     file_path: str
+
+
+@dataclass
+class DownloadFileRequest:
+    url: AnyHttpUrl
 
 
 @dataclass
