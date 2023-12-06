@@ -182,8 +182,8 @@ class NWBCreater:
 
     @classmethod
     def roi(cls, nwbfile, function_id, roi_list):
-        image_seg = nwbfile.processing["ophys"].data_interfaces["ImageSegmentation"]
         nwbfile = cls.add_plane_segmentation(nwbfile, function_id)
+        image_seg = nwbfile.processing["ophys"].data_interfaces["ImageSegmentation"]
         plane_seg = image_seg.plane_segmentations[function_id]
 
         if roi_list:
