@@ -245,8 +245,16 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }, [roiData])
 
   useEffect(() => {
+    if (!roiFilePath || !workspaceId) return
+    dispatch(getStatus({ path: roiFilePath, workspaceId }))
+  }, [roiFilePath, workspaceId])
+
+  useEffect(() => {
+    if (!refRoiFilePath.current || !workspaceId) return
     return () => {
-      onCancel()
+      dispatch(
+        cancelRoi({ path: refRoiFilePath.current as string, workspaceId }),
+      )
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -356,6 +364,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
   const [cancelFirst, setCancelFirst] = useState(true)
 
   const checkStatus = useCallback(() => {
+    if (!statusRoi) return
     return Object.keys(statusRoi).every(
       (key) => statusRoi[key as keyof StatusROI].length === 0,
     )
@@ -364,25 +373,9 @@ const ImagePlotChart = memo(function ImagePlotChart({
 
   const [edit, setEdit] = useState<boolean>(!checkStatus())
 
-  const fetchStatusRoi = async () => {
-    if (
-      !roiFilePath ||
-      !roiFilePath.includes(CELL_ROI) ||
-      workspaceId === undefined
-    ) {
-      return
-    }
-    dispatch(getStatus({ path: roiFilePath, workspaceId }))
-  }
-
   useEffect(() => {
     setEdit(!checkStatus())
   }, [checkStatus])
-
-  useEffect(() => {
-    fetchStatusRoi()
-    //eslint-disable-next-line
-  }, [roiFilePath, workspaceId])
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSelectMode(event.target.checked)
@@ -511,11 +504,6 @@ const ImagePlotChart = memo(function ImagePlotChart({
     } finally {
       workspaceId &&
         dispatch(getRoiData({ path: refRoiFilePath.current, workspaceId }))
-      // setStatusRoi({
-      //   temp_add_roi: [],
-      //   temp_delete_roi: [],
-      //   temp_merge_roi: [],
-      // })
     }
   }
 
@@ -653,7 +641,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
     }
     setAction("")
     setEdit(true)
-    fetchStatusRoi()
+    dispatch(getStatus({ path: roiFilePath, workspaceId }))
   }
 
   const onMergeRoi = async () => {
