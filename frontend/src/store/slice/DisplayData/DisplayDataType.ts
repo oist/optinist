@@ -12,6 +12,7 @@ import {
   PieData,
   PolarData,
 } from "api/outputs/Outputs"
+import { StatusROI } from "components/Workspace/Visualize/Plot/ImagePlot"
 
 export const DISPLAY_DATA_SLICE_NAME = "displayData"
 
@@ -56,6 +57,7 @@ export type DisplayData = {
     [filePath: string]: PolarDisplayData
   }
   loading: boolean
+  statusRoi: StatusROI
 }
 
 export const DATA_TYPE_SET = {

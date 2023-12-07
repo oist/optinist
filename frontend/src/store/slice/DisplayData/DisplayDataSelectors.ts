@@ -358,3 +358,5 @@ export const selectPolarDataError = (filePath: string) => (state: RootState) =>
   selectPolarDataIsInitialized(filePath)(state)
     ? selectDisplayData(state).polar[filePath].error
     : null
+
+export const selectStatusRoi = (state: RootState) => state.displayData.statusRoi

@@ -29,20 +29,17 @@ import Slider from "@mui/material/Slider"
 import { styled } from "@mui/material/styles"
 import Switch from "@mui/material/Switch"
 
-import {
-  addRoiApi,
-  commitRoiApi,
-  deleteRoiApi,
-  getStatusRoi,
-  mergeRoiApi,
-} from "api/outputs/Outputs"
-import Loading from "components/common/Loading"
 import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
 import {
+  addRoi,
   cancelRoi,
+  commitRoi,
+  deleteRoi,
   getImageData,
   getRoiData,
+  getStatus,
   getTimeSeriesInitData,
+  mergeRoi,
 } from "store/slice/DisplayData/DisplayDataActions"
 import {
   selectImageDataError,
@@ -53,6 +50,7 @@ import {
   selectRoiData,
   selectImageDataMaxSize,
   selectImageMeta,
+  selectStatusRoi,
 } from "store/slice/DisplayData/DisplayDataSelectors"
 import {
   selectingImageArea,
@@ -209,7 +207,6 @@ const ImagePlotChart = memo(function ImagePlotChart({
     imageDataEqualtyFn,
   )
 
-  const [loadingApi, setLoadingApi] = useState(false)
   const [roiDataState, setRoiDataState] = useState(roiData)
   const [pointClick, setPointClick] = useState<PointClick[]>([])
 
@@ -225,16 +222,11 @@ const ImagePlotChart = memo(function ImagePlotChart({
   const roiAlpha = useSelector(selectImageItemRoiAlpha(itemId))
   const width = useSelector(selectVisualizeItemWidth(itemId))
   const height = useSelector(selectVisualizeItemHeight(itemId))
-
+  const statusRoi = useSelector(selectStatusRoi)
   const [sizeDrag, setSizeDrag] = useState(initSizeDrag)
   const [startDragAddRoi, setStartDragAddRoi] = useState(false)
   const [action, setAction] = useState("")
   const [positionDrag, setChangeSize] = useState<PositionDrag | undefined>()
-  const [statusRoi, setStatusRoi] = useState<StatusROI>({
-    temp_add_roi: [],
-    temp_delete_roi: [],
-    temp_merge_roi: [],
-  })
 
   const outputKey: string | null = useSelector(selectRoiItemOutputKeys(itemId))
 
@@ -380,8 +372,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
     ) {
       return
     }
-    const data = await getStatusRoi(roiFilePath, workspaceId)
-    setStatusRoi(data as StatusROI)
+    dispatch(getStatus({ path: roiFilePath, workspaceId }))
   }
 
   useEffect(() => {
@@ -520,11 +511,11 @@ const ImagePlotChart = memo(function ImagePlotChart({
     } finally {
       workspaceId &&
         dispatch(getRoiData({ path: refRoiFilePath.current, workspaceId }))
-      setStatusRoi({
-        temp_add_roi: [],
-        temp_delete_roi: [],
-        temp_merge_roi: [],
-      })
+      // setStatusRoi({
+      //   temp_add_roi: [],
+      //   temp_delete_roi: [],
+      //   temp_merge_roi: [],
+      // })
     }
   }
 
@@ -541,7 +532,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
     //eslint-disable-next-line
   }, [roiFilePath, action, JSON.stringify(statusRoi)])
 
-  const addRoi = () => {
+  const onAddRoi = () => {
     setAction(ADD_ROI)
   }
 
@@ -550,6 +541,8 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }
 
   const onCancelAdd = () => {
+    setAction("")
+    setEdit(true)
     setSizeDrag(initSizeDrag)
     setChangeSize(undefined)
     setPointClick([])
@@ -608,9 +601,8 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }
 
   const addOrSelectRoi = async () => {
-    if (!roiFilePath || loadingApi || !workspaceId) return
+    if (!roiFilePath || !workspaceId) return
     if (action === ADD_ROI) {
-      setLoadingApi(true)
       const sizeX = roiDataState[0].length - 1
       const sizeY = roiDataState.length - 1
       const xAdd = Number(((sizeDrag.width + 2) / (sChart / sizeX)).toFixed(1))
@@ -624,66 +616,67 @@ const ImagePlotChart = memo(function ImagePlotChart({
         sizex: xAdd,
         sizey: yAdd,
       }
-      dispatch(resetAllOrderList())
-      await addRoiApi(roiFilePath, workspaceId, pointCenter)
-      setLoadingApi(false)
+      await dispatch(resetAllOrderList())
+      await dispatch(
+        addRoi({ path: roiFilePath, workspaceId, data: pointCenter }),
+      )
       onCancelAdd()
-      workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     }
     if (action === MERGE_ROI) {
       if (pointClick.length < 2) return
-      setLoadingApi(true)
       dispatch(resetAllOrderList())
-      await mergeRoiApi(roiFilePath, workspaceId, {
-        ids: pointClick.map((point) => point.z),
-      })
-      setLoadingApi(false)
+      dispatch(
+        mergeRoi({
+          path: roiFilePath,
+          workspaceId,
+          data: {
+            ids: pointClick.map((point) => point.z),
+          },
+        }),
+      )
       setPointClick([])
       workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     } else if (action === DELETE_ROI) {
       if (!pointClick.length) return
-      setLoadingApi(true)
       dispatch(resetAllOrderList())
-      await deleteRoiApi(roiFilePath, workspaceId, {
-        ids: pointClick.map((point) => point.z),
-      })
-      setLoadingApi(false)
+      await dispatch(
+        deleteRoi({
+          path: roiFilePath,
+          workspaceId,
+          data: {
+            ids: pointClick.map((point) => point.z),
+          },
+        }),
+      )
       setPointClick([])
       workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
     }
     setAction("")
     setEdit(true)
-    setEdit(true)
     fetchStatusRoi()
   }
 
   const onMergeRoi = async () => {
-    if (!roiFilePath || loadingApi) return
+    if (!roiFilePath) return
     setAction(MERGE_ROI)
   }
 
   const onDeleteRoi = async () => {
-    if (!roiFilePath || loadingApi) return
+    if (!roiFilePath) return
     setAction(DELETE_ROI)
   }
 
   const onCommitRoi = async () => {
     if (!roiFilePath || workspaceId === undefined) return
-    setLoadingApi(true)
     try {
-      await commitRoiApi(roiFilePath, workspaceId)
-      workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
-      setStatusRoi({
-        temp_add_roi: [],
-        temp_delete_roi: [],
-        temp_merge_roi: [],
-      })
+      await dispatch(commitRoi({ path: roiFilePath, workspaceId }))
+      workspaceId &&
+        (await dispatch(getRoiData({ path: roiFilePath, workspaceId })))
       enqueueSnackbar("Edit ROI Finished", { variant: "success" })
       resetTimeSeries()
     } finally {
       setEdit(false)
       setAction("")
-      setLoadingApi(false)
     }
   }
 
@@ -765,7 +758,6 @@ const ImagePlotChart = memo(function ImagePlotChart({
 
   return (
     <ImagePlotContainer>
-      {loadingApi ? <Loading /> : null}
       <Box sx={{ display: "flex" }}>
         <Box sx={{ flexGrow: 1, mt: 1 }}>
           <PlayBack activeIndex={activeIndex} />
@@ -781,14 +773,11 @@ const ImagePlotChart = memo(function ImagePlotChart({
           <>
             <BoxDiv sx={{ flexDirection: "column" }}>
               <BoxWrapper sx={{ marginBottom: 2 }}>
+                <LinkDiv onClick={onAddRoi}>{ADD_ROI}</LinkDiv>
                 <LinkDiv
-                  sx={{ opacity: loadingApi ? 0.5 : 1 }}
-                  onClick={addRoi}
-                >
-                  {ADD_ROI}
-                </LinkDiv>
-                <LinkDiv
-                  sx={{ color: "#F84E1B", opacity: loadingApi ? 0.5 : 1 }}
+                  sx={{
+                    color: "#F84E1B",
+                  }}
                   onClick={onDeleteRoi}
                 >
                   {DELETE_ROI}
@@ -797,7 +786,6 @@ const ImagePlotChart = memo(function ImagePlotChart({
                   sx={{
                     color: "#6619A9",
                     ml: 0,
-                    opacity: loadingApi ? 0.5 : 1,
                   }}
                   onClick={onMergeRoi}
                 >
@@ -809,14 +797,15 @@ const ImagePlotChart = memo(function ImagePlotChart({
                   (key) => statusRoi[key as keyof StatusROI].length > 0,
                 ) ? (
                   <LinkDiv
-                    sx={{ color: "#32A919", opacity: loadingApi ? 0.5 : 1 }}
+                    sx={{
+                      color: "#32A919",
+                    }}
                     onClick={onCommitRoi}
                   >
                     Commit Edit
                   </LinkDiv>
                 ) : null}
                 <LinkDiv
-                  sx={{ opacity: loadingApi ? 0.5 : 1 }}
                   onClick={() => {
                     onCancel()
                     setEdit(false)

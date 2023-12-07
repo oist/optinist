@@ -10,9 +10,11 @@ import MenuItem from "@mui/material/MenuItem"
 import Paper from "@mui/material/Paper"
 import Select, { SelectChangeEvent } from "@mui/material/Select"
 
+import Loading from "components/common/Loading"
 import { useMouseDragHandler } from "components/utils/MouseDragUtil"
 import { DisplayDataItem } from "components/Workspace/Visualize/DisplayDataItem"
 import { FilePathSelect } from "components/Workspace/Visualize/FilePathSelect"
+import { selectLoadingVisualize } from "store/slice/DisplayData/DisplayDataSelectors"
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
@@ -60,8 +62,12 @@ export const VisualizeItem = memo(function VisualizeItem({
   )
   const { size, onMouseDownX, onMouseDownY, onMouseDownXY } =
     useItemDragResize(itemId)
+  const loading = useSelector(selectLoadingVisualize)
   return (
-    <Box sx={{ m: 1, display: "flex", flexDirection: "row" }}>
+    <Box
+      sx={{ m: 1, display: "flex", flexDirection: "row", position: "relative" }}
+    >
+      {loading ? <Loading position={"absolute"} /> : null}
       <Box
         sx={{
           display: "flex",

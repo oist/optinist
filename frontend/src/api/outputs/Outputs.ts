@@ -180,7 +180,7 @@ export async function deleteRoiApi(
 export async function commitRoiApi(
   path: string,
   workspace_id: number,
-): Promise<{ data: HTMLData; meta?: PlotMetaData }> {
+): Promise<boolean> {
   const response = await axios.post(
     `${BASE_URL}/outputs/image/${path}/commit_edit?workspace_id=${workspace_id}`,
   )
