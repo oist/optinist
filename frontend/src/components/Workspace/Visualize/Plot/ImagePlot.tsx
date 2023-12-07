@@ -707,11 +707,6 @@ const ImagePlotChart = memo(function ImagePlotChart({
     if (action) {
       return (
         <>
-          {action !== ADD_ROI ? (
-            <BoxDiv>
-              ROI Selecteds: [{pointClick.map((item) => item.z).join(",")}]
-            </BoxDiv>
-          ) : null}
           <BoxDiv sx={{ display: "flex", gap: 1 }}>
             <LinkDiv
               sx={{
@@ -748,15 +743,26 @@ const ImagePlotChart = memo(function ImagePlotChart({
               OK
             </LinkDiv>
           </BoxDiv>
-        </>
+          {action !== ADD_ROI ? (
+            <BoxDiv style={{ marginTop: "0.5em" }}>
+              ROI Selecteds: &nbsp;
+                {action === DELETE_ROI ? (
+                  <span style={{color: "gray"}}>&#x25CB;</span>
+                ) : action === MERGE_ROI ? (
+                  <span style={{color: "magenta"}}>&#x25CF;</span>
+                ) : null}
+              &nbsp; [{pointClick.map((item) => item.z).join(",")}]
+            </BoxDiv>
+          ) : null}
+         </>
       )
     }
 
     if (!edit)
       return (
-        <LinkDiv sx={{ width: "fit-content" }} onClick={editRoi}>
+        <Button sx={{ width: "fit-content" }} onClick={editRoi} variant="outlined" size="small">
           Edit ROI
-        </LinkDiv>
+        </Button>
       )
     return null
   }
