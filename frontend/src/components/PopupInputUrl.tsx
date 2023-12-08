@@ -8,6 +8,7 @@ import DialogTitle from "@mui/material/DialogTitle"
 import TextField from "@mui/material/TextField"
 import Typography from "@mui/material/Typography"
 
+import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from "api/files/Files"
 import { ConfirmDialog } from "components/common/ConfirmDialog"
 
 type PopupInputUrlProps = {
@@ -18,6 +19,7 @@ type PopupInputUrlProps = {
   onLoadFileViaUrl: () => void
   setError: (value: string) => void
   error: string
+  fileType: FILE_TREE_TYPE
 }
 
 const PopupInputUrl = ({
@@ -28,12 +30,26 @@ const PopupInputUrl = ({
   onLoadFileViaUrl,
   setError,
   error,
+  fileType,
 }: PopupInputUrlProps) => {
   const [openConfirm, setOpenConfirm] = useState(false)
   const validateUrl = (url: string) => {
-    const validExtensions = [".tiff", ".tif", ".csv", ".hdf5", ".nwb"]
+    const checkType = () => {
+      if (fileType === FILE_TREE_TYPE_SET.IMAGE) {
+        return [".tiff", ".tif"]
+      }
+      if (fileType === FILE_TREE_TYPE_SET.CSV) {
+        return [".csv"]
+      }
+      if (fileType === FILE_TREE_TYPE_SET.HDF5) {
+        return [".hdf5", ".nwb"]
+      }
+      return undefined
+    }
+    const validExtensions = checkType()
     const fileExtension = url.substring(url.lastIndexOf("."))
     return (
+      validExtensions &&
       validExtensions.includes(fileExtension) &&
       (url.startsWith("http://") || url.startsWith("https://"))
     )
@@ -87,7 +103,11 @@ const PopupInputUrl = ({
           <Button onClick={handleClosePopup} variant={"outlined"}>
             Cancel
           </Button>
-          <Button onClick={onClickLoad} variant={"contained"}>
+          <Button
+            disabled={!!error || !value}
+            onClick={onClickLoad}
+            variant={"contained"}
+          >
             Load
           </Button>
         </DialogActions>

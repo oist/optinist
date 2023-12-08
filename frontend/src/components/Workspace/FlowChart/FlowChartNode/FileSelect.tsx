@@ -1,4 +1,11 @@
-import { ChangeEvent, memo, ReactNode, useContext, useRef } from "react"
+import {
+  ChangeEvent,
+  memo,
+  ReactNode,
+  useContext,
+  useEffect,
+  useRef,
+} from "react"
 import { useSelector } from "react-redux"
 
 import AddLinkIcon from "@mui/icons-material/AddLink"
@@ -138,12 +145,24 @@ export const FileSelectImple = memo(function FileSelectImple({
   const onClickViaUrl = () => {
     if (!nodeId) return
     onOpenInputUrlDialog({
+      fileType: fileTreeType,
       open: true,
       filePath: filePath as string,
       nodeId,
       requestId: id,
     })
   }
+
+  useEffect(() => {
+    if (!nodeId) return
+    onOpenInputUrlDialog({
+      fileType: fileTreeType,
+      open: false,
+      filePath: filePath as string,
+      nodeId,
+      requestId: id,
+    })
+  }, [])
 
   const accept = getFileInputAccept(fileTreeType)
   const fileName = getLabelByPath(filePath)

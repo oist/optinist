@@ -19,6 +19,7 @@ import {
   ErrorDialogValue,
   FileSelectDialogValue,
   DialogContext,
+  FileInputUrl,
 } from "components/Workspace/FlowChart/Dialog/DialogContext"
 import { FileSelectDialog } from "components/Workspace/FlowChart/Dialog/FileSelectDialog"
 import { ReactFlowComponent } from "components/Workspace/FlowChart/ReactFlowComponent"
@@ -61,7 +62,7 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
     anchorElRef: { current: null },
     message: "",
   })
-  const [dialogViaUrl, setDialogViaUrl] = useState({
+  const [dialogViaUrl, setDialogViaUrl] = useState<FileInputUrl>({
     open: false,
     nodeId: "",
     requestId: "",
@@ -160,18 +161,21 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
                 }}
               />
             )}
-            <PopupInputUrl
-              open={dialogViaUrl.open}
-              value={fileViaUrl}
-              setValue={setFileViaUrl}
-              handleClose={() => {
-                setFileViaUrl("")
-                setDialogViaUrl({ ...dialogViaUrl, open: false })
-              }}
-              onLoadFileViaUrl={onLoadFileViaUrl}
-              setError={setErrorUrl}
-              error={errorUrl}
-            />
+            {dialogViaUrl.fileType ? (
+              <PopupInputUrl
+                open={dialogViaUrl.open}
+                value={fileViaUrl}
+                setValue={setFileViaUrl}
+                handleClose={() => {
+                  setFileViaUrl("")
+                  setDialogViaUrl({ ...dialogViaUrl, open: false })
+                }}
+                onLoadFileViaUrl={onLoadFileViaUrl}
+                setError={setErrorUrl}
+                error={errorUrl}
+                fileType={dialogViaUrl.fileType}
+              />
+            ) : null}
             {messageError?.message && (
               <Popover
                 open

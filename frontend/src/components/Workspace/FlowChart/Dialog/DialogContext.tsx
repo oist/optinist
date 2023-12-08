@@ -11,10 +11,11 @@ export declare type FileSelectDialogValue = {
 }
 
 export declare type FileInputUrl = {
-  filePath: string
+  filePath?: string
   open: boolean
   nodeId: string
   requestId: string
+  fileType?: FILE_TREE_TYPE
 }
 
 export declare type ClearWorkflowIdDialogValue = {
