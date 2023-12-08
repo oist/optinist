@@ -2,6 +2,7 @@ import { memo, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Handle, Position, NodeProps } from "reactflow"
 
+import SettingsIcon from "@mui/icons-material/Settings"
 import {
   Button,
   Dialog,
@@ -14,6 +15,7 @@ import {
   Box,
   LinearProgress,
   Typography,
+  IconButton,
 } from "@mui/material"
 
 import { FileSelect } from "components/Workspace/FlowChart/FlowChartNode/FileSelect"
@@ -85,7 +87,7 @@ const CsvFileNodeImple = memo(function CsvFileNodeImple({
         fileType={FILE_TYPE_SET.CSV}
         filePath={filePath ?? ""}
       />
-      {!!filePath && <ParamSettingDialog nodeId={nodeId} filePath={filePath} />}
+      {/*{!!filePath && <ParamSettingDialog nodeId={nodeId} filePath={filePath} />}*/}
       <Handle
         type="source"
         position={Position.Right}
@@ -132,10 +134,14 @@ export const ParamSettingDialog = memo(function ParamSettingDialog({
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} sx={{ padding: 0 }}>
-        Settings
-      </Button>
-      <Dialog open={open}>
+      <IconButton
+        onClick={() => setOpen(true)}
+        sx={{ padding: 0 }}
+        color={"primary"}
+      >
+        <SettingsIcon />
+      </IconButton>
+      <Dialog open={open} onClose={onClickCancel}>
         <DialogTitle>Csv Setting</DialogTitle>
         <DialogContent dividers>
           <Box sx={{ display: "flex", p: 1, m: 1, alignItems: "flex-start" }}>
@@ -187,10 +193,10 @@ export const ParamSettingDialog = memo(function ParamSettingDialog({
           />
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClickCancel} variant="outlined" color="inherit">
+          <Button onClick={onClickCancel} variant="outlined">
             cancel
           </Button>
-          <Button onClick={onClickOk} color="primary" variant="outlined">
+          <Button onClick={onClickOk} variant="contained">
             OK
           </Button>
         </DialogActions>

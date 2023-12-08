@@ -1,11 +1,15 @@
-import { ChangeEvent, memo, useContext, useRef } from "react"
+import { ChangeEvent, memo, ReactNode, useContext, useRef } from "react"
 import { useSelector } from "react-redux"
 
-import { Button, Tooltip, Typography } from "@mui/material"
+import AddLinkIcon from "@mui/icons-material/AddLink"
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate"
+import ChecklistRtlIcon from "@mui/icons-material/ChecklistRtl"
+import { IconButton, Tooltip, Typography } from "@mui/material"
 import ButtonGroup from "@mui/material/ButtonGroup"
 
 import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from "api/files/Files"
 import { DialogContext } from "components/Workspace/FlowChart/Dialog/DialogContext"
+import { ParamSettingDialog } from "components/Workspace/FlowChart/FlowChartNode/CsvFileNode"
 import { LinearProgressWithLabel } from "components/Workspace/FlowChart/FlowChartNode/LinerProgressWithLabel"
 import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
 import { getLabelByPath } from "store/slice/FlowElement/FlowElementUtils"
@@ -34,6 +38,7 @@ export const FileSelect = memo(function FileSelect({
     uninitialized,
     progress,
     error,
+    id,
   } = useFileUploader({ fileType, nodeId })
   const onUploadFileHandle = (formData: FormData, fileName: string) => {
     onUploadFile(formData, fileName)
@@ -45,13 +50,17 @@ export const FileSelect = memo(function FileSelect({
           <LinearProgressWithLabel value={progress} />
         </div>
       )}
+      <Typography>{fileType}</Typography>
       <FileSelectImple
         multiSelect={multiSelect}
         filePath={filePath}
         onSelectFile={onChangeFilePath}
         onUploadFile={onUploadFileHandle}
         fileTreeType={fileType}
-        selectButtonLabel={`Select ${fileType}`}
+        selectButtonLabel={<ChecklistRtlIcon />}
+        uploadViaUrl={<AddLinkIcon />}
+        nodeId={nodeId}
+        id={id.current}
       />
       {error != null && (
         <Typography variant="caption" color="error">
@@ -68,8 +77,12 @@ interface FileSelectImpleProps {
   onUploadFile: (formData: FormData, fileName: string) => void
   onSelectFile: (path: string | string[]) => void
   fileTreeType?: FILE_TREE_TYPE
-  selectButtonLabel?: string
+  selectButtonLabel?: ReactNode
   uploadButtonLabel?: string
+  uploadViaUrl?: ReactNode
+  nodeId?: string
+  onUploadViaUrl?: (url: string) => void
+  id: string
 }
 
 export const FileSelectImple = memo(function FileSelectImple({
@@ -80,9 +93,15 @@ export const FileSelectImple = memo(function FileSelectImple({
   fileTreeType,
   selectButtonLabel,
   uploadButtonLabel,
+  uploadViaUrl,
+  nodeId,
+  id,
 }: FileSelectImpleProps) {
-  const { onOpenFileSelectDialog, onOpenClearWorkflowIdDialog } =
-    useContext(DialogContext)
+  const {
+    onOpenFileSelectDialog,
+    onOpenClearWorkflowIdDialog,
+    onOpenInputUrlDialog,
+  } = useContext(DialogContext)
   const currentWorkflowId = useSelector(selectPipelineLatestUid)
 
   const onFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -115,28 +134,61 @@ export const FileSelectImple = memo(function FileSelectImple({
       clickInput()
     }
   }
+
+  const onClickViaUrl = () => {
+    if (!nodeId) return
+    onOpenInputUrlDialog({
+      open: true,
+      filePath: filePath as string,
+      nodeId,
+      requestId: id,
+    })
+  }
+
   const accept = getFileInputAccept(fileTreeType)
   const fileName = getLabelByPath(filePath)
+
   return (
     <div>
       <ButtonGroup size="small" style={{ marginRight: 4 }}>
-        <Button
-          variant="outlined"
-          onClick={() => {
-            onOpenFileSelectDialog({
-              open: true,
-              multiSelect,
-              filePath,
-              fileTreeType,
-              onSelectFile,
-            })
-          }}
-        >
-          {selectButtonLabel ? selectButtonLabel : "Select File"}
-        </Button>
-        <Button onClick={onClick} variant="outlined">
-          {uploadButtonLabel ? uploadButtonLabel : "Load"}
-        </Button>
+        <Tooltip title={"Select from uploaded files"}>
+          <IconButton
+            color={"primary"}
+            onClick={() => {
+              onOpenFileSelectDialog({
+                open: true,
+                multiSelect,
+                filePath,
+                fileTreeType,
+                onSelectFile,
+              })
+            }}
+          >
+            {selectButtonLabel ? selectButtonLabel : "Select File"}
+          </IconButton>
+        </Tooltip>
+        <Tooltip title={"Upload file"}>
+          <IconButton onClick={onClick} color={"primary"}>
+            {uploadButtonLabel ? uploadButtonLabel : <AddPhotoAlternateIcon />}
+          </IconButton>
+        </Tooltip>
+        {uploadViaUrl ? (
+          <Tooltip title={"Upload file via URL"}>
+            <IconButton onClick={onClickViaUrl} color={"primary"}>
+              {uploadViaUrl}
+            </IconButton>
+          </Tooltip>
+        ) : null}
+        {fileTreeType === FILE_TREE_TYPE_SET.CSV && !!filePath && !!nodeId && (
+          <Tooltip title={"Settings"}>
+            <IconButton>
+              <ParamSettingDialog
+                nodeId={nodeId}
+                filePath={filePath as string}
+              />
+            </IconButton>
+          </Tooltip>
+        )}
       </ButtonGroup>
       <div>
         <input

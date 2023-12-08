@@ -3,12 +3,15 @@ import { DndProvider } from "react-dnd"
 import { HTML5Backend } from "react-dnd-html5-backend"
 import { useDispatch, useSelector } from "react-redux"
 
+import { useSnackbar, VariantType } from "notistack"
+
 import { Box, FormHelperText, Popover } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import { styled } from "@mui/material/styles"
 
 import { CurrentPipelineInfo } from "components/common/CurrentPipelineInfo"
 import { SectionTitle } from "components/common/ParamSection"
+import PopupInputUrl from "components/PopupInputUrl"
 import { AlgorithmOutputDialog } from "components/Workspace/FlowChart/Dialog/AlgorithmOutputDialog"
 import { ClearWorkflowIdDialog } from "components/Workspace/FlowChart/Dialog/ClearWorkflowIdDialog"
 import {
@@ -22,9 +25,13 @@ import { ReactFlowComponent } from "components/Workspace/FlowChart/ReactFlowComp
 import RightDrawer from "components/Workspace/FlowChart/RightDrawer"
 import { AlgorithmTreeView } from "components/Workspace/FlowChart/TreeView"
 import { CONTENT_HEIGHT, DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from "const/Layout"
+import { uploadViaUrl } from "store/slice/FileUploader/FileUploaderActions"
+import { setInputNodeFilePath } from "store/slice/InputNode/InputNodeActions"
 import { UseRunPipelineReturnType } from "store/slice/Pipeline/PipelineHook"
 import { clearCurrentPipeline } from "store/slice/Pipeline/PipelineSlice"
 import { selectRightDrawerIsOpen } from "store/slice/RightDrawer/RightDrawerSelectors"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
+import { AppDispatch } from "store/store"
 
 const initDialogFile = {
   filePath: "",
@@ -41,9 +48,10 @@ const initClearWorkflow = {
 }
 
 const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch<AppDispatch>()
 
   const open = useSelector(selectRightDrawerIsOpen)
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
   const [dialogNodeId, setDialogNodeId] = useState("")
   const [dialogFile, setDialogFile] =
     useState<FileSelectDialogValue>(initDialogFile)
@@ -53,6 +61,45 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
     anchorElRef: { current: null },
     message: "",
   })
+  const [dialogViaUrl, setDialogViaUrl] = useState({
+    open: false,
+    nodeId: "",
+    requestId: "",
+  })
+  const [fileViaUrl, setFileViaUrl] = useState("")
+  const [errorUrl, setErrorUrl] = useState("")
+
+  const { enqueueSnackbar } = useSnackbar()
+
+  const handleClickVariant = (variant: VariantType, mess: string) => {
+    enqueueSnackbar(mess, { variant })
+  }
+
+  const onLoadFileViaUrl = async () => {
+    if (!workspaceId || !fileViaUrl) return
+    try {
+      setDialogViaUrl({ ...dialogViaUrl, open: false })
+      const data = await dispatch(
+        uploadViaUrl({
+          workspaceId,
+          url: fileViaUrl,
+          requestId: dialogViaUrl.requestId,
+        }),
+      )
+      dispatch(
+        setInputNodeFilePath({
+          nodeId: dialogViaUrl.nodeId,
+          filePath: [(data.payload as { file_name: string }).file_name],
+        }),
+      )
+      setDialogFile({
+        ...dialogFile,
+        filePath: [(data.payload as { file_name: string }).file_name],
+      })
+    } catch {
+      handleClickVariant("error", "url does not exist")
+    }
+  }
 
   return (
     <Box display="flex">
@@ -61,6 +108,7 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
           onOpenOutputDialog: setDialogNodeId,
           onOpenFileSelectDialog: setDialogFile,
           onOpenClearWorkflowIdDialog: setDialogClearWorkflowId,
+          onOpenInputUrlDialog: setDialogViaUrl,
           onMessageError: setMessageError,
         }}
       >
@@ -112,6 +160,18 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
                 }}
               />
             )}
+            <PopupInputUrl
+              open={dialogViaUrl.open}
+              value={fileViaUrl}
+              setValue={setFileViaUrl}
+              handleClose={() => {
+                setFileViaUrl("")
+                setDialogViaUrl({ ...dialogViaUrl, open: false })
+              }}
+              onLoadFileViaUrl={onLoadFileViaUrl}
+              setError={setErrorUrl}
+              error={errorUrl}
+            />
             {messageError?.message && (
               <Popover
                 open

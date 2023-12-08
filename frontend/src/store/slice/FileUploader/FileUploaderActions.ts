@@ -2,7 +2,7 @@ import { AxiosProgressEvent } from "axios"
 
 import { createAsyncThunk, createAction } from "@reduxjs/toolkit"
 
-import { uploadFileApi } from "api/files/Files"
+import { uploadFileApi, uploadViaUrlApi } from "api/files/Files"
 import { FILE_UPLOADER_SLICE_NAME } from "store/slice/FileUploader/FileUploaderType"
 import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
 
@@ -68,3 +68,25 @@ function getUploadConfig(
     },
   }
 }
+
+export const uploadViaUrl = createAsyncThunk<
+  { file_name: string },
+  { workspaceId: number; url: string; requestId: string }
+>(`${FILE_UPLOADER_SLICE_NAME}/uploadFileViaUrl`, async (data, thunkAPI) => {
+  const { workspaceId, url, requestId } = data
+  try {
+    const config = getUploadConfig((percent, total) => {
+      thunkAPI.dispatch(
+        setUploadProgress({
+          requestId,
+          progress: percent,
+          total,
+        }),
+      )
+    })
+    const data = await uploadViaUrlApi(workspaceId, url, config)
+    return data
+  } catch (e) {
+    return thunkAPI.rejectWithValue(e)
+  }
+})

@@ -300,7 +300,7 @@ const TreeItemLabel = memo(function TreeItemLabel({
       <Box>
         <Checkbox
           {...checkboxProps}
-          disableRipple
+          // disableRipple
           size="small"
           sx={{
             marginRight: "4px",

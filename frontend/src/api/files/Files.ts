@@ -59,3 +59,18 @@ export async function uploadFileApi(
   )
   return response.data
 }
+
+export const uploadViaUrlApi = async (
+  workspaceId: number,
+  url: string,
+  config: {
+    onUploadProgress: (progressEvent: AxiosProgressEvent) => void
+  },
+): Promise<{ file_name: string }> => {
+  const res = await axios.post(
+    `${BASE_URL}/files/${workspaceId}/download`,
+    { url },
+    config,
+  )
+  return res.data
+}
