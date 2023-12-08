@@ -32,6 +32,7 @@ RUN poetry install --no-root
 # copy optinist files
 COPY frontend/build /app/frontend/build
 COPY studio /app/studio
+COPY sample_data /app/sample_data
 COPY main.py ./
 
 EXPOSE 8000

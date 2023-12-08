@@ -39,7 +39,7 @@ export const ImportWorkflowConfigButton = memo(
     }
 
     return (
-      <Tooltip title="Import workflow from config file">
+      <Tooltip title="Import workflow yaml file">
         <IconButton onClick={onClick}>
           <UploadFile color="primary" />
           <input

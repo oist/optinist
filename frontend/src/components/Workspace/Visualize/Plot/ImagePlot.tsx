@@ -583,7 +583,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }
 
   return (
-    <div>
+    <ImagePlotContainer>
       <Box sx={{ display: "flex" }}>
         <Box sx={{ flexGrow: 1, mt: 1 }}>
           <PlayBack activeIndex={activeIndex} />
@@ -676,7 +676,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
           </DivAddRoi>
         ) : null}
       </div>
-    </div>
+    </ImagePlotContainer>
   )
 })
 
@@ -834,6 +834,15 @@ function debounce<T extends (...args: PlotSelectionEvent[]) => unknown>(
     timeoutId = setTimeout(() => callback(...args), delay)
   }
 }
+
+const ImagePlotContainer = styled("div")`
+  .selectionlayer path {
+    stroke: white !important;
+    stroke-dasharray: 6 !important;
+    stroke-width: 2px !important;
+    opacity: 1 !important;
+  }
+`
 
 const BoxDiv = styled("div")({
   mt: 1,

@@ -1,4 +1,5 @@
 import os
+import shutil
 from dataclasses import asdict
 
 import yaml
@@ -7,7 +8,10 @@ from fastapi.responses import FileResponse
 
 from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
 from studio.app.common.core.experiment.experiment_utils import ExptUtils
-from studio.app.common.core.utils.filepath_creater import join_filepath
+from studio.app.common.core.utils.filepath_creater import (
+    create_directory,
+    join_filepath,
+)
 from studio.app.common.core.workflow.workflow_reader import WorkflowConfigReader
 from studio.app.common.core.workspace.workspace_dependencies import (
     is_workspace_available,
@@ -87,3 +91,20 @@ async def import_workflow_config(file: UploadFile = File(...)):
         return WorkflowConfig(**contents)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Parsing yaml failed: {str(e)}")
+
+
+@router.get(
+    "/sample_data/{workspace_id}",
+    dependencies=[Depends(is_workspace_available)],
+)
+async def copy_sample_data(workspace_id: str):
+    folders = ["input", "output"]
+
+    for folder in folders:
+        sample_data_dir = join_filepath([DIRPATH.ROOT_DIR, "sample_data", folder])
+        user_dir = join_filepath([DIRPATH.DATA_DIR, folder, workspace_id])
+
+        create_directory(user_dir)
+        shutil.copytree(sample_data_dir, user_dir, dirs_exist_ok=True)
+
+    return True
