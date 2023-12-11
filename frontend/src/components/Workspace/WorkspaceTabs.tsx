@@ -39,8 +39,6 @@ const WorkspaceTabs: FC = () => {
     [roiFilePath, workspaceId, statusRoi],
   )
 
-  const loading = useSelector(selectLoadingVisualize)
-
   return (
     <>
       <Tabs
@@ -54,7 +52,6 @@ const WorkspaceTabs: FC = () => {
         <Tab label="Visualize" {...a11yProps(1)} />
         <Tab label="Record" {...a11yProps(2)} />
       </Tabs>
-      {loading && activeTab !== 1 ? <Loading /> : null}
     </>
   )
 }

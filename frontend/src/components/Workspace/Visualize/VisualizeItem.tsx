@@ -60,6 +60,7 @@ export const VisualizeItem = memo(function VisualizeItem({
   const isSelected = useSelector(
     (state: RootState) => selectSelectedVisualizeItemId(state) === itemId,
   )
+
   const { size, onMouseDownX, onMouseDownY, onMouseDownXY } =
     useItemDragResize(itemId)
   const loading = useSelector(selectLoadingVisualize)
@@ -67,7 +68,7 @@ export const VisualizeItem = memo(function VisualizeItem({
     <Box
       sx={{ m: 1, display: "flex", flexDirection: "row", position: "relative" }}
     >
-      {loading ? <Loading position={"absolute"} /> : null}
+      {loading && isSelected ? <Loading position={"absolute"} /> : null}
       <Box
         sx={{
           display: "flex",
