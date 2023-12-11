@@ -250,11 +250,12 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }, [roiFilePath, workspaceId])
 
   useEffect(() => {
-    if (!refRoiFilePath.current || !workspaceId) return
     return () => {
+      if (!refRoiFilePath.current || !workspaceId) return
       dispatch(
         cancelRoi({ path: refRoiFilePath.current as string, workspaceId }),
       )
+      console.log("refRoiFilePath.current", refRoiFilePath.current)
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
