@@ -20,14 +20,12 @@ class CsvData(BaseData):
         self.meta = meta
 
         if isinstance(data, str):
-            self.data = pd.read_csv(data, header=None).values
+            header = params.get("setHeader", None)
+            self.data = pd.read_csv(data, header=header).values
 
             if params["transpose"]:
                 self.data = self.data.T
 
-            if params["setHeader"] is not None:
-                header = params["setHeader"]
-                self.data = self.data[header:]
         else:
             self.data = np.array(data)
 
