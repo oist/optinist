@@ -27,7 +27,9 @@ def suite2p_registration(
     if ops.get("do_regmetrics", True) and ops["nframes"] >= 1500:
         ops = registration.get_pc_metrics(ops)
 
-    mv = io.BinaryFile(Lx=ops["Lx"], Ly=ops["Ly"], read_filename=ops["reg_file"]).data
+    mv = io.BinaryFile(
+        Lx=ops["Lx"], Ly=ops["Ly"], read_filename=ops["reg_file"]
+    ).data.copy()
 
     info = {
         "refImg": ImageData(ops["refImg"], output_dir=output_dir, file_name="refImg"),
