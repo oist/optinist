@@ -1,4 +1,4 @@
-import { memo, useCallback, useState, MouseEvent } from "react"
+import { memo, useCallback, useState, MouseEvent, useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import { Close, Numbers } from "@mui/icons-material"
@@ -48,6 +48,7 @@ import { arrayEqualityFn } from "utils/EqualityUtils"
 
 interface ItemIdProps {
   itemId: number
+  setRoiFilePath?: (value: string) => void
 }
 
 export const VisualizeItem = memo(function VisualizeItem({
@@ -64,11 +65,14 @@ export const VisualizeItem = memo(function VisualizeItem({
   const { size, onMouseDownX, onMouseDownY, onMouseDownXY } =
     useItemDragResize(itemId)
   const loading = useSelector(selectLoadingVisualize)
+  const [roiFilePath, setRoiFilePath] = useState("")
   return (
     <Box
       sx={{ m: 1, display: "flex", flexDirection: "row", position: "relative" }}
     >
-      {loading && isSelected ? <Loading position={"absolute"} /> : null}
+      {loading && roiFilePath.includes("/cell_roi.json") ? (
+        <Loading position={"absolute"} />
+      ) : null}
       <Box
         sx={{
           display: "flex",
@@ -87,7 +91,7 @@ export const VisualizeItem = memo(function VisualizeItem({
               isSelected ? theme.palette.primary.light : undefined,
           }}
         >
-          <ItemHeader itemId={itemId} />
+          <ItemHeader itemId={itemId} setRoiFilePath={setRoiFilePath} />
           <DisplayDataItem itemId={itemId} />
         </Paper>
         <Box
@@ -148,7 +152,10 @@ export const VisualizeItem = memo(function VisualizeItem({
   )
 })
 
-const ItemHeader = memo(function ItemHeader({ itemId }: ItemIdProps) {
+const ItemHeader = memo(function ItemHeader({
+  itemId,
+  setRoiFilePath,
+}: ItemIdProps) {
   const dataType = useSelector(selectVisualizeDataType(itemId))
   const filePath = useSelector(selectVisualizeDataFilePath(itemId))
   const isSingleData = useSelector(selectDisplayDataIsSingle(itemId))
@@ -184,7 +191,7 @@ const ItemHeader = memo(function ItemHeader({ itemId }: ItemIdProps) {
       )}
       {dataType === DATA_TYPE_SET.IMAGE && (
         <Box flexGrow={1}>
-          <RoiSelect itemId={itemId} />
+          <RoiSelect itemId={itemId} setRoiFilePath={setRoiFilePath} />
         </Box>
       )}
       <Box>
@@ -360,10 +367,18 @@ function useItemDragResize(itemId: number) {
   }
 }
 
-const RoiSelect = memo(function RoiSelect({ itemId }: ItemIdProps) {
+const RoiSelect = memo(function RoiSelect({
+  itemId,
+  setRoiFilePath,
+}: ItemIdProps) {
   const dispatch = useDispatch()
   const roiItemNodeId = useSelector(selectRoiItemNodeId(itemId))
   const roiItemFilePath = useSelector(selectRoiItemFilePath(itemId))
+  useEffect(() => {
+    if (!roiItemFilePath) return
+    setRoiFilePath?.(roiItemFilePath)
+    //eslint-disable-next-line
+  }, [roiItemFilePath])
   const onSelectRoiFilePath = (
     nodeId: string,
     filePath: string,
