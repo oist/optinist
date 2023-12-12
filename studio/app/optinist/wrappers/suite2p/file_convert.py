@@ -11,7 +11,10 @@ from studio.app.optinist.dataclass import Suite2pData
 def suite2p_file_convert(
     image: ImageData, output_dir: str, params: dict = None, **kwargs
 ) -> dict(ops=Suite2pData):
+    import numpy as np
+    import tifffile
     from suite2p import default_ops, io
+    from suite2p.io.tiff import open_tiff, use_sktiff_reader
 
     function_id = output_dir.split("/")[-1]
     print("start suite2p_file_convert:", function_id)
@@ -19,6 +22,24 @@ def suite2p_file_convert(
     data_path_list = []
     data_name_list = []
     for file_path in image.path:
+        use_sktiff = (
+            True
+            if params.get("force_sktiff")
+            else use_sktiff_reader(file_path, batch_size=params.get("batch_size"))
+        )
+
+        tif, _ = open_tiff(file_path, use_sktiff)
+        if use_sktiff:
+            im = tifffile.imread(file_path)
+        else:
+            im = tif.data()
+
+        if im.dtype.type == np.float32:
+            im = (im - im.min()) / (im.max() - im.min())
+            im = (im * np.iinfo(np.int16).max).astype(np.int16)
+
+        tifffile.imwrite(file_path, im)
+
         data_path_list.append(os.path.dirname(file_path))
         data_name_list.append(os.path.basename(file_path))
 
