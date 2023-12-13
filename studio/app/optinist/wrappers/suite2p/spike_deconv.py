@@ -43,7 +43,7 @@ def suite2p_spike_deconv(
         ).T
         roi_list.append(kargs)
 
-    nwbfile[NWBDATASET.ROI] = {function_id: {"roi_list": roi_list}}
+    nwbfile[NWBDATASET.ROI] = {function_id: roi_list}
 
     # Fluorenceを追加
     nwbfile[NWBDATASET.FLUORESCENCE] = {
