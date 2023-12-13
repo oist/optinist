@@ -38,6 +38,7 @@ def suite2p_file_convert(
             im = (im - im.min()) / (im.max() - im.min())
             im = (im * np.iinfo(np.int16).max).astype(np.int16)
 
+        file_path = join_filepath([output_dir, os.path.basename(file_path)])
         tifffile.imwrite(file_path, im)
 
         data_path_list.append(os.path.dirname(file_path))
