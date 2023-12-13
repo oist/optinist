@@ -251,17 +251,19 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }, [roiFilePath, workspaceId])
 
   useEffect(() => {
+    refRoiFilePath.current = roiFilePath
     return () => {
-      if (!refRoiFilePath.current || !workspaceId) return
+      if (
+        !refRoiFilePath.current ||
+        !workspaceId ||
+        !refRoiFilePath.current.includes(CELL_ROI)
+      )
+        return
       dispatch(
         cancelRoi({ path: refRoiFilePath.current as string, workspaceId }),
       )
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
-
-  useEffect(() => {
-    refRoiFilePath.current = roiFilePath
   }, [roiFilePath])
 
   const data = useMemo(
@@ -661,7 +663,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
       await dispatch(commitRoi({ path: roiFilePath, workspaceId }))
       workspaceId &&
         (await dispatch(getRoiData({ path: roiFilePath, workspaceId })))
-      enqueueSnackbar("Edit ROI Finished", { variant: "success" })
+      enqueueSnackbar("Finished", { variant: "success" })
       resetTimeSeries()
     } finally {
       setEdit(false)
