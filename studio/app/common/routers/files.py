@@ -167,6 +167,7 @@ async def download_file(
 def download(res: Response, file_name: str, workspace_id: str, chunk_size=1024):
     total = int(res.headers.get("content-length", 0))
     filepath = join_filepath([DIRPATH.INPUT_DIR, workspace_id, file_name])
+    current = 0
 
     try:
         with open(filepath, "wb") as file, tqdm(
@@ -178,9 +179,8 @@ def download(res: Response, file_name: str, workspace_id: str, chunk_size=1024):
         ) as bar:
             for data in res.iter_content(chunk_size=chunk_size):
                 size = file.write(data)
-                DOWNLOAD_STATUS[filepath] = DownloadStatus(
-                    total=total, current=os.fstat(file.fileno()).st_size
-                )
+                current += size
+                DOWNLOAD_STATUS[filepath] = DownloadStatus(total=total, current=current)
                 bar.update(size)
     except Exception as e:
         DOWNLOAD_STATUS[filepath] = DownloadStatus(error=str(e))
