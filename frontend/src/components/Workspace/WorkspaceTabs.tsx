@@ -4,10 +4,8 @@ import { useDispatch, useSelector } from "react-redux"
 import Tab from "@mui/material/Tab"
 import Tabs from "@mui/material/Tabs"
 
-import Loading from "components/common/Loading"
 import { StatusROI } from "components/Workspace/Visualize/Plot/ImagePlot"
 import { cancelRoi } from "store/slice/DisplayData/DisplayDataActions"
-import { selectLoadingVisualize } from "store/slice/DisplayData/DisplayDataSelectors"
 import {
   selectActiveTab,
   selectCurrentWorkspaceId,
