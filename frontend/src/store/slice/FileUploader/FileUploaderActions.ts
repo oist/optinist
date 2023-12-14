@@ -2,7 +2,12 @@ import { AxiosProgressEvent } from "axios"
 
 import { createAsyncThunk, createAction } from "@reduxjs/toolkit"
 
-import { uploadFileApi, uploadViaUrlApi } from "api/files/Files"
+import {
+  getStatusLoadViaUrlApi,
+  GetStatusViaUrl,
+  uploadFileApi,
+  uploadViaUrlApi,
+} from "api/files/Files"
 import { FILE_UPLOADER_SLICE_NAME } from "store/slice/FileUploader/FileUploaderType"
 import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
 
@@ -11,6 +16,11 @@ export const setUploadProgress = createAction<{
   progress: number
   total: number
 }>(`${FILE_UPLOADER_SLICE_NAME}/setUploadProgress`)
+
+export const setDownloadProgress = createAction<{
+  requestId: string
+  progress: number
+}>(`${FILE_UPLOADER_SLICE_NAME}/setDownloadProgress`)
 
 export const uploadFile = createAsyncThunk<
   {
@@ -73,18 +83,29 @@ export const uploadViaUrl = createAsyncThunk<
   { file_name: string },
   { workspaceId: number; url: string; requestId: string }
 >(`${FILE_UPLOADER_SLICE_NAME}/uploadFileViaUrl`, async (data, thunkAPI) => {
-  const { workspaceId, url, requestId } = data
+  const { workspaceId, url } = data
   try {
-    const config = getUploadConfig((percent, total) => {
-      thunkAPI.dispatch(
-        setUploadProgress({
-          requestId,
-          progress: percent,
-          total,
-        }),
-      )
-    })
-    const data = await uploadViaUrlApi(workspaceId, url, config)
+    const data = await uploadViaUrlApi(workspaceId, url)
+    return data
+  } catch (e) {
+    return thunkAPI.rejectWithValue(e)
+  }
+})
+
+export const getStatusLoadViaUrl = createAsyncThunk<
+  GetStatusViaUrl,
+  { workspaceId: number; file_name: string; requestId: string }
+>(`${FILE_UPLOADER_SLICE_NAME}/getStatusLoadViaUrl`, async (data, thunkAPI) => {
+  const { workspaceId, file_name, requestId } = data
+  try {
+    const data = await getStatusLoadViaUrlApi(workspaceId, file_name)
+    thunkAPI.dispatch(
+      setUploadProgress({
+        requestId,
+        progress: (data.current / data.total) * 100,
+        total: data.total,
+      }),
+    )
     return data
   } catch (e) {
     return thunkAPI.rejectWithValue(e)

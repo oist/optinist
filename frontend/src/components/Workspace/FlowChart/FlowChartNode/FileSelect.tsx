@@ -162,6 +162,7 @@ export const FileSelectImple = memo(function FileSelectImple({
       nodeId,
       requestId: id,
     })
+    //eslint-disable-next-line
   }, [])
 
   const accept = getFileInputAccept(fileTreeType)

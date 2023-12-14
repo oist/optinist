@@ -26,7 +26,10 @@ import { ReactFlowComponent } from "components/Workspace/FlowChart/ReactFlowComp
 import RightDrawer from "components/Workspace/FlowChart/RightDrawer"
 import { AlgorithmTreeView } from "components/Workspace/FlowChart/TreeView"
 import { CONTENT_HEIGHT, DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from "const/Layout"
-import { uploadViaUrl } from "store/slice/FileUploader/FileUploaderActions"
+import {
+  getStatusLoadViaUrl,
+  uploadViaUrl,
+} from "store/slice/FileUploader/FileUploaderActions"
 import { setInputNodeFilePath } from "store/slice/InputNode/InputNodeActions"
 import { UseRunPipelineReturnType } from "store/slice/Pipeline/PipelineHook"
 import { clearCurrentPipeline } from "store/slice/Pipeline/PipelineSlice"
@@ -87,6 +90,28 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
           requestId: dialogViaUrl.requestId,
         }),
       )
+      let firstCall = true
+      const makeApiCall = async () => {
+        const statusData = await dispatch(
+          getStatusLoadViaUrl({
+            workspaceId,
+            file_name: (data.payload as { file_name: string }).file_name,
+            requestId: dialogViaUrl.requestId,
+          }),
+        )
+        if (
+          (statusData.payload as { current: number }).current !==
+          (statusData.payload as { total: number }).total
+        ) {
+          if (!firstCall) {
+            setTimeout(makeApiCall, 1000)
+          } else {
+            firstCall = false
+            makeApiCall()
+          }
+        }
+      }
+      makeApiCall()
       dispatch(
         setInputNodeFilePath({
           nodeId: dialogViaUrl.nodeId,
