@@ -109,15 +109,16 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
             firstCall = false
             makeApiCall()
           }
+        } else {
+          dispatch(
+            setInputNodeFilePath({
+              nodeId: dialogViaUrl.nodeId,
+              filePath: [(data.payload as { file_name: string }).file_name],
+            }),
+          )
         }
       }
       makeApiCall()
-      dispatch(
-        setInputNodeFilePath({
-          nodeId: dialogViaUrl.nodeId,
-          filePath: [(data.payload as { file_name: string }).file_name],
-        }),
-      )
       setDialogFile({
         ...dialogFile,
         filePath: [(data.payload as { file_name: string }).file_name],
