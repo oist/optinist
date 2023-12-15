@@ -62,7 +62,6 @@ const BehaviorFileNodeImple = memo(function BehaviorFileNodeImple({
         fileType={FILE_TYPE_SET.CSV}
         filePath={filePath ?? ""}
       />
-      {!!filePath && <ParamSettingDialog nodeId={nodeId} filePath={filePath} />}
       <Handle
         type="source"
         position={Position.Right}
