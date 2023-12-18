@@ -117,7 +117,7 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
         dispatch(
           setInputNodeFilePath({
             nodeId: dialogViaUrl.nodeId,
-            filePath: [(data.payload as { file_name: string }).file_name],
+            filePath: (data.payload as { file_name: string }).file_name,
           }),
         )
       }
