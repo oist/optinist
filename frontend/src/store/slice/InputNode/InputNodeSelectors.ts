@@ -17,8 +17,9 @@ export const selectInputNodeFileType = (nodeId: string) => (state: RootState) =>
   selectInputNodeById(nodeId)(state).fileType
 
 export const selectInputNodeSelectedFilePath =
-  (nodeId: string) => (state: RootState) =>
-    selectInputNodeById(nodeId)(state).selectedFilePath
+  (nodeId: string) => (state: RootState) => {
+    return selectInputNodeById(nodeId)(state).selectedFilePath
+  }
 
 export const selectCsvInputNodeSelectedFilePath =
   (nodeId: string) => (state: RootState) => {
@@ -86,6 +87,18 @@ export const selectCsvInputNodeParamSetIndex =
     selectCsvInputNodeParam(nodeId)(state).setIndex
 
 export const selectCsvInputNodeParamTranspose =
+  (nodeId: string) => (state: RootState) =>
+    selectCsvInputNodeParam(nodeId)(state).transpose
+
+export const selectMatlabInputNodeParamSetHeader =
+  (nodeId: string) => (state: RootState) =>
+    selectCsvInputNodeParam(nodeId)(state).setHeader
+
+export const selectMatlabInputNodeParamSetIndex =
+  (nodeId: string) => (state: RootState) =>
+    selectCsvInputNodeParam(nodeId)(state).setIndex
+
+export const selectMatlabInputNodeParamTranspose =
   (nodeId: string) => (state: RootState) =>
     selectCsvInputNodeParam(nodeId)(state).transpose
 

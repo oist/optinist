@@ -9,6 +9,7 @@ import { HistogramPlot } from "components/Workspace/Visualize/Plot/HistogramPlot
 import { HTMLPlot } from "components/Workspace/Visualize/Plot/HTMLPlot"
 import { ImagePlot } from "components/Workspace/Visualize/Plot/ImagePlot"
 import { LinePlot } from "components/Workspace/Visualize/Plot/LinePlot"
+import { MatlabPlot } from "components/Workspace/Visualize/Plot/MatlabPlot"
 import { PiePlot } from "components/Workspace/Visualize/Plot/PiePlot"
 import { PolarPlot } from "components/Workspace/Visualize/Plot/PolarPlot"
 import { RoiPlot } from "components/Workspace/Visualize/Plot/RoiPlot"
@@ -55,6 +56,8 @@ const DisplayPlot = memo(function DisplayPlot({ dataType }: DataTypeProps) {
   switch (dataType) {
     case DATA_TYPE_SET.CSV:
       return <CsvPlot />
+    case DATA_TYPE_SET.MATLAB:
+      return <MatlabPlot />
     case DATA_TYPE_SET.TIME_SERIES:
       return <TimeSeriesPlot />
     case DATA_TYPE_SET.HEAT_MAP:

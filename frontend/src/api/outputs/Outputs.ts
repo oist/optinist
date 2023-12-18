@@ -90,6 +90,19 @@ export async function getCsvDataApi(
   return response.data
 }
 
+export type MatlabData = number[][]
+
+export async function getMatlabDataApi(
+  path: string,
+  params: { workspaceId: number },
+): Promise<{ data: MatlabData; meta?: PlotMetaData }> {
+  const response = await axios.get(`${BASE_URL}/outputs/matlab/${path}`, {
+    params: { workspace_id: params.workspaceId },
+  })
+
+  return response.data
+}
+
 export type RoiData = number[][][]
 
 export async function getRoiDataApi(

@@ -131,6 +131,32 @@ export const selectCsvDataIsFulfilled =
     selectCsvDataIsInitialized(filePath)(state) &&
     selectDisplayData(state).csv[filePath].fulfilled
 
+export const selectMatlabData = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).matlab[filePath].data
+
+export const selectMatlabMeta = (filePath: string) => (state: RootState) =>
+  selectDisplayData(state).matlab[filePath].meta
+
+export const selectMatlabDataIsInitialized =
+  (filePath: string) => (state: RootState) =>
+    Object.keys(selectDisplayData(state).matlab).includes(filePath)
+
+export const selectMatlabDataError =
+  (filePath: string) => (state: RootState) =>
+    selectCsvDataIsInitialized(filePath)(state)
+      ? selectDisplayData(state).csv[filePath].error
+      : null
+
+export const selectMatlabDataIsPending =
+  (filePath: string) => (state: RootState) =>
+    selectCsvDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).csv[filePath].pending
+
+export const selectMatlabDataIsFulfilled =
+  (filePath: string) => (state: RootState) =>
+    selectCsvDataIsInitialized(filePath)(state) &&
+    selectDisplayData(state).csv[filePath].fulfilled
+
 export const selectRoiData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).roi[filePath]?.data[0] ?? []
 
