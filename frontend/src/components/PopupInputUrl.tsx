@@ -48,21 +48,29 @@ const PopupInputUrl = ({
     }
     const validExtensions = checkType()
     const fileExtension = url.substring(url.lastIndexOf("."))
-    return (
-      validExtensions &&
-      validExtensions.includes(fileExtension) &&
-      (url.startsWith("http://") || url.startsWith("https://"))
-    )
+    if (!url) {
+      setError("url can't be empty")
+      return
+    }
+    if (!(url.startsWith("http://") || url.startsWith("https://"))) {
+      setError("Please enter a valid URL starting with http:// or https://")
+      return
+    }
+    if (validExtensions && !validExtensions.includes(fileExtension)) {
+      const error =
+        validExtensions.length === 1
+          ? validExtensions[0]
+          : validExtensions.join(" or ")
+      setError(`Please enter a valid Image file URL ending with ${error}`)
+      return
+    }
+    setError("")
   }
 
   const handleFileVia = (event: ChangeEvent<HTMLInputElement>) => {
     const { value } = event.target
     setValue(value)
-    if (!validateUrl(value)) {
-      setError("is validate")
-    } else {
-      setError("")
-    }
+    validateUrl(value)
   }
 
   const handleClosePopup = () => {
@@ -71,11 +79,7 @@ const PopupInputUrl = ({
   }
 
   const onBlur = () => {
-    if (!validateUrl(value)) {
-      setError("is validate")
-    } else {
-      setError("")
-    }
+    validateUrl(value)
   }
 
   const onClickLoad = () => {
@@ -114,10 +118,10 @@ const PopupInputUrl = ({
       </Dialog>
       <ConfirmDialog
         open={openConfirm}
-        content={"Do you want load from via url"}
-        onCancel={() => setOpenConfirm(false)}
+        title={"Upload file from following URL?"}
+        content={value}
+        setOpen={setOpenConfirm}
         onConfirm={() => {
-          setOpenConfirm(false)
           onLoadFileViaUrl()
           setValue("")
         }}

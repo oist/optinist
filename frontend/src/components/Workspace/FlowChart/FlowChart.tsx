@@ -81,51 +81,52 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
 
   const onLoadFileViaUrl = async () => {
     if (!workspaceId || !fileViaUrl) return
-    try {
-      setDialogViaUrl({ ...dialogViaUrl, open: false })
-      const data = await dispatch(
-        uploadViaUrl({
+    setDialogViaUrl({ ...dialogViaUrl, open: false })
+    const data = await dispatch(
+      uploadViaUrl({
+        workspaceId,
+        url: fileViaUrl,
+        requestId: dialogViaUrl.requestId,
+      }),
+    )
+    if ((data as { error: { message: string } }).error) {
+      handleClickVariant("error", "Url does not exist!")
+      return
+    }
+    let firstCall = true
+    const makeApiCall = async () => {
+      const statusData = await dispatch(
+        getStatusLoadViaUrl({
           workspaceId,
-          url: fileViaUrl,
+          file_name: (data.payload as { file_name: string }).file_name,
           requestId: dialogViaUrl.requestId,
         }),
       )
-      let firstCall = true
-      const makeApiCall = async () => {
-        const statusData = await dispatch(
-          getStatusLoadViaUrl({
-            workspaceId,
-            file_name: (data.payload as { file_name: string }).file_name,
-            requestId: dialogViaUrl.requestId,
+      if (
+        (statusData.payload as { current: number }).current !==
+        (statusData.payload as { total: number }).total
+      ) {
+        if (!firstCall) {
+          setTimeout(makeApiCall, 1000)
+        } else {
+          firstCall = false
+          makeApiCall()
+        }
+      } else {
+        handleClickVariant("success", "File upload finished!")
+        dispatch(
+          setInputNodeFilePath({
+            nodeId: dialogViaUrl.nodeId,
+            filePath: [(data.payload as { file_name: string }).file_name],
           }),
         )
-        if (
-          (statusData.payload as { current: number }).current !==
-          (statusData.payload as { total: number }).total
-        ) {
-          if (!firstCall) {
-            setTimeout(makeApiCall, 1000)
-          } else {
-            firstCall = false
-            makeApiCall()
-          }
-        } else {
-          dispatch(
-            setInputNodeFilePath({
-              nodeId: dialogViaUrl.nodeId,
-              filePath: [(data.payload as { file_name: string }).file_name],
-            }),
-          )
-        }
       }
-      makeApiCall()
-      setDialogFile({
-        ...dialogFile,
-        filePath: [(data.payload as { file_name: string }).file_name],
-      })
-    } catch {
-      handleClickVariant("error", "url does not exist")
     }
+    makeApiCall()
+    setDialogFile({
+      ...dialogFile,
+      filePath: [(data.payload as { file_name: string }).file_name],
+    })
   }
 
   return (
