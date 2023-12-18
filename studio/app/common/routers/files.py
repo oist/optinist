@@ -1,3 +1,4 @@
+import json
 import os
 import shutil
 from glob import glob
@@ -7,9 +8,11 @@ from urllib.parse import urlparse
 
 import requests
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile
+from PIL import Image
 from requests.models import Response
 from tqdm import tqdm
 
+from studio.app.common.core.utils.file_reader import JsonReader
 from studio.app.common.core.utils.filepath_creater import (
     create_directory,
     join_filepath,
@@ -49,6 +52,11 @@ class DirTreeGetter:
             os.listdir(absolute_dirpath),
             key=lambda x: (not os.path.isdir(join_filepath([absolute_dirpath, x])), x),
         )
+
+        IMAGE_SHAPE_DICT = (
+            get_image_shape_dict(workspace_id) if file_types == ACCEPT_TIFF_EXT else {}
+        )
+
         for node_name in sorted_listdir:
             if dirname is None:
                 relative_path = node_name
@@ -58,12 +66,16 @@ class DirTreeGetter:
             search_dirpath = join_filepath([absolute_dirpath, node_name])
 
             if os.path.isfile(search_dirpath) and node_name.endswith(tuple(file_types)):
+                shape = IMAGE_SHAPE_DICT.get(node_name, {}).get("shape")
+                if shape is None and file_types == ACCEPT_TIFF_EXT:
+                    shape = update_image_shape(workspace_id, node_name)
                 nodes.append(
                     TreeNode(
                         path=relative_path,
                         name=node_name,
                         isdir=False,
                         nodes=[],
+                        shape=shape,
                     )
                 )
             elif (
@@ -92,6 +104,40 @@ class DirTreeGetter:
         return files_list
 
 
+def get_image_shape_dict(workspace_id):
+    dirpath = join_filepath([DIRPATH.INPUT_DIR, workspace_id])
+    try:
+        tiff_format_dict = JsonReader.read(
+            join_filepath([dirpath, ".image_shape.json"])
+        )
+        return tiff_format_dict
+    except FileNotFoundError:
+        return {}
+
+
+def update_image_shape(workspace_id, file_name):
+    dirpath = join_filepath([DIRPATH.INPUT_DIR, workspace_id])
+    filepath = join_filepath([dirpath, file_name])
+
+    try:
+        img = Image.open(filepath)
+        shape = [img.n_frames, *img.size]
+    except:  # noqa
+        shape = []
+
+    tiff_format_file = join_filepath([dirpath, ".image_shape.json"])
+    try:
+        tiff_format_dict = JsonReader.read(tiff_format_file)
+    except FileNotFoundError:
+        tiff_format_dict = {}
+    tiff_format_dict[file_name] = {"shape": shape}
+
+    with open(tiff_format_file, "w") as f:
+        json.dump(tiff_format_dict, f)
+
+    return shape
+
+
 @router.get(
     "/{workspace_id}",
     response_model=List[TreeNode],
@@ -109,6 +155,19 @@ async def get_files(workspace_id: str, file_type: str = None):
 
 
 @router.post(
+    "/{workspace_id}/shape/{filename}",
+    response_model=bool,
+    dependencies=[Depends(is_workspace_owner)],
+)
+async def set_shape(workspace_id: str, filename: str):
+    try:
+        update_image_shape(workspace_id, filename)
+    except Exception as e:
+        raise HTTPException(status=422, detail=str(e))
+    return True
+
+
+@router.post(
     "/{workspace_id}/upload/{filename}",
     response_model=FilePath,
     dependencies=[Depends(is_workspace_owner)],
@@ -120,6 +179,8 @@ async def create_file(workspace_id: str, filename: str, file: UploadFile = File(
 
     with open(filepath, "wb") as f:
         shutil.copyfileobj(file.file, f)
+
+    update_image_shape(workspace_id, filename)
 
     return {"file_path": filename}
 
@@ -161,6 +222,7 @@ async def download_file(
     except Exception as e:
         raise HTTPException(status_code=422, detail=str(e))
     background_tasks.add_task(download, res, path.name, workspace_id)
+    background_tasks.add_task(update_image_shape, workspace_id, path.name)
     return {"file_name": path.name}
 
 
