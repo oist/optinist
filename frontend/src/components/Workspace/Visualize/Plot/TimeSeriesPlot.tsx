@@ -142,7 +142,7 @@ const TimeSeriesPlotImple = memo(function TimeSeriesPlotImple() {
         let y = newDataXrange.map((x) => newTimeSeriesData[key]?.[x])
         const i = Number(key)
         const new_i = Math.floor((i % 10) * 10 + i / 10) % 100
-        if (drawOrderList.includes(key)) {
+        if (drawOrderList.includes(key) && !stdBool) {
           const activeIdx: number = drawOrderList.findIndex((v) => v === key)
           const mean: number = y.reduce((a, b) => a + b) / y.length
           const std: number =

@@ -83,8 +83,8 @@ const imageItemInitialValue: ImageItem = {
 const timeSeriesItemInitialValue: TimeSeriesItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.TIME_SERIES,
-  stdBool: true,
-  span: 1,
+  stdBool: false,
+  span: 5,
   showgrid: true,
   showline: true,
   showticklabels: true,
