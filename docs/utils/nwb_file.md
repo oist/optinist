@@ -316,13 +316,13 @@ save_data=['ops', 'fluorescence', 'all_roi', 'non_cell_roi', 'cell_roi'],
 info['mean'] = TimeSeriesData(
     mean,
     std=sem,
-    index=list(np.arange(params['start_time'], params['end_time'])),
+    index=list(np.arange(params['pre_event'], params['post_event'])),
     cell_numbers=cell_numbers if iscell is not None else None,
     file_name='mean'
 )
 info['mean_heatmap'] = HeatMapData(
     norm_mean,
-    columns=list(np.arange(params['start_time'], params['end_time'])),
+    columns=list(np.arange(params['pre_event'], params['post_event'])),
     file_name='mean_heatmap'
 )
 info['nwbfile'] = nwbfile
