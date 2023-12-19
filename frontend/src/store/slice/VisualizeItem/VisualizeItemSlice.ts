@@ -83,7 +83,7 @@ const imageItemInitialValue: ImageItem = {
 const timeSeriesItemInitialValue: TimeSeriesItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.TIME_SERIES,
-  offset: true,
+  stdBool: false,
   span: 5,
   showgrid: true,
   showline: true,
@@ -572,12 +572,12 @@ export const visualaizeItemSlice = createSlice({
       state,
       action: PayloadAction<{
         itemId: number
-        offset: boolean
+        stdBool: boolean
       }>,
     ) => {
       const targetItem = state.items[action.payload.itemId]
       if (isTimeSeriesItem(targetItem)) {
-        targetItem.offset = action.payload.offset
+        targetItem.stdBool = action.payload.stdBool
       }
     },
     setTimeSeriesItemSpan: (
