@@ -18,6 +18,7 @@ class TimeSeriesData(BaseData):
         self,
         data,
         std=None,
+        sem=None,
         index=None,
         cell_numbers=None,
         file_name="timeseries",
@@ -37,6 +38,7 @@ class TimeSeriesData(BaseData):
             self.data = self.data[np.newaxis, :]
 
         self.std = std
+        self.sem = sem
 
         # indexを指定
         if index is not None:
@@ -46,7 +48,7 @@ class TimeSeriesData(BaseData):
 
         # cell番号を表示
         if cell_numbers is not None:
-            self.cell_numbers = cell_numbers + 1
+            self.cell_numbers = cell_numbers
         else:
             self.cell_numbers = range(len(self.data))
 

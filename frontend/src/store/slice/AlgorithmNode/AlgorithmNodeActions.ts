@@ -1,7 +1,8 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
-import { getAlgoParamsApi } from 'api/params/Params'
-import { ParamDTO } from 'utils/param/ParamType'
-import { ALGORITHM_NODE_SLICE_NAME } from './AlgorithmNodeType'
+import { createAsyncThunk } from "@reduxjs/toolkit"
+
+import { getAlgoParamsApi } from "api/params/Params"
+import { ALGORITHM_NODE_SLICE_NAME } from "store/slice/AlgorithmNode/AlgorithmNodeType"
+import { ParamDTO } from "utils/param/ParamType"
 
 export const getAlgoParams = createAsyncThunk<
   ParamDTO,

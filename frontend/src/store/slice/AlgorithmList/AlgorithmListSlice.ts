@@ -1,10 +1,11 @@
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit"
+
+import { getAlgoList } from "store/slice/AlgorithmList/AlgorithmListActions"
 import {
   ALGORITHM_LIST_SLICE_NAME,
   AlgorithmListType,
-} from './AlgorithmListType'
-import { getAlgoList } from './AlgorithmListActions'
-import { convertToAlgoListType } from './AlgorithmListUtils'
+} from "store/slice/AlgorithmList/AlgorithmListType"
+import { convertToAlgoListType } from "store/slice/AlgorithmList/AlgorithmListUtils"
 
 export const initialState: AlgorithmListType = {
   isLatest: false,

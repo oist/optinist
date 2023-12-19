@@ -72,10 +72,11 @@ class Runner:
             gc.collect()
 
         except Exception as e:
-            PickleWriter.write(
-                __rule.output,
-                list(traceback.TracebackException.from_exception(e).format())[-2:],
-            )
+            err_msg = list(traceback.TracebackException.from_exception(e).format())
+            # show full trace to console
+            print(*err_msg, sep="\n")
+            # save msg for GUI
+            PickleWriter.write(__rule.output, err_msg)
 
     @classmethod
     def set_func_start_timestamp(cls, output_dirpath):
@@ -142,8 +143,24 @@ class Runner:
         input_info = {}
         for filepath in input_files:
             load_data = PickleReader.read(filepath)
+            merged_nwb = cls.deep_merge(
+                load_data.pop("nwbfile", {}), input_info.pop("nwbfile", {})
+            )
             input_info = dict(list(load_data.items()) + list(input_info.items()))
+            input_info["nwbfile"] = merged_nwb
         return input_info
+
+    @classmethod
+    def deep_merge(cls, dict1, dict2):
+        if not isinstance(dict1, dict) or not isinstance(dict2, dict):
+            return dict2
+        merged = dict1.copy()
+        for k, v in dict2.items():
+            if k in merged and isinstance(merged[k], dict):
+                merged[k] = cls.deep_merge(merged[k], v)
+            else:
+                merged[k] = v
+        return merged
 
     @classmethod
     def dict2leaf(cls, root_dict: dict, path_list):

@@ -1,10 +1,5 @@
-import { createSlice, isAnyOf } from '@reduxjs/toolkit'
-import {
-  DATA_TYPE,
-  DATA_TYPE_SET,
-  DisplayData,
-  DISPLAY_DATA_SLICE_NAME,
-} from './DisplayDataType'
+import { createSlice, isAnyOf } from "@reduxjs/toolkit"
+
 import {
   getCsvData,
   getHeatMapData,
@@ -20,12 +15,19 @@ import {
   getLineData,
   getPieData,
   getPolarData,
-} from './DisplayDataActions'
+} from "store/slice/DisplayData/DisplayDataActions"
+import {
+  DATA_TYPE,
+  DATA_TYPE_SET,
+  DisplayData,
+  DISPLAY_DATA_SLICE_NAME,
+} from "store/slice/DisplayData/DisplayDataType"
+import { run, runByCurrentUid } from "store/slice/Pipeline/PipelineActions"
 import {
   deleteDisplayItem,
   setNewDisplayDataPath,
-} from '../VisualizeItem/VisualizeItemActions'
-import { run, runByCurrentUid } from 'store/slice/Pipeline/PipelineActions'
+} from "store/slice/VisualizeItem/VisualizeItemActions"
+
 const initialState: DisplayData = {
   timeSeries: {},
   heatMap: {},
@@ -62,9 +64,14 @@ export const displayDataSlice = createSlice({
       })
       .addCase(getTimeSeriesDataById.pending, (state, action) => {
         const { path } = action.meta.arg
-        if (!state.timeSeries.hasOwnProperty(path)) {
+        if (
+          Object.prototype.hasOwnProperty.call(
+            !state.timeSeries.hasOwnProperty,
+            path,
+          )
+        ) {
           state.timeSeries[path] = {
-            type: 'timeSeries',
+            type: "timeSeries",
             xrange: [],
             data: {},
             std: {},
@@ -81,13 +88,13 @@ export const displayDataSlice = createSlice({
       .addCase(getTimeSeriesDataById.rejected, (state, action) => {
         const { path } = action.meta.arg
         state.timeSeries[path] = {
-          type: 'timeSeries',
+          type: "timeSeries",
           xrange: [],
           data: {},
           std: {},
           pending: false,
           fulfilled: false,
-          error: action.error.message ?? 'rejected',
+          error: action.error.message ?? "rejected",
         }
       })
       .addCase(getTimeSeriesDataById.fulfilled, (state, action) => {
@@ -104,9 +111,14 @@ export const displayDataSlice = createSlice({
       })
       .addCase(getTimeSeriesAllData.pending, (state, action) => {
         const { path } = action.meta.arg
-        if (!state.timeSeries.hasOwnProperty(path)) {
+        if (
+          Object.prototype.hasOwnProperty.call(
+            !state.timeSeries.hasOwnProperty,
+            path,
+          )
+        ) {
           state.timeSeries[path] = {
-            type: 'timeSeries',
+            type: "timeSeries",
             xrange: [],
             data: {},
             std: {},
@@ -123,13 +135,13 @@ export const displayDataSlice = createSlice({
       .addCase(getTimeSeriesAllData.rejected, (state, action) => {
         const { path } = action.meta.arg
         state.timeSeries[path] = {
-          type: 'timeSeries',
+          type: "timeSeries",
           xrange: [],
           data: {},
           std: {},
           pending: false,
           fulfilled: false,
-          error: action.error.message ?? 'rejected',
+          error: action.error.message ?? "rejected",
         }
       })
       .addCase(getTimeSeriesAllData.fulfilled, (state, action) => {
@@ -146,9 +158,14 @@ export const displayDataSlice = createSlice({
       })
       .addCase(getTimeSeriesInitData.pending, (state, action) => {
         const { path } = action.meta.arg
-        if (!state.timeSeries.hasOwnProperty(path)) {
+        if (
+          Object.prototype.hasOwnProperty.call(
+            !state.timeSeries.hasOwnProperty,
+            path,
+          )
+        ) {
           state.timeSeries[path] = {
-            type: 'timeSeries',
+            type: "timeSeries",
             xrange: [],
             data: {},
             std: {},
@@ -165,13 +182,13 @@ export const displayDataSlice = createSlice({
       .addCase(getTimeSeriesInitData.rejected, (state, action) => {
         const { path } = action.meta.arg
         state.timeSeries[path] = {
-          type: 'timeSeries',
+          type: "timeSeries",
           xrange: [],
           data: {},
           std: {},
           pending: false,
           fulfilled: false,
-          error: action.error.message ?? 'rejected',
+          error: action.error.message ?? "rejected",
         }
       })
       .addCase(getTimeSeriesInitData.fulfilled, (state, action) => {
@@ -188,7 +205,7 @@ export const displayDataSlice = createSlice({
       .addCase(getHeatMapData.pending, (state, action) => {
         const { path } = action.meta.arg
         state.heatMap[path] = {
-          type: 'heatMap',
+          type: "heatMap",
           data: [],
           columns: [],
           index: [],
@@ -200,19 +217,19 @@ export const displayDataSlice = createSlice({
       .addCase(getHeatMapData.rejected, (state, action) => {
         const { path } = action.meta.arg
         state.heatMap[path] = {
-          type: 'heatMap',
+          type: "heatMap",
           data: [],
           columns: [],
           index: [],
           pending: false,
           fulfilled: false,
-          error: action.error.message ?? 'rejected',
+          error: action.error.message ?? "rejected",
         }
       })
       .addCase(getHeatMapData.fulfilled, (state, action) => {
         const { path } = action.meta.arg
         state.heatMap[path] = {
-          type: 'heatMap',
+          type: "heatMap",
           data: action.payload.data,
           meta: action.payload.meta,
           columns: action.payload.columns,
@@ -225,7 +242,7 @@ export const displayDataSlice = createSlice({
       .addCase(getHistogramData.pending, (state, action) => {
         const { path } = action.meta.arg
         state.histogram[path] = {
-          type: 'histogram',
+          type: "histogram",
           data: [],
           pending: true,
           fulfilled: false,
@@ -235,17 +252,17 @@ export const displayDataSlice = createSlice({
       .addCase(getHistogramData.rejected, (state, action) => {
         const { path } = action.meta.arg
         state.histogram[path] = {
-          type: 'histogram',
+          type: "histogram",
           data: [],
           pending: false,
           fulfilled: false,
-          error: action.error.message ?? 'rejected',
+          error: action.error.message ?? "rejected",
         }
       })
       .addCase(getHistogramData.fulfilled, (state, action) => {
         const { path } = action.meta.arg
         state.histogram[path] = {
-          type: 'histogram',
+          type: "histogram",
           data: action.payload.data,
           meta: action.payload.meta,
           pending: false,
@@ -256,7 +273,7 @@ export const displayDataSlice = createSlice({
       .addCase(getLineData.pending, (state, action) => {
         const { path } = action.meta.arg
         state.line[path] = {
-          type: 'line',
+          type: "line",
           data: [],
           columns: [],
           index: [],
@@ -268,19 +285,19 @@ export const displayDataSlice = createSlice({
       .addCase(getLineData.rejected, (state, action) => {
         const { path } = action.meta.arg
         state.line[path] = {
-          type: 'line',
+          type: "line",
           data: [],
           columns: [],
           index: [],
           pending: false,
           fulfilled: false,
-          error: action.error.message ?? 'rejected',
+          error: action.error.message ?? "rejected",
         }
       })
       .addCase(getLineData.fulfilled, (state, action) => {
         const { path } = action.meta.arg
         state.line[path] = {
-          type: 'line',
+          type: "line",
           data: action.payload.data,
           columns: action.payload.columns,
           index: action.payload.index,
@@ -293,7 +310,7 @@ export const displayDataSlice = createSlice({
       .addCase(getPieData.pending, (state, action) => {
         const { path } = action.meta.arg
         state.pie[path] = {
-          type: 'pie',
+          type: "pie",
           data: [],
           columns: [],
           pending: true,
@@ -304,18 +321,18 @@ export const displayDataSlice = createSlice({
       .addCase(getPieData.rejected, (state, action) => {
         const { path } = action.meta.arg
         state.pie[path] = {
-          type: 'pie',
+          type: "pie",
           data: [],
           columns: [],
           pending: false,
           fulfilled: false,
-          error: action.error.message ?? 'rejected',
+          error: action.error.message ?? "rejected",
         }
       })
       .addCase(getPieData.fulfilled, (state, action) => {
         const { path } = action.meta.arg
         state.pie[path] = {
-          type: 'pie',
+          type: "pie",
           data: action.payload.data,
           columns: action.payload.columns,
           meta: action.payload.meta,
@@ -327,7 +344,7 @@ export const displayDataSlice = createSlice({
       .addCase(getPolarData.pending, (state, action) => {
         const { path } = action.meta.arg
         state.polar[path] = {
-          type: 'polar',
+          type: "polar",
           data: [],
           columns: [],
           index: [],
@@ -339,19 +356,19 @@ export const displayDataSlice = createSlice({
       .addCase(getPolarData.rejected, (state, action) => {
         const { path } = action.meta.arg
         state.polar[path] = {
-          type: 'polar',
+          type: "polar",
           data: [],
           columns: [],
           index: [],
           pending: false,
           fulfilled: false,
-          error: action.error.message ?? 'rejected',
+          error: action.error.message ?? "rejected",
         }
       })
       .addCase(getPolarData.fulfilled, (state, action) => {
         const { path } = action.meta.arg
         state.polar[path] = {
-          type: 'polar',
+          type: "polar",
           data: action.payload.data,
           columns: action.payload.columns,
           index: action.payload.index,
@@ -364,7 +381,7 @@ export const displayDataSlice = createSlice({
       .addCase(getImageData.pending, (state, action) => {
         const { path } = action.meta.arg
         state.image[path] = {
-          type: 'image',
+          type: "image",
           data: [],
           pending: true,
           fulfilled: false,
@@ -374,7 +391,7 @@ export const displayDataSlice = createSlice({
       .addCase(getImageData.fulfilled, (state, action) => {
         const { path } = action.meta.arg
         state.image[path] = {
-          type: 'image',
+          type: "image",
           data: action.payload.data,
           meta: action.payload.meta,
           pending: false,
@@ -385,17 +402,17 @@ export const displayDataSlice = createSlice({
       .addCase(getImageData.rejected, (state, action) => {
         const { path } = action.meta.arg
         state.image[path] = {
-          type: 'image',
+          type: "image",
           data: [],
           pending: false,
           fulfilled: false,
-          error: action.error.message ?? 'rejected',
+          error: action.error.message ?? "rejected",
         }
       })
       .addCase(getCsvData.pending, (state, action) => {
         const { path } = action.meta.arg
         state.csv[path] = {
-          type: 'csv',
+          type: "csv",
           data: [],
           pending: true,
           fulfilled: false,
@@ -405,7 +422,7 @@ export const displayDataSlice = createSlice({
       .addCase(getCsvData.fulfilled, (state, action) => {
         const { path } = action.meta.arg
         state.csv[path] = {
-          type: 'csv',
+          type: "csv",
           data: action.payload.data,
           meta: action.payload.meta,
           pending: false,
@@ -416,17 +433,17 @@ export const displayDataSlice = createSlice({
       .addCase(getCsvData.rejected, (state, action) => {
         const { path } = action.meta.arg
         state.csv[path] = {
-          type: 'csv',
+          type: "csv",
           data: [],
           pending: false,
           fulfilled: false,
-          error: action.error.message ?? 'rejected',
+          error: action.error.message ?? "rejected",
         }
       })
       .addCase(getRoiData.pending, (state, action) => {
         const { path } = action.meta.arg
         state.roi[path] = {
-          type: 'roi',
+          type: "roi",
           data: [],
           pending: true,
           fulfilled: false,
@@ -449,7 +466,7 @@ export const displayDataSlice = createSlice({
           .map(String)
 
         state.roi[path] = {
-          type: 'roi',
+          type: "roi",
           data: data,
           meta: action.payload.meta,
           pending: false,
@@ -461,18 +478,18 @@ export const displayDataSlice = createSlice({
       .addCase(getRoiData.rejected, (state, action) => {
         const { path } = action.meta.arg
         state.roi[path] = {
-          type: 'roi',
+          type: "roi",
           data: [],
           pending: false,
           fulfilled: false,
-          error: action.error.message ?? 'rejected',
+          error: action.error.message ?? "rejected",
           roiUniqueList: [],
         }
       })
       .addCase(getScatterData.pending, (state, action) => {
         const { path } = action.meta.arg
         state.scatter[path] = {
-          type: 'scatter',
+          type: "scatter",
           data: {},
           pending: true,
           fulfilled: false,
@@ -482,7 +499,7 @@ export const displayDataSlice = createSlice({
       .addCase(getScatterData.fulfilled, (state, action) => {
         const { path } = action.meta.arg
         state.scatter[path] = {
-          type: 'scatter',
+          type: "scatter",
           data: action.payload.data,
           meta: action.payload.meta,
           pending: false,
@@ -493,17 +510,17 @@ export const displayDataSlice = createSlice({
       .addCase(getScatterData.rejected, (state, action) => {
         const { path } = action.meta.arg
         state.scatter[path] = {
-          type: 'scatter',
+          type: "scatter",
           data: {},
           pending: false,
           fulfilled: false,
-          error: action.error.message ?? 'rejected',
+          error: action.error.message ?? "rejected",
         }
       })
       .addCase(getBarData.pending, (state, action) => {
         const { path } = action.meta.arg
         state.bar[path] = {
-          type: 'bar',
+          type: "bar",
           data: {},
           columns: [],
           index: [],
@@ -515,19 +532,19 @@ export const displayDataSlice = createSlice({
       .addCase(getBarData.rejected, (state, action) => {
         const { path } = action.meta.arg
         state.bar[path] = {
-          type: 'bar',
+          type: "bar",
           data: {},
           columns: [],
           index: [],
           pending: false,
           fulfilled: false,
-          error: action.error.message ?? 'rejected',
+          error: action.error.message ?? "rejected",
         }
       })
       .addCase(getBarData.fulfilled, (state, action) => {
         const { path } = action.meta.arg
         state.bar[path] = {
-          type: 'bar',
+          type: "bar",
           data: action.payload.data,
           meta: action.payload.meta,
           columns: action.payload.columns,
@@ -540,8 +557,8 @@ export const displayDataSlice = createSlice({
       .addCase(getHTMLData.pending, (state, action) => {
         const { path } = action.meta.arg
         state.html[path] = {
-          type: 'html',
-          data: '',
+          type: "html",
+          data: "",
           pending: true,
           fulfilled: false,
           error: null,
@@ -550,7 +567,7 @@ export const displayDataSlice = createSlice({
       .addCase(getHTMLData.fulfilled, (state, action) => {
         const { path } = action.meta.arg
         state.html[path] = {
-          type: 'html',
+          type: "html",
           data: action.payload.data,
           meta: action.payload.meta,
           pending: false,
@@ -561,16 +578,16 @@ export const displayDataSlice = createSlice({
       .addCase(getHTMLData.rejected, (state, action) => {
         const { path } = action.meta.arg
         state.html[path] = {
-          type: 'html',
-          data: '',
+          type: "html",
+          data: "",
           pending: false,
           fulfilled: false,
-          error: action.error.message ?? 'rejected',
+          error: action.error.message ?? "rejected",
         }
       })
       .addMatcher(
         isAnyOf(run.fulfilled, runByCurrentUid.fulfilled),
-        (state, action) => initialState,
+        () => initialState,
       )
   },
 })

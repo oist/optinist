@@ -1,7 +1,9 @@
-import { nanoid } from '@reduxjs/toolkit'
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { uploadFile } from './FileUploaderActions'
+import { useCallback, useRef } from "react"
+import { useDispatch, useSelector } from "react-redux"
+
+import { nanoid } from "@reduxjs/toolkit"
+
+import { uploadFile } from "store/slice/FileUploader/FileUploaderActions"
 import {
   selectFileUploadIsPending,
   selectUploadFilePath,
@@ -9,9 +11,10 @@ import {
   selectFileUploadProgress,
   selectFileUploadIsUninitialized,
   selectFileUploadError,
-} from './FileUploaderSelectors'
-import { FILE_TYPE } from '../InputNode/InputNodeType'
-import { selectCurrentWorkspaceId } from '../Workspace/WorkspaceSelector'
+} from "store/slice/FileUploader/FileUploaderSelectors"
+import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
+import { AppDispatch } from "store/store"
 
 type UseFileUploaderProps = {
   fileType?: FILE_TYPE
@@ -19,10 +22,10 @@ type UseFileUploaderProps = {
 }
 
 export function useFileUploader({ fileType, nodeId }: UseFileUploaderProps) {
-  const dispatch = useDispatch()
-  const id = React.useRef(nanoid())
+  const dispatch = useDispatch<AppDispatch>()
+  const id = useRef(nanoid())
   const workspaceId = useSelector(selectCurrentWorkspaceId)
-  const onUploadFile = React.useCallback(
+  const onUploadFile = useCallback(
     (formData: FormData, fileName: string) => {
       if (workspaceId) {
         dispatch(
@@ -36,7 +39,7 @@ export function useFileUploader({ fileType, nodeId }: UseFileUploaderProps) {
           }),
         )
       } else {
-        throw new Error('workspaceId is undefined')
+        throw new Error("workspaceId is undefined")
       }
     },
     [dispatch, workspaceId, fileType, nodeId],

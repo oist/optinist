@@ -1,5 +1,5 @@
-import axios from 'utils/axios'
-import { getRefreshToken } from 'utils/auth/AuthUtils'
+import { getRefreshToken } from "utils/auth/AuthUtils"
+import axios from "utils/axios"
 
 export type LoginDTO = {
   email: string
@@ -17,12 +17,12 @@ export type AccessTokenDTO = {
 }
 
 export const loginApi = async (data: LoginDTO): Promise<TokenDTO> => {
-  const response = await axios.post('/auth/login', data)
+  const response = await axios.post("/auth/login", data)
   return response.data
 }
 
 export const refreshTokenApi = async (): Promise<AccessTokenDTO> => {
-  const response = await axios.post('/auth/refresh', {
+  const response = await axios.post("/auth/refresh", {
     refresh_token: getRefreshToken(),
   })
   return response.data

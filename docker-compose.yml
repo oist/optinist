@@ -11,8 +11,8 @@ services:
       - ../optinist-docker-volumes/logs/:/app/logs
       - ../optinist-docker-volumes/studio_data/:/app/studio_data
     ports:
-      - "8000:8000"
-    command: python main.py --host 0.0.0.0 --port 8000
+      - "127.0.0.1:8000:8000"
+    command: poetry run python main.py --host 0.0.0.0 --port 8000
     environment:
       PYTHONPATH: /app/
       TZ: Asia/Tokyo

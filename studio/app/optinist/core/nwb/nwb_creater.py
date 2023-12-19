@@ -174,7 +174,7 @@ class NWBCreater:
             pass
 
         function_process = nwbfile.create_processing_module(
-            name=function_id, description="processsed by " + function_id
+            name=function_id, description="processed by " + function_id
         )
         function_process.add(motion_correction)
 
@@ -182,8 +182,8 @@ class NWBCreater:
 
     @classmethod
     def roi(cls, nwbfile, function_id, roi_list):
-        image_seg = nwbfile.processing["ophys"].data_interfaces["ImageSegmentation"]
         nwbfile = cls.add_plane_segmentation(nwbfile, function_id)
+        image_seg = nwbfile.processing["ophys"].data_interfaces["ImageSegmentation"]
         plane_seg = image_seg.plane_segmentations[function_id]
 
         if roi_list:
@@ -197,10 +197,10 @@ class NWBCreater:
         return nwbfile
 
     @classmethod
-    def column(cls, nwbfile, function_id, name, discription, data):
+    def column(cls, nwbfile, function_id, name, description, data):
         image_seg = nwbfile.processing["ophys"].data_interfaces["ImageSegmentation"]
         plane_seg = image_seg.plane_segmentations[function_id]
-        plane_seg.add_column(name, discription, data)
+        plane_seg.add_column(name, description, data)
 
         return nwbfile
 

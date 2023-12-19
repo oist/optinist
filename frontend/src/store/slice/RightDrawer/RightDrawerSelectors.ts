@@ -1,4 +1,4 @@
-import { RootState } from 'store/store'
+import { RootState } from "store/store"
 
 export const selectRightDrawerIsOpen = (state: RootState) =>
   state.rightDrawer.open

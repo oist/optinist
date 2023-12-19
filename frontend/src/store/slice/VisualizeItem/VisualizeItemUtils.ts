@@ -1,4 +1,4 @@
-import { DATA_TYPE_SET } from '../DisplayData/DisplayDataType'
+import { DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
 import {
   VisualaizeItemType,
   DisplayDataItem,
@@ -14,7 +14,7 @@ import {
   LineItem,
   PieItem,
   PolarItem,
-} from './VisualizeItemType'
+} from "store/slice/VisualizeItem/VisualizeItemType"
 
 export function isDisplayDataItem(
   item: VisualaizeItemType,

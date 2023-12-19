@@ -2,14 +2,14 @@ import type {
   ExperimentDTO,
   ExperimentsDTO,
   FunctionsDTO,
-} from 'api/experiments/Experiments'
-import { RunResultDTO } from 'api/run/Run'
+} from "api/experiments/Experiments"
+import { RunResultDTO } from "api/run/Run"
 import type {
   ExperimentListType,
   ExperimentType,
   ExperimentFunction,
   EXPERIMENTS_STATUS,
-} from './ExperimentsType'
+} from "store/slice/Experiments/ExperimentsType"
 
 export function convertToExperimentListType(
   dto: ExperimentsDTO,
@@ -31,31 +31,32 @@ export function convertToExperimentType(dto: ExperimentDTO): ExperimentType {
       status: status,
       hasNWB: value.hasNWB,
     }
-    status === 'error' &&
+    status === "error" &&
       value.message &&
       (functions[value.unique_id].message = value.message)
   })
   return {
     uid: dto.unique_id,
-    timestamp: dto.started_at,
+    startedAt: dto.started_at,
+    finishedAt: dto.finished_at,
     status: dto.success,
     name: dto.name,
     hasNWB: dto.hasNWB,
     functions,
-    frameRate: dto.nwb?.imaging_plane.imaging_rate
+    frameRate: dto.nwb?.imaging_plane.imaging_rate,
   }
 }
 
 function convertToExperimentStatus(dto: string): EXPERIMENTS_STATUS {
   switch (dto) {
-    case 'running':
-      return 'running'
-    case 'success':
-      return 'success'
-    case 'error':
-      return 'error'
+    case "running":
+      return "running"
+    case "success":
+      return "success"
+    case "error":
+      return "error"
     default:
-      throw new Error('failed to convert to EXPERIMENTS_STATUS')
+      throw new Error("failed to convert to EXPERIMENTS_STATUS")
   }
 }
 
@@ -66,7 +67,7 @@ export function convertFunctionsToRunResultDTO(
   Object.entries(dto).forEach(([nodeId, value]) => {
     result[nodeId] = {
       status: value.success,
-      message: value.message ?? '',
+      message: value.message ?? "",
       name: value.name,
       outputPaths: value.outputPaths,
     }

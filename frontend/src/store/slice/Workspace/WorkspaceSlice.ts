@@ -1,6 +1,6 @@
-import { PayloadAction, createSlice, isAnyOf } from '@reduxjs/toolkit'
-import { WORKSPACE_SLICE_NAME, Workspace } from './WorkspaceType'
-import { reproduceWorkflow } from '../Workflow/WorkflowActions'
+import { PayloadAction, createSlice, isAnyOf } from "@reduxjs/toolkit"
+
+import { reproduceWorkflow } from "store/slice/Workflow/WorkflowActions"
 import {
   delWorkspace,
   getListUserShareWorkSpaces,
@@ -9,7 +9,11 @@ import {
   postListUserShareWorkspaces,
   postWorkspace,
   putWorkspace,
-} from './WorkspaceActions'
+} from "store/slice/Workspace/WorkspaceActions"
+import {
+  WORKSPACE_SLICE_NAME,
+  Workspace,
+} from "store/slice/Workspace/WorkspaceType"
 
 const initialState: Workspace = {
   currentWorkspace: {
@@ -45,9 +49,11 @@ export const workspaceSlice = createSlice({
     builder
       .addCase(reproduceWorkflow.fulfilled, (state, action) => {
         state.currentWorkspace.workspaceId = action.meta.arg.workspaceId
+        state.currentWorkspace.selectedTab = 0
       })
       .addCase(getWorkspace.fulfilled, (state, action) => {
         state.currentWorkspace.workspaceId = action.payload.id
+        state.currentWorkspace.workspaceName = action.payload.name
         state.currentWorkspace.ownerId = action.payload.user.id
         state.loading = false
       })

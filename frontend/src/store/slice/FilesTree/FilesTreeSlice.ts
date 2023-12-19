@@ -1,11 +1,15 @@
-import { createSlice } from '@reduxjs/toolkit'
-import { FILE_TREE_TYPE_SET } from 'api/files/Files'
-import { uploadFile } from 'store/slice/FileUploader/FileUploaderActions'
-import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
+import { createSlice } from "@reduxjs/toolkit"
 
-import { getFilesTree } from './FilesTreeAction'
-import { FilesTree, FILES_TREE_SLICE_NAME } from './FilesTreeType'
-import { convertToTreeNodeType } from './FilesTreeUtils'
+import { FILE_TREE_TYPE_SET } from "api/files/Files"
+import { getFilesTree } from "store/slice/FilesTree/FilesTreeAction"
+import {
+  FilesTree,
+  FILES_TREE_SLICE_NAME,
+} from "store/slice/FilesTree/FilesTreeType"
+import { convertToTreeNodeType } from "store/slice/FilesTree/FilesTreeUtils"
+import { uploadFile } from "store/slice/FileUploader/FileUploaderActions"
+import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
+import { importSampleData } from "store/slice/Workflow/WorkflowActions"
 
 export const initialState: FilesTree = {}
 export const filesTreeSlice = createSlice({
@@ -83,6 +87,18 @@ export const filesTreeSlice = createSlice({
         } else {
           state[FILE_TREE_TYPE_SET.ALL].isLatest = false
         }
+      })
+      .addCase(importSampleData.fulfilled, (state) => {
+        ;[
+          FILE_TREE_TYPE_SET.IMAGE,
+          FILE_TREE_TYPE_SET.CSV,
+          FILE_TREE_TYPE_SET.HDF5,
+          FILE_TREE_TYPE_SET.ALL,
+        ].forEach((fileType) => {
+          if (state[fileType] != null) {
+            state[fileType].isLatest = false
+          }
+        })
       })
   },
 })

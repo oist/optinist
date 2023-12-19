@@ -1,15 +1,18 @@
-import React from 'react'
-import { useSelector, useDispatch } from 'react-redux'
-import PlotlyChart from 'react-plotlyjs-ts'
-import LinearProgress from '@mui/material/LinearProgress'
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
+import { memo, useContext, useEffect, useMemo } from "react"
+import PlotlyChart from "react-plotlyjs-ts"
+import { useSelector, useDispatch } from "react-redux"
 
-import { DisplayDataContext } from '../DataContext'
+import Box from "@mui/material/Box"
+import FormControl from "@mui/material/FormControl"
+import InputLabel from "@mui/material/InputLabel"
+import LinearProgress from "@mui/material/LinearProgress"
+import MenuItem from "@mui/material/MenuItem"
+import Select, { SelectChangeEvent } from "@mui/material/Select"
+import Typography from "@mui/material/Typography"
+
+import { BarData } from "api/outputs/Outputs"
+import { DisplayDataContext } from "components/Workspace/Visualize/DataContext"
+import { getBarData } from "store/slice/DisplayData/DisplayDataActions"
 import {
   selectBarData,
   selectBarDataError,
@@ -18,26 +21,25 @@ import {
   selectBarDataIsPending,
   selectBarIndex,
   selectBarMeta,
-} from 'store/slice/DisplayData/DisplayDataSelectors'
-import { getBarData } from 'store/slice/DisplayData/DisplayDataActions'
-import { BarData } from 'api/outputs/Outputs'
+} from "store/slice/DisplayData/DisplayDataSelectors"
 import {
   selectBarItemIndex,
   selectVisualizeItemHeight,
   selectVisualizeItemWidth,
   selectVisualizeSaveFilename,
   selectVisualizeSaveFormat,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { setBarItemIndex } from 'store/slice/VisualizeItem/VisualizeItemSlice'
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
+import { setBarItemIndex } from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { AppDispatch } from "store/store"
 
-export const BarPlot = React.memo(() => {
-  const { filePath: path } = React.useContext(DisplayDataContext)
-  const dispatch = useDispatch()
+export const BarPlot = memo(function BarPlot() {
+  const { filePath: path } = useContext(DisplayDataContext)
+  const dispatch = useDispatch<AppDispatch>()
   const isPending = useSelector(selectBarDataIsPending(path))
   const isInitialized = useSelector(selectBarDataIsInitialized(path))
   const error = useSelector(selectBarDataError(path))
   const isFulfilled = useSelector(selectBarDataIsFulfilled(path))
-  React.useEffect(() => {
+  useEffect(() => {
     if (!isInitialized) {
       dispatch(getBarData({ path }))
     }
@@ -53,8 +55,8 @@ export const BarPlot = React.memo(() => {
   }
 })
 
-const BarPlotImple = React.memo(() => {
-  const { filePath: path, itemId } = React.useContext(DisplayDataContext)
+const BarPlotImple = memo(function BarPlotImple() {
+  const { filePath: path, itemId } = useContext(DisplayDataContext)
   const barData = useSelector(selectBarData(path), barDataEqualityFn)
   const meta = useSelector(selectBarMeta(path))
   const width = useSelector(selectVisualizeItemWidth(itemId))
@@ -62,18 +64,18 @@ const BarPlotImple = React.memo(() => {
   const index = useSelector(selectBarItemIndex(itemId))
   const dataKeys = useSelector(selectBarIndex(path))
 
-  const data = React.useMemo(
+  const data = useMemo(
     () => [
       {
         x: Object.keys(barData[index]),
         y: Object.values(barData[index]),
-        type: 'bar',
+        type: "bar",
       },
     ],
     [barData, index],
   )
 
-  const layout = React.useMemo(
+  const layout = useMemo(
     () => ({
       title: {
         text: meta?.title,
@@ -86,7 +88,7 @@ const BarPlotImple = React.memo(() => {
         l: 50, // left
         b: 40, // bottom
       },
-      dragmode: 'pan',
+      dragmode: "pan",
       autosize: true,
       xaxis: {
         title: meta?.xlabel,
@@ -113,7 +115,7 @@ const BarPlotImple = React.memo(() => {
 
   return (
     <div>
-      <Box sx={{ display: 'flex' }}>
+      <Box sx={{ display: "flex" }}>
         <Box sx={{ flexGrow: 1, ml: 1 }}>
           <SelectIndex dataKeys={dataKeys} />
         </Box>
@@ -123,10 +125,12 @@ const BarPlotImple = React.memo(() => {
   )
 })
 
-const SelectIndex = React.memo<{
+interface SelectIndexProps {
   dataKeys: string[]
-}>(({ dataKeys }) => {
-  const { itemId } = React.useContext(DisplayDataContext)
+}
+
+const SelectIndex = memo(function SelectIndex({ dataKeys }: SelectIndexProps) {
+  const { itemId } = useContext(DisplayDataContext)
   const dispatch = useDispatch()
   const index = useSelector(selectBarItemIndex(itemId))
 
@@ -143,7 +147,9 @@ const SelectIndex = React.memo<{
       <InputLabel>index</InputLabel>
       <Select label="smooth" value={`${index}`} onChange={handleChange}>
         {dataKeys.map((v, i) => (
-          <MenuItem value={i}>{v}</MenuItem>
+          <MenuItem key={i} value={i}>
+            {v}
+          </MenuItem>
         ))}
       </Select>
     </FormControl>

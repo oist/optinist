@@ -7,8 +7,6 @@
 import os
 from datetime import datetime
 
-from sphinx_pyproject import SphinxConfig
-
 # -- Path setup --------------------------------------------------------------
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -18,11 +16,10 @@ from sphinx_pyproject import SphinxConfig
 
 
 # -- Project information -----------------------------------------------------
-config = SphinxConfig("../pyproject.toml", globalns=globals())
 project = "OptiNiSt"
 copyright = f"{datetime.today().year}, OIST"
 author = ""
-release = ".".join(config.version.split(".")[:2])
+release = "1.0.1"
 
 # -- readthedocs -------------------------------------------------------------
 on_rtd = os.environ.get("READTHEDOCS", None) == "True"
@@ -46,6 +43,7 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.extlinks",
     "sphinx.ext.autodoc.typehints",
+    "sphinx_copybutton",
 ]
 
 # Tell myst-parser to assign header anchors for h1-h3.

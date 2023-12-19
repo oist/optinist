@@ -1,13 +1,29 @@
-import { WORKFLOW_SLICE_NAME } from './WorkflowType'
-import { createAsyncThunk } from '@reduxjs/toolkit'
+import { createAsyncThunk } from "@reduxjs/toolkit"
+
 import {
+  fetchWorkflowApi,
   reproduceWorkflowApi,
   importWorkflowConfigApi,
+  importSampleDataApi,
   WorkflowConfigDTO,
-} from 'api/workflow/Workflow'
+  WorkflowWithResultDTO,
+} from "api/workflow/Workflow"
+import { WORKFLOW_SLICE_NAME } from "store/slice/Workflow/WorkflowType"
+
+export const fetchWorkflow = createAsyncThunk<WorkflowWithResultDTO, number>(
+  `${WORKFLOW_SLICE_NAME}/fetchExperiment`,
+  async (workspaceId, thunkAPI) => {
+    try {
+      const response = await fetchWorkflowApi(workspaceId)
+      return response
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
 
 export const reproduceWorkflow = createAsyncThunk<
-  WorkflowConfigDTO,
+  WorkflowWithResultDTO,
   { workspaceId: number; uid: string }
 >(
   `${WORKFLOW_SLICE_NAME}/reproduceWorkflow`,
@@ -29,6 +45,21 @@ export const importWorkflowConfig = createAsyncThunk<
   async ({ formData }, thunkAPI) => {
     try {
       const response = await importWorkflowConfigApi(formData)
+      return response
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
+
+export const importSampleData = createAsyncThunk<
+  boolean,
+  { workspaceId: number }
+>(
+  `${WORKFLOW_SLICE_NAME}/importSampleData`,
+  async ({ workspaceId }, thunkAPI) => {
+    try {
+      const response = await importSampleDataApi(workspaceId)
       return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)

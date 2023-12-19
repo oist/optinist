@@ -1,0 +1,175 @@
+last_output:
+- 1/tutorial1/eta_jntqpbkvwv/eta.pkl
+rules:
+  eta_jntqpbkvwv:
+    hdf5Path: null
+    input:
+    - 1/tutorial1/input_zdax4o54o0/sample_mouse2p_behavior.pkl
+    - 1/tutorial1/suite2p_roi_rfau106shp/suite2p_roi.pkl
+    - 1/tutorial1/suite2p_roi_rfau106shp/suite2p_roi.pkl
+    nwbfile: null
+    output: 1/tutorial1/eta_jntqpbkvwv/eta.pkl
+    params:
+      post_event: 10
+      pre_event: -10
+      event_col_index: 1
+      transpose_x: true
+      transpose_y: false
+      trigger_threshold: 0
+      trigger_type: up
+    path: optinist/basic_neural_analysis/eta
+    return_arg:
+      fluorescence: neural_data
+      input_zdax4o54o0: behaviors_data
+      iscell: iscell
+    type: eta
+  input_0:
+    hdf5Path: null
+    input:
+    - 1/sample_mouse2p_image.tiff
+    nwbfile:
+      device:
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+        name: Microscope device
+      experiment_description: None
+      identifier: optinist
+      image_series:
+        starting_frame:
+        - 0
+        starting_time: 0
+      imaging_plane:
+        description: standard
+        excitation_lambda: 900.0
+        imaging_rate: 30.0
+        indicator: GCaMP
+        location: V1
+        name: ImagingPlane
+      ophys:
+        plane_segmentation:
+          description: ''
+          name: PlaneSegmentation
+      optical_channel:
+        description: optical channel
+        emission_lambda: 500.0
+        name: OpticalChannel
+      session_description: optinist
+    output: 1/tutorial1/input_0/sample_mouse2p_image.pkl
+    params: {}
+    path: null
+    return_arg: input_0
+    type: image
+  input_zdax4o54o0:
+    hdf5Path: null
+    input: 1/sample_mouse2p_behavior.csv
+    nwbfile:
+      device:
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+        name: Microscope device
+      experiment_description: None
+      identifier: optinist
+      image_series:
+        starting_frame:
+        - 0
+        starting_time: 0
+      imaging_plane:
+        description: standard
+        excitation_lambda: 900.0
+        imaging_rate: 30.0
+        indicator: GCaMP
+        location: V1
+        name: ImagingPlane
+      ophys:
+        plane_segmentation:
+          description: ''
+          name: PlaneSegmentation
+      optical_channel:
+        description: optical channel
+        emission_lambda: 500.0
+        name: OpticalChannel
+      session_description: optinist
+    output: 1/tutorial1/input_zdax4o54o0/sample_mouse2p_behavior.pkl
+    params:
+      setHeader: null
+      setIndex: false
+      transpose: false
+    path: null
+    return_arg: input_zdax4o54o0
+    type: behavior
+  suite2p_file_convert_axgpevzu10:
+    hdf5Path: null
+    input:
+    - 1/tutorial1/input_0/sample_mouse2p_image.pkl
+    nwbfile: null
+    output: 1/tutorial1/suite2p_file_convert_axgpevzu10/suite2p_file_convert.pkl
+    params:
+      batch_size: 500
+      do_registration: 1
+      force_sktiff: false
+      nchannels: 1
+      nplanes: 1
+    path: suite2p/suite2p_file_convert
+    return_arg:
+      input_0: image
+    type: suite2p_file_convert
+  suite2p_registration_ktrkq5sa71:
+    hdf5Path: null
+    input:
+    - 1/tutorial1/suite2p_file_convert_axgpevzu10/suite2p_file_convert.pkl
+    nwbfile: null
+    output: 1/tutorial1/suite2p_registration_ktrkq5sa71/suite2p_registration.pkl
+    params:
+      1Preg: false
+      align_by_chan: 1
+      bidi_corrected: false
+      bidiphase: 0
+      block_size:
+      - 128
+      - 128
+      diameter: 0
+      do_bidiphase: false
+      frames_include: -1
+      functional_chan: 1
+      keep_movie_raw: false
+      maxregshift: 0.1
+      maxregshiftNR: 5
+      nonrigid: true
+      pre_smooth: 0
+      reg_tif: false
+      smooth_sigma: 1.15
+      smooth_sigma_time: 0
+      snr_thresh: 1.2
+      spatial_hp_reg: 42
+      spatial_taper: 40
+      th_badframes: 1
+    path: suite2p/suite2p_registration
+    return_arg:
+      ops: ops
+    type: suite2p_registration
+  suite2p_roi_rfau106shp:
+    hdf5Path: null
+    input:
+    - 1/tutorial1/suite2p_registration_ktrkq5sa71/suite2p_registration.pkl
+    nwbfile: null
+    output: 1/tutorial1/suite2p_roi_rfau106shp/suite2p_roi.pkl
+    params:
+      allow_overlap: false
+      high_pass: 100
+      inner_neuropil_radius: 2
+      max_iterations: 20
+      max_overlap: 0.75
+      min_neuropil_pixels: 350
+      nbinned: 5000
+      neucoeff: 0.7
+      preclassify: 0
+      soma_crop: true
+      sparse_mode: true
+      spatial_hp_detect: 25
+      spatial_scale: 0
+      tau: 1
+      threshold_scaling: 1
+    path: suite2p/suite2p_roi
+    return_arg:
+      ops: ops
+    type: suite2p_roi
