@@ -162,6 +162,8 @@ export const FileSelectImple = memo(function FileSelectImple({
 
 function getFileInputAccept(fileType: FILE_TREE_TYPE | undefined) {
   switch (fileType) {
+    case FILE_TREE_TYPE_SET.MATLAB:
+      return ".mat"
     case FILE_TREE_TYPE_SET.IMAGE:
       return ".tif,.tiff"
     case FILE_TREE_TYPE_SET.CSV:

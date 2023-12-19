@@ -2,44 +2,39 @@ import { memo, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Handle, Position, NodeProps } from "reactflow"
 
-import {
-  Button,
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogActions,
-  Switch,
-  FormControlLabel,
-  TextField,
-  Box,
-  LinearProgress,
-  Typography,
-} from "@mui/material"
+import FolderIcon from "@mui/icons-material/Folder"
+import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined"
+import { Typography } from "@mui/material"
+import Button from "@mui/material/Button"
+import Dialog from "@mui/material/Dialog"
+import DialogActions from "@mui/material/DialogActions"
+import DialogContent from "@mui/material/DialogContent"
+import DialogTitle from "@mui/material/DialogTitle"
+import LinearProgress from "@mui/material/LinearProgress"
+import { useTheme } from "@mui/material/styles"
+import { TreeItem } from "@mui/x-tree-view/TreeItem"
+import { TreeView } from "@mui/x-tree-view/TreeView"
 
 import { FileSelect } from "components/Workspace/FlowChart/FlowChartNode/FileSelect"
 import { toHandleId } from "components/Workspace/FlowChart/FlowChartNode/FlowChartUtils"
 import { NodeContainer } from "components/Workspace/FlowChart/FlowChartNode/NodeContainer"
-import { PresentationalMatlabPlot } from "components/Workspace/Visualize/Plot/MatlabPlot"
 import { HANDLE_STYLE } from "const/flowchart"
-import { getMatlabData } from "store/slice/DisplayData/DisplayDataActions"
-import {
-  selectMatlabDataError,
-  selectMatlabDataIsFulfilled,
-  selectMatlabDataIsInitialized,
-  selectMatlabDataIsPending,
-} from "store/slice/DisplayData/DisplayDataSelectors"
 import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
 import { NodeIdProps } from "store/slice/FlowElement/FlowElementType"
 import { setInputNodeFilePath } from "store/slice/InputNode/InputNodeActions"
 import {
-  selectCsvInputNodeSelectedFilePath,
   selectInputNodeDefined,
-  selectMatlabInputNodeParamSetHeader,
-  selectMatlabInputNodeParamSetIndex,
-  selectMatlabInputNodeParamTranspose,
+  selectInputNodeMatlabPath,
+  selectMatlabInputNodeSelectedFilePath,
 } from "store/slice/InputNode/InputNodeSelectors"
-import { setMatlabInputNodeParam } from "store/slice/InputNode/InputNodeSlice"
+import { setInputNodeMatlabPath } from "store/slice/InputNode/InputNodeSlice"
 import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
+import { getMatlabTree } from "store/slice/Matlab/MatlabAction"
+import {
+  selectMatlabIsLoading,
+  selectMatlabNodes,
+} from "store/slice/Matlab/MatlabSelectors"
+import { MatlabTreeNodeType } from "store/slice/Matlab/MatlabType"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
 import { AppDispatch } from "store/store"
 
@@ -56,8 +51,8 @@ const MatlabFileNodeImple = memo(function MatlabFileNodeImple({
   id: nodeId,
   selected,
 }: NodeProps) {
-  const dispatch = useDispatch<AppDispatch>()
-  const filePath = useSelector(selectCsvInputNodeSelectedFilePath(nodeId))
+  const dispatch = useDispatch()
+  const filePath = useSelector(selectMatlabInputNodeSelectedFilePath(nodeId))
   const onChangeFilePath = (path: string) => {
     dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
   }
@@ -77,15 +72,15 @@ const MatlabFileNodeImple = memo(function MatlabFileNodeImple({
       </button>
       <FileSelect
         nodeId={nodeId}
-        onChangeFilePath={(path: string | string[]) => {
+        onChangeFilePath={(path) => {
           if (!Array.isArray(path)) {
             onChangeFilePath(path)
           }
         }}
-        fileType={FILE_TYPE_SET.CSV}
+        fileType={FILE_TYPE_SET.MATLAB}
         filePath={filePath ?? ""}
       />
-      {!!filePath && <ParamSettingDialog nodeId={nodeId} filePath={filePath} />}
+      {filePath !== undefined && <ItemSelect nodeId={nodeId} />}
       <Handle
         type="source"
         position={Position.Right}
@@ -96,101 +91,37 @@ const MatlabFileNodeImple = memo(function MatlabFileNodeImple({
   )
 })
 
-interface ParamSettingDialogProps extends NodeIdProps {
-  filePath: string
-}
-
-export const ParamSettingDialog = memo(function ParamSettingDialog({
-  nodeId,
-  filePath,
-}: ParamSettingDialogProps) {
+const ItemSelect = memo(function ItemSelect({ nodeId }: NodeIdProps) {
   const [open, setOpen] = useState(false)
-  // OK時のみStoreに反映させるため一時的な値をuseStateで保持しておく。
-  // useStateの初期値はselectorで取得。
-  const [setHeader, setSetHeader] = useState(
-    useSelector(selectMatlabInputNodeParamSetHeader(nodeId)),
-  )
-  const [setIndex, setSetIndex] = useState(
-    useSelector(selectMatlabInputNodeParamSetIndex(nodeId)),
-  )
-  const [transpose, setTranspose] = useState(
-    useSelector(selectMatlabInputNodeParamTranspose(nodeId)),
-  )
-  const dispatch = useDispatch<AppDispatch>()
-  const onClickCancel = () => {
-    setOpen(false)
-  }
-  const onClickOk = () => {
-    setOpen(false)
-    dispatch(
-      setMatlabInputNodeParam({
-        nodeId,
-        param: { setHeader, setIndex, transpose },
-      }),
-    )
-  }
+
+  const structureFileName = useSelector(selectInputNodeMatlabPath(nodeId))
 
   return (
     <>
-      <Button onClick={() => setOpen(true)} sx={{ padding: 0 }}>
-        Settings
+      <Button variant="outlined" size="small" onClick={() => setOpen(true)}>
+        {"Structure"}
       </Button>
-      <Dialog open={open}>
-        <DialogTitle>Matlab Setting</DialogTitle>
-        <DialogContent dividers>
-          <Box sx={{ display: "flex", p: 1, m: 1, alignItems: "flex-start" }}>
-            <FormControlLabel
-              sx={{ margin: (theme) => theme.spacing(0, 1, 0, 1) }}
-              control={
-                <Switch
-                  checked={transpose}
-                  onChange={(event) => setTranspose(event.target.checked)}
-                />
-              }
-              label="Transpose"
-            />
-            <TextField
-              label="header"
-              sx={{
-                width: 100,
-                margin: (theme) => theme.spacing(0, 1, 0, 1),
-              }}
-              type="number"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              onChange={(event) => {
-                const value = Number(event.target.value)
-                if (value >= 0) {
-                  setSetHeader(value)
-                }
-              }}
-              value={setHeader}
-            />
-            <FormControlLabel
-              sx={{ margin: (theme) => theme.spacing(0, 1, 0, 1) }}
-              control={
-                <Switch
-                  checked={setIndex}
-                  onChange={(event) => setSetIndex(event.target.checked)}
-                />
-              }
-              label="Set Index"
-            />
-          </Box>
-          <Typography variant="h6">Preview</Typography>
-          <MatlabPreview
-            filePath={filePath}
-            transpose={transpose}
-            setHeader={setHeader}
-            setIndex={setIndex}
-          />
-        </DialogContent>
+      <Typography className="selectFilePath" variant="caption">
+        {structureFileName ? structureFileName : "No structure is selected."}
+      </Typography>
+
+      <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
+        <DialogTitle>{"Select File"}</DialogTitle>
+        <Structure nodeId={nodeId} />
         <DialogActions>
-          <Button onClick={onClickCancel} variant="outlined" color="inherit">
+          <Button
+            onClick={() => setOpen(false)}
+            color="inherit"
+            variant="outlined"
+          >
             cancel
           </Button>
-          <Button onClick={onClickOk} color="primary" variant="outlined">
+          <Button
+            onClick={() => setOpen(false)}
+            color="primary"
+            variant="outlined"
+            autoFocus
+          >
             OK
           </Button>
         </DialogActions>
@@ -199,35 +130,96 @@ export const ParamSettingDialog = memo(function ParamSettingDialog({
   )
 })
 
-interface MatlabPreviewProps {
-  filePath: string
-  transpose: boolean
-  setHeader: number | null
-  setIndex: boolean
+const Structure = memo(function Structure({ nodeId }: NodeIdProps) {
+  const theme = useTheme()
+  return (
+    <DialogContent dividers>
+      <div
+        style={{
+          height: 300,
+          overflow: "auto",
+          marginBottom: theme.spacing(1),
+          border: "1px solid",
+          padding: theme.spacing(1),
+          borderColor: theme.palette.divider,
+        }}
+      >
+        <FileTreeView nodeId={nodeId} />
+      </div>
+    </DialogContent>
+  )
+})
+
+const FileTreeView = memo(function FileTreeView({ nodeId }: NodeIdProps) {
+  const [tree, isLoading] = useMatlabTree(nodeId)
+  return (
+    <div>
+      {isLoading && <LinearProgress />}
+      <TreeView>
+        {tree?.map((node, i) => (
+          <TreeNode
+            key={`matlabtree-${nodeId}-${i}`}
+            node={node}
+            nodeId={nodeId}
+          />
+        ))}
+      </TreeView>
+    </div>
+  )
+})
+
+interface TreeNodeProps extends NodeIdProps {
+  node: MatlabTreeNodeType
 }
 
-const MatlabPreview = memo(function MatlabPreview({
-  filePath: path,
-  ...otherProps
-}: MatlabPreviewProps) {
-  const isInitialized = useSelector(selectMatlabDataIsInitialized(path))
-  const isPending = useSelector(selectMatlabDataIsPending(path))
-  const isFulfilled = useSelector(selectMatlabDataIsFulfilled(path))
-  const error = useSelector(selectMatlabDataError(path))
-  const dispatch = useDispatch<AppDispatch>()
-  const workspaceId = useSelector(selectCurrentWorkspaceId)
-  useEffect(() => {
-    if (workspaceId && !isInitialized) {
-      dispatch(getMatlabData({ path, workspaceId }))
-    }
-  }, [dispatch, isInitialized, path, workspaceId])
-  if (isPending) {
-    return <LinearProgress />
-  } else if (error != null) {
-    return <Typography color="error">{error}</Typography>
-  } else if (isFulfilled) {
-    return <PresentationalMatlabPlot path={path} {...otherProps} />
+const TreeNode = memo(function TreeNode({ node, nodeId }: TreeNodeProps) {
+  const dispatch = useDispatch()
+
+  const onClickFile = (path: string) => {
+    dispatch(setInputNodeMatlabPath({ nodeId, path }))
+  }
+
+  if (node.isDir) {
+    // Directory
+    return (
+      <TreeItem
+        icon={<FolderIcon htmlColor="skyblue" />}
+        nodeId={node.path}
+        label={node.name}
+      >
+        {node.nodes.map((childNode, i) => (
+          <TreeNode node={childNode} key={i} nodeId={nodeId} />
+        ))}
+      </TreeItem>
+    )
   } else {
+    // File
+    if (node.shape)
+      return (
+        <TreeItem
+          icon={<InsertDriveFileOutlinedIcon fontSize="small" />}
+          nodeId={node.path}
+          label={node.name + `   (shape=(${node.shape}))`}
+          onClick={() => onClickFile(node.path)}
+        />
+      )
     return null
   }
 })
+
+function useMatlabTree(
+  nodeId: string,
+): [MatlabTreeNodeType[] | undefined, boolean] {
+  const dispatch = useDispatch<AppDispatch>()
+  const tree = useSelector(selectMatlabNodes())
+  const isLoading = useSelector(selectMatlabIsLoading())
+  const filePath = useSelector(selectMatlabInputNodeSelectedFilePath(nodeId))
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
+  useEffect(() => {
+    if (workspaceId && !isLoading && filePath) {
+      dispatch(getMatlabTree({ path: filePath, workspaceId }))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [workspaceId, filePath])
+  return [tree, isLoading]
+}

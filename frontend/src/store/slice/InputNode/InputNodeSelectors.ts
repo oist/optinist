@@ -2,6 +2,7 @@ import {
   isHDF5InputNode,
   isCsvInputNode,
   isImageInputNode,
+  isMatlabInputNode,
 } from "store/slice/InputNode/InputNodeUtils"
 import { RootState } from "store/store"
 
@@ -51,6 +52,16 @@ export const selectHDF5InputNodeSelectedFilePath =
     }
   }
 
+export const selectMatlabInputNodeSelectedFilePath =
+  (nodeId: string) => (state: RootState) => {
+    const node = selectInputNodeById(nodeId)(state)
+    if (isMatlabInputNode(node)) {
+      return node.selectedFilePath
+    } else {
+      throw new Error("invalid input node type")
+    }
+  }
+
 export const selectFilePathIsUndefined = (state: RootState) =>
   Object.keys(state.inputNode).length === 0 ||
   Object.values(state.inputNode).filter((inputNode) => {
@@ -90,23 +101,21 @@ export const selectCsvInputNodeParamTranspose =
   (nodeId: string) => (state: RootState) =>
     selectCsvInputNodeParam(nodeId)(state).transpose
 
-export const selectMatlabInputNodeParamSetHeader =
-  (nodeId: string) => (state: RootState) =>
-    selectCsvInputNodeParam(nodeId)(state).setHeader
-
-export const selectMatlabInputNodeParamSetIndex =
-  (nodeId: string) => (state: RootState) =>
-    selectCsvInputNodeParam(nodeId)(state).setIndex
-
-export const selectMatlabInputNodeParamTranspose =
-  (nodeId: string) => (state: RootState) =>
-    selectCsvInputNodeParam(nodeId)(state).transpose
-
 export const selectInputNodeHDF5Path =
   (nodeId: string) => (state: RootState) => {
     const item = selectInputNodeById(nodeId)(state)
     if (isHDF5InputNode(item)) {
       return item.hdf5Path
+    } else {
+      return undefined
+    }
+  }
+
+export const selectInputNodeMatlabPath =
+  (nodeId: string) => (state: RootState) => {
+    const item = selectInputNodeById(nodeId)(state)
+    if (isMatlabInputNode(item)) {
+      return item.matlabPath
     } else {
       return undefined
     }

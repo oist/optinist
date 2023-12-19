@@ -36,20 +36,15 @@ export type CsvInputParamType = {
   transpose: boolean
 }
 
-export type MatlabInputParamType = {
-  setHeader: number | null
-  setIndex: boolean
-  transpose: boolean
-}
-
 export interface CsvInputNode
   extends InputNodeBaseType<"csv", CsvInputParamType> {
   selectedFilePath?: string
 }
 
 export interface MatlabInputNode
-  extends InputNodeBaseType<"matlab", MatlabInputParamType> {
+  extends InputNodeBaseType<"matlab", Record<never, never>> {
   selectedFilePath?: string
+  matlabPath?: string
 }
 
 export interface ImageInputNode
