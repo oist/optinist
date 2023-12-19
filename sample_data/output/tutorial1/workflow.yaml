@@ -90,16 +90,16 @@ nodeDict:
       hdf5Path: null
       label: eta
       param:
-        end_time:
-          path: end_time
+        post_event:
+          path: post_event
           type: child
           value: 10
-        start_time:
-          path: start_time
+        pre_event:
+          path: pre_event
           type: child
           value: -10
-        target_index:
-          path: target_index
+        event_col_index:
+          path: event_col_index
           type: child
           value: 1
         transpose_x:
