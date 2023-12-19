@@ -1,3 +1,4 @@
+(Record)=
 Record
 =================
 In the RECORD field, you can check the workflow status in your `OPTINIST_DIR` and manage your analysis pipeline. The table lists all the pipelines in your `OPTINIST_DIR`.
@@ -70,6 +71,7 @@ This function is convenient when you want to check the results of the past workf
    From version 1.1.0, you can visualize the results without running the workflow.
 ```
 
+(DownloadButtons)=
 ### Download Buttons
 
 <br>

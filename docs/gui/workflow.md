@@ -58,6 +58,7 @@ To put files there, see next [](DirectorySetting) section.
    Currently, only image files with {.tif, .TIF, .tiff, .TIFF} extensions are supported.
 ```
 
+(DirectorySetting)=
 #### Directory Setting
 OptiNiSt uses `OPTINIST_DIR` for retrieving data and saving results. OptiNiSt searches for input data in the 'input' directory within `OPTINIST_DIR`. The default `OPTINIST_DIR` is `/tmp/studio` on your computer.
 
@@ -158,6 +159,7 @@ Each algorithm node has PARAM button and OUTPUT button.
   </p>
   <br/>
 
+(ConnectingNodes)=
 ### Connecting Nodes
 Connect colored connectors of the nodes by dragging your cursor from the output connector(right side of the nodes) to the next input connector(left side of the nodes) to create connecting edges.
 

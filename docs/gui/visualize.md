@@ -155,6 +155,7 @@ The time is calculated from imaging_plane.imaging_rate, in NWB settings.
    So, be sure if your imaging_rate is set correctly before running workflow.
 ```
 
+(EditingROI)=
 ### Editing ROI
 
 <p align="center">
