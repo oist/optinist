@@ -2,7 +2,8 @@ import { AxiosProgressEvent } from "axios"
 
 import { createAsyncThunk, createAction } from "@reduxjs/toolkit"
 
-import { uploadFileApi } from "api/files/Files"
+import { updateShapeApi, uploadFileApi } from "api/files/Files"
+import { getFilesTree } from "store/slice/FilesTree/FilesTreeAction"
 import { FILE_UPLOADER_SLICE_NAME } from "store/slice/FileUploader/FileUploaderType"
 import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
 
@@ -68,3 +69,23 @@ function getUploadConfig(
     },
   }
 }
+
+export const updateShape = createAsyncThunk<
+  boolean,
+  {
+    workspaceId: number
+    fileName: string
+  }
+>(
+  `${FILE_UPLOADER_SLICE_NAME}/updateShape`,
+  async ({ workspaceId, fileName }, thunkAPI) => {
+    const { dispatch } = thunkAPI
+    try {
+      const response = await updateShapeApi(workspaceId, fileName)
+      dispatch(getFilesTree({ workspaceId, fileType: "image" }))
+      return response
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
