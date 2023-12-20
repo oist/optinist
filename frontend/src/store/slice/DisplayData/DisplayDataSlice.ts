@@ -33,7 +33,7 @@ const initialState: DisplayData = {
   heatMap: {},
   image: {},
   csv: {},
-  matlab: {},
+  // matlab: {},
   roi: {},
   scatter: {},
   bar: {},
@@ -622,8 +622,6 @@ function deleteDisplayDataFn(
     delete state.pie[filePath]
   } else if (dataType === DATA_TYPE_SET.POLAR) {
     delete state.polar[filePath]
-  } else if (dataType === DATA_TYPE_SET.MATLAB) {
-    delete state.matlab[filePath]
   }
 }
 

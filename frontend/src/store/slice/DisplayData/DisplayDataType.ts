@@ -29,9 +29,6 @@ export type DisplayData = {
   csv: {
     [filePath: string]: CsvDisplayData
   }
-  matlab: {
-    [filePath: string]: MatlabDisplayData
-  }
   roi: {
     [filePath: string]: RoiDisplayData
   }
