@@ -1,53 +1,57 @@
-import os
 import ctypes
 import json
+import os
 import platform
+
 from MicroscopeDataReaderBase import MicroscopeDataReaderBase, OMEDataModel
 
 
 class ND2Reader(MicroscopeDataReaderBase):
-    """Nikon ND2 data reader
-    """
+    """Nikon ND2 data reader"""
 
     WINDOWS_DLL_FILE = "/nikon/windows/nd2readsdk-shared.dll"
     LINUX_DLL_FILE = "/nikon/linux/libnd2readsdk-shared.so"
 
     @staticmethod
     def get_library_path() -> str:
-        DLL_FILE = __class__.WINDOWS_DLL_FILE \
-            if (platform.system() == "Windows") else __class__.LINUX_DLL_FILE
+        DLL_FILE = (
+            __class__.WINDOWS_DLL_FILE
+            if (platform.system() == "Windows")
+            else __class__.LINUX_DLL_FILE
+        )
         return os.environ.get(__class__.LIBRARY_DIR_KEY, "") + DLL_FILE
 
     @staticmethod
     def is_available() -> bool:
-        """Determine if library is available
-        """
-        return (__class__.LIBRARY_DIR_KEY in os.environ) and \
-            os.path.isfile(__class__.get_library_path())
+        """Determine if library is available"""
+        return (__class__.LIBRARY_DIR_KEY in os.environ) and os.path.isfile(
+            __class__.get_library_path()
+        )
 
     def _init_library(self) -> dict:
         self.__dll = ctypes.cdll.LoadLibrary(__class__.get_library_path())
 
-        self.__dll.Lim_FileOpenForReadUtf8.argtypes = (ctypes.c_char_p, )
+        self.__dll.Lim_FileOpenForReadUtf8.argtypes = (ctypes.c_char_p,)
         self.__dll.Lim_FileOpenForReadUtf8.restype = ctypes.c_void_p
-        self.__dll.Lim_FileGetMetadata.argtypes = (ctypes.c_void_p, )
+        self.__dll.Lim_FileGetMetadata.argtypes = (ctypes.c_void_p,)
         self.__dll.Lim_FileGetMetadata.restype = ctypes.c_char_p
-        self.__dll.Lim_FileGetAttributes.argtypes = (ctypes.c_void_p, )
+        self.__dll.Lim_FileGetAttributes.argtypes = (ctypes.c_void_p,)
         self.__dll.Lim_FileGetAttributes.restype = ctypes.c_char_p
-        self.__dll.Lim_FileGetTextinfo.argtypes = (ctypes.c_void_p, )
+        self.__dll.Lim_FileGetTextinfo.argtypes = (ctypes.c_void_p,)
         self.__dll.Lim_FileGetTextinfo.restype = ctypes.c_char_p
-        self.__dll.Lim_FileGetExperiment.argtypes = (ctypes.c_void_p, )
+        self.__dll.Lim_FileGetExperiment.argtypes = (ctypes.c_void_p,)
         self.__dll.Lim_FileGetExperiment.restype = ctypes.c_char_p
-        self.__dll.Lim_FileGetCoordSize.argtypes = (ctypes.c_void_p, )
+        self.__dll.Lim_FileGetCoordSize.argtypes = (ctypes.c_void_p,)
         self.__dll.Lim_FileGetCoordSize.restype = ctypes.c_size_t
         self.__dll.Lim_FileGetCoordsFromSeqIndex.argtypes = (
-            ctypes.c_void_p, ctypes.c_uint, )
+            ctypes.c_void_p,
+            ctypes.c_uint,
+        )
         self.__dll.Lim_FileGetCoordsFromSeqIndex.restype = ctypes.c_size_t
-        self.__dll.Lim_FileClose.argtypes = (ctypes.c_void_p, )
+        self.__dll.Lim_FileClose.argtypes = (ctypes.c_void_p,)
 
     def _load_data_file(self, data_file_path: str) -> object:
-        handle = self.__dll.Lim_FileOpenForReadUtf8(
-            data_file_path.encode("utf-8"))
+        handle = self.__dll.Lim_FileOpenForReadUtf8(data_file_path.encode("utf-8"))
 
         if handle is None:
             raise FileNotFoundError(data_file_path)
@@ -89,13 +93,12 @@ class ND2Reader(MicroscopeDataReaderBase):
             size_x=attributes["widthPx"],
             size_y=attributes["heightPx"],
             size_t=attributes["sequenceCount"],
-            size_c=attributes["componentCount"]  # TODO: この内容が正しいか要確認
+            size_c=attributes["componentCount"],  # TODO: この内容が正しいか要確認
         )
 
         return omeData
 
     def _build_lab_specific_metadata(self, all_metadata: dict) -> dict:
-
         # ----------------------------------------
         # Lab固有仕様のmetadata作成
         # ----------------------------------------
@@ -146,43 +149,39 @@ class ND2Reader(MicroscopeDataReaderBase):
             "uiSequenceCount": attributes["sequenceCount"],
             "uiTileWidth": attributes.get("tileWidthPx", None),  # Optional
             "uiTileHeight": attributes.get("tileHeightPx", None),  # Optional
+            # TODO: 最新版ライブラリでは該当するパラメータがない？
+            # (compressionLevel or compressionType)
             "uiCompression": None,  # TODO: Optional ?
-                                    # TODO: 最新版ライブラリでは該当するパラメータがない？
-                                    # (compressionLevel or compressionType)
-            "uiQuality": None,  # TODO: 最新版ライブラリでは該当するパラメータがない？
-
+            # TODO: 最新版ライブラリでは該当するパラメータがない？
+            "uiQuality": None,
             # /* 4 components (From Lab MEX) */
             "Type": None,  # TODO: 要設定
             "Loops": None,  # TODO: 要設定
             "ZSlicenum": None,  # TODO: 要設定
             "ZInterval": None,  # TODO: 要設定
-
             # /* 7 components (From Lab MEX) */
             "dTimeStart": None,  # TODO: 最新版ライブラリでは該当するパラメータがない？
             "MicroPerPixel": None,  # TODO: 最新版ライブラリでは該当するパラメータがない？
-                                    # metadata.volume.axesCalibrated が該当？
+            # metadata.volume.axesCalibrated が該当？
             "PixelAspect": None,  # TODO: 最新版ライブラリでは該当するパラメータがない？
             "ObjectiveName": metadata_ch0_microscope.get(
-                "objectiveName", None),  # Optional
-                                         # Note: この値 は channels[0] からの取得と想定
+                "objectiveName", None
+            ),  # Optional, channels[0] からの取得
+            # TODO: ライブラリバージョンにより、取得値が異なる可能性がある？
             "dObjectiveMag": metadata_ch0_microscope.get(
-                "objectiveMagnification",
-                None),  # Optional
-                        # Note: この値 は channels[0] からの取得と想定
-                        # TODO: ライブラリバージョンにより、取得値が異なる可能性がある？
+                "objectiveMagnification", None
+            ),  # Optional, channels[0] からの取得
             "dObjectiveNA": metadata_ch0_microscope.get(
-                "objectiveNumericalAperture",
-                None),  # Optional
-                        # Note: この値 は channels[0] からの取得と想定
+                "objectiveNumericalAperture", None
+            ),  # Optional, channels[0] からの取得
             "dZoom": metadata_ch0_microscope.get(
-                "zoomMagnification", None),  # Optional
-                                             # Note: この値 は channels[0] からの取得と想定
-
+                "zoomMagnification", None
+            ),  # Optional, channels[0] からの取得
             # /* 3 components (From Lab MEX) */
             # Note: All elements of textinfo are optional.
             "wszDescription": textinfo.get("description", None),
             "wszCapturing": textinfo.get("capturing", None),
-            "Date": textinfo.get("date", None)
+            "Date": textinfo.get("date", None),
         }
 
         return lab_specific_metadata

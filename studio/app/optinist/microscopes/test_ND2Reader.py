@@ -1,6 +1,7 @@
-import os
-from ND2Reader import ND2Reader
 import logging
+import os
+
+from ND2Reader import ND2Reader
 
 CURRENT_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
 LIBRARY_DIR = CURRENT_DIR_PATH + "/dll"
@@ -22,6 +23,7 @@ def test_nd2_reader():
 
     # # debug print.
     import json
+
     print(json.dumps(data_reader.original_metadata))
     # print(data_reader.ome_metadata)
     # print(json.dumps(data_reader.lab_specific_metadata))
