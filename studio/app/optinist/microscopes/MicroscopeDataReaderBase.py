@@ -33,6 +33,11 @@ class MicroscopeDataReaderBase(metaclass=ABCMeta):
         """
         self._init_library()
 
+        # init members
+        self.__original_metadata = None
+        self.__ome_metadata = None
+        self.__lab_specific_metadata = None
+
     def load(self, data_file_path: str):
         """
         Reset data
