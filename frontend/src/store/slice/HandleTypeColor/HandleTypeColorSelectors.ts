@@ -1,4 +1,4 @@
-import { RootState } from '../../store'
+import { RootState } from "store/store"
 
 export const selectHandleTypeColor = (key: string) => (state: RootState) => {
   if (state.handleColor.colorMap[key] != null) {

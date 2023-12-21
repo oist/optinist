@@ -16,7 +16,6 @@ Follow the steps below to setup `multiuser` mode.
     ```
 2. copy config files
     ```bash
-    cp frontend/.env.example frontend/.env
     cp studio/config/.env.example studio/config.env
     cp studio/config/auth/firebase_config.example.json studio/config/auth/firebase_config.json
     ```
@@ -85,9 +84,7 @@ Follow the steps below to setup `multiuser` mode.
     ```
 
 ### Set OptiNiSt config
-1. Edit `frontend/.env`
-    - Change `REACT_APP_IS_STANDALONE` to `false`
-2. Edit `studio/config/.env`
+1. Edit `studio/config/.env`
     - Change `SECRET_KEY` to any random string.
     - Change `USE_FIREBASE_TOKEN` to `True`.
     - Change `IS_STANDALONE` to `False`
@@ -98,8 +95,8 @@ Follow the steps below to setup `multiuser` mode.
     - `MYSQL_ROOT_PASSWORD` can be left commented.
 
 ### Setup Frontend
-1. Install node.js(version 18)
-    - https://nodejs.org/ja
+1. Install node.js(version 20)
+    - https://nodejs.org
 2. Install yarn
     ```bash
     npm install -g yarn

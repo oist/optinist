@@ -1,5 +1,5 @@
-import { HDF5TreeDTO } from 'api/hdf5/HDF5'
-import { HDF5TreeNodeType } from './HDF5Type'
+import { HDF5TreeDTO } from "api/hdf5/HDF5"
+import { HDF5TreeNodeType } from "store/slice/HDF5/HDF5Type"
 
 export function convertToTreeNodeType(dto: HDF5TreeDTO[]): HDF5TreeNodeType[] {
   return dto.map((node) =>

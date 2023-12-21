@@ -1,27 +1,29 @@
-import { store, rootReducer } from 'store/store'
+import { expect, describe, test } from "@jest/globals"
+
+import { selectImageData } from "store/slice/DisplayData/DisplayDataSelectors"
+import { DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
+import {
+  deleteDisplayItem,
+  setNewDisplayDataPath,
+} from "store/slice/VisualizeItem/VisualizeItemActions"
+import {
+  selectVisualizeItemById,
+  selectVisualizeItemLayout,
+  selectSelectedVisualizeItemId,
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import {
   pushInitialItemToNewRow,
   insertInitialItemToNextColumn,
   addItemForWorkflowDialog,
   deleteAllItemForWorkflowDialog,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
-import {
-  deleteDisplayItem,
-  setNewDisplayDataPath,
-} from 'store/slice/VisualizeItem/VisualizeItemActions'
-import {
-  selectVisualizeItemById,
-  selectVisualizeItemLayout,
-  selectSelectedVisualizeItemId,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
+} from "store/slice/VisualizeItem/VisualizeItemSlice"
 import {
   isCsvItem,
   isImageItem,
-} from 'store/slice/VisualizeItem/VisualizeItemUtils'
-import { selectImageData } from 'store/slice/DisplayData/DisplayDataSelectors'
+} from "store/slice/VisualizeItem/VisualizeItemUtils"
+import { store, rootReducer } from "store/store"
 
-describe('Visualize', () => {
+describe("Visualize", () => {
   const initialRootState = store.getState()
 
   // Item追加(行)
@@ -73,9 +75,9 @@ describe('Visualize', () => {
   test(`${setNewDisplayDataPath.type} when deleteData is false`, () => {
     const prevState = rootReducer(initialRootState, pushInitialItemToNewRow)
     const itemId = 0
-    const nodeId = 'dummy_image2image8time_qikqvda3um'
+    const nodeId = "dummy_image2image8time_qikqvda3um"
     const filePath =
-      '/tmp/optinist/output/4fa05cff/dummy_image2image8time_qikqvda3um/image.json'
+      "/tmp/optinist/output/4fa05cff/dummy_image2image8time_qikqvda3um/image.json"
     const dataType = DATA_TYPE_SET.IMAGE
     const deleteData = false
     const targetState = rootReducer(
@@ -95,8 +97,8 @@ describe('Visualize', () => {
 
   test(`${setNewDisplayDataPath.type} when deleteData is true`, () => {
     const itemId = 0
-    const prevNodeId = 'input_0'
-    const prevFilePath = '/tmp/optinist/input/hoge/hoge.tif'
+    const prevNodeId = "input_0"
+    const prevFilePath = "/tmp/optinist/input/hoge/hoge.tif"
     const prevDataType = DATA_TYPE_SET.IMAGE
     let prevState = rootReducer(
       rootReducer(initialRootState, pushInitialItemToNewRow),
@@ -124,8 +126,8 @@ describe('Visualize', () => {
       },
     }
     const deleteData = true
-    const filePath = '/tmp/optinist/input/sample/sample.csv'
-    const nodeId = 'input_90i2lotktx'
+    const filePath = "/tmp/optinist/input/sample/sample.csv"
+    const nodeId = "input_90i2lotktx"
     const dataType = DATA_TYPE_SET.CSV
     const targetState = rootReducer(
       prevState,
@@ -163,8 +165,8 @@ describe('Visualize', () => {
 
   test(`${deleteDisplayItem.type} when deleteData is true`, () => {
     const itemId = 0
-    const prevNodeId = 'input_0'
-    const prevFilePath = '/tmp/optinist/input/hoge/hoge.tif'
+    const prevNodeId = "input_0"
+    const prevFilePath = "/tmp/optinist/input/hoge/hoge.tif"
     const prevDataType = DATA_TYPE_SET.IMAGE
     let prevState = rootReducer(
       rootReducer(initialRootState, pushInitialItemToNewRow),
@@ -212,9 +214,9 @@ describe('Visualize', () => {
   // AlgorithmNodeのoutputダイアログで使用するItemの追加
   test(addItemForWorkflowDialog.type, () => {
     const itemId = 0
-    const nodeId = 'dummy_image2image8time_qikqvda3um'
+    const nodeId = "dummy_image2image8time_qikqvda3um"
     const filePath =
-      '/tmp/optinist/output/4fa05cff/dummy_image2image8time_qikqvda3um/image.json'
+      "/tmp/optinist/output/4fa05cff/dummy_image2image8time_qikqvda3um/image.json"
     const dataType = DATA_TYPE_SET.IMAGE
     const targetState = rootReducer(
       initialRootState,
@@ -233,14 +235,14 @@ describe('Visualize', () => {
 
   // AlgorithmNodeのoutputダイアログを閉じる
   test(deleteAllItemForWorkflowDialog.type, () => {
-    const nodeId = 'dummy_image2image8time_qikqvda3um'
+    const nodeId = "dummy_image2image8time_qikqvda3um"
     // itemId: 0
     let prevState = rootReducer(
       initialRootState,
       addItemForWorkflowDialog({
         nodeId,
         filePath:
-          '/tmp/optinist/output/4fa05cff/dummy_image2image8time_qikqvda3um/image.json',
+          "/tmp/optinist/output/4fa05cff/dummy_image2image8time_qikqvda3um/image.json",
         dataType: DATA_TYPE_SET.IMAGE,
       }),
     )
@@ -250,7 +252,7 @@ describe('Visualize', () => {
       addItemForWorkflowDialog({
         nodeId,
         filePath:
-          '/tmp/optinist/output/4fa05cff/dummy_image2image8time_qikqvda3um/timeseries',
+          "/tmp/optinist/output/4fa05cff/dummy_image2image8time_qikqvda3um/timeseries",
         dataType: DATA_TYPE_SET.TIME_SERIES,
       }),
     )

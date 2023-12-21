@@ -1,6 +1,7 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
-import { ALGORITHM_LIST_SLICE_NAME } from './AlgorithmListType'
-import { AlgoListDTO, getAlgoListApi } from 'api/algolist/AlgoList'
+import { createAsyncThunk } from "@reduxjs/toolkit"
+
+import { AlgoListDTO, getAlgoListApi } from "api/algolist/AlgoList"
+import { ALGORITHM_LIST_SLICE_NAME } from "store/slice/AlgorithmList/AlgorithmListType"
 
 export const getAlgoList = createAsyncThunk<AlgoListDTO, void>(
   `${ALGORITHM_LIST_SLICE_NAME}/getAlgoList`,

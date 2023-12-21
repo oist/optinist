@@ -20,7 +20,7 @@ Main Features
 
 .. _issue: https://github.com/oist/optinist/issues
 .. _here: https://www.biorxiv.org/content/early/2017/07/20/061507
-.. _this paper: Comming Soon
+.. _this paper: Coming Soon
 .. _pypi: https://pypi.org/project/optinist/
 
 .. * :ref:`modindex`
@@ -36,3 +36,4 @@ Main Features
   gui/index
   host_for_multiuser/index
   utils/index
+  for_developers/index

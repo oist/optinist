@@ -1,14 +1,15 @@
-import React from 'react'
-import { ExperimentTable } from './ExperimentTable'
-import { CONTENT_HEIGHT } from 'const/Layout'
+import { memo } from "react"
 
-const Experiment = React.memo(() => {
+import { ExperimentTable } from "components/Workspace/Experiment/ExperimentTable"
+import { CONTENT_HEIGHT } from "const/Layout"
+
+const Experiment = memo(function Experiment() {
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: "flex" }}>
       <main
         style={{
-          display: 'flex',
-          flexDirection: 'column',
+          display: "flex",
+          flexDirection: "column",
           flexGrow: 1,
           minHeight: CONTENT_HEIGHT,
         }}

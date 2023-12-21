@@ -31,7 +31,7 @@ build_frontend:
 .PHONY: docs
 docs:
 	rm -rf docs/_build/
-	# pip install -e '.[doc]'
+	poetry install --with doc --no-root
 	# sphinx-apidoc -f -o ./docs/_build/modules ./studio
 	sphinx-autobuild -b html docs docs/_build --port 8001
 
@@ -42,24 +42,21 @@ dockerhub:
 
 .PHONY: local_build
 local_build:
-	cd frontend
-	yarn install && yarn build
-	cd ../
-	pip install .
+	cd frontend && yarn install --ignore-scripts && yarn build
+	poetry build
 
 .PHONY: upload_testpypi
 upload_testpypi:
-	python -m build
-	twine upload --repository testpypi dist/*
+	poetry publish -r testpypi
 
-.PHONY: test_pypi
-test_pypi:
-	python3 -m pip install --index-url https://test.pypi.org/simple/ studio
+.PHONY: install_testpypi
+install_testpypi:
+	pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ optinist
+	pip show optinist
 
 .PHONY: push_pypi
 push_pypi:
-	twine upload --repository pypi dist/*
-
+	poetry publish
 
 .PHONY: format
 format:

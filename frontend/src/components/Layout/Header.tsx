@@ -1,23 +1,27 @@
-import { FC } from 'react'
-import { useLocation } from 'react-router-dom'
-import { styled } from '@mui/material/styles'
-import MuiAppBar from '@mui/material/AppBar'
-import Box from '@mui/material/Box'
-import Toolbar from '@mui/material/Toolbar'
-import Typography from '@mui/material/Typography'
-import IconButton from '@mui/material/IconButton'
-import MenuIcon from '@mui/icons-material/Menu'
-import Logo from 'components/logo.png'
-import Tooltips from 'components/Layout/Tooltips'
-import WorkspaceTabs from 'components/Workspace/WorkspaceTabs'
-import { IS_STANDALONE } from 'const/Mode'
-import Profile from './Profile'
-import { APP_BAR_HEIGHT } from 'const/Layout'
+import { FC } from "react"
+import { useSelector } from "react-redux"
+import { useLocation } from "react-router-dom"
+
+import MenuIcon from "@mui/icons-material/Menu"
+import MuiAppBar from "@mui/material/AppBar"
+import Box from "@mui/material/Box"
+import IconButton from "@mui/material/IconButton"
+import { styled } from "@mui/material/styles"
+import Toolbar from "@mui/material/Toolbar"
+import Typography from "@mui/material/Typography"
+
+import Profile from "components/Layout/Profile"
+import Tooltips from "components/Layout/Tooltips"
+import Logo from "components/logo.png"
+import WorkspaceTabs from "components/Workspace/WorkspaceTabs"
+import { APP_BAR_HEIGHT } from "const/Layout"
+import { selectModeStandalone } from "store/slice/Standalone/StandaloneSeclector"
 
 const Header: FC<{
   handleDrawerOpen: () => void
 }> = ({ handleDrawerOpen }) => {
-  return IS_STANDALONE ? (
+  const isStandalone = useSelector(selectModeStandalone)
+  return isStandalone ? (
     <StandaloneHeader />
   ) : (
     <MultiUserHeader handleDrawerOpen={handleDrawerOpen} />
@@ -66,9 +70,9 @@ const MultiUserHeader: FC<{ handleDrawerOpen: () => void }> = ({
 }
 
 const StyledAppBar = styled(MuiAppBar)({
-  position: 'fixed',
-  backgroundColor: '#E1DEDB',
-  color: '#000000',
+  position: "fixed",
+  backgroundColor: "#E1DEDB",
+  color: "#000000",
   height: APP_BAR_HEIGHT,
 })
 

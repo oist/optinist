@@ -1,35 +1,35 @@
-import { RootState } from 'store/store'
-import { EXPERIMENTS_STATUS } from './ExperimentsType'
+import { EXPERIMENTS_STATUS } from "store/slice/Experiments/ExperimentsType"
+import { RootState } from "store/store"
 
 const selectExperiments = (state: RootState) => state.experiments
 
 export const selectExperimentsStatusIsUninitialized = (state: RootState) =>
-  selectExperiments(state).status === 'uninitialized'
+  selectExperiments(state).status === "uninitialized"
 
 export const selectExperimentsStatusIsPending = (state: RootState) =>
-  selectExperiments(state).status === 'pending'
+  selectExperiments(state).status === "pending"
 
 export const selectExperimentsStatusIsFulfilled = (state: RootState) =>
-  selectExperiments(state).status === 'fulfilled'
+  selectExperiments(state).status === "fulfilled"
 
 export const selectExperimentsStatusIsError = (state: RootState) =>
-  selectExperiments(state).status === 'error'
+  selectExperiments(state).status === "error"
 
 export const selectExperimentsErrorMessage = (state: RootState) => {
   const experiments = selectExperiments(state)
-  if (experiments.status === 'error') {
+  if (experiments.status === "error") {
     return experiments.message
   } else {
-    throw new Error('experiments status is not error')
+    throw new Error("experiments status is not error")
   }
 }
 
 export const selectExperimentList = (state: RootState) => {
   const experiments = selectExperiments(state)
-  if (experiments.status === 'fulfilled') {
+  if (experiments.status === "fulfilled") {
     return experiments.experimentList
   } else {
-    throw new Error('experiments status is not fulfilled')
+    throw new Error("experiments status is not fulfilled")
   }
 }
 
@@ -39,8 +39,11 @@ export const selectExperimentUidList = (state: RootState) =>
 export const selectExperiment = (uid: string) => (state: RootState) =>
   selectExperimentList(state)[uid]
 
-export const selectExperimentTimeStamp = (uid: string) => (state: RootState) =>
-  selectExperiment(uid)(state).timestamp
+export const selectExperimentStartedAt = (uid: string) => (state: RootState) =>
+  selectExperiment(uid)(state).startedAt
+
+export const selectExperimentFinishedAt = (uid: string) => (state: RootState) =>
+  selectExperiment(uid)(state).finishedAt
 
 export const selectExperimentName = (uid: string) => (state: RootState) =>
   selectExperiment(uid)(state).name
@@ -58,12 +61,12 @@ export const selectExperimentStatus =
 
     const functions = selectExperimentList(state)[uid].functions
     const statusList = Object.values(functions).map((f) => f.status)
-    if (statusList.findIndex((status) => status === 'error') >= 0) {
-      return 'error'
-    } else if (statusList.findIndex((status) => status === 'running') >= 0) {
-      return 'running'
+    if (statusList.findIndex((status) => status === "error") >= 0) {
+      return "error"
+    } else if (statusList.findIndex((status) => status === "running") >= 0) {
+      return "running"
     } else {
-      return 'success'
+      return "success"
     }
   }
 
@@ -87,11 +90,16 @@ export const selectExperimentFunctionStatus =
   (uid: string, nodeId: string) => (state: RootState) =>
     selectExperimentFunction(uid, nodeId)(state).status
 
+export const selectExperimentFunctionMessage =
+  (uid: string, nodeId: string) => (state: RootState) =>
+    selectExperimentFunction(uid, nodeId)(state).message
+
 export const selectExperimentFunctionHasNWB =
   (uid: string, nodeId: string) => (state: RootState) =>
     selectExperimentFunction(uid, nodeId)(state).hasNWB
 
-export const selectFrameRate = (currentPipelineUid?: string) => (state: RootState) => {
-  if(!currentPipelineUid) return 50
-  return selectExperiment(currentPipelineUid)(state).frameRate || 50
-}
+export const selectFrameRate =
+  (currentPipelineUid?: string) => (state: RootState) => {
+    if (!currentPipelineUid) return 50
+    return selectExperiment(currentPipelineUid)(state).frameRate || 50
+  }

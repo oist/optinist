@@ -30,7 +30,7 @@ It can be executed in CUI by running `run_cluster.py`.
 
 The parameter arguments are as follows.
 - config(string): path of config.yaml file set in step 1
-- cores(int): Specifies the number of CPU cores. (defalt: 2, cores >= 2)
+- cores(int): Specifies the number of CPU cores. (default: 2, cores >= 2)
 - forceall(bool): Whether to overwrite existing results or not. (default: false)
 - use_conda(bool): Whether to use the conda virtual environment or not. If not, it is necessary to have caiman, suite2p, etc. INSTALL the current environment into the execution environment.
 

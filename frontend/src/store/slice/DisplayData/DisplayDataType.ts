@@ -11,9 +11,9 @@ import {
   LineData,
   PieData,
   PolarData,
-} from 'api/outputs/Outputs'
+} from "api/outputs/Outputs"
 
-export const DISPLAY_DATA_SLICE_NAME = 'displayData'
+export const DISPLAY_DATA_SLICE_NAME = "displayData"
 
 export type DisplayData = {
   timeSeries: {
@@ -58,24 +58,24 @@ export type DisplayData = {
 }
 
 export const DATA_TYPE_SET = {
-  TIME_SERIES: 'timeSeries',
-  HEAT_MAP: 'heatMap',
-  IMAGE: 'image',
-  CSV: 'csv',
-  ROI: 'roi',
-  SCATTER: 'scatter',
-  BAR: 'bar',
-  HDF5: 'hdf5',
-  HTML: 'html',
-  FLUO: 'fluo',
-  BEHAVIOR: 'behavior',
-  HISTOGRAM: 'histogram',
-  LINE: 'line',
-  PIE: 'pie',
-  POLAR: 'polar',
+  TIME_SERIES: "timeSeries",
+  HEAT_MAP: "heatMap",
+  IMAGE: "image",
+  CSV: "csv",
+  ROI: "roi",
+  SCATTER: "scatter",
+  BAR: "bar",
+  HDF5: "hdf5",
+  HTML: "html",
+  FLUO: "fluo",
+  BEHAVIOR: "behavior",
+  HISTOGRAM: "histogram",
+  LINE: "line",
+  PIE: "pie",
+  POLAR: "polar",
 } as const
 
-export type DATA_TYPE = typeof DATA_TYPE_SET[keyof typeof DATA_TYPE_SET]
+export type DATA_TYPE = (typeof DATA_TYPE_SET)[keyof typeof DATA_TYPE_SET]
 
 export type PlotMetaData = {
   xlabel?: string
@@ -93,50 +93,50 @@ interface BaseDisplay<T extends DATA_TYPE, Data> {
 }
 
 export interface TimeSeriesDisplayData
-  extends BaseDisplay<'timeSeries', TimeSeriesData> {
+  extends BaseDisplay<"timeSeries", TimeSeriesData> {
   xrange: string[]
   std: TimeSeriesData
 }
 
 export interface HeatMapDisplayData
-  extends BaseDisplay<'heatMap', HeatMapData> {
+  extends BaseDisplay<"heatMap", HeatMapData> {
   columns: string[]
   index: string[]
 }
 
-export interface ImageDisplayData extends BaseDisplay<'image', ImageData> {}
+export interface ImageDisplayData extends BaseDisplay<"image", ImageData> {}
 
-export interface CsvDisplayData extends BaseDisplay<'csv', CsvData> {
+export interface CsvDisplayData extends BaseDisplay<"csv", CsvData> {
   // columns: string[]
 }
 
-export interface RoiDisplayData extends BaseDisplay<'roi', RoiData> {
+export interface RoiDisplayData extends BaseDisplay<"roi", RoiData> {
   roiUniqueList: string[]
 }
 
 export interface ScatterDisplayData
-  extends BaseDisplay<'scatter', ScatterData> {}
+  extends BaseDisplay<"scatter", ScatterData> {}
 
-export interface BarDisplayData extends BaseDisplay<'bar', BarData> {
+export interface BarDisplayData extends BaseDisplay<"bar", BarData> {
   columns: string[]
   index: string[]
 }
 
-export interface HTMLDisplayData extends BaseDisplay<'html', HTMLData> {}
+export interface HTMLDisplayData extends BaseDisplay<"html", HTMLData> {}
 
 export interface HistogramDisplayData
-  extends BaseDisplay<'histogram', HistogramData> {}
+  extends BaseDisplay<"histogram", HistogramData> {}
 
-export interface LineDisplayData extends BaseDisplay<'line', LineData> {
+export interface LineDisplayData extends BaseDisplay<"line", LineData> {
   columns: number[]
   index: number[]
 }
 
-export interface PieDisplayData extends BaseDisplay<'pie', PieData> {
+export interface PieDisplayData extends BaseDisplay<"pie", PieData> {
   columns: string[]
 }
 
-export interface PolarDisplayData extends BaseDisplay<'polar', PolarData> {
+export interface PolarDisplayData extends BaseDisplay<"polar", PolarData> {
   columns: number[]
   index: number[]
 }

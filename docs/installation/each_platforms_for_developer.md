@@ -28,9 +28,8 @@ Please follow instructions below.
 
 #### Install Node.js
 
-Get node with version 16 or 18
-- [Node.js Official](https://nodejs.org/ja)
-- version 20 is not supported yet.
+Get node with version 20
+- [Node.js Official](https://nodejs.org)
 
 You can also install node via [nvm](https://github.com/nvm-sh/nvm)
 
@@ -49,7 +48,7 @@ cd ./optinist
 ### Create anaconda environment
 
 ```
-conda create -n optinist_dev python=3.8
+conda create -n optinist_dev python=3.8 poetry
 conda activate optinist_dev
 ```
 
@@ -60,10 +59,10 @@ conda config --set channel_priority strict
 ### Install requirements
 
 ```
-pip install -e '.[dev]'
+poetry install --no-root --with dev
 ```
 
-If you will make PRs, please see the [](Contributing) section.
+If you will make PRs, please see the [](for_developers) section.
 
 ### Set saving directory
 
@@ -71,12 +70,6 @@ Optinist default saving directory is `/tmp/studio`. If you reboot your PC, this 
 ```
 export OPTINIST_DIR="your_saving_dir"
 ```
-
-<!--
-### 2. Create virtualenv
-
-Under maintenance...
--->
 
 ## 2. Run backend
 

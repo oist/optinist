@@ -1,12 +1,28 @@
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import Switch from '@mui/material/Switch'
-import FormControlLabel from '@mui/material/FormControlLabel'
-import Select, { SelectChangeEvent } from '@mui/material/Select'
-import InputLabel from '@mui/material/InputLabel'
-import MenuItem from '@mui/material/MenuItem'
-import FormControl from '@mui/material/FormControl'
+import { ChangeEvent, FC, useContext, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
 
+import "react-linear-gradient-picker/dist/index.css"
+import {
+  Box,
+  Button,
+  Grid,
+  MenuItem,
+  SelectChangeEvent,
+  TextField,
+} from "@mui/material"
+
+import {
+  ParamSection,
+  FieldLabel,
+  FileNameChip,
+} from "components/common/ParamSection"
+import { ParamSelect } from "components/common/ParamSelect"
+import { ParamSwitch } from "components/common/ParamSwitch"
+import { ParamTextField } from "components/common/ParamTextField"
+import { GradientColorPicker } from "components/Workspace/Visualize/Editor/GradientColorPicker"
+import { SaveFig } from "components/Workspace/Visualize/Editor/SaveFig"
+import { SelectedItemIdContext } from "components/Workspace/Visualize/VisualizeItemEditor"
+import { getImageData } from "store/slice/DisplayData/DisplayDataActions"
 import {
   selectImageItemShowGrid,
   selectImageItemShowLine,
@@ -18,11 +34,8 @@ import {
   selectImageItemEndIndex,
   selectImageItemRoiAlpha,
   selectImageItemFilePath,
-  selectDisplayDataIsSingle,
   selectImageItemAlpha,
-} from 'store/slice/VisualizeItem/VisualizeItemSelectors'
-import { SelectedItemIdContext } from '../VisualizeItemEditor'
-
+} from "store/slice/VisualizeItem/VisualizeItemSelectors"
 import {
   setImageItemShowGrid,
   setImageItemShowLine,
@@ -35,87 +48,51 @@ import {
   resetImageActiveIndex,
   setImageItemRoiAlpha,
   setImageItemAlpha,
-} from 'store/slice/VisualizeItem/VisualizeItemSlice'
+} from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { ColorType } from "store/slice/VisualizeItem/VisualizeItemType"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
+import { AppDispatch } from "store/store"
 
-import 'react-linear-gradient-picker/dist/index.css'
-import { FileSelectImple } from 'components/Workspace/FlowChart/FlowChartNode/FileSelect'
-import { useFileUploader } from 'store/slice/FileUploader/FileUploaderHook'
-import { FILE_TYPE_SET } from 'store/slice/InputNode/InputNodeType'
-import { FILE_TREE_TYPE_SET } from 'api/files/Files'
-import { Box, TextField } from '@mui/material'
-import { GradientColorPicker } from './GradientColorPicker'
-import { ColorType } from 'store/slice/VisualizeItem/VisualizeItemType'
-import { DATA_TYPE_SET } from 'store/slice/DisplayData/DisplayDataType'
-import Button from '@mui/material/Button'
-import { getImageData } from 'store/slice/DisplayData/DisplayDataActions'
-import { setNewDisplayDataPath } from 'store/slice/VisualizeItem/VisualizeItemActions'
-import { SaveFig } from './SaveFig'
-import { selectCurrentWorkspaceId } from 'store/slice/Workspace/WorkspaceSelector'
-
-export const ImageItemEditor: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+export const ImageItemEditor: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
   const filePath = useSelector(selectImageItemFilePath(itemId))
-
-  const isSingleData = useSelector(selectDisplayDataIsSingle(itemId))
-  const onSelectImageFile = (newPath: string) => {
-    const basePayload = {
-      itemId,
-      nodeId: null,
-      filePath: newPath,
-    }
-    dispatch(
-      setNewDisplayDataPath(
-        isSingleData && filePath != null
-          ? {
-              ...basePayload,
-              deleteData: true,
-              prevDataType: DATA_TYPE_SET.IMAGE,
-              prevFilePath: filePath,
-            }
-          : {
-              ...basePayload,
-              deleteData: false,
-            },
-      ),
-    )
-  }
-
-  const { onUploadFile } = useFileUploader({ fileType: FILE_TYPE_SET.IMAGE })
-  const onUploadFileHandle = (formData: FormData, fileName: string) => {
-    onUploadFile(formData, fileName)
-  }
-
   const colors = useSelector(selectImageItemColors(itemId))
   const dispathSetColor = (colorCode: ColorType[]) => {
     dispatch(setImageItemColors({ itemId, colors: colorCode }))
   }
 
   return (
-    <div style={{ margin: '10px', padding: 10 }}>
-      <FileSelectImple
-        filePath={filePath ?? ''}
-        onSelectFile={(path) => !Array.isArray(path) && onSelectImageFile(path)}
-        onUploadFile={onUploadFileHandle}
-        fileTreeType={FILE_TREE_TYPE_SET.IMAGE}
-        selectButtonLabel="Select Image"
-      />
-      <StartEndIndex />
-      <Showticklabels />
-      <ShowLine />
-      <ShowGrid />
-      <ShowScale />
-      <Zsmooth />
-      <GradientColorPicker colors={colors} dispatchSetColor={dispathSetColor} />
-      <Alpha />
-      <RoiAlpha />
+    <>
+      <ParamSection title="Image">
+        <FileNameChip filePath={filePath} />
+        <StartEndIndex />
+        <Showticklabels />
+        <ShowLine />
+        <ShowGrid />
+        <ShowScale />
+        <Zsmooth />
+        <Grid container component="label" alignItems="center">
+          <Grid item xs={8}>
+            <FieldLabel>Pick Color</FieldLabel>
+          </Grid>
+          <Grid item xs={4}>
+            <GradientColorPicker
+              colors={colors}
+              dispatchSetColor={dispathSetColor}
+            />
+          </Grid>
+        </Grid>
+        <Alpha />
+        <RoiAlpha />
+      </ParamSection>
       <SaveFig />
-    </div>
+    </>
   )
 }
 
-const Showticklabels: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const Showticklabels: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const showticklabels = useSelector(selectImageItemShowticklabels(itemId))
   const dispatch = useDispatch()
   const toggleChecked = () => {
@@ -124,165 +101,150 @@ const Showticklabels: React.FC = () => {
     )
   }
   return (
-    <FormControlLabel
-      control={<Switch checked={showticklabels} onChange={toggleChecked} />}
-      label="Showticklabels"
+    <ParamSwitch
+      label={"ShowTickLabels"}
+      value={showticklabels}
+      onChange={toggleChecked}
     />
   )
 }
 
-const ShowLine: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const ShowLine: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const showline = useSelector(selectImageItemShowLine(itemId))
   const dispatch = useDispatch()
   const toggleChecked = () => {
     dispatch(setImageItemShowLine({ itemId, showline: !showline }))
   }
   return (
-    <FormControlLabel
-      control={<Switch checked={showline} onChange={toggleChecked} />}
-      label="ShowLine"
-    />
+    <ParamSwitch label={"ShowLine"} value={showline} onChange={toggleChecked} />
   )
 }
 
-const ShowGrid: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const ShowGrid: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const showgrid = useSelector(selectImageItemShowGrid(itemId))
   const dispatch = useDispatch()
   const toggleChecked = () => {
     dispatch(setImageItemShowGrid({ itemId, showgrid: !showgrid }))
   }
   return (
-    <FormControlLabel
-      control={<Switch checked={showgrid} onChange={toggleChecked} />}
-      label="ShowGrid"
-    />
+    <ParamSwitch label={"ShowGrid"} value={showgrid} onChange={toggleChecked} />
   )
 }
 
-const ShowScale: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const ShowScale: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const showscale = useSelector(selectImageItemShowScale(itemId))
   const dispatch = useDispatch()
   const toggleChecked = () => {
     dispatch(setImageItemShowScale({ itemId, showscale: !showscale }))
   }
   return (
-    <FormControlLabel
-      control={<Switch checked={showscale} onChange={toggleChecked} />}
-      label="ShowScale"
+    <ParamSwitch
+      label={"ShowScale"}
+      value={showscale}
+      onChange={toggleChecked}
     />
   )
 }
 
-const Zsmooth: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const Zsmooth: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const zsmooth = useSelector(selectImageItemZsmooth(itemId))
   const dispatch = useDispatch()
   const handleChange = (event: SelectChangeEvent<string | boolean>) => {
     dispatch(setImageItemZsmooth({ itemId, zsmooth: event.target.value }))
   }
   return (
-    <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
-      <InputLabel>smooth</InputLabel>
-      <Select label="smooth" value={zsmooth} onChange={handleChange}>
-        <MenuItem value={'best'}>best</MenuItem>
-        <MenuItem value={'fast'}>fast</MenuItem>
-        <MenuItem value={'false'}>False</MenuItem>
-      </Select>
-    </FormControl>
+    <ParamSelect
+      label="Smooth"
+      onChange={handleChange}
+      value={zsmooth as string}
+    >
+      <MenuItem value={"best"}>best</MenuItem>
+      <MenuItem value={"fast"}>fast</MenuItem>
+      <MenuItem value={"false"}>False</MenuItem>
+    </ParamSelect>
   )
 }
 
-const Alpha: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const Alpha: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
   const alpha = useSelector(selectImageItemAlpha(itemId))
   const inputError = !(alpha > 0)
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value === '' ? '' : Number(event.target.value)
-    if (typeof newValue === 'number') {
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value === "" ? "" : Number(event.target.value)
+    if (typeof newValue === "number") {
       dispatch(setImageItemAlpha({ itemId, alpha: newValue }))
     }
   }
   return (
-    <>
-      <TextField
-        style={{ width: '100%' }}
-        label={'image alpha'}
-        error={inputError}
-        type="number"
-        inputProps={{
-          step: 0.1,
-          min: 0,
-          max: 1.0,
-        }}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        onChange={onChange}
-        value={alpha}
-        helperText={inputError ? 'index > 0' : undefined}
-      />
-    </>
+    <ParamTextField
+      label={"Image Alpha"}
+      type="number"
+      value={alpha}
+      inputProps={{
+        step: 0.1,
+        min: 0,
+        max: 1.0,
+      }}
+      onChange={onChange}
+      error={inputError}
+      helperText={inputError ? "index > 0" : undefined}
+    />
   )
 }
 
-const RoiAlpha: React.FC = () => {
-  const itemId = React.useContext(SelectedItemIdContext)
+const RoiAlpha: FC = () => {
+  const itemId = useContext(SelectedItemIdContext)
   const dispatch = useDispatch()
   const roiAlpha = useSelector(selectImageItemRoiAlpha(itemId))
   const inputError = !(roiAlpha > 0)
-  const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value === '' ? '' : Number(event.target.value)
-    if (typeof newValue === 'number') {
+  const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value === "" ? "" : Number(event.target.value)
+    if (typeof newValue === "number") {
       dispatch(setImageItemRoiAlpha({ itemId, roiAlpha: newValue }))
     }
   }
   return (
-    <>
-      <TextField
-        style={{ width: '100%' }}
-        label={'roi alpha'}
-        error={inputError}
-        type="number"
-        inputProps={{
-          step: 0.1,
-          min: 0,
-          max: 1.0,
-        }}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        onChange={onChange}
-        value={roiAlpha}
-        helperText={inputError ? 'index > 0' : undefined}
-      />
-    </>
+    <ParamTextField
+      label={"Roi Alpha"}
+      type="number"
+      value={roiAlpha}
+      inputProps={{
+        step: 0.1,
+        min: 0,
+        max: 1.0,
+      }}
+      onChange={onChange}
+      error={inputError}
+      helperText={inputError ? "index > 0" : undefined}
+    />
   )
 }
 
-const StartEndIndex: React.FC = () => {
+const StartEndIndex: FC = () => {
   const workspaceId = useSelector(selectCurrentWorkspaceId)
-  const itemId = React.useContext(SelectedItemIdContext)
-  const [startIndex, onChangeStartIndex] = React.useState(
+  const itemId = useContext(SelectedItemIdContext)
+  const [startIndex, onChangeStartIndex] = useState(
     useSelector(selectImageItemStartIndex(itemId)),
   )
-  const [endIndex, onChangeEndIndex] = React.useState(
+  const [endIndex, onChangeEndIndex] = useState(
     useSelector(selectImageItemEndIndex(itemId)),
   )
   const inputError = !(startIndex > 0)
-  const dispatch = useDispatch()
-  const onStartChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value === '' ? '' : Number(event.target.value)
-    if (typeof newValue === 'number') {
+  const dispatch = useDispatch<AppDispatch>()
+  const onStartChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value === "" ? "" : Number(event.target.value)
+    if (typeof newValue === "number") {
       onChangeStartIndex(newValue)
     }
   }
-  const onEndChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue = event.target.value === '' ? '' : Number(event.target.value)
-    if (typeof newValue === 'number') {
+  const onEndChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const newValue = event.target.value === "" ? "" : Number(event.target.value)
+    if (typeof newValue === "number") {
       onChangeEndIndex(newValue)
     }
   }
@@ -307,38 +269,43 @@ const StartEndIndex: React.FC = () => {
   }
 
   return (
-    <Box sx={{ display: 'flex', alignItems: 'flex-start' }}>
-      <TextField
-        error={inputError}
-        type="number"
-        inputProps={{
-          step: 1,
-          min: 0,
-        }}
-        InputLabelProps={{
-          shrink: true,
-        }}
-        onChange={onStartChange}
-        value={startIndex}
-        helperText={inputError ? 'index > 0' : undefined}
-      />
-      ~
-      <TextField
-        type="number"
-        InputLabelProps={{
-          shrink: true,
-        }}
-        onChange={onEndChange}
-        value={endIndex}
-      />
-      <Button
-        size="small"
-        className="ctrl_btn"
-        variant="contained"
-        onClick={onClickButton}
-      >
-        load
-      </Button>
+    <Box marginBottom={2}>
+      <FieldLabel>Start/End Index</FieldLabel>
+      <Box sx={{ display: "flex", alignItems: "flex-start" }}>
+        <TextField
+          error={inputError}
+          type="number"
+          inputProps={{
+            step: 1,
+            min: 0,
+          }}
+          InputLabelProps={{
+            shrink: true,
+          }}
+          onChange={onStartChange}
+          value={startIndex}
+          helperText={inputError ? "index > 0" : undefined}
+          style={{ marginRight: 8 }}
+        />
+        ~
+        <TextField
+          type="number"
+          InputLabelProps={{
+            shrink: true,
+          }}
+          onChange={onEndChange}
+          value={endIndex}
+          style={{ marginLeft: 8, marginRight: 8 }}
+        />
+        <Button
+          size="small"
+          className="ctrl_btn"
+          variant="contained"
+          onClick={onClickButton}
+        >
+          load
+        </Button>
+      </Box>
     </Box>
   )
 }

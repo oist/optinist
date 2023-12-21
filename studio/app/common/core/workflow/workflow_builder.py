@@ -1,4 +1,4 @@
-from studio.app.common.core.workflow.workflow import WorkflowConfig
+from studio.app.common.schemas.workflow import WorkflowConfig
 
 
 class WorkflowConfigBuilder:

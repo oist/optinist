@@ -1,39 +1,44 @@
-import React from 'react'
-import Box from '@mui/material/Box'
+import { memo } from "react"
+import { useSelector } from "react-redux"
+import { useNavigate } from "react-router-dom"
 
-import { UseRunPipelineReturnType } from 'store/slice/Pipeline/PipelineHook'
-import { NWBSettingButton } from './FlowChart/NWB'
-import { SnakemakeButton } from './FlowChart/Snakemake'
-import { RunButtons } from './RunButtons'
-import { Button } from '@mui/material'
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos'
-import { useNavigate } from 'react-router-dom'
-import { IS_STANDALONE } from 'const/Mode'
-import { ImportWorkflowConfigButton } from './FlowChart/ImportWorkflowConfigButton'
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos"
+import { Button } from "@mui/material"
+import Box from "@mui/material/Box"
 
-export const ToolBar = React.memo<UseRunPipelineReturnType>((props) => {
+import { CreateWorkflowButton } from "components/Workspace/FlowChart/Buttons/CreateWorkflow"
+import { ImportWorkflowConfigButton } from "components/Workspace/FlowChart/Buttons/ImportWorkflowConfig"
+import { NWBSettingButton } from "components/Workspace/FlowChart/Buttons/NWB"
+import { RunButtons } from "components/Workspace/FlowChart/Buttons/RunButtons"
+import { SnakemakeButton } from "components/Workspace/FlowChart/Buttons/Snakemake"
+import { UseRunPipelineReturnType } from "store/slice/Pipeline/PipelineHook"
+import { selectModeStandalone } from "store/slice/Standalone/StandaloneSeclector"
+
+export const ToolBar = memo(function ToolBar(props: UseRunPipelineReturnType) {
   const navigate = useNavigate()
+  const isStandalone = useSelector(selectModeStandalone)
   return (
     <Box
       style={{
-        position: 'absolute',
-        float: 'right',
-        textAlign: 'right',
+        display: "flex",
+        alignItems: "center",
+        position: "absolute",
+        float: "right",
+        textAlign: "right",
         top: -7,
         right: 10,
         zIndex: 4,
-        textTransform: 'none',
-        fontSize: '1rem',
+        textTransform: "none",
+        fontSize: "1rem",
       }}
     >
-      { !IS_STANDALONE &&
-        (
-          <Button onClick={() => navigate('/console/workspaces')}>
-            <ArrowBackIosIcon />
-            Workspaces
-          </Button>
-        )
-      }
+      {!isStandalone && (
+        <Button onClick={() => navigate("/console/workspaces")}>
+          <ArrowBackIosIcon />
+          Workspaces
+        </Button>
+      )}
+      <CreateWorkflowButton />
       <ImportWorkflowConfigButton />
       <SnakemakeButton />
       <NWBSettingButton />

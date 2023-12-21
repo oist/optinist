@@ -1,0 +1,398 @@
+edgeDict:
+  ? reactflow__edge-input_0input_0--image--ImageData-suite2p_file_convert_axgpevzu10suite2p_file_convert_axgpevzu10--image--ImageData
+  : animated: false
+    id: reactflow__edge-input_0input_0--image--ImageData-suite2p_file_convert_axgpevzu10suite2p_file_convert_axgpevzu10--image--ImageData
+    source: input_0
+    sourceHandle: input_0--image--ImageData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: suite2p_file_convert_axgpevzu10
+    targetHandle: suite2p_file_convert_axgpevzu10--image--ImageData
+    type: buttonedge
+  ? reactflow__edge-input_zdax4o54o0input_zdax4o54o0--behavior--BehaviorData-eta_jntqpbkvwveta_jntqpbkvwv--behaviors_data--BehaviorData
+  : animated: false
+    id: reactflow__edge-input_zdax4o54o0input_zdax4o54o0--behavior--BehaviorData-eta_jntqpbkvwveta_jntqpbkvwv--behaviors_data--BehaviorData
+    source: input_zdax4o54o0
+    sourceHandle: input_zdax4o54o0--behavior--BehaviorData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: eta_jntqpbkvwv
+    targetHandle: eta_jntqpbkvwv--behaviors_data--BehaviorData
+    type: buttonedge
+  ? reactflow__edge-suite2p_file_convert_axgpevzu10suite2p_file_convert_axgpevzu10--ops--Suite2pData-suite2p_registration_ktrkq5sa71suite2p_registration_ktrkq5sa71--ops--Suite2pData
+  : animated: false
+    id: reactflow__edge-suite2p_file_convert_axgpevzu10suite2p_file_convert_axgpevzu10--ops--Suite2pData-suite2p_registration_ktrkq5sa71suite2p_registration_ktrkq5sa71--ops--Suite2pData
+    source: suite2p_file_convert_axgpevzu10
+    sourceHandle: suite2p_file_convert_axgpevzu10--ops--Suite2pData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: suite2p_registration_ktrkq5sa71
+    targetHandle: suite2p_registration_ktrkq5sa71--ops--Suite2pData
+    type: buttonedge
+  ? reactflow__edge-suite2p_registration_ktrkq5sa71suite2p_registration_ktrkq5sa71--ops--Suite2pData-suite2p_roi_rfau106shpsuite2p_roi_rfau106shp--ops--Suite2pData
+  : animated: false
+    id: reactflow__edge-suite2p_registration_ktrkq5sa71suite2p_registration_ktrkq5sa71--ops--Suite2pData-suite2p_roi_rfau106shpsuite2p_roi_rfau106shp--ops--Suite2pData
+    source: suite2p_registration_ktrkq5sa71
+    sourceHandle: suite2p_registration_ktrkq5sa71--ops--Suite2pData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: suite2p_roi_rfau106shp
+    targetHandle: suite2p_roi_rfau106shp--ops--Suite2pData
+    type: buttonedge
+  ? reactflow__edge-suite2p_roi_rfau106shpsuite2p_roi_rfau106shp--fluorescence--FluoData-eta_jntqpbkvwveta_jntqpbkvwv--neural_data--FluoData
+  : animated: false
+    id: reactflow__edge-suite2p_roi_rfau106shpsuite2p_roi_rfau106shp--fluorescence--FluoData-eta_jntqpbkvwveta_jntqpbkvwv--neural_data--FluoData
+    source: suite2p_roi_rfau106shp
+    sourceHandle: suite2p_roi_rfau106shp--fluorescence--FluoData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: eta_jntqpbkvwv
+    targetHandle: eta_jntqpbkvwv--neural_data--FluoData
+    type: buttonedge
+  ? reactflow__edge-suite2p_roi_rfau106shpsuite2p_roi_rfau106shp--iscell--IscellData-eta_jntqpbkvwveta_jntqpbkvwv--iscell--IscellData
+  : animated: false
+    id: reactflow__edge-suite2p_roi_rfau106shpsuite2p_roi_rfau106shp--iscell--IscellData-eta_jntqpbkvwveta_jntqpbkvwv--iscell--IscellData
+    source: suite2p_roi_rfau106shp
+    sourceHandle: suite2p_roi_rfau106shp--iscell--IscellData
+    style:
+      border: null
+      borderRadius: null
+      height: null
+      padding: null
+      width: 5
+    target: eta_jntqpbkvwv
+    targetHandle: eta_jntqpbkvwv--iscell--IscellData
+    type: buttonedge
+nodeDict:
+  eta_jntqpbkvwv:
+    data:
+      fileType: null
+      hdf5Path: null
+      label: eta
+      param:
+        post_event:
+          path: post_event
+          type: child
+          value: 10
+        pre_event:
+          path: pre_event
+          type: child
+          value: -10
+        event_col_index:
+          path: event_col_index
+          type: child
+          value: 1
+        transpose_x:
+          path: transpose_x
+          type: child
+          value: true
+        transpose_y:
+          path: transpose_y
+          type: child
+          value: false
+        trigger_threshold:
+          path: trigger_threshold
+          type: child
+          value: 0
+        trigger_type:
+          path: trigger_type
+          type: child
+          value: up
+      path: optinist/basic_neural_analysis/eta
+      type: algorithm
+    id: eta_jntqpbkvwv
+    position:
+      x: 1224.2857142857142
+      y: 289.69462945905894
+    style:
+      border: '1px solid #777'
+      borderRadius: 0
+      height: 125
+      padding: 0
+      width: 250
+    type: AlgorithmNode
+  input_0:
+    data:
+      fileType: image
+      hdf5Path: null
+      label: sample_mouse2p_image.tiff
+      param: {}
+      path:
+      - sample_mouse2p_image.tiff
+      type: input
+    id: input_0
+    position:
+      x: 50
+      y: 150
+    style:
+      border: '1px solid #777'
+      borderRadius: null
+      height: 125
+      padding: null
+      width: 250
+    type: ImageFileNode
+  input_zdax4o54o0:
+    data:
+      fileType: csv
+      hdf5Path: null
+      label: sample_mouse2p_behavior.csv
+      param:
+        setHeader: null
+        setIndex: false
+        transpose: false
+      path: sample_mouse2p_behavior.csv
+      type: input
+    id: input_zdax4o54o0
+    position:
+      x: 51.42857142857133
+      y: 327.67953226739525
+    style:
+      border: '1px solid #777'
+      borderRadius: null
+      height: 125
+      padding: null
+      width: 250
+    type: BehaviorFileNode
+  suite2p_file_convert_axgpevzu10:
+    data:
+      fileType: null
+      hdf5Path: null
+      label: suite2p_file_convert
+      param:
+        batch_size:
+          path: batch_size
+          type: child
+          value: 500
+        do_registration:
+          path: do_registration
+          type: child
+          value: 1
+        force_sktiff:
+          path: force_sktiff
+          type: child
+          value: false
+        nchannels:
+          path: nchannels
+          type: child
+          value: 1
+        nplanes:
+          path: nplanes
+          type: child
+          value: 1
+      path: suite2p/suite2p_file_convert
+      type: algorithm
+    id: suite2p_file_convert_axgpevzu10
+    position:
+      x: 325.7142857142858
+      y: 149.55901582838015
+    style:
+      border: '1px solid #777'
+      borderRadius: 0
+      height: 125
+      padding: 0
+      width: 250
+    type: AlgorithmNode
+  suite2p_registration_ktrkq5sa71:
+    data:
+      fileType: null
+      hdf5Path: null
+      label: suite2p_registration
+      param:
+        1Preg:
+          path: 1Preg
+          type: child
+          value: false
+        align_by_chan:
+          path: align_by_chan
+          type: child
+          value: 1
+        bidi_corrected:
+          path: bidi_corrected
+          type: child
+          value: false
+        bidiphase:
+          path: bidiphase
+          type: child
+          value: 0
+        block_size:
+          path: block_size
+          type: child
+          value:
+          - 128
+          - 128
+        diameter:
+          path: diameter
+          type: child
+          value: 0
+        do_bidiphase:
+          path: do_bidiphase
+          type: child
+          value: false
+        frames_include:
+          path: frames_include
+          type: child
+          value: -1
+        functional_chan:
+          path: functional_chan
+          type: child
+          value: 1
+        keep_movie_raw:
+          path: keep_movie_raw
+          type: child
+          value: false
+        maxregshift:
+          path: maxregshift
+          type: child
+          value: 0.1
+        maxregshiftNR:
+          path: maxregshiftNR
+          type: child
+          value: 5
+        nonrigid:
+          path: nonrigid
+          type: child
+          value: true
+        pre_smooth:
+          path: pre_smooth
+          type: child
+          value: 0
+        reg_tif:
+          path: reg_tif
+          type: child
+          value: false
+        smooth_sigma:
+          path: smooth_sigma
+          type: child
+          value: 1.15
+        smooth_sigma_time:
+          path: smooth_sigma_time
+          type: child
+          value: 0
+        snr_thresh:
+          path: snr_thresh
+          type: child
+          value: 1.2
+        spatial_hp_reg:
+          path: spatial_hp_reg
+          type: child
+          value: 42
+        spatial_taper:
+          path: spatial_taper
+          type: child
+          value: 40
+        th_badframes:
+          path: th_badframes
+          type: child
+          value: 1
+      path: suite2p/suite2p_registration
+      type: algorithm
+    id: suite2p_registration_ktrkq5sa71
+    position:
+      x: 601.4285714285713
+      y: 152.20114255094356
+    style:
+      border: '1px solid #777'
+      borderRadius: 0
+      height: 125
+      padding: 0
+      width: 250
+    type: AlgorithmNode
+  suite2p_roi_rfau106shp:
+    data:
+      fileType: null
+      hdf5Path: null
+      label: suite2p_roi
+      param:
+        allow_overlap:
+          path: allow_overlap
+          type: child
+          value: false
+        high_pass:
+          path: high_pass
+          type: child
+          value: 100
+        inner_neuropil_radius:
+          path: inner_neuropil_radius
+          type: child
+          value: 2
+        max_iterations:
+          path: max_iterations
+          type: child
+          value: 20
+        max_overlap:
+          path: max_overlap
+          type: child
+          value: 0.75
+        min_neuropil_pixels:
+          path: min_neuropil_pixels
+          type: child
+          value: 350
+        nbinned:
+          path: nbinned
+          type: child
+          value: 5000
+        neucoeff:
+          path: neucoeff
+          type: child
+          value: 0.7
+        preclassify:
+          path: preclassify
+          type: child
+          value: 0
+        soma_crop:
+          path: soma_crop
+          type: child
+          value: true
+        sparse_mode:
+          path: sparse_mode
+          type: child
+          value: true
+        spatial_hp_detect:
+          path: spatial_hp_detect
+          type: child
+          value: 25
+        spatial_scale:
+          path: spatial_scale
+          type: child
+          value: 0
+        tau:
+          path: tau
+          type: child
+          value: 1
+        threshold_scaling:
+          path: threshold_scaling
+          type: child
+          value: 1
+      path: suite2p/suite2p_roi
+      type: algorithm
+    id: suite2p_roi_rfau106shp
+    position:
+      x: 881.4285714285713
+      y: 152.2011425509436
+    style:
+      border: '1px solid #777'
+      borderRadius: 0
+      height: 125
+      padding: 0
+      width: 250
+    type: AlgorithmNode
