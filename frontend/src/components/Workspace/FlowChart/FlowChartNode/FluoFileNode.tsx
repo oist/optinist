@@ -56,7 +56,8 @@ const FluoFileNodeImple = memo(function FluoFileNodeImple({
             onChangeFilePath(path)
           }
         }}
-        fileType={FILE_TYPE_SET.FLUO}
+        nameNode={FILE_TYPE_SET.FLUO}
+        fileType={FILE_TYPE_SET.CSV}
         filePath={filePath ?? ""}
       />
       <Handle

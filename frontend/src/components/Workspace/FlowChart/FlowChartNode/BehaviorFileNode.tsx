@@ -58,7 +58,8 @@ const BehaviorFileNodeImple = memo(function BehaviorFileNodeImple({
             onChangeFilePath(path)
           }
         }}
-        fileType={FILE_TYPE_SET.BEHAVIOR}
+        nameNode={FILE_TYPE_SET.BEHAVIOR}
+        fileType={FILE_TYPE_SET.CSV}
         filePath={filePath ?? ""}
       />
       <Handle

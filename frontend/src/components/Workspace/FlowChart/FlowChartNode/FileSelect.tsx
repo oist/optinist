@@ -27,6 +27,7 @@ import {
 } from "store/slice/Pipeline/PipelineSelectors"
 
 interface FileSelectProps {
+  nameNode?: string
   multiSelect?: boolean
   filePath: string | string[]
   fileType: FILE_TYPE
@@ -35,6 +36,7 @@ interface FileSelectProps {
 }
 
 export const FileSelect = memo(function FileSelect({
+  nameNode,
   multiSelect = false,
   filePath,
   nodeId,
@@ -60,7 +62,7 @@ export const FileSelect = memo(function FileSelect({
           <LinearProgressWithLabel value={progress} />
         </div>
       )}
-      <Typography>{fileType}</Typography>
+      <Typography>{nameNode || fileType}</Typography>
       <FileSelectImple
         multiSelect={multiSelect}
         filePath={filePath}
@@ -212,25 +214,16 @@ export const FileSelectImple = memo(function FileSelectImple({
             </IconButton>
           </Tooltip>
         ) : null}
-        {fileTreeType &&
-          (
-            [
-              FILE_TREE_TYPE_SET.CSV,
-              FILE_TREE_TYPE_SET.FLUO,
-              FILE_TREE_TYPE_SET.BEHAVIOR,
-            ] as string[]
-          ).includes(fileTreeType as string) &&
-          !!filePath &&
-          !!nodeId && (
-            <Tooltip title={"Settings"}>
-              <IconButton>
-                <ParamSettingDialog
-                  nodeId={nodeId}
-                  filePath={filePath as string}
-                />
-              </IconButton>
-            </Tooltip>
-          )}
+        {fileTreeType === FILE_TREE_TYPE_SET.CSV && !!filePath && !!nodeId && (
+          <Tooltip title={"Settings"}>
+            <IconButton>
+              <ParamSettingDialog
+                nodeId={nodeId}
+                filePath={filePath as string}
+              />
+            </IconButton>
+          </Tooltip>
+        )}
       </ButtonGroup>
       <div>
         <input
