@@ -1,11 +1,12 @@
 import { memo, ChangeEvent, useRef } from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
 import { useSnackbar } from "notistack"
 
 import { UploadFile } from "@mui/icons-material"
 import { IconButton, Tooltip } from "@mui/material"
 
+import { selectPipelineIsStartedSuccess } from "store/slice/Pipeline/PipelineSelectors"
 import { reset } from "store/slice/VisualizeItem/VisualizeItemSlice"
 import { importWorkflowConfig } from "store/slice/Workflow/WorkflowActions"
 import { AppDispatch } from "store/store"
@@ -15,6 +16,8 @@ export const ImportWorkflowConfigButton = memo(
     const dispatch: AppDispatch = useDispatch()
     const inputRef = useRef<HTMLInputElement>(null)
     const { enqueueSnackbar } = useSnackbar()
+
+    const isPending = useSelector(selectPipelineIsStartedSuccess)
 
     const onClick = () => {
       inputRef.current?.click()
@@ -40,7 +43,7 @@ export const ImportWorkflowConfigButton = memo(
 
     return (
       <Tooltip title="Import workflow yaml file">
-        <IconButton onClick={onClick}>
+        <IconButton onClick={onClick} disabled={!!isPending}>
           <UploadFile color="primary" />
           <input
             hidden
