@@ -40,7 +40,7 @@ exclude = ["studio/tests/*", "studio/test_data/*", "conda.env.*"]
 
 [tool.poetry.dependencies]
 python = "^3.8.1"
-fastapi = "0.104.*"
+fastapi = ">=0.104,<0.106"
 uvicorn = "0.24.*"
 numpy = { version = ">=1.23, <1.27" }
 aiofiles = "*"
