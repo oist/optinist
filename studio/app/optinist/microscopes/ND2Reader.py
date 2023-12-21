@@ -21,17 +21,17 @@ class ND2Reader(MicroscopeDataReaderBase):
 
     @staticmethod
     def get_library_path() -> str:
-        platform_naem = platform.system()
+        platform_name = platform.system()
 
         if __class__.LIBRARY_DIR_KEY not in os.environ:
             return None
 
-        if platform_naem not in __class__.SDK_LIBRARY_FILES:
+        if platform_name not in __class__.SDK_LIBRARY_FILES:
             return None
 
         return (
             os.environ.get(__class__.LIBRARY_DIR_KEY)
-            + __class__.SDK_LIBRARY_FILES[platform_naem]["main"]
+            + __class__.SDK_LIBRARY_FILES[platform_name]["main"]
         )
 
     @staticmethod
