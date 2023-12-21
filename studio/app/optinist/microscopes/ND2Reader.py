@@ -9,17 +9,30 @@ from MicroscopeDataReaderBase import MicroscopeDataReaderBase, OMEDataModel
 class ND2Reader(MicroscopeDataReaderBase):
     """Nikon ND2 data reader"""
 
-    WINDOWS_DLL_FILE = "/nikon/windows/nd2readsdk-shared.dll"
-    LINUX_DLL_FILE = "/nikon/linux/libnd2readsdk-shared.so"
+    SDK_LIBRARY_FILES = {
+        "Windows": {
+            "main": "/nikon/windows/nd2readsdk-shared.dll",
+        },
+        "Linux": {
+            "main": "/nikon/linux/libnd2readsdk-shared.so",
+            "dependencies": ("libjpeg.so.8", "libtiff.so.5"),
+        },
+    }
 
     @staticmethod
     def get_library_path() -> str:
-        DLL_FILE = (
-            __class__.WINDOWS_DLL_FILE
-            if (platform.system() == "Windows")
-            else __class__.LINUX_DLL_FILE
+        platform_naem = platform.system()
+
+        if __class__.LIBRARY_DIR_KEY not in os.environ:
+            return None
+
+        if platform_naem not in __class__.SDK_LIBRARY_FILES:
+            return None
+
+        return (
+            os.environ.get(__class__.LIBRARY_DIR_KEY)
+            + __class__.SDK_LIBRARY_FILES[platform_naem]["main"]
         )
-        return os.environ.get(__class__.LIBRARY_DIR_KEY, "") + DLL_FILE
 
     @staticmethod
     def is_available() -> bool:
@@ -29,8 +42,21 @@ class ND2Reader(MicroscopeDataReaderBase):
         )
 
     def _init_library(self) -> dict:
+        # load sdk libraries (dependencies)
+        if "dependencies" in __class__.SDK_LIBRARY_FILES[platform.system()]:
+            platform_library_dir = os.path.dirname(__class__.get_library_path())
+            dependencies = __class__.SDK_LIBRARY_FILES[platform.system()][
+                "dependencies"
+            ]
+
+            for dependency in dependencies:
+                dependency_path = f"{platform_library_dir}/{dependency}"
+                self.__dll = ctypes.cdll.LoadLibrary(dependency_path)
+
+        # load sdk library
         self.__dll = ctypes.cdll.LoadLibrary(__class__.get_library_path())
 
+        # define ctypes interfaces
         self.__dll.Lim_FileOpenForReadUtf8.argtypes = (ctypes.c_char_p,)
         self.__dll.Lim_FileOpenForReadUtf8.restype = ctypes.c_void_p
         self.__dll.Lim_FileGetMetadata.argtypes = (ctypes.c_void_p,)
