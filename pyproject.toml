@@ -60,7 +60,7 @@ firebase_admin = "*"
 pyrebase4 = "4.7.1"
 pydantic = { version = "1.10.13", extras = ["email", "dotenv"] }
 python-jose = { version = "*", extras = ["cryptography"] }
-alembic = "1.9.2"
+alembic = "1.13.1"
 sqlmodel = "0.0.12"
 pymysql = "1.1.0"
 fastapi_pagination = "0.12.13"
