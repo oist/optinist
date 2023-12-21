@@ -1,15 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-import { HDF5Tree, HDF5_SLICE_NAME } from "store/slice/HDF5/HDF5Type"
-import { convertToTreeNodeType } from "store/slice/HDF5/HDF5Utils"
 import { getMatlabTree } from "store/slice/Matlab/MatlabAction"
+import { MATLAB_SLICE_NAME, MatlabTree } from "store/slice/Matlab/MatlabType"
+import { convertToTreeNodeType } from "store/slice/Matlab/MatlabUtils"
 
-const initialState: HDF5Tree = {
+const initialState: MatlabTree = {
   isLoading: false,
   tree: [],
 }
-export const HDF5Slice = createSlice({
-  name: HDF5_SLICE_NAME,
+export const matlabSlice = createSlice({
+  name: MATLAB_SLICE_NAME,
   initialState,
   reducers: {},
   extraReducers: (builder) => {
@@ -25,4 +25,4 @@ export const HDF5Slice = createSlice({
   },
 })
 
-export default HDF5Slice.reducer
+export default matlabSlice.reducer

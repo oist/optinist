@@ -1,8 +1,8 @@
 import { RootState } from "store/store"
 
 export const selectMatlab = (state: RootState) => {
-  if (state.hdf5 != null) {
-    return state.hdf5
+  if (state.matlab != null) {
+    return state.matlab
   } else {
     return undefined
   }

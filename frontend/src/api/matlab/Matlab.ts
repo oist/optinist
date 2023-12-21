@@ -8,6 +8,7 @@ export interface MatlabDirDTO {
   name: string
   nodes: MatlabTreeDTO[]
   path: string
+  dataType: string | null
 }
 
 export interface MatlabFileDTO {
@@ -16,6 +17,7 @@ export interface MatlabFileDTO {
   shape: [number]
   path: string
   nbytes: string
+  dataType: string | null
 }
 
 export async function getMatlabTreeApi(

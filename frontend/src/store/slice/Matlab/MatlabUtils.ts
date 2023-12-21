@@ -11,6 +11,7 @@ export function convertToTreeNodeType(
           isDir: true,
           nodes: convertToTreeNodeType(node.nodes),
           path: node.path,
+          dataType: node.dataType,
         }
       : {
           name: node.name,
@@ -18,6 +19,7 @@ export function convertToTreeNodeType(
           shape: node.shape,
           path: node.path,
           nbytes: node.nbytes,
+          dataType: node.dataType,
         },
   )
 }

@@ -12,6 +12,7 @@ export { default as visualaizeItemReducer } from "./VisualizeItem/VisualizeItemS
 export { default as snakemakeReducer } from "./Snakemake/SnakemakeSlice"
 export { default as pipelineReducer } from "./Pipeline/PipelineSlice"
 export { default as hdf5Reducer } from "./HDF5/HDF5Slice"
+export { default as matlabReducer } from "./Matlab/MatlabSlice"
 export { default as experimentsReducer } from "./Experiments/ExperimentsSlice"
 export { default as workspaceReducer } from "./Workspace/WorkspaceSlice"
 export { default as userReducer } from "./User/UserSlice"

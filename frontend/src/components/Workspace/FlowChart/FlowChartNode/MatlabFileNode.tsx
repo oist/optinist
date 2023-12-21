@@ -4,8 +4,9 @@ import { Handle, Position, NodeProps } from "reactflow"
 
 import FolderIcon from "@mui/icons-material/Folder"
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined"
-import { Typography } from "@mui/material"
+import { Box, Checkbox, Typography, Tooltip } from "@mui/material"
 import Button from "@mui/material/Button"
+import { CheckboxProps } from "@mui/material/Checkbox"
 import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
 import DialogContent from "@mui/material/DialogContent"
@@ -92,9 +93,21 @@ const MatlabFileNodeImple = memo(function MatlabFileNodeImple({
 })
 
 const ItemSelect = memo(function ItemSelect({ nodeId }: NodeIdProps) {
+  const dispatch = useDispatch<AppDispatch>()
   const [open, setOpen] = useState(false)
+  const [fileSelect, setFileSelect] = useState("")
 
   const structureFileName = useSelector(selectInputNodeMatlabPath(nodeId))
+
+  const onClickOk = () => {
+    dispatch(setInputNodeMatlabPath({ nodeId, path: fileSelect }))
+    setOpen(false)
+  }
+
+  const onClickCancel = () => {
+    setFileSelect("")
+    setOpen(false)
+  }
 
   return (
     <>
@@ -107,21 +120,16 @@ const ItemSelect = memo(function ItemSelect({ nodeId }: NodeIdProps) {
 
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
         <DialogTitle>{"Select File"}</DialogTitle>
-        <Structure nodeId={nodeId} />
+        <Structure
+          nodeId={nodeId}
+          fileSelect={fileSelect}
+          setFileSelect={setFileSelect}
+        />
         <DialogActions>
-          <Button
-            onClick={() => setOpen(false)}
-            color="inherit"
-            variant="outlined"
-          >
+          <Button onClick={onClickCancel} color="primary" variant="outlined">
             cancel
           </Button>
-          <Button
-            onClick={() => setOpen(false)}
-            color="primary"
-            variant="outlined"
-            autoFocus
-          >
+          <Button onClick={onClickOk} variant="contained" autoFocus>
             OK
           </Button>
         </DialogActions>
@@ -130,7 +138,11 @@ const ItemSelect = memo(function ItemSelect({ nodeId }: NodeIdProps) {
   )
 })
 
-const Structure = memo(function Structure({ nodeId }: NodeIdProps) {
+const Structure = memo(function Structure({
+  nodeId,
+  fileSelect,
+  setFileSelect,
+}: NodeIdProps) {
   const theme = useTheme()
   return (
     <DialogContent dividers>
@@ -144,20 +156,38 @@ const Structure = memo(function Structure({ nodeId }: NodeIdProps) {
           borderColor: theme.palette.divider,
         }}
       >
-        <FileTreeView nodeId={nodeId} />
+        <FileTreeView
+          nodeId={nodeId}
+          fileSelect={fileSelect}
+          setFileSelect={setFileSelect}
+        />
       </div>
+      <Typography>Select File</Typography>
+      <Typography variant="subtitle2">{fileSelect || "---"}</Typography>
     </DialogContent>
   )
 })
 
-const FileTreeView = memo(function FileTreeView({ nodeId }: NodeIdProps) {
+const FileTreeView = memo(function FileTreeView({
+  nodeId,
+  fileSelect,
+  setFileSelect,
+}: NodeIdProps) {
   const [tree, isLoading] = useMatlabTree(nodeId)
   return (
     <div>
       {isLoading && <LinearProgress />}
+      <Box display={"flex"} borderBottom={1}>
+        <Box flexGrow={4}>Structure</Box>
+        <Box flexGrow={2}>Type</Box>
+        <Box flexGrow={3}>Shape</Box>
+        <Box flexGrow={1}></Box>
+      </Box>
       <TreeView>
         {tree?.map((node, i) => (
           <TreeNode
+            fileSelect={fileSelect}
+            setFileSelect={setFileSelect}
             key={`matlabtree-${nodeId}-${i}`}
             node={node}
             nodeId={nodeId}
@@ -168,15 +198,73 @@ const FileTreeView = memo(function FileTreeView({ nodeId }: NodeIdProps) {
   )
 })
 
+interface TreeItemLabelProps {
+  isFile: boolean
+  shape: number[]
+  type: string | null
+  label: string
+  checkboxProps: CheckboxProps
+}
+
+const TreeItemLabel = memo(function TreeItemLabel({
+  isFile = false,
+  label,
+  shape,
+  type,
+  checkboxProps,
+}: TreeItemLabelProps) {
+  return (
+    <Box display="flex" alignItems="center" gap={2}>
+      <Tooltip
+        title={<span style={{ fontSize: 14 }}>{label}</span>}
+        placement={"left"}
+      >
+        <Box
+          width={isFile ? "35%" : "32%"}
+          overflow={"hidden"}
+          textOverflow={"ellipsis"}
+        >
+          {label}
+        </Box>
+      </Tooltip>
+      <Box width={"20%"}>{type}</Box>
+      <Box width={"25%"}>{shape ? `(${shape.join(", ")})` : ""}</Box>
+      <Box>
+        <Checkbox
+          {...checkboxProps}
+          disableRipple
+          size="small"
+          sx={{
+            marginRight: "4px",
+            padding: "2px",
+          }}
+        />
+      </Box>
+    </Box>
+  )
+})
+
 interface TreeNodeProps extends NodeIdProps {
+  setFileSelect?: (value: string) => void
+  fileSelect?: string
   node: MatlabTreeNodeType
 }
 
-const TreeNode = memo(function TreeNode({ node, nodeId }: TreeNodeProps) {
+const TreeNode = memo(function TreeNode({
+  node,
+  nodeId,
+  setFileSelect,
+  fileSelect,
+}: TreeNodeProps) {
   const dispatch = useDispatch()
-
+  const structureFileName = useSelector(selectInputNodeMatlabPath(nodeId))
+  useEffect(() => {
+    if (!structureFileName) return
+    setFileSelect?.(structureFileName)
+    //eslint-disable-next-line
+  }, [dispatch, structureFileName])
   const onClickFile = (path: string) => {
-    dispatch(setInputNodeMatlabPath({ nodeId, path }))
+    setFileSelect?.(path === fileSelect ? "" : path)
   }
 
   if (node.isDir) {
@@ -188,21 +276,36 @@ const TreeNode = memo(function TreeNode({ node, nodeId }: TreeNodeProps) {
         label={node.name}
       >
         {node.nodes.map((childNode, i) => (
-          <TreeNode node={childNode} key={i} nodeId={nodeId} />
+          <TreeNode
+            setFileSelect={setFileSelect}
+            fileSelect={fileSelect}
+            node={childNode}
+            key={i}
+            nodeId={nodeId}
+          />
         ))}
       </TreeItem>
     )
   } else {
     // File
-    if (node.shape)
-      return (
-        <TreeItem
-          icon={<InsertDriveFileOutlinedIcon fontSize="small" />}
-          nodeId={node.path}
-          label={node.name + `   (shape=(${node.shape}))`}
-          onClick={() => onClickFile(node.path)}
-        />
-      )
+    return (
+      <TreeItem
+        icon={<InsertDriveFileOutlinedIcon fontSize="small" />}
+        nodeId={node.path}
+        label={
+          <TreeItemLabel
+            isFile={true}
+            label={node.name}
+            type={node.dataType}
+            shape={node.shape}
+            checkboxProps={{
+              checked: fileSelect === node.path,
+            }}
+          />
+        }
+        onClick={() => onClickFile(node.path)}
+      />
+    )
     return null
   }
 })
