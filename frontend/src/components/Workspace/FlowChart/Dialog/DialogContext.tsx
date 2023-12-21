@@ -11,7 +11,7 @@ export declare type FileSelectDialogValue = {
 }
 
 export declare type FileInputUrl = {
-  filePath?: string
+  filePath?: string | string[]
   open: boolean
   nodeId: string
   requestId: string

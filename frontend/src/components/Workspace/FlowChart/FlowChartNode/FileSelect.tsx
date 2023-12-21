@@ -6,7 +6,7 @@ import {
   useEffect,
   useRef,
 } from "react"
-import { useSelector } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
 import AddLinkIcon from "@mui/icons-material/AddLink"
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate"
@@ -18,6 +18,7 @@ import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from "api/files/Files"
 import { DialogContext } from "components/Workspace/FlowChart/Dialog/DialogContext"
 import { ParamSettingDialog } from "components/Workspace/FlowChart/FlowChartNode/CsvFileNode"
 import { LinearProgressWithLabel } from "components/Workspace/FlowChart/FlowChartNode/LinerProgressWithLabel"
+import { getFilesTree } from "store/slice/FilesTree/FilesTreeAction"
 import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
 import { getLabelByPath } from "store/slice/FlowElement/FlowElementUtils"
 import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
@@ -25,6 +26,8 @@ import {
   selectPipelineIsStartedSuccess,
   selectPipelineLatestUid,
 } from "store/slice/Pipeline/PipelineSelectors"
+import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
+import { AppDispatch } from "store/store"
 
 interface FileSelectProps {
   nameNode?: string
@@ -114,8 +117,10 @@ export const FileSelectImple = memo(function FileSelectImple({
     onOpenClearWorkflowIdDialog,
     onOpenInputUrlDialog,
   } = useContext(DialogContext)
+  const dispatch = useDispatch<AppDispatch>()
   const currentWorkflowId = useSelector(selectPipelineLatestUid)
   const isPending = useSelector(selectPipelineIsStartedSuccess)
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
 
   const onFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
@@ -153,7 +158,7 @@ export const FileSelectImple = memo(function FileSelectImple({
     onOpenInputUrlDialog({
       fileType: fileTreeType,
       open: true,
-      filePath: filePath as string,
+      filePath: filePath,
       nodeId,
       requestId: id,
     })
@@ -164,7 +169,7 @@ export const FileSelectImple = memo(function FileSelectImple({
     onOpenInputUrlDialog({
       fileType: fileTreeType,
       open: false,
-      filePath: filePath as string,
+      filePath: filePath,
       nodeId,
       requestId: id,
     })
@@ -189,6 +194,14 @@ export const FileSelectImple = memo(function FileSelectImple({
                 fileTreeType,
                 onSelectFile,
               })
+              if (workspaceId && fileTreeType) {
+                dispatch(
+                  getFilesTree({
+                    workspaceId,
+                    fileType: fileTreeType,
+                  }),
+                )
+              }
             }}
           >
             {selectButtonLabel ? selectButtonLabel : "Select File"}
