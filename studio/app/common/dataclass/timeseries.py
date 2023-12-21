@@ -21,6 +21,7 @@ class TimeSeriesData(BaseData):
         sem=None,
         index=None,
         cell_numbers=None,
+        params=None,
         file_name="timeseries",
         meta: Optional[PlotMetaData] = None,
     ):
@@ -30,7 +31,8 @@ class TimeSeriesData(BaseData):
         assert data.ndim <= 2, "TimeSeries Dimension Error"
 
         if isinstance(data, str):
-            self.data = pd.read_csv(data, header=None).values
+            header = params.get("setHeader", None) if isinstance(params, dict) else None
+            self.data = pd.read_csv(data, header=header).values
         else:
             self.data = data
 

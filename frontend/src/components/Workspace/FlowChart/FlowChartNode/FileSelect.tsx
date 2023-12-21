@@ -155,7 +155,7 @@ export const FileSelectImple = memo(function FileSelectImple({
             height: 0,
           }}
         />
-        <Tooltip title={fileName ? fileName : null}>
+        <Tooltip title={fileName ? fileName : null} placement="right">
           <Typography className="selectFilePath" variant="body2">
             {fileName ? fileName : "No file is selected."}
           </Typography>
