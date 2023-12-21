@@ -1,8 +1,6 @@
-from typing import List, Union
+from typing import List
 
 from pydantic.dataclasses import dataclass as pydantic_dataclass
-
-from studio.app.common.schemas.outputs import OutputData
 
 
 @pydantic_dataclass
@@ -13,4 +11,4 @@ class MatNode:
     nodes: List["MatNode"] = None
     shape: tuple = None
     nbytes: str = None
-    data: Union[int, str, OutputData] = None
+    dataType: str = None

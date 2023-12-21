@@ -1,12 +1,10 @@
 from typing import List
 
 import numpy as np
-import pandas as pd
 from fastapi import APIRouter
 from scipy.io import loadmat
 
 from studio.app.common.core.utils.filepath_creater import join_filepath
-from studio.app.common.schemas.outputs import OutputData
 from studio.app.dir_path import DIRPATH
 from studio.app.optinist.schemas.mat import MatNode
 
@@ -42,17 +40,21 @@ class MatGetter:
             )
         elif isinstance(data, np.ndarray):
             data = data[:, np.newaxis] if len(data.shape) == 1 else data
-            df = pd.DataFrame(data=data).to_dict(orient="split")
             return MatNode(
                 isDir=False,
                 name=name,
                 path=current_path,
                 shape=data.shape,
+                dataType="array",
                 nbytes=f"{int(data.nbytes / (1000**2))} M",
-                data=OutputData(**df),
             )
         else:
-            return MatNode(isDir=False, name=name, path=current_path, data=data)
+            return MatNode(
+                isDir=False,
+                name=name,
+                path=current_path,
+                dataType=type(data).__name__,
+            )
 
 
 @router.get(
