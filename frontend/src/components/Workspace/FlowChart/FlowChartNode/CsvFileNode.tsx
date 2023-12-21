@@ -143,9 +143,17 @@ export const ParamSettingDialog = memo(function ParamSettingDialog({
       <Dialog open={open} onClose={onClickCancel}>
         <DialogTitle>Csv Setting</DialogTitle>
         <DialogContent dividers>
-          <Box sx={{ display: "flex", p: 1, m: 1, alignItems: "flex-start" }}>
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "flex-start",
+            }}
+          >
             <FormControlLabel
-              sx={{ margin: (theme) => theme.spacing(0, 1, 0, 1) }}
+              sx={{
+                margin: (theme) => theme.spacing(0, 1, 0, 1),
+                whiteSpace: "nowrap",
+              }}
               control={
                 <Switch
                   checked={transpose}
@@ -154,26 +162,50 @@ export const ParamSettingDialog = memo(function ParamSettingDialog({
               }
               label="Transpose"
             />
-            <TextField
-              label="header"
-              sx={{
-                width: 100,
-                margin: (theme) => theme.spacing(0, 1, 0, 1),
-              }}
-              type="number"
-              InputLabelProps={{
-                shrink: true,
-              }}
-              onChange={(event) => {
-                const value = Number(event.target.value)
-                if (value >= 0) {
-                  setSetHeader(value)
-                }
-              }}
-              value={setHeader}
-            />
             <FormControlLabel
-              sx={{ margin: (theme) => theme.spacing(0, 1, 0, 1) }}
+              sx={{
+                margin: (theme) => theme.spacing(0, 1, 0, 1),
+                whiteSpace: "nowrap",
+              }}
+              control={
+                <Switch
+                  checked={setHeader != null}
+                  onChange={(event) => {
+                    if (event.target.checked) {
+                      setSetHeader(0)
+                    } else {
+                      setSetHeader(null)
+                    }
+                  }}
+                />
+              }
+              label="Set Header"
+            />
+            {setHeader != null && (
+              <TextField
+                label="header"
+                sx={{
+                  width: 100,
+                  margin: (theme) => theme.spacing(0, 1, 0, 1),
+                }}
+                type="number"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+                onChange={(event) => {
+                  const value = Number(event.target.value)
+                  if (value >= 0) {
+                    setSetHeader(value)
+                  }
+                }}
+                value={setHeader}
+              />
+            )}
+            <FormControlLabel
+              sx={{
+                margin: (theme) => theme.spacing(0, 1, 0, 1),
+                whiteSpace: "nowrap",
+              }}
               control={
                 <Switch
                   checked={setIndex}

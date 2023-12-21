@@ -118,11 +118,13 @@ async def get_image(
     filepath: str,
     workspace_id: str,
     start_index: Optional[int] = 0,
-    end_index: Optional[int] = 1,
+    end_index: Optional[int] = 10,
 ):
     filename, ext = os.path.splitext(os.path.basename(filepath))
     if ext in ACCEPT_TIFF_EXT:
-        filepath = join_filepath([DIRPATH.INPUT_DIR, workspace_id, filepath])
+        if not filepath.startswith(join_filepath([DIRPATH.OUTPUT_DIR, workspace_id])):
+            filepath = join_filepath([DIRPATH.INPUT_DIR, workspace_id, filepath])
+
         save_dirpath = join_filepath(
             [
                 os.path.dirname(filepath),

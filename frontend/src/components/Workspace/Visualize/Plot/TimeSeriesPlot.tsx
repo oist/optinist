@@ -83,7 +83,7 @@ const TimeSeriesPlotImple = memo(function TimeSeriesPlotImple() {
   const dataXrange = useSelector(selectTimeSeriesXrange(path))
   const dataStd = useSelector(selectTimeSeriesStd(path))
   const rangeUnit = useSelector(selectImageItemRangeUnit(itemId))
-  const offset = useSelector(selectTimeSeriesItemOffset(itemId))
+  const stdBool = useSelector(selectTimeSeriesItemOffset(itemId))
   const span = useSelector(selectTimeSeriesItemSpan(itemId))
   const showgrid = useSelector(selectTimeSeriesItemShowGrid(itemId))
   const showline = useSelector(selectTimeSeriesItemShowLine(itemId))
@@ -142,7 +142,7 @@ const TimeSeriesPlotImple = memo(function TimeSeriesPlotImple() {
         let y = newDataXrange.map((x) => newTimeSeriesData[key]?.[x])
         const i = Number(key)
         const new_i = Math.floor((i % 10) * 10 + i / 10) % 100
-        if (drawOrderList.includes(key) && offset) {
+        if (drawOrderList.includes(key) && !stdBool) {
           const activeIdx: number = drawOrderList.findIndex((v) => v === key)
           const mean: number = y.reduce((a, b) => a + b) / y.length
           const std: number =
@@ -162,7 +162,7 @@ const TimeSeriesPlotImple = memo(function TimeSeriesPlotImple() {
             error_y: {
               type: "data",
               array:
-                !offset && Object.keys(dataStd).includes(key)
+                stdBool && Object.keys(dataStd).includes(key)
                   ? Object.values(dataStd[key])
                   : null,
               visible: true,
@@ -173,7 +173,7 @@ const TimeSeriesPlotImple = memo(function TimeSeriesPlotImple() {
     )
   }, [
     drawOrderList,
-    offset,
+    stdBool,
     span,
     colorScale,
     dataStd,

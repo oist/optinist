@@ -21,7 +21,10 @@ import { LinearProgressWithLabel } from "components/Workspace/FlowChart/FlowChar
 import { useFileUploader } from "store/slice/FileUploader/FileUploaderHook"
 import { getLabelByPath } from "store/slice/FlowElement/FlowElementUtils"
 import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
-import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
+import {
+  selectPipelineIsStartedSuccess,
+  selectPipelineLatestUid,
+} from "store/slice/Pipeline/PipelineSelectors"
 
 interface FileSelectProps {
   multiSelect?: boolean
@@ -110,6 +113,7 @@ export const FileSelectImple = memo(function FileSelectImple({
     onOpenInputUrlDialog,
   } = useContext(DialogContext)
   const currentWorkflowId = useSelector(selectPipelineLatestUid)
+  const isPending = useSelector(selectPipelineIsStartedSuccess)
 
   const onFileInputChange = (event: ChangeEvent<HTMLInputElement>) => {
     event.preventDefault()
@@ -174,6 +178,7 @@ export const FileSelectImple = memo(function FileSelectImple({
         <Tooltip title={"Select from uploaded files"}>
           <IconButton
             color={"primary"}
+            disabled={!!isPending}
             onClick={() => {
               onOpenFileSelectDialog({
                 open: true,
@@ -188,13 +193,21 @@ export const FileSelectImple = memo(function FileSelectImple({
           </IconButton>
         </Tooltip>
         <Tooltip title={"Upload file"}>
-          <IconButton onClick={onClick} color={"primary"}>
+          <IconButton
+            onClick={onClick}
+            color={"primary"}
+            disabled={!!isPending}
+          >
             {uploadButtonLabel ? uploadButtonLabel : <AddPhotoAlternateIcon />}
           </IconButton>
         </Tooltip>
         {uploadViaUrl ? (
           <Tooltip title={"Upload file via URL"}>
-            <IconButton onClick={onClickViaUrl} color={"primary"}>
+            <IconButton
+              onClick={onClickViaUrl}
+              color={"primary"}
+              disabled={!!isPending}
+            >
               {uploadViaUrl}
             </IconButton>
           </Tooltip>
@@ -222,7 +235,7 @@ export const FileSelectImple = memo(function FileSelectImple({
             height: 0,
           }}
         />
-        <Tooltip title={fileName ? fileName : null}>
+        <Tooltip title={fileName ? fileName : null} placement="right">
           <Typography className="selectFilePath" variant="body2">
             {fileName ? fileName : "No file is selected."}
           </Typography>
