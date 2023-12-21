@@ -32,7 +32,7 @@ docker run -it --shm-size=2G \
 --env OPTINIST_DIR="/app/studio_data" \
 --name optinist_container -d -p 8000:8000 --restart=unless-stopped \
 oistncu/optinist:latest \
-python main.py --host 0.0.0.0 --port 8000
+poetry run python main.py --host 0.0.0.0 --port 8000
 ```
 
 ```{eval-rst}
