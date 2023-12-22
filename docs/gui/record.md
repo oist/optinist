@@ -1,73 +1,88 @@
+(Record)=
 Record
 =================
+In the RECORD field, you can check the workflow status in your `OPTINIST_DIR` and manage your analysis pipeline. The table lists all the pipelines in your `OPTINIST_DIR`.
+
 <br>
 <p align="center">
-<img width="400px" src="../_static/record/whole.png" alt="Whole"/>
+<img width="600px" src="../_static/record/whole.png" alt="Record window"/>
 </p>
-
-
-In the RECORD field, you can check the workflow status in your OPTINIST_DIR and manage your analysis pipeline. The table lists all the pipelines in your OPTINIST_DIR. By clicking on the mark on the 2nd column, you can show the details of each pipeline.
-
-OptiNiSt records and reproduces past workflow pipelines. It can download results in nwb format.
-
-
-OptiNiSt can:
-- Record past executed workflow
-- Reproduce past workflow
-- Download workflow config file
-- Download snakemake config file
-- Download results as NWB files
 
 ### Record Table
+In RECORD table, you can:
+- See past executed workflows
+- Reproduce past workflow
+- Download files
+    - Workflow config file
+    - Snakemake config file
+    - Results as NWB files
+- Delete workflow record
 
 <p align="center">
-<img width="400px" src="../_static/record/components/table.png" alt="Table"/>
+<img width="600px" src="../_static/record/table.png" alt="Record table"/>
 </p>
 
-- **Timestamp**: latest execution date and time.
-- **ID**: unique ID. This is the directory name for the whole results of the pipeline.
-- **Name**: user-defined workflow name.
-- **Success**: success or failure (abortion with error) of execution.
-- **Reproduce**: button to reproduce the workflow graph to the WORKFLOW field.
-- **Workflow**: button to copy the workflow composition to your download folder on your computer.
-- **SnakeFile**: button to copy snakemake config file to your download folder on your computer.
-- **NWB**: button to copy the analysis results as NWB file to your download folder on your computer.
-- **Delete**: button to delete the workflow from the OPTINIST_DIR.
-
-
+| Header | Description |
+| --- | --- |
+| Timestamp | Latest execution timestamp. <br>It shows start time, end time and elapsed time of the workflow. |
+| ID | Workflow's unique id. <br>This is same as the directory name for the whole results of the workflow. |
+| Name | User-defined workflow name. You can edit the name by clicking the name. |
+| Success | Workflow's status. Success, error or running. |
+| Reproduce | Button to reproduce the workflow to the WORKFLOW field. <br>You can visualize the results for the workflow by clicking the button. |
+| Workflow | Button to download the workflow config yaml file. <br>This file can be used on import workflow button on WORKFLOW tab. <br>See details in [](ImportWorkflowYaml). |
+| SnakeFile | Button to download the snakemake config file. |
+| NWB | Button to download the analysis results as NWB file. |
+| Delete | Button to delete the workflow record from the OPTINIST_DIR. |
 
 ### Details
+You can check the results of each node by clicking arrow icon on the left of the table.
 
 <p align="center">
-<img width="400px" src="../_static/record/components/details.png" alt="Details"/>
+<img width="600px" src="../_static/record/details.png" alt="Record detail"/>
 </p>
 
-- **Function**: names of the nods (function).
-- **nodeID**: unique ID. This is the directory name for the results of each node.
-- **Success**: success or failure (abortion with error) of execution of the node.
-- **NWB**: button to copy the analysis results as NWB file to your download folder on your computer.
+| Header | Description |
+| --- | --- |
+| Function | Name of the node. |
+| nodeID | Unique id of the node. <br>This is same as the directory name for the results of the node. <br> This id is shown on the each node's bottom. |
+| Success | Node's status. Success, error or running. |
+| NWB | Button to download the analysis results for the algorithm as NWB file. |
 
+If status is error, you can see the error message by clicking status icon.
 
+<p align="center">
+<img width="600px" src="../_static/record/error_message.png" alt="Error message"/>
+</p>
+
+(ReproduceButton)=
 ### Reproduce Button
+Clicking the Reproduce arrow retrieves the pipeline onto the workflow.
+
+This function is convenient when you want to check the results of the past workflow or reuse the same analysis pipeline.
 
 <br>
 <p align="left">
-<img width="100px" src="../_static/tutorials/fig41_reproduce.png" alt="Whole" />
+<img width="100px" src="../_static/record/reproduce_button.png" alt="Reproduce button" />
 </p>
 
-Clicking the Reproduce arrow retrieves the pipeline onto the workflow. This function is convenient when you restart the analysis after closing the browser. The reproduced pipeline needs to be `RUN` again (not `RUN ALL`) to make plots available.
+```{eval-rst}
+.. note::
+   You needed to RUN the reproduced workflow to visualize the results until version 1.1.0.
+   From version 1.1.0, you can visualize the results without running the workflow.
+```
 
+(DownloadButtons)=
 ### Download Buttons
 
 <br>
 <p align="left">
-<img width="300px" src="../_static/tutorials/fig42_workflownwb.png" alt="Whole" />
+<img width="300px" src="../_static/record/download_buttons.png" alt="Download buttons" />
 </p>
 
 You can download 3 types of config files here.
 
-- Workflow: the workflow and parameters information to reproduce in OptiNiSt GUI.
-- Snakemake: the workflow and parameters information used by Snakemake.
-- NWB: nwbfile which contains the data and its analysis results.
-
-This function is convenient when users want to share the same analysis pipeline or inspect the output results.
+| FileType | Description |
+| --- | --- |
+| Workflow | It includes the workflow and parameters information to reproduce in OptiNiSt GUI. <br>This file can be used on import workflow button on WORKFLOW tab. <br>See details in [](ImportWorkflowYaml). |
+| SnakeFile | It includes the workflow and parameters information used by Snakemake. |
+| NWB | NWBfile which contains the data and its analysis results. |

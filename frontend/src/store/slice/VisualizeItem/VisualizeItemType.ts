@@ -82,7 +82,7 @@ export interface ImageItem extends DisplayDataItemBaseType {
 
 export interface TimeSeriesItem extends DisplayDataItemBaseType {
   dataType: typeof DATA_TYPE_SET.TIME_SERIES
-  offset: boolean
+  stdBool: boolean
   span: number
   showgrid: boolean
   showline: boolean

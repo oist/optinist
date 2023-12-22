@@ -219,7 +219,7 @@ describe("RecordReproduce", () => {
           position: { x: 51, y: 150 },
           style: {
             border: "1px solid #777",
-            height: 125,
+            height: 140,
             width: 250,
           },
         },
@@ -230,7 +230,7 @@ describe("RecordReproduce", () => {
           position: { x: 350, y: 151.3534781075913 },
           style: {
             border: "1px solid #777",
-            height: 125,
+            height: 140,
             width: 250,
             padding: 0,
             borderRadius: 0,
@@ -243,7 +243,7 @@ describe("RecordReproduce", () => {
           position: { x: 600, y: 164.03341976235507 },
           style: {
             border: "1px solid #777",
-            height: 125,
+            height: 140,
             width: 250,
             padding: 0,
             borderRadius: 0,
