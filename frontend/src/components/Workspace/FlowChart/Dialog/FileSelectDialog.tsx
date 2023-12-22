@@ -352,6 +352,7 @@ const TreeItemLabel = memo(function TreeItemLabel({
             maxWidth: "48%",
             textOverflow: "ellipsis",
             overflowX: "hidden",
+            whiteSpace: "pre",
           }}
         >
           {label}
