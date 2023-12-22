@@ -33,6 +33,12 @@ export interface FileNodeDTO extends NodeBaseDTO {
   isdir: false
 }
 
+export type GetStatusViaUrl = {
+  total: number
+  current: number
+  error: string | null
+}
+
 export async function getFilesTreeApi(
   workspaceId: number,
   fileType: FILE_TREE_TYPE,
@@ -69,4 +75,26 @@ export async function updateShapeApi(
     `${BASE_URL}/files/${workspaceId}/shape/${fileName}`,
   )
   return response.data
+}
+
+export const uploadViaUrlApi = async (
+  workspaceId: number,
+  url: string,
+): Promise<{ file_name: string }> => {
+  const res = await axios.post(
+    `${BASE_URL}/files/${workspaceId}/download`,
+    { url },
+    // config,
+  )
+  return res.data
+}
+
+export const getStatusLoadViaUrlApi = async (
+  workspaceId: number,
+  file_name: string,
+): Promise<GetStatusViaUrl> => {
+  const res = await axios.get(
+    `${BASE_URL}/files/${workspaceId}/download/status?file_name=${file_name}`,
+  )
+  return res.data
 }

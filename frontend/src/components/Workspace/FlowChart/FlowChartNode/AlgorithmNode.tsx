@@ -109,13 +109,17 @@ const AlgorithmNodeImple = memo(function AlgorithmNodeImple({
         </Grid>
       </Grid>
       <ButtonGroup>
-        <Button size="small" onClick={onClickParamButton}>
+        <Button
+          size="small"
+          onClick={onClickParamButton}
+          disabled={status === NODE_RESULT_STATUS.PENDING}
+        >
           Param
         </Button>
         <Button
           size="small"
           onClick={onClickOutputButton}
-          disabled={status !== NODE_RESULT_STATUS.SUCCESS}
+          disabled={status === NODE_RESULT_STATUS.PENDING}
         >
           Output
         </Button>
