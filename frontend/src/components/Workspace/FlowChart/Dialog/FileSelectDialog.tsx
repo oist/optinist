@@ -77,6 +77,7 @@ export const FileSelectDialog = memo(function FileSelectDialog({
     }
   }
   const theme = useTheme()
+
   return (
     <Dialog open={open} onClose={onCancel} fullWidth>
       <DialogTitle>{title ?? "Select File"}</DialogTitle>

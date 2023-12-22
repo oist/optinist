@@ -2,7 +2,6 @@ import { memo } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Handle, Position, NodeProps } from "reactflow"
 
-import { ParamSettingDialog } from "components/Workspace/FlowChart/FlowChartNode/CsvFileNode"
 import { FileSelect } from "components/Workspace/FlowChart/FlowChartNode/FileSelect"
 import { toHandleId } from "components/Workspace/FlowChart/FlowChartNode/FlowChartUtils"
 import { useHandleColor } from "components/Workspace/FlowChart/FlowChartNode/HandleColorHook"
@@ -59,10 +58,10 @@ const BehaviorFileNodeImple = memo(function BehaviorFileNodeImple({
             onChangeFilePath(path)
           }
         }}
+        nameNode={FILE_TYPE_SET.BEHAVIOR}
         fileType={FILE_TYPE_SET.CSV}
         filePath={filePath ?? ""}
       />
-      {!!filePath && <ParamSettingDialog nodeId={nodeId} filePath={filePath} />}
       <Handle
         type="source"
         position={Position.Right}
