@@ -13,6 +13,7 @@ class Rule:
     type: str
     nwbfile: dict = None
     hdf5Path: str = None
+    matPath: str = None
     path: str = None
 
 

@@ -1,3 +1,4 @@
+from functools import reduce
 from typing import List
 
 import numpy as np
@@ -13,16 +14,21 @@ router = APIRouter()
 
 class MatGetter:
     @classmethod
+    def data(cls, filepath, dataPath: str = None):
+        data = loadmat(filepath, simplify_cells=True)
+        data = {key: value for key, value in data.items() if not key.startswith("__")}
+        keys = dataPath.split("/") if dataPath is not None else []
+        # if dataPath is not None or dataPath.strip("") != "":
+        return reduce(lambda d, key: d[key], keys, data)
+        # return data
+
+    @classmethod
     def get(cls, filepath, workspace_id) -> List[MatNode]:
         filepath = join_filepath([DIRPATH.INPUT_DIR, workspace_id, filepath])
 
-        data = loadmat(filepath, simplify_cells=True)
+        data = cls.data(filepath, dataPath=None)
 
-        return [
-            cls.dict_to_matnode(value, key, key)
-            for key, value in data.items()
-            if not key.startswith("__")
-        ]
+        return [cls.dict_to_matnode(value, key, key) for key, value in data.items()]
 
     @classmethod
     def dict_to_matnode(cls, data, name, current_path=""):

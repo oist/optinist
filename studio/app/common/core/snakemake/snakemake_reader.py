@@ -12,6 +12,7 @@ class RuleConfigReader:
             type=rule["type"],
             nwbfile=rule["nwbfile"],
             hdf5Path=rule["hdf5Path"],
+            matPath=rule["matPath"],
             path=rule["path"],
         )
 
