@@ -7,7 +7,7 @@ class FILETYPE:
     CSV: str = "csv"
     HDF5: str = "hdf5"
     BEHAVIOR: str = "behavior"
-    MATLAB: str = "mat"
+    MATLAB: str = "matlab"
 
 
 ACCEPT_TIFF_EXT = [".tif", ".tiff", ".TIF", ".TIFF"]
