@@ -349,7 +349,7 @@ const TreeItemLabel = memo(function TreeItemLabel({
         <Box
           flexGrow={5}
           sx={{
-            maxWidth: "50%",
+            maxWidth: "48%",
             textOverflow: "ellipsis",
             overflowX: "hidden",
           }}
@@ -360,7 +360,7 @@ const TreeItemLabel = memo(function TreeItemLabel({
       {fileType === FILE_TREE_TYPE_SET.IMAGE ? (
         <>
           <Box flexGrow={3} marginLeft={2}>
-            {!shape || shape.length === 0 ? (
+            {!shape ? (
               <Tooltip
                 title={
                   <span style={{ fontSize: 14 }}>
