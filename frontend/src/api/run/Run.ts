@@ -35,7 +35,7 @@ export interface InputNodePostData extends InputNodeData {
     [key: string]: unknown
   }
   hdf5Path?: string
-  matlabPath?: string
+  matPath?: string
 }
 
 export interface AlgorithmNodePostData extends AlgorithmNodeData {

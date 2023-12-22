@@ -44,7 +44,7 @@ export interface CsvInputNode
 export interface MatlabInputNode
   extends InputNodeBaseType<"matlab", Record<never, never>> {
   selectedFilePath?: string
-  matlabPath?: string
+  matPath?: string
 }
 
 export interface ImageInputNode

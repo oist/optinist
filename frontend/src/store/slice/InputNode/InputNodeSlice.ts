@@ -65,7 +65,7 @@ export const inputNodeSlice = createSlice({
       const { nodeId, path } = action.payload
       const item = state[nodeId]
       if (isMatlabInputNode(item)) {
-        item.matlabPath = path
+        item.matPath = path
       }
     },
     setInputNodeHDF5Path(
@@ -227,7 +227,7 @@ export const inputNodeSlice = createSlice({
                 } else if (node.data.fileType === FILE_TYPE_SET.MATLAB) {
                   newState[node.id] = {
                     fileType: FILE_TYPE_SET.MATLAB,
-                    matlabPath: node.data.matlabPath,
+                    matPath: node.data.matPath,
                     selectedFilePath: node.data.path as string,
                     param: {},
                   }

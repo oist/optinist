@@ -33,7 +33,6 @@ const initialState: DisplayData = {
   heatMap: {},
   image: {},
   csv: {},
-  // matlab: {},
   roi: {},
   scatter: {},
   bar: {},

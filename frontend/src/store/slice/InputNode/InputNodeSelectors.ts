@@ -115,7 +115,7 @@ export const selectInputNodeMatlabPath =
   (nodeId: string) => (state: RootState) => {
     const item = selectInputNodeById(nodeId)(state)
     if (isMatlabInputNode(item)) {
-      return item.matlabPath
+      return item.matPath
     } else {
       return undefined
     }
