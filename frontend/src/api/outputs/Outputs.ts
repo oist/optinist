@@ -1,3 +1,4 @@
+import { StatusROI } from "components/Workspace/Visualize/Plot/ImagePlot"
 import { BASE_URL } from "const/API"
 import { PlotMetaData } from "store/slice/DisplayData/DisplayDataType"
 import axios from "utils/axios"
@@ -142,10 +143,11 @@ export async function getHTMLDataApi(
 
 export async function addRoiApi(
   path: string,
+  workspaceId: number,
   data: { posx: number; posy: number; sizex: number; sizey: number },
 ): Promise<{ data: HTMLData; meta?: PlotMetaData }> {
   const response = await axios.post(
-    `${BASE_URL}/outputs/image/${path}/add_roi`,
+    `${BASE_URL}/outputs/image/${path}/add_roi?workspace_id=${workspaceId}`,
     data,
   )
   return response.data
@@ -153,10 +155,11 @@ export async function addRoiApi(
 
 export async function mergeRoiApi(
   path: string,
+  workspaceId: number,
   data: { ids: number[] },
 ): Promise<{ data: HTMLData; meta?: PlotMetaData }> {
   const response = await axios.post(
-    `${BASE_URL}/outputs/image/${path}/merge_roi`,
+    `${BASE_URL}/outputs/image/${path}/merge_roi?workspace_id=${workspaceId}`,
     data,
   )
   return response.data
@@ -164,11 +167,42 @@ export async function mergeRoiApi(
 
 export async function deleteRoiApi(
   path: string,
+  workspaceId: number,
   data: { ids: number[] },
 ): Promise<{ data: HTMLData; meta?: PlotMetaData }> {
   const response = await axios.post(
-    `${BASE_URL}/outputs/image/${path}/delete_roi`,
+    `${BASE_URL}/outputs/image/${path}/delete_roi?workspace_id=${workspaceId}`,
     data,
+  )
+  return response.data
+}
+
+export async function commitRoiApi(
+  path: string,
+  workspace_id: number,
+): Promise<boolean> {
+  const response = await axios.post(
+    `${BASE_URL}/outputs/image/${path}/commit_edit?workspace_id=${workspace_id}`,
+  )
+  return response.data
+}
+
+export async function cancelRoiApi(
+  path: string | string[],
+  workspace_id: number,
+): Promise<{ data: HTMLData; meta?: PlotMetaData }> {
+  const response = await axios.post(
+    `${BASE_URL}/outputs/image/${path}/cancel_edit?workspace_id=${workspace_id}`,
+  )
+  return response.data
+}
+
+export async function getStatusRoi(
+  path: string,
+  workspace_id: number,
+): Promise<StatusROI> {
+  const response = await axios.post(
+    `${BASE_URL}/outputs/image/${path}/status?workspace_id=${workspace_id}`,
   )
   return response.data
 }

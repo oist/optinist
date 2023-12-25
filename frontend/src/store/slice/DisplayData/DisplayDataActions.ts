@@ -27,7 +27,14 @@ import {
   getLineDataApi,
   getPieDataApi,
   getPolarDataApi,
+  cancelRoiApi,
+  addRoiApi,
+  mergeRoiApi,
+  deleteRoiApi,
+  commitRoiApi,
+  getStatusRoi,
 } from "api/outputs/Outputs"
+import { StatusROI } from "components/Workspace/Visualize/Plot/ImagePlot"
 import {
   PlotMetaData,
   DISPLAY_DATA_SLICE_NAME,
@@ -152,6 +159,109 @@ export const getRoiData = createAsyncThunk<
   async ({ path, workspaceId }, thunkAPI) => {
     try {
       const response = await getRoiDataApi(path, { workspaceId })
+      return response
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
+
+export const cancelRoi = createAsyncThunk<
+  { data: HTMLData; meta?: PlotMetaData },
+  { path: string | string[]; workspaceId: number }
+>(
+  `${DISPLAY_DATA_SLICE_NAME}/cancelRoi`,
+  async ({ path, workspaceId }, thunkAPI) => {
+    try {
+      const response = await cancelRoiApi(path, workspaceId)
+      return response
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
+
+export const addRoi = createAsyncThunk<
+  { data: HTMLData; meta?: PlotMetaData },
+  {
+    path: string
+    workspaceId: number
+    data: { posx: number; posy: number; sizex: number; sizey: number }
+  }
+>(
+  `${DISPLAY_DATA_SLICE_NAME}/addRoi`,
+  async ({ path, workspaceId, data }, thunkAPI) => {
+    const { dispatch } = thunkAPI
+    try {
+      const response = await addRoiApi(path, workspaceId, data)
+      await dispatch(getStatus({ path, workspaceId }))
+      await dispatch(getRoiData({ path, workspaceId }))
+      return response
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
+
+export const mergeRoi = createAsyncThunk<
+  { data: HTMLData; meta?: PlotMetaData },
+  { path: string; workspaceId: number; data: { ids: number[] } }
+>(
+  `${DISPLAY_DATA_SLICE_NAME}/mergeROi`,
+  async ({ path, workspaceId, data }, thunkAPI) => {
+    const { dispatch } = thunkAPI
+    try {
+      const response = await mergeRoiApi(path, workspaceId, data)
+      dispatch(getStatus({ path, workspaceId }))
+      return response
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
+
+export const deleteRoi = createAsyncThunk<
+  { data: HTMLData; meta?: PlotMetaData },
+  { path: string; workspaceId: number; data: { ids: number[] } }
+>(
+  `${DISPLAY_DATA_SLICE_NAME}/deleteRoi`,
+  async ({ path, workspaceId, data }, thunkAPI) => {
+    const { dispatch } = thunkAPI
+    try {
+      const response = await deleteRoiApi(path, workspaceId, data)
+      dispatch(getStatus({ path, workspaceId }))
+      return response
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
+
+export const commitRoi = createAsyncThunk<
+  boolean,
+  { path: string; workspaceId: number }
+>(
+  `${DISPLAY_DATA_SLICE_NAME}/commitRoi`,
+  async ({ path, workspaceId }, thunkAPI) => {
+    const { dispatch } = thunkAPI
+    try {
+      const response = await commitRoiApi(path, workspaceId)
+      dispatch(getStatus({ path, workspaceId }))
+      return response
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
+
+export const getStatus = createAsyncThunk<
+  StatusROI,
+  { path: string; workspaceId: number }
+>(
+  `${DISPLAY_DATA_SLICE_NAME}/getStatusRoi`,
+  async ({ path, workspaceId }, thunkAPI) => {
+    try {
+      const response = await getStatusRoi(path, workspaceId)
       return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)
