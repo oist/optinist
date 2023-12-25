@@ -9,8 +9,8 @@ from os.path import abspath, dirname
 ROOT_DIRPATH = dirname(dirname(dirname(dirname(dirname(dirname(abspath(__file__)))))))
 sys.path.append(ROOT_DIRPATH)
 
-from studio.app.optinist.core.edit_ROI import EditRoiUtils
+from studio.app.optinist.core.edit_ROI import EditROI
 
 if __name__ == "__main__":
     config = snakemake.config
-    EditRoiUtils.execute(config)
+    EditROI(file_path=config["file_path"]).commit()
