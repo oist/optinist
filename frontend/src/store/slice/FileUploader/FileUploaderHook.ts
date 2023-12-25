@@ -58,5 +58,6 @@ export function useFileUploader({ fileType, nodeId }: UseFileUploaderProps) {
     progress,
     error,
     onUploadFile,
+    id,
   }
 }

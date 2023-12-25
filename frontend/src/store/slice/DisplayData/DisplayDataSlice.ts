@@ -72,12 +72,7 @@ export const displayDataSlice = createSlice({
       })
       .addCase(getTimeSeriesDataById.pending, (state, action) => {
         const { path } = action.meta.arg
-        if (
-          Object.prototype.hasOwnProperty.call(
-            !state.timeSeries.hasOwnProperty,
-            path,
-          )
-        ) {
+        if (!Object.prototype.hasOwnProperty.call(state.timeSeries, path)) {
           state.timeSeries[path] = {
             type: "timeSeries",
             xrange: [],
@@ -119,12 +114,7 @@ export const displayDataSlice = createSlice({
       })
       .addCase(getTimeSeriesAllData.pending, (state, action) => {
         const { path } = action.meta.arg
-        if (
-          Object.prototype.hasOwnProperty.call(
-            !state.timeSeries.hasOwnProperty,
-            path,
-          )
-        ) {
+        if (!Object.prototype.hasOwnProperty.call(state.timeSeries, path)) {
           state.timeSeries[path] = {
             type: "timeSeries",
             xrange: [],
@@ -166,12 +156,7 @@ export const displayDataSlice = createSlice({
       })
       .addCase(getTimeSeriesInitData.pending, (state, action) => {
         const { path } = action.meta.arg
-        if (
-          Object.prototype.hasOwnProperty.call(
-            !state.timeSeries.hasOwnProperty,
-            path,
-          )
-        ) {
+        if (!Object.prototype.hasOwnProperty.call(state.timeSeries, path)) {
           state.timeSeries[path] = {
             type: "timeSeries",
             xrange: [],

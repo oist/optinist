@@ -6,6 +6,7 @@ import Tabs from "@mui/material/Tabs"
 
 import { StatusROI } from "components/Workspace/Visualize/Plot/ImagePlot"
 import { cancelRoi } from "store/slice/DisplayData/DisplayDataActions"
+import { selectPipelineIsStartedSuccess } from "store/slice/Pipeline/PipelineSelectors"
 import {
   selectActiveTab,
   selectCurrentWorkspaceId,
@@ -37,6 +38,8 @@ const WorkspaceTabs: FC = () => {
     [roiFilePath, workspaceId, statusRoi],
   )
 
+  const isPending = useSelector(selectPipelineIsStartedSuccess)
+
   return (
     <>
       <Tabs
@@ -47,7 +50,7 @@ const WorkspaceTabs: FC = () => {
         textColor="primary"
       >
         <Tab label="Workflow" {...a11yProps(0)} />
-        <Tab label="Visualize" {...a11yProps(1)} />
+        <Tab disabled={!!isPending} label="Visualize" {...a11yProps(1)} />
         <Tab label="Record" {...a11yProps(2)} />
       </Tabs>
     </>

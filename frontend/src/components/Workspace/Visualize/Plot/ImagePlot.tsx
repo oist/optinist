@@ -931,7 +931,7 @@ const PlayBack = memo(function PlayBack({ activeIndex }: ActiveIndexProps) {
       </Button>
       <TextField
         sx={{ width: 100, ml: 2 }}
-        label="Duration [msec]"
+        label="msec/frame"
         type="number"
         inputProps={{
           step: 100,

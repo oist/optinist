@@ -10,9 +10,9 @@ rules:
     nwbfile: null
     output: 1/tutorial1/eta_jntqpbkvwv/eta.pkl
     params:
-      end_time: 10
-      start_time: -10
-      target_index: 1
+      post_event: 10
+      pre_event: -10
+      event_col_index: 1
       transpose_x: true
       transpose_y: false
       trigger_threshold: 0

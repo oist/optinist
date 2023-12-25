@@ -10,6 +10,7 @@ class FluoData(TimeSeriesData):
         data,
         std=None,
         index=None,
+        params=None,
         file_name="fluo",
         meta: Optional[PlotMetaData] = None,
     ):
@@ -17,6 +18,7 @@ class FluoData(TimeSeriesData):
             data=data,
             std=std,
             index=index,
+            params=params,
             file_name=file_name,
             meta=meta,
         )
