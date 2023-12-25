@@ -33,9 +33,7 @@ const App: FC = () => {
     dispatch(getModeStandalone())
       .unwrap()
       .catch(() => {
-        new Promise((resolve) =>
-          setTimeout(resolve, RETRY_WAIT),
-        ).then(() => {
+        new Promise((resolve) => setTimeout(resolve, RETRY_WAIT)).then(() => {
           getMode()
         })
       })

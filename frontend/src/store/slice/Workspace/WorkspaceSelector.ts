@@ -14,8 +14,14 @@ export const selectWorkspaceItem =
 export const selectActiveTab = (state: RootState) =>
   state.workspace.currentWorkspace.selectedTab
 
+export const selectRoiFilePathCancel = (state: RootState) =>
+  state.workspace.currentWorkspace.roiFilePath
+
 export const selectCurrentWorkspaceId = (state: RootState) =>
   state.workspace.currentWorkspace.workspaceId
+
+export const selectStatusRoiCancel = (state: RootState) =>
+  state.workspace.currentWorkspace.statusRoi
 
 export const selectCurrentWorkspaceName = (state: RootState) =>
   state.workspace.currentWorkspace.workspaceName

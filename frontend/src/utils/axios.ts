@@ -11,8 +11,8 @@ const axios = axiosLibrary.create({
 
 axios.interceptors.request.use(
   async (config) => {
-    config.headers.Authorization = `Bearer ${getToken()}`
-    config.headers.ExToken = getExToken()
+    config.headers!.Authorization = `Bearer ${getToken()}`
+    config.headers!.ExToken = getExToken()
     return config
   },
   (error) => Promise.reject(error),

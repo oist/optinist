@@ -1,10 +1,11 @@
 from studio.app.common.core.snakemake.smk_utils import SmkUtils
 from studio.app.common.core.utils.filepath_creater import join_filepath
-from studio.app.optinist.core.edit_ROI import EditRoiUtils, ACTION
+from studio.app.optinist.core.edit_ROI import EditRoiUtils
 from studio.app.const import FILETYPE
 from studio.app.dir_path import DIRPATH
 
-if config.get('type') == ACTION.EDIT_ROI:
+
+if config.get('type') == "EDIT_ROI":
     rule edit_ROI:
         conda:
             EditRoiUtils.conda(config)
