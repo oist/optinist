@@ -13,7 +13,7 @@ import AutorenewIcon from "@mui/icons-material/Autorenew"
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline"
 import FolderIcon from "@mui/icons-material/Folder"
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined"
-import { Tooltip } from "@mui/material"
+import { Divider, IconButton, Tooltip } from "@mui/material"
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 import Checkbox, { CheckboxProps } from "@mui/material/Checkbox"
@@ -190,15 +190,18 @@ const FileTreeView = memo(function FileTreeView({
     <div>
       {isLoading && <LinearProgress />}
       {fileType === FILE_TREE_TYPE_SET.IMAGE ? (
-        <Box sx={{ display: "flex", borderBottom: "1px solid black" }}>
-          <Typography flexGrow={5} sx={{ maxWidth: "50%" }}>
-            Files
-          </Typography>
-          <Typography flexGrow={3} marginLeft={2}>
-            Shapes
-          </Typography>
-          <Box flexGrow={1}></Box>
-        </Box>
+        <>
+          <Box sx={{ display: "flex" }}>
+            <Typography flexGrow={5} sx={{ maxWidth: "50%" }}>
+              Files
+            </Typography>
+            <Typography flexGrow={3} marginLeft={2}>
+              Shapes
+            </Typography>
+            <Box flexGrow={1}></Box>
+          </Box>
+          <Divider />
+        </>
       ) : null}
       <TreeView
         disableSelection={multiSelect}
@@ -347,9 +350,8 @@ const TreeItemLabel = memo(function TreeItemLabel({
         placement={"left-start"}
       >
         <Box
-          flexGrow={5}
           sx={{
-            maxWidth: "48%",
+            width: "48%",
             textOverflow: "ellipsis",
             overflowX: "hidden",
             whiteSpace: "pre",
@@ -360,7 +362,7 @@ const TreeItemLabel = memo(function TreeItemLabel({
       </Tooltip>
       {fileType === FILE_TREE_TYPE_SET.IMAGE ? (
         <>
-          <Box flexGrow={3} marginLeft={2}>
+          <Box width={"35%"} marginLeft={2} alignItems={"center"}>
             {!shape ? (
               <Tooltip
                 title={
@@ -376,14 +378,9 @@ const TreeItemLabel = memo(function TreeItemLabel({
               `(${shape.join(", ")})`
             )}
           </Box>
-          <Box
-            marginRight={1}
-            display={"flex"}
-            alignItems={"center"}
-            onClick={(event) => onUpdate(event, label)}
-          >
+          <IconButton onClick={(event) => onUpdate(event, label)}>
             <AutorenewIcon />
-          </Box>
+          </IconButton>
         </>
       ) : null}
       <Box>
