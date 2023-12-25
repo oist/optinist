@@ -177,7 +177,7 @@ const InputNodeComponent = memo(function InputNodeComponent({
           break
         case FILE_TYPE_SET.MATLAB:
           reactFlowNodeType = REACT_FLOW_NODE_TYPE_KEY.MatlabFileNode
-          // fileType = FILE_TYPE_SET.MATLAB
+          fileType = FILE_TYPE_SET.MATLAB
           break
       }
       const newNode = {

@@ -2,9 +2,10 @@ import { memo, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Handle, Position, NodeProps } from "reactflow"
 
+import AccountTreeIcon from "@mui/icons-material/AccountTree"
 import FolderIcon from "@mui/icons-material/Folder"
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined"
-import { Typography } from "@mui/material"
+import { IconButton, Typography } from "@mui/material"
 import Button from "@mui/material/Button"
 import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
@@ -98,9 +99,9 @@ const ItemSelect = memo(function ItemSelect({ nodeId }: NodeIdProps) {
 
   return (
     <>
-      <Button variant="outlined" size="small" onClick={() => setOpen(true)}>
-        {"Structure"}
-      </Button>
+      <IconButton onClick={() => setOpen(true)}>
+        <AccountTreeIcon color={"primary"} />
+      </IconButton>
       <Typography className="selectFilePath" variant="caption">
         {structureFileName ? structureFileName : "No structure is selected."}
       </Typography>

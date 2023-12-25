@@ -2,9 +2,17 @@ import { memo, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Handle, Position, NodeProps } from "reactflow"
 
+import AccountTreeIcon from "@mui/icons-material/AccountTree"
 import FolderIcon from "@mui/icons-material/Folder"
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined"
-import { Box, Checkbox, Typography, Tooltip } from "@mui/material"
+import {
+  Box,
+  Checkbox,
+  Typography,
+  Tooltip,
+  Divider,
+  IconButton,
+} from "@mui/material"
 import Button from "@mui/material/Button"
 import { CheckboxProps } from "@mui/material/Checkbox"
 import Dialog from "@mui/material/Dialog"
@@ -111,9 +119,9 @@ const ItemSelect = memo(function ItemSelect({ nodeId }: NodeIdProps) {
 
   return (
     <>
-      <Button variant="outlined" size="small" onClick={() => setOpen(true)}>
-        {"Structure"}
-      </Button>
+      <IconButton onClick={() => setOpen(true)}>
+        <AccountTreeIcon color={"primary"} />
+      </IconButton>
       <Typography className="selectFilePath" variant="caption">
         {structureFileName ? structureFileName : "No structure is selected."}
       </Typography>
@@ -177,12 +185,13 @@ const FileTreeView = memo(function FileTreeView({
   return (
     <div>
       {isLoading && <LinearProgress />}
-      <Box display={"flex"} borderBottom={1}>
+      <Box display={"flex"} paddingBottom={1}>
         <Box flexGrow={4}>Structure</Box>
         <Box flexGrow={2}>Type</Box>
         <Box flexGrow={3}>Shape</Box>
         <Box flexGrow={1}></Box>
       </Box>
+      <Divider />
       <TreeView>
         {tree?.map((node, i) => (
           <TreeNode
