@@ -45,13 +45,6 @@ export function isCsvItem(item: VisualaizeItemType): item is CsvItem {
   )
 }
 
-export function isMatlabItem(item: VisualaizeItemType): item is CsvItem {
-  return (
-    item.itemType === VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA &&
-    item.dataType === DATA_TYPE_SET.CSV
-  )
-}
-
 export function isHeatMapItem(item: VisualaizeItemType): item is HeatMapItem {
   return (
     item.itemType === VISUALIZE_ITEM_TYPE_SET.DISPLAY_DATA &&
