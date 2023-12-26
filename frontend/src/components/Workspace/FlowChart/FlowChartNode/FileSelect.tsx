@@ -8,6 +8,7 @@ import {
 } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
+import AccountTreeIcon from "@mui/icons-material/AccountTree"
 import AddLinkIcon from "@mui/icons-material/AddLink"
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate"
 import ChecklistRtlIcon from "@mui/icons-material/ChecklistRtl"
@@ -36,6 +37,7 @@ interface FileSelectProps {
   fileType: FILE_TYPE
   nodeId?: string
   onChangeFilePath: (path: string | string[]) => void
+  setOpen?: (value: boolean) => void
 }
 
 export const FileSelect = memo(function FileSelect({
@@ -44,6 +46,7 @@ export const FileSelect = memo(function FileSelect({
   filePath,
   nodeId,
   fileType,
+  setOpen,
   onChangeFilePath,
 }: FileSelectProps) {
   const {
@@ -76,6 +79,7 @@ export const FileSelect = memo(function FileSelect({
         uploadViaUrl={<AddLinkIcon />}
         nodeId={nodeId}
         id={id.current}
+        setOpen={setOpen}
       />
       {error != null && (
         <Typography variant="caption" color="error">
@@ -98,6 +102,7 @@ interface FileSelectImpleProps {
   nodeId?: string
   onUploadViaUrl?: (url: string) => void
   id: string
+  setOpen?: (value: boolean) => void
 }
 
 export const FileSelectImple = memo(function FileSelectImple({
@@ -111,6 +116,7 @@ export const FileSelectImple = memo(function FileSelectImple({
   uploadViaUrl,
   nodeId,
   id,
+  setOpen,
 }: FileSelectImpleProps) {
   const {
     onOpenFileSelectDialog,
@@ -183,60 +189,89 @@ export const FileSelectImple = memo(function FileSelectImple({
     <div>
       <ButtonGroup size="small" style={{ marginRight: 4 }}>
         <Tooltip title={"Select from uploaded files"}>
-          <IconButton
-            color={"primary"}
-            disabled={!!isPending}
-            onClick={() => {
-              onOpenFileSelectDialog({
-                open: true,
-                multiSelect,
-                filePath,
-                fileTreeType,
-                onSelectFile,
-              })
-              if (workspaceId && fileTreeType) {
-                dispatch(
-                  getFilesTree({
-                    workspaceId,
-                    fileType: fileTreeType,
-                  }),
-                )
-              }
-            }}
-          >
-            {selectButtonLabel ? selectButtonLabel : "Select File"}
-          </IconButton>
+          <span>
+            <IconButton
+              color={"primary"}
+              disabled={!!isPending}
+              onClick={() => {
+                onOpenFileSelectDialog({
+                  open: true,
+                  multiSelect,
+                  filePath,
+                  fileTreeType,
+                  onSelectFile,
+                })
+                if (workspaceId && fileTreeType) {
+                  dispatch(
+                    getFilesTree({
+                      workspaceId,
+                      fileType: fileTreeType,
+                    }),
+                  )
+                }
+              }}
+            >
+              {selectButtonLabel ? selectButtonLabel : "Select File"}
+            </IconButton>
+          </span>
         </Tooltip>
         <Tooltip title={"Upload file"}>
-          <IconButton
-            onClick={onClick}
-            color={"primary"}
-            disabled={!!isPending}
-          >
-            {uploadButtonLabel ? uploadButtonLabel : <AddPhotoAlternateIcon />}
-          </IconButton>
-        </Tooltip>
-        {uploadViaUrl ? (
-          <Tooltip title={"Upload file via URL"}>
+          <span>
             <IconButton
-              onClick={onClickViaUrl}
+              onClick={onClick}
               color={"primary"}
               disabled={!!isPending}
             >
-              {uploadViaUrl}
+              {uploadButtonLabel ? (
+                uploadButtonLabel
+              ) : (
+                <AddPhotoAlternateIcon />
+              )}
             </IconButton>
+          </span>
+        </Tooltip>
+        {uploadViaUrl ? (
+          <Tooltip title={"Upload file via URL"}>
+            <span>
+              <IconButton
+                onClick={onClickViaUrl}
+                color={"primary"}
+                disabled={!!isPending}
+              >
+                {uploadViaUrl}
+              </IconButton>
+            </span>
           </Tooltip>
         ) : null}
         {fileTreeType === FILE_TREE_TYPE_SET.CSV && !!filePath && !!nodeId && (
           <Tooltip title={"Settings"}>
-            <IconButton>
-              <ParamSettingDialog
-                nodeId={nodeId}
-                filePath={filePath as string}
-              />
-            </IconButton>
+            <span>
+              <IconButton disabled={!!isPending}>
+                <ParamSettingDialog
+                  nodeId={nodeId}
+                  filePath={filePath as string}
+                />
+              </IconButton>
+            </span>
           </Tooltip>
         )}
+        {(
+          [FILE_TREE_TYPE_SET.HDF5, FILE_TREE_TYPE_SET.MATLAB] as string[]
+        ).includes(fileTreeType as string) &&
+          !!filePath &&
+          !!nodeId && (
+            <Tooltip title={"Structure"}>
+              <span>
+                <IconButton
+                  color={"primary"}
+                  disabled={!!isPending}
+                  onClick={() => setOpen?.(true)}
+                >
+                  <AccountTreeIcon />
+                </IconButton>
+              </span>
+            </Tooltip>
+          )}
       </ButtonGroup>
       <div>
         <input

@@ -35,7 +35,9 @@ export const NodeContainer: FC<{
         flexDirection: "column",
       }}
     >
-      <Box margin={1}>{children}</Box>
+      <Box margin={1} marginBottom={0}>
+        {children}
+      </Box>
       <Tooltip title={nodeId} placement="bottom-start">
         <Typography
           marginX={1}

@@ -2,10 +2,9 @@ import { memo, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Handle, Position, NodeProps } from "reactflow"
 
-import AccountTreeIcon from "@mui/icons-material/AccountTree"
 import FolderIcon from "@mui/icons-material/Folder"
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined"
-import { IconButton, Typography } from "@mui/material"
+import { Typography } from "@mui/material"
 import Button from "@mui/material/Button"
 import Dialog from "@mui/material/Dialog"
 import DialogActions from "@mui/material/DialogActions"
@@ -39,6 +38,11 @@ import { FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
 import { AppDispatch } from "store/store"
 
+type ItemSelectProps = {
+  open: boolean
+  setOpen: (value: boolean) => void
+} & NodeIdProps
+
 export const HDF5FileNode = memo(function HDF5FileNode(element: NodeProps) {
   const defined = useSelector(selectInputNodeDefined(element.id))
   if (defined) {
@@ -54,6 +58,8 @@ const HDF5FileNodeImple = memo(function HDF5FileNodeImple({
 }: NodeProps) {
   const dispatch = useDispatch()
   const filePath = useSelector(selectHDF5InputNodeSelectedFilePath(nodeId))
+
+  const [open, setOpen] = useState(false)
   const onChangeFilePath = (path: string) => {
     dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
   }
@@ -78,10 +84,13 @@ const HDF5FileNodeImple = memo(function HDF5FileNodeImple({
             onChangeFilePath(path)
           }
         }}
+        setOpen={setOpen}
         fileType={FILE_TYPE_SET.HDF5}
         filePath={filePath ?? ""}
       />
-      {filePath !== undefined && <ItemSelect nodeId={nodeId} />}
+      {filePath !== undefined && (
+        <ItemSelect open={open} setOpen={setOpen} nodeId={nodeId} />
+      )}
       <Handle
         type="source"
         position={Position.Right}
@@ -92,35 +101,29 @@ const HDF5FileNodeImple = memo(function HDF5FileNodeImple({
   )
 })
 
-const ItemSelect = memo(function ItemSelect({ nodeId }: NodeIdProps) {
-  const [open, setOpen] = useState(false)
-
+const ItemSelect = memo(function ItemSelect({
+  nodeId,
+  open,
+  setOpen,
+}: ItemSelectProps) {
   const structureFileName = useSelector(selectInputNodeHDF5Path(nodeId))
 
   return (
     <>
-      <IconButton onClick={() => setOpen(true)}>
-        <AccountTreeIcon color={"primary"} />
-      </IconButton>
       <Typography className="selectFilePath" variant="caption">
         {structureFileName ? structureFileName : "No structure is selected."}
       </Typography>
-
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
         <DialogTitle>{"Select File"}</DialogTitle>
         <Structure nodeId={nodeId} />
         <DialogActions>
-          <Button
-            onClick={() => setOpen(false)}
-            color="inherit"
-            variant="outlined"
-          >
+          <Button onClick={() => setOpen(false)} variant="outlined">
             cancel
           </Button>
           <Button
             onClick={() => setOpen(false)}
             color="primary"
-            variant="outlined"
+            variant="contained"
             autoFocus
           >
             OK

@@ -2,17 +2,9 @@ import { memo, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Handle, Position, NodeProps } from "reactflow"
 
-import AccountTreeIcon from "@mui/icons-material/AccountTree"
 import FolderIcon from "@mui/icons-material/Folder"
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined"
-import {
-  Box,
-  Checkbox,
-  Typography,
-  Tooltip,
-  Divider,
-  IconButton,
-} from "@mui/material"
+import { Box, Checkbox, Typography, Tooltip, Divider } from "@mui/material"
 import Button from "@mui/material/Button"
 import { CheckboxProps } from "@mui/material/Checkbox"
 import Dialog from "@mui/material/Dialog"
@@ -47,6 +39,11 @@ import { MatlabTreeNodeType } from "store/slice/Matlab/MatlabType"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
 import { AppDispatch } from "store/store"
 
+type ItemSelectProps = {
+  open: boolean
+  setOpen: (value: boolean) => void
+} & NodeIdProps
+
 export const MatlabFileNode = memo(function MatlabFileNode(element: NodeProps) {
   const defined = useSelector(selectInputNodeDefined(element.id))
   if (defined) {
@@ -62,6 +59,8 @@ const MatlabFileNodeImple = memo(function MatlabFileNodeImple({
 }: NodeProps) {
   const dispatch = useDispatch()
   const filePath = useSelector(selectMatlabInputNodeSelectedFilePath(nodeId))
+
+  const [open, setOpen] = useState(false)
   const onChangeFilePath = (path: string) => {
     dispatch(setInputNodeFilePath({ nodeId, filePath: path }))
   }
@@ -86,10 +85,13 @@ const MatlabFileNodeImple = memo(function MatlabFileNodeImple({
             onChangeFilePath(path)
           }
         }}
+        setOpen={setOpen}
         fileType={FILE_TYPE_SET.MATLAB}
         filePath={filePath ?? ""}
       />
-      {filePath !== undefined && <ItemSelect nodeId={nodeId} />}
+      {filePath !== undefined && (
+        <ItemSelect open={open} setOpen={setOpen} nodeId={nodeId} />
+      )}
       <Handle
         type="source"
         position={Position.Right}
@@ -100,32 +102,31 @@ const MatlabFileNodeImple = memo(function MatlabFileNodeImple({
   )
 })
 
-const ItemSelect = memo(function ItemSelect({ nodeId }: NodeIdProps) {
+const ItemSelect = memo(function ItemSelect({
+  nodeId,
+  open,
+  setOpen,
+}: ItemSelectProps) {
   const dispatch = useDispatch<AppDispatch>()
-  const [open, setOpen] = useState(false)
   const [fileSelect, setFileSelect] = useState("")
 
   const structureFileName = useSelector(selectInputNodeMatlabPath(nodeId))
 
   const onClickOk = () => {
     dispatch(setInputNodeMatlabPath({ nodeId, path: fileSelect }))
-    setOpen(false)
+    setOpen?.(false)
   }
 
   const onClickCancel = () => {
     setFileSelect("")
-    setOpen(false)
+    setOpen?.(false)
   }
 
   return (
     <>
-      <IconButton onClick={() => setOpen(true)}>
-        <AccountTreeIcon color={"primary"} />
-      </IconButton>
       <Typography className="selectFilePath" variant="caption">
         {structureFileName ? structureFileName : "No structure is selected."}
       </Typography>
-
       <Dialog open={open} onClose={() => setOpen(false)} fullWidth>
         <DialogTitle>{"Select File"}</DialogTitle>
         <Structure
