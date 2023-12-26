@@ -5,7 +5,7 @@ from ND2Reader import ND2Reader
 
 CURRENT_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
 LIBRARY_DIR = CURRENT_DIR_PATH + "/dll"
-TEST_DATA_PATH = CURRENT_DIR_PATH + "/testdata/nikon-oriOD001.nd2"
+TEST_DATA_PATH = CURRENT_DIR_PATH + "/testdata/nikon/nikon-oriOD001.nd2"
 
 os.environ[ND2Reader.LIBRARY_DIR_KEY] = LIBRARY_DIR
 
