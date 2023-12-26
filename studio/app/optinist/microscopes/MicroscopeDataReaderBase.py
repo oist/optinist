@@ -1,10 +1,10 @@
 import os
 from abc import ABCMeta, abstractmethod
+from dataclasses import dataclass
 
-from pydantic import BaseModel
 
-
-class OMEDataModel(BaseModel):
+@dataclass
+class OMEDataModel:
     """OME(Open Microscopy Environment) aware metadata
     @link https://ome-model.readthedocs.io/en/stable/ome-xml/
     """
@@ -14,12 +14,12 @@ class OMEDataModel(BaseModel):
     size_y: int
     size_t: int
     size_c: int
+    fps: int  # frames_per_second  # TODO: OME標準の類似項目に合わせる
 
     # TODO: 以下今後追加想定
     # SizeZ: int
     # AcquisitionDate: date
     # Instrument/(Laser|Detector): str
-    # FrameRate: float  # 正確にはOMEの項目ではない様だが、追加想定
 
 
 class MicroscopeDataReaderBase(metaclass=ABCMeta):
@@ -34,6 +34,7 @@ class MicroscopeDataReaderBase(metaclass=ABCMeta):
         self._init_library()
 
         # init members
+        self.__data_handle = None
         self.__original_metadata = None
         self.__ome_metadata = None
         self.__lab_specific_metadata = None
@@ -49,14 +50,16 @@ class MicroscopeDataReaderBase(metaclass=ABCMeta):
         """
         Load data
         """
-        handle = self._load_data_file(data_file_path)
+        self.__data_handle = self._load_data_file(data_file_path)
         self.__data_file_path = data_file_path
         data_name = os.path.basename(data_file_path)
 
         """
         Read metadata
         """
-        self.__original_metadata = self._build_original_metadata(handle, data_name)
+        self.__original_metadata = self._build_original_metadata(
+            self.__data_handle, data_name
+        )
         self.__ome_metadata = self._build_ome_metadata(self.__original_metadata)
         self.__lab_specific_metadata = self._build_lab_specific_metadata(
             self.__original_metadata
@@ -65,7 +68,7 @@ class MicroscopeDataReaderBase(metaclass=ABCMeta):
         """
         Release resources
         """
-        self._release_resources(handle)
+        self._release_resources(self.__data_handle)
 
     @abstractmethod
     def _init_library(self) -> dict:
@@ -83,12 +86,12 @@ class MicroscopeDataReaderBase(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def _build_ome_metadata(self, all_metadata: dict) -> OMEDataModel:
+    def _build_ome_metadata(self, original_metadata: dict) -> OMEDataModel:
         """Build OME(Open Microscopy Environment) aware metadata"""
         pass
 
     @abstractmethod
-    def _build_lab_specific_metadata(self, all_metadata: dict) -> dict:
+    def _build_lab_specific_metadata(self, original_metadata: dict) -> dict:
         """Build metadata in lab-specific format"""
         pass
 
@@ -98,18 +101,22 @@ class MicroscopeDataReaderBase(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def _get_images_stack(self) -> list:
+    def get_images_stack(self) -> list:
         """Return microscope image stacks"""
         pass
 
     @property
-    def original_metadata(self):
+    def data_handle(self) -> object:
+        return self.__data_handle
+
+    @property
+    def original_metadata(self) -> dict:
         return self.__original_metadata
 
     @property
-    def ome_metadata(self):
+    def ome_metadata(self) -> dict:
         return self.__ome_metadata
 
     @property
-    def lab_specific_metadata(self):
+    def lab_specific_metadata(self) -> dict:
         return self.__lab_specific_metadata
