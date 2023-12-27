@@ -71,7 +71,11 @@ class FileWriter:
     @classmethod
     def mat(cls, rule_config: Rule):
         nwbfile = rule_config.nwbfile
-        data = MatGetter.data(rule_config.input, rule_config.matPath)
+        try:
+            data = MatGetter.data(rule_config.input, rule_config.matPath)
+        except NotImplementedError:
+            with h5py.File(rule_config.input, "r") as f:
+                data = f[rule_config.matPath][:]
 
         if data.ndim == 3:
             info = {rule_config.return_arg: ImageData(data, "")}

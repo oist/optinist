@@ -7,6 +7,7 @@ from scipy.io import loadmat
 
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.dir_path import DIRPATH
+from studio.app.optinist.routers.hdf5 import HDF5Getter
 from studio.app.optinist.schemas.mat import MatNode
 
 router = APIRouter()
@@ -18,17 +19,16 @@ class MatGetter:
         data = loadmat(filepath, simplify_cells=True)
         data = {key: value for key, value in data.items() if not key.startswith("__")}
         keys = dataPath.split("/") if dataPath is not None else []
-        # if dataPath is not None or dataPath.strip("") != "":
         return reduce(lambda d, key: d[key], keys, data)
-        # return data
 
     @classmethod
     def get(cls, filepath, workspace_id) -> List[MatNode]:
         filepath = join_filepath([DIRPATH.INPUT_DIR, workspace_id, filepath])
-
-        data = cls.data(filepath, dataPath=None)
-
-        return [cls.dict_to_matnode(value, key, key) for key, value in data.items()]
+        try:
+            data = cls.data(filepath, dataPath=None)
+            return [cls.dict_to_matnode(value, key, key) for key, value in data.items()]
+        except NotImplementedError:
+            return HDF5Getter.get(filepath)
 
     @classmethod
     def dict_to_matnode(cls, data, name, current_path=""):
