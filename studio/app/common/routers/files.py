@@ -66,9 +66,9 @@ class DirTreeGetter:
             search_dirpath = join_filepath([absolute_dirpath, node_name])
 
             if os.path.isfile(search_dirpath) and node_name.endswith(tuple(file_types)):
-                shape = IMAGE_SHAPE_DICT.get(node_name, {}).get("shape")
+                shape = IMAGE_SHAPE_DICT.get(relative_path, {}).get("shape")
                 if shape is None and file_types == ACCEPT_TIFF_EXT:
-                    shape = update_image_shape(workspace_id, node_name)
+                    shape = update_image_shape(workspace_id, relative_path)
                 nodes.append(
                     TreeNode(
                         path=relative_path,
@@ -115,9 +115,9 @@ def get_image_shape_dict(workspace_id):
         return {}
 
 
-def update_image_shape(workspace_id, file_name):
+def update_image_shape(workspace_id, relative_file_path):
     dirpath = join_filepath([DIRPATH.INPUT_DIR, workspace_id])
-    filepath = join_filepath([dirpath, file_name])
+    filepath = join_filepath([dirpath, relative_file_path])
 
     try:
         img = Image.open(filepath)
@@ -130,10 +130,10 @@ def update_image_shape(workspace_id, file_name):
         tiff_format_dict = JsonReader.read(tiff_format_file)
     except FileNotFoundError:
         tiff_format_dict = {}
-    tiff_format_dict[file_name] = {"shape": shape}
+    tiff_format_dict[relative_file_path] = {"shape": shape}
 
     with open(tiff_format_file, "w") as f:
-        json.dump(tiff_format_dict, f)
+        json.dump(tiff_format_dict, f, indent=4)
 
     return shape
 
@@ -155,13 +155,13 @@ async def get_files(workspace_id: str, file_type: str = None):
 
 
 @router.post(
-    "/{workspace_id}/shape/{filename}",
+    "/{workspace_id}/shape/{filepath}",
     response_model=bool,
     dependencies=[Depends(is_workspace_owner)],
 )
-async def set_shape(workspace_id: str, filename: str):
+async def set_shape(workspace_id: str, filepath: str):
     try:
-        update_image_shape(workspace_id, filename)
+        update_image_shape(workspace_id, filepath)
     except Exception as e:
         raise HTTPException(status=422, detail=str(e))
     return True
