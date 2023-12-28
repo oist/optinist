@@ -27,9 +27,12 @@ def test_nd2_reader():
     import json
 
     # dump attributes
-    pprint(json.dumps(data_reader.original_metadata))
+    print("[original_metadata]", json.dumps(data_reader.original_metadata, indent=2))
     pprint(data_reader.ome_metadata)
-    pprint(json.dumps(data_reader.lab_specific_metadata))
+    print(
+        "[lab_specific_metadata]",
+        json.dumps(data_reader.lab_specific_metadata, indent=2),
+    )
 
     # dump image stack
     # images_stack = data_reader.get_images_stack()

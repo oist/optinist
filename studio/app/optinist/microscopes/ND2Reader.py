@@ -112,8 +112,10 @@ class ND2Reader(MicroscopeDataReaderBase):
         """
 
         attributes = original_metadata["attributes"]
-        # metadata = original_metadata["metadata"]
-        # textinfo = original_metadata["textinfo"]
+        experiment = original_metadata["experiment"]
+
+        # TODO: experiment, periods, の参照は先頭データに固定でOK？
+        period_ms = float(experiment[0]["parameters"]["periods"][0]["periodMs"])
 
         omeData = OMEDataModel(
             image_name=original_metadata["data_name"],
@@ -121,7 +123,7 @@ class ND2Reader(MicroscopeDataReaderBase):
             size_y=attributes["heightPx"],
             size_t=attributes["sequenceCount"],
             size_c=attributes["componentCount"],  # TODO: この内容が正しいか要確認
-            fps=0,  # TODO: 要設定
+            fps=(1000 / period_ms),
         )
 
         return omeData
@@ -163,7 +165,6 @@ class ND2Reader(MicroscopeDataReaderBase):
         # experiment = original_metadata["experiment"]
 
         # ※一部のデータ項目は ch0 より取得
-        # TODO: 上記の仕様で適切であるか？（要レビュー）
         metadata_ch0_microscope = metadata["channels"][0]["microscope"]
 
         lab_specific_metadata = {
