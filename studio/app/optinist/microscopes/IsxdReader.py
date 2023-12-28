@@ -84,6 +84,8 @@ class IsxdReader(MicroscopeDataReaderBase):
 
     def get_images_stack(self) -> list:
         movie: isx.Movie = self.data_handle
-        image_frames = [movie.get_frame_data(i) for i in range(movie.timing.num_samples)]
+        image_frames = [
+            movie.get_frame_data(i) for i in range(movie.timing.num_samples)
+        ]
 
         return image_frames
