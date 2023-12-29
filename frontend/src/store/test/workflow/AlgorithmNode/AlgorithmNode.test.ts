@@ -62,7 +62,9 @@ describe("AlgorithmNode", () => {
       functionPath,
     )
     expect(selectAlgorithmNodeById(nodeId)(targetState).name).toBe(name)
-    expect(selectAlgorithmNodeById(nodeId)(targetState).isUpdated).toBe(false)
+    expect(selectAlgorithmNodeById(nodeId)(targetState).originalValue).toBe(
+      false,
+    )
     expect(selectAlgorithmNodeById(nodeId)(targetState).params).toEqual({
       param1: {
         type: "child",
@@ -104,12 +106,15 @@ describe("AlgorithmNode", () => {
   test(updateParam.type, () => {
     const path = "param3/param4"
     const newValue = 10
-    const updateParamAction = updateParam({ nodeId, path, newValue })
+    const initValue = 9
+    const updateParamAction = updateParam({ nodeId, path, newValue, initValue })
     const targetState = rootReducer(
       rootReducer(initialRootState, addAlgorithmNodeAction),
       updateParamAction,
     )
-    expect(selectAlgorithmNodeById(nodeId)(targetState).isUpdated).toBe(true)
+    expect(selectAlgorithmNodeById(nodeId)(targetState).originalValue).toBe(
+      true,
+    )
     expect(selectAlgorithmParamsValue(nodeId, path)(targetState)).toBe(newValue)
   })
 })

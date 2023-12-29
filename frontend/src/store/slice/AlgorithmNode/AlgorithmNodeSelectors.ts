@@ -21,9 +21,14 @@ export const selectAlgorithmParams = (nodeId: string) => (state: RootState) =>
   selectAlgorithmNodeById(nodeId)(state).params
 
 export const selectAlgorithmIsUpdated =
-  (nodeId: string) => (state: RootState) =>
-    selectAlgorithmNodeById(nodeId)(state).isUpdated
-
+  (nodeId: string) => (state: RootState) => {
+    const originalValue = selectAlgorithmNodeById(nodeId)(state).originalValue
+    const param = selectAlgorithmParams(nodeId)(state)
+    return (
+      !(JSON.stringify(originalValue) === JSON.stringify(param)) &&
+      originalValue
+    )
+  }
 export const selectAlgorithmParamsExit =
   (nodeId: string) => (state: RootState) =>
     selectAlgorithmNodeById(nodeId)(state).params !== null

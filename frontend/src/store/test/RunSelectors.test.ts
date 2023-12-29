@@ -64,7 +64,7 @@ describe("RunSelectors", () => {
           },
           neucoeff: { type: "child", value: 0.7, path: "neucoeff" },
         },
-        isUpdated: false,
+        originalValue: false,
       },
       suite2p_file_convert_m58owcejm0: {
         functionPath: "suite2p/suite2p_file_convert",
@@ -84,7 +84,7 @@ describe("RunSelectors", () => {
             path: "do_registration",
           },
         },
-        isUpdated: false,
+        originalValue: false,
       },
     },
     flowElement: {
@@ -587,7 +587,7 @@ describe("RunSelectors", () => {
             path: "do_registration",
           },
         },
-        isUpdated: true,
+        originalValue: true,
       },
     },
     flowElement: {

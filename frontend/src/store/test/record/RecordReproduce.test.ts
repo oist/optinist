@@ -167,13 +167,13 @@ describe("RecordReproduce", () => {
         name: "dummy_image2image",
         functionPath: "dummy/dummy_image2image",
         params: { sample: { path: "sample", type: "child", value: "test" } },
-        isUpdated: false,
+        originalValue: "",
       },
       dummy_image2image8time_4mrz8h7hyk: {
         name: "dummy_image2image8time",
         functionPath: "dummy/dummy_image2image8time",
         params: {},
-        isUpdated: false,
+        originalValue: false,
       },
     },
     flowElement: {

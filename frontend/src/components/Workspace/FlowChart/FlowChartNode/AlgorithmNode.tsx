@@ -32,7 +32,6 @@ import {
   selectAlgorithmIsUpdated,
   selectAlgorithmNodeDefined,
 } from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
-import { selectAncestorNodesIsUpdatedById } from "store/slice/FlowElement/FlowElementSelectors"
 import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
 import { NodeData, NodeIdProps } from "store/slice/FlowElement/FlowElementType"
 import {
@@ -82,16 +81,15 @@ const AlgorithmNodeImple = memo(function AlgorithmNodeImple({
 
   const status = useStatus(nodeId)
   const workflowId = useSelector(selectPipelineLatestUid)
-  const selfIsUpdated = useSelector(selectAlgorithmIsUpdated(nodeId))
-  const ancestorIsUpdated = useSelector(
-    selectAncestorNodesIsUpdatedById(nodeId),
-  )
-
-  const updated =
-    typeof workflowId !== "undefined" && (selfIsUpdated || ancestorIsUpdated)
+  const isUpdated = useSelector(selectAlgorithmIsUpdated(nodeId))
+  const updated = typeof workflowId !== "undefined" && isUpdated
 
   return (
-    <NodeContainer nodeId={nodeId} selected={elementSelected} updated={updated}>
+    <NodeContainer
+      nodeId={nodeId}
+      selected={elementSelected}
+      updated={!!updated}
+    >
       <button
         className="flowbutton"
         onClick={onClickDeleteIcon}
@@ -133,7 +131,6 @@ const AlgorithmNodeImple = memo(function AlgorithmNodeImple({
 const AlgoProgress = memo(function AlgoProgress({ nodeId }: NodeIdProps) {
   const status = useStatus(nodeId)
   const pipelineStatus = useSelector(selectPipelineStatus)
-
   if (
     pipelineStatus === RUN_STATUS.START_SUCCESS &&
     status === NODE_RESULT_STATUS.PENDING
