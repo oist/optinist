@@ -29,8 +29,8 @@ class IsxdReader(MicroscopeDataReaderBase):
         #         initialization process. (using pip module)
         pass  # do nothing.
 
-    def _load_data_file(self, data_file_path: str) -> object:
-        return isx.Movie.read(data_file_path)
+    def _load_data_file(self, data_path: str) -> object:
+        return isx.Movie.read(data_path)
 
     def _build_original_metadata(self, handle: object, data_name: str) -> dict:
         movie: isx.Movie = handle
