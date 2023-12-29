@@ -1,6 +1,10 @@
 import sys
 
-import isx
+try:
+    import isx
+except ModuleNotFoundError:
+    pass
+
 from MicroscopeDataReaderBase import MicroscopeDataReaderBase, OMEDataModel
 
 
@@ -25,8 +29,8 @@ class IsxdReader(MicroscopeDataReaderBase):
         #         initialization process. (using pip module)
         pass  # do nothing.
 
-    def _load_data_file(self, data_file_path: str) -> object:
-        return isx.Movie.read(data_file_path)
+    def _load_data_file(self, data_path: str) -> object:
+        return isx.Movie.read(data_path)
 
     def _build_original_metadata(self, handle: object, data_name: str) -> dict:
         movie: isx.Movie = handle
@@ -80,9 +84,8 @@ class IsxdReader(MicroscopeDataReaderBase):
 
     def get_images_stack(self) -> list:
         movie: isx.Movie = self.data_handle
-        image_frames = []
-
-        for i in range(movie.timing.num_samples):
-            image_frames.append(movie.get_frame_data(i))
+        image_frames = [
+            movie.get_frame_data(i) for i in range(movie.timing.num_samples)
+        ]
 
         return image_frames

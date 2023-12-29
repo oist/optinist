@@ -34,12 +34,13 @@ class MicroscopeDataReaderBase(metaclass=ABCMeta):
         self._init_library()
 
         # init members
+        self.__data_path = None
         self.__data_handle = None
         self.__original_metadata = None
         self.__ome_metadata = None
         self.__lab_specific_metadata = None
 
-    def load(self, data_file_path: str):
+    def load(self, data_path: str):
         """
         Reset data
         """
@@ -50,16 +51,15 @@ class MicroscopeDataReaderBase(metaclass=ABCMeta):
         """
         Load data
         """
-        self.__data_handle = self._load_data_file(data_file_path)
-        self.__data_file_path = data_file_path
-        data_name = os.path.basename(data_file_path)
+        handle = self._load_data_file(data_path)
+        self.__data_handle = handle
+        self.__data_path = data_path
+        data_name = os.path.basename(data_path)
 
         """
         Read metadata
         """
-        self.__original_metadata = self._build_original_metadata(
-            self.__data_handle, data_name
-        )
+        self.__original_metadata = self._build_original_metadata(handle, data_name)
         self.__ome_metadata = self._build_ome_metadata(self.__original_metadata)
         self.__lab_specific_metadata = self._build_lab_specific_metadata(
             self.__original_metadata
@@ -68,7 +68,7 @@ class MicroscopeDataReaderBase(metaclass=ABCMeta):
         """
         Release resources
         """
-        self._release_resources(self.__data_handle)
+        self._release_resources(handle)
 
     @abstractmethod
     def _init_library(self) -> dict:
@@ -76,7 +76,7 @@ class MicroscopeDataReaderBase(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def _load_data_file(self, data_file_path: str) -> object:
+    def _load_data_file(self, data_path: str) -> object:
         """Return metadata specific to microscope instruments"""
         pass
 
@@ -104,6 +104,10 @@ class MicroscopeDataReaderBase(metaclass=ABCMeta):
     def get_images_stack(self) -> list:
         """Return microscope image stacks"""
         pass
+
+    @property
+    def data_path(self) -> str:
+        return self.__data_path
 
     @property
     def data_handle(self) -> object:
