@@ -35,6 +35,9 @@ class HDF5Getter:
         parent_path: str,
     ):
         name = path_list[0]
+        if name.startswith("#"):
+            return
+
         path = name if parent_path == "" else f"{parent_path}/{name}"
 
         is_exists = False

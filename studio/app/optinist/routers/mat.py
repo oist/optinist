@@ -17,7 +17,11 @@ class MatGetter:
     @classmethod
     def data(cls, filepath, dataPath: str = None):
         data = loadmat(filepath, simplify_cells=True)
-        data = {key: value for key, value in data.items() if not key.startswith("__")}
+        data = {
+            key: value
+            for key, value in data.items()
+            if not key.startswith("__") and not key.startswith("#")
+        }
         keys = dataPath.split("/") if dataPath is not None else []
         return reduce(lambda d, key: d[key], keys, data)
 
