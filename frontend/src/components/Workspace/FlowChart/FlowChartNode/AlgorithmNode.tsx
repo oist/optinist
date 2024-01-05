@@ -32,6 +32,7 @@ import {
   selectAlgorithmIsUpdated,
   selectAlgorithmNodeDefined,
 } from "store/slice/AlgorithmNode/AlgorithmNodeSelectors"
+import { selectAncestorNodesOriginalValueById } from "store/slice/FlowElement/FlowElementSelectors"
 import { deleteFlowNodeById } from "store/slice/FlowElement/FlowElementSlice"
 import { NodeData, NodeIdProps } from "store/slice/FlowElement/FlowElementType"
 import {
@@ -81,8 +82,12 @@ const AlgorithmNodeImple = memo(function AlgorithmNodeImple({
 
   const status = useStatus(nodeId)
   const workflowId = useSelector(selectPipelineLatestUid)
+  const ancestorIsUpdated = useSelector(
+    selectAncestorNodesOriginalValueById(nodeId),
+  )
   const isUpdated = useSelector(selectAlgorithmIsUpdated(nodeId))
-  const updated = typeof workflowId !== "undefined" && isUpdated
+  const updated =
+    typeof workflowId !== "undefined" && (isUpdated || ancestorIsUpdated)
 
   return (
     <NodeContainer

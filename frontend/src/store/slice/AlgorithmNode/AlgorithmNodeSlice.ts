@@ -42,7 +42,7 @@ export const algorithmNodeSlice = createSlice({
         const target = getChildParam(path, param)
         if (target != null) {
           target.value = newValue
-          state[nodeId].originalValue = !(
+          state[nodeId].isUpdate = !(
             JSON.stringify(initValue) === JSON.stringify(newValue)
           )
         }
@@ -63,7 +63,8 @@ export const algorithmNodeSlice = createSlice({
             functionPath,
             name,
             params: convertToParamMap(params),
-            originalValue: runAlready ?? false,
+            originalValue: state[node.id]?.originalValue,
+            isUpdate: runAlready ?? false,
           }
         }
       })
@@ -97,6 +98,7 @@ export const algorithmNodeSlice = createSlice({
                   functionPath: node.data.path,
                   params: node.data.param,
                   originalValue: node.data.param,
+                  isUpdate: false,
                 }
               }
             })
@@ -110,7 +112,7 @@ export const algorithmNodeSlice = createSlice({
           Object.values(runPostData.nodeDict)
             .filter(isAlgorithmNodePostData)
             .forEach((node) => {
-              state[node.id].originalValue = false
+              state[node.id].isUpdate = false
             })
         },
       )

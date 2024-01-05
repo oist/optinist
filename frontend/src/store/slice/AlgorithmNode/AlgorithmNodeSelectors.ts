@@ -18,15 +18,15 @@ export const selectAlgorithmName = (nodeId: string) => (state: RootState) =>
   selectAlgorithmNodeById(nodeId)(state).name
 
 export const selectAlgorithmParams = (nodeId: string) => (state: RootState) =>
-  selectAlgorithmNodeById(nodeId)(state).params
+  selectAlgorithmNodeById(nodeId)(state)?.params
 
 export const selectAlgorithmIsUpdated =
   (nodeId: string) => (state: RootState) => {
+    const isUpdate = selectAlgorithmNodeById(nodeId)(state).isUpdate
     const originalValue = selectAlgorithmNodeById(nodeId)(state).originalValue
     const param = selectAlgorithmParams(nodeId)(state)
     return (
-      !(JSON.stringify(originalValue) === JSON.stringify(param)) &&
-      originalValue
+      !(JSON.stringify(originalValue) === JSON.stringify(param)) && isUpdate
     )
   }
 export const selectAlgorithmParamsExit =

@@ -11,4 +11,5 @@ type AlgorithmNodeType = {
   name: string
   params: ParamMap | null
   originalValue: unknown
+  isUpdate: boolean
 }

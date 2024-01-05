@@ -24,8 +24,8 @@ const selectParentNodeIdsById = (nodeId: string) => (state: RootState) =>
     .filter((edge) => edge.target === nodeId)
     .map((edge) => edge.source)
 
-const selectNodeOriginalValue = (nodeId: string) => (state: RootState) =>
-  state.algorithmNode[nodeId]?.originalValue ?? false
+const selectNodeIsUpdate = (nodeId: string) => (state: RootState) =>
+  state.algorithmNode[nodeId]?.isUpdate
 
 export const selectAncestorNodesOriginalValueById =
   (nodeId: string) =>
@@ -34,7 +34,7 @@ export const selectAncestorNodesOriginalValueById =
     if (parentNodes.length === 0) {
       return false
     } else {
-      if (parentNodes.some((id) => selectNodeOriginalValue(id)(state))) {
+      if (parentNodes.some((id) => selectNodeIsUpdate(id)(state))) {
         return true
       } else {
         return parentNodes.some((id) =>
