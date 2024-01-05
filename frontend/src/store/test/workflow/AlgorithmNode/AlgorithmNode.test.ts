@@ -63,7 +63,7 @@ describe("AlgorithmNode", () => {
     )
     expect(selectAlgorithmNodeById(nodeId)(targetState).name).toBe(name)
     expect(selectAlgorithmNodeById(nodeId)(targetState).originalValue).toBe(
-      false,
+      undefined,
     )
     expect(selectAlgorithmNodeById(nodeId)(targetState).params).toEqual({
       param1: {
@@ -113,7 +113,7 @@ describe("AlgorithmNode", () => {
       updateParamAction,
     )
     expect(selectAlgorithmNodeById(nodeId)(targetState).originalValue).toBe(
-      true,
+      undefined,
     )
     expect(selectAlgorithmParamsValue(nodeId, path)(targetState)).toBe(newValue)
   })

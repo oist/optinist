@@ -166,6 +166,7 @@ describe("RecordReproduce", () => {
       dummy_image2image_c8tqfxw0mq: {
         name: "dummy_image2image",
         functionPath: "dummy/dummy_image2image",
+        isUpdate: false,
         params: { sample: { path: "sample", type: "child", value: "test" } },
         originalValue: {
           sample: {
@@ -178,6 +179,7 @@ describe("RecordReproduce", () => {
       dummy_image2image8time_4mrz8h7hyk: {
         name: "dummy_image2image8time",
         functionPath: "dummy/dummy_image2image8time",
+        isUpdate: false,
         originalValue: {},
         params: {},
       },

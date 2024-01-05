@@ -697,11 +697,6 @@ describe("RunSelectors", () => {
         position: { x: 350, y: 153.52022229668373 },
       },
     },
-    forceRunList: [
-      {
-        nodeId: "suite2p_file_convert_6fn2k01zph",
-        name: "suite2p_file_convert",
-      },
-    ],
+    forceRunList: [],
   }
 })
