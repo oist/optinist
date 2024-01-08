@@ -3,11 +3,10 @@ from typing import List
 
 import numpy as np
 from fastapi import APIRouter
-from scipy.io import loadmat
+from pymatreader import read_mat
 
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.dir_path import DIRPATH
-from studio.app.optinist.routers.hdf5 import HDF5Getter
 from studio.app.optinist.schemas.mat import MatNode
 
 router = APIRouter()
@@ -16,7 +15,7 @@ router = APIRouter()
 class MatGetter:
     @classmethod
     def data(cls, filepath, dataPath: str = None):
-        data = loadmat(filepath, simplify_cells=True)
+        data = read_mat(filepath)
         data = {
             key: value
             for key, value in data.items()
@@ -28,11 +27,8 @@ class MatGetter:
     @classmethod
     def get(cls, filepath, workspace_id) -> List[MatNode]:
         filepath = join_filepath([DIRPATH.INPUT_DIR, workspace_id, filepath])
-        try:
-            data = cls.data(filepath, dataPath=None)
-            return [cls.dict_to_matnode(value, key, key) for key, value in data.items()]
-        except NotImplementedError:
-            return HDF5Getter.get(filepath)
+        data = cls.data(filepath, dataPath=None)
+        return [cls.dict_to_matnode(value, key, key) for key, value in data.items()]
 
     @classmethod
     def dict_to_matnode(cls, data, name, current_path=""):
@@ -49,7 +45,6 @@ class MatGetter:
                 ],
             )
         elif isinstance(data, np.ndarray):
-            data = data[:, np.newaxis] if len(data.shape) == 1 else data
             return MatNode(
                 isDir=False,
                 name=name,
