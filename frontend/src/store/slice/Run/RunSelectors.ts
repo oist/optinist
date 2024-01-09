@@ -41,9 +41,9 @@ const selectForceRunList = (state: RootState) => {
   return nodes
     .filter(isAlgorithmNodeData)
     .filter((node) => {
-      const originalValue = selectAlgorithmIsUpdated(node.id)(state)
+      const isUpdated = selectAlgorithmIsUpdated(node.id)(state)
       const status = selectPipelineNodeResultStatus(node.id)(state)
-      return originalValue || status === NODE_RESULT_STATUS.ERROR
+      return isUpdated || status === NODE_RESULT_STATUS.ERROR
     })
     .map((node) => ({
       nodeId: node.id,
