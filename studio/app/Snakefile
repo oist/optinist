@@ -17,7 +17,7 @@ else:
 
 
     for rule_name, details in config["rules"].items():
-        if details["type"] in [FILETYPE.IMAGE, FILETYPE.CSV, FILETYPE.BEHAVIOR, FILETYPE.HDF5]:
+        if details["type"] in [FILETYPE.IMAGE, FILETYPE.CSV, FILETYPE.BEHAVIOR, FILETYPE.HDF5, FILETYPE.MATLAB]:
             rule:
                 input:
                     SmkUtils.input(details)

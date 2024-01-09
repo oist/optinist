@@ -68,6 +68,7 @@ plotly = "5.18.0"
 kaleido = "0.2.1"
 filelock = "*"
 ruamel-yaml = "^0.18.5"
+pymatreader = "^0.0.32"
 
 [tool.poetry.group.dev]
 optional = true

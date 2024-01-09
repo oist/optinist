@@ -6,6 +6,7 @@ from studio.app.common.core.snakemake.snakemake_reader import (
 
 rule_config = {
     "hdf5Path": None,
+    "matPath": None,
     "input": ["snakemake/0/data_endoscope.pkl"],
     "nwbfile": None,
     "output": "snakemake/1/suite2p_roi.pkl",
