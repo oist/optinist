@@ -21,6 +21,7 @@ class ND2Reader(MicroscopeDataReaderBase):
 
     @staticmethod
     def get_library_path() -> str:
+        """Returns the path of the library (dll) file"""
         platform_name = platform.system()
 
         if __class__.LIBRARY_DIR_KEY not in os.environ:
@@ -41,7 +42,7 @@ class ND2Reader(MicroscopeDataReaderBase):
             __class__.get_library_path()
         )
 
-    def _init_library(self) -> dict:
+    def _init_library(self):
         # load sdk libraries (dependencies)
         if "dependencies" in __class__.SDK_LIBRARY_FILES[platform.system()]:
             platform_library_dir = os.path.dirname(__class__.get_library_path())
@@ -95,7 +96,7 @@ class ND2Reader(MicroscopeDataReaderBase):
         textinfo = json.loads(textinfo)
         experiment = json.loads(experiment)
 
-        all_metadata = {
+        original_metadata = {
             "data_name": data_name,
             "attributes": attributes,
             "metadata": metadata,
@@ -103,28 +104,29 @@ class ND2Reader(MicroscopeDataReaderBase):
             "experiment": experiment,
         }
 
-        return all_metadata
+        return original_metadata
 
-    def _build_ome_metadata(self, all_metadata: dict) -> OMEDataModel:
+    def _build_ome_metadata(self, original_metadata: dict) -> OMEDataModel:
         """
         @link OME/NativeND2Reader
         """
 
-        attributes = all_metadata["attributes"]
-        # metadata = all_metadata["metadata"]
-        # textinfo = all_metadata["textinfo"]
+        attributes = original_metadata["attributes"]
+        # metadata = original_metadata["metadata"]
+        # textinfo = original_metadata["textinfo"]
 
         omeData = OMEDataModel(
-            image_name=all_metadata["data_name"],
+            image_name=original_metadata["data_name"],
             size_x=attributes["widthPx"],
             size_y=attributes["heightPx"],
             size_t=attributes["sequenceCount"],
             size_c=attributes["componentCount"],  # TODO: この内容が正しいか要確認
+            fps=0,  # TODO: 要設定
         )
 
         return omeData
 
-    def _build_lab_specific_metadata(self, all_metadata: dict) -> dict:
+    def _build_lab_specific_metadata(self, original_metadata: dict) -> dict:
         # ----------------------------------------
         # Lab固有仕様のmetadata作成
         # ----------------------------------------
@@ -155,10 +157,10 @@ class ND2Reader(MicroscopeDataReaderBase):
         #     }
         # }
 
-        attributes = all_metadata["attributes"]
-        metadata = all_metadata["metadata"]
-        textinfo = all_metadata["textinfo"]
-        # experiment = all_metadata["experiment"]
+        attributes = original_metadata["attributes"]
+        metadata = original_metadata["metadata"]
+        textinfo = original_metadata["textinfo"]
+        # experiment = original_metadata["experiment"]
 
         # ※一部のデータ項目は ch0 より取得
         # TODO: 上記の仕様で適切であるか？（要レビュー）
@@ -215,6 +217,6 @@ class ND2Reader(MicroscopeDataReaderBase):
     def _release_resources(self, handle: object) -> None:
         self.__dll.Lim_FileClose(handle)
 
-    def _get_images_stack(self) -> list:
+    def get_images_stack(self) -> list:
         # TODO: under construction
         return []
