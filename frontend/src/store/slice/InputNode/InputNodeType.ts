@@ -6,6 +6,7 @@ export const FILE_TYPE_SET = {
   HDF5: "hdf5",
   FLUO: "fluo",
   BEHAVIOR: "behavior",
+  MATLAB: "matlab",
 } as const
 
 export type FILE_TYPE = (typeof FILE_TYPE_SET)[keyof typeof FILE_TYPE_SET]
@@ -14,7 +15,11 @@ export type InputNode = {
   [nodeId: string]: InputNodeType
 }
 
-export type InputNodeType = CsvInputNode | ImageInputNode | HDF5InputNode
+export type InputNodeType =
+  | CsvInputNode
+  | ImageInputNode
+  | HDF5InputNode
+  | MatlabInputNode
 
 interface InputNodeBaseType<
   T extends FILE_TYPE,
@@ -34,6 +39,12 @@ export type CsvInputParamType = {
 export interface CsvInputNode
   extends InputNodeBaseType<"csv", CsvInputParamType> {
   selectedFilePath?: string
+}
+
+export interface MatlabInputNode
+  extends InputNodeBaseType<"matlab", Record<never, never>> {
+  selectedFilePath?: string
+  matPath?: string
 }
 
 export interface ImageInputNode

@@ -27,6 +27,8 @@ import {
   getLineDataApi,
   getPieDataApi,
   getPolarDataApi,
+  getMatlabDataApi,
+  MatlabData,
   cancelRoiApi,
   addRoiApi,
   mergeRoiApi,
@@ -144,6 +146,21 @@ export const getCsvData = createAsyncThunk<
   async ({ path, workspaceId }, thunkAPI) => {
     try {
       const response = await getCsvDataApi(path, { workspaceId })
+      return response
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
+
+export const getMatlabData = createAsyncThunk<
+  { data: MatlabData; meta?: PlotMetaData },
+  { path: string; workspaceId: number }
+>(
+  `${DISPLAY_DATA_SLICE_NAME}/getMatlabData`,
+  async ({ path, workspaceId }, thunkAPI) => {
+    try {
+      const response = await getMatlabDataApi(path, { workspaceId })
       return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)
