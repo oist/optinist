@@ -1,6 +1,7 @@
 from typing import List
 
 import h5py
+import numpy as np
 from fastapi import APIRouter
 
 from studio.app.common.core.utils.filepath_creater import join_filepath
@@ -34,6 +35,9 @@ class HDF5Getter:
         parent_path: str,
     ):
         name = path_list[0]
+        if name.startswith("#"):
+            return
+
         path = name if parent_path == "" else f"{parent_path}/{name}"
 
         is_exists = False
@@ -65,6 +69,9 @@ class HDF5Getter:
                         path=path,
                         shape=node.shape,
                         nbytes=f"{int(node.nbytes / (1000**2))} M",
+                        dataType="array"
+                        if isinstance(node[:], np.ndarray)
+                        else type(node[:]).__name__,
                     )
                 )
 

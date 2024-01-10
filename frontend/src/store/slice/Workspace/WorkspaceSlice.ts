@@ -1,5 +1,6 @@
 import { PayloadAction, createSlice, isAnyOf } from "@reduxjs/toolkit"
 
+import { StatusROI } from "components/Workspace/Visualize/Plot/ImagePlot"
 import { reproduceWorkflow } from "store/slice/Workflow/WorkflowActions"
 import {
   delWorkspace,
@@ -17,7 +18,10 @@ import {
 
 const initialState: Workspace = {
   currentWorkspace: {
+    statusRoi: undefined,
     selectedTab: 0,
+    roiFilePath: undefined,
+    workspaceId: undefined,
   },
   workspace: {
     items: [],
@@ -33,6 +37,18 @@ export const workspaceSlice = createSlice({
   name: WORKSPACE_SLICE_NAME,
   initialState,
   reducers: {
+    setDataCancel: (
+      state,
+      action: PayloadAction<{
+        roiFilePath?: string
+        workspaceId?: number
+        statusRoi?: StatusROI
+      }>,
+    ) => {
+      state.currentWorkspace.roiFilePath = action.payload.roiFilePath
+      state.currentWorkspace.workspaceId = action.payload.workspaceId
+      state.currentWorkspace.statusRoi = action.payload.statusRoi
+    },
     setActiveTab: (state, action: PayloadAction<number>) => {
       state.currentWorkspace.selectedTab = action.payload
     },
@@ -99,6 +115,10 @@ export const workspaceSlice = createSlice({
   },
 })
 
-export const { setCurrentWorkspace, clearCurrentWorkspace, setActiveTab } =
-  workspaceSlice.actions
+export const {
+  setCurrentWorkspace,
+  clearCurrentWorkspace,
+  setActiveTab,
+  setDataCancel,
+} = workspaceSlice.actions
 export default workspaceSlice.reducer

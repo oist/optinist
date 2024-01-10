@@ -58,7 +58,7 @@ export const TimeSeriesItemEditor: FC = () => {
   return (
     <>
       <ParamSection title="TimeSeries">
-        <Offset />
+        <STD />
         <Span />
         <ShowGrid />
         <ShowLine />
@@ -73,14 +73,14 @@ export const TimeSeriesItemEditor: FC = () => {
   )
 }
 
-const Offset: FC = () => {
+const STD: FC = () => {
   const itemId = useContext(SelectedItemIdContext)
-  const offset = useSelector(selectTimeSeriesItemOffset(itemId))
+  const stdBool = useSelector(selectTimeSeriesItemOffset(itemId))
   const dispatch = useDispatch()
   const toggleChecked = () => {
-    dispatch(setTimeSeriesItemOffset({ itemId, offset: !offset }))
+    dispatch(setTimeSeriesItemOffset({ itemId, stdBool: !stdBool }))
   }
-  return <ParamSwitch label="Offset" value={offset} onChange={toggleChecked} />
+  return <ParamSwitch label="STD" value={stdBool} onChange={toggleChecked} />
 }
 
 const Span: FC = () => {
@@ -97,7 +97,7 @@ const Span: FC = () => {
   return (
     <ParamTextField
       type="number"
-      label="Offset std"
+      label="vertical offset"
       value={span}
       onChange={onChange}
     />

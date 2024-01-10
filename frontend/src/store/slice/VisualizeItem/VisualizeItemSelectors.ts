@@ -301,7 +301,7 @@ export const selectTimeSeriesItemOffset =
   (itemId: number) => (state: RootState) => {
     const item = selectVisualizeItemById(itemId)(state)
     if (isTimeSeriesItem(item)) {
-      return item.offset
+      return item.stdBool
     } else {
       throw new Error("invalid VisualaizeItemType")
     }
@@ -498,6 +498,36 @@ export const selectCsvItemSetIndex = (itemId: number) => (state: RootState) => {
     throw new Error("invalid VisualaizeItemType")
   }
 }
+
+export const selectMatlabItemTranspose =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItemById(itemId)(state)
+    if (isCsvItem(item)) {
+      return item.transpose
+    } else {
+      throw new Error("invalid VisualaizeItemType")
+    }
+  }
+
+export const selectMatlabItemSetHeader =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItemById(itemId)(state)
+    if (isCsvItem(item)) {
+      return item.setHeader
+    } else {
+      throw new Error("invalid VisualaizeItemType")
+    }
+  }
+
+export const selectMatlabItemSetIndex =
+  (itemId: number) => (state: RootState) => {
+    const item = selectVisualizeItemById(itemId)(state)
+    if (isCsvItem(item)) {
+      return item.setIndex
+    } else {
+      throw new Error("invalid VisualaizeItemType")
+    }
+  }
 
 export const selectBarItemIndex = (itemId: number) => (state: RootState) => {
   const item = selectVisualizeItemById(itemId)(state)

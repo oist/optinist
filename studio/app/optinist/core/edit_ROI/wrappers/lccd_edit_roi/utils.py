@@ -1,9 +1,18 @@
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
+from studio.app.optinist.dataclass.roi import EditRoiData
 
 
-def set_nwbfile(lccd_data, roi_list, function_id, fluorescence=None):
+def set_nwbfile(edit_roi_data: EditRoiData, iscell, function_id, fluorescence=None):
+    # NWBの追加
     nwbfile = {}
 
+    # NWBにROIを追加
+    roi_list = []
+    n_cells = edit_roi_data.im.shape[0]
+    for i in range(n_cells):
+        kargs = {}
+        kargs["image_mask"] = edit_roi_data.im[i, :]
+        roi_list.append(kargs)
     nwbfile[NWBDATASET.ROI] = {function_id: roi_list}
 
     if fluorescence is not None:
@@ -23,16 +32,16 @@ def set_nwbfile(lccd_data, roi_list, function_id, fluorescence=None):
         function_id: {
             "name": "iscell",
             "description": "two columns - iscell & probcell",
-            "data": lccd_data.get("is_cell"),
+            "data": iscell,
         }
     }
 
     # NWB追加
     nwbfile[NWBDATASET.POSTPROCESS] = {
         function_id: {
-            "add_roi": lccd_data.get("add_roi", []),
-            "delete_roi": lccd_data.get("delete_roi", []),
-            "merge_roi": lccd_data.get("merge_roi", []),
+            "add_roi": edit_roi_data.add_roi,
+            "delete_roi": edit_roi_data.delete_roi,
+            "merge_roi": edit_roi_data.merge_roi,
         }
     }
 

@@ -15,6 +15,12 @@ import {
   getLineData,
   getPieData,
   getPolarData,
+  cancelRoi,
+  mergeRoi,
+  addRoi,
+  deleteRoi,
+  commitRoi,
+  getStatus,
 } from "store/slice/DisplayData/DisplayDataActions"
 import {
   DATA_TYPE,
@@ -41,6 +47,8 @@ const initialState: DisplayData = {
   line: {},
   pie: {},
   polar: {},
+  loading: false,
+  statusRoi: { temp_add_roi: [], temp_delete_roi: [], temp_merge_roi: [] },
 }
 
 export const displayDataSlice = createSlice({
@@ -64,12 +72,7 @@ export const displayDataSlice = createSlice({
       })
       .addCase(getTimeSeriesDataById.pending, (state, action) => {
         const { path } = action.meta.arg
-        if (
-          Object.prototype.hasOwnProperty.call(
-            !state.timeSeries.hasOwnProperty,
-            path,
-          )
-        ) {
+        if (!Object.prototype.hasOwnProperty.call(state.timeSeries, path)) {
           state.timeSeries[path] = {
             type: "timeSeries",
             xrange: [],
@@ -111,12 +114,7 @@ export const displayDataSlice = createSlice({
       })
       .addCase(getTimeSeriesAllData.pending, (state, action) => {
         const { path } = action.meta.arg
-        if (
-          Object.prototype.hasOwnProperty.call(
-            !state.timeSeries.hasOwnProperty,
-            path,
-          )
-        ) {
+        if (!Object.prototype.hasOwnProperty.call(state.timeSeries, path)) {
           state.timeSeries[path] = {
             type: "timeSeries",
             xrange: [],
@@ -158,12 +156,7 @@ export const displayDataSlice = createSlice({
       })
       .addCase(getTimeSeriesInitData.pending, (state, action) => {
         const { path } = action.meta.arg
-        if (
-          Object.prototype.hasOwnProperty.call(
-            !state.timeSeries.hasOwnProperty,
-            path,
-          )
-        ) {
+        if (!Object.prototype.hasOwnProperty.call(state.timeSeries, path)) {
           state.timeSeries[path] = {
             type: "timeSeries",
             xrange: [],
@@ -442,6 +435,7 @@ export const displayDataSlice = createSlice({
       })
       .addCase(getRoiData.pending, (state, action) => {
         const { path } = action.meta.arg
+        state.loading = true
         state.roi[path] = {
           type: "roi",
           data: [],
@@ -454,6 +448,7 @@ export const displayDataSlice = createSlice({
       .addCase(getRoiData.fulfilled, (state, action) => {
         const { path } = action.meta.arg
         const { data } = action.payload
+        state.loading = false
 
         // 計算
         const roi1Ddata: number[] = data[0]
@@ -477,6 +472,7 @@ export const displayDataSlice = createSlice({
       })
       .addCase(getRoiData.rejected, (state, action) => {
         const { path } = action.meta.arg
+        state.loading = false
         state.roi[path] = {
           type: "roi",
           data: [],
@@ -585,6 +581,48 @@ export const displayDataSlice = createSlice({
           error: action.error.message ?? "rejected",
         }
       })
+      .addCase(getStatus.fulfilled, (state, action) => {
+        state.statusRoi = action.payload
+        state.loading = false
+      })
+      .addCase(cancelRoi.fulfilled, (state) => {
+        state.statusRoi = {
+          temp_add_roi: [],
+          temp_delete_roi: [],
+          temp_merge_roi: [],
+        }
+        state.loading = false
+      })
+      .addMatcher(
+        isAnyOf(
+          cancelRoi.pending,
+          mergeRoi.pending,
+          deleteRoi.pending,
+          addRoi.pending,
+          commitRoi.pending,
+          getStatus.pending,
+        ),
+        (state) => {
+          state.loading = true
+        },
+      )
+      .addMatcher(
+        isAnyOf(
+          cancelRoi.rejected,
+          mergeRoi.rejected,
+          mergeRoi.fulfilled,
+          addRoi.rejected,
+          addRoi.fulfilled,
+          deleteRoi.rejected,
+          deleteRoi.fulfilled,
+          commitRoi.rejected,
+          commitRoi.fulfilled,
+          getStatus.rejected,
+        ),
+        (state) => {
+          state.loading = false
+        },
+      )
       .addMatcher(
         isAnyOf(run.fulfilled, runByCurrentUid.fulfilled),
         () => initialState,

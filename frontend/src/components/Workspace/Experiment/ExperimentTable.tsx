@@ -63,13 +63,16 @@ import {
   selectExperimentHasNWB,
 } from "store/slice/Experiments/ExperimentsSelectors"
 import { ExperimentSortKeys } from "store/slice/Experiments/ExperimentsType"
-import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
+import {
+  selectPipelineIsStartedSuccess,
+  selectPipelineLatestUid,
+} from "store/slice/Pipeline/PipelineSelectors"
 import { clearCurrentPipeline } from "store/slice/Pipeline/PipelineSlice"
 import {
   selectCurrentWorkspaceId,
   selectIsWorkspaceOwner,
 } from "store/slice/Workspace/WorkspaceSelector"
-import { AppDispatch } from "store/store"
+import { AppDispatch, RootState } from "store/store"
 
 export const ExperimentUidContext = createContext<string>("")
 
@@ -112,6 +115,13 @@ const TableImple = memo(function TableImple() {
   const experimentListValues = Object.values(experimentList)
   const experimentListKeys = Object.keys(experimentList)
   const dispatch = useDispatch<AppDispatch>()
+  const [checkedList, setCheckedList] = useState<string[]>([])
+  const [open, setOpen] = useState(false)
+  const isRunning = useSelector((state: RootState) => {
+    const currentUid = selectPipelineLatestUid(state)
+    const isPending = selectPipelineIsStartedSuccess(state)
+    return checkedList.includes(currentUid as string) && isPending
+  })
   const onClickReload = () => {
     dispatch(getExperiments())
   }
@@ -123,9 +133,6 @@ const TableImple = memo(function TableImple() {
     setOrder(isAsc ? "desc" : "asc")
     setSortTarget(property)
   }
-
-  const [checkedList, setCheckedList] = useState<string[]>([])
-  const [open, setOpen] = useState(false)
 
   const onCheckBoxClick = (uid: string) => {
     if (checkedList.includes(uid)) {
@@ -214,7 +221,7 @@ const TableImple = memo(function TableImple() {
             color="error"
             endIcon={<DeleteIcon />}
             onClick={onClickDelete}
-            disabled={checkedList.length === 0}
+            disabled={checkedList.length === 0 || isRunning}
           >
             Delete
           </Button>

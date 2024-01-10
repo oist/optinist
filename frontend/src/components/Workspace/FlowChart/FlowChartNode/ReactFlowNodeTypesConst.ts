@@ -5,10 +5,12 @@ import { CsvFileNode } from "components/Workspace/FlowChart/FlowChartNode/CsvFil
 import { FluoFileNode } from "components/Workspace/FlowChart/FlowChartNode/FluoFileNode"
 import { HDF5FileNode } from "components/Workspace/FlowChart/FlowChartNode/HDF5FileNode"
 import { ImageFileNode } from "components/Workspace/FlowChart/FlowChartNode/ImageFileNode"
+import { MatlabFileNode } from "components/Workspace/FlowChart/FlowChartNode/MatlabFileNode"
 
 export const reactFlowNodeTypes = {
   ImageFileNode,
   CsvFileNode,
+  MatlabFileNode,
   HDF5FileNode,
   AlgorithmNode,
   FluoFileNode,

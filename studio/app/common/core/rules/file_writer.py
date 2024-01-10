@@ -4,6 +4,7 @@ from studio.app.common.core.snakemake.smk import Rule
 from studio.app.common.dataclass import CsvData, ImageData, TimeSeriesData
 from studio.app.const import FILETYPE
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
+from studio.app.optinist.routers.mat import MatGetter
 
 
 class FileWriter:
@@ -47,6 +48,30 @@ class FileWriter:
 
         with h5py.File(rule_config.input, "r") as f:
             data = f[rule_config.hdf5Path][:]
+
+        if data.ndim == 3:
+            info = {rule_config.return_arg: ImageData(data, "")}
+            nwbfile["image_series"]["external_file"] = info[rule_config.return_arg]
+            info["nwbfile"] = {}
+            info["nwbfile"][FILETYPE.IMAGE] = nwbfile
+        elif data.ndim == 2:
+            info = {rule_config.return_arg: TimeSeriesData(data, "")}
+
+            if NWBDATASET.TIMESERIES not in nwbfile:
+                nwbfile[NWBDATASET.TIMESERIES] = {}
+
+            nwbfile[NWBDATASET.TIMESERIES][rule_config.return_arg] = info[
+                rule_config.return_arg
+            ]
+            nwbfile.pop("image_series", None)
+            info["nwbfile"] = {"input": nwbfile}
+
+        return info
+
+    @classmethod
+    def mat(cls, rule_config: Rule):
+        nwbfile = rule_config.nwbfile
+        data = MatGetter.data(rule_config.input, rule_config.matPath)
 
         if data.ndim == 3:
             info = {rule_config.return_arg: ImageData(data, "")}

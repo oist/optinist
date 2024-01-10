@@ -5,7 +5,7 @@ export const INITIAL_IMAGE_ELEMENT_NAME = "NoName"
 export const NANO_ID_LENGTH = 10
 export const ALGO_NODE_STYLE: CSSProperties = {
   border: "1px solid #777",
-  height: 125,
+  height: 140,
   width: 250,
   padding: 0,
   borderRadius: 0,
@@ -13,7 +13,7 @@ export const ALGO_NODE_STYLE: CSSProperties = {
 
 export const DATA_NODE_STYLE: CSSProperties = {
   border: "1px solid #777",
-  height: 125,
+  height: 140,
   width: 250,
 } as const
 
@@ -33,6 +33,7 @@ export const REACT_FLOW_NODE_TYPE_KEY = {
   FluoFileNode: "FluoFileNode",
   AlgorithmNode: "AlgorithmNode",
   BehaviorFileNode: "BehaviorFileNode",
+  MatlabFileNode: "MatlabFileNode",
 } as const
 
 export type REACT_FLOW_NODE_TYPE =
