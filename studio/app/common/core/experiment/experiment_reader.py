@@ -62,7 +62,7 @@ class ExptConfigReader:
             config["name"] = new_name
 
         with open(filepath, "w") as f:
-            yaml.dump(config, f)
+            yaml.dump(config, f, sort_keys=False)
 
         return ExptConfig(
             workspace_id=config["workspace_id"],
