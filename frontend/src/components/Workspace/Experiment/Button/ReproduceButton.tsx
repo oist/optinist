@@ -9,6 +9,7 @@ import IconButton from "@mui/material/IconButton"
 import { ConfirmDialog } from "components/common/ConfirmDialog"
 import { ExperimentUidContext } from "components/Workspace/Experiment/ExperimentTable"
 import { selectExperimentName } from "store/slice/Experiments/ExperimentsSelectors"
+import { selectPipelineIsStartedSuccess } from "store/slice/Pipeline/PipelineSelectors"
 import { reset } from "store/slice/VisualizeItem/VisualizeItemSlice"
 import { reproduceWorkflow } from "store/slice/Workflow/WorkflowActions"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
@@ -19,6 +20,8 @@ export const ReproduceButton = memo(function ReproduceButton() {
   const openDialog = () => {
     setOpen(true)
   }
+
+  const isPending = useSelector(selectPipelineIsStartedSuccess)
 
   const dispatch: AppDispatch = useDispatch()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
@@ -42,7 +45,7 @@ export const ReproduceButton = memo(function ReproduceButton() {
   }
   return (
     <>
-      <IconButton onClick={openDialog}>
+      <IconButton onClick={openDialog} color="primary" disabled={!!isPending}>
         <ReplyIcon />
       </IconButton>
       <ConfirmDialog
