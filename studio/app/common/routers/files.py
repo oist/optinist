@@ -7,8 +7,8 @@ from typing import Dict, List
 from urllib.parse import urlparse
 
 import requests
+import tifffile
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile
-from PIL import Image
 from requests.models import Response
 from tqdm import tqdm
 
@@ -126,8 +126,8 @@ def update_image_shape(workspace_id, relative_file_path):
     filepath = join_filepath([dirpath, relative_file_path])
 
     try:
-        img = Image.open(filepath)
-        shape = [img.n_frames, *img.size]
+        img = tifffile.imread(filepath)
+        shape = img.shape
     except:  # noqa
         shape = []
 
