@@ -1,15 +1,17 @@
 import { memo, useState } from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 
 import { AddToPhotos } from "@mui/icons-material"
 import { IconButton, Tooltip } from "@mui/material"
 
 import { ConfirmDialog } from "components/common/ConfirmDialog"
 import { clearFlowElements } from "store/slice/FlowElement/FlowElementSlice"
+import { selectPipelineIsStartedSuccess } from "store/slice/Pipeline/PipelineSelectors"
 
 export const CreateWorkflowButton = memo(function CreateWorkflowButton() {
   const [open, setOpen] = useState(false)
   const dispatch = useDispatch()
+  const isPending = useSelector(selectPipelineIsStartedSuccess)
 
   const openDialog = () => {
     setOpen(true)
@@ -21,8 +23,8 @@ export const CreateWorkflowButton = memo(function CreateWorkflowButton() {
   return (
     <>
       <Tooltip title="Create new workflow">
-        <IconButton onClick={openDialog}>
-          <AddToPhotos color="primary" />
+        <IconButton onClick={openDialog} color="primary" disabled={!!isPending}>
+          <AddToPhotos />
         </IconButton>
       </Tooltip>
       <ConfirmDialog
