@@ -11,6 +11,7 @@ class TreeNode:
     name: str
     isdir: bool
     nodes: List["TreeNode"]
+    shape: Optional[List] = None
 
 
 @dataclass
