@@ -382,12 +382,16 @@ const TreeItemLabel = memo(function TreeItemLabel({
               )
             ) : null}
           </Box>
-          <IconButton
-            sx={{ minWidth: 24 }}
-            onClick={(event) => onUpdate(event, label)}
-          >
-            <AutorenewIcon />
-          </IconButton>
+          {!isDir ? (
+            <IconButton
+              sx={{ minWidth: 24 }}
+              onClick={(event) => onUpdate(event, label)}
+            >
+              <AutorenewIcon />
+            </IconButton>
+          ) : (
+            <Box width={24} marginRight={2} />
+          )}
         </>
       ) : null}
       <Box>
