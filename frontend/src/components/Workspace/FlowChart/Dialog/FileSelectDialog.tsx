@@ -346,7 +346,7 @@ const TreeItemLabel = memo(function TreeItemLabel({
     [dispatch, workspaceId],
   )
   return (
-    <Box display="flex" alignItems="center">
+    <Box height={24} display="flex" alignItems="center">
       <Tooltip
         title={<span style={{ fontSize: 14 }}>{label}</span>}
         placement={"left-start"}
