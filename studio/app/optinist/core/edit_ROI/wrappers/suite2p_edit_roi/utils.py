@@ -4,6 +4,7 @@ import numpy as np
 from scipy import stats
 
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
+from studio.app.optinist.dataclass import EditRoiData
 
 
 def masks_and_traces(ops, stat_manual, stat_orig):
@@ -119,9 +120,8 @@ def get_stat0_add_roi(ops, posx, posy, sizex, sizey):
     return [{"ypix": ypix, "xpix": xpix, "lam": lam, "npix": ypix.size, "med": med}]
 
 
-def set_nwbfile(ops, function_id):
+def set_nwbfile(ops, iscell, edit_roi_data: EditRoiData, function_id):
     stat = ops.get("stat")
-    iscell = ops.get("iscell")
     F = ops.get("F")
     Fneu = ops.get("Fneu")
 
@@ -170,9 +170,9 @@ def set_nwbfile(ops, function_id):
     # NWB追加
     nwbfile[NWBDATASET.POSTPROCESS] = {
         function_id: {
-            "add_roi": ops.get("add_roi", []),
-            "delete_roi": ops.get("delete_roi", []),
-            "merge_roi": ops.get("merge_roi", []),
+            "add_roi": edit_roi_data.add_roi,
+            "delete_roi": edit_roi_data.delete_roi,
+            "merge_roi": edit_roi_data.merge_roi,
         }
     }
 

@@ -35,5 +35,7 @@ export interface FlowElement {
 }
 
 export interface NodeIdProps {
+  setFileSelect?: (value: string) => void
+  fileSelect?: string
   nodeId: string
 }
