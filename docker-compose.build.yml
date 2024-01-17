@@ -1,0 +1,12 @@
+version: "3"
+
+services:
+  studio-build-fe:
+    image: node:20.8.0-alpine3.18
+    working_dir: /app/frontend
+    volumes:
+      - ./frontend/:/app/frontend/:cached
+    command: ash -c 'yarn install && yarn build'
+    environment:
+      TZ: Asia/Tokyo
+      GENERATE_SOURCEMAP: false

@@ -124,7 +124,7 @@ const PopupShare = ({
       return
     }
     timeout.current = setTimeout(() => {
-      dispatch(getListSearch({ keyword: textSearch }))
+      dispatch(getListSearch({ keyword: encodeURIComponent(textSearch) }))
     }, 300)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [textSearch])

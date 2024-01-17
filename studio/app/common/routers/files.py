@@ -9,6 +9,7 @@ from urllib.parse import urlparse
 import requests
 import tifffile
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile
+from PIL import Image
 from requests.models import Response
 from tqdm import tqdm
 
