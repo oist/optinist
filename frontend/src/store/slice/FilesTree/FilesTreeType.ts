@@ -6,6 +6,7 @@ export interface NodeBase {
   path: string
   name: string
   isDir: boolean
+  shape: []
 }
 
 export interface DirNode extends NodeBase {

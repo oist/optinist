@@ -22,6 +22,7 @@ export interface NodeBaseDTO {
   path: string
   name: string
   isdir: boolean
+  shape: []
 }
 
 export interface DirNodeDTO extends NodeBaseDTO {
@@ -63,6 +64,16 @@ export async function uploadFileApi(
     `${BASE_URL}/files/${workspaceId}/upload/${fileName}`,
     formData,
     config,
+  )
+  return response.data
+}
+
+export async function updateShapeApi(
+  workspaceId: number,
+  fileName: string,
+): Promise<boolean> {
+  const response = await axios.post(
+    `${BASE_URL}/files/${workspaceId}/shape/${fileName}`,
   )
   return response.data
 }
