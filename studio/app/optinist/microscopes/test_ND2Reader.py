@@ -31,24 +31,27 @@ def test_nd2_reader():
     # print("[lab_specific_metadata]",
     #    json.dumps(data_reader.lab_specific_metadata, indent=2))
 
-    # dump image stack
-    images_stack = []
-    images_stack = data_reader.get_images_stack()
+    # get image stacks (for all channels)
+    channels_stacks = data_reader.get_images_stack()
 
     # save tiff image (multi page) test
-    if len(images_stack) > 0:
+    if (len(channels_stacks) > 0) and (len(channels_stacks[0]) > 0):
         from PIL import Image
 
-        save_stack = [Image.fromarray(frame) for frame in images_stack]
-        save_path = os.path.basename(TEST_DATA_PATH) + ".out.tiff"
-        print(f"save image: {save_path}")
+        # save stacks for all channels
+        for channel_idx, images_stack in enumerate(channels_stacks):
+            save_stack = [Image.fromarray(frame) for frame in images_stack]
+            save_path = (
+                os.path.basename(TEST_DATA_PATH) + f".out.ch{channel_idx+1}.tiff"
+            )
+            print(f"save image: {save_path}")
 
-        save_stack[0].save(
-            save_path,
-            compression="tiff_deflate",
-            save_all=True,
-            append_images=save_stack[1:],
-        )
+            save_stack[0].save(
+                save_path,
+                compression="tiff_deflate",
+                save_all=True,
+                append_images=save_stack[1:],
+            )
 
     # asserts
     assert data_reader.original_metadata["attributes"]["widthPx"] > 0

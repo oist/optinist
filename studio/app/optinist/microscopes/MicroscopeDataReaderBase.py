@@ -10,10 +10,10 @@ class OMEDataModel:
     """
 
     image_name: str
-    size_x: int
-    size_y: int
-    size_t: int
-    size_c: int
+    size_x: int  # width
+    size_y: int  # height
+    size_t: int  # time
+    size_c: int  # TODO: 要確認
     fps: int  # frames_per_second  # TODO: OME標準の類似項目に合わせる
 
     # TODO: 以下今後追加想定
