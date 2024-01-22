@@ -142,10 +142,10 @@ class ND2Reader(MicroscopeDataReaderBase):
         attributes = original_metadata["attributes"]
         experiment = original_metadata["experiment"]
 
-        # TODO: experiment, periods, の参照は先頭データに固定でOK？
+        # experiment, periods, の参照は先頭データの内容から取得
         if (experiment is not None) and ("periods" in experiment[0]["parameters"]):
             period_ms = float(experiment[0]["parameters"]["periods"][0]["periodMs"])
-            fps = 1000 / period_ms
+            fps = (1000 / period_ms) if period_ms > 0 else 0
         else:
             period_ms = 0
             fps = 0
@@ -155,7 +155,7 @@ class ND2Reader(MicroscopeDataReaderBase):
             size_x=attributes["widthPx"],
             size_y=attributes["heightPx"],
             size_t=attributes["sequenceCount"],
-            size_c=attributes["componentCount"],  # TODO: この内容が正しいか要確認
+            size_c=0,
             fps=fps,
         )
 
@@ -258,7 +258,14 @@ class ND2Reader(MicroscopeDataReaderBase):
         handle = self._load_data_file(self.data_path)
         pic: LIMPICTURE = LIMPICTURE()
         seq_count = self.__dll.Lim_FileGetSeqCount(handle)
-        result_stack = []
+
+        # read image attributes
+        attributes = self.__dll.Lim_FileGetAttributes(handle)
+        attributes = json.loads(attributes)
+        image_component_count = int(attributes["componentCount"])
+
+        # initialize return value (each channel's stack)
+        result_channels_stacks = [[] for i in range(image_component_count)]
 
         # loop for each sequence
         for seq_idx in range(seq_count):
@@ -269,47 +276,59 @@ class ND2Reader(MicroscopeDataReaderBase):
                 break
 
             # calculate pixel byte size
-            # TODO: 以下の計算式で適切であるか画像フォーマットの正確な仕様を確認必要
-            #       ※一旦、pixcel_bytes=2 (uiComponents=1, pic.uiBitsPerComp) の動作OKは確認
-            #       ・pixcel_bytes は最大9バイト(3*3)が想定される？
-            #       ・移植元コードでは、uiComponents へのアクセスに、ビットシフトを利用している模様？
-            # TODO: またその他のパラメーターの考慮も必要？
-            #       ・"Channel" を考慮した画像取得（アドレス計算）が、要件への対応に必要
-            #       ・3D（"ZSlicenum" ?）画像を考慮した画像取得（アドレス計算）が必要？
-            pixcel_bytes = int(pic.uiComponents * ((pic.uiBitsPerComp + 7) / 8))
-            if pixcel_bytes == 1:
-                pixcel_data_type = ctypes.c_byte
-            elif pixcel_bytes > 1 and pixcel_bytes <= 2:
-                pixcel_data_type = ctypes.c_ushort
-            elif pixcel_bytes > 2:
-                pixcel_data_type = ctypes.c_uint
-            else:
+            # Note: pixcel_bytes は [1/2/4/6/8] を取りうる想定
+            pixcel_bytes = int(pic.uiComponents * int((pic.uiBitsPerComp + 7) / 8))
+            if pixcel_bytes not in (1, 2, 4, 6, 8):
                 raise AttributeError(f"Invalid pixcel_bytes: {pixcel_bytes}")
 
             # # debug print
             # print(
             #     f"Picture info: #{seq_idx + 1}",
             #     pic.uiWidth, pic.uiHeight, bytes, pic.uiComponents,
-            #     pic.uiBitsPerComp, pixcel_bytes, pixcel_data_type,
+            #     pic.uiBitsPerComp, pixcel_bytes,
             # )
 
-            # scan each lines
+            # scan image lines
             lines_buffer = []
             for line_idx in range(pic.uiHeight):
+                # Calculate the number of bytes per line (ctypes._CData format)
+                # * Probably the same value as pic.uiWidthBytes,
+                #     but ported based on the logic of the SDK sample code.
+                # * It appears that the unit should be ctypes.c_ushort.
+                line_bytes = ctypes.c_ushort * int(pixcel_bytes * pic.uiWidth / 2)
+
                 # Data acquisition for line and conversion to np.ndarray format
-                line_buffer = (pixcel_data_type * pic.uiWidth).from_address(
+                line_buffer = line_bytes.from_address(
                     pic.pImageData + (line_idx * pic.uiWidthBytes)
                 )
                 line_buffer_array = np.ctypeslib.as_array(line_buffer)
 
-                # stored in line data stack
+                # stored in line buffer stack
                 lines_buffer.append(line_buffer_array)
 
-            # allocate planar image buffer (nb.ndarray format)
-            plane_buffer = np.concatenate([[v] for v in lines_buffer])
-            result_stack.append(plane_buffer)
+            # allocate planar image buffer (np.ndarray)
+            raw_plane_buffer = np.concatenate([[v] for v in lines_buffer])
 
-        # release resources
+            # extract image data for each channel(component)
+            for component_idx in range(pic.uiComponents):
+                # In nikon nd2 format, "component" in effect indicates "channel".
+                channel_idx = component_idx
+
+                # A frame image is cut out from a raw frame image
+                #     in units of channel(component).
+                # Note: The pixel values of each component are adjacent to each other,
+                #     one pixel at a time.
+                #   Image: [px1: [c1][c2]..[cN]]..[pxN: [c1][c2]..[cN]]
+                component_pixel_indexes = [
+                    (i * image_component_count) + component_idx
+                    for i in range(pic.uiWidth)
+                ]
+                channel_plane_buffer = raw_plane_buffer[:, component_pixel_indexes]
+
+                # construct return value (each channel's stack)
+                result_channels_stacks[channel_idx].append(channel_plane_buffer)
+
+        # do release resources
         self._release_resources(handle)
 
-        return result_stack
+        return result_channels_stacks
