@@ -2,7 +2,7 @@ import ctypes
 import json
 import os
 import platform
-from enum import IntEnum
+from enum import Enum, IntEnum
 
 import numpy as np
 from MicroscopeDataReaderBase import MicroscopeDataReaderBase, OMEDataModel
@@ -11,6 +11,21 @@ from MicroscopeDataReaderBase import MicroscopeDataReaderBase, OMEDataModel
 class LimCode(IntEnum):
     LIM_OK = 0
     LIM_ERR_UNEXPECTED = -1
+
+
+class ExperimentLoopType(Enum):
+    Unknown = "Unknown"
+    TimeLoop = "TimeLoop"
+    XYPosLoop = "XYPosLoop"
+    ZStackLoop = "ZStackLoop"
+    NETimeLoop = "NETimeLoop"
+
+
+class DimensionType(Enum):
+    D_2D_SINGLE = "2Ds"
+    D_2D_MULTI = "2Dm"
+    D_3D_SINGLE = "3Ds"
+    D_3D_MULTI = "3Dm"
 
 
 class LIMPICTURE(ctypes.Structure):
@@ -87,6 +102,8 @@ class ND2Reader(MicroscopeDataReaderBase):
         self.__dll.Lim_FileGetTextinfo.restype = ctypes.c_char_p
         self.__dll.Lim_FileGetExperiment.argtypes = (ctypes.c_void_p,)
         self.__dll.Lim_FileGetExperiment.restype = ctypes.c_char_p
+        self.__dll.Lim_FileGetFrameMetadata.argtypes = (ctypes.c_void_p, ctypes.c_uint)
+        self.__dll.Lim_FileGetFrameMetadata.restype = ctypes.c_char_p
         self.__dll.Lim_FileGetSeqCount.argtypes = (ctypes.c_void_p,)
         self.__dll.Lim_FileGetSeqCount.restype = ctypes.c_uint
         self.__dll.Lim_FileGetCoordSize.argtypes = (ctypes.c_void_p,)
@@ -117,19 +134,27 @@ class ND2Reader(MicroscopeDataReaderBase):
         attributes = self.__dll.Lim_FileGetAttributes(handle)
         metadata = self.__dll.Lim_FileGetMetadata(handle)
         textinfo = self.__dll.Lim_FileGetTextinfo(handle)
-        experiment = self.__dll.Lim_FileGetExperiment(handle)
+        experiments = self.__dll.Lim_FileGetExperiment(handle)
+        frame_metadata = self.__dll.Lim_FileGetFrameMetadata(
+            handle, 0
+        )  # get 1st frame info
 
         attributes = json.loads(attributes)
         metadata = json.loads(metadata)
         textinfo = json.loads(textinfo) if textinfo is not None else None
-        experiment = json.loads(experiment) if experiment is not None else None
+        experiments = json.loads(experiments) if experiments is not None else None
+        frame_metadata = json.loads(frame_metadata)
+
+        # frame_metadata は、必要な項目のみに絞る
+        frame_metadata_single = frame_metadata["channels"][0]
 
         original_metadata = {
             "data_name": data_name,
             "attributes": attributes,
             "metadata": metadata,
             "textinfo": textinfo,
-            "experiment": experiment,
+            "experiments": experiments,
+            "frame_metadata": frame_metadata_single,
         }
 
         return original_metadata
@@ -140,11 +165,11 @@ class ND2Reader(MicroscopeDataReaderBase):
         """
 
         attributes = original_metadata["attributes"]
-        experiment = original_metadata["experiment"]
+        experiments = original_metadata["experiments"]
 
         # experiment, periods, の参照は先頭データの内容から取得
-        if (experiment is not None) and ("periods" in experiment[0]["parameters"]):
-            period_ms = float(experiment[0]["parameters"]["periods"][0]["periodMs"])
+        if (experiments is not None) and ("periods" in experiments[0]["parameters"]):
+            period_ms = float(experiments[0]["parameters"]["periods"][0]["periodMs"])
             fps = (1000 / period_ms) if period_ms > 0 else 0
         else:
             period_ms = 0
@@ -162,43 +187,49 @@ class ND2Reader(MicroscopeDataReaderBase):
         return omeData
 
     def _build_lab_specific_metadata(self, original_metadata: dict) -> dict:
-        # ----------------------------------------
-        # Lab固有仕様のmetadata作成
-        # ----------------------------------------
-
-        # TODO: 既存のMEXコードより、以下のコード移植が必要だが、最新版ライブラリでの各値の取得方法が不明となっている。
-        #     - m_Experiment.uiLevelCount
-        #     - m_Experiment.pAllocatedLevels
-        #     - m_Experiment.pAllocatedLevels[n].uiLoopSize
-        #     - m_Experiment.pAllocatedLevels[n].dInterval
-        #
-        # if(m_Experiment.uiLevelCount==0){
-        #       *type=(char *)"2Ds";
-        # } else if (m_Experiment.uiLevelCount==2){
-        #       *type=(char *)"3Dm";
-        #       *mxGetPr(Loops)= (double)m_Experiment.pAllocatedLevels[0].
-        #           uiLoopSize;
-        #       *mxGetPr(ZSlicenum)=(double)m_Experiment.pAllocatedLevels[1].uiLoopSize;
-        #       *mxGetPr(ZInterval)=(double)m_Experiment.pAllocatedLevels[1].dInterval;
-        # } else {
-        #     if (m_Experiment.pAllocatedLevels[0].uiExpType==2){
-        #           *type=(char *)"3Ds";
-        #           *mxGetPr(ZSlicenum)=(double)m_Experiment.pAllocatedLevels[0].uiLoopSize;
-        #           *mxGetPr(ZInterval)=(double)m_Experiment.pAllocatedLevels[0].dInterval;
-        #     }
-        #     if (m_Experiment.pAllocatedLevels[0].uiExpType==0){
-        #           *type=(char *)"2Dm";
-        #           *mxGetPr(Loops)=(double)m_Experiment.pAllocatedLevels[0].uiLoopSize;
-        #     }
-        # }
+        """Build metadata in lab-specific format"""
 
         attributes = original_metadata["attributes"]
         metadata = original_metadata["metadata"]
         textinfo = original_metadata["textinfo"]
-        # experiment = original_metadata["experiment"]
+        experiments = original_metadata["experiments"]
+        frame_metadata = original_metadata["frame_metadata"]
+
+        # ----------------------------------------
+        # データの次元タイプ別でのパラメータ構築
+        # ----------------------------------------
+
+        experiments_count = len(experiments) if experiments is not None else 0
+        dimension_type = None
+        loop_count = 0
+        z_slicenum = 0
+        z_interval = 0
+
+        if experiments_count == 0:
+            dimension_type = DimensionType.D_2D_SINGLE.value
+        elif experiments_count == 2:
+            dimension_type = DimensionType.D_3D_MULTI.value
+            loop_count = experiments[0]["count"]
+            z_slicenum = experiments[1]["count"]
+            z_interval = experiments[1]["parameters"]["stepUm"]
+        else:
+            if experiments[0]["type"] == ExperimentLoopType.NETimeLoop.value:
+                dimension_type = DimensionType.D_2D_MULTI.value
+                loop_count = experiments[0]["count"]
+            elif experiments[0]["type"] == ExperimentLoopType.ZStackLoop.value:
+                dimension_type = DimensionType.D_3D_SINGLE.value
+                z_slicenum = experiments[0]["count"]
+                z_interval = experiments[0]["parameters"]["stepUm"]
+
+        # ----------------------------------------
+        # Lab固有metadata変数構築
+        # ----------------------------------------
 
         # ※一部のデータ項目は ch0 より取得
         metadata_ch0_microscope = metadata["channels"][0]["microscope"]
+        metadata_ch0_volume = metadata["channels"][0]["volume"]
+        axes_calibration_x = metadata_ch0_volume["axesCalibration"][0]
+        axes_calibration_y = metadata_ch0_volume["axesCalibration"][1]
 
         lab_specific_metadata = {
             # /* 11 cinoibebts (From Lab MEX) */
@@ -209,27 +240,28 @@ class ND2Reader(MicroscopeDataReaderBase):
             "uiBpcInMemory": attributes["bitsPerComponentInMemory"],
             "uiBpcSignificant": attributes["bitsPerComponentSignificant"],
             "uiSequenceCount": attributes["sequenceCount"],
+            # TODO: ライブラリバージョンにより、取得値が異なっている可能性がある？ (uiTileWidth)
             "uiTileWidth": attributes.get("tileWidthPx", None),  # Optional
+            # TODO: ライブラリバージョンにより、取得値が異なっている可能性がある？ (uiTileHeight)
             "uiTileHeight": attributes.get("tileHeightPx", None),  # Optional
-            # TODO: 最新版ライブラリでは該当するパラメータがない？
-            # (compressionLevel or compressionType)
-            "uiCompression": None,  # TODO: Optional ?
-            # TODO: 最新版ライブラリでは該当するパラメータがない？
-            "uiQuality": None,
+            # TODO: 旧ライブラリでは、数値が設定されているが、旧ライブラリでは文字列 (uiCompression)
+            "uiCompression": attributes.get("compressionType", None),  # Optional
+            # TODO: 旧ライブラリでは、適切ではない値が格納されている可能性がある？ (uiQuality)
+            "uiQuality": attributes.get("compressionLevel", None),  # Optional
             # /* 4 components (From Lab MEX) */
-            "Type": None,  # TODO: 要設定
-            "Loops": None,  # TODO: 要設定
-            "ZSlicenum": None,  # TODO: 要設定
-            "ZInterval": None,  # TODO: 要設定
+            "Type": dimension_type,
+            "Loops": loop_count,
+            "ZSlicenum": z_slicenum,
+            "ZInterval": z_interval,
             # /* 7 components (From Lab MEX) */
-            "dTimeStart": None,  # TODO: 最新版ライブラリでは該当するパラメータがない？
-            "MicroPerPixel": None,  # TODO: 最新版ライブラリでは該当するパラメータがない？
-            # metadata.volume.axesCalibrated が該当？
-            "PixelAspect": None,  # TODO: 最新版ライブラリでは該当するパラメータがない？
+            "dTimeStart": frame_metadata["time"]["absoluteJulianDayNumber"],
+            # TODO: ライブラリバージョンにより、取得値が異なっている可能性がある？ (MicroPerPixel)
+            "MicroPerPixel": axes_calibration_x,
+            "PixelAspect": axes_calibration_x / axes_calibration_y,
             "ObjectiveName": metadata_ch0_microscope.get(
                 "objectiveName", None
             ),  # Optional, channels[0] からの取得
-            # TODO: ライブラリバージョンにより、取得値が異なる可能性がある？
+            # TODO: ライブラリバージョンにより、取得値が異なっている可能性がある？ (dObjectiveMag)
             "dObjectiveMag": metadata_ch0_microscope.get(
                 "objectiveMagnification", None
             ),  # Optional, channels[0] からの取得
