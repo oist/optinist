@@ -19,6 +19,7 @@ imaging_plane:
 image_series:
     starting_time: 0
     starting_frame: [0,]
+    save_raw_image_to_nwb: False
 ophys:
     plane_segmentation:
         name: 'PlaneSegmentation'
