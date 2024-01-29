@@ -86,7 +86,7 @@ class ND2Reader(MicroscopeDataReaderBase):
 
             for dependency in dependencies:
                 dependency_path = f"{platform_library_dir}/{dependency}"
-                self.__dll = ctypes.cdll.LoadLibrary(dependency_path)
+                ctypes.cdll.LoadLibrary(dependency_path)
 
         # load sdk library
         self.__dll = ctypes.cdll.LoadLibrary(__class__.get_library_path())

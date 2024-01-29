@@ -1,6 +1,5 @@
 import logging
 import os
-from pprint import pprint
 
 from OIRReader import OIRReader
 
@@ -21,8 +20,7 @@ def test_oir_reader():
 
     # initialize
     data_reader = OIRReader()
-
-    pprint(data_reader)
+    data_reader.load(TEST_DATA_PATH)
 
     # TODO: Under construction
 

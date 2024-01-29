@@ -6,6 +6,9 @@ import platform
 
 from MicroscopeDataReaderBase import MicroscopeDataReaderBase, OMEDataModel
 
+import studio.app.optinist.microscopes.modules.olympus.lib as lib
+from studio.app.optinist.microscopes.modules.olympus.h_ida import IDA_OpenMode
+
 
 class OIRReader(MicroscopeDataReaderBase):
     """Olympus OIR data reader"""
@@ -53,16 +56,56 @@ class OIRReader(MicroscopeDataReaderBase):
 
             for dependency in dependencies:
                 dependency_path = f"{platform_library_dir}/{dependency}"
-                self.__dll = ctypes.cdll.LoadLibrary(dependency_path)
-
-        self.__dll = ctypes.cdll.LoadLibrary(__class__.get_library_path())
+                ctypes.cdll.LoadLibrary(dependency_path)
 
         # load sdk library
+        self.__dll = lib.load_library(__class__.get_library_path())
+
+        # initialize sdk library
         self.__dll.Initialize()
 
     def _load_data_file(self, data_file_path: str) -> object:
-        # TODO: Under construction
-        return None
+        ida = self.__dll
+        hAccessor = self.__hAccessor = ctypes.c_void_p()
+        hFile = self.__hFile = ctypes.c_void_p()
+
+        # Get Accessor
+        ida.GetAccessor(data_file_path, ctypes.byref(hAccessor))
+        if not hAccessor:
+            # TODO: raise exception
+            print("Please check the File path")
+            return
+
+        # Connect
+        ida.Connect(hAccessor)
+
+        # Open file
+        # TODO: process exception
+        ida.Open(
+            # result = ida.Open(
+            hAccessor,
+            data_file_path,
+            IDA_OpenMode.IDA_OM_READ,
+            ctypes.byref(hFile),
+        )
+
+        # GetNumberOfGroup
+        num_of_group = ctypes.c_int()
+        ida.GetNumOfGroups(hAccessor, hFile, ctypes.byref(num_of_group))
+
+        # Get Group Handle
+        hGroup = self.__hGroup = ctypes.c_void_p()
+        specify_group = (
+            0  # OIR Data has only 1 group, omp2info file may have more groups
+        )
+        ida.GetGroup(hAccessor, hFile, specify_group, ctypes.byref(hGroup))
+
+        # GetNumberOfLevels
+        num_of_layer = ctypes.c_int()
+        ida.GetNumOfLevels(hAccessor, hGroup, ctypes.byref(num_of_layer))
+        print("-- GetNumOfLevels - num_of_layer:", num_of_layer)
+
+        return (hAccessor, hFile, hGroup)
 
     def _build_original_metadata(self, handle: object, data_name: str) -> dict:
         # TODO: Under construction
