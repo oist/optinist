@@ -4,6 +4,7 @@ import {
   HDF5InputNode,
   InputNodeType,
   FILE_TYPE_SET,
+  MatlabInputNode,
 } from "store/slice/InputNode/InputNodeType"
 
 export function isImageInputNode(
@@ -16,6 +17,12 @@ export function isCsvInputNode(
   inputNode: InputNodeType,
 ): inputNode is CsvInputNode {
   return inputNode.fileType === FILE_TYPE_SET.CSV
+}
+
+export function isMatlabInputNode(
+  inputNode: InputNodeType,
+): inputNode is MatlabInputNode {
+  return inputNode.fileType === FILE_TYPE_SET.MATLAB
 }
 
 export function isHDF5InputNode(

@@ -11,11 +11,13 @@ describe("FilesTree", () => {
       path: "/tmp/optinist/input/hoge",
       name: "hoge",
       isdir: true,
+      shape: [],
       nodes: [
         {
           path: "/tmp/optinist/input/hoge/hoge.tif",
           name: "hoge.tif",
           isdir: false,
+          shape: [],
         },
       ],
     },
@@ -23,11 +25,13 @@ describe("FilesTree", () => {
       path: "/tmp/optinist/input/copy_image1",
       name: "copy_image1",
       isdir: true,
+      shape: [],
       nodes: [
         {
           path: "/tmp/optinist/input/copy_image1/copy_image1.tif",
           name: "copy_image1.tif",
           isdir: false,
+          shape: [],
         },
       ],
     },
@@ -42,11 +46,13 @@ describe("FilesTree", () => {
           path: "/tmp/optinist/input/hoge",
           name: "hoge",
           isDir: true,
+          shape: [],
           nodes: [
             {
               path: "/tmp/optinist/input/hoge/hoge.tif",
               name: "hoge.tif",
               isDir: false,
+              shape: [],
             },
           ],
         },
@@ -54,11 +60,13 @@ describe("FilesTree", () => {
           path: "/tmp/optinist/input/copy_image1",
           name: "copy_image1",
           isDir: true,
+          shape: [],
           nodes: [
             {
               path: "/tmp/optinist/input/copy_image1/copy_image1.tif",
               name: "copy_image1.tif",
               isDir: false,
+              shape: [],
             },
           ],
         },

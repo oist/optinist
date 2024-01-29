@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit"
 
 import {
+  getStatusLoadViaUrl,
   setUploadProgress,
   uploadFile,
 } from "store/slice/FileUploader/FileUploaderActions"
@@ -50,6 +51,36 @@ export const fileUploaderSlice = createSlice({
         }
       })
       .addCase(uploadFile.rejected, (state, action) => {
+        const { requestId } = action.meta.arg
+        const currentState = state[requestId]
+        state[requestId] = {
+          ...currentState,
+          pending: false,
+          fulfilled: false,
+          error: action.error.message,
+        }
+      })
+      .addCase(getStatusLoadViaUrl.pending, (state, action) => {
+        const { requestId } = action.meta.arg
+        const currentState = state[requestId]
+        state[requestId] = {
+          ...currentState,
+          isUninitialized: false,
+          pending: true,
+          fulfilled: false,
+        }
+      })
+      .addCase(getStatusLoadViaUrl.fulfilled, (state, action) => {
+        const { current, total } = action.payload
+        const { requestId } = action.meta.arg
+        const currentState = state[requestId]
+        state[requestId] = {
+          ...currentState,
+          pending: !(current === total),
+          fulfilled: true,
+        }
+      })
+      .addCase(getStatusLoadViaUrl.rejected, (state, action) => {
         const { requestId } = action.meta.arg
         const currentState = state[requestId]
         state[requestId] = {

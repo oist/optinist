@@ -21,9 +21,9 @@ export const filesTreeSlice = createSlice({
       .addCase(getFilesTree.pending, (state, action) => {
         const { fileType } = action.meta.arg
         state[fileType] = {
+          ...state[fileType],
           isLoading: true,
           isLatest: false,
-          tree: [],
         }
       })
       .addCase(getFilesTree.fulfilled, (state, action) => {

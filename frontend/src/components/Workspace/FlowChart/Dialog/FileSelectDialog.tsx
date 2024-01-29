@@ -1,8 +1,19 @@
-import { memo, SyntheticEvent, useContext, useEffect, useState } from "react"
+import {
+  memo,
+  SyntheticEvent,
+  useContext,
+  useEffect,
+  useState,
+  MouseEvent,
+  useCallback,
+} from "react"
 import { useDispatch, useSelector } from "react-redux"
 
+import AutorenewIcon from "@mui/icons-material/Autorenew"
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline"
 import FolderIcon from "@mui/icons-material/Folder"
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined"
+import { Divider, IconButton, Tooltip } from "@mui/material"
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 import Checkbox, { CheckboxProps } from "@mui/material/Checkbox"
@@ -29,6 +40,7 @@ import {
   getNodeByPath,
   isDirNodeByPath,
 } from "store/slice/FilesTree/FilesTreeUtils"
+import { updateShape } from "store/slice/FileUploader/FileUploaderActions"
 import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
 import { AppDispatch } from "store/store"
@@ -77,6 +89,7 @@ export const FileSelectDialog = memo(function FileSelectDialog({
     }
   }
   const theme = useTheme()
+
   return (
     <Dialog open={open} onClose={onCancel} fullWidth>
       <DialogTitle>{title ?? "Select File"}</DialogTitle>
@@ -176,6 +189,18 @@ const FileTreeView = memo(function FileTreeView({
   return (
     <div>
       {isLoading && <LinearProgress />}
+      {fileType === FILE_TREE_TYPE_SET.IMAGE ? (
+        <>
+          <Box sx={{ display: "flex" }}>
+            <Typography sx={{ width: "50%" }}>Files</Typography>
+            <Typography sx={{ minWidth: "35%" }} marginLeft={2}>
+              Shapes
+            </Typography>
+            <Box></Box>
+          </Box>
+          <Divider />
+        </>
+      ) : null}
       <TreeView
         disableSelection={multiSelect}
         multiSelect={multiSelect}
@@ -183,6 +208,7 @@ const FileTreeView = memo(function FileTreeView({
       >
         {tree?.map((node) => (
           <TreeNode
+            fileType={fileType}
             key={node.name}
             node={node}
             selectedFilePath={selectedFilePath}
@@ -197,6 +223,7 @@ const FileTreeView = memo(function FileTreeView({
 })
 
 interface TreeNodeProps {
+  fileType: FILE_TREE_TYPE
   node: TreeNodeType
   selectedFilePath: string[] | string
   multiSelect: boolean
@@ -205,6 +232,7 @@ interface TreeNodeProps {
 }
 
 const TreeNode = memo(function TreeNode({
+  fileType,
   node,
   selectedFilePath,
   multiSelect,
@@ -232,6 +260,9 @@ const TreeNode = memo(function TreeNode({
         label={
           multiSelect && node.nodes.filter((node) => !node.isDir).length > 0 ? (
             <TreeItemLabel
+              isDir={node.isDir}
+              fileType={fileType}
+              shape={node.shape}
               label={node.name}
               checkboxProps={{
                 indeterminate,
@@ -249,6 +280,7 @@ const TreeNode = memo(function TreeNode({
       >
         {node.nodes.map((childNode, i) => (
           <TreeNode
+            fileType={fileType}
             node={childNode}
             selectedFilePath={selectedFilePath}
             key={i}
@@ -267,6 +299,9 @@ const TreeNode = memo(function TreeNode({
         label={
           multiSelect ? (
             <TreeItemLabel
+              isDir={node.isDir}
+              fileType={fileType}
+              shape={node.shape}
               label={node.name}
               checkboxProps={{
                 checked:
@@ -286,17 +321,79 @@ const TreeNode = memo(function TreeNode({
 })
 
 interface TreeItemLabelProps {
+  fileType: FILE_TREE_TYPE
+  shape: number[]
   label: string
   checkboxProps: CheckboxProps
+  isDir?: boolean
 }
 
 const TreeItemLabel = memo(function TreeItemLabel({
+  fileType,
+  shape,
   label,
+  isDir,
   checkboxProps,
 }: TreeItemLabelProps) {
+  const dispatch = useDispatch<AppDispatch>()
+  const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const onUpdate = useCallback(
+    (event: MouseEvent, fileName: string) => {
+      if (!workspaceId) return
+      event.stopPropagation()
+      dispatch(updateShape({ workspaceId, fileName }))
+    },
+    [dispatch, workspaceId],
+  )
   return (
-    <Box display="flex" alignItems="center">
-      <Box flexGrow={1}>{label}</Box>
+    <Box height={24} display="flex" alignItems="center">
+      <Tooltip
+        title={<span style={{ fontSize: 14 }}>{label}</span>}
+        placement={"left-start"}
+      >
+        <Box
+          sx={{
+            width: "48%",
+            textOverflow: "ellipsis",
+            overflowX: "hidden",
+            whiteSpace: "pre",
+          }}
+        >
+          {label}
+        </Box>
+      </Tooltip>
+      {fileType === FILE_TREE_TYPE_SET.IMAGE ? (
+        <>
+          <Box minWidth={175} marginLeft={2} alignItems={"center"}>
+            {!isDir ? (
+              !shape ? (
+                <Tooltip
+                  title={
+                    <span style={{ fontSize: 14 }}>
+                      parsing image shape failed
+                    </span>
+                  }
+                  placement={"right"}
+                >
+                  <ErrorOutlineIcon color={"error"} />
+                </Tooltip>
+              ) : (
+                `(${shape.join(", ")})`
+              )
+            ) : null}
+          </Box>
+          {!isDir ? (
+            <IconButton
+              sx={{ minWidth: 24 }}
+              onClick={(event) => onUpdate(event, label)}
+            >
+              <AutorenewIcon />
+            </IconButton>
+          ) : (
+            <Box width={24} marginRight={2} />
+          )}
+        </>
+      ) : null}
       <Box>
         <Checkbox
           {...checkboxProps}
@@ -305,6 +402,7 @@ const TreeItemLabel = memo(function TreeItemLabel({
           sx={{
             marginRight: "4px",
             padding: "2px",
+            minWidth: 24,
           }}
         />
       </Box>

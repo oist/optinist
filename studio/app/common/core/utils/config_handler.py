@@ -24,4 +24,4 @@ class ConfigWriter:
         create_directory(dirname)
 
         with open(join_filepath([dirname, filename]), "w") as f:
-            yaml.dump(config, f)
+            yaml.dump(config, f, sort_keys=False)

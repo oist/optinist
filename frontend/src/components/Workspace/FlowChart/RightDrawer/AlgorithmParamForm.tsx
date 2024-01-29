@@ -46,8 +46,8 @@ const ParamItem = memo(function ParamItem({ paramKey }: ParamItemProps) {
   const Component = createParamFormItemComponent({
     paramSelector: (paramKey) => selectAlgorithmParam(nodeId, paramKey),
     paramValueSelector: (path) => selectAlgorithmParamsValue(nodeId, path),
-    paramUpdateActionCreator: (path, newValue) =>
-      updateParam({ nodeId, path, newValue }),
+    paramUpdateActionCreator: (path, newValue, initValue) =>
+      updateParam({ nodeId, path, newValue, initValue }),
   })
   return <Component paramKey={paramKey} />
 })
