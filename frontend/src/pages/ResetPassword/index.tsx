@@ -24,7 +24,7 @@ const ResetPassword = () => {
     if (errors.email || errorCheck) return
     setIsLoading(true)
     try {
-      await sendResetPasswordMailApi(values.email)
+      await sendResetPasswordMailApi(encodeURIComponent(values.email))
       setTimeout(() => {
         alert(
           ` You'll receive a link to reset your password at ${values.email}. Please check your mail!`,

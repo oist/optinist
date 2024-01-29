@@ -20,6 +20,7 @@ import {
 import {
   isCsvInputNode,
   isHDF5InputNode,
+  isMatlabInputNode,
 } from "store/slice/InputNode/InputNodeUtils"
 import {
   reproduceWorkflow,
@@ -52,6 +53,19 @@ export const inputNodeSlice = createSlice({
       const inputNode = state[nodeId]
       if (isCsvInputNode(inputNode)) {
         inputNode.param = param
+      }
+    },
+    setInputNodeMatlabPath(
+      state,
+      action: PayloadAction<{
+        nodeId: string
+        path: string
+      }>,
+    ) {
+      const { nodeId, path } = action.payload
+      const item = state[nodeId]
+      if (isMatlabInputNode(item)) {
+        item.matPath = path
       }
     },
     setInputNodeHDF5Path(
@@ -124,6 +138,12 @@ export const inputNodeSlice = createSlice({
                 },
               }
               break
+            case FILE_TYPE_SET.MATLAB:
+              state[node.id] = {
+                fileType,
+                param: {},
+              }
+              break
           }
         }
       })
@@ -169,6 +189,11 @@ export const inputNodeSlice = createSlice({
                   fileType: FILE_TYPE_SET.CSV,
                   param: node.data.param as CsvInputParamType,
                 }
+              } else if (node.data.fileType === FILE_TYPE_SET.MATLAB) {
+                newState[node.id] = {
+                  fileType: FILE_TYPE_SET.MATLAB,
+                  param: {},
+                }
               } else if (node.data.fileType === FILE_TYPE_SET.HDF5) {
                 newState[node.id] = {
                   fileType: FILE_TYPE_SET.HDF5,
@@ -199,6 +224,13 @@ export const inputNodeSlice = createSlice({
                     selectedFilePath: node.data.path as string,
                     param: node.data.param as CsvInputParamType,
                   }
+                } else if (node.data.fileType === FILE_TYPE_SET.MATLAB) {
+                  newState[node.id] = {
+                    fileType: FILE_TYPE_SET.MATLAB,
+                    matPath: node.data.matPath,
+                    selectedFilePath: node.data.path as string,
+                    param: {},
+                  }
                 } else if (node.data.fileType === FILE_TYPE_SET.HDF5) {
                   newState[node.id] = {
                     fileType: FILE_TYPE_SET.HDF5,
@@ -214,7 +246,10 @@ export const inputNodeSlice = createSlice({
       ),
 })
 
-export const { setCsvInputNodeParam, setInputNodeHDF5Path } =
-  inputNodeSlice.actions
+export const {
+  setCsvInputNodeParam,
+  setInputNodeMatlabPath,
+  setInputNodeHDF5Path,
+} = inputNodeSlice.actions
 
 export default inputNodeSlice.reducer

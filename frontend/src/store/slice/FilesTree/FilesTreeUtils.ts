@@ -9,11 +9,13 @@ export function convertToTreeNodeType(dto: TreeNodeTypeDTO[]): TreeNodeType[] {
           name: node.name,
           isDir: true,
           nodes: convertToTreeNodeType(node.nodes),
+          shape: node.shape,
         }
       : {
           path: node.path,
           name: node.name,
           isDir: false,
+          shape: node.shape,
         },
   )
 }

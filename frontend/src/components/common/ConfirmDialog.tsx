@@ -50,6 +50,7 @@ export const ConfirmDialog: FC<ConfirmDialogProps> = ({
         "& .MuiDialog-container": {
           "& .MuiPaper-root": {
             minWidth: "300px",
+            wordWrap: "break-word",
           },
         },
       }}

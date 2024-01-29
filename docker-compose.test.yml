@@ -23,14 +23,3 @@ services:
     environment:
       TZ: Asia/Tokyo
     command: yarn test:ci
-
-  build_studio_frontend:
-    image: build_studio_frontend
-    container_name: build_studio_frontend
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile.build
-    environment:
-      TZ: Asia/Tokyo
-    volumes:
-      - ./frontend/build:/app/build:cached

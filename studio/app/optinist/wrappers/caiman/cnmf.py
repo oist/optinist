@@ -5,7 +5,7 @@ import numpy as np
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.dataclass import ImageData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
-from studio.app.optinist.dataclass import CaimanCnmfData, FluoData, IscellData, RoiData
+from studio.app.optinist.dataclass import EditRoiData, FluoData, IscellData, RoiData
 
 
 def get_roi(A, thr, thr_method, swap_dim, dims):
@@ -149,29 +149,34 @@ def caiman_cnmf(
 
     iscell = np.concatenate(
         [
-            np.ones(cnm.estimates.A.shape[-1]),
+            np.ones(len(cnm.estimates.C)),
             np.zeros(cnm.estimates.b.shape[-1] if cnm.estimates.b is not None else 0),
         ]
-    ).astype(bool)
+    )
 
-    ims = get_roi(cnm.estimates.A, thr, thr_method, swap_dim, dims)
-    ims = np.stack(ims)
-    cell_roi = np.nanmax(ims, axis=0).astype(float)
-    cell_roi[cell_roi == 0] = np.nan
-    cell_roi -= 1
+    cell_ims = get_roi(cnm.estimates.A, thr, thr_method, swap_dim, dims)
+    cell_ims = np.stack(cell_ims).astype(float)
+    cell_ims[cell_ims == 0] = np.nan
+    cell_ims -= 1
+    n_rois = len(cell_ims)
 
     if cnm.estimates.b is not None and cnm.estimates.b.size != 0:
-        non_cell_roi_ims = get_roi(
+        non_cell_ims = get_roi(
             scipy.sparse.csc_matrix(cnm.estimates.b), thr, thr_method, swap_dim, dims
         )
-        non_cell_roi_ims = np.stack(non_cell_roi_ims)
-        non_cell_roi = np.nanmax(non_cell_roi_ims, axis=0).astype(float)
+        non_cell_ims = np.stack(non_cell_ims).astype(float)
+        for i, j in enumerate(range(n_rois, n_rois + len(non_cell_ims))):
+            non_cell_ims[i, :] = np.where(non_cell_ims[i, :] != 0, j, 0)
+        non_cell_roi = np.nanmax(non_cell_ims, axis=0).astype(float)
     else:
-        non_cell_roi_ims = None
+        non_cell_ims = np.zeros((0, *dims))
         non_cell_roi = np.zeros(dims)
-    non_cell_roi[non_cell_roi == 0] = np.nan
+        non_cell_roi[non_cell_roi == 0] = np.nan
+    non_cell_ims[non_cell_ims == 0] = np.nan
 
-    all_roi = np.nanmax(np.stack([cell_roi, non_cell_roi]), axis=0)
+    n_bg = len(non_cell_ims)
+
+    im = np.vstack([cell_ims, non_cell_ims])
 
     # NWBの追加
     nwbfile = {}
@@ -210,9 +215,6 @@ def caiman_cnmf(
     }
 
     # Fluorescence
-    n_rois = len(cnm.estimates.C)
-    n_bg = len(cnm.estimates.f) if cnm.estimates.f is not None else 0
-
     fluorescence = (
         np.concatenate(
             [
@@ -236,16 +238,6 @@ def caiman_cnmf(
         }
     }
 
-    cnmf_data = {}
-    cnmf_data["fluorescence"] = fluorescence
-    cnmf_data["im"] = (
-        np.concatenate([ims, non_cell_roi_ims], axis=0)
-        if non_cell_roi_ims is not None
-        else ims
-    )
-    cnmf_data["is_cell"] = iscell.astype(bool)
-    cnmf_data["images"] = mmap_images
-
     info = {
         "images": ImageData(
             np.array(Cn * 255, dtype=np.uint8),
@@ -254,13 +246,19 @@ def caiman_cnmf(
         ),
         "fluorescence": FluoData(fluorescence, file_name="fluorescence"),
         "iscell": IscellData(iscell, file_name="iscell"),
-        "all_roi": RoiData(all_roi, output_dir=output_dir, file_name="all_roi"),
-        "cell_roi": RoiData(cell_roi, output_dir=output_dir, file_name="cell_roi"),
+        "all_roi": RoiData(
+            np.nanmax(im, axis=0), output_dir=output_dir, file_name="all_roi"
+        ),
+        "cell_roi": RoiData(
+            np.nanmax(im[iscell != 0], axis=0),
+            output_dir=output_dir,
+            file_name="cell_roi",
+        ),
         "non_cell_roi": RoiData(
             non_cell_roi, output_dir=output_dir, file_name="non_cell_roi"
         ),
+        "edit_roi_data": EditRoiData(mmap_images, im),
         "nwbfile": nwbfile,
-        "cnmf_data": CaimanCnmfData(cnmf_data),
     }
 
     return info
