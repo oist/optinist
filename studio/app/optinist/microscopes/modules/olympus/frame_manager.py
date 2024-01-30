@@ -29,7 +29,6 @@ class FrameManager:
         self.m_hImage = ct.c_void_p()
         self.m_rect = None
         self.m_pucImageBuffer = None
-        self.m_pucImageBuffer_asWORD = None
         self.m_vecAxisIndex = []
         self.m_vecAxisPosition = []
         self.m_vecRois = []
@@ -38,19 +37,29 @@ class FrameManager:
         )
 
     def get_image_body(self, rect):
+        # ----------------------------------------
+        # Get image buffer pointer
+        # ----------------------------------------
+
         self.m_rect = rect
         self.m_pucImageBuffer = lib.get_image_body(
             self.m_hAccessor, self.m_hImage, ct.byref(self.m_rect)
         )
-        return self.m_pucImageBuffer
+
+        # ----------------------------------------
+        # Get ctypes type image buffer pointer
+        # ----------------------------------------
+
+        # Note: specify c_uint16
+        buffer_size = ct.c_uint16 * rect.width * rect.height
+
+        ctypes_buffer_ptr = buffer_size.from_buffer(self.m_pucImageBuffer)
+
+        return (self.m_pucImageBuffer, ctypes_buffer_ptr)
 
     def release_image_body(self):
         if self.m_pucImageBuffer:
             self.m_pucImagebuffer = None
-            # TODO: 以下の変数代入処理はリファクタリング対象
-            self.m_pucImageBuffer_asWORD = ct.cast(
-                self.m_pucImageBuffer, ct.POINTER(ct.c_uint16)
-            )
 
     def write_image_body(self, filename):
         # Note: Not impletented.
@@ -59,20 +68,6 @@ class FrameManager:
     def write_image_body_binary(self, filename):
         # Note: Not impletented.
         pass
-
-    # TODO: needs refactoring
-    def get_pixel_value_tm(self, myDataCnt):
-        return self.m_pucImageBuffer_asWORD[myDataCnt]
-
-    # TODO: needs refactoring
-    def pucBuffer_to_WORD_TM(self, width, height):
-        # TODO: The width and height should be obtained externally as appropriate.
-        #   (If it is difficult to obtain them here, they should be obtained elsewhere.)
-        buffer_size = ct.c_uint16 * width * height
-
-        self.m_pucImageBuffer_asWORD = buffer_size.from_buffer(self.m_pucImageBuffer)
-
-        return self.m_pucImageBuffer_asWORD
 
     def get_frame_index(self):
         pFrameAxes = lib.get_image_axis(self.m_hAccessor, self.m_hImage)
@@ -95,7 +90,7 @@ class FrameManager:
         result, hProp = lib.get_frame_property(
             self.m_hAccessor, self.m_hImage, "AxisPosition", "axisName", "TIMELAPSE"
         )
-        if result == 0:
+        if result == h_ida.IDA_Result.IDA_RESULT_SUCCESS:
             result, pAxisPosition = lib.get_property_value(
                 self.m_hAccessor, hProp, "position"
             )
@@ -111,7 +106,7 @@ class FrameManager:
         result, hProp = lib.get_frame_property(
             self.m_hAccessor, self.m_hImage, "AxisPosition", "axisName", "ZSTACK"
         )
-        if result == 0:
+        if result == h_ida.IDA_Result.IDA_RESULT_SUCCESS:
             result, pAxisPosition = lib.get_property_value(
                 self.m_hAccessor, hProp, "position"
             )
@@ -127,7 +122,7 @@ class FrameManager:
         result, hProp = lib.get_frame_property(
             self.m_hAccessor, self.m_hImage, "AxisPosition", "axisName", "LAMBDA"
         )
-        if result == 0:
+        if result == h_ida.IDA_Result.IDA_RESULT_SUCCESS:
             result, pAxisPosition = lib.get_property_value(
                 self.m_hAccessor, hProp, "position"
             )
@@ -151,20 +146,6 @@ class FrameManager:
                     print(f"\tZSTACK={ap.get_position()}")
                 elif ap.get_type() == h_ida.IDA_AxisType.IDA_AT_TIME:
                     print(f"\tTIMELAPSE={ap.get_position()}")
-
-    # TODO: needs refactoring
-    def get_timestamp_channel_tm(self):
-        my_timestamp_channel = 0
-        for idx, ap in enumerate(self.m_vecAxisPosition):
-            if ap.get_exit():
-                if ap.get_type() == h_ida.IDA_AxisType.IDA_AT_TIME:
-                    my_timestamp_channel = idx
-        return my_timestamp_channel
-
-    # TODO: needs refactoring
-    def get_timestamp_tm(self, mychannel):
-        mytimestamp = self.m_vecAxisPosition[mychannel].get_position()
-        return mytimestamp
 
     def get_frame_roi(self):
         result, hProp = lib.get_frame_property(

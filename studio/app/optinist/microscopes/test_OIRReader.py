@@ -55,10 +55,9 @@ def test_oir_reader():
             )
 
     # asserts
-    # TODO: 要実装
-    # assert data_reader.original_metadata["attributes"]["widthPx"] > 0
-    # assert data_reader.ome_metadata.size_x > 0
-    # assert data_reader.lab_specific_metadata["uiWidth"] > 0
+    assert data_reader.original_metadata["rect"]["width"] > 0
+    assert data_reader.ome_metadata.size_x > 0
+    assert data_reader.lab_specific_metadata["uiWidth"] > 0
 
 
 if __name__ == "__main__":

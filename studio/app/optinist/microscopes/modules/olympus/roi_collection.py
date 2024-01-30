@@ -5,8 +5,8 @@
 """
 import ctypes as ct
 
+import studio.app.optinist.microscopes.modules.olympus.h_ida as h_ida
 import studio.app.optinist.microscopes.modules.olympus.lib as lib
-from studio.app.optinist.microscopes.modules.olympus.h_ida import IDA_VALUE
 
 
 class Roi:
@@ -45,7 +45,7 @@ class Roi:
 
     def set_points(self, pSrc, nNumOfSrc):
         for p in pSrc:
-            buf = IDA_VALUE.IDA_POINT()
+            buf = h_ida.IDA_VALUE.IDA_POINT()
             buf.x = p.value.point.x
             buf.y = p.value.point.y
             self.m_vecPoints.append(buf)
