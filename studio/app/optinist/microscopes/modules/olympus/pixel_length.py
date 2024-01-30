@@ -29,6 +29,12 @@ class PixelLength:
         print(f"\tx = {self.m_dX}")
         print(f"\ty = {self.m_dY}")
 
+    def get_values(self):
+        return {
+            "x": self.m_dX,
+            "y": self.m_dY,
+        }
+
     def get_pixel_length_x(self):
         return self.m_dX
 

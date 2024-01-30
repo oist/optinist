@@ -27,3 +27,9 @@ class AreaImageSize:
         print("Image Size")
         print(f"\tx={self.m_nX}")
         print(f"\ty={self.m_nY}")
+
+    def get_values(self):
+        return {
+            "x": self.m_nX,
+            "y": self.m_nY,
+        }

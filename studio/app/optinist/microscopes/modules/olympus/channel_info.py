@@ -105,6 +105,18 @@ class ChannelInfo:
             print(f"\tDepth[byte] = {self.m_vecnChannelDepth[cnt]}")
             print(f"\tAvai Bit[bit] = {self.m_vecnChannelBitCount[cnt]}")
 
+    def get_values(self):
+        results = []
+        for cnt in range(len(self.m_vecpszChannelIdList)):
+            result = {
+                "id": self.m_vecpszChannelIdList[cnt],
+                "name": self.m_vecpszChannelName[cnt],
+                "depth": self.m_vecnChannelDepth[cnt],
+                "bit_count": self.m_vecnChannelBitCount[cnt],
+            }
+            results.append(result)
+        return results
+
     @property
     def depth_of_ch0(self):
         return self.m_vecnChannelDepth[0]

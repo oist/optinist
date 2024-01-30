@@ -19,6 +19,7 @@ from studio.app.optinist.microscopes.modules.olympus.h_ida import (
     CMN_RECT,
     IDA_AXIS_INFO,
     IDA_OpenMode,
+    IDA_Result,
 )
 from studio.app.optinist.microscopes.modules.olympus.objective_lens_info import (
     ObjectiveLensInfo,
@@ -93,22 +94,20 @@ class OIRReader(MicroscopeDataReaderBase):
         # Get Accessor
         ida.GetAccessor(data_file_path, ctypes.byref(hAccessor))
         if not hAccessor:
-            # TODO: raise exception
-            print("Please check the File path")
-            return
+            raise Exception("GetAccessor Error: Please check the File path.")
 
         # Connect
         ida.Connect(hAccessor)
 
         # Open file
-        # TODO: process exception
-        ida.Open(
-            # result = ida.Open(
+        result = ida.Open(
             hAccessor,
             data_file_path,
             IDA_OpenMode.IDA_OM_READ,
             ctypes.byref(hFile),
         )
+        if result != IDA_Result.IDA_RESULT_SUCCESS:
+            raise Exception("Open Error")
 
         # Get Group Handle
         hGroup = self.__hGroup = ctypes.c_void_p()
@@ -119,7 +118,6 @@ class OIRReader(MicroscopeDataReaderBase):
 
         # GetArea
         hArea = self.__hArea = ctypes.c_void_p()
-        # TODO: `specify_layer = 0` is valid?
         specify_layer = 0  # OIR and omp2info file has only 1 layer
         specify_area = ctypes.c_int()
         ida.GetArea(hAccessor, hGroup, specify_layer, specify_area, ctypes.byref(hArea))
@@ -128,20 +126,6 @@ class OIRReader(MicroscopeDataReaderBase):
         return (hAccessor, hFile, hGroup, hArea)
 
     def _build_original_metadata(self, handle: object, data_name: str) -> dict:
-        # TODO: 各データ取得クラス（ChannelInfo, etc）に get_metadata を定義、情報を取得・構築する
-        return {}
-
-    def _build_ome_metadata(self, original_metadata: dict) -> OMEDataModel:
-        """
-        @link OME/NativeND2Reader
-        """
-
-        # TODO: Under construction
-        return None
-
-    def _build_lab_specific_metadata(self, original_metadata: dict) -> dict:
-        # TODO: 以下の各値は original_metadata より取得する形式とする
-
         ida = self.__dll
 
         hAccessor = self.__hAccessor
@@ -149,13 +133,17 @@ class OIRReader(MicroscopeDataReaderBase):
         hGroup = self.__hGroup
         hArea = self.__hArea
 
+        # --------------------------------------------------
+        # Get data from API
+        # --------------------------------------------------
+
         # GetNumberOfGroup
-        num_of_group = ctypes.c_int()
-        ida.GetNumOfGroups(hAccessor, hFile, ctypes.byref(num_of_group))
+        num_of_groups = ctypes.c_int()
+        ida.GetNumOfGroups(hAccessor, hFile, ctypes.byref(num_of_groups))
 
         # GetNumberOfLevels
-        num_of_layer = ctypes.c_int()
-        ida.GetNumOfLevels(hAccessor, hGroup, ctypes.byref(num_of_layer))
+        num_of_levels = ctypes.c_int()
+        ida.GetNumOfLevels(hAccessor, hGroup, ctypes.byref(num_of_levels))
 
         # GetLevelImageSize
         rect = CMN_RECT()
@@ -168,39 +156,103 @@ class OIRReader(MicroscopeDataReaderBase):
 
         # Channel Information
         channel_info = ChannelInfo(hAccessor, hArea)
-        channel_info.print()
-
-        # Image Size
-        area_image_size = AreaImageSize(hAccessor, hArea)
-        area_image_size.print()
 
         # Axes Information
         axis_info = AxisInfo(hAccessor, hArea)
-        axis_info.print()
 
         # Pixel Length
         pixel_length = PixelLength(hAccessor, hArea)
-        pixel_length.print()
 
         # Objective Lens Info
         objective_lens_info = ObjectiveLensInfo(hAccessor, hArea)
-        objective_lens_info.print()
 
         # File Creation Time
         file_creation_time = FileCreationTime(hAccessor, hArea)
-        file_creation_time.print()
 
         # System Information
         system_info = SystemInfo(hAccessor, hArea)
-        system_info.print()
 
         # User Comment
         user_comment = UserComment(hAccessor, hArea)
-        user_comment.print()
 
-        # ====================
-        # Something here
-        # ====================
+        # --------------------------------------------------
+        # Construct metadata
+        # --------------------------------------------------
+
+        original_metadata = {
+            "data_name": data_name,
+            "num_of_groups": num_of_groups.value,
+            "num_of_levels": num_of_levels.value,
+            "num_of_area": num_of_area.value,
+            "rect": {
+                "x": rect.x,
+                "y": rect.y,
+                "width": rect.width,
+                "height": rect.height,
+            },
+            "axis_info": axis_info.get_values(),
+            "pixel_length": pixel_length.get_values(),
+            "channel_info": channel_info.get_values(),
+            "objective_lens_info": objective_lens_info.get_values(),
+            "file_creation_time": file_creation_time.get_values(),
+            "system_info": system_info.get_values(),
+            "user_comment": user_comment.get_values(),
+        }
+
+        return original_metadata
+
+    def _build_ome_metadata(self, original_metadata: dict) -> OMEDataModel:
+        """
+        @link OME/NativeND2Reader
+        """
+
+        rect = original_metadata["rect"]
+        axis_info = original_metadata["axis_info"]
+
+        # get sequence counts
+        # Note: Use the largest sequence count for each axis.
+        axes_sequence_counts = []
+        for axis_name, axis in axis_info.items():
+            axes_sequence_counts.append(axis["max"])
+        sequence_count = max(axes_sequence_counts)
+
+        fps = 0  # TODO: 計算対象予定
+
+        omeData = OMEDataModel(
+            image_name=original_metadata["data_name"],
+            size_x=rect["width"],
+            size_y=rect["height"],
+            size_t=sequence_count,
+            size_c=0,
+            fps=fps,
+        )
+
+        return omeData
+
+    def _build_lab_specific_metadata(self, original_metadata: dict) -> dict:
+        # --------------------------------------------------
+        # Get parameters from original_metadata
+        # --------------------------------------------------
+
+        num_of_groups = original_metadata["num_of_groups"]
+        num_of_levels = original_metadata["num_of_levels"]
+        num_of_area = original_metadata["num_of_area"]
+        rect = original_metadata["rect"]
+        pixel_length = original_metadata["pixel_length"]
+        channel_info = original_metadata["channel_info"]
+        objective_lens_info = original_metadata["objective_lens_info"]
+        file_creation_time = original_metadata["file_creation_time"]
+        system_info = original_metadata["system_info"]
+        user_comment = original_metadata["user_comment"]
+
+        # --------------------------------------------------
+        # Make parameters
+        # --------------------------------------------------
+
+        hAccessor = self.__hAccessor
+        hArea = self.__hArea
+
+        axis_info = AxisInfo(hAccessor, hArea)
 
         nLLoop = nTLoop = nZLoop = 0
         Zstep = Zstart = Zend = Tstep = 0.0
@@ -222,40 +274,40 @@ class OIRReader(MicroscopeDataReaderBase):
             Tstep = axis.get_step()
         nTLoop = nTLoop or 1
 
-        # ====================
-        # Output
-        # ====================
+        # --------------------------------------------------
+        # Construct metadata
+        # --------------------------------------------------
 
-        result_data = {
-            "uiWidth": rect.width,
-            "uiHeight": rect.height,
+        lab_specific_metadata = {
+            "uiWidth": rect["width"],
+            "uiHeight": rect["height"],
             "Loops": nTLoop,
             "ZSlicenum": nZLoop,
-            "nChannel": channel_info.get_num_of_channel(),
-            "PixelLengthX": pixel_length.get_pixel_length_x(),
-            "PixelLengthY": pixel_length.get_pixel_length_y(),
+            "nChannel": len(channel_info),
+            "PixelLengthX": pixel_length["x"],
+            "PixelLengthY": pixel_length["y"],
             "ZInterval": Zstep,
             "TInterval": Tstep,
             "ZStart": Zstart,
             "ZEnd": Zend,
-            "ObjectiveName": objective_lens_info.name,
-            "ObjectiveMag": objective_lens_info.magnification,
-            "ObjectiveNA": objective_lens_info.na,
-            "ReflectiveIndex": objective_lens_info.reflective_index,
-            "Immersion": objective_lens_info.immersion,
-            "Date": file_creation_time.creation_time,
-            "NumberOfGroup": num_of_group.value,
-            "NumberOfLevel": num_of_layer.value,
-            "NumberOfArea": num_of_area.value,
-            "ByteDepthCh0": channel_info.depth_of_ch0,
-            "SystemName": system_info.system_name,
-            "SystemVersion": system_info.system_version,
-            "DeviceName": system_info.device_name,
-            "UserName": system_info.user_name,
-            "CommentByUser": user_comment.comment,
+            "ObjectiveName": objective_lens_info["name"],
+            "ObjectiveMag": objective_lens_info["magnification"],
+            "ObjectiveNA": objective_lens_info["na"],
+            "ReflectiveIndex": objective_lens_info["reflective_index"],
+            "Immersion": objective_lens_info["immersion"],
+            "Date": file_creation_time["creation_time"],
+            "NumberOfGroup": num_of_groups,
+            "NumberOfLevel": num_of_levels,
+            "NumberOfArea": num_of_area,
+            "ByteDepthCh0": channel_info[0]["depth"] if len(channel_info) > 0 else None,
+            "SystemName": system_info["system_name"],
+            "SystemVersion": system_info["system_version"],
+            "DeviceName": system_info["device_name"],
+            "UserName": system_info["user_name"],
+            "CommentByUser": user_comment["comment"],
         }
 
-        return result_data
+        return lab_specific_metadata
 
     def _release_resources(self, handle: object) -> None:
         # ----------------------------------------

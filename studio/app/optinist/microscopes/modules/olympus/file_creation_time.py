@@ -23,6 +23,11 @@ class FileCreationTime:
         print("File Creation Time")
         print(f"\tTime={self.m_szCreationTime}")
 
+    def get_values(self):
+        return {
+            "creation_time": self.m_szCreationTime,
+        }
+
     @property
     def creation_time(self):
         return self.m_szCreationTime

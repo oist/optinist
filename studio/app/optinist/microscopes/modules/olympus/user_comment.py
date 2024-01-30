@@ -23,6 +23,11 @@ class UserComment:
         print("User Comment")
         print(f"\tComment = {self.m_szComment}")
 
+    def get_values(self):
+        return {
+            "comment": self.m_szComment,
+        }
+
     @property
     def comment(self):
         return self.m_szComment

@@ -137,6 +137,9 @@ class AxisInfo:
     def get_axis(self, name):
         return self.m_axes.get(name, None)
 
+    def exist(self, name):
+        return name in self.m_axes
+
     def print(self):
         print("Axis Information")
         for name, axis in self.m_axes.items():
@@ -146,5 +149,13 @@ class AxisInfo:
             print(f"\t\tend = {axis.get_end()}")
             print(f"\t\tmax = {axis.get_max()}")
 
-    def exist(self, name):
-        return name in self.m_axes
+    def get_values(self):
+        result = {}
+        for name, axis in self.m_axes.items():
+            result[name] = {
+                "start": axis.get_start(),
+                "step": axis.get_step(),
+                "end": axis.get_end(),
+                "max": axis.get_max(),
+            }
+        return result

@@ -41,6 +41,14 @@ class SystemInfo:
         print(f"\tdeviceName = {self.m_szDeviceName}")
         print(f"\tuserName = {self.m_szUserName}")
 
+    def get_values(self):
+        return {
+            "system_name": self.m_szSystemName,
+            "system_version": self.m_szSystemVersion,
+            "device_name": self.m_szDeviceName,
+            "user_name": self.m_szUserName,
+        }
+
     @property
     def system_name(self):
         return self.m_szSystemName

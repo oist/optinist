@@ -65,6 +65,16 @@ class ObjectiveLensInfo:
         print(f"\tWD = {self.m_dWD}")
         print(f"\tReflective Index = {self.m_dReflectiveIndex}")
 
+    def get_values(self):
+        return {
+            "name": self.m_szName,
+            "magnification": self.m_dMagnification,
+            "immersion": self.m_szImmersion,
+            "na": self.m_dNA,
+            "wd": self.m_dWD,
+            "reflective_index": self.m_dReflectiveIndex,
+        }
+
     @property
     def name(self):
         return self.m_szName
