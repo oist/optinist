@@ -80,15 +80,12 @@ def get_lut(hAccessor, hArea, channel_id):
     return result, pLUTR, pLUTG, pLUTB
 
 
-# TODO: どこで利用されている？
 def get_image_body(hAccessor, hImage, rect):
     image_size = ct.c_uint64()
     image_buffer = None
     result = ida.GetImageBody(hAccessor, hImage, rect, None, None, ct.byref(image_size))
-    if result != 0:
-        # TODO: 例外処理
-        print("Error: GetImageBody")
-        return None
+    if result != IDA_Result.IDA_RESULT_SUCCESS:
+        raise Exception("Error: GetImageBody")
 
     if image_size.value != 0:
         image_buffer = (ct.c_uint8 * image_size.value)()
@@ -100,21 +97,40 @@ def get_image_body(hAccessor, hImage, rect):
 
 def get_image_axis(hAccessor, hImage):
     num_of_frame_axis = ct.c_int()
-    # TODO: do check result
-    # result = ida.GetImageAxis(
-    ida.GetImageAxis(hAccessor, hImage, None, None, ct.byref(num_of_frame_axis))
+    result = ida.GetImageAxis(
+        hAccessor, hImage, None, None, ct.byref(num_of_frame_axis)
+    )
+    if result != IDA_Result.IDA_RESULT_SUCCESS:
+        raise Exception("Error: GetImageAxis")
+
     pFrameAxes = (IDA_AXIS_INFO * num_of_frame_axis.value)()
-    # TODO: do check result
-    # result = ida.GetImageAxis(
-    ida.GetImageAxis(
+
+    result = ida.GetImageAxis(
         hAccessor, hImage.pFrameAxes, num_of_frame_axis, ct.byref(num_of_frame_axis)
     )
+    if result != IDA_Result.IDA_RESULT_SUCCESS:
+        raise Exception("Error: GetImageAxis")
+
     return pFrameAxes
 
 
 def set_frame_axis_index(
     nLIndex, nZIndex, nTIndex, pRoiCollection, pAxisInfo, pAxes, pnAxisCount
 ):
+    """
+    // *****************************************************************************
+    //  @brief  SetFrameAxisIndex
+    //  @param[in]  nLIndex -- LAMBDA axis index if LAMBDA axis doesn't exist, set 0
+    //  @param[in]  nZIndex -- ZSTACK axis index if ZSTACK axis doesn't exist, set 0
+    //  @param[in]  nTIndex -- TIMELASE axis index if TIMELASE axis doesn't exist, set 0
+    //  @param[in]	pAxisInfo- Axis Information getting from CAxisInfo class
+    //  @param[out]  pAes
+    //      -- This output is used by GetImage Function( CFrameManager::CFrameManager )
+    //  @retval		void
+    //  @note
+    // *****************************************************************************
+    """
+
     # 0: LAxis
     # 1: ZAxis
     # 2: TAxis
@@ -126,15 +142,15 @@ def set_frame_axis_index(
     for i in range(3):
         if bHasAxis[i]:
             nSize[i] = pAxis[i].get_max()
-    if pRoiCollection.has_point_roi():
+    if pRoiCollection.has_point_roi():  # Point
         pAxes[0].nNumber = nTIndex
         pAxes[0].nType = IDA_AxisType.IDA_AT_TIME
         pnAxisCount = 1
-    elif pRoiCollection.has_multi_point_roi():
+    elif pRoiCollection.has_multi_point_roi():  # Multipoint
         pAxes[0].nNumber = nTIndex
         pAxes[0].nType = IDA_AxisType.IDA_AT_TIME
         pnAxisCount = 1
-    elif pRoiCollection.has_mapping_roi():
+    elif pRoiCollection.has_mapping_roi():  # Mapping
         if not bHasAxis[1]:
             pAxes[0].nNumber = nTIndex
             pAxes[0].nType = IDA_AxisType.IDA_AT_TIME
@@ -145,26 +161,26 @@ def set_frame_axis_index(
             pAxes[1].nNumber = nTIndex
             pAxes[1].nType = IDA_AxisType.IDA_AT_TIME
             pnAxisCount = 2
-    elif pRoiCollection.has_line_roi():
-        if not bHasAxis[0] and not bHasAxis[1] and bHasAxis[2]:
+    elif pRoiCollection.has_line_roi():  # Line
+        if not bHasAxis[0] and not bHasAxis[1] and bHasAxis[2]:  # XT
             pAxes[0].nNumber = nTIndex
             pAxes[0].nType = IDA_AxisType.IDA_AT_TIME
             pnAxisCount = 1
-        elif not bHasAxis[0] and bHasAxis[1] and not bHasAxis[2]:
+        elif not bHasAxis[0] and bHasAxis[1] and not bHasAxis[2]:  # XZ
             pAxes[0].nNumber = nZIndex
             pAxes[0].nType = IDA_AxisType.IDA_AT_Z
             pnAxisCount = 1
-        elif not bHasAxis[0] and bHasAxis[1] and bHasAxis[2]:
+        elif not bHasAxis[0] and bHasAxis[1] and bHasAxis[2]:  # XZT
             pAxes[0].nNumber = nZIndex
             pAxes[0].nType = IDA_AxisType.IDA_AT_Z
             pAxes[1].nNumber = nTIndex
             pAxes[1].nType = IDA_AxisType.IDA_AT_TIME
             pnAxisCount = 2
         else:
-            # TODO: What?
+            # Note: Not implemented.
             pass
-    else:
-        if nSize[0] != 0 and nSize[1] != 0 and nSize[2] != 0:
+    else:  # XY
+        if nSize[0] != 0 and nSize[1] != 0 and nSize[2] != 0:  # XYLZT
             pAxes[0].nNumber = nLIndex
             pAxes[0].nType = IDA_AxisType.IDA_AT_LAMBDA
             pAxes[1].nNumber = nZIndex
@@ -172,37 +188,37 @@ def set_frame_axis_index(
             pAxes[2].nNumber = nTIndex
             pAxes[2].nType = IDA_AxisType.IDA_AT_TIME
             pnAxisCount = 3
-        elif nSize[0] != 0 and nSize[1] != 0 and nSize[2] == 0:
+        elif nSize[0] != 0 and nSize[1] != 0 and nSize[2] == 0:  # XYLZ
             pAxes[0].nNumber = nLIndex
             pAxes[0].nType = IDA_AxisType.IDA_AT_LAMBDA
             pAxes[1].nNumber = nZIndex
             pAxes[1].nType = IDA_AxisType.IDA_AT_Z
             pnAxisCount = 2
-        elif nSize[0] != 0 and nSize[1] == 0 and nSize[2] != 0:
+        elif nSize[0] != 0 and nSize[1] == 0 and nSize[2] != 0:  # XYLT
             pAxes[0].nNumber = nLIndex
             pAxes[0].nType = IDA_AxisType.IDA_AT_LAMBDA
             pAxes[1].nNumber = nTIndex
             pAxes[1].nType = IDA_AxisType.IDA_AT_TIME
             pnAxisCount = 2
-        elif nSize[0] == 0 and nSize[1] != 0 and nSize[2] != 0:
+        elif nSize[0] == 0 and nSize[1] != 0 and nSize[2] != 0:  # XYZT
             pAxes[0].nNumber = nZIndex
             pAxes[0].nType = IDA_AxisType.IDA_AT_Z
             pAxes[1].nNumber = nTIndex
             pAxes[1].nType = IDA_AxisType.IDA_AT_TIME
             pnAxisCount = 2
-        elif nSize[0] != 0 and nSize[1] == 0 and nSize[2] == 0:
+        elif nSize[0] != 0 and nSize[1] == 0 and nSize[2] == 0:  # XYL
             pAxes[0].nNumber = nLIndex
             pAxes[0].nType = IDA_AxisType.IDA_AT_LAMBDA
             pnAxisCount = 1
-        elif nSize[0] == 0 and nSize[1] != 0 and nSize[2] == 0:
+        elif nSize[0] == 0 and nSize[1] != 0 and nSize[2] == 0:  # XYZ
             pAxes[0].nNumber = nZIndex
             pAxes[0].nType = IDA_AxisType.IDA_AT_Z
             pnAxisCount = 1
-        elif nSize[0] == 0 and nSize[1] == 0 and nSize[2] != 0:
+        elif nSize[0] == 0 and nSize[1] == 0 and nSize[2] != 0:  # XYT
             pAxes[0].nNumber = nTIndex
             pAxes[0].nType = IDA_AxisType.IDA_AT_TIME
             pnAxisCount = 1
-        elif nSize[0] == 0 and nSize[1] == 0 and nSize[2] == 0:
+        elif nSize[0] == 0 and nSize[1] == 0 and nSize[2] == 0:  # XY
             pAxes[0].nNumber = nTIndex
             pAxes[0].nType = IDA_AxisType.IDA_AT_TIME
             pnAxisCount = 1
