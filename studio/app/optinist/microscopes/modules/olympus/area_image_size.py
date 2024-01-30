@@ -1,6 +1,4 @@
-import lib
-
-ida = lib.ida
+import studio.app.optinist.microscopes.modules.olympus.lib as lib
 
 
 class AreaImageSize:
@@ -12,7 +10,7 @@ class AreaImageSize:
         if pImageSize:
             del pImageSize
         if hProp:
-            ida.ReleaseProperty(hAccessor, hProp)
+            lib.ida.ReleaseProperty(hAccessor, hProp)
 
     def get_x(self):
         return self.m_nX

@@ -1,9 +1,12 @@
 import ctypes as ct
 
-import h_ida
-import lib
-from axis_info import AxisIndex, AxisPosition
-from roi_collection import Roi
+import studio.app.optinist.microscopes.modules.olympus.h_ida as h_ida
+import studio.app.optinist.microscopes.modules.olympus.lib as lib
+from studio.app.optinist.microscopes.modules.olympus.axis_info import (
+    AxisIndex,
+    AxisPosition,
+)
+from studio.app.optinist.microscopes.modules.olympus.roi_collection import Roi
 
 
 class FrameManager:

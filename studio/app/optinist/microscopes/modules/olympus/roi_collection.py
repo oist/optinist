@@ -1,7 +1,7 @@
 import ctypes as ct
 
-import lib
-from h_ida import IDA_VALUE
+import studio.app.optinist.microscopes.modules.olympus.lib as lib
+from studio.app.optinist.microscopes.modules.olympus.h_ida import IDA_VALUE
 
 
 class Roi:

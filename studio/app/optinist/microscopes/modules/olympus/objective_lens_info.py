@@ -1,4 +1,4 @@
-import lib
+import studio.app.optinist.microscopes.modules.olympus.lib as lib
 
 
 class ObjectiveLensInfo:

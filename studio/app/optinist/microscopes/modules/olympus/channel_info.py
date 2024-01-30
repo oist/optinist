@@ -1,9 +1,7 @@
 import ctypes as ct
 
-import h_ida
-import lib
-
-ida = lib.ida
+import studio.app.optinist.microscopes.modules.olympus.h_ida as h_ida
+import studio.app.optinist.microscopes.modules.olympus.lib as lib
 
 
 class ChannelInfo:
@@ -67,10 +65,10 @@ class ChannelInfo:
                 self.m_vecpnChannelLUTB.append(lut_b)
 
             if hPropChannel:
-                ida.ReleaseProperty(hAccessor, hPropChannel)
+                lib.ida.ReleaseProperty(hAccessor, hPropChannel)
 
         if hPropEnabled:
-            ida.ReleaseProperty(hAccessor, hPropEnabled)
+            lib.ida.ReleaseProperty(hAccessor, hPropEnabled)
         if pChIDs:
             del pChIDs
 

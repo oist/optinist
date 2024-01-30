@@ -5,6 +5,7 @@ from studio.app.optinist.microscopes.modules.olympus.h_ida import (
     IDA_PARAM,
     IDA_PARAM_ELEMENT,
     IDA_VALUE,
+    IDA_AxisType,
     IDA_Result,
 )
 
@@ -12,6 +13,7 @@ ida = None
 
 
 def load_library(library_path: str):
+    global ida
     ida = ct.cdll.LoadLibrary(library_path)
     return ida
 
@@ -101,3 +103,103 @@ def get_image_axis(hAccessor, hImage):
         hAccessor, hImage.pFrameAxes, num_of_frame_axis, ct.byref(num_of_frame_axis)
     )
     return pFrameAxes
+
+
+def set_frame_axis_index(
+    nLIndex, nZIndex, nTIndex, pRoiCollection, pAxisInfo, pAxes, pnAxisCount
+):
+    # TODO:
+
+    # 0: LAxis
+    # 1: ZAxis
+    # 2: TAxis
+    KEY = ["LAMBDA", "ZSTACK", "TIMELAPSE"]
+    nSize = [0] * 3
+    bHasAxis = [pAxisInfo.exist(key) for key in KEY]
+    pAxis = [pAxisInfo.get_axis(key) for key in KEY]
+    pnAxisCount = 0
+    for i in range(3):
+        if bHasAxis[i]:
+            nSize[i] = pAxis[i].get_max()
+    if pRoiCollection.has_point_roi():
+        pAxes[0].nNumber = nTIndex
+        pAxes[0].nType = IDA_AxisType.IDA_AT_TIME
+        pnAxisCount = 1
+    elif pRoiCollection.has_multi_point_roi():
+        pAxes[0].nNumber = nTIndex
+        pAxes[0].nType = IDA_AxisType.IDA_AT_TIME
+        pnAxisCount = 1
+    elif pRoiCollection.has_mapping_roi():
+        if not bHasAxis[1]:
+            pAxes[0].nNumber = nTIndex
+            pAxes[0].nType = IDA_AxisType.IDA_AT_TIME
+            pnAxisCount = 1
+        else:
+            pAxes[0].nNumber = nZIndex
+            pAxes[0].nType = IDA_AxisType.IDA_AT_Z
+            pAxes[1].nNumber = nTIndex
+            pAxes[1].nType = IDA_AxisType.IDA_AT_TIME
+            pnAxisCount = 2
+    elif pRoiCollection.has_line_roi():
+        if not bHasAxis[0] and not bHasAxis[1] and bHasAxis[2]:
+            pAxes[0].nNumber = nTIndex
+            pAxes[0].nType = IDA_AxisType.IDA_AT_TIME
+            pnAxisCount = 1
+        elif not bHasAxis[0] and bHasAxis[1] and not bHasAxis[2]:
+            pAxes[0].nNumber = nZIndex
+            pAxes[0].nType = IDA_AxisType.IDA_AT_Z
+            pnAxisCount = 1
+        elif not bHasAxis[0] and bHasAxis[1] and bHasAxis[2]:
+            pAxes[0].nNumber = nZIndex
+            pAxes[0].nType = IDA_AxisType.IDA_AT_Z
+            pAxes[1].nNumber = nTIndex
+            pAxes[1].nType = IDA_AxisType.IDA_AT_TIME
+            pnAxisCount = 2
+        else:
+            # TODO: What?
+            pass
+    else:
+        if nSize[0] != 0 and nSize[1] != 0 and nSize[2] != 0:
+            pAxes[0].nNumber = nLIndex
+            pAxes[0].nType = IDA_AxisType.IDA_AT_LAMBDA
+            pAxes[1].nNumber = nZIndex
+            pAxes[1].nType = IDA_AxisType.IDA_AT_Z
+            pAxes[2].nNumber = nTIndex
+            pAxes[2].nType = IDA_AxisType.IDA_AT_TIME
+            pnAxisCount = 3
+        elif nSize[0] != 0 and nSize[1] != 0 and nSize[2] == 0:
+            pAxes[0].nNumber = nLIndex
+            pAxes[0].nType = IDA_AxisType.IDA_AT_LAMBDA
+            pAxes[1].nNumber = nZIndex
+            pAxes[1].nType = IDA_AxisType.IDA_AT_Z
+            pnAxisCount = 2
+        elif nSize[0] != 0 and nSize[1] == 0 and nSize[2] != 0:
+            pAxes[0].nNumber = nLIndex
+            pAxes[0].nType = IDA_AxisType.IDA_AT_LAMBDA
+            pAxes[1].nNumber = nTIndex
+            pAxes[1].nType = IDA_AxisType.IDA_AT_TIME
+            pnAxisCount = 2
+        elif nSize[0] == 0 and nSize[1] != 0 and nSize[2] != 0:
+            pAxes[0].nNumber = nZIndex
+            pAxes[0].nType = IDA_AxisType.IDA_AT_Z
+            pAxes[1].nNumber = nTIndex
+            pAxes[1].nType = IDA_AxisType.IDA_AT_TIME
+            pnAxisCount = 2
+        elif nSize[0] != 0 and nSize[1] == 0 and nSize[2] == 0:
+            pAxes[0].nNumber = nLIndex
+            pAxes[0].nType = IDA_AxisType.IDA_AT_LAMBDA
+            pnAxisCount = 1
+        elif nSize[0] == 0 and nSize[1] != 0 and nSize[2] == 0:
+            pAxes[0].nNumber = nZIndex
+            pAxes[0].nType = IDA_AxisType.IDA_AT_Z
+            pnAxisCount = 1
+        elif nSize[0] == 0 and nSize[1] == 0 and nSize[2] != 0:
+            pAxes[0].nNumber = nTIndex
+            pAxes[0].nType = IDA_AxisType.IDA_AT_TIME
+            pnAxisCount = 1
+        elif nSize[0] == 0 and nSize[1] == 0 and nSize[2] == 0:
+            pAxes[0].nNumber = nTIndex
+            pAxes[0].nType = IDA_AxisType.IDA_AT_TIME
+            pnAxisCount = 1
+    del pAxis
+    return pnAxisCount

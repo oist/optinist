@@ -1,6 +1,4 @@
-import lib
-
-ida = lib.ida
+import studio.app.optinist.microscopes.modules.olympus.lib as lib
 
 
 class PixelLength:
@@ -19,7 +17,7 @@ class PixelLength:
         del pPixelLength
 
         if hProp:
-            ida.ReleaseProperty(hAccessor, hProp)
+            lib.ida.ReleaseProperty(hAccessor, hProp)
 
     def print(self):
         print("Pixel length[um]")
