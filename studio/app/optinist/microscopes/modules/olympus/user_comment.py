@@ -1,3 +1,8 @@
+"""Olympus IDA wrapper module
+
+* Porting of IDA_Sample/UserComment.h,cpp
+
+"""
 import studio.app.optinist.microscopes.modules.olympus.lib as lib
 
 
@@ -17,3 +22,7 @@ class UserComment:
     def print(self):
         print("User Comment")
         print(f"\tComment = {self.m_szComment}")
+
+    @property
+    def comment(self):
+        return self.m_szComment

@@ -1,3 +1,8 @@
+"""Olympus IDA wrapper module
+
+* Porting of IDA_Sample/PixelLength.h,cpp
+
+"""
 import studio.app.optinist.microscopes.modules.olympus.lib as lib
 
 

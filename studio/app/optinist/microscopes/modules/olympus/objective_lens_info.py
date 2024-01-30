@@ -1,3 +1,8 @@
+"""Olympus IDA wrapper module
+
+* Porting of IDA_Sample/ObjectiveLensInfo.h,cpp
+
+"""
 import studio.app.optinist.microscopes.modules.olympus.lib as lib
 
 
@@ -60,24 +65,26 @@ class ObjectiveLensInfo:
         print(f"\tWD = {self.m_dWD}")
         print(f"\tReflective Index = {self.m_dReflectiveIndex}")
 
-    def get_name_tm(self, hAccessor, hArea):
-        result, hProp = lib.get_area_property(hAccessor, hArea, "ObjectiveLensInfo")
-        result, pName = lib.get_property_value(hAccessor, hProp, "name")
-        return pName[0].value.pszString
+    @property
+    def name(self):
+        return self.m_szName
 
-    def get_immersion_tm(self, hAccessor, hArea):
-        result, hProp = lib.get_area_property(hAccessor, hArea, "ObjectiveLensInfo")
-        result, pImmersion = lib.get_property_value(hAccessor, hProp, "immersion")
-        return pImmersion[0].value.pszString
+    @property
+    def immersion(self):
+        return self.m_szImmersion
 
-    def get_magnification_tm(self):
+    @property
+    def magnification(self):
         return self.m_dMagnification
 
-    def get_na_tm(self):
+    @property
+    def na(self):
         return self.m_dNA
 
-    def get_wd_tm(self):
+    @property
+    def wd(self):
         return self.m_dWD
 
-    def get_reflective_index_tm(self):
+    @property
+    def reflective_index(self):
         return self.m_dReflectiveIndex

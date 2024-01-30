@@ -1,3 +1,8 @@
+"""Olympus IDA wrapper module
+
+* Porting of IDA_Sample/AxisInfo.h,cpp
+
+"""
 import ctypes as ct
 
 import studio.app.optinist.microscopes.modules.olympus.h_ida as h_ida
@@ -104,7 +109,7 @@ class AxisInfo:
                     ct.cast(ct.c_wchar_p(c_axis.value.pszString), ct.c_void_p),
                 ],
             )
-            if result == 0:
+            if result == h_ida.IDA_Result.IDA_RESULT_SUCCESS:
                 result, pStart = lib.get_property_value(hAccessor, hPropAxis, "start")
                 axis.set_start(pStart[0].value.dDouble)
                 del pStart

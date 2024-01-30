@@ -1,3 +1,8 @@
+"""Olympus IDA wrapper module
+
+* Utilities for IDA API
+
+"""
 import ctypes as ct
 
 from studio.app.optinist.microscopes.modules.olympus.h_ida import (
@@ -75,11 +80,13 @@ def get_lut(hAccessor, hArea, channel_id):
     return result, pLUTR, pLUTG, pLUTB
 
 
+# TODO: どこで利用されている？
 def get_image_body(hAccessor, hImage, rect):
     image_size = ct.c_uint64()
     image_buffer = None
     result = ida.GetImageBody(hAccessor, hImage, rect, None, None, ct.byref(image_size))
     if result != 0:
+        # TODO: 例外処理
         print("Error: GetImageBody")
         return None
 
@@ -108,8 +115,6 @@ def get_image_axis(hAccessor, hImage):
 def set_frame_axis_index(
     nLIndex, nZIndex, nTIndex, pRoiCollection, pAxisInfo, pAxes, pnAxisCount
 ):
-    # TODO:
-
     # 0: LAxis
     # 1: ZAxis
     # 2: TAxis

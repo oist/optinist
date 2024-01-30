@@ -1,3 +1,8 @@
+"""Olympus IDA wrapper module
+
+* Porting of IDA_Sample/RoiCollection.h,cpp
+
+"""
 import ctypes as ct
 
 import studio.app.optinist.microscopes.modules.olympus.lib as lib

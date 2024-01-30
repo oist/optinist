@@ -1,3 +1,8 @@
+"""Olympus IDA wrapper module
+
+* Porting of IDA_Sample/FrameManager.h,cpp
+
+"""
 import ctypes as ct
 
 import studio.app.optinist.microscopes.modules.olympus.h_ida as h_ida
@@ -42,21 +47,24 @@ class FrameManager:
     def release_image_body(self):
         if self.m_pucImageBuffer:
             self.m_pucImagebuffer = None
+            # TODO: 以下の変数代入処理はリファクタリング対象
             self.m_pucImageBuffer_asWORD = ct.cast(
                 self.m_pucImageBuffer, ct.POINTER(ct.c_uint16)
             )
 
     def write_image_body(self, filename):
-        # TODO: Do something here
+        # Note: Not impletented.
         pass
 
     def write_image_body_binary(self, filename):
-        # TODO: Do something here
+        # Note: Not impletented.
         pass
 
+    # TODO: needs refactoring
     def get_pixel_value_tm(self, myDataCnt):
         return self.m_pucImageBuffer_asWORD[myDataCnt]
 
+    # TODO: needs refactoring
     def pucBuffer_to_WORD_TM(self, width, height):
         # TODO: The width and height should be obtained externally as appropriate.
         #   (If it is difficult to obtain them here, they should be obtained elsewhere.)
@@ -68,12 +76,11 @@ class FrameManager:
 
     def get_frame_index(self):
         pFrameAxes = lib.get_image_axis(self.m_hAccessor, self.m_hImage)
-        for f in pFrameAxes:
+        for p in pFrameAxes:
             axis_index = AxisIndex()
             axis_index.set_exit(True)
-            # TODO: Is the following code correct? (p.nType, p.nNumber)
-            axis_index.set_type(ct.p.nType)
-            axis_index.set_index(ct.p.nNumber)
+            axis_index.set_type(p.nType)
+            axis_index.set_index(p.nNumber)
             self.m_vecAxisIndex.append(axis_index)
 
         del pFrameAxes
@@ -145,6 +152,7 @@ class FrameManager:
                 elif ap.get_type() == h_ida.IDA_AxisType.IDA_AT_TIME:
                     print(f"\tTIMELAPSE={ap.get_position()}")
 
+    # TODO: needs refactoring
     def get_timestamp_channel_tm(self):
         my_timestamp_channel = 0
         for idx, ap in enumerate(self.m_vecAxisPosition):
@@ -153,6 +161,7 @@ class FrameManager:
                     my_timestamp_channel = idx
         return my_timestamp_channel
 
+    # TODO: needs refactoring
     def get_timestamp_tm(self, mychannel):
         mytimestamp = self.m_vecAxisPosition[mychannel].get_position()
         return mytimestamp
@@ -202,14 +211,11 @@ class FrameManager:
             del pAnalysisROIRotation
 
             # Get Analysis ROI Data
-            result, pAnalysisData = lib.get_property_value(
+            result, pAnalysisROIData = lib.get_property_value(
                 self.m_hAccessor, hPropInfo, "data"
             )
-
-            # TODO: linterで警告が生じているため、コメントアウト（別途修正）
-            # roi.set_points(pAnalysisROIData, -1)
-
-            del pAnalysisData
+            roi.set_points(pAnalysisROIData, -1)
+            del pAnalysisROIData
 
             if roi.get_type() == "MULTI_POINT":
                 # PanX
