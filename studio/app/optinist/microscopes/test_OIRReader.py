@@ -33,15 +33,15 @@ def test_oir_reader():
     )
 
     # get image stacks (for all channels)
-    channels_stacks = data_reader.get_images_stack()
+    channels_stacks = data_reader.get_image_stacks()
 
     # save tiff image (multi page) test
     if (len(channels_stacks) > 0) and (len(channels_stacks[0]) > 0):
         from PIL import Image
 
         # save stacks for all channels
-        for channel_idx, images_stack in enumerate(channels_stacks):
-            save_stack = [Image.fromarray(frame) for frame in images_stack]
+        for channel_idx, image_stack in enumerate(channels_stacks):
+            save_stack = [Image.fromarray(frame) for frame in image_stack]
             save_path = (
                 os.path.basename(TEST_DATA_PATH) + f".out.ch{channel_idx+1}.tiff"
             )

@@ -34,13 +34,27 @@ class MicroscopeDataReaderBase(metaclass=ABCMeta):
         self._init_library()
 
         # init members
-        self.__data_path = None
-        self.__data_handle = None
+        self.__data_file_path = None
+        self.__resource_handles = None
         self.__original_metadata = None
         self.__ome_metadata = None
         self.__lab_specific_metadata = None
 
-    def load(self, data_path: str):
+    def __del__(self):
+        """
+        Destructor
+        """
+        if self.__resource_handles is not None:
+            self._release_resources()
+            self.__resource_handles = None
+
+    def load(self, data_file_path: str):
+        """
+        Release resources
+        """
+        if self.__resource_handles is not None:
+            raise Exception("Reader module already initialized.")
+
         """
         Reset data
         """
@@ -49,26 +63,25 @@ class MicroscopeDataReaderBase(metaclass=ABCMeta):
         self.__lab_specific_metadata = None
 
         """
-        Load data
+        Load data file
         """
-        handle = self._load_data_file(data_path)
-        self.__data_handle = handle
-        self.__data_path = data_path
-        data_name = os.path.basename(data_path)
+        handles = self._load_file(data_file_path)
+        self.__resource_handles = handles
+        self.__data_file_path = data_file_path
+        data_name = os.path.basename(data_file_path)
 
         """
         Read metadata
         """
-        self.__original_metadata = self._build_original_metadata(handle, data_name)
+        self.__original_metadata = self._build_original_metadata(data_name)
         self.__ome_metadata = self._build_ome_metadata(self.__original_metadata)
         self.__lab_specific_metadata = self._build_lab_specific_metadata(
             self.__original_metadata
         )
 
-        """
-        Release resources
-        """
-        self._release_resources(handle)
+    def get_image_stacks(self) -> list:
+        """Return microscope image stacks"""
+        return self._get_image_stacks()
 
     @abstractmethod
     def _init_library(self) -> dict:
@@ -76,12 +89,12 @@ class MicroscopeDataReaderBase(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def _load_data_file(self, data_path: str) -> object:
+    def _load_file(self, data_file_path: str) -> object:
         """Return metadata specific to microscope instruments"""
         pass
 
     @abstractmethod
-    def _build_original_metadata(self, handle: object, data_name: str) -> dict:
+    def _build_original_metadata(self, data_name: str) -> dict:
         """Build metadata specific to microscope instruments"""
         pass
 
@@ -96,22 +109,22 @@ class MicroscopeDataReaderBase(metaclass=ABCMeta):
         pass
 
     @abstractmethod
-    def _release_resources(self, handle: object) -> None:
+    def _release_resources() -> None:
         """Release microscope library resources"""
         pass
 
     @abstractmethod
-    def get_images_stack(self) -> list:
+    def _get_image_stacks(self) -> list:
         """Return microscope image stacks"""
         pass
 
     @property
-    def data_path(self) -> str:
-        return self.__data_path
+    def data_file_path(self) -> str:
+        return self.__data_file_path
 
     @property
-    def data_handle(self) -> object:
-        return self.__data_handle
+    def resource_handles(self) -> list:
+        return self.__resource_handles
 
     @property
     def original_metadata(self) -> dict:

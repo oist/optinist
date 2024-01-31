@@ -31,7 +31,10 @@ from studio.app.optinist.microscopes.modules.olympus.user_comment import UserCom
 
 
 class OIRReader(MicroscopeDataReaderBase):
-    """Olympus OIR data reader"""
+    """Olympus OIR data reader
+
+    * IDAL SDK usage method is based on IDA_Sample/IDA_Sample.cpp
+    """
 
     SDK_LIBRARY_FILES = {
         "Windows": {
@@ -79,19 +82,16 @@ class OIRReader(MicroscopeDataReaderBase):
                 ctypes.cdll.LoadLibrary(dependency_path)
 
         # load sdk library
-        self.__dll = lib.load_library(__class__.get_library_path())
-
-    def _load_data_file(self, data_file_path: str) -> object:
-        ida = self.__dll
-
-        hAccessor = self.__hAccessor = ctypes.c_void_p()
-        hFile = self.__hFile = ctypes.c_void_p()
+        ida = self.__dll = lib.load_library(__class__.get_library_path())
 
         # initialize sdk library
-        # TODO: 要リファクタリング：_load_data_file の外部でのコールとする
         ida.Initialize()
 
+    def _load_file(self, data_file_path: str) -> object:
+        ida = self.__dll
+
         # Get Accessor
+        hAccessor = self.__hAccessor = ctypes.c_void_p()
         ida.GetAccessor(data_file_path, ctypes.byref(hAccessor))
         if not hAccessor:
             raise Exception("GetAccessor Error: Please check the File path.")
@@ -100,6 +100,7 @@ class OIRReader(MicroscopeDataReaderBase):
         ida.Connect(hAccessor)
 
         # Open file
+        hFile = ctypes.c_void_p()
         result = ida.Open(
             hAccessor,
             data_file_path,
@@ -110,28 +111,24 @@ class OIRReader(MicroscopeDataReaderBase):
             raise Exception("Open Error")
 
         # Get Group Handle
-        hGroup = self.__hGroup = ctypes.c_void_p()
+        hGroup = ctypes.c_void_p()
         specify_group = (
             0  # OIR Data has only 1 group, omp2info file may have more groups
         )
         ida.GetGroup(hAccessor, hFile, specify_group, ctypes.byref(hGroup))
 
         # GetArea
-        hArea = self.__hArea = ctypes.c_void_p()
+        hArea = ctypes.c_void_p()
         specify_layer = 0  # OIR and omp2info file has only 1 layer
         specify_area = ctypes.c_int()
         ida.GetArea(hAccessor, hGroup, specify_layer, specify_area, ctypes.byref(hArea))
 
-        # TODO: return type を要リファクタリング（他のReaderのI/Fとも要整合）
         return (hAccessor, hFile, hGroup, hArea)
 
-    def _build_original_metadata(self, handle: object, data_name: str) -> dict:
+    def _build_original_metadata(self, data_name: str) -> dict:
         ida = self.__dll
 
-        hAccessor = self.__hAccessor
-        hFile = self.__hFile
-        hGroup = self.__hGroup
-        hArea = self.__hArea
+        (hAccessor, hFile, hGroup, hArea) = self.resource_handles
 
         # --------------------------------------------------
         # Get data from API
@@ -216,7 +213,7 @@ class OIRReader(MicroscopeDataReaderBase):
             axes_sequence_counts.append(axis["max"])
         sequence_count = max(axes_sequence_counts)
 
-        fps = 0  # TODO: 計算対象予定
+        fps = 0  # TODO: 今後計算対象予定
 
         omeData = OMEDataModel(
             image_name=original_metadata["data_name"],
@@ -249,8 +246,8 @@ class OIRReader(MicroscopeDataReaderBase):
         # Make parameters
         # --------------------------------------------------
 
-        hAccessor = self.__hAccessor
-        hArea = self.__hArea
+        (hAccessor, hFile, hGroup, hArea) = self.resource_handles
+        del hFile, hGroup
 
         axis_info = AxisInfo(hAccessor, hArea)
 
@@ -261,6 +258,7 @@ class OIRReader(MicroscopeDataReaderBase):
             axis = axis_info.get_axis("LAMBDA")
             nLLoop = axis.get_max()
         nLLoop = nLLoop or 1
+
         if axis_info.exist("ZSTACK"):
             axis = axis_info.get_axis("ZSTACK")
             nZLoop = axis.get_max()
@@ -268,6 +266,7 @@ class OIRReader(MicroscopeDataReaderBase):
             Zstart = axis.get_start()
             Zend = axis.get_end()
         nZLoop = nZLoop or 1
+
         if axis_info.exist("TIMELAPSE"):
             axis = axis_info.get_axis("TIMELAPSE")
             nTLoop = axis.get_max()
@@ -309,30 +308,10 @@ class OIRReader(MicroscopeDataReaderBase):
 
         return lab_specific_metadata
 
-    def _release_resources(self, handle: object) -> None:
-        # ----------------------------------------
-        # Release each resource
-        # ----------------------------------------
-
-        ida = self.__dll
-
-        hAccessor = self.__hAccessor
-        hFile = self.__hFile
-        hGroup = self.__hGroup
-        hArea = self.__hArea
-
-        ida.ReleaseArea(hAccessor, hArea)
-        ida.ReleaseGroup(hAccessor, hGroup)
-        ida.Close(hAccessor, hFile)
-        ida.Disconnect(hAccessor)
-        ida.ReleaseAccessor(ctypes.byref(hAccessor))
-        ida.Terminate()
-
-    def get_images_stack(self) -> list:
+    def _get_image_stacks(self) -> list:
         """Return microscope image stacks"""
 
-        # initialization
-        (hAccessor, hFile, hGroup, hArea) = self._load_data_file(self.data_path)
+        (hAccessor, hFile, hGroup, hArea) = self.resource_handles
 
         rect = CMN_RECT()
 
@@ -407,8 +386,20 @@ class OIRReader(MicroscopeDataReaderBase):
             # construct return value (each channel's stack)
             result_channels_stacks.append(result_stack)
 
-        # do release resources
-        # TODO: 要リファクタリング：引数仕様整理
-        self._release_resources((hAccessor, hFile, hGroup, hArea))
-
         return result_channels_stacks
+
+    def _release_resources(self) -> None:
+        # ----------------------------------------
+        # Release each resource
+        # ----------------------------------------
+
+        ida = self.__dll
+
+        (hAccessor, hFile, hGroup, hArea) = self.resource_handles
+
+        ida.ReleaseArea(hAccessor, hArea)
+        ida.ReleaseGroup(hAccessor, hGroup)
+        ida.Close(hAccessor, hFile)
+        ida.Disconnect(hAccessor)
+        ida.ReleaseAccessor(ctypes.byref(hAccessor))
+        ida.Terminate()

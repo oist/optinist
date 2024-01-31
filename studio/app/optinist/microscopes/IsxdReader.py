@@ -29,11 +29,14 @@ class IsxdReader(MicroscopeDataReaderBase):
         #         initialization process. (using pip module)
         pass  # do nothing.
 
-    def _load_data_file(self, data_path: str) -> object:
-        return isx.Movie.read(data_path)
+    def _load_file(self, data_file_path: str) -> object:
+        handle = isx.Movie.read(data_file_path)
+        return (handle,)
 
-    def _build_original_metadata(self, handle: object, data_name: str) -> dict:
-        movie: isx.Movie = handle
+    def _build_original_metadata(self, data_name: str) -> dict:
+        movie: isx.Movie = None
+        (movie,) = self.resource_handles
+
         spacing: isx.Spacing = movie.spacing
         timing: isx.Timing = movie.timing
 
@@ -78,12 +81,14 @@ class IsxdReader(MicroscopeDataReaderBase):
         # Note: Not currently supported
         return None
 
-    def _release_resources(self, handle: object) -> None:
+    def _release_resources(self) -> None:
         # Note: in inscopix sdk, there is no library (ddl) release process.
         pass  # do nothing.
 
-    def get_images_stack(self) -> list:
-        movie: isx.Movie = self.data_handle
+    def _get_image_stacks(self) -> list:
+        movie: isx.Movie = None
+        (movie,) = self.resource_handles
+
         image_frames = [
             movie.get_frame_data(i) for i in range(movie.timing.num_samples)
         ]
