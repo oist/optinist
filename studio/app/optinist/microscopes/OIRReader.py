@@ -85,30 +85,32 @@ class OIRReader(MicroscopeDataReaderBase):
         ida = self.__dll = lib.load_library(__class__.get_library_path())
 
         # initialize sdk library
-        ida.Initialize()
+        ida_result = ida.Initialize()
+        if ida_result != IDA_Result.IDA_RESULT_SUCCESS:
+            raise Exception("IDA Initialize Error")
 
     def _load_file(self, data_file_path: str) -> object:
         ida = self.__dll
 
         # Get Accessor
         hAccessor = self.__hAccessor = ctypes.c_void_p()
-        ida.GetAccessor(data_file_path, ctypes.byref(hAccessor))
-        if not hAccessor:
-            raise Exception("GetAccessor Error: Please check the File path.")
+        ida_result = ida.GetAccessor(data_file_path, ctypes.byref(hAccessor))
+        if ida_result != IDA_Result.IDA_RESULT_SUCCESS or not hAccessor:
+            raise FileNotFoundError(f"IDA GetAccessor Error: {data_file_path}")
 
         # Connect
         ida.Connect(hAccessor)
 
         # Open file
         hFile = ctypes.c_void_p()
-        result = ida.Open(
+        ida_result = ida.Open(
             hAccessor,
             data_file_path,
             IDA_OpenMode.IDA_OM_READ,
             ctypes.byref(hFile),
         )
-        if result != IDA_Result.IDA_RESULT_SUCCESS:
-            raise Exception("Open Error")
+        if ida_result != IDA_Result.IDA_RESULT_SUCCESS or not hFile:
+            raise FileNotFoundError(f"IDA Open Error: {data_file_path}")
 
         # Get Group Handle
         hGroup = ctypes.c_void_p()

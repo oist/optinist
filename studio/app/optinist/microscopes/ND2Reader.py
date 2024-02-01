@@ -126,7 +126,7 @@ class ND2Reader(MicroscopeDataReaderBase):
         handle = self.__dll.Lim_FileOpenForReadUtf8(data_file_path.encode("utf-8"))
 
         if handle is None:
-            raise FileNotFoundError(data_file_path)
+            raise FileNotFoundError(f"Open Error: {data_file_path}")
 
         return (handle,)
 
