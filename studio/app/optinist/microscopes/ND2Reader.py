@@ -2,6 +2,7 @@ import ctypes
 import json
 import os
 import platform
+import re
 from enum import Enum, IntEnum
 
 import numpy as np
@@ -167,14 +168,22 @@ class ND2Reader(MicroscopeDataReaderBase):
         """
 
         attributes = original_metadata["attributes"]
+        metadata = original_metadata["metadata"]
+        textinfo = original_metadata["textinfo"]
         experiments = original_metadata["experiments"]
+        first_experiment_parameters = experiments[0]["parameters"]
+        metadata_ch0_microscope = metadata["channels"][0]["microscope"]
 
         # experiment, periods, の参照は先頭データの内容から取得
-        if (experiments is not None) and ("periods" in experiments[0]["parameters"]):
-            period_ms = float(experiments[0]["parameters"]["periods"][0]["periodMs"])
-            fps = (1000 / period_ms) if period_ms > 0 else 0
+        if "periods" in first_experiment_parameters:
+            try:
+                fps = (
+                    1000
+                    / first_experiment_parameters["periods"][0]["periodDiff"]["avg"]
+                )
+            except:  # noqa: E722
+                fps = 1000 / first_experiment_parameters["periodDiff"]["avg"]
         else:
-            period_ms = 0
             fps = 0
 
         omeData = OMEDataModel(
@@ -182,7 +191,10 @@ class ND2Reader(MicroscopeDataReaderBase):
             size_x=attributes["widthPx"],
             size_y=attributes["heightPx"],
             size_t=attributes["sequenceCount"],
-            size_c=0,
+            size_z=0,  # size_z は後続処理で計算・設定する
+            size_c=len(metadata["channels"]),
+            acquisition_date=re.sub(" +", " ", textinfo["date"]),
+            objective_model=metadata_ch0_microscope.get("objectiveName", None),
             fps=fps,
         )
 
@@ -222,6 +234,9 @@ class ND2Reader(MicroscopeDataReaderBase):
                 dimension_type = DimensionType.D_3D_SINGLE.value
                 z_slicenum = experiments[0]["count"]
                 z_interval = experiments[0]["parameters"]["stepUm"]
+
+        # ※ome_metadata の一部項目をアップデート
+        self.ome_metadata.size_z = z_slicenum
 
         # ----------------------------------------
         # Lab固有metadata変数構築

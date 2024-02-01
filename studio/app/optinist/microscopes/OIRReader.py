@@ -207,6 +207,9 @@ class OIRReader(MicroscopeDataReaderBase):
 
         rect = original_metadata["rect"]
         axis_info = original_metadata["axis_info"]
+        channel_info = original_metadata["channel_info"]
+        objective_lens_info = original_metadata["objective_lens_info"]
+        file_creation_time = original_metadata["file_creation_time"]
 
         # get sequence counts
         # Note: Use the largest sequence count for each axis.
@@ -215,14 +218,24 @@ class OIRReader(MicroscopeDataReaderBase):
             axes_sequence_counts.append(axis["max"])
         sequence_count = max(axes_sequence_counts)
 
-        fps = 0  # TODO: 今後計算対象予定
+        # get axis z frame count
+        nZLoop = axis_info["ZSTACK"]["max"] if "ZSTACK" in axis_info else 1
+
+        # get fps
+        # TODO: fps の取得には、FrameManager経由
+        #   (FrameManager.m_vecAxisPosition[].GetPosition) での
+        #   アクセスが必要となる模様. 今後計算対象予定.
+        fps = 0
 
         omeData = OMEDataModel(
             image_name=original_metadata["data_name"],
             size_x=rect["width"],
             size_y=rect["height"],
             size_t=sequence_count,
-            size_c=0,
+            size_z=nZLoop,
+            size_c=len(channel_info),
+            acquisition_date=file_creation_time["creation_time"],
+            objective_model=objective_lens_info["name"],
             fps=fps,
         )
 

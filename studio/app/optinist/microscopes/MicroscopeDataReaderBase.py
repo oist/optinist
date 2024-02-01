@@ -12,14 +12,12 @@ class OMEDataModel:
     image_name: str
     size_x: int  # width
     size_y: int  # height
-    size_t: int  # time
-    size_c: int  # TODO: 要確認
-    fps: int  # frames_per_second  # TODO: OME標準の類似項目に合わせる
-
-    # TODO: 以下今後追加想定
-    # SizeZ: int
-    # AcquisitionDate: date
-    # Instrument/(Laser|Detector): str
+    size_t: int  # time frames
+    size_z: int  # axis z frames
+    size_c: int  # channels
+    acquisition_date: str
+    objective_model: str  # objective lens model
+    fps: int  # frames_per_second  # Note: extended from OME format
 
 
 class MicroscopeDataReaderBase(metaclass=ABCMeta):

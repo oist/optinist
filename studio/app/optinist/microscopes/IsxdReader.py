@@ -71,7 +71,10 @@ class IsxdReader(MicroscopeDataReaderBase):
             size_x=spacing["width"],
             size_y=spacing["height"],
             size_t=timing["num_samples"],
-            size_c=0,
+            size_z=0,  # Note: currently unsettled
+            size_c=0,  # Note: currently unsettled
+            acquisition_date=timing["start"],
+            objective_model=None,  # Note: currently unsettled
             fps=(1000 / timing["period_msec"]),
         )
 
