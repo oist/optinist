@@ -1,2 +1,7 @@
 dll/
 testdata/
+
+/*.out.json
+/*.out.tiff
+/*.out.*.json
+/*.out.*.tiff

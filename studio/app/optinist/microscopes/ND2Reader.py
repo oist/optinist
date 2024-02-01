@@ -86,7 +86,7 @@ class ND2Reader(MicroscopeDataReaderBase):
 
             for dependency in dependencies:
                 dependency_path = f"{platform_library_dir}/{dependency}"
-                self.__dll = ctypes.cdll.LoadLibrary(dependency_path)
+                ctypes.cdll.LoadLibrary(dependency_path)
 
         # load sdk library
         self.__dll = ctypes.cdll.LoadLibrary(__class__.get_library_path())
@@ -122,15 +122,17 @@ class ND2Reader(MicroscopeDataReaderBase):
 
         self.__dll.Lim_FileClose.argtypes = (ctypes.c_void_p,)
 
-    def _load_data_file(self, data_path: str) -> object:
-        handle = self.__dll.Lim_FileOpenForReadUtf8(data_path.encode("utf-8"))
+    def _load_file(self, data_file_path: str) -> object:
+        handle = self.__dll.Lim_FileOpenForReadUtf8(data_file_path.encode("utf-8"))
 
         if handle is None:
-            raise FileNotFoundError(data_path)
+            raise FileNotFoundError(data_file_path)
 
-        return handle
+        return (handle,)
 
-    def _build_original_metadata(self, handle: object, data_name: str) -> dict:
+    def _build_original_metadata(self, data_name: str) -> dict:
+        (handle,) = self.resource_handles
+
         attributes = self.__dll.Lim_FileGetAttributes(handle)
         metadata = self.__dll.Lim_FileGetMetadata(handle)
         textinfo = self.__dll.Lim_FileGetTextinfo(handle)
@@ -280,14 +282,17 @@ class ND2Reader(MicroscopeDataReaderBase):
 
         return lab_specific_metadata
 
-    def _release_resources(self, handle: object) -> None:
+    def _release_resources(self) -> None:
+        (handle,) = self.resource_handles
+
         self.__dll.Lim_FileClose(handle)
 
-    def get_images_stack(self) -> list:
+    def _get_image_stacks(self) -> list:
         """Return microscope image stacks"""
 
+        (handle,) = self.resource_handles
+
         # initialization
-        handle = self._load_data_file(self.data_path)
         pic: LIMPICTURE = LIMPICTURE()
         seq_count = self.__dll.Lim_FileGetSeqCount(handle)
 
@@ -359,8 +364,5 @@ class ND2Reader(MicroscopeDataReaderBase):
 
                 # construct return value (each channel's stack)
                 result_channels_stacks[channel_idx].append(channel_plane_buffer)
-
-        # do release resources
-        self._release_resources(handle)
 
         return result_channels_stacks

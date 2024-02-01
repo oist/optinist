@@ -3,25 +3,25 @@ import logging
 import os
 from pprint import pprint
 
-from ND2Reader import ND2Reader
+from OIRReader import OIRReader
 
 CURRENT_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
 LIBRARY_DIR = CURRENT_DIR_PATH + "/dll"
-TEST_DATA_PATH = CURRENT_DIR_PATH + "/testdata/nikon/pia_volume_area1.nd2"
+TEST_DATA_PATH = CURRENT_DIR_PATH + "/testdata/olympus/olympus-xyt005_0001.oir"
 
-os.environ[ND2Reader.LIBRARY_DIR_KEY] = LIBRARY_DIR
+os.environ[OIRReader.LIBRARY_DIR_KEY] = LIBRARY_DIR
 
 
-def test_nd2_reader():
-    if not ND2Reader.is_available():
+def test_oir_reader():
+    if not OIRReader.is_available():
         # Note: To output the logging contents to the console,
         #       specify the following options to pytest
         #   > pytest --log-cli-level=DEBUG
-        logging.warning("ND2Reader is not available.")
+        logging.warning("OIRReader is not available.")
         return
 
     # initialize
-    data_reader = ND2Reader()
+    data_reader = OIRReader()
     data_reader.load(TEST_DATA_PATH)
 
     # dump attributes
@@ -55,10 +55,10 @@ def test_nd2_reader():
             )
 
     # asserts
-    assert data_reader.original_metadata["attributes"]["widthPx"] > 0
+    assert data_reader.original_metadata["rect"]["width"] > 0
     assert data_reader.ome_metadata.size_x > 0
     assert data_reader.lab_specific_metadata["uiWidth"] > 0
 
 
 if __name__ == "__main__":
-    test_nd2_reader()
+    test_oir_reader()
