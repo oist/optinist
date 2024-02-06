@@ -19,6 +19,25 @@ class OMEDataModel:
     objective_model: str  # objective lens model
     fps: int  # frames_per_second  # Note: extended from OME format
 
+    def get_ome_values(self):
+        return {
+            "Image": {
+                "Name": self.image_name,
+                "AcquisitionDate": self.acquisition_date,
+                "Fps": self.fps,
+            },
+            "Pixels": {
+                "SizeC": self.size_c,
+                "SizeT": self.size_t,
+                "SizeX": self.size_x,
+                "SizeY": self.size_y,
+                "SizeZ": self.size_z,
+            },
+            "Objective": {
+                "Model": self.objective_model,
+            },
+        }
+
 
 class MicroscopeDataReaderBase(metaclass=ABCMeta):
     """Microscope data reader base class"""

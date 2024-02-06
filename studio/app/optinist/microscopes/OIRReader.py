@@ -202,7 +202,7 @@ class OIRReader(MicroscopeDataReaderBase):
 
     def _build_ome_metadata(self, original_metadata: dict) -> OMEDataModel:
         """
-        @link OME/NativeND2Reader
+        @link OME/OIRReader
         """
 
         rect = original_metadata["rect"]
