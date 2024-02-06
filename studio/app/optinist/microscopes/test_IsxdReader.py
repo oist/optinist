@@ -26,6 +26,7 @@ def test_isxd_reader():
     # dump attributes
     print("[original_metadata]", json.dumps(data_reader.original_metadata, indent=2))
     pprint(data_reader.ome_metadata)
+    pprint(data_reader.ome_metadata.get_ome_values())
     print(
         "[lab_specific_metadata]",
         json.dumps(data_reader.lab_specific_metadata, indent=2),

@@ -60,7 +60,7 @@ class IsxdReader(MicroscopeDataReaderBase):
 
     def _build_ome_metadata(self, original_metadata: dict) -> OMEDataModel:
         """
-        @link OME/NativeND2Reader
+        Note: Inscopix format is not supported in OME Bio-Formats
         """
 
         spacing = original_metadata["spacing"]

@@ -171,8 +171,12 @@ class ND2Reader(MicroscopeDataReaderBase):
         metadata = original_metadata["metadata"]
         textinfo = original_metadata["textinfo"]
         experiments = original_metadata["experiments"]
-        first_experiment_parameters = experiments[0]["parameters"]
-        metadata_ch0_microscope = metadata["channels"][0]["microscope"]
+        first_experiment_parameters = (
+            experiments[0]["parameters"] if experiments else {}
+        )
+        metadata_ch0_microscope = (
+            metadata["channels"][0]["microscope"] if experiments else {}
+        )
 
         # experiment, periods, の参照は先頭データの内容から取得
         if "periods" in first_experiment_parameters:
@@ -190,7 +194,7 @@ class ND2Reader(MicroscopeDataReaderBase):
             image_name=original_metadata["data_name"],
             size_x=attributes["widthPx"],
             size_y=attributes["heightPx"],
-            size_t=attributes["sequenceCount"],
+            size_t=0,  # size_z は後続処理で計算・設定する
             size_z=0,  # size_z は後続処理で計算・設定する
             size_c=len(metadata["channels"]),
             acquisition_date=re.sub(" +", " ", textinfo["date"]),
@@ -236,6 +240,7 @@ class ND2Reader(MicroscopeDataReaderBase):
                 z_interval = experiments[0]["parameters"]["stepUm"]
 
         # ※ome_metadata の一部項目をアップデート
+        self.ome_metadata.size_t = loop_count
         self.ome_metadata.size_z = z_slicenum
 
         # ----------------------------------------
@@ -257,13 +262,17 @@ class ND2Reader(MicroscopeDataReaderBase):
             "uiBpcInMemory": attributes["bitsPerComponentInMemory"],
             "uiBpcSignificant": attributes["bitsPerComponentSignificant"],
             "uiSequenceCount": attributes["sequenceCount"],
-            # TODO: ライブラリバージョンにより、取得値が異なっている可能性がある？ (uiTileWidth)
+            # Note: There are minor differences in values between SDK versions.
+            # (uiTileWidth)
             "uiTileWidth": attributes.get("tileWidthPx", None),  # Optional
-            # TODO: ライブラリバージョンにより、取得値が異なっている可能性がある？ (uiTileHeight)
+            # Note: There are minor differences in values between SDK versions.
+            # (uiTileHeight)
             "uiTileHeight": attributes.get("tileHeightPx", None),  # Optional
-            # TODO: 旧ライブラリでは、数値が設定されているが、旧ライブラリでは文字列 (uiCompression)
+            # Note: There are minor differences in values between SDK versions.
+            # (uiCompression)
             "uiCompression": attributes.get("compressionType", None),  # Optional
-            # TODO: 旧ライブラリでは、適切ではない値が格納されている可能性がある？ (uiQuality)
+            # Note: There are minor differences in values between SDK versions.
+            # (uiQuality)
             "uiQuality": attributes.get("compressionLevel", None),  # Optional
             # /* 4 components (From Lab MEX) */
             "Type": dimension_type,
@@ -272,13 +281,15 @@ class ND2Reader(MicroscopeDataReaderBase):
             "ZInterval": z_interval,
             # /* 7 components (From Lab MEX) */
             "dTimeStart": frame_metadata["time"]["absoluteJulianDayNumber"],
-            # TODO: ライブラリバージョンにより、取得値が異なっている可能性がある？ (MicroPerPixel)
+            # Note: There are minor differences in values between SDK versions.
+            # (MicroPerPixel)
             "MicroPerPixel": axes_calibration_x,
             "PixelAspect": axes_calibration_x / axes_calibration_y,
             "ObjectiveName": metadata_ch0_microscope.get(
                 "objectiveName", None
             ),  # Optional, channels[0] からの取得
-            # TODO: ライブラリバージョンにより、取得値が異なっている可能性がある？ (dObjectiveMag)
+            # Note: There are minor differences in values between SDK versions.
+            # (dObjectiveMag)
             "dObjectiveMag": metadata_ch0_microscope.get(
                 "objectiveMagnification", None
             ),  # Optional, channels[0] からの取得
