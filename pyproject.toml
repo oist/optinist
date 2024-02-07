@@ -69,6 +69,7 @@ kaleido = "0.2.1"
 filelock = "*"
 ruamel-yaml = "^0.18.5"
 pymatreader = "^0.0.32"
+xmltodict = "*"
 
 [tool.poetry.group.dev]
 optional = true
