@@ -73,6 +73,7 @@ def suite2p_roi(
     nwbfile = {}
 
     nwbfile[NWBDATASET.ROI] = {function_id: roi_list}
+    nwbfile[NWBDATASET.POSTPROCESS] = {function_id: {"all_roi_img": im}}
 
     # iscellを追加
     nwbfile[NWBDATASET.COLUMN] = {
