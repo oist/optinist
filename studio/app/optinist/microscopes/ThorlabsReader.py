@@ -1,5 +1,9 @@
 import os
+import re
+import shutil
 import sys
+import zipfile
+from datetime import datetime
 from glob import glob
 
 import tifffile
@@ -14,7 +18,11 @@ class ThorlabsReader(MicroscopeDataReaderBase):
     #   so any module that supports it (e.g., tifffile) can be used.
     SDK_MODULE_NAME = "tifffile"
 
+    RAW_ARCHIVE_FILE_PATTERN = ".*\\.zip$"
+
     OME_TIFF_EXT = ".tif"
+
+    METADATA_EXPERIMENT_FILENAME = "Experiment.xml"
 
     @staticmethod
     def get_library_path() -> str:
@@ -27,6 +35,11 @@ class ThorlabsReader(MicroscopeDataReaderBase):
         """Determine if library is available"""
         return __class__.SDK_MODULE_NAME in sys.modules
 
+    def __init__(self):
+        super().__init__()
+
+        self.__data_extracted_paths: dict = None
+
     def _init_library(self):
         # Note: Thorlabs data format does not use library (ddl).
         pass  # do nothing.
@@ -37,48 +50,115 @@ class ThorlabsReader(MicroscopeDataReaderBase):
         # If path is a directory, it is assumed to be the directory
         #   containing OME-TIFF files and processing is performed.
         if os.path.isdir(data_file_path):
-            # read one tiffflie at the beginning.
-            #   (in OME-TIFF, if one file is read, other tiff files
-            #   are automatically read by the tiffflie module as series)
-            tiff_files = sorted(
-                glob(os.path.join(data_file_path, f"*{__class__.OME_TIFF_EXT}"))
-            )
-            if len(tiff_files) == 0:
-                raise FileNotFoundError(data_file_path)
+            data_extracted_path = data_file_path
+            self.__data_extracted_paths = {
+                "path": data_extracted_path,
+                "is_temporary": False,
+            }
 
-            # Note:
-            # In the tiffflie module, if a split tiff file
-            #   for a series of OME-TIFF is missing, a warning is output,
-            #   but processing continues without interruption.
-            #   -> The missing tiff file is processed as a black image.
-            #   -> The caller does not seem to be able to determine
-            #      whether the above warning exists or not.
-
-            tiff_file = tiff_files[0]
-            handle_tiff = tifffile.TiffFile(tiff_file)
+            handle_tiff = self.__load_ome_tiff(data_extracted_path)
 
         # If path is a file, it is assumed to be an archive file in the directory
         #   containing OME-TIFF files, and processing is performed.
-        elif os.path.isfile(data_file_path):
-            # TODO: 実装前
-            # # 想定処理内容
-            # - zipアーカイブの展開（tmpdirへ）
-            # - data_file_path の更新（展開後のディレクトリパスを保持）
-            # - 展開フォルダの後処理（_release_resources() での実施想定）
-            # など
-            raise RuntimeError("Under construction")
+        elif os.path.isfile(data_file_path) and re.match(
+            __class__.RAW_ARCHIVE_FILE_PATTERN, data_file_path
+        ):
+            data_extracted_path = self.__get_data_extracted_path(data_file_path)
+            self.__extract_raw_archive(data_file_path, data_extracted_path)
+
+            handle_tiff = self.__load_ome_tiff(data_extracted_path)
+            self.__data_extracted_paths = {
+                "path": data_extracted_path,
+                "is_temporary": True,
+            }
 
         else:
             raise FileNotFoundError(data_file_path)
 
         return (handle_tiff,)
 
+    def __get_data_extracted_path(self, data_file_path: str) -> str:
+        if os.path.isdir(data_file_path):
+            raise AssertionError("Unexpected case")
+        elif os.path.isfile(data_file_path):
+            path = "{}/{}_extracted-{}".format(
+                os.path.dirname(data_file_path),
+                os.path.splitext(os.path.basename(data_file_path))[0],
+                datetime.now().strftime("%Y%m%d%H%M%S"),
+            )
+            return path
+        else:
+            raise FileNotFoundError(self.data_file_path)
+
+    def __extract_raw_archive(self, data_file_path: str, data_extracted_path: str):
+        if not os.path.isfile(data_file_path) or not re.match(
+            __class__.RAW_ARCHIVE_FILE_PATTERN, data_file_path
+        ):
+            raise FileNotFoundError(data_file_path)
+
+        with zipfile.ZipFile(data_file_path) as zf:
+            # Inspect file contents before extraction
+            if __class__.METADATA_EXPERIMENT_FILENAME not in zf.namelist():
+                raise AssertionError(f"Invalid raw archive file. [{data_file_path}]")
+
+            zf.extractall(data_extracted_path)
+
+    def __cleanup_raw_extracted_path(self):
+        """
+        Clean up temporary directories extracted from Raw archive file.
+        """
+
+        # Note: To ensure safety,
+        #   the contents of the target directory are checked and then deleted.
+
+        data_extracted_path = self.__data_extracted_paths["path"]
+        is_temporary = self.__data_extracted_paths["is_temporary"]
+        metadata_experiment_path = os.path.join(
+            data_extracted_path, __class__.METADATA_EXPERIMENT_FILENAME
+        )
+
+        # Perform cleanup only on temporary folder
+        if not is_temporary:
+            return
+
+        if os.path.isdir(data_extracted_path) and os.path.isfile(
+            metadata_experiment_path
+        ):
+            shutil.rmtree(data_extracted_path)
+        else:
+            raise FileNotFoundError(data_extracted_path)
+
+    def __load_ome_tiff(self, data_extracted_path: str) -> object:
+        # read one tiffflie at the beginning.
+        #   (in OME-TIFF, if one file is read, other tiff files
+        #   are automatically read by the tiffflie module as series)
+        tiff_files = sorted(
+            glob(os.path.join(data_extracted_path, f"*{__class__.OME_TIFF_EXT}"))
+        )
+        if len(tiff_files) == 0:
+            raise FileNotFoundError(data_extracted_path)
+
+        # Note:
+        # In the tiffflie module, if a split tiff file
+        #   for a series of OME-TIFF is missing, a warning is output,
+        #   but processing continues without interruption.
+        #   -> The missing tiff file is processed as a black image.
+        #   -> The caller does not seem to be able to determine
+        #      whether the above warning exists or not.
+
+        tiff_file = tiff_files[0]
+        handle_tiff = tifffile.TiffFile(tiff_file)
+
+        return handle_tiff
+
     def _build_original_metadata(self, data_name: str) -> dict:
         handle_tiff = None
         (handle_tiff,) = self.resource_handles
 
         # Read extended metadata files in ThorImageLS
-        metadata_experiment_path = os.path.join(self.data_file_path, "Experiment.xml")
+        metadata_experiment_path = os.path.join(
+            self.__data_extracted_paths["path"], __class__.METADATA_EXPERIMENT_FILENAME
+        )
         if os.path.isfile(metadata_experiment_path):
             with open(metadata_experiment_path) as f:
                 experiments = xmltodict.parse(f.read())
@@ -101,19 +181,26 @@ class ThorlabsReader(MicroscopeDataReaderBase):
         handle_tiff = None
         (handle_tiff,) = self.resource_handles
 
+        print(handle_tiff.ome_metadata)
+
         ome_metadata = xmltodict.parse(handle_tiff.ome_metadata)
         ome_metadata = ome_metadata["OME"]
+        ome_metadata_image_pixcels = ome_metadata["Image"]["Pixels"]
 
         omeData = OMEDataModel(
             image_name=original_metadata["data_name"],
-            size_x=int(ome_metadata["Image"]["Pixels"]["@SizeX"]),
-            size_y=int(ome_metadata["Image"]["Pixels"]["@SizeY"]),
-            size_t=int(ome_metadata["Image"]["Pixels"]["@SizeT"]),
-            size_z=int(ome_metadata["Image"]["Pixels"]["@SizeZ"]),
-            size_c=int(ome_metadata["Image"]["Pixels"]["@SizeC"]),
+            size_x=int(ome_metadata_image_pixcels["@SizeX"]),
+            size_y=int(ome_metadata_image_pixcels["@SizeY"]),
+            size_t=int(ome_metadata_image_pixcels["@SizeT"]),
+            size_z=int(ome_metadata_image_pixcels["@SizeZ"]),
+            size_c=int(ome_metadata_image_pixcels["@SizeC"]),
+            depth=OMEDataModel.get_depth_from_pixel_type(
+                ome_metadata_image_pixcels["@Type"]
+            ),
+            significant_bits=0,  # Note: currently unsettled
             acquisition_date=ome_metadata["Image"]["@AcquiredDate"],
-            objective_model=None,  # TODO: 取得方法調査
-            fps=0,  # TODO: 取得方法調査
+            objective_model=None,  # TODO: 取得方法 要検討
+            fps=0,  # TODO: 取得方法 要検討
         )
 
         return omeData
@@ -123,8 +210,7 @@ class ThorlabsReader(MicroscopeDataReaderBase):
         return None
 
     def _release_resources(self) -> None:
-        # Note: Thorlabs data format does not use library (ddl).
-        pass  # do nothing.
+        self.__cleanup_raw_extracted_path()
 
     def _get_image_stacks(self) -> list:
         handle_tiff = None
