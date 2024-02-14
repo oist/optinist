@@ -181,8 +181,6 @@ class ThorlabsReader(MicroscopeDataReaderBase):
         handle_tiff = None
         (handle_tiff,) = self.resource_handles
 
-        print(handle_tiff.ome_metadata)
-
         ome_metadata = xmltodict.parse(handle_tiff.ome_metadata)
         ome_metadata = ome_metadata["OME"]
         ome_metadata_image_pixcels = ome_metadata["Image"]["Pixels"]
