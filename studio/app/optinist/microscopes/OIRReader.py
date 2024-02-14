@@ -234,6 +234,8 @@ class OIRReader(MicroscopeDataReaderBase):
             size_t=sequence_count,
             size_z=nZLoop,
             size_c=len(channel_info),
+            depth=int(channel_info[0]["depth"]) * 8,
+            significant_bits=channel_info[0]["bit_count"],
             acquisition_date=file_creation_time["creation_time"],
             objective_model=objective_lens_info["name"],
             fps=fps,
