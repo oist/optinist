@@ -14,25 +14,28 @@ def roi_from_hdf5(
 ) -> dict():
     if iscell is not None:
         iscell = iscell.data
-        data = (
-            cell_img.data[iscell != 0]
-            if params.get("show_iscell", True)
-            else cell_img.data[iscell == 0]
-        )
         return {
-            "roi": RoiData(
-                np.nanmax(data, axis=0),
-                output_dir=output_dir,
-                file_name="roi",
-            ),
-            "nwbfile": {},
-        }
-    else:
-        return {
-            "roi": RoiData(
+            "all_roi": RoiData(
                 np.nanmax(cell_img.data, axis=0),
                 output_dir=output_dir,
                 file_name="roi",
             ),
-            "nwbfile": {},
+            "non_cell_roi": RoiData(
+                np.nanmax(cell_img.data[iscell == 0], axis=0),
+                output_dir=output_dir,
+                file_name="noncell_roi",
+            ),
+            "cell_roi": RoiData(
+                np.nanmax(cell_img.data[iscell != 0], axis=0),
+                output_dir=output_dir,
+                file_name="cell_roi",
+            ),
+        }
+    else:
+        return {
+            "all_roi": RoiData(
+                np.nanmax(cell_img.data, axis=0),
+                output_dir=output_dir,
+                file_name="roi",
+            ),
         }
