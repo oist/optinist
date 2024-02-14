@@ -194,9 +194,11 @@ class ND2Reader(MicroscopeDataReaderBase):
             image_name=original_metadata["data_name"],
             size_x=attributes["widthPx"],
             size_y=attributes["heightPx"],
-            size_t=0,  # size_z は後続処理で計算・設定する
+            size_t=0,  # size_t は後続処理で計算・設定する
             size_z=0,  # size_z は後続処理で計算・設定する
             size_c=len(metadata["channels"]),
+            depth=attributes["bitsPerComponentInMemory"],
+            significant_bits=attributes["bitsPerComponentSignificant"],
             acquisition_date=re.sub(" +", " ", textinfo["date"]),
             objective_model=metadata_ch0_microscope.get("objectiveName", None),
             fps=fps,

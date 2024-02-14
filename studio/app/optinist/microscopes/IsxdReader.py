@@ -42,6 +42,9 @@ class IsxdReader(MicroscopeDataReaderBase):
 
         original_metadata = {
             "data_name": data_name,
+            "movie": {
+                "data_type": movie.data_type.__name__,
+            },
             "spacing": {
                 "width": spacing.num_pixels[0],
                 "height": spacing.num_pixels[1],
@@ -63,6 +66,7 @@ class IsxdReader(MicroscopeDataReaderBase):
         Note: Inscopix format is not supported in OME Bio-Formats
         """
 
+        movie = original_metadata["movie"]
         spacing = original_metadata["spacing"]
         timing = original_metadata["timing"]
 
@@ -73,6 +77,8 @@ class IsxdReader(MicroscopeDataReaderBase):
             size_t=timing["num_samples"],
             size_z=0,  # Note: currently unsettled
             size_c=0,  # Note: currently unsettled
+            depth=OMEDataModel.get_depth_from_pixel_type(movie["data_type"]),
+            significant_bits=0,  # Note: currently unsettled
             acquisition_date=timing["start"],
             objective_model=None,  # Note: currently unsettled
             fps=(1000 / timing["period_msec"]),
