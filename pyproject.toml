@@ -112,7 +112,7 @@ profile = "black"
 
 [tool.pytest.ini_options]
 pythonpath = "."
-testpaths="studio/tests"
+testpaths = "studio/tests"
 env = ["OPTINIST_DIR=studio/test_data"]
 
 [tool.codespell]
