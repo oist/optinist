@@ -51,6 +51,8 @@ def lccd_detect(
 
     nwbfile = {}
     nwbfile[NWBDATASET.ROI] = {function_id: roi_list}
+    nwbfile[NWBDATASET.POSTPROCESS] = {function_id: {"all_roi_img": im}}
+
     nwbfile[NWBDATASET.COLUMN] = {
         function_id: {
             "name": "iscell",

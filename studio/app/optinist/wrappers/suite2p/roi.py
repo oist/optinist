@@ -73,6 +73,7 @@ def suite2p_roi(
     nwbfile = {}
 
     nwbfile[NWBDATASET.ROI] = {function_id: roi_list}
+    nwbfile[NWBDATASET.POSTPROCESS] = {function_id: {"all_roi_img": im}}
 
     # iscellを追加
     nwbfile[NWBDATASET.COLUMN] = {
@@ -90,7 +91,7 @@ def suite2p_roi(
                 "table_name": "Fluorescence",
                 "region": list(range(len(F))),
                 "name": "Fluorescence",
-                "data": F,
+                "data": np.transpose(F),
                 "unit": "lumens",
                 "rate": ops["fs"],
             },
@@ -98,7 +99,7 @@ def suite2p_roi(
                 "table_name": "Neuropil",
                 "region": list(range(len(Fneu))),
                 "name": "Neuropil",
-                "data": Fneu,
+                "data": np.transpose(Fneu),
                 "unit": "lumens",
                 "rate": ops["fs"],
             },
