@@ -15,6 +15,8 @@ class OMEDataModel:
     size_t: int  # time frames
     size_z: int  # axis z frames
     size_c: int  # channels
+    depth: int  # pixel depth (bits per pixel)
+    significant_bits: int  # pixel significant-bits
     acquisition_date: str
     objective_model: str  # objective lens model
     fps: int  # frames_per_second  # Note: extended from OME format
@@ -32,11 +34,41 @@ class OMEDataModel:
                 "SizeX": self.size_x,
                 "SizeY": self.size_y,
                 "SizeZ": self.size_z,
+                "SignificantBits": self.significant_bits,
+                "Type": self.pixel_type,
             },
             "Objective": {
                 "Model": self.objective_model,
             },
         }
+
+    @property
+    def pixel_type(self) -> str:
+        """
+        @see https://www.openmicroscopy.org/Schemas \
+            /Documentation/Generated/OME-2016-06/ome_xsd.html#Pixels_Type
+        """
+
+        depth = self.depth
+        if depth > 0 and depth <= 8:
+            return "uint8"
+        elif depth > 8 and depth <= 16:
+            return "uint16"
+        elif depth > 16 and depth <= 32:
+            return "uint32"
+        else:
+            return "other"
+
+    @staticmethod
+    def get_depth_from_pixel_type(type_label: str):
+        if type_label == "unit8":
+            return 8
+        elif type_label == "uint16":
+            return 16
+        elif type_label == "uint32":
+            return 32
+        else:
+            return 0
 
 
 class MicroscopeDataReaderBase(metaclass=ABCMeta):
@@ -96,6 +128,11 @@ class MicroscopeDataReaderBase(metaclass=ABCMeta):
             self.__original_metadata
         )
 
+        """
+        Loading completion handler
+        """
+        self._load_complete_handler()
+
     def get_image_stacks(self) -> list:
         """Return microscope image stacks"""
         return self._get_image_stacks()
@@ -123,6 +160,13 @@ class MicroscopeDataReaderBase(metaclass=ABCMeta):
     @abstractmethod
     def _build_lab_specific_metadata(self, original_metadata: dict) -> dict:
         """Build metadata in lab-specific format"""
+        pass
+
+    # Note: not @abstractmethod
+    def _load_complete_handler(self):
+        """Loading completion handler"""
+
+        # Overwrite if necessary processing.
         pass
 
     @abstractmethod
