@@ -61,12 +61,12 @@ class FileWriter:
     @classmethod
     def get_info_from_array_data(cls, rule_config: Rule, nwbfile, data):
         if data.ndim == 3:
-            info = {rule_config.return_arg: ImageData(data, "")}
+            info = {rule_config.return_arg: ImageData(data)}
             nwbfile["image_series"]["external_file"] = info[rule_config.return_arg]
-            info["nwbfile"] = {}
+            info["nwbfile"] = {"input": nwbfile}
             info["nwbfile"][FILETYPE.IMAGE] = nwbfile
         elif data.ndim == 2:
-            info = {rule_config.return_arg: TimeSeriesData(data, "")}
+            info = {rule_config.return_arg: TimeSeriesData(data)}
 
             if NWBDATASET.TIMESERIES not in nwbfile:
                 nwbfile[NWBDATASET.TIMESERIES] = {}
@@ -77,7 +77,7 @@ class FileWriter:
             nwbfile.pop("image_series", None)
             info["nwbfile"] = {"input": nwbfile}
         elif data.ndim == 1:
-            info = {rule_config.return_arg: IscellData(data, "")}
+            info = {rule_config.return_arg: IscellData(data)}
 
             if NWBDATASET.COLUMN not in nwbfile:
                 nwbfile[NWBDATASET.COLUMN] = {}

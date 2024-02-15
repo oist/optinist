@@ -204,6 +204,7 @@ def caiman_cnmf(
             roi_list.append(kargs)
 
     nwbfile[NWBDATASET.ROI] = {function_id: roi_list}
+    nwbfile[NWBDATASET.POSTPROCESS] = {function_id: {"all_roi_img": im}}
 
     # iscellを追加
     nwbfile[NWBDATASET.COLUMN] = {
