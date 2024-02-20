@@ -3,7 +3,7 @@
 #   - https://caiman.readthedocs.io/en/dev/core_functions.html#caiman.source_extraction.cnmf.params.CNMFParams
 
 # ----------------------------------------
-# Basic Paramaters
+# Basic Parameters
 # ----------------------------------------
 
 data params:
@@ -34,7 +34,7 @@ merge params:
 
 
 # ----------------------------------------
-# Advanced Paramaters
+# Advanced Parameters
 # ----------------------------------------
 
 init params (advanced):
