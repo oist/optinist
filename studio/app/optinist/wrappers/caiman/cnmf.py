@@ -162,7 +162,11 @@ def caiman_cnmf(
 
     if cnm.estimates.b is not None and cnm.estimates.b.size != 0:
         non_cell_ims = get_roi(
-            scipy.sparse.csc_matrix(cnm.estimates.b), roi_thr, thr_method, swap_dim, dims
+            scipy.sparse.csc_matrix(cnm.estimates.b),
+            roi_thr,
+            thr_method,
+            swap_dim,
+            dims,
         )
         non_cell_ims = np.stack(non_cell_ims).astype(float)
         for i, j in enumerate(range(n_rois, n_rois + len(non_cell_ims))):
