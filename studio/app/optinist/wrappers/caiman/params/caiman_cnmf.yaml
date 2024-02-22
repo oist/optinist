@@ -21,6 +21,8 @@ init params:
   nb: 2
   method_init: "greedy_roi"
 
+  roi_thr: 0.9  # Note: Extended param for ROI
+
 preprocess params:
   p: 1
 
@@ -29,7 +31,6 @@ patch params:
   stride: 6
 
 merge params:
-  thr: 0.9
   merge_thr: 0.85
 
 
@@ -37,9 +38,21 @@ merge params:
 # Advanced Parameters
 # ----------------------------------------
 
+# Note: Other data params are undefined because they are less necessary.
+# data params:
+#   fnames: null
+#   dims: null
+#   fr: 30
+#   dxy: [1, 1]
+#   var_name_hdf5: 'mov'
+#   caiman_version: null
+#   last_commit: null
+#   mmap_F: null
+#   mmap_C: null
+
 init params (advanced):
   SC_kernel: "heat"
-  SC_sigma : 1
+  SC_sigma: 1
   SC_thr: 0
   SC_normalize: True
   SC_use_NN: False

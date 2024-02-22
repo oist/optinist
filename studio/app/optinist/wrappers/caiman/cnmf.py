@@ -8,7 +8,7 @@ from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import EditRoiData, FluoData, IscellData, RoiData
 
 
-def get_roi(A, thr, thr_method, swap_dim, dims):
+def get_roi(A, roi_thr, thr_method, swap_dim, dims):
     from scipy.ndimage import binary_fill_holes
     from skimage.measure import find_contours
 
@@ -52,7 +52,7 @@ def get_roi(A, thr, thr_method, swap_dim, dims):
             Bmat = np.reshape(Bvec, dims, order="F")
 
         r_mask = np.zeros_like(Bmat, dtype="bool")
-        contour = find_contours(Bmat, thr)
+        contour = find_contours(Bmat, roi_thr)
         for c in contour:
             r_mask[np.round(c[:, 0]).astype("int"), np.round(c[:, 1]).astype("int")] = 1
 
@@ -85,7 +85,7 @@ def caiman_cnmf(
 
     Ain = params.pop("Ain", None)
     do_refit = params.pop("do_refit", None)
-    thr = params.pop("thr", None)
+    roi_thr = params.pop("roi_thr", None)
 
     file_path = images.path
     if isinstance(file_path, list):
@@ -154,7 +154,7 @@ def caiman_cnmf(
         ]
     )
 
-    cell_ims = get_roi(cnm.estimates.A, thr, thr_method, swap_dim, dims)
+    cell_ims = get_roi(cnm.estimates.A, roi_thr, thr_method, swap_dim, dims)
     cell_ims = np.stack(cell_ims).astype(float)
     cell_ims[cell_ims == 0] = np.nan
     cell_ims -= 1
@@ -162,7 +162,7 @@ def caiman_cnmf(
 
     if cnm.estimates.b is not None and cnm.estimates.b.size != 0:
         non_cell_ims = get_roi(
-            scipy.sparse.csc_matrix(cnm.estimates.b), thr, thr_method, swap_dim, dims
+            scipy.sparse.csc_matrix(cnm.estimates.b), roi_thr, thr_method, swap_dim, dims
         )
         non_cell_ims = np.stack(non_cell_ims).astype(float)
         for i, j in enumerate(range(n_rois, n_rois + len(non_cell_ims))):
