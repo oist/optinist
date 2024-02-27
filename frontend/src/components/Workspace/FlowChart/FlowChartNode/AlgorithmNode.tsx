@@ -122,7 +122,11 @@ const AlgorithmNodeImple = memo(function AlgorithmNodeImple({
         <Button
           size="small"
           onClick={onClickOutputButton}
-          disabled={status === NODE_RESULT_STATUS.PENDING}
+          disabled={
+            !status ||
+            status === NODE_RESULT_STATUS.PENDING ||
+            status === "uninitialized"
+          }
         >
           Output
         </Button>
