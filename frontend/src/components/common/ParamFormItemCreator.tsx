@@ -102,18 +102,18 @@ export function createParamFormItemComponent({
       value
         .split(",")
         .filter(Boolean)
-        .map((e) => Number(e))
+        .map((e) => (Number(e) ? Number(e) : e))
 
     const onBlur = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-      const newValue = e.target.value as string
+      const newValue = e.target.value
       if (requireConfirm && currentWorkflowId != null) {
         onOpenClearWorkflowIdDialog({
           open: true,
           handleOk: () => {
             dispatch(
               updateParamAction(
-                splitValue(newValue),
-                splitValue(initValue as string),
+                splitValue(newValue.toString()),
+                splitValue((initValue as string).toString()),
               ),
             )
           },
@@ -122,8 +122,8 @@ export function createParamFormItemComponent({
       } else {
         dispatch(
           updateParamAction(
-            splitValue(newValue),
-            splitValue(initValue as string),
+            splitValue(newValue.toString()),
+            splitValue((initValue as string).toString()),
           ),
         )
       }
