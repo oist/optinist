@@ -3,11 +3,11 @@ import logging
 import os
 from pprint import pprint
 
-from OIRReader import OIRReader
+from studio.app.optinist.microscopes.OIRReader import OIRReader
 
-CURRENT_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
-LIBRARY_DIR = CURRENT_DIR_PATH + "/dll"
-TEST_DATA_PATH = CURRENT_DIR_PATH + "/testdata/olympus/olympus-xyt005_0001.oir"
+TEST_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
+LIBRARY_DIR = os.path.dirname(TEST_DIR_PATH) + "/dll"
+TEST_DATA_PATH = TEST_DIR_PATH + "/test_data/olympus/olympus-xyt005_0001.oir"
 
 os.environ[OIRReader.LIBRARY_DIR_KEY] = LIBRARY_DIR
 
@@ -43,8 +43,8 @@ def test_oir_reader():
         # save stacks for all channels
         for channel_idx, image_stack in enumerate(channels_stacks):
             save_stack = [Image.fromarray(frame) for frame in image_stack]
-            save_path = (
-                os.path.basename(TEST_DATA_PATH) + f".out.ch{channel_idx+1}.tiff"
+            save_path = "{}/{}.out.ch{}.tiff".format(
+                TEST_DIR_PATH, os.path.basename(TEST_DATA_PATH), channel_idx + 1
             )
             print(f"save image: {save_path}")
 

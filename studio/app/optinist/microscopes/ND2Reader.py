@@ -6,7 +6,7 @@ import re
 from enum import Enum, IntEnum
 
 import numpy as np
-from MicroscopeDataReaderBase import MicroscopeDataReaderBase, OMEDataModel
+from studio.app.optinist.microscopes.MicroscopeDataReaderBase import MicroscopeDataReaderBase, OMEDataModel
 
 
 class LimCode(IntEnum):

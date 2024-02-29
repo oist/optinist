@@ -5,7 +5,7 @@ try:
 except ModuleNotFoundError:
     pass
 
-from MicroscopeDataReaderBase import MicroscopeDataReaderBase, OMEDataModel
+from studio.app.optinist.microscopes.MicroscopeDataReaderBase import MicroscopeDataReaderBase, OMEDataModel
 
 
 class IsxdReader(MicroscopeDataReaderBase):
