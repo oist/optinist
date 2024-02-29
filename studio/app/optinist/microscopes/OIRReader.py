@@ -3,9 +3,12 @@ import os
 import platform
 
 import numpy as np
-from studio.app.optinist.microscopes.MicroscopeDataReaderBase import MicroscopeDataReaderBase, OMEDataModel
 
 import studio.app.optinist.microscopes.modules.olympus.lib as lib
+from studio.app.optinist.microscopes.MicroscopeDataReaderBase import (
+    MicroscopeDataReaderBase,
+    OMEDataModel,
+)
 from studio.app.optinist.microscopes.modules.olympus.area_image_size import (
     AreaImageSize,
 )

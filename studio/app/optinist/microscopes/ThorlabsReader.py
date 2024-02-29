@@ -8,7 +8,11 @@ from glob import glob
 
 import tifffile
 import xmltodict
-from studio.app.optinist.microscopes.MicroscopeDataReaderBase import MicroscopeDataReaderBase, OMEDataModel
+
+from studio.app.optinist.microscopes.MicroscopeDataReaderBase import (
+    MicroscopeDataReaderBase,
+    OMEDataModel,
+)
 
 
 class ThorlabsReader(MicroscopeDataReaderBase):
