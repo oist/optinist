@@ -137,8 +137,13 @@ class IsxdReader(MicroscopeDataReaderBase):
         movie: isx.Movie = None
         (movie,) = self.resource_handles
 
+        # get frame data's np.ndarray.dtype
+        # Note: Individual support for `isx v1.0.3`
+        pixel_np_dtype = self.ome_metadata.pixel_np_dtype
+
         image_frames = [
-            movie.get_frame_data(i) for i in range(movie.timing.num_samples)
+            movie.get_frame_data(i).astype(pixel_np_dtype)
+            for i in range(movie.timing.num_samples)
         ]
 
         return image_frames

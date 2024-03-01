@@ -2,6 +2,11 @@ import os
 from abc import ABCMeta, abstractmethod
 from dataclasses import dataclass
 
+from numpy import uint8 as np_uint8
+from numpy import uint16 as np_uint16
+from numpy import uint32 as np_uint32
+from numpy.typing import DTypeLike
+
 
 @dataclass
 class OMEDataModel:
@@ -58,6 +63,18 @@ class OMEDataModel:
             return "uint32"
         else:
             return "other"
+
+    @property
+    def pixel_np_dtype(self) -> DTypeLike:
+        depth = self.depth
+        if depth > 0 and depth <= 8:
+            return np_uint8
+        elif depth > 8 and depth <= 16:
+            return np_uint16
+        elif depth > 16 and depth <= 32:
+            return np_uint32
+        else:
+            return np_uint8
 
     @staticmethod
     def get_depth_from_pixel_type(type_label: str):
