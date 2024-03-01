@@ -43,6 +43,36 @@ class IsxdReader(MicroscopeDataReaderBase):
         spacing: isx.Spacing = movie.spacing
         timing: isx.Timing = movie.timing
 
+        # Get acquisition start time
+        # Note: Individual support for `isx v1.0.3`
+        if not hasattr(timing, "start"):
+            from datetime import datetime, timezone
+
+            # Get acquisition start time from metadata
+            timing_info_start = (
+                movie.footer.get("timingInfo", {})
+                .get("start", {})
+                .get("secsSinceEpoch", {})
+            )
+            timing_info_start_num = int(timing_info_start.get("num"))
+            timing_info_start_den = int(timing_info_start.get("den"))
+            timing_start_unixtime = int(timing_info_start_num / timing_info_start_den)
+
+            timing_start_datetime = datetime.fromtimestamp(
+                timing_start_unixtime, timezone.utc
+            )
+            start_datatime = timing_start_datetime.strftime("%Y-%m-%d %H:%M:%S")
+
+            del (
+                timing_info_start,
+                timing_info_start_num,
+                timing_info_start_den,
+                timing_start_unixtime,
+                timing_start_datetime,
+            )
+        else:
+            start_datatime = timing.start.to_datetime().strftime("%Y-%m-%d %H:%M:%S")
+
         original_metadata = {
             "data_name": data_name,
             "movie": {
@@ -53,12 +83,18 @@ class IsxdReader(MicroscopeDataReaderBase):
                 "height": spacing.num_pixels[1],
             },
             "timing": {
-                "start": timing.start.to_datetime().strftime("%Y-%m-%d %H:%M:%S"),
-                "period_msec": timing.period.to_msecs(),
+                "start": start_datatime,
+                "period_msec": round(timing.period.secs_float * 1000),
                 "num_samples": timing.num_samples,
-                "dropped": timing.dropped,
-                "cropped": timing.cropped,
-                "blank": timing.blank,
+                "dropped": (
+                    timing.dropped if hasattr(timing, "dropped") else None
+                ),  # Note: No attr at `isx v1.0.3`
+                "cropped": (
+                    timing.cropped if hasattr(timing, "cropped") else None
+                ),  # Note: No attr at `isx v1.0.3`
+                "blank": (
+                    timing.blank if hasattr(timing, "blank") else None
+                ),  # Note: No attr at `isx v1.0.3`
             },
         }
 
