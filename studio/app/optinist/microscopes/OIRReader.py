@@ -3,9 +3,12 @@ import os
 import platform
 
 import numpy as np
-from MicroscopeDataReaderBase import MicroscopeDataReaderBase, OMEDataModel
 
 import studio.app.optinist.microscopes.modules.olympus.lib as lib
+from studio.app.optinist.microscopes.MicroscopeDataReaderBase import (
+    MicroscopeDataReaderBase,
+    OMEDataModel,
+)
 from studio.app.optinist.microscopes.modules.olympus.area_image_size import (
     AreaImageSize,
 )
@@ -26,6 +29,9 @@ from studio.app.optinist.microscopes.modules.olympus.objective_lens_info import 
 )
 from studio.app.optinist.microscopes.modules.olympus.pixel_length import PixelLength
 from studio.app.optinist.microscopes.modules.olympus.roi_collection import RoiCollection
+from studio.app.optinist.microscopes.modules.olympus.scanner_settings import (
+    ScannerSettings,
+)
 from studio.app.optinist.microscopes.modules.olympus.system_info import SystemInfo
 from studio.app.optinist.microscopes.modules.olympus.user_comment import UserComment
 
@@ -165,6 +171,9 @@ class OIRReader(MicroscopeDataReaderBase):
         # Objective Lens Info
         objective_lens_info = ObjectiveLensInfo(hAccessor, hArea)
 
+        # Scanner Settings
+        scanner_settings = ScannerSettings(hAccessor, hArea)
+
         # File Creation Time
         file_creation_time = FileCreationTime(hAccessor, hArea)
 
@@ -193,6 +202,7 @@ class OIRReader(MicroscopeDataReaderBase):
             "pixel_length": pixel_length.get_values(),
             "channel_info": channel_info.get_values(),
             "objective_lens_info": objective_lens_info.get_values(),
+            "scanner_settings": scanner_settings.get_values(),
             "file_creation_time": file_creation_time.get_values(),
             "system_info": system_info.get_values(),
             "user_comment": user_comment.get_values(),
@@ -209,6 +219,7 @@ class OIRReader(MicroscopeDataReaderBase):
         axis_info = original_metadata["axis_info"]
         channel_info = original_metadata["channel_info"]
         objective_lens_info = original_metadata["objective_lens_info"]
+        scanner_settings = original_metadata["scanner_settings"]
         file_creation_time = original_metadata["file_creation_time"]
 
         # get sequence counts
@@ -222,10 +233,7 @@ class OIRReader(MicroscopeDataReaderBase):
         nZLoop = axis_info["ZSTACK"]["max"] if "ZSTACK" in axis_info else 1
 
         # get fps
-        # TODO: fps の取得には、FrameManager経由
-        #   (FrameManager.m_vecAxisPosition[].GetPosition) での
-        #   アクセスが必要となる模様. 今後計算対象予定.
-        fps = 0
+        fps = round(1000 / scanner_settings["frame_speed"])
 
         omeData = OMEDataModel(
             image_name=original_metadata["data_name"],
