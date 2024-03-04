@@ -63,6 +63,21 @@ def get_roi(A, roi_thr, thr_method, swap_dim, dims):
     return ims
 
 
+def util_recursive_flatten_params(params, result_params: dict, nest_counter=0):
+    """
+    Recursively flatten node parameters (operation for CaImAn CNMFParams)
+    """
+    # avoid infinite loops
+    assert nest_counter <= 2, f"Nest depth overflow. [{nest_counter}]"
+    nest_counter += 1
+
+    for key, nested_param in params.items():
+        if type(nested_param) is dict:
+            util_recursive_flatten_params(nested_param, result_params, nest_counter)
+        else:
+            result_params[key] = nested_param
+
+
 def caiman_cnmf(
     images: ImageData, output_dir: str, params: dict = None, **kwargs
 ) -> dict(fluorescence=FluoData, iscell=IscellData):
@@ -77,15 +92,13 @@ def caiman_cnmf(
     function_id = output_dir.split("/")[-1]
     print("start caiman_cnmf:", function_id)
 
-    # flatten params segments.
-    params_flatten = {}
-    for params_segment in params.values():
-        params_flatten.update(params_segment)
-    params = params_flatten
+    # flatten cmnf params segments.
+    reshaped_params = {}
+    util_recursive_flatten_params(params, reshaped_params)
 
-    Ain = params.pop("Ain", None)
-    do_refit = params.pop("do_refit", None)
-    roi_thr = params.pop("roi_thr", None)
+    Ain = reshaped_params.pop("Ain", None)
+    do_refit = reshaped_params.pop("do_refit", None)
+    roi_thr = reshaped_params.pop("roi_thr", None)
 
     file_path = images.path
     if isinstance(file_path, list):
@@ -120,10 +133,10 @@ def caiman_cnmf(
     nwbfile = kwargs.get("nwbfile", {})
     fr = nwbfile.get("imaging_plane", {}).get("imaging_rate", 30)
 
-    if params is None:
+    if reshaped_params is None:
         ops = CNMFParams()
     else:
-        ops = CNMFParams(params_dict={**params, "fr": fr})
+        ops = CNMFParams(params_dict={**reshaped_params, "fr": fr})
 
     if "dview" in locals():
         stop_server(dview=dview)  # noqa: F821
