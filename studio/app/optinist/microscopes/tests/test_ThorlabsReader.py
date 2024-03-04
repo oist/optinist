@@ -3,10 +3,10 @@ import logging
 import os
 from pprint import pprint
 
-from ThorlabsReader import ThorlabsReader
+from studio.app.optinist.microscopes.ThorlabsReader import ThorlabsReader
 
-CURRENT_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
-TEST_DATA_PATH = CURRENT_DIR_PATH + "/testdata/thorlabs/timelapse600"
+TEST_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
+TEST_DATA_PATH = TEST_DIR_PATH + "/test_data/thorlabs/timelapse600"
 
 
 def test_thorlabs_reader():
@@ -39,8 +39,8 @@ def test_thorlabs_reader():
         import tifffile
 
         for channel_idx in range(channel_len):
-            save_path = (
-                os.path.basename(TEST_DATA_PATH) + f".out.ch{channel_idx+1}.tiff"
+            save_path = "{}/{}.out.tiff".format(
+                TEST_DIR_PATH, os.path.basename(TEST_DATA_PATH)
             )
             print(f"save image: {save_path}")
 

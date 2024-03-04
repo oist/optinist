@@ -3,11 +3,11 @@ import logging
 import os
 from pprint import pprint
 
-from ND2Reader import ND2Reader
+from studio.app.optinist.microscopes.ND2Reader import ND2Reader
 
-CURRENT_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
-LIBRARY_DIR = CURRENT_DIR_PATH + "/dll"
-TEST_DATA_PATH = CURRENT_DIR_PATH + "/testdata/nikon/pia_volume_area1.nd2"
+TEST_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
+LIBRARY_DIR = os.path.dirname(TEST_DIR_PATH) + "/dll"
+TEST_DATA_PATH = TEST_DIR_PATH + "/test_data/nikon/pia_volume_area1.nd2"
 
 os.environ[ND2Reader.LIBRARY_DIR_KEY] = LIBRARY_DIR
 
@@ -43,8 +43,8 @@ def test_nd2_reader():
         # save stacks for all channels
         for channel_idx, image_stack in enumerate(channels_stacks):
             save_stack = [Image.fromarray(frame) for frame in image_stack]
-            save_path = (
-                os.path.basename(TEST_DATA_PATH) + f".out.ch{channel_idx+1}.tiff"
+            save_path = "{}/{}.out.ch{}.tiff".format(
+                TEST_DIR_PATH, os.path.basename(TEST_DATA_PATH), channel_idx + 1
             )
             print(f"save image: {save_path}")
 

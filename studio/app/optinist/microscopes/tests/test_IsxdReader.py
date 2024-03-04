@@ -1,13 +1,17 @@
 import json
 import logging
 import os
+import sys
 from pprint import pprint
 
-from IsxdReader import IsxdReader
+# add sys.path for isx conda env
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../../../../")
 
-CURRENT_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
+from studio.app.optinist.microscopes.IsxdReader import IsxdReader  # NOQA
+
+TEST_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA_PATH = (
-    CURRENT_DIR_PATH + "/testdata/inscopix/oist_short_example_preprocessed.isxd"
+    TEST_DIR_PATH + "/test_data/inscopix/oist_short_example_preprocessed.isxd"
 )
 
 
@@ -40,7 +44,9 @@ def test_isxd_reader():
         from PIL import Image
 
         save_stack = [Image.fromarray(frame) for frame in image_stack]
-        save_path = os.path.basename(TEST_DATA_PATH) + ".out.tiff"
+        save_path = "{}/{}.out.tiff".format(
+            TEST_DIR_PATH, os.path.basename(TEST_DATA_PATH)
+        )
         print(f"save image: {save_path}")
 
         save_stack[0].save(
