@@ -8,7 +8,7 @@ from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import EditRoiData, FluoData, IscellData, RoiData
 
 
-def get_roi(A, thr, thr_method, swap_dim, dims):
+def get_roi(A, roi_thr, thr_method, swap_dim, dims):
     from scipy.ndimage import binary_fill_holes
     from skimage.measure import find_contours
 
@@ -52,7 +52,7 @@ def get_roi(A, thr, thr_method, swap_dim, dims):
             Bmat = np.reshape(Bvec, dims, order="F")
 
         r_mask = np.zeros_like(Bmat, dtype="bool")
-        contour = find_contours(Bmat, thr)
+        contour = find_contours(Bmat, roi_thr)
         for c in contour:
             r_mask[np.round(c[:, 0]).astype("int"), np.round(c[:, 1]).astype("int")] = 1
 
@@ -61,6 +61,21 @@ def get_roi(A, thr, thr_method, swap_dim, dims):
         ims.append(r_mask + (i * r_mask))
 
     return ims
+
+
+def util_recursive_flatten_params(params, result_params: dict, nest_counter=0):
+    """
+    Recursively flatten node parameters (operation for CaImAn CNMFParams)
+    """
+    # avoid infinite loops
+    assert nest_counter <= 2, f"Nest depth overflow. [{nest_counter}]"
+    nest_counter += 1
+
+    for key, nested_param in params.items():
+        if type(nested_param) is dict:
+            util_recursive_flatten_params(nested_param, result_params, nest_counter)
+        else:
+            result_params[key] = nested_param
 
 
 def caiman_cnmf(
@@ -77,15 +92,13 @@ def caiman_cnmf(
     function_id = output_dir.split("/")[-1]
     print("start caiman_cnmf:", function_id)
 
-    # flatten params segments.
-    params_flatten = {}
-    for params_segment in params.values():
-        params_flatten.update(params_segment)
-    params = params_flatten
+    # flatten cmnf params segments.
+    reshaped_params = {}
+    util_recursive_flatten_params(params, reshaped_params)
 
-    Ain = params.pop("Ain", None)
-    do_refit = params.pop("do_refit", None)
-    thr = params.pop("thr", None)
+    Ain = reshaped_params.pop("Ain", None)
+    do_refit = reshaped_params.pop("do_refit", None)
+    roi_thr = reshaped_params.pop("roi_thr", None)
 
     file_path = images.path
     if isinstance(file_path, list):
@@ -120,10 +133,10 @@ def caiman_cnmf(
     nwbfile = kwargs.get("nwbfile", {})
     fr = nwbfile.get("imaging_plane", {}).get("imaging_rate", 30)
 
-    if params is None:
+    if reshaped_params is None:
         ops = CNMFParams()
     else:
-        ops = CNMFParams(params_dict={**params, "fr": fr})
+        ops = CNMFParams(params_dict={**reshaped_params, "fr": fr})
 
     if "dview" in locals():
         stop_server(dview=dview)  # noqa: F821
@@ -154,7 +167,7 @@ def caiman_cnmf(
         ]
     )
 
-    cell_ims = get_roi(cnm.estimates.A, thr, thr_method, swap_dim, dims)
+    cell_ims = get_roi(cnm.estimates.A, roi_thr, thr_method, swap_dim, dims)
     cell_ims = np.stack(cell_ims).astype(float)
     cell_ims[cell_ims == 0] = np.nan
     cell_ims -= 1
@@ -162,7 +175,11 @@ def caiman_cnmf(
 
     if cnm.estimates.b is not None and cnm.estimates.b.size != 0:
         non_cell_ims = get_roi(
-            scipy.sparse.csc_matrix(cnm.estimates.b), thr, thr_method, swap_dim, dims
+            scipy.sparse.csc_matrix(cnm.estimates.b),
+            roi_thr,
+            thr_method,
+            swap_dim,
+            dims,
         )
         non_cell_ims = np.stack(non_cell_ims).astype(float)
         for i, j in enumerate(range(n_rois, n_rois + len(non_cell_ims))):
