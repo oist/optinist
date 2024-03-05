@@ -208,6 +208,9 @@ class ThorlabsReader(MicroscopeDataReaderBase):
         ome_metadata = xmltodict.parse(handle_tiff.ome_metadata)
         ome_metadata = ome_metadata["OME"]
         ome_metadata_image_pixcels = ome_metadata["Image"]["Pixels"]
+        experiments = original_metadata["experiments"]["ThorImageExperiment"]
+
+        fps = round(float(experiments["LSM"]["@frameRate"]), 2)
 
         omeData = OMEDataModel(
             image_name=original_metadata["data_name"],
@@ -222,7 +225,7 @@ class ThorlabsReader(MicroscopeDataReaderBase):
             significant_bits=0,  # Note: currently unsettled
             acquisition_date=ome_metadata["Image"]["@AcquiredDate"],
             objective_model=None,  # TODO: 取得方法 要検討
-            fps=0,  # TODO: 取得方法 要検討
+            fps=fps,
         )
 
         return omeData

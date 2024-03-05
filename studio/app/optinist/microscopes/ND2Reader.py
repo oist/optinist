@@ -175,22 +175,20 @@ class ND2Reader(MicroscopeDataReaderBase):
         metadata = original_metadata["metadata"]
         textinfo = original_metadata["textinfo"]
         experiments = original_metadata["experiments"]
-        first_experiment_parameters = (
-            experiments[0]["parameters"] if experiments else {}
-        )
+        first_experiment_params = experiments[0]["parameters"] if experiments else {}
         metadata_ch0_microscope = (
             metadata["channels"][0]["microscope"] if experiments else {}
         )
 
         # experiment, periods, の参照は先頭データの内容から取得
-        if "periods" in first_experiment_parameters:
+        if "periods" in first_experiment_params:
             try:
-                fps = (
-                    1000
-                    / first_experiment_parameters["periods"][0]["periodDiff"]["avg"]
-                )
+                interval = first_experiment_params["periods"][0]["periodDiff"]["avg"]
             except:  # noqa: E722
-                fps = 1000 / first_experiment_parameters["periodDiff"]["avg"]
+                interval = first_experiment_params["periodDiff"]["avg"]
+
+            fps = round(1000 / interval, 2)
+
         else:
             fps = 0
 
