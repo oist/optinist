@@ -1,9 +1,13 @@
 import json
 import logging
 import os
+import sys
 from pprint import pprint
 
-from studio.app.optinist.microscopes.ND2Reader import ND2Reader
+# add sys.path for conda env
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../../../../")
+
+from studio.app.optinist.microscopes.ND2Reader import ND2Reader  # NOQA
 
 TEST_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
 LIBRARY_DIR = os.path.dirname(TEST_DIR_PATH) + "/dll"

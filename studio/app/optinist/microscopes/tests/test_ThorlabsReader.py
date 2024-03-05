@@ -1,9 +1,13 @@
 import json
 import logging
 import os
+import sys
 from pprint import pprint
 
-from studio.app.optinist.microscopes.ThorlabsReader import ThorlabsReader
+# add sys.path for conda env
+sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../../../../")
+
+from studio.app.optinist.microscopes.ThorlabsReader import ThorlabsReader  # NOQA
 
 TEST_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA_PATH = TEST_DIR_PATH + "/test_data/thorlabs/timelapse600"

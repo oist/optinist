@@ -4,7 +4,7 @@ import os
 import sys
 from pprint import pprint
 
-# add sys.path for isx conda env
+# add sys.path for conda env
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../../../../")
 
 from studio.app.optinist.microscopes.IsxdReader import IsxdReader  # NOQA
