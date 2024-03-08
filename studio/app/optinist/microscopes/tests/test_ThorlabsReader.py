@@ -13,7 +13,7 @@ TEST_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
 TEST_DATA_PATH = TEST_DIR_PATH + "/test_data/thorlabs/timelapse600"
 
 
-def test_thorlabs_reader():
+def test_thorlabs_reader(dump_metadata=True, dump_stack=True):
     if not ThorlabsReader.is_available():
         # Note: To output the logging contents to the console,
         #       specify the following options to pytest
@@ -26,33 +26,38 @@ def test_thorlabs_reader():
     data_reader.load(TEST_DATA_PATH)
 
     # dump attributes
-    print("[original_metadata]", json.dumps(data_reader.original_metadata, indent=2))
-    pprint(data_reader.ome_metadata)
-    pprint(data_reader.ome_metadata.get_ome_values())
-    print(
-        "[lab_specific_metadata]",
-        json.dumps(data_reader.lab_specific_metadata, indent=2),
-    )
+    if dump_metadata:
+        print(
+            "[original_metadata]", json.dumps(data_reader.original_metadata, indent=2)
+        )
+        pprint(data_reader.ome_metadata)
+        pprint(data_reader.ome_metadata.get_ome_values())
+        print(
+            "[lab_specific_metadata]",
+            json.dumps(data_reader.lab_specific_metadata, indent=2),
+        )
 
-    # get image stacks
-    channels_stacks = data_reader.get_image_stacks()
-    channel_len = channels_stacks.shape[1]
+    # get & dump image stack
+    if dump_stack:
+        # get image stacks
+        channels_stacks = data_reader.get_image_stacks()
+        channel_len = channels_stacks.shape[1]
 
-    # save tiff image (multi page) test
-    if channel_len > 0:
-        import tifffile
+        # save tiff image (multi page) test
+        if channel_len > 0:
+            import tifffile
 
-        for channel_idx in range(channel_len):
-            save_path = "{}/{}.out.tiff".format(
-                TEST_DIR_PATH, os.path.basename(TEST_DATA_PATH)
-            )
-            print(f"save image: {save_path}")
+            for channel_idx in range(channel_len):
+                save_path = "{}/{}.out.tiff".format(
+                    TEST_DIR_PATH, os.path.basename(TEST_DATA_PATH)
+                )
+                print(f"save image: {save_path}")
 
-            tifffile.imwrite(save_path, channels_stacks[:, channel_idx, :, :])
+                tifffile.imwrite(save_path, channels_stacks[:, channel_idx, :, :])
 
     # asserts
     assert data_reader.ome_metadata.size_x > 0
 
 
 if __name__ == "__main__":
-    test_thorlabs_reader()
+    test_thorlabs_reader(dump_stack=True)
