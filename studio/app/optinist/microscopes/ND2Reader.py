@@ -148,7 +148,7 @@ class ND2Reader(MicroscopeDataReaderBase):
 
         attributes = json.loads(attributes)
         metadata = json.loads(metadata)
-        textinfo = json.loads(textinfo) if textinfo is not None else None
+        textinfo = json.loads(textinfo) if textinfo is not None else {}
         experiments = json.loads(experiments) if experiments is not None else None
         frame_metadata = json.loads(frame_metadata)
 
@@ -187,7 +187,7 @@ class ND2Reader(MicroscopeDataReaderBase):
             except:  # noqa: E722
                 interval = first_experiment_params["periodDiff"]["avg"]
 
-            fps = round(1000 / interval, 2)
+            fps = round(1000 / interval, 2) if interval > 0 else 0
 
         else:
             fps = 0
@@ -201,7 +201,7 @@ class ND2Reader(MicroscopeDataReaderBase):
             size_c=len(metadata["channels"]),
             depth=attributes["bitsPerComponentInMemory"],
             significant_bits=attributes["bitsPerComponentSignificant"],
-            acquisition_date=re.sub(" +", " ", textinfo["date"]),
+            acquisition_date=re.sub(" +", " ", textinfo.get("date", "")),
             objective_model=metadata_ch0_microscope.get("objectiveName", None),
             fps=fps,
         )
