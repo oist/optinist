@@ -39,10 +39,11 @@ def get_frame_property(hAccessor, hImage, key, axisName=None, axisValue=None):
     hProp = ct.c_void_p()
     Param_AxisPosition = IDA_PARAM()
     if axisName:
+        c_axisValue = ct.c_wchar_p(axisValue)
         Param_AxisPosition.nSize = 1
         element = IDA_PARAM_ELEMENT()
         element.pszKey = axisName
-        element.pValue = ct.cast(axisValue, ct.c_void_p)
+        element.pValue = ct.cast(c_axisValue, ct.c_void_p)
         Param_AxisPosition.pElements.contents = element
     result = ida.GetFrameProperty(
         hAccessor, hImage, key, ct.byref(Param_AxisPosition), ct.byref(hProp)
