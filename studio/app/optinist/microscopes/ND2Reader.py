@@ -409,7 +409,8 @@ class ND2Reader(MicroscopeDataReaderBase):
         # reshape operation.
         # Note: For 4D data(XYZT), reshape 3D format(XY(Z|T)) to 4D format(XYZT)
         if self.ome_metadata.size_z > 1 and self.ome_metadata.size_t > 1:
-            result_channels_stacks.reshape(
+            raw_result_channels_stacks = result_channels_stacks
+            result_channels_stacks = raw_result_channels_stacks.reshape(
                 self.ome_metadata.size_c,
                 self.ome_metadata.size_t,
                 self.ome_metadata.size_z,
