@@ -374,7 +374,7 @@ class ND2Reader(MicroscopeDataReaderBase):
 
             # allocate image plane buffer
             single_plane_buffer = np.empty(
-                [image_height, line_bytes],
+                [image_height, image_width, image_component_count],
                 dtype=self.ome_metadata.pixel_np_dtype,
             )
 
@@ -387,11 +387,12 @@ class ND2Reader(MicroscopeDataReaderBase):
                 line_buffer_array = np.ctypeslib.as_array(line_buffer)
 
                 # mapping to plane buffer
-                single_plane_buffer[line_idx, :] = line_buffer_array
+                single_plane_buffer[line_idx] = line_buffer_array.reshape(
+                    image_width, image_component_count
+                )
 
             # extract image data for each channel(component)
             for component_idx in range(pic.uiComponents):
-                # In nikon nd2 format, "component" in effect indicates "channel".
                 channel_idx = component_idx
 
                 # A frame image is cut out from a raw frame image
@@ -399,9 +400,7 @@ class ND2Reader(MicroscopeDataReaderBase):
                 # Note: The pixel values of each component are adjacent to each other,
                 #     one pixel at a time.
                 #   Image: [px1: [c1][c2]..[cN]]..[pxN: [c1][c2]..[cN]]
-                channel_plane_buffer = single_plane_buffer[
-                    :, component_idx::image_component_count
-                ]
+                channel_plane_buffer = single_plane_buffer[:, :, component_idx]
 
                 # construct return value (each channel's stack)
                 result_channels_stacks[channel_idx, seq_idx] = channel_plane_buffer
