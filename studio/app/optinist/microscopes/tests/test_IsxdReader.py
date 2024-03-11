@@ -4,7 +4,7 @@ import os
 import sys
 from pprint import pprint
 
-# add sys.path for isx conda env
+# add sys.path for conda env
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../../../../")
 
 from studio.app.optinist.microscopes.IsxdReader import IsxdReader  # NOQA
@@ -15,7 +15,7 @@ TEST_DATA_PATH = (
 )
 
 
-def test_isxd_reader():
+def test_isxd_reader(dump_metadata=True, dump_stack=True):
     if not IsxdReader.is_available():
         # Note: To output the logging contents to the console,
         #       specify the following options to pytest
@@ -28,33 +28,33 @@ def test_isxd_reader():
     data_reader.load(TEST_DATA_PATH)
 
     # dump attributes
-    print("[original_metadata]", json.dumps(data_reader.original_metadata, indent=2))
-    pprint(data_reader.ome_metadata)
-    pprint(data_reader.ome_metadata.get_ome_values())
-    print(
-        "[lab_specific_metadata]",
-        json.dumps(data_reader.lab_specific_metadata, indent=2),
-    )
-
-    # get image stacks
-    image_stack = data_reader.get_image_stacks()
-
-    # save tiff image (multi page) test
-    if len(image_stack) > 0:
-        from PIL import Image
-
-        save_stack = [Image.fromarray(frame) for frame in image_stack]
-        save_path = "{}/{}.out.tiff".format(
-            TEST_DIR_PATH, os.path.basename(TEST_DATA_PATH)
+    if dump_metadata:
+        print(
+            "[original_metadata]", json.dumps(data_reader.original_metadata, indent=2)
         )
-        print(f"save image: {save_path}")
-
-        save_stack[0].save(
-            save_path,
-            compression="tiff_deflate",
-            save_all=True,
-            append_images=save_stack[1:],
+        pprint(data_reader.ome_metadata)
+        pprint(data_reader.ome_metadata.get_ome_values())
+        print(
+            "[lab_specific_metadata]",
+            json.dumps(data_reader.lab_specific_metadata, indent=2),
         )
+
+    # get & dump image stack
+    if dump_stack:
+        # get image stacks (for all channels)
+        channels_stacks = data_reader.get_image_stacks()
+
+        # save tiff image (multi page) test
+        if (channels_stacks.shape[0] > 0) and (channels_stacks.shape[1] > 0):
+            import tifffile
+
+            for channel_idx, image_stack in enumerate(channels_stacks):
+                save_path = "{}/{}.out.ch{}.tiff".format(
+                    TEST_DIR_PATH, os.path.basename(TEST_DATA_PATH), channel_idx + 1
+                )
+                print(f"save image: {save_path}")
+
+                tifffile.imwrite(save_path, image_stack)
 
     # asserts
     assert data_reader.original_metadata["spacing"]["width"] > 0
@@ -62,4 +62,4 @@ def test_isxd_reader():
 
 
 if __name__ == "__main__":
-    test_isxd_reader()
+    test_isxd_reader(dump_stack=True)

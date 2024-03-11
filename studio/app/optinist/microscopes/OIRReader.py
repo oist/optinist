@@ -233,7 +233,7 @@ class OIRReader(MicroscopeDataReaderBase):
         nZLoop = axis_info["ZSTACK"]["max"] if "ZSTACK" in axis_info else 1
 
         # get fps
-        fps = round(1000 / scanner_settings["frame_speed"])
+        fps = round(1000 / scanner_settings["frame_speed"], 2)
 
         omeData = OMEDataModel(
             image_name=original_metadata["data_name"],
@@ -333,6 +333,22 @@ class OIRReader(MicroscopeDataReaderBase):
 
         return lab_specific_metadata
 
+    def _release_resources(self) -> None:
+        # ----------------------------------------
+        # Release each resource
+        # ----------------------------------------
+
+        ida = self.__dll
+
+        (hAccessor, hFile, hGroup, hArea) = self.resource_handles
+
+        ida.ReleaseArea(hAccessor, hArea)
+        ida.ReleaseGroup(hAccessor, hGroup)
+        ida.Close(hAccessor, hFile)
+        ida.Disconnect(hAccessor)
+        ida.ReleaseAccessor(ctypes.byref(hAccessor))
+        ida.Terminate()
+
     def _get_image_stacks(self) -> list:
         """Return microscope image stacks"""
 
@@ -374,13 +390,20 @@ class OIRReader(MicroscopeDataReaderBase):
         rect.width = area_image_size.get_x()
         rect.height = area_image_size.get_y()
 
-        # initialize return value (each channel's stack)
-        result_channels_stacks = []
+        # Get the number of channels
+        channels_count = channel_info.get_num_of_channel()
+
+        # allocate return value buffer (all channel's stack)
+        # *using numpy.ndarray
+        result_channels_stacks = np.empty(
+            [channels_count, (nLLoop * nTLoop * nZLoop), rect.height, rect.width],
+            dtype=self.ome_metadata.pixel_np_dtype,
+        )
 
         # Retrieve Image data and TimeStamp frame-by-frame
-        for channel_no in range(channel_info.get_num_of_channel()):
-            # Variable for storing results (image stack)
-            result_stack = []
+        for channel_no in range(channels_count):
+            # Sequential index through nLLoop/nZLoop/nTLoop
+            serial_loops_index = 0
 
             for i in range(nLLoop):
                 for j in range(nZLoop):
@@ -403,28 +426,31 @@ class OIRReader(MicroscopeDataReaderBase):
                         ctypes_buffer_ptr = buffer_pointer[1]
 
                         # Obtain image data in ndarray format
-                        pucBuffer_ndarray = np.ctypeslib.as_array(ctypes_buffer_ptr)
-                        result_stack.append(pucBuffer_ndarray)
+                        single_plane_buffer = np.ctypeslib.as_array(ctypes_buffer_ptr)
+
+                        # construct return value (each channel's stack)
+                        result_channels_stacks[
+                            channel_no, serial_loops_index
+                        ] = single_plane_buffer
+                        serial_loops_index += 1
 
                         frame_manager.release_image_body()
 
-            # construct return value (each channel's stack)
-            result_channels_stacks.append(result_stack)
+        # reshape/transpose operation.
+        # Note: To be performed for 4D data
+        # TODO: Need to test
+        if self.ome_metadata.size_z > 1 and self.ome_metadata.size_t > 1:
+            # 1. For OIR 4D data(XYTZ), reshape 3D format(XY(T*Z)) to 4D format(XYTZ)
+            # 2. For OIR 4D data(XYTZ), transpose to 4D format(XYZT)
+            raw_result_channels_stacks = result_channels_stacks
+            result_channels_stacks = raw_result_channels_stacks.reshape(
+                self.ome_metadata.size_c,
+                self.ome_metadata.size_z,
+                self.ome_metadata.size_t,
+                self.ome_metadata.size_y,
+                self.ome_metadata.size_x,
+            ).transpose(
+                0, 2, 1, 3, 4
+            )  # transpose Z<->T
 
         return result_channels_stacks
-
-    def _release_resources(self) -> None:
-        # ----------------------------------------
-        # Release each resource
-        # ----------------------------------------
-
-        ida = self.__dll
-
-        (hAccessor, hFile, hGroup, hArea) = self.resource_handles
-
-        ida.ReleaseArea(hAccessor, hArea)
-        ida.ReleaseGroup(hAccessor, hGroup)
-        ida.Close(hAccessor, hFile)
-        ida.Disconnect(hAccessor)
-        ida.ReleaseAccessor(ctypes.byref(hAccessor))
-        ida.Terminate()

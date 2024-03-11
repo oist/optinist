@@ -101,11 +101,31 @@ class ThorlabsReader(MicroscopeDataReaderBase):
             raise FileNotFoundError(data_file_path)
 
         with zipfile.ZipFile(data_file_path) as zf:
-            # Inspect file contents before extraction
-            if __class__.METADATA_EXPERIMENT_FILENAME not in zf.namelist():
-                raise AssertionError(f"Invalid raw archive file. [{data_file_path}]")
+            # Prepare required file names in the archive
+            # *Inspect file contents before extraction
+            in_arvhice_subdir_name = os.path.splitext(os.path.basename(data_file_path))[
+                0
+            ]
+            bare_experiment_filename = __class__.METADATA_EXPERIMENT_FILENAME
+            subdir_experiment_filename = (
+                f"{in_arvhice_subdir_name}/{bare_experiment_filename}"
+            )
 
-            zf.extractall(data_extracted_path)
+            # Case #1) Case without subdirectories (stored in root of archive)
+            if bare_experiment_filename in zf.namelist():
+                zf.extractall(data_extracted_path)
+
+            # Case #2) Cases containing subdirectory (same dirname as archive)
+            elif subdir_experiment_filename in zf.namelist():
+                zf.extractall(data_extracted_path)
+
+                # Move files under subdirectory to directly
+                # under the expansion directory
+                for f in glob(f"{data_extracted_path}/{in_arvhice_subdir_name}/*"):
+                    shutil.move(f, data_extracted_path)
+
+            else:
+                raise AssertionError(f"Invalid raw archive file. [{data_file_path}]")
 
     def __cleanup_raw_extracted_path(self):
         """
@@ -188,6 +208,9 @@ class ThorlabsReader(MicroscopeDataReaderBase):
         ome_metadata = xmltodict.parse(handle_tiff.ome_metadata)
         ome_metadata = ome_metadata["OME"]
         ome_metadata_image_pixcels = ome_metadata["Image"]["Pixels"]
+        experiments = original_metadata["experiments"]["ThorImageExperiment"]
+
+        fps = round(float(experiments["LSM"]["@frameRate"]), 2)
 
         omeData = OMEDataModel(
             image_name=original_metadata["data_name"],
@@ -202,7 +225,7 @@ class ThorlabsReader(MicroscopeDataReaderBase):
             significant_bits=0,  # Note: currently unsettled
             acquisition_date=ome_metadata["Image"]["@AcquiredDate"],
             objective_model=None,  # TODO: 取得方法 要検討
-            fps=0,  # TODO: 取得方法 要検討
+            fps=fps,
         )
 
         return omeData
@@ -218,4 +241,14 @@ class ThorlabsReader(MicroscopeDataReaderBase):
         handle_tiff = None
         (handle_tiff,) = self.resource_handles
 
-        return handle_tiff.asarray()
+        # get return value buffer (all channel's stack)
+        # *numpy.ndarray
+        result_channels_stacks = handle_tiff.asarray()
+
+        # reshape/transpose operation.
+        raw_result_channels_stacks = result_channels_stacks
+        result_channels_stacks = raw_result_channels_stacks.transpose(
+            1, 0, 2, 3
+        )  # transpose to XYCT -> XYTC
+
+        return result_channels_stacks

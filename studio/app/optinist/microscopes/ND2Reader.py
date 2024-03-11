@@ -148,7 +148,7 @@ class ND2Reader(MicroscopeDataReaderBase):
 
         attributes = json.loads(attributes)
         metadata = json.loads(metadata)
-        textinfo = json.loads(textinfo) if textinfo is not None else None
+        textinfo = json.loads(textinfo) if textinfo is not None else {}
         experiments = json.loads(experiments) if experiments is not None else None
         frame_metadata = json.loads(frame_metadata)
 
@@ -175,22 +175,20 @@ class ND2Reader(MicroscopeDataReaderBase):
         metadata = original_metadata["metadata"]
         textinfo = original_metadata["textinfo"]
         experiments = original_metadata["experiments"]
-        first_experiment_parameters = (
-            experiments[0]["parameters"] if experiments else {}
-        )
+        first_experiment_params = experiments[0]["parameters"] if experiments else {}
         metadata_ch0_microscope = (
             metadata["channels"][0]["microscope"] if experiments else {}
         )
 
         # experiment, periods, の参照は先頭データの内容から取得
-        if "periods" in first_experiment_parameters:
+        if "periods" in first_experiment_params:
             try:
-                fps = (
-                    1000
-                    / first_experiment_parameters["periods"][0]["periodDiff"]["avg"]
-                )
+                interval = first_experiment_params["periods"][0]["periodDiff"]["avg"]
             except:  # noqa: E722
-                fps = 1000 / first_experiment_parameters["periodDiff"]["avg"]
+                interval = first_experiment_params["periodDiff"]["avg"]
+
+            fps = round(1000 / interval, 2) if interval > 0 else 0
+
         else:
             fps = 0
 
@@ -203,7 +201,7 @@ class ND2Reader(MicroscopeDataReaderBase):
             size_c=len(metadata["channels"]),
             depth=attributes["bitsPerComponentInMemory"],
             significant_bits=attributes["bitsPerComponentSignificant"],
-            acquisition_date=re.sub(" +", " ", textinfo["date"]),
+            acquisition_date=re.sub(" +", " ", textinfo.get("date", "")),
             objective_model=metadata_ch0_microscope.get("objectiveName", None),
             fps=fps,
         )
@@ -331,10 +329,21 @@ class ND2Reader(MicroscopeDataReaderBase):
         # read image attributes
         attributes = self.__dll.Lim_FileGetAttributes(handle)
         attributes = json.loads(attributes)
+        image_width = attributes["widthPx"]
+        image_height = attributes["heightPx"]
+
+        # Get the number of components in image
+        # *In ND2, the number of components is almost the same
+        #  as the number of channels.
         image_component_count = int(attributes["componentCount"])
 
-        # initialize return value (each channel's stack)
-        result_channels_stacks = [[] for i in range(image_component_count)]
+        # allocate return value buffer (all channel's stack)
+        # Note: For speed, the image processing results in the following sections
+        #       will be set directly to this variable (numpy.ndarray).
+        result_channels_stacks = np.empty(
+            [image_component_count, seq_count, image_height, image_width],
+            dtype=self.ome_metadata.pixel_np_dtype,
+        )
 
         # loop for each sequence
         for seq_idx in range(seq_count):
@@ -345,7 +354,7 @@ class ND2Reader(MicroscopeDataReaderBase):
                 break
 
             # calculate pixel byte size
-            # Note: pixcel_bytes は [1/2/4/6/8] を取りうる想定
+            # Note: pixcel_bytes is assumed to be [1/2/4/6/8]
             pixcel_bytes = int(pic.uiComponents * int((pic.uiBitsPerComp + 7) / 8))
             if pixcel_bytes not in (1, 2, 4, 6, 8):
                 raise AttributeError(f"Invalid pixcel_bytes: {pixcel_bytes}")
@@ -357,30 +366,33 @@ class ND2Reader(MicroscopeDataReaderBase):
             #     pic.uiBitsPerComp, pixcel_bytes,
             # )
 
-            # scan image lines
-            lines_buffer = []
-            for line_idx in range(pic.uiHeight):
-                # Calculate the number of bytes per line (ctypes._CData format)
-                # * Probably the same value as pic.uiWidthBytes,
-                #     but ported based on the logic of the SDK sample code.
-                # * It appears that the unit should be ctypes.c_ushort.
-                line_bytes = ctypes.c_ushort * int(pixcel_bytes * pic.uiWidth / 2)
+            # Calculate the number of bytes per line (ctypes._CData format)
+            # * Probably the same value as pic.uiWidthBytes,
+            #     but ported based on the logic of the SDK sample code.
+            line_bytes = int(pixcel_bytes * pic.uiWidth / 2)
+            line_ctypes_bytes = self.ome_metadata.pixel_ct_type * line_bytes
 
+            # allocate image plane buffer
+            single_plane_buffer = np.empty(
+                [image_height, image_width, image_component_count],
+                dtype=self.ome_metadata.pixel_np_dtype,
+            )
+
+            # scan image lines
+            for line_idx in range(pic.uiHeight):
                 # Data acquisition for line and conversion to np.ndarray format
-                line_buffer = line_bytes.from_address(
+                line_buffer = line_ctypes_bytes.from_address(
                     pic.pImageData + (line_idx * pic.uiWidthBytes)
                 )
                 line_buffer_array = np.ctypeslib.as_array(line_buffer)
 
-                # stored in line buffer stack
-                lines_buffer.append(line_buffer_array)
-
-            # allocate planar image buffer (np.ndarray)
-            raw_plane_buffer = np.concatenate([[v] for v in lines_buffer])
+                # mapping to plane buffer
+                single_plane_buffer[line_idx] = line_buffer_array.reshape(
+                    image_width, image_component_count
+                )
 
             # extract image data for each channel(component)
             for component_idx in range(pic.uiComponents):
-                # In nikon nd2 format, "component" in effect indicates "channel".
                 channel_idx = component_idx
 
                 # A frame image is cut out from a raw frame image
@@ -388,13 +400,21 @@ class ND2Reader(MicroscopeDataReaderBase):
                 # Note: The pixel values of each component are adjacent to each other,
                 #     one pixel at a time.
                 #   Image: [px1: [c1][c2]..[cN]]..[pxN: [c1][c2]..[cN]]
-                component_pixel_indexes = [
-                    (i * image_component_count) + component_idx
-                    for i in range(pic.uiWidth)
-                ]
-                channel_plane_buffer = raw_plane_buffer[:, component_pixel_indexes]
+                channel_plane_buffer = single_plane_buffer[:, :, component_idx]
 
                 # construct return value (each channel's stack)
-                result_channels_stacks[channel_idx].append(channel_plane_buffer)
+                result_channels_stacks[channel_idx, seq_idx] = channel_plane_buffer
+
+        # reshape operation.
+        # Note: For 4D data(XYZT), reshape 3D format(XY(Z|T)) to 4D format(XYZT)
+        if self.ome_metadata.size_z > 1 and self.ome_metadata.size_t > 1:
+            raw_result_channels_stacks = result_channels_stacks
+            result_channels_stacks = raw_result_channels_stacks.reshape(
+                self.ome_metadata.size_c,
+                self.ome_metadata.size_t,
+                self.ome_metadata.size_z,
+                self.ome_metadata.size_y,
+                self.ome_metadata.size_x,
+            )
 
         return result_channels_stacks
