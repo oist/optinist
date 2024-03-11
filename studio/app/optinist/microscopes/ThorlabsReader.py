@@ -241,4 +241,14 @@ class ThorlabsReader(MicroscopeDataReaderBase):
         handle_tiff = None
         (handle_tiff,) = self.resource_handles
 
-        return handle_tiff.asarray()
+        # get return value buffer (all channel's stack)
+        # *numpy.ndarray
+        result_channels_stacks = handle_tiff.asarray()
+
+        # reshape/transpose operation.
+        raw_result_channels_stacks = result_channels_stacks
+        result_channels_stacks = raw_result_channels_stacks.transpose(
+            1, 0, 2, 3
+        )  # transpose to XYCT -> XYTC
+
+        return result_channels_stacks

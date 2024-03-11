@@ -1,5 +1,6 @@
 import os
 from abc import ABCMeta, abstractmethod
+from ctypes import c_uint8, c_uint16, c_uint32
 from dataclasses import dataclass
 
 from numpy import uint8 as np_uint8
@@ -75,6 +76,18 @@ class OMEDataModel:
             return np_uint32
         else:
             return np_uint8
+
+    @property
+    def pixel_ct_type(self):
+        depth = self.depth
+        if depth > 0 and depth <= 8:
+            return c_uint8
+        elif depth > 8 and depth <= 16:
+            return c_uint16
+        elif depth > 16 and depth <= 32:
+            return c_uint32
+        else:
+            return c_uint8
 
     @staticmethod
     def get_depth_from_pixel_type(type_label: str):

@@ -46,23 +46,16 @@ def test_nd2_reader(dump_metadata=True, dump_stack=True):
         channels_stacks = data_reader.get_image_stacks()
 
         # save tiff image (multi page) test
-        if (len(channels_stacks) > 0) and (len(channels_stacks[0]) > 0):
-            from PIL import Image
+        if (channels_stacks.shape[0] > 0) and (channels_stacks.shape[1] > 0):
+            import tifffile
 
-            # save stacks for all channels
             for channel_idx, image_stack in enumerate(channels_stacks):
-                save_stack = [Image.fromarray(frame) for frame in image_stack]
                 save_path = "{}/{}.out.ch{}.tiff".format(
                     TEST_DIR_PATH, os.path.basename(TEST_DATA_PATH), channel_idx + 1
                 )
                 print(f"save image: {save_path}")
 
-                save_stack[0].save(
-                    save_path,
-                    compression="tiff_deflate",
-                    save_all=True,
-                    append_images=save_stack[1:],
-                )
+                tifffile.imwrite(save_path, image_stack)
 
     # asserts
     assert data_reader.original_metadata["attributes"]["widthPx"] > 0
