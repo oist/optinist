@@ -39,21 +39,20 @@ def test_thorlabs_reader(dump_metadata=True, dump_stack=True):
 
     # get & dump image stack
     if dump_stack:
-        # get image stacks
+        # get image stacks (for all channels)
         channels_stacks = data_reader.get_image_stacks()
-        channel_len = channels_stacks.shape[1]
 
         # save tiff image (multi page) test
-        if channel_len > 0:
+        if (channels_stacks.shape[0] > 0) and (channels_stacks.shape[1] > 0):
             import tifffile
 
-            for channel_idx in range(channel_len):
-                save_path = "{}/{}.out.tiff".format(
-                    TEST_DIR_PATH, os.path.basename(TEST_DATA_PATH)
+            for channel_idx, image_stack in enumerate(channels_stacks):
+                save_path = "{}/{}.out.ch{}.tiff".format(
+                    TEST_DIR_PATH, os.path.basename(TEST_DATA_PATH), channel_idx + 1
                 )
                 print(f"save image: {save_path}")
 
-                tifffile.imwrite(save_path, channels_stacks[:, channel_idx, :, :])
+                tifffile.imwrite(save_path, image_stack)
 
     # asserts
     assert data_reader.ome_metadata.size_x > 0

@@ -1,5 +1,7 @@
 import sys
 
+import numpy as np
+
 try:
     import isx
 except ModuleNotFoundError:
@@ -139,13 +141,30 @@ class IsxdReader(MicroscopeDataReaderBase):
         movie: isx.Movie = None
         (movie,) = self.resource_handles
 
+        # Get the number of channels
+        channels_count = 1  # NOTE: Fixed to '1'
+
+        # allocate return value buffer (all channel's stack)
+        # *using numpy.ndarray
+        result_channels_stacks = np.empty(
+            [
+                channels_count,
+                movie.timing.num_samples,
+                self.ome_metadata.size_y,
+                self.ome_metadata.size_x,
+            ],
+            dtype=self.ome_metadata.pixel_np_dtype,
+        )
+
         # get frame data's np.ndarray.dtype
         # Note: Individual support for `isx v1.0.3`
         pixel_np_dtype = self.ome_metadata.pixel_np_dtype
 
-        image_frames = [
-            movie.get_frame_data(i).astype(pixel_np_dtype)
-            for i in range(movie.timing.num_samples)
-        ]
+        # loop for each channels
+        for channel_no in range(channels_count):
+            for i in range(movie.timing.num_samples):
+                single_plane_buffer = movie.get_frame_data(i).astype(pixel_np_dtype)
+                single_plane_buffer = single_plane_buffer.T  # rotate YX->XY
+                result_channels_stacks[channel_no, i] = single_plane_buffer
 
-        return image_frames
+        return result_channels_stacks
