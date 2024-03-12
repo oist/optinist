@@ -25,14 +25,14 @@ class OMEDataModel:
     significant_bits: int  # pixel significant-bits
     acquisition_date: str
     objective_model: str  # objective lens model
-    fps: int  # frames_per_second  # Note: extended from OME format
+    imaging_rate: int  # rate images are acquired (Hz)  # *extended from OME format
 
     def get_ome_values(self):
         return {
             "Image": {
                 "Name": self.image_name,
                 "AcquisitionDate": self.acquisition_date,
-                "Fps": self.fps,
+                "ImagingRate": self.imaging_rate,
             },
             "Pixels": {
                 "SizeC": self.size_c,

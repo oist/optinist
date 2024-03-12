@@ -111,7 +111,7 @@ class IsxdReader(MicroscopeDataReaderBase):
         spacing = original_metadata["spacing"]
         timing = original_metadata["timing"]
 
-        fps = round(1000 / timing["period_msec"], 2)
+        imaging_rate = round(1000 / timing["period_msec"], 2)
 
         omeData = OMEDataModel(
             image_name=original_metadata["data_name"],
@@ -124,7 +124,7 @@ class IsxdReader(MicroscopeDataReaderBase):
             significant_bits=0,  # Note: currently unsettled
             acquisition_date=timing["start"],
             objective_model=None,  # Note: currently unsettled
-            fps=fps,
+            imaging_rate=imaging_rate,
         )
 
         return omeData

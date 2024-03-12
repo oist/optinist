@@ -232,8 +232,7 @@ class OIRReader(MicroscopeDataReaderBase):
         # get axis z frame count
         nZLoop = axis_info["ZSTACK"]["max"] if "ZSTACK" in axis_info else 1
 
-        # get fps
-        fps = round(1000 / scanner_settings["frame_speed"], 2)
+        imaging_rate = round(1000 / scanner_settings["frame_speed"], 2)
 
         omeData = OMEDataModel(
             image_name=original_metadata["data_name"],
@@ -246,7 +245,7 @@ class OIRReader(MicroscopeDataReaderBase):
             significant_bits=channel_info[0]["bit_count"],
             acquisition_date=file_creation_time["creation_time"],
             objective_model=objective_lens_info["name"],
-            fps=fps,
+            imaging_rate=imaging_rate,
         )
 
         return omeData
