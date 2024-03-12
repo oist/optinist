@@ -182,15 +182,13 @@ class ND2Reader(MicroscopeDataReaderBase):
 
         # experiment, periods, の参照は先頭データの内容から取得
         if "periods" in first_experiment_params:
-            try:
-                interval = first_experiment_params["periods"][0]["periodDiff"]["avg"]
-            except:  # noqa: E722
-                interval = first_experiment_params["periodDiff"]["avg"]
-
-            fps = round(1000 / interval, 2) if interval > 0 else 0
-
+            interval = first_experiment_params["periods"][0]["periodDiff"]["avg"]
+        elif "periodDiff" in first_experiment_params:
+            interval = first_experiment_params["periodDiff"]["avg"]
         else:
-            fps = 0
+            interval = 0
+
+        imaging_rate = round(1000 / interval, 2) if interval > 0 else 0
 
         omeData = OMEDataModel(
             image_name=original_metadata["data_name"],
@@ -203,7 +201,7 @@ class ND2Reader(MicroscopeDataReaderBase):
             significant_bits=attributes["bitsPerComponentSignificant"],
             acquisition_date=re.sub(" +", " ", textinfo.get("date", "")),
             objective_model=metadata_ch0_microscope.get("objectiveName", None),
-            fps=fps,
+            imaging_rate=imaging_rate,
         )
 
         return omeData
