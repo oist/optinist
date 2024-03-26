@@ -2571,6 +2571,23 @@ docs = ["sphinx (>=4.5.0,<5.0.0)", "sphinx-rtd-theme", "zope.interface"]
 tests = ["coverage[toml] (==5.0.4)", "pytest (>=6.0.0,<7.0.0)"]
 
 [[package]]
+name = "pymatreader"
+version = "0.0.32"
+description = "Convenient reader for Matlab mat files"
+optional = false
+python-versions = "*"
+files = [
+    {file = "pymatreader-0.0.32-py3-none-any.whl", hash = "sha256:30fbe85ef919bcd7707fa9b7dfaf90f2d26d59ff1de84ab425a1a0a7e85a6f8a"},
+    {file = "pymatreader-0.0.32.tar.gz", hash = "sha256:34a5b4812635c98d3e5776fc21cd7f85b045784539363674d178dfb1158a617f"},
+]
+
+[package.dependencies]
+h5py = "*"
+numpy = "*"
+scipy = "!=1.7.0"
+xmltodict = "*"
+
+[[package]]
 name = "pymysql"
 version = "1.1.0"
 description = "Pure Python MySQL Driver"
@@ -3947,6 +3964,17 @@ files = [
 ]
 
 [[package]]
+name = "xmltodict"
+version = "0.13.0"
+description = "Makes working with XML feel like you are working with JSON"
+optional = false
+python-versions = ">=3.4"
+files = [
+    {file = "xmltodict-0.13.0-py2.py3-none-any.whl", hash = "sha256:aa89e8fd76320154a40d19a0df04a4695fb9dc5ba977cbb68ab3e4eb225e7852"},
+    {file = "xmltodict-0.13.0.tar.gz", hash = "sha256:341595a488e3e01a85a9d8911d8912fd922ede5fecc4dce437eb4b6c8d037e56"},
+]
+
+[[package]]
 name = "yte"
 version = "1.5.1"
 description = "A YAML template engine with Python expressions"
@@ -3980,4 +4008,4 @@ testing = ["big-O", "jaraco.functools", "jaraco.itertools", "more-itertools", "p
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.8.1"
-content-hash = "24a03c16411f6e968310732e134badc23d1693f98e6c5e407e722637aa64f804"
+content-hash = "db15ba0b38b205619c634e435dba310876ac17b38a6845851d31947d43f76e90"

@@ -11,3 +11,4 @@ class HDF5Node:
     nodes: List["HDF5Node"] = None
     shape: tuple = None
     nbytes: str = None
+    dataType: str = None

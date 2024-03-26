@@ -68,6 +68,8 @@ plotly = "5.18.0"
 kaleido = "0.2.1"
 filelock = "*"
 ruamel-yaml = "^0.18.5"
+pymatreader = "^0.0.32"
+xmltodict = "*"
 
 [tool.poetry.group.dev]
 optional = true
@@ -111,6 +113,7 @@ profile = "black"
 
 [tool.pytest.ini_options]
 pythonpath = "."
+testpaths = "studio/tests"
 env = ["OPTINIST_DIR=studio/test_data"]
 
 [tool.codespell]

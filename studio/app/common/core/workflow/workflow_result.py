@@ -46,10 +46,15 @@ class WorkflowResult:
                         message=error_message,
                     )
 
-            glob_pickle_filepath = join_filepath(
-                [self.workflow_dirpath, node_id, "*.pkl"]
+            glob_pickle_filepath = glob(
+                join_filepath([self.workflow_dirpath, node_id, "*.pkl"])
             )
-            for pickle_filepath in glob(glob_pickle_filepath):
+            tmp_glob_pickle_filepath = glob(
+                join_filepath([self.workflow_dirpath, node_id, "tmp_*.pkl"])
+            )
+            for pickle_filepath in list(
+                set(glob_pickle_filepath) - set(tmp_glob_pickle_filepath)
+            ):
                 results[node_id] = NodeResult(
                     self.workflow_dirpath,
                     node_id,

@@ -13,6 +13,8 @@ class NodeType:
     FLUO: str = "FluoFileNode"
     BEHAVIOR: str = "BehaviorFileNode"
     HDF5: str = "HDF5FileNode"
+    MAT: str = "MatlabFileNode"
+    MICROSCOPE: str = "MicroscopeFileNode"
     ALGO: str = "AlgorithmNode"
 
 
@@ -57,6 +59,7 @@ class NodeData:
     type: str
     fileType: str = None
     hdf5Path: str = None
+    matPath: str = None
 
 
 @dataclass

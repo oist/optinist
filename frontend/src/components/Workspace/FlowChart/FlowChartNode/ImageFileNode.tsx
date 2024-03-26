@@ -66,7 +66,7 @@ const ImageFileNodeImple = memo(function ImageFileNodeImple({
           }
         }}
         fileType={FILE_TYPE_SET.IMAGE}
-        filePath={filePath ?? []}
+        filePath={typeof filePath === "string" ? [filePath] : filePath || []}
       />
       <Handle
         type="source"

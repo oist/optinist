@@ -5,6 +5,7 @@ from studio.app.common.core.snakemake.smk_builder import RuleBuilder
 from studio.app.common.core.utils.filepath_creater import get_pickle_file
 from studio.app.common.core.workflow.workflow import Edge, Node, NodeType
 from studio.app.common.core.workflow.workflow_params import get_typecheck_params
+from studio.app.const import FILETYPE
 
 
 class SmkRule:
@@ -52,6 +53,16 @@ class SmkRule:
         return (
             self.builder.set_type("hdf5").set_hdf5Path(self._node.data.hdf5Path).build()
         )
+
+    def mat(self) -> Rule:
+        return (
+            self.builder.set_type(FILETYPE.MATLAB)
+            .set_matPath(self._node.data.matPath)
+            .build()
+        )
+
+    def microscope(self) -> Rule:
+        return self.builder.set_type(FILETYPE.MICROSCOPE).build()
 
     def algo(self, nodeDict: Dict[str, Node]) -> Rule:
         algo_input = []

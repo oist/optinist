@@ -24,6 +24,7 @@ import { isAlgorithmNodeData } from "store/slice/FlowElement/FlowElementUtils"
 import {
   selectInputNodeFileType,
   selectInputNodeHDF5Path,
+  selectInputNodeMatlabPath,
   selectInputNodeParam,
   selectInputNodeSelectedFilePath,
 } from "store/slice/InputNode/InputNodeSelectors"
@@ -74,6 +75,7 @@ const selectNodeDictForRun = (state: RootState): NodeDict => {
       const fileType = selectInputNodeFileType(node.id)(state)
       const param = selectInputNodeParam(node.id)(state)
       const hdf5Path = selectInputNodeHDF5Path(node.id)(state)
+      const matPath = selectInputNodeMatlabPath(node.id)(state)
       const inputNodePosyData: Node<InputNodePostData> = {
         ...node,
         data: {
@@ -82,6 +84,7 @@ const selectNodeDictForRun = (state: RootState): NodeDict => {
           type: NODE_TYPE_SET.INPUT,
           path: filePath ?? "",
           param,
+          matPath: matPath,
           hdf5Path: hdf5Path,
           fileType,
         },
