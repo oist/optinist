@@ -25,6 +25,7 @@ if __name__ == "__main__":
         FILETYPE.BEHAVIOR,
         FILETYPE.HDF5,
         FILETYPE.MATLAB,
+        FILETYPE.MICROSCOPE,
     ]:
         rule_config.input = snakemake.input[0]
 
@@ -41,4 +42,7 @@ if __name__ == "__main__":
         PickleWriter.write(rule_config.output, outputfile)
     elif rule_config.type == FILETYPE.MATLAB:
         outputfile = FileWriter.mat(rule_config)
+        PickleWriter.write(rule_config.output, outputfile)
+    elif rule_config.type == FILETYPE.MICROSCOPE:
+        outputfile = FileWriter.microscope(rule_config)
         PickleWriter.write(rule_config.output, outputfile)

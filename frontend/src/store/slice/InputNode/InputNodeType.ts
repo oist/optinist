@@ -7,6 +7,7 @@ export const FILE_TYPE_SET = {
   FLUO: "fluo",
   BEHAVIOR: "behavior",
   MATLAB: "matlab",
+  MICROSCOPE: "microscope",
 } as const
 
 export type FILE_TYPE = (typeof FILE_TYPE_SET)[keyof typeof FILE_TYPE_SET]
@@ -20,6 +21,7 @@ export type InputNodeType =
   | ImageInputNode
   | HDF5InputNode
   | MatlabInputNode
+  | MicroscopeInputNode
 
 interface InputNodeBaseType<
   T extends FILE_TYPE,
@@ -56,4 +58,9 @@ export interface HDF5InputNode
   extends InputNodeBaseType<"hdf5", Record<never, never>> {
   selectedFilePath?: string
   hdf5Path?: string
+}
+
+export interface MicroscopeInputNode
+  extends InputNodeBaseType<"microscope", Record<never, never>> {
+  selectedFilePath?: string
 }

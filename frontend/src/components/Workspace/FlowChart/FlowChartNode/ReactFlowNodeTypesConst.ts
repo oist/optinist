@@ -6,6 +6,7 @@ import { FluoFileNode } from "components/Workspace/FlowChart/FlowChartNode/FluoF
 import { HDF5FileNode } from "components/Workspace/FlowChart/FlowChartNode/HDF5FileNode"
 import { ImageFileNode } from "components/Workspace/FlowChart/FlowChartNode/ImageFileNode"
 import { MatlabFileNode } from "components/Workspace/FlowChart/FlowChartNode/MatlabFileNode"
+import { MicroscopeFileNode } from "components/Workspace/FlowChart/FlowChartNode/MicroscopeFileNode"
 
 export const reactFlowNodeTypes = {
   ImageFileNode,
@@ -15,6 +16,7 @@ export const reactFlowNodeTypes = {
   AlgorithmNode,
   FluoFileNode,
   BehaviorFileNode,
+  MicroscopeFileNode,
 } as const
 
 export const reactFlowEdgeTypes = {

@@ -119,6 +119,11 @@ export const AlgorithmTreeView = memo(function AlgorithmTreeView() {
           nodeName={"matlabData"}
           fileType={FILE_TYPE_SET.MATLAB}
         />
+        <InputNodeComponent
+          fileName={"microscope"}
+          nodeName={"microscopeData"}
+          fileType={FILE_TYPE_SET.MICROSCOPE}
+        />
       </TreeItem>
       <TreeItem nodeId="Algorithm" label="Algorithm">
         {Object.entries(algoList).map(([name, node], i) => (
@@ -178,6 +183,10 @@ const InputNodeComponent = memo(function InputNodeComponent({
         case FILE_TYPE_SET.MATLAB:
           reactFlowNodeType = REACT_FLOW_NODE_TYPE_KEY.MatlabFileNode
           fileType = FILE_TYPE_SET.MATLAB
+          break
+        case FILE_TYPE_SET.MICROSCOPE:
+          reactFlowNodeType = REACT_FLOW_NODE_TYPE_KEY.MicroscopeFileNode
+          fileType = FILE_TYPE_SET.MICROSCOPE
           break
       }
       const newNode = {

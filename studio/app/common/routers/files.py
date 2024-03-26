@@ -28,9 +28,10 @@ from studio.app.common.schemas.files import (
     TreeNode,
 )
 from studio.app.const import (
-    ACCEPR_MATLAB_EXT,
     ACCEPT_CSV_EXT,
     ACCEPT_HDF5_EXT,
+    ACCEPT_MATLAB_EXT,
+    ACCEPT_MICROSCOPE_EXT,
     ACCEPT_TIFF_EXT,
     FILETYPE,
 )
@@ -156,8 +157,10 @@ async def get_files(workspace_id: str, file_type: str = None):
         return DirTreeGetter.get_tree(workspace_id, ACCEPT_CSV_EXT)
     elif file_type == FILETYPE.HDF5:
         return DirTreeGetter.get_tree(workspace_id, ACCEPT_HDF5_EXT)
+    elif file_type == FILETYPE.MICROSCOPE:
+        return DirTreeGetter.get_tree(workspace_id, ACCEPT_MICROSCOPE_EXT)
     elif file_type == FILETYPE.MATLAB:
-        return DirTreeGetter.get_tree(workspace_id, ACCEPR_MATLAB_EXT)
+        return DirTreeGetter.get_tree(workspace_id, ACCEPT_MATLAB_EXT)
     else:
         return []
 
@@ -219,7 +222,13 @@ async def download_file(
     background_tasks: BackgroundTasks,
 ):
     path = PurePath(urlparse(file.url).path)
-    if path.suffix not in {*ACCEPT_CSV_EXT, *ACCEPT_HDF5_EXT, *ACCEPT_TIFF_EXT}:
+    if path.suffix not in {
+        *ACCEPT_CSV_EXT,
+        *ACCEPT_HDF5_EXT,
+        *ACCEPT_TIFF_EXT,
+        *ACCEPT_MATLAB_EXT,
+        *ACCEPT_MICROSCOPE_EXT,
+    }:
         raise HTTPException(status_code=400, detail="Invalid url")
 
     create_directory(join_filepath([DIRPATH.INPUT_DIR, workspace_id]))

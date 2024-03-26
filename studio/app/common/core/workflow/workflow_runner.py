@@ -126,6 +126,14 @@ class WorkflowRunner:
                     edgeDict=self.edgeDict,
                     nwbfile=nwbfile,
                 ).mat()
+            elif node.type == NodeType.MICROSCOPE:
+                rule_dict[node.id] = SmkRule(
+                    workspace_id=self.workspace_id,
+                    unique_id=self.unique_id,
+                    node=node,
+                    edgeDict=self.edgeDict,
+                    nwbfile=nwbfile,
+                ).microscope()
             elif node.type == NodeType.ALGO:
                 rule = SmkRule(
                     workspace_id=self.workspace_id,
