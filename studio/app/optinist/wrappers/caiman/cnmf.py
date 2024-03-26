@@ -81,7 +81,6 @@ def util_recursive_flatten_params(params, result_params: dict, nest_counter=0):
 def caiman_cnmf(
     images: ImageData, output_dir: str, params: dict = None, **kwargs
 ) -> dict(fluorescence=FluoData, iscell=IscellData):
-    import scipy
     from caiman import local_correlations, stop_server
     from caiman.cluster import setup_cluster
     from caiman.mmapping import prepare_shape
@@ -151,6 +150,8 @@ def caiman_cnmf(
     if do_refit:
         cnm = cnm.refit(mmap_images, dview=dview)
 
+    cnm.estimates.evaluate_components(mmap_images, cnm.params, dview=dview)
+
     stop_server(dview=dview)
 
     # contours plot
@@ -160,26 +161,26 @@ def caiman_cnmf(
     thr_method = "nrg"
     swap_dim = False
 
-    iscell = np.concatenate(
-        [
-            np.ones(len(cnm.estimates.C)),
-            np.zeros(cnm.estimates.b.shape[-1] if cnm.estimates.b is not None else 0),
-        ]
-    )
+    idx_good = cnm.estimates.idx_components
+    idx_bad = cnm.estimates.idx_components_bad
+    if not isinstance(idx_good, list):
+        idx_good = idx_good.tolist()
+    if not isinstance(idx_bad, list):
+        idx_bad = idx_bad.tolist()
 
-    cell_ims = get_roi(cnm.estimates.A, roi_thr, thr_method, swap_dim, dims)
+    iscell = np.concatenate([np.ones(len(idx_good)), np.zeros(len(idx_bad))])
+
+    cell_ims = get_roi(
+        cnm.estimates.A[:, idx_good], roi_thr, thr_method, swap_dim, dims
+    )
     cell_ims = np.stack(cell_ims).astype(float)
     cell_ims[cell_ims == 0] = np.nan
     cell_ims -= 1
     n_rois = len(cell_ims)
 
-    if cnm.estimates.b is not None and cnm.estimates.b.size != 0:
+    if len(idx_bad) > 0:
         non_cell_ims = get_roi(
-            scipy.sparse.csc_matrix(cnm.estimates.b),
-            roi_thr,
-            thr_method,
-            swap_dim,
-            dims,
+            cnm.estimates.A[:, idx_bad], roi_thr, thr_method, swap_dim, dims
         )
         non_cell_ims = np.stack(non_cell_ims).astype(float)
         for i, j in enumerate(range(n_rois, n_rois + len(non_cell_ims))):
@@ -191,7 +192,7 @@ def caiman_cnmf(
         non_cell_roi[non_cell_roi == 0] = np.nan
     non_cell_ims[non_cell_ims == 0] = np.nan
 
-    n_bg = len(non_cell_ims)
+    n_noncell_rois = len(non_cell_ims)
 
     im = np.vstack([cell_ims, non_cell_ims])
 
@@ -209,17 +210,6 @@ def caiman_cnmf(
             kargs["rejected"] = i in cnm.estimates.rejected_list
         roi_list.append(kargs)
 
-    # backgroundsを追加
-    if cnm.estimates.b is not None:
-        for bg in cnm.estimates.b.T:
-            kargs = {}
-            kargs["image_mask"] = bg.reshape(dims)
-            if hasattr(cnm.estimates, "accepted_list"):
-                kargs["accepted"] = False
-            if hasattr(cnm.estimates, "rejected_list"):
-                kargs["rejected"] = False
-            roi_list.append(kargs)
-
     nwbfile[NWBDATASET.ROI] = {function_id: roi_list}
     nwbfile[NWBDATASET.POSTPROCESS] = {function_id: {"all_roi_img": im}}
 
@@ -233,22 +223,13 @@ def caiman_cnmf(
     }
 
     # Fluorescence
-    fluorescence = (
-        np.concatenate(
-            [
-                cnm.estimates.C,
-                cnm.estimates.f,
-            ]
-        )
-        if cnm.estimates.f is not None
-        else cnm.estimates.C
-    )
+    fluorescence = cnm.estimates.C
 
     nwbfile[NWBDATASET.FLUORESCENCE] = {
         function_id: {
             "Fluorescence": {
                 "table_name": "ROIs",
-                "region": list(range(n_rois + n_bg)),
+                "region": list(range(n_rois + n_noncell_rois)),
                 "name": "Fluorescence",
                 "data": fluorescence.T,
                 "unit": "lumens",
