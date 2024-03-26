@@ -5,6 +5,7 @@ from studio.app.common.dataclass import CsvData, ImageData, TimeSeriesData
 from studio.app.const import FILETYPE
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass.iscell import IscellData
+from studio.app.optinist.dataclass.microscope import MicroscopeData
 from studio.app.optinist.routers.mat import MatGetter
 
 
@@ -57,6 +58,13 @@ class FileWriter:
         nwbfile = rule_config.nwbfile
         data = MatGetter.data(rule_config.input, rule_config.matPath)
         return cls.get_info_from_array_data(rule_config, nwbfile, data)
+
+    @classmethod
+    def microscope(cls, rule_config: Rule):
+        nwbfile = rule_config.nwbfile
+        info = {rule_config.return_arg: MicroscopeData(rule_config.input)}
+        info["nwbfile"] = {"input": nwbfile}
+        return info
 
     @classmethod
     def get_info_from_array_data(cls, rule_config: Rule, nwbfile, data):

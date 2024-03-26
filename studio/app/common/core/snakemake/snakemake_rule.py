@@ -61,6 +61,9 @@ class SmkRule:
             .build()
         )
 
+    def microscope(self) -> Rule:
+        return self.builder.set_type(FILETYPE.MICROSCOPE).build()
+
     def algo(self, nodeDict: Dict[str, Node]) -> Rule:
         algo_input = []
         return_arg_names = {}

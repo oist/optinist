@@ -5,6 +5,7 @@ import {
   InputNodeType,
   FILE_TYPE_SET,
   MatlabInputNode,
+  MicroscopeInputNode,
 } from "store/slice/InputNode/InputNodeType"
 
 export function isImageInputNode(
@@ -29,4 +30,10 @@ export function isHDF5InputNode(
   inputNode: InputNodeType,
 ): inputNode is HDF5InputNode {
   return inputNode.fileType === FILE_TYPE_SET.HDF5
+}
+
+export function isMicroscopeInputNode(
+  inputNode: InputNodeType,
+): inputNode is MicroscopeInputNode {
+  return inputNode.fileType === FILE_TYPE_SET.MICROSCOPE
 }

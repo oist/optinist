@@ -1,0 +1,7 @@
+dependencies:
+  - python=3.9
+  # - gcc=12
+  - pip
+  - pip:
+    - isx==1.0.*
+    - pynwb==2.6.0

@@ -62,7 +62,7 @@ class ImageData(BaseData):
 
     @property
     def output_path(self) -> OutputPath:
-        if self.data.ndim == 3:
+        if self.data.ndim >= 3:
             # self.path will be a list if self.data got into else statement on __init__
             if isinstance(self.path, list) and isinstance(self.path[0], str):
                 _path = self.path[0]

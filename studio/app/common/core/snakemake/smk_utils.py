@@ -17,6 +17,7 @@ class SmkUtils:
             FILETYPE.BEHAVIOR,
             FILETYPE.HDF5,
             FILETYPE.MATLAB,
+            FILETYPE.MICROSCOPE,
         ]:
             return join_filepath([DIRPATH.INPUT_DIR, details["input"]])
         else:
@@ -34,6 +35,7 @@ class SmkUtils:
             FILETYPE.BEHAVIOR,
             FILETYPE.HDF5,
             FILETYPE.MATLAB,
+            FILETYPE.MICROSCOPE,
         ]:
             return None
 
