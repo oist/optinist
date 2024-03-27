@@ -5,8 +5,8 @@ from studio.app.optinist.dataclass.microscope import MicroscopeData
 def microscope_to_img(
     microscope: MicroscopeData, output_dir: str, params: dict = None, **kwargs
 ) -> dict(microscope_image=ImageData):
-    microscope_data = microscope.data
-    raw_stack = microscope_data.get_image_stacks()  # (ch, t, y, x) or (ch, t, z, y, x)
+    reader = microscope.reader
+    raw_stack = reader.get_image_stacks()  # (ch, t, y, x) or (ch, t, z, y, x)
 
     ch = params.get("ch", 0)
     image = ImageData(
@@ -14,5 +14,6 @@ def microscope_to_img(
         output_dir=output_dir,
         file_name="microscope_image",
     )
+    microscope.set_data(image.data)
 
     return {"microscope_image": image}
