@@ -110,3 +110,15 @@ advanced:
     do_merge: True
     merge_parallel: False
     max_merge_area: null
+
+  quality_evaluation_params:
+    SNR_lowest: 0.5
+    cnn_lowest: 0.1
+    gSig_range: null
+    min_SNR: 2.5
+    min_cnn_thr: 0.9
+    rval_lowest: -1
+    rval_thr: 0.8
+    use_cnn: True
+    use_ecc: False
+    max_ecc: 3
