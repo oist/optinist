@@ -34,24 +34,29 @@ You can create a new workflow by clicking the + button.
 ### Setting Input data
 By default, an Image node is displayed. This node defines the path to the data to use.
 
-<br>
 <p align="center">
 <img width="250px" src="../_static/workflow/image_node.png" alt="Image node" />
 </p>
 <br/>
 
 To select the data, follow these steps:
-1. Click on the SELECT IMAGE button on the Image node.
+1. Click on the check list icon on the Image node.
 2. Select a file or a folder. Choosing a folder makes all the TIFF files in the shown sequence an input set of continuous frames.
 
 You can select files in `input` directory under `OPTINIST_DIR`.
 To put files there, see next [](DirectorySetting) section.
 
-<br>
 <p align="center">
 <img width="400px" src="../_static/workflow/imageList.png" alt="Image file selection" />
 </p>
 <br/>
+
+The image's shapes are displayed in the file select dialog.
+Algorithms for image analysis assumes (time, y, x) or (time, z, y, x).
+Please check the data if you looks getting wrong results.
+
+If you replace the image file with the same file name, shape cannot be updated automatically.
+Please click reload icon besides the checkbox.
 
 ```{eval-rst}
 .. note::
@@ -68,10 +73,14 @@ You may not want to modify your original data folder, or you may want to make yo
 
 1. **Upload from GUI**
 
-    Click on the LOAD button on the node. The LOAD button copies the selected file to your `OPTINIST_DIR/input`.
+    Click on the image icon on the node. The LOAD button copies the selected file to your `OPTINIST_DIR/input`.
+
+    <p align="center">
+    <img width="300px" src="../_static/workflow/image_node_upload_from_gui.png" alt="upload file" />
+    </p>
 
     **By this method, you cannot upload multiple files or folder at once**.
-    - If you want to upload multiple files or folder at once, use the method below.
+    - If you want to upload multiple files or folder at once, use the next method.
 
 2. **Copy files to `OPTINIST_DIR`**
 
@@ -89,29 +98,146 @@ You may not want to modify your original data folder, or you may want to make yo
       <img width="400px" src="../_static/workflow/put_folder_to_input_dir.png" alt="Put folder to input dir" />
       </p>
 
-3. **Change the setting of `OPTINIST_DIR`**
+3. **Get file via URL**
+
+    Click on the link icon on the node.
+
+    <p align="center">
+    <img width="300px" src="../_static/workflow/image_node_from_cloud.png" alt="Get File from Cloud" />
+    </p>
+
+    Then input dialog will be shown. You can input the URL of the file you want to use.
+
+    <p align="center">
+    <img width="450px" src="../_static/workflow/image_node_from_cloud_input.png" alt="Input FILE URL" />
+    </p>
+
+    ```{eval-rst}
+    .. note::
+        The URL should be direct link to the one file.
+        It should be
+
+          - started with ``http://`` or ``https://``.
+          - ended with the file name with extension.
+
+        And more, download links require authentication are not supported.
+    ```
+
+4. **Change the setting of `OPTINIST_DIR`**
 
     This requires modifying source codes. See [](each-platforms-for-developer) installation guide section.
     `OPTINIST_DIR` is defined in `optinist/studio/app/dir_path.py`. Change line for `OPTINIST_DIR`, `INPUT_DIR`, and `OUTPUT_DIR` according to your demand. Changing `dir_path.py` may also be necessary when running the pipeline on your cluster computers. Also, you can quickly change `OPTINIST_DIR` by changing the environment variable before launching. The change is effective after relaunching.
 
 #### Other Data Formats As The Input
 
-<br>
-<p align="center">
-<img width="300px" src="../_static/workflow/csv_connect.png" alt="CSV Connect" />
-</p>
+* CSV, FLUO, BEHAVIOR
 
-eta, cca, correlation, cross_correlation, granger, glm, lda, and svm assume the input neural data shape is frames x cells matrix.
-Because the output of CaImAn and Suite2P on the pipeline is cell x frames, the default setting for neural data for these analyses is set to transpose.
-Pca and tsne can be done in either direction depending on your purpose.
-The function assumes their input to be samples x features.
-Rows and columns can be specified by `settings` appearing after selecting the csv data.
-Note that the number of data points has to be the same as the number of frames of image data.
-Fluo data node is for cell's fluorescence timecourse data given as .csv.
+  These nodes are for csv data.
+  Once the file selected, you can preview and change settings for the data.
 
-Another data format prepared is hdf5. This format is compatible with the nwb data format.
-CSV and hdf5 nodes have black output connectors.
-The edge connected to the black output connector can be connected to any input connector. Be careful; this means that it does not check the format correspondence between input and output.
+  <p align="center">
+  <img width="300px" src="../_static/workflow/csv_settings.png" alt="CSV settings" />
+  </p>
+
+  * transpose
+
+    You can use transposed the data as the input by checking this box.
+
+    <p align="center">
+    <img width="400px" src="../_static/workflow/csv_transpose.png" alt="CSV transpose" />
+    </p>
+
+    eta, cca, correlation, cross_correlation, granger, glm, lda, and svm assume the input neural data shape is frames x cells matrix.
+    Because the output of CaImAn and Suite2P on the pipeline is cell x frames, the default setting for neural data for these analyses is set to transpose.
+
+    Pca and tsne can be done in either direction depending on your purpose.
+    The function assumes their input to be samples x features.
+
+  * set_header
+
+    If your csv data has header, check this box.
+    Set the header index to your data's header row. (**first row is 0**)
+    The data below the header row will be used as the data.
+
+    <p align="center">
+    <img width="400px" src="../_static/workflow/csv_set_header.png" alt="CSV Set Header" />
+    </p>
+
+  * set_index
+
+    You can add index column to the data by checking this box.
+
+    <p align="center">
+    <img width="400px" src="../_static/workflow/csv_set_index.png" alt="CSV Set Index" />
+    </p>
+
+* HDF5
+
+  This node id for ``.hdf5`` and ``.nwb``. NWB is compatible with the HDF5 data format. So you can use your NWB result's data as the input.
+
+  <p align="center">
+  <img width="300px" src="../_static/workflow/hdf5_node.png" alt="HDF5 node" />
+  </p>
+
+  Once the file selected, you can dig into the data structure and select the data to use.
+
+  <p align="center">
+  <img width="400px" src="../_static/workflow/hdf5_structure.png" alt="HDF5 node" />
+  </p>
+
+  Connecting the hdf5 node to the pipeline, you can use the selected data in the hdf5 file.
+  There are some utility algorithms for hdf5 data.
+  fluo_from_hdf5 is to extract fluorescence data from hdf5 data.
+
+  <p align="center">
+  <img width="650px" src="../_static/workflow/hdf5_to_fluo.png" alt="HDF5 to fluo" />
+  </p>
+
+* Matlab
+
+  This node is for ``.mat`` file.
+  Like hdf5 node, you can dig into the data structure and select the data to use.
+
+```{eval-rst}
+.. note::
+  CSV, HDF5 and Matlab nodes have black output connectors.
+  Black output connector can be connected to any input connector.
+  Be careful; this means that it does not check the format correspondence between input and output.
+```
+
+* MICROSCOPE
+
+  Currently, we've implemented to read following microscope data format.
+
+  * Inscopix(.isxd)
+  * NIKON(.nd2)
+  * Olympus(.oir)
+
+  ```{eval-rst}
+  .. note::
+     We use `py_isx <https://github.com/inscopix/py_isx>`_ package with version 1.0.* for Inscopix data.
+     Currently, the library supports only CellSet and Movie file types, so you can use only them.
+  ```
+
+  ```{eval-rst}
+  .. note::
+     We implement loading C libraries for reading NIKON and Olympus file.
+     The libraries are available only on Linux and Windows (Not on MacOS).
+
+     And due to the license issue, we cannot distribute their library in this project.
+     You need to get the libraries by yourself and add them to the path. To do that,
+
+     - get the C library files from the manufacturer's support.
+     - use OptiNiSt by :ref:`developer mode <each-platforms-for-developer>`.
+     - put the libraries into ``optinist/studio/app/optinist/microscopes/dll/{nikon | olympus}/{linux | windows}/``
+  ```
+
+  <p align="center">
+  <img width="650px" src="../_static/workflow/microscope.png" alt="Microscope" />
+  </p>
+
+  You can convert these data into ImageData so that you can use them in the pipeline.
+  To convert, connect microscope_to_img Algorithm node to the microscope data node.
 
 
 ### Adding Nodes
@@ -208,6 +334,12 @@ Input file selection will not reproduced because it may not be in your device.
 
 ## Running pipelines
 Click the RUN button at the top right.
+
+Note that while the workflow running, you **cannot**
+- use [](Visualize) tab
+- delete current workflow from [](Record) tab
+- reproduce other workflow from [](Record) tab
+
 There are 2 types of execution. You can select the type by clicking the dropdown button.
 
 <br>
@@ -300,8 +432,13 @@ For general information about NWB, refer to [NWB official page](https://www.nwb.
 ```{eval-rst}
 .. note::
    Basically, these parameters are description for your experiment.
-   So, they are not used for analysis.
+   So, they are not used for analysis except for following parameters.
 
-   But, only ``imaging_plane.imaging_rate`` is used as parameter for frame rate.
-   See details in :ref:`Switch time course plot units <SwitchTimeUnit>`.
+   - ``imaging_plane.imaging_rate``
+      This will be used as parameter for frame rate.
+      See details in :ref:`Switch time course plot units <SwitchTimeUnit>`.
+
+   - ``image_series.save_raw_image_to_nwb``
+      If True, raw image data will be saved to NWB file's acquisition.
+      If not, only the path to the image data will be saved.
 ```
