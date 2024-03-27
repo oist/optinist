@@ -1,6 +1,8 @@
 import os
 from enum import Enum
 
+from dotenv import load_dotenv
+
 _DEFAULT_DIR = "/tmp/studio"
 _ENV_DIR = os.environ.get("OPTINIST_DIR")
 
@@ -27,6 +29,7 @@ class DIRPATH:
     CONDAENV_DIR = (
         f"{os.path.dirname(os.path.dirname(os.path.dirname(__file__)))}/conda"
     )
+    load_dotenv(f"{CONFIG_DIR}/.env")
 
     SNAKEMAKE_FILEPATH = f"{APP_DIR}/Snakefile"
     EXPERIMENT_YML = "experiment.yaml"

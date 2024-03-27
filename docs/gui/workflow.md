@@ -229,7 +229,9 @@ You may not want to modify your original data folder, or you may want to make yo
 
      - get the C library files from the manufacturer's support.
      - use OptiNiSt by :ref:`developer mode <each-platforms-for-developer>`.
-     - put the libraries into ``optinist/studio/app/optinist/microscopes/dll/{nikon | olympus}/{linux | windows}/``
+     - set environment value ``MICROSCOPES_LIBRARY_DIR`` in ``studio/config/.env`` to your library path.
+     - put the libraries into ``MICROSCOPES_LIBRARY_DIR/dll/{nikon | olympus}/{linux | windows}/``
+     - If you use Linux, open ``studio/app/optinist/wrappers/optinist/conda/microscope.yaml`` and uncomment the ``- gcc=12`` line.
   ```
 
   <p align="center">
