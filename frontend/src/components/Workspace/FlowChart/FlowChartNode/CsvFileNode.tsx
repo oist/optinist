@@ -183,7 +183,7 @@ export const ParamSettingDialog = memo(function ParamSettingDialog({
             />
             {setHeader != null && (
               <TextField
-                label="header"
+                label="header index"
                 sx={{
                   width: 100,
                   margin: (theme) => theme.spacing(0, 1, 0, 1),

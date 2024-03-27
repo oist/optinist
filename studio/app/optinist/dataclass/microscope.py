@@ -14,7 +14,7 @@ class MicroscopeData(BaseData):
         self.json_path = None
 
     @property
-    def data(self):
+    def reader(self):
         ext = os.path.splitext(self.path)[1]
         if ext == ".nd2":
             reader = ND2Reader()
@@ -31,3 +31,6 @@ class MicroscopeData(BaseData):
 
         reader.load(self.path)
         return reader
+
+    def set_data(self, data):
+        self.data = data
