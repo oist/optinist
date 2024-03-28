@@ -1,4 +1,12 @@
-import { ChangeEvent, FC, memo, useContext, useRef } from "react"
+import {
+  ChangeEvent,
+  FC,
+  memo,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react"
 import { useDispatch, useSelector } from "react-redux"
 
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore"
@@ -10,7 +18,11 @@ import { Accordion } from "components/common/Accordion"
 import { ParamSwitch } from "components/common/ParamSwitch"
 import { ParamTextField } from "components/common/ParamTextField"
 import { DialogContext } from "components/Workspace/FlowChart/Dialog/DialogContext"
-import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
+import {
+  selectPipelineLatestUid,
+  selectPipelineStatus,
+} from "store/slice/Pipeline/PipelineSelectors"
+import { RUN_STATUS } from "store/slice/Pipeline/PipelineType"
 import { RootState } from "store/store"
 import { ParamType } from "utils/param/ParamType"
 import { isParamChild } from "utils/param/ParamUtils"
@@ -20,6 +32,7 @@ type ParamValueSelectorType = (path: string) => (state: RootState) => unknown
 type ParamUpdateActionCreatorType = (
   path: string,
   newValue: unknown,
+  initValue: unknown,
 ) => AnyAction
 
 export type CreateParamFormItemComponentProps = {
@@ -37,10 +50,10 @@ export function createParamFormItemComponent({
 }: CreateParamFormItemComponentProps): FC<{ paramKey: string }> {
   function useParamValueUpdate(
     path: string,
-  ): [unknown, (newValue: unknown) => AnyAction] {
+  ): [unknown, (newValue: unknown, initValue: unknown) => AnyAction] {
     const value = useSelector(paramValueSelector(path))
-    const updateParamAction = (newValue: unknown) => {
-      return paramUpdateActionCreator(path, newValue)
+    const updateParamAction = (newValue: unknown, initValue: unknown) => {
+      return paramUpdateActionCreator(path, newValue, initValue)
     }
     return [value, updateParamAction]
   }
@@ -48,12 +61,25 @@ export function createParamFormItemComponent({
   const ParamItemForString = memo(function ParamItemForString({
     name,
     path,
+    pipelineStatus,
   }: ParamChildItemProps) {
     const dispatch = useDispatch()
+    const [initValue, setInitValue] = useState<unknown>()
     const [value, updateParamAction] = useParamValueUpdate(path)
     const isArray = useRef(Array.isArray(value))
     const currentWorkflowId = useSelector(selectPipelineLatestUid)
     const { onOpenClearWorkflowIdDialog } = useContext(DialogContext)
+
+    useEffect(() => {
+      setInitValue(value)
+      //eslint-disable-next-line
+    }, [])
+
+    useEffect(() => {
+      if (pipelineStatus !== RUN_STATUS.START_PENDING) return
+      setInitValue(value)
+      //eslint-disable-next-line
+    }, [pipelineStatus])
 
     const onChange = (
       e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>,
@@ -63,12 +89,12 @@ export function createParamFormItemComponent({
         onOpenClearWorkflowIdDialog({
           open: true,
           handleOk: () => {
-            dispatch(updateParamAction(newValue))
+            dispatch(updateParamAction(newValue, initValue))
           },
           handleCancel: () => null,
         })
       } else {
-        dispatch(updateParamAction(newValue))
+        dispatch(updateParamAction(newValue, initValue))
       }
     }
 
@@ -76,20 +102,30 @@ export function createParamFormItemComponent({
       value
         .split(",")
         .filter(Boolean)
-        .map((e) => Number(e))
+        .map((e) => (Number(e) ? Number(e) : e))
 
     const onBlur = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
-      const newValue = e.target.value as string
+      const newValue = e.target.value
       if (requireConfirm && currentWorkflowId != null) {
         onOpenClearWorkflowIdDialog({
           open: true,
           handleOk: () => {
-            dispatch(updateParamAction(splitValue(newValue)))
+            dispatch(
+              updateParamAction(
+                splitValue(newValue.toString()),
+                splitValue((initValue as string).toString()),
+              ),
+            )
           },
           handleCancel: () => null,
         })
       } else {
-        dispatch(updateParamAction(splitValue(newValue)))
+        dispatch(
+          updateParamAction(
+            splitValue(newValue.toString()),
+            splitValue((initValue as string).toString()),
+          ),
+        )
       }
     }
     const valueField = Array.isArray(value)
@@ -108,11 +144,24 @@ export function createParamFormItemComponent({
   const ParamItemForNumber = memo(function ParamItemForNumber({
     name,
     path,
+    pipelineStatus,
   }: ParamChildItemProps) {
     const dispatch = useDispatch()
     const [value, updateParamAction] = useParamValueUpdate(path)
+    const [initValue, setInitValue] = useState<unknown>()
     const currentWorkflowId = useSelector(selectPipelineLatestUid)
     const { onOpenClearWorkflowIdDialog } = useContext(DialogContext)
+
+    useEffect(() => {
+      setInitValue(value)
+      //eslint-disable-next-line
+    }, [])
+
+    useEffect(() => {
+      if (pipelineStatus !== RUN_STATUS.START_PENDING) return
+      setInitValue(value)
+      //eslint-disable-next-line
+    }, [pipelineStatus])
 
     if (typeof value === "number") {
       const onChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -123,12 +172,12 @@ export function createParamFormItemComponent({
             onOpenClearWorkflowIdDialog({
               open: true,
               handleOk: () => {
-                dispatch(updateParamAction(newValue))
+                dispatch(updateParamAction(newValue, initValue))
               },
               handleCancel: () => null,
             })
           } else {
-            dispatch(updateParamAction(newValue))
+            dispatch(updateParamAction(newValue, initValue))
           }
         }
       }
@@ -148,11 +197,24 @@ export function createParamFormItemComponent({
   const ParamItemForBoolean = memo(function ParamItemForBoolean({
     name,
     path,
+    pipelineStatus,
   }: ParamChildItemProps) {
     const dispatch = useDispatch()
+    const [initValue, setInitValue] = useState<unknown>()
     const [value, updateParamAction] = useParamValueUpdate(path)
     const currentWorkflowId = useSelector(selectPipelineLatestUid)
     const { onOpenClearWorkflowIdDialog } = useContext(DialogContext)
+
+    useEffect(() => {
+      setInitValue(value)
+      //eslint-disable-next-line
+    }, [])
+
+    useEffect(() => {
+      if (pipelineStatus !== RUN_STATUS.START_PENDING) return
+      setInitValue(value)
+      //eslint-disable-next-line
+    }, [pipelineStatus])
 
     if (typeof value === "boolean") {
       const onChange = () => {
@@ -160,12 +222,12 @@ export function createParamFormItemComponent({
           onOpenClearWorkflowIdDialog({
             open: true,
             handleOk: () => {
-              dispatch(updateParamAction(!value))
+              dispatch(updateParamAction(!value, initValue))
             },
             handleCancel: () => null,
           })
         } else {
-          dispatch(updateParamAction(!value))
+          dispatch(updateParamAction(!value, initValue))
         }
       }
       return <ParamSwitch label={name} value={value} onChange={onChange} />
@@ -178,15 +240,40 @@ export function createParamFormItemComponent({
     name,
     path,
   }: ParamChildItemProps) {
+    const pipelineStatus = useSelector(selectPipelineStatus)
     const [value] = useParamValueUpdate(path)
     if (typeof value === "number") {
-      return <ParamItemForNumber name={name} path={path} />
+      return (
+        <ParamItemForNumber
+          name={name}
+          path={path}
+          pipelineStatus={pipelineStatus}
+        />
+      )
     } else if (typeof value === "string") {
-      return <ParamItemForString name={name} path={path} />
+      return (
+        <ParamItemForString
+          name={name}
+          path={path}
+          pipelineStatus={pipelineStatus}
+        />
+      )
     } else if (typeof value === "boolean") {
-      return <ParamItemForBoolean name={name} path={path} />
+      return (
+        <ParamItemForBoolean
+          name={name}
+          path={path}
+          pipelineStatus={pipelineStatus}
+        />
+      )
     } else {
-      return <ParamItemForString name={name} path={path} />
+      return (
+        <ParamItemForString
+          name={name}
+          path={path}
+          pipelineStatus={pipelineStatus}
+        />
+      )
     }
   })
 
@@ -240,4 +327,5 @@ interface ParamItemProps extends ParamKeyProps {
 interface ParamChildItemProps {
   name: string
   path: string
+  pipelineStatus?: string
 }

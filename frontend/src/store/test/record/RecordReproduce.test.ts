@@ -166,14 +166,22 @@ describe("RecordReproduce", () => {
       dummy_image2image_c8tqfxw0mq: {
         name: "dummy_image2image",
         functionPath: "dummy/dummy_image2image",
+        isUpdate: false,
         params: { sample: { path: "sample", type: "child", value: "test" } },
-        isUpdated: false,
+        originalValue: {
+          sample: {
+            path: "sample",
+            type: "child",
+            value: "test",
+          },
+        },
       },
       dummy_image2image8time_4mrz8h7hyk: {
         name: "dummy_image2image8time",
         functionPath: "dummy/dummy_image2image8time",
+        isUpdate: false,
+        originalValue: {},
         params: {},
-        isUpdated: false,
       },
     },
     flowElement: {
@@ -219,7 +227,7 @@ describe("RecordReproduce", () => {
           position: { x: 51, y: 150 },
           style: {
             border: "1px solid #777",
-            height: 125,
+            height: 140,
             width: 250,
           },
         },
@@ -230,7 +238,7 @@ describe("RecordReproduce", () => {
           position: { x: 350, y: 151.3534781075913 },
           style: {
             border: "1px solid #777",
-            height: 125,
+            height: 140,
             width: 250,
             padding: 0,
             borderRadius: 0,
@@ -243,7 +251,7 @@ describe("RecordReproduce", () => {
           position: { x: 600, y: 164.03341976235507 },
           style: {
             border: "1px solid #777",
-            height: 125,
+            height: 140,
             width: 250,
             padding: 0,
             borderRadius: 0,
@@ -424,7 +432,12 @@ describe("RecordReproduce", () => {
       listUserShare: undefined,
       loading: false,
       workspace: { items: [], limit: 50, offset: 0, total: 0 },
-      currentWorkspace: { selectedTab: 0, workspaceId: 1 },
+      currentWorkspace: {
+        selectedTab: 0,
+        workspaceId: 1,
+        roiFilePath: undefined,
+        statusRoi: undefined,
+      },
     },
   }
 

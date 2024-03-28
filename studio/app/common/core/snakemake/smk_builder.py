@@ -10,6 +10,7 @@ class RuleBuilder:
         self._type = None
         self._nwbfile = None
         self._hdf5Path = None
+        self._matPath = None
         self._path = None
 
     def set_input(self, input, workspace_id=None) -> "RuleBuilder":
@@ -46,6 +47,10 @@ class RuleBuilder:
         self._hdf5Path = hdf5Path
         return self
 
+    def set_matPath(self, matPath) -> "RuleBuilder":
+        self._matPath = matPath
+        return self
+
     def set_path(self, path) -> "RuleBuilder":
         self._path = path
         return self
@@ -59,5 +64,6 @@ class RuleBuilder:
             type=self._type,
             nwbfile=self._nwbfile,
             hdf5Path=self._hdf5Path,
+            matPath=self._matPath,
             path=self._path,
         )

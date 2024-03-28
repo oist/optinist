@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "optinist"
 description = "Calcium Imaging Pipeline Tool"
-version = "1.1.0"
+version = "1.2.0"
 license = "GPL-3.0"
 authors = ["OIST <email@example.com>"]
 readme = "README.md"
@@ -68,12 +68,14 @@ plotly = "5.18.0"
 kaleido = "0.2.1"
 filelock = "*"
 ruamel-yaml = "^0.18.5"
+pymatreader = "^0.0.32"
+xmltodict = "*"
 
 [tool.poetry.group.dev]
 optional = true
 
 [tool.poetry.group.dev.dependencies]
-black = "*"
+black = "23.11"
 flake8 = "6.1.*"
 isort = "*"
 pre-commit = "*"
@@ -111,6 +113,7 @@ profile = "black"
 
 [tool.pytest.ini_options]
 pythonpath = "."
+testpaths = "studio/tests"
 env = ["OPTINIST_DIR=studio/test_data"]
 
 [tool.codespell]

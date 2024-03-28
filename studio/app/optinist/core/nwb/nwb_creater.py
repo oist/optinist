@@ -54,7 +54,7 @@ class NWBCreater:
             excitation_lambda=float(
                 config["imaging_plane"]["excitation_lambda"]
             ),  # 励起（れいき）波長
-            indicator=config["imaging_plane"]["indicator"],  # カルシウムインディケーター
+            indicator=config["imaging_plane"]["indicator"],  # カルシウムインジケーター
             location=config["imaging_plane"]["location"],
         )
 
@@ -63,13 +63,17 @@ class NWBCreater:
             NWBDATASET.IMAGE_SERIES in config
             and "external_file" in config[NWBDATASET.IMAGE_SERIES]
         ):
-            # image_data = config[NWBDATASET.IMAGE_SERIES]['external_file'].data
-            image_path = config[NWBDATASET.IMAGE_SERIES]["external_file"].path
+            external_file = config[NWBDATASET.IMAGE_SERIES]["external_file"]
+            image_path = external_file.path
+
             starting_frames = (
                 config[NWBDATASET.IMAGE_SERIES]["starting_frame"]
                 if "starting_frame" in config[NWBDATASET.IMAGE_SERIES]
                 else None
             )
+            save_raw_image_to_nwb = config[NWBDATASET.IMAGE_SERIES][
+                "save_raw_image_to_nwb"
+            ]
 
             if isinstance(image_path, list) and len(image_path) > 1:
                 if starting_frames == 0 or starting_frames == [0]:
@@ -77,15 +81,18 @@ class NWBCreater:
                 elif isinstance(starting_frames, str):
                     starting_frames = starting_frames.split(",")
                     starting_frames = list(map(int, starting_frames))
+            elif isinstance(image_path, str):
+                image_path = [image_path]
 
             image_series = TwoPhotonSeries(
                 name="TwoPhotonSeries",
                 starting_frame=starting_frames,
-                external_file=image_path,
+                external_file=image_path if not save_raw_image_to_nwb else None,
                 imaging_plane=imaging_plane,
                 starting_time=float(config[NWBDATASET.IMAGE_SERIES]["starting_time"]),
                 rate=1.0,
                 unit="normalized amplitude",
+                data=external_file.data if save_raw_image_to_nwb else None,
             )
             nwbfile.add_acquisition(image_series)
 

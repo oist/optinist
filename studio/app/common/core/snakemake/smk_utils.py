@@ -12,7 +12,13 @@ class SmkUtils:
     def input(cls, details):
         if details["type"] in [FILETYPE.IMAGE]:
             return [join_filepath([DIRPATH.INPUT_DIR, x]) for x in details["input"]]
-        elif details["type"] in [FILETYPE.CSV, FILETYPE.BEHAVIOR, FILETYPE.HDF5]:
+        elif details["type"] in [
+            FILETYPE.CSV,
+            FILETYPE.BEHAVIOR,
+            FILETYPE.HDF5,
+            FILETYPE.MATLAB,
+            FILETYPE.MICROSCOPE,
+        ]:
             return join_filepath([DIRPATH.INPUT_DIR, details["input"]])
         else:
             return [join_filepath([DIRPATH.OUTPUT_DIR, x]) for x in details["input"]]
@@ -28,6 +34,8 @@ class SmkUtils:
             FILETYPE.CSV,
             FILETYPE.BEHAVIOR,
             FILETYPE.HDF5,
+            FILETYPE.MATLAB,
+            FILETYPE.MICROSCOPE,
         ]:
             return None
 

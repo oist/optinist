@@ -2,6 +2,8 @@ import {
   isHDF5InputNode,
   isCsvInputNode,
   isImageInputNode,
+  isMatlabInputNode,
+  isMicroscopeInputNode,
 } from "store/slice/InputNode/InputNodeUtils"
 import { RootState } from "store/store"
 
@@ -17,8 +19,9 @@ export const selectInputNodeFileType = (nodeId: string) => (state: RootState) =>
   selectInputNodeById(nodeId)(state).fileType
 
 export const selectInputNodeSelectedFilePath =
-  (nodeId: string) => (state: RootState) =>
-    selectInputNodeById(nodeId)(state).selectedFilePath
+  (nodeId: string) => (state: RootState) => {
+    return selectInputNodeById(nodeId)(state).selectedFilePath
+  }
 
 export const selectCsvInputNodeSelectedFilePath =
   (nodeId: string) => (state: RootState) => {
@@ -44,6 +47,26 @@ export const selectHDF5InputNodeSelectedFilePath =
   (nodeId: string) => (state: RootState) => {
     const node = selectInputNodeById(nodeId)(state)
     if (isHDF5InputNode(node)) {
+      return node.selectedFilePath
+    } else {
+      throw new Error("invalid input node type")
+    }
+  }
+
+export const selectMatlabInputNodeSelectedFilePath =
+  (nodeId: string) => (state: RootState) => {
+    const node = selectInputNodeById(nodeId)(state)
+    if (isMatlabInputNode(node)) {
+      return node.selectedFilePath
+    } else {
+      throw new Error("invalid input node type")
+    }
+  }
+
+export const selectMicroscopeInputNodeSelectedFilePath =
+  (nodeId: string) => (state: RootState) => {
+    const node = selectInputNodeById(nodeId)(state)
+    if (isMicroscopeInputNode(node)) {
       return node.selectedFilePath
     } else {
       throw new Error("invalid input node type")
@@ -94,6 +117,16 @@ export const selectInputNodeHDF5Path =
     const item = selectInputNodeById(nodeId)(state)
     if (isHDF5InputNode(item)) {
       return item.hdf5Path
+    } else {
+      return undefined
+    }
+  }
+
+export const selectInputNodeMatlabPath =
+  (nodeId: string) => (state: RootState) => {
+    const item = selectInputNodeById(nodeId)(state)
+    if (isMatlabInputNode(item)) {
+      return item.matPath
     } else {
       return undefined
     }

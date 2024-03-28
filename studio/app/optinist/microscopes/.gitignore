@@ -1,0 +1,8 @@
+dll/
+
+/tests/test_data/
+/tests/test_output/
+/tests/*.out.json
+/tests/*.out.tiff
+/tests/*.out.*.json
+/tests/*.out.*.tiff

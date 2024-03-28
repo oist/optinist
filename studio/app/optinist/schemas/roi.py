@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 
 from pydantic import BaseModel, Field
 
@@ -14,5 +14,7 @@ class RoiList(BaseModel):
     ids: List[int] = Field(default=[0, 1])
 
 
-class EditRoiSuccess(BaseModel):
-    max_index: int
+class RoiStatus(BaseModel):
+    temp_add_roi: List[Union[int, float]]
+    temp_merge_roi: List[Union[int, float]]
+    temp_delete_roi: List[Union[int, float]]
