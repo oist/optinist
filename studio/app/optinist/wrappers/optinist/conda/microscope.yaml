@@ -1,5 +1,8 @@
+channels:
+  - conda-forge
 dependencies:
   - python=3.9
+  # NOTE: Uncomment the following line if you want to use .nd2 .oir files on linux
   # - gcc=12
   - pip
   - pip:
