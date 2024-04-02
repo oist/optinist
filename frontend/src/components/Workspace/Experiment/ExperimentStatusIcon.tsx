@@ -72,6 +72,7 @@ const ErrorIcon = memo(function ErrorIcon({ message }: ErrorIconProps) {
           color="error"
           padding={2}
           marginBottom={0}
+          whiteSpace="pre-wrap"
         >
           {message}
         </Typography>
