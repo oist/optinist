@@ -168,7 +168,12 @@ def caiman_cnmf(
     if not isinstance(idx_bad, list):
         idx_bad = idx_bad.tolist()
 
-    iscell = np.concatenate([np.ones(len(idx_good)), np.zeros(len(idx_bad))])
+    iscell = np.concatenate(
+        [
+            np.ones(len(idx_good), dtype=int),
+            np.zeros(len(idx_bad), dtype=int),
+        ]
+    )
 
     cell_ims = get_roi(
         cnm.estimates.A[:, idx_good], roi_thr, thr_method, swap_dim, dims

@@ -67,7 +67,7 @@ def lccd_detect(
                 "table_name": "Fluorescence",
                 "region": list(range(len(timeseries))),
                 "name": "Fluorescence",
-                "data": timeseries,
+                "data": timeseries.T,
                 "unit": "lumens",
             }
         }
