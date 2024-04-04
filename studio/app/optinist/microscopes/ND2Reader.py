@@ -180,6 +180,20 @@ class ND2Reader(MicroscopeDataReaderBase):
             metadata["channels"][0]["microscope"] if experiments else {}
         )
 
+        size_x = attributes["widthPx"]
+        size_y = attributes["heightPx"]
+
+        # physical size of pixel を計算
+        # TODO: 以下の計算式で適切であるか、要仕様確認
+        pinhole_size_um = metadata_ch0_microscope.get("pinholeDiameterUm", None)
+        zoom_magnification = metadata_ch0_microscope.get("zoomMagnification", 1.0)
+        if pinhole_size_um is not None:
+            physical_sizex = (pinhole_size_um * zoom_magnification) / size_x
+            physical_sizey = (pinhole_size_um * zoom_magnification) / size_y
+        else:
+            physical_sizex = None
+            physical_sizey = None
+
         # experiment, periods, の参照は先頭データの内容から取得
         if "periods" in first_experiment_params:
             interval = first_experiment_params["periods"][0]["periodDiff"]["avg"]
@@ -192,11 +206,13 @@ class ND2Reader(MicroscopeDataReaderBase):
 
         omeData = OMEDataModel(
             image_name=original_metadata["data_name"],
-            size_x=attributes["widthPx"],
-            size_y=attributes["heightPx"],
+            size_x=size_x,
+            size_y=size_y,
             size_t=0,  # size_t は後続処理で計算・設定する
             size_z=0,  # size_z は後続処理で計算・設定する
             size_c=len(metadata["channels"]),
+            physical_sizex=physical_sizex,
+            physical_sizey=physical_sizey,
             depth=attributes["bitsPerComponentInMemory"],
             significant_bits=attributes["bitsPerComponentSignificant"],
             acquisition_date=re.sub(" +", " ", textinfo.get("date", "")),

@@ -13,9 +13,6 @@ from studio.app.optinist.microscopes.MicroscopeDataReaderBase import (
     MicroscopeDataReaderBase,
     OMEDataModel,
 )
-from studio.app.optinist.microscopes.MicroscopeDataReaderUtils import (
-    MicroscopeDataFileExt,
-)
 
 
 class ThorlabsReader(MicroscopeDataReaderBase):
@@ -25,7 +22,7 @@ class ThorlabsReader(MicroscopeDataReaderBase):
     #   so any module that supports it (e.g., tifffile) can be used.
     SDK_MODULE_NAME = "tifffile"
 
-    RAW_ARCHIVE_FILE_PATTERN = MicroscopeDataFileExt.THOR_FILE_EXT.value
+    RAW_ARCHIVE_FILE_PATTERN = ".*\\.thor.zip$"
 
     OME_TIFF_EXT = ".tif"
 
@@ -222,6 +219,8 @@ class ThorlabsReader(MicroscopeDataReaderBase):
             size_t=int(ome_metadata_image_pixcels["@SizeT"]),
             size_z=int(ome_metadata_image_pixcels["@SizeZ"]),
             size_c=int(ome_metadata_image_pixcels["@SizeC"]),
+            physical_sizex=float(ome_metadata_image_pixcels["@PhysicalSizeX"]),
+            physical_sizey=float(ome_metadata_image_pixcels["@PhysicalSizeY"]),
             depth=OMEDataModel.get_depth_from_pixel_type(
                 ome_metadata_image_pixcels["@Type"]
             ),
