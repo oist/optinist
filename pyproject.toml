@@ -29,6 +29,7 @@ include = [
   "frontend/build/static/js/*",
   "frontend/build/static/media/*",
   "studio/app/optinist/core/nwb/nwb.yaml",
+  "studio/app/optinist/microscopes/libs.zip",
   "studio/app/common/core/snakemake/snakemake.yaml",
   "studio/app/*/wrappers/**/*.yaml",
   "studio/app/Snakefile",
