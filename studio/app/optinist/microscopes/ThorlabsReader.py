@@ -13,6 +13,9 @@ from studio.app.optinist.microscopes.MicroscopeDataReaderBase import (
     MicroscopeDataReaderBase,
     OMEDataModel,
 )
+from studio.app.optinist.microscopes.MicroscopeDataReaderUtils import (
+    MicroscopeDataFileExt,
+)
 
 
 class ThorlabsReader(MicroscopeDataReaderBase):
@@ -22,7 +25,7 @@ class ThorlabsReader(MicroscopeDataReaderBase):
     #   so any module that supports it (e.g., tifffile) can be used.
     SDK_MODULE_NAME = "tifffile"
 
-    RAW_ARCHIVE_FILE_PATTERN = ".*\\.thor.zip$"
+    RAW_ARCHIVE_FILE_PATTERN = MicroscopeDataFileExt.THOR_FILE_EXT.value
 
     OME_TIFF_EXT = ".tif"
 
