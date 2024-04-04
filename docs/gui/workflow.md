@@ -224,14 +224,8 @@ You may not want to modify your original data folder, or you may want to make yo
      We implement loading C libraries for reading NIKON and Olympus file.
      The libraries are available only on Linux and Windows (Not on MacOS).
 
-     And due to the license issue, we cannot distribute their library in this project.
-     You need to get the libraries by yourself and add them to the path. To do that,
-
-     - get the C library files from the manufacturer's support.
-     - use OptiNiSt by :ref:`developer mode <each-platforms-for-developer>`.
-     - set environment value ``MICROSCOPES_LIBRARY_DIR`` in ``studio/config/.env`` to your library path.
-     - put the libraries into ``MICROSCOPES_LIBRARY_DIR/dll/{nikon | olympus}/{linux | windows}/``
-     - If you use Linux, open ``studio/app/optinist/wrappers/optinist/conda/microscope.yaml`` and uncomment the ``- gcc=12`` line.
+     - If you use Linux, use OptiNiSt by :ref:`developer mode <each-platforms-for-developer>`.
+      - open ``studio/app/optinist/wrappers/optinist/conda/microscope.yaml`` and uncomment the ``- gcc=12`` line.
   ```
 
   <p align="center">
