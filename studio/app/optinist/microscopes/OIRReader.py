@@ -217,6 +217,7 @@ class OIRReader(MicroscopeDataReaderBase):
 
         rect = original_metadata["rect"]
         axis_info = original_metadata["axis_info"]
+        pixel_length = original_metadata["pixel_length"]
         channel_info = original_metadata["channel_info"]
         objective_lens_info = original_metadata["objective_lens_info"]
         scanner_settings = original_metadata["scanner_settings"]
@@ -241,6 +242,8 @@ class OIRReader(MicroscopeDataReaderBase):
             size_t=sequence_count,
             size_z=nZLoop,
             size_c=len(channel_info),
+            physical_sizex=pixel_length["x"],
+            physical_sizey=pixel_length["y"],
             depth=int(channel_info[0]["depth"]) * 8,
             significant_bits=channel_info[0]["bit_count"],
             acquisition_date=file_creation_time["creation_time"],

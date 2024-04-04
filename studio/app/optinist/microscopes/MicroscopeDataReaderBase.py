@@ -27,6 +27,11 @@ class OMEDataModel:
     objective_model: str  # objective lens model
     imaging_rate: int  # rate images are acquired (Hz)  # *extended from OME format
 
+    physical_sizex: float = None  # physical size of a pixel
+    physical_sizex_unit: str = "µm"  # units of the physical_sizex.
+    physical_sizey: float = None  # physical size of a pixel
+    physical_sizey_unit: str = "µm"  # units of the physical_sizey.
+
     def get_ome_values(self):
         return {
             "Image": {
@@ -40,6 +45,10 @@ class OMEDataModel:
                 "SizeX": self.size_x,
                 "SizeY": self.size_y,
                 "SizeZ": self.size_z,
+                "PhysicalSizeX": self.physical_sizex,
+                "PhysicalSizeXUnit": self.physical_sizex_unit,
+                "PhysicalSizeY": self.physical_sizey,
+                "PhysicalSizeYUnit": self.physical_sizey_unit,
                 "SignificantBits": self.significant_bits,
                 "Type": self.pixel_type,
             },
