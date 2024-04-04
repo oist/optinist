@@ -113,8 +113,6 @@ class OMEDataModel:
 class MicroscopeDataReaderBase(metaclass=ABCMeta):
     """Microscope data reader base class"""
 
-    LIBRARY_DIR_KEY = "MICROSCOPES_LIBRARY_DIR"
-
     def __init__(self):
         """
         Initialization

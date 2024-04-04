@@ -10,10 +10,7 @@ sys.path.append(os.path.dirname(os.path.abspath(__file__)) + "/../../../../../")
 from studio.app.optinist.microscopes.OIRReader import OIRReader  # NOQA
 
 TEST_DIR_PATH = os.path.dirname(os.path.abspath(__file__))
-LIBRARY_DIR = os.path.dirname(TEST_DIR_PATH) + "/dll"
 TEST_DATA_PATH = TEST_DIR_PATH + "/test_data/olympus/olympus-xyt005_0001.oir"
-
-os.environ[OIRReader.LIBRARY_DIR_KEY] = LIBRARY_DIR
 
 
 def test_oir_reader(dump_metadata=True, dump_stack=True):
