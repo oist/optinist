@@ -12,19 +12,11 @@ handlers:
     class: logging.StreamHandler
     level: DEBUG
     formatter: default
-  rotating_file:
-    class: logging.handlers.TimedRotatingFileHandler
-    level: DEBUG
-    formatter: default
-    filename: logs/studio.log
-    when: midnight
-    interval: 1
-    backupCount: 365
 loggers:
   snakemake:
     level: INFO
-    handlers: [rotating_file]
+    handlers: [console]
     propagate: false
 root:
   level: INFO
-  handlers: [console, rotating_file]
+  handlers: [console]

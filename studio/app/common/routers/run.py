@@ -3,6 +3,7 @@ from typing import Dict
 
 from fastapi import APIRouter, BackgroundTasks, Depends
 
+from studio.app.common.core.logger import AppLogger
 from studio.app.common.core.workflow.workflow import Message, NodeItem, RunItem
 from studio.app.common.core.workflow.workflow_result import WorkflowResult
 from studio.app.common.core.workflow.workflow_runner import WorkflowRunner
@@ -13,6 +14,8 @@ from studio.app.common.core.workspace.workspace_dependencies import (
 
 router = APIRouter(prefix="/run", tags=["run"])
 
+logger = AppLogger.get_logger()
+
 
 @router.post(
     "/{workspace_id}",
@@ -22,7 +25,9 @@ router = APIRouter(prefix="/run", tags=["run"])
 async def run(workspace_id: str, runItem: RunItem, background_tasks: BackgroundTasks):
     unique_id = str(uuid.uuid4())[:8]
     WorkflowRunner(workspace_id, unique_id, runItem).run_workflow(background_tasks)
-    print("run snakemake")
+
+    logger.info("run snakemake")
+
     return unique_id
 
 
@@ -35,8 +40,10 @@ async def run_id(
     workspace_id: str, uid: str, runItem: RunItem, background_tasks: BackgroundTasks
 ):
     WorkflowRunner(workspace_id, uid, runItem).run_workflow(background_tasks)
-    print("run snakemake")
-    print("forcerun list: ", runItem.forceRunList)
+
+    logger.info("run snakemake")
+    logger.info("forcerun list: %s", runItem.forceRunList)
+
     return uid
 
 
