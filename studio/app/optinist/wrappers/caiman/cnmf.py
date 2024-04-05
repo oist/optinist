@@ -4,11 +4,14 @@ import shutil
 
 import numpy as np
 
+from studio.app.common.core.logger import AppLogger
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.dataclass import ImageData
 from studio.app.dir_path import DIRPATH
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import EditRoiData, FluoData, IscellData, RoiData
+
+logger = AppLogger.get_logger()
 
 
 def get_roi(A, roi_thr, thr_method, swap_dim, dims):
@@ -92,7 +95,7 @@ def caiman_cnmf(
     from caiman.source_extraction.cnmf.params import CNMFParams
 
     function_id = output_dir.split("/")[-1]
-    print("start caiman_cnmf:", function_id)
+    logger.info(f"start caiman_cnmf: {function_id}")
 
     # NOTE: evaluate_components requires cnn_model files in caiman_data directory.
     caiman_data_dir = os.path.join(os.path.expanduser("~"), "caiman_data")
