@@ -1,7 +1,10 @@
+from studio.app.common.core.logger import AppLogger
 from studio.app.common.dataclass import BarData, ScatterData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import BehaviorData, FluoData, IscellData
 from studio.app.optinist.wrappers.optinist.utils import standard_norm
+
+logger = AppLogger.get_logger()
 
 
 def CCA(
@@ -16,7 +19,7 @@ def CCA(
     from sklearn.cross_decomposition import CCA
 
     function_id = output_dir.split("/")[-1]
-    print("start cca:", function_id)
+    logger.info("start cca:", function_id)
 
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data

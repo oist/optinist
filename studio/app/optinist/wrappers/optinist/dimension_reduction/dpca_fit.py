@@ -1,10 +1,13 @@
 import numpy as np
 import pandas as pd
 
+from studio.app.common.core.logger import AppLogger
 from studio.app.common.dataclass import HeatMapData  # , TimeSeriesData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import BehaviorData, FluoData, IscellData
 from studio.app.optinist.wrappers.optinist.utils import standard_norm
+
+logger = AppLogger.get_logger()
 
 
 def calc_trigger(behavior_data, trigger_type, trigger_threshold):
@@ -112,7 +115,9 @@ def createMatrix(D, triggers, stims, duration):
             ]
 
         else:
-            print("currently the number of condition category has to be less than 4")
+            logger.warn(
+                "currently the number of condition category has to be less than 4"
+            )
             return
 
     return X2
@@ -142,7 +147,7 @@ def dpca_fit(
     from dPCA import dPCA
 
     function_id = output_dir.split("/")[-1]
-    print("start dpca:", function_id)
+    logger.info("start dpca:", function_id)
 
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data

@@ -7,6 +7,7 @@ import numpy as np
 from fastapi import HTTPException, status
 from snakemake import snakemake
 
+from studio.app.common.core.logger import AppLogger
 from studio.app.common.core.rules.runner import Runner
 from studio.app.common.core.utils.config_handler import ConfigReader
 from studio.app.common.core.utils.filepath_creater import join_filepath
@@ -19,6 +20,8 @@ from studio.app.optinist.core.edit_ROI.wrappers import edit_roi_wrapper_dict
 from studio.app.optinist.core.nwb.nwb_creater import overwrite_nwb
 from studio.app.optinist.dataclass import EditRoiData, IscellData, RoiData
 from studio.app.optinist.schemas.roi import RoiStatus
+
+logger = AppLogger.get_logger()
 
 
 @dataclass
@@ -89,7 +92,7 @@ class EditROI:
             "iscell", self.output_info.get("iscell")
         ).data
 
-        print("start edit roi:", self.function_id)
+        logger.info("start edit roi:", self.function_id)
 
     @property
     def pickle_file_path(self):
@@ -222,9 +225,11 @@ class EditROI:
         self.__update_pickle_for_roi_edition(self.pickle_file_path, info)
         self.__save_json(info)
         self.__update_whole_nwb(info)
-        os.remove(self.tmp_pickle_file_path) if os.path.exists(
-            self.tmp_pickle_file_path
-        ) else None
+        (
+            os.remove(self.tmp_pickle_file_path)
+            if os.path.exists(self.tmp_pickle_file_path)
+            else None
+        )
 
     def cancel(self):
         original_num_cell = len(self.output_info.get("fluorescence").data)
@@ -242,9 +247,11 @@ class EditROI:
             ),
         }
         self.__save_json(info)
-        os.remove(self.tmp_pickle_file_path) if os.path.exists(
-            self.tmp_pickle_file_path
-        ) else None
+        (
+            os.remove(self.tmp_pickle_file_path)
+            if os.path.exists(self.tmp_pickle_file_path)
+            else None
+        )
 
     def __update_whole_nwb(self, output_info):
         workflow_dirpath = os.path.dirname(self.node_dirpath)

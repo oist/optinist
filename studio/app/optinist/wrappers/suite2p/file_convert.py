@@ -1,11 +1,14 @@
 import os
 
+from studio.app.common.core.logger import AppLogger
 from studio.app.common.core.utils.filepath_creater import (
     create_directory,
     join_filepath,
 )
 from studio.app.common.dataclass import ImageData
 from studio.app.optinist.dataclass import Suite2pData
+
+logger = AppLogger.get_logger()
 
 
 def suite2p_file_convert(
@@ -17,7 +20,7 @@ def suite2p_file_convert(
     from suite2p.io.tiff import open_tiff, use_sktiff_reader
 
     function_id = output_dir.split("/")[-1]
-    print("start suite2p_file_convert:", function_id)
+    logger.info("start suite2p_file_convert:", function_id)
 
     data_path_list = []
     data_name_list = []
@@ -44,8 +47,8 @@ def suite2p_file_convert(
         data_path_list.append(os.path.dirname(file_path))
         data_name_list.append(os.path.basename(file_path))
 
-    print(data_path_list)
-    print(data_name_list)
+    logger.info(data_path_list)
+    logger.info(data_name_list)
     # data pathと保存pathを指定
     db = {
         "data_path": data_path_list,

@@ -1,3 +1,4 @@
+from studio.app.common.core.logger import AppLogger
 from studio.app.common.dataclass import ImageData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import (
@@ -8,6 +9,8 @@ from studio.app.optinist.dataclass import (
     Suite2pData,
 )
 
+logger = AppLogger.get_logger()
+
 
 def suite2p_roi(
     ops: Suite2pData, output_dir: str, params: dict = None, **kwargs
@@ -16,7 +19,7 @@ def suite2p_roi(
     from suite2p import ROI, classification, default_ops, detection, extraction
 
     function_id = output_dir.split("/")[-1]
-    print("start suite2p_roi:", function_id)
+    logger.info("start suite2p_roi:", function_id)
 
     nwbfile = kwargs.get("nwbfile", {})
     fs = nwbfile.get("imaging_plane", {}).get("imaging_rate", 30)
@@ -29,13 +32,13 @@ def suite2p_roi(
     builtin_classfile = classification.builtin_classfile
     user_classfile = classification.user_classfile
     if ops_classfile:
-        print(f"NOTE: applying classifier {str(ops_classfile)}")
+        logger.info(f"NOTE: applying classifier {str(ops_classfile)}")
         classfile = ops_classfile
     elif ops["use_builtin_classifier"] or not user_classfile.is_file():
-        print(f"NOTE: Applying builtin classifier at {str(builtin_classfile)}")
+        logger.info(f"NOTE: Applying builtin classifier at {str(builtin_classfile)}")
         classfile = builtin_classfile
     else:
-        print(f"NOTE: applying default {str(user_classfile)}")
+        logger.info(f"NOTE: applying default {str(user_classfile)}")
         classfile = user_classfile
 
     ops, stat = detection.detect(ops=ops, classfile=classfile)

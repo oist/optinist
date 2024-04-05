@@ -1,7 +1,10 @@
+from studio.app.common.core.logger import AppLogger
 from studio.app.common.dataclass import HeatMapData, ScatterData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import FluoData, IscellData
 from studio.app.optinist.wrappers.optinist.utils import standard_norm
+
+logger = AppLogger.get_logger()
 
 
 def Granger(
@@ -20,7 +23,7 @@ def Granger(
     from tqdm import tqdm
 
     function_id = output_dir.split("/")[-1]
-    print("start granger:", function_id)
+    logger.info("start granger:", function_id)
 
     neural_data = neural_data.data
 
@@ -59,7 +62,7 @@ def Granger(
     }
 
     if params["use_adfuller_test"]:
-        print("adfuller test ")
+        logger.info("Running adfuller test ")
 
         for i in tqdm(range(num_cell)):
             tp = adfuller(tX[:, i], **params["adfuller"])
@@ -85,7 +88,7 @@ def Granger(
     }
 
     if params["use_coint_test"]:
-        print("cointegration test ")
+        logger.info("Running cointegration test ")
 
         for i in tqdm(range(num_comb)):
             tp = coint(X[:, comb[i][0]], X[:, comb[i][1]], **params["coint"])
@@ -96,7 +99,7 @@ def Granger(
             cit["cit_crit_value"][i, :] = tp[2]
 
     #  Granger causality
-    print("granger test ")
+    logger.info("Running granger test ")
 
     if hasattr(params["Granger_maxlag"], "__iter__"):
         num_lag = len(params["Granger_maxlag"])
