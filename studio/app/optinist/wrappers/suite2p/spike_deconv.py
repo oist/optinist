@@ -1,5 +1,8 @@
+from studio.app.common.core.logger import AppLogger
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import SpikingActivityData, Suite2pData
+
+logger = AppLogger.get_logger()
 
 
 def suite2p_spike_deconv(
@@ -9,7 +12,7 @@ def suite2p_spike_deconv(
     from suite2p import default_ops, extraction
 
     function_id = output_dir.split("/")[-1]
-    print("start suite2_spike_deconv:", function_id)
+    logger.info("start suite2_spike_deconv: %s", function_id)
 
     ops = ops.data
 

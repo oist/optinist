@@ -1,6 +1,9 @@
+from studio.app.common.core.logger import AppLogger
 from studio.app.common.dataclass import HeatMapData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import FluoData, IscellData
+
+logger = AppLogger.get_logger()
 
 
 def correlation(
@@ -13,7 +16,7 @@ def correlation(
     import numpy as np
 
     function_id = output_dir.split("/")[-1]
-    print("start correlation:", function_id)
+    logger.info("start correlation: %s", function_id)
 
     neural_data = neural_data.data
 

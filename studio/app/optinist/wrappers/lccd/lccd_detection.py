@@ -1,8 +1,11 @@
 import numpy as np
 
+from studio.app.common.core.logger import AppLogger
 from studio.app.common.dataclass import ImageData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import EditRoiData, FluoData, IscellData, RoiData
+
+logger = AppLogger.get_logger()
 
 
 def lccd_detect(
@@ -11,9 +14,9 @@ def lccd_detect(
     from studio.app.optinist.wrappers.lccd.lccd_python.lccd import LCCD
 
     function_id = output_dir.split("/")[-1]
-    print("start lccd_detect:", function_id)
+    logger.info("start lccd_detect: %s", function_id)
 
-    print("params: ", params)
+    logger.info("params: %s", params)
     lccd = LCCD(params)
     D = LoadData(mc_images)
     assert len(D.shape) == 3, "input array should have dimensions (width, height, time)"

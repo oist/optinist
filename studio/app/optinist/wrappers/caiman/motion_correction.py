@@ -1,5 +1,6 @@
 import shutil
 
+from studio.app.common.core.logger import AppLogger
 from studio.app.common.core.utils.filepath_creater import (
     create_directory,
     join_filepath,
@@ -7,6 +8,8 @@ from studio.app.common.core.utils.filepath_creater import (
 from studio.app.common.dataclass import ImageData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import RoiData
+
+logger = AppLogger.get_logger()
 
 
 def caiman_mc(
@@ -20,7 +23,7 @@ def caiman_mc(
     from caiman.source_extraction.cnmf.params import CNMFParams
 
     function_id = output_dir.split("/")[-1]
-    print("start caiman motion_correction:", function_id)
+    logger.info(f"start caiman motion_correction: {function_id}")
 
     opts = CNMFParams()
 
