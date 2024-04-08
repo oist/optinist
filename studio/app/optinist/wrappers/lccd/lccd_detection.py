@@ -14,9 +14,9 @@ def lccd_detect(
     from studio.app.optinist.wrappers.lccd.lccd_python.lccd import LCCD
 
     function_id = output_dir.split("/")[-1]
-    logger.info("start lccd_detect:", function_id)
+    logger.info("start lccd_detect: %s", function_id)
 
-    logger.info("params: ", params)
+    logger.info("params: %s", params)
     lccd = LCCD(params)
     D = LoadData(mc_images)
     assert len(D.shape) == 3, "input array should have dimensions (width, height, time)"

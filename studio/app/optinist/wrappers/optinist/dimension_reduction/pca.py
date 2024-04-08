@@ -19,7 +19,7 @@ def PCA(
     from sklearn.decomposition import PCA
 
     function_id = output_dir.split("/")[-1]
-    logger.info("start PCA:", function_id)
+    logger.info("start PCA: %s", function_id)
 
     neural_data = neural_data.data
 

@@ -21,7 +21,7 @@ def LDA(
     from sklearn.model_selection import StratifiedKFold
 
     function_id = output_dir.split("/")[-1]
-    logger.info("start LDA:", function_id)
+    logger.info("start LDA: %s", function_id)
 
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data

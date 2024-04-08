@@ -19,7 +19,7 @@ def CCA(
     from sklearn.cross_decomposition import CCA
 
     function_id = output_dir.split("/")[-1]
-    logger.info("start cca:", function_id)
+    logger.info("start cca: %s", function_id)
 
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data

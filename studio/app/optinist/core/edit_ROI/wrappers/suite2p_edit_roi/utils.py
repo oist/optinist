@@ -48,7 +48,7 @@ def masks_and_traces(ops, stat_manual, stat_orig):
         inner_neuropil_radius=ops["inner_neuropil_radius"],
         min_neuropil_pixels=ops["min_neuropil_pixels"],
     )
-    logger.info("Masks made in %0.2f sec." % (time.time() - t0))
+    logger.info("Masks made in %0.2f sec.", (time.time() - t0))
 
     F, Fneu, F_chan2, Fneu_chan2, ops = extraction.extract_traces_from_masks(
         ops, manual_cell_masks, manual_neuropil_masks

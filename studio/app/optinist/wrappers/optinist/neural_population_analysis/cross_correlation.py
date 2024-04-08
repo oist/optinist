@@ -21,7 +21,7 @@ def cross_correlation(
     from tqdm import tqdm
 
     function_id = output_dir.split("/")[-1]
-    logger.info("start cross_correlation:", function_id)
+    logger.info("start cross_correlation: %s", function_id)
 
     neural_data = neural_data.data
 

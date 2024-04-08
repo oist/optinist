@@ -11,7 +11,7 @@ def suite2p_registration(
     from suite2p import default_ops, io, registration
 
     function_id = output_dir.split("/")[-1]
-    logger.info("start suite2p registration:", function_id)
+    logger.info("start suite2p registration: %s", function_id)
 
     ops = ops.data
     refImg = ops["meanImg"]

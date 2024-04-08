@@ -12,7 +12,7 @@ def suite2p_spike_deconv(
     from suite2p import default_ops, extraction
 
     function_id = output_dir.split("/")[-1]
-    logger.info("start suite2_spike_deconv:", function_id)
+    logger.info("start suite2_spike_deconv: %s", function_id)
 
     ops = ops.data
 

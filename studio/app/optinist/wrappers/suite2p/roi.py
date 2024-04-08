@@ -19,7 +19,7 @@ def suite2p_roi(
     from suite2p import ROI, classification, default_ops, detection, extraction
 
     function_id = output_dir.split("/")[-1]
-    logger.info("start suite2p_roi:", function_id)
+    logger.info("start suite2p_roi: %s", function_id)
 
     nwbfile = kwargs.get("nwbfile", {})
     fs = nwbfile.get("imaging_plane", {}).get("imaging_rate", 30)

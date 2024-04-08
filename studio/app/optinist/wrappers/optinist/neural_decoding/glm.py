@@ -27,7 +27,7 @@ def GLM(
     import statsmodels.api as sm
 
     function_id = output_dir.split("/")[-1]
-    logger.info("start glm:", function_id)
+    logger.info("start glm: %s", function_id)
 
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data

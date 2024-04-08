@@ -23,7 +23,7 @@ def Granger(
     from tqdm import tqdm
 
     function_id = output_dir.split("/")[-1]
-    logger.info("start granger:", function_id)
+    logger.info("start granger: %s", function_id)
 
     neural_data = neural_data.data
 

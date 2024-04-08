@@ -92,7 +92,7 @@ class EditROI:
             "iscell", self.output_info.get("iscell")
         ).data
 
-        logger.info("start edit roi:", self.function_id)
+        logger.info("start edit roi: %s", self.function_id)
 
     @property
     def pickle_file_path(self):

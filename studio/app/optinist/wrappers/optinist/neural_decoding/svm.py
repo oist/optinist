@@ -21,7 +21,7 @@ def SVM(
     from sklearn.model_selection import GridSearchCV, StratifiedKFold
 
     function_id = output_dir.split("/")[-1]
-    logger.info("start SVM:", function_id)
+    logger.info("start SVM: %s", function_id)
 
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data

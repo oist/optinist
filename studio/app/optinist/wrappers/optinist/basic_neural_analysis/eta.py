@@ -76,7 +76,7 @@ def ETA(
     **kwargs,
 ) -> dict(mean=TimeSeriesData):
     function_id = output_dir.split("/")[-1]
-    logger.info("start ETA:", function_id)
+    logger.info("start ETA: %s", function_id)
 
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data

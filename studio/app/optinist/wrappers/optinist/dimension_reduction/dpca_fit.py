@@ -147,7 +147,7 @@ def dpca_fit(
     from dPCA import dPCA
 
     function_id = output_dir.split("/")[-1]
-    logger.info("start dpca:", function_id)
+    logger.info("start dpca: %s", function_id)
 
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data

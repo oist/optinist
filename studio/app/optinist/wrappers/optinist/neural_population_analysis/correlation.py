@@ -16,7 +16,7 @@ def correlation(
     import numpy as np
 
     function_id = output_dir.split("/")[-1]
-    logger.info("start correlation:", function_id)
+    logger.info("start correlation: %s", function_id)
 
     neural_data = neural_data.data
 

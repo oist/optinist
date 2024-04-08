@@ -18,7 +18,7 @@ def TSNE(
     from sklearn.manifold import TSNE
 
     function_id = output_dir.split("/")[-1]
-    logger.info("start TSNE:", function_id)
+    logger.info("start TSNE: %s", function_id)
 
     neural_data = neural_data.data
 
