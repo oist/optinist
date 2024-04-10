@@ -187,6 +187,7 @@ class ND2Reader(MicroscopeDataReaderBase):
         textinfo = original_metadata["textinfo"]
         experiments = original_metadata["experiments"]
         first_experiment_params = experiments[0]["parameters"] if experiments else {}
+        metadata_ch0_volume = metadata["channels"][0]["volume"]
         metadata_ch0_microscope = (
             metadata["channels"][0]["microscope"] if experiments else {}
         )
@@ -194,13 +195,12 @@ class ND2Reader(MicroscopeDataReaderBase):
         size_x = attributes["widthPx"]
         size_y = attributes["heightPx"]
 
-        # physical size of pixel を計算
-        # TODO: 以下の計算式で適切であるか、要仕様確認
-        pinhole_size_um = metadata_ch0_microscope.get("pinholeDiameterUm", None)
-        zoom_magnification = metadata_ch0_microscope.get("zoomMagnification", 1.0)
-        if pinhole_size_um is not None:
-            physical_sizex = (pinhole_size_um * zoom_magnification) / size_x
-            physical_sizey = (pinhole_size_um * zoom_magnification) / size_y
+        # get image physical size by from "axesCalibration"
+        axesCalibrated = metadata_ch0_volume["axesCalibrated"]
+        if axesCalibrated[0] and axesCalibrated[1]:
+            axesCalibration = metadata_ch0_volume["axesCalibration"]
+            physical_sizex = axesCalibration[0]
+            physical_sizey = axesCalibration[1]
         else:
             physical_sizex = None
             physical_sizey = None
