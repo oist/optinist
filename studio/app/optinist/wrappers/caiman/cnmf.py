@@ -91,7 +91,7 @@ def caiman_cnmf(
     from caiman.cluster import setup_cluster
     from caiman.mmapping import prepare_shape
     from caiman.paths import memmap_frames_filename
-    from caiman.source_extraction.cnmf import cnmf
+    from caiman.source_extraction.cnmf import cnmf, online_cnmf
     from caiman.source_extraction.cnmf.params import CNMFParams
 
     function_id = output_dir.split("/")[-1]
@@ -111,6 +111,7 @@ def caiman_cnmf(
     Ain = reshaped_params.pop("Ain", None)
     do_refit = reshaped_params.pop("do_refit", None)
     roi_thr = reshaped_params.pop("roi_thr", None)
+    use_online = reshaped_params.pop("use_online", False)
 
     file_path = images.path
     if isinstance(file_path, list):
@@ -157,11 +158,25 @@ def caiman_cnmf(
         backend="local", n_processes=None, single_thread=True
     )
 
-    cnm = cnmf.CNMF(n_processes=n_processes, dview=dview, Ain=Ain, params=ops)
-    cnm = cnm.fit(mmap_images)
+    if use_online:
+        ops.change_params(
+            {
+                "fnames": [join_filepath([dir_path, fname_tot])],
+                # NOTE: These params uses np.inf as default in CaImAn.
+                # Yaml cannot serialize np.inf, so default value in yaml is None.
+                "max_comp_update_shape": reshaped_params["max_comp_update_shape"]
+                or np.inf,
+                "num_times_comp_updated": reshaped_params["update_num_comps"] or np.inf,
+            }
+        )
+        cnm = online_cnmf.OnACID(dview=dview, Ain=Ain, params=ops)
+        cnm.fit_online()
+    else:
+        cnm = cnmf.CNMF(n_processes=n_processes, dview=dview, Ain=Ain, params=ops)
+        cnm = cnm.fit(mmap_images)
 
-    if do_refit:
-        cnm = cnm.refit(mmap_images, dview=dview)
+        if do_refit:
+            cnm = cnm.refit(mmap_images, dview=dview)
 
     cnm.estimates.evaluate_components(mmap_images, cnm.params, dview=dview)
 
