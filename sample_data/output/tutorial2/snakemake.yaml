@@ -1,41 +1,9 @@
-last_output:
-- 1/tutorial2/pca_xi0d87mbrk/pca.pkl
 rules:
-  caiman_cnmf_z6a16cmiwl:
-    hdf5Path: null
-    input:
-    - 1/tutorial2/caiman_mc_p4f6nsi9bh/caiman_mc.pkl
-    nwbfile: null
-    output: 1/tutorial2/caiman_cnmf_z6a16cmiwl/caiman_cnmf.pkl
-    params:
-      init_params:
-        K: 4
-        do_refit: false
-        gSig:
-        - 4
-        - 4
-        method_init: greedy_roi
-        nb: 2
-        ssub: 1
-        tsub: 1
-      merge_params:
-        merge_thr: 0.85
-        thr: 0.9
-      patch_params:
-        rf: null
-        stride: 6
-      preprocess_params:
-        p: 1
-    path: caiman/caiman_cnmf
-    return_arg:
-      mc_images: images
-    type: caiman_cnmf
   caiman_mc_p4f6nsi9bh:
-    hdf5Path: null
     input:
     - 1/tutorial2/input_0/sample_mouse2p_image.pkl
-    nwbfile: null
-    output: 1/tutorial2/caiman_mc_p4f6nsi9bh/caiman_mc.pkl
+    return_arg:
+      input_0: image
     params:
       border_nan: copy
       gSig_filt: null
@@ -62,53 +30,57 @@ rules:
       - 96
       upsample_factor_grid: 4
       use_cuda: false
-    path: caiman/caiman_mc
-    return_arg:
-      input_0: image
+    output: 1/tutorial2/caiman_mc_p4f6nsi9bh/caiman_mc.pkl
     type: caiman_mc
-  input_0:
+    nwbfile: null
     hdf5Path: null
+    matPath: null
+    path: caiman/caiman_mc
+  input_0:
     input:
     - 1/sample_mouse2p_image.tiff
+    return_arg: input_0
+    params: {}
+    output: 1/tutorial2/input_0/sample_mouse2p_image.pkl
+    type: image
     nwbfile:
+      session_description: optinist
+      identifier: optinist
+      experiment_description: None
       device:
+        name: Microscope device
         description: Microscope Information
         manufacturer: Microscope Manufacture
-        name: Microscope device
-      experiment_description: None
-      identifier: optinist
-      image_series:
-        starting_frame:
-        - 0
-        starting_time: 0
-      imaging_plane:
-        description: standard
-        excitation_lambda: 900.0
-        imaging_rate: 30.0
-        indicator: GCaMP
-        location: V1
-        name: ImagingPlane
-      ophys:
-        plane_segmentation:
-          description: ''
-          name: PlaneSegmentation
       optical_channel:
+        name: OpticalChannel
         description: optical channel
         emission_lambda: 500.0
-        name: OpticalChannel
-      session_description: optinist
-    output: 1/tutorial2/input_0/sample_mouse2p_image.pkl
-    params: {}
-    path: null
-    return_arg: input_0
-    type: image
-  pca_xi0d87mbrk:
+      imaging_plane:
+        name: ImagingPlane
+        description: standard
+        imaging_rate: 30.0
+        excitation_lambda: 900.0
+        indicator: GCaMP
+        location: V1
+      image_series:
+        starting_time: 0
+        starting_frame:
+        - 0
+        save_raw_image_to_nwb: false
+      ophys:
+        plane_segmentation:
+          name: PlaneSegmentation
+          description: ''
     hdf5Path: null
+    matPath: null
+    path: null
+  pca_xi0d87mbrk:
     input:
-    - 1/tutorial2/caiman_cnmf_z6a16cmiwl/caiman_cnmf.pkl
-    - 1/tutorial2/caiman_cnmf_z6a16cmiwl/caiman_cnmf.pkl
-    nwbfile: null
-    output: 1/tutorial2/pca_xi0d87mbrk/pca.pkl
+    - 1/tutorial2/caiman_cnmf_qcjcwx9uq7/caiman_cnmf.pkl
+    - 1/tutorial2/caiman_cnmf_qcjcwx9uq7/caiman_cnmf.pkl
+    return_arg:
+      fluorescence: neural_data
+      iscell: iscell
     params:
       PCA:
         copy: true
@@ -120,8 +92,116 @@ rules:
       standard_mean: true
       standard_std: true
       transpose: true
-    path: optinist/dimension_reduction/pca
-    return_arg:
-      fluorescence: neural_data
-      iscell: iscell
+    output: 1/tutorial2/pca_xi0d87mbrk/pca.pkl
     type: pca
+    nwbfile: null
+    hdf5Path: null
+    matPath: null
+    path: optinist/dimension_reduction/pca
+  caiman_cnmf_qcjcwx9uq7:
+    input:
+    - 1/tutorial2/caiman_mc_p4f6nsi9bh/caiman_mc.pkl
+    return_arg:
+      mc_images: images
+    params:
+      data_params:
+        decay_time: 0.4
+      init_params:
+        do_refit: false
+        K: 4
+        gSig:
+        - 4
+        - 4
+        ssub: 1
+        tsub: 1
+        nb: 2
+        method_init: greedy_roi
+        roi_thr: 0.9
+      preprocess_params:
+        p: 1
+      patch_params:
+        rf: null
+        stride: 6
+      merge_params:
+        merge_thr: 0.85
+      advanced:
+        init_params:
+          SC_kernel: heat
+          SC_sigma: 1
+          SC_thr: 0
+          SC_normalize: true
+          SC_use_NN: false
+          SC_nnn: 20
+          gSiz: null
+          center_psf: false
+          lambda_gnmf: 1
+          maxIter: 5
+          min_corr: 0.85
+          min_pnr: 20
+          seed_method: auto
+          ring_size_factor: 1.5
+          ssub_B: 2
+          init_iter: 2
+          nIter: 5
+          rolling_sum: true
+          rolling_length: 100
+          kernel: null
+          max_iter_snmf: 500
+          alpha_snmf: 0.5
+          sigma_smooth_snmf:
+          - 0.5
+          - 0.5
+          - 0.5
+          perc_baseline_snmf: 20
+          normalize_init: true
+          options_local_NMF: null
+        preprocess_params:
+          sn: null
+          noise_range:
+          - 0.25
+          - 0.5
+          noise_method: mean
+          max_num_samples_fft: 3072
+          n_pixels_per_process: null
+          compute_g: false
+          lags: 5
+          include_noise: false
+          pixels: null
+          check_nan: true
+        patch_params:
+          nb_patch: 1
+          border_pix: 0
+          low_rank_background: true
+          del_duplicates: false
+          only_init: true
+          p_patch: 0
+          skip_refinement: false
+          remove_very_bad_comps: false
+          p_ssub: 2
+          p_tsub: 2
+          memory_fact: 1
+          n_processes: 1
+          in_memory: true
+        merge_params:
+          do_merge: true
+          merge_parallel: false
+          max_merge_area: null
+        quality_evaluation_params:
+          SNR_lowest: 0.5
+          cnn_lowest: 0.1
+          gSig_range: null
+          min_SNR: 2.5
+          min_cnn_thr: 0.9
+          rval_lowest: -1
+          rval_thr: 0.8
+          use_cnn: true
+          use_ecc: false
+          max_ecc: 3
+    output: 1/tutorial2/caiman_cnmf_qcjcwx9uq7/caiman_cnmf.pkl
+    type: caiman_cnmf
+    nwbfile: null
+    hdf5Path: null
+    matPath: null
+    path: caiman/caiman_cnmf
+last_output:
+- 1/tutorial2/pca_xi0d87mbrk/pca.pkl
