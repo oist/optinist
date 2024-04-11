@@ -1,91 +1,95 @@
-finished_at: '2023-11-22 17:20:57'
+workspace_id: '1'
+unique_id: tutorial2
+name: Tutorial2
+started_at: '2024-04-11 16:47:34'
+finished_at: '2024-04-11 16:49:14'
+success: success
+hasNWB: true
 function:
-  caiman_cnmf_z6a16cmiwl:
-    finished_at: '2023-11-22 17:20:48'
-    hasNWB: true
-    message: caiman_cnmf success
-    name: caiman_cnmf
-    outputPaths:
-      all_roi:
-        max_index: null
-        path: /tmp/studio/output/1/tutorial2/caiman_cnmf_z6a16cmiwl/all_roi.json
-        type: roi
-      cell_roi:
-        max_index: null
-        path: /tmp/studio/output/1/tutorial2/caiman_cnmf_z6a16cmiwl/cell_roi.json
-        type: roi
-      fluorescence:
-        max_index: 6
-        path: /tmp/studio/output/1/tutorial2/caiman_cnmf_z6a16cmiwl/fluorescence
-        type: timeseries
-      images:
-        max_index: 1
-        path: /tmp/studio/output/1/tutorial2/caiman_cnmf_z6a16cmiwl/images.json
-        type: images
-      non_cell_roi:
-        max_index: null
-        path: /tmp/studio/output/1/tutorial2/caiman_cnmf_z6a16cmiwl/non_cell_roi.json
-        type: roi
-    started_at: null
-    success: success
-    unique_id: caiman_cnmf_z6a16cmiwl
   caiman_mc_p4f6nsi9bh:
-    finished_at: '2023-11-22 17:20:50'
+    unique_id: caiman_mc_p4f6nsi9bh
+    name: caiman_mc
+    success: success
     hasNWB: true
     message: caiman_mc success
-    name: caiman_mc
     outputPaths:
       mc_images:
-        max_index: 2000
-        path: /tmp/studio/output/1/tutorial2/caiman_mc_p4f6nsi9bh/mc_images.json
+        path: /tmp/studio/output/1/tutorial2/caiman_mc_p4f6nsi9bh/tiff/mc_images/mc_images.tif
         type: images
+        max_index: 2000
       meanImg:
-        max_index: 1
         path: /tmp/studio/output/1/tutorial2/caiman_mc_p4f6nsi9bh/meanImg.json
         type: images
+        max_index: 1
       rois:
-        max_index: null
         path: /tmp/studio/output/1/tutorial2/caiman_mc_p4f6nsi9bh/rois.json
         type: roi
-    started_at: null
-    success: success
-    unique_id: caiman_mc_p4f6nsi9bh
+        max_index: null
+    started_at: '2024-04-11 16:47:49'
+    finished_at: '2024-04-11 16:48:34'
   input_0:
-    finished_at: '2023-11-22 17:20:42'
+    unique_id: input_0
+    name: sample_mouse2p_image.tiff
+    success: success
     hasNWB: false
     message: null
-    name: sample_mouse2p_image.tiff
     outputPaths: null
-    started_at: '2023-11-22 17:20:42'
-    success: success
-    unique_id: input_0
+    started_at: '2024-04-11 16:47:34'
+    finished_at: '2024-04-11 16:47:34'
   pca_xi0d87mbrk:
-    finished_at: '2023-11-22 17:20:57'
+    unique_id: pca_xi0d87mbrk
+    name: pca
+    success: success
     hasNWB: true
     message: pca success
-    name: pca
     outputPaths:
-      contribution:
-        max_index: null
-        path: /tmp/studio/output/1/tutorial2/pca_xi0d87mbrk/contribution.json
-        type: bar
-      cumsum_contribution:
-        max_index: null
-        path: /tmp/studio/output/1/tutorial2/pca_xi0d87mbrk/cumsum_contribution.json
-        type: bar
       explained_variance:
-        max_index: null
         path: /tmp/studio/output/1/tutorial2/pca_xi0d87mbrk/evr.json
         type: bar
-      projectedNd:
         max_index: null
+      projectedNd:
         path: /tmp/studio/output/1/tutorial2/pca_xi0d87mbrk/projectedNd.json
         type: scatter
-    started_at: '2023-11-22 17:20:53'
+        max_index: null
+      contribution:
+        path: /tmp/studio/output/1/tutorial2/pca_xi0d87mbrk/contribution.json
+        type: bar
+        max_index: null
+      cumsum_contribution:
+        path: /tmp/studio/output/1/tutorial2/pca_xi0d87mbrk/cumsum_contribution.json
+        type: bar
+        max_index: null
+    started_at: '2024-04-11 16:49:09'
+    finished_at: '2024-04-11 16:49:14'
+  caiman_cnmf_qcjcwx9uq7:
+    unique_id: caiman_cnmf_qcjcwx9uq7
+    name: caiman_cnmf
     success: success
-    unique_id: pca_xi0d87mbrk
-hasNWB: true
-name: Tutorial2
+    hasNWB: true
+    message: caiman_cnmf success
+    outputPaths:
+      images:
+        path: /tmp/studio/output/1/tutorial2/caiman_cnmf_qcjcwx9uq7/images.json
+        type: images
+        max_index: 1
+      fluorescence:
+        path: /tmp/studio/output/1/tutorial2/caiman_cnmf_qcjcwx9uq7/fluorescence
+        type: timeseries
+        max_index: 4
+      all_roi:
+        path: /tmp/studio/output/1/tutorial2/caiman_cnmf_qcjcwx9uq7/all_roi.json
+        type: roi
+        max_index: null
+      cell_roi:
+        path: /tmp/studio/output/1/tutorial2/caiman_cnmf_qcjcwx9uq7/cell_roi.json
+        type: roi
+        max_index: null
+      non_cell_roi:
+        path: /tmp/studio/output/1/tutorial2/caiman_cnmf_qcjcwx9uq7/non_cell_roi.json
+        type: roi
+        max_index: null
+    started_at: '2024-04-11 16:48:36'
+    finished_at: '2024-04-11 16:48:59'
 nwb:
   device:
     description: Microscope Information
@@ -119,7 +123,3 @@ snakemake:
   forcetargets: true
   lock: false
   use_conda: true
-started_at: '2023-11-22 17:20:42'
-success: success
-unique_id: tutorial2
-workspace_id: '1'
