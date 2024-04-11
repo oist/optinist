@@ -222,14 +222,19 @@ class NWBCreater:
                 roi["table_name"], region=roi["region"]
             )
 
-            roi_resp_series = RoiResponseSeries(
-                name=roi["name"],
-                data=roi["data"],
-                rois=region_roi,
-                unit=roi["unit"],
-                timestamps=roi.get("timestamps"),
-                rate=float(roi.get("rate", 0.0)),
-            )
+            roi_resp_dict = {
+                "name": roi["name"],
+                "data": roi["data"],
+                "rois": region_roi,
+                "unit": roi["unit"],
+                "timestamps": roi.get("timestamps"),
+                "rate": float(roi.get("rate", 0.0)),
+            }
+            if "comments" in roi:
+                roi_resp_dict["comments"] = roi["comments"]
+
+            roi_resp_series = RoiResponseSeries(**roi_resp_dict)
+
             fluo.add_roi_response_series(roi_resp_series)
 
         nwbfile.processing["ophys"].add(fluo)
