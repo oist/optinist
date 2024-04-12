@@ -11,7 +11,7 @@ data_params:
 
 init_params:
   # Ain: null  # TBD: need to support 2D array type.
-
+  use_online: False  # If True, use CNMF Online instead of CNMF.
   do_refit: False
 
   K: 4
@@ -122,3 +122,46 @@ advanced:
     use_cnn: True
     use_ecc: False
     max_ecc: 3
+
+  online_params:
+    N_samples_exceptionality: null  # timesteps to compute SNR
+    batch_update_suff_stat: False
+    dist_shape_update: False        # update shapes in a distributed way
+    ds_factor: 1                    # spatial downsampling for faster processing
+    epochs: 1                       # number of epochs
+    expected_comps: 500             # number of expected components
+    full_XXt: False                 # store entire XXt matrix (as opposed to a list of sub-matrices)
+    init_batch: 200                 # length of mini batch for initialization
+    init_method: bare               # initialization method for first batch
+    iters_shape: 5                  # number of block-CD iterations
+    max_comp_update_shape: null     # maximum number of spatial components to be updated at each time
+                                    # Set int value. If left None, np.inf (CaImAn default) is used.
+    max_num_added: 5                # maximum number of new components for each frame
+    max_shifts_online: 10           # maximum shifts during motion correction
+    min_num_trial: 5                # number of mew possible components for each frame
+    minibatch_shape: 100            # number of frames in each minibatch
+    minibatch_suff_stat: 5
+    motion_correct: False           # flag for motion correction
+    movie_name_online: 'online_movie.mp4'  # filename of saved movie (appended to directory where data is located)
+    normalize: False                # normalize frame
+    n_refit: 0                      # Additional iterations to simultaneously refit
+    num_times_comp_updated: null    # number of times each component is updated
+                                    # Set int value. If left None, np.inf (CaImAn default) is used.
+    opencv_codec: H264              # FourCC video codec for saving movie. Check http://www.fourcc.org/codecs.php
+    ring_CNN: False                 # flag for using a ring CNN background model
+    save_online_movie: False        # flag for saving online movie
+    show_movie: False               # display movie online
+    simultaneously: False           # demix and deconvolve simultaneously
+    sniper_mode: False              # flag for using CNN
+    stop_detection: False           # flag for stop detecting new neurons at the last epoch
+    test_both: False                # flag for using both CNN and space correlation
+    thresh_CNN_noisy: 0.5           # threshold for online CNN classifier
+    thresh_fitness_delta: -50
+    thresh_fitness_raw: null        # threshold for trace SNR (computed below)
+    thresh_overlap: 0.5
+    update_freq: 200                # update every shape at least once every update_freq steps
+    update_num_comps: False         # flag for searching for new components
+    use_corr_img: False             # flag for using correlation image to detect new components
+    use_dense: True                 # flag for representation and storing of A and b
+    use_peak_max: True              # flag for finding candidate centroids
+    W_update_factor: 1              # update W less often than shapes by a given factor

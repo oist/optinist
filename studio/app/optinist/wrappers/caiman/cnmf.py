@@ -69,6 +69,36 @@ def get_roi(A, roi_thr, thr_method, swap_dim, dims):
     return ims
 
 
+def util_get_memmap(images: np.ndarray, file_path: str):
+    """
+    convert np.ndarray to mmap
+    """
+    from caiman.mmapping import prepare_shape
+    from caiman.paths import memmap_frames_filename
+
+    order = "C"
+    dims = images.shape[1:]
+    T = images.shape[0]
+    shape_mov = (np.prod(dims), T)
+
+    dir_path = join_filepath(file_path.split("/")[:-1])
+    basename = file_path.split("/")[-1]
+    fname_tot = memmap_frames_filename(basename, dims, T, order)
+    mmap_path = join_filepath([dir_path, fname_tot])
+
+    mmap_images = np.memmap(
+        mmap_path,
+        mode="w+",
+        dtype=np.float32,
+        shape=prepare_shape(shape_mov),
+        order=order,
+    )
+
+    mmap_images = np.reshape(mmap_images.T, [T] + list(dims), order="F")
+    mmap_images[:] = images[:]
+    return mmap_images, dims, mmap_path
+
+
 def util_recursive_flatten_params(params, result_params: dict, nest_counter=0):
     """
     Recursively flatten node parameters (operation for CaImAn CNMFParams)
@@ -89,9 +119,7 @@ def caiman_cnmf(
 ) -> dict(fluorescence=FluoData, iscell=IscellData):
     from caiman import local_correlations, stop_server
     from caiman.cluster import setup_cluster
-    from caiman.mmapping import prepare_shape
-    from caiman.paths import memmap_frames_filename
-    from caiman.source_extraction.cnmf import cnmf
+    from caiman.source_extraction.cnmf import cnmf, online_cnmf
     from caiman.source_extraction.cnmf.params import CNMFParams
 
     function_id = output_dir.split("/")[-1]
@@ -111,33 +139,14 @@ def caiman_cnmf(
     Ain = reshaped_params.pop("Ain", None)
     do_refit = reshaped_params.pop("do_refit", None)
     roi_thr = reshaped_params.pop("roi_thr", None)
+    use_online = reshaped_params.pop("use_online", False)
 
     file_path = images.path
     if isinstance(file_path, list):
         file_path = file_path[0]
 
     images = images.data
-
-    # np.arrayをmmapへ変換
-    order = "C"
-    dims = images.shape[1:]
-    T = images.shape[0]
-    shape_mov = (np.prod(dims), T)
-
-    dir_path = join_filepath(file_path.split("/")[:-1])
-    basename = file_path.split("/")[-1]
-    fname_tot = memmap_frames_filename(basename, dims, T, order)
-
-    mmap_images = np.memmap(
-        join_filepath([dir_path, fname_tot]),
-        mode="w+",
-        dtype=np.float32,
-        shape=prepare_shape(shape_mov),
-        order=order,
-    )
-
-    mmap_images = np.reshape(mmap_images.T, [T] + list(dims), order="F")
-    mmap_images[:] = images[:]
+    mmap_images, dims, mmap_path = util_get_memmap(images, file_path)
 
     del images
     gc.collect()
@@ -157,11 +166,25 @@ def caiman_cnmf(
         backend="local", n_processes=None, single_thread=True
     )
 
-    cnm = cnmf.CNMF(n_processes=n_processes, dview=dview, Ain=Ain, params=ops)
-    cnm = cnm.fit(mmap_images)
+    if use_online:
+        ops.change_params(
+            {
+                "fnames": [mmap_path],
+                # NOTE: These params uses np.inf as default in CaImAn.
+                # Yaml cannot serialize np.inf, so default value in yaml is None.
+                "max_comp_update_shape": reshaped_params["max_comp_update_shape"]
+                or np.inf,
+                "num_times_comp_updated": reshaped_params["update_num_comps"] or np.inf,
+            }
+        )
+        cnm = online_cnmf.OnACID(dview=dview, Ain=Ain, params=ops)
+        cnm.fit_online()
+    else:
+        cnm = cnmf.CNMF(n_processes=n_processes, dview=dview, Ain=Ain, params=ops)
+        cnm = cnm.fit(mmap_images)
 
-    if do_refit:
-        cnm = cnm.refit(mmap_images, dview=dview)
+        if do_refit:
+            cnm = cnm.refit(mmap_images, dview=dview)
 
     cnm.estimates.evaluate_components(mmap_images, cnm.params, dview=dview)
 
