@@ -3,10 +3,12 @@ import json
 import os
 import platform
 import re
+import shutil
 from enum import Enum, IntEnum
 
 import numpy as np
 
+from studio.app.dir_path import DIRPATH
 from studio.app.optinist.microscopes.MicroscopeDataReaderBase import (
     MicroscopeDataReaderBase,
     OMEDataModel,
@@ -59,30 +61,39 @@ class ND2Reader(MicroscopeDataReaderBase):
     }
 
     @staticmethod
+    def unpack_libs():
+        """Unpack library files"""
+        if not os.path.isdir(DIRPATH.MICROSCOPE_LIB_DIR):
+            shutil.unpack_archive(
+                DIRPATH.MICROSCOPE_LIB_ZIP, DIRPATH.MICROSCOPE_LIB_DIR
+            )
+
+    @staticmethod
     def get_library_path() -> str:
         """Returns the path of the library (dll) file"""
         platform_name = platform.system()
 
-        if __class__.LIBRARY_DIR_KEY not in os.environ:
+        if not os.path.isdir(DIRPATH.MICROSCOPE_LIB_DIR):
             return None
 
         if platform_name not in __class__.SDK_LIBRARY_FILES:
             return None
 
         return (
-            os.environ.get(__class__.LIBRARY_DIR_KEY)
+            DIRPATH.MICROSCOPE_LIB_DIR
             + __class__.SDK_LIBRARY_FILES[platform_name]["main"]
         )
 
     @staticmethod
     def is_available() -> bool:
         """Determine if library is available"""
-        return (__class__.LIBRARY_DIR_KEY in os.environ) and os.path.isfile(
-            __class__.get_library_path()
-        )
+        __class__.unpack_libs()
+        return os.path.isfile(__class__.get_library_path())
 
     def _init_library(self):
         # load sdk libraries (dependencies)
+        __class__.unpack_libs()
+
         if "dependencies" in __class__.SDK_LIBRARY_FILES[platform.system()]:
             platform_library_dir = os.path.dirname(__class__.get_library_path())
             dependencies = __class__.SDK_LIBRARY_FILES[platform.system()][
@@ -176,9 +187,23 @@ class ND2Reader(MicroscopeDataReaderBase):
         textinfo = original_metadata["textinfo"]
         experiments = original_metadata["experiments"]
         first_experiment_params = experiments[0]["parameters"] if experiments else {}
+        metadata_ch0_volume = metadata["channels"][0]["volume"]
         metadata_ch0_microscope = (
             metadata["channels"][0]["microscope"] if experiments else {}
         )
+
+        size_x = attributes["widthPx"]
+        size_y = attributes["heightPx"]
+
+        # get image physical size by from "axesCalibration"
+        axesCalibrated = metadata_ch0_volume["axesCalibrated"]
+        if axesCalibrated[0] and axesCalibrated[1]:
+            axesCalibration = metadata_ch0_volume["axesCalibration"]
+            physical_sizex = axesCalibration[0]
+            physical_sizey = axesCalibration[1]
+        else:
+            physical_sizex = None
+            physical_sizey = None
 
         # experiment, periods, の参照は先頭データの内容から取得
         if "periods" in first_experiment_params:
@@ -192,11 +217,13 @@ class ND2Reader(MicroscopeDataReaderBase):
 
         omeData = OMEDataModel(
             image_name=original_metadata["data_name"],
-            size_x=attributes["widthPx"],
-            size_y=attributes["heightPx"],
+            size_x=size_x,
+            size_y=size_y,
             size_t=0,  # size_t は後続処理で計算・設定する
             size_z=0,  # size_z は後続処理で計算・設定する
             size_c=len(metadata["channels"]),
+            physical_sizex=physical_sizex,
+            physical_sizey=physical_sizey,
             depth=attributes["bitsPerComponentInMemory"],
             significant_bits=attributes["bitsPerComponentSignificant"],
             acquisition_date=re.sub(" +", " ", textinfo.get("date", "")),

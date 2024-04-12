@@ -1,10 +1,12 @@
 import ctypes
 import os
 import platform
+import shutil
 
 import numpy as np
 
 import studio.app.optinist.microscopes.modules.olympus.lib as lib
+from studio.app.dir_path import DIRPATH
 from studio.app.optinist.microscopes.MicroscopeDataReaderBase import (
     MicroscopeDataReaderBase,
     OMEDataModel,
@@ -53,30 +55,39 @@ class OIRReader(MicroscopeDataReaderBase):
     }
 
     @staticmethod
+    def unpack_libs():
+        """Unpack library files"""
+        if not os.path.isdir(DIRPATH.MICROSCOPE_LIB_DIR):
+            shutil.unpack_archive(
+                DIRPATH.MICROSCOPE_LIB_ZIP, DIRPATH.MICROSCOPE_LIB_DIR
+            )
+
+    @staticmethod
     def get_library_path() -> str:
         """Returns the path of the library (dll) file"""
         platform_name = platform.system()
 
-        if __class__.LIBRARY_DIR_KEY not in os.environ:
+        if not os.path.isdir(DIRPATH.MICROSCOPE_LIB_DIR):
             return None
 
         if platform_name not in __class__.SDK_LIBRARY_FILES:
             return None
 
         return (
-            os.environ.get(__class__.LIBRARY_DIR_KEY)
+            DIRPATH.MICROSCOPE_LIB_DIR
             + __class__.SDK_LIBRARY_FILES[platform_name]["main"]
         )
 
     @staticmethod
     def is_available() -> bool:
         """Determine if library is available"""
-        return (__class__.LIBRARY_DIR_KEY in os.environ) and os.path.isfile(
-            __class__.get_library_path()
-        )
+        __class__.unpack_libs()
+        return os.path.isfile(__class__.get_library_path())
 
     def _init_library(self):
         # load sdk libraries (dependencies)
+        __class__.unpack_libs()
+
         if "dependencies" in __class__.SDK_LIBRARY_FILES[platform.system()]:
             platform_library_dir = os.path.dirname(__class__.get_library_path())
             dependencies = __class__.SDK_LIBRARY_FILES[platform.system()][
@@ -217,6 +228,7 @@ class OIRReader(MicroscopeDataReaderBase):
 
         rect = original_metadata["rect"]
         axis_info = original_metadata["axis_info"]
+        pixel_length = original_metadata["pixel_length"]
         channel_info = original_metadata["channel_info"]
         objective_lens_info = original_metadata["objective_lens_info"]
         scanner_settings = original_metadata["scanner_settings"]
@@ -241,6 +253,8 @@ class OIRReader(MicroscopeDataReaderBase):
             size_t=sequence_count,
             size_z=nZLoop,
             size_c=len(channel_info),
+            physical_sizex=pixel_length["x"],
+            physical_sizey=pixel_length["y"],
             depth=int(channel_info[0]["depth"]) * 8,
             significant_bits=channel_info[0]["bit_count"],
             acquisition_date=file_creation_time["creation_time"],
