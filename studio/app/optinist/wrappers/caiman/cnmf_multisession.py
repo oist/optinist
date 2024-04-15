@@ -44,6 +44,9 @@ def caiman_cnmf_multisession(
 
     Ain = reshaped_params.pop("Ain", None)
     roi_thr = reshaped_params.pop("roi_thr", None)
+    n_reg_files = reshaped_params.pop("n_reg_files", 2)
+    if n_reg_files < 2:
+        raise Exception(f"Set n_reg_files to a integer value gte 2. Now {n_reg_files}.")
     reg_file_rate = reshaped_params.pop("reg_file_rate", 1.0)
     if reg_file_rate > 1.0:
         logger.warn(
@@ -51,7 +54,7 @@ def caiman_cnmf_multisession(
         )
         reg_file_rate = 1.0
 
-    split_image_paths = images.split_image(output_dir)
+    split_image_paths = images.split_image(output_dir, n_files=n_reg_files)
     n_split_images = len(split_image_paths)
 
     logger.info(f"image was split into {n_split_images} parts.")
