@@ -1,13 +1,15 @@
 import gc
 import os
-import shutil
 
 import numpy as np
+import requests
 
 from studio.app.common.core.logger import AppLogger
-from studio.app.common.core.utils.filepath_creater import join_filepath
+from studio.app.common.core.utils.filepath_creater import (
+    create_directory,
+    join_filepath,
+)
 from studio.app.common.dataclass import ImageData
-from studio.app.dir_path import DIRPATH
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import EditRoiData, FluoData, IscellData, RoiData
 
@@ -114,6 +116,36 @@ def util_recursive_flatten_params(params, result_params: dict, nest_counter=0):
             result_params[key] = nested_param
 
 
+def util_download_model_files():
+    """
+    download model files for component evaluation
+    """
+    # NOTE: We specify the version of the CaImAn to download.
+    base_url = "https://github.com/flatironinstitute/CaImAn/raw/v1.9.12/model"
+    model_files = [
+        "cnn_model.h5",
+        "cnn_model.h5.pb",
+        "cnn_model.json",
+        "cnn_model_online.h5",
+        "cnn_model_online.h5.pb",
+        "cnn_model_online.json",
+    ]
+
+    caiman_data_dir = os.path.join(os.path.expanduser("~"), "caiman_data")
+    if not os.path.exists(caiman_data_dir):
+        create_directory(caiman_data_dir)
+        model_dir = join_filepath([caiman_data_dir, "model"])
+        create_directory(join_filepath(model_dir))
+
+        for model in model_files:
+            url = f"{base_url}/{model}"
+            file_path = join_filepath([model_dir, model])
+            logger.info(f"Downloading {model}")
+            response = requests.get(url)
+            with open(file_path, "wb") as f:
+                f.write(response.content)
+
+
 def caiman_cnmf(
     images: ImageData, output_dir: str, params: dict = None, **kwargs
 ) -> dict(fluorescence=FluoData, iscell=IscellData):
@@ -126,11 +158,7 @@ def caiman_cnmf(
     logger.info(f"start caiman_cnmf: {function_id}")
 
     # NOTE: evaluate_components requires cnn_model files in caiman_data directory.
-    caiman_data_dir = os.path.join(os.path.expanduser("~"), "caiman_data")
-    if not os.path.exists(caiman_data_dir):
-        shutil.copytree(
-            f"{DIRPATH.APP_DIR}/optinist/wrappers/caiman/caiman_data", caiman_data_dir
-        )
+    util_download_model_files()
 
     # flatten cmnf params segments.
     reshaped_params = {}
