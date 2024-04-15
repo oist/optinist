@@ -4,6 +4,7 @@ import platform
 import shutil
 
 import numpy as np
+import requests
 
 import studio.app.optinist.microscopes.modules.olympus.lib as lib
 from studio.app.dir_path import DIRPATH
@@ -58,6 +59,13 @@ class OIRReader(MicroscopeDataReaderBase):
     def unpack_libs():
         """Unpack library files"""
         if not os.path.isdir(DIRPATH.MICROSCOPE_LIB_DIR):
+            if not os.path.exists(DIRPATH.MICROSCOPE_LIB_ZIP):
+                response = requests.get(
+                    "https://github.com/oist/optinist/raw/v1.2.1/studio/app/optinist/microscopes/libs.zip"  # noqa: E501
+                )
+                with open(DIRPATH.MICROSCOPE_LIB_ZIP, "wb") as f:
+                    f.write(response.content)
+
             shutil.unpack_archive(
                 DIRPATH.MICROSCOPE_LIB_ZIP, DIRPATH.MICROSCOPE_LIB_DIR
             )
