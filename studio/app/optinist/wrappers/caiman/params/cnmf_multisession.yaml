@@ -11,6 +11,7 @@ data_params:
 
 init_params:
   # Ain: null  # TBD: need to support 2D array type.
+  n_reg_files: 2 # number of files to be split.
   reg_file_rate: 1.0  # threshold for the cell is detected in how many files
   K: 4
   gSig: [4, 4]

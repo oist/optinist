@@ -16,7 +16,6 @@ from studio.app.common.core.workflow.workflow import OutputPath, OutputType
 from studio.app.common.dataclass.base import BaseData
 from studio.app.common.dataclass.utils import create_images_list
 from studio.app.common.schemas.outputs import PlotMetaData
-from studio.app.const import MAX_IMAGE_DATA_PART_SIZE
 from studio.app.dir_path import DIRPATH
 
 
@@ -50,17 +49,12 @@ class ImageData(BaseData):
             del data
             gc.collect()
 
-    def split_image(self, output_dir: str):
-        image = self.data
-        size = image.nbytes
-        frames = image.shape[0]
+    def split_image(self, output_dir: str, n_files: int = 2):
+        assert n_files > 1, "n_files should be greater than 1"
 
-        if size > MAX_IMAGE_DATA_PART_SIZE:
-            frames_per_part = math.ceil(
-                frames / math.ceil(size / MAX_IMAGE_DATA_PART_SIZE)
-            )
-        else:
-            frames_per_part = frames // 2
+        image = self.data
+        frames = image.shape[0]
+        frames_per_part = math.ceil(frames // n_files)
 
         file_name = self.path[0] if isinstance(self.path, list) else self.path
         name, ext = os.path.splitext(os.path.basename(file_name))
@@ -69,13 +63,13 @@ class ImageData(BaseData):
         _dir = join_filepath([output_dir, "image_split", name])
         create_directory(_dir)
 
-        for t in np.arange(0, frames, frames_per_part):
-            _path = join_filepath([_dir, f"{name}_{t//frames_per_part}{ext}"])
+        for n in range(n_files):
+            _path = join_filepath([_dir, f"{name}_{n}{ext}"])
             with tifffile.TiffWriter(_path, bigtiff=True) as tif:
-                if t == frames - 1:
-                    tif.write(image[t:])
+                if n == n_files - 1:
+                    tif.write(image[n * frames_per_part :])
                 else:
-                    tif.write(image[t : t + frames_per_part])
+                    tif.write(image[n * frames_per_part : (n + 1) * frames_per_part])
             save_paths.append(_path)
 
         return save_paths

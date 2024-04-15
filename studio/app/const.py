@@ -20,5 +20,3 @@ ACCEPT_MICROSCOPE_EXT = [".nd2", ".oir", ".isxd", ".thor.zip"]
 NOT_DISPLAY_ARGS_LIST = ["params", "output_dir", "nwbfile", "kwargs"]
 
 DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
-
-MAX_IMAGE_DATA_PART_SIZE = 1_000_000_000  # 1GB
