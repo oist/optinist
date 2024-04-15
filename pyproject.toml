@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "optinist"
 description = "Calcium Imaging Pipeline Tool"
-version = "1.2.0"
+version = "1.2.1"
 license = "GPL-3.0"
 authors = ["OIST <email@example.com>"]
 readme = "README.md"
@@ -36,7 +36,12 @@ include = [
   "sample_data/input/*",
   "sample_data/output/**/*.yaml",
 ]
-exclude = ["studio/tests/*", "studio/test_data/*", "conda.env.*"]
+exclude = [
+  "studio/tests/*",
+  "studio/test_data/*",
+  "conda.env.*",
+  "studio/app/optinist/microscopes/libs.zip",
+]
 
 [tool.poetry.dependencies]
 python = "^3.8.1"
