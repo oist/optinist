@@ -44,6 +44,8 @@ def caiman_cnmf_multisession(
 
     Ain = reshaped_params.pop("Ain", None)
     roi_thr = reshaped_params.pop("roi_thr", None)
+
+    # mulisiession params
     n_reg_files = reshaped_params.pop("n_reg_files", 2)
     if n_reg_files < 2:
         raise Exception(f"Set n_reg_files to a integer value gte 2. Now {n_reg_files}.")
@@ -53,6 +55,13 @@ def caiman_cnmf_multisession(
             f"reg_file_rate {reg_file_rate}, should be lte 1. Using 1.0 instead."
         )
         reg_file_rate = 1.0
+
+    align_flag = reshaped_params.pop("align_flag", True)
+    max_thr = reshaped_params.pop("max_thr", 0)
+    use_opt_flow = reshaped_params.pop("use_opt_flow", True)
+    thresh_cost = reshaped_params.pop("thresh_cost", 0.7)
+    max_dist = reshaped_params.pop("max_dist", 10)
+    enclosed_thr = reshaped_params.pop("enclosed_thr", None)
 
     split_image_paths = images.split_image(output_dir, n_files=n_reg_files)
     n_split_images = len(split_image_paths)
@@ -97,7 +106,15 @@ def caiman_cnmf_multisession(
     dims = templates[0].shape
 
     spatial_union, assignments, matchings = register_multisession(
-        A=spatial, dims=dims, templates=templates
+        A=spatial,
+        dims=dims,
+        templates=templates,
+        align_flag=align_flag,
+        max_thr=max_thr,
+        use_opt_flow=use_opt_flow,
+        thresh_cost=thresh_cost,
+        max_dist=max_dist,
+        enclosed_thr=enclosed_thr,
     )
 
     reg_files = int(len(split_image_paths) * reg_file_rate)

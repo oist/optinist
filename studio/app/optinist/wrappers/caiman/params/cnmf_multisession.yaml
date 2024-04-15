@@ -11,8 +11,6 @@ data_params:
 
 init_params:
   # Ain: null  # TBD: need to support 2D array type.
-  n_reg_files: 2 # number of files to be split.
-  reg_file_rate: 1.0  # threshold for the cell is detected in how many files
   K: 4
   gSig: [4, 4]
   ssub: 1
@@ -32,6 +30,18 @@ patch_params:
 merge_params:
   merge_thr: 0.85
 
+multisession_params:
+  # Following 2 parameters are optinist specific.
+  n_reg_files: 2 # number of files to be split.
+  reg_file_rate: 1.0  # threshold for the cell is detected in how many files
+  # Following parameters are from CaImAn register_multisession.
+  align_flag: True  # align the templates before matching
+  max_thr: 0  # max threshold parameter before binarization
+  use_opt_flow: True  # use dense optical flow to align templates
+  thresh_cost: 0.7  # maximum distance considered
+  max_dist: 10  # max distance between centroids
+  enclosed_thr: null  # float, if not None set distance to at most the specified value
+                      # when ground truth is a subset of inferred
 
 # ----------------------------------------
 # Advanced Parameters

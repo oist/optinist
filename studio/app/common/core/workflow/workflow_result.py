@@ -55,12 +55,14 @@ class WorkflowResult:
             for pickle_filepath in list(
                 set(glob_pickle_filepath) - set(tmp_glob_pickle_filepath)
             ):
-                results[node_id] = NodeResult(
+                node_result = NodeResult(
                     self.workflow_dirpath,
                     node_id,
                     pickle_filepath,
-                ).get()
-                self.has_nwb(node_id)
+                )
+                if node_result.info is not None:
+                    results[node_id] = node_result.get()
+                    self.has_nwb(node_id)
 
         self.has_nwb()
 
@@ -144,7 +146,10 @@ class NodeResult:
 
         pickle_filepath = pickle_filepath.replace("\\", "/")
         self.algo_name = os.path.splitext(os.path.basename(pickle_filepath))[0]
-        self.info = PickleReader.read(pickle_filepath)
+        try:
+            self.info = PickleReader.read(pickle_filepath)
+        except EOFError:
+            self.info = None
 
     def get(self):
         expt_config = ExptConfigReader.read(self.expt_filepath)
