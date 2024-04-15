@@ -1,4 +1,4 @@
-dll/
+libs/
 
 /tests/test_data/
 /tests/test_output/

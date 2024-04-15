@@ -28,6 +28,12 @@ build_frontend:
 	docker-compose -f docker-compose.test.yml build build_studio_frontend
 	docker-compose -f docker-compose.test.yml run build_studio_frontend
 
+.PHONY: format
+format:
+	black studio *.py
+	isort studio *.py
+	flake8 studio *.py
+
 .PHONY: docs
 docs:
 	rm -rf docs/_build/
@@ -35,31 +41,38 @@ docs:
 	# sphinx-apidoc -f -o ./docs/_build/modules ./studio
 	sphinx-autobuild -b html docs docs/_build --port 8001
 
-.PHONY: dockerhub
-dockerhub:
-	docker build --rm -t oistncu/optinist:latest . --platform=linux/amd64
-	docker push oistncu/optinist:latest
-
 .PHONY: local_build
 local_build:
+	rm -rf dist
 	cd frontend && yarn install --ignore-scripts && yarn build
 	poetry build
 
-.PHONY: upload_testpypi
-upload_testpypi:
+.PHONY: push_testpypi
+push_testpypi:
 	poetry publish -r testpypi
 
 .PHONY: install_testpypi
 install_testpypi:
-	pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ optinist
+	pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ optinist==${ver}
 	pip show optinist
+
+.PHONY: build_test_docker
+build_test_docker:
+	docker build --no-cache -t optinist-release-test:${ver} -f studio/config/docker/Dockerfile .
+
+.PHONY: run_test_docker
+run_test_docker:
+	docker run -it \
+	-v ${volume}:/app/studio_data \
+	--env OPTINIST_DIR="/app/studio_data" \
+	--name optinist-release-test -d -p 8000:8000 optinist-release-test:${ver} \
+	poetry run python main.py --host 0.0.0.0 --port 8000
 
 .PHONY: push_pypi
 push_pypi:
 	poetry publish
 
-.PHONY: format
-format:
-	black studio *.py
-	isort studio *.py
-	flake8 studio *.py
+.PHONY: push_dockerhub
+push_dockerhub:
+	docker build --rm -t oistncu/optinist:latest -f studio/config/docker/Dockerfile . --platform=linux/amd64
+	docker push oistncu/optinist:latest

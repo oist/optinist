@@ -1,4 +1,6 @@
 import gc
+import math
+import os
 from typing import Optional
 
 import imageio
@@ -46,6 +48,31 @@ class ImageData(BaseData):
 
             del data
             gc.collect()
+
+    def split_image(self, output_dir: str, n_files: int = 2):
+        assert n_files > 1, "n_files should be greater than 1"
+
+        image = self.data
+        frames = image.shape[0]
+        frames_per_part = math.ceil(frames // n_files)
+
+        file_name = self.path[0] if isinstance(self.path, list) else self.path
+        name, ext = os.path.splitext(os.path.basename(file_name))
+        save_paths = []
+
+        _dir = join_filepath([output_dir, "image_split", name])
+        create_directory(_dir)
+
+        for n in range(n_files):
+            _path = join_filepath([_dir, f"{name}_{n}{ext}"])
+            with tifffile.TiffWriter(_path, bigtiff=True) as tif:
+                if n == n_files - 1:
+                    tif.write(image[n * frames_per_part :])
+                else:
+                    tif.write(image[n * frames_per_part : (n + 1) * frames_per_part])
+            save_paths.append(_path)
+
+        return save_paths
 
     @property
     def data(self):

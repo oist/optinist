@@ -117,9 +117,9 @@ def main(develop_mode: bool = False):
     args = parser.parse_args()
 
     log_config_file = (
-        f"{DIRPATH.CONFIG_DIR}/standalone-logging.yaml"
+        f"{DIRPATH.CONFIG_DIR}/logging.yaml"
         if MODE.IS_STANDALONE
-        else f"{DIRPATH.CONFIG_DIR}/logging.yaml"
+        else f"{DIRPATH.CONFIG_DIR}/logging.multiuser.yaml"
     )
 
     if develop_mode:

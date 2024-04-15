@@ -1,0 +1,133 @@
+# - CaImAn parameters reference page
+#   - https://caiman.readthedocs.io/en/dev/Getting_Started.html#parameters
+#   - https://caiman.readthedocs.io/en/dev/core_functions.html#caiman.source_extraction.cnmf.params.CNMFParams
+
+# ----------------------------------------
+# Basic Parameters
+# ----------------------------------------
+
+data_params:
+  decay_time: 0.4
+
+init_params:
+  # Ain: null  # TBD: need to support 2D array type.
+  K: 4
+  gSig: [4, 4]
+  ssub: 1
+  tsub: 1
+  nb: 2
+  method_init: "greedy_roi"
+
+  roi_thr: 0.9  # Note: Extended param for ROI
+
+preprocess_params:
+  p: 1
+
+patch_params:
+  rf: null
+  stride: 6
+
+merge_params:
+  merge_thr: 0.85
+
+multisession_params:
+  # Following 2 parameters are optinist specific.
+  n_reg_files: 2 # number of files to be split.
+  reg_file_rate: 1.0  # threshold for the cell is detected in how many files
+  # Following parameters are from CaImAn register_multisession.
+  align_flag: True  # align the templates before matching
+  max_thr: 0  # max threshold parameter before binarization
+  use_opt_flow: True  # use dense optical flow to align templates
+  thresh_cost: 0.7  # maximum distance considered
+  max_dist: 10  # max distance between centroids
+  enclosed_thr: null  # float, if not None set distance to at most the specified value
+                      # when ground truth is a subset of inferred
+
+# ----------------------------------------
+# Advanced Parameters
+# ----------------------------------------
+
+advanced:
+  # Note: Other data params are undefined because they are less necessary.
+  # data_params:
+  #   fnames: null
+  #   dims: null
+  #   fr: 30
+  #   dxy: [1, 1]
+  #   var_name_hdf5: 'mov'
+  #   caiman_version: null
+  #   last_commit: null
+  #   mmap_F: null
+  #   mmap_C: null
+
+  init_params:
+    SC_kernel: "heat"
+    SC_sigma: 1
+    SC_thr: 0
+    SC_normalize: True
+    SC_use_NN: False
+    SC_nnn: 20
+    gSiz: null
+    center_psf: False
+    lambda_gnmf: 1
+    maxIter: 5
+    min_corr: 0.85
+    min_pnr: 20
+    seed_method: "auto"
+    ring_size_factor: 1.5
+    ssub_B: 2
+    init_iter: 2
+    nIter: 5
+    rolling_sum: True
+    rolling_length: 100
+    kernel: null
+    max_iter_snmf: 500
+    alpha_snmf: 0.5
+    sigma_smooth_snmf: [0.5, 0.5, 0.5]
+    perc_baseline_snmf: 20
+    normalize_init: True
+    options_local_NMF: null
+
+  preprocess_params:
+    sn: null
+    noise_range: [0.25, 0.5]
+    noise_method: "mean"
+    max_num_samples_fft: 3072
+    n_pixels_per_process: null
+    compute_g: False
+    lags: 5
+    include_noise: False
+    pixels: null
+    check_nan: True
+
+  patch_params:
+    nb_patch: 1
+    border_pix: 0
+    low_rank_background: True
+    del_duplicates: False
+    only_init: True
+    p_patch: 0
+    skip_refinement: False
+    remove_very_bad_comps: False
+    p_ssub: 2
+    p_tsub: 2
+    memory_fact: 1
+    n_processes: 1
+    in_memory: True
+
+  merge_params:
+    do_merge: True
+    merge_parallel: False
+    max_merge_area: null
+
+  quality_evaluation_params:
+    SNR_lowest: 0.5
+    cnn_lowest: 0.1
+    gSig_range: null
+    min_SNR: 2.5
+    min_cnn_thr: 0.9
+    rval_lowest: -1
+    rval_thr: 0.8
+    use_cnn: True
+    use_ecc: False
+    max_ecc: 3

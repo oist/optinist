@@ -1,9 +1,12 @@
 import numpy as np
 from scipy.stats import mode
 
+from studio.app.common.core.logger import AppLogger
 from studio.app.common.dataclass import HeatMapData, TimeSeriesData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import BehaviorData, FluoData, IscellData
+
+logger = AppLogger.get_logger()
 
 
 def calc_trigger(behavior_data, trigger_type, trigger_threshold):
@@ -73,7 +76,7 @@ def ETA(
     **kwargs,
 ) -> dict(mean=TimeSeriesData):
     function_id = output_dir.split("/")[-1]
-    print("start ETA:", function_id)
+    logger.info("start ETA: %s", function_id)
 
     neural_data = neural_data.data
     behaviors_data = behaviors_data.data

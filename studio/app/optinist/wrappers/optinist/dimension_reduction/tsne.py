@@ -1,7 +1,10 @@
+from studio.app.common.core.logger import AppLogger
 from studio.app.common.dataclass import ScatterData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import FluoData, IscellData
 from studio.app.optinist.wrappers.optinist.utils import standard_norm
+
+logger = AppLogger.get_logger()
 
 
 def TSNE(
@@ -15,7 +18,7 @@ def TSNE(
     from sklearn.manifold import TSNE
 
     function_id = output_dir.split("/")[-1]
-    print("start TSNE:", function_id)
+    logger.info("start TSNE: %s", function_id)
 
     neural_data = neural_data.data
 

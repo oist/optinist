@@ -1,6 +1,9 @@
+from studio.app.common.core.logger import AppLogger
 from studio.app.common.dataclass import TimeSeriesData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import FluoData, IscellData
+
+logger = AppLogger.get_logger()
 
 
 def cross_correlation(
@@ -18,7 +21,7 @@ def cross_correlation(
     from tqdm import tqdm
 
     function_id = output_dir.split("/")[-1]
-    print("start cross_correlation:", function_id)
+    logger.info("start cross_correlation: %s", function_id)
 
     neural_data = neural_data.data
 
