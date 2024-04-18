@@ -6,3 +6,4 @@ dependencies:
   - cython
   - numpy=1.22.*
   - caiman>=1.9.9, <=1.9.12
+  - scikit-image=0.19.*
