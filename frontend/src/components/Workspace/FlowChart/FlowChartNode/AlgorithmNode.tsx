@@ -1,4 +1,4 @@
-import { memo, useContext, useRef, useState } from "react"
+import { memo, useContext, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { Handle, Position, NodeProps } from "reactflow"
 
@@ -7,7 +7,7 @@ import ErrorIcon from "@mui/icons-material/Error"
 import {
   Typography,
   useTheme,
-  Tooltip,
+  // Tooltip,
   IconButton,
   Button,
   LinearProgress,
@@ -271,12 +271,12 @@ const ArgHandle = memo(function ArgHandle({
 }: HandleProps) {
   const hex_color = useHandleColor(type)
   const id = toHandleId(nodeId, name, type)
-  const [isHover, setHover] = useState(false)
+  // const [isHover, setHover] = useState(false)
   const rgb_color = hexToRgb(hex_color, isNone)
   return (
     <Handle
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
+      // onMouseEnter={() => setHover(true)}
+      // onMouseLeave={() => setHover(false)}
       key={i.toFixed()}
       type="target"
       position={Position.Left}
@@ -288,7 +288,7 @@ const ArgHandle = memo(function ArgHandle({
       }}
       isValidConnection={isValidConnection}
     >
-      <Tooltip
+      {/* <Tooltip
         title={
           <>
             <Typography color="inherit">name: {name}</Typography>
@@ -300,7 +300,7 @@ const ArgHandle = memo(function ArgHandle({
         arrow
       >
         <div />
-      </Tooltip>
+      </Tooltip> */}
     </Handle>
   )
 })
@@ -312,11 +312,11 @@ const ReturnHandle = memo<HandleProps>(function ReturnHandle({
 }: HandleProps) {
   const color = useHandleColor(type)
   const id = toHandleId(nodeId, name, type)
-  const [isHover, setHover] = useState(false)
+  // const [isHover, setHover] = useState(false)
   return (
     <Handle
-      onMouseEnter={() => setHover(true)}
-      onMouseLeave={() => setHover(false)}
+      // onMouseEnter={() => setHover(true)}
+      // onMouseLeave={() => setHover(false)}
       key={i.toFixed()}
       type="source"
       position={Position.Right}
@@ -328,7 +328,7 @@ const ReturnHandle = memo<HandleProps>(function ReturnHandle({
       }}
       isValidConnection={isValidConnection}
     >
-      <Tooltip
+      {/* <Tooltip
         title={
           <>
             <Typography color="inherit">name: {name}</Typography>
@@ -340,7 +340,7 @@ const ReturnHandle = memo<HandleProps>(function ReturnHandle({
         arrow
       >
         <div />
-      </Tooltip>
+      </Tooltip> */}
     </Handle>
   )
 })
