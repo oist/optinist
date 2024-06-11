@@ -44,14 +44,16 @@ class SmkRule:
         )
 
     def image(self) -> Rule:
-        return self.builder.set_type("image").build()
+        return self.builder.set_type(FILETYPE.IMAGE).build()
 
-    def csv(self, nodeType="csv") -> Rule:
+    def csv(self, nodeType=FILETYPE.CSV) -> Rule:
         return self.builder.set_type(nodeType).build()
 
     def hdf5(self) -> Rule:
         return (
-            self.builder.set_type("hdf5").set_hdf5Path(self._node.data.hdf5Path).build()
+            self.builder.set_type(FILETYPE.HDF5)
+            .set_hdf5Path(self._node.data.hdf5Path)
+            .build()
         )
 
     def mat(self) -> Rule:
