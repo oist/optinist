@@ -219,7 +219,7 @@ async def download_file(
     background_tasks: BackgroundTasks,
 ):
     path = PurePath(urlparse(file.url).path)
-    if path.suffix not in ACCEPT_FILE_EXT.AlL_EXT.value:
+    if path.suffix not in ACCEPT_FILE_EXT.ALL_EXT.value:
         raise HTTPException(status_code=400, detail="Invalid url")
 
     create_directory(join_filepath([DIRPATH.INPUT_DIR, workspace_id]))

@@ -19,7 +19,7 @@ class ACCEPT_FILE_EXT(Enum):
     MATLAB_EXT = [".mat"]
     MICROSCOPE_EXT = [".nd2", ".oir", ".isxd", ".thor.zip"]
 
-    AlL_EXT = TIFF_EXT + CSV_EXT + HDF5_EXT + MATLAB_EXT + MICROSCOPE_EXT
+    ALL_EXT = TIFF_EXT + CSV_EXT + HDF5_EXT + MATLAB_EXT + MICROSCOPE_EXT
 
 
 NOT_DISPLAY_ARGS_LIST = ["params", "output_dir", "nwbfile", "kwargs"]
