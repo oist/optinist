@@ -12,7 +12,7 @@ from studio.app.common.core.utils.filepath_creater import (
 )
 from studio.app.common.core.utils.json_writer import JsonWriter, save_tiff2json
 from studio.app.common.schemas.outputs import JsonTimeSeriesData, OutputData
-from studio.app.const import ACCEPT_TIFF_EXT
+from studio.app.const import ACCEPT_FILE_EXT
 from studio.app.dir_path import DIRPATH
 
 router = APIRouter(prefix="/outputs", tags=["outputs"])
@@ -121,7 +121,7 @@ async def get_image(
     end_index: Optional[int] = 10,
 ):
     filename, ext = os.path.splitext(os.path.basename(filepath))
-    if ext in ACCEPT_TIFF_EXT:
+    if ext in ACCEPT_FILE_EXT.TIFF_EXT.value:
         if not filepath.startswith(join_filepath([DIRPATH.OUTPUT_DIR, workspace_id])):
             filepath = join_filepath([DIRPATH.INPUT_DIR, workspace_id, filepath])
 

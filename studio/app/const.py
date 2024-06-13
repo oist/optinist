@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from enum import Enum
 
 
 @dataclass
@@ -11,11 +12,15 @@ class FILETYPE:
     MICROSCOPE: str = "microscope"
 
 
-ACCEPT_TIFF_EXT = [".tif", ".tiff", ".TIF", ".TIFF"]
-ACCEPT_CSV_EXT = [".csv"]
-ACCEPT_HDF5_EXT = [".hdf5", ".nwb", ".HDF5", ".NWB"]
-ACCEPT_MATLAB_EXT = [".mat"]
-ACCEPT_MICROSCOPE_EXT = [".nd2", ".oir", ".isxd", ".thor.zip"]
+class ACCEPT_FILE_EXT(Enum):
+    TIFF_EXT = [".tif", ".tiff", ".TIF", ".TIFF"]
+    CSV_EXT = [".csv"]
+    HDF5_EXT = [".hdf5", ".nwb", ".HDF5", ".NWB"]
+    MATLAB_EXT = [".mat"]
+    MICROSCOPE_EXT = [".nd2", ".oir", ".isxd", ".thor.zip"]
+
+    AlL_EXT = TIFF_EXT + CSV_EXT + HDF5_EXT + MATLAB_EXT + MICROSCOPE_EXT
+
 
 NOT_DISPLAY_ARGS_LIST = ["params", "output_dir", "nwbfile", "kwargs"]
 
