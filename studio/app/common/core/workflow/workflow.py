@@ -18,7 +18,7 @@ class NodeType:
     MATLAB: str = "MatlabFileNode"
     MICROSCOPE: str = "MicroscopeFileNode"
 
-    # Data Type (Includs above DataType Nodes)
+    # Data Type (Includes above DataType Nodes)
     DATA: str = "DataNode"
 
     # Algo Type
