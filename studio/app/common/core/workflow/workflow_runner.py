@@ -10,7 +10,7 @@ from studio.app.common.core.snakemake.snakemake_executor import (
 from studio.app.common.core.snakemake.snakemake_reader import SmkParamReader
 from studio.app.common.core.snakemake.snakemake_rule import SmkRule
 from studio.app.common.core.snakemake.snakemake_writer import SmkConfigWriter
-from studio.app.common.core.workflow.workflow import NodeType, RunItem
+from studio.app.common.core.workflow.workflow import NodeType, NodeTypeUtil, RunItem
 from studio.app.common.core.workflow.workflow_params import get_typecheck_params
 from studio.app.common.core.workflow.workflow_reader import WorkflowConfigReader
 from studio.app.common.core.workflow.workflow_writer import WorkflowConfigWriter
@@ -78,7 +78,7 @@ class WorkflowRunner:
         last_outputs = []
 
         for node in self.nodeDict.values():
-            if NodeType.check_nodetype(node.type) == NodeType.DATA:
+            if NodeTypeUtil.check_nodetype(node.type) == NodeType.DATA:
                 data_common_rule = SmkRule(
                     workspace_id=self.workspace_id,
                     unique_id=self.unique_id,
@@ -105,7 +105,7 @@ class WorkflowRunner:
 
                 rule_dict[node.id] = data_rule
 
-            elif NodeType.check_nodetype(node.type) == NodeType.ALGO:
+            elif NodeTypeUtil.check_nodetype(node.type) == NodeType.ALGO:
                 algo_rule = SmkRule(
                     workspace_id=self.workspace_id,
                     unique_id=self.unique_id,

@@ -12,7 +12,7 @@ sys.path.append(ROOT_DIRPATH)
 from studio.app.common.core.rules.file_writer import FileWriter
 from studio.app.common.core.snakemake.snakemake_reader import RuleConfigReader
 from studio.app.common.core.utils.pickle_handler import PickleWriter
-from studio.app.common.core.workflow.workflow import NodeType
+from studio.app.common.core.workflow.workflow import NodeType, NodeTypeUtil
 from studio.app.const import FILETYPE
 
 if __name__ == "__main__":
@@ -20,7 +20,7 @@ if __name__ == "__main__":
 
     rule_config = RuleConfigReader.read(snakemake.params.name)
 
-    if NodeType.check_nodetype_from_filetype(rule_config.type) == NodeType.DATA:
+    if NodeTypeUtil.check_nodetype_from_filetype(rule_config.type) == NodeType.DATA:
         if rule_config.type in [FILETYPE.IMAGE]:
             rule_config.input = snakemake.input
         else:
@@ -30,18 +30,18 @@ if __name__ == "__main__":
 
     rule_config.output = snakemake.output[0]
 
+    outputfile = None
     if rule_config.type in [FILETYPE.CSV, FILETYPE.BEHAVIOR]:
         outputfile = FileWriter.csv(rule_config, rule_config.type)
-        PickleWriter.write(rule_config.output, outputfile)
     elif rule_config.type == FILETYPE.IMAGE:
         outputfile = FileWriter.image(rule_config)
-        PickleWriter.write(rule_config.output, outputfile)
     elif rule_config.type == FILETYPE.HDF5:
         outputfile = FileWriter.hdf5(rule_config)
-        PickleWriter.write(rule_config.output, outputfile)
     elif rule_config.type == FILETYPE.MATLAB:
         outputfile = FileWriter.mat(rule_config)
-        PickleWriter.write(rule_config.output, outputfile)
     elif rule_config.type == FILETYPE.MICROSCOPE:
         outputfile = FileWriter.microscope(rule_config)
-        PickleWriter.write(rule_config.output, outputfile)
+    else:
+        assert False, f"Invalid file type: {rule_config.type}"
+
+    PickleWriter.write(rule_config.output, outputfile)

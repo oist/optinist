@@ -17,33 +17,37 @@ class NodeType:
     HDF5: str = "HDF5FileNode"
     MATLAB: str = "MatlabFileNode"
     MICROSCOPE: str = "MicroscopeFileNode"
+
     # Data Type (Includs above DataType Nodes)
     DATA: str = "DataNode"
+
     # Algo Type
     ALGO: str = "AlgorithmNode"
 
-    @classmethod
-    def check_nodetype(cls, node_type: str) -> str:
+
+class NodeTypeUtil:
+    @staticmethod
+    def check_nodetype(node_type: str) -> str:
         """
         Check NodeType (DATA or ALGO) from detailed node type
         """
         if node_type in [
-            cls.IMAGE,
-            cls.CSV,
-            cls.FLUO,
-            cls.BEHAVIOR,
-            cls.HDF5,
-            cls.MATLAB,
-            cls.MICROSCOPE,
+            NodeType.IMAGE,
+            NodeType.CSV,
+            NodeType.FLUO,
+            NodeType.BEHAVIOR,
+            NodeType.HDF5,
+            NodeType.MATLAB,
+            NodeType.MICROSCOPE,
         ]:
-            return cls.DATA
-        elif node_type == cls.ALGO:
-            return cls.ALGO
+            return NodeType.DATA
+        elif node_type == NodeType.ALGO:
+            return NodeType.ALGO
         else:
             None
 
-    @classmethod
-    def check_nodetype_from_filetype(cls, file_type: str) -> str:
+    @staticmethod
+    def check_nodetype_from_filetype(file_type: str) -> str:
         """
         Check NodeType (DATA or ALGO) from file type
         """
@@ -55,7 +59,7 @@ class NodeType:
             FILETYPE.MATLAB,
             FILETYPE.MICROSCOPE,
         ]:
-            return cls.DATA
+            return NodeType.DATA
         else:
             None
 

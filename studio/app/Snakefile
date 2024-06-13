@@ -3,7 +3,7 @@ from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.optinist.core.edit_ROI import EditRoiUtils
 from studio.app.dir_path import DIRPATH
 
-from studio.app.common.core.workflow.workflow import NodeType
+from studio.app.common.core.workflow.workflow import NodeType, NodeTypeUtil
 
 if config.get('type') == "EDIT_ROI":
     rule edit_ROI:
@@ -17,7 +17,7 @@ else:
 
 
     for rule_name, details in config["rules"].items():
-        if NodeType.check_nodetype_from_filetype(details["type"]) == NodeType.DATA:
+        if NodeTypeUtil.check_nodetype_from_filetype(details["type"]) == NodeType.DATA:
             rule:
                 name:
                     rule_name

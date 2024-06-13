@@ -2,7 +2,7 @@ import os
 
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.utils.filepath_finder import find_condaenv_filepath
-from studio.app.common.core.workflow.workflow import NodeType
+from studio.app.common.core.workflow.workflow import NodeType, NodeTypeUtil
 from studio.app.const import FILETYPE
 from studio.app.dir_path import DIRPATH
 from studio.app.wrappers import wrapper_dict
@@ -11,7 +11,7 @@ from studio.app.wrappers import wrapper_dict
 class SmkUtils:
     @classmethod
     def input(cls, details):
-        if NodeType.check_nodetype_from_filetype(details["type"]) == NodeType.DATA:
+        if NodeTypeUtil.check_nodetype_from_filetype(details["type"]) == NodeType.DATA:
             if details["type"] in [FILETYPE.IMAGE]:
                 return [join_filepath([DIRPATH.INPUT_DIR, x]) for x in details["input"]]
             else:
@@ -25,7 +25,7 @@ class SmkUtils:
 
     @classmethod
     def conda(cls, details):
-        if NodeType.check_nodetype_from_filetype(details["type"]) == NodeType.DATA:
+        if NodeTypeUtil.check_nodetype_from_filetype(details["type"]) == NodeType.DATA:
             return None
 
         wrapper = cls.dict2leaf(wrapper_dict, details["path"].split("/"))
