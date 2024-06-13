@@ -12,22 +12,21 @@ sys.path.append(ROOT_DIRPATH)
 from studio.app.common.core.rules.file_writer import FileWriter
 from studio.app.common.core.snakemake.snakemake_reader import RuleConfigReader
 from studio.app.common.core.utils.pickle_handler import PickleWriter
+from studio.app.common.core.workflow.workflow import NodeType
 from studio.app.const import FILETYPE
 
 if __name__ == "__main__":
     last_output = snakemake.config["last_output"]
 
     rule_config = RuleConfigReader.read(snakemake.params.name)
-    if rule_config.type in [FILETYPE.IMAGE]:
-        rule_config.input = snakemake.input
-    elif rule_config.type in [
-        FILETYPE.CSV,
-        FILETYPE.BEHAVIOR,
-        FILETYPE.HDF5,
-        FILETYPE.MATLAB,
-        FILETYPE.MICROSCOPE,
-    ]:
-        rule_config.input = snakemake.input[0]
+
+    if NodeType.check_nodetype_from_filetype(rule_config.type) == NodeType.DATA:
+        if rule_config.type in [FILETYPE.IMAGE]:
+            rule_config.input = snakemake.input
+        else:
+            rule_config.input = snakemake.input[0]
+    else:
+        assert False, f"Invalid rule type: {rule_config.type}"
 
     rule_config.output = snakemake.output[0]
 

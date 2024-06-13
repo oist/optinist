@@ -4,18 +4,60 @@ from typing import Dict, List, Union
 from pydantic import BaseModel
 
 from studio.app.common.core.snakemake.smk import ForceRun
+from studio.app.const import FILETYPE
 
 
 @dataclass
 class NodeType:
+    # Data Types
     IMAGE: str = "ImageFileNode"
     CSV: str = "CsvFileNode"
     FLUO: str = "FluoFileNode"
     BEHAVIOR: str = "BehaviorFileNode"
     HDF5: str = "HDF5FileNode"
-    MAT: str = "MatlabFileNode"
+    MATLAB: str = "MatlabFileNode"
     MICROSCOPE: str = "MicroscopeFileNode"
+    # Data Type (Includs above DataType Nodes)
+    DATA: str = "DataNode"
+    # Algo Type
     ALGO: str = "AlgorithmNode"
+
+    @classmethod
+    def check_nodetype(cls, node_type: str) -> str:
+        """
+        Check NodeType (DATA or ALGO) from detailed node type
+        """
+        if node_type in [
+            cls.IMAGE,
+            cls.CSV,
+            cls.FLUO,
+            cls.BEHAVIOR,
+            cls.HDF5,
+            cls.MATLAB,
+            cls.MICROSCOPE,
+        ]:
+            return cls.DATA
+        elif node_type == cls.ALGO:
+            return cls.ALGO
+        else:
+            None
+
+    @classmethod
+    def check_nodetype_from_filetype(cls, file_type: str) -> str:
+        """
+        Check NodeType (DATA or ALGO) from file type
+        """
+        if file_type in [
+            FILETYPE.IMAGE,
+            FILETYPE.CSV,
+            FILETYPE.BEHAVIOR,
+            FILETYPE.HDF5,
+            FILETYPE.MATLAB,
+            FILETYPE.MICROSCOPE,
+        ]:
+            return cls.DATA
+        else:
+            None
 
 
 @dataclass
