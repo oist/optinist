@@ -124,7 +124,7 @@ Follow the steps below to setup `multiuser` mode.
     ```bash
     alembic upgrade head
     ```
-3. Insert initial data
+3. Insert initial data.
 
     ```bash
     mysql -u DB_USER_NAME -p
@@ -133,10 +133,11 @@ Follow the steps below to setup `multiuser` mode.
     USE YOUR_DATABASE_NAME;
     INSERT INTO organization (name) VALUES ('YOUR_ORGANIZATION_NAME');
     INSERT INTO roles (id, role) VALUES (1, 'admin'), (20, 'operator');
-    INSERT INTO users (uid, organization_id, name, email, active) VALUES ('USER_UID', 1, 'YOUR_EMAIL', 'YOUR_PASSWORD', 1);
+    INSERT INTO users (uid, organization_id, name, email, active) VALUES ('YOUR_UID', 1, 'YOUR_NAME', 'YOUR_EMAIL', 1);
     INSERT INTO user_roles (user_id, role_id) VALUES (1, 1);
     ```
-    - USER_UID is the user uid you created in the previous step ([Create admin user for the project](#create-admin-user-for-the-project)).
+    - YOUR_UID and YOUR_EMAIL sould be ones you set in the previous step ([Create admin user for the project](#create-admin-user-for-the-project)).
+    - YOUR_NAME and YOUR_ORGANIZATION_NAME can be arbitary.
     - Only 2 roles, "admin" and "operator" are supported for now.
       - "admin"
         - can manage other users
