@@ -136,8 +136,8 @@ Follow the steps below to setup `multiuser` mode.
     INSERT INTO users (uid, organization_id, name, email, active) VALUES ('YOUR_UID', 1, 'YOUR_NAME', 'YOUR_EMAIL', 1);
     INSERT INTO user_roles (user_id, role_id) VALUES (1, 1);
     ```
-    - YOUR_UID and YOUR_EMAIL sould be ones you set in the previous step ([Create admin user for the project](#create-admin-user-for-the-project)).
-    - YOUR_NAME and YOUR_ORGANIZATION_NAME can be arbitary.
+    - YOUR_UID and YOUR_EMAIL should be ones you set in the previous step ([Create admin user for the project](#create-admin-user-for-the-project)).
+    - YOUR_NAME and YOUR_ORGANIZATION_NAME can be arbitrary.
     - Only 2 roles, "admin" and "operator" are supported for now.
       - "admin"
         - can manage other users
