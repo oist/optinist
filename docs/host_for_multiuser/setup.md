@@ -124,7 +124,7 @@ Follow the steps below to setup `multiuser` mode.
     ```bash
     alembic upgrade head
     ```
-3. Insert initial data.
+3. Insert initial data
 
     ```bash
     mysql -u DB_USER_NAME -p
