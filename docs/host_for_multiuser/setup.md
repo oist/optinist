@@ -118,7 +118,7 @@ Follow the steps below to setup `multiuser` mode.
 1. Install backend requirements
     ```bash
     cd studio
-    pip install .
+    pip install -e .
     ```
 2. Setup database
     ```bash
