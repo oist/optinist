@@ -64,7 +64,7 @@ Follow the steps below to setup `multiuser` mode.
     - (keep databaseURL blank)
 7. Select "Service accounts" tab.
 8. Click "Generate new private key" in "Firebase Admin SDK" section.
-9. Put the downloaded file to `studio/config/auth/firebase_private.json`.
+9. Save the downloaded file to `studio/config/auth/firebase_private.json`.
 
 ### Setup Database
 - Set up your own mysql (or mariadb) server or use docker compose mysql
