@@ -127,7 +127,7 @@ INSERT INTO roles (id, role) VALUES (1, 'admin'), (20, 'operator');
 INSERT INTO users (uid, organization_id, name, email, active) VALUES ('{FIREBASE_USER_UID}', 1, '{YOUR_NAME}', '{YOUR_EMAIL}', true);
 INSERT INTO user_roles (user_id, role_id) VALUES (1, 1);
 ```
-  - Note of Variables
+  - Note on Variables
     - `{FIREBASE_USER_UID}` ... The user uid you created in the previous step ([Create admin user for the project](#create-admin-user-for-the-project)).
     - `{YOUR_ORGANIZATION_NAME}` ... Display name on system (Any text)
     - `{YOUR_NAME}` ... Display name on system (Any text)
