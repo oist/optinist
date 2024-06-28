@@ -131,6 +131,7 @@ class ExptDataWriter:
         with open(filepath, "r+") as f:
             config = yaml.safe_load(f)
             config["name"] = new_name
+            f.seek(0)  # requires seek(0) before write.
             yaml.dump(config, f, sort_keys=False)
 
         return ExptConfig(
