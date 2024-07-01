@@ -12,7 +12,7 @@ const Login = () => {
   const navigate = useNavigate()
   const dispatch: AppDispatch = useDispatch()
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<{ [key: string]: string }>({
     email: "",
     password: "",
@@ -26,7 +26,7 @@ const Login = () => {
     event.preventDefault()
     const errorCheck = validateSubmit()
     if (errorCheck) return
-    setIsLoading(true)
+    setLoading(true)
     dispatch(login(values))
       .unwrap()
       .then(async (_) => {
@@ -37,7 +37,7 @@ const Login = () => {
         setErrors({ email: "Email or password is wrong", password: "" })
       })
       .finally(() => {
-        setIsLoading(false)
+        setLoading(false)
       })
   }
 
@@ -114,7 +114,7 @@ const Login = () => {
           </Stack>
         </FormSignUp>
       </LoginContent>
-      {isLoading && <Loading />}
+      <Loading loading={loading} />
     </LoginWrapper>
   )
 }

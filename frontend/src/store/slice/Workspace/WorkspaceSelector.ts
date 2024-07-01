@@ -29,8 +29,7 @@ export const selectCurrentWorkspaceName = (state: RootState) =>
 export const selectCurrentWorkspaceOwnerId = (state: RootState) =>
   state.workspace.currentWorkspace.ownerId
 
-export const selectIsLoadingWorkspaceList = (state: RootState) =>
-  state.workspace.loading
+export const selectLoading = (state: RootState) => state.workspace.loading
 
 export const selectIsWorkspaceOwner = (state: RootState) =>
   selectModeStandalone(state)

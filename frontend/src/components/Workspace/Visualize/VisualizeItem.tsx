@@ -14,7 +14,7 @@ import Loading from "components/common/Loading"
 import { useMouseDragHandler } from "components/utils/MouseDragUtil"
 import { DisplayDataItem } from "components/Workspace/Visualize/DisplayDataItem"
 import { FilePathSelect } from "components/Workspace/Visualize/FilePathSelect"
-import { selectLoadingVisualize } from "store/slice/DisplayData/DisplayDataSelectors"
+import { selectLoading } from "store/slice/DisplayData/DisplayDataSelectors"
 import {
   DATA_TYPE,
   DATA_TYPE_SET,
@@ -64,15 +64,15 @@ export const VisualizeItem = memo(function VisualizeItem({
 
   const { size, onMouseDownX, onMouseDownY, onMouseDownXY } =
     useItemDragResize(itemId)
-  const loading = useSelector(selectLoadingVisualize)
+  const loading = useSelector(selectLoading)
   const [roiFilePath, setRoiFilePath] = useState("")
   return (
     <Box
       sx={{ m: 1, display: "flex", flexDirection: "row", position: "relative" }}
     >
-      {loading && roiFilePath.includes("/cell_roi.json") ? (
-        <Loading position={"absolute"} />
-      ) : null}
+      {loading && roiFilePath.includes("/cell_roi.json") && (
+        <Loading loading={true} position={"absolute"} />
+      )}
       <Box
         sx={{
           display: "flex",
