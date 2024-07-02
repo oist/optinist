@@ -4,16 +4,20 @@ export type Experiments =
   | {
       status: "fulfilled"
       experimentList: ExperimentListType
+      loading?: boolean
     }
   | {
       status: "uninitialized"
+      loading?: boolean
     }
   | {
       status: "pending"
+      loading?: boolean
     }
   | {
       status: "error"
       message?: string
+      loading?: boolean
     }
 
 export type ExperimentListType = {
