@@ -104,6 +104,7 @@ describe("Experiments", () => {
     )
     const expectState = {
       status: "fulfilled",
+      loading: false,
       experimentList: {
         [uid1]: {
           uid: uid1,
