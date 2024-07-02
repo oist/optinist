@@ -54,25 +54,3 @@ class ExptConfigReader:
             }
         else:
             return None
-
-    @classmethod
-    def rename(cls, filepath, new_name: str) -> ExptConfig:
-        with open(filepath, "r") as f:
-            config = yaml.safe_load(f)
-            config["name"] = new_name
-
-        with open(filepath, "w") as f:
-            yaml.dump(config, f, sort_keys=False)
-
-        return ExptConfig(
-            workspace_id=config["workspace_id"],
-            unique_id=config["unique_id"],
-            name=config["name"],
-            started_at=config.get("started_at"),
-            finished_at=config.get("finished_at"),
-            success=config.get("success", "running"),
-            hasNWB=config["hasNWB"],
-            function=cls.read_function(config["function"]),
-            nwb=config.get("nwb"),
-            snakemake=config.get("snakemake"),
-        )

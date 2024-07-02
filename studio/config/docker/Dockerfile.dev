@@ -26,7 +26,8 @@ RUN echo 'alias ll="ls -la --color=auto"' >> /root/.bashrc && \
 # setup optinist
 COPY pyproject.toml poetry.lock ./
 RUN pip3 install --no-cache-dir --upgrade pip && \
-    pip3 install poetry
+    pip3 install poetry && \
+    poetry config virtualenvs.create false
 RUN poetry install --no-root --with dev
 
 EXPOSE 8000

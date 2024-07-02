@@ -3,16 +3,18 @@ disable_existing_loggers: false
 formatters:
   default:
     (): "uvicorn.logging.DefaultFormatter"
-    fmt: "%(asctime)s %(levelprefix)s %(funcName)s():%(lineno)d - %(message)s"
+    fmt: "%(asctime)s %(levelprefix)s [%(name)s] %(funcName)s():%(lineno)d - %(message)s"
   access:
     (): "uvicorn.logging.AccessFormatter"
-    fmt: "%(asctime)s %(levelprefix)s %(funcName)s():%(lineno)d - %(message)s"
+    fmt: "%(asctime)s %(levelprefix)s [%(name)s] %(funcName)s():%(lineno)d - %(message)s"
 handlers:
   console:
     class: logging.StreamHandler
     level: DEBUG
     formatter: default
 loggers:
+  optinist:
+    level: DEBUG
   snakemake:
     level: INFO
     handlers: [console]

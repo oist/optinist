@@ -6,8 +6,8 @@ RUN apt-get --allow-releaseinfo-change update && \
     apt-get install --no-install-recommends -y git gcc g++ libgl1 && \
     apt-get purge git -y && apt-get autoremove -y && apt-get clean
 
-
 RUN pip3 install --no-cache-dir --upgrade pip && \
-    pip3 install poetry
+    pip3 install poetry && \
+    poetry config virtualenvs.create false
 
 COPY pyproject.toml poetry.lock ./

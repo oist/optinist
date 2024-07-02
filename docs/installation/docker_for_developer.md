@@ -24,6 +24,12 @@ git clone https://github.com/oist/optinist.git
 cd ./optinist
 ```
 
+- copy config files
+  ```
+  cp studio/config/.env.example studio/config/.env
+  cp frontend/.env.example frontend/.env
+  ```
+
 ### Start docker container
 
 ```
