@@ -15,6 +15,7 @@ rules:
     return_arg: input_0
     type: image
     hdf5Path: null
+    matPath: null
   suite2p_file_convert:
     input:
     - default/snakemake/input_0/data_endoscope.pkl
@@ -31,6 +32,7 @@ rules:
       input_0: image
     type: suite2p_file_convert
     hdf5Path: null
+    matPath: null
   suite2p_roi:
     input:
     - default/snakemake/suite2p_file_convert/suite2p_file_convert.pkl
@@ -47,3 +49,4 @@ rules:
       input_0: image
     type: suite2p_roi
     hdf5Path: null
+    matPath: null

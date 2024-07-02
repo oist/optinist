@@ -3,6 +3,7 @@ last_output:
 rules:
   '0':
     hdf5Path: null
+    matPath: null
     input:
     - data_endoscope.tif
     nwbfile:
@@ -40,6 +41,7 @@ rules:
     type: image
   RBM675AAxiTY7J8aXP_nh:
     hdf5Path: null
+    matPath: null
     input:
     - test_data/snakemake/0/data_endoscope.pkl
     nwbfile: null
@@ -57,6 +59,7 @@ rules:
     type: suite2p_file_convert
   vUyi1TzpuUVDtSwTb-EFp:
     hdf5Path: null
+    matPath: null
     input:
     - test_data/snakemake/1/suite2p_file_convert.pkl
     nwbfile: null
