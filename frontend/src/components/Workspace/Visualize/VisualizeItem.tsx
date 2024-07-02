@@ -70,7 +70,7 @@ export const VisualizeItem = memo(function VisualizeItem({
     <Box
       sx={{ m: 1, display: "flex", flexDirection: "row", position: "relative" }}
     >
-      {loading && roiFilePath.includes("/cell_roi.json") && (
+      {loading && roiFilePath.includes("_roi.json") && (
         <Loading loading={true} position={"absolute"} />
       )}
       <Box
