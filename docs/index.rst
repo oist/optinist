@@ -36,4 +36,5 @@ Main Features
   gui/index
   host_for_multiuser/index
   utils/index
+  utils/nwb_file
   for_developers/index
