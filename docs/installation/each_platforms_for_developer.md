@@ -34,7 +34,7 @@ Get node with version 20
 You can also install node via [nvm](https://github.com/nvm-sh/nvm)
 
 After install node, install yarn.
-```bash
+```
 npm install -g yarn
 ```
 
@@ -44,6 +44,12 @@ npm install -g yarn
 git clone https://github.com/oist/optinist.git
 cd ./optinist
 ```
+
+- copy config files
+  ```
+  cp studio/config/.env.example studio/config/.env
+  cp frontend/.env.example frontend/.env
+  ```
 
 ### Create anaconda environment
 

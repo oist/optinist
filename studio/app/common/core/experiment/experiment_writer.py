@@ -1,7 +1,10 @@
 import os
+import shutil
 from dataclasses import asdict
 from datetime import datetime
 from typing import Dict
+
+import yaml
 
 from studio.app.common.core.experiment.experiment import ExptConfig, ExptFunction
 from studio.app.common.core.experiment.experiment_builder import ExptConfigBuilder
@@ -98,3 +101,48 @@ class ExptConfigWriter:
                 func_dict[node.id].success = "success"
 
         return self.builder.set_function(func_dict).build()
+
+
+class ExptDataWriter:
+    def __init__(
+        self,
+        workspace_id: str,
+        unique_id: str,
+    ):
+        self.workspace_id = workspace_id
+        self.unique_id = unique_id
+
+    def delete_data(self) -> bool:
+        shutil.rmtree(
+            join_filepath([DIRPATH.OUTPUT_DIR, self.workspace_id, self.unique_id])
+        )
+        return True
+
+    def rename(self, new_name: str) -> ExptConfig:
+        filepath = join_filepath(
+            [
+                DIRPATH.OUTPUT_DIR,
+                self.workspace_id,
+                self.unique_id,
+                DIRPATH.EXPERIMENT_YML,
+            ]
+        )
+
+        with open(filepath, "r+") as f:
+            config = yaml.safe_load(f)
+            config["name"] = new_name
+            f.seek(0)  # requires seek(0) before write.
+            yaml.dump(config, f, sort_keys=False)
+
+        return ExptConfig(
+            workspace_id=config["workspace_id"],
+            unique_id=config["unique_id"],
+            name=config["name"],
+            started_at=config.get("started_at"),
+            finished_at=config.get("finished_at"),
+            success=config.get("success", "running"),
+            hasNWB=config["hasNWB"],
+            function=ExptConfigReader.read_function(config["function"]),
+            nwb=config.get("nwb"),
+            snakemake=config.get("snakemake"),
+        )

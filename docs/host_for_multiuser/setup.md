@@ -16,18 +16,20 @@ Follow the steps below to setup `multiuser` mode.
     ```
 2. copy config files
     ```bash
-    cp studio/config/.env.example studio/config.env
-    cp studio/config/auth/firebase_config.example.json studio/config/auth/firebase_config.json
+    cp -i studio/config/.env.example studio/config/.env
+    cp -i studio/config/auth/firebase_config.example.json studio/config/auth/firebase_config.json
     ```
 
-### Create your Firebase Project
+###  Setup Firebase Authentication
+
+#### Create your Firebase Project
 1. Go to [https://console.firebase.google.com/](https://console.firebase.google.com/)
 2. Click "Add project".
 3. Enter your project name, and click "Continue".
 4. Google Analytics is optional. You can choose "Enable Google Analytics for this project" or not.
 5. After your project is ready, click "Continue".
 
-### Setup Firebase Authentication
+#### Setup Firebase Authentication
 1. Select "Build > Authentication" from the left menu.
 2. Select "Get started".
 3. Select "Sign-in method" tab.
@@ -35,7 +37,7 @@ Follow the steps below to setup `multiuser` mode.
 5. Click "Email/Password" and enable it.
 6. Click "Save".
 
-### Create admin user for the project
+#### Create admin user for the project
 1. Select "Authentication" from the left menu.
 2. Select "Users" tab.
 3. Click "Add user" button.
@@ -45,7 +47,7 @@ Follow the steps below to setup `multiuser` mode.
 
 - Created user's "User UID" is required later.
 
-### Get Firebase tokens
+#### Get Firebase tokens
 1. Click setting icon(besides Project Overview), then select "Project settings" from the left menu.
 2. Select "General" tab.
 3. Select "web app" in "Your apps" section.
@@ -62,90 +64,115 @@ Follow the steps below to setup `multiuser` mode.
     - (keep databaseURL blank)
 7. Select "Service accounts" tab.
 8. Click "Generate new private key" in "Firebase Admin SDK" section.
-9. Put the downloaded file to `studio/config/auth/firebase_private.json`.
+9. Save the downloaded file to `studio/config/auth/firebase_private.json`.
 
-### Setup mysql(or mariadb)
-1. Install mysql(or mariadb) server.
-2. Connect mysql server.
+### Setup Database
+- Set up your own mysql (or mariadb) server or use docker compose mysql
+- Below are the instructions for using mysql with docker compose.
+
+1. Edit configs.
+    - Edit studio/config/.env
+      - Set `MYSQL_SERVER` to db server host or ip
+        - Format: `{DB_HOST}:{DB_PORT}`
+        - \*For docker platform, the fixed value `db:3306` is fine.
+      - Set `MYSQL_ROOT_PASSWORD` to database root password, which you have decided.
+      - Set `MYSQL_DATABASE` to `{YOUR_DATABASE_NAME}`, which you have decided.
+      - Set `MYSQL_USER` to `{DB_USER_NAME}`, which you have decided.
+      - Set `MYSQL_PASSWORD` to `{DB_USER_PASSWORD}`, which you have decided.
+2. Install & run mysql server.
     ```bash
-    mysql -u root -p
+    docker compose -f docker-compose.dev.multiuser.yml up db -d
     ```
-3. Create database for your project.
-    ```sql
-    CREATE DATABASE YOUR_DATABASE_NAME;
-    ```
-4. Create user for your project.
-    ```sql
-    CREATE USER 'DB_USER_NAME'@'localhost' IDENTIFIED BY 'DB_USER_PASSWORD';
-    ```
-5. Grant all privileges to the user for the database.
-    ```sql
-    GRANT ALL PRIVILEGES ON YOUR_DATABASE_NAME.* TO 'DB_USER_NAME'@'localhost';
-    ```
+    - The database and db_user are automatically generated based on the .env settings.
+3. Check connection to mysql server.
+    - Connecting via docker command
+      ```bash
+      docker exec -it {DB_CONTAINER_NAME} mysql -u {DB_USER_NAME} -p {YOUR_DATABASE_NAME}
+      mysql> exit
+      ```
+      - Note: `{DB_CONTAINER_NAME}` is the container name or container ID of the database docker container. (Can be confirmed with `docker ps`)
+    - Connect via mysql command (requires mysql-client)
+      ```bash
+      mysql -h {DB_HOST} --port={DB_PORT} -u {DB_USER_NAME} -p {YOUR_DATABASE_NAME}
+      mysql> exit
+      ```
+    - If a connection to the database server is available, the setup was successful.
 
-### Set OptiNiSt config
-1. Edit `studio/config/.env`
+### Setup & Run OptiNiSt
+
+#### For Docker Platform
+
+To use multiuser mode with Docker, perform the following steps.
+
+##### Setup Backend
+
+###### 1. Set OptiNiSt config
+- Edit `studio/config/.env`
     - Change `SECRET_KEY` to any random string.
     - Change `USE_FIREBASE_TOKEN` to `True`.
     - Change `IS_STANDALONE` to `False`
-    - Set `MYSQL_SERVER` to your host
-    - Set `MYSQL_DATABASE` to {YOUR_DATABASE_NAME}, which you created in the previous step.
-    - Set `MYSQL_USER` to {DB_USER_NAME}, which you created in the previous step.
-    - Set `MYSQL_PASSWORD` to {DB_USER_PASSWORD}, which you created in the previous step.
-    - `MYSQL_ROOT_PASSWORD` can be left commented.
 
-### Setup Frontend
-1. Install node.js(version 20)
-    - https://nodejs.org
-2. Install yarn
-    ```bash
-    npm install -g yarn
-    ```
-3. Install frontend requirements
-    ```bash
-    cd frontend
-    yarn install
-    ```
-4. Build frontend
-    ```bash
-    yarn build
-    ```
+###### 2. Start backend (Database is set up on startup)
+```bash
+docker compose -f docker-compose.dev.multiuser.yml up studio-dev-be -d
+```
 
-### Setup Backend
-- See OptiNiSt installation guide.
-- After create and activate conda environment for the project, run following commands
+###### 3. Insert initial data
+```bash
+docker exec -it {DB_CONTAINER_NAME} mysql -u {DB_USER_NAME} -p {YOUR_DATABASE_NAME}
+```
+```sql
+INSERT INTO organization (name) VALUES ('{YOUR_ORGANIZATION_NAME}');
+INSERT INTO roles (id, role) VALUES (1, 'admin'), (20, 'operator');
+INSERT INTO users (uid, organization_id, name, email, active) VALUES ('{FIREBASE_USER_UID}', 1, '{YOUR_NAME}', '{YOUR_EMAIL}', true);
+INSERT INTO user_roles (user_id, role_id) VALUES (1, 1);
+```
+  - Note on Variables
+    - `{FIREBASE_USER_UID}` ... The user uid you created in the previous step ([Create admin user for the project](#create-admin-user-for-the-project)).
+    - `{YOUR_ORGANIZATION_NAME}` ... Display name on system (Any text)
+    - `{YOUR_NAME}` ... Display name on system (Any text)
+    - `{YOUR_EMAIL}` ... Email address corresponding to `{FIREBASE_USER_UID}`
 
-1. Install backend requirements
-    ```bash
-    cd studio
-    pip install .
-    ```
-2. Setup database
-    ```bash
-    alembic upgrade head
-    ```
-3. Insert initial data
+- About Roles
+  - Only 2 roles, "admin" and "operator" are supported for now.
+    - "admin"
+      - can manage other users
+    - "operator"
+      - general user
+  - More information is [here](usage.md).
 
-    ```bash
-    mysql -u DB_USER_NAME -p
-    ```
-    ```sql
-    USE YOUR_DATABASE_NAME;
-    INSERT INTO organization (name) VALUES ('YOUR_ORGANIZATION_NAME');
-    INSERT INTO roles (id, role) VALUES (1, 'admin'), (20, 'operator');
-    INSERT INTO users (uid, organization_id, name, email, active, ) VALUES ('USER_UID', 1, 'YOUR_EMAIL', 'YOUR_PASSWORD', 1);
-    INSERT INTO user_roles (user_id, role_id) VALUES (1, 1);
-    ```
-    - USER_UID is the user uid you created in the previous step ([Create admin user for the project](#create-admin-user-for-the-project)).
-    - Only 2 roles, "admin" and "operator" are supported for now.
-      - "admin"
-        - can manage other users
-      - "operator"
-        - general user
+##### Run OptiNiSt
+```bash
+docker compose -f docker-compose.dev.multiuser.yml up -d
+```
 
-### Run OptiNiSt
+1. Access to `http://{YOUR_HOST}:8000` from your browser.
+2. Confirm that you can SingIn with your Firebase Authentication account.
+
+#### For Non-Docker Platforms
+
+Below are the steps for a case using Non-Docker platforms (Windows, Mac, Linux).
+
+##### Setup Backend
+- See [OptiNiSt installation guide](../installation/index.rst).
+- After creating and activating a conda environment for the project, run following commands
+
+###### 1. Set OptiNiSt config
+- Same as [Set OptiNiSt config](#set-optinist-config) procedure.
+
+###### 2. Setup database
+```bash
+cd {OPTINIST_ROOT_PATH}  # root path of repository cloned
+alembic upgrade head
+```
+
+###### 3. Insert initial data
+- Same as [Insert initial data](#insert-initial-data) procedure.
+
+##### Run OptiNiSt
 ```bash
 python main.py
 ```
 
-- Access to `http://{YOUR_HOST}:8000` from your browser.
+1. Access to `http://{YOUR_HOST}:8000` from your browser.
+2. Confirm that you can SingIn with your Firebase Authentication account.
