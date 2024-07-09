@@ -218,7 +218,7 @@ const Account = () => {
           Delete Account
         </Button>
       </BoxFlex>
-      {loading ? <Loading /> : null}
+      <Loading loading={loading} />
     </AccountWrapper>
   )
 }

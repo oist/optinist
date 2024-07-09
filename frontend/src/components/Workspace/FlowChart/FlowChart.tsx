@@ -222,7 +222,7 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
                   horizontal: "left",
                 }}
               >
-                <div style={{ margin: 8, whiteSpace: "pre-wrap"}}>
+                <div style={{ margin: 8, whiteSpace: "pre-wrap" }}>
                   <FormHelperText error={true}>
                     {messageError.message}
                   </FormHelperText>

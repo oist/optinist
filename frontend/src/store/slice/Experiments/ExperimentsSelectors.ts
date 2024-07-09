@@ -24,6 +24,9 @@ export const selectExperimentsErrorMessage = (state: RootState) => {
   }
 }
 
+export const selectLoading = (state: RootState) =>
+  selectExperiments(state).loading
+
 export const selectExperimentList = (state: RootState) => {
   const experiments = selectExperiments(state)
   if (experiments.status === "fulfilled") {

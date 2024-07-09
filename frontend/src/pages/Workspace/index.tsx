@@ -46,7 +46,7 @@ import {
   putWorkspace,
 } from "store/slice/Workspace/WorkspaceActions"
 import {
-  selectIsLoadingWorkspaceList,
+  selectLoading,
   selectWorkspaceData,
   selectWorkspaceListUserShare,
 } from "store/slice/Workspace/WorkspaceSelector"
@@ -282,7 +282,7 @@ const PopupNew = ({
 const Workspaces = () => {
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
-  const loading = useSelector(selectIsLoadingWorkspaceList)
+  const loading = useSelector(selectLoading)
   const listUserShare = useSelector(selectWorkspaceListUserShare)
   const data = useSelector(selectWorkspaceData)
   const user = useSelector(selectCurrentUser)
@@ -565,7 +565,7 @@ const Workspaces = () => {
         error={error}
         handleOkNew={handleOkNew}
       />
-      {loading ? <Loading /> : null}
+      <Loading loading={loading} />
     </WorkspacesWrapper>
   )
 }

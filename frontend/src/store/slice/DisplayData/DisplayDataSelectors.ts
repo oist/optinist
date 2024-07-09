@@ -1,8 +1,7 @@
 import { RootState } from "store/store"
 
 const selectDisplayData = (state: RootState) => state.displayData
-export const selectLoadingVisualize = (state: RootState) =>
-  state.displayData.loading
+export const selectLoading = (state: RootState) => state.displayData.loading
 
 export const selectTimeSeriesData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).timeSeries[filePath].data

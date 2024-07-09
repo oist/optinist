@@ -32,6 +32,7 @@ export interface FlowElement {
   flowEdges: Edge[]
   flowPosition: Transform
   elementCoord: ElementCoord
+  loading?: boolean
 }
 
 export interface NodeIdProps {
