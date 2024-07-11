@@ -7,6 +7,7 @@ import numpy as np
 from fastapi import HTTPException, status
 from snakemake import snakemake
 
+from studio.app.common.core.experiment.experiment import ExptOutputPathIds
 from studio.app.common.core.logger import AppLogger
 from studio.app.common.core.rules.runner import Runner
 from studio.app.common.core.utils.config_handler import ConfigReader
@@ -69,7 +70,7 @@ class EditRoiUtils:
 class EditROI:
     def __init__(self, file_path):
         self.node_dirpath = os.path.dirname(file_path)
-        self.function_id = self.node_dirpath.split("/")[-1]
+        self.function_id = ExptOutputPathIds(self.node_dirpath).function_id
 
         self.output_info: Dict = PickleReader.read(self.pickle_file_path)
         self.tmp_output_info: Dict = (

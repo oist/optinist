@@ -1,3 +1,4 @@
+from studio.app.common.core.experiment.experiment import ExptOutputPathIds
 from studio.app.common.core.logger import AppLogger
 from studio.app.common.dataclass import TimeSeriesData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
@@ -20,7 +21,7 @@ def cross_correlation(
     import scipy.stats as stats
     from tqdm import tqdm
 
-    function_id = output_dir.split("/")[-1]
+    function_id = ExptOutputPathIds(output_dir).function_id
     logger.info("start cross_correlation: %s", function_id)
 
     neural_data = neural_data.data

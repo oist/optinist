@@ -1,3 +1,4 @@
+from studio.app.common.core.experiment.experiment import ExptOutputPathIds
 from studio.app.common.core.logger import AppLogger
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import SpikingActivityData, Suite2pData
@@ -11,7 +12,7 @@ def suite2p_spike_deconv(
     import numpy as np
     from suite2p import default_ops, extraction
 
-    function_id = output_dir.split("/")[-1]
+    function_id = ExptOutputPathIds(output_dir).function_id
     logger.info("start suite2_spike_deconv: %s", function_id)
 
     ops = ops.data
