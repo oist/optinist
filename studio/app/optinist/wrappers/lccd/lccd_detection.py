@@ -1,5 +1,6 @@
 import numpy as np
 
+from studio.app.common.core.experiment.experiment import ExptOutputPathIds
 from studio.app.common.core.logger import AppLogger
 from studio.app.common.dataclass import ImageData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
@@ -13,7 +14,7 @@ def lccd_detect(
 ) -> dict(fluorescence=FluoData, cell_roi=RoiData):
     from studio.app.optinist.wrappers.lccd.lccd_python.lccd import LCCD
 
-    function_id = output_dir.split("/")[-1]
+    function_id = ExptOutputPathIds(output_dir).function_id
     logger.info("start lccd_detect: %s", function_id)
 
     logger.info("params: %s", params)
