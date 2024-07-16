@@ -223,7 +223,13 @@ export const flowElementSlice = createSlice({
       .addCase(fetchWorkflow.pending, (state) => {
         state.loading = true
       })
+      .addCase(reproduceWorkflow.pending, (state) => {
+        state.loading = true
+      })
       .addCase(fetchWorkflow.rejected, () => initialState)
+      .addCase(reproduceWorkflow.rejected, (state) => {
+        state.loading = false
+      })
       .addMatcher(
         isAnyOf(
           reproduceWorkflow.fulfilled,
