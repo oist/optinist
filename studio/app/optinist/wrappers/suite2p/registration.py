@@ -1,3 +1,4 @@
+from studio.app.common.core.experiment.experiment import ExptOutputPathIds
 from studio.app.common.core.logger import AppLogger
 from studio.app.common.dataclass import ImageData
 from studio.app.optinist.dataclass import Suite2pData
@@ -10,7 +11,7 @@ def suite2p_registration(
 ) -> dict(ops=Suite2pData, mc_images=ImageData):
     from suite2p import default_ops, io, registration
 
-    function_id = output_dir.split("/")[-1]
+    function_id = ExptOutputPathIds(output_dir).function_id
     logger.info("start suite2p registration: %s", function_id)
 
     ops = ops.data

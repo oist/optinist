@@ -106,18 +106,18 @@ To use multiuser mode with Docker, perform the following steps.
 
 ##### Setup Backend
 
-###### 1. Set OptiNiSt config
+###### &#x2488;Set OptiNiSt config
 - Edit `studio/config/.env`
     - Change `SECRET_KEY` to any random string.
     - Change `USE_FIREBASE_TOKEN` to `True`.
     - Change `IS_STANDALONE` to `False`
 
-###### 2. Start backend (Database is set up on startup)
+###### &#x2489;Start backend (Database is set up on startup)
 ```bash
 docker compose -f docker-compose.dev.multiuser.yml up studio-dev-be -d
 ```
 
-###### 3. Insert initial data
+###### &#x248a;Insert initial data
 ```bash
 docker exec -it {DB_CONTAINER_NAME} mysql -u {DB_USER_NAME} -p {YOUR_DATABASE_NAME}
 ```
@@ -157,16 +157,16 @@ Below are the steps for a case using Non-Docker platforms (Windows, Mac, Linux).
 - See [OptiNiSt installation guide](../installation/index.rst).
 - After creating and activating a conda environment for the project, run following commands
 
-###### 1. Set OptiNiSt config
+###### &#x2488;Set OptiNiSt config
 - Same as [Set OptiNiSt config](#set-optinist-config) procedure.
 
-###### 2. Setup database
+###### &#x2489;Setup database
 ```bash
 cd {OPTINIST_ROOT_PATH}  # root path of repository cloned
 alembic upgrade head
 ```
 
-###### 3. Insert initial data
+###### &#x248a;Insert initial data
 - Same as [Insert initial data](#insert-initial-data) procedure.
 
 ##### Run OptiNiSt

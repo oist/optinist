@@ -260,6 +260,7 @@ describe("RecordReproduce", () => {
       ],
       flowPosition: [0, 0, 0.7],
       elementCoord: { x: 100, y: 150 },
+      loading: false,
     },
     inputNode: {
       input_0: {
