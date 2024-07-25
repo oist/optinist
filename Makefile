@@ -1,32 +1,57 @@
+#
+# optinist Makefile
+#
+
+############################## For Testing ##############################
+
+define rm_unused_docker_containers
+	docker ps -a --filter "status=exited" --filter "name=$(1)" --format "{{.ID}}" | xargs --no-run-if-empty docker rm
+endef
+
 .PHONY: test_run
 test_run:
-	docker-compose -f docker-compose.test.yml down --rmi all --volumes --remove-orphans
-	docker-compose -f docker-compose.test.yml rm -f
-	docker-compose -f docker-compose.test.yml build test_studio
-	docker-compose -f docker-compose.test.yml build test_studio_frontend
-	docker-compose -f docker-compose.test.yml run test_studio
-	docker-compose -f docker-compose.test.yml run test_studio_frontend
+	# cleanup
+	docker compose -f docker-compose.test.yml down --rmi all --volumes
+	docker compose -f docker-compose.test.yml rm -f
+	@$(call rm_unused_docker_containers, test_studio)
+	# build/run
+	docker compose -f docker-compose.test.yml build test_studio
+	docker compose -f docker-compose.test.yml build test_studio_frontend
+	docker compose -f docker-compose.test.yml run test_studio
+	docker compose -f docker-compose.test.yml run test_studio_frontend
 
 .PHONY: test_python
 test_python:
-	docker-compose -f docker-compose.test.yml down --rmi all --volumes --remove-orphans
-	docker-compose -f docker-compose.test.yml rm -f
-	docker-compose -f docker-compose.test.yml build test_studio
-	docker-compose -f docker-compose.test.yml run test_studio
+	# cleanup
+	docker compose -f docker-compose.test.yml down --rmi all --volumes
+	docker compose -f docker-compose.test.yml rm -f
+	@$(call rm_unused_docker_containers, test_studio)
+	# build/run
+	docker compose -f docker-compose.test.yml build test_studio
+	docker compose -f docker-compose.test.yml run test_studio
 
 .PHONY: test_frontend
 test_frontend:
-	docker-compose -f docker-compose.test.yml down --rmi all --volumes --remove-orphans
-	docker-compose -f docker-compose.test.yml rm -f
-	docker-compose -f docker-compose.test.yml build test_studio_frontend
-	docker-compose -f docker-compose.test.yml run test_studio_frontend
+	# cleanup
+	docker compose -f docker-compose.test.yml down --rmi all --volumes
+	docker compose -f docker-compose.test.yml rm -f
+	@$(call rm_unused_docker_containers, test_studio)
+	# build/run
+	docker compose -f docker-compose.test.yml build test_studio_frontend
+	docker compose -f docker-compose.test.yml run test_studio_frontend
+
+
+############################## For Building ##############################
 
 .PHONY: build_frontend
 build_frontend:
-	docker-compose -f docker-compose.test.yml down --rmi all --volumes --remove-orphans
-	docker-compose -f docker-compose.test.yml rm -f
-	docker-compose -f docker-compose.test.yml build build_studio_frontend
-	docker-compose -f docker-compose.test.yml run build_studio_frontend
+	# cleanup
+	docker compose -f docker-compose.build.yml down
+	docker compose -f docker-compose.build.yml rm -f
+	@$(call rm_unused_docker_containers, studio-build-fe)
+	# build/run
+	docker compose -f docker-compose.build.yml build studio-build-fe
+	docker compose -f docker-compose.build.yml run studio-build-fe
 
 .PHONY: format
 format:
@@ -46,6 +71,9 @@ local_build:
 	rm -rf dist
 	cd frontend && yarn install --ignore-scripts && yarn build
 	poetry build
+
+
+############################## For Deployment ##############################
 
 .PHONY: push_testpypi
 push_testpypi:
