@@ -53,6 +53,7 @@
     "web-vitals": "^3.5.0"
   },
   "scripts": {
+    "prestart": "node export-versions.js",
     "start": "react-app-rewired start --scripts-version react-scripts",
     "build": "BUILD_PATH='./build' react-app-rewired build --openssl-legacy-provider build",
     "test": "react-app-rewired test",
