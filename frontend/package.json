@@ -55,7 +55,6 @@
   "scripts": {
     "prestart": "node export-versions.js",
     "start": "react-app-rewired start --scripts-version react-scripts",
-    "prebuild": "node export-versions.js",
     "build": "BUILD_PATH='./build' react-app-rewired build --openssl-legacy-provider build",
     "test": "react-app-rewired test",
     "test:ci": "CI=true react-app-rewired test",
