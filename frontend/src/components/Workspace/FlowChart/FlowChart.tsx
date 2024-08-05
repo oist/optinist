@@ -10,6 +10,7 @@ import { grey } from "@mui/material/colors"
 import { styled } from "@mui/material/styles"
 
 import { CurrentPipelineInfo } from "components/common/CurrentPipelineInfo"
+import { DevelopmentInformation } from "components/common/DevelopmentInformation"
 import { SectionTitle } from "components/common/ParamSection"
 import PopupInputUrl from "components/PopupInputUrl"
 import { AlgorithmOutputDialog } from "components/Workspace/FlowChart/Dialog/AlgorithmOutputDialog"
@@ -56,6 +57,8 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
 
   const open = useSelector(selectRightDrawerIsOpen)
   const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const isDevelopment = process.env.NODE_ENV === "development"
+
   const [dialogNodeId, setDialogNodeId] = useState("")
   const [dialogFile, setDialogFile] =
     useState<FileSelectDialogValue>(initDialogFile)
@@ -145,6 +148,11 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
             <Box overflow="auto" marginRight={2}>
               <CurrentPipelineInfo />
             </Box>
+            {isDevelopment && (
+              <Box overflow="auto" marginRight={2}>
+                <DevelopmentInformation />
+              </Box>
+            )}
             <Box overflow="auto">
               <SectionTitle>Nodes</SectionTitle>
               <AlgorithmTreeView />
