@@ -1,5 +1,3 @@
-last_output:
-- default/snakemake/suite2p_roi/suite2p_roi.pkl
 rules:
   input_0:
     input:
@@ -11,42 +9,54 @@ rules:
         starting_frame: 0
         starting_time: 0
     params: {}
-    path: null
     return_arg: input_0
     type: image
     hdf5Path: null
     matPath: null
-  suite2p_file_convert:
+    path: null
+  suite2p_file_convert_1234:
     input:
     - default/snakemake/input_0/data_endoscope.pkl
-    output: default/snakemake/suite2p_file_convert/suite2p_file_convert.pkl
-    nwbfile: null
+    return_arg:
+      input_0: image
     params:
       batch_size: 500
       do_registration: 1
       force_sktiff: false
       nchannels: 1
       nplanes: 1
-    path: suite2p/suite2p_file_convert
-    return_arg:
-      input_0: image
+    output: default/snakemake/suite2p_file_convert_1234/suite2p_file_convert.pkl
     type: suite2p_file_convert
-    hdf5Path: null
-    matPath: null
-  suite2p_roi:
-    input:
-    - default/snakemake/suite2p_file_convert/suite2p_file_convert.pkl
-    output: default/snakemake/suite2p_roi/suite2p_roi.pkl
     nwbfile: null
-    params:
-      batch_size: 500
-      do_registration: 1
-      force_sktiff: false
-      nchannels: 1
-      nplanes: 1
-    path: suite2p/suite2p_roi
-    return_arg:
-      input_0: image
-    type: suite2p_roi
     hdf5Path: null
     matPath: null
+    path: suite2p/suite2p_file_convert
+  suite2p_roi_1234:
+    input:
+    - default/snakemake/suite2p_file_convert_1234/suite2p_file_convert.pkl
+    return_arg:
+      ops: ops
+    params:
+      allow_overlap: false
+      high_pass: 100
+      inner_neuropil_radius: 2
+      max_iterations: 20
+      max_overlap: 0.75
+      min_neuropil_pixels: 350
+      nbinned: 5000
+      neucoeff: 0.7
+      preclassify: 0
+      soma_crop: true
+      sparse_mode: true
+      spatial_hp_detect: 25
+      spatial_scale: 0
+      tau: 1
+      threshold_scaling: 1
+    output: default/snakemake/suite2p_roi_1234/suite2p_roi.pkl
+    type: suite2p_roi
+    nwbfile: null
+    hdf5Path: null
+    matPath: null
+    path: suite2p/suite2p_roi
+last_output:
+- default/snakemake/suite2p_roi_1234/suite2p_roi.pkl

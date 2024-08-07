@@ -6,16 +6,18 @@ from studio.app.common.core.snakemake.snakemake_executor import (
     delete_dependencies,
     snakemake_execute,
 )
+from studio.app.common.core.utils.pickle_handler import PickleReader
 from studio.app.common.core.workflow.workflow import Edge, Node, NodeData
 from studio.app.dir_path import DIRPATH
-
-tiff_filename = "test.tif"
 
 workspace_id = "default"
 unique_id = "snakemake"
 
+suite2p_file_convert_node_id = "suite2p_file_convert_1234"
+suite2p_roi_node_id = "suite2p_roi_1234"
+
 smk_param = SmkParam(
-    use_conda=False,
+    use_conda=True,
     cores=2,
     forceall=True,
     forcetargets=True,
@@ -29,13 +31,9 @@ shutil.copytree(
 )
 
 
-def test_snakemake_execute():
-    snakemake_execute(workspace_id, unique_id, smk_param)
-
-
 nodeDict = {
-    "suite2p_file_convert": Node(
-        id="suite2p_file_convert",
+    suite2p_file_convert_node_id: Node(
+        id=suite2p_file_convert_node_id,
         type="a",
         data=NodeData(label="suite2p_file_convert", param={}, path="", type=""),
         position={"x": 0, "y": 0},
@@ -47,8 +45,8 @@ nodeDict = {
             "width": 180,
         },
     ),
-    "suite2p_roi": Node(
-        id="suite2p_roi",
+    suite2p_roi_node_id: Node(
+        id=suite2p_roi_node_id,
         type="a",
         data=NodeData(label="suite2p_roi", param={}, path="", type=""),
         position={"x": 0, "y": 0},
@@ -70,17 +68,17 @@ edgeDict = {
         animated=False,
         sourceHandle="",
         style={},
-        target="suite2p_file_convert",
+        target=suite2p_file_convert_node_id,
         targetHandle="",
         type={},
     ),
     "edge2": Edge(
         id="edge2",
-        source="suite2p_file_convert",
+        source=suite2p_file_convert_node_id,
         animated=False,
         sourceHandle="",
         style={},
-        target="suite2p_roi",
+        target=suite2p_roi_node_id,
         targetHandle="",
         type={},
     ),
@@ -89,51 +87,78 @@ edgeDict = {
 output_dirpath = f"{DIRPATH.DATA_DIR}/output/default/snakemake"
 
 
-def test_snakemake_delete_dependencies():
-    smk_param.forcerun = [
-        ForceRun(
-            nodeId="suite2p_roi",
-            name="suite2p_roi",
-        )
-    ]
-    delete_dependencies(
-        workspace_id=workspace_id,
-        unique_id=unique_id,
-        smk_params=smk_param,
-        nodeDict=nodeDict,
-        edgeDict=edgeDict,
-    )
-
-    assert not os.path.exists(f"{output_dirpath}/suite2p_roi/suite2p_roi.pkl")
+# TODO: Do Commonize
+def util_check_workflow_pickle_is_valid(data) -> bool:
+    is_valid = (data is not None) and (type(data) is not list)
+    return is_valid
 
 
-def test_snakemake_delete_dependencies_file_convert():
-    test_snakemake_execute()
+def test_snakemake_execute(client):
+    """
+    Test for Run snakemake (suite2p)
+    """
 
-    smk_param.forcerun = [
-        ForceRun(
-            nodeId="suite2p_file_convert",
-            name="suite2p_file_convert",
-        )
-    ]
-    delete_dependencies(
-        workspace_id=workspace_id,
-        unique_id=unique_id,
-        smk_params=smk_param,
-        nodeDict=nodeDict,
-        edgeDict=edgeDict,
-    )
-
-    assert not os.path.exists(
-        f"{output_dirpath}/suite2p_file_convert/suite2p_file_convert.pkl"
-    )
-    assert not os.path.exists(f"{output_dirpath}/suite2p_roi/suite2p_roi.pkl")
-
-
-def test_error_snakemake_execute():
-    smk_param.use_conda = True
+    # Run snakemake executor
     snakemake_execute(workspace_id, unique_id, smk_param)
 
-    error_log_filepath = f"{DIRPATH.OUTPUT_DIR}/default/snakemake/error.log"
+    # Check snakemake execution results
+    suite2p_file_convert_pkl_path = (
+        f"{output_dirpath}/{suite2p_file_convert_node_id}/suite2p_file_convert.pkl"
+    )
+    suite2p_roi_pkl_path = f"{output_dirpath}/{suite2p_roi_node_id}/suite2p_roi.pkl"
+    assert os.path.exists(suite2p_file_convert_pkl_path), "Workflow pickle not found"
+    assert os.path.exists(suite2p_roi_pkl_path), "Workflow pickle not found"
 
+    suite2p_file_convert_pkl = PickleReader.read(suite2p_file_convert_pkl_path)
+    suite2p_roi_pkl = PickleReader.read(suite2p_roi_pkl_path)
+    assert util_check_workflow_pickle_is_valid(
+        suite2p_file_convert_pkl
+    ), "Invalid workflow pickle"
+    assert util_check_workflow_pickle_is_valid(
+        suite2p_roi_pkl
+    ), "Invalid workflow pickle"
+
+    # Check for generated "error.log" file
+    error_log_filepath = f"{DIRPATH.OUTPUT_DIR}/default/snakemake/error.log"
     assert os.path.exists(error_log_filepath)
+
+
+def test_snakemake_delete_dependencies():
+    """
+    Test for delete snakemake dependencies
+    """
+
+    suite2p_file_convert_pkl_path = (
+        f"{output_dirpath}/{suite2p_file_convert_node_id}/suite2p_file_convert.pkl"
+    )
+    suite2p_roi_pkl_path = f"{output_dirpath}/{suite2p_roi_node_id}/suite2p_roi.pkl"
+
+    # Existence check of dependencies files
+    # *Files are pre-generated by `test_snakemake_execute`
+    assert os.path.exists(suite2p_file_convert_pkl_path), "Dependencies files not found"
+    assert os.path.exists(suite2p_roi_pkl_path), "Dependencies files not found"
+
+    # Run delete_dependencies
+    smk_param.forcerun = [
+        ForceRun(
+            nodeId=suite2p_file_convert_node_id,
+            name="suite2p_file_convert",
+        ),
+        ForceRun(
+            nodeId=suite2p_roi_node_id,
+            name="suite2p_roi",
+        ),
+    ]
+    delete_dependencies(
+        workspace_id=workspace_id,
+        unique_id=unique_id,
+        smk_params=smk_param,
+        nodeDict=nodeDict,
+        edgeDict=edgeDict,
+    )
+
+    # Check for deleted dependencies files
+    assert not os.path.exists(
+        suite2p_file_convert_pkl_path
+    ), "Dependencies files remain"
+    assert not os.path.exists(suite2p_roi_pkl_path), "Dependencies files remain"
