@@ -11,31 +11,31 @@ endef
 .PHONY: test_run
 test_run:
 	# cleanup
-	docker compose -f docker-compose.test.yml down --rmi all --volumes
+	docker compose -f docker-compose.test.yml down
 	docker compose -f docker-compose.test.yml rm -f
-	@$(call rm_unused_docker_containers, test_studio)
+	@$(call rm_unused_docker_containers, test_studio_backend)
 	# build/run
-	docker compose -f docker-compose.test.yml build test_studio
+	docker compose -f docker-compose.test.yml build test_studio_backend
 	docker compose -f docker-compose.test.yml build test_studio_frontend
-	docker compose -f docker-compose.test.yml run test_studio
+	docker compose -f docker-compose.test.yml run test_studio_backend
 	docker compose -f docker-compose.test.yml run test_studio_frontend
 
 .PHONY: test_python
 test_python:
 	# cleanup
-	docker compose -f docker-compose.test.yml down --rmi all --volumes
+	docker compose -f docker-compose.test.yml down
 	docker compose -f docker-compose.test.yml rm -f
-	@$(call rm_unused_docker_containers, test_studio)
+	@$(call rm_unused_docker_containers, test_studio_backend)
 	# build/run
-	docker compose -f docker-compose.test.yml build test_studio
-	docker compose -f docker-compose.test.yml run test_studio
+	docker compose -f docker-compose.test.yml build test_studio_backend
+	docker compose -f docker-compose.test.yml run test_studio_backend
 
 .PHONY: test_frontend
 test_frontend:
 	# cleanup
-	docker compose -f docker-compose.test.yml down --rmi all --volumes
+	docker compose -f docker-compose.test.yml down
 	docker compose -f docker-compose.test.yml rm -f
-	@$(call rm_unused_docker_containers, test_studio)
+	@$(call rm_unused_docker_containers, test_studio_frontend)
 	# build/run
 	docker compose -f docker-compose.test.yml build test_studio_frontend
 	docker compose -f docker-compose.test.yml run test_studio_frontend
