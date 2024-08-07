@@ -7,6 +7,9 @@ from studio.app.common.core.workflow.workflow import Edge, Node, NodeData, RunIt
 from studio.app.common.core.workflow.workflow_writer import WorkflowConfigWriter
 from studio.app.dir_path import DIRPATH
 
+workspace_id = "default2"
+unique_id = "expt_test"
+
 node_data = NodeData(label="a", param={}, path="", type="")
 
 nodeDict = {
@@ -50,8 +53,8 @@ def test_create_config() -> ExptConfig:
     )
 
     expt_config = ExptConfigWriter(
-        workspace_id="test_workspace_id",
-        unique_id="test_id",
+        workspace_id=workspace_id,
+        unique_id=unique_id,
         name=runItem.name,
     ).create_config()
 
@@ -72,20 +75,20 @@ def test_add_run_info():
     assert expt_config.success == "running"
 
 
-dirpath = f"{DIRPATH.DATA_DIR}/output/workspace_id/unique_id"
+dirpath = f"{DIRPATH.OUTPUT_DIR}/{workspace_id}/{unique_id}"
 
 
 def test_function_from_nodeDict():
     WorkflowConfigWriter(
-        workspace_id="workspace_id",
-        unique_id="unique_id",
+        workspace_id=workspace_id,
+        unique_id=unique_id,
         nodeDict=nodeDict,
         edgeDict=edgeDict,
     ).write()
 
     expt_config = ExptConfigWriter(
-        workspace_id="workspace_id",
-        unique_id="unique_id",
+        workspace_id=workspace_id,
+        unique_id=unique_id,
         name="name",
     ).function_from_nodeDict()
 
@@ -98,15 +101,15 @@ def test_new_write():
         shutil.rmtree(dirpath)
 
     WorkflowConfigWriter(
-        workspace_id="workspace_id",
-        unique_id="unique_id",
+        workspace_id=workspace_id,
+        unique_id=unique_id,
         nodeDict=nodeDict,
         edgeDict=edgeDict,
     ).write()
 
     ExptConfigWriter(
-        workspace_id="workspace_id",
-        unique_id="unique_id",
+        workspace_id=workspace_id,
+        unique_id=unique_id,
         name="name",
     ).write()
 
@@ -115,8 +118,8 @@ def test_new_write():
 
 def test_write_add():
     ExptConfigWriter(
-        workspace_id="workspace_id",
-        unique_id="unique_id",
+        workspace_id=workspace_id,
+        unique_id=unique_id,
         name="name",
     ).write()
 
