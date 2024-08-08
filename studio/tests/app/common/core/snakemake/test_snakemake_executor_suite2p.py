@@ -91,7 +91,7 @@ edgeDict = {
 output_dirpath = f"{DIRPATH.OUTPUT_DIR}/{workspace_id}/{unique_id}"
 
 
-@pytest.mark.snakemake_executor_suite2p
+@pytest.mark.heavier_processing
 def test_snakemake_execute(client):
     """
     Test for Run snakemake
@@ -120,7 +120,7 @@ def test_snakemake_execute(client):
     assert os.path.exists(error_log_filepath)
 
 
-@pytest.mark.snakemake_executor_suite2p
+@pytest.mark.heavier_processing
 def test_snakemake_delete_dependencies():
     """
     Test for delete snakemake dependencies

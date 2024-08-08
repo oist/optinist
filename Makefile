@@ -8,6 +8,8 @@ define rm_unused_docker_containers
 	docker ps -a --filter "status=exited" --filter "name=$(1)" --format "{{.ID}}" | xargs --no-run-if-empty docker rm
 endef
 
+PYTEST = poetry run pytest -s
+
 .PHONY: test_run
 test_run:
 	# cleanup
@@ -17,7 +19,7 @@ test_run:
 	# build/run
 	docker compose -f docker-compose.test.yml build test_studio_backend
 	docker compose -f docker-compose.test.yml build test_studio_frontend
-	docker compose -f docker-compose.test.yml run test_studio_backend
+	docker compose -f docker-compose.test.yml run test_studio_backend $(PYTEST) -m "not heavier_processing"
 	docker compose -f docker-compose.test.yml run test_studio_frontend
 
 .PHONY: test_backend
@@ -28,7 +30,17 @@ test_backend:
 	@$(call rm_unused_docker_containers, test_studio_backend)
 	# build/run
 	docker compose -f docker-compose.test.yml build test_studio_backend
-	docker compose -f docker-compose.test.yml run test_studio_backend
+	docker compose -f docker-compose.test.yml run test_studio_backend $(PYTEST) -m "not heavier_processing"
+
+.PHONY: test_backend_full
+test_backend_full:
+	# cleanup
+	docker compose -f docker-compose.test.yml down
+	docker compose -f docker-compose.test.yml rm -f
+	@$(call rm_unused_docker_containers, test_studio_backend)
+	# build/run
+	docker compose -f docker-compose.test.yml build test_studio_backend
+	docker compose -f docker-compose.test.yml run test_studio_backend $(PYTEST)
 
 .PHONY: test_frontend
 test_frontend:

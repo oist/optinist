@@ -126,8 +126,8 @@ filterwarnings = [
     "ignore:invalid escape sequence :DeprecationWarning",
 ]
 markers = [
-    "snakemake_executor_lccd",
-    "snakemake_executor_suite2p",
+    "lighter_processing",
+    "heavier_processing",
 ]
 
 [tool.codespell]
