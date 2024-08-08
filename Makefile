@@ -20,8 +20,8 @@ test_run:
 	docker compose -f docker-compose.test.yml run test_studio_backend
 	docker compose -f docker-compose.test.yml run test_studio_frontend
 
-.PHONY: test_python
-test_python:
+.PHONY: test_backend
+test_backend:
 	# cleanup
 	docker compose -f docker-compose.test.yml down
 	docker compose -f docker-compose.test.yml rm -f

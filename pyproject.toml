@@ -125,6 +125,10 @@ filterwarnings = [
     "ignore:Deprecated call to `pkg_resources.declare_namespace:DeprecationWarning",
     "ignore:invalid escape sequence :DeprecationWarning",
 ]
+markers = [
+    "snakemake_executor_lccd",
+    "snakemake_executor_suite2p",
+]
 
 [tool.codespell]
 skip = './frontend/build,./frontend/node_modules,./docs/_build,*.lock,*log,*.egg-info'
