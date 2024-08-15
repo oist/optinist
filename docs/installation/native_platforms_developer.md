@@ -1,5 +1,5 @@
-(each-platforms-for-developer)=
-Each Platforms for Developer
+(native_platforms_developer)=
+Native platforms (Developer)
 =================
 
 ```{contents}

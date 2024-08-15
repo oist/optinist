@@ -1,4 +1,5 @@
-# Procedure for adding a new algorithm
+Add your own algorithm
+==================
 
 ```{contents}
 :depth: 3

@@ -1,4 +1,5 @@
-CUI execution
+(cui-execution)=
+Cluster usage
 =================
 This section describes how to run a workflow created in GUI on a cluster or in CUI.
 

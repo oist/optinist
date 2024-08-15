@@ -1,11 +1,10 @@
-Host Optinist yourself for multiuser use
-========================================
+(set-optinist-config)=
+Multi-user (Host setup)
+=======================
 
 ```{contents}
 :depth: 4
 ```
-
-## Setup multiuser mode
 
 Follow the steps below to setup `multiuser` mode.
 
@@ -167,7 +166,7 @@ alembic upgrade head
 ```
 
 ###### &#x248a;Insert initial data
-- Same as [Insert initial data](#insert-initial-data) procedure.
+- For data input procedure, see :ref:`set-optinist-config`.
 
 ##### Run OptiNiSt
 ```bash
