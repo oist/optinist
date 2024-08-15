@@ -1,4 +1,4 @@
-Multi user mode usage
+Multi-user (User)
 =====================
 
 ```{contents}

@@ -34,6 +34,8 @@ Main Features
   installation/index
   tutorials
   gui/index
+  data_nodes
+  algorithm_nodes
   host_for_multiuser/index
   utils/index
   utils/nwb_file
