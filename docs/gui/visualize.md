@@ -23,7 +23,7 @@ To add another display box , click the "+" button. You can add new boxes to the 
 ### Selecting an item to show
 Pull down of the `Select Item` shows the available item to show. Select one of these items.
 
-Items are separated by the algorithm that created the item.
+Items are separated by the data / algorithm nodes used to create them.
 
 <p align="center">
 <img width="600px" src="../_static/visualize/select_output_item.png" alt="SelectOutputItem" />
@@ -35,7 +35,7 @@ You may want to check some frames of the multi-page tiff files. Visualize page o
 
 After creating a plot box by clicking on + mark, Select the image using the `Select Item` dropdown list.
 
-Then you can select the range of the frame in Start/End Index of left sidebar. Assign 1st and last frame numbers, then clicking LOAD button starts loading the data.
+You can select the range of the frames using the Start/End Index in the left sidebar. Input the first and last frame numbers, then click the LOAD button.
 
 <p align="center">
 <img width="600px" src="../_static/visualize/movie_index.png" alt="movie index" />
@@ -44,81 +44,62 @@ Then you can select the range of the frame in Start/End Index of left sidebar. A
 Click on the PLAY button within the plotting box to play the loaded movie.
 The number indicated on the right of PAUSE button is the frame interval in milliseconds.
 
-
 ### Customizing visualization parameters
-Select one of the display boxes by clicking inside of the box. Selected box will be highlighted by blue outline.
+Select one of the display boxes by clicking inside of the box. The selected box will be highlighted with a blue outline.
 
-Left sidebar shows the parameters available for the selected box.
+The left sidebar shows the parameters available for the selected box.
 
 <p align="center">
 <img width="600px" src="../_static/visualize/customize_param.png" alt="CustomizeParam" />
 </p>
 
+## ROI and timecourses
+In order to visualise the fluorescence time series of ROI, two visualise boxes must be created and linked.
 
-## ROI and timecourse
-There is a way to link ROI plots and fluorescence time series.
-Create One box showing ROI and another box showing fluorescence. You can link two boxes by setting `ref image` in the fluorescence box to be the ID of the ROI box. (ID of the box is on the left upper side). By clicking on the ROI of a cell, you can visualize the corresponding fluorescence time course in the fluorescence box. By turning on the `drag select` in ROI box, you can select multiple cells in the image at once.
-
-
-### Ref Image
-
-<p align="center">
-<img width="600px" src="../_static/visualize/ref_image.png" alt="RefImage" />
-</p>
-
-TimeSeries plot can refer to a image plot to synthronize cell number index. Click or drag image plot so that cell number indexes are synthoronized in corresponding timeseries plot.
-
-
-### Showing ROI and time courses
-After running the ROI detection algorithms, the most often created plots are extracted cells' shape and fluorescence time series. To show the plot, prepare two plotting boxes.
-
-<br>
-<p align="center">
-<img width="600px" src="../_static/visualize/twobox.png" alt="Whole" />
-</p>
-
-In one plotting box (ex, the one with ID:0), select a background image such as meanimg from the Select Item pulldowns.
+First create one box with the imaging data. Select the imaging data file (e.g. .tiff) from the `Select Item` drop down menu.
 
 <br>
 <p align="center">
 <img width="200px" src="../_static/visualize/select_item.png" alt="Whole" />
 </p>
 
-In the same plotting box, select cell_roi from the Select Roi pull-downs. Both Suite2P and CaImAn include the process to drop the extracted ROIs that do not meet the criteria. In OptiNiSt, the cell ID is given to all the ROIs. Cell_roi is the ROIs that passed the criteria.
+Then select the ROI (e.g. `cell_roi`). Both Suite2P and CaImAn include the process to remove the extracted ROIs that do not meet the criteria. You can visualise ROI that have been removed by selecting `non_cell_roi`.
 
 <br>
 <p align="center">
 <img width="200px" src="../_static/visualize/select_roi.png" alt="Whole" />
 </p>
 
-The plotting box (ID:0) shows the background image and detected cells.
+The plotting box (#0) shows the background image and detected cells.  In OptiNiSt, a cell ID is given to all the ROIs and will be used for visualisation. Hover over an ROI to see the cell ID. 
+
 <br>
 <p align="center">
 <img width="400px" src="../_static/visualize/roi.png" alt="Whole" />
 </p>
 
-In another plotting box (ex, the one with ID:1), select fluorescence from the Select Item pulldown.
-And select 0(same ID with the plotting box of your ROI image) from the ref image pull down. By doing this,  the two plotting boxes are linked.
+In another plotting box (e.g. number #1), select fluorescence from the `Select Item` pulldown. Link two boxes by setting `Link to box (#)` in the fluorescence box to match the ID of the ROI box. (Number # of the box is on the left upper side). By clicking on the ROI of a cell, you can visualize the corresponding fluorescence time course in the fluorescence box. 
+
+
+<br>
+<p align="center">
+<img width="600px" src="../_static/visualize/twobox.png" alt="Whole" />
+</p>
+
 
 <br>
 <p align="center">
 <img width="400px" src="../_static/visualize/fluo.png" alt="Whole" />
 </p>
 
-Now you can explore the ROI and time course. The color of ROI and corresponding time course is matched. You will know the cell ID by letting your mouse over the cell in the image. Clicking on the cell automatically adds the fluorescence time course of the clicked cell.
+Once linked, TimeSeries plots will synchronize the ROI and time courses between boxes. The color of ROI and corresponding time course is matched. Clicking on the cell automatically adds the fluorescence time course of the clicked cell.
+
 <br>
 <p align="center">
 <img width="600px" src="../_static/visualize/roi_fluo.png" alt="Whole" />
 </p>
 
-```{eval-rst}
-.. note::
-  - Cell's ID starts from 0 from version 1.0.0
 
-      - In the previous versions, starts from 1.
-```
-
-If it is tiring to select the cell by clicking one by one, turn on the drag select button on the right in the plotting box of ROI. It enables selecting all the cells within the rectangular area you define.
+You can select multiple ROI at once by turning on the `drag select` function on the right in the plotting box of ROI. It enables selecting all the ROI within the rectangular area you define.
 
 <br>
 <p align="center">
@@ -128,14 +109,14 @@ If it is tiring to select the cell by clicking one by one, turn on the drag sele
 (SwitchTimeUnit)=
 ### Switch time course plot units
 
-By default, timecourse plot's x axis is frame number. You can switch to time unit by clicking "range unit" in left side bar.
+By default, timecourse plot's x axis is frame number. You can switch to time unit by clicking  `range unit` in left side bar.
 
 <br>
 <p align="center">
 <img width="600px" src="../_static/visualize/select_timecourse_unit.png" alt="SelectTimeCourseUnit" />
 </p>
 
-If you change unit to "time", plot's x axis is changed to time(sec).
+If you change unit to `time`, plot's x axis is changed to time(sec).
 
 <br>
 <p align="center">
@@ -152,7 +133,7 @@ The time is calculated from imaging_plane.imaging_rate, in NWB settings.
 ```{eval-rst}
 .. important::
    The NWB settings parameter ``imaging_rate`` is also used as parameter for frame rate like ``fs`` in suite2p.
-   So, be sure if your imaging_rate is set correctly before running workflow.
+   So, confirm your imaging_rate is set correctly before running workflow.
 ```
 
 (EditingROI)=
@@ -162,39 +143,34 @@ The time is calculated from imaging_plane.imaging_rate, in NWB settings.
 <img width="400px" src="../_static/visualize/edit-roi/box.png" alt="Image plot" />
 </p>
 
-To the edit roi, prepare a plotting box.
+To the edit roi, open a plotting box.
 
 <p align="center">
 <img width="200px" src="../_static/visualize/select_item.png" alt="Select item" />
 </p>
 
-In one plotting box (ex, the one with ID:0), select a background image such as meanImg from the Select Item pulldowns.
-In the same plotting box, select cell_roi from the Select Roi pull-downs.
+In one plotting box (e.g. #0), select a background image such as meanImg from the `Select Item` pulldowns.
+In the same plotting box, select cell_roi from the `Select Roi` pull-downs. The plotting box (#0) will show the background image and detected cells.
 
-<br>
-<p align="center">
-<img width="200px" src="../_static/visualize/select_roi.png" alt="Select roi" />
-</p>
-The plotting box (ID:0) shows the background image and detected cells.
 <br>
 <p align="center">
 <img width="400px" src="../_static/visualize/edit-roi/cell_roi_selected.png" alt="Overlaid roi" />
 </p>
 
+You can click the <strong>Add ROI</strong> button then drag drop, resize the white circle to change the new ROI position and size.
+Press <strong>OK</strong> or <strong>Cancel</strong> button to Add or No
+
 <p align="center">
 <img width="400px" src="../_static/visualize/edit-roi/add_roi_clicked.png" alt="Add roi" />
 </p>
 
-
-You can click the <strong>Add ROI</strong> button then drag drop, resize the white circle to change the new ROI position and size.
-Press <strong>OK</strong> or <strong>Cancel</strong> button to Add or No
+Or click on each cell ROI to delete ROI or merge ROIs (when you select 2 or more ROI cells)
+Press <strong>Merge ROI</strong> or <strong>Delete ROI</strong> or <strong>Cancel</strong> button to Merge or Delete or No.
 
 <p align="center">
 <img width="400px" src="../_static/visualize/edit-roi/roi_selected_merge_or_delete.png" alt="Merge or delete roi" />
 </p>
 
-Or click on each cell ROI to delete ROI or merge ROIs (when you select 2 or more ROI cells)
-Press <strong>Merge ROI</strong> or <strong>Delete ROI</strong> or <strong>Cancel</strong> button to Merge or Delete or No.
 
 NWB file is overwritten with the ROI edit information.
 
@@ -219,12 +195,12 @@ NWB file is overwritten with the ROI edit information.
 ```
 
 ## saving plot as image file
-You can save created plots in svg, png, jpeg, or webp format.
+You can save plots in SVG, PNG, JPEG, or WEBP format.
 
-Please select the format and set the file name on the the SaveFig section in left panel. Then click the camera mark in the plotting box.
+Please select the format and set the file name on the the `SaveFig` section in left panel. Then click the camera mark in the plotting box.
 
 <p align="center">
 <img width="600px" src="../_static/visualize/save_fig.png" alt="Save fig" />
 </p>
 
-Svg format saves the plot as a vector-based graphical format which may be convenient when you need high-resolution figures.
+SVG format saves the plot as a vector-based graphical format which may be convenient when you need high-resolution figures.
