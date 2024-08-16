@@ -33,7 +33,7 @@ Notice how the new node changes color. This will also happen anytime you change 
 </p>
 
 ## Checking the data
-You may want to check the data after uploading it. Switch to the `Visualize` tab. Press the `+` icon to add a new window. Select the imaging data you want to see. If you adjust the start and end time, remember to press `LOAD` afterwards. You can also see the effectiveness of the motion correction by loading your original data and the motion corrected `mc_images` in side-by-side windows.
+You may want to check the data after uploading it. Switch to the `Visualize` tab. Press the `+` icon to add a new box. Select the imaging data you want to see. If you adjust the start and end time, remember to press `LOAD` afterwards. You can also see the effectiveness of the motion correction by loading your original data and the motion corrected `mc_images` in side-by-side boxes.
 
 <p align="center">
 <img width="400px" src="./_static/tutorials/play_vid.png" alt="Whole" />
@@ -47,10 +47,10 @@ It is also possible to check your behavioural csv data in the Visualize tab. You
 
 ## Selecting ROIs
 To visualise ROIs you first need to follow these steps:
-1. Open a window and select your imaging dataset.
+1. Open a box and select your imaging dataset.
 2. In the dropdown menu that appears to the right select the ROI type. Let's start by checking `cell_roi`.
-3. Open a second window and in the drop-down menu select `fluorescence` under the suite2p_roi header.
-4. Link the two windows using `ref image`, inputing the # of the other window.
+3. Open a second box and in the drop-down menu select `fluorescence` under the suite2p_roi header.
+4. Link the two boxes using `Link to box (#)`, inputing the # of the other box.
 5. Select an ROI to see by clicking on the ROI mask or the ROI ID in the legend.
 
 <p align="center">
@@ -66,7 +66,7 @@ By clicking on more than one ROI mask, you can also `Merge ROI`. The selected RO
 </p>
 
 ## Visualising analysis algorithms
-Finally, let's check the ETA analysis. Open up a new window and select `mean` under the ETA header of the drop-down menu. Link this window to your data to only see the `cell_roi` data. Then select and ROI from the legend.
+Finally, let's check the ETA analysis. Open up a new box and select `mean` under the ETA header of the drop-down menu. Link this box to your data to only see the `cell_roi` data. Then select and ROI from the legend.
 
 You'll see the mean trace across all of the time points specified by 1s in the `sample_mouse2p_behavior.csv` file. Also std can be displayed by setting `STD` in the left side-bar to True.
 
