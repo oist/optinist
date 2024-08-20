@@ -1,0 +1,68 @@
+workspace_id: "default"
+unique_id: bebffe0c
+name: New flow
+started_at: "2023-07-04 12:51:48"
+finished_at: null
+success: running
+hasNWB: false
+function:
+  input_0:
+    unique_id: input_0
+    name: data_endoscope.tif
+    success: success
+    hasNWB: false
+    message: null
+    outputPaths: null
+    started_at: "2023-07-04 12:51:48"
+    finished_at: "2023-07-04 12:51:48"
+  suite2p_file_convert_1234:
+    unique_id: suite2p_file_convert_1234
+    name: suite2p_file_convert
+    success: running
+    hasNWB: false
+    message: null
+    outputPaths: null
+    started_at: null
+    finished_at: null
+  suite2p_roi_1234:
+    unique_id: suite2p_roi_1234
+    name: suite2p_roi
+    success: running
+    hasNWB: false
+    message: null
+    outputPaths: null
+    started_at: null
+    finished_at: null
+nwb:
+  identifier: optinist
+  experiment_description: None
+  device:
+    name: Microscope device
+    description: Microscope Information
+    manufacturer: Microscope Manufacture
+  image_series:
+    starting_time: 0
+    starting_frame:
+      - 0
+  imaging_plane:
+    name: ImagingPlane
+    description: standard
+    imaging_rate: 200
+    excitation_lambda: 600
+    indicator: GCaMap
+    location: V1
+  ophys:
+    plane_segmentation:
+      name: PlaneSegmentation
+      description: ""
+  optical_channel:
+    description: optical channel
+    emission_lambda: 500
+    name: OpticalChannel
+  session_description: optinist
+snakemake:
+  use_conda: true
+  cores: 2
+  forceall: false
+  forcetargets: true
+  lock: false

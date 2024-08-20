@@ -152,8 +152,8 @@ class Runner:
             load_data = PickleReader.read(filepath)
 
             # validate load_data content
-            assert (
-                type(load_data) is dict
+            assert PickleReader.check_is_valid_node_pickle(
+                load_data
             ), f"Invalid node input data content. [{filepath}]"
 
             merged_nwb = cls.deep_merge(

@@ -6,6 +6,9 @@ from studio.app.common.core.workflow.workflow_writer import WorkflowConfigWriter
 from studio.app.common.schemas.workflow import WorkflowConfig
 from studio.app.dir_path import DIRPATH
 
+workspace_id = "default"
+unique_id = "workflow_test"
+
 node_data = NodeData(label="a", param={}, path="", type="")
 
 nodeDict = {
@@ -40,8 +43,8 @@ edgeDict = {
 
 def test_create_config() -> WorkflowConfig:
     workflow_config = WorkflowConfigWriter(
-        workspace_id="test_workspace_id",
-        unique_id="test_id",
+        workspace_id=workspace_id,
+        unique_id=unique_id,
         nodeDict=nodeDict,
         edgeDict=edgeDict,
     ).create_config()
@@ -49,7 +52,7 @@ def test_create_config() -> WorkflowConfig:
     assert isinstance(workflow_config, WorkflowConfig)
 
 
-dirpath = f"{DIRPATH.DATA_DIR}/output/workspace_id/unique_id"
+dirpath = f"{DIRPATH.OUTPUT_DIR}/{workspace_id}/{unique_id}"
 
 
 def test_write():
@@ -57,8 +60,8 @@ def test_write():
         shutil.rmtree(dirpath)
 
     WorkflowConfigWriter(
-        workspace_id="workspace_id",
-        unique_id="unique_id",
+        workspace_id=workspace_id,
+        unique_id=unique_id,
         nodeDict=nodeDict,
         edgeDict=edgeDict,
     ).write()

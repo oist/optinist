@@ -12,6 +12,17 @@ class PickleReader:
         with open(filepath, "rb") as f:
             return pickle.load(f)
 
+    @staticmethod
+    def check_is_valid_node_pickle(data):
+        """
+        Checks whether the node processing result pickle is valid
+        - If the processing is successful, the result information is stored in a dict
+        - If the processing fails, the error information is stored in a list
+        """
+        is_valid = (data is not None) and (type(data) is dict)
+
+        return is_valid
+
 
 class PickleWriter:
     @classmethod

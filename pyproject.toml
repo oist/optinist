@@ -120,6 +120,15 @@ profile = "black"
 pythonpath = "."
 testpaths = "studio/tests"
 env = ["OPTINIST_DIR=studio/test_data"]
+filterwarnings = [
+    "ignore:pkg_resources is deprecated as an API:DeprecationWarning",
+    "ignore:Deprecated call to `pkg_resources.declare_namespace:DeprecationWarning",
+    "ignore:invalid escape sequence :DeprecationWarning",
+]
+markers = [
+    "lighter_processing",
+    "heavier_processing",
+]
 
 [tool.codespell]
 skip = './frontend/build,./frontend/node_modules,./docs/_build,*.lock,*log,*.egg-info'

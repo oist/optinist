@@ -2,7 +2,12 @@ from studio.app.common.core.experiment.experiment import ExptConfig, ExptFunctio
 from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
 from studio.app.dir_path import DIRPATH
 
-expt_filepath = f"{DIRPATH.DATA_DIR}/output_test/0123/experiment.yaml"
+workspace_id = "default"
+unique_id = "0123"
+
+expt_filepath = (
+    f"{DIRPATH.DATA_DIR}/output_test/{workspace_id}/{unique_id}/experiment.yaml"
+)
 
 
 def test_read():
