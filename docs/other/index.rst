@@ -6,5 +6,5 @@ Other
   :maxdepth: 2
   :caption: OTHER:
 
-  add_algorithm
+  host_for_multiuser/index
   cui_execution

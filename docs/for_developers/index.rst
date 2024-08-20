@@ -13,5 +13,4 @@ See the following guidelines before submitting Pull Requests.
   ../README
   style
   pull_request
-  architecture
   test
