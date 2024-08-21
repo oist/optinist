@@ -56,7 +56,7 @@
     "prestart": "node export-versions.js",
     "start": "react-app-rewired start --scripts-version react-scripts",
     "build": "BUILD_PATH='./build' react-app-rewired build --openssl-legacy-provider build",
-    "test": "react-app-rewired test --transformIgnorePatterns 'node_modules/(?!react-dnd)/'",
+    "test": "react-app-rewired test --transformIgnorePatterns 'node_modules/(?!react-dnd|@react-dnd)/'",
     "test:ci": "CI=true react-app-rewired test",
     "eject": "react-scripts eject",
     "format": "prettier --write .",
