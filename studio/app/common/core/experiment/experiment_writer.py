@@ -128,10 +128,12 @@ class ExptDataWriter:
             ]
         )
 
-        with open(filepath, "r+") as f:
+        # Note: "r+" option is not used here because it requires file pointer control.
+        with open(filepath, "r") as f:
             config = yaml.safe_load(f)
             config["name"] = new_name
-            f.seek(0)  # requires seek(0) before write.
+
+        with open(filepath, "w") as f:
             yaml.dump(config, f, sort_keys=False)
 
         return ExptConfig(
