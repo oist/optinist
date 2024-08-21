@@ -29,7 +29,7 @@ Main Features
 
 .. toctree::
   :maxdepth: 2
-  :caption: USER GUIDE:
+  :caption: User Guide:
 
   installation/index
   tutorials

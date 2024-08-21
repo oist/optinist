@@ -80,7 +80,7 @@ Multi-user (User)
 - Switching workspaces, you can run multiple workflows in parallel.
   - When you back to the workspace, you will see the last status of the workflow.
 
-### Sharing workspace
+### Sharing Workspace
 - Workspaces are belong to the user who created it (owner).
 - Shared users can
   - get files (workflow, snakemake, nwb files) of shared workflows
@@ -91,7 +91,7 @@ Multi-user (User)
   - edit, delete existing records
 
 
-#### Share workspace
+#### Share Workspace
 1. Click share icon in the workspace row.
 2. Type the email address of the user you want to share.
 3. Select suggested user.
@@ -110,7 +110,7 @@ Multi-user (User)
 
 - To unsare workspace, click "x" icon in the permitted users list.
 
-#### Check shared workspaces
+#### Check Shared Workspaces
 - Share icon of workspace you are sharing with someone else will be blue (not shared is black).
 - Shared workspace has share icon beside owner name.
 

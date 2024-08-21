@@ -7,7 +7,7 @@ OptiNiSt visualizes the analysis results by [plotly](https://plotly.com/).
 <img width="600px" src="../_static/visualize/whole.png" alt="Whole" />
 </p>
 
-## Adding a display box
+## Adding a Display Box
 Click the "+" button to create a display box.
 
 <p align="center">
@@ -20,7 +20,7 @@ To add another display box , click the "+" button. You can add new boxes to the 
 <img width="600px" src="../_static/visualize/add_column.png" alt="AddColumn" />
 </p>
 
-### Selecting an item to show
+### Selecting an Item to Show
 Pull down of the `Select Item` shows the available item to show. Select one of these items.
 
 Items are separated by the data / algorithm nodes used to create them.
@@ -30,7 +30,7 @@ Items are separated by the data / algorithm nodes used to create them.
 </p>
 
 
-### Checking movies
+### Checking Movies
 You may want to check some frames of the multi-page tiff files. Visualize page offers the way to check.
 
 After creating a plot box by clicking on + mark, Select the image using the `Select Item` dropdown list.
@@ -44,7 +44,7 @@ You can select the range of the frames using the Start/End Index in the left sid
 Click on the PLAY button within the plotting box to play the loaded movie.
 The number indicated on the right of PAUSE button is the frame interval in milliseconds.
 
-### Customizing visualization parameters
+### Customizing Visualization Parameters
 Select one of the display boxes by clicking inside of the box. The selected box will be highlighted with a blue outline.
 
 The left sidebar shows the parameters available for the selected box.
@@ -70,14 +70,14 @@ Then select the ROI (e.g. `cell_roi`). Both Suite2P and CaImAn include the proce
 <img width="200px" src="../_static/visualize/select_roi.png" alt="Whole" />
 </p>
 
-The plotting box (#0) shows the background image and detected cells.  In OptiNiSt, a cell ID is given to all the ROIs and will be used for visualisation. Hover over an ROI to see the cell ID. 
+The plotting box (#0) shows the background image and detected cells. In OptiNiSt, a cell ID is given to all the ROIs and will be used for visualisation. Hover over an ROI to see the cell ID.
 
 <br>
 <p align="center">
 <img width="400px" src="../_static/visualize/roi.png" alt="Whole" />
 </p>
 
-In another plotting box (e.g. number #1), select fluorescence from the `Select Item` pulldown. Link two boxes by setting `Link to box (#)` in the fluorescence box to match the ID of the ROI box. (Number # of the box is on the left upper side). By clicking on the ROI of a cell, you can visualize the corresponding fluorescence time course in the fluorescence box. 
+In another plotting box (e.g. #1), select fluorescence from the `Select Item` pulldown. Link two boxes by setting `Link to box (#)` in the fluorescence box to match the # of the ROI box (Number # of the box is on the left upper side). By clicking on the ROI of a cell, you can visualize the corresponding fluorescence time course in the fluorescence box.
 
 
 <br>
@@ -107,7 +107,7 @@ You can select multiple ROI at once by turning on the `drag select` function on 
 </p>
 
 (SwitchTimeUnit)=
-### Switch time course plot units
+### Switch Time Course Plot Units
 
 By default, timecourse plot's x axis is frame number. You can switch to time unit by clicking  `range unit` in left side bar.
 
@@ -157,7 +157,7 @@ In the same plotting box, select cell_roi from the `Select Roi` pull-downs. The 
 <img width="400px" src="../_static/visualize/edit-roi/cell_roi_selected.png" alt="Overlaid roi" />
 </p>
 
-You can click the <strong>Add ROI</strong> button then drag drop, resize the white circle to change the new ROI position and size.
+You can click the <strong>Add ROI</strong> button then drag-drop and resize the white circle to change the new ROI position and size.
 Press <strong>OK</strong> or <strong>Cancel</strong> button to Add or No
 
 <p align="center">
@@ -165,7 +165,7 @@ Press <strong>OK</strong> or <strong>Cancel</strong> button to Add or No
 </p>
 
 Or click on each cell ROI to delete ROI or merge ROIs (when you select 2 or more ROI cells)
-Press <strong>Merge ROI</strong> or <strong>Delete ROI</strong> or <strong>Cancel</strong> button to Merge or Delete or No.
+Press <strong>Merge ROI</strong> or <strong>Delete ROI</strong> or <strong>Cancel</strong> button to Merge or Delete or Not. To keep changes and see them in the analysis you must </strong>Commit Edit</strong>.
 
 <p align="center">
 <img width="400px" src="../_static/visualize/edit-roi/roi_selected_merge_or_delete.png" alt="Merge or delete roi" />
@@ -194,7 +194,7 @@ NWB file is overwritten with the ROI edit information.
           - iscell data of deleted ROI changes to False.
 ```
 
-## saving plot as image file
+## Saving Plots
 You can save plots in SVG, PNG, JPEG, or WEBP format.
 
 Please select the format and set the file name on the the `SaveFig` section in left panel. Then click the camera mark in the plotting box.

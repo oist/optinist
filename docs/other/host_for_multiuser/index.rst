@@ -1,5 +1,5 @@
 ******************
-Multi-user mode
+Multi-user Mode
 ******************
 
 .. toctree::

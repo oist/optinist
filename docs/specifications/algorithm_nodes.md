@@ -5,7 +5,7 @@ Algorithm Nodes
 OptiNiSt includes a variety of third-party calcium (Ca<sup>2+</sup>) imaging software packages for processing video data and extracting cell ROI information. OptiNiSt also includes a selection of data analysis tools. Each step of data processing and analysis are contained within a Node, which can be mixed-and-matched. Here we summarise the usage and requirements of each node.
 
 
-#### Data processing
+#### Data Processing
 ##### [CaImAn](https://caiman.readthedocs.io/en/latest/)
 ###### caiman_mc
   - **Description:** Motion Correction ([NoRMCorre](https://caiman.readthedocs.io/en/latest/CaImAn_features_and_references.html#normcorre)). The function will perform either rigid or piecewise rigid motion correction depending on the attribute self.pw_rigid and will perform high pass spatial filtering for determining the motion (used in 1p data) if the attribute self.gSig_filt is not None.
@@ -383,7 +383,7 @@ OptiNiSt includes a variety of third-party calcium (Ca<sup>2+</sup>) imaging sof
       - **transpose_y** [bool, default: True]: Whether to transpose the behavior data matrix.
       - **standard_x_mean** [bool, default: True]: Standardize X by subtracting mean.
       - **standard_x_std*** [bool, default: True]: Standardize X by dividing by std.
-    
+
     - **Grid Search**: Find optimal parameters by comparing models within specified range
         (Otherwise specify yourself in SVM parameters)
       - **use_grid_search** [bool, default: True]: Whether to perform grid search for hyperparameter optimization.
@@ -401,7 +401,7 @@ OptiNiSt includes a variety of third-party calcium (Ca<sup>2+</sup>) imaging sof
       - **n_splits** [int, default: 5]: Number of folds in k-fold cross-validation.
       - **shuffle** [bool, default: True]: Whether to shuffle the data before splitting.
 
-    - **SVM**: 
+    - **SVM**:
       - **C** [float, default: 1.0]: Regularization parameter (inverse of regularization strength). Must be strictly positive. The penalty is a squared L2 penalty.
       - **kernel** [str (‘linear’, ‘poly’, ‘rbf’, ‘sigmoid’), default: 'rbf']: Kernel type to be used in the algorithm.  For an intuitive visualization of different kernel types see [Plot classification boundaries with different SVM Kernels](https://scikit-learn.org/stable/auto_examples/svm/plot_svm_kernels.html#sphx-glr-auto-examples-svm-plot-svm-kernels-py).
         - 'linear': Linear kernel, equivalent to no transformation.
@@ -466,7 +466,7 @@ OptiNiSt includes a variety of third-party calcium (Ca<sup>2+</sup>) imaging sof
     - **adfuller**: The Augmented Dickey-Fuller test can be used to test for a unit root in a univariate process in the presence of serial correlation.
         - **maxlag** [int or None]: Maximum lag order for the test,  default value of 12*(nobs/100)^{1/4} is used when None.
         - **regression** [str ('c', 'ct','ctt','n'), default: 'c']: Type of regression to use.
-            - “c” : constant only (default). 
+            - “c” : constant only (default).
             - “ct” : constant and trend.
             - “ctt” : constant, and linear and quadratic trend.
             - “n” : no constant, no trend.
@@ -475,12 +475,12 @@ OptiNiSt includes a variety of third-party calcium (Ca<sup>2+</sup>) imaging sof
           - “t-stat” based choice of maxlag. Starts with maxlag and drops a lag until the t-statistic on the last lag length is significant using a 5%-sized test.
           - If None, then the number of included lags is set to maxlag.
         - regresults [bool, default: False]: If True, returns the full regression results.
-        - store ? 
+        - store ?
         - regresults ?
 
     - **coint**: The null hypothesis is no cointegration. Variables in y0 and y1 are assumed to be integrated of order 1, I(1).Uses the augmented Engle-Granger two-step cointegration test. Constant or trend is included in 1st stage regression, i.e. in cointegrating equation.
       - **trend** [str ('c', 'ct','ctt','n'), default: 'c']: The trend term included in regression for cointegrating equation.
-            - “c” : constant only (default). 
+            - “c” : constant only (default).
             - “ct” : constant and trend.
             - “ctt” : constant, and linear and quadratic trend.
             - “n” : no constant, no trend.
@@ -494,14 +494,14 @@ OptiNiSt includes a variety of third-party calcium (Ca<sup>2+</sup>) imaging sof
   - **Output:** ImageData
   - **Parameters:**
    - **ch:** [int, default: 0] Channel to extract from the microscope data.
-   
-###### Fluo from HDF5 (To visualize time series data directly from HDf5)
+
+###### Fluo from HDF5
   - **Description:** Extracts fluorescence data from HDF5 file and transposes for visualization
   - **Input:** FluoData, HDF5Data
   - **Output:** FluoData
 
-###### ROI from HDF5 
+###### ROI from HDF5
   - **Description:** Extracts ROI data from HDF5 file and prepares it for visualization
   - **Input:** ImageData, HDF5Data, IscellData
   - **Output:** RoiData
-  
+

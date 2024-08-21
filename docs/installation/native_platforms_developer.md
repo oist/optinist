@@ -1,5 +1,5 @@
 (native_platforms_developer)=
-Native platforms (Developer)
+Native Platforms (Developer)
 =================
 
 ```{contents}
@@ -38,7 +38,7 @@ After install node, install yarn.
 npm install -g yarn
 ```
 
-### Clone repository
+### Clone Repository
 
 ```
 git clone https://github.com/oist/optinist.git
@@ -51,7 +51,7 @@ cd ./optinist
   cp frontend/.env.example frontend/.env
   ```
 
-### Create anaconda environment
+### Create Anaconda Environment
 
 ```
 conda create -n optinist_dev python=3.8 poetry
@@ -62,7 +62,7 @@ conda activate optinist_dev
 conda config --set channel_priority strict
 ```
 
-### Install requirements
+### Install Requirements
 
 ```
 poetry install --no-root --with dev
@@ -70,14 +70,14 @@ poetry install --no-root --with dev
 
 If you will make PRs, please see the [](for_developers) section.
 
-### Set saving directory
+### Set Saving Directory
 
 Optinist default saving directory is `/tmp/studio`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
 ```
 export OPTINIST_DIR="your_saving_dir"
 ```
 
-## 2. Run backend
+## 2. Run Backend
 
 ```
 python main.py
@@ -95,7 +95,7 @@ INFO:     Application startup complete.
 
 - If you won't develop the frontend code, launch browser and go to http://localhost:8000
 
-## 3. Run frontend
+## 3. Run Frontend
 
 Open new terminal window, and go to `frontend` directory.
 
@@ -117,7 +117,5 @@ yarn start
     frontend in development environment uses port 3000,
     while production optinist uses 8000.
 ```
-
-It opens correctly!
 
 Done!

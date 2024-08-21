@@ -3,15 +3,15 @@ Tutorials
 
 This tutorial will walk you through the basic workflow of Optinist. You can read through this tutorial and try running Optinst on our sample dataset. Then you will be ready to start using Optinist on your own data.
 
-* [Loading Sample data](#loading-sample-data)
-* [Adding nodes to your Workflow](#adding-nodes-to-your-workflow)
-* [Checking the data](#checking-the-data)
+* [Loading Sample Data](#loading-sample-data)
+* [Adding Nodes to your Workflow](#adding-nodes-to-your-workflow)
+* [Checking the Data](#checking-the-data)
 * [Selecting ROIs](#selecting-rois)
-* [Visualising analysis algorithms](#visualising-analysis-algorithms)
+* [Visualising Analysis Algorithms](#visualising-analysis-algorithms)
 * [Tutorial 2](#practice-with-tutorial-2)
 
-## Loading Sample data
-Let's begin by loading some sample data. The `Import sample data` button can be found by first selecting the `Documentation` button. This action moves the sample data into your Optinist [working directory](#DirectorySetting).
+## Loading Sample Data
+Let's begin by loading some sample data. The `Import sample data` button can be found by first selecting the `Documentation` button. This action moves the sample data into your Optinist [working directory](#DirectorySettings).
 
 Next, switch to the [Record](#Record) tab. This is where the records of all your workflows will be kept. You can conveniently reload any previous workflow from here. To load the tutorial workflow, select the [Reproduce](#ReproduceButton) icon. Note that you can download the [Workflow, Snakemake, and NWB files](#DownloadButtons) for use later.
 
@@ -23,7 +23,7 @@ Since this will be the first time running this data on your computer, you'll nee
 <img width="600px" src="./_static/tutorials/load_sample_data.png" alt="Whole" />
 </p>
 
-## Adding nodes to your Workflow
+## Adding Nodes to your Workflow
 You can easily add new `Data` and `Algorithm` nodes from the left-hand side menu. Let's practice by adding another type of analysis. Try selecting `PCA` (Principal Components Analysis) from the `Algorithm` menu. You'll need to connect the nodes with the [matching data type](#ConnectingNodes). Note that the opaque connector blocks are necessary, and the transparent blocks are optional. By connecting the blue blocks, only the ROIs that are confirmed as cells will be used for PCA.
 
 Notice how the new node changes color. This will also happen anytime you change a parameter. You'll need to `Run` the analysis again. Conveniently, Optinist checks which nodes are affected by changes and only runs what is necessary.
@@ -32,7 +32,7 @@ Notice how the new node changes color. This will also happen anytime you change 
 <img width="600px" src="./_static/tutorials/add_modules.png" alt="Whole" />
 </p>
 
-## Checking the data
+## Checking the Data
 You may want to check the data after uploading it. Switch to the `Visualize` tab. Press the `+` icon to add a new box. Select the imaging data you want to see. If you adjust the start and end time, remember to press `LOAD` afterwards. You can also see the effectiveness of the motion correction by loading your original data and the motion corrected `mc_images` in side-by-side boxes.
 
 <p align="center">
@@ -65,7 +65,7 @@ By clicking on more than one ROI mask, you can also `Merge ROI`. The selected RO
 <img width="600px" src="./_static/tutorials/delete_ROI.png" alt="Whole" />
 </p>
 
-## Visualising analysis algorithms
+## Visualising Analysis Algorithms
 Finally, let's check the ETA analysis. Open up a new box and select `mean` under the ETA header of the drop-down menu. Link this box to your data to only see the `cell_roi` data. Then select and ROI from the legend.
 
 You'll see the mean trace across all of the time points specified by 1s in the `sample_mouse2p_behavior.csv` file. Also std can be displayed by setting `STD` in the left side-bar to True.
@@ -83,4 +83,3 @@ You would recreate the figure below.
 <p align="center">
 <img width="600px" src="./_static/tutorials/PCA.png" alt="Whole" />
 </p>
-
