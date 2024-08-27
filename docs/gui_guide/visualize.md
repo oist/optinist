@@ -4,7 +4,7 @@ Visualize
 OptiNiSt visualizes the analysis results by [plotly](https://plotly.com/).
 
 <p align="center">
-<img width="600px" src="../_static/visualize/whole.png" alt="Whole" />
+<img width="600px" src="../_static/visualize/whole.png" alt="Visualise multiple boxes" />
 </p>
 
 ## Adding a Display Box
@@ -60,21 +60,21 @@ First create one box with the imaging data. Select the imaging data file (e.g. .
 
 <br>
 <p align="center">
-<img width="200px" src="../_static/visualize/select_item.png" alt="Whole" />
+<img width="600px" src="../_static/visualize/select_item.png" alt="Select Item" />
 </p>
 
 Then select the ROI (e.g. `cell_roi`). Both Suite2P and CaImAn include the process to remove the extracted ROIs that do not meet the criteria. You can visualise ROI that have been removed by selecting `non_cell_roi`.
 
 <br>
 <p align="center">
-<img width="200px" src="../_static/visualize/select_roi.png" alt="Whole" />
+<img width="200px" src="../_static/visualize/select_roi.png" alt="Select ROI" />
 </p>
 
 The plotting box (#0) shows the background image and detected cells. In OptiNiSt, a cell ID is given to all the ROIs and will be used for visualisation. Hover over an ROI to see the cell ID.
 
 <br>
 <p align="center">
-<img width="400px" src="../_static/visualize/roi.png" alt="Whole" />
+<img width="400px" src="../_static/visualize/roi.png" alt="ROI" />
 </p>
 
 In another plotting box (e.g. #1), select fluorescence from the `Select Item` pulldown. Link two boxes by setting `Link to box (#)` in the fluorescence box to match the # of the ROI box (Number # of the box is on the left upper side). By clicking on the ROI of a cell, you can visualize the corresponding fluorescence time course in the fluorescence box.
@@ -82,20 +82,15 @@ In another plotting box (e.g. #1), select fluorescence from the `Select Item` pu
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/visualize/twobox.png" alt="Whole" />
+<img width="600px" src="../_static/visualize/twobox.png" alt="Link boxes" />
 </p>
 
-
-<br>
-<p align="center">
-<img width="400px" src="../_static/visualize/fluo.png" alt="Whole" />
-</p>
 
 Once linked, TimeSeries plots will synchronize the ROI and time courses between boxes. The color of ROI and corresponding time course is matched. Clicking on the cell automatically adds the fluorescence time course of the clicked cell.
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/visualize/roi_fluo.png" alt="Whole" />
+<img width="600px" src="../_static/visualize/roi_fluo.png" alt="ROI select, fluo time course" />
 </p>
 
 
@@ -103,25 +98,19 @@ You can select multiple ROI at once by turning on the `drag select` function on 
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/visualize/drag_select.png" alt="Whole" />
+<img width="600px" src="../_static/visualize/drag_select.png" alt="Drag select" />
 </p>
 
 (SwitchTimeUnit)=
 ### Switch Time Course Plot Units
 
-By default, timecourse plot's x axis is frame number. You can switch to time unit by clicking  `range unit` in left side bar.
+By default, timecourse plot's x axis is frame number. You can switch to time unit by clicking  `range unit` in left side bar. If you change unit to `time`, plot's x axis is changed to time(sec).
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/visualize/select_timecourse_unit.png" alt="SelectTimeCourseUnit" />
+<img width="600px" src="../_static/visualize/select_timecourse_unit.png" alt="Select Time Course Unit" />
 </p>
 
-If you change unit to `time`, plot's x axis is changed to time(sec).
-
-<br>
-<p align="center">
-<img width="600px" src="../_static/visualize/timecourse_time_unit.png" alt="TimeCourseTimeUnit" />
-</p>
 
 The time is calculated from imaging_plane.imaging_rate, in NWB settings.
 
@@ -139,38 +128,38 @@ The time is calculated from imaging_plane.imaging_rate, in NWB settings.
 (EditingROI)=
 ### Editing ROI
 
-<p align="center">
-<img width="400px" src="../_static/visualize/edit-roi/box.png" alt="Image plot" />
-</p>
-
-To the edit roi, open a plotting box.
-
-<p align="center">
-<img width="200px" src="../_static/visualize/select_item.png" alt="Select item" />
-</p>
-
-In one plotting box (e.g. #0), select a background image such as meanImg from the `Select Item` pulldowns.
-In the same plotting box, select cell_roi from the `Select Roi` pull-downs. The plotting box (#0) will show the background image and detected cells.
+To the edit roi, open a plotting box and select a background image such as meanImg from the `Select Item` pulldowns.
+In the same plotting box, select cell_roi from the `Select Roi` pull-downs. The plotting box (#0) will show the background image and detected cells. Click Edit ROI to bring up the editing options.
 
 <br>
 <p align="center">
-<img width="400px" src="../_static/visualize/edit-roi/cell_roi_selected.png" alt="Overlaid roi" />
+<img width="400px" src="../_static/visualize/edit_roi.png" alt="Edit roi" />
 </p>
 
-You can click the <strong>Add ROI</strong> button then drag-drop and resize the white circle to change the new ROI position and size.
-Press <strong>OK</strong> or <strong>Cancel</strong> button to Add or No
+Select from the three edit ROI options: Add ROI, Delete ROI, Merge ROI.
+
+<br>
+<p align="center">
+<img width="400px" src="../_static/visualize/edit_roi_clicked.png" alt="Edit ROI clicked" />
+</p>
+
+Click the <strong>Add ROI</strong> button then drag-drop and resize the white circle to change the new ROI position and size.
+Click <strong>OK</strong> or <strong>Cancel</strong> button to Add or not. 
 
 <p align="center">
-<img width="400px" src="../_static/visualize/edit-roi/add_roi_clicked.png" alt="Add roi" />
+<img width="400px" src="../_static/visualize/add_roi_clicked.png" alt="Add roi" />
 </p>
 
-Or click on each cell ROI to delete ROI or merge ROIs (when you select 2 or more ROI cells)
-Press <strong>Merge ROI</strong> or <strong>Delete ROI</strong> or <strong>Cancel</strong> button to Merge or Delete or Not. To keep changes and see them in the analysis you must </strong>Commit Edit</strong>.
+Click <strong>Merge ROI</strong> (when you combine 2 or more ROI cells) or <strong>Delete ROI</strong> or <strong>Cancel</strong> button to Merge or Delete or not. 
 
 <p align="center">
-<img width="400px" src="../_static/visualize/edit-roi/roi_selected_merge_or_delete.png" alt="Merge or delete roi" />
+<img width="400px" src="../_static/visualize/merge_roi_clicked.png" alt="Merge roi" />
 </p>
 
+To keep changes and see them in the analysis you must </strong>Commit Edit</strong>.
+<p align="center">
+<img width="400px" src="../_static/visualize/commit.png" alt="Commit roi changes" />
+</p>
 
 NWB file is overwritten with the ROI edit information.
 
@@ -180,7 +169,7 @@ NWB file is overwritten with the ROI edit information.
 
   - common
 
-      - edited ROI ids are recorded in processing/optinist section
+      - Edited ROI ids are recorded in processing/optinist section
 
   - specific
 

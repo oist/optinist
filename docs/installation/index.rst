@@ -15,5 +15,5 @@ Installation
   :maxdepth: 2
   :caption: Installation (Developer)
 
-  docker_for_developer
+  docker_developer
   native_platforms_developer

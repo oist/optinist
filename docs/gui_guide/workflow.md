@@ -49,7 +49,8 @@ Clicking the + button adds the analysis nodes to the Workflow field.
 
 The left side of the window displays all available analysis methods. ROI detection tools (currently Suite2P, CaImAn and LCCD) are in the "Algorithm" category, and all other pre-installed analyses are in the "optinist" category.
 
-### Input Data with Data Nodes
+(AddData)=
+### Input Data with Data Nodes 
 * Image (TIFF)
 
   By default, an Image node is displayed. This node defines the path to the data to use.
@@ -212,6 +213,7 @@ You can only connect the input and output connectors of the same color.
 - <span style="color: orange; ">Fluorescence</span>
 - <span style="color: #cfc22b; ">Behavior</span>
 - <span style="color: blue; ">Iscell</span>
+- <span style="color: black; ">Unspecified</span>
 
 
 ### Removing Nodes or Connects

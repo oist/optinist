@@ -115,11 +115,12 @@ To use multiuser mode with Docker, perform the following steps.
 ```bash
 docker compose -f docker-compose.dev.multiuser.yml up studio-dev-be -d
 ```
-
+(insert_initial_data)=
 ###### Insert Initial Data
 ```bash
 docker exec -it {DB_CONTAINER_NAME} mysql -u {DB_USER_NAME} -p {YOUR_DATABASE_NAME}
 ```
+Make an initial sql entry
 ```sql
 INSERT INTO organization (name) VALUES ('{YOUR_ORGANIZATION_NAME}');
 INSERT INTO roles (id, role) VALUES (1, 'admin'), (20, 'operator');
@@ -166,7 +167,7 @@ alembic upgrade head
 ```
 
 ###### Insert Initial Data
-- For data input procedure, see :ref:`set-optinist-config`.
+- For data input procedure, [see Insert Initial Data](#insert_initial_data) 
 
 ##### Run OptiNiSt
 ```bash
