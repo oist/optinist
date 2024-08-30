@@ -38,7 +38,9 @@
     "react-app-rewired": "^2.2.1",
     "react-color": "^2.19.3",
     "react-dnd": "^16.0.1",
+    "react-dnd-cjs": "^9.5.1",
     "react-dnd-html5-backend": "^16.0.1",
+    "react-dnd-html5-backend-cjs": "^9.5.1",
     "react-dom": "18.2.0",
     "react-linear-gradient-picker": "^3.0.1",
     "react-plotlyjs-ts": "^2.2.2",
@@ -109,7 +111,10 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "^axios$": "axios/dist/node/axios.cjs"
+      "^axios$": "axios/dist/node/axios.cjs",
+      "react-dnd": "react-dnd-cjs",
+      "react-dnd-html5-backend": "react-dnd-html5-backend-cjs",
+      "dnd-core": "dnd-core-cjs"
     }
   }
 }
