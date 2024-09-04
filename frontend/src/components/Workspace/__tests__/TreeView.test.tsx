@@ -6,7 +6,7 @@ import configureStore from "redux-mock-store"
 import thunk from "redux-thunk"
 
 import { describe, it, beforeEach } from "@jest/globals"
-import { render, screen, fireEvent } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 import { userEvent } from "@testing-library/user-event"
 
 import { AlgorithmTreeView } from "components/Workspace/FlowChart/TreeView"
