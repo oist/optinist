@@ -33,8 +33,6 @@ const isTestEnv = process.env.NODE_ENV === "test"
 // Ensure TestBackend is imported correctly and used conditionally
 const backend = isTestEnv ? TestBackend : HTML5Backend
 
-console.log(TestBackend)
-
 describe("Flowchart Component", () => {
   it("renders correctly", () => {
     const handleRunPipelineByUid = jest.fn()
