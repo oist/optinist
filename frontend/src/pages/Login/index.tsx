@@ -2,6 +2,8 @@ import { ChangeEvent, FormEvent, useState } from "react"
 import { useDispatch } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 
+import { AxiosError } from "axios"
+
 import { Box, Stack, styled, Typography } from "@mui/material"
 
 import Loading from "components/common/Loading"
@@ -33,8 +35,16 @@ const Login = () => {
         await dispatch(getMe())
         navigate("/console")
       })
-      .catch((_) => {
-        setErrors({ email: "Email or password is wrong", password: "" })
+      .catch((e: AxiosError) => {
+        const status = e.response?.status
+        if (status && status >= 400 && status < 500) {
+          setErrors({ email: "Email or password is wrong.", password: "" })
+        } else {
+          setErrors({
+            email: "An unexpected error occurred in authentication.",
+            password: "",
+          })
+        }
       })
       .finally(() => {
         setLoading(false)
