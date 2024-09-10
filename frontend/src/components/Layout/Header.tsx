@@ -64,6 +64,7 @@ const MultiUserHeader: FC<{ handleDrawerOpen: () => void }> = ({
         </Box>
         {showTabsRegex.test(location.pathname) && <WorkspaceTabs />}
         <Profile />
+        <Tooltips />
       </Toolbar>
     </StyledAppBar>
   )
