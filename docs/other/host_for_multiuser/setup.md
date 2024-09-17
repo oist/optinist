@@ -155,7 +155,7 @@ docker compose -f docker-compose.dev.multiuser.yml up -d
 Below are the steps for a case using Non-Docker platforms (Windows, Mac, Linux).
 
 ##### Setup Backend
-- See [OptiNiSt installation guide](../../installation/index.rst) for installing conda and optinist. 
+- See [OptiNiSt installation guide](../../installation/index.rst) for installing conda and optinist for installing conda and optinist. 
 - After creating and activating a conda environment for the project, run following commands
 
 ###### Set OptiNiSt Config
