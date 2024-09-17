@@ -105,6 +105,7 @@ To use multiuser mode with Docker, perform the following steps.
 
 ##### Setup Backend
 
+(set-optinist-config)=
 ###### Set OptiNiSt Config
 - Edit `studio/config/.env`
     - Change `SECRET_KEY` to any random string.
@@ -154,11 +155,11 @@ docker compose -f docker-compose.dev.multiuser.yml up -d
 Below are the steps for a case using Non-Docker platforms (Windows, Mac, Linux).
 
 ##### Setup Backend
-- See [OptiNiSt installation guide](../../installation/index.rst).
+- See [OptiNiSt installation guide](../../installation/index.rst) for installing conda and optinist. 
 - After creating and activating a conda environment for the project, run following commands
 
 ###### Set OptiNiSt Config
-- Same as [Set OptiNiSt config](#set-optinist-config) procedure.
+- Follow the steps to change the `.env` file to multi-user mode, see [Set OptiNiSt config](#set-optinist-config). 
 
 ###### Setup Database
 ```bash
@@ -167,12 +168,15 @@ alembic upgrade head
 ```
 
 ###### Insert Initial Data
-- For data input procedure, [see Insert Initial Data](#insert_initial_data) 
+- To setup the database we need to insert some inital data. Follow the procedure in [Insert Initial Data](#insert_initial_data), but remove the initial command `docker exec -it {DB_CONTAINER_NAME}`, as not using Docker. Instead to add initial data and setup database, use:
+```bash
+mysql -u {DB_USER_NAME} -p {YOUR_DATABASE_NAME}
+``` 
 
 ##### Run OptiNiSt
 ```bash
 python main.py
 ```
 
-1. Access to `http://{YOUR_HOST}:8000` from your browser.
+1. Access to `http://{YOUR_HOST}:8000` from your browser (most likely `http://localhost:8000`).
 2. Confirm that you can SingIn with your Firebase Authentication account.
