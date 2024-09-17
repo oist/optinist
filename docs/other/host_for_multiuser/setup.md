@@ -155,11 +155,11 @@ docker compose -f docker-compose.dev.multiuser.yml up -d
 Below are the steps for a case using Non-Docker platforms (Windows, Mac, Linux).
 
 ##### Setup Backend
-- See [OptiNiSt installation guide](../../installation/index.rst) for installing conda and optinist. 
+- See [OptiNiSt installation guide](../../installation/index.rst) for installing conda and optinist for installing conda and optinist.
 - After creating and activating a conda environment for the project, run following commands
 
 ###### Set OptiNiSt Config
-- Follow the steps to change the `.env` file to multi-user mode, see [Set OptiNiSt config](#set-optinist-config). 
+- Follow the steps to change the `.env` file to multi-user mode, see [Set OptiNiSt config](#set-optinist-config).
 
 ###### Setup Database
 ```bash
@@ -168,10 +168,10 @@ alembic upgrade head
 ```
 
 ###### Insert Initial Data
-- To setup the database we need to insert some inital data. Follow the procedure in [Insert Initial Data](#insert_initial_data), but remove the initial command `docker exec -it {DB_CONTAINER_NAME}`, as not using Docker. Instead to add initial data and setup database, use:
+- To setup the database we need to insert some initial data. Follow the procedure in [Insert Initial Data](#insert_initial_data), but remove the initial command `docker exec -it {DB_CONTAINER_NAME}`, as not using Docker. Instead to add initial data and setup database, use:
 ```bash
 mysql -u {DB_USER_NAME} -p {YOUR_DATABASE_NAME}
-``` 
+```
 
 ##### Run OptiNiSt
 ```bash
