@@ -116,4 +116,37 @@ describe("AlgorithmTreeView", () => {
       }),
     )
   })
+
+  it("dispatches the correct action when the algorithm add button is clicked", async () => {
+    render(
+      <Provider store={store}>
+        <AlgorithmTreeView />
+      </Provider>,
+    )
+
+    const algorithmTreeLabel = screen.getByText("Algorithm")
+    await userEvent.click(algorithmTreeLabel)
+
+    const caimanTreeLabel = screen.getByText("caiman")
+    await userEvent.click(caimanTreeLabel)
+
+    // Get the add button using data-testid
+    const addButton = screen.getAllByLabelText("add")[0]
+
+    // Simulate the click event
+    await userEvent.click(addButton)
+
+    // Verify that the action was dispatched with the expected payload
+    expect(store.dispatch).toHaveBeenCalledWith(
+      expect.objectContaining({
+        type: "flowElement/addAlgorithmNode",
+        payload: {
+          node: expect.any(Object),
+          name: expect.any(String),
+          functionPath: expect.any(String),
+          runAlready: expect.any(Boolean),
+        },
+      }),
+    )
+  })
 })
