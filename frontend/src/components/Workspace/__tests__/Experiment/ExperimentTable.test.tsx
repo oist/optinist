@@ -43,14 +43,28 @@ describe("ExperimentTable", () => {
           1: {
             uid: "1",
             name: "Experiment 1",
-            functions: {},
+            functions: {
+              caiman_mc_p4f6nsi9bh: {
+                name: "caiman_mc",
+                nodeId: "caiman_mc_p4f6nsi9bh",
+                status: "success",
+                hasNWB: true,
+              },
+            },
             startedAt: "2023-09-17",
             hasNWB: true,
           },
           2: {
             uid: "2",
             name: "Experiment 2",
-            functions: {},
+            functions: {
+              input_0: {
+                name: "sample_mouse2p_image 2",
+                nodeId: "input_0",
+                status: "error",
+                hasNWB: false,
+              },
+            },
             startedAt: "2023-09-17",
             hasNWB: true,
           },
@@ -232,6 +246,45 @@ describe("ExperimentTable", () => {
     // Now all checkboxes should be checked
     checkboxes.forEach((checkbox) => {
       expect(checkbox).toBeChecked()
+    })
+  })
+
+  it("expands and collapses the row when clicking the arrow button", async () => {
+    render(
+      <Provider store={store}>
+        <ExperimentTable />
+      </Provider>,
+    )
+
+    // Locate the arrow button (expand/collapse)
+    const expandButtonFirst = screen.getAllByRole("button", {
+      name: /expand row/i,
+    })[0] // Assuming we're dealing with the first row
+
+    // Initially, the details should not be rendered
+    expect(screen.queryByText("Details")).not.toBeInTheDocument()
+
+    // Click to expand
+    fireEvent.click(expandButtonFirst)
+
+    // The details should now be visible
+    await waitFor(() => {
+      expect(screen.getByText("Details")).toBeInTheDocument()
+    })
+
+    const doneIconList = screen.getAllByTestId("DoneIcon")
+
+    // Verify that the Function 1 details are displayed
+    expect(screen.getByText("caiman_mc")).toBeInTheDocument()
+    expect(screen.getByText("caiman_mc_p4f6nsi9bh")).toBeInTheDocument()
+    expect(doneIconList[0]).toBeInTheDocument()
+
+    // Click to collapse
+    fireEvent.click(expandButtonFirst)
+
+    // The details should no longer be visible
+    await waitFor(() => {
+      expect(screen.queryByText("Details")).not.toBeInTheDocument()
     })
   })
 })
