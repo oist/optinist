@@ -214,6 +214,7 @@ const TableImple = memo(function TableImple() {
         </Button>
         {isOwner && (
           <Button
+            data-testid="delete-selected-button"
             sx={{
               marginBottom: (theme) => theme.spacing(1),
             }}

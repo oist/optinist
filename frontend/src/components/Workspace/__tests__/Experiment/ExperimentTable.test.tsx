@@ -287,4 +287,26 @@ describe("ExperimentTable", () => {
       expect(screen.queryByText("Details")).not.toBeInTheDocument()
     })
   })
+
+  it("enables the Delete button when a checkbox is checked", () => {
+    render(
+      <Provider store={store}>
+        <ExperimentTable />
+      </Provider>,
+    )
+
+    // Ensure the Delete button is initially disabled
+    const deleteButton = screen.getByTestId("delete-selected-button")
+    expect(deleteButton).toBeDisabled()
+
+    // Click on the first checkbox to select an experiment
+    const checkbox = screen.getAllByRole("checkbox")[1] // Assuming the first checkbox is for the first row
+    fireEvent.click(checkbox)
+
+    // Verify that the checkbox is checked
+    expect(checkbox).toBeChecked()
+
+    // Now the Delete button should be enabled
+    expect(deleteButton).toBeEnabled()
+  })
 })
