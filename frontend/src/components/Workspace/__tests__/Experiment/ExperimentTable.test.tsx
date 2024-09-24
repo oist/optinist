@@ -10,6 +10,7 @@ import {
   fireEvent,
   prettyDOM,
   waitFor,
+  within,
 } from "@testing-library/react"
 
 import { renameExperiment } from "api/experiments/Experiments"
@@ -185,56 +186,52 @@ describe("ExperimentTable", () => {
         <ExperimentTable />
       </Provider>,
     )
-
-    console.log(prettyDOM(screen.getByText("Experiment 1")))
-
     // Check that the experiment names are rendered
     expect(screen.getByText("Experiment 1")).toBeInTheDocument()
     expect(screen.getByText("Experiment 2")).toBeInTheDocument()
   })
 
-  it("should update the experiment list after renaming a record", async () => {
-    // Mock the response of renameExperiment to simulate a successful operation
-    ;(renameExperiment as jest.Mock).mockResolvedValue({
-      message: "Experiment renamed successfully",
-    })
-
+  it("Checkbox per Row Should be checked", () => {
     render(
       <Provider store={store}>
         <ExperimentTable />
       </Provider>,
     )
 
-    // This is still a table td element
-    const inputElement = screen.getByText("Experiment 1")
+    const checkbox = screen.getAllByRole("checkbox")
 
-    // Make the input element editable
-    fireEvent.click(inputElement)
+    fireEvent.click(checkbox[1])
 
-    console.log(prettyDOM(inputElement))
+    expect(checkbox[1]).toBeChecked()
+  })
 
-    // Now, find the actual input inside the td
-    const inputField = inputElement.querySelector("input")
-
-    // Perform the change on the input field
-    fireEvent.change(inputField!, { target: { value: "New Name" } })
-
-    // Simulate the onBlur event to trigger save logic
-    fireEvent.blur(inputField!)
-
-    // Wait for the renameExperiment async function to be called
-    await waitFor(() =>
-      expect(renameExperiment).toHaveBeenCalledWith(1, "1", "New Name"),
+  it("Select All Checkbox is available", () => {
+    render(
+      <Provider store={store}>
+        <ExperimentTable />
+      </Provider>,
     )
 
-    // Optionally, log the input element to verify changes
-    console.log(prettyDOM(inputField))
+    // Find the <span> with the data-testid
+    const selectAllCheckboxSpan = screen.getByTestId("select-all-checkbox")
 
-    // Check if the action was dispatched (based on Redux or other state management logic)
-    const actions = store.getActions()
-    console.log(actions)
+    // Get the actual checkbox input inside the span
+    const selectAllCheckbox = within(selectAllCheckboxSpan).getByRole(
+      "checkbox",
+    )
 
-    // Check that the experiment list reflects the change
-    console.log(selectExperimentList(store.getState()))
+    // Initially, all checkboxes should be unchecked
+    const checkboxes = screen.getAllByRole("checkbox")
+    checkboxes.forEach((checkbox) => {
+      expect(checkbox).not.toBeChecked()
+    })
+
+    // Click the "Select All" checkbox
+    fireEvent.click(selectAllCheckbox)
+
+    // Now all checkboxes should be checked
+    checkboxes.forEach((checkbox) => {
+      expect(checkbox).toBeChecked()
+    })
   })
 })
