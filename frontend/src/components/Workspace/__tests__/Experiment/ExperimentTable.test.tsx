@@ -8,12 +8,10 @@ import {
   render,
   screen,
   fireEvent,
-  prettyDOM,
   waitFor,
   within,
 } from "@testing-library/react"
 
-import { renameExperiment } from "api/experiments/Experiments"
 import { ExperimentTable } from "components/Workspace/Experiment/ExperimentTable"
 import { selectExperimentList } from "store/slice/Experiments/ExperimentsSelectors"
 import { Experiments } from "store/slice/Experiments/ExperimentsType"
