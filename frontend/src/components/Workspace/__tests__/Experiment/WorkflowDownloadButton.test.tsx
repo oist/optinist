@@ -1,17 +1,15 @@
 /* eslint-disable no-undef */
 import "@testing-library/jest-dom"
-import { useContext } from "react"
 import { Provider } from "react-redux"
 
 import configureStore from "redux-mock-store"
 
 import { render, screen, fireEvent, waitFor } from "@testing-library/react"
 
-import { downloadWorkflowConfigApi } from "api/workflow/Workflow" // Adjust import path
+import { downloadWorkflowConfigApi } from "api/workflow/Workflow"
 import mockStoreData from "components/Workspace/__tests__/Experiment/mockStore.json"
-import { WorkflowDownloadButton } from "components/Workspace/Experiment/Button/DownloadButton" // Adjust import path
-import { ExperimentUidContext } from "components/Workspace/Experiment/ExperimentTable" // Adjust import path
-import { Experiments } from "store/slice/Experiments/ExperimentsType"
+import { WorkflowDownloadButton } from "components/Workspace/Experiment/Button/DownloadButton"
+import { ExperimentUidContext } from "components/Workspace/Experiment/ExperimentTable"
 
 jest.mock("api/workflow/Workflow", () => ({
   downloadWorkflowConfigApi: jest.fn(),
