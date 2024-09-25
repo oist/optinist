@@ -92,6 +92,7 @@ export const SnakemakeDownloadButton = memo(function SnakemakeDownloadButton() {
         download={`snakemake_${uid}.yaml`}
         className="hidden"
         ref={ref}
+        data-testid="snakemake-download-link"
       >
         {/* 警告が出るので空文字を入れておく */}{" "}
       </a>
@@ -122,7 +123,7 @@ export const WorkflowDownloadButton = memo(function WorkflowDownloadButton() {
 
   return (
     <>
-      <IconButton onClick={onClick}>
+      <IconButton onClick={onClick} data-testid="workflow-download-button">
         <SimCardDownloadOutlinedIcon color="primary" />
       </IconButton>
       <a
@@ -130,6 +131,7 @@ export const WorkflowDownloadButton = memo(function WorkflowDownloadButton() {
         download={`workflow_${uid}.yaml`}
         className="hidden"
         ref={ref}
+        data-testid="workflow-download-link"
       >
         {/* 警告が出るので空文字を入れておく */}{" "}
       </a>
