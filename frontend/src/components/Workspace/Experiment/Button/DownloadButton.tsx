@@ -54,7 +54,13 @@ export const NWBDownloadButton = memo(function NWBDownloadButton({
       <IconButton onClick={onClick} color="primary" disabled={!hasNWB}>
         <SimCardDownloadOutlinedIcon />
       </IconButton>
-      <a href={url} download={`nwb_${name}.nwb`} className="hidden" ref={ref}>
+      <a
+        href={url}
+        download={`nwb_${name}.nwb`}
+        className="hidden"
+        ref={ref}
+        data-testid="nwb-download-link"
+      >
         {/* 警告が出るので空文字を入れておく */}{" "}
       </a>
     </>
