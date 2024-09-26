@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { Provider } from "react-redux"
 
 import configureStore from "redux-mock-store"
