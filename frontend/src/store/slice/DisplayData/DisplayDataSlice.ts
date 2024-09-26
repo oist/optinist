@@ -50,6 +50,7 @@ const initialState: DisplayData = {
   loading: false,
   loadingStack: [],
   statusRoi: { temp_add_roi: [], temp_delete_roi: [], temp_merge_roi: [] },
+  isEditRoiCommitting: false,
 }
 
 export const displayDataSlice = createSlice({
@@ -605,13 +606,17 @@ export const displayDataSlice = createSlice({
         state.loadingStack.pop()
         state.loading = state.loadingStack.length > 0
       })
+      .addCase(commitRoi.pending, (state) => {
+        state.isEditRoiCommitting = true
+
+        state.loadingStack.push((state.loading = true))
+      })
       .addMatcher(
         isAnyOf(
           cancelRoi.pending,
           mergeRoi.pending,
           deleteRoi.pending,
           addRoi.pending,
-          commitRoi.pending,
           getStatus.pending,
         ),
         (state) => {
@@ -627,8 +632,6 @@ export const displayDataSlice = createSlice({
           addRoi.fulfilled,
           deleteRoi.rejected,
           deleteRoi.fulfilled,
-          commitRoi.rejected,
-          commitRoi.fulfilled,
           getStatus.rejected,
         ),
         (state) => {
@@ -636,6 +639,12 @@ export const displayDataSlice = createSlice({
           state.loading = state.loadingStack.length > 0
         },
       )
+      .addMatcher(isAnyOf(commitRoi.rejected, commitRoi.fulfilled), (state) => {
+        state.isEditRoiCommitting = false
+
+        state.loadingStack.pop()
+        state.loading = state.loadingStack.length > 0
+      })
       .addMatcher(
         isAnyOf(run.fulfilled, runByCurrentUid.fulfilled),
         () => initialState,
