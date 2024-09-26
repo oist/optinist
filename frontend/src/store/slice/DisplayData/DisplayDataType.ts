@@ -58,6 +58,7 @@ export type DisplayData = {
     [filePath: string]: PolarDisplayData
   }
   loading: boolean
+  loadingStack: boolean[]
   statusRoi: StatusROI
 }
 

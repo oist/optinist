@@ -48,6 +48,7 @@ const initialState: DisplayData = {
   pie: {},
   polar: {},
   loading: false,
+  loadingStack: [],
   statusRoi: { temp_add_roi: [], temp_delete_roi: [], temp_merge_roi: [] },
 }
 
@@ -435,7 +436,9 @@ export const displayDataSlice = createSlice({
       })
       .addCase(getRoiData.pending, (state, action) => {
         const { path } = action.meta.arg
-        state.loading = true
+
+        state.loadingStack.push((state.loading = true))
+
         state.roi[path] = {
           type: "roi",
           data: [],
@@ -448,7 +451,9 @@ export const displayDataSlice = createSlice({
       .addCase(getRoiData.fulfilled, (state, action) => {
         const { path } = action.meta.arg
         const { data } = action.payload
-        state.loading = false
+
+        state.loadingStack.pop()
+        state.loading = state.loadingStack.length > 0
 
         // 計算
         const roi1Ddata: number[] = data[0]
@@ -472,7 +477,10 @@ export const displayDataSlice = createSlice({
       })
       .addCase(getRoiData.rejected, (state, action) => {
         const { path } = action.meta.arg
-        state.loading = false
+
+        state.loadingStack.pop()
+        state.loading = state.loadingStack.length > 0
+
         state.roi[path] = {
           type: "roi",
           data: [],
@@ -583,7 +591,9 @@ export const displayDataSlice = createSlice({
       })
       .addCase(getStatus.fulfilled, (state, action) => {
         state.statusRoi = action.payload
-        state.loading = false
+
+        state.loadingStack.pop()
+        state.loading = state.loadingStack.length > 0
       })
       .addCase(cancelRoi.fulfilled, (state) => {
         state.statusRoi = {
@@ -591,7 +601,9 @@ export const displayDataSlice = createSlice({
           temp_delete_roi: [],
           temp_merge_roi: [],
         }
-        state.loading = false
+
+        state.loadingStack.pop()
+        state.loading = state.loadingStack.length > 0
       })
       .addMatcher(
         isAnyOf(
@@ -603,7 +615,7 @@ export const displayDataSlice = createSlice({
           getStatus.pending,
         ),
         (state) => {
-          state.loading = true
+          state.loadingStack.push((state.loading = true))
         },
       )
       .addMatcher(
@@ -620,7 +632,8 @@ export const displayDataSlice = createSlice({
           getStatus.rejected,
         ),
         (state) => {
-          state.loading = false
+          state.loadingStack.pop()
+          state.loading = state.loadingStack.length > 0
         },
       )
       .addMatcher(
