@@ -318,8 +318,6 @@ describe("ExperimentTable", () => {
     )
 
     const rows = screen.getAllByRole("row")
-    console.log(prettyDOM(rows[1]))
-    console.log(prettyDOM(rows[3]))
 
     expect(rows[1]).toHaveTextContent("2023-09-17")
     expect(rows[3]).toHaveTextContent("2023-09-15")
@@ -354,5 +352,34 @@ describe("ExperimentTable", () => {
     const rows = screen.getAllByRole("row")
     expect(rows[1]).toHaveTextContent("Experiment 2")
     expect(rows[3]).toHaveTextContent("Experiment 1")
+  })
+
+  it("should show the delete confirmation dialog and cancel the deletion", async () => {
+    render(
+      <Provider store={store}>
+        <ExperimentTable />
+      </Provider>,
+    )
+
+    // Find the delete button in the first row
+    const deleteButton = screen.getAllByTestId("delete-button")[0]
+
+    // // Click the delete button
+    fireEvent.click(deleteButton)
+
+    // Wait for the dialog to appear
+    const dialog = await waitFor(() =>
+      screen.getByRole("dialog", { name: /delete record\?/i }),
+    )
+    expect(dialog).toBeInTheDocument()
+
+    // Find and click the "Cancel" button
+    const cancelButton = screen.getByText(/cancel/i)
+    fireEvent.click(cancelButton)
+
+    // Check if the dialog has been closed
+    await waitFor(() => {
+      expect(dialog).not.toBeInTheDocument()
+    })
   })
 })
