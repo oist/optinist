@@ -11,6 +11,7 @@ import {
   fireEvent,
   waitFor,
   within,
+  prettyDOM,
 } from "@testing-library/react"
 
 import { ExperimentTable } from "components/Workspace/Experiment/ExperimentTable"
@@ -64,7 +65,7 @@ describe("ExperimentTable", () => {
                 hasNWB: false,
               },
             },
-            startedAt: "2023-09-17",
+            startedAt: "2023-09-15",
             hasNWB: true,
           },
         },
@@ -187,7 +188,7 @@ describe("ExperimentTable", () => {
         uid: "2",
         name: "Experiment 2",
         functions: {},
-        startedAt: "2023-09-17",
+        startedAt: "2023-09-15",
         hasNWB: true,
       },
     ])
@@ -307,5 +308,51 @@ describe("ExperimentTable", () => {
 
     // Now the Delete button should be enabled
     expect(deleteButton).toBeEnabled()
+  })
+
+  it("should sort experiments by Timestamp in descending order by default", () => {
+    render(
+      <Provider store={store}>
+        <ExperimentTable />
+      </Provider>,
+    )
+
+    const rows = screen.getAllByRole("row")
+    console.log(prettyDOM(rows[1]))
+    console.log(prettyDOM(rows[3]))
+
+    expect(rows[1]).toHaveTextContent("2023-09-17")
+    expect(rows[3]).toHaveTextContent("2023-09-15")
+  })
+
+  it("should sort experiments by name when the name header is clicked", () => {
+    render(
+      <Provider store={store}>
+        <ExperimentTable />
+      </Provider>,
+    )
+
+    const nameHeader = screen.getByText("Name")
+    fireEvent.click(nameHeader)
+
+    const rows = screen.getAllByRole("row")
+    expect(rows[1]).toHaveTextContent("Experiment 1")
+    expect(rows[3]).toHaveTextContent("Experiment 2")
+  })
+
+  it("should toggle sorting order when the name header is clicked twice", () => {
+    render(
+      <Provider store={store}>
+        <ExperimentTable />
+      </Provider>,
+    )
+
+    const nameHeader = screen.getByText("Name")
+    fireEvent.click(nameHeader)
+    fireEvent.click(nameHeader)
+
+    const rows = screen.getAllByRole("row")
+    expect(rows[1]).toHaveTextContent("Experiment 2")
+    expect(rows[3]).toHaveTextContent("Experiment 1")
   })
 })
