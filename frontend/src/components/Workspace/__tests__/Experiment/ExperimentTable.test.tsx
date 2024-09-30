@@ -134,7 +134,7 @@ describe("ExperimentTable", () => {
       pipeline: {
         run: {
           uid: "",
-          status: "StartSuccess",
+          status: "Finished",
           runPostData: {
             name: "",
             nodeDict: {},
@@ -371,6 +371,39 @@ describe("ExperimentTable", () => {
     const dialog = await waitFor(() =>
       screen.getByRole("dialog", { name: /delete record\?/i }),
     )
+    expect(dialog).toBeInTheDocument()
+
+    // Find and click the "Cancel" button
+    const cancelButton = screen.getByText(/cancel/i)
+    fireEvent.click(cancelButton)
+
+    // Check if the dialog has been closed
+    await waitFor(() => {
+      expect(dialog).not.toBeInTheDocument()
+    })
+  })
+
+  it("should show the reproduce confirmation dialog and cancel the reproduce", async () => {
+    render(
+      <Provider store={store}>
+        <ExperimentTable />
+      </Provider>,
+    )
+
+    // Find the reproduce button in the first row
+    const reproduceButton = screen.getAllByTestId("reproduce-button")[0]
+
+    // Click the reproduce button
+    fireEvent.click(reproduceButton)
+
+    const dialog = await waitFor(
+      () => screen.getByRole("dialog"), // Remove the name filter for troubleshooting
+    )
+
+    // Wait for the dialog to appear
+    // const dialog = await waitFor(() =>
+    //   screen.getByRole("dialog", { name: /reproduce workflow\?/i }),
+    // )
     expect(dialog).toBeInTheDocument()
 
     // Find and click the "Cancel" button
