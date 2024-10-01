@@ -116,6 +116,8 @@ describe("ExperimentTable", () => {
           temp_delete_roi: [],
           temp_merge_roi: [],
         },
+        loadingStack: [],
+        isEditRoiCommitting: false,
       },
       fileUploader: {},
       mode: {
