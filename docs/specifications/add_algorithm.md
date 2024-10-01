@@ -1,4 +1,5 @@
-# Procedure for adding a new algorithm
+Add your Algorithm
+==================
 
 ```{contents}
 :depth: 3
@@ -14,7 +15,7 @@ Below we describe an example procedure for adding a new algorithm.
  - {OPTINIST_SRC_DIR}  ... Replace with the actual source storage directory path.
 
 
-### 1. Prepare necessary directories and files for the algorithm
+### 1. Prepare Necessary Directories and Files for the Algorithm
 
 First, prepare the necessary directories and files for the algorithm.
 
@@ -36,7 +37,7 @@ First, prepare the necessary directories and files for the algorithm.
 
 ### 2. Algorithm implementation
 
-#### Import statement description
+#### Import Statement Description
 
 - Target file
   - {OPTINIST_SRC_DIR}/studio/app/optinist/wrappers/`new_algo`/`new_algo_func`.py
@@ -50,7 +51,7 @@ from studio.app.common.dataclass import *
   - see. [DataClass](#dataclass)
 
 
-#### Define the Input/Output of the function and implement the logic.
+#### Define the Input/Output of the Function and Implement the Logic.
 
 - Target file
   - {OPTINIST_SRC_DIR}/studio/app/optinist/wrappers/`new_algo_wrapper`/`new_algo_func`.py
@@ -81,7 +82,7 @@ def new_algo_func(               # (*1)
     - see. [Function Parameter Definitions](#function-parameter-definitions)
   - (*5) The return value is a dictionary type. (This is also reflected in the GUI.)
 
-#### Definition of information to be displayed in the GUI
+#### Definition of Information to be Displayed in the GUI
 
 - Target file
   - {OPTINIST_SRC_DIR}/studio/app/optinist/wrappers/`new_algo`/\_\_init__.py
@@ -147,7 +148,7 @@ Optinist support datatype.
 - ScatterData
 - BarData
 
-### Input & Output handle
+### Input & Output Handle
 
 In the following example, the **new_algo_func** function takes **ImageData** and returns **FluoData**.
 
@@ -187,7 +188,7 @@ Function input parameters (input on GUI) can be defined in the following file.
   - {algorithm_function_name} must match the actual function name.
 
 
-### Drawing output results
+### Drawing Output Results
 
 - Above we described the node input and output handle, here we describe the visualization of the result.
 - The output of the function is a dictionary. (Here we use the variable **info**.)
@@ -223,7 +224,7 @@ Restart the Application, connect imageNode and run it, and you will see the outp
 img { width: 50%; }
 </style>
 
-#### Customize plot metadata
+#### Customize Plot Metadata
 
 You can set plot title and axis labels to some output.
 

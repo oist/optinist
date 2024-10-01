@@ -9,7 +9,7 @@
   ```
   - Once installed, it automatically checks your coding style on every commits.
 
-### Branch rules
+### Branch Rules
 - You can submit Pull Request by pushing new branch.
   - Make sure the base branch is `develop-main`, and PR is to `develop-main`.
   - You can't push to the `develop-main` branch directly, the branch is protected.

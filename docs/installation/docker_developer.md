@@ -1,4 +1,4 @@
-Docker for Developer
+Docker (Developer)
 =================
 
 ```{contents}
@@ -30,7 +30,7 @@ cd ./optinist
   cp frontend/.env.example frontend/.env
   ```
 
-### Start docker container
+### Start Docker Container
 
 ```
 docker compose -f docker-compose.dev.yml up
@@ -38,7 +38,7 @@ docker compose -f docker-compose.dev.yml up
 
 - add `-d` option to make container run in background
 
-## 2. Access to backend
+## 2. Access to Backend
 
 - Launch browser, and go to http://localhost:3000
 - Your local code change will be applied on save.
