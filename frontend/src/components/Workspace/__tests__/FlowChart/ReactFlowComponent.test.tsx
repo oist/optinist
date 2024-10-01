@@ -34,6 +34,7 @@ const isTestEnv = process.env.NODE_ENV === "test"
 const backendFactory = isTestEnv ? TestBackend : HTML5Backend
 
 describe("Flowchart Component", () => {
+  // TODO: WIP - Fix the test
   // it("renders correctly", () => {
   //   const handleRunPipelineByUid = jest.fn()
   //   const handleRunPipeline = jest.fn()
