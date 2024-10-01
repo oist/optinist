@@ -9,7 +9,7 @@ import { describe, it, beforeEach } from "@jest/globals"
 import { render, screen } from "@testing-library/react"
 import { userEvent } from "@testing-library/user-event"
 
-import { mockStoreData } from "components/Workspace/FlowChart/testdata/mockStoreData.json"
+import { mockStoreData } from "components/Workspace/__tests__/FlowChart/mockStoreData.json"
 import { AlgorithmTreeView } from "components/Workspace/FlowChart/TreeView"
 import { getAlgoList } from "store/slice/AlgorithmList/AlgorithmListActions"
 
