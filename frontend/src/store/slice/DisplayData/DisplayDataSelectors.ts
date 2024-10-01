@@ -1,7 +1,11 @@
 import { RootState } from "store/store"
 
 const selectDisplayData = (state: RootState) => state.displayData
+
 export const selectLoading = (state: RootState) => state.displayData.loading
+
+export const selectIsEditRoiCommitting = (state: RootState) =>
+  state.displayData.isEditRoiCommitting
 
 export const selectTimeSeriesData = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).timeSeries[filePath].data
