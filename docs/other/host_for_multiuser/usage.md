@@ -1,4 +1,4 @@
-Multi user mode usage
+Multi-user (User)
 =====================
 
 ```{contents}
@@ -10,7 +10,7 @@ Multi user mode usage
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/host_for_multiuser/login.png" alt="Login" />
+<img width="600px" src="../../_static/host_for_multiuser/login.png" alt="Login" />
 </p>
 
 
@@ -28,14 +28,14 @@ Multi user mode usage
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/host_for_multiuser/dashboard.png" alt="Dashboard" />
+<img width="600px" src="../../_static/host_for_multiuser/dashboard.png" alt="Dashboard" />
 </p>
 
 - These menus can be accessed from sidebar shown by clicking the icon in the top left corner.
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/host_for_multiuser/sidebar.png" alt="Sidebar" />
+<img width="600px" src="../../_static/host_for_multiuser/sidebar.png" alt="Sidebar" />
 </p>
 
 - And by clicking icon in the top right corner, you can
@@ -44,7 +44,7 @@ Multi user mode usage
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/host_for_multiuser/profile_icon.png" alt="ProfileIcon" />
+<img width="600px" src="../../_static/host_for_multiuser/profile_icon.png" alt="ProfileIcon" />
 </p>
 
 ## Account Profile
@@ -56,7 +56,7 @@ Multi user mode usage
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/host_for_multiuser/profile.png" alt="Profile" />
+<img width="600px" src="../../_static/host_for_multiuser/profile.png" alt="Profile" />
 </p>
 
 
@@ -73,14 +73,14 @@ Multi user mode usage
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/host_for_multiuser/workspaces.png" alt="Workspaces" />
+<img width="600px" src="../../_static/host_for_multiuser/workspaces.png" alt="Workspaces" />
 </p>
 
 
 - Switching workspaces, you can run multiple workflows in parallel.
   - When you back to the workspace, you will see the last status of the workflow.
 
-### Sharing workspace
+### Sharing Workspace
 - Workspaces are belong to the user who created it (owner).
 - Shared users can
   - get files (workflow, snakemake, nwb files) of shared workflows
@@ -91,7 +91,7 @@ Multi user mode usage
   - edit, delete existing records
 
 
-#### Share workspace
+#### Share Workspace
 1. Click share icon in the workspace row.
 2. Type the email address of the user you want to share.
 3. Select suggested user.
@@ -99,24 +99,24 @@ Multi user mode usage
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/host_for_multiuser/type_user_to_share.png" alt="TypeUserToShare" />
+<img width="600px" src="../../_static/host_for_multiuser/type_user_to_share.png" alt="TypeUserToShare" />
 </p>
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/host_for_multiuser/share_workspace.png" alt="ShareWorkspace" />
+<img width="600px" src="../../_static/host_for_multiuser/share_workspace.png" alt="ShareWorkspace" />
 </p>
 
 
 - To unsare workspace, click "x" icon in the permitted users list.
 
-#### Check shared workspaces
+#### Check Shared Workspaces
 - Share icon of workspace you are sharing with someone else will be blue (not shared is black).
 - Shared workspace has share icon beside owner name.
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/host_for_multiuser/workspaces.png" alt="Workspaces" />
+<img width="600px" src="../../_static/host_for_multiuser/workspaces.png" alt="Workspaces" />
 </p>
 
 So, in the image above,
@@ -133,5 +133,5 @@ So, in the image above,
 
 <br>
 <p align="center">
-<img width="600px" src="../_static/host_for_multiuser/account_manager.png" alt="AccountManager" />
+<img width="600px" src="../../_static/host_for_multiuser/account_manager.png" alt="AccountManager" />
 </p>
