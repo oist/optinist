@@ -1,5 +1,5 @@
 ******************
-HOST FOR MULTIUSER
+Multi-user Mode
 ******************
 
 .. toctree::

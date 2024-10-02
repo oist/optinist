@@ -13,8 +13,15 @@ The analysis pipeline can be parallel or bifurcating.
 <img width="600px" src="../_static/workflow/whole.png" alt="Workflow window" />
 <br/>
 
+## Data Nodes
+See [](data_nodes) for a description of which data types each node accepts.
+- Data shape is displayed in the file select dialog. Please check data shape if you have unexpected results.
+- If you replace the image file with the same file name, shape cannot be updated automatically. Please click reload icon besides the checkbox.
 
-## Creating workflow
+## Algorithm Nodes
+See [](algorithm_nodes) for a description of each data processing and analysis node.
+
+## Create a Workflow
 You can create a new workflow by clicking the + button.
 
 <br>
@@ -30,105 +37,40 @@ You can create a new workflow by clicking the + button.
    The records are kept if you have already run the workflow. You can reproduce the workflow from RECORD tab. See details :ref:`here <ReproduceButton>`.
 ```
 
+### Adding Nodes
+Select Data or Algorithm node from the treeview on the left.
+Clicking the + button adds the analysis nodes to the Workflow field.
 
-### Setting Input data
-By default, an Image node is displayed. This node defines the path to the data to use.
-
+<br>
 <p align="center">
-<img width="250px" src="../_static/workflow/image_node.png" alt="Image node" />
+  <img width="600px" src="../_static/workflow/add_algorithm.png" alt="Add Algorithm" />
 </p>
-<br/>
+<br>
 
-To select the data, follow these steps:
-1. Click on the check list icon on the Image node.
-2. Select a file or a folder. Choosing a folder makes all the TIFF files in the shown sequence an input set of continuous frames.
+The left side of the window displays all available analysis methods. ROI detection tools (currently Suite2P, CaImAn and LCCD) are in the "Algorithm" category, and all other pre-installed analyses are in the "optinist" category.
 
-You can select files in `input` directory under `OPTINIST_DIR`.
-To put files there, see next [](DirectorySetting) section.
+(AddData)=
+### Input Data with Data Nodes 
+* Image (TIFF)
 
-<p align="center">
-<img width="400px" src="../_static/workflow/imageList.png" alt="Image file selection" />
-</p>
-<br/>
+  By default, an Image node is displayed. This node defines the path to the data to use.
 
-The image's shapes are displayed in the file select dialog.
-Algorithms for image analysis assumes (time, y, x) or (time, z, y, x).
-Please check the data if you looks getting wrong results.
+  <p align="center">
+  <img width="250px" src="../_static/workflow/image_node.png" alt="Image node" />
+  </p>
+  <br/>
 
-If you replace the image file with the same file name, shape cannot be updated automatically.
-Please click reload icon besides the checkbox.
+  To select the data, follow these steps:
+  1. Click on the check list icon on the Image node.
+  2. Select a file or a folder. Choosing a folder makes all the TIFF files in the shown sequence an input set of continuous frames.
 
-```{eval-rst}
-.. note::
-   Currently, only image files with {.tif, .TIF, .tiff, .TIFF} extensions are supported.
-```
+  You can select files in `input` directory under `OPTINIST_DIR`.
+  To add files to the directory, see [](DirectorySettings) section.
 
-(DirectorySetting)=
-#### Directory Setting
-OptiNiSt uses `OPTINIST_DIR` for retrieving data and saving results. OptiNiSt searches for input data in the 'input' directory within `OPTINIST_DIR`. The default `OPTINIST_DIR` is `/tmp/studio` on your computer.
-
-Choosing a folder makes all the TIFF files in the shown sequence an input set of continuous frames.
-
-You may not want to modify your original data folder, or you may want to make your data folder visible and accessible to OptiNiSt because imaging data can be large and take time to copy. You can take either strategy in assigning your data path:
-
-1. **Upload from GUI**
-
-    Click on the image icon on the node. The LOAD button copies the selected file to your `OPTINIST_DIR/input`.
-
-    <p align="center">
-    <img width="300px" src="../_static/workflow/image_node_upload_from_gui.png" alt="upload file" />
-    </p>
-
-    **By this method, you cannot upload multiple files or folder at once**.
-    - If you want to upload multiple files or folder at once, use the next method.
-
-2. **Copy files to `OPTINIST_DIR`**
-
-    Copy your raw data to `OPTINIST_DIR/input/1/` by your OS's file manager or command lines.
-      ```{eval-rst}
-      .. warning::
-          Be sure to copy under ``input/1/``. ``1`` is the default workspace id for :ref:`standalone mode <about-multiuser-mode>`.
-          If you copy under ``input/`` directly, the file cannot be found from GUI.
-      ```
-
-    You can copy folder into the input directory.
-    - If you put folder, you can see the folder from GUI, SELECT IMAGE dialog like this.
-      <br>
-      <p align="center">
-      <img width="400px" src="../_static/workflow/put_folder_to_input_dir.png" alt="Put folder to input dir" />
-      </p>
-
-3. **Get file via URL**
-
-    Click on the link icon on the node.
-
-    <p align="center">
-    <img width="300px" src="../_static/workflow/image_node_from_cloud.png" alt="Get File from Cloud" />
-    </p>
-
-    Then input dialog will be shown. You can input the URL of the file you want to use.
-
-    <p align="center">
-    <img width="450px" src="../_static/workflow/image_node_from_cloud_input.png" alt="Input FILE URL" />
-    </p>
-
-    ```{eval-rst}
-    .. note::
-        The URL should be direct link to the one file.
-        It should be
-
-          - started with ``http://`` or ``https://``.
-          - ended with the file name with extension.
-
-        And more, download links require authentication are not supported.
-    ```
-
-4. **Change the setting of `OPTINIST_DIR`**
-
-    This requires modifying source codes. See [](each-platforms-for-developer) installation guide section.
-    `OPTINIST_DIR` is defined in `optinist/studio/app/dir_path.py`. Change line for `OPTINIST_DIR`, `INPUT_DIR`, and `OUTPUT_DIR` according to your demand. Changing `dir_path.py` may also be necessary when running the pipeline on your cluster computers. Also, you can quickly change `OPTINIST_DIR` by changing the environment variable before launching. The change is effective after relaunching.
-
-#### Other Data Formats As The Input
+  <p align="center">
+  <img width="400px" src="../_static/workflow/imageList.png" alt="Image file selection" />
+  </p>
+  <br/>
 
 * CSV, FLUO, BEHAVIOR
 
@@ -147,15 +89,15 @@ You may not want to modify your original data folder, or you may want to make yo
     <img width="400px" src="../_static/workflow/csv_transpose.png" alt="CSV transpose" />
     </p>
 
-    eta, cca, correlation, cross_correlation, granger, glm, lda, and svm assume the input neural data shape is frames x cells matrix.
+    ETA, CCA, correlation, cross_correlation, granger, GLM, LDA, and SVM assume the input neural data shape is frames x cells matrix.
     Because the output of CaImAn and Suite2P on the pipeline is cell x frames, the default setting for neural data for these analyses is set to transpose.
 
-    Pca and tsne can be done in either direction depending on your purpose.
+    PCA and TSNE can be done in either direction depending on your purpose.
     The function assumes their input to be samples x features.
 
   * set_header
 
-    If your csv data has header, check this box.
+    If your CSV data has header, check this box.
     Set the header index to your data's header row. (**first row is 0**)
     The data below the header row will be used as the data.
 
@@ -173,21 +115,20 @@ You may not want to modify your original data folder, or you may want to make yo
 
 * HDF5
 
-  This node id for ``.hdf5`` and ``.nwb``. NWB is compatible with the HDF5 data format. So you can use your NWB result's data as the input.
+  This node accepts ``.hdf5`` and ``.nwb`` file types. NWB is compatible with the HDF5 data format. You can use you OptiNiSt data analysis results, which save in NWB format, as the input.
 
   <p align="center">
   <img width="300px" src="../_static/workflow/hdf5_node.png" alt="HDF5 node" />
   </p>
 
-  Once the file selected, you can dig into the data structure and select the data to use.
+  Once a file is selected, you can search through the data structure and select the data to use.
 
   <p align="center">
   <img width="400px" src="../_static/workflow/hdf5_structure.png" alt="HDF5 node" />
   </p>
 
-  Connecting the hdf5 node to the pipeline, you can use the selected data in the hdf5 file.
-  There are some utility algorithms for hdf5 data.
-  fluo_from_hdf5 is to extract fluorescence data from hdf5 data.
+  There are some additional utility nodes for processing HDF5 data.
+  For example, fluo_from_hdf5 extracts fluorescence data from HDF5 data.
 
   <p align="center">
   <img width="650px" src="../_static/workflow/hdf5_to_fluo.png" alt="HDF5 to fluo" />
@@ -195,60 +136,32 @@ You may not want to modify your original data folder, or you may want to make yo
 
 * Matlab
 
-  This node is for ``.mat`` file.
-  Like hdf5 node, you can dig into the data structure and select the data to use.
+  This node accepts ``.mat`` files.
+  Once a file is selected, you can search through the data structure and select the data to use.
 
-```{eval-rst}
-.. note::
-  CSV, HDF5 and Matlab nodes have black output connectors.
-  Black output connector can be connected to any input connector.
-  Be careful; this means that it does not check the format correspondence between input and output.
-```
+  ```{eval-rst}
+  .. note::
+    CSV, HDF5 and Matlab nodes have black output connectors.
+    Black output connector can be connected to any input connector.
+    Be careful; this means that it does not check the format correspondence between input and output.
+  ```
 
-* MICROSCOPE
+* Microsope
 
-  Currently, we've implemented to read following microscope data format.
+  See [](data_nodes) for more information Microsope nodes. Currently, the Microsope node can accept following data formats.
 
   * Inscopix(.isxd)
   * NIKON(.nd2)
   * Olympus(.oir)
 
-  ```{eval-rst}
-  .. note::
-     We use `py_isx <https://github.com/inscopix/py_isx>`_ package with version 1.0.* for Inscopix data.
-     Currently, the library supports only CellSet and Movie file types, so you can use only them.
-  ```
-
-  ```{eval-rst}
-  .. note::
-     We implement loading C libraries for reading NIKON and Olympus file.
-     The libraries are available only on Linux and Windows (Not on MacOS).
-
-     - If you use Linux, use OptiNiSt by :ref:`developer mode <each-platforms-for-developer>`.
-      - open ``studio/app/optinist/wrappers/optinist/conda/microscope.yaml`` and uncomment the ``- gcc=12`` line.
-  ```
-
-  <p align="center">
+    <p align="center">
   <img width="650px" src="../_static/workflow/microscope.png" alt="Microscope" />
   </p>
 
   You can convert these data into ImageData so that you can use them in the pipeline.
   To convert, connect microscope_to_img Algorithm node to the microscope data node.
 
-
-### Adding Nodes
-Select Data or Algorithm node from the treeview on the left.
-Clicking the + button adds the analysis nodes to the Workflow field.
-
-<br>
-<p align="center">
-  <img width="600px" src="../_static/workflow/add_algorithm.png" alt="Add Algorithm" />
-</p>
-<br>
-
-The left side of the window displays all available analysis methods. ROI detection tools (currently Suite2P, CaImAn and LCCD) are in the "Algorithm" category, and all other pre-installed analyses are in the "optinist" category.
-
-### Algorithm Nodes
+### Algorithm Node Settings
 
 Each algorithm node has PARAM button and OUTPUT button.
 
@@ -300,6 +213,7 @@ You can only connect the input and output connectors of the same color.
 - <span style="color: orange; ">Fluorescence</span>
 - <span style="color: #cfc22b; ">Behavior</span>
 - <span style="color: blue; ">Iscell</span>
+- <span style="color: black; ">Unspecified</span>
 
 
 ### Removing Nodes or Connects
@@ -328,7 +242,7 @@ Input file selection will not reproduced because it may not be in your device.
 <br/>
 
 
-## Running pipelines
+## Running Pipelines
 Click the RUN button at the top right.
 
 Note that while the workflow running, you **cannot**
@@ -382,7 +296,73 @@ There are 2 types of execution. You can select the type by clicking the dropdown
    With RUN, results will be overwritten. To avoid this, use RUN ALL.
 ```
 
-## SNAKEMANE settings
+(DirectorySettings)=
+## Directory Settings
+OptiNiSt uses `OPTINIST_DIR` for retrieving data and saving results. OptiNiSt searches for input data in the 'input' directory within `OPTINIST_DIR`. The default `OPTINIST_DIR` is `/tmp/studio` on your computer.
+
+Choosing a folder makes all the TIFF files in the shown sequence an input set of continuous frames.
+
+You may not want to modify your original data folder, or you may want to make your data folder visible and accessible to OptiNiSt because imaging data can be large and take time to copy. You can take either strategy in assigning your data path:
+
+1. **Upload from GUI**
+
+    Click on the image icon on the node. The LOAD button copies the selected file to your `OPTINIST_DIR/input`.
+
+    <p align="center">
+    <img width="300px" src="../_static/workflow/image_node_upload_from_gui.png" alt="upload file" />
+    </p>
+
+    **By this method, you cannot upload multiple files or folder at once**.
+    - If you want to upload multiple files or folder at once, use the next method.
+
+2. **Copy Files to `OPTINIST_DIR`**
+
+    Copy your raw data to `OPTINIST_DIR/input/1/` by your OS's file manager or command lines.
+      ```{eval-rst}
+      .. warning::
+          Be sure to copy under ``input/1/``. ``1`` is the default workspace id for :ref:`standalone mode <about-multiuser-mode>`.
+          If you copy under ``input/`` directly, the file cannot be found from GUI.
+      ```
+
+    You can copy folder into the input directory.
+    - If you put folder, you can see the folder from GUI, SELECT IMAGE dialog like this.
+      <br>
+      <p align="center">
+      <img width="400px" src="../_static/workflow/put_folder_to_input_dir.png" alt="Put folder to input dir" />
+      </p>
+
+3. **Get file via URL**
+
+    Click on the link icon on the node.
+
+    <p align="center">
+    <img width="300px" src="../_static/workflow/image_node_from_cloud.png" alt="Get File from Cloud" />
+    </p>
+
+    Then input dialog will be shown. You can input the URL of the file you want to use.
+
+    <p align="center">
+    <img width="450px" src="../_static/workflow/image_node_from_cloud_input.png" alt="Input FILE URL" />
+    </p>
+
+    ```{eval-rst}
+    .. note::
+        The URL should be direct link to the one file.
+        It should be
+
+          - started with ``http://`` or ``https://``.
+          - ended with the file name with extension.
+
+        And more, download links require authentication are not supported.
+    ```
+
+4. **Change the Setting of `OPTINIST_DIR`**
+
+    This requires modifying source codes. See [](native_platforms_developer) installation guide section.
+    `OPTINIST_DIR` is defined in `optinist/studio/app/dir_path.py`. Change line for `OPTINIST_DIR`, `INPUT_DIR`, and `OUTPUT_DIR` according to your demand. Changing `dir_path.py` may also be necessary when running the pipeline on your cluster computers. Also, you can quickly change `OPTINIST_DIR` by changing the environment variable before launching. The change is effective after relaunching.
+
+
+## SNAKEMAKE Settings
 OptiNiSt's pipeline construction is based on [Snakemake](https://snakemake.readthedocs.io/en/stable/), a pipeline controlling tool for Python scripts.
 
 <br>
@@ -401,7 +381,7 @@ The Snakemake parameter setting is following.
 For details about snakemake parameters please refer to [snakemake official page](https://snakemake.readthedocs.io/en/stable/executing/cli.html).
 
 
-## NWB setting
+## NWB Settings
 Defines the metadata associated with the input data.
 By configuring this, the output NWB file includes the information set here.
 You can leave this setting as the default.

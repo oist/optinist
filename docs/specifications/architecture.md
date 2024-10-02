@@ -5,7 +5,7 @@
 - framework: React (v18)
 - middleware: Redux, Redux Toolkit, React Router
 
-#### Directory structure
+#### Directory Structure
 Following is the summary of directory structure.
 
 - frontend
@@ -32,7 +32,7 @@ Following is the summary of directory structure.
 - framework: FastAPI
 - handle workflow by snakemake.
 
-#### Directory structure
+#### Directory Structure
 Following is the summary of directory structure.
 - studio
   - alembic: files for database migration. database is used in multi-user mode.
