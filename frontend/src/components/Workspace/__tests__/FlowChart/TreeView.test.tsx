@@ -6,12 +6,13 @@ import configureStore from "redux-mock-store"
 import thunk from "redux-thunk"
 
 import { describe, it, beforeEach } from "@jest/globals"
-import { render, screen } from "@testing-library/react"
+import { prettyDOM, render, screen } from "@testing-library/react"
 import { userEvent } from "@testing-library/user-event"
 
 import { mockStoreData } from "components/Workspace/__tests__/FlowChart/mockStoreData.json"
 import { AlgorithmTreeView } from "components/Workspace/FlowChart/TreeView"
 import { getAlgoList } from "store/slice/AlgorithmList/AlgorithmListActions"
+import { addAlgorithmNode } from "store/slice/FlowElement/FlowElementActions"
 
 jest.mock("store/slice/AlgorithmList/AlgorithmListActions", () => ({
   getAlgoList: jest.fn(),
@@ -118,35 +119,45 @@ describe("AlgorithmTreeView", () => {
   })
 
   it("dispatches the correct action when the algorithm add button is clicked", async () => {
+    // Spy on the `addAlgorithmNode` action for this test
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const addAlgorithmNodeMock = jest
+      .spyOn(
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        require("store/slice/FlowElement/FlowElementActions"),
+        "addAlgorithmNode",
+      )
+      .mockImplementation(jest.fn())
+
     render(
       <Provider store={store}>
         <AlgorithmTreeView />
       </Provider>,
     )
 
+    // Click the "Algorithm" label to expand the node
     const algorithmTreeLabel = screen.getByText("Algorithm")
     await userEvent.click(algorithmTreeLabel)
 
+    // Ensure the "caiman" node exists and click it
     const caimanTreeLabel = screen.getByText("caiman")
     await userEvent.click(caimanTreeLabel)
 
-    // Get the add button using data-testid
-    const addButton = screen.getAllByLabelText("add")[0]
-
-    // Simulate the click event
+    // Click the add button for the "caiman" node (using a more specific selector if needed)
+    const addButton = screen.getAllByTestId("AddIcon")[0]
     await userEvent.click(addButton)
 
-    // Verify that the action was dispatched with the expected payload
-    expect(store.dispatch).toHaveBeenCalledWith(
-      expect.objectContaining({
-        type: "flowElement/addAlgorithmNode",
-        payload: {
-          node: expect.any(Object),
-          name: expect.any(String),
-          functionPath: expect.any(String),
-          runAlready: expect.any(Boolean),
-        },
-      }),
-    )
+    // Verify that the addAlgorithmNode action was dispatched
+    expect(addAlgorithmNode).toHaveBeenCalledWith({
+      node: {
+        data: { label: "caiman_mc", type: "algorithm" },
+        id: expect.any(String), // Use `expect.any(String)` if the id is dynamically generated,
+        position: undefined,
+        type: "AlgorithmNode",
+      },
+      name: "caiman_mc",
+      functionPath: "caiman/caiman_mc",
+      runAlready: true,
+    })
   })
 })
