@@ -1,15 +1,14 @@
-Host Optinist yourself for multiuser use
-========================================
+(set-optinist-config)=
+Multi-user (Host setup)
+=======================
 
 ```{contents}
 :depth: 4
 ```
 
-## Setup multiuser mode
-
 Follow the steps below to setup `multiuser` mode.
 
-### Clone the repository
+### Clone the Repository
 1. In your hosting server, clone the OptiNiSt repository.
     ```bash
     git clone git@github.com:oist/optinist.git -b main
@@ -37,7 +36,7 @@ Follow the steps below to setup `multiuser` mode.
 5. Click "Email/Password" and enable it.
 6. Click "Save".
 
-#### Create admin user for the project
+#### Create Admin User for the Project
 1. Select "Authentication" from the left menu.
 2. Select "Users" tab.
 3. Click "Add user" button.
@@ -47,7 +46,7 @@ Follow the steps below to setup `multiuser` mode.
 
 - Created user's "User UID" is required later.
 
-#### Get Firebase tokens
+#### Get Firebase Tokens
 1. Click setting icon(besides Project Overview), then select "Project settings" from the left menu.
 2. Select "General" tab.
 3. Select "web app" in "Your apps" section.
@@ -106,21 +105,23 @@ To use multiuser mode with Docker, perform the following steps.
 
 ##### Setup Backend
 
-###### &#x2488;Set OptiNiSt config
+(set-optinist-config)=
+###### Set OptiNiSt Config
 - Edit `studio/config/.env`
     - Change `SECRET_KEY` to any random string.
     - Change `USE_FIREBASE_TOKEN` to `True`.
     - Change `IS_STANDALONE` to `False`
 
-###### &#x2489;Start backend (Database is set up on startup)
+###### Start Backend (Database is set up on startup)
 ```bash
 docker compose -f docker-compose.dev.multiuser.yml up studio-dev-be -d
 ```
-
-###### &#x248a;Insert initial data
+(insert_initial_data)=
+###### Insert Initial Data
 ```bash
 docker exec -it {DB_CONTAINER_NAME} mysql -u {DB_USER_NAME} -p {YOUR_DATABASE_NAME}
 ```
+Make an initial sql entry
 ```sql
 INSERT INTO organization (name) VALUES ('{YOUR_ORGANIZATION_NAME}');
 INSERT INTO roles (id, role) VALUES (1, 'admin'), (20, 'operator');
@@ -154,25 +155,28 @@ docker compose -f docker-compose.dev.multiuser.yml up -d
 Below are the steps for a case using Non-Docker platforms (Windows, Mac, Linux).
 
 ##### Setup Backend
-- See [OptiNiSt installation guide](../installation/index.rst).
+- See [OptiNiSt installation guide](../../installation/index.rst) for installing conda and optinist for installing conda and optinist.
 - After creating and activating a conda environment for the project, run following commands
 
-###### &#x2488;Set OptiNiSt config
-- Same as [Set OptiNiSt config](#set-optinist-config) procedure.
+###### Set OptiNiSt Config
+- Follow the steps to change the `.env` file to multi-user mode, see [Set OptiNiSt config](#set-optinist-config).
 
-###### &#x2489;Setup database
+###### Setup Database
 ```bash
 cd {OPTINIST_ROOT_PATH}  # root path of repository cloned
 alembic upgrade head
 ```
 
-###### &#x248a;Insert initial data
-- Same as [Insert initial data](#insert-initial-data) procedure.
+###### Insert Initial Data
+- To setup the database we need to insert some initial data. Follow the procedure in [Insert Initial Data](#insert_initial_data), but remove the initial command `docker exec -it {DB_CONTAINER_NAME}`, as not using Docker. Instead to add initial data and setup database, use:
+```bash
+mysql -u {DB_USER_NAME} -p {YOUR_DATABASE_NAME}
+```
 
 ##### Run OptiNiSt
 ```bash
 python main.py
 ```
 
-1. Access to `http://{YOUR_HOST}:8000` from your browser.
+1. Access to `http://{YOUR_HOST}:8000` from your browser (most likely `http://localhost:8000`).
 2. Confirm that you can SingIn with your Firebase Authentication account.

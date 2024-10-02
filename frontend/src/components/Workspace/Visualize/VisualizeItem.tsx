@@ -279,7 +279,7 @@ const RefImageItemIdSelect = memo(function RefImageItemIdSelect({
   )
   return (
     <FormControl fullWidth variant="standard">
-      <InputLabel>ref image</InputLabel>
+      <InputLabel>Link to box (#)</InputLabel>
       <Select
         value={String(selectedRefImageItemId)}
         onChange={onChangeRefImageItemId}

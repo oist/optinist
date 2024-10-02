@@ -2,7 +2,7 @@
 About
 =====
 
-- Normally, Optinist is a single user application. But you can host it yourself for multiuser use.
+- Normally, Optinist is a single user application. However is is possible to have multiple users access the same workspace.
   - We call single user mode as `standalone`, and multiuser mode as `multiuser`.
 - In `multiuser` mode, we provide the following features.
   - Account management

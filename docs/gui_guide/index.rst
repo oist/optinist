@@ -1,10 +1,10 @@
 *********
-GUI GUIDE
+GUI Guide
 *********
 
 .. toctree::
   :maxdepth: 2
-  :caption: GUI GUIDE:
+  :caption: GUI Guide:
 
   workflow
   visualize

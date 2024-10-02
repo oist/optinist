@@ -1,4 +1,5 @@
-CUI execution
+(cui-execution)=
+Cluster Usage
 =================
 This section describes how to run a workflow created in GUI on a cluster or in CUI.
 
@@ -9,11 +10,11 @@ This section describes how to run a workflow created in GUI on a cluster or in C
   - [4. Execution](#4-execution)
   - [5.Output result](#5output-result)
 
-## 1. Config file settings
+## 1. Config File Settings
 Place the config file required by Snakemake at the appropriate location.
 The config file can be downloaded from **Record** on the GUI.
 
-## 2. Set environment variables for save paths
+## 2. Set Environment Variables for Save Paths
 Change environment variables. Change the environment variable as follows, because the default setting refers to the directory under `/tmp/studio`.
 ```bash
 export OPTINIST_DIR="your_saving_dir"
@@ -40,6 +41,6 @@ The command executes the following
 python run_cluster.py --config="{config.yaml file path}"
 ```
 
-## 5.Output result
+## 5.Output Result
 The results are stored in `{OPTINIST_DIR}/output/{unique_id}`.
 If you want to visualize the results, you can move this directory to local, and you can check the results in GUI.
