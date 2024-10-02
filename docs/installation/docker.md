@@ -13,13 +13,13 @@ Please follow instructions below.
 
 <br />
 
-## 1. Make docker image container
+## 1. Make Docker Image Container
 
 ### Install Tools
 
 - Install [Docker](https://www.docker.com/products/docker-desktop/)
 
-### Make docker image
+### Make Docker Image
 
 Pull the latest docker image from docker hub.
 ```
@@ -42,10 +42,8 @@ poetry run python main.py --host 0.0.0.0 --port 8000
     By the command above (``-v`` option), you can mount your local directory to docker container.
 ```
 
-## 2. Access to backend
+## 2. Access to Backend
 
 - Launch browser, and go to http://localhost:8000
-
-It opens correctly!
 
 Done!

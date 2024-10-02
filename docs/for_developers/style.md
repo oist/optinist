@@ -23,7 +23,7 @@
       - Uncomment the line `// "flake8.path": ["conda", "run", "-n", "optinist_dev", "python", "-m", "flake8"],`
       - and set `optinist_dev` to your conda environment name.
 
-#### Other editors
+#### Other Editors
 - Though automatically checked with pre-commit, you can check your code follow the guide before commit.
 - Run the following command to check linting and format your code.
   ```
