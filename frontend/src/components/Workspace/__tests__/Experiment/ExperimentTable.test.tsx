@@ -2,7 +2,6 @@
 import { Provider } from "react-redux"
 
 import configureStore from "redux-mock-store"
-import thunk, { ThunkMiddleware } from "redux-thunk"
 
 import { describe, it, beforeEach } from "@jest/globals"
 import { Store, AnyAction } from "@reduxjs/toolkit"
@@ -14,13 +13,20 @@ import {
   within,
 } from "@testing-library/react"
 
-import { ExperimentTable } from "components/Workspace/Experiment/ExperimentTable"
+import { renameExperiment } from "api/experiments/Experiments"
+import { ReproduceButton } from "components/Workspace/Experiment/Button/ReproduceButton"
+import {
+  ExperimentTable,
+  ExperimentUidContext,
+} from "components/Workspace/Experiment/ExperimentTable"
 import {
   deleteExperimentByUid,
   getExperiments,
 } from "store/slice/Experiments/ExperimentsActions"
 import { selectExperimentList } from "store/slice/Experiments/ExperimentsSelectors"
 import { Experiments } from "store/slice/Experiments/ExperimentsType"
+import { reset } from "store/slice/VisualizeItem/VisualizeItemSlice"
+import { reproduceWorkflow } from "store/slice/Workflow/WorkflowActions"
 import { RootState } from "store/store"
 
 jest.mock("api/experiments/Experiments", () => ({
@@ -45,11 +51,25 @@ jest.mock("store/slice/Pipeline/PipelineSlice", () => ({
   clearCurrentPipeline: jest.fn(),
 }))
 
+// Mock necessary actions and selectors
+jest.mock("store/slice/Workflow/WorkflowActions", () => ({
+  reproduceWorkflow: jest.fn(() => ({ unwrap: jest.fn() })),
+}))
+
+jest.mock("store/slice/VisualizeItem/VisualizeItemSlice", () => ({
+  reset: jest.fn(),
+}))
+
 jest.mock("store/slice/Experiments/ExperimentsSelectors", () => ({
   ...jest.requireActual("store/slice/Experiments/ExperimentsSelectors"),
   selectExperimentsStatusIsUninitialized: jest.fn(),
   selectExperimentsStatusIsError: jest.fn(),
   selectExperimentList: jest.fn(),
+}))
+
+// Mock necessary actions and API
+jest.mock("api/experiments/Experiments", () => ({
+  renameExperiment: jest.fn(),
 }))
 
 const mockStore = configureStore<RootState, AnyAction>([])
@@ -441,48 +461,115 @@ describe("ExperimentTable", () => {
   })
 
   // TODO: WIP - Fix the test
-  // it("should delete a single experiment when confirmed in the dialog", async () => {
-  //   render(
-  //     <Provider store={store}>
-  //       <ExperimentTable />
-  //     </Provider>,
-  //   )
+  it.skip("renders and handles reproduction", async () => {
+    render(
+      <Provider store={store}>
+        <ExperimentUidContext.Provider value="1">
+          <ReproduceButton />
+        </ExperimentUidContext.Provider>
+      </Provider>,
+    )
 
-  //   // Find the delete button for the first experiment in the table row
-  //   const deleteButton = screen.getAllByTestId("delete-button")[0] // Assuming each row has a delete button with this data-testid
+    // Simulate clicking the reproduce button to open the dialog
+    fireEvent.click(screen.getByTestId("reproduce-button"))
 
-  //   // Click the delete button in the row
-  //   fireEvent.click(deleteButton)
+    // Assert the confirm dialog appears
+    expect(screen.getByText("Reproduce workflow?")).toBeInTheDocument()
 
-  //   // Wait for the confirmation dialog to appear
-  //   const dialog = await waitFor(() =>
-  //     screen.getByRole("dialog", { name: /delete record\?/i }),
-  //   )
-  //   expect(dialog).toBeInTheDocument()
+    // Simulate confirming the reproduction
+    fireEvent.click(screen.getByText("reproduce"))
 
-  //   // Find and click the "Confirm" button in the dialog
-  //   const confirmButton = screen.getByTestId("delete-confirm-button")
-  //   fireEvent.click(confirmButton)
+    // Wait for the dispatch actions
+    await waitFor(() => {
+      expect(reproduceWorkflow).toHaveBeenCalledWith({
+        workspaceId: 1,
+        uid: "1",
+      })
+    })
 
-  //   // Ensure the deleteExperimentByUid action is called with the correct UID
-  //   expect(deleteExperimentByUid).toHaveBeenCalledWith("1")
-  // })
+    // Assert reset action was dispatched
+    expect(reset).toHaveBeenCalled()
+  })
 
   // TODO: WIP - Fix the test
-  // it("should dispatch the getExperiments action when the Reload button is clicked", () => {
-  //   render(
-  //     <Provider store={store}>
-  //       <ExperimentTable />
-  //     </Provider>,
-  //   )
+  it.skip("should delete a single experiment when confirmed in the dialog", async () => {
+    render(
+      <Provider store={store}>
+        <ExperimentTable />
+      </Provider>,
+    )
 
-  //   // Find the Reload button by its text or other attributes
-  //   const reloadButton = screen.getByText(/reload/i)
+    // Find the delete button for the first experiment in the table row
+    const deleteButton = screen.getAllByTestId("delete-button")[0] // Assuming each row has a delete button with this data-testid
 
-  //   // Click the Reload button
-  //   fireEvent.click(reloadButton)
+    // Click the delete button in the row
+    fireEvent.click(deleteButton)
 
-  //   // Ensure the getExperiments action is dispatched
-  //   expect(getExperiments).toHaveBeenCalledTimes(1)
-  // })
+    // Wait for the confirmation dialog to appear
+    const dialog = await waitFor(() =>
+      screen.getByRole("dialog", { name: /delete record\?/i }),
+    )
+    expect(dialog).toBeInTheDocument()
+
+    // Find and click the "Confirm" button in the dialog
+    const confirmButton = screen.getByTestId("delete-confirm-button")
+    fireEvent.click(confirmButton)
+
+    // Ensure the deleteExperimentByUid action is called with the correct UID
+    expect(deleteExperimentByUid).toHaveBeenCalledWith("1")
+  })
+
+  // TODO: WIP - Fix the test
+  it.skip("should dispatch the getExperiments action when the Reload button is clicked", () => {
+    render(
+      <Provider store={store}>
+        <ExperimentTable />
+      </Provider>,
+    )
+
+    // Find the Reload button by its text or other attributes
+    const reloadButton = screen.getByText(/reload/i)
+
+    // Click the Reload button
+    fireEvent.click(reloadButton)
+
+    // Ensure the getExperiments action is dispatched
+    expect(getExperiments).toHaveBeenCalledTimes(1)
+  })
+
+  it.skip("allows renaming an experiment", async () => {
+    render(
+      <Provider store={store}>
+        <ExperimentTable />
+      </Provider>,
+    )
+
+    // Assert that the original name is rendered
+    expect(screen.getByText("Experiment 1")).toBeInTheDocument()
+
+    // Simulate clicking the name to enable editing
+    fireEvent.click(screen.getByText("Experiment 1"))
+
+    // The input should now be present
+    const input = screen.getByPlaceholderText("Name")
+    expect(input).toBeInTheDocument()
+
+    // Simulate changing the name
+    fireEvent.change(input, { target: { value: "New Experiment Name" } })
+
+    // Simulate input losing focus (triggering onBlurEdit)
+    fireEvent.blur(input)
+
+    // Wait for the renameExperiment API call
+    await waitFor(() => {
+      expect(renameExperiment).toHaveBeenCalledWith(
+        1,
+        "1",
+        "New Experiment Name",
+      )
+    })
+
+    // After renaming, the UI should update with the new name
+    expect(screen.getByText("New Experiment Name")).toBeInTheDocument()
+  })
 })
