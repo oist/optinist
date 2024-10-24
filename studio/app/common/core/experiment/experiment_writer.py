@@ -48,7 +48,7 @@ class ExptConfigWriter:
         else:
             self.create_config()
 
-        self.function_from_nodeDict()
+        self.build_function_from_nodeDict()
 
         ConfigWriter.write(
             dirname=join_filepath(
@@ -72,12 +72,14 @@ class ExptConfigWriter:
 
     def add_run_info(self) -> ExptConfig:
         return (
-            self.builder.set_started_at(datetime.now().strftime(DATE_FORMAT))  # 時間を更新
+            self.builder.set_started_at(
+                datetime.now().strftime(DATE_FORMAT)
+            )  # Update time
             .set_success("running")
             .build()
         )
 
-    def function_from_nodeDict(self) -> ExptConfig:
+    def build_function_from_nodeDict(self) -> ExptConfig:
         func_dict: Dict[str, ExptFunction] = {}
         node_dict = WorkflowConfigReader.read(
             join_filepath(
@@ -113,10 +115,13 @@ class ExptDataWriter:
         self.unique_id = unique_id
 
     def delete_data(self) -> bool:
+        result = True
+
         shutil.rmtree(
             join_filepath([DIRPATH.OUTPUT_DIR, self.workspace_id, self.unique_id])
         )
-        return True
+
+        return result
 
     def rename(self, new_name: str) -> ExptConfig:
         filepath = join_filepath(
@@ -127,6 +132,9 @@ class ExptDataWriter:
                 DIRPATH.EXPERIMENT_YML,
             ]
         )
+
+        # validate params
+        new_name = "" if new_name is None else new_name  # filter None
 
         # Note: "r+" option is not used here because it requires file pointer control.
         with open(filepath, "r") as f:
