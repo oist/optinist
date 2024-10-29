@@ -4,7 +4,7 @@ Installation
 
 .. toctree::
   :maxdepth: 2
-  :caption: Installation (for User)
+  :caption: Installation (User)
 
   docker
   windows
@@ -13,7 +13,7 @@ Installation
 
 .. toctree::
   :maxdepth: 2
-  :caption: Installation (for Developer)
+  :caption: Installation (Developer)
 
-  docker_for_developer
-  each_platforms_for_developer
+  docker_developer
+  native_platforms_developer

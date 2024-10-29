@@ -2,12 +2,13 @@ import os
 from glob import glob
 from typing import Dict
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import FileResponse
 
 from studio.app.common.core.experiment.experiment import ExptConfig
 from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
 from studio.app.common.core.experiment.experiment_writer import ExptDataWriter
+from studio.app.common.core.logger import AppLogger
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.workspace.workspace_dependencies import (
     is_workspace_available,
@@ -17,6 +18,8 @@ from studio.app.common.schemas.experiment import DeleteItem, RenameItem
 from studio.app.dir_path import DIRPATH
 
 router = APIRouter(prefix="/experiments", tags=["experiments"])
+
+logger = AppLogger.get_logger()
 
 
 @router.get(
@@ -33,7 +36,8 @@ async def get_experiments(workspace_id: str):
         try:
             config = ExptConfigReader.read(path)
             exp_config[config.unique_id] = config
-        except Exception:
+        except Exception as e:
+            logger.error(e, exc_info=True)
             pass
 
     return exp_config
@@ -49,10 +53,18 @@ async def rename_experiment(workspace_id: str, unique_id: str, item: RenameItem)
         workspace_id,
         unique_id,
     ).rename(item.new_name)
-    config.nodeDict = []
-    config.edgeDict = []
+    try:
+        config.nodeDict = []
+        config.edgeDict = []
 
-    return config
+        return config
+
+    except Exception as e:
+        logger.error(e, exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="rename experiment failed",
+        )
 
 
 @router.delete(
@@ -67,8 +79,12 @@ async def delete_experiment(workspace_id: str, unique_id: str):
             unique_id,
         ).delete_data()
         return True
-    except Exception:
-        return False
+    except Exception as e:
+        logger.error(e, exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="can not delete record.",
+        )
 
 
 @router.post(
@@ -84,8 +100,12 @@ async def delete_experiment_list(workspace_id: str, deleteItem: DeleteItem):
                 unique_id,
             ).delete_data()
         return True
-    except Exception:
-        return False
+    except Exception as e:
+        logger.error(e, exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="can not delete record.",
+        )
 
 
 @router.get(
@@ -99,4 +119,6 @@ async def download_config_experiment(workspace_id: str, unique_id: str):
     if os.path.exists(config_filepath):
         return FileResponse(config_filepath)
     else:
-        raise HTTPException(status_code=404, detail="file not found")
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="file not found"
+        )

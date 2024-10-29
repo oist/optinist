@@ -90,7 +90,7 @@ def test_function_from_nodeDict():
         workspace_id=workspace_id,
         unique_id=unique_id,
         name="name",
-    ).function_from_nodeDict()
+    ).build_function_from_nodeDict()
 
     assert isinstance(expt_config.function, dict)
     assert isinstance(expt_config.function["test1"], ExptFunction)

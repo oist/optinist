@@ -29,12 +29,11 @@ Main Features
 
 .. toctree::
   :maxdepth: 2
-  :caption: USER GUIDE:
+  :caption: User Guide:
 
   installation/index
   tutorials
-  gui/index
-  host_for_multiuser/index
-  utils/index
-  utils/nwb_file
+  gui_guide/index
+  specifications/index
+  other/index
   for_developers/index
