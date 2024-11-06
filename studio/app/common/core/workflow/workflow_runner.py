@@ -1,3 +1,4 @@
+import uuid
 from dataclasses import asdict
 from typing import Dict, List
 
@@ -38,6 +39,11 @@ class WorkflowRunner:
             nwbfile=get_typecheck_params(self.runItem.nwbParam, "nwb"),
             snakemake=get_typecheck_params(self.runItem.snakemakeParam, "snakemake"),
         ).write()
+
+    @staticmethod
+    def create_workflow_unique_id() -> str:
+        new_unique_id = str(uuid.uuid4())[:8]
+        return new_unique_id
 
     def run_workflow(self, background_tasks):
         self.set_smk_config()

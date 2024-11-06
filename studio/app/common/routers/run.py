@@ -1,4 +1,3 @@
-import uuid
 from typing import Dict
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
@@ -24,7 +23,7 @@ logger = AppLogger.get_logger()
 )
 async def run(workspace_id: str, runItem: RunItem, background_tasks: BackgroundTasks):
     try:
-        unique_id = str(uuid.uuid4())[:8]
+        unique_id = WorkflowRunner.create_workflow_unique_id()
         WorkflowRunner(workspace_id, unique_id, runItem).run_workflow(background_tasks)
 
         logger.info("run snakemake")
