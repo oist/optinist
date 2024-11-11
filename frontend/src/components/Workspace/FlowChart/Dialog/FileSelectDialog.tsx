@@ -10,6 +10,8 @@ import {
 import { useDispatch, useSelector } from "react-redux"
 
 import AutorenewIcon from "@mui/icons-material/Autorenew"
+import CloseIcon from "@mui/icons-material/Close"
+import DeleteIcon from "@mui/icons-material/Delete"
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline"
 import FolderIcon from "@mui/icons-material/Folder"
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined"
@@ -29,7 +31,10 @@ import { TreeView } from "@mui/x-tree-view/TreeView"
 
 import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from "api/files/Files"
 import { DialogContext } from "components/Workspace/FlowChart/Dialog/DialogContext"
-import { getFilesTree } from "store/slice/FilesTree/FilesTreeAction"
+import {
+  deleteFileTree,
+  getFilesTree,
+} from "store/slice/FilesTree/FilesTreeAction"
 import {
   selectFilesIsLatest,
   selectFilesIsLoading,
@@ -345,6 +350,14 @@ const TreeItemLabel = memo(function TreeItemLabel({
     },
     [dispatch, workspaceId],
   )
+  const onDelete = useCallback(
+    (event: MouseEvent, fileName: string) => {
+      if (!workspaceId) return
+      event.stopPropagation()
+      dispatch(deleteFileTree({ workspaceId, fileName, fileType }))
+    },
+    [dispatch, fileType, workspaceId],
+  )
   return (
     <Box height={24} display="flex" alignItems="center">
       <Tooltip
@@ -382,16 +395,6 @@ const TreeItemLabel = memo(function TreeItemLabel({
               )
             ) : null}
           </Box>
-          {!isDir ? (
-            <IconButton
-              sx={{ minWidth: 24 }}
-              onClick={(event) => onUpdate(event, label)}
-            >
-              <AutorenewIcon />
-            </IconButton>
-          ) : (
-            <Box width={24} marginRight={2} />
-          )}
         </>
       ) : null}
       <Box>
@@ -406,6 +409,22 @@ const TreeItemLabel = memo(function TreeItemLabel({
           }}
         />
       </Box>
+      {!isDir ? (
+        <IconButton
+          sx={{ minWidth: 24 }}
+          onClick={(event) => onUpdate(event, label)}
+        >
+          <AutorenewIcon />
+        </IconButton>
+      ) : (
+        <Box width={24} marginRight={2} />
+      )}
+      <IconButton
+        sx={{ minWidth: 24 }}
+        onClick={(event) => onDelete(event, label)}
+      >
+        <DeleteIcon />
+      </IconButton>
     </Box>
   )
 })
@@ -419,11 +438,39 @@ const FilePathSelectedListView = memo(function FilePathSelectedListView({
 }: FilePathProps) {
   return (
     <Typography variant="subtitle2">
-      {path
-        ? Array.isArray(path)
-          ? path.map((text) => <li key={text}>{text}</li>)
-          : path
-        : "---"}
+      {path ? (
+        Array.isArray(path) ? (
+          <ul style={{ padding: 0, margin: 0, listStyleType: "none" }}>
+            {path.map((text) => (
+              <li
+                key={text}
+                style={{
+                  marginBottom: "8px",
+                  listStyleType: "disc",
+                  marginLeft: "24px",
+                }}
+              >
+                <span
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  <span>{text}</span>
+                  <IconButton style={{ padding: "0" }}>
+                    <CloseIcon />
+                  </IconButton>
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          path
+        )
+      ) : (
+        "---"
+      )}
     </Typography>
   )
 })

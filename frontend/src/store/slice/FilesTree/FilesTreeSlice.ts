@@ -1,7 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 import { FILE_TREE_TYPE_SET } from "api/files/Files"
-import { getFilesTree } from "store/slice/FilesTree/FilesTreeAction"
+import {
+  getFilesTree,
+  deleteFileTree,
+} from "store/slice/FilesTree/FilesTreeAction"
 import {
   FilesTree,
   FILES_TREE_SLICE_NAME,
@@ -31,6 +34,31 @@ export const filesTreeSlice = createSlice({
         state[fileType].tree = convertToTreeNodeType(action.payload)
         state[fileType].isLatest = true
         state[fileType].isLoading = false
+      })
+      .addCase(deleteFileTree.pending, (state, action) => {
+        const { fileType } = action.meta.arg
+        console.log(state[fileType].tree)
+        console.log(state[fileType].isLatest)
+        console.log(state[fileType].isLoading)
+        console.log(action.meta.arg)
+        state[fileType] = {
+          ...state[fileType],
+          isLoading: true,
+          isLatest: false,
+        }
+      })
+      .addCase(deleteFileTree.rejected, (state, action) => {
+        const { fileType } = action.meta.arg
+        state[fileType] = {
+          ...state[fileType],
+          isLoading: false,
+          isLatest: true,
+        }
+        console.log("deleteFileTree.rejected")
+        console.log(action.meta.arg)
+        console.log(state[fileType].tree)
+        console.log(state[fileType].isLatest)
+        console.log(state[fileType].isLoading)
       })
       .addCase(uploadFile.pending, (state, action) => {
         const { fileType } = action.meta.arg

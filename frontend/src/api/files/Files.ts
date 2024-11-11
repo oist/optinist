@@ -69,6 +69,16 @@ export async function uploadFileApi(
   return response.data
 }
 
+export async function deleteFileTreeApi(
+  workspaceId: number,
+  fileName: string,
+): Promise<boolean> {
+  const response = await axios.delete(
+    `${BASE_URL}/${workspaceId}/delete/${fileName}`,
+  )
+  return response.data
+}
+
 export async function updateShapeApi(
   workspaceId: number,
   fileName: string,
