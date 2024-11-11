@@ -37,10 +37,6 @@ export const filesTreeSlice = createSlice({
       })
       .addCase(deleteFileTree.pending, (state, action) => {
         const { fileType } = action.meta.arg
-        console.log(state[fileType].tree)
-        console.log(state[fileType].isLatest)
-        console.log(state[fileType].isLoading)
-        console.log(action.meta.arg)
         state[fileType] = {
           ...state[fileType],
           isLoading: true,
@@ -54,11 +50,6 @@ export const filesTreeSlice = createSlice({
           isLoading: false,
           isLatest: true,
         }
-        console.log("deleteFileTree.rejected")
-        console.log(action.meta.arg)
-        console.log(state[fileType].tree)
-        console.log(state[fileType].isLatest)
-        console.log(state[fileType].isLoading)
       })
       .addCase(uploadFile.pending, (state, action) => {
         const { fileType } = action.meta.arg
