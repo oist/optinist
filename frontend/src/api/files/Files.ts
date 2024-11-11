@@ -74,7 +74,7 @@ export async function deleteFileTreeApi(
   fileName: string,
 ): Promise<boolean> {
   const response = await axios.delete(
-    `${BASE_URL}/${workspaceId}/delete/${fileName}`,
+    `${BASE_URL}/files/${workspaceId}/delete/${fileName}`,
   )
   return response.data
 }

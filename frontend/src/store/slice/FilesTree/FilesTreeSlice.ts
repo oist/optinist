@@ -51,6 +51,13 @@ export const filesTreeSlice = createSlice({
           isLatest: true,
         }
       })
+      .addCase(deleteFileTree.fulfilled, (state, action) => {
+        const { fileType, fileName } = action.meta.arg
+        const fileTree = state[fileType].tree
+        state[fileType].tree = fileTree.filter((node) => node.name !== fileName)
+        state[fileType].isLoading = false
+        state[fileType].isLatest = true
+      })
       .addCase(uploadFile.pending, (state, action) => {
         const { fileType } = action.meta.arg
         if (fileType === FILE_TYPE_SET.IMAGE) {

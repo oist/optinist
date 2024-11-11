@@ -12,7 +12,6 @@ from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, Up
 from requests.models import Response
 from tqdm import tqdm
 
-from studio.app.common.core.logger import AppLogger
 from studio.app.common.core.utils.file_reader import JsonReader
 from studio.app.common.core.utils.filepath_creater import (
     create_directory,
@@ -207,13 +206,11 @@ DOWNLOAD_STATUS: Dict[str, DownloadStatus] = {}
 )
 async def delete_file(workspace_id: str, filename: str):
     filepath = join_filepath([DIRPATH.INPUT_DIR, workspace_id, filename])
-    logger = AppLogger.get_logger()
-    logger.info(f"Delete file: {filepath}")
-    # try:
-    #     os.remove(filepath)
-    # except FileNotFoundError:
-    #     raise HTTPException(status_code=404)
-    # return {"file_path": filename}
+    try:
+        os.remove(filepath)
+        return True
+    except FileNotFoundError:
+        return False
 
 
 @router.get(
