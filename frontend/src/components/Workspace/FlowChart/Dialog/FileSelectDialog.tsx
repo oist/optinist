@@ -15,7 +15,7 @@ import DeleteIcon from "@mui/icons-material/Delete"
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline"
 import FolderIcon from "@mui/icons-material/Folder"
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined"
-import { Divider, IconButton, Tooltip } from "@mui/material"
+import { DialogContentText, Divider, IconButton, Tooltip } from "@mui/material"
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 import Checkbox, { CheckboxProps } from "@mui/material/Checkbox"
@@ -58,6 +58,12 @@ type FileSelectDialogProps = {
   open: boolean
   onClickCancel: () => void
   multiSelect: boolean
+}
+
+type DeleteConfirmDialogProps = {
+  open: boolean
+  onClose: () => void
+  onOk: () => void
 }
 
 export const FileSelectDialog = memo(function FileSelectDialog({
@@ -342,6 +348,7 @@ const TreeItemLabel = memo(function TreeItemLabel({
 }: TreeItemLabelProps) {
   const dispatch = useDispatch<AppDispatch>()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState(false)
   const onUpdate = useCallback(
     (event: MouseEvent, fileName: string) => {
       if (!workspaceId) return
@@ -358,73 +365,109 @@ const TreeItemLabel = memo(function TreeItemLabel({
     },
     [dispatch, fileType, workspaceId],
   )
+
+  const DeleteConfirmDialog = memo(function DeleteConfirmDialog({
+    open,
+    onClose,
+    onOk,
+  }: DeleteConfirmDialogProps) {
+    return (
+      <Dialog open={open} onClose={onClose}>
+        <DialogTitle>Confirm Delete</DialogTitle>
+        <DialogContent>
+          <DialogContentText>
+            Are you sure you want to delete this item?
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={onClose} color="primary">
+            No
+          </Button>
+          <Button onClick={onOk} color="primary" autoFocus>
+            Yes
+          </Button>
+        </DialogActions>
+      </Dialog>
+    )
+  })
+
   return (
-    <Box height={24} display="flex" alignItems="center">
-      <Tooltip
-        title={<span style={{ fontSize: 14 }}>{label}</span>}
-        placement={"left-start"}
-      >
-        <Box
-          sx={{
-            width: "48%",
-            textOverflow: "ellipsis",
-            overflowX: "hidden",
-            whiteSpace: "pre",
-          }}
+    <Box>
+      <Box height={24} display="flex" alignItems="center">
+        <Tooltip
+          title={<span style={{ fontSize: 14 }}>{label}</span>}
+          placement={"left-start"}
         >
-          {label}
-        </Box>
-      </Tooltip>
-      {fileType === FILE_TREE_TYPE_SET.IMAGE ? (
-        <>
-          <Box minWidth={175} marginLeft={2} alignItems={"center"}>
-            {!isDir ? (
-              !shape ? (
-                <Tooltip
-                  title={
-                    <span style={{ fontSize: 14 }}>
-                      parsing image shape failed
-                    </span>
-                  }
-                  placement={"right"}
-                >
-                  <ErrorOutlineIcon color={"error"} />
-                </Tooltip>
-              ) : (
-                `(${shape.join(", ")})`
-              )
-            ) : null}
+          <Box
+            sx={{
+              width: "48%",
+              textOverflow: "ellipsis",
+              overflowX: "hidden",
+              whiteSpace: "pre",
+            }}
+          >
+            {label}
           </Box>
-        </>
-      ) : null}
-      <Box>
-        <Checkbox
-          {...checkboxProps}
-          disableRipple
-          size="small"
-          sx={{
-            marginRight: "4px",
-            padding: "2px",
-            minWidth: 24,
-          }}
-        />
-      </Box>
-      {!isDir ? (
+        </Tooltip>
+        {fileType === FILE_TREE_TYPE_SET.IMAGE ? (
+          <>
+            <Box minWidth={175} marginLeft={2} alignItems={"center"}>
+              {!isDir ? (
+                !shape ? (
+                  <Tooltip
+                    title={
+                      <span style={{ fontSize: 14 }}>
+                        parsing image shape failed
+                      </span>
+                    }
+                    placement={"right"}
+                  >
+                    <ErrorOutlineIcon color={"error"} />
+                  </Tooltip>
+                ) : (
+                  `(${shape.join(", ")})`
+                )
+              ) : null}
+            </Box>
+          </>
+        ) : null}
+        <Box>
+          <Checkbox
+            {...checkboxProps}
+            disableRipple
+            size="small"
+            sx={{
+              marginRight: "4px",
+              padding: "2px",
+              minWidth: 24,
+            }}
+          />
+        </Box>
+        {!isDir ? (
+          <IconButton
+            sx={{ minWidth: 24 }}
+            onClick={(event) => onUpdate(event, label)}
+          >
+            <AutorenewIcon />
+          </IconButton>
+        ) : (
+          <Box width={24} marginRight={2} />
+        )}
         <IconButton
           sx={{ minWidth: 24 }}
-          onClick={(event) => onUpdate(event, label)}
+          onClick={() => setDeleteConfirmDialogOpen(true)}
         >
-          <AutorenewIcon />
+          <DeleteIcon />
         </IconButton>
-      ) : (
-        <Box width={24} marginRight={2} />
-      )}
-      <IconButton
-        sx={{ minWidth: 24 }}
-        onClick={(event) => onDelete(event, label)}
-      >
-        <DeleteIcon />
-      </IconButton>
+      </Box>
+      <DeleteConfirmDialog
+        open={deleteConfirmDialogOpen}
+        onClose={() => setDeleteConfirmDialogOpen(false)}
+        onOk={() => {
+          onDelete({ stopPropagation: () => {} } as MouseEvent, label)
+          setDeleteConfirmDialogOpen(false)
+        }}
+      />
     </Box>
   )
 })
