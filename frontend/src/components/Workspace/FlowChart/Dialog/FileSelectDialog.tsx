@@ -151,6 +151,40 @@ const FileTreeView = memo(function FileTreeView({
   multiSelect,
 }: FileTreeViewProps) {
   const [tree, isLoading] = useFileTree(fileType)
+  // const [initialized, setInitialized] = useState(false)
+
+  // // Helper function to check if a file exists in the tree
+  // const isFileInTree = (path: string, tree: TreeNodeType[] | null): boolean => {
+  //   if (!tree) return false
+  //   const checkNode = (node: TreeNodeType): boolean => {
+  //     if (node.path === path) return true
+  //     if (node.isDir && node.nodes) {
+  //       return node.nodes.some(checkNode)
+  //     }
+  //     return false
+  //   }
+  //   return tree.some(checkNode)
+  // }
+
+  // // Effect to remove selected file if it's not in the tree
+  // useEffect(() => {
+  //   if (!initialized && tree) {
+  //     if (Array.isArray(selectedFilePath)) {
+  //       const validPaths = selectedFilePath.filter((path) =>
+  //         isFileInTree(path, tree),
+  //       )
+  //       if (validPaths.length !== selectedFilePath.length) {
+  //         setSelectedFilePath(validPaths)
+  //       }
+  //     } else if (selectedFilePath && !isFileInTree(selectedFilePath, tree)) {
+  //       setSelectedFilePath([])
+  //     }
+  //     setInitialized(true) // Prevents re-running on every render
+  //   }
+  // }, [tree, initialized, selectedFilePath, setSelectedFilePath])
+
+  // console.log(selectedFilePath)
+
   const onNodeSelectHandler = (
     event: SyntheticEvent,
     nodeIds: Array<string> | string,
@@ -339,7 +373,7 @@ interface TreeItemLabelProps {
   isDir?: boolean
 }
 
-const TreeItemLabel = memo(function TreeItemLabel({
+export const TreeItemLabel = memo(function TreeItemLabel({
   fileType,
   shape,
   label,
