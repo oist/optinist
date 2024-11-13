@@ -183,8 +183,6 @@ const FileTreeView = memo(function FileTreeView({
   //   }
   // }, [tree, initialized, selectedFilePath, setSelectedFilePath])
 
-  // console.log(selectedFilePath)
-
   const onNodeSelectHandler = (
     event: SyntheticEvent,
     nodeIds: Array<string> | string,
@@ -414,10 +412,23 @@ export const TreeItemLabel = memo(function TreeItemLabel({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button onClick={onClose} color="primary">
+          <Button
+            onClick={(event) => {
+              event.stopPropagation()
+              onClose()
+            }}
+            color="primary"
+          >
             No
           </Button>
-          <Button onClick={onOk} color="primary" autoFocus>
+          <Button
+            onClick={(event) => {
+              event.stopPropagation()
+              onOk()
+            }}
+            color="primary"
+            autoFocus
+          >
             Yes
           </Button>
         </DialogActions>
@@ -489,7 +500,10 @@ export const TreeItemLabel = memo(function TreeItemLabel({
         )}
         <IconButton
           sx={{ minWidth: 24 }}
-          onClick={() => setDeleteConfirmDialogOpen(true)}
+          onClick={(event) => {
+            event.stopPropagation()
+            setDeleteConfirmDialogOpen(true)
+          }}
         >
           <DeleteIcon />
         </IconButton>
