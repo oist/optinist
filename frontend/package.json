@@ -50,7 +50,9 @@
     "stream-browserify": "^3.0.0",
     "styled-components": "^6.1.1",
     "typescript": "^5.2.2",
-    "web-vitals": "^3.5.0"
+    "web-vitals": "^3.5.0",
+    "redux-mock-store": "^1.5.5",
+    "@types/redux-mock-store": "^1.0.6"
   },
   "scripts": {
     "start": "react-app-rewired start --scripts-version react-scripts",
