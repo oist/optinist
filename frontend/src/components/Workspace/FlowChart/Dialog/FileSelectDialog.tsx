@@ -123,7 +123,10 @@ export const FileSelectDialog = memo(function FileSelectDialog({
           />
         </div>
         <Typography variant="subtitle1">Select File</Typography>
-        <FilePathSelectedListView path={selectedFilePath} />
+        <FilePathSelectedListView
+          path={selectedFilePath}
+          setSelectedFilePath={setSelectedFilePath}
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={onCancel} variant="outlined">
@@ -151,37 +154,37 @@ const FileTreeView = memo(function FileTreeView({
   multiSelect,
 }: FileTreeViewProps) {
   const [tree, isLoading] = useFileTree(fileType)
-  // const [initialized, setInitialized] = useState(false)
+  const [initialized, setInitialized] = useState(false)
 
-  // // Helper function to check if a file exists in the tree
-  // const isFileInTree = (path: string, tree: TreeNodeType[] | null): boolean => {
-  //   if (!tree) return false
-  //   const checkNode = (node: TreeNodeType): boolean => {
-  //     if (node.path === path) return true
-  //     if (node.isDir && node.nodes) {
-  //       return node.nodes.some(checkNode)
-  //     }
-  //     return false
-  //   }
-  //   return tree.some(checkNode)
-  // }
+  // Helper function to check if a file exists in the tree
+  const isFileInTree = (path: string, tree: TreeNodeType[] | null): boolean => {
+    if (!tree) return false
+    const checkNode = (node: TreeNodeType): boolean => {
+      if (node.path === path) return true
+      if (node.isDir && node.nodes) {
+        return node.nodes.some(checkNode)
+      }
+      return false
+    }
+    return tree.some(checkNode)
+  }
 
-  // // Effect to remove selected file if it's not in the tree
-  // useEffect(() => {
-  //   if (!initialized && tree) {
-  //     if (Array.isArray(selectedFilePath)) {
-  //       const validPaths = selectedFilePath.filter((path) =>
-  //         isFileInTree(path, tree),
-  //       )
-  //       if (validPaths.length !== selectedFilePath.length) {
-  //         setSelectedFilePath(validPaths)
-  //       }
-  //     } else if (selectedFilePath && !isFileInTree(selectedFilePath, tree)) {
-  //       setSelectedFilePath([])
-  //     }
-  //     setInitialized(true) // Prevents re-running on every render
-  //   }
-  // }, [tree, initialized, selectedFilePath, setSelectedFilePath])
+  // Effect to remove selected file if it's not in the tree
+  useEffect(() => {
+    if (!initialized && tree) {
+      if (Array.isArray(selectedFilePath)) {
+        const validPaths = selectedFilePath.filter((path) =>
+          isFileInTree(path, tree),
+        )
+        if (validPaths.length !== selectedFilePath.length) {
+          setSelectedFilePath(validPaths)
+        }
+      } else if (selectedFilePath && !isFileInTree(selectedFilePath, tree)) {
+        setSelectedFilePath([])
+      }
+      setInitialized(true) // Prevents re-running on every render
+    }
+  }, [tree, initialized, selectedFilePath, setSelectedFilePath])
 
   const onNodeSelectHandler = (
     event: SyntheticEvent,
@@ -258,6 +261,7 @@ const FileTreeView = memo(function FileTreeView({
             multiSelect={multiSelect}
             onCheckDir={onCheckDir}
             onCheckFile={onCheckFile}
+            setSelectedFilePath={setSelectedFilePath}
           />
         ))}
       </TreeView>
@@ -272,6 +276,7 @@ interface TreeNodeProps {
   multiSelect: boolean
   onCheckDir: (path: string, checked: boolean) => void
   onCheckFile: (path: string) => void
+  setSelectedFilePath: (path: string[] | string) => void
 }
 
 const TreeNode = memo(function TreeNode({
@@ -281,6 +286,7 @@ const TreeNode = memo(function TreeNode({
   multiSelect,
   onCheckDir,
   onCheckFile,
+  setSelectedFilePath,
 }: TreeNodeProps) {
   if (node.isDir) {
     const allChecked =
@@ -315,6 +321,8 @@ const TreeNode = memo(function TreeNode({
                 },
                 onChange: (e) => onCheckDir(node.path, e.target.checked),
               }}
+              setSelectedFilePath={setSelectedFilePath}
+              selectedFilePath={selectedFilePath}
             />
           ) : (
             node.name
@@ -330,6 +338,7 @@ const TreeNode = memo(function TreeNode({
             multiSelect={multiSelect}
             onCheckDir={onCheckDir}
             onCheckFile={onCheckFile}
+            setSelectedFilePath={setSelectedFilePath}
           />
         ))}
       </TreeItem>
@@ -352,6 +361,8 @@ const TreeNode = memo(function TreeNode({
                   selectedFilePath.includes(node.path),
                 onChange: () => onCheckFile(node.path),
               }}
+              setSelectedFilePath={setSelectedFilePath}
+              selectedFilePath={selectedFilePath}
             />
           ) : (
             node.name
@@ -369,6 +380,8 @@ interface TreeItemLabelProps {
   label: string
   checkboxProps: CheckboxProps
   isDir?: boolean
+  setSelectedFilePath: (path: string[] | string) => void
+  selectedFilePath: string[] | string
 }
 
 export const TreeItemLabel = memo(function TreeItemLabel({
@@ -377,6 +390,8 @@ export const TreeItemLabel = memo(function TreeItemLabel({
   label,
   isDir,
   checkboxProps,
+  setSelectedFilePath,
+  selectedFilePath,
 }: TreeItemLabelProps) {
   const dispatch = useDispatch<AppDispatch>()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
@@ -393,9 +408,17 @@ export const TreeItemLabel = memo(function TreeItemLabel({
     (event: MouseEvent, fileName: string) => {
       if (!workspaceId) return
       event.stopPropagation()
+
+      // Remove the file from selectedFile state
+      if (Array.isArray(selectedFilePath)) {
+        setSelectedFilePath(
+          selectedFilePath.filter((file) => file !== fileName),
+        )
+      }
+
       dispatch(deleteFileTree({ workspaceId, fileName, fileType }))
     },
-    [dispatch, fileType, workspaceId],
+    [dispatch, fileType, selectedFilePath, setSelectedFilePath, workspaceId],
   )
 
   const DeleteConfirmDialog = memo(function DeleteConfirmDialog({
@@ -522,11 +545,18 @@ export const TreeItemLabel = memo(function TreeItemLabel({
 
 interface FilePathProps {
   path: string | string[]
+  setSelectedFilePath: (path: string[] | string) => void
 }
 
 const FilePathSelectedListView = memo(function FilePathSelectedListView({
   path,
+  setSelectedFilePath,
 }: FilePathProps) {
+  const handleRemoveFile = (fileToRemove: string) => {
+    if (Array.isArray(path)) {
+      setSelectedFilePath(path.filter((file) => file !== fileToRemove))
+    }
+  }
   return (
     <Typography variant="subtitle2">
       {path ? (
@@ -536,7 +566,7 @@ const FilePathSelectedListView = memo(function FilePathSelectedListView({
               <li
                 key={text}
                 style={{
-                  marginBottom: "8px",
+                  marginBottom: "3px",
                   listStyleType: "disc",
                   marginLeft: "24px",
                 }}
@@ -549,8 +579,11 @@ const FilePathSelectedListView = memo(function FilePathSelectedListView({
                   }}
                 >
                   <span>{text}</span>
-                  <IconButton style={{ padding: "0" }}>
-                    <CloseIcon />
+                  <IconButton
+                    style={{ padding: "0" }}
+                    onClick={() => handleRemoveFile(text)}
+                  >
+                    <CloseIcon style={{ width: "15px", height: "15px" }} />
                   </IconButton>
                 </span>
               </li>
