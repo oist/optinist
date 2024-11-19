@@ -7,6 +7,7 @@ import numpy as np
 from fastapi import HTTPException, status
 from snakemake import snakemake
 
+from studio.app.common.core.experiment.experiment import ExptOutputPathIds
 from studio.app.common.core.logger import AppLogger
 from studio.app.common.core.rules.runner import Runner
 from studio.app.common.core.utils.config_handler import ConfigReader
@@ -53,7 +54,7 @@ class EditRoiUtils:
 
     @classmethod
     def execute(cls, filepath):
-        snakemake(
+        result = snakemake(
             DIRPATH.SNAKEMAKE_FILEPATH,
             use_conda=True,
             cores=2,
@@ -65,11 +66,16 @@ class EditRoiUtils:
             },
         )
 
+        if not result:
+            logger.error("edit_ROI snakemake run failed.")
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
 
 class EditROI:
     def __init__(self, file_path):
         self.node_dirpath = os.path.dirname(file_path)
-        self.function_id = self.node_dirpath.split("/")[-1]
+        self.workflow_dirpath = os.path.dirname(self.node_dirpath)
+        self.function_id = ExptOutputPathIds(self.node_dirpath).function_id
 
         self.output_info: Dict = PickleReader.read(self.pickle_file_path)
         self.tmp_output_info: Dict = (
@@ -225,6 +231,7 @@ class EditROI:
         self.__update_pickle_for_roi_edition(self.pickle_file_path, info)
         self.__save_json(info)
         self.__update_whole_nwb(info)
+
         (
             os.remove(self.tmp_pickle_file_path)
             if os.path.exists(self.tmp_pickle_file_path)
@@ -254,9 +261,8 @@ class EditROI:
         )
 
     def __update_whole_nwb(self, output_info):
-        workflow_dirpath = os.path.dirname(self.node_dirpath)
         smk_config_file = join_filepath(
-            [workflow_dirpath, DIRPATH.SNAKEMAKE_CONFIG_YML]
+            [self.workflow_dirpath, DIRPATH.SNAKEMAKE_CONFIG_YML]
         )
         smk_config = ConfigReader.read(smk_config_file)
         last_outputs = smk_config.get("last_output")
@@ -266,7 +272,7 @@ class EditROI:
             last_output_info = self.__update_pickle_for_roi_edition(
                 last_output_path, output_info
             )
-            whole_nwb_path = join_filepath([workflow_dirpath, "whole.nwb"])
+            whole_nwb_path = join_filepath([self.workflow_dirpath, "whole.nwb"])
 
             Runner.save_all_nwb(whole_nwb_path, last_output_info["nwbfile"])
 

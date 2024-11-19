@@ -11,6 +11,8 @@
     }
   },
   "eslint.workingDirectories": ["frontend"],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
   "flake8.args": ["--config=.flake8"],
   // NOTE: Uncomment following line and fix "optinist_dev" to your conda env name
   // "flake8.path": ["conda", "run", "-n", "optinist_dev", "python", "-m", "flake8"],

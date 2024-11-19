@@ -1,6 +1,11 @@
 from studio.app.dir_path import DIRPATH
 
-timeseries_dirpath = f"{DIRPATH.DATA_DIR}/output/default/0123/func1/fluorescence.json"
+workspace_id = "default"
+unique_id = "0123"
+
+timeseries_dirpath = (
+    f"{DIRPATH.OUTPUT_DIR}/{workspace_id}/{unique_id}/func1/fluorescence.json"
+)
 
 
 def test_inittimedata(client):

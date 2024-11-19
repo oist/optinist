@@ -1,7 +1,10 @@
 import os
+import shutil
 from dataclasses import asdict
 from datetime import datetime
 from typing import Dict
+
+import yaml
 
 from studio.app.common.core.experiment.experiment import ExptConfig, ExptFunction
 from studio.app.common.core.experiment.experiment_builder import ExptConfigBuilder
@@ -45,7 +48,7 @@ class ExptConfigWriter:
         else:
             self.create_config()
 
-        self.function_from_nodeDict()
+        self.build_function_from_nodeDict()
 
         ConfigWriter.write(
             dirname=join_filepath(
@@ -69,12 +72,14 @@ class ExptConfigWriter:
 
     def add_run_info(self) -> ExptConfig:
         return (
-            self.builder.set_started_at(datetime.now().strftime(DATE_FORMAT))  # 時間を更新
+            self.builder.set_started_at(
+                datetime.now().strftime(DATE_FORMAT)
+            )  # Update time
             .set_success("running")
             .build()
         )
 
-    def function_from_nodeDict(self) -> ExptConfig:
+    def build_function_from_nodeDict(self) -> ExptConfig:
         func_dict: Dict[str, ExptFunction] = {}
         node_dict = WorkflowConfigReader.read(
             join_filepath(
@@ -98,3 +103,56 @@ class ExptConfigWriter:
                 func_dict[node.id].success = "success"
 
         return self.builder.set_function(func_dict).build()
+
+
+class ExptDataWriter:
+    def __init__(
+        self,
+        workspace_id: str,
+        unique_id: str,
+    ):
+        self.workspace_id = workspace_id
+        self.unique_id = unique_id
+
+    def delete_data(self) -> bool:
+        result = True
+
+        shutil.rmtree(
+            join_filepath([DIRPATH.OUTPUT_DIR, self.workspace_id, self.unique_id])
+        )
+
+        return result
+
+    def rename(self, new_name: str) -> ExptConfig:
+        filepath = join_filepath(
+            [
+                DIRPATH.OUTPUT_DIR,
+                self.workspace_id,
+                self.unique_id,
+                DIRPATH.EXPERIMENT_YML,
+            ]
+        )
+
+        # validate params
+        new_name = "" if new_name is None else new_name  # filter None
+
+        # Note: "r+" option is not used here because it requires file pointer control.
+        with open(filepath, "r") as f:
+            config = yaml.safe_load(f)
+            config["name"] = new_name
+
+        with open(filepath, "w") as f:
+            yaml.dump(config, f, sort_keys=False)
+
+        return ExptConfig(
+            workspace_id=config["workspace_id"],
+            unique_id=config["unique_id"],
+            name=config["name"],
+            started_at=config.get("started_at"),
+            finished_at=config.get("finished_at"),
+            success=config.get("success", "running"),
+            hasNWB=config["hasNWB"],
+            function=ExptConfigReader.read_function(config["function"]),
+            nwb=config.get("nwb"),
+            snakemake=config.get("snakemake"),
+        )

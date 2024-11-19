@@ -1,3 +1,4 @@
+from studio.app.common.core.experiment.experiment import ExptOutputPathIds
 from studio.app.common.core.logger import AppLogger
 from studio.app.common.dataclass import ImageData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
@@ -18,7 +19,7 @@ def suite2p_roi(
     import numpy as np
     from suite2p import ROI, classification, default_ops, detection, extraction
 
-    function_id = output_dir.split("/")[-1]
+    function_id = ExptOutputPathIds(output_dir).function_id
     logger.info("start suite2p_roi: %s", function_id)
 
     nwbfile = kwargs.get("nwbfile", {})

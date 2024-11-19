@@ -659,11 +659,18 @@ const ImagePlotChart = memo(function ImagePlotChart({
   const onCommitRoi = async () => {
     if (!roiFilePath || workspaceId === undefined) return
     try {
-      await dispatch(commitRoi({ path: roiFilePath, workspaceId }))
+      await dispatch(commitRoi({ path: roiFilePath, workspaceId })).unwrap()
       workspaceId &&
-        (await dispatch(getRoiData({ path: roiFilePath, workspaceId })))
-      enqueueSnackbar("Finished", { variant: "success" })
+        (await dispatch(
+          getRoiData({ path: roiFilePath, workspaceId }),
+        ).unwrap())
+
+      enqueueSnackbar("Successfully committed to Edit ROI.", {
+        variant: "success",
+      })
       resetTimeSeries()
+    } catch (error) {
+      enqueueSnackbar("Failed to commit Edit ROI.", { variant: "error" })
     } finally {
       setEdit(false)
       setAction("")

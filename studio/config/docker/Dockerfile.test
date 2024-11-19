@@ -2,12 +2,25 @@ FROM --platform=linux/amd64 python:3.8.18-slim
 
 WORKDIR /app
 
+# install default packages
 RUN apt-get --allow-releaseinfo-change update && \
-    apt-get install --no-install-recommends -y git gcc g++ libgl1 && \
-    apt-get purge git -y && apt-get autoremove -y && apt-get clean
+    apt-get install --no-install-recommends -y git
 
-
-RUN pip3 install --no-cache-dir --upgrade pip && \
-    pip3 install poetry
-
+# install conda & packages
+RUN mkdir -p /opt/miniconda3 && \
+    apt-get install --no-install-recommends -y gcc g++ libgl1 libgl1-mesa-dev libopencv-dev wget && \
+    wget -q https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh -O /opt/miniconda3/miniconda.sh && \
+    apt-get purge wget -y && apt-get autoremove -y && apt-get clean && \
+    bash /opt/miniconda3/miniconda.sh -b -u -p /opt/miniconda3 && \
+    rm /opt/miniconda3/miniconda.sh && \
+    export PATH="$PATH:/opt/miniconda3/bin" && \
+    conda upgrade -y --all && \
+    conda config --set channel_priority strict && \
+    conda clean -y --tarballs
+ENV PATH $PATH:/opt/miniconda3/bin
+# setup optinist
 COPY pyproject.toml poetry.lock ./
+RUN pip3 install --no-cache-dir --upgrade pip && \
+    pip3 install poetry && \
+    poetry config virtualenvs.create false
+RUN poetry install --no-root --with test

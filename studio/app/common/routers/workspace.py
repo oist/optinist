@@ -36,7 +36,7 @@ shared_count_subquery = (
         common_model.User.active.is_(True),
     )
     .correlate(common_model.Workspace)
-    .as_scalar()
+    .scalar_subquery()
 )
 
 

@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.stats import mode
 
+from studio.app.common.core.experiment.experiment import ExptOutputPathIds
 from studio.app.common.core.logger import AppLogger
 from studio.app.common.dataclass import HeatMapData, TimeSeriesData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
@@ -75,7 +76,7 @@ def ETA(
     params: dict = None,
     **kwargs,
 ) -> dict(mean=TimeSeriesData):
-    function_id = output_dir.split("/")[-1]
+    function_id = ExptOutputPathIds(output_dir).function_id
     logger.info("start ETA: %s", function_id)
 
     neural_data = neural_data.data
