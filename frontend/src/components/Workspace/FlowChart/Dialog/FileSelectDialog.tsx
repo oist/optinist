@@ -122,7 +122,11 @@ export const FileSelectDialog = memo(function FileSelectDialog({
             selectedFilePath={selectedFilePath}
           />
         </div>
-        <Typography variant="subtitle1">Select File</Typography>
+        <Typography variant="subtitle1">
+          {Array.isArray(selectedFilePath) && selectedFilePath.length === 0
+            ? "No Selected File"
+            : "Selected File"}
+        </Typography>
         <FilePathSelectedListView
           path={selectedFilePath}
           setSelectedFilePath={setSelectedFilePath}
@@ -527,6 +531,7 @@ export const TreeItemLabel = memo(function TreeItemLabel({
             event.stopPropagation()
             setDeleteConfirmDialogOpen(true)
           }}
+          disabled={checkboxProps.checked}
         >
           <DeleteIcon />
         </IconButton>
