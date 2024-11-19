@@ -1,0 +1,140 @@
+{
+  "experiments": {
+    "status": "fulfilled",
+    "experimentList": {
+      "1": {
+        "uid": "1",
+        "name": "Experiment 1",
+        "functions": {
+          "caiman_mc_p4f6nsi9bh": {
+            "name": "caiman_mc",
+            "nodeId": "caiman_mc_p4f6nsi9bh",
+            "status": "success",
+            "hasNWB": true
+          }
+        },
+        "startedAt": "2023-09-17",
+        "hasNWB": true
+      },
+      "2": {
+        "uid": "2",
+        "name": "Experiment 2",
+        "functions": {
+          "input_0": {
+            "name": "sample_mouse2p_image 2",
+            "nodeId": "input_0",
+            "status": "error",
+            "hasNWB": false
+          }
+        },
+        "startedAt": "2023-09-17",
+        "hasNWB": true
+      }
+    }
+  },
+  "algorithmList": {
+    "isLatest": false,
+    "tree": {}
+  },
+  "algorithmNode": {},
+  "displayData": {
+    "timeSeries": {},
+    "heatMap": {},
+    "image": {},
+    "csv": {},
+    "roi": {},
+    "scatter": {},
+    "bar": {},
+    "html": {},
+    "histogram": {},
+    "line": {},
+    "pie": {},
+    "polar": {},
+    "loading": false,
+    "statusRoi": {
+      "temp_add_roi": [],
+      "temp_delete_roi": [],
+      "temp_merge_roi": []
+    }
+  },
+  "fileUploader": {},
+  "mode": {
+    "mode": false,
+    "loading": false
+  },
+  "flowElement": {
+    "flowNodes": [],
+    "flowEdges": [],
+    "flowPosition": [0, 0, 0],
+    "elementCoord": {
+      "x": 0,
+      "y": 0
+    }
+  },
+  "inputNode": {},
+  "handleColor": {
+    "colorMap": { "#000000": "#000000" },
+    "nextKey": 0
+  },
+  "filesTree": {},
+  "nwb": {
+    "params": {}
+  },
+  "rightDrawer": {
+    "open": false,
+    "mode": "nwb",
+    "currendNodeId": null
+  },
+  "visualaizeItem": {
+    "selectedItemId": null,
+    "items": {},
+    "layout": []
+  },
+  "snakemake": {
+    "params": {}
+  },
+  "pipeline": {
+    "run": {
+      "uid": "",
+      "status": "StartSuccess",
+      "runPostData": {
+        "name": "",
+        "nodeDict": {},
+        "edgeDict": {},
+        "nwbParam": {},
+        "snakemakeParam": {},
+        "forceRunList": []
+      },
+      "runResult": {}
+    },
+    "runBtn": 1
+  },
+  "hdf5": {
+    "isLoading": false,
+    "tree": []
+  },
+  "matlab": {
+    "isLoading": false,
+    "tree": []
+  },
+  "workspace": {
+    "workspace": {
+      "items": [],
+      "total": 0,
+      "limit": 0,
+      "offset": 0
+    },
+    "currentWorkspace": {
+      "statusRoi": null,
+      "roiFilePath": null,
+      "workspaceId": 1,
+      "workspaceName": null,
+      "selectedTab": 0,
+      "ownerId": null
+    },
+    "loading": false
+  },
+  "user": {
+    "loading": false
+  }
+}

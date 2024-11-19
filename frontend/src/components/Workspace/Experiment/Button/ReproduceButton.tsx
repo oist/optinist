@@ -45,7 +45,12 @@ export const ReproduceButton = memo(function ReproduceButton() {
   }
   return (
     <>
-      <IconButton onClick={openDialog} color="primary" disabled={!!isPending}>
+      <IconButton
+        onClick={openDialog}
+        color="primary"
+        disabled={!!isPending}
+        data-testid="reproduce-button"
+      >
         <ReplyIcon />
       </IconButton>
       <ConfirmDialog
