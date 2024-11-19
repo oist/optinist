@@ -525,16 +525,17 @@ export const TreeItemLabel = memo(function TreeItemLabel({
         ) : (
           <Box width={24} marginRight={2} />
         )}
-        <IconButton
+
+        <Button
           sx={{ minWidth: 24 }}
+          color="error"
+          endIcon={<DeleteIcon />}
           onClick={(event) => {
             event.stopPropagation()
             setDeleteConfirmDialogOpen(true)
           }}
           disabled={checkboxProps.checked}
-        >
-          <DeleteIcon />
-        </IconButton>
+        />
       </Box>
       <DeleteConfirmDialog
         open={deleteConfirmDialogOpen}

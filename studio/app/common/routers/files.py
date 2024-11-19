@@ -210,7 +210,13 @@ async def delete_file(workspace_id: str, filename: str):
         os.remove(filepath)
         return True
     except FileNotFoundError:
-        return False
+        raise HTTPException(status_code=404, detail="File not found.")
+    except PermissionError:
+        raise HTTPException(status_code=403, detail="Permission denied.")
+    except IsADirectoryError:
+        raise HTTPException(status_code=400, detail="Is a directory.")
+    except OSError as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 
 @router.get(
