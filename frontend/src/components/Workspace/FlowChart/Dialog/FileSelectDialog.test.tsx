@@ -7,11 +7,11 @@ import { Store, AnyAction } from "@reduxjs/toolkit"
 import { render, screen, fireEvent } from "@testing-library/react"
 
 import { TreeItemLabel } from "components/Workspace/FlowChart/Dialog/FileSelectDialog"
-import { deleteFileTree } from "store/slice/FilesTree/FilesTreeAction"
+import { deleteFile } from "store/slice/FilesTree/FilesTreeAction"
 import { AppDispatch } from "store/store"
 
 jest.mock("store/slice/FilesTree/FilesTreeAction", () => ({
-  deleteFileTree: jest.fn(),
+  deleteFile: jest.fn(),
 }))
 
 const mockStore = configureStore<
@@ -33,7 +33,7 @@ describe("TreeItemLabel Component", () => {
     store.dispatch = jest.fn()
   })
 
-  it("should dispatch deleteFileTree action when delete is confirmed", () => {
+  it("should dispatch deleteFile action when delete is confirmed", () => {
     render(
       <Provider store={store}>
         <TreeItemLabel
@@ -57,7 +57,7 @@ describe("TreeItemLabel Component", () => {
     fireEvent.click(confirmButton)
 
     expect(store.dispatch).toHaveBeenCalledWith(
-      deleteFileTree({
+      deleteFile({
         workspaceId: 123,
         fileName: "testFile",
         fileType: "image",
@@ -65,7 +65,7 @@ describe("TreeItemLabel Component", () => {
     )
   })
 
-  it("should not dispatch deleteFileTree action if confirmation clicked no", () => {
+  it("should not dispatch deleteFile action if confirmation clicked no", () => {
     render(
       <Provider store={store}>
         <TreeItemLabel
@@ -88,6 +88,6 @@ describe("TreeItemLabel Component", () => {
     const confirmButton = screen.getByRole("button", { name: /no/i })
     fireEvent.click(confirmButton)
 
-    expect(store.dispatch).not.toHaveBeenCalledWith(deleteFileTree)
+    expect(store.dispatch).not.toHaveBeenCalledWith(deleteFile)
   })
 })

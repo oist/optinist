@@ -69,7 +69,7 @@ export async function uploadFileApi(
   return response.data
 }
 
-export async function deleteFileTreeApi(
+export async function deleteFileApi(
   workspaceId: number,
   fileName: string,
 ): Promise<boolean> {

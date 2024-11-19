@@ -1,10 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 
 import { FILE_TREE_TYPE_SET } from "api/files/Files"
-import {
-  getFilesTree,
-  deleteFileTree,
-} from "store/slice/FilesTree/FilesTreeAction"
+import { getFilesTree, deleteFile } from "store/slice/FilesTree/FilesTreeAction"
 import {
   FilesTree,
   FILES_TREE_SLICE_NAME,
@@ -35,7 +32,7 @@ export const filesTreeSlice = createSlice({
         state[fileType].isLatest = true
         state[fileType].isLoading = false
       })
-      .addCase(deleteFileTree.pending, (state, action) => {
+      .addCase(deleteFile.pending, (state, action) => {
         const { fileType } = action.meta.arg
         state[fileType] = {
           ...state[fileType],
@@ -43,7 +40,7 @@ export const filesTreeSlice = createSlice({
           isLatest: false,
         }
       })
-      .addCase(deleteFileTree.rejected, (state, action) => {
+      .addCase(deleteFile.rejected, (state, action) => {
         const { fileType } = action.meta.arg
         state[fileType] = {
           ...state[fileType],
@@ -51,7 +48,7 @@ export const filesTreeSlice = createSlice({
           isLatest: true,
         }
       })
-      .addCase(deleteFileTree.fulfilled, (state, action) => {
+      .addCase(deleteFile.fulfilled, (state, action) => {
         const { fileType, fileName } = action.meta.arg
         const fileTree = state[fileType].tree
         state[fileType].tree = fileTree.filter((node) => node.name !== fileName)

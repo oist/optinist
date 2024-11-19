@@ -31,10 +31,7 @@ import { TreeView } from "@mui/x-tree-view/TreeView"
 
 import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from "api/files/Files"
 import { DialogContext } from "components/Workspace/FlowChart/Dialog/DialogContext"
-import {
-  deleteFileTree,
-  getFilesTree,
-} from "store/slice/FilesTree/FilesTreeAction"
+import { deleteFile, getFilesTree } from "store/slice/FilesTree/FilesTreeAction"
 import {
   selectFilesIsLatest,
   selectFilesIsLoading,
@@ -420,7 +417,7 @@ export const TreeItemLabel = memo(function TreeItemLabel({
         )
       }
 
-      dispatch(deleteFileTree({ workspaceId, fileName, fileType }))
+      dispatch(deleteFile({ workspaceId, fileName, fileType }))
     },
     [dispatch, fileType, selectedFilePath, setSelectedFilePath, workspaceId],
   )

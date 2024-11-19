@@ -3,7 +3,7 @@ import { createAsyncThunk } from "@reduxjs/toolkit"
 import {
   FILE_TREE_TYPE,
   getFilesTreeApi,
-  deleteFileTreeApi,
+  deleteFileApi,
   TreeNodeTypeDTO,
 } from "api/files/Files"
 import { FILES_TREE_SLICE_NAME } from "store/slice/FilesTree/FilesTreeType"
@@ -23,15 +23,15 @@ export const getFilesTree = createAsyncThunk<
   },
 )
 
-export const deleteFileTree = createAsyncThunk<
+export const deleteFile = createAsyncThunk<
   boolean,
   { workspaceId: number; fileName: string; fileType: FILE_TREE_TYPE }
 >(
-  `${FILES_TREE_SLICE_NAME}/deleteFileTree`,
+  `${FILES_TREE_SLICE_NAME}/deleteFile`,
   async ({ workspaceId, fileName }, thunkAPI) => {
     if (workspaceId) {
       try {
-        const response = await deleteFileTreeApi(workspaceId, fileName)
+        const response = await deleteFileApi(workspaceId, fileName)
         return response
       } catch (e) {
         return thunkAPI.rejectWithValue(e)
