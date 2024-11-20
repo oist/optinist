@@ -92,7 +92,7 @@ describe("AlgorithmTreeView", () => {
     expect(store.dispatch).toHaveBeenCalledWith(getAlgoList())
   })
 
-  it("dispatches the correct action when the add button is clicked", async () => {
+  it("dispatches the correct action when the Image node add button is clicked", async () => {
     render(
       <Provider store={store}>
         <AlgorithmTreeView />
