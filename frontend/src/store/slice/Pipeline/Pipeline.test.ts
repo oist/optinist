@@ -102,7 +102,7 @@ describe("Pipeline", () => {
   }
 
   test(run.fulfilled.type, () => {
-    const state = reducer(
+    const targetState = reducer(
       reducer(initialState, runPendingAction),
       runFulfilledAction,
     )
@@ -196,6 +196,116 @@ describe("Pipeline", () => {
       },
       runBtn: 1,
     }
-    expect(state).toEqual(expectState)
+    expect(targetState).toEqual(expectState)
+  })
+
+  test(run.pending.type, () => {
+    const targetState = reducer(initialState, runPendingAction)
+    const expectState = {
+      run: {
+        status: "StartPending",
+      },
+      runBtn: 1,
+    }
+    expect(targetState).toEqual(expectState)
+  })
+
+  test(run.rejected.type, () => {
+    const targetState = reducer(reducer(initialState, runPendingAction), {
+      type: run.rejected.type,
+      meta: {
+        requestId: "FmYmw6sCHA2Ll5JJfPuJN",
+        requestStatus: "pending",
+        arg: {
+          runPostData: {
+            name: "record test",
+            nodeDict: {
+              node1: {
+                id: "node1",
+                type: "type1",
+                data: {
+                  key: "value1",
+                },
+              },
+              node2: {
+                id: "node2",
+                type: "type2",
+                data: {
+                  key: "value2",
+                },
+              },
+            },
+            edgeDict: {
+              node1: {
+                id: "node1",
+                type: "type1",
+                data: {
+                  key: "value1",
+                },
+              },
+              node2: {
+                id: "node2",
+                type: "type2",
+                data: {
+                  key: "value2",
+                },
+              },
+            },
+            snakemakeParam: {
+              type: "parent",
+              children: {
+                config: {
+                  type: "parent",
+                  children: {
+                    cores: {
+                      type: "child",
+                      value: 4,
+                      path: "config.cores",
+                    },
+                    memory: {
+                      type: "child",
+                      value: "16GB",
+                      path: "config.memory",
+                    },
+                    restartTimes: {
+                      type: "child",
+                      value: 3,
+                      path: "config.restartTimes",
+                    },
+                  },
+                },
+              },
+            },
+            nwbParam: {
+              type: "parent",
+              children: {
+                filePath: {
+                  type: "child",
+                  value: "/path/to/nwb/file",
+                  path: "nwbParam.filePath",
+                },
+                options: {
+                  type: "child",
+                  value: {
+                    option1: true,
+                    option2: false,
+                  },
+                  path: "nwbParam.options",
+                },
+              },
+            },
+            forceRunList: [],
+          },
+        },
+      },
+      error: "error message",
+    })
+    const expectState = {
+      run: {
+        status: "StartError",
+      },
+      runBtn: 1,
+    }
+    expect(targetState).toEqual(expectState)
   })
 })
