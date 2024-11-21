@@ -14,6 +14,7 @@ import {
   run,
   runByCurrentUid,
   pollRunResult,
+  cancelResult,
 } from "store/slice/Pipeline/PipelineActions"
 import reducer, { initialState } from "store/slice/Pipeline/PipelineSlice"
 import { Pipeline } from "store/slice/Pipeline/PipelineType"
@@ -320,6 +321,74 @@ describe("Pipeline", () => {
       const expectState = {
         ...initialState,
         run: { ...initialState.run, status: "Aborted" },
+      }
+      expect(targetState).toEqual(expectState)
+    })
+  })
+
+  describe("Pipeline CancelResult", () => {
+    const cancelResultPendingAction = {
+      type: cancelResult.pending.type,
+      meta: { requestId: "FmYmw6sCHA2Ll5JJfPuJN", requestStatus: "pending" },
+    }
+
+    const cancelResultRejectedAction = {
+      type: cancelResult.rejected.type,
+      meta: {
+        requestId: "FmYmw6sCHA2Ll5JJfPuJN",
+        requestStatus: "rejected",
+        arg: { uid: "test-uid" },
+      },
+      error: "error message",
+    }
+
+    test(cancelResult.fulfilled.type, () => {
+      const cancelResultFulfilledAction = {
+        type: cancelResult.fulfilled.type,
+        meta: {
+          requestId: "FmYmw6sCHA2Ll5JJfPuJN",
+          requestStatus: "fulfilled",
+          arg: { uid: "test-uid" },
+        },
+        payload: {
+          message: "Cancellation successful",
+        },
+      }
+
+      const targetState = reducer(
+        reducer(initialState, cancelResultPendingAction),
+        cancelResultFulfilledAction,
+      )
+
+      const expectState = {
+        ...initialState,
+        run: {
+          ...initialState.run,
+          status: "Canceled",
+        },
+      }
+      expect(targetState).toEqual(expectState)
+    })
+
+    // Status is not changing when CancelResult is pending at PipelineSlice
+    test(cancelResult.pending.type, () => {
+      const targetState = reducer(initialState, cancelResultPendingAction)
+      const expectState = {
+        run: { status: "StartUninitialized" },
+        runBtn: 1,
+      }
+      expect(targetState).toEqual(expectState)
+    })
+
+    // Status is not changing when CancelResult is rejected at PipelineSlice
+    test(cancelResult.rejected.type, () => {
+      const targetState = reducer(
+        reducer(initialState, cancelResultPendingAction),
+        cancelResultRejectedAction,
+      )
+      const expectState = {
+        ...initialState,
+        run: { ...initialState.run, status: "StartUninitialized" },
       }
       expect(targetState).toEqual(expectState)
     })
