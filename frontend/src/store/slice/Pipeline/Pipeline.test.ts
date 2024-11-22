@@ -17,8 +17,10 @@ import {
   cancelResult,
 } from "store/slice/Pipeline/PipelineActions"
 import reducer, { initialState } from "store/slice/Pipeline/PipelineSlice"
-import { Pipeline } from "store/slice/Pipeline/PipelineType"
+import { Pipeline, RUN_STATUS } from "store/slice/Pipeline/PipelineType"
 import { ParamMap, ParamType } from "utils/param/ParamType"
+
+const requestId = "FmYmw6sCHA2Ll5JJfPuJN"
 
 // Factory for reusable mock data structures
 const createNodeDict = (): NodeDict => ({
@@ -106,7 +108,7 @@ const createFulfilledAction = (
 ) => ({
   type: actionType.fulfilled.type,
   meta: {
-    requestId: "FmYmw6sCHA2Ll5JJfPuJN",
+    requestId: requestId,
     requestStatus: "fulfilled",
     arg: { runPostData },
   },
@@ -116,7 +118,7 @@ const createFulfilledAction = (
 const runPendingAction = {
   type: run.pending.type,
   meta: {
-    requestId: "FmYmw6sCHA2Ll5JJfPuJN",
+    requestId: requestId,
     requestStatus: "pending",
   },
 }
@@ -124,7 +126,7 @@ const runPendingAction = {
 const runRejectedAction = {
   type: run.rejected.type,
   meta: {
-    requestId: "FmYmw6sCHA2Ll5JJfPuJN",
+    requestId: requestId,
     requestStatus: "rejected",
     arg: { runPostData },
   },
@@ -133,12 +135,12 @@ const runRejectedAction = {
 
 const runByCurrentUidPendingAction = {
   type: runByCurrentUid.pending.type,
-  meta: { requestId: "FmYmw6sCHA2Ll5JJfPuJN", requestStatus: "pending" },
+  meta: { requestId: requestId, requestStatus: "pending" },
 }
 
 const pollRunResultPendingAction = {
   type: pollRunResult.pending.type,
-  meta: { requestId: "FmYmw6sCHA2Ll5JJfPuJN", requestStatus: "pending" },
+  meta: { requestId: requestId, requestStatus: "pending" },
 }
 
 describe("Pipeline", () => {
@@ -155,7 +157,7 @@ describe("Pipeline", () => {
         run: {
           runPostData,
           runResult: {},
-          status: "StartSuccess" as const,
+          status: RUN_STATUS.START_SUCCESS,
           uid: "response data",
         },
         runBtn: 1,
@@ -165,7 +167,10 @@ describe("Pipeline", () => {
 
     test(run.pending.type, () => {
       const targetState = reducer(initialState, runPendingAction)
-      const expectState = { run: { status: "StartPending" }, runBtn: 1 }
+      const expectState = {
+        run: { status: RUN_STATUS.START_PENDING },
+        runBtn: 1,
+      }
       expect(targetState).toEqual(expectState)
     })
 
@@ -174,7 +179,7 @@ describe("Pipeline", () => {
         reducer(initialState, runPendingAction),
         runRejectedAction,
       )
-      const expectState = { run: { status: "StartError" }, runBtn: 1 }
+      const expectState = { run: { status: RUN_STATUS.START_ERROR }, runBtn: 1 }
       expect(targetState).toEqual(expectState)
     })
   })
@@ -193,7 +198,7 @@ describe("Pipeline", () => {
         run: {
           runPostData,
           runResult: {},
-          status: "StartSuccess",
+          status: RUN_STATUS.START_SUCCESS,
           uid: "response data",
         },
         runBtn: 1,
@@ -204,7 +209,7 @@ describe("Pipeline", () => {
     test(runByCurrentUid.pending.type, () => {
       const targetState = reducer(initialState, runByCurrentUidPendingAction)
       const expectState = {
-        run: { status: "StartPending" },
+        run: { status: RUN_STATUS.START_PENDING },
         runBtn: 1,
       }
       expect(targetState).toEqual(expectState)
@@ -214,7 +219,7 @@ describe("Pipeline", () => {
       const runByCurrentUidRejectedAction = {
         type: runByCurrentUid.rejected.type,
         meta: {
-          requestId: "FmYmw6sCHA2Ll5JJfPuJN",
+          requestId: requestId,
           requestStatus: "rejected",
           arg: { runPostData },
         },
@@ -224,7 +229,7 @@ describe("Pipeline", () => {
         reducer(initialState, runByCurrentUidPendingAction),
         runByCurrentUidRejectedAction,
       )
-      const expectState = { run: { status: "StartError" }, runBtn: 1 }
+      const expectState = { run: { status: RUN_STATUS.START_ERROR }, runBtn: 1 }
       expect(targetState).toEqual(expectState)
     })
   })
@@ -234,7 +239,7 @@ describe("Pipeline", () => {
       const pollRunResultFulfilledAction = {
         type: pollRunResult.fulfilled.type,
         meta: {
-          requestId: "FmYmw6sCHA2Ll5JJfPuJN",
+          requestId: requestId,
           requestStatus: "fulfilled",
           arg: { uid: "test-uid" },
         },
@@ -297,7 +302,7 @@ describe("Pipeline", () => {
               name: "Node 2",
             },
           },
-          status: "Finished",
+          status: RUN_STATUS.FINISHED,
           uid: "test-uid",
         },
       }
@@ -308,7 +313,7 @@ describe("Pipeline", () => {
       const pollRunResultRejectedAction = {
         type: pollRunResult.rejected.type,
         meta: {
-          requestId: "FmYmw6sCHA2Ll5JJfPuJN",
+          requestId: requestId,
           requestStatus: "rejected",
           arg: { uid: "test-uid" },
         },
@@ -320,7 +325,7 @@ describe("Pipeline", () => {
       )
       const expectState = {
         ...initialState,
-        run: { ...initialState.run, status: "Aborted" },
+        run: { ...initialState.run, status: RUN_STATUS.ABORTED },
       }
       expect(targetState).toEqual(expectState)
     })
@@ -329,13 +334,13 @@ describe("Pipeline", () => {
   describe("Pipeline CancelResult", () => {
     const cancelResultPendingAction = {
       type: cancelResult.pending.type,
-      meta: { requestId: "FmYmw6sCHA2Ll5JJfPuJN", requestStatus: "pending" },
+      meta: { requestId: requestId, requestStatus: "pending" },
     }
 
     const cancelResultRejectedAction = {
       type: cancelResult.rejected.type,
       meta: {
-        requestId: "FmYmw6sCHA2Ll5JJfPuJN",
+        requestId: requestId,
         requestStatus: "rejected",
         arg: { uid: "test-uid" },
       },
@@ -346,7 +351,7 @@ describe("Pipeline", () => {
       const cancelResultFulfilledAction = {
         type: cancelResult.fulfilled.type,
         meta: {
-          requestId: "FmYmw6sCHA2Ll5JJfPuJN",
+          requestId: requestId,
           requestStatus: "fulfilled",
           arg: { uid: "test-uid" },
         },
@@ -364,7 +369,7 @@ describe("Pipeline", () => {
         ...initialState,
         run: {
           ...initialState.run,
-          status: "Canceled",
+          status: RUN_STATUS.CANCELED,
         },
       }
       expect(targetState).toEqual(expectState)
@@ -374,7 +379,7 @@ describe("Pipeline", () => {
     test(cancelResult.pending.type, () => {
       const targetState = reducer(initialState, cancelResultPendingAction)
       const expectState = {
-        run: { status: "StartUninitialized" },
+        run: { status: RUN_STATUS.START_UNINITIALIZED },
         runBtn: 1,
       }
       expect(targetState).toEqual(expectState)
@@ -388,7 +393,7 @@ describe("Pipeline", () => {
       )
       const expectState = {
         ...initialState,
-        run: { ...initialState.run, status: "StartUninitialized" },
+        run: { ...initialState.run, status: RUN_STATUS.START_UNINITIALIZED },
       }
       expect(targetState).toEqual(expectState)
     })
