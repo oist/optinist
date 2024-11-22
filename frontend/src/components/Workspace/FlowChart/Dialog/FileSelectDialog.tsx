@@ -9,6 +9,8 @@ import {
 } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
+import { enqueueSnackbar } from "notistack"
+
 import AutorenewIcon from "@mui/icons-material/Autorenew"
 import CloseIcon from "@mui/icons-material/Close"
 import DeleteIcon from "@mui/icons-material/Delete"
@@ -532,6 +534,7 @@ export const TreeItemLabel = memo(function TreeItemLabel({
             setDeleteConfirmDialogOpen(true)
           }}
           disabled={checkboxProps.checked}
+          data-testid="DeleteIconBtn"
         />
       </Box>
       <DeleteConfirmDialog

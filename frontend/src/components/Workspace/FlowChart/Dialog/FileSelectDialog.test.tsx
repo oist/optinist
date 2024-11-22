@@ -90,4 +90,42 @@ describe("TreeItemLabel Component", () => {
 
     expect(store.dispatch).not.toHaveBeenCalledWith(deleteFile)
   })
+
+  it("should disable delete button if the file checkbox is checked", () => {
+    render(
+      <Provider store={store}>
+        <TreeItemLabel
+          fileType="image"
+          shape={[100, 100]}
+          label="testFile"
+          isDir={false}
+          checkboxProps={{ checked: true, onChange: jest.fn() }}
+          setSelectedFilePath={jest.fn()}
+          selectedFilePath={""}
+        />
+      </Provider>,
+    )
+
+    const deleteButton = screen.getByTestId("DeleteIconBtn")
+    expect(deleteButton).toBeDisabled()
+  })
+
+  it("should enable delete button if the file checkbox is not checked", () => {
+    render(
+      <Provider store={store}>
+        <TreeItemLabel
+          fileType="image"
+          shape={[100, 100]}
+          label="testFile"
+          isDir={false}
+          checkboxProps={{ checked: false, onChange: jest.fn() }}
+          setSelectedFilePath={jest.fn()}
+          selectedFilePath={""}
+        />
+      </Provider>,
+    )
+
+    const deleteButton = screen.getByTestId("DeleteIcon")
+    expect(deleteButton).toBeEnabled()
+  })
 })

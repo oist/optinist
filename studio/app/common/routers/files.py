@@ -203,16 +203,14 @@ DOWNLOAD_STATUS: Dict[str, DownloadStatus] = {}
 )
 async def delete_file(workspace_id: str, filename: str):
     filepath = join_filepath([DIRPATH.INPUT_DIR, workspace_id, filename])
+    if not os.path.exists(filepath):
+        raise HTTPException(status_code=404, detail="File not found.")
     try:
         os.remove(filepath)
+        # Remove the file entry from DOWNLOAD_STATUS if it exists
+        DOWNLOAD_STATUS.pop(filepath, None)
         return True
-    except FileNotFoundError:
-        raise HTTPException(status_code=404, detail="File not found.")
-    except PermissionError:
-        raise HTTPException(status_code=403, detail="Permission denied.")
-    except IsADirectoryError:
-        raise HTTPException(status_code=400, detail="Is a directory.")
-    except OSError as e:
+    except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 

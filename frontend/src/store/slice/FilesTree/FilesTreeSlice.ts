@@ -1,3 +1,5 @@
+import { enqueueSnackbar } from "notistack"
+
 import { createSlice } from "@reduxjs/toolkit"
 
 import { FILE_TREE_TYPE_SET } from "api/files/Files"
@@ -47,6 +49,7 @@ export const filesTreeSlice = createSlice({
           isLoading: false,
           isLatest: true,
         }
+        enqueueSnackbar("Failed to delete file", { variant: "error" })
       })
       .addCase(deleteFile.fulfilled, (state, action) => {
         const { fileType, fileName } = action.meta.arg
