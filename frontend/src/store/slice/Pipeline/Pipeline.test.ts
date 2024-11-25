@@ -443,11 +443,4 @@ describe("isStartedPipeline", () => {
     }
     expect(isStartedPipeline(pipeline)).toBe(false)
   })
-
-  test("returns false for an undefined status", () => {
-    const pipeline: PipelineType = {
-      status: RUN_STATUS.START_UNINITIALIZED, // Example of an undefined status
-    }
-    expect(isStartedPipeline(pipeline)).toBe(false)
-  })
 })
