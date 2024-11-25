@@ -151,7 +151,7 @@ const pollRunResultPendingAction = {
   meta: { requestId: requestId, requestStatus: "pending" },
 }
 
-describe("Pipeline 状態管理", () => {
+describe("Pipeline State Test", () => {
   describe("Pipeline Run", () => {
     test(run.fulfilled.type, () => {
       const runFulfilledAction = createFulfilledAction(run)
