@@ -1,6 +1,6 @@
 import { Edge } from "reactflow"
 
-import { expect, describe, test } from "@jest/globals"
+import { expect, describe, test, beforeEach } from "@jest/globals"
 import { AsyncThunk } from "@reduxjs/toolkit"
 
 import {
@@ -16,13 +16,16 @@ import {
   pollRunResult,
   cancelResult,
 } from "store/slice/Pipeline/PipelineActions"
+import * as selectors from "store/slice/Pipeline/PipelineSelectors"
 import reducer, { initialState } from "store/slice/Pipeline/PipelineSlice"
 import {
+  NODE_RESULT_STATUS,
   Pipeline,
   PipelineType,
   RUN_STATUS,
 } from "store/slice/Pipeline/PipelineType"
 import { isStartedPipeline } from "store/slice/Pipeline/PipelineUtils"
+import { RootState } from "store/store"
 import { ParamMap, ParamType } from "utils/param/ParamType"
 
 const requestId = "FmYmw6sCHA2Ll5JJfPuJN"
@@ -405,7 +408,7 @@ describe("Pipeline", () => {
   })
 })
 
-describe("isStartedPipeline", () => {
+describe("PipelineUtils isStartedPipeline", () => {
   test("returns true for status RUN_STATUS.START_SUCCESS", () => {
     const pipeline: PipelineType = {
       status: RUN_STATUS.START_SUCCESS,
@@ -442,5 +445,115 @@ describe("isStartedPipeline", () => {
       // add other necessary fields for PipelineType if needed
     }
     expect(isStartedPipeline(pipeline)).toBe(false)
+  })
+})
+
+describe("Pipeline Selectors", () => {
+  let initialState: RootState
+
+  beforeEach(() => {
+    initialState = {
+      pipeline: {
+        currentPipeline: { uid: "123" },
+        run: {
+          runResult: {
+            node1: {
+              status: "pending",
+              message: "Processing...",
+              nodeResult: {
+                status: NODE_RESULT_STATUS.PENDING,
+              },
+            },
+            node2: {
+              status: "success",
+              message: "Completed",
+              outputPaths: { key1: { path: "/output/file1", type: "csv" } },
+            },
+          },
+          status: RUN_STATUS.START_SUCCESS,
+        },
+        runBtn: false,
+      },
+      experiments: {
+        status: "fulfilled",
+        experimentList: {
+          "123": { name: "Pipeline 123" },
+        },
+      },
+    } as unknown as RootState
+  })
+
+  test("selectPipelineLatestUid should return the latest pipeline UID", () => {
+    const result = selectors.selectPipelineLatestUid(initialState)
+    expect(result).toBe("123")
+  })
+
+  test("selectCurrentPipelineName should return the current pipeline name", () => {
+    const result = selectors.selectCurrentPipelineName(initialState)
+    expect(result).toBe("Pipeline 123")
+  })
+
+  test("selectRunResultPendingList should return pending nodes", () => {
+    const result = selectors.selectRunResultPendingList(initialState)
+    const expectedValue = [
+      {
+        message: "Processing...",
+        nodeResult: { status: "pending" },
+        status: "pending",
+      },
+    ]
+    expect(result).toEqual(expectedValue)
+  })
+
+  test("selectRunResultPendingNodeIdList should return pending node IDs", () => {
+    const result = selectors.selectRunResultPendingNodeIdList(initialState)
+    expect(result).toEqual(["node1"])
+  })
+
+  test("selectPipelineIsStartedSuccess should return true if pipeline is started successfully", () => {
+    const result = selectors.selectPipelineIsStartedSuccess(initialState)
+    expect(result).toBe(true)
+  })
+
+  test("selectPipelineNodeResultOutputFilePath should return the output file path for a given node and key", () => {
+    const result = selectors.selectPipelineNodeResultOutputFilePath(
+      "node2",
+      "key1",
+    )(initialState)
+    expect(result).toBe("/output/file1")
+  })
+
+  test("selectPipelineNodeResultOutputFileDataType should return the data type for a given node and key", () => {
+    const result = selectors.selectPipelineNodeResultOutputFileDataType(
+      "node2",
+      "key1",
+    )(initialState)
+    expect(result).toBe("csv")
+  })
+
+  test("selectPipelineNodeResultMessage should return the message for a given node", () => {
+    const result =
+      selectors.selectPipelineNodeResultMessage("node1")(initialState)
+    expect(result).toBe("Processing...")
+  })
+
+  test("selectPipelineNodeResultOutputKeyList should return the output keys for a given node", () => {
+    const result =
+      selectors.selectPipelineNodeResultOutputKeyList("node2")(initialState)
+    expect(result).toEqual(["key1"])
+  })
+
+  test("selectPipelineNodeResultSuccessList should return nodes with success status", () => {
+    const result = selectors.selectPipelineNodeResultSuccessList(initialState)
+    expect(result).toEqual([
+      {
+        nodeId: "node2",
+        nodeResult: {
+          status: "success",
+          message: "Completed",
+          outputPaths: { key1: { path: "/output/file1", type: "csv" } },
+        },
+      },
+    ])
   })
 })
