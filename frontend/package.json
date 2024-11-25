@@ -61,6 +61,7 @@
     "start": "react-app-rewired start --scripts-version react-scripts",
     "build": "BUILD_PATH='./build' react-app-rewired build --openssl-legacy-provider build",
     "test": "react-app-rewired test",
+    "test-coverage": "react-app-rewired test --coverage",
     "test:ci": "CI=true react-app-rewired test",
     "eject": "react-scripts eject",
     "format": "prettier --write .",
