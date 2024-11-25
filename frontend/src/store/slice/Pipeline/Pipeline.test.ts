@@ -17,7 +17,12 @@ import {
   cancelResult,
 } from "store/slice/Pipeline/PipelineActions"
 import reducer, { initialState } from "store/slice/Pipeline/PipelineSlice"
-import { Pipeline, RUN_STATUS } from "store/slice/Pipeline/PipelineType"
+import {
+  Pipeline,
+  PipelineType,
+  RUN_STATUS,
+} from "store/slice/Pipeline/PipelineType"
+import { isStartedPipeline } from "store/slice/Pipeline/PipelineUtils"
 import { ParamMap, ParamType } from "utils/param/ParamType"
 
 const requestId = "FmYmw6sCHA2Ll5JJfPuJN"
@@ -397,5 +402,52 @@ describe("Pipeline", () => {
       }
       expect(targetState).toEqual(expectState)
     })
+  })
+})
+
+describe("isStartedPipeline", () => {
+  test("returns true for status RUN_STATUS.START_SUCCESS", () => {
+    const pipeline: PipelineType = {
+      status: RUN_STATUS.START_SUCCESS,
+      uid: "test-uid",
+      runPostData: runPostData,
+      runResult: {},
+    }
+    expect(isStartedPipeline(pipeline)).toBe(true)
+  })
+
+  test("returns true for status RUN_STATUS.FINISHED", () => {
+    const pipeline: PipelineType = {
+      status: RUN_STATUS.FINISHED,
+      uid: "test-uid",
+      runPostData: runPostData,
+      runResult: {},
+    }
+    expect(isStartedPipeline(pipeline)).toBe(true)
+  })
+
+  test("returns true for status RUN_STATUS.ABORTED", () => {
+    const pipeline: PipelineType = {
+      status: RUN_STATUS.ABORTED,
+      uid: "test-uid",
+      runPostData: runPostData,
+      runResult: {},
+    }
+    expect(isStartedPipeline(pipeline)).toBe(true)
+  })
+
+  test("returns false for status other than START_SUCCESS, FINISHED, or ABORTED", () => {
+    const pipeline: PipelineType = {
+      status: RUN_STATUS.START_PENDING, // Example of a non-started status
+      // add other necessary fields for PipelineType if needed
+    }
+    expect(isStartedPipeline(pipeline)).toBe(false)
+  })
+
+  test("returns false for an undefined status", () => {
+    const pipeline: PipelineType = {
+      status: RUN_STATUS.START_UNINITIALIZED, // Example of an undefined status
+    }
+    expect(isStartedPipeline(pipeline)).toBe(false)
   })
 })
