@@ -371,7 +371,6 @@ const TreeNode = memo(function TreeNode({
             node.name
           )
         }
-        onClick={() => onCheckFile(node.path)}
       />
     )
   }
