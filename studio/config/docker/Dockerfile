@@ -30,6 +30,10 @@ RUN pip3 install --no-cache-dir --upgrade pip && \
     poetry config virtualenvs.create false
 RUN poetry install --no-root
 
+# setup optinist: download caiman model files
+COPY studio/app/optinist/wrappers/caiman/run_download_model_files.sh ./
+RUN bash run_download_model_files.sh && rm run_download_model_files.sh
+
 # copy optinist files
 COPY frontend/build /app/frontend/build
 COPY studio /app/studio
