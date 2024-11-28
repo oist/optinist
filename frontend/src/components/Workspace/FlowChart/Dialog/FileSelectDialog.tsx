@@ -407,6 +407,14 @@ export const TreeItemLabel = memo(function TreeItemLabel({
     },
     [dispatch, workspaceId],
   )
+  const onOpenDeleteConfirmDialog = useCallback(
+    (event: MouseEvent) => {
+      if (!workspaceId) return
+      event.stopPropagation()
+      setDeleteConfirmDialogOpen(true)
+    },
+    [workspaceId],
+  )
   const onDelete = useCallback(
     (event: MouseEvent, fileName: string) => {
       if (!workspaceId) return
@@ -524,18 +532,17 @@ export const TreeItemLabel = memo(function TreeItemLabel({
         ) : (
           <Box width={24} marginRight={2} />
         )}
-
-        <Button
+        <IconButton
           sx={{ minWidth: 24 }}
           color="error"
-          endIcon={<DeleteIcon />}
           onClick={(event) => {
-            event.stopPropagation()
-            setDeleteConfirmDialogOpen(true)
+            onOpenDeleteConfirmDialog(event)
           }}
           disabled={checkboxProps.checked}
           data-testid="DeleteIconBtn"
-        />
+        >
+          <DeleteIcon />
+        </IconButton>
       </Box>
       <DeleteConfirmDialog
         open={deleteConfirmDialogOpen}
