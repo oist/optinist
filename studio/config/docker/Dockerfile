@@ -4,11 +4,11 @@ WORKDIR /app
 
 # install default packages
 RUN apt-get --allow-releaseinfo-change update && \
-    apt-get install --no-install-recommends -y sudo procps iproute2 iputils-ping less vim
+    apt-get install --no-install-recommends -y sudo procps iproute2 iputils-ping telnet wget curl unzip less vim
 
 # install conda & packages
 RUN mkdir -p /opt/miniconda3 && \
-    apt-get install --no-install-recommends -y gcc g++ libgl1 libgl1-mesa-dev libopencv-dev wget && \
+    apt-get install --no-install-recommends -y gcc g++ libgl1 libgl1-mesa-dev libopencv-dev && \
     wget -q https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh -O /opt/miniconda3/miniconda.sh && \
     apt-get purge wget -y && apt-get autoremove -y && apt-get clean && \
     bash /opt/miniconda3/miniconda.sh -b -u -p /opt/miniconda3 && \
@@ -34,6 +34,4 @@ RUN poetry install --no-root
 COPY frontend/build /app/frontend/build
 COPY studio /app/studio
 COPY sample_data /app/sample_data
-COPY main.py ./
-
-EXPOSE 8000
+COPY main.py alembic.ini ./
