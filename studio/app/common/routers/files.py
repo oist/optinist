@@ -207,8 +207,6 @@ async def delete_file(workspace_id: str, filename: str):
         raise HTTPException(status_code=404, detail="File not found.")
     try:
         os.remove(filepath)
-        # Remove the file entry from DOWNLOAD_STATUS if it exists
-        DOWNLOAD_STATUS.pop(filepath, None)
         return True
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

@@ -470,7 +470,14 @@ export const TreeItemLabel = memo(function TreeItemLabel({
   })
 
   return (
-    <Box>
+    <Box
+      sx={{
+        "&:hover": {
+          backgroundColor: "transparent",
+        },
+        cursor: "default",
+      }}
+    >
       <Box height={24} display="flex" alignItems="center">
         <Tooltip
           title={<span style={{ fontSize: 14 }}>{label}</span>}
