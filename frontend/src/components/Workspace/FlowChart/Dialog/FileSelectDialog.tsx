@@ -32,6 +32,7 @@ import { TreeItem } from "@mui/x-tree-view/TreeItem"
 import { TreeView } from "@mui/x-tree-view/TreeView"
 
 import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from "api/files/Files"
+import { ConfirmDialog } from "components/common/ConfirmDialog"
 import { DialogContext } from "components/Workspace/FlowChart/Dialog/DialogContext"
 import { deleteFile, getFilesTree } from "store/slice/FilesTree/FilesTreeAction"
 import {
@@ -431,44 +432,6 @@ export const TreeItemLabel = memo(function TreeItemLabel({
     [dispatch, fileType, selectedFilePath, setSelectedFilePath, workspaceId],
   )
 
-  const DeleteConfirmDialog = memo(function DeleteConfirmDialog({
-    open,
-    onClose,
-    onOk,
-  }: DeleteConfirmDialogProps) {
-    return (
-      <Dialog open={open} onClose={onClose}>
-        <DialogTitle>Confirm Delete</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Are you sure you want to delete this item?
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button
-            onClick={(event) => {
-              event.stopPropagation()
-              onClose()
-            }}
-            color="primary"
-          >
-            No
-          </Button>
-          <Button
-            onClick={(event) => {
-              event.stopPropagation()
-              onOk()
-            }}
-            color="primary"
-            autoFocus
-          >
-            Yes
-          </Button>
-        </DialogActions>
-      </Dialog>
-    )
-  })
-
   return (
     <Box
       sx={{
@@ -550,13 +513,17 @@ export const TreeItemLabel = memo(function TreeItemLabel({
           <DeleteIcon />
         </IconButton>
       </Box>
-      <DeleteConfirmDialog
+      <ConfirmDialog
         open={deleteConfirmDialogOpen}
-        onClose={() => setDeleteConfirmDialogOpen(false)}
-        onOk={() => {
+        setOpen={setDeleteConfirmDialogOpen}
+        onConfirm={() => {
           onDelete({ stopPropagation: () => {} } as MouseEvent, label)
           setDeleteConfirmDialogOpen(false)
         }}
+        title="Are you sure you want to delete this item?"
+        content={`${label}`}
+        confirmLabel="delete"
+        iconType="warning"
       />
     </Box>
   )
