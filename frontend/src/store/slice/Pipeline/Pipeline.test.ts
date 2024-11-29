@@ -10,15 +10,12 @@ import {
 import * as selectors from "store/slice/Pipeline/PipelineSelectors"
 import reducer, { initialState } from "store/slice/Pipeline/PipelineSlice"
 import {
-  createCancelFulfilledAction,
-  createCancelPendingAction,
-  createCancelRejectedAction,
-  createFulfilledAction,
+  createFulfilledActionWithRunPostData,
   createPendingAction,
   createPendingActionWithRequestId,
   createRejectedAction,
-  createRunResultFulfilledAction,
-  createRunResultRejectedAction,
+  createRunResultAndCacelFulfilledAction,
+  createRunResultAndCancelRejectedAction,
   runPostData,
 } from "store/slice/Pipeline/PipelineTestUtils"
 import {
@@ -30,10 +27,24 @@ import {
 import { isStartedPipeline } from "store/slice/Pipeline/PipelineUtils"
 import { RootState } from "store/store"
 
+const pollRunResultPayload = {
+  node1: {
+    status: "success",
+    message: "Node 1 completed successfully",
+    name: "Node 1",
+    outputPaths: {
+      output1: { path: "/path/to/output1", type: "images" },
+    },
+  },
+  node2: { status: "failed", message: "Node 2 failed", name: "Node 2" },
+}
+
 describe("Pipeline State Test", () => {
   describe("Pipeline Run", () => {
     test(run.fulfilled.type, () => {
-      const runFulfilledAction = createFulfilledAction(run) as AnyAction
+      const runFulfilledAction = createFulfilledActionWithRunPostData(
+        run,
+      ) as AnyAction
       const targetState = reducer(
         reducer(initialState, createPendingActionWithRequestId(run)),
         runFulfilledAction,
@@ -77,7 +88,7 @@ describe("Pipeline State Test", () => {
   describe("Pipeline RunByCurrentId", () => {
     test(runByCurrentUid.fulfilled.type, () => {
       const runByCurrentUidFulfilledAction =
-        createFulfilledAction(runByCurrentUid)
+        createFulfilledActionWithRunPostData(runByCurrentUid)
       const targetState = reducer(
         reducer(initialState, createPendingAction(runByCurrentUid)),
         runByCurrentUidFulfilledAction,
@@ -143,7 +154,10 @@ describe("Pipeline State Test", () => {
 
       const targetState = reducer(
         reducer(mockState, createPendingAction(pollRunResult)),
-        createRunResultFulfilledAction(pollRunResult),
+        createRunResultAndCacelFulfilledAction(
+          pollRunResult,
+          pollRunResultPayload,
+        ),
       )
 
       const expectState = {
@@ -176,7 +190,7 @@ describe("Pipeline State Test", () => {
     test(pollRunResult.rejected.type, () => {
       const targetState = reducer(
         reducer(initialState, createPendingAction(pollRunResult)),
-        createRunResultRejectedAction(pollRunResult),
+        createRunResultAndCancelRejectedAction(pollRunResult, "error message"),
       )
       const expectState = {
         ...initialState,
@@ -189,8 +203,11 @@ describe("Pipeline State Test", () => {
   describe("Pipeline CancelResult", () => {
     test(cancelResult.fulfilled.type, () => {
       const targetState = reducer(
-        reducer(initialState, createCancelPendingAction(cancelResult)),
-        createCancelFulfilledAction(cancelResult),
+        reducer(initialState, createPendingAction(cancelResult)),
+        createRunResultAndCacelFulfilledAction(
+          cancelResult,
+          "Cancellation successful",
+        ),
       )
 
       const expectState = {
@@ -207,7 +224,7 @@ describe("Pipeline State Test", () => {
     test(cancelResult.pending.type, () => {
       const targetState = reducer(
         initialState,
-        createCancelPendingAction(cancelResult),
+        createPendingActionWithRequestId(cancelResult),
       )
       const expectState = {
         run: { status: RUN_STATUS.START_UNINITIALIZED },
@@ -219,8 +236,8 @@ describe("Pipeline State Test", () => {
     // Status is not changing when CancelResult is rejected at PipelineSlice
     test(cancelResult.rejected.type, () => {
       const targetState = reducer(
-        reducer(initialState, createCancelPendingAction(cancelResult)),
-        createCancelRejectedAction(cancelResult),
+        reducer(initialState, createPendingActionWithRequestId(cancelResult)),
+        createRunResultAndCancelRejectedAction(cancelResult, "error message"),
       )
       const expectState = {
         ...initialState,

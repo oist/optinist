@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Edge } from "reactflow"
 
 import { AsyncThunk, AnyAction } from "@reduxjs/toolkit"
@@ -91,21 +93,7 @@ export const runPostData: RunPostData = {
   forceRunList: [],
 }
 
-export const pollRunResultPayload = {
-  node1: {
-    status: "success",
-    message: "Node 1 completed successfully",
-    name: "Node 1",
-    outputPaths: {
-      output1: { path: "/path/to/output1", type: "images" },
-    },
-  },
-  node2: { status: "failed", message: "Node 2 failed", name: "Node 2" },
-}
-
-// Helper to create a fulfilled action for a given action type and payload
-export const createFulfilledAction = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const createFulfilledActionWithRunPostData = (
   actionType: AsyncThunk<any, any, any>,
   payload = "response data",
 ) => ({
@@ -119,7 +107,6 @@ export const createFulfilledAction = (
 })
 
 export const createPendingActionWithRequestId = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   actionType: AsyncThunk<any, any, any>,
 ): AnyAction => ({
   type: actionType.pending.type,
@@ -130,7 +117,6 @@ export const createPendingActionWithRequestId = (
 })
 
 export const createRejectedAction = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   actionType: AsyncThunk<any, any, any>,
   error = "error message",
 ) => ({
@@ -144,7 +130,6 @@ export const createRejectedAction = (
 })
 
 export const createPendingAction = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   actionType: AsyncThunk<any, any, any>,
 ): AnyAction => ({
   type: actionType.pending.type,
@@ -153,10 +138,9 @@ export const createPendingAction = (
   },
 })
 
-export const createRunResultFulfilledAction = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const createRunResultAndCacelFulfilledAction = (
   actionType: AsyncThunk<any, any, any>,
-  payload = pollRunResultPayload,
+  payload: any,
 ) => ({
   type: actionType.fulfilled.type,
   meta: {
@@ -167,9 +151,9 @@ export const createRunResultFulfilledAction = (
   payload,
 })
 
-export const createRunResultRejectedAction = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const createRunResultAndCancelRejectedAction = (
   actionType: AsyncThunk<any, any, any>,
+  errorMessage: string,
 ) => ({
   type: actionType.rejected.type,
   meta: {
@@ -177,40 +161,5 @@ export const createRunResultRejectedAction = (
     requestStatus: "rejected",
     arg: { uid: "test-uid" },
   },
-  error: "error message",
-})
-
-export const createCancelFulfilledAction = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  actionType: AsyncThunk<any, any, any>,
-  payload = "Cancellation successful",
-) => ({
-  type: actionType.fulfilled.type,
-  meta: {
-    requestId: requestId,
-    requestStatus: "fulfilled",
-    arg: { uid: "test-uid" },
-  },
-  payload,
-})
-
-export const createCancelPendingAction = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  actionType: AsyncThunk<any, any, any>,
-) => ({
-  type: actionType.rejected.type,
-  meta: { requestId: requestId, requestStatus: "pending" },
-})
-
-export const createCancelRejectedAction = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  actionType: AsyncThunk<any, any, any>,
-) => ({
-  type: actionType.rejected.type,
-  meta: {
-    requestId: requestId,
-    requestStatus: "rejected",
-    arg: { uid: "test-uid" },
-  },
-  error: "error message",
+  error: errorMessage,
 })
