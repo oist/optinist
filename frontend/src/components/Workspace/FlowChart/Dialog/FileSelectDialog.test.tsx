@@ -53,7 +53,7 @@ describe("TreeItemLabel Component", () => {
     fireEvent.click(deleteIcon)
 
     // Confirm the delete action
-    const confirmButton = screen.getByRole("button", { name: /yes/i })
+    const confirmButton = screen.getByRole("button", { name: /DELETE/i })
     fireEvent.click(confirmButton)
 
     expect(store.dispatch).toHaveBeenCalledWith(
@@ -85,7 +85,7 @@ describe("TreeItemLabel Component", () => {
     fireEvent.click(deleteIcon)
 
     // Confirm the delete action
-    const confirmButton = screen.getByRole("button", { name: /no/i })
+    const confirmButton = screen.getByRole("button", { name: /CANCEL/i })
     fireEvent.click(confirmButton)
 
     expect(store.dispatch).not.toHaveBeenCalledWith(deleteFile)
