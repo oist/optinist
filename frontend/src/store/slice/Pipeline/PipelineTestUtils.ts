@@ -138,7 +138,7 @@ export const createPendingAction = (
   },
 })
 
-export const createRunResultAndCacelFulfilledAction = (
+export const createRunResultAndCancelFulfilledAction = (
   actionType: AsyncThunk<any, any, any>,
   payload: any,
 ) => ({
