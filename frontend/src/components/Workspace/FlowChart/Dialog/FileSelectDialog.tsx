@@ -9,15 +9,13 @@ import {
 } from "react"
 import { useDispatch, useSelector } from "react-redux"
 
-import { enqueueSnackbar } from "notistack"
-
 import AutorenewIcon from "@mui/icons-material/Autorenew"
 import CloseIcon from "@mui/icons-material/Close"
 import DeleteIcon from "@mui/icons-material/Delete"
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline"
 import FolderIcon from "@mui/icons-material/Folder"
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined"
-import { DialogContentText, Divider, IconButton, Tooltip } from "@mui/material"
+import { Divider, IconButton, Tooltip } from "@mui/material"
 import Box from "@mui/material/Box"
 import Button from "@mui/material/Button"
 import Checkbox, { CheckboxProps } from "@mui/material/Checkbox"
@@ -58,12 +56,6 @@ type FileSelectDialogProps = {
   open: boolean
   onClickCancel: () => void
   multiSelect: boolean
-}
-
-type DeleteConfirmDialogProps = {
-  open: boolean
-  onClose: () => void
-  onOk: () => void
 }
 
 export const FileSelectDialog = memo(function FileSelectDialog({
