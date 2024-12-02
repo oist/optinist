@@ -10,9 +10,9 @@ import {
 import * as selectors from "store/slice/Pipeline/PipelineSelectors"
 import reducer, { initialState } from "store/slice/Pipeline/PipelineSlice"
 import {
-  createFulfilledActionWithRunPostData,
+  createFulfilledWithRunPostDataAction,
   createPendingAction,
-  createPendingActionWithRequestId,
+  createPendingWithRequestIdAction,
   createRejectedAction,
   createRunResultAndCacelFulfilledAction,
   createRunResultAndCancelRejectedAction,
@@ -42,11 +42,11 @@ const pollRunResultPayload = {
 describe("Pipeline State Test", () => {
   describe("Pipeline Run", () => {
     test(run.fulfilled.type, () => {
-      const runFulfilledAction = createFulfilledActionWithRunPostData(
+      const runFulfilledAction = createFulfilledWithRunPostDataAction(
         run,
       ) as AnyAction
       const targetState = reducer(
-        reducer(initialState, createPendingActionWithRequestId(run)),
+        reducer(initialState, createPendingWithRequestIdAction(run)),
         runFulfilledAction,
       )
 
@@ -66,7 +66,7 @@ describe("Pipeline State Test", () => {
     test(run.pending.type, () => {
       const targetState = reducer(
         initialState,
-        createPendingActionWithRequestId(run),
+        createPendingWithRequestIdAction(run),
       )
       const expectState = {
         run: { status: RUN_STATUS.START_PENDING },
@@ -77,7 +77,7 @@ describe("Pipeline State Test", () => {
 
     test(run.rejected.type, () => {
       const targetState = reducer(
-        reducer(initialState, createPendingActionWithRequestId(run)),
+        reducer(initialState, createPendingWithRequestIdAction(run)),
         createRejectedAction(run),
       )
       const expectState = { run: { status: RUN_STATUS.START_ERROR }, runBtn: 1 }
@@ -88,7 +88,7 @@ describe("Pipeline State Test", () => {
   describe("Pipeline RunByCurrentId", () => {
     test(runByCurrentUid.fulfilled.type, () => {
       const runByCurrentUidFulfilledAction =
-        createFulfilledActionWithRunPostData(runByCurrentUid)
+        createFulfilledWithRunPostDataAction(runByCurrentUid)
       const targetState = reducer(
         reducer(initialState, createPendingAction(runByCurrentUid)),
         runByCurrentUidFulfilledAction,
@@ -224,7 +224,7 @@ describe("Pipeline State Test", () => {
     test(cancelResult.pending.type, () => {
       const targetState = reducer(
         initialState,
-        createPendingActionWithRequestId(cancelResult),
+        createPendingWithRequestIdAction(cancelResult),
       )
       const expectState = {
         run: { status: RUN_STATUS.START_UNINITIALIZED },
@@ -236,7 +236,7 @@ describe("Pipeline State Test", () => {
     // Status is not changing when CancelResult is rejected at PipelineSlice
     test(cancelResult.rejected.type, () => {
       const targetState = reducer(
-        reducer(initialState, createPendingActionWithRequestId(cancelResult)),
+        reducer(initialState, createPendingWithRequestIdAction(cancelResult)),
         createRunResultAndCancelRejectedAction(cancelResult, "error message"),
       )
       const expectState = {

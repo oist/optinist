@@ -93,7 +93,7 @@ export const runPostData: RunPostData = {
   forceRunList: [],
 }
 
-export const createFulfilledActionWithRunPostData = (
+export const createFulfilledWithRunPostDataAction = (
   actionType: AsyncThunk<any, any, any>,
   payload = "response data",
 ) => ({
@@ -106,7 +106,7 @@ export const createFulfilledActionWithRunPostData = (
   payload,
 })
 
-export const createPendingActionWithRequestId = (
+export const createPendingWithRequestIdAction = (
   actionType: AsyncThunk<any, any, any>,
 ): AnyAction => ({
   type: actionType.pending.type,
