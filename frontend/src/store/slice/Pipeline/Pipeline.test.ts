@@ -14,7 +14,7 @@ import {
   createPendingAction,
   createPendingWithRequestIdAction,
   createRejectedAction,
-  createRunResultAndCacelFulfilledAction,
+  createRunResultAndCancelFulfilledAction,
   createRunResultAndCancelRejectedAction,
   runPostData,
 } from "store/slice/Pipeline/PipelineTestUtils"
@@ -154,7 +154,7 @@ describe("Pipeline State Test", () => {
 
       const targetState = reducer(
         reducer(mockState, createPendingAction(pollRunResult)),
-        createRunResultAndCacelFulfilledAction(
+        createRunResultAndCancelFulfilledAction(
           pollRunResult,
           pollRunResultPayload,
         ),
@@ -204,7 +204,7 @@ describe("Pipeline State Test", () => {
     test(cancelResult.fulfilled.type, () => {
       const targetState = reducer(
         reducer(initialState, createPendingAction(cancelResult)),
-        createRunResultAndCacelFulfilledAction(
+        createRunResultAndCancelFulfilledAction(
           cancelResult,
           "Cancellation successful",
         ),
