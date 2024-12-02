@@ -17,6 +17,7 @@ import {
   createRunResultAndCancelFulfilledAction,
   createRunResultAndCancelRejectedAction,
   runPostData,
+  pollRunResultPayload,
 } from "store/slice/Pipeline/PipelineTestUtils"
 import {
   NODE_RESULT_STATUS,
@@ -26,18 +27,6 @@ import {
 } from "store/slice/Pipeline/PipelineType"
 import { isStartedPipeline } from "store/slice/Pipeline/PipelineUtils"
 import { RootState } from "store/store"
-
-const pollRunResultPayload = {
-  node1: {
-    status: "success",
-    message: "Node 1 completed successfully",
-    name: "Node 1",
-    outputPaths: {
-      output1: { path: "/path/to/output1", type: "images" },
-    },
-  },
-  node2: { status: "failed", message: "Node 2 failed", name: "Node 2" },
-}
 
 describe("Pipeline State Test", () => {
   describe("Pipeline Run", () => {

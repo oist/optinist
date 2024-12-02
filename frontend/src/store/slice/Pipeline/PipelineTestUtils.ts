@@ -93,6 +93,18 @@ export const runPostData: RunPostData = {
   forceRunList: [],
 }
 
+export const pollRunResultPayload = {
+  node1: {
+    status: "success",
+    message: "Node 1 completed successfully",
+    name: "Node 1",
+    outputPaths: {
+      output1: { path: "/path/to/output1", type: "images" },
+    },
+  },
+  node2: { status: "failed", message: "Node 2 failed", name: "Node 2" },
+}
+
 export const createFulfilledWithRunPostDataAction = (
   actionType: AsyncThunk<any, any, any>,
   payload = "response data",
