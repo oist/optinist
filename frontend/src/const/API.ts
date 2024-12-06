@@ -7,7 +7,7 @@ const PROTO =
 const PORT =
   process.env.REACT_APP_SERVER_PORT ||
   window.location.port ||
-  (PROTO == "https" ? 443 : 8000)
+  (PROTO == "https" ? 443 : 80)
 
 export const BASE_URL =
   PORT == null ? `${PROTO}://${HOST}` : `${PROTO}://${HOST}:${PORT}`
