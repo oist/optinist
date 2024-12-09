@@ -7,17 +7,17 @@ RUN apt-get --allow-releaseinfo-change update && \
     apt-get install --no-install-recommends -y sudo procps iproute2 iputils-ping telnet wget curl unzip less vim
 
 # install conda & packages
-RUN mkdir -p /opt/miniconda3 && \
-    apt-get install --no-install-recommends -y gcc g++ libgl1 libgl1-mesa-dev libopencv-dev && \
-    wget -q https://repo.anaconda.com/miniconda/Miniconda3-py39_4.12.0-Linux-x86_64.sh -O /opt/miniconda3/miniconda.sh && \
-    apt-get purge wget -y && apt-get autoremove -y && apt-get clean && \
-    bash /opt/miniconda3/miniconda.sh -b -u -p /opt/miniconda3 && \
-    rm /opt/miniconda3/miniconda.sh && \
-    export PATH="$PATH:/opt/miniconda3/bin" && \
+RUN apt-get install --no-install-recommends -y gcc g++ libgl1 libgl1-mesa-dev libopencv-dev && \
+    apt-get autoremove -y && apt-get clean
+RUN mkdir -p /opt/miniforge && \
+    curl -L "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh" -o /opt/miniforge/Miniforge3.sh && \
+    bash /opt/miniforge/Miniforge3.sh -b -u -p /opt/miniforge && \
+    rm /opt/miniforge/Miniforge3.sh && \
+    export PATH="$PATH:/opt/miniforge/bin" && \
     conda upgrade -y --all && \
-    conda config --set channel_priority strict && \
+    conda config --set channel_priority flexible && \
     conda clean -y --tarballs
-ENV PATH $PATH:/opt/miniconda3/bin
+ENV PATH $PATH:/opt/miniforge/bin
 
 # setup user profile
 RUN echo 'alias ll="ls -la --color=auto"' >> /root/.bashrc && \
