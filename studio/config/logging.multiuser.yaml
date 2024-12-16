@@ -23,6 +23,9 @@ handlers:
 loggers:
   optinist:
     level: DEBUG
+  # # sql logging config
+  # sqlalchemy.engine:
+  #   level: INFO
   snakemake:
     level: INFO
     handlers: [rotating_file]

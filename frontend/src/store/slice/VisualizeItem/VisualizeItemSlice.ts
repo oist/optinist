@@ -30,8 +30,8 @@ import {
   LineItem,
   PieItem,
   PolarItem,
-  VISUALIZE_ITEM_SLICE_NAME,
   MatlabItem,
+  VISUALIZE_ITEM_SLICE_NAME,
 } from "store/slice/VisualizeItem/VisualizeItemType"
 import {
   isDisplayDataItem,
@@ -166,7 +166,6 @@ const polarItemInitialValue: PolarItem = {
   dataType: DATA_TYPE_SET.POLAR,
   selectedIndex: 0,
 }
-
 const matlabItemInitialValue: MatlabItem = {
   ...displayDataCommonInitialValue,
   dataType: DATA_TYPE_SET.MATLAB,
