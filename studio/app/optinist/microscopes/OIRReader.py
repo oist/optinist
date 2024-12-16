@@ -450,9 +450,9 @@ class OIRReader(MicroscopeDataReaderBase):
                         single_plane_buffer = np.ctypeslib.as_array(ctypes_buffer_ptr)
 
                         # construct return value (each channel's stack)
-                        result_channels_stacks[channel_no, serial_loops_index] = (
-                            single_plane_buffer
-                        )
+                        result_channels_stacks[
+                            channel_no, serial_loops_index
+                        ] = single_plane_buffer
                         serial_loops_index += 1
 
                         frame_manager.release_image_body()
