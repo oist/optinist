@@ -28,8 +28,11 @@ import {
 
 import { UserDTO } from "api/users/UsersApiDTO"
 import Loading from "components/common/Loading"
-import { getListSearch } from "store/slice/User/UserActions"
-import { selectListSearch, selectLoading } from "store/slice/User/UserSelector"
+import { getListUserSearch } from "store/slice/User/UserActions"
+import {
+  selectListUserSearch,
+  selectLoading,
+} from "store/slice/User/UserSelector"
 import { resetUserSearch } from "store/slice/User/UserSlice"
 import { postListUserShareWorkspaces } from "store/slice/Workspace/WorkspaceActions"
 import { AppDispatch } from "store/store"
@@ -103,7 +106,7 @@ const PopupShare = ({
   id,
   title,
 }: PopupType) => {
-  const usersSuggest = useSelector(selectListSearch)
+  const usersSuggest = useSelector(selectListUserSearch)
   const loading = useSelector(selectLoading)
   const [textSearch, setTextSearch] = useState("")
   const [stateUserShare, setStateUserShare] = useState(usersShare || undefined)
@@ -124,7 +127,7 @@ const PopupShare = ({
       return
     }
     timeout.current = setTimeout(() => {
-      dispatch(getListSearch({ keyword: encodeURIComponent(textSearch) }))
+      dispatch(getListUserSearch({ keyword: encodeURIComponent(textSearch) }))
     }, 300)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [textSearch])

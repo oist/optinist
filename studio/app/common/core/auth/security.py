@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime, timedelta
 from typing import Any, Dict, Optional, Tuple, Union
 
@@ -69,11 +70,14 @@ def _validate_token(
         )
         if payload.get("token_type") != token_type:
             err = "Invalid token type"
-    except ExpiredSignatureError:
+    except ExpiredSignatureError as e:
+        logging.getLogger().error(e)
         err = "Credentials has expired"
-    except (JWTError, ValidationError):
+    except (JWTError, ValidationError) as e:
+        logging.getLogger().error(e)
         err = "Could not validate credentials"
-    except Exception:
+    except Exception as e:
+        logging.getLogger().error(e)
         err = "Bad token"
 
     return payload, err

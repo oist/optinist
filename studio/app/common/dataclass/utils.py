@@ -15,3 +15,8 @@ def create_images_list(data):
         images.append(_img.tolist())
 
     return images
+
+
+def save_thumbnail(plot_file):
+    # Note: In the barebone-studio version, it does nothing.
+    pass

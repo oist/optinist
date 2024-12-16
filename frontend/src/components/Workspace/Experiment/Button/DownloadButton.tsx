@@ -32,6 +32,7 @@ export const NWBDownloadButton = memo(function NWBDownloadButton({
   const { enqueueSnackbar } = useSnackbar()
 
   const onClick = async () => {
+    if (!workspaceId) return
     try {
       const responseData = await downloadExperimentNwbApi(
         workspaceId!,
