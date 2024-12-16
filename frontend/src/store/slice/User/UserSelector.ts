@@ -10,7 +10,8 @@ export const selectCurrentUserUid = (state: RootState) =>
   selectCurrentUser(state)?.uid
 export const selectCurrentUserEmail = (state: RootState) =>
   selectCurrentUser(state)?.email
-export const selectListSearch = (state: RootState) => state.user.listUserSearch
+export const selectListUserSearch = (state: RootState) =>
+  state.user.listUserSearch
 export const isAdmin = (state: RootState) => {
   return state.user && ROLE.ADMIN === state.user.currentUser?.role_id
 }
