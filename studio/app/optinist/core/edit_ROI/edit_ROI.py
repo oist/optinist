@@ -102,7 +102,10 @@ class EditROI:
 
     @property
     def pickle_file_path(self):
-        files = glob(join_filepath([self.node_dirpath, "[!tmp_]*.pkl"]))
+        files = list(
+            set(glob(join_filepath([self.node_dirpath, "*.pkl"])))
+            - set(glob(join_filepath([self.node_dirpath, "tmp_*.pkl"])))
+        )
         if len(files) == 0:
             raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
         return files[0]

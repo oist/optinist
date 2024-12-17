@@ -1,7 +1,9 @@
+import { enqueueSnackbar } from "notistack"
+
 import { createSlice } from "@reduxjs/toolkit"
 
 import { FILE_TREE_TYPE_SET } from "api/files/Files"
-import { getFilesTree } from "store/slice/FilesTree/FilesTreeAction"
+import { getFilesTree, deleteFile } from "store/slice/FilesTree/FilesTreeAction"
 import {
   FilesTree,
   FILES_TREE_SLICE_NAME,
@@ -31,6 +33,30 @@ export const filesTreeSlice = createSlice({
         state[fileType].tree = convertToTreeNodeType(action.payload)
         state[fileType].isLatest = true
         state[fileType].isLoading = false
+      })
+      .addCase(deleteFile.pending, (state, action) => {
+        const { fileType } = action.meta.arg
+        state[fileType] = {
+          ...state[fileType],
+          isLoading: true,
+          isLatest: false,
+        }
+      })
+      .addCase(deleteFile.rejected, (state, action) => {
+        const { fileType } = action.meta.arg
+        state[fileType] = {
+          ...state[fileType],
+          isLoading: false,
+          isLatest: true,
+        }
+        enqueueSnackbar("Failed to delete file", { variant: "error" })
+      })
+      .addCase(deleteFile.fulfilled, (state, action) => {
+        const { fileType, fileName } = action.meta.arg
+        const fileTree = state[fileType].tree
+        state[fileType].tree = fileTree.filter((node) => node.name !== fileName)
+        state[fileType].isLoading = false
+        state[fileType].isLatest = true
       })
       .addCase(uploadFile.pending, (state, action) => {
         const { fileType } = action.meta.arg

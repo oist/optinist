@@ -10,6 +10,8 @@ import {
 import { useDispatch, useSelector } from "react-redux"
 
 import AutorenewIcon from "@mui/icons-material/Autorenew"
+import CloseIcon from "@mui/icons-material/Close"
+import DeleteIcon from "@mui/icons-material/Delete"
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline"
 import FolderIcon from "@mui/icons-material/Folder"
 import InsertDriveFileOutlinedIcon from "@mui/icons-material/InsertDriveFileOutlined"
@@ -28,8 +30,9 @@ import { TreeItem } from "@mui/x-tree-view/TreeItem"
 import { TreeView } from "@mui/x-tree-view/TreeView"
 
 import { FILE_TREE_TYPE, FILE_TREE_TYPE_SET } from "api/files/Files"
+import { ConfirmDialog } from "components/common/ConfirmDialog"
 import { DialogContext } from "components/Workspace/FlowChart/Dialog/DialogContext"
-import { getFilesTree } from "store/slice/FilesTree/FilesTreeAction"
+import { deleteFile, getFilesTree } from "store/slice/FilesTree/FilesTreeAction"
 import {
   selectFilesIsLatest,
   selectFilesIsLoading,
@@ -111,8 +114,15 @@ export const FileSelectDialog = memo(function FileSelectDialog({
             selectedFilePath={selectedFilePath}
           />
         </div>
-        <Typography variant="subtitle1">Select File</Typography>
-        <FilePathSelectedListView path={selectedFilePath} />
+        <Typography variant="subtitle1">
+          {Array.isArray(selectedFilePath) && selectedFilePath.length === 0
+            ? "No Selected File"
+            : "Selected File"}
+        </Typography>
+        <FilePathSelectedListView
+          path={selectedFilePath}
+          setSelectedFilePath={setSelectedFilePath}
+        />
       </DialogContent>
       <DialogActions>
         <Button onClick={onCancel} variant="outlined">
@@ -140,6 +150,38 @@ const FileTreeView = memo(function FileTreeView({
   multiSelect,
 }: FileTreeViewProps) {
   const [tree, isLoading] = useFileTree(fileType)
+  const [initialized, setInitialized] = useState(false)
+
+  // Helper function to check if a file exists in the tree
+  const isFileInTree = (path: string, tree: TreeNodeType[] | null): boolean => {
+    if (!tree) return false
+    const checkNode = (node: TreeNodeType): boolean => {
+      if (node.path === path) return true
+      if (node.isDir && node.nodes) {
+        return node.nodes.some(checkNode)
+      }
+      return false
+    }
+    return tree.some(checkNode)
+  }
+
+  // Effect to remove selected file if it's not in the tree
+  useEffect(() => {
+    if (!initialized && tree) {
+      if (Array.isArray(selectedFilePath)) {
+        const validPaths = selectedFilePath.filter((path) =>
+          isFileInTree(path, tree),
+        )
+        if (validPaths.length !== selectedFilePath.length) {
+          setSelectedFilePath(validPaths)
+        }
+      } else if (selectedFilePath && !isFileInTree(selectedFilePath, tree)) {
+        setSelectedFilePath([])
+      }
+      setInitialized(true) // Prevents re-running on every render
+    }
+  }, [tree, initialized, selectedFilePath, setSelectedFilePath])
+
   const onNodeSelectHandler = (
     event: SyntheticEvent,
     nodeIds: Array<string> | string,
@@ -215,6 +257,7 @@ const FileTreeView = memo(function FileTreeView({
             multiSelect={multiSelect}
             onCheckDir={onCheckDir}
             onCheckFile={onCheckFile}
+            setSelectedFilePath={setSelectedFilePath}
           />
         ))}
       </TreeView>
@@ -229,6 +272,7 @@ interface TreeNodeProps {
   multiSelect: boolean
   onCheckDir: (path: string, checked: boolean) => void
   onCheckFile: (path: string) => void
+  setSelectedFilePath: (path: string[] | string) => void
 }
 
 const TreeNode = memo(function TreeNode({
@@ -238,6 +282,7 @@ const TreeNode = memo(function TreeNode({
   multiSelect,
   onCheckDir,
   onCheckFile,
+  setSelectedFilePath,
 }: TreeNodeProps) {
   if (node.isDir) {
     const allChecked =
@@ -272,6 +317,8 @@ const TreeNode = memo(function TreeNode({
                 },
                 onChange: (e) => onCheckDir(node.path, e.target.checked),
               }}
+              setSelectedFilePath={setSelectedFilePath}
+              selectedFilePath={selectedFilePath}
             />
           ) : (
             node.name
@@ -287,6 +334,7 @@ const TreeNode = memo(function TreeNode({
             multiSelect={multiSelect}
             onCheckDir={onCheckDir}
             onCheckFile={onCheckFile}
+            setSelectedFilePath={setSelectedFilePath}
           />
         ))}
       </TreeItem>
@@ -309,12 +357,13 @@ const TreeNode = memo(function TreeNode({
                   selectedFilePath.includes(node.path),
                 onChange: () => onCheckFile(node.path),
               }}
+              setSelectedFilePath={setSelectedFilePath}
+              selectedFilePath={selectedFilePath}
             />
           ) : (
             node.name
           )
         }
-        onClick={() => onCheckFile(node.path)}
       />
     )
   }
@@ -326,17 +375,22 @@ interface TreeItemLabelProps {
   label: string
   checkboxProps: CheckboxProps
   isDir?: boolean
+  setSelectedFilePath: (path: string[] | string) => void
+  selectedFilePath: string[] | string
 }
 
-const TreeItemLabel = memo(function TreeItemLabel({
+export const TreeItemLabel = memo(function TreeItemLabel({
   fileType,
   shape,
   label,
   isDir,
   checkboxProps,
+  setSelectedFilePath,
+  selectedFilePath,
 }: TreeItemLabelProps) {
   const dispatch = useDispatch<AppDispatch>()
   const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const [deleteConfirmDialogOpen, setDeleteConfirmDialogOpen] = useState(false)
   const onUpdate = useCallback(
     (event: MouseEvent, fileName: string) => {
       if (!workspaceId) return
@@ -345,85 +399,180 @@ const TreeItemLabel = memo(function TreeItemLabel({
     },
     [dispatch, workspaceId],
   )
+  const onOpenDeleteConfirmDialog = useCallback(
+    (event: MouseEvent) => {
+      if (!workspaceId) return
+      event.stopPropagation()
+      setDeleteConfirmDialogOpen(true)
+    },
+    [workspaceId],
+  )
+  const onDelete = useCallback(
+    (event: MouseEvent, fileName: string) => {
+      if (!workspaceId) return
+      event.stopPropagation()
+
+      // Remove the file from selectedFile state
+      if (Array.isArray(selectedFilePath)) {
+        setSelectedFilePath(
+          selectedFilePath.filter((file) => file !== fileName),
+        )
+      }
+
+      dispatch(deleteFile({ workspaceId, fileName, fileType }))
+    },
+    [dispatch, fileType, selectedFilePath, setSelectedFilePath, workspaceId],
+  )
+
   return (
-    <Box height={24} display="flex" alignItems="center">
-      <Tooltip
-        title={<span style={{ fontSize: 14 }}>{label}</span>}
-        placement={"left-start"}
-      >
-        <Box
-          sx={{
-            width: "48%",
-            textOverflow: "ellipsis",
-            overflowX: "hidden",
-            whiteSpace: "pre",
-          }}
+    <Box
+      sx={{
+        "&:hover": {
+          backgroundColor: "transparent",
+        },
+        cursor: "default",
+      }}
+    >
+      <Box height={24} display="flex" alignItems="center">
+        <Tooltip
+          title={<span style={{ fontSize: 14 }}>{label}</span>}
+          placement={"left-start"}
         >
-          {label}
-        </Box>
-      </Tooltip>
-      {fileType === FILE_TREE_TYPE_SET.IMAGE ? (
-        <>
-          <Box minWidth={175} marginLeft={2} alignItems={"center"}>
-            {!isDir ? (
-              !shape ? (
-                <Tooltip
-                  title={
-                    <span style={{ fontSize: 14 }}>
-                      parsing image shape failed
-                    </span>
-                  }
-                  placement={"right"}
-                >
-                  <ErrorOutlineIcon color={"error"} />
-                </Tooltip>
-              ) : (
-                `(${shape.join(", ")})`
-              )
-            ) : null}
+          <Box
+            sx={{
+              width: "48%",
+              textOverflow: "ellipsis",
+              overflowX: "hidden",
+              whiteSpace: "pre",
+            }}
+          >
+            {label}
           </Box>
-          {!isDir ? (
-            <IconButton
-              sx={{ minWidth: 24 }}
-              onClick={(event) => onUpdate(event, label)}
-            >
-              <AutorenewIcon />
-            </IconButton>
-          ) : (
-            <Box width={24} marginRight={2} />
-          )}
-        </>
-      ) : null}
-      <Box>
-        <Checkbox
-          {...checkboxProps}
-          disableRipple
-          size="small"
-          sx={{
-            marginRight: "4px",
-            padding: "2px",
-            minWidth: 24,
+        </Tooltip>
+        {fileType === FILE_TREE_TYPE_SET.IMAGE ? (
+          <>
+            <Box minWidth={175} marginLeft={2} alignItems={"center"}>
+              {!isDir ? (
+                !shape ? (
+                  <Tooltip
+                    title={
+                      <span style={{ fontSize: 14 }}>
+                        parsing image shape failed
+                      </span>
+                    }
+                    placement={"right"}
+                  >
+                    <ErrorOutlineIcon color={"error"} />
+                  </Tooltip>
+                ) : (
+                  `(${shape.join(", ")})`
+                )
+              ) : null}
+            </Box>
+          </>
+        ) : null}
+        <Box>
+          <Checkbox
+            {...checkboxProps}
+            disableRipple
+            size="small"
+            sx={{
+              marginRight: "4px",
+              padding: "2px",
+              minWidth: 24,
+            }}
+          />
+        </Box>
+        {!isDir ? (
+          <IconButton
+            sx={{ minWidth: 24 }}
+            onClick={(event) => onUpdate(event, label)}
+          >
+            <AutorenewIcon />
+          </IconButton>
+        ) : (
+          <Box width={24} marginRight={2} />
+        )}
+        <IconButton
+          sx={{ minWidth: 24 }}
+          color="error"
+          onClick={(event) => {
+            onOpenDeleteConfirmDialog(event)
           }}
-        />
+          disabled={checkboxProps.checked}
+          data-testid="DeleteIconBtn"
+        >
+          <DeleteIcon />
+        </IconButton>
       </Box>
+      <ConfirmDialog
+        open={deleteConfirmDialogOpen}
+        setOpen={setDeleteConfirmDialogOpen}
+        onConfirm={() => {
+          onDelete({ stopPropagation: () => {} } as MouseEvent, label)
+          setDeleteConfirmDialogOpen(false)
+        }}
+        title="Are you sure you want to delete this item?"
+        content={`${label}`}
+        confirmLabel="delete"
+        iconType="warning"
+      />
     </Box>
   )
 })
 
 interface FilePathProps {
   path: string | string[]
+  setSelectedFilePath: (path: string[] | string) => void
 }
 
 const FilePathSelectedListView = memo(function FilePathSelectedListView({
   path,
+  setSelectedFilePath,
 }: FilePathProps) {
+  const handleRemoveFile = (fileToRemove: string) => {
+    if (Array.isArray(path)) {
+      setSelectedFilePath(path.filter((file) => file !== fileToRemove))
+    }
+  }
   return (
     <Typography variant="subtitle2">
-      {path
-        ? Array.isArray(path)
-          ? path.map((text) => <li key={text}>{text}</li>)
-          : path
-        : "---"}
+      {path ? (
+        Array.isArray(path) ? (
+          <ul style={{ padding: 0, margin: 0, listStyleType: "none" }}>
+            {path.map((text) => (
+              <li
+                key={text}
+                style={{
+                  marginBottom: "3px",
+                  listStyleType: "disc",
+                  marginLeft: "24px",
+                }}
+              >
+                <span
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    width: "100%",
+                  }}
+                >
+                  <span>{text}</span>
+                  <IconButton
+                    style={{ padding: "0" }}
+                    onClick={() => handleRemoveFile(text)}
+                  >
+                    <CloseIcon style={{ width: "15px", height: "15px" }} />
+                  </IconButton>
+                </span>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          path
+        )
+      ) : (
+        "---"
+      )}
     </Typography>
   )
 })

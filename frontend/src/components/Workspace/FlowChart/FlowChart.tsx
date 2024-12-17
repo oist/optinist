@@ -12,7 +12,6 @@ import { styled } from "@mui/material/styles"
 import { CurrentPipelineInfo } from "components/common/CurrentPipelineInfo"
 import { DevelopmentInformation } from "components/common/DevelopmentInformation"
 import { SectionTitle } from "components/common/ParamSection"
-import PopupInputUrl from "components/PopupInputUrl"
 import { AlgorithmOutputDialog } from "components/Workspace/FlowChart/Dialog/AlgorithmOutputDialog"
 import { ClearWorkflowIdDialog } from "components/Workspace/FlowChart/Dialog/ClearWorkflowIdDialog"
 import {
@@ -26,6 +25,7 @@ import { FileSelectDialog } from "components/Workspace/FlowChart/Dialog/FileSele
 import { ReactFlowComponent } from "components/Workspace/FlowChart/ReactFlowComponent"
 import RightDrawer from "components/Workspace/FlowChart/RightDrawer"
 import { AlgorithmTreeView } from "components/Workspace/FlowChart/TreeView"
+import PopupInputUrl from "components/Workspace/PopupInputUrl"
 import { CONTENT_HEIGHT, DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from "const/Layout"
 import {
   getStatusLoadViaUrl,

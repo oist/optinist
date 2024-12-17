@@ -54,7 +54,9 @@
     "stream-browserify": "^3.0.0",
     "styled-components": "^6.1.1",
     "typescript": "^5.2.2",
-    "web-vitals": "^3.5.0"
+    "web-vitals": "^3.5.0",
+    "redux-mock-store": "^1.5.5",
+    "@types/redux-mock-store": "^1.0.6"
   },
   "scripts": {
     "prestart": "node export-versions.js",
@@ -103,7 +105,7 @@
     "prettier": "^3.0.3",
     "process": "^0.11.10",
     "punycode": "^2.3.1",
-    "redux-mock-store": "^1.5.4"
+    "redux-mock-store": "^1.5.5"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
