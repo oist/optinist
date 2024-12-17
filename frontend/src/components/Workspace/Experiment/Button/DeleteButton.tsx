@@ -47,7 +47,12 @@ export const DeleteButton = memo(function DeleteButton() {
 
   return (
     <>
-      <IconButton onClick={openDialog} disabled={isRunning} color="error">
+      <IconButton
+        onClick={openDialog}
+        disabled={isRunning}
+        color="error"
+        data-testid="delete-button"
+      >
         <DeleteOutlineIcon />
       </IconButton>
       <ConfirmDialog

@@ -26,7 +26,7 @@ import {
   fetchWorkflow,
 } from "store/slice/Workflow/WorkflowActions"
 
-const initialState: Pipeline = {
+export const initialState: Pipeline = {
   run: {
     status: RUN_STATUS.START_UNINITIALIZED,
   },

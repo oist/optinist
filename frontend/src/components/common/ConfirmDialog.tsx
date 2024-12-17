@@ -32,6 +32,10 @@ export const ConfirmDialog: FC<ConfirmDialogProps> = ({
   confirmLabel,
   iconType,
 }) => {
+  const dataTestId = confirmLabel
+    ? `${confirmLabel}-confirm-button`
+    : "ok-button"
+
   const handleClose = () => {
     onCancel && onCancel()
     setOpen && setOpen(false)
@@ -67,7 +71,11 @@ export const ConfirmDialog: FC<ConfirmDialogProps> = ({
         <Button variant="outlined" onClick={handleClose}>
           cancel
         </Button>
-        <Button variant="contained" onClick={handleConfirm}>
+        <Button
+          variant="contained"
+          onClick={handleConfirm}
+          data-testid={dataTestId}
+        >
           {confirmLabel ?? "ok"}
         </Button>
       </DialogActions>
