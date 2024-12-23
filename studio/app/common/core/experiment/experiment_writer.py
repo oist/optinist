@@ -11,6 +11,7 @@ from studio.app.common.core.experiment.experiment_builder import ExptConfigBuild
 from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
 from studio.app.common.core.utils.config_handler import ConfigWriter
 from studio.app.common.core.utils.filepath_creater import join_filepath
+from studio.app.common.core.workflow.workflow import NodeRunStatus, WorkflowRunStatus
 from studio.app.common.core.workflow.workflow_reader import WorkflowConfigReader
 from studio.app.const import DATE_FORMAT
 from studio.app.dir_path import DIRPATH
@@ -64,7 +65,7 @@ class ExptConfigWriter:
             .set_unique_id(self.unique_id)
             .set_name(self.name)
             .set_started_at(datetime.now().strftime(DATE_FORMAT))
-            .set_success("running")
+            .set_success(WorkflowRunStatus.RUNNING.value)
             .set_nwbfile(self.nwbfile)
             .set_snakemake(self.snakemake)
             .build()
@@ -75,7 +76,7 @@ class ExptConfigWriter:
             self.builder.set_started_at(
                 datetime.now().strftime(DATE_FORMAT)
             )  # Update time
-            .set_success("running")
+            .set_success(WorkflowRunStatus.RUNNING.value)
             .build()
         )
 
@@ -94,13 +95,16 @@ class ExptConfigWriter:
 
         for node in node_dict.values():
             func_dict[node.id] = ExptFunction(
-                unique_id=node.id, name=node.data.label, hasNWB=False, success="running"
+                unique_id=node.id,
+                name=node.data.label,
+                hasNWB=False,
+                success=NodeRunStatus.RUNNING.value,
             )
             if node.data.type == "input":
                 timestamp = datetime.now().strftime(DATE_FORMAT)
                 func_dict[node.id].started_at = timestamp
                 func_dict[node.id].finished_at = timestamp
-                func_dict[node.id].success = "success"
+                func_dict[node.id].success = NodeRunStatus.SUCCESS.value
 
         return self.builder.set_function(func_dict).build()
 
@@ -150,7 +154,7 @@ class ExptDataWriter:
             name=config["name"],
             started_at=config.get("started_at"),
             finished_at=config.get("finished_at"),
-            success=config.get("success", "running"),
+            success=config.get("success", WorkflowRunStatus.RUNNING.value),
             hasNWB=config["hasNWB"],
             function=ExptConfigReader.read_function(config["function"]),
             nwb=config.get("nwb"),

@@ -12,7 +12,7 @@ from studio.app.common.core.utils.config_handler import ConfigWriter
 from studio.app.common.core.utils.file_reader import JsonReader, Reader
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.utils.pickle_handler import PickleReader
-from studio.app.common.core.workflow.workflow import Message, OutputPath
+from studio.app.common.core.workflow.workflow import Message, NodeRunStatus, OutputPath
 from studio.app.common.dataclass import BaseData
 from studio.app.const import DATE_FORMAT
 from studio.app.dir_path import DIRPATH
@@ -35,14 +35,19 @@ class WorkflowResult:
         self.error_filepath = join_filepath([self.workflow_dirpath, "error.log"])
         self.pid_filepath = join_filepath([self.workflow_dirpath, "pid.json"])
 
-    def get(self, nodeIdList):
+    def observe(self, nodeIdList) -> Dict:
+        """
+        Perform the following operations for the specified workflow
+          - Check and update the workflow execution status
+          - Response with the confirmed workflow execution status
+        """
         results: Dict[str, Message] = {}
         for node_id in nodeIdList:
             if os.path.exists(self.error_filepath):
                 error_message = Reader.read(self.error_filepath)
                 if error_message != "":
                     results[node_id] = Message(
-                        status="error",
+                        status=NodeRunStatus.ERROR.value,
                         message=error_message,
                     )
 
@@ -60,16 +65,19 @@ class WorkflowResult:
                     node_id,
                     pickle_filepath,
                 )
-                if node_result.info is not None:
-                    results[node_id] = node_result.get()
-                    self.has_nwb(node_id)
 
-        self.has_nwb()
+                if node_result.info is not None:
+                    results[node_id] = node_result.observe()
+                    self.__check_has_nwb(node_id)
+
+        self.__check_has_nwb()
 
         return results
 
-    def has_nwb(self, node_id=None):
-        if node_id is None:
+    def __check_has_nwb(self, node_id=None):
+        target_whole_nwb = node_id is None
+
+        if target_whole_nwb:
             nwb_filepath_list = glob(join_filepath([self.workflow_dirpath, "*.nwb"]))
         else:
             nwb_filepath_list = glob(
@@ -80,7 +88,7 @@ class WorkflowResult:
             if os.path.exists(nwb_filepath):
                 config = ExptConfigReader.read(self.expt_filepath)
 
-                if node_id is None:
+                if target_whole_nwb:
                     config.hasNWB = True
                 else:
                     config.function[node_id].hasNWB = True
@@ -151,26 +159,29 @@ class NodeResult:
         except EOFError:
             self.info = None
 
-    def get(self):
+    def observe(self):
         expt_config = ExptConfigReader.read(self.expt_filepath)
+
         if isinstance(self.info, (list, str)):
-            expt_config.function[self.node_id].success = "error"
+            expt_config.function[self.node_id].success = NodeRunStatus.ERROR.value
             message = self.error()
         else:
-            expt_config.function[self.node_id].success = "success"
+            expt_config.function[self.node_id].success = NodeRunStatus.SUCCESS.value
             message = self.success()
             expt_config.function[self.node_id].outputPaths = message.outputPaths
+
         now = datetime.now().strftime(DATE_FORMAT)
         expt_config.function[self.node_id].finished_at = now
         expt_config.function[self.node_id].message = message.message
 
         statuses = list(map(lambda x: x.success, expt_config.function.values()))
-        if "running" not in statuses:
+
+        if NodeRunStatus.RUNNING.value not in statuses:
             expt_config.finished_at = now
-            if "error" in statuses:
-                expt_config.success = "error"
+            if NodeRunStatus.ERROR.value in statuses:
+                expt_config.success = NodeRunStatus.ERROR.value
             else:
-                expt_config.success = "success"
+                expt_config.success = NodeRunStatus.SUCCESS.value
 
         ConfigWriter.write(
             dirname=self.workflow_dirpath,
@@ -182,23 +193,23 @@ class NodeResult:
 
     def success(self):
         return Message(
-            status="success",
+            status=NodeRunStatus.SUCCESS.value,
             message=f"{self.algo_name} success",
-            outputPaths=self.outputPaths(),
+            outputPaths=self.output_paths(),
         )
 
     def error(self):
         return Message(
-            status="error",
+            status=NodeRunStatus.ERROR.value,
             message=self.info if isinstance(self.info, str) else "\n".join(self.info),
         )
 
-    def outputPaths(self):
-        outputPaths: Dict[str, OutputPath] = {}
+    def output_paths(self):
+        output_paths: Dict[str, OutputPath] = {}
         for k, v in self.info.items():
             if isinstance(v, BaseData):
                 v.save_json(self.node_dirpath)
                 if v.output_path:
-                    outputPaths[k] = v.output_path
+                    output_paths[k] = v.output_path
 
-        return outputPaths
+        return output_paths

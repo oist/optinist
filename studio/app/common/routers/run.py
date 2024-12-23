@@ -69,7 +69,7 @@ async def run_id(
 )
 async def run_result(workspace_id: str, uid: str, nodeDict: NodeItem):
     try:
-        return WorkflowResult(workspace_id, uid).get(nodeDict.pendingNodeIdList)
+        return WorkflowResult(workspace_id, uid).observe(nodeDict.pendingNodeIdList)
     except Exception as e:
         logger.error(e, exc_info=True)
         raise HTTPException(
