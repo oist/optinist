@@ -2,7 +2,7 @@ import logging
 import os
 from typing import Dict
 
-from studio.app.common.core.utils.file_reader import JsonReader
+from studio.app.common.core.utils.file_reader import JsonReader, Reader
 from studio.app.common.core.utils.filepath_creater import (
     create_directory,
     join_filepath,
@@ -17,28 +17,16 @@ class SmkStatusLogger:
     will use same log data.
     """
 
-    @staticmethod
-    def get_logger(workspace_id: str, unique_id: str) -> logging.Logger:
-        output_dirpath = join_filepath(
-            [
-                DIRPATH.OUTPUT_DIR,
-                workspace_id,
-                unique_id,
-            ]
-        )
-        create_directory(output_dirpath)
+    ERROR_LOG_NAME = "error.log"
 
-        filepath = f"{output_dirpath}/error.log"
-        if os.path.exists(filepath):
-            try:
-                os.remove(filepath)
-            except Exception as e:
-                print("[Exception][Logger]", e)
+    @classmethod
+    def get_logger(cls, workspace_id: str, unique_id: str) -> logging.Logger:
+        log_file_path = cls.__init_error_log_file(workspace_id, unique_id)
 
         logger = logging.getLogger(unique_id)
 
-        # FileHandlerの設定
-        fh = logging.FileHandler(filepath)
+        # setting FileHandler
+        fh = logging.FileHandler(log_file_path)
         fh.setLevel(logging.ERROR)
         fmt = logging.Formatter(
             "%(asctime)s : %(levelname)s - %(filename)s - %(message)s"
@@ -46,14 +34,56 @@ class SmkStatusLogger:
         fh.setFormatter(fmt)
         logger.addHandler(fh)
         fh.close()
+
         return logger
+
+    @classmethod
+    def __get_error_log_file_path(cls, workspace_id: str, unique_id: str):
+        output_dirpath = join_filepath(
+            [
+                DIRPATH.OUTPUT_DIR,
+                workspace_id,
+                unique_id,
+            ]
+        )
+        log_file_path = f"{output_dirpath}/{cls.ERROR_LOG_NAME}"
+
+        return log_file_path
+
+    @classmethod
+    def __init_error_log_file(cls, workspace_id: str, unique_id: str) -> str:
+        log_file_path = cls.__get_error_log_file_path(workspace_id, unique_id)
+        output_dirpath = os.path.dirname(log_file_path)
+
+        create_directory(output_dirpath)
+
+        if os.path.exists(log_file_path):
+            try:
+                os.remove(log_file_path)
+            except Exception as e:
+                print("[Exception][Logger]", e)
+
+        return log_file_path
+
+    @classmethod
+    def get_error_content(cls, workspace_id: str, unique_id: str) -> dict:
+        log_file_path = cls.__get_error_log_file_path(workspace_id, unique_id)
+
+        if os.path.exists(log_file_path):
+            error_log = Reader.read(log_file_path)
+            has_error = error_log != ""
+        else:
+            error_log = None
+            has_error = False
+
+        return {"has_error": has_error, "error_log": error_log}
 
     def __init__(self, workspace_id, unique_id):
         self.workspace_id = workspace_id
         self.unique_id = unique_id
         self.logger: logging.Logger = __class__.get_logger(workspace_id, unique_id)
 
-    def smk_logger(self, msg: Dict[str, str] = None):
+    def log_handler(self, msg: Dict[str, str] = None):
         """
         msg:
             level:
@@ -61,13 +91,15 @@ class SmkStatusLogger:
                 "job_finished": jobの終了を通知。
         """
         # pass
-        # # エラーした
+        # # has error.
         # if "exception" in msg:
         #     self.logger.error(msg)
 
+        # Inspect log contents
         if "level" in msg and "debug" in msg["level"]:
             level = msg["level"]
             if "debug" in level and "msg" in msg:
+                # Inspects for error logs
                 if "Traceback" in msg["msg"]:
                     # check if the message is thrown by killing process action
                     if any(
@@ -83,10 +115,13 @@ class SmkStatusLogger:
                             ]
                         )
                         pid_data = JsonReader.read(pid_filepath)
+
                         # since multiple running workflow share log data,
                         # check if message really belongs to the current workflow
                         if pid_data["last_script_file"] in msg["msg"]:
                             self.logger.error("Workflow cancelled")
+
+                    # for any other errors
                     else:
                         self.logger.error(msg)
 
