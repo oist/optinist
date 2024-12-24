@@ -85,9 +85,7 @@ class WorkflowResult:
             nwb_filepath_list = glob(join_filepath([self.workflow_dirpath, "*.nwb"]))
         else:
             node_dirpath = join_filepath([self.workflow_dirpath, node_id])
-            nwb_filepath_list = glob(
-                join_filepath([node_dirpath, "*.nwb"])
-            )
+            nwb_filepath_list = glob(join_filepath([node_dirpath, "*.nwb"]))
 
         for nwb_filepath in nwb_filepath_list:
             if os.path.exists(nwb_filepath):
