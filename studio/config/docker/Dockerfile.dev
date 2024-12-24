@@ -16,7 +16,7 @@ RUN mkdir -p /opt/miniforge && \
     export PATH="$PATH:/opt/miniforge/bin" && \
     conda upgrade -y --all && \
     conda config --set channel_priority flexible && \
-    conda clean -y --tarballs
+    conda clean -y --all
 ENV PATH $PATH:/opt/miniforge/bin
 
 # setup user profile
