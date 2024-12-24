@@ -41,8 +41,12 @@ class WorkflowResult:
           - Check and update the workflow execution status
           - Response with the confirmed workflow execution status
         """
+
         results: Dict[str, Message] = {}
+
         for node_id in nodeIdList:
+            node_dirpath = join_filepath([self.workflow_dirpath, node_id])
+
             if os.path.exists(self.error_filepath):
                 error_message = Reader.read(self.error_filepath)
                 if error_message != "":
@@ -51,25 +55,25 @@ class WorkflowResult:
                         message=error_message,
                     )
 
-            glob_pickle_filepath = glob(
-                join_filepath([self.workflow_dirpath, node_id, "*.pkl"])
+            node_pickle_files = list(
+                set(glob(join_filepath([node_dirpath, "*.pkl"])))
+                - set(glob(join_filepath([node_dirpath, "tmp_*.pkl"])))
             )
-            tmp_glob_pickle_filepath = glob(
-                join_filepath([self.workflow_dirpath, node_id, "tmp_*.pkl"])
-            )
-            for pickle_filepath in list(
-                set(glob_pickle_filepath) - set(tmp_glob_pickle_filepath)
-            ):
+
+            # process node pickle files
+            for node_pickle_path in node_pickle_files:
+                # check node result
                 node_result = NodeResult(
                     self.workflow_dirpath,
                     node_id,
-                    pickle_filepath,
+                    node_pickle_path,
                 )
+                results[node_id] = node_result.observe()
 
-                if node_result.info is not None:
-                    results[node_id] = node_result.observe()
-                    self.__check_has_nwb(node_id)
+                # check node nwb
+                self.__check_has_nwb(node_id)
 
+        # check workflow nwb
         self.__check_has_nwb()
 
         return results
@@ -80,8 +84,9 @@ class WorkflowResult:
         if target_whole_nwb:
             nwb_filepath_list = glob(join_filepath([self.workflow_dirpath, "*.nwb"]))
         else:
+            node_dirpath = join_filepath([self.workflow_dirpath, node_id])
             nwb_filepath_list = glob(
-                join_filepath([self.workflow_dirpath, node_id, "*.nwb"])
+                join_filepath([node_dirpath, "*.nwb"])
             )
 
         for nwb_filepath in nwb_filepath_list:
@@ -157,12 +162,12 @@ class NodeResult:
         try:
             self.info = PickleReader.read(pickle_filepath)
         except EOFError:
-            self.info = None
+            self.info = None  # indicates error
 
-    def observe(self):
+    def observe(self) -> Message:
         expt_config = ExptConfigReader.read(self.expt_filepath)
 
-        if isinstance(self.info, (list, str)):
+        if PickleReader.check_is_error_node_pickle(self.info):
             expt_config.function[self.node_id].success = NodeRunStatus.ERROR.value
             message = self.error()
         else:
@@ -191,20 +196,22 @@ class NodeResult:
 
         return message
 
-    def success(self):
+    def success(self) -> Message:
         return Message(
             status=NodeRunStatus.SUCCESS.value,
             message=f"{self.algo_name} success",
             outputPaths=self.output_paths(),
         )
 
-    def error(self):
-        return Message(
-            status=NodeRunStatus.ERROR.value,
-            message=self.info if isinstance(self.info, str) else "\n".join(self.info),
-        )
+    def error(self) -> Message:
+        if self.info is None:
+            message = "Invalid node result info: None"
+        else:
+            message = "\n".join(self.info) if isinstance(self.info, list) else self.info
 
-    def output_paths(self):
+        return Message(status=NodeRunStatus.ERROR.value, message=message)
+
+    def output_paths(self) -> dict:
         output_paths: Dict[str, OutputPath] = {}
         for k, v in self.info.items():
             if isinstance(v, BaseData):

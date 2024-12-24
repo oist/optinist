@@ -77,13 +77,12 @@ class Runner:
             gc.collect()
 
         except Exception as e:
+            # logging error
             err_msg = list(traceback.TracebackException.from_exception(e).format())
-
-            # show full trace to console
             logger.error("\n".join(err_msg))
 
-            # save msg for GUI
-            PickleWriter.write(__rule.output, err_msg)
+            # save error info to node pickle data.
+            PickleWriter.write_error(__rule.output, e)
 
     @classmethod
     def set_func_start_timestamp(cls, output_dirpath):
