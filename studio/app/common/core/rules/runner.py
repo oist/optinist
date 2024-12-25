@@ -266,7 +266,7 @@ class Runner:
 
         if not os.path.exists(last_script_file):
             logger.warning(
-                "The run script has not yet started. script: ", last_script_file
+                f"The run script has not yet started. script: {last_script_file}"
             )
             raise HTTPException(status_code=404)
 

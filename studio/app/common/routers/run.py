@@ -87,6 +87,9 @@ async def run_result(workspace_id: str, uid: str, nodeDict: NodeItem):
 async def cancel_run(workspace_id: str, uid: str):
     try:
         return Runner.cancel_run(workspace_id, uid)
+    except HTTPException as e:
+        logger.error(e)
+        raise e
     except Exception as e:
         logger.error(e, exc_info=True)
         raise HTTPException(
