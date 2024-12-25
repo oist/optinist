@@ -8,8 +8,8 @@ from typing import Dict
 from fastapi import HTTPException
 
 from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
+from studio.app.common.core.experiment.experiment_writer import ExptConfigWriter
 from studio.app.common.core.snakemake.smk_status_logger import SmkStatusLogger
-from studio.app.common.core.utils.config_handler import ConfigWriter
 from studio.app.common.core.utils.file_reader import JsonReader
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.utils.pickle_handler import PickleReader
@@ -56,7 +56,8 @@ class WorkflowResult:
             if workflow_error["has_error"]:
                 node_pickle_path = None
                 node_result = NodeResult(
-                    self.workflow_dirpath,
+                    self.workspace_id,
+                    self.unique_id,
                     node_id,
                     node_pickle_path,
                     workflow_error,
@@ -75,7 +76,8 @@ class WorkflowResult:
                 # process node pickle files
                 for node_pickle_path in node_pickle_files:
                     node_result = NodeResult(
-                        self.workflow_dirpath,
+                        self.workspace_id,
+                        self.unique_id,
                         node_id,
                         node_pickle_path,
                     )
@@ -106,10 +108,9 @@ class WorkflowResult:
                 else:
                     config.function[node_id].hasNWB = True
 
-                ConfigWriter.write(
-                    dirname=self.workflow_dirpath,
-                    filename=DIRPATH.EXPERIMENT_YML,
-                    config=asdict(config),
+                # Update EXPERIMENT_YML
+                ExptConfigWriter.write_raw(
+                    self.workspace_id, self.unique_id, asdict(config)
                 )
 
     def cancel(self):
@@ -159,12 +160,21 @@ class WorkflowResult:
 class NodeResult:
     def __init__(
         self,
-        workflow_dirpath: str,
+        workspace_id: str,
+        unique_id: str,
         node_id: str,
         pickle_filepath: str,
         workflow_error: dict = None,
     ):
-        self.workflow_dirpath = workflow_dirpath
+        self.workspace_id = workspace_id
+        self.unique_id = unique_id
+        self.workflow_dirpath = join_filepath(
+            [
+                DIRPATH.OUTPUT_DIR,
+                self.workspace_id,
+                self.unique_id,
+            ]
+        )
         self.node_id = node_id
         self.node_dirpath = join_filepath([self.workflow_dirpath, self.node_id])
         self.expt_filepath = join_filepath(
@@ -217,12 +227,10 @@ class NodeResult:
             else:
                 expt_config.success = NodeRunStatus.SUCCESS.value
 
-        ConfigWriter.write(
-            dirname=self.workflow_dirpath,
-            filename=DIRPATH.EXPERIMENT_YML,
-            config=asdict(expt_config),
+        # Update EXPERIMENT_YML
+        ExptConfigWriter.write_raw(
+            self.workspace_id, self.unique_id, asdict(expt_config)
         )
-
         return message
 
     def success(self) -> Message:

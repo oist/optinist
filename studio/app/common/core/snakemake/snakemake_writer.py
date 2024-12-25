@@ -4,10 +4,10 @@ from studio.app.dir_path import DIRPATH
 
 
 class SmkConfigWriter:
-    @classmethod
-    def write(cls, workspace_id, unique_id, flow_config):
+    @staticmethod
+    def write_raw(workspace_id, unique_id, config):
         ConfigWriter.write(
             dirname=join_filepath([DIRPATH.OUTPUT_DIR, workspace_id, unique_id]),
             filename=DIRPATH.SNAKEMAKE_CONFIG_YML,
-            config=flow_config,
+            config=config,
         )

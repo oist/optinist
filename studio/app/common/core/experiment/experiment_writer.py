@@ -33,6 +33,14 @@ class ExptConfigWriter:
         self.snakemake = snakemake
         self.builder = ExptConfigBuilder()
 
+    @staticmethod
+    def write_raw(workspace_id: str, unique_id: str, config: dict) -> None:
+        ConfigWriter.write(
+            dirname=join_filepath([DIRPATH.OUTPUT_DIR, workspace_id, unique_id]),
+            filename=DIRPATH.EXPERIMENT_YML,
+            config=config,
+        )
+
     def write(self) -> None:
         expt_filepath = join_filepath(
             [
@@ -51,12 +59,9 @@ class ExptConfigWriter:
 
         self.build_function_from_nodeDict()
 
-        ConfigWriter.write(
-            dirname=join_filepath(
-                [DIRPATH.OUTPUT_DIR, self.workspace_id, self.unique_id]
-            ),
-            filename=DIRPATH.EXPERIMENT_YML,
-            config=asdict(self.builder.build()),
+        # Write EXPERIMENT_YML
+        self.write_raw(
+            self.workspace_id, self.unique_id, config=asdict(self.builder.build())
         )
 
     def create_config(self) -> ExptConfig:

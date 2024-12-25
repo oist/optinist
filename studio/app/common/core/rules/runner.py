@@ -7,10 +7,11 @@ from datetime import datetime
 
 from filelock import FileLock
 
+from studio.app.common.core.experiment.experiment import ExptOutputPathIds
 from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
+from studio.app.common.core.experiment.experiment_writer import ExptConfigWriter
 from studio.app.common.core.logger import AppLogger
 from studio.app.common.core.snakemake.smk import Rule
-from studio.app.common.core.utils.config_handler import ConfigWriter
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.utils.pickle_handler import PickleReader, PickleWriter
 from studio.app.const import DATE_FORMAT
@@ -87,16 +88,16 @@ class Runner:
     @classmethod
     def set_func_start_timestamp(cls, output_dirpath):
         workflow_dirpath = os.path.dirname(output_dirpath)
-        node_id = os.path.basename(output_dirpath)
+        ids = ExptOutputPathIds(output_dirpath)
+
         expt_config = ExptConfigReader.read(
             join_filepath([workflow_dirpath, DIRPATH.EXPERIMENT_YML])
         )
-        expt_config.function[node_id].started_at = datetime.now().strftime(DATE_FORMAT)
-        ConfigWriter.write(
-            dirname=workflow_dirpath,
-            filename=DIRPATH.EXPERIMENT_YML,
-            config=asdict(expt_config),
+        expt_config.function[ids.function_id].started_at = datetime.now().strftime(
+            DATE_FORMAT
         )
+
+        ExptConfigWriter.write_raw(ids.workspace_id, ids.unique_id, asdict(expt_config))
 
     @classmethod
     def save_func_nwb(cls, save_path, name, nwbfile, output_info):
