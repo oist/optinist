@@ -3,6 +3,7 @@ from typing import Dict
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 
 from studio.app.common.core.logger import AppLogger
+from studio.app.common.core.rules.runner import Runner
 from studio.app.common.core.workflow.workflow import Message, NodeItem, RunItem
 from studio.app.common.core.workflow.workflow_result import WorkflowResult
 from studio.app.common.core.workflow.workflow_runner import WorkflowRunner
@@ -83,9 +84,9 @@ async def run_result(workspace_id: str, uid: str, nodeDict: NodeItem):
     response_model=bool,
     dependencies=[Depends(is_workspace_owner)],
 )
-async def run_cancel(workspace_id: str, uid: str):
+async def cancel_run(workspace_id: str, uid: str):
     try:
-        return WorkflowResult(workspace_id, uid).cancel()
+        return Runner.cancel_run(workspace_id, uid)
     except Exception as e:
         logger.error(e, exc_info=True)
         raise HTTPException(

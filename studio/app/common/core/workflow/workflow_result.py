@@ -1,16 +1,12 @@
 import os
-import signal
 from dataclasses import asdict
 from datetime import datetime
 from glob import glob
 from typing import Dict
 
-from fastapi import HTTPException
-
 from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
 from studio.app.common.core.experiment.experiment_writer import ExptConfigWriter
 from studio.app.common.core.snakemake.smk_status_logger import SmkStatusLogger
-from studio.app.common.core.utils.file_reader import JsonReader
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.utils.pickle_handler import PickleReader
 from studio.app.common.core.workflow.workflow import Message, NodeRunStatus, OutputPath
@@ -33,8 +29,6 @@ class WorkflowResult:
         self.expt_filepath = join_filepath(
             [self.workflow_dirpath, DIRPATH.EXPERIMENT_YML]
         )
-
-        self.pid_filepath = join_filepath([self.workflow_dirpath, "pid.json"])
 
     def observe(self, nodeIdList) -> Dict:
         """
@@ -112,49 +106,6 @@ class WorkflowResult:
                 ExptConfigWriter.write_raw(
                     self.workspace_id, self.unique_id, asdict(config)
                 )
-
-    def cancel(self):
-        """
-        The algorithm function of this workflow is being executed at the line:
-        https://github.com/snakemake/snakemake/blob/27b224ed12448df8aebc7d1ff8f25e3bf7622232/snakemake/shell.py#L258
-        ```
-        proc = sp.Popen(
-            cmd,
-            bufsize=-1,
-            shell=use_shell,
-            stdout=stdout,
-            universal_newlines=iterable or read or None,
-            close_fds=close_fds,
-            **cls._process_args,
-            env=envvars,
-        )
-        ```
-        The `cmd` argument has the following format:
-        ```
-        source ~/miniconda3/bin/activate
-        '~/Documents/optinistfs/.snakemake/conda/491889952d2f07f3876bb801eea626e9_';
-        set -euo pipefail;
-        python ~/Documents/optinistfs/.snakemake/scripts/tmp03froqxo.func.py
-        ```
-        Interrupt the conda activate at the beginning of the process is impossible
-        because it is only called when each algorithm function executes.
-        This workflow is cancelled by killing process via PID of algorithm function
-        saved in pid.json file
-        Raises:
-            HTTPException: if pid_filepath or last_script_file does not exist
-        """
-        if not os.path.exists(self.pid_filepath):
-            raise HTTPException(status_code=404)
-
-        pid_data = JsonReader.read(self.pid_filepath)
-
-        if not os.path.exists(pid_data["last_script_file"]):
-            raise HTTPException(status_code=404)
-
-        os.remove(pid_data["last_script_file"])
-        os.kill(pid_data["last_pid"], signal.SIGTERM)
-
-        return True
 
 
 class NodeResult:

@@ -2,7 +2,8 @@ import logging
 import os
 from typing import Dict
 
-from studio.app.common.core.utils.file_reader import JsonReader, Reader
+from studio.app.common.core.rules.runner import Runner
+from studio.app.common.core.utils.file_reader import Reader
 from studio.app.common.core.utils.filepath_creater import (
     create_directory,
     join_filepath,
@@ -12,9 +13,9 @@ from studio.app.dir_path import DIRPATH
 
 class SmkStatusLogger:
     """
-    TODO: Since the Snakemake library automatically creates thread for workflows and
-    shares the same loggers in the library, all workflows running at the same time
-    will use same log data.
+    ATTENTION: Since the Snakemake library automatically creates thread for workflow
+      and shares the same loggers in the library, all workflows running at the same time
+      will use same log data.
     """
 
     ERROR_LOG_NAME = "error.log"
@@ -106,20 +107,16 @@ class SmkStatusLogger:
                         err in msg["msg"]
                         for err in ["Signals.SIGTERM", "exit status 15"]
                     ):
-                        pid_filepath = join_filepath(
-                            [
-                                DIRPATH.OUTPUT_DIR,
-                                self.workspace_id,
-                                self.unique_id,
-                                "pid.json",
-                            ]
+                        pid_data = Runner.read_pid_file(
+                            self.workspace_id, self.unique_id
                         )
-                        pid_data = JsonReader.read(pid_filepath)
 
                         # since multiple running workflow share log data,
                         # check if message really belongs to the current workflow
                         if pid_data["last_script_file"] in msg["msg"]:
                             self.logger.error("Workflow cancelled")
+                        else:
+                            self.logger.error(msg)
 
                     # for any other errors
                     else:

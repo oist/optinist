@@ -1,10 +1,14 @@
 import copy
 import gc
+import json
 import os
+import signal
 import traceback
 from dataclasses import asdict
 from datetime import datetime
+from pathlib import Path
 
+from fastapi import HTTPException
 from filelock import FileLock
 
 from studio.app.common.core.experiment.experiment import ExptOutputPathIds
@@ -12,6 +16,7 @@ from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
 from studio.app.common.core.experiment.experiment_writer import ExptConfigWriter
 from studio.app.common.core.logger import AppLogger
 from studio.app.common.core.snakemake.smk import Rule
+from studio.app.common.core.utils.file_reader import JsonReader
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.utils.pickle_handler import PickleReader, PickleWriter
 from studio.app.const import DATE_FORMAT
@@ -27,15 +32,18 @@ logger = AppLogger.get_logger()
 
 
 class Runner:
+    RUN_PROCESS_PID_FILE = "pid.json"
+
     @classmethod
-    def run(cls, __rule: Rule, last_output):
+    def run(cls, __rule: Rule, last_output, run_script_path: str):
         try:
             logger.info("start rule runner")
 
-            input_info = cls.read_input_info(__rule.input)
+            # write pid file
+            cls.__write_pid_file(__rule, run_script_path)
 
-            cls.change_dict_key_exist(input_info, __rule)
-
+            input_info = cls.__read_input_info(__rule.input)
+            cls.__change_dict_key_exist(input_info, __rule)
             nwbfile = input_info["nwbfile"]
 
             # input_info
@@ -43,10 +51,10 @@ class Runner:
                 if key not in __rule.return_arg.values():
                     input_info.pop(key)
 
-            cls.set_func_start_timestamp(os.path.dirname(__rule.output))
+            cls.__set_func_start_timestamp(os.path.dirname(__rule.output))
 
             # output_info
-            output_info = cls.execute_function(
+            output_info = cls.__execute_function(
                 __rule.path,
                 __rule.params,
                 nwbfile.get("input"),
@@ -55,7 +63,7 @@ class Runner:
             )
 
             # nwbfileの設定
-            output_info["nwbfile"] = cls.save_func_nwb(
+            output_info["nwbfile"] = cls.__save_func_nwb(
                 f"{__rule.output.split('.')[0]}.nwb",
                 __rule.type,
                 nwbfile,
@@ -86,7 +94,39 @@ class Runner:
             PickleWriter.write_error(__rule.output, e)
 
     @classmethod
-    def set_func_start_timestamp(cls, output_dirpath):
+    def __get_pid_file_path(cls, workspace_id: str, unique_id: str) -> str:
+        pid_file_path = join_filepath(
+            [
+                DIRPATH.OUTPUT_DIR,
+                workspace_id,
+                unique_id,
+                cls.RUN_PROCESS_PID_FILE,
+            ]
+        )
+        return pid_file_path
+
+    @classmethod
+    def __write_pid_file(cls, __rule: Rule, run_script_path: str) -> None:
+        """
+        save snakemake script file path and PID of current running algo function
+        """
+        pid_data = {"last_pid": os.getpid(), "last_script_file": run_script_path}
+
+        workflow_dirpath = str(Path(__rule.output).parent.parent)
+        ids = ExptOutputPathIds(workflow_dirpath)
+        pid_file_path = cls.__get_pid_file_path(ids.workspace_id, ids.unique_id)
+
+        with open(pid_file_path, "w") as f:
+            json.dump(pid_data, f)
+
+    @classmethod
+    def read_pid_file(cls, workspace_id: str, unique_id: str) -> dict:
+        pid_file_path = cls.__get_pid_file_path(workspace_id, unique_id)
+        pid_data = JsonReader.read(pid_file_path)
+        return pid_data
+
+    @classmethod
+    def __set_func_start_timestamp(cls, output_dirpath):
         workflow_dirpath = os.path.dirname(output_dirpath)
         ids = ExptOutputPathIds(output_dirpath)
 
@@ -100,7 +140,7 @@ class Runner:
         ExptConfigWriter.write_raw(ids.workspace_id, ids.unique_id, asdict(expt_config))
 
     @classmethod
-    def save_func_nwb(cls, save_path, name, nwbfile, output_info):
+    def __save_func_nwb(cls, save_path, name, nwbfile, output_info):
         if "nwbfile" in output_info:
             nwbfile[name] = output_info["nwbfile"]
             save_nwb(
@@ -128,8 +168,8 @@ class Runner:
                 save_nwb(save_path, input_nwbfile, nwbconfig)
 
     @classmethod
-    def execute_function(cls, path, params, nwb_params, output_dir, input_info):
-        wrapper = cls.dict2leaf(wrapper_dict, path.split("/"))
+    def __execute_function(cls, path, params, nwb_params, output_dir, input_info):
+        wrapper = cls.__dict2leaf(wrapper_dict, path.split("/"))
         func = copy.deepcopy(wrapper["function"])
         output_info = func(
             params=params, nwbfile=nwb_params, output_dir=output_dir, **input_info
@@ -140,13 +180,13 @@ class Runner:
         return output_info
 
     @classmethod
-    def change_dict_key_exist(cls, input_info, rule_config: Rule):
+    def __change_dict_key_exist(cls, input_info, rule_config: Rule):
         for return_name, arg_name in rule_config.return_arg.items():
             if return_name in input_info:
                 input_info[arg_name] = input_info.pop(return_name)
 
     @classmethod
-    def read_input_info(cls, input_files):
+    def __read_input_info(cls, input_files):
         input_info = {}
         for filepath in input_files:
             load_data = PickleReader.read(filepath)
@@ -156,7 +196,7 @@ class Runner:
                 load_data
             ), f"Invalid node input data content. [{filepath}]"
 
-            merged_nwb = cls.deep_merge(
+            merged_nwb = cls.__deep_merge(
                 load_data.pop("nwbfile", {}), input_info.pop("nwbfile", {})
             )
             input_info = dict(list(load_data.items()) + list(input_info.items()))
@@ -164,21 +204,73 @@ class Runner:
         return input_info
 
     @classmethod
-    def deep_merge(cls, dict1, dict2):
+    def __deep_merge(cls, dict1, dict2):
         if not isinstance(dict1, dict) or not isinstance(dict2, dict):
             return dict2
         merged = dict1.copy()
         for k, v in dict2.items():
             if k in merged and isinstance(merged[k], dict):
-                merged[k] = cls.deep_merge(merged[k], v)
+                merged[k] = cls.__deep_merge(merged[k], v)
             else:
                 merged[k] = v
         return merged
 
     @classmethod
-    def dict2leaf(cls, root_dict: dict, path_list):
+    def __dict2leaf(cls, root_dict: dict, path_list):
         path = path_list.pop(0)
         if len(path_list) > 0:
-            return cls.dict2leaf(root_dict[path], path_list)
+            return cls.__dict2leaf(root_dict[path], path_list)
         else:
             return root_dict[path]
+
+    @classmethod
+    def cancel_run(cls, workspace_id: str, unique_id: str):
+        """
+        The algorithm function of this workflow is being executed at the line:
+        https://github.com/snakemake/snakemake/blob/27b224ed12448df8aebc7d1ff8f25e3bf7622232/snakemake/shell.py#L258
+        ```
+        proc = sp.Popen(
+            cmd,
+            bufsize=-1,
+            shell=use_shell,
+            stdout=stdout,
+            universal_newlines=iterable or read or None,
+            close_fds=close_fds,
+            **cls._process_args,
+            env=envvars,
+        )
+        ```
+        The `cmd` argument has the following format:
+        ```
+        source ~/miniconda3/bin/activate
+        '/app/.snakemake/conda/xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx_';
+        set -euo pipefail;
+        python /app/.snakemake/scripts/tmpxxxxxxxx.func.py
+        ```
+        Interrupt the conda activate at the beginning of the process is impossible
+        because it is only called when each algorithm function executes.
+        This workflow is cancelled by killing process via PID of algorithm function
+        saved in `RUN_PROCESS_PID_FILE` file
+        Raises:
+            HTTPException: if pid_filepath or last_script_file does not exist
+        """
+
+        pid_filepath = cls.__get_pid_file_path(workspace_id, unique_id)
+
+        if not os.path.exists(pid_filepath):
+            raise HTTPException(status_code=404)
+
+        pid_data = cls.read_pid_file(workspace_id, unique_id)
+        last_pid = pid_data["last_pid"]
+        last_script_file = pid_data["last_script_file"]
+
+        if not os.path.exists(last_script_file):
+            logger.warning(
+                "The run script has not yet started. script: ", last_script_file
+            )
+            raise HTTPException(status_code=404)
+
+        os.remove(last_script_file)
+        os.kill(last_pid, signal.SIGTERM)
+
+        return True
