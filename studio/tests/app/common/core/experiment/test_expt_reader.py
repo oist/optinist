@@ -1,5 +1,6 @@
 from studio.app.common.core.experiment.experiment import ExptConfig, ExptFunction
 from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
+from studio.app.common.core.workflow.workflow import NodeRunStatus
 from studio.app.dir_path import DIRPATH
 
 workspace_id = "default"
@@ -30,7 +31,7 @@ def test_read_function():
         "sample1": {
             "unique_id": "a",
             "name": "a",
-            "success": "success",
+            "success": NodeRunStatus.SUCCESS.value,
             "hasNWB": False,
             "started_at": "2023-07-04 12:52:06",
             "finished_at": "2023-07-04 12:52:19",

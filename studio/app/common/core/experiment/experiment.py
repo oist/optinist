@@ -1,8 +1,10 @@
+import re
 from dataclasses import dataclass
 from typing import Dict, Optional
 
 from studio.app.common.core.snakemake.smk import SmkParam
 from studio.app.common.core.workflow.workflow import OutputPath
+from studio.app.dir_path import DIRPATH
 from studio.app.optinist.schemas.nwb import NWBParams
 
 
@@ -46,9 +48,16 @@ class ExptOutputPathIds:
           - {DIRPATH.OUTPUT_DIR}/{workspace_id}/{unique_id}/{function_id}
         """
         if self.output_dir:
-            splitted_path = self.output_dir.split("/")
+            output_relative_dir = re.sub(f"^{DIRPATH.OUTPUT_DIR}/", "", self.output_dir)
+            splitted_ids = output_relative_dir.split("/")
         else:
-            splitted_path = []
+            splitted_ids = []
 
-        if len(splitted_path) >= 3:
-            self.workspace_id, self.unique_id, self.function_id = splitted_path[-3:]
+        ids_couont = len(splitted_ids)
+
+        if ids_couont == 3:
+            self.workspace_id, self.unique_id, self.function_id = splitted_ids
+        elif ids_couont == 2:
+            self.workspace_id, self.unique_id = splitted_ids
+        else:
+            assert False, f"Invalid path specified: {self.output_dir}"

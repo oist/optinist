@@ -4,6 +4,7 @@ import shutil
 import pytest
 
 from studio.app.common.core.snakemake.smk import ForceRun, SmkParam
+from studio.app.common.core.snakemake.smk_status_logger import SmkStatusLogger
 from studio.app.common.core.snakemake.snakemake_executor import (
     delete_dependencies,
     snakemake_execute,
@@ -115,8 +116,8 @@ def test_snakemake_execute(client):
         node_2nd_pkl
     ), "Invalid workflow pickle"
 
-    # Check for generated "error.log" file
-    error_log_filepath = f"{output_dirpath}/error.log"
+    # Check for generated snakemake_status_logger log file
+    error_log_filepath = f"{output_dirpath}/{SmkStatusLogger.ERROR_LOG_NAME}"
     assert os.path.exists(error_log_filepath)
 
 

@@ -22,7 +22,7 @@ def test_WorkflowResult_get():
         output_dirpath,
         dirs_exist_ok=True,
     )
-    output = WorkflowResult(workspace_id=workspace_id, unique_id=unique_id).get(
+    output = WorkflowResult(workspace_id=workspace_id, unique_id=unique_id).observe(
         node_id_list
     )
 
@@ -33,9 +33,10 @@ def test_WorkflowResult_get():
 def test_NodeResult_get():
     assert os.path.exists(pickle_path)
     output = NodeResult(
-        workflow_dirpath=output_dirpath,
+        workspace_id=workspace_id,
+        unique_id=unique_id,
         node_id="func1",
         pickle_filepath=pickle_path,
-    ).get()
+    ).observe()
 
     assert isinstance(output, Message)

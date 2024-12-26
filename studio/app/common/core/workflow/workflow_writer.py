@@ -24,13 +24,17 @@ class WorkflowConfigWriter:
         self.builder = WorkflowConfigBuilder()
         self.create_config()
 
-    def write(self) -> None:
+    @staticmethod
+    def write_raw(workspace_id: str, unique_id: str, config: dict) -> None:
         ConfigWriter.write(
-            dirname=join_filepath(
-                [DIRPATH.OUTPUT_DIR, self.workspace_id, self.unique_id]
-            ),
+            dirname=join_filepath([DIRPATH.OUTPUT_DIR, workspace_id, unique_id]),
             filename=DIRPATH.WORKFLOW_YML,
-            config=asdict(self.builder.build()),
+            config=config,
+        )
+
+    def write(self) -> None:
+        self.write_raw(
+            self.workspace_id, self.unique_id, config=asdict(self.builder.build())
         )
 
     def create_config(self) -> WorkflowConfig:
