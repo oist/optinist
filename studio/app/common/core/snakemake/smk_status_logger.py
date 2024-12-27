@@ -8,6 +8,7 @@ from studio.app.common.core.utils.filepath_creater import (
     create_directory,
     join_filepath,
 )
+from studio.app.common.schemas.workflow import WorkflowErrorInfo
 from studio.app.dir_path import DIRPATH
 
 
@@ -67,7 +68,7 @@ class SmkStatusLogger:
         return log_file_path
 
     @classmethod
-    def get_error_content(cls, workspace_id: str, unique_id: str) -> dict:
+    def get_error_content(cls, workspace_id: str, unique_id: str) -> WorkflowErrorInfo:
         log_file_path = cls.__get_error_log_file_path(workspace_id, unique_id)
 
         if os.path.exists(log_file_path):
@@ -77,7 +78,7 @@ class SmkStatusLogger:
             error_log = None
             has_error = False
 
-        return {"has_error": has_error, "error_log": error_log}
+        return WorkflowErrorInfo(has_error=has_error, error_log=error_log)
 
     def __init__(self, workspace_id, unique_id):
         self.workspace_id = workspace_id
@@ -113,7 +114,10 @@ class SmkStatusLogger:
 
                         # since multiple running workflow share log data,
                         # check if message really belongs to the current workflow
-                        if pid_data["last_script_file"] in msg["msg"]:
+                        if (
+                            pid_data is not None
+                            and pid_data.last_script_file in msg["msg"]
+                        ):
                             self.logger.error("Workflow cancelled")
                         else:
                             self.logger.error(msg)
