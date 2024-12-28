@@ -276,7 +276,7 @@ class WorkflowMonitor:
     PROCESS_SNAKEMAKE_CMDLINE = "python .*/\\.snakemake/scripts/"
     PROCESS_SNAKEMAKE_WAIT_TIMEOUT = 180  # sec
     PROCESS_CONDA_CMDLINE = "conda env create .*/\\.snakemake/conda/"
-    PROCESS_CONDA_WAIT_TIMEOUT = 3600
+    PROCESS_CONDA_WAIT_TIMEOUT = 3600  # sec
 
     def __init__(self, workspace_id: str, unique_id: str):
         self.workspace_id = workspace_id
@@ -292,7 +292,7 @@ class WorkflowMonitor:
             # Set dummy value to proceed to the next step.
             pid_data = WorkflowPIDFileData(
                 last_pid=999999,
-                last_script_file="__dummy_function.py",
+                last_script_file="__dummy_wrapper_function.py",
                 create_time=time.time(),
             )
 
@@ -330,12 +330,10 @@ class WorkflowMonitor:
                     cmdline = " ".join(cmdline) if cmdline else ""
 
                     if re.search(self.PROCESS_CONDA_CMDLINE, cmdline):
-                        conda_process_create_elapsed = int(
-                            time.time() - proc.create_time()
-                        )
+                        conda_ps_create_elapsed = int(time.time() - proc.create_time())
                         logger.info(
                             f"Found conda process. [{proc}] [{cmdline}] "
-                            f"[{conda_process_create_elapsed}]",
+                            f"[{conda_ps_create_elapsed} sec]",
                         )
                         conda_process = Process(proc.pid)
 
@@ -347,10 +345,7 @@ class WorkflowMonitor:
                         #   so it is difficult to identify the process with certainty.
                         # Therefore, the process start time is used here to determine
                         #   the process by estimation.
-                        if (
-                            conda_process_create_elapsed
-                            < self.PROCESS_CONDA_WAIT_TIMEOUT
-                        ):
+                        if conda_ps_create_elapsed < self.PROCESS_CONDA_WAIT_TIMEOUT:
                             process_result = WorkflowProcessInfo(
                                 process=conda_process, pid_data=pid_data
                             )
@@ -358,7 +353,7 @@ class WorkflowMonitor:
                             logger.warning(
                                 "This conda command is "
                                 "probably an irrelevant process.."
-                                f"[{conda_process}] [{conda_process_create_elapsed}]"
+                                f"[{conda_process}] [{conda_ps_create_elapsed} sec]"
                             )
                     else:
                         continue  # skip that process
@@ -368,20 +363,15 @@ class WorkflowMonitor:
                 except ZombieProcess:
                     continue  # skip that process
 
-            # Rescue action when process not found
-            if conda_process is None:
-                # Check elapsed time for process startup
-                # *Retry for a certain period of time even if process not found
-                if pid_data.elapsed_time < self.PROCESS_SNAKEMAKE_WAIT_TIMEOUT:
-                    logger.debug(
-                        f"Set dummy workflow process tentatively. [{pid_data}]"
-                    )
-                    process_result = WorkflowProcessInfo(
-                        process=None, pid_data=pid_data
-                    )
-                else:
-                    logger.warning(f"No workflow process found at all. [{pid_data}]")
-                    process_result = None
+        # Rescue action when process not found
+        if process_result is None:
+            # Check elapsed time for process startup
+            # *Retry for a certain period of time even if process not found
+            if pid_data.elapsed_time < self.PROCESS_SNAKEMAKE_WAIT_TIMEOUT:
+                logger.debug(f"Set dummy workflow process tentatively. [{pid_data}]")
+                process_result = WorkflowProcessInfo(process=None, pid_data=pid_data)
+            else:
+                logger.warning(f"No workflow process found at all. [{pid_data}]")
 
         return process_result
 
