@@ -44,7 +44,7 @@ class WorkflowResult:
         self.expt_filepath = join_filepath(
             [self.workflow_dirpath, DIRPATH.EXPERIMENT_YML]
         )
-        self.monitor = WorkflowMonitor(workspace_id, unique_id)
+        self.monitor = WorkflowMonitor(workspace_id, unique_id, self.expt_filepath)
 
     def observe(self, nodeIdList: List[str]) -> Dict:
         """
@@ -278,9 +278,10 @@ class WorkflowMonitor:
     PROCESS_CONDA_CMDLINE = "conda env create .*/\\.snakemake/conda/"
     PROCESS_CONDA_WAIT_TIMEOUT = 3600  # sec
 
-    def __init__(self, workspace_id: str, unique_id: str):
+    def __init__(self, workspace_id: str, unique_id: str, expt_filepath: str):
         self.workspace_id = workspace_id
         self.unique_id = unique_id
+        self.expt_filepath = expt_filepath
 
     def search_process(self) -> WorkflowProcessInfo:
         pid_data = Runner.read_pid_file(self.workspace_id, self.unique_id)
@@ -289,14 +290,23 @@ class WorkflowMonitor:
                 f"No workflow pid file found. [{self.workspace_id}/{self.unique_id}]"
             )
 
+            # Refer experiment_data instead of pid_data
+            expt_config = ExptConfigReader.read(self.expt_filepath)
+            try:
+                expt_started_time = datetime.strptime(
+                    expt_config.started_at, DATE_FORMAT
+                )
+            except ValueError:
+                expt_started_time = datetime.fromtimestamp(0)
+
             # Set dummy value to proceed to the next step.
             pid_data = WorkflowPIDFileData(
                 last_pid=999999,
                 last_script_file="__dummy_wrapper_function.py",
-                create_time=time.time(),
+                create_time=expt_started_time.timestamp(),
             )
 
-        process_result: WorkflowProcessInfo = None
+        process_data: WorkflowProcessInfo = None
 
         # Find the process corresponding to the pid in pid_data
         try:
@@ -315,7 +325,7 @@ class WorkflowMonitor:
                 )
                 raise NoSuchProcess(last_pid)
 
-            process_result = WorkflowProcessInfo(process=process, pid_data=pid_data)
+            process_data = WorkflowProcessInfo(process=process, pid_data=pid_data)
 
         # If the target process does not exist,
         # check for the existence of the `conda env create` command process.
@@ -346,7 +356,7 @@ class WorkflowMonitor:
                         # Therefore, the process start time is used here to determine
                         #   the process by estimation.
                         if conda_ps_create_elapsed < self.PROCESS_CONDA_WAIT_TIMEOUT:
-                            process_result = WorkflowProcessInfo(
+                            process_data = WorkflowProcessInfo(
                                 process=conda_process, pid_data=pid_data
                             )
                         else:
@@ -364,16 +374,16 @@ class WorkflowMonitor:
                     continue  # skip that process
 
         # Rescue action when process not found
-        if process_result is None:
+        if process_data is None:
             # Check elapsed time for process startup
             # *Retry for a certain period of time even if process not found
             if pid_data.elapsed_time < self.PROCESS_SNAKEMAKE_WAIT_TIMEOUT:
                 logger.debug(f"Set dummy workflow process tentatively. [{pid_data}]")
-                process_result = WorkflowProcessInfo(process=None, pid_data=pid_data)
+                process_data = WorkflowProcessInfo(process=None, pid_data=pid_data)
             else:
                 logger.warning(f"No workflow process found at all. [{pid_data}]")
 
-        return process_result
+        return process_data
 
     def cancel_run(self):
         """
