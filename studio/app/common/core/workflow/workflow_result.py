@@ -5,9 +5,9 @@ import time
 from dataclasses import asdict
 from datetime import datetime
 from glob import glob
-from http.client import HTTPException
 from typing import Dict, List
 
+from fastapi import HTTPException, status
 from psutil import AccessDenied, NoSuchProcess, Process, ZombieProcess, process_iter
 
 from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
@@ -44,7 +44,7 @@ class WorkflowResult:
         self.expt_filepath = join_filepath(
             [self.workflow_dirpath, DIRPATH.EXPERIMENT_YML]
         )
-        self.monitor = WorkflowMonitor(workspace_id, unique_id, self.expt_filepath)
+        self.monitor = WorkflowMonitor(workspace_id, unique_id)
 
     def observe(self, nodeIdList: List[str]) -> Dict:
         """
@@ -278,10 +278,17 @@ class WorkflowMonitor:
     PROCESS_CONDA_CMDLINE = "conda env create .*/\\.snakemake/conda/"
     PROCESS_CONDA_WAIT_TIMEOUT = 3600  # sec
 
-    def __init__(self, workspace_id: str, unique_id: str, expt_filepath: str):
+    def __init__(self, workspace_id: str, unique_id: str):
         self.workspace_id = workspace_id
         self.unique_id = unique_id
-        self.expt_filepath = expt_filepath
+        self.expt_filepath = join_filepath(
+            [
+                DIRPATH.OUTPUT_DIR,
+                self.workspace_id,
+                self.unique_id,
+                DIRPATH.EXPERIMENT_YML,
+            ]
+        )
 
     def search_process(self) -> WorkflowProcessInfo:
         pid_data = Runner.read_pid_file(self.workspace_id, self.unique_id)
@@ -418,10 +425,15 @@ class WorkflowMonitor:
 
         current_process = self.search_process()
         if current_process is None:
-            raise HTTPException(status_code=404)
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Current process not found",
+            )
         elif current_process.process is None:
-            raise HTTPException(status_code=404)
-
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Current process not found",
+            )
         pid_data = current_process.pid_data
 
         if os.path.exists(pid_data.last_script_file):
