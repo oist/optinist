@@ -24,4 +24,7 @@ COPY pyproject.toml poetry.lock ./
 RUN pip3 install --no-cache-dir --upgrade pip && \
     pip3 install poetry && \
     poetry config virtualenvs.create false
-RUN poetry install --no-root --with test
+
+# export requirements.txt from poetry and install
+RUN poetry export -f requirements.txt -o requirements.studio.txt --with test
+RUN pip3 install -r requirements.studio.txt
