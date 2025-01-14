@@ -2,8 +2,6 @@ import { memo } from "react"
 import { useSelector } from "react-redux"
 import { useNavigate } from "react-router-dom"
 
-import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos"
-import { Button } from "@mui/material"
 import Box from "@mui/material/Box"
 
 import { CreateWorkflowButton } from "components/Workspace/FlowChart/Buttons/CreateWorkflow"
@@ -32,12 +30,6 @@ export const ToolBar = memo(function ToolBar(props: UseRunPipelineReturnType) {
         fontSize: "1rem",
       }}
     >
-      {!isStandalone && (
-        <Button onClick={() => navigate("/console/workspaces")}>
-          <ArrowBackIosIcon />
-          Workspaces
-        </Button>
-      )}
       <CreateWorkflowButton />
       <ImportWorkflowConfigButton />
       <SnakemakeButton />
