@@ -22,7 +22,7 @@ Please follow instructions below.
 ### Make Docker Image
 
 Pull the latest docker image from docker hub.
-```
+```bash
 docker pull oistncu/optinist
 ```
 Start docker container.
