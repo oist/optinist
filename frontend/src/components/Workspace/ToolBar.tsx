@@ -1,6 +1,4 @@
 import { memo } from "react"
-import { useSelector } from "react-redux"
-import { useNavigate } from "react-router-dom"
 
 import Box from "@mui/material/Box"
 
@@ -10,11 +8,8 @@ import { NWBSettingButton } from "components/Workspace/FlowChart/Buttons/NWB"
 import { RunButtons } from "components/Workspace/FlowChart/Buttons/RunButtons"
 import { SnakemakeButton } from "components/Workspace/FlowChart/Buttons/Snakemake"
 import { UseRunPipelineReturnType } from "store/slice/Pipeline/PipelineHook"
-import { selectModeStandalone } from "store/slice/Standalone/StandaloneSeclector"
 
 export const ToolBar = memo(function ToolBar(props: UseRunPipelineReturnType) {
-  const navigate = useNavigate()
-  const isStandalone = useSelector(selectModeStandalone)
   return (
     <Box
       style={{
