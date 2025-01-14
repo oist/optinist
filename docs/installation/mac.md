@@ -46,24 +46,28 @@ Please follow instructions below.
 
            arch -x86_64 /usr/bin/env bash
 
-   3. Download and install Miniconda:
+   3. Download and install Miniforge:
+
+      - Miniforge: https://github.com/conda-forge/miniforge
 
         .. code-block:: bash
 
-           curl -O https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
+           curl -L -O "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-x86_64.sh"
 
-           bash Miniconda3-latest-MacOSX-x86_64.sh
+           bash Miniforge3-$(uname)-x86_64.sh
 
-           /Users/MYUSERNAME/miniconda3/bin/conda init
+           $HOME/miniforge3/bin/conda init
 
            conda activate
+
+           conda config --set channel_priority flexible
 
    Now continue creating the optinist environment using conda
 ```
 
-### Create Anaconda Environment
+### Create Conda Environment
 
-```
+```bash
 conda create -n optinist python=3.8
 conda activate optinist
 ```
@@ -71,24 +75,24 @@ conda activate optinist
 
 ### Install Library
 
-```
+```bash
 pip install optinist
 ```
 
 ### Set Saving Directory
 
 Optinist default saving directory is `/tmp/studio`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
-```
+```bash
 export OPTINIST_DIR="your_saving_dir"
 ```
 
 ## 2. Run Backend
 
-```
+```bash
 run_optinist
 ```
 - `run_optinist` log is as blow:
-```
+```bash
 $ run_optinist
 INFO:   Will watch for changes in these directories: [‘/Users/oist/optinist/backend’]
 INFO:   Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)

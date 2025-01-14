@@ -34,13 +34,13 @@ Get node with version 20
 You can also install node via [nvm](https://github.com/nvm-sh/nvm)
 
 After install node, install yarn.
-```
+```bash
 npm install -g yarn
 ```
 
 ### Clone Repository
 
-```
+```bash
 git clone https://github.com/oist/optinist.git
 cd ./optinist
 ```
@@ -51,20 +51,25 @@ cd ./optinist
   cp frontend/.env.example frontend/.env
   ```
 
-### Create Anaconda Environment
+### Create Conda Environment
 
-```
+```bash
 conda create -n optinist_dev python=3.8 poetry
 conda activate optinist_dev
 ```
 
-```
-conda config --set channel_priority strict
-```
+- for *Miniconda*
+  ```bash
+  conda config --set channel_priority strict
+  ```
+- for *Miniforge*
+  ```bash
+  conda config --set channel_priority flexible
+  ```
 
 ### Install Requirements
 
-```
+```bash
 poetry install --no-root --with dev
 ```
 
@@ -73,17 +78,18 @@ If you will make PRs, please see the [](for_developers) section.
 ### Set Saving Directory
 
 Optinist default saving directory is `/tmp/studio`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
-```
+
+```bash
 export OPTINIST_DIR="your_saving_dir"
 ```
 
 ## 2. Run Backend
 
-```
+```bash
 python main.py
 ```
 - `python main.py` log is as blow:
-```
+```bash
 $ run_optinist
 INFO:     Will watch for changes in these directories: ['/home/oist/optinist/backend']
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
@@ -99,13 +105,13 @@ INFO:     Application startup complete.
 
 Open new terminal window, and go to `frontend` directory.
 
-```
+```bash
 # from optinist root directory
 cd frontend
 ```
 
 Then install packages and run.
-```
+```bash
 yarn install
 yarn start
 ```

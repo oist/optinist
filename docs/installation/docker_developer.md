@@ -19,20 +19,20 @@ Please follow instructions below.
 
 ### Clone repository
 
-```
+```bash
 git clone https://github.com/oist/optinist.git
 cd ./optinist
 ```
 
 - copy config files
-  ```
+  ```bash
   cp studio/config/.env.example studio/config/.env
   cp frontend/.env.example frontend/.env
   ```
 
 ### Start Docker Container
 
-```
+```bash
 docker compose -f docker-compose.dev.yml up
 ```
 
