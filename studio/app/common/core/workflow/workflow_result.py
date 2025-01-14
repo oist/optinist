@@ -384,7 +384,7 @@ class WorkflowMonitor:
         if process_data is None:
             # Check elapsed time for process startup
             # *Retry for a certain period of time even if process not found
-            if pid_data.elapsed_time < self.PROCESS_SNAKEMAKE_WAIT_TIMEOUT:
+            if pid_data.elapsed_time_float < self.PROCESS_SNAKEMAKE_WAIT_TIMEOUT:
                 logger.debug(f"Set dummy workflow process tentatively. [{pid_data}]")
                 process_data = WorkflowProcessInfo(process=None, pid_data=pid_data)
             else:
