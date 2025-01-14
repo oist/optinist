@@ -274,7 +274,7 @@ class NodeResult:
 
 class WorkflowMonitor:
     PROCESS_SNAKEMAKE_CMDLINE = "python .*/\\.snakemake/scripts/"
-    PROCESS_SNAKEMAKE_WAIT_TIMEOUT = 180  # sec
+    PROCESS_SNAKEMAKE_WAIT_TIMEOUT = 7200  # sec
     PROCESS_CONDA_CMDLINE = "conda env create .*/\\.snakemake/conda/"
     PROCESS_CONDA_WAIT_TIMEOUT = 3600  # sec
 
