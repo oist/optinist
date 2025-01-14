@@ -32,12 +32,17 @@ class WorkflowPIDFileData:
     last_pid: int
     last_script_file: str
     create_time: float
-    elapsed_time: float = None
+    elapsed_time: str = None
 
     def __post_init__(self):
         import time
 
-        self.elapsed_time = time.time() - self.create_time
+        elapsed_time = time.time() - self.create_time
+        self.elapsed_time = f"{elapsed_time:.6}"  # Converted to str for saving to json
+
+    @property
+    def elapsed_time_float(self):
+        return float(self.elapsed_time)
 
 
 @dataclass
