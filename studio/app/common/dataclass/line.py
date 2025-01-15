@@ -1,8 +1,7 @@
 from typing import Optional
 
+import matplotlib.pyplot as plt
 import pandas as pd
-import plotly.express as px
-import plotly.io as pio
 
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.utils.json_writer import JsonWriter
@@ -32,8 +31,11 @@ class LineData(BaseData):
 
     def save_plot(self, output_dir):
         for i in range(len(self.data)):
-            fig = px.line(y=self.data[i], x=self.columns)
+            plt.figure()
+            plt.plot(self.columns, self.data[i])
+            plt.grid(True, linestyle="--", alpha=0.7)
             plot_file = join_filepath([output_dir, f"{self.file_name}_{i}.png"])
-            pio.write_image(fig, plot_file)
+            plt.savefig(plot_file, bbox_inches="tight")
+            plt.close()
 
             save_thumbnail(plot_file)
