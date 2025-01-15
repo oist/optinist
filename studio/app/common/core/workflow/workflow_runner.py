@@ -1,3 +1,4 @@
+import uuid
 from dataclasses import asdict
 from typing import Dict, List
 
@@ -39,6 +40,11 @@ class WorkflowRunner:
             snakemake=get_typecheck_params(self.runItem.snakemakeParam, "snakemake"),
         ).write()
 
+    @staticmethod
+    def create_workflow_unique_id() -> str:
+        new_unique_id = str(uuid.uuid4())[:8]
+        return new_unique_id
+
     def run_workflow(self, background_tasks):
         self.set_smk_config()
 
@@ -67,7 +73,9 @@ class WorkflowRunner:
             last_output=last_output,
         )
 
-        SmkConfigWriter.write(self.workspace_id, self.unique_id, asdict(flow_config))
+        SmkConfigWriter.write_raw(
+            self.workspace_id, self.unique_id, asdict(flow_config)
+        )
 
     def rulefile(self):
         endNodeList = self.get_endNodeList()

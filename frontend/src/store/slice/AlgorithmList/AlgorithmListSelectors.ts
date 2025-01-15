@@ -4,7 +4,7 @@ import { RootState } from "store/store"
 
 export const selectAlgorithmList = (state: RootState) => state.algorithmList
 
-export const selectAlgorithmListIsLated = (state: RootState) =>
+export const selectAlgorithmListIsLatest = (state: RootState) =>
   selectAlgorithmList(state).isLatest
 
 export const selectAlgorithmListTree = (state: RootState) =>

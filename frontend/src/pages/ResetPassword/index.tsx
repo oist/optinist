@@ -9,7 +9,7 @@ import { regexEmail } from "const/Auth"
 
 const ResetPassword = () => {
   const navigate = useNavigate()
-  const [isLoading, setIsLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<{ [key: string]: string }>({
     email: "",
   })
@@ -22,7 +22,7 @@ const ResetPassword = () => {
 
     const errorCheck = validateSubmit()
     if (errors.email || errorCheck) return
-    setIsLoading(true)
+    setLoading(true)
     try {
       await sendResetPasswordMailApi(encodeURIComponent(values.email))
       setTimeout(() => {
@@ -35,7 +35,7 @@ const ResetPassword = () => {
         alert("Email does not exists!")
       }, 300)
     } finally {
-      setIsLoading(false)
+      setLoading(false)
     }
   }
 
@@ -95,7 +95,7 @@ const ResetPassword = () => {
           </Stack>
         </FormSignUp>
       </LoginContent>
-      {isLoading && <Loading />}
+      <Loading loading={loading} />
     </LoginWrapper>
   )
 }

@@ -1,5 +1,6 @@
 import os
 
+from studio.app.common.core.experiment.experiment import ExptOutputPathIds
 from studio.app.common.core.logger import AppLogger
 from studio.app.common.core.utils.filepath_creater import (
     create_directory,
@@ -19,7 +20,7 @@ def suite2p_file_convert(
     from suite2p import default_ops, io
     from suite2p.io.tiff import open_tiff, use_sktiff_reader
 
-    function_id = output_dir.split("/")[-1]
+    function_id = ExptOutputPathIds(output_dir).function_id
     logger.info("start suite2p_file_convert: %s", function_id)
 
     data_path_list = []

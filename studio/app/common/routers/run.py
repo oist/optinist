@@ -1,11 +1,13 @@
-import uuid
 from typing import Dict
 
-from fastapi import APIRouter, BackgroundTasks, Depends
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, status
 
 from studio.app.common.core.logger import AppLogger
 from studio.app.common.core.workflow.workflow import Message, NodeItem, RunItem
-from studio.app.common.core.workflow.workflow_result import WorkflowResult
+from studio.app.common.core.workflow.workflow_result import (
+    WorkflowMonitor,
+    WorkflowResult,
+)
 from studio.app.common.core.workflow.workflow_runner import WorkflowRunner
 from studio.app.common.core.workspace.workspace_dependencies import (
     is_workspace_available,
@@ -23,12 +25,20 @@ logger = AppLogger.get_logger()
     dependencies=[Depends(is_workspace_owner)],
 )
 async def run(workspace_id: str, runItem: RunItem, background_tasks: BackgroundTasks):
-    unique_id = str(uuid.uuid4())[:8]
-    WorkflowRunner(workspace_id, unique_id, runItem).run_workflow(background_tasks)
+    try:
+        unique_id = WorkflowRunner.create_workflow_unique_id()
+        WorkflowRunner(workspace_id, unique_id, runItem).run_workflow(background_tasks)
 
-    logger.info("run snakemake")
+        logger.info("run snakemake")
 
-    return unique_id
+        return unique_id
+
+    except Exception as e:
+        logger.error(e, exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to run workflow.",
+        )
 
 
 @router.post(
@@ -39,12 +49,20 @@ async def run(workspace_id: str, runItem: RunItem, background_tasks: BackgroundT
 async def run_id(
     workspace_id: str, uid: str, runItem: RunItem, background_tasks: BackgroundTasks
 ):
-    WorkflowRunner(workspace_id, uid, runItem).run_workflow(background_tasks)
+    try:
+        WorkflowRunner(workspace_id, uid, runItem).run_workflow(background_tasks)
 
-    logger.info("run snakemake")
-    logger.info("forcerun list: %s", runItem.forceRunList)
+        logger.info("run snakemake")
+        logger.info("forcerun list: %s", runItem.forceRunList)
 
-    return uid
+        return uid
+
+    except Exception as e:
+        logger.error(e, exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to run workflow.",
+        )
 
 
 @router.post(
@@ -53,7 +71,14 @@ async def run_id(
     dependencies=[Depends(is_workspace_available)],
 )
 async def run_result(workspace_id: str, uid: str, nodeDict: NodeItem):
-    return WorkflowResult(workspace_id, uid).get(nodeDict.pendingNodeIdList)
+    try:
+        return WorkflowResult(workspace_id, uid).observe(nodeDict.pendingNodeIdList)
+    except Exception as e:
+        logger.error(e, exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to result workflow.",
+        )
 
 
 @router.post(
@@ -61,5 +86,15 @@ async def run_result(workspace_id: str, uid: str, nodeDict: NodeItem):
     response_model=bool,
     dependencies=[Depends(is_workspace_owner)],
 )
-async def run_cancel(workspace_id: str, uid: str):
-    return WorkflowResult(workspace_id, uid).cancel()
+async def cancel_run(workspace_id: str, uid: str):
+    try:
+        return WorkflowMonitor(workspace_id, uid).cancel_run()
+    except HTTPException as e:
+        logger.error(e)
+        raise e
+    except Exception as e:
+        logger.error(e, exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Failed to cencel workflow.",
+        )

@@ -64,6 +64,7 @@ const initialState: FlowElement = {
   flowEdges: [],
   flowPosition: initialFlowPosition,
   elementCoord: initialElementCoord,
+  loading: false,
 }
 
 export const flowElementSlice = createSlice({
@@ -219,7 +220,16 @@ export const flowElementSlice = createSlice({
           }
         }
       })
+      .addCase(fetchWorkflow.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(reproduceWorkflow.pending, (state) => {
+        state.loading = true
+      })
       .addCase(fetchWorkflow.rejected, () => initialState)
+      .addCase(reproduceWorkflow.rejected, (state) => {
+        state.loading = false
+      })
       .addMatcher(
         isAnyOf(
           reproduceWorkflow.fulfilled,
@@ -253,6 +263,7 @@ export const flowElementSlice = createSlice({
             },
           )
           state.flowEdges = Object.values(action.payload.edgeDict)
+          state.loading = false
         },
       ),
 })

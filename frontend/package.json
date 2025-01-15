@@ -33,12 +33,16 @@
     "moment": "^2.29.4",
     "notistack": "^3.0.1",
     "plotly.js": "^2.27.1",
+    "punycode": "^2.3.1",
     "qs": "^6.11.2",
     "react": "18.2.0",
     "react-app-rewired": "^2.2.1",
     "react-color": "^2.19.3",
     "react-dnd": "^16.0.1",
+    "react-dnd-cjs": "^9.5.1",
     "react-dnd-html5-backend": "^16.0.1",
+    "react-dnd-html5-backend-cjs": "^9.5.1",
+    "react-dnd-test-backend": "^16.0.1",
     "react-dom": "18.2.0",
     "react-linear-gradient-picker": "^3.0.1",
     "react-plotlyjs-ts": "^2.2.2",
@@ -50,12 +54,16 @@
     "stream-browserify": "^3.0.0",
     "styled-components": "^6.1.1",
     "typescript": "^5.2.2",
-    "web-vitals": "^3.5.0"
+    "web-vitals": "^3.5.0",
+    "redux-mock-store": "^1.5.5",
+    "@types/redux-mock-store": "^1.0.6"
   },
   "scripts": {
+    "prestart": "node export-versions.js",
     "start": "react-app-rewired start --scripts-version react-scripts",
     "build": "BUILD_PATH='./build' react-app-rewired build --openssl-legacy-provider build",
     "test": "react-app-rewired test",
+    "test-coverage": "react-app-rewired test --coverage",
     "test:ci": "CI=true react-app-rewired test",
     "eject": "react-scripts eject",
     "format": "prettier --write .",
@@ -80,6 +88,8 @@
     "@babel/runtime": "^7.23.2",
     "@types/plotly.js": "^2.12.30",
     "@types/react-redux": "^7.1.30",
+    "@types/redux-mock-store": "^1.0.6",
+    "@types/testing-library__user-event": "^4.2.0",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
     "eslint": "^8.53.0",
@@ -93,7 +103,9 @@
     "husky": "^8.0.3",
     "lint-staged": "^15.0.2",
     "prettier": "^3.0.3",
-    "process": "^0.11.10"
+    "process": "^0.11.10",
+    "punycode": "^2.3.1",
+    "redux-mock-store": "^1.5.5"
   },
   "lint-staged": {
     "*.{ts,tsx}": [
@@ -106,7 +118,10 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "^axios$": "axios/dist/node/axios.cjs"
+      "^axios$": "axios/dist/node/axios.cjs",
+      "react-dnd": "react-dnd-cjs",
+      "react-dnd-html5-backend": "react-dnd-html5-backend-cjs",
+      "dnd-core": "dnd-core-cjs"
     }
   }
 }

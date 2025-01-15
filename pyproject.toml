@@ -70,11 +70,11 @@ sqlmodel = "0.0.12"
 pymysql = "1.1.0"
 fastapi_pagination = "0.12.13"
 plotly = "5.18.0"
-kaleido = "0.2.1"
 filelock = "*"
 ruamel-yaml = "^0.18.5"
 pymatreader = "^0.0.32"
 xmltodict = "*"
+matplotlib = "3.7.*"
 
 [tool.poetry.group.dev]
 optional = true
@@ -120,6 +120,15 @@ profile = "black"
 pythonpath = "."
 testpaths = "studio/tests"
 env = ["OPTINIST_DIR=studio/test_data"]
+filterwarnings = [
+    "ignore:pkg_resources is deprecated as an API:DeprecationWarning",
+    "ignore:Deprecated call to `pkg_resources.declare_namespace:DeprecationWarning",
+    "ignore:invalid escape sequence :DeprecationWarning",
+]
+markers = [
+    "lighter_processing",
+    "heavier_processing",
+]
 
 [tool.codespell]
 skip = './frontend/build,./frontend/node_modules,./docs/_build,*.lock,*log,*.egg-info'
