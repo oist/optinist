@@ -274,7 +274,7 @@ class NodeResult:
 
 class WorkflowMonitor:
     PROCESS_SNAKEMAKE_CMDLINE = "python .*/\\.snakemake/scripts/"
-    PROCESS_SNAKEMAKE_WAIT_TIMEOUT = 180  # sec
+    PROCESS_SNAKEMAKE_WAIT_TIMEOUT = 7200  # sec
     PROCESS_CONDA_CMDLINE = "conda env create .*/\\.snakemake/conda/"
     PROCESS_CONDA_WAIT_TIMEOUT = 3600  # sec
 
@@ -384,7 +384,7 @@ class WorkflowMonitor:
         if process_data is None:
             # Check elapsed time for process startup
             # *Retry for a certain period of time even if process not found
-            if pid_data.elapsed_time < self.PROCESS_SNAKEMAKE_WAIT_TIMEOUT:
+            if pid_data.elapsed_time_float < self.PROCESS_SNAKEMAKE_WAIT_TIMEOUT:
                 logger.debug(f"Set dummy workflow process tentatively. [{pid_data}]")
                 process_data = WorkflowProcessInfo(process=None, pid_data=pid_data)
             else:
