@@ -15,7 +15,7 @@ def roi_from_hdf5(
     if iscell is not None:
         iscell_data = iscell.data
         return {
-            "iscell": IscellData(iscell, file_name="iscell"),
+            "iscell": IscellData(iscell_data, file_name="iscell"),
             "all_roi": RoiData(
                 np.nanmax(cell_img.data, axis=0),
                 output_dir=output_dir,
