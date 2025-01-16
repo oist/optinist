@@ -12,6 +12,8 @@ import {
 } from "react"
 import { useSelector, useDispatch } from "react-redux"
 
+import { useSnackbar } from "notistack"
+
 import DeleteIcon from "@mui/icons-material/Delete"
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown"
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp"
@@ -34,7 +36,7 @@ import TableRow from "@mui/material/TableRow"
 import TableSortLabel from "@mui/material/TableSortLabel"
 import Typography from "@mui/material/Typography"
 
-import { renameExperiment } from "api/experiments/Experiments"
+import { renameExperimentApi } from "api/experiments/Experiments"
 import { ConfirmDialog } from "components/common/ConfirmDialog"
 import { useLocalStorage } from "components/utils/LocalStorageUtil"
 import { DeleteButton } from "components/Workspace/Experiment/Button/DeleteButton"
@@ -122,6 +124,8 @@ const TableImple = memo(function TableImple() {
     const isPending = selectPipelineIsStartedSuccess(state)
     return checkedList.includes(currentUid as string) && isPending
   })
+  const { enqueueSnackbar } = useSnackbar()
+
   const onClickReload = () => {
     dispatch(getExperiments())
   }
@@ -157,6 +161,14 @@ const TableImple = memo(function TableImple() {
   }
   const onClickOk = () => {
     dispatch(deleteExperimentByList(checkedList))
+      .unwrap()
+      .then(() => {
+        // do nothing.
+      })
+      .catch(() => {
+        enqueueSnackbar("Failed to delete", { variant: "error" })
+      })
+
     checkedList.filter((v) => v === currentPipelineUid).length > 0 &&
       dispatch(clearCurrentPipeline())
     setCheckedList([])
@@ -214,6 +226,7 @@ const TableImple = memo(function TableImple() {
         </Button>
         {isOwner && (
           <Button
+            data-testid="delete-selected-button"
             sx={{
               marginBottom: (theme) => theme.spacing(1),
             }}
@@ -234,11 +247,17 @@ const TableImple = memo(function TableImple() {
         title="Delete records?"
         content={
           <>
-            {checkedList.map((uid) => (
-              <Typography key={uid}>
-                ・{experimentList[uid].name} ({uid})
-              </Typography>
-            ))}
+            {checkedList.map((uid) => {
+              const experiment = experimentList[uid]
+              return (
+                <Typography key={uid}>
+                  ・
+                  {experiment
+                    ? `${experiment.name} (${uid})`
+                    : `Unknown (${uid})`}
+                </Typography>
+              )
+            })}
           </>
         }
         iconType="warning"
@@ -356,6 +375,7 @@ const HeadItem = memo(function HeadItem({
       <TableRow>
         <TableCell padding="checkbox">
           <Checkbox
+            data-testid="select-all-checkbox"
             sx={{ visibility: checkboxVisible ? "visible" : "hidden" }}
             checked={allChecked}
             indeterminate={allCheckIndeterminate}
@@ -424,6 +444,7 @@ const RowItem = memo(function RowItem({
   const [errorEdit, setErrorEdit] = useState("")
   const [valueEdit, setValueEdit] = useState(name)
   const dispatch = useDispatch<AppDispatch>()
+  const { enqueueSnackbar } = useSnackbar()
 
   const onBlurEdit = (event: FocusEvent) => {
     event.preventDefault()
@@ -451,7 +472,13 @@ const RowItem = memo(function RowItem({
 
   const onSaveNewName = async () => {
     if (valueEdit === name || workspaceId === void 0) return
-    await renameExperiment(workspaceId, uid, valueEdit)
+
+    try {
+      await renameExperimentApi(workspaceId, uid, valueEdit)
+    } catch (e) {
+      enqueueSnackbar("Failed to rename", { variant: "error" })
+    }
+
     dispatch(getExperiments())
   }
 

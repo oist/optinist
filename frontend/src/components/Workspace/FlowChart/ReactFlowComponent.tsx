@@ -27,6 +27,7 @@ import {
 import "reactflow/dist/style.css"
 
 import "style/flow.css"
+import Loading from "components/common/Loading"
 import {
   DND_ITEM_TYPE_SET,
   TreeItemCollectedProps,
@@ -42,6 +43,7 @@ import {
   selectFlowEdges,
   selectFlowNodes,
   selectFlowPosition,
+  selectLoading,
 } from "store/slice/FlowElement/FlowElementSelectors"
 import {
   editFlowNodePositionById,
@@ -63,6 +65,7 @@ export const ReactFlowComponent = memo(function ReactFlowComponent(
   const flowNodes = useSelector(selectFlowNodes)
   const flowEdges = useSelector(selectFlowEdges)
   const edges = flowEdges.filter((item) => !isNode(item)) as Edge<NodeData>[]
+  const loading = useSelector(selectLoading)
   const dispatch = useDispatch()
 
   const onConnect = (params: Connection | Edge) => {
@@ -168,6 +171,7 @@ export const ReactFlowComponent = memo(function ReactFlowComponent(
           </ReactFlow>
         </div>
       </ReactFlowProviderComponent>
+      <Loading loading={loading} />
     </div>
   )
 })

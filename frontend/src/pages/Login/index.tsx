@@ -2,6 +2,8 @@ import { ChangeEvent, FormEvent, useState } from "react"
 import { useDispatch } from "react-redux"
 import { Link, useNavigate } from "react-router-dom"
 
+import { AxiosError } from "axios"
+
 import { Box, Stack, styled, Typography } from "@mui/material"
 
 import Loading from "components/common/Loading"
@@ -12,7 +14,7 @@ const Login = () => {
   const navigate = useNavigate()
   const dispatch: AppDispatch = useDispatch()
 
-  const [isLoading, setIsLoading] = useState(false)
+  const [loading, setLoading] = useState(false)
   const [errors, setErrors] = useState<{ [key: string]: string }>({
     email: "",
     password: "",
@@ -26,18 +28,26 @@ const Login = () => {
     event.preventDefault()
     const errorCheck = validateSubmit()
     if (errorCheck) return
-    setIsLoading(true)
+    setLoading(true)
     dispatch(login(values))
       .unwrap()
       .then(async (_) => {
         await dispatch(getMe())
         navigate("/console")
       })
-      .catch((_) => {
-        setErrors({ email: "Email or password is wrong", password: "" })
+      .catch((e: AxiosError) => {
+        const status = e.response?.status
+        if (status && status >= 400 && status < 500) {
+          setErrors({ email: "Email or password is wrong.", password: "" })
+        } else {
+          setErrors({
+            email: "An unexpected error occurred in authentication.",
+            password: "",
+          })
+        }
       })
       .finally(() => {
-        setIsLoading(false)
+        setLoading(false)
       })
   }
 
@@ -114,7 +124,7 @@ const Login = () => {
           </Stack>
         </FormSignUp>
       </LoginContent>
-      {isLoading && <Loading />}
+      <Loading loading={loading} />
     </LoginWrapper>
   )
 }

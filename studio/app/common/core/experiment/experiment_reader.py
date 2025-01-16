@@ -3,7 +3,7 @@ from typing import Dict
 import yaml
 
 from studio.app.common.core.experiment.experiment import ExptConfig, ExptFunction
-from studio.app.common.core.workflow.workflow import OutputPath
+from studio.app.common.core.workflow.workflow import NodeRunStatus, OutputPath
 
 
 class ExptConfigReader:
@@ -18,7 +18,7 @@ class ExptConfigReader:
             name=config["name"],
             started_at=config["started_at"],
             finished_at=config.get("finished_at"),
-            success=config.get("success", "running"),
+            success=config.get("success", NodeRunStatus.RUNNING.value),
             hasNWB=config["hasNWB"],
             function=cls.read_function(config["function"]),
             nwb=config.get("nwb"),
@@ -33,7 +33,7 @@ class ExptConfigReader:
                 name=value["name"],
                 started_at=value.get("started_at"),
                 finished_at=value.get("finished_at"),
-                success=value.get("success", "running"),
+                success=value.get("success", NodeRunStatus.RUNNING.value),
                 hasNWB=value["hasNWB"],
                 message=value.get("message"),
                 outputPaths=cls.read_output_paths(value.get("outputPaths")),

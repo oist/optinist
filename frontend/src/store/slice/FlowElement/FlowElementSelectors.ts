@@ -10,6 +10,8 @@ export const selectFlowPosition = (state: RootState) =>
 export const selectElementCoord = (state: RootState) =>
   state.flowElement.elementCoord
 
+export const selectLoading = (state: RootState) => state.flowElement.loading
+
 export const selectNodeById = (nodeId: string) => (state: RootState) =>
   selectFlowNodes(state).find((node) => node.id === nodeId)
 

@@ -4,6 +4,7 @@
 #
 #  https://www.statsmodels.org/stable/glm.html
 
+from studio.app.common.core.experiment.experiment import ExptOutputPathIds
 from studio.app.common.core.logger import AppLogger
 from studio.app.common.dataclass import BarData, HTMLData, ScatterData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
@@ -26,7 +27,7 @@ def GLM(
     import pandas as pd
     import statsmodels.api as sm
 
-    function_id = output_dir.split("/")[-1]
+    function_id = ExptOutputPathIds(output_dir).function_id
     logger.info("start glm: %s", function_id)
 
     neural_data = neural_data.data

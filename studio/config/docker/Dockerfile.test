@@ -1,13 +1,30 @@
-FROM --platform=linux/amd64 python:3.8.18-slim
+FROM --platform=linux/amd64 python:3.8.20-slim
 
 WORKDIR /app
 
+# install default packages
 RUN apt-get --allow-releaseinfo-change update && \
-    apt-get install --no-install-recommends -y git gcc g++ libgl1 && \
-    apt-get purge git -y && apt-get autoremove -y && apt-get clean
+    apt-get install --no-install-recommends -y git curl
 
+# install conda & packages
+RUN apt-get install --no-install-recommends -y gcc g++ libgl1 libgl1-mesa-dev libopencv-dev && \
+    apt-get autoremove -y && apt-get clean
+RUN mkdir -p /opt/miniforge && \
+    curl -L "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh" -o /opt/miniforge/Miniforge3.sh && \
+    bash /opt/miniforge/Miniforge3.sh -b -u -p /opt/miniforge && \
+    rm /opt/miniforge/Miniforge3.sh && \
+    export PATH="$PATH:/opt/miniforge/bin" && \
+    conda upgrade -y --all && \
+    conda config --set channel_priority flexible && \
+    conda clean -y --all
+ENV PATH $PATH:/opt/miniforge/bin
+
+# setup optinist
+COPY pyproject.toml poetry.lock ./
 RUN pip3 install --no-cache-dir --upgrade pip && \
     pip3 install poetry && \
     poetry config virtualenvs.create false
 
-COPY pyproject.toml poetry.lock ./
+# export requirements.txt from poetry and install
+RUN poetry export -f requirements.txt -o requirements.studio.txt --with test
+RUN pip3 install -r requirements.studio.txt

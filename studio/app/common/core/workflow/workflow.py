@@ -1,10 +1,51 @@
 from dataclasses import dataclass
+from enum import Enum
 from typing import Dict, List, Union
 
 from pydantic import BaseModel
 
 from studio.app.common.core.snakemake.smk import ForceRun
 from studio.app.const import FILETYPE
+
+
+class WorkflowRunStatus(Enum):
+    RUNNING = "running"
+    ERROR = "error"
+    SUCCESS = "success"
+
+    @classmethod
+    def is_running(cls, status: str) -> bool:
+        return status == cls.RUNNING.value
+
+    @classmethod
+    def is_success(cls, status: str) -> bool:
+        return status == cls.SUCCESS.value
+
+    @classmethod
+    def is_error(cls, status: str) -> bool:
+        return status == cls.ERROR.value
+
+
+class NodeRunStatus(Enum):
+    """
+    Note: Content is the same as WorkflowRunStatus
+    """
+
+    RUNNING = WorkflowRunStatus.RUNNING.value
+    ERROR = WorkflowRunStatus.ERROR.value
+    SUCCESS = WorkflowRunStatus.SUCCESS.value
+
+    @classmethod
+    def is_running(cls, status: str) -> bool:
+        return WorkflowRunStatus.is_running(status)
+
+    @classmethod
+    def is_success(cls, status: str) -> bool:
+        return WorkflowRunStatus.is_success(status)
+
+    @classmethod
+    def is_error(cls, status: str) -> bool:
+        return WorkflowRunStatus.is_error(status)
 
 
 @dataclass

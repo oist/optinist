@@ -40,7 +40,7 @@ export const deleteUserApi = async (id: number): Promise<string> => {
   return response.data
 }
 
-export const getListSearchApi = async (data: {
+export const getListUserSearchApi = async (data: {
   keyword: string | null
 }): Promise<UserDTO[]> => {
   const response = await axios.get(

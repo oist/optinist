@@ -1,3 +1,4 @@
+from studio.app.common.core.experiment.experiment import ExptOutputPathIds
 from studio.app.common.core.logger import AppLogger
 from studio.app.common.dataclass import ScatterData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
@@ -17,7 +18,7 @@ def TSNE(
     import numpy as np
     from sklearn.manifold import TSNE
 
-    function_id = output_dir.split("/")[-1]
+    function_id = ExptOutputPathIds(output_dir).function_id
     logger.info("start TSNE: %s", function_id)
 
     neural_data = neural_data.data
