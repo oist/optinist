@@ -11,7 +11,7 @@ logger = AppLogger.get_logger()
 
 def lccd_detect(
     mc_images: ImageData, output_dir: str, params: dict = None, **kwargs
-) -> dict(fluorescence=FluoData, cell_roi=RoiData):
+) -> dict(fluorescence=FluoData, iscell=IscellData):
     from studio.app.optinist.wrappers.lccd.lccd_python.lccd import LCCD
 
     function_id = ExptOutputPathIds(output_dir).function_id
@@ -38,8 +38,12 @@ def lccd_detect(
         timeseries[i, :] = np.mean(reshapedD[roi[:, i] > 0, :], axis=0)
 
     im = np.stack(roi_list)
+    im = im.astype(np.float64)
     im[im == 0] = np.nan
     im -= 1
+
+    empty_roi = np.full_like(im[0], np.nan)
+    roi_image = np.nanmax(im[iscell != 0], axis=0).astype(float)
 
     timeseries_dff = np.ones([num_cell, num_frames]) * np.nan
     for i in range(num_cell):
@@ -71,21 +75,25 @@ def lccd_detect(
                 "table_name": "Fluorescence",
                 "region": list(range(len(timeseries))),
                 "name": "Fluorescence",
-                "data": timeseries.T,
+                "data": timeseries,
                 "unit": "lumens",
             }
         }
     }
 
     info = {
+        "dff": FluoData(timeseries_dff, file_name="dff"),
+        "fluorescence": FluoData(timeseries, file_name="fluorescence"),
+        "iscell": IscellData(iscell),
+        "all_roi": RoiData(roi_image, output_dir=output_dir, file_name="all_roi"),
         "cell_roi": RoiData(
-            np.nanmax(im[iscell != 0], axis=0),
+            roi_image,
             output_dir=output_dir,
             file_name="cell_roi",
         ),
-        "fluorescence": FluoData(timeseries, file_name="fluorescence"),
-        "dff": FluoData(timeseries_dff, file_name="dff"),
-        "iscell": IscellData(iscell),
+        "non_cell_roi": RoiData(
+            empty_roi, output_dir=output_dir, file_name="non_cell_roi"
+        ),
         "edit_roi_data": EditRoiData(images=mc_images.data, im=im),
         "nwbfile": nwbfile,
     }

@@ -172,7 +172,7 @@ OptiNiSt includes a variety of third-party calcium (Ca<sup>2+</sup>) imaging sof
 ###### lccd_detect
   - **Description:** Low Computational-cost Cell Detection
   - **Input:** ImageData
-  - **Output:** FluoData (time series for each detected cell), RoiData (spatial masks for each detected cell)
+  - **Output:** FluoData, IsCellData
   - **Parameters:**
     - **blob_detector:** Initial step that identifies potential cells or "blobs" in each frame of the video.
       - **filtersize1** [int (filtersize1 <= Time / 2), default: 100]: Size of the larger temporal filter for smoothing.
@@ -498,10 +498,19 @@ OptiNiSt includes a variety of third-party calcium (Ca<sup>2+</sup>) imaging sof
 ###### Fluo from HDF5
   - **Description:** Extracts fluorescence data from HDF5 file and transposes for visualization
   - **Input:** FluoData, HDF5Data
+    - If using optinist nwb format:
+        - processing/ophys/suite2p_roi_UNIQUE-ID/Fluorescence/data
+        - processing/ophys/caiman_cnmf_UNIQUE-ID/Fluorescence/data
   - **Output:** FluoData
 
 ###### ROI from HDF5
   - **Description:** Extracts ROI data from HDF5 file and prepares it for visualization
   - **Input:** ImageData, HDF5Data, IscellData
-  - **Output:** RoiData
-
+    - If using optinist nwb format:
+      cell_img:
+        - processing/optinist/suite2p_roi_UNIQUE-ID_all_roi_img/data
+        - processing/optinist/caiman_cnmf_UNIQUE-ID_all_roi_img/data
+      iscell:
+        - processing/ophys/ImageSegmentation/suite2p_roi_UNIQUE-ID/iscell
+        - processing/ophys/ImageSegmentation/caiman_cnmf_UNIQUE-ID/iscell
+  - **Output:** IscellData
