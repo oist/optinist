@@ -1,7 +1,7 @@
 .. _for_developers:
 
 ***************
-FOR DEVELOPERS
+For Developers
 ***************
 
 OptiNiSt welcomes your contributions.
@@ -10,7 +10,8 @@ See the following guidelines before submitting Pull Requests.
 .. toctree::
   :maxdepth: 2
 
+  ../README
   style
   pull_request
-  architecture
   test
+  nwb_file

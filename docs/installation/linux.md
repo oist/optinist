@@ -16,53 +16,57 @@ Please follow instructions below.
     We confirmed them on Ubuntu 18.04/20.04/22.04.
 ```
 
-## 1. Make backend environment
+## 1. Make Backend Environment
 
 ### Install Tools
 
 #### Install gcc, g++
 
 - For install CaImAn, you need to install gcc and g++.
-```
+
+```bash
 sudo apt install gcc g++
 ```
 
 #### Install Anaconda
 
-```
+```bash
 # *The latest version of the module is ok.
-wget https://repo.anaconda.com/archive/Anaconda3-2022.10-Linux-x86_64.sh
-bash Anaconda3-2022.10-Linux-x86_64.sh
+ANACONDA_VERSION=2022.10
+wget https://repo.anaconda.com/archive/Anaconda3-${ANACONDA_VERSION}-Linux-x86_64.sh
+bash Anaconda3-${ANACONDA_VERSION}-Linux-x86_64.sh
 ```
 
-### Create anaconda environment
+### Create Conda Environment
 
-```
+```bash
 conda create -n optinist python=3.8
 conda activate optinist
 ```
 
+### Install Library
 
-### Install library
-
-```
+```bash
 pip install optinist
 ```
 
-### Set saving directory
+### Set Saving Directory
 
 Optinist default saving directory is `/tmp/studio`. If you reboot your PC, this repogitory content is deleted. And setting the saving directory in environment path.
-```
+
+```bash
 export OPTINIST_DIR="your_saving_dir"
 ```
 
-## 2. Run backend
+## 2. Run Backend
 
-```
+```bash
 run_optinist
 ```
+
 - `run_optinist` log is as blow:
-```
+
+```bash
 $ run_optinist
 INFO:     Will watch for changes in these directories: ['/home/oist/optinist/backend']
 INFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)
@@ -71,8 +75,7 @@ INFO:     Started server process [6557]
 INFO:     Waiting for application startup.
 INFO:     Application startup complete.
 ```
-- Launch browser, and go to http://localhost:8000
 
-It opens correctly!
+- Launch browser, and go to http://localhost:8000
 
 Done!

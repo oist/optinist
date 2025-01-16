@@ -8,6 +8,9 @@ services:
     working_dir: /app
     volumes:
       - .:/app
+      # optinist data outputs directories
+      - ../optinist-docker-volumes/.snakemake/:/app/.snakemake
+      - ../optinist-docker-volumes/logs/:/app/logs
       - ../optinist-docker-volumes/studio_data/:/app/studio_data
     ports:
       - "127.0.0.1:8000:8000"

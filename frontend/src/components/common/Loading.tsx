@@ -2,13 +2,16 @@ import { Box, keyframes, styled } from "@mui/material"
 
 type Props = {
   position?: "fixed" | "absolute"
+  loading: boolean | undefined
 }
 
-const Loading = ({ position = "fixed" }: Props) => {
+const Loading = ({ position = "fixed", loading }: Props) => {
   return (
-    <LoaderWrapper position={position}>
-      <Loader />
-    </LoaderWrapper>
+    loading && (
+      <LoaderWrapper position={position}>
+        <Loader />
+      </LoaderWrapper>
+    )
   )
 }
 

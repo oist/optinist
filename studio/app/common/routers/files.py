@@ -27,14 +27,7 @@ from studio.app.common.schemas.files import (
     FilePath,
     TreeNode,
 )
-from studio.app.const import (
-    ACCEPT_CSV_EXT,
-    ACCEPT_HDF5_EXT,
-    ACCEPT_MATLAB_EXT,
-    ACCEPT_MICROSCOPE_EXT,
-    ACCEPT_TIFF_EXT,
-    FILETYPE,
-)
+from studio.app.const import ACCEPT_FILE_EXT, FILETYPE
 from studio.app.dir_path import DIRPATH
 
 router = APIRouter(prefix="/files", tags=["files"])
@@ -61,7 +54,9 @@ class DirTreeGetter:
         )
 
         IMAGE_SHAPE_DICT = (
-            get_image_shape_dict(workspace_id) if file_types == ACCEPT_TIFF_EXT else {}
+            get_image_shape_dict(workspace_id)
+            if file_types == ACCEPT_FILE_EXT.TIFF_EXT.value
+            else {}
         )
 
         for node_name in sorted_listdir:
@@ -74,7 +69,7 @@ class DirTreeGetter:
 
             if os.path.isfile(search_dirpath) and node_name.endswith(tuple(file_types)):
                 shape = IMAGE_SHAPE_DICT.get(relative_path, {}).get("shape")
-                if shape is None and file_types == ACCEPT_TIFF_EXT:
+                if shape is None and file_types == ACCEPT_FILE_EXT.TIFF_EXT.value:
                     shape = update_image_shape(workspace_id, relative_path)
                 nodes.append(
                     TreeNode(
@@ -152,15 +147,17 @@ def update_image_shape(workspace_id, relative_file_path):
 )
 async def get_files(workspace_id: str, file_type: str = None):
     if file_type == FILETYPE.IMAGE:
-        return DirTreeGetter.get_tree(workspace_id, ACCEPT_TIFF_EXT)
+        return DirTreeGetter.get_tree(workspace_id, ACCEPT_FILE_EXT.TIFF_EXT.value)
     elif file_type == FILETYPE.CSV:
-        return DirTreeGetter.get_tree(workspace_id, ACCEPT_CSV_EXT)
+        return DirTreeGetter.get_tree(workspace_id, ACCEPT_FILE_EXT.CSV_EXT.value)
     elif file_type == FILETYPE.HDF5:
-        return DirTreeGetter.get_tree(workspace_id, ACCEPT_HDF5_EXT)
+        return DirTreeGetter.get_tree(workspace_id, ACCEPT_FILE_EXT.HDF5_EXT.value)
     elif file_type == FILETYPE.MICROSCOPE:
-        return DirTreeGetter.get_tree(workspace_id, ACCEPT_MICROSCOPE_EXT)
+        return DirTreeGetter.get_tree(
+            workspace_id, ACCEPT_FILE_EXT.MICROSCOPE_EXT.value
+        )
     elif file_type == FILETYPE.MATLAB:
-        return DirTreeGetter.get_tree(workspace_id, ACCEPT_MATLAB_EXT)
+        return DirTreeGetter.get_tree(workspace_id, ACCEPT_FILE_EXT.MATLAB_EXT.value)
     else:
         return []
 
@@ -199,6 +196,22 @@ async def create_file(workspace_id: str, filename: str, file: UploadFile = File(
 DOWNLOAD_STATUS: Dict[str, DownloadStatus] = {}
 
 
+@router.delete(
+    "/{workspace_id}/delete/{filename}",
+    response_model=bool,
+    dependencies=[Depends(is_workspace_owner)],
+)
+async def delete_file(workspace_id: str, filename: str):
+    filepath = join_filepath([DIRPATH.INPUT_DIR, workspace_id, filename])
+    if not os.path.exists(filepath):
+        raise HTTPException(status_code=404, detail="File not found.")
+    try:
+        os.remove(filepath)
+        return True
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
 @router.get(
     "/{workspace_id}/download/status",
     response_model=DownloadStatus,
@@ -222,13 +235,7 @@ async def download_file(
     background_tasks: BackgroundTasks,
 ):
     path = PurePath(urlparse(file.url).path)
-    if path.suffix not in {
-        *ACCEPT_CSV_EXT,
-        *ACCEPT_HDF5_EXT,
-        *ACCEPT_TIFF_EXT,
-        *ACCEPT_MATLAB_EXT,
-        *ACCEPT_MICROSCOPE_EXT,
-    }:
+    if path.suffix not in ACCEPT_FILE_EXT.ALL_EXT.value:
         raise HTTPException(status_code=400, detail="Invalid url")
 
     create_directory(join_filepath([DIRPATH.INPUT_DIR, workspace_id]))

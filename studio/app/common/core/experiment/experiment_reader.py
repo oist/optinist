@@ -3,7 +3,7 @@ from typing import Dict
 import yaml
 
 from studio.app.common.core.experiment.experiment import ExptConfig, ExptFunction
-from studio.app.common.core.workflow.workflow import OutputPath
+from studio.app.common.core.workflow.workflow import NodeRunStatus, OutputPath
 
 
 class ExptConfigReader:
@@ -18,7 +18,7 @@ class ExptConfigReader:
             name=config["name"],
             started_at=config["started_at"],
             finished_at=config.get("finished_at"),
-            success=config.get("success", "running"),
+            success=config.get("success", NodeRunStatus.RUNNING.value),
             hasNWB=config["hasNWB"],
             function=cls.read_function(config["function"]),
             nwb=config.get("nwb"),
@@ -33,7 +33,7 @@ class ExptConfigReader:
                 name=value["name"],
                 started_at=value.get("started_at"),
                 finished_at=value.get("finished_at"),
-                success=value.get("success", "running"),
+                success=value.get("success", NodeRunStatus.RUNNING.value),
                 hasNWB=value["hasNWB"],
                 message=value.get("message"),
                 outputPaths=cls.read_output_paths(value.get("outputPaths")),
@@ -54,25 +54,3 @@ class ExptConfigReader:
             }
         else:
             return None
-
-    @classmethod
-    def rename(cls, filepath, new_name: str) -> ExptConfig:
-        with open(filepath, "r") as f:
-            config = yaml.safe_load(f)
-            config["name"] = new_name
-
-        with open(filepath, "w") as f:
-            yaml.dump(config, f, sort_keys=False)
-
-        return ExptConfig(
-            workspace_id=config["workspace_id"],
-            unique_id=config["unique_id"],
-            name=config["name"],
-            started_at=config.get("started_at"),
-            finished_at=config.get("finished_at"),
-            success=config.get("success", "running"),
-            hasNWB=config["hasNWB"],
-            function=cls.read_function(config["function"]),
-            nwb=config.get("nwb"),
-            snakemake=config.get("snakemake"),
-        )

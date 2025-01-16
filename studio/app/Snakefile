@@ -1,9 +1,9 @@
 from studio.app.common.core.snakemake.smk_utils import SmkUtils
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.optinist.core.edit_ROI import EditRoiUtils
-from studio.app.const import FILETYPE
 from studio.app.dir_path import DIRPATH
 
+from studio.app.common.core.workflow.workflow import NodeType, NodeTypeUtil
 
 if config.get('type') == "EDIT_ROI":
     rule edit_ROI:
@@ -17,15 +17,10 @@ else:
 
 
     for rule_name, details in config["rules"].items():
-        if details["type"] in [
-            FILETYPE.IMAGE,
-            FILETYPE.CSV,
-            FILETYPE.BEHAVIOR,
-            FILETYPE.HDF5,
-            FILETYPE.MATLAB,
-            FILETYPE.MICROSCOPE,
-        ]:
+        if NodeTypeUtil.check_nodetype_from_filetype(details["type"]) == NodeType.DATA:
             rule:
+                name:
+                    rule_name
                 input:
                     SmkUtils.input(details)
                 output:
@@ -36,6 +31,8 @@ else:
                     f"{DIRPATH.APP_DIR}/common/core/rules/data.py"
         else:
             rule:
+                name:
+                    rule_name
                 input:
                     SmkUtils.input(details)
                 output:

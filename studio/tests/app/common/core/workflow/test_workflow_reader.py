@@ -9,7 +9,12 @@ from studio.app.common.core.workflow.workflow_reader import WorkflowConfigReader
 from studio.app.common.schemas.workflow import WorkflowConfig
 from studio.app.dir_path import DIRPATH
 
-workflow_filepath = f"{DIRPATH.DATA_DIR}/output_test/0123/workflow.yaml"
+workspace_id = "default"
+unique_id = "0123"
+
+workflow_filepath = (
+    f"{DIRPATH.DATA_DIR}/output_test/{workspace_id}/{unique_id}/workflow.yaml"
+)
 
 
 def test_read():

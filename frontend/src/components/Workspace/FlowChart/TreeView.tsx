@@ -20,7 +20,7 @@ import {
 import { REACT_FLOW_NODE_TYPE, REACT_FLOW_NODE_TYPE_KEY } from "const/flowchart"
 import { getAlgoList } from "store/slice/AlgorithmList/AlgorithmListActions"
 import {
-  selectAlgorithmListIsLated,
+  selectAlgorithmListIsLatest,
   selectAlgorithmListTree,
 } from "store/slice/AlgorithmList/AlgorithmListSelectors"
 import {
@@ -44,7 +44,7 @@ import { getNanoId } from "utils/nanoid/NanoIdUtils"
 export const AlgorithmTreeView = memo(function AlgorithmTreeView() {
   const dispatch = useDispatch<AppDispatch>()
   const algoList = useSelector(selectAlgorithmListTree)
-  const isLatest = useSelector(selectAlgorithmListIsLated)
+  const isLatest = useSelector(selectAlgorithmListIsLatest)
   const workflowId = useSelector(selectPipelineLatestUid)
   const runAlready = typeof workflowId !== "undefined"
 

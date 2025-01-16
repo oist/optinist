@@ -12,7 +12,7 @@ def test():
     if os.path.exists(output_fileapth):
         os.remove(output_fileapth)
 
-    SmkConfigWriter.write(
+    SmkConfigWriter.write_raw(
         workspace_id,
         unique_id,
         {"test"},

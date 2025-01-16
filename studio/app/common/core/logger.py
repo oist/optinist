@@ -1,5 +1,6 @@
 import logging
 import logging.config
+import os
 
 import yaml
 
@@ -12,7 +13,7 @@ class AppLogger:
     Generic Application Logger
     """
 
-    LOGGER_NAME = None  # Note: use root logger (empty name)
+    LOGGER_NAME = "optinist"
 
     @staticmethod
     def init_logger():
@@ -39,7 +40,18 @@ class AppLogger:
         )
 
         with open(log_config_file) as file:
-            logging.config.dictConfig(yaml.load(file.read(), yaml.FullLoader))
+            log_config = yaml.load(file.read(), yaml.FullLoader)
+
+            # create log output directory (if none exists)
+            log_file = (
+                log_config.get("handlers", {}).get("rotating_file", {}).get("filename")
+            )
+            if log_file:
+                log_dir = os.path.dirname(log_file)
+                if not os.path.isdir(log_dir):
+                    os.makedirs(log_dir)
+
+            logging.config.dictConfig(log_config)
 
     @staticmethod
     def get_logger():

@@ -10,7 +10,7 @@ unique_id = "0123"
 output_test_dir = f"{DIRPATH.DATA_DIR}/output_test"
 
 shutil.copytree(
-    f"{output_test_dir}/{unique_id}",
+    f"{output_test_dir}/{workspace_id}/{unique_id}",
     f"{DIRPATH.OUTPUT_DIR}/{workspace_id}/{unique_id}",
     dirs_exist_ok=True,
 )

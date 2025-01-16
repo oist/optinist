@@ -2,7 +2,9 @@ import os
 
 from studio.app.dir_path import DIRPATH
 
-filepath = f"{DIRPATH.DATA_DIR}/output/test.txt"
+workspace_id = "default"
+
+filepath = f"{DIRPATH.OUTPUT_DIR}/{workspace_id}/test.txt"
 
 
 def test_create_filepath():
