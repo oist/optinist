@@ -91,7 +91,7 @@ const ModalComponent = ({
   const [formData, setFormData] = useState<{ [key: string]: string }>(
     dataEdit || initState,
   )
-  const [isDisabled, setIsDisabled] = useState(false)
+  const [isFormDisabled, setIsFormDisabled] = useState(false)
   const [errors, setErrors] = useState<{ [key: string]: string }>(initState)
 
   const validateEmail = (value: string): string => {
@@ -182,18 +182,18 @@ const ModalComponent = ({
 
   const onSubmit = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
-    setIsDisabled(true)
+    setIsFormDisabled(true)
     const newErrors = validateForm()
     if (Object.keys(newErrors).some((key) => !!newErrors[key])) {
       setErrors(newErrors)
-      setIsDisabled(false)
+      setIsFormDisabled(false)
       return
     }
     try {
       await onSubmitEdit(dataEdit?.id, formData)
       setOpenModal(false)
     } finally {
-      setIsDisabled(false)
+      setIsFormDisabled(false)
     }
   }
   const onCancel = () => {
@@ -259,14 +259,14 @@ const ModalComponent = ({
           </Button>
           <Button
             variant={"contained"}
-            disabled={isDisabled}
+            disabled={isFormDisabled}
             onClick={(e) => onSubmit(e)}
           >
             Ok
           </Button>
         </ButtonModal>
       </ModalBox>
-      {isDisabled ? <Loading /> : null}
+      <Loading loading={isFormDisabled} />
     </Modal>
   )
 }
@@ -783,7 +783,7 @@ const AccountManager = () => {
           dataEdit={dataEdit}
         />
       ) : null}
-      {loading ? <Loading /> : null}
+      <Loading loading={loading} />
     </AccountManagerWrapper>
   )
 }

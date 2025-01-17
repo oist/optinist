@@ -3,10 +3,10 @@ disable_existing_loggers: false
 formatters:
   default:
     (): "uvicorn.logging.DefaultFormatter"
-    fmt: "%(asctime)s %(levelprefix)s %(funcName)s():%(lineno)d - %(message)s"
+    fmt: "%(asctime)s %(levelprefix)s [%(name)s] %(funcName)s():%(lineno)d - %(message)s"
   access:
     (): "uvicorn.logging.AccessFormatter"
-    fmt: "%(asctime)s %(levelprefix)s %(funcName)s():%(lineno)d - %(message)s"
+    fmt: "%(asctime)s %(levelprefix)s [%(name)s] %(funcName)s():%(lineno)d - %(message)s"
 handlers:
   console:
     class: logging.StreamHandler
@@ -21,6 +21,11 @@ handlers:
     interval: 1
     backupCount: 365
 loggers:
+  optinist:
+    level: DEBUG
+  # # sql logging config
+  # sqlalchemy.engine:
+  #   level: INFO
   snakemake:
     level: INFO
     handlers: [rotating_file]

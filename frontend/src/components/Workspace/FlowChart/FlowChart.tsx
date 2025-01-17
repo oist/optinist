@@ -10,8 +10,8 @@ import { grey } from "@mui/material/colors"
 import { styled } from "@mui/material/styles"
 
 import { CurrentPipelineInfo } from "components/common/CurrentPipelineInfo"
+import { DevelopmentInformation } from "components/common/DevelopmentInformation"
 import { SectionTitle } from "components/common/ParamSection"
-import PopupInputUrl from "components/PopupInputUrl"
 import { AlgorithmOutputDialog } from "components/Workspace/FlowChart/Dialog/AlgorithmOutputDialog"
 import { ClearWorkflowIdDialog } from "components/Workspace/FlowChart/Dialog/ClearWorkflowIdDialog"
 import {
@@ -25,6 +25,7 @@ import { FileSelectDialog } from "components/Workspace/FlowChart/Dialog/FileSele
 import { ReactFlowComponent } from "components/Workspace/FlowChart/ReactFlowComponent"
 import RightDrawer from "components/Workspace/FlowChart/RightDrawer"
 import { AlgorithmTreeView } from "components/Workspace/FlowChart/TreeView"
+import PopupInputUrl from "components/Workspace/PopupInputUrl"
 import { CONTENT_HEIGHT, DRAWER_WIDTH, RIGHT_DRAWER_WIDTH } from "const/Layout"
 import {
   getStatusLoadViaUrl,
@@ -56,6 +57,8 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
 
   const open = useSelector(selectRightDrawerIsOpen)
   const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const isDevelopment = process.env.NODE_ENV === "development"
+
   const [dialogNodeId, setDialogNodeId] = useState("")
   const [dialogFile, setDialogFile] =
     useState<FileSelectDialogValue>(initDialogFile)
@@ -145,6 +148,11 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
             <Box overflow="auto" marginRight={2}>
               <CurrentPipelineInfo />
             </Box>
+            {isDevelopment && (
+              <Box overflow="auto" marginRight={2}>
+                <DevelopmentInformation />
+              </Box>
+            )}
             <Box overflow="auto">
               <SectionTitle>Nodes</SectionTitle>
               <AlgorithmTreeView />
@@ -222,7 +230,7 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
                   horizontal: "left",
                 }}
               >
-                <div style={{ margin: 8, whiteSpace: "pre-wrap"}}>
+                <div style={{ margin: 8, whiteSpace: "pre-wrap" }}>
                   <FormHelperText error={true}>
                     {messageError.message}
                   </FormHelperText>

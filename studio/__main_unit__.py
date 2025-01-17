@@ -1,5 +1,5 @@
 import argparse
-import logging
+from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import Depends, FastAPI, Request
@@ -12,6 +12,7 @@ from studio.app.common.core.auth.auth_dependencies import (
     get_admin_user,
     get_current_user,
 )
+from studio.app.common.core.logger import AppLogger
 from studio.app.common.core.mode import MODE
 from studio.app.common.core.workspace.workspace_dependencies import (
     is_workspace_available,
@@ -34,7 +35,21 @@ from studio.app.common.routers import (
 from studio.app.dir_path import DIRPATH
 from studio.app.optinist.routers import hdf5, mat, nwb, roi
 
-app = FastAPI(docs_url="/docs", openapi_url="/openapi")
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup event
+    mode = "standalone" if MODE.IS_STANDALONE else "multiuser"
+    logger = AppLogger.get_logger()
+    logger.info(f'"Studio" application startup complete. [mode: {mode}]')
+
+    yield
+
+    # Shutdown event
+    logger.info('"Studio" application shutdown.')
+
+
+app = FastAPI(docs_url="/docs", openapi_url="/openapi", lifespan=lifespan)
 
 add_pagination(app)
 
@@ -86,12 +101,6 @@ app.mount(
 )
 
 templates = Jinja2Templates(directory=f"{FRONTEND_DIRPATH}/build")
-
-
-@app.on_event("startup")
-async def startup_event():
-    mode = "standalone" if MODE.IS_STANDALONE else "multiuser"
-    logging.info(f'"Studio" application startup complete. [mode: {mode}]')
 
 
 @app.get("/is_standalone", response_model=bool, tags=["others"])

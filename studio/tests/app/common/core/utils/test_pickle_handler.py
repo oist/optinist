@@ -3,7 +3,10 @@ import os
 from studio.app.common.core.utils.pickle_handler import PickleReader, PickleWriter
 from studio.app.dir_path import DIRPATH
 
-filepath = f"{DIRPATH.DATA_DIR}/output/0123/func2/func2.pkl"
+workspace_id = "default"
+unique_id = "pickle_test"
+
+filepath = f"{DIRPATH.OUTPUT_DIR}/{workspace_id}/{unique_id}/func2/func2.pkl"
 
 
 def test_PickleWriter():
@@ -15,7 +18,7 @@ def test_PickleWriter():
     assert os.path.exists(filepath)
 
 
-filepath = f"{DIRPATH.DATA_DIR}/output_test/0123/func1/func1.pkl"
+filepath = f"{DIRPATH.DATA_DIR}/output_test/{workspace_id}/{unique_id}/func1/func1.pkl"
 
 
 def test_PickleReader():

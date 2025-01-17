@@ -24,7 +24,7 @@ const Layout = ({ children }: { children?: ReactNode }) => {
   const dispatch = useDispatch<AppDispatch>()
   const isStandalone = useSelector(selectModeStandalone)
 
-  const [loading, setLoadingAuth] = useState(
+  const [loading, setLoading] = useState(
     !isStandalone && authRequiredPathRegex.test(location.pathname),
   )
 
@@ -37,7 +37,7 @@ const Layout = ({ children }: { children?: ReactNode }) => {
 
   const checkAuth = async () => {
     if (user) {
-      if (loading) setLoadingAuth(false)
+      if (loading) setLoading(false)
       return
     }
     const token = getToken()
@@ -52,16 +52,17 @@ const Layout = ({ children }: { children?: ReactNode }) => {
     } catch {
       navigate("/login", { replace: true })
     } finally {
-      if (loading) setLoadingAuth(false)
+      if (loading) setLoading(false)
     }
   }
-
-  if (loading) return <Loading />
 
   return isStandalone || authRequiredPathRegex.test(location.pathname) ? (
     <AuthedLayout>{children}</AuthedLayout>
   ) : (
-    <UnauthedLayout>{children}</UnauthedLayout>
+    <>
+      <Loading loading={loading} />
+      <UnauthedLayout>{children}</UnauthedLayout>
+    </>
   )
 }
 

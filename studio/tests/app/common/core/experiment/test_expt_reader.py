@@ -1,8 +1,14 @@
 from studio.app.common.core.experiment.experiment import ExptConfig, ExptFunction
 from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
+from studio.app.common.core.workflow.workflow import NodeRunStatus
 from studio.app.dir_path import DIRPATH
 
-expt_filepath = f"{DIRPATH.DATA_DIR}/output_test/0123/experiment.yaml"
+workspace_id = "default"
+unique_id = "0123"
+
+expt_filepath = (
+    f"{DIRPATH.DATA_DIR}/output_test/{workspace_id}/{unique_id}/experiment.yaml"
+)
 
 
 def test_read():
@@ -25,7 +31,7 @@ def test_read_function():
         "sample1": {
             "unique_id": "a",
             "name": "a",
-            "success": "success",
+            "success": NodeRunStatus.SUCCESS.value,
             "hasNWB": False,
             "started_at": "2023-07-04 12:52:06",
             "finished_at": "2023-07-04 12:52:19",

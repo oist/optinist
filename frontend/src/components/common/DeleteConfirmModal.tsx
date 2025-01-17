@@ -20,13 +20,13 @@ type DeleteConfirmModalProps = {
   onSubmit: () => void
   titleSubmit: string
   description: string
-  isLoading?: boolean
+  loading?: boolean
 }
 const DeleteConfirmModal: FC<DeleteConfirmModalProps> = ({
   onClose,
   open,
   onSubmit,
-  isLoading,
+  loading,
   titleSubmit,
   description,
 }) => {
@@ -67,7 +67,7 @@ const DeleteConfirmModal: FC<DeleteConfirmModalProps> = ({
           </Button>
         </DialogActions>
       </Dialog>
-      {isLoading ? <Loading /> : null}
+      <Loading loading={loading} />
     </>
   )
 }

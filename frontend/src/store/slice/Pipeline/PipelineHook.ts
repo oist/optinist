@@ -88,18 +88,28 @@ export function useRunPipeline() {
   const filePathIsUndefined = useSelector(selectFilePathIsUndefined)
   const algorithmNodeNotExist = useSelector(selectAlgorithmNodeNotExist)
   const runPostData = useSelector(selectRunPostData)
+  const { enqueueSnackbar } = useSnackbar()
+
   const handleRunPipeline = useCallback(
     (name: string) => {
       dispatch(run({ runPostData: { name, ...runPostData, forceRunList: [] } }))
+        .unwrap()
+        .catch(() => {
+          enqueueSnackbar("Failed to Run workflow", { variant: "error" })
+        })
     },
-    [dispatch, runPostData],
+    [dispatch, enqueueSnackbar, runPostData],
   )
   const handleClickVariant = (variant: VariantType, mess: string) => {
     enqueueSnackbar(mess, { variant })
   }
   const handleRunPipelineByUid = useCallback(() => {
     dispatch(runByCurrentUid({ runPostData }))
-  }, [dispatch, runPostData])
+      .unwrap()
+      .catch(() => {
+        enqueueSnackbar("Failed to Run workflow", { variant: "error" })
+      })
+  }, [dispatch, enqueueSnackbar, runPostData])
   const handleCancelPipeline = useCallback(async () => {
     if (uid != null) {
       const data = await dispatch(cancelResult({ uid }))
@@ -123,7 +133,6 @@ export function useRunPipeline() {
     }
   }, [dispatch, uid, isCanceled, isStartedSuccess])
   const status = useSelector(selectPipelineStatus)
-  const { enqueueSnackbar } = useSnackbar()
   // タブ移動による再レンダリングするたびにスナックバーが実行されてしまう挙動を回避するために前回の値を保持
   const [prevStatus, setPrevStatus] = useState(status)
   useEffect(() => {
