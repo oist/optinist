@@ -1,4 +1,4 @@
-import re
+import os
 from dataclasses import dataclass
 from typing import Dict, Optional
 
@@ -48,16 +48,23 @@ class ExptOutputPathIds:
           - {DIRPATH.OUTPUT_DIR}/{workspace_id}/{unique_id}/{function_id}
         """
         if self.output_dir:
-            output_relative_dir = re.sub(f"^{DIRPATH.OUTPUT_DIR}/", "", self.output_dir)
+            output_relative_dir = os.path.relpath(
+                self.output_dir.replace("\\", "/"),
+                DIRPATH.OUTPUT_DIR.replace("\\", "/"),
+            ).replace("\\", "/")
             splitted_ids = output_relative_dir.split("/")
         else:
+            output_relative_dir = None
             splitted_ids = []
 
-        ids_couont = len(splitted_ids)
+        ids_count = len(splitted_ids)
 
-        if ids_couont == 3:
+        if ids_count == 3:
             self.workspace_id, self.unique_id, self.function_id = splitted_ids
-        elif ids_couont == 2:
+        elif ids_count == 2:
             self.workspace_id, self.unique_id = splitted_ids
         else:
-            assert False, f"Invalid path specified: {self.output_dir}"
+            assert False, (
+                "Invalid path specified: "
+                f"[ids_count: {ids_count}] [path: {output_relative_dir}]"
+            )

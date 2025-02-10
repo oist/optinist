@@ -123,6 +123,10 @@ class Runner:
         with open(pid_file_path, "w") as f:
             json.dump(asdict(pid_data), f)
 
+            # Force immediate write of pid file
+            f.flush()
+            os.fsync(f.fileno())
+
     @classmethod
     def read_pid_file(cls, workspace_id: str, unique_id: str) -> WorkflowPIDFileData:
         pid_file_path = cls.__get_pid_file_path(workspace_id, unique_id)
