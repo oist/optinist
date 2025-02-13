@@ -1,4 +1,4 @@
-# optinist <img src="docs/_static/optinist.png" width="250" title="optinist" alt="optinist" align="right" vspace = "50">
+# OptiNiSt <img src="docs/_static/optinist.png" width="250" title="optinist" alt="optinist" align="right" vspace = "50">
 
 <p align="center">
     <a>
@@ -33,23 +33,20 @@ OptiNiSt helps researchers try multiple data analysis methods, visualize the res
 
 OptiNiSt also supports reproducibility of scientific research, standardization of analysis protocols, and developments of novel analysis tools as plug-in.
 
-## Support library
+### Support Library
 
-### ROI detection
-
+#### ROI detection
 - [x] [Suite2p](https://github.com/MouseLand/suite2p)
 - [x] [CaImAn](https://github.com/flatironinstitute/CaImAn)
 - [x] [LCCD](https://github.com/magnetizedCell/lccd-python)
 
-### Postprocessing
+#### Postprocessing
+- [x] Basic Neural Analysis (Event Trigger Average...)
+- [x] Dimension Reduction (PCA...)
+- [x] Neural Decoding (LDA...)
+- [x] Neural Population Analysis (Correlation...)
 
-- [x] Basic Neural Analysis(Event Trigger Average...)
-- [x] Dimension Reduction(PCA...)
-- [x] Neural Decoding(LDA...)
-- [x] Neural Population Analysis(Correlation...)
-
-### Saving Format
-
+#### Saving Format
 - [x] [NWB](https://github.com/NeurodataWithoutBorders/pynwb)
 
 ## Key Features
@@ -137,15 +134,29 @@ Kenji Doya, Yukako Yamane [OIST Neural Computation Unit](https://groups.oist.jp/
 [[LCCD]](https://github.com/magnetizedCell/lccd-python) Tsubasa Ito, Keisuke Ota, Kanako Ueno, Yasuhiro Oisi, Chie Matsubara, Kenta Kobayashi, Masamichi Ohkura, Junichi Nakai, Masanori Murayama, Toru Aonishi, "Low computational-cost cell detection method for calcium imaging data", 2022
 [[PyNWB]](https://github.com/NeurodataWithoutBorders/pynwb) Oliver Rübel, Andrew Tritt, Ryan Ly, Benjamin K. Dichter, Satrajit Ghosh, Lawrence Niu, Ivan Soltesz, Karel Svoboda, Loren Frank, Kristofer E. Bouchard, "The Neurodata Without Borders ecosystem for neurophysiological data science", bioRxiv 2021.03.13.435173, March 15, 2021
 
-<!-- ## Citing the Project
-To cite this repository in publications:
+
+
+## Citation
+<table width="100%">
+<tr>
+<td valign="top" width="50%">
+If you use this software, please cite our paper:
+<a href="https://www.biorxiv.org/content/10.1101/2024.09.17.613603v1">https://www.biorxiv.org/content/10.1101/2024.09.17.613603v1</a>
+</td>
+<td valign="top" width="50%" align="right">
+<img src="docs/_static/paper_QR.png" alt="Read our paper" width="150">
+</td>
+</tr>
+</table>
+
 ```
 @misc{OptiNiSt,
-  author = {name},
-  title = {title},
-  year = {2022},
-  publisher = {},
-  journal = {},
-  howpublished = {},
+	author = {Yamane, Yukako and Li, Yuzhe and Matsumoto, Keita and Kanai, Ryota and Desforges, Miles and Gutierrez, Carlos Enrique and Doya, Kenji},
+	title = {Optical Neuroimage Studio (OptiNiSt): intuitive, scalable, extendable framework for optical neuroimage data analysis},
+	elocation-id = {2024.09.17.613603},
+	year = {2024},
+	doi = {10.1101/2024.09.17.613603},
+  journal = {bioRxiv}
+	publisher = {Cold Spring Harbor Laboratory},
 }
-``` -->
+```
