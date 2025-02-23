@@ -16,7 +16,7 @@ jobs:
         with:
           python-version: '3.8'
       - run: python -m pip install flake8
-      - uses: liskin/gh-problem-matcher-wrap@a89a18291dcde8d4e6158adf736b5432987bbf95
+      - uses: liskin/gh-problem-matcher-wrap@e7b7beaaafa52524748b31a381160759d68d61fb
         with:
           linters: flake8
           run: flake8
@@ -28,7 +28,7 @@ jobs:
         with:
           python-version: '3.8'
       - run: python -m pip install isort
-      - uses: liskin/gh-problem-matcher-wrap@a89a18291dcde8d4e6158adf736b5432987bbf95
+      - uses: liskin/gh-problem-matcher-wrap@e7b7beaaafa52524748b31a381160759d68d61fb
         with:
           linters: isort
           run: isort --check --diff studio
