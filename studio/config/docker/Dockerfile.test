@@ -7,8 +7,12 @@ RUN apt-get --allow-releaseinfo-change update && \
     apt-get install --no-install-recommends -y git curl
 
 # Install conda & packages
-RUN apt-get install --no-install-recommends -y gcc g++ libgl1 libgl1-mesa-dev libopencv-dev && \
+RUN apt-get install --no-install-recommends -y gcc g++ clang libgl1 libgl1-mesa-dev libopencv-dev && \
     apt-get autoremove -y && apt-get clean
+
+# Specify compiler (use clang)
+ENV CC=clang CXX=clang++
+
 RUN mkdir -p /opt/miniforge && \
     curl -L "https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-$(uname)-$(uname -m).sh" -o /opt/miniforge/Miniforge3.sh && \
     bash /opt/miniforge/Miniforge3.sh -b -u -p /opt/miniforge && \
