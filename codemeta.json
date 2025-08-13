@@ -133,7 +133,7 @@
         "Docker",
         "Python 3.9"
     ],
-    "version": "2.2.2",
+    "version": "2.2.3",
     "developmentStatus": "active",
     "funding": "Brain/MINDS",
     "issueTracker": "https://github.com/oist/optinist/issues",
