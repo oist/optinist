@@ -108,7 +108,7 @@
     "dateCreated": "2022-02-21",
     "dateModified": "2025-05-26",
     "datePublished": "2022-06-22",
-    "description": "OptiNiSt: framework for neuroimaging data analysis",
+    "description": "OptiNiSt(Optical Neuroimage Studio) is a GUI based workflow pipeline tools for processing calcium imaging data. OptiNiSt helps researchers try multiple data analysis methods, visualize the results, and construct the data analysis pipelines easily and quickly on GUI. OptiNiSt's data-saving format follows NWB standards. OptiNiSt also supports reproducibility of scientific research, standardization of analysis protocols, and developments of novel analysis tools as plug-in.",
     "funder": {
         "type": "Organization",
         "name": "AMED"
@@ -128,7 +128,7 @@
     "programmingLanguage": [
         "Python 3",
         "TypeScript"
-    ]
+    ],
     "runtimePlatform": [
         "Docker",
         "Python 3.9"
@@ -137,5 +137,5 @@
     "developmentStatus": "active",
     "funding": "Brain/MINDS",
     "issueTracker": "https://github.com/oist/optinist/issues",
-    "referencePublication": "https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1013087"
+    "referencePublication": "https://doi.org/10.1371/journal.pcbi.1013087"
 }
