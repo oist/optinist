@@ -82,7 +82,7 @@ async def run_id(
             # Return 422 for YAML validation errors
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail="Workflow yaml error, see FAQ",
+                detail=e.args[0] if e.args else "Workflow yaml error, see FAQ",
             )
         else:
             # Keep original error handling for other errors

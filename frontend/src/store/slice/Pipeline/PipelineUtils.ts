@@ -138,7 +138,12 @@ export function handleWorkflowYamlError(
         )
       },
     }
-    enqueueSnackbar("Workflow yaml error, see FAQ\n", snackbarOptions)
+    const detail = (error.response.data as { detail?: unknown } | undefined)
+      ?.detail
+    enqueueSnackbar(
+      `${typeof detail === "string" ? detail : "Workflow yaml error, see FAQ"}\n`,
+      snackbarOptions,
+    )
   } else {
     enqueueSnackbar("Failed to Run workflow", { variant: "error" })
   }
