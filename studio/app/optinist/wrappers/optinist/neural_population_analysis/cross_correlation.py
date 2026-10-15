@@ -26,7 +26,7 @@ def cross_correlation(
 
     neural_data = neural_data.data
 
-    # data should be time x component matrix
+    # X must be (cell, time); iscell picks rows
     if params["transpose"]:
         X = neural_data.transpose()
     else:
@@ -39,6 +39,8 @@ def cross_correlation(
 
     # calculate cross correlation
     num_cell = X.shape[0]
+    if num_cell < 2:
+        raise ValueError(f"cross_correlation needs at least 2 cells, got {num_cell}")
     data_len = X.shape[1]
     shuffle_num = params["shuffle_sample_number"]
 
@@ -112,9 +114,9 @@ def cross_correlation(
             axis=1,
         )
 
-    name = f"{str(cb[i][0])}-{str(cb[i][1])}"
-    info[name] = TimeSeriesData(arr1.T, file_name=name)
-    name = f"shuffle {str(cb[i][0])}-{str(cb[i][1])}"
-    info[name] = TimeSeriesData(arr2.T, file_name=name)
+        name = f"{str(cb[i][0])}-{str(cb[i][1])}"
+        info[name] = TimeSeriesData(arr1.T, file_name=name)
+        name = f"shuffle {str(cb[i][0])}-{str(cb[i][1])}"
+        info[name] = TimeSeriesData(arr2.T, file_name=name)
 
     return info
