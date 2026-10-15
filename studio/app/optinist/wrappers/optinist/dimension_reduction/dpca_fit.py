@@ -16,12 +16,24 @@ from studio.app.optinist.wrappers.optinist.utils import (
 logger = AppLogger.get_logger()
 
 MAX_LISTED_COMBINATIONS = 10
+# PostProcess data is at most 4-D: (component, time, levels_1, levels_2)
+MAX_FEATURE_COLUMNS = 2
 
 
 def _as_list(value):
     if isinstance(value, str):
         return [v.strip() for v in value.split(",") if v.strip()]
     return list(value) if isinstance(value, (list, tuple, np.ndarray)) else [value]
+
+
+def _as_int(value, name):
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        number = math.nan
+    if not number.is_integer():
+        raise ValueError(f"{name} must be whole numbers, got {value!r}")
+    return int(number)
 
 
 def calc_trigger(behavior_data, trigger_type, trigger_threshold):
@@ -132,10 +144,18 @@ def prepare_inputs(X, B, iscell, params):
     if iscell is not None:
         X = X[:, np.where(iscell > 0)[0]]
 
-    trigger_column = int(params["trigger_column"])
-    feature_columns = [int(c) for c in _as_list(params["feature_columns"])]
+    trigger_column = _as_int(params["trigger_column"], "trigger_column")
+    feature_columns = [
+        _as_int(c, "feature_columns") for c in _as_list(params["feature_columns"])
+    ]
     if not feature_columns:
         raise ValueError("feature_columns needs at least one behavior column")
+    if len(feature_columns) > MAX_FEATURE_COLUMNS:
+        raise ValueError(
+            f"feature_columns allows at most {MAX_FEATURE_COLUMNS} columns, got "
+            f"{feature_columns}; the NWB export stores dPCA components with at "
+            "most 4 dimensions"
+        )
     for col in [trigger_column] + feature_columns:
         if not 0 <= col < B.shape[1]:
             raise ValueError(
@@ -143,7 +163,9 @@ def prepare_inputs(X, B, iscell, params):
                 f"columns (0 to {B.shape[1] - 1})"
             )
 
-    duration = [int(d) for d in _as_list(params["trigger_duration"])]
+    duration = [
+        _as_int(d, "trigger_duration") for d in _as_list(params["trigger_duration"])
+    ]
     if len(duration) != 2 or duration[0] >= duration[1]:
         raise ValueError(
             "trigger_duration must be [before, after] with before < after, "
@@ -185,17 +207,19 @@ def prepare_inputs(X, B, iscell, params):
             f"{params['regularizer']!r}"
         )
 
-    seed = int(params.get("seed", 0))
+    seed = _as_int(params.get("seed", 0), "seed")
     if not 0 <= seed < 2**32:
         raise ValueError(f"seed must be between 0 and 2**32 - 1, got {seed}")
 
-    n_components = int(params["n_components"])
+    n_components = _as_int(params["n_components"], "n_components")
     if n_components > X.shape[1]:
         raise ValueError(
             f"n_components ({n_components}) exceeds the number of cells "
             f"({X.shape[1]})"
         )
-    figure_components = [int(c) for c in _as_list(params["figure_components"])]
+    figure_components = [
+        _as_int(c, "figure_components") for c in _as_list(params["figure_components"])
+    ]
     bad = [c for c in figure_components if not 0 <= c < n_components]
     if bad:
         raise ValueError(
@@ -225,7 +249,7 @@ def prepare_inputs(X, B, iscell, params):
         "labels": labels,
         "regularizer": regularizer,
         "n_components": n_components,
-        "n_iter": int(params["n_iter"]),
+        "n_iter": _as_int(params["n_iter"], "n_iter"),
         "seed": seed,
         "duration": duration,
         "figure_features": figure_features,

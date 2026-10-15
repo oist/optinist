@@ -160,6 +160,12 @@ def test_defaults_run_on_sample_behavior(fluo, behavior, defaults):
         ({"regularizer": "inf"}, "regularizer must be a number"),
         ({"regularizer": "nan"}, "regularizer must be a number"),
         ({"seed": -1}, "seed must be between"),
+        ({"feature_columns": [0, 2, 3], "labels": "tbcd"}, "at most 2 columns"),
+        ({"feature_columns": [0.9, 2.1]}, "feature_columns must be whole numbers"),
+        ({"trigger_column": 1.9}, "trigger_column must be whole numbers"),
+        ({"trigger_duration": [-2.9, 2.9]}, "trigger_duration must be whole"),
+        ({"n_components": 2.5}, "n_components must be whole numbers"),
+        ({"figure_components": ["x"]}, "figure_components must be whole"),
     ],
 )
 def test_guards_raise_before_fitting(fluo, behavior, defaults, over, match):
@@ -169,9 +175,15 @@ def test_guards_raise_before_fitting(fluo, behavior, defaults, over, match):
 
 def test_string_params_from_hand_edited_yaml_are_coerced(fluo, behavior, defaults):
     prepared = _prepare(
-        fluo, behavior, defaults, figure_components=["0", 1], feature_columns="0, 2"
+        fluo,
+        behavior,
+        defaults,
+        figure_components=["0", 1],
+        feature_columns="0, 2",
+        trigger_duration=[-10.0, "10"],
     )
     assert prepared["figure_components"] == [0, 1]
+    assert prepared["duration"] == [-10, 10]
     assert prepared["mean"].shape == (N_ROI, 20, 2, 2)
 
 
