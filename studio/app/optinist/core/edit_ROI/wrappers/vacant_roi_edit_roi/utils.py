@@ -30,7 +30,7 @@ def set_nwbfile(edit_roi_data: EditRoiData, iscell, function_id, fluorescence=No
                 "table_name": "ROIs",
                 "region": list(range(n_cells)) if n_cells > 0 else [0],
                 "name": "Fluorescence",
-                "data": fluorescence.T
+                "data": fluorescence
                 if fluorescence is not None and fluorescence.size > 0
                 else np.array([]).reshape(0, 0),
                 "unit": "lumens",
