@@ -1,5 +1,6 @@
 import asyncio
 import dataclasses
+import io
 import json
 import os
 import threading
@@ -9,6 +10,7 @@ from glob import glob
 import numpy as np
 import pytest
 import tifffile
+from fastapi import BackgroundTasks, UploadFile
 from filelock import FileLock
 
 from studio.app.common.core.utils.filelock_handler import FileLockUtils
@@ -486,6 +488,37 @@ def test_get_files_does_not_block_event_loop(monkeypatch):
         await asyncio.sleep(0.05)
         assert time.monotonic() - t0 < 0.3
         assert await task == []
+
+    asyncio.run(run())
+
+
+@pytest.mark.parametrize("handler", ["set_shape", "create_file"])
+def test_shape_update_does_not_block_event_loop(ws, monkeypatch, handler):
+    def slow(*args):
+        time.sleep(0.5)
+        return []
+
+    monkeypatch.setattr(files_module, "update_image_shape", slow)
+    monkeypatch.setattr(
+        files_module.WorkspaceDataCapacityService, "is_available", lambda: False
+    )
+    call = {
+        "set_shape": lambda: files_module.set_shape("ws", "a.tif"),
+        "create_file": lambda: files_module.create_file(
+            "ws",
+            "a.tif",
+            BackgroundTasks(),
+            UploadFile(io.BytesIO(b"x"), filename="a.tif"),
+            None,
+        ),
+    }[handler]
+
+    async def run():
+        task = asyncio.create_task(call())
+        t0 = time.monotonic()
+        await asyncio.sleep(0.05)
+        assert time.monotonic() - t0 < 0.3
+        await task
 
     asyncio.run(run())
 

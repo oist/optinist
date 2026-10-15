@@ -299,9 +299,11 @@ async def get_files(workspace_id: str, file_type: str = None):
 )
 async def set_shape(workspace_id: str, filepath: str):
     try:
-        update_image_shape(workspace_id, filepath)
+        await asyncio.get_running_loop().run_in_executor(
+            None, update_image_shape, workspace_id, filepath
+        )
     except Exception as e:
-        raise HTTPException(status=422, detail=str(e))
+        raise HTTPException(status_code=422, detail=str(e))
     return True
 
 
@@ -324,7 +326,9 @@ async def create_file(
     with open(filepath, "wb") as f:
         shutil.copyfileobj(file.file, f)
 
-    update_image_shape(workspace_id, filename)
+    await asyncio.get_running_loop().run_in_executor(
+        None, update_image_shape, workspace_id, filename
+    )
 
     if WorkspaceDataCapacityService.is_available():
         background_tasks.add_task(
