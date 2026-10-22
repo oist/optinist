@@ -1,9 +1,11 @@
+import itertools
+import math
+
 import numpy as np
-import pandas as pd
 
 from studio.app.common.core.experiment.experiment import ExptOutputPathIds
 from studio.app.common.core.logger import AppLogger
-from studio.app.common.dataclass import HeatMapData  # , TimeSeriesData
+from studio.app.common.dataclass import HeatMapData
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import BehaviorData, FluoData, IscellData
 from studio.app.optinist.wrappers.optinist.utils import (
@@ -13,130 +15,246 @@ from studio.app.optinist.wrappers.optinist.utils import (
 
 logger = AppLogger.get_logger()
 
+MAX_LISTED_COMBINATIONS = 10
+# PostProcess data is at most 4-D: (component, time, levels_1, levels_2)
+MAX_FEATURE_COLUMNS = 2
+
+
+def _as_list(value):
+    if isinstance(value, str):
+        return [v.strip() for v in value.split(",") if v.strip()]
+    return list(value) if isinstance(value, (list, tuple, np.ndarray)) else [value]
+
+
+def _as_int(value, name):
+    try:
+        number = float(value)
+    except (TypeError, ValueError):
+        number = math.nan
+    if not number.is_integer():
+        raise ValueError(f"{name} must be whole numbers, got {value!r}")
+    return int(number)
+
 
 def calc_trigger(behavior_data, trigger_type, trigger_threshold):
-    # same function is also in the eta
-    flg = np.array(behavior_data > trigger_threshold, dtype=int)
+    flg = np.array(
+        np.asarray(behavior_data, dtype=float) > trigger_threshold, dtype=int
+    )
+    diff = np.ediff1d(flg)
     if trigger_type == "up":
-        trigger_idx = np.where(np.ediff1d(flg) == 1)[0]
+        edges = diff == 1
     elif trigger_type == "down":
-        trigger_idx = np.where(np.ediff1d(flg) == -1)[0]
+        edges = diff == -1
     elif trigger_type == "cross":
-        trigger_idx = np.where(np.ediff1d(flg) != 0)[0]
+        edges = diff != 0
     else:
-        trigger_idx = np.where(np.ediff1d(flg) == 0)[0]
-
-    return trigger_idx
-
-
-def GetIndices(dims, outtype):
-    index = np.indices(dims)
-    ind = []
-    for i in range(len(index)):
-        ind.append(index[i].flatten())
-    ind = np.array(ind)
-    ind = ind.transpose()
-
-    if outtype == "list":
-        out = []
-        for i in range(ind.shape[1]):
-            out.append(ind[:, i])
-    else:
-        out = ind
-
-    return out
+        raise ValueError(
+            f"trigger_type must be 'up', 'down' or 'cross', got {trigger_type!r}"
+        )
+    idx = np.where(edges)[0] + 1
+    if trigger_type != "down" and flg[0]:
+        idx = np.insert(idx, 0, 0)
+    return idx
 
 
-def createMatrix(D, triggers, stims, duration):
-    # D: num_timestamps x num_unit   neural data
-    # triggers: index of trigger
-    # stims: list of stimulus property for each trigger
-    # durations: frames before and after trigger to use
+def build_trials(D, triggers, features, feature_columns, duration):
+    """Average (time, unit) data around the triggers per feature level combination.
 
-    num_unit = D.shape[1]
-    num_triggers = len(triggers)
-    num_property = len(stims)
-    num_timepoints = duration[1] - duration[0]
+    Returns the trial mean of shape (unit, window, levels_1, levels_2, ...), the
+    trial count per combination and the level values of each feature.
+    """
+    d0, d1 = duration
+    n_time, n_unit = D.shape
+    triggers = np.asarray(triggers, dtype=int)
+    inside = (triggers + d0 >= 0) & (triggers + d1 <= n_time)
+    if not inside.all():
+        logger.warning(
+            "dropped %d of %d triggers whose window [%d, %d) leaves the recording",
+            int((~inside).sum()),
+            len(triggers),
+            d0,
+            d1,
+        )
+    if not inside.any():
+        raise ValueError(
+            f"no trigger window [{d0}, {d1}) fits inside the recording of "
+            f"{n_time} frames; check trigger_duration and trigger_column"
+        )
+    triggers = triggers[inside]
 
-    # X is the reshaped data for each trigger
-    X = np.zeros([num_triggers, num_unit, num_timepoints])
-    for i in range(num_triggers):
-        X[i, :, :] = D[
-            triggers[i] + duration[0] : triggers[i] + duration[1], :
-        ].transpose()
-
-    # df is the table of stimulus conditions
-    # df: number of trigger x ( number of property +1 )
-    # uq_stims = list of unique stimulus for each property
-    # num_uq_stims = number of unique_stims for each property
-
-    columns = columns = list(map(str, range(num_property)))
-    columns.append("all")
-    df = pd.DataFrame(data=None, index=list(range(num_triggers)), columns=columns)
-    for i in range(num_property):
-        df[columns[i]] = stims[i]
-
-    for i in range(num_triggers):
-        df.iloc[i, num_property] = "_".join(map(str, df.iloc[i, 0:2].values.tolist()))
-
-    uq_list = df["all"].unique()
-    uq_stims = []
-    num_uq_stims = []
-    for i in range(num_property):
-        uq_stims.append(list(df.iloc[:, i].unique()))
-        num_uq_stims.append(len(uq_stims[i]))
-
-    #  check number of samples
-    # n: number of samples for each condition
-    # index: index of the trigger for each condition
-    # min_sample: minimum number of samples for a condition
-    n = np.zeros([len(uq_list)], dtype=int)
-    index = []
-    for i in range(len(uq_list)):
-        index.append(list(df[df["all"] == uq_list[i]].index))
-        n[i] = len(index[i])
-
-    min_sample = int(np.min(n))
-
-    # re-format the data (number of samples is set to the nun_sample)
-    X2 = np.zeros([min_sample, num_unit, num_timepoints] + num_uq_stims)
-
-    for i in range(len(index)):
-        stims = list(df.iloc[index[i][0], 0 : df.shape[1] - 1])
-        tgtind = []
-        for j in range(len(stims)):
-            tgtind.append(uq_stims[j].index(stims[j]))
-
-        if num_property == 1:
-            X2[0:min_sample, :, :, tgtind[0]] = X[index[i][0:min_sample], :, :]
-        elif num_property == 2:
-            X2[0:min_sample, :, :, tgtind[0], tgtind[1]] = X[
-                index[i][0:min_sample], :, :
-            ]
-        elif num_property == 3:
-            X2[0:min_sample, :, :, tgtind[0], tgtind[1], tgtind[2]] = X[
-                index[i][0:min_sample], :, :
-            ]
-
-        else:
-            logger.warn(
-                "currently the number of condition category has to be less than 4"
+    levels, codes = [], []
+    for col, values in zip(feature_columns, features):
+        uniq, inv = np.unique(np.asarray(values)[inside], return_inverse=True)
+        if len(uniq) < 2:
+            raise ValueError(
+                f"feature column {col} has a single value ({uniq[0]}) at the "
+                "triggers; a condition needs at least 2 levels"
             )
-            return
+        if len(uniq) > 10 and len(uniq) > len(inv) / 2:
+            raise ValueError(
+                f"feature column {col} has {len(uniq)} distinct values over "
+                f"{len(inv)} triggers; dPCA needs categorical conditions with a "
+                "few levels, not a continuous variable"
+            )
+        levels.append(uniq)
+        codes.append(inv)
+    codes = np.stack(codes, axis=1)
 
-    return X2
+    cond_shape = tuple(len(u) for u in levels)
+    counts = np.zeros(cond_shape, dtype=int)
+    np.add.at(counts, tuple(codes.T), 1)
+    missing = np.argwhere(counts == 0)
+    if len(missing):
+        combos = ", ".join(
+            "(" + ", ".join(str(levels[i][k]) for i, k in enumerate(m)) + ")"
+            for m in missing[:MAX_LISTED_COMBINATIONS]
+        )
+        more = len(missing) - MAX_LISTED_COMBINATIONS
+        if more > 0:
+            combos += f" and {more} more"
+        raise ValueError(
+            f"no trials for feature level combination(s) {combos} of columns "
+            f"{list(feature_columns)}; every combination needs at least one "
+            "trigger, choose other feature_columns"
+        )
+    if counts.min() < 3 or counts.max() > 10 * counts.min():
+        logger.warning(
+            "unbalanced trial counts per condition %s for columns %s; a "
+            "condition with few trials weighs as much as the others in the fit",
+            counts.tolist(),
+            list(feature_columns),
+        )
+
+    sums = np.zeros((n_unit, d1 - d0) + cond_shape)
+    for trig, code in zip(triggers, codes):
+        sums[(slice(None), slice(None)) + tuple(code)] += D[trig + d0 : trig + d1].T
+    return sums / counts, counts, levels
 
 
-def reshapeBehavior(
-    B, trigger_column, trigger_type, trigger_threshold, feature_columns
-):
-    Trig = calc_trigger(B[:, trigger_column], trigger_type, trigger_threshold)
+def prepare_inputs(X, B, iscell, params):
+    """Validate params against the data and build the dPCA inputs."""
+    if params["transpose"]:
+        X = X.transpose()
+    if X.shape[0] != B.shape[0]:
+        raise ValueError(
+            "neural_data and behaviors_data must share the time axis: neural "
+            f"{X.shape}, behavior {B.shape}. Neural data must be (time, cells) "
+            "after the transpose option is applied"
+        )
+    if iscell is not None:
+        X = X[:, np.where(iscell > 0)[0]]
 
-    features = []
-    for i in range(len(feature_columns)):
-        features.append(B[Trig, feature_columns[i]])
+    trigger_column = _as_int(params["trigger_column"], "trigger_column")
+    feature_columns = [
+        _as_int(c, "feature_columns") for c in _as_list(params["feature_columns"])
+    ]
+    if not feature_columns:
+        raise ValueError("feature_columns needs at least one behavior column")
+    if len(feature_columns) > MAX_FEATURE_COLUMNS:
+        raise ValueError(
+            f"feature_columns allows at most {MAX_FEATURE_COLUMNS} columns, got "
+            f"{feature_columns}; the NWB export stores dPCA components with at "
+            "most 4 dimensions"
+        )
+    for col in [trigger_column] + feature_columns:
+        if not 0 <= col < B.shape[1]:
+            raise ValueError(
+                f"column {col} is out of range: behaviors_data has {B.shape[1]} "
+                f"columns (0 to {B.shape[1] - 1})"
+            )
 
-    return [Trig, features]
+    duration = [
+        _as_int(d, "trigger_duration") for d in _as_list(params["trigger_duration"])
+    ]
+    if len(duration) != 2 or duration[0] >= duration[1]:
+        raise ValueError(
+            "trigger_duration must be [before, after] with before < after, "
+            f"e.g. [-10, 10], got {params['trigger_duration']}"
+        )
+
+    labels = params["labels"]
+    n_labels = 1 + len(feature_columns)
+    if (
+        not isinstance(labels, str)
+        or len(labels) != n_labels
+        or len(set(labels)) != n_labels
+    ):
+        raise ValueError(
+            f"labels must be {n_labels} distinct characters (time plus one per "
+            f"feature column {feature_columns}), got {labels!r}"
+        )
+    marginalizations = [
+        "".join(c)
+        for r in range(1, n_labels + 1)
+        for c in itertools.combinations(labels, r)
+    ]
+    figure_features = [str(f) for f in _as_list(params["figure_features"])]
+    bad = [f for f in figure_features if f not in marginalizations]
+    if bad:
+        raise ValueError(
+            f"figure_features {bad} are not marginalizations of labels "
+            f"{labels!r}; choose from {marginalizations}"
+        )
+
+    try:
+        regularizer = float(params["regularizer"])
+    except (TypeError, ValueError):
+        regularizer = -1.0
+    if regularizer < 0 or not math.isfinite(regularizer):
+        raise ValueError(
+            "regularizer must be a number >= 0 (0 disables it); the library's "
+            f"'auto' search is not supported by this node, got "
+            f"{params['regularizer']!r}"
+        )
+
+    seed = _as_int(params.get("seed", 0), "seed")
+    if not 0 <= seed < 2**32:
+        raise ValueError(f"seed must be between 0 and 2**32 - 1, got {seed}")
+
+    n_components = _as_int(params["n_components"], "n_components")
+    if n_components > X.shape[1]:
+        raise ValueError(
+            f"n_components ({n_components}) exceeds the number of cells "
+            f"({X.shape[1]})"
+        )
+    figure_components = [
+        _as_int(c, "figure_components") for c in _as_list(params["figure_components"])
+    ]
+    bad = [c for c in figure_components if not 0 <= c < n_components]
+    if bad:
+        raise ValueError(
+            f"figure_components {bad} must be between 0 and n_components - 1 "
+            f"({n_components - 1})"
+        )
+
+    X = standard_norm(X, params["standard_mean"], params["standard_std"])
+
+    triggers = calc_trigger(
+        B[:, trigger_column], params["trigger_type"], params["trigger_threshold"]
+    )
+    if len(triggers) == 0:
+        raise ValueError(
+            f"no '{params['trigger_type']}' trigger found in behaviors_data column "
+            f"{trigger_column} with threshold {params['trigger_threshold']}"
+        )
+    features = [B[triggers, c] for c in feature_columns]
+    mean, counts, levels = build_trials(
+        X, triggers, features, feature_columns, duration
+    )
+
+    return {
+        "mean": mean,
+        "counts": counts,
+        "levels": levels,
+        "labels": labels,
+        "regularizer": regularizer,
+        "n_components": n_components,
+        "n_iter": _as_int(params["n_iter"], "n_iter"),
+        "seed": seed,
+        "duration": duration,
+        "figure_features": figure_features,
+        "figure_components": figure_components,
+    }
 
 
 def dpca_fit(
@@ -147,9 +265,6 @@ def dpca_fit(
     params: dict = None,
     **kwargs,
 ) -> dict():
-    # modules specific to function
-    from dPCA import dPCA
-
     function_id = ExptOutputPathIds(output_dir).function_id
     logger.info("start dpca: %s", function_id)
 
@@ -157,99 +272,48 @@ def dpca_fit(
     recursive_flatten_params(params, flattened_params)
     params = flattened_params
 
-    neural_data = neural_data.data
-    behaviors_data = behaviors_data.data
-
-    # neural data should be time x cells
-    if params["transpose"]:
-        X = neural_data.transpose()
-    else:
-        X = neural_data
-
-    if iscell is not None:
-        iscell = iscell.data
-        ind = np.where(iscell > 0)[0]
-        X = X[:, ind]
-
-    # preprocessing
-    X = standard_norm(X, params["standard_mean"], params["standard_std"])
-
-    # create trigger and features
-    [Trig, features] = reshapeBehavior(
-        behaviors_data,
-        params["trigger_column"],
-        params["trigger_type"],
-        params["trigger_threshold"],
-        params["feature_colums"],
+    prepared = prepare_inputs(
+        neural_data.data,
+        behaviors_data.data,
+        None if iscell is None else iscell.data,
+        params,
     )
-    X = createMatrix(X, Trig, features, params["trigger_duration"])
+    labels = prepared["labels"]
 
-    # calculate dPCA  #
-
-    # X: array - like, shape(n_samples, n_features_1, n_features_2, ...)
-    # Training data, where n_samples in the number of samples
-    # and n_features_j is the number
-    # of the j - features(where the axis correspond to different parameters).
+    # modules specific to function
+    from dPCA import dPCA
 
     dpca = dPCA.dPCA(
-        labels=params["labels"],
-        join=params["join"],
-        regularizer=params["regularizer"],
-        n_components=params["n_components"],
-        copy=params["copy"],
-        n_iter=params["n_iter"],
+        labels=labels,
+        regularizer=prepared["regularizer"],
+        n_components=prepared["n_components"],
+        n_iter=prepared["n_iter"],
     )
+    # the library seeds its randomized SVD from the global RNG
+    rng_state = np.random.get_state()
+    np.random.seed(prepared["seed"])
+    try:
+        result = dpca.fit_transform(prepared["mean"])
+    finally:
+        np.random.set_state(rng_state)
 
-    result = dpca.fit_transform(np.mean(X, axis=0), X)
-    keys = list(result.keys())
-
-    Out_forfigure = {}
-    # figure shows only assigned components and properties
-    for i in range(len(params["figure_features"])):
-        for j in range(len(params["figure_components"])):
-            tp = result[params["figure_features"][i]][
-                params["figure_components"][j],
-            ]  # 1st component
-            inds = GetIndices(tp.shape[1:], "matrix")
-            arr = np.zeros([tp.shape[0], inds.shape[0]])
-            for m in range(inds.shape[0]):
-                for k in range(tp.shape[0]):
-                    arr[k, m] = tp[tuple([k] + list(inds[m, :]))]
-
-            Out_forfigure[
-                params["figure_features"][i]
-                + "-component"
-                + str(params["figure_components"][j])
-            ] = arr
-    Out_forfigure["features"] = list(Out_forfigure.keys())
-
-    names = []
-    for i in range(inds.shape[0]):
-        names.append("feature" + "_".join(map(str, inds[i, :])))
-    Out_forfigure["trace_names"] = names
-
-    # NWB
-    tpdic = {}
-    for i in range(len(keys)):
-        tpdic[keys[i]] = result[keys[i]]
-
-    nwbfile = {}
-    nwbfile[NWBDATASET.POSTPROCESS] = {function_id: {**tpdic}}
-
+    d0, d1 = prepared["duration"]
+    columns = list(range(d0, d1))
     info = {}
-    for i in range(len(Out_forfigure["features"])):
-        # info[Out_forfigure["features"][i]] = TimeSeriesData(
-        #     Out_forfigure[Out_forfigure["features"][i]].transpose(),
-        #     std=None,
-        #     index=None,
-        #     file_name=Out_forfigure["features"][i],
-        # )
+    for feat in prepared["figure_features"]:
+        for comp in prepared["figure_components"]:
+            tp = result[feat][comp]
+            name = f"{feat}-component{comp}"
+            info[name] = HeatMapData(
+                tp.reshape(tp.shape[0], -1).T, columns=columns, file_name=name
+            )
 
-        info[Out_forfigure["features"][i]] = HeatMapData(
-            Out_forfigure[Out_forfigure["features"][i]].transpose(),
-            columns=None,
-            file_name=Out_forfigure["features"][i],
-        )
-    info["nwbfile"] = nwbfile
+    postprocess = dict(result)
+    for key, ratio in dpca.explained_variance_ratio_.items():
+        postprocess[f"explained_variance_ratio_{key}"] = np.asarray(ratio)
+    for label, values in zip(labels[1:], prepared["levels"]):
+        postprocess[f"levels_{label}"] = np.asarray(values)
+    postprocess["trial_counts"] = prepared["counts"]
+    info["nwbfile"] = {NWBDATASET.POSTPROCESS: {function_id: postprocess}}
 
     return info
