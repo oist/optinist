@@ -48,6 +48,21 @@ def test_every_cell_pair_is_written(output_dir):
     assert post["mat"].shape == (N_CELL, N_CELL, n_lags)
 
 
+def test_cross_correlation_leaves_its_input_unchanged(output_dir):
+    data = np.random.default_rng(1).random((N_CELL, N_TIME))
+    fluo = FluoData(data, file_name="f")
+    nwb_fluorescence = {"Fluorescence": {"data": fluo.data}}
+    original = data.copy()
+
+    info = cross_correlation(fluo, output_dir, params=PARAMS)
+
+    assert np.array_equal(fluo.data, original)
+    assert np.array_equal(nwb_fluorescence["Fluorescence"]["data"], original)
+    (post,) = info["nwbfile"][NWBDATASET.POSTPROCESS].values()
+    lag0 = original @ original.T
+    assert np.allclose(post["mat"][:, :, LAGS], lag0)
+
+
 def test_cross_correlation_needs_two_cells(output_dir):
     fluo = FluoData(np.random.default_rng(5).random((1, N_TIME)), file_name="f")
     with pytest.raises(ValueError, match="at least 2 cells"):

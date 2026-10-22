@@ -65,8 +65,7 @@ def cross_correlation(
             # baseline
             tp_s_mat = np.zeros([len(x), shuffle_num])
             for k in range(shuffle_num):
-                tp = X[j, :]
-                np.random.shuffle(tp)
+                tp = np.random.permutation(X[j, :])
                 ccvals = ss.correlate(X[i, :], tp, method=params["method"], mode="same")
                 tp_s_mat[:, k] = ccvals[ind]
 
