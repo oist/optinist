@@ -103,6 +103,8 @@ export const selectFilePathIsUndefined = (state: RootState) =>
   Object.values(state.inputNode).filter((inputNode) => {
     if (isHDF5InputNode(inputNode)) {
       return inputNode.selectedFilePath == null || inputNode.hdf5Path == null
+    } else if (isMatlabInputNode(inputNode)) {
+      return inputNode.selectedFilePath == null || inputNode.matPath == null
     } else {
       const filePath = inputNode.selectedFilePath
       if (Array.isArray(filePath)) {

@@ -251,7 +251,7 @@ class WorkflowNodeDataFilter:
             ] = copy.deepcopy(nwbfile[type][NWBDATASET.FLUORESCENCE][function_id])
             nwbfile[type][NWBDATASET.FLUORESCENCE][filtered_function_id][
                 "Fluorescence"
-            ]["data"] = fluorescence.T
+            ]["data"] = fluorescence
 
         # 4. POSTPROCESS section updates
         logger.info(

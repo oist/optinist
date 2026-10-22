@@ -21,7 +21,7 @@ def correlation(
 
     neural_data = neural_data.data
 
-    # data should be time x component matrix
+    # X must be (cell, time); iscell picks rows
     if params["transpose"]:
         X = neural_data.transpose()
     else:
@@ -35,7 +35,7 @@ def correlation(
     num_cell = X.shape[0]
 
     # calculate correlation
-    corr = np.corrcoef(X)
+    corr = np.atleast_2d(np.corrcoef(X))
     for i in range(num_cell):
         corr[i, i] = np.nan
 

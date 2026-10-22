@@ -1,0 +1,77 @@
+workspace_id: "default"
+unique_id: smk_exec_lccd_analysis
+name: New flow
+started_at: '2024-08-08 12:02:33'
+finished_at: null
+success: running
+hasNWB: false
+function:
+  input_0:
+    unique_id: input_0
+    name: data_endoscope.tif
+    success: success
+    hasNWB: false
+    message: null
+    outputPaths: null
+    started_at: '2024-08-08 12:02:33'
+    finished_at: '2024-08-08 12:02:33'
+  lccd_cell_detection_1234:
+    unique_id: lccd_cell_detection_1234
+    name: lccd_cell_detection
+    success: running
+    hasNWB: false
+    message: null
+    outputPaths: null
+    started_at: null
+    finished_at: null
+  correlation_1234:
+    unique_id: correlation_1234
+    name: correlation
+    success: running
+    hasNWB: false
+    message: null
+    outputPaths: null
+    started_at: null
+    finished_at: null
+  cross_correlation_1234:
+    unique_id: cross_correlation_1234
+    name: cross_correlation
+    success: running
+    hasNWB: false
+    message: null
+    outputPaths: null
+    started_at: null
+    finished_at: null
+nwb:
+  session_description: optinist
+  identifier: optinist
+  experiment_description: None
+  device:
+    name: Microscope device
+    description: Microscope Information
+    manufacturer: Microscope Manufacture
+  optical_channel:
+    name: OpticalChannel
+    description: optical channel
+    emission_lambda: 500
+  imaging_plane:
+    name: ImagingPlane
+    description: standard
+    imaging_rate: 200
+    excitation_lambda: 600
+    indicator: GCaMap
+    location: V1
+  image_series:
+    starting_time: 0
+    starting_frame:
+      - 0
+  ophys:
+    plane_segmentation:
+      name: PlaneSegmentation
+      description: ""
+snakemake:
+  use_conda: true
+  cores: 2
+  forceall: false
+  # forcetargets: true
+  # lock: false

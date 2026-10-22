@@ -68,7 +68,7 @@ class Runner:
 
             # Save NWB data of Function(Node)
             output_info["nwbfile"] = cls.__save_func_nwb(
-                f"{__rule.output.split('.')[0]}.nwb",
+                f"{os.path.splitext(__rule.output)[0]}.nwb",
                 __rule.type,
                 nwbfile,
                 output_info,
@@ -191,9 +191,10 @@ class Runner:
         del func
         gc.collect()
 
+        function_id = ExptOutputPathIds(output_dir).function_id
+
         try:
             # Initialize CONFIG dictionary structure
-            function_id = ExptOutputPathIds(output_dir).function_id
             if "nwbfile" not in output_info:
                 output_info["nwbfile"] = {}
 
@@ -205,18 +206,19 @@ class Runner:
             logger.warning(f"Failed to initialize CONFIG dataset for{function_id}:{e}")
 
         # Store conda env config in CONFIG dataset
-        try:
-            conda_name = wrapper.get("conda_name")
-            conda_env_path = find_condaenv_filepath(conda_name)
-            conda_config = ConfigReader.read(conda_env_path)
-            config_str = json.dumps(conda_config, separators=(",", ":"))
+        conda_name = wrapper.get("conda_name")
+        if conda_name:
+            try:
+                conda_env_path = find_condaenv_filepath(conda_name)
+                conda_config = ConfigReader.read(conda_env_path)
+                config_str = json.dumps(conda_config, separators=(",", ":"))
 
-            # Store conda env config in CONFIG dataset
-            output_info["nwbfile"][NWBDATASET.CONFIG][function_id][
-                "conda_config"
-            ] = config_str
-        except Exception as e:
-            logger.info(f"Failed to add conda environment config to NWB file: {e}")
+                # Store conda env config in CONFIG dataset
+                output_info["nwbfile"][NWBDATASET.CONFIG][function_id][
+                    "conda_config"
+                ] = config_str
+            except Exception as e:
+                logger.info(f"Failed to add conda environment config to NWB file: {e}")
 
         try:
             # Store node parameters in CONFIG dataset
