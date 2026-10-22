@@ -406,7 +406,9 @@ def caiman_cnmf(
             file_name="all_roi",
         ),
         "cell_roi": RoiData(
-            np.nanmax(im[iscell != 0], axis=0) if len(im) > 0 else empty_roi.copy(),
+            np.nanmax(im[iscell != 0], axis=0, initial=np.nan)
+            if len(im) > 0
+            else empty_roi.copy(),
             output_dir=output_dir,
             file_name="cell_roi",
         ),
