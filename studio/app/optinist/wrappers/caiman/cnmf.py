@@ -198,15 +198,16 @@ def component_outputs(
             raise ValueError("one mask per rejected component expected")
         non_cell_ims = np.stack(non_cell_ims).astype(float)
         for i, j in enumerate(range(n_rois, n_rois + len(non_cell_ims))):
-            non_cell_ims[i, :] = np.where(non_cell_ims[i, :] != 0, j, 0)
-        non_cell_roi = np.nanmax(non_cell_ims, axis=0).astype(float)
+            non_cell_ims[i, :] = np.where(non_cell_ims[i, :] != 0, j + 1, 0)
     else:
         non_cell_ims = np.zeros((0, *dims))
-        non_cell_roi = np.zeros(dims)
-        non_cell_roi[non_cell_roi == 0] = np.nan
     non_cell_ims[non_cell_ims == 0] = np.nan
+    non_cell_ims -= 1
 
     n_noncell_rois = len(non_cell_ims)
+    non_cell_roi = (
+        np.nanmax(non_cell_ims, axis=0) if n_noncell_rois > 0 else np.full(dims, np.nan)
+    )
 
     im = (
         np.vstack([cell_ims, non_cell_ims])

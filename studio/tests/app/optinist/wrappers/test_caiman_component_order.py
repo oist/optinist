@@ -1,3 +1,6 @@
+import sys
+import types
+
 import numpy as np
 import pytest
 import scipy.sparse as sp
@@ -81,8 +84,40 @@ def test_a_mask_count_that_differs_from_the_components_is_refused(monkeypatch):
         cnmf.component_outputs(A, C, [0, 1], [], DIMS, 0.9, "nrg", False)
 
 
-def test_get_roi_emits_an_empty_mask_for_an_empty_component():
-    pytest.importorskip("skimage")
+def test_rejected_only_components_keep_their_masks(monkeypatch):
+    monkeypatch.setattr(cnmf, "get_roi", labelled_masks)
+    A = sp.csc_matrix(
+        np.array(
+            [
+                [1.0 if p // DIMS[1] == c else 0.0 for c in range(2)]
+                for p in range(PIXELS)
+            ]
+        )
+    )
+    C = np.arange(2)[:, None] * 10.0 + np.arange(FRAMES)
+
+    im, iscell, _, F, non_cell_roi, n_rois, n_noncell = cnmf.component_outputs(
+        A, C, [], [0, 1], DIMS, 0.9, "nrg", False, n_frames=FRAMES
+    )
+
+    assert (n_rois, n_noncell) == (0, 2) and list(iscell) == [0, 0]
+    for row in range(2):
+        assert set(np.argwhere(~np.isnan(im[row]))[:, 0]) == {row}
+        assert np.nanmax(im[row]) == row
+        assert np.array_equal(F[row], C[row])
+    assert np.array_equal(np.unique(non_cell_roi[~np.isnan(non_cell_roi)]), [0, 1])
+    assert np.isnan(non_cell_roi[2:]).all()
+
+
+def test_get_roi_emits_an_empty_mask_for_an_empty_component(monkeypatch):
+    # stand-in for skimage, absent from the app image: outline pixels under the level
+    measure = types.ModuleType("skimage.measure")
+    measure.find_contours = lambda image, level: [np.argwhere(image < level)]
+    skimage = types.ModuleType("skimage")
+    skimage.measure = measure
+    monkeypatch.setitem(sys.modules, "skimage", skimage)
+    monkeypatch.setitem(sys.modules, "skimage.measure", measure)
+
     dense = np.zeros((PIXELS, 2))
     dense[:4, 1] = 1.0  # component 0 has no pixels at all
     ims = cnmf.get_roi(sp.csc_matrix(dense), 0.9, "nrg", False, DIMS)
