@@ -146,6 +146,11 @@ def util_download_model_files():
                     f.write(response.content)
 
 
+def nwb_image_mask(A, comp, dims, swap_dim):
+    # the pixel order get_roi reads A in, so the NWB masks match the ROI images
+    return A[:, comp].toarray().reshape(dims, order="C" if swap_dim else "F")
+
+
 def component_outputs(
     A,
     C,
@@ -218,7 +223,7 @@ def component_outputs(
     roi_list = []
     for comp in order:
         kargs = {}
-        kargs["image_mask"] = A.T[comp].T.toarray().reshape(dims)
+        kargs["image_mask"] = nwb_image_mask(A, comp, dims, swap_dim)
         if accepted_list is not None:
             kargs["accepted"] = comp in accepted_list
         if rejected_list is not None:
@@ -406,7 +411,9 @@ def caiman_cnmf(
             file_name="all_roi",
         ),
         "cell_roi": RoiData(
-            np.nanmax(im[iscell != 0], axis=0) if len(im) > 0 else empty_roi.copy(),
+            np.nanmax(im[iscell != 0], axis=0, initial=np.nan)
+            if len(im) > 0
+            else empty_roi.copy(),
             output_dir=output_dir,
             file_name="cell_roi",
         ),

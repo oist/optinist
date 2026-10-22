@@ -78,9 +78,15 @@ class EditRoiData(BaseData):
         return [id for ids in merge_roi for id in ids]
 
     def status(self):
+        # an undone pending merge keeps its entry for commit but no longer paints
+        undone = {float(id) for id in self.temp_delete_roi}
+        merged = [
+            (k, *(() if k in undone else v), -1.0)
+            for k, v in self.temp_merge_roi.items()
+        ]
         return RoiStatus(
             temp_add_roi=list(self.temp_add_roi.keys()),
-            temp_merge_roi=self.temp_merge_roi_list,
+            temp_merge_roi=[id for ids in merged for id in ids],
             temp_delete_roi=list(self.temp_delete_roi.keys()),
         )
 

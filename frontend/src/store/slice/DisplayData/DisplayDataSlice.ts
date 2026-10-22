@@ -19,6 +19,7 @@ import {
   mergeRoi,
   addRoi,
   deleteRoi,
+  promoteRoi,
   commitRoi,
   getStatus,
 } from "store/slice/DisplayData/DisplayDataActions"
@@ -54,6 +55,7 @@ const initialState: DisplayData = {
     temp_add_roi: [],
     temp_delete_roi: [],
     temp_merge_roi: [],
+    temp_promote_roi: [],
   },
   isEditRoiCommitting: false,
 }
@@ -645,6 +647,7 @@ export const displayDataSlice = createSlice({
           temp_add_roi: [],
           temp_delete_roi: [],
           temp_merge_roi: [],
+          temp_promote_roi: [],
         }
 
         state.loadingStack.pop()
@@ -660,6 +663,7 @@ export const displayDataSlice = createSlice({
           cancelRoi.pending,
           mergeRoi.pending,
           deleteRoi.pending,
+          promoteRoi.pending,
           addRoi.pending,
           getStatus.pending,
         ),
@@ -676,6 +680,8 @@ export const displayDataSlice = createSlice({
           addRoi.fulfilled,
           deleteRoi.rejected,
           deleteRoi.fulfilled,
+          promoteRoi.rejected,
+          promoteRoi.fulfilled,
           getStatus.rejected,
         ),
         (state) => {

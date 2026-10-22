@@ -159,12 +159,16 @@ def suite2p_roi(
             file_name="all_roi",
         ),
         "non_cell_roi": RoiData(
-            np.nanmax(im[iscell == 0], axis=0) if len(im) > 0 else empty_roi,
+            np.nanmax(im[iscell == 0], axis=0, initial=np.nan)
+            if len(im) > 0
+            else empty_roi,
             output_dir=output_dir,
             file_name="noncell_roi",
         ),
         "cell_roi": RoiData(
-            np.nanmax(im[iscell != 0], axis=0) if len(im) > 0 else empty_roi,
+            np.nanmax(im[iscell != 0], axis=0, initial=np.nan)
+            if len(im) > 0
+            else empty_roi,
             output_dir=output_dir,
             file_name="cell_roi",
         ),

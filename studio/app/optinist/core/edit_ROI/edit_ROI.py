@@ -28,6 +28,7 @@ class CellType:
     NON_ROI = 0
     TEMP_ADD = -1
     TEMP_DELETE = -2
+    TEMP_PROMOTE = -3
 
 
 class EditROI:
@@ -82,8 +83,23 @@ class EditROI:
     def num_cell(self):
         return self.tmp_data.im.shape[0]
 
+    @property
+    def __cell_roi_im(self):
+        # pending promotions and undone pending merges are not drawn as cells
+        drawn = ~np.isin(self.tmp_iscell, [CellType.NON_ROI, CellType.TEMP_PROMOTE])
+        for merged_id in self.tmp_data.temp_merge_roi:
+            if self.tmp_iscell[int(merged_id)] == CellType.TEMP_DELETE:
+                drawn[int(merged_id)] = False
+        return np.fmax.reduce(
+            self.tmp_data.im, axis=0, where=drawn[:, None, None], initial=np.nan
+        )
+
     def get_status(self) -> RoiStatus:
-        return self.tmp_data.status()
+        roi_status = self.tmp_data.status()
+        roi_status.temp_promote_roi = np.where(
+            self.tmp_iscell == CellType.TEMP_PROMOTE
+        )[0].tolist()
+        return roi_status
 
     def add(self, roi_pos):
         new_roi = create_ellipse_mask(self.shape, roi_pos)
@@ -95,9 +111,7 @@ class EditROI:
 
         info = {
             "cell_roi": RoiData(
-                np.nanmax(
-                    self.tmp_data.im[self.tmp_iscell != CellType.NON_ROI], axis=0
-                ),
+                self.__cell_roi_im,
                 output_dir=self.node_dirpath,
                 file_name="cell_roi",
             ),
@@ -121,9 +135,7 @@ class EditROI:
 
         info = {
             "cell_roi": RoiData(
-                np.nanmax(
-                    self.tmp_data.im[self.tmp_iscell != CellType.NON_ROI], axis=0
-                ),
+                self.__cell_roi_im,
                 output_dir=self.node_dirpath,
                 file_name="cell_roi",
             ),
@@ -135,10 +147,59 @@ class EditROI:
         self.__save_json(info)
 
     def delete(self, ids: List[int]):
+        # deleting a pending merge restores its sources; the entry stays so commit
+        # still appends the merged ROI's trace and keeps fluorescence aligned
+        for id in ids:
+            for parent in self.tmp_data.temp_merge_roi.get(float(id), []):
+                if parent in self.tmp_data.temp_delete_roi:
+                    continue
+                self.tmp_iscell[parent] = (
+                    CellType.TEMP_ADD
+                    if parent in self.tmp_data.temp_add_roi
+                    else CellType.ROI
+                )
+
         self.tmp_iscell[ids] = CellType.TEMP_DELETE
 
         for id in ids:
             self.tmp_data.temp_delete_roi[id] = None
+
+        info = {
+            "cell_roi": RoiData(
+                self.__cell_roi_im,
+                output_dir=self.node_dirpath,
+                file_name="cell_roi",
+            ),
+            "iscell": IscellData(self.tmp_iscell),
+            "edit_roi_data": self.tmp_data,
+        }
+
+        self.__update_pickle_for_roi_edition(self.tmp_pickle_file_path, info)
+        self.__save_json(info)
+
+    def promote(self, ids: List[int]):
+        num_roi = len(self.tmp_iscell)
+        not_promotable = [
+            id
+            for id in ids
+            if not 0 <= id < num_roi or self.tmp_iscell[id] != CellType.NON_ROI
+        ]
+        if not_promotable:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"ROIs are not non-cell ROIs: {not_promotable}",
+            )
+
+        # a cell with no fluorescence record would have nothing to plot
+        num_trace = len(self.output_info.get("fluorescence").data)
+        without_trace = [id for id in ids if id >= num_trace]
+        if without_trace:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"ROIs have no fluorescence record: {without_trace}",
+            )
+
+        self.tmp_iscell[ids] = CellType.TEMP_PROMOTE
 
         info = {
             "iscell": IscellData(self.tmp_iscell),
@@ -149,6 +210,8 @@ class EditROI:
         self.__save_json(info)
 
     def commit(self):
+        self.tmp_iscell[self.tmp_iscell == CellType.TEMP_PROMOTE] = CellType.ROI
+
         if "suite2p" in self.function_id:
             from studio.app.optinist.core.edit_ROI.wrappers.suite2p_edit_roi import (
                 commit_edit as suite2p_commit,
@@ -203,6 +266,22 @@ class EditROI:
                 self.function_id,
             )
 
+        iscell = info["iscell"].data
+        non_cell_roi_file_name = self.__non_cell_roi_file_name()
+        if non_cell_roi_file_name:
+            im = info["edit_roi_data"].im
+            # rows without a fluorescence record would offer a click that fails
+            has_trace = np.arange(len(im)) < len(info["fluorescence"].data)
+            non_cell = (iscell == CellType.NON_ROI) & has_trace
+            # lowest id on top, so a deleted merge does not cover its sources
+            info["non_cell_roi"] = RoiData(
+                np.fmin.reduce(
+                    im, axis=0, where=non_cell[:, None, None], initial=np.nan
+                ),
+                output_dir=self.node_dirpath,
+                file_name=non_cell_roi_file_name,
+            )
+
         info["edit_roi_data"].images = self.data.images
 
         self.__update_pickle_for_roi_edition(self.pickle_file_path, info)
@@ -219,13 +298,12 @@ class EditROI:
         original_num_cell = len(self.output_info.get("fluorescence").data)
         self.tmp_data.im = self.tmp_data.im[:original_num_cell]
         self.tmp_iscell = self.tmp_iscell[:original_num_cell]
+        self.tmp_iscell[self.tmp_iscell == CellType.TEMP_PROMOTE] = CellType.NON_ROI
         self.tmp_data.cancel()
 
         info = {
             "cell_roi": RoiData(
-                np.nanmax(
-                    self.tmp_data.im[self.tmp_iscell != CellType.NON_ROI], axis=0
-                ),
+                self.__cell_roi_im,
                 output_dir=self.node_dirpath,
                 file_name="cell_roi",
             ),
@@ -236,6 +314,12 @@ class EditROI:
             if os.path.exists(self.tmp_pickle_file_path)
             else None
         )
+
+    def __non_cell_roi_file_name(self):
+        for file_name in ("non_cell_roi", "noncell_roi"):
+            if os.path.exists(join_filepath([self.node_dirpath, f"{file_name}.json"])):
+                return file_name
+        return None
 
     def __update_whole_nwb(self, output_info):
         smk_config = SmkConfigReader.read(

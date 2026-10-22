@@ -197,6 +197,18 @@ export async function deleteRoiApi(
   return response.data
 }
 
+export async function promoteRoiApi(
+  path: string,
+  workspaceId: number,
+  data: { ids: number[] },
+): Promise<{ data: HTMLData; meta?: PlotMetaData }> {
+  const response = await axios.post(
+    `${BASE_URL}/outputs/image/${path}/promote_roi?workspace_id=${workspaceId}`,
+    data,
+  )
+  return response.data
+}
+
 export async function commitRoiApi(
   path: string,
   workspace_id: number,

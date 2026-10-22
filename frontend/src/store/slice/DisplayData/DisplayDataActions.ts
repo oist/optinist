@@ -33,6 +33,7 @@ import {
   addRoiApi,
   mergeRoiApi,
   deleteRoiApi,
+  promoteRoiApi,
   commitRoiApi,
   getStatusRoi,
 } from "api/outputs/Outputs"
@@ -246,6 +247,23 @@ export const deleteRoi = createAsyncThunk<
     const { dispatch } = thunkAPI
     try {
       const response = await deleteRoiApi(path, workspaceId, data)
+      dispatch(getStatus({ path, workspaceId }))
+      return response
+    } catch (e) {
+      return thunkAPI.rejectWithValue(e)
+    }
+  },
+)
+
+export const promoteRoi = createAsyncThunk<
+  { data: HTMLData; meta?: PlotMetaData },
+  { path: string; workspaceId: number; data: { ids: number[] } }
+>(
+  `${DISPLAY_DATA_SLICE_NAME}/promoteRoi`,
+  async ({ path, workspaceId, data }, thunkAPI) => {
+    const { dispatch } = thunkAPI
+    try {
+      const response = await promoteRoiApi(path, workspaceId, data)
       dispatch(getStatus({ path, workspaceId }))
       return response
     } catch (e) {
