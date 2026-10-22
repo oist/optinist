@@ -21,10 +21,10 @@ OptiNiSt accepts a variety of data types. Data are added in "nodes", depending o
   - Can be transposed if specified in parameters
 - File Extension: ".csv"
 #### HDF5 / [NWB](https://nwb-schema.readthedocs.io/en/latest/format_description.html)
-- Format: Contains Groups, Datasets, Attributes (metadata). 
+- Format: Contains Groups, Datasets, Attributes (metadata).
   - A Group is similar to a folder and may contain an arbitrary number of other groups and datasets,
   - A Dataset describes an n-dimensional array and provides the primary means for storing data,
-  - An Attribute* is a small dataset that is attached to a specific group or dataset and is typically used to store metadata specific to the object they are associated with. 
+  - An Attribute* is a small dataset that is attached to a specific group or dataset and is typically used to store metadata specific to the object they are associated with.
  - ".hdf5", ".nwb", ".HDF5", ".NWB"
 #### Matlab
  - Format:
@@ -89,7 +89,7 @@ Defined in bar.py
 Expects 1D or 2D numpy array
 If 1D, converts to 2D with shape (1, length)
 
-    LineData:  
+    LineData:
 Defined in line.py
 Expects 2D numpy array
 
