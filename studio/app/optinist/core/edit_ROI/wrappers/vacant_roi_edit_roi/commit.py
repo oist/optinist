@@ -46,10 +46,12 @@ def commit_edit(
         # If starting with no ROIs, initialize with correct time dimension
         new_fluorescences = np.zeros((num_cell, images.shape[0]))
 
+    num_committed = len(fluorescence)
+    added = iscell == CellType.TEMP_ADD
     iscell[iscell == CellType.TEMP_DELETE] = CellType.NON_ROI
-    for i in range(num_cell):
-        if iscell[i] == CellType.TEMP_ADD:
-            new_fluorescences[i] = np.mean(images[:, ~np.isnan(data.im[i])], axis=1)
+    for i in range(num_committed, num_cell):
+        new_fluorescences[i] = np.mean(images[:, ~np.isnan(data.im[i])], axis=1)
+        if added[i]:
             iscell[i] = CellType.ROI
 
     data.commit()

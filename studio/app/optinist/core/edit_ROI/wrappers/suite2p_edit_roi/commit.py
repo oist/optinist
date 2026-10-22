@@ -58,7 +58,9 @@ def commit_edit(data: EditRoiData, ops: Suite2pData, iscell, node_dirpath, funct
         return info
 
     for roi_id, roi_data in temp_roi_data_dict.items():
-        iscell[int(roi_id)] = CellType.ROI
+        # a pending ROI deleted before commit keeps its trace but stays a non-cell
+        if iscell[int(roi_id)] != CellType.TEMP_DELETE:
+            iscell[int(roi_id)] = CellType.ROI
         # Save fluorescence traces of added roi
         if isinstance(roi_data, RoiPos):
             stat0 = get_stat0_add_roi(

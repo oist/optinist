@@ -38,6 +38,7 @@ import {
   commitRoi,
   deleteRoi,
   mergeRoi,
+  promoteRoi,
   getImageData,
   getRoiData,
   getStatus,
@@ -95,12 +96,19 @@ export type StatusROI = {
   temp_add_roi: number[]
   temp_delete_roi: number[]
   temp_merge_roi: number[]
+  temp_promote_roi: number[]
 }
 
 const ADD_ROI = "Add ROI"
 const DELETE_ROI = "Delete ROI"
 const MERGE_ROI = "Merge ROI"
+const PROMOTE_ROI = "Set as Cell ROI"
 const CELL_ROI = "/cell_roi.json"
+// all_roi is not offered: no commit path regenerates it
+const PROMOTE_ROI_FILES = ["/noncell_roi.json", "/non_cell_roi.json"]
+
+const isEditableRoiPath = (path?: string | null): path is string =>
+  [CELL_ROI, ...PROMOTE_ROI_FILES].some((file) => path?.includes(file))
 const WIDTH_CHARTJS = 321
 const INIT_WIDTH_ROI = 30
 
@@ -224,6 +232,10 @@ const ImagePlotChart = memo(function ImagePlotChart({
     () => roiFilePath?.includes(CELL_ROI),
     [roiFilePath],
   )
+  const allowPromoteRoi = useMemo(
+    () => PROMOTE_ROI_FILES.some((file) => roiFilePath?.includes(file)),
+    [roiFilePath],
+  )
   const { setRoisClick, roisClick, resetRoisClick } = useVisualize()
   const roiClicked = useMemo(() => roisClick[itemId] || [], [itemId, roisClick])
 
@@ -235,6 +247,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
         temp_add_roi: [],
         temp_delete_roi: [],
         temp_merge_roi: [],
+        temp_promote_roi: [],
       }
     )
   }, [selectedStatus])
@@ -264,12 +277,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
   useEffect(() => {
     refRoiFilePath.current = roiFilePath
     return () => {
-      if (
-        !refRoiFilePath.current ||
-        !workspaceId ||
-        !refRoiFilePath.current.includes(CELL_ROI)
-      )
-        return
+      if (!workspaceId || !isEditableRoiPath(refRoiFilePath.current)) return
       dispatch(
         cancelRoi({ path: refRoiFilePath.current as string, workspaceId }),
       )
@@ -322,7 +330,8 @@ const ImagePlotChart = memo(function ImagePlotChart({
           const isDeleted = statusRoi?.temp_delete_roi?.includes(i) || false
           const isMerged = statusRoi?.temp_merge_roi?.includes(i) || false
           const isAdded = statusRoi?.temp_add_roi?.includes(i) || false
-          if (allowEditRoi && isClickPoint && action) {
+          const isPromoted = statusRoi?.temp_promote_roi?.includes(i) || false
+          if ((allowEditRoi || allowPromoteRoi) && isClickPoint && action) {
             switch (action) {
               case DELETE_ROI:
                 return [offset, "#FFA500"] // orange
@@ -330,12 +339,15 @@ const ImagePlotChart = memo(function ImagePlotChart({
                 return [offset, "#e134eb"] // purple
               case ADD_ROI:
                 return [offset, "3483eb"] // red
+              case PROMOTE_ROI:
+                return [offset, "#32A919"] // green
             }
           }
-          if (isDeleted || isMerged || isAdded) {
+          if (isDeleted || isMerged || isAdded || isPromoted) {
             if (isDeleted) return [offset, "#FFA500"]
             if (isMerged) return [offset, "#e134eb"]
             if (isAdded) return [offset, "3483eb"]
+            if (isPromoted) return [offset, "#32A919"]
           }
           if (isClickPoint || !roiClicked.length) return [offset, hex]
           return [offset, rgba2hex(rgba, 0.3)]
@@ -359,6 +371,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
       roiClicked,
       statusRoi,
       allowEditRoi,
+      allowPromoteRoi,
     ],
   )
 
@@ -541,8 +554,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
   const onCancel = async () => {
     setAction("")
     if (
-      !refRoiFilePath.current ||
-      !refRoiFilePath.current.includes(CELL_ROI) ||
+      !isEditableRoiPath(refRoiFilePath.current) ||
       workspaceId === undefined
     ) {
       return
@@ -660,7 +672,7 @@ const ImagePlotChart = memo(function ImagePlotChart({
     if (action === MERGE_ROI) {
       if (roiClicked.length < 2) return
       dispatch(resetAllOrderList())
-      dispatch(
+      await dispatch(
         mergeRoi({
           path: roiFilePath,
           workspaceId,
@@ -681,6 +693,23 @@ const ImagePlotChart = memo(function ImagePlotChart({
       )
       resetRoisClick(itemId)
       workspaceId && dispatch(getRoiData({ path: roiFilePath, workspaceId }))
+    } else if (action === PROMOTE_ROI) {
+      if (!roiClicked.length) return
+      dispatch(resetAllOrderList())
+      try {
+        await dispatch(
+          promoteRoi({
+            path: roiFilePath,
+            workspaceId,
+            data: { ids: roiClicked },
+          }),
+        ).unwrap()
+      } catch (error) {
+        const message = (error as { message?: string })?.message
+        enqueueSnackbar(message ?? "Failed to set the ROIs as cell ROIs.", {
+          variant: "error",
+        })
+      }
     }
     setAction("")
     setEdit(true)
@@ -696,6 +725,11 @@ const ImagePlotChart = memo(function ImagePlotChart({
   const onDeleteRoi = async () => {
     if (!roiFilePath) return
     setAction(DELETE_ROI)
+  }
+
+  const onPromoteRoi = async () => {
+    if (!roiFilePath) return
+    setAction(PROMOTE_ROI)
   }
 
   const onCommitRoi = async () => {
@@ -736,12 +770,16 @@ const ImagePlotChart = memo(function ImagePlotChart({
   }
 
   const renderActionRoi = () => {
-    if (!allowEditRoi) return null
+    if (!allowEditRoi && !allowPromoteRoi) return null
+    const okDisabled =
+      action !== ADD_ROI && roiClicked.length < (action === MERGE_ROI ? 2 : 1)
     if (action) {
       return (
         <>
           {action !== ADD_ROI ? (
-            <BoxDiv>ROI Selecteds: [{roiClicked?.join(",") || ""}]</BoxDiv>
+            <BoxDiv data-testid="roi-selected-ids">
+              ROI Selecteds: [{roiClicked?.join(",") || ""}]
+            </BoxDiv>
           ) : null}
           <BoxDiv sx={{ display: "flex", gap: 1 }}>
             <LinkDiv
@@ -751,7 +789,9 @@ const ImagePlotChart = memo(function ImagePlotChart({
                     ? "#F84E1B"
                     : action === MERGE_ROI
                       ? "#6619A9"
-                      : "default",
+                      : action === PROMOTE_ROI
+                        ? "#32A919"
+                        : "default",
                 display: "flex",
                 gap: 1,
                 textDecoration: "none",
@@ -763,16 +803,8 @@ const ImagePlotChart = memo(function ImagePlotChart({
             <LinkDiv onClick={onCancelAdd}>Cancel</LinkDiv>
             <LinkDiv
               style={{
-                opacity:
-                  (roiClicked.length < 2 && action === MERGE_ROI) ||
-                  (roiClicked.length < 1 && action === DELETE_ROI)
-                    ? 0.5
-                    : 1,
-                cursor:
-                  (roiClicked.length < 2 && action === MERGE_ROI) ||
-                  (roiClicked.length < 1 && action === DELETE_ROI)
-                    ? "default"
-                    : "pointer",
+                opacity: okDisabled ? 0.5 : 1,
+                cursor: okDisabled ? "default" : "pointer",
               }}
               onClick={addOrSelectRoi}
             >
@@ -807,28 +839,42 @@ const ImagePlotChart = memo(function ImagePlotChart({
         />
       </Box>
       <Box sx={{ minHeight: 5.5 }}>
-        {edit && !action && roiFilePath && roiFilePath.includes(CELL_ROI) ? (
+        {edit && !action && (allowEditRoi || allowPromoteRoi) ? (
           <>
             <BoxDiv sx={{ flexDirection: "column" }}>
               <BoxWrapper sx={{ marginBottom: 2 }}>
-                <LinkDiv onClick={onAddRoi}>{ADD_ROI}</LinkDiv>
-                <LinkDiv
-                  sx={{
-                    color: "#F84E1B",
-                  }}
-                  onClick={onDeleteRoi}
-                >
-                  {DELETE_ROI}
-                </LinkDiv>
-                <LinkDiv
-                  sx={{
-                    color: "#6619A9",
-                    ml: 0,
-                  }}
-                  onClick={onMergeRoi}
-                >
-                  {MERGE_ROI}
-                </LinkDiv>
+                {allowEditRoi ? (
+                  <>
+                    <LinkDiv onClick={onAddRoi}>{ADD_ROI}</LinkDiv>
+                    <LinkDiv
+                      sx={{
+                        color: "#F84E1B",
+                      }}
+                      onClick={onDeleteRoi}
+                    >
+                      {DELETE_ROI}
+                    </LinkDiv>
+                    <LinkDiv
+                      sx={{
+                        color: "#6619A9",
+                        ml: 0,
+                      }}
+                      onClick={onMergeRoi}
+                    >
+                      {MERGE_ROI}
+                    </LinkDiv>
+                  </>
+                ) : (
+                  <LinkDiv
+                    data-testid="roi-promote"
+                    sx={{
+                      color: "#32A919",
+                    }}
+                    onClick={onPromoteRoi}
+                  >
+                    {PROMOTE_ROI}
+                  </LinkDiv>
+                )}
               </BoxWrapper>
               <BoxWrapper>
                 {Object.keys(statusRoi).some(
