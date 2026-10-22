@@ -118,7 +118,7 @@ def commit_edit(data: EditRoiData, ops: Suite2pData, iscell, node_dirpath, funct
         "fluorescence": FluoData(ops["F"], file_name="fluorescence"),
         "iscell": IscellData(iscell),
         "cell_roi": RoiData(
-            np.nanmax(data.im[iscell != CellType.NON_ROI], axis=0),
+            np.nanmax(data.im[iscell != CellType.NON_ROI], axis=0, initial=np.nan),
             output_dir=node_dirpath,
             file_name="cell_roi",
         ),

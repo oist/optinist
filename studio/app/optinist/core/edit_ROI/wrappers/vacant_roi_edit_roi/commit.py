@@ -56,7 +56,7 @@ def commit_edit(
 
     info = {
         "cell_roi": RoiData(
-            np.nanmax(data.im[iscell != CellType.NON_ROI], axis=0),
+            np.nanmax(data.im[iscell != CellType.NON_ROI], axis=0, initial=np.nan),
             output_dir=node_dirpath,
             file_name="cell_roi",
         ),

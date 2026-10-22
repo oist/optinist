@@ -96,7 +96,9 @@ class EditROI:
         info = {
             "cell_roi": RoiData(
                 np.nanmax(
-                    self.tmp_data.im[self.tmp_iscell != CellType.NON_ROI], axis=0
+                    self.tmp_data.im[self.tmp_iscell != CellType.NON_ROI],
+                    axis=0,
+                    initial=np.nan,
                 ),
                 output_dir=self.node_dirpath,
                 file_name="cell_roi",
@@ -122,7 +124,9 @@ class EditROI:
         info = {
             "cell_roi": RoiData(
                 np.nanmax(
-                    self.tmp_data.im[self.tmp_iscell != CellType.NON_ROI], axis=0
+                    self.tmp_data.im[self.tmp_iscell != CellType.NON_ROI],
+                    axis=0,
+                    initial=np.nan,
                 ),
                 output_dir=self.node_dirpath,
                 file_name="cell_roi",
@@ -224,7 +228,9 @@ class EditROI:
         info = {
             "cell_roi": RoiData(
                 np.nanmax(
-                    self.tmp_data.im[self.tmp_iscell != CellType.NON_ROI], axis=0
+                    self.tmp_data.im[self.tmp_iscell != CellType.NON_ROI],
+                    axis=0,
+                    initial=np.nan,
                 ),
                 output_dir=self.node_dirpath,
                 file_name="cell_roi",
