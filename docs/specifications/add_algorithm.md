@@ -418,6 +418,15 @@ Add the new entry in the format below:
 
 > **Tip:** Make sure that the `conda_name` matches the environment you’ve defined in your Snakemake workflow.
 
+### 3. Add the Sample Workflow
+
+When a node's Conda environment is missing, its **Create env** dialog imports and runs the sample workflow `setup_conda_{name}` from `sample_data/maintenance/output/`. Without it, the dialog fails.
+
+Copy an existing directory (e.g. `setup_conda_lccd/`) to `setup_conda_{name}/`. In all three files (`experiment.yaml`, `workflow.yaml` and `snakemake.yaml`):
+
+1. Replace the algorithm node id (e.g. `setup_conda_lccd_3suw9pfbqj`) with `setup_conda_{name}_` plus a new random suffix (e.g. `setup_conda_{name}_a1b2c3d4e5`). Replace every occurrence: the id also appears in the edge key, `id`, `target` and `targetHandle` in `workflow.yaml`.
+2. Then replace the remaining `setup_conda_lccd` with `setup_conda_{name}`.
+
 ---
 
 You're all set! Your custom Conda setup function is now ready to be used with Snakemake.
