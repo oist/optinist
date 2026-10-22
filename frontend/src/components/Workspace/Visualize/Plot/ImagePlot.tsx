@@ -86,7 +86,10 @@ import {
   setImageActiveIndex,
   setImageItemDuration,
 } from "store/slice/VisualizeItem/VisualizeItemSlice"
-import { isTimeSeriesItem } from "store/slice/VisualizeItem/VisualizeItemUtils"
+import {
+  isImageItem,
+  isTimeSeriesItem,
+} from "store/slice/VisualizeItem/VisualizeItemUtils"
 import { selectCurrentWorkspaceId } from "store/slice/Workspace/WorkspaceSelector"
 import { setDataCancel } from "store/slice/Workspace/WorkspaceSlice"
 import { AppDispatch, RootState } from "store/store"
@@ -107,7 +110,16 @@ const CELL_ROI = "/cell_roi.json"
 // all_roi is not offered: no commit path regenerates it
 const PROMOTE_ROI_FILES = ["/noncell_roi.json", "/non_cell_roi.json"]
 
+// the node types EditROI has commit wrappers for
+const EDITABLE_ROI_NODES = ["suite2p", "lccd", "vacant_roi", "caiman"]
+
+const isEditableNode = (path?: string | null) => {
+  const nodeId = path?.split("/").slice(-2)[0] ?? ""
+  return EDITABLE_ROI_NODES.some((name) => nodeId.includes(name))
+}
+
 const isEditableRoiPath = (path?: string | null): path is string =>
+  isEditableNode(path) &&
   [CELL_ROI, ...PROMOTE_ROI_FILES].some((file) => path?.includes(file))
 const WIDTH_CHARTJS = 321
 const INIT_WIDTH_ROI = 30
@@ -229,11 +241,13 @@ const ImagePlotChart = memo(function ImagePlotChart({
   const showRoiLabels = useSelector(selectImageItemShowRoiLabels(itemId))
 
   const allowEditRoi = useMemo(
-    () => roiFilePath?.includes(CELL_ROI),
+    () => isEditableNode(roiFilePath) && roiFilePath?.includes(CELL_ROI),
     [roiFilePath],
   )
   const allowPromoteRoi = useMemo(
-    () => PROMOTE_ROI_FILES.some((file) => roiFilePath?.includes(file)),
+    () =>
+      isEditableNode(roiFilePath) &&
+      PROMOTE_ROI_FILES.some((file) => roiFilePath?.includes(file)),
     [roiFilePath],
   )
   const { setRoisClick, roisClick, resetRoisClick } = useVisualize()
@@ -736,10 +750,18 @@ const ImagePlotChart = memo(function ImagePlotChart({
     if (!roiFilePath || workspaceId === undefined) return
     try {
       await dispatch(commitRoi({ path: roiFilePath, workspaceId })).unwrap()
-      workspaceId &&
-        (await dispatch(
-          getRoiData({ path: roiFilePath, workspaceId }),
-        ).unwrap())
+      // commit rewrites cell_roi and non_cell_roi, so refetch every open view of this node
+      const nodeDir = roiFilePath.slice(0, roiFilePath.lastIndexOf("/") + 1)
+      const openRoiPaths = Object.values(itemsVisual ?? {})
+        .map((item) => (isImageItem(item) ? item.roiItem?.filePath : null))
+        .filter(
+          (path): path is string =>
+            !!path && path !== roiFilePath && path.startsWith(nodeDir),
+        )
+      await dispatch(getRoiData({ path: roiFilePath, workspaceId })).unwrap()
+      openRoiPaths.forEach((path) =>
+        dispatch(getRoiData({ path, workspaceId })),
+      )
 
       enqueueSnackbar("Successfully committed to Edit ROI.", {
         variant: "success",

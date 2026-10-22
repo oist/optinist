@@ -85,8 +85,11 @@ class EditROI:
 
     @property
     def __cell_roi_im(self):
-        # a pending promotion stays out of cell_roi until commit resolves it
+        # pending promotions and undone pending merges are not drawn as cells
         drawn = ~np.isin(self.tmp_iscell, [CellType.NON_ROI, CellType.TEMP_PROMOTE])
+        for merged_id in self.tmp_data.temp_merge_roi:
+            if self.tmp_iscell[int(merged_id)] == CellType.TEMP_DELETE:
+                drawn[int(merged_id)] = False
         return np.nanmax(self.tmp_data.im[drawn], axis=0, initial=np.nan)
 
     def get_status(self) -> RoiStatus:
@@ -158,6 +161,11 @@ class EditROI:
             self.tmp_data.temp_delete_roi[id] = None
 
         info = {
+            "cell_roi": RoiData(
+                self.__cell_roi_im,
+                output_dir=self.node_dirpath,
+                file_name="cell_roi",
+            ),
             "iscell": IscellData(self.tmp_iscell),
             "edit_roi_data": self.tmp_data,
         }

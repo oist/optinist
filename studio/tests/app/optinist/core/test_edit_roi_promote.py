@@ -96,6 +96,8 @@ def test_deleting_a_pending_merge_restores_its_sources(node_dirpath):
     edit_roi = EditROI(file_path=file_path)
     assert list(edit_roi.tmp_iscell[:2]) == [CellType.ROI, CellType.ROI]
     assert not {0, 1} & set(edit_roi.get_status().temp_merge_roi)
+    # the undone merge no longer covers its sources, so they can be clicked again
+    assert drawn_ids(node_dirpath, "cell_roi") == [0, 1]
 
     edit_roi.commit()
     assert drawn_ids(node_dirpath, "cell_roi") == [0, 1]
