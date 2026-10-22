@@ -11,7 +11,7 @@ describe("handleWorkflowYamlError", () => {
   test("a 422 shows the backend detail with the FAQ action", () => {
     const snackbar = enqueue()
     const detail =
-      "Workflow yaml error, see FAQ: unknown parameter 'transpose' for dpca; reset the node's parameters and run again"
+      "Workflow yaml error, see FAQ: unknown parameter 'transpose' for dpca; delete the node, add it again and rerun"
     handleWorkflowYamlError(
       { response: { status: 422, data: { detail } } },
       snackbar,

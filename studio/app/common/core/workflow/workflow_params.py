@@ -26,7 +26,7 @@ def check_types(params, default_params, name=""):
             )
             raise KeyError(
                 f"Workflow yaml error, see FAQ: unknown parameter '{key}' for "
-                f"{name or 'this node'}; reset the node's parameters and run again"
+                f"{name or 'this node'}; delete the node, add it again and rerun"
             )
         if isinstance(params[key], dict):
             params[key] = check_types(params[key], default_params[key], name)
