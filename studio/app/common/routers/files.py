@@ -144,13 +144,15 @@ class DirTreeGetter:
         shape = _entry_shape(entry)
         # Legacy entries carry no mtime/size and are trusted until rewritten.
         if (
-            shape is not None
+            shape
             and entry.get("mtime", st.st_mtime) == st.st_mtime
             and entry.get("size", st.st_size) == st.st_size
         ):
             return shape
         entry = _shape_entry(filepath, st)
-        cache["new"][relative_path] = entry
+        # A failed read is retried next walk rather than cached.
+        if entry["shape"]:
+            cache["new"][relative_path] = entry
         return entry["shape"]
 
     @classmethod

@@ -439,6 +439,26 @@ def test_get_tree_trusts_legacy_cache_entries(ws, monkeypatch):
     assert DirTreeGetter.get_tree("ws", TIFF)[0].shape == [9, 9]
 
 
+def test_get_tree_rereads_legacy_empty_shape(ws):
+    _tif(ws / "a.tif", (2, 3))
+    (ws / IMAGE_SHAPE_FILE).write_text(json.dumps({"a.tif": {"shape": []}}))
+
+    assert DirTreeGetter.get_tree("ws", TIFF)[0].shape == [2, 3]
+    assert _cache(ws)["a.tif"]["shape"] == [2, 3]
+
+
+def test_get_tree_does_not_cache_an_unreadable_tiff(ws, monkeypatch):
+    (ws / "bad.tif").write_bytes(b"not a tiff")
+
+    assert DirTreeGetter.get_tree("ws", TIFF)[0].shape == []
+    assert not (ws / IMAGE_SHAPE_FILE).exists()
+
+    monkeypatch.setattr(
+        files_module, "_merge_image_shape_dict", lambda *a: pytest.fail("rewrote")
+    )
+    assert DirTreeGetter.get_tree("ws", TIFF)[0].shape == []
+
+
 @pytest.mark.parametrize(
     "payload",
     ["{not json", "[]", '{"a.tif": "shape"}', '{"a.tif": {"shape": "x"}}'],
