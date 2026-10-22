@@ -90,7 +90,9 @@ class EditROI:
         for merged_id in self.tmp_data.temp_merge_roi:
             if self.tmp_iscell[int(merged_id)] == CellType.TEMP_DELETE:
                 drawn[int(merged_id)] = False
-        return np.nanmax(self.tmp_data.im[drawn], axis=0, initial=np.nan)
+        return np.fmax.reduce(
+            self.tmp_data.im, axis=0, where=drawn[:, None, None], initial=np.nan
+        )
 
     def get_status(self) -> RoiStatus:
         roi_status = self.tmp_data.status()
@@ -149,6 +151,8 @@ class EditROI:
         # still appends the merged ROI's trace and keeps fluorescence aligned
         for id in ids:
             for parent in self.tmp_data.temp_merge_roi.get(float(id), []):
+                if parent in self.tmp_data.temp_delete_roi:
+                    continue
                 self.tmp_iscell[parent] = (
                     CellType.TEMP_ADD
                     if parent in self.tmp_data.temp_add_roi
@@ -268,9 +272,12 @@ class EditROI:
             im = info["edit_roi_data"].im
             # rows without a fluorescence record would offer a click that fails
             has_trace = np.arange(len(im)) < len(info["fluorescence"].data)
-            non_cell_im = im[(iscell == CellType.NON_ROI) & has_trace]
+            non_cell = (iscell == CellType.NON_ROI) & has_trace
+            # lowest id on top, so a deleted merge does not cover its sources
             info["non_cell_roi"] = RoiData(
-                np.nanmax(non_cell_im, axis=0, initial=np.nan),
+                np.fmin.reduce(
+                    im, axis=0, where=non_cell[:, None, None], initial=np.nan
+                ),
                 output_dir=self.node_dirpath,
                 file_name=non_cell_roi_file_name,
             )

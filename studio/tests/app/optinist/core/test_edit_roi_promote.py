@@ -101,3 +101,51 @@ def test_deleting_a_pending_merge_restores_its_sources(node_dirpath):
 
     edit_roi.commit()
     assert drawn_ids(node_dirpath, "cell_roi") == [0, 1]
+
+
+def test_undoing_a_merge_keeps_a_deleted_source_deleted(node_dirpath):
+    file_path = build_node(node_dirpath, [CellType.ROI, CellType.ROI, CellType.NON_ROI])
+
+    EditROI(file_path=file_path).delete([0])
+    EditROI(file_path=file_path).merge([0, 1])
+    EditROI(file_path=file_path).delete([NUM_ROI])
+    EditROI(file_path=file_path).commit()
+
+    assert drawn_ids(node_dirpath, "cell_roi") == [1]
+
+
+def test_a_deleted_committed_merge_leaves_its_sources_selectable(node_dirpath):
+    file_path = build_node(node_dirpath, [CellType.ROI, CellType.ROI, CellType.NON_ROI])
+
+    EditROI(file_path=file_path).merge([0, 1])
+    EditROI(file_path=file_path).commit()
+    EditROI(file_path=file_path).delete([NUM_ROI])
+    EditROI(file_path=file_path).commit()
+
+    assert drawn_ids(node_dirpath, "cell_roi") == []
+    assert {0, 1} <= set(drawn_ids(node_dirpath, "non_cell_roi"))
+
+
+def test_cancel_drops_a_pending_promotion(node_dirpath):
+    file_path = build_node(
+        node_dirpath, [CellType.ROI, CellType.NON_ROI, CellType.NON_ROI]
+    )
+
+    EditROI(file_path=file_path).promote([2])
+    EditROI(file_path=file_path).cancel()
+
+    assert EditROI(file_path=file_path).get_status().temp_promote_roi == []
+    assert drawn_ids(node_dirpath, "cell_roi") == [0]
+
+
+def test_promote_refuses_an_roi_without_a_trace(node_dirpath):
+    file_path = build_node(node_dirpath, [CellType.ROI] * NUM_ROI)
+
+    # deleting every ROI empties the fluorescence, so none can be promoted back
+    EditROI(file_path=file_path).delete(list(range(NUM_ROI)))
+    EditROI(file_path=file_path).commit()
+    assert drawn_ids(node_dirpath, "non_cell_roi") == []
+
+    with pytest.raises(HTTPException) as excinfo:
+        EditROI(file_path=file_path).promote([0])
+    assert excinfo.value.status_code == 400

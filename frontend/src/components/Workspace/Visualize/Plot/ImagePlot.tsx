@@ -288,13 +288,17 @@ const ImagePlotChart = memo(function ImagePlotChart({
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roiFilePath, workspaceId])
 
+  const refPromotePending = useRef(false)
+  refPromotePending.current = statusRoi.temp_promote_roi.length > 0
+
   useEffect(() => {
     refRoiFilePath.current = roiFilePath
     return () => {
-      if (!workspaceId || !isEditableRoiPath(refRoiFilePath.current)) return
-      dispatch(
-        cancelRoi({ path: refRoiFilePath.current as string, workspaceId }),
-      )
+      const path = refRoiFilePath.current
+      if (!workspaceId || !isEditableRoiPath(path)) return
+      // a non-cell view cancels only when it has promotions of its own pending
+      if (!path.includes(CELL_ROI) && !refPromotePending.current) return
+      dispatch(cancelRoi({ path, workspaceId }))
     }
     //eslint-disable-next-line react-hooks/exhaustive-deps
   }, [roiFilePath])
