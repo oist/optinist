@@ -39,7 +39,8 @@ def vacant_roi(
     # Create ROI list for NWB
     roi_list = [{"image_mask": roi[:, i].reshape(D.shape[:2])} for i in range(num_cell)]
 
-    nwbfile = {}
+    nwbfile = kwargs.get("nwbfile", {})
+    logger.debug(f"nwbfile: {nwbfile}")
     nwbfile[NWBDATASET.ROI] = {function_id: {"roi_list": roi_list}}
     nwbfile[NWBDATASET.POSTPROCESS] = {function_id: {"all_roi_img": im}}
 
@@ -59,6 +60,7 @@ def vacant_roi(
                 "name": "Fluorescence",
                 "data": timeseries,
                 "unit": "lumens",
+                "rate": nwbfile.get("imaging_plane", {}).get("imaging_rate", 30),
             }
         }
     }

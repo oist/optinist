@@ -21,6 +21,7 @@ import {
 } from "store/slice/Pipeline/PipelineActions"
 import {
   fetchWorkflow,
+  importSampleData,
   reproduceWorkflow,
 } from "store/slice/Workflow/WorkflowActions"
 
@@ -81,6 +82,19 @@ export const experimentsSlice = createSlice({
               target.functions[nodeId].status = "error"
             }
           })
+        }
+      })
+      .addCase(importSampleData.pending, (state) => {
+        state.loading = true
+      })
+      .addCase(importSampleData.fulfilled, (state, _) => {
+        state.loading = false
+      })
+      .addCase(importSampleData.rejected, (state, action) => {
+        return {
+          status: "error",
+          message: action.error.message,
+          loading: false,
         }
       })
       .addMatcher(

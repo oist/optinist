@@ -35,7 +35,10 @@ const ImageFileNodeImple = memo(function ImageFileNodeImple({
   const dispatch = useDispatch()
   const filePath = useSelector(
     selectImageInputNodeSelectedFilePath(nodeId),
-    (a, b) => (a != null && b != null ? arrayEqualityFn(a, b) : a === b),
+    (a, b) =>
+      a != null && b != null
+        ? arrayEqualityFn(a as string[], b as string[])
+        : a === b,
   )
   const onChangeFilePath = (path: string[]) => {
     dispatch(setInputNodeFilePath({ nodeId, filePath: path }))

@@ -20,7 +20,11 @@ import {
   TreeItemDragObject,
   TreeItemDropResult,
 } from "components/Workspace/FlowChart/DnDItemType"
-import { REACT_FLOW_NODE_TYPE, REACT_FLOW_NODE_TYPE_KEY } from "const/flowchart"
+import {
+  getFileTypeConfigsByHierarchy,
+  REACT_FLOW_NODE_TYPE_KEY,
+} from "config/fileTypes.config"
+import { FileNodeFactory } from "factories/FileNodeFactory"
 import { getAlgoList } from "store/slice/AlgorithmList/AlgorithmListActions"
 import {
   selectAlgorithmListIsLatest,
@@ -35,11 +39,8 @@ import {
   addAlgorithmNode,
   addInputNode,
 } from "store/slice/FlowElement/FlowElementActions"
-import {
-  NODE_TYPE,
-  NODE_TYPE_SET,
-} from "store/slice/FlowElement/FlowElementType"
-import { FILE_TYPE, FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
+import { NODE_TYPE_SET } from "store/slice/FlowElement/FlowElementType"
+import { FILE_TYPE } from "store/slice/InputNode/InputNodeType"
 import { selectPipelineLatestUid } from "store/slice/Pipeline/PipelineSelectors"
 import { AppDispatch } from "store/store"
 import { getNanoId } from "utils/nanoid/NanoIdUtils"
@@ -82,6 +83,9 @@ export const AlgorithmTreeView = memo(function AlgorithmTreeView() {
     [dispatch, runAlready],
   )
 
+  // Get file type configs grouped by hierarchy
+  const fileTypesByHierarchy = getFileTypeConfigsByHierarchy()
+
   return (
     <TreeView
       sx={{
@@ -91,124 +95,73 @@ export const AlgorithmTreeView = memo(function AlgorithmTreeView() {
       defaultCollapseIcon={<ExpandMoreIcon />}
       defaultExpandIcon={<ChevronRightIcon />}
     >
-      <TreeItem nodeId="Data" label="Data">
-        <InputNodeComponent
-          fileName={"image"}
-          nodeName={"imageData"}
-          fileType={FILE_TYPE_SET.IMAGE}
-        />
-        <InputNodeComponent
-          fileName={"csv"}
-          nodeName={"csvData"}
-          fileType={FILE_TYPE_SET.CSV}
-        />
-        <InputNodeComponent
-          fileName={"hdf5"}
-          nodeName={"hdf5Data"}
-          fileType={FILE_TYPE_SET.HDF5}
-        />
-        <InputNodeComponent
-          fileName={"fluo"}
-          nodeName={"fluoData"}
-          fileType={FILE_TYPE_SET.FLUO}
-        />
-        <InputNodeComponent
-          fileName={"behavior"}
-          nodeName={"behaviorData"}
-          fileType={FILE_TYPE_SET.BEHAVIOR}
-        />
-        <InputNodeComponent
-          fileName={"matlab"}
-          nodeName={"matlabData"}
-          fileType={FILE_TYPE_SET.MATLAB}
-        />
-        <InputNodeComponent
-          fileName={"microscope"}
-          nodeName={"microscopeData"}
-          fileType={FILE_TYPE_SET.MICROSCOPE}
-        />
-      </TreeItem>
+      {/* Dynamically generate hierarchy nodes for file types */}
+      {Object.entries(fileTypesByHierarchy).map(([hierarchyName, configs]) => (
+        <TreeItem
+          key={hierarchyName}
+          nodeId={hierarchyName}
+          label={hierarchyName}
+        >
+          {configs.map((config) => (
+            <InputNodeComponent
+              key={config.key}
+              fileType={config.key as FILE_TYPE}
+              config={config}
+            />
+          ))}
+        </TreeItem>
+      ))}
+
+      {/* Algorithm hierarchy remains static */}
       <TreeItem nodeId="Algorithm" label="Algorithm">
-        {Object.entries(algoList).map(([name, node], i) => (
-          <AlgoNodeComponentRecursive
-            name={name}
-            node={node}
-            onAddAlgoNode={onAddAlgoNode}
-            key={i.toFixed()}
-          />
-        ))}
+        {Object.entries(algoList)
+          .filter(([, node]) => node !== undefined)
+          .map(([name, node], i) => (
+            <AlgoNodeComponentRecursive
+              name={name}
+              node={node}
+              onAddAlgoNode={onAddAlgoNode}
+              key={i.toFixed()}
+            />
+          ))}
       </TreeItem>
     </TreeView>
   )
 })
 
 interface InputNodeComponentProps {
-  fileName: string
-  nodeName: string
   fileType: FILE_TYPE
+  config: import("config/fileTypes.config").EnhancedFileTypeConfig
 }
 
 const InputNodeComponent = memo(function InputNodeComponent({
-  fileName,
-  nodeName,
   fileType,
+  config,
 }: InputNodeComponentProps) {
   const dispatch = useDispatch()
 
   const onAddDataNode = useCallback(
     (
-      nodeType: NODE_TYPE,
-      nodeName: string,
+      displayName: string,
       fileType: FILE_TYPE,
       position?: { x: number; y: number },
     ) => {
-      let reactFlowNodeType: REACT_FLOW_NODE_TYPE | "" = ""
-      switch (fileType) {
-        case FILE_TYPE_SET.CSV:
-          reactFlowNodeType = REACT_FLOW_NODE_TYPE_KEY.CsvFileNode
-          break
-        case FILE_TYPE_SET.IMAGE:
-          reactFlowNodeType = REACT_FLOW_NODE_TYPE_KEY.ImageFileNode
-          fileType = FILE_TYPE_SET.IMAGE
-          break
-        case FILE_TYPE_SET.HDF5:
-          reactFlowNodeType = REACT_FLOW_NODE_TYPE_KEY.HDF5FileNode
-          fileType = FILE_TYPE_SET.HDF5
-          break
-        case FILE_TYPE_SET.FLUO:
-          reactFlowNodeType = REACT_FLOW_NODE_TYPE_KEY.FluoFileNode
-          fileType = FILE_TYPE_SET.FLUO
-          break
-        case FILE_TYPE_SET.BEHAVIOR:
-          reactFlowNodeType = REACT_FLOW_NODE_TYPE_KEY.BehaviorFileNode
-          fileType = FILE_TYPE_SET.BEHAVIOR
-          break
-        case FILE_TYPE_SET.MATLAB:
-          reactFlowNodeType = REACT_FLOW_NODE_TYPE_KEY.MatlabFileNode
-          fileType = FILE_TYPE_SET.MATLAB
-          break
-        case FILE_TYPE_SET.MICROSCOPE:
-          reactFlowNodeType = REACT_FLOW_NODE_TYPE_KEY.MicroscopeFileNode
-          fileType = FILE_TYPE_SET.MICROSCOPE
-          break
-      }
-      const newNode = {
-        id: `input_${getNanoId()}`,
-        type: reactFlowNodeType,
-        data: { label: nodeName, type: nodeType },
+      const newNode = FileNodeFactory.createReactFlowNode(
+        displayName,
+        config,
         position,
-      }
+      )
       dispatch(addInputNode({ node: newNode, fileType }))
     },
-    [dispatch],
+    [dispatch, config],
   )
 
   const { isDragging, dragRef } = useLeafItemDrag(
     useCallback(
       (position) => {
-        onAddDataNode(NODE_TYPE_SET.INPUT, nodeName, fileType, position)
+        onAddDataNode(config.displayName, fileType, position)
       },
-      [onAddDataNode, nodeName, fileType],
+      [onAddDataNode, config.displayName, fileType],
     ),
   )
 
@@ -219,11 +172,11 @@ const InputNodeComponent = memo(function InputNodeComponent({
         opacity: isDragging ? 0.6 : 1,
       }}
       onFocusCapture={(e) => e.stopPropagation()}
-      nodeId={fileName}
+      nodeId={config.key}
       label={
         <AddButton
-          name={fileName}
-          onClick={() => onAddDataNode(NODE_TYPE_SET.INPUT, nodeName, fileType)}
+          name={config.displayName}
+          onClick={() => onAddDataNode(config.displayName, fileType)}
         />
       }
     />
@@ -248,6 +201,11 @@ const AlgoNodeComponentRecursive = memo(function AlgoNodeComponentRecursive({
   node,
   onAddAlgoNode,
 }: AlgoNodeComponentRecursiveProps) {
+  // Guard against undefined nodes
+  if (!node) {
+    return null
+  }
+
   if (isAlgoChild(node)) {
     return (
       <AlgoNodeComponent
@@ -259,14 +217,16 @@ const AlgoNodeComponentRecursive = memo(function AlgoNodeComponentRecursive({
   } else {
     return (
       <TreeItem nodeId={name} label={name}>
-        {Object.entries(node.children).map(([name, node], i) => (
-          <AlgoNodeComponentRecursive
-            name={name}
-            node={node}
-            onAddAlgoNode={onAddAlgoNode}
-            key={i.toFixed()}
-          />
-        ))}
+        {Object.entries(node.children)
+          .filter(([, childNode]) => childNode !== undefined)
+          .map(([childName, childNode], i) => (
+            <AlgoNodeComponentRecursive
+              name={childName}
+              node={childNode}
+              onAddAlgoNode={onAddAlgoNode}
+              key={i.toFixed()}
+            />
+          ))}
       </TreeItem>
     )
   }

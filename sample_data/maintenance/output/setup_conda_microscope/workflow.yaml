@@ -1,0 +1,57 @@
+nodeDict:
+  input_bmkjfbfk1d:
+    id: input_bmkjfbfk1d
+    type: ImageFileNode
+    data:
+      label: setup_conda_mouse2p_image.tiff
+      param: {}
+      path:
+      - setup_conda_mouse2p_image.tiff
+      type: input
+      fileType: image
+      hdf5Path: null
+      matPath: null
+    position:
+      x: 320
+      y: 173
+    style:
+      border: '1px solid #777'
+      height: 140
+      padding: null
+      width: 250
+      borderRadius: null
+  setup_conda_microscope_1ckm7897nn:
+    id: setup_conda_microscope_1ckm7897nn
+    type: AlgorithmNode
+    data:
+      label: setup_conda_microscope
+      param: {}
+      path: maintenance/setup_conda/setup_conda_microscope
+      type: algorithm
+      fileType: null
+      hdf5Path: null
+      matPath: null
+    position:
+      x: 648.5714285714289
+      y: 172.87840120441336
+    style:
+      border: '1px solid #777'
+      height: 140
+      padding: 0
+      width: 250
+      borderRadius: 0
+edgeDict:
+  ? reactflow__edge-input_bmkjfbfk1dinput_bmkjfbfk1d--image--ImageData-setup_conda_microscope_1ckm7897nnsetup_conda_microscope_1ckm7897nn--image--ImageData
+  : id: reactflow__edge-input_bmkjfbfk1dinput_bmkjfbfk1d--image--ImageData-setup_conda_microscope_1ckm7897nnsetup_conda_microscope_1ckm7897nn--image--ImageData
+    type: buttonedge
+    animated: false
+    source: input_bmkjfbfk1d
+    sourceHandle: input_bmkjfbfk1d--image--ImageData
+    target: setup_conda_microscope_1ckm7897nn
+    targetHandle: setup_conda_microscope_1ckm7897nn--image--ImageData
+    style:
+      border: null
+      height: null
+      padding: null
+      width: 5
+      borderRadius: null

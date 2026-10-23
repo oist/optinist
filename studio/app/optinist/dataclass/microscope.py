@@ -13,6 +13,9 @@ class MicroscopeData(BaseData):
         self.path = path
         self.json_path = None
 
+    def save_json(self, json_dir):
+        pass
+
     @property
     def reader(self):
         ext = os.path.splitext(self.path)[1]

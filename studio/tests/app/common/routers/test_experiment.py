@@ -1,7 +1,10 @@
 import os
 import shutil
 
+from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
+from studio.app.common.core.experiment.experiment_writer import ExptConfigWriter
 from studio.app.common.core.utils.filepath_creater import join_filepath
+from studio.app.common.core.workflow.workflow import NodeRunStatus
 from studio.app.dir_path import DIRPATH
 
 workspace_id = "default"
@@ -14,6 +17,19 @@ shutil.copytree(
     f"{DIRPATH.OUTPUT_DIR}/{workspace_id}/{unique_id}",
     dirs_exist_ok=True,
 )
+
+
+def __create_dummy_experiment_config(workspace_id: str, unique_id: str) -> dict:
+    return {
+        "workspace_id": workspace_id,
+        "unique_id": unique_id,
+        "name": "Dummy Experiment",
+        "started_at": None,
+        "finished_at": None,
+        "success": NodeRunStatus.SUCCESS.value,
+        "hasNWB": None,
+        "function": {},
+    }
 
 
 def test_get(client):
@@ -31,10 +47,13 @@ def test_delete(client):
     os.makedirs(dirpath, exist_ok=True)
 
     # Add dummy experiment.yaml
-    with open(os.path.join(dirpath, DIRPATH.EXPERIMENT_YML), "w") as f:
-        f.write("name: Dummy Experiment\nsuccess: success")
+    expt_config_dict = __create_dummy_experiment_config(workspace_id, dirname)
+    ExptConfigWriter._write_raw(workspace_id, dirname, expt_config_dict)
+    config_path = ExptConfigReader.get_config_yaml_path(workspace_id, dirname)
 
     assert os.path.exists(dirpath)
+    assert os.path.exists(config_path)
+
     response = client.delete(f"/experiments/{workspace_id}/{dirname}")
     assert response.status_code == 200
     assert not os.path.exists(dirpath)
@@ -47,10 +66,12 @@ def test_delete_list(client):
         os.makedirs(dirpath, exist_ok=True)
 
         # Add dummy experiment.yaml
-        with open(os.path.join(dirpath, DIRPATH.EXPERIMENT_YML), "w") as f:
-            f.write("name: Dummy Experiment\nsuccess: success")
+        expt_config_dict = __create_dummy_experiment_config(workspace_id, name)
+        ExptConfigWriter._write_raw(workspace_id, name, expt_config_dict)
+        config_path = ExptConfigReader.get_config_yaml_path(workspace_id, name)
 
         assert os.path.exists(dirpath)
+        assert os.path.exists(config_path)
 
     response = client.post(
         f"/experiments/delete/{workspace_id}", json={"uidList": uidList}

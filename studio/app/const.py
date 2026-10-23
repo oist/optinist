@@ -15,7 +15,7 @@ class FILETYPE:
 class ACCEPT_FILE_EXT(Enum):
     TIFF_EXT = [".tif", ".tiff", ".TIF", ".TIFF"]
     CSV_EXT = [".csv"]
-    HDF5_EXT = [".hdf5", ".nwb", ".HDF5", ".NWB"]
+    HDF5_EXT = [".hdf5", ".h5", ".nwb", ".HDF5", ".NWB"]
     MATLAB_EXT = [".mat"]
     MICROSCOPE_EXT = [".nd2", ".oir", ".isxd", ".thor.zip"]
 

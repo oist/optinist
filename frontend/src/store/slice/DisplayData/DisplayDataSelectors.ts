@@ -10,20 +10,30 @@ export const selectLoading = (state: RootState) => state.displayData.loading
 export const selectIsEditRoiCommitting = (state: RootState) =>
   state.displayData.isEditRoiCommitting
 
-export const selectTimeSeriesData =
-  (filePath: string | null) => (state: RootState) => {
-    if (!filePath) return {}
-    return selectDisplayData(state).timeSeries[filePath]?.data || {}
-  }
+export const selectTimeSeriesData = (filePath: string | null) =>
+  createSelector(
+    [
+      (state: RootState) =>
+        filePath
+          ? selectDisplayData(state).timeSeries[filePath]?.data
+          : undefined,
+    ],
+    (data) => data || {},
+  )
 
 export const selectTimesSeriesMeta = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).timeSeries[filePath].meta
 
-export const selectTimeSeriesXrange =
-  (filePath: string | null) => (state: RootState) => {
-    if (!filePath) return []
-    return selectDisplayData(state).timeSeries[filePath]?.xrange || []
-  }
+export const selectTimeSeriesXrange = (filePath: string | null) =>
+  createSelector(
+    [
+      (state: RootState) =>
+        filePath
+          ? selectDisplayData(state).timeSeries[filePath]?.xrange
+          : undefined,
+    ],
+    (xrange) => xrange || [],
+  )
 
 export const selectTimeSeriesStd = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).timeSeries[filePath].std
@@ -144,8 +154,11 @@ export const selectCsvDataIsFulfilled =
     selectCsvDataIsInitialized(filePath)(state) &&
     selectDisplayData(state).csv[filePath].fulfilled
 
-export const selectRoiData = (filePath: string) => (state: RootState) =>
-  selectDisplayData(state).roi[filePath]?.data[0] ?? []
+export const selectRoiData = (filePath: string) =>
+  createSelector(
+    [(state: RootState) => selectDisplayData(state).roi[filePath]?.data[0]],
+    (data) => data ?? [],
+  )
 
 export const selectRoiMeta = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).roi[filePath].meta
@@ -176,8 +189,11 @@ export const selectRoiUniqueList = (filePath: string) => (state: RootState) => {
   return null
 }
 
-export const selectScatterData = (filePath: string) => (state: RootState) =>
-  selectDisplayData(state).scatter[filePath]?.data ?? []
+export const selectScatterData = (filePath: string) =>
+  createSelector(
+    [(state: RootState) => selectDisplayData(state).scatter[filePath]?.data],
+    (data) => data ?? [],
+  )
 
 export const selectScatterMeta = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).scatter[filePath]?.meta
@@ -202,14 +218,20 @@ export const selectScatterDataIsFulfilled =
     selectScatterDataIsInitialized(filePath)(state) &&
     selectDisplayData(state).scatter[filePath].fulfilled
 
-export const selectBarData = (filePath: string) => (state: RootState) =>
-  selectDisplayData(state).bar[filePath]?.data ?? []
+export const selectBarData = (filePath: string) =>
+  createSelector(
+    [(state: RootState) => selectDisplayData(state).bar[filePath]?.data],
+    (data) => data ?? [],
+  )
 
 export const selectBarMeta = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).bar[filePath]?.meta
 
-export const selectBarIndex = (filePath: string) => (state: RootState) =>
-  selectDisplayData(state).bar[filePath]?.index ?? []
+export const selectBarIndex = (filePath: string) =>
+  createSelector(
+    [(state: RootState) => selectDisplayData(state).bar[filePath]?.index],
+    (index) => index ?? [],
+  )
 
 export const selectBarDataIsInitialized =
   (filePath: string) => (state: RootState) =>
@@ -230,8 +252,11 @@ export const selectBarDataIsFulfilled =
     selectBarDataIsInitialized(filePath)(state) &&
     selectDisplayData(state).bar[filePath].fulfilled
 
-export const selectHTMLData = (filePath: string) => (state: RootState) =>
-  selectDisplayData(state).html[filePath]?.data ?? ""
+export const selectHTMLData = (filePath: string) =>
+  createSelector(
+    [(state: RootState) => selectDisplayData(state).html[filePath]?.data],
+    (data) => data ?? "",
+  )
 
 export const selectHTMLMeta = (filePath: string) => (state: RootState) =>
   selectDisplayData(state).html[filePath].meta
@@ -376,6 +401,7 @@ export const selectStatusRoi = createSelector(
     temp_add_roi: statusRoi?.temp_add_roi || [],
     temp_delete_roi: statusRoi?.temp_delete_roi || [],
     temp_merge_roi: statusRoi?.temp_merge_roi || [],
+    temp_promote_roi: statusRoi?.temp_promote_roi || [],
   }),
 )
 

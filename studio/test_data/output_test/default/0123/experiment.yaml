@@ -91,6 +91,6 @@ nwb:
 snakemake:
   cores: 2
   forceall: false
-  forcetargets: true
-  lock: false
+  # forcetargets: true
+  # lock: false
   use_conda: true

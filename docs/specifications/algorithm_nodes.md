@@ -298,44 +298,44 @@ OptiNiSt includes a variety of third-party calcium (Ca<sup>2+</sup>) imaging sof
 
 ###### [dPCA](https://github.com/machenslab/dPCA) (demixed Principal Component Analysis)
 
-- **Description:** Decompose neural activity into components related to task-related components.
-- **Input:** FluoData (neural activity), BehaviorData (behavioral variables) , IsCellData (optional)
-  - **Neural data should have shape (n_neurons, n_timepoints).**
-  - **Behavior data should have shape (n_timepoints, n_behavioral_variables).**
-  - **Behavior data should include columns for trigger_column and feature_columns**
-  - **Set trigger_column and feature_column indices within total number of behavioural data columns**
-- **Output:** HeatMapData (component activations for different task conditions).
+- **Description:** Decompose trial-averaged neural activity around behavioral events into components related to time and to each task condition (demixed PCA).
+- **Input:** FluoData (neural activity), BehaviorData (behavioral variables), IsCellData (optional)
+  - **Neural data should have shape (n_neurons, n_timepoints)** (the default `transpose: True` turns it into time x cells).
+  - **Behavior data should have shape (n_timepoints, n_behavioral_variables)** and the same number of time points as the neural data.
+  - **Trigger column:** thresholded per frame; a trial starts at the first frame above (or below) threshold after each transition. A signal already above threshold at frame 0 counts as an 'up' trigger, as in ETA.
+  - **Feature columns:** read at the trigger frame and treated as categorical conditions (a few discrete levels each). Every combination of levels must occur at least once. Continuous columns (many distinct values) and constant columns are rejected. Unbalanced trial counts (a condition with fewer than 3 trials, or a 10x spread) are averaged as they are and logged as a warning; the per-condition counts are stored in the NWB file.
+  - **Trials whose window leaves the recording are dropped** with a warning; conditions with unequal trial counts are averaged over all their trials.
+- **Output:** HeatMapData per selected marginalization and component: rows are the condition combinations (in level order), columns are frames relative to the trigger. The NWB file also stores the explained variance ratio per marginalization and the level values of each feature.
 - **Parameters:**
 
   - **I/O:**
 
-    - **transpose** [bool, default: False]: Whether to transpose the neural data matrix.
-    - **trigger_column** [int, default: 1]: Column index in behavior data for event triggers.
-    - **trigger_type** ['up', 'down', 'cross', default: 'up']:
-      - 'up' detects transitions 0 to trigger_threshold
-      - 'down' detects transitions trigger_threshold to 0
-      - 'cross' detects either up or down transitions.
-    - **trigger_threshold** [float, default 0.5]: Threshold value for trigger detection
-    - **trigger_duration** [list of 2 ints, default: [10, 10]]: Frames before and after trigger to include.
-    - **feature_columns** [list of ints, default: [3, 4]]: Columns in behaviors_data to use as features/conditions for the dPCA analysis.
-
+    - **transpose** [bool, default: True]: Whether to transpose the neural data matrix to (time, cells).
     - **standard_mean** [bool, default: True]: Whether to standardize by subtracting mean.
     - **standard_std** [bool, default: True]: Whether to standardize by dividing by std.
+    - **trigger_column** [int, default: 1]: Column index in behavior data for event triggers.
+    - **trigger_type** ['up', 'down', 'cross', default: 'up']:
+      - 'up' detects transitions from below to above trigger_threshold
+      - 'down' detects transitions from above to below trigger_threshold
+      - 'cross' detects either transition (the feature values at up and down edges are usually different, so prefer 'up' or 'down').
+    - **trigger_threshold** [float, default: 0.5]: Threshold value for trigger detection.
+    - **trigger_duration** [list of 2 ints, default: [-10, 10]]: Frames before (negative) and after the trigger to include; before < after.
+    - **feature_columns** [list of ints, default: [0, 2]]: Columns in behavior data used as conditions for the dPCA analysis: 1 or 2 columns. More than 2 is rejected, because the NWB file stores dPCA components with at most 4 dimensions (component, time, levels per feature). The default pair is the only full-factorial design in the sample behavior CSV and is heavily unbalanced, so the defaults are a smoke test rather than an analysis.
 
   - **dPCA:**
-    <!-- check 't', 'b', 'c', 'tbc', 's', 'ts'. Are these all used correctly?-->
 
-    - **labels** [str, default: 'tbc']: list of characters with which to describe the parameter axes, e.g. 'tsd' to denote time, stimulus and decision axis. All marginalizations (e.g. time-stimulus) are referred to by subsets of those characters (e.g. 'ts'). Must match the number of dimensions in the data.
-    - **regularizer** [float, default: 0.001]: If > 0, the regularization weight is regularizer\*var(data). Helps prevent overfitting by adding a penalty term to the optimization objective.
-    <!-- check if can use 'auto' regulariser-->
-    - **n_components** [int or dict, default: 10]: Number of components to keep. If int, same number of components are kept in each marginalization (e.g. {'t' : 10, 'ts' : 5}).
-    - **join** [dict or None, default: None]: How to join task parameters. If a data set has parametrized by time t and stimulus s, then dPCA will split the data into marginalizations corresponding to 't', 's' and 'ts'. At times, we want to join different marginalizations (like 's' and 'ts'), e.g. if we are only interested in the time-modulated stimulus components. In this case,we would pass {'ts' : ['s','ts']}.
-    - **n_iter:** [int, default: 0]: Number of iterations for randomized SVD solver (sklearn).
-    - **copy** [bool, default: True]: Whether to copy X and Y before fitting and transforming. Ensures that the original data is not modified.
+    - **labels** [str, default: 'tbc']: One character per data axis: time first, then one per feature column, so its length must be 1 + number of feature columns. Marginalizations are referred to by subsets of these characters (e.g. 'tb').
+    - **regularizer** [float >= 0, default: 0]: If > 0, the regularization weight is regularizer\*var(data). Helps prevent overfitting. The library's 'auto' search is not supported.
+    - **n_components** [int, default: 8]: Number of components kept in every marginalization. Must not exceed the number of cells.
+    - **n_iter** [int, default: 0]: Number of iterations for the randomized SVD solver (sklearn).
+    - **seed** [int, default: 0]: Random seed for the SVD solver; the same seed gives the same components on the same data.
 
   - **Plot:**
-    - **figure_components** [list of ints, default: [0, 1]]: Specifies which dPCA components to plot. Default will create figures for the first two components (0 and 1).
-    - **figure_features**: ['t', 'b', 'c', 'tbc']: Defines which marginalizations or feature combinations to plot. 't' might represent time, 'b' and 'c' the two behavioral features, and 'tbc' their interaction.
+    - **figure_components** [list of ints, default: [0, 1]]: Which dPCA components to plot; each must be below n_components.
+    - **figure_features** [list of str, default: ['t', 'b', 'c', 'tbc']]: Which marginalizations to plot; each must be a subset of `labels`.
+
+- **Errors:** the node fails before fitting with a message naming the problem when the time axes differ (check `transpose`), a column index is out of range, more than 2 feature columns are given, an index, offset or count is not a whole number (`1.9` is rejected, `"2"` and `2.0` are accepted), `labels` has the wrong length, `regularizer` is negative or 'auto', a feature column is constant or continuous, a level combination has no trials, no trigger is found, or a plot selection is outside `n_components` or the marginalizations.
+- **Workflows saved before this version:** the parameters were renamed and regrouped (`feature_colums` became `feature_columns`; `join` and `copy` were removed), so running an old dPCA node fails with a message naming the unknown parameter. Delete the dPCA node and add it again to get the current parameters.
 
 ###### [TSNE](https://scikit-learn.org/stable/modules/generated/sklearn.manifold.TSNE.html) (t-distributed stochastic neighbor embedding)
 

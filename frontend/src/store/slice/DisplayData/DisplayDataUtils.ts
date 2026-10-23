@@ -8,6 +8,8 @@ import {
  */
 export function toDataType(value: string): DATA_TYPE {
   switch (value) {
+    case "empty":
+      return DATA_TYPE_SET.EMPTY
     case "images":
       return DATA_TYPE_SET.IMAGE
     case "timeseries":

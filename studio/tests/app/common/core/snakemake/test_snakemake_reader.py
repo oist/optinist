@@ -28,8 +28,8 @@ smk_config = {
     "use_conda": False,
     "cores": 2,
     "forceall": True,
-    "forcetargets": True,
-    "lock": False,
+    # "forcetargets": True,
+    # "lock": False,
 }
 
 

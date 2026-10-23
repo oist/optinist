@@ -3,9 +3,8 @@ from glob import glob
 from fastapi import APIRouter, Depends
 from fastapi.responses import FileResponse
 
-from studio.app.common.core.utils.config_handler import ConfigReader
 from studio.app.common.core.utils.filepath_creater import join_filepath
-from studio.app.common.core.utils.filepath_finder import find_param_filepath
+from studio.app.common.core.workflow.workflow_params import read_default_params
 from studio.app.common.core.workspace.workspace_dependencies import (
     is_workspace_available,
 )
@@ -17,8 +16,7 @@ router = APIRouter()
 
 @router.get("/nwb", response_model=NWBParams, tags=["params"])
 async def get_nwb_params():
-    filepath = find_param_filepath("nwb")
-    return ConfigReader.read(filepath)
+    return read_default_params("nwb")
 
 
 @router.get(

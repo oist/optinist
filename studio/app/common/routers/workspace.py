@@ -80,7 +80,8 @@ def search_workspaces(
                     experiment_path = join_filepath([workspace_dir, experiment_id])
                     if not os.path.isdir(experiment_path):
                         continue
-                    status = ExptConfigReader.load_experiment_success_status(
+
+                    status = ExptConfigReader.read_experiment_status(
                         str(ws.id), experiment_id
                     )
                     if status is None:

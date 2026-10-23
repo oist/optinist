@@ -5,7 +5,7 @@ from studio.app.const import FILETYPE
 workspace_id = "default"
 unique_id = "smk_test"
 
-node = Node(
+node_input = Node(
     id="input_0",
     type="type",
     data=NodeData(
@@ -23,7 +23,23 @@ node = Node(
     style={},
 )
 
-nodeDict = {"node1": node}
+node_algo = Node(
+    id="algo_0",
+    type="type",
+    data=NodeData(
+        label="label",
+        param={},
+        path="path",
+        type="type",
+    ),
+    position=NodePosition(
+        x=0,
+        y=0,
+    ),
+    style={},
+)
+
+nodeDict = {node_input.id: node_input, node_algo.id: node_algo}
 
 edgeDict = {
     "edge1": Edge(
@@ -32,8 +48,8 @@ edgeDict = {
         animated=False,
         source="input_0",
         sourceHandle="input_0--image--ImageData",
-        target="suite2p",
-        targetHandle="suite2p--image--ImageData",
+        target="algo_0",
+        targetHandle="algo_0--image--ImageData",
         style={},
     ),
 }
@@ -43,7 +59,7 @@ def test_SmkSetfile_image():
     rule = SmkRule(
         workspace_id=workspace_id,
         unique_id=unique_id,
-        node=node,
+        node=node_input,
         edgeDict=edgeDict,
         nwbfile={},
     ).image()
@@ -55,7 +71,7 @@ def test_SmkSetfile_csv():
     rule = SmkRule(
         workspace_id=workspace_id,
         unique_id=unique_id,
-        node=node,
+        node=node_input,
         edgeDict=edgeDict,
         nwbfile={},
     ).csv()
@@ -66,7 +82,7 @@ def test_SmkSetfile_hdf5():
     rule = SmkRule(
         workspace_id=workspace_id,
         unique_id=unique_id,
-        node=node,
+        node=node_input,
         edgeDict=edgeDict,
         nwbfile={},
     ).hdf5()
@@ -78,9 +94,9 @@ def test_SmkSetfile_algo():
     rule = SmkRule(
         workspace_id=workspace_id,
         unique_id=unique_id,
-        node=node,
+        node=node_algo,
         edgeDict=edgeDict,
     ).algo(nodeDict=nodeDict)
 
-    assert rule.type == node.data.label
-    assert rule.path == node.data.path
+    assert rule.type == node_input.data.label
+    assert rule.path == node_input.data.path

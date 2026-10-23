@@ -1,4 +1,4 @@
-import { memo, useContext, useEffect, useMemo } from "react"
+import { memo, useContext, useEffect, useMemo, useRef, useState } from "react"
 import PlotlyChart from "react-plotlyjs-ts"
 import { useSelector, useDispatch } from "react-redux"
 
@@ -68,11 +68,20 @@ const RoiPlotImple = memo(function RoiPlotImple() {
   const { dialogFilterNodeId } = useContext(DialogContext)
   const timeDataMaxIndex = useSelector(selectRoiItemIndex(itemId, path))
   const { setRoiSelected, roisSelected, setMaxRoi } = useRoisSelected()
+  const [isMounted, setIsMounted] = useState(false)
+  const plotRef = useRef<HTMLDivElement>(null)
 
   const { filterParam } = useBoxFilter()
   const { setRoisClickWithGetTime, roisClick, isVisualize } = useVisualize()
 
   const roiVisualSelected = roisClick[itemId]
+
+  useEffect(() => {
+    setIsMounted(true)
+    return () => {
+      setIsMounted(false)
+    }
+  }, [])
 
   useEffect(() => {
     const maxv =
@@ -203,22 +212,32 @@ const RoiPlotImple = memo(function RoiPlotImple() {
   const saveFileName = useSelector(selectVisualizeSaveFilename(itemId))
   const saveFormat = useSelector(selectVisualizeSaveFormat(itemId))
 
-  const config = {
-    displayModeBar: true,
-    // scrollZoom: true,
-    responsive: true,
-    toImageButtonOptions: {
-      format: saveFormat,
-      filename: saveFileName,
-    },
+  const config = useMemo(
+    () => ({
+      displayModeBar: true,
+      // scrollZoom: true,
+      responsive: true,
+      toImageButtonOptions: {
+        format: saveFormat,
+        filename: saveFileName,
+      },
+    }),
+    [saveFormat, saveFileName],
+  )
+
+  if (!isMounted) {
+    return <div ref={plotRef} style={{ width: "100%", height: "100%" }} />
   }
+
   return (
-    <PlotlyChart
-      onClick={onChartClick}
-      data={data}
-      layout={layout}
-      config={config}
-    />
+    <div ref={plotRef} style={{ width: "100%", height: "100%" }}>
+      <PlotlyChart
+        onClick={onChartClick}
+        data={data}
+        layout={layout}
+        config={config}
+      />
+    </div>
   )
 })
 

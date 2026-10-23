@@ -5,3 +5,6 @@ class IscellData(BaseData):
     def __init__(self, data, file_name="iscell"):
         super().__init__(file_name)
         self.data = data
+
+    def save_json(self, json_dir):
+        pass

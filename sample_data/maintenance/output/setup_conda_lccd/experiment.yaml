@@ -60,5 +60,5 @@ snakemake:
   use_conda: true
   cores: 2
   forceall: false
-  forcetargets: true
-  lock: false
+  # forcetargets: true
+  # lock: false

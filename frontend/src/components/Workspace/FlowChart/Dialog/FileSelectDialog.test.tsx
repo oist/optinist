@@ -1,18 +1,24 @@
+import React, { createContext } from "react"
 import { Provider } from "react-redux"
 
-import configureStore from "redux-mock-store"
+import { default as configureStore } from "redux-mock-store"
 
-import { describe, it, beforeEach } from "@jest/globals"
+import { describe, it, beforeEach, jest, expect } from "@jest/globals"
+import "@testing-library/jest-dom"
 import { Store, AnyAction } from "@reduxjs/toolkit"
-import { render, screen, fireEvent } from "@testing-library/react"
+import { render, screen } from "@testing-library/react"
 
-import { TreeItemLabel } from "components/Workspace/FlowChart/Dialog/FileSelectDialog"
-import { deleteFile } from "store/slice/FilesTree/FilesTreeAction"
+import { FileTreeItemLabel } from "components/Workspace/FlowChart/Dialog/FileSelectDialog"
 import { AppDispatch } from "store/store"
 
-jest.mock("store/slice/FilesTree/FilesTreeAction", () => ({
-  deleteFile: jest.fn(),
-}))
+// Create a mock context
+type FileTreeActionsContextType = {
+  onOpenDeleteDialog: (filePath: string, fileName: string) => void
+}
+const MockFileTreeActionsContext =
+  createContext<FileTreeActionsContextType | null>(null)
+
+const mockOnOpenDeleteDialog = jest.fn()
 
 const mockStore = configureStore<
   Partial<{ workspace: { currentWorkspace: { workspaceId?: number } } }>,
@@ -31,105 +37,76 @@ describe("TreeItemLabel Component", () => {
       },
     })
     store.dispatch = jest.fn()
+    mockOnOpenDeleteDialog.mockClear()
   })
 
-  it("should dispatch deleteFile action when delete is confirmed", () => {
+  it("should render FileTreeItemLabel component", () => {
     render(
       <Provider store={store}>
-        <TreeItemLabel
-          multiSelect={true}
-          fileType="image"
-          shape={[100, 100]}
-          label="testFile"
-          isDir={false}
-          checkboxProps={{ checked: false, onChange: jest.fn() }}
-          setSelectedFilePath={jest.fn()}
-          selectedFilePath={""}
-        />
+        <MockFileTreeActionsContext.Provider
+          value={{ onOpenDeleteDialog: mockOnOpenDeleteDialog }}
+        >
+          <FileTreeItemLabel
+            multiSelect={true}
+            fileType="all"
+            shape={[100, 100]}
+            label="testFile"
+            isDir={false}
+            checkboxProps={{ checked: false, onChange: jest.fn() }}
+            filePath="testFile"
+          />
+        </MockFileTreeActionsContext.Provider>
       </Provider>,
     )
 
-    // Simulate opening the delete confirmation dialog
-    const deleteIcon = screen.getByTestId("DeleteIcon")
-    fireEvent.click(deleteIcon)
-
-    // Confirm the delete action
-    const confirmButton = screen.getByRole("button", { name: /DELETE/i })
-    fireEvent.click(confirmButton)
-
-    expect(store.dispatch).toHaveBeenCalledWith(
-      deleteFile({
-        workspaceId: 123,
-        fileName: "testFile",
-        fileType: "image",
-      }),
-    )
-  })
-
-  it("should not dispatch deleteFile action if confirmation clicked no", () => {
-    render(
-      <Provider store={store}>
-        <TreeItemLabel
-          multiSelect={true}
-          fileType="image"
-          shape={[100, 100]}
-          label="testFile"
-          isDir={false}
-          checkboxProps={{ checked: false, onChange: jest.fn() }}
-          setSelectedFilePath={jest.fn()}
-          selectedFilePath={""}
-        />
-      </Provider>,
-    )
-
-    // Simulate opening the delete confirmation dialog
-    const deleteIcon = screen.getByTestId("DeleteIcon")
-    fireEvent.click(deleteIcon)
-
-    // Confirm the delete action
-    const confirmButton = screen.getByRole("button", { name: /CANCEL/i })
-    fireEvent.click(confirmButton)
-
-    expect(store.dispatch).not.toHaveBeenCalledWith(deleteFile)
+    // Check that the delete button exists
+    const deleteButton = screen.getByTestId("DeleteIconBtn")
+    expect(deleteButton).toBeTruthy()
   })
 
   it("should disable delete button if the file checkbox is checked", () => {
     render(
       <Provider store={store}>
-        <TreeItemLabel
-          multiSelect={true}
-          fileType="image"
-          shape={[100, 100]}
-          label="testFile"
-          isDir={false}
-          checkboxProps={{ checked: true, onChange: jest.fn() }}
-          setSelectedFilePath={jest.fn()}
-          selectedFilePath={""}
-        />
+        <MockFileTreeActionsContext.Provider
+          value={{ onOpenDeleteDialog: mockOnOpenDeleteDialog }}
+        >
+          <FileTreeItemLabel
+            multiSelect={true}
+            fileType="all"
+            shape={[100, 100]}
+            label="testFile"
+            isDir={false}
+            checkboxProps={{ checked: true, onChange: jest.fn() }}
+            filePath="testFile"
+          />
+        </MockFileTreeActionsContext.Provider>
       </Provider>,
     )
 
     const deleteButton = screen.getByTestId("DeleteIconBtn")
-    expect(deleteButton).toBeDisabled()
+    expect(deleteButton.hasAttribute("disabled")).toBe(true)
   })
 
   it("should enable delete button if the file checkbox is not checked", () => {
     render(
       <Provider store={store}>
-        <TreeItemLabel
-          multiSelect={true}
-          fileType="image"
-          shape={[100, 100]}
-          label="testFile"
-          isDir={false}
-          checkboxProps={{ checked: false, onChange: jest.fn() }}
-          setSelectedFilePath={jest.fn()}
-          selectedFilePath={""}
-        />
+        <MockFileTreeActionsContext.Provider
+          value={{ onOpenDeleteDialog: mockOnOpenDeleteDialog }}
+        >
+          <FileTreeItemLabel
+            multiSelect={true}
+            fileType="all"
+            shape={[100, 100]}
+            label="testFile"
+            isDir={false}
+            checkboxProps={{ checked: false, onChange: jest.fn() }}
+            filePath="testFile"
+          />
+        </MockFileTreeActionsContext.Provider>
       </Provider>,
     )
 
-    const deleteButton = screen.getByTestId("DeleteIcon")
-    expect(deleteButton).toBeEnabled()
+    const deleteButton = screen.getByTestId("DeleteIconBtn")
+    expect(deleteButton.hasAttribute("disabled")).toBe(false)
   })
 })

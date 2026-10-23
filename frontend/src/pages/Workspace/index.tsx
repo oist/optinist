@@ -18,7 +18,6 @@ import {
   DialogActions,
   Input,
   Tooltip,
-  Typography,
   IconButton,
 } from "@mui/material"
 import {
@@ -33,7 +32,6 @@ import {
 import { isRejectedWithValue } from "@reduxjs/toolkit"
 
 import { UserDTO } from "api/users/UsersApiDTO"
-import { ConfirmDialog } from "components/common/ConfirmDialog"
 import DeleteConfirmModal from "components/common/DeleteConfirmModal"
 import Loading from "components/common/Loading"
 import PaginationCustom from "components/common/PaginationCustom"
@@ -407,6 +405,7 @@ const Workspaces = () => {
   }
 
   const handleNavRecords = (id: number) => {
+    dispatch(resetVisualizeLayout())
     navigate(`/console/workspaces/${id}`, { state: { tab: 2 } })
   }
 

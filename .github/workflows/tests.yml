@@ -5,21 +5,33 @@ on:
     branches:
       - main
       - develop-main
+      - develop-feature
     paths-ignore:
-      - 'docs/**'
+      - "docs/**"
 
   workflow_dispatch:
 
+# Test jobs are separated for parallel execution and clearer failure identification
 jobs:
-
-  test:
-
+  # Backend and Lambda tests
+  test_backend:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
 
-      - name: Run test_run command
+      - name: Run backend tests
         shell: bash
         run: |
-          make test_run
+          make test_backend
+
+
+  # Frontend tests
+  test_frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Run frontend tests
+        shell: bash
+        run: |
+          make test_frontend

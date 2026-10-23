@@ -31,9 +31,7 @@ class WorkflowNodeDataFilter:
         self.workflow_dirpath = join_filepath(
             [DIRPATH.OUTPUT_DIR, workspace_id, unique_id]
         )
-        self.workflow_config = WorkflowConfigReader.read(
-            join_filepath([self.workflow_dirpath, DIRPATH.WORKFLOW_YML])
-        )
+        self.workflow_config = WorkflowConfigReader.read(workspace_id, unique_id)
         self.node_dirpath = join_filepath([self.workflow_dirpath, node_id])
 
         # current output data path
@@ -57,13 +55,7 @@ class WorkflowNodeDataFilter:
         )
 
     def _check_data_filter(self):
-        expt_filepath = join_filepath(
-            [
-                self.workflow_dirpath,
-                DIRPATH.EXPERIMENT_YML,
-            ]
-        )
-        exp_config = ExptConfigReader.read(expt_filepath)
+        exp_config = ExptConfigReader.read(self.workspace_id, self.unique_id)
 
         assert (
             exp_config.function[self.node_id].success == WorkflowRunStatus.SUCCESS.value
@@ -259,7 +251,7 @@ class WorkflowNodeDataFilter:
             ] = copy.deepcopy(nwbfile[type][NWBDATASET.FLUORESCENCE][function_id])
             nwbfile[type][NWBDATASET.FLUORESCENCE][filtered_function_id][
                 "Fluorescence"
-            ]["data"] = fluorescence.T
+            ]["data"] = fluorescence
 
         # 4. POSTPROCESS section updates
         logger.info(

@@ -43,6 +43,8 @@ def get_roi(A, roi_thr, thr_method, swap_dim, dims):
                     neuron_id=i + 1,
                 )
                 coordinates.append(pars)
+                # keep one mask per column so row i stays component i
+                ims.append(np.zeros(dims))
                 continue
             else:
                 # we work with normalized values
@@ -142,6 +144,99 @@ def util_download_model_files():
                 response = requests.get(url)
                 with open(file_path, "wb") as f:
                     f.write(response.content)
+
+
+def nwb_image_mask(A, comp, dims, swap_dim):
+    # the pixel order get_roi reads A in, so the NWB masks match the ROI images
+    return A[:, comp].toarray().reshape(dims, order="C" if swap_dim else "F")
+
+
+def component_outputs(
+    A,
+    C,
+    idx_good,
+    idx_bad,
+    dims,
+    roi_thr,
+    thr_method,
+    swap_dim,
+    accepted_list=None,
+    rejected_list=None,
+    n_frames=0,
+):
+    """im, iscell, the NWB ROI table and fluorescence in one shared row order.
+
+    Row i of every output is component order[i], accepted components first, so
+    the ROI editor and the analyses can index fluorescence by im row.
+    """
+    order = list(idx_good) + list(idx_bad)
+    n_components = len(order)
+
+    iscell = np.concatenate(
+        [
+            np.ones(len(idx_good), dtype=int),
+            np.zeros(len(idx_bad), dtype=int),
+        ]
+    )
+
+    if len(idx_good) > 0 and A is not None:
+        cell_ims = get_roi(A[:, idx_good], roi_thr, thr_method, swap_dim, dims)
+        if len(cell_ims) != len(idx_good):
+            raise ValueError("one mask per accepted component expected")
+        if len(cell_ims) > 0:  # Check if get_roi returned any ROIs
+            cell_ims = np.stack(cell_ims).astype(float)
+            cell_ims[cell_ims == 0] = np.nan
+            cell_ims = np.where(
+                np.isnan(cell_ims), cell_ims, cell_ims - 1
+            )  # Safer subtraction
+            n_rois = len(cell_ims)
+        else:
+            cell_ims = np.zeros((0, *dims))
+            n_rois = 0
+    else:
+        cell_ims = np.zeros((0, *dims))
+        n_rois = 0
+
+    if len(idx_bad) > 0:
+        non_cell_ims = get_roi(A[:, idx_bad], roi_thr, thr_method, swap_dim, dims)
+        if len(non_cell_ims) != len(idx_bad):
+            raise ValueError("one mask per rejected component expected")
+        non_cell_ims = np.stack(non_cell_ims).astype(float)
+        for i, j in enumerate(range(n_rois, n_rois + len(non_cell_ims))):
+            non_cell_ims[i, :] = np.where(non_cell_ims[i, :] != 0, j + 1, 0)
+    else:
+        non_cell_ims = np.zeros((0, *dims))
+    non_cell_ims[non_cell_ims == 0] = np.nan
+    non_cell_ims -= 1
+
+    n_noncell_rois = len(non_cell_ims)
+    non_cell_roi = (
+        np.nanmax(non_cell_ims, axis=0) if n_noncell_rois > 0 else np.full(dims, np.nan)
+    )
+
+    im = (
+        np.vstack([cell_ims, non_cell_ims])
+        if n_components > 0
+        else np.zeros((0, *dims))
+    )
+
+    roi_list = []
+    for comp in order:
+        kargs = {}
+        kargs["image_mask"] = nwb_image_mask(A, comp, dims, swap_dim)
+        if accepted_list is not None:
+            kargs["accepted"] = comp in accepted_list
+        if rejected_list is not None:
+            kargs["rejected"] = comp in rejected_list
+        roi_list.append(kargs)
+
+    fluorescence = (
+        np.asarray(C)[order]
+        if n_components > 0 and C is not None
+        else np.zeros((0, n_frames))
+    )
+
+    return im, iscell, roi_list, fluorescence, non_cell_roi, n_rois, n_noncell_rois
 
 
 def caiman_cnmf(
@@ -250,70 +345,30 @@ def caiman_cnmf(
     thr_method = "nrg"
     swap_dim = False
 
-    iscell = np.concatenate(
-        [
-            np.ones(len(idx_good), dtype=int),
-            np.zeros(len(idx_bad), dtype=int),
-        ]
-    )
-
-    if len(idx_good) > 0 and hasattr(cnm.estimates, "A"):
-        cell_ims = get_roi(
-            cnm.estimates.A[:, idx_good], roi_thr, thr_method, swap_dim, dims
-        )
-        if len(cell_ims) > 0:  # Check if get_roi returned any ROIs
-            cell_ims = np.stack(cell_ims).astype(float)
-            cell_ims[cell_ims == 0] = np.nan
-            cell_ims = np.where(
-                np.isnan(cell_ims), cell_ims, cell_ims - 1
-            )  # Safer subtraction
-            n_rois = len(cell_ims)
-        else:
-            cell_ims = np.zeros((0, *dims))
-            n_rois = 0
-    else:
-        cell_ims = np.zeros((0, *dims))
-        n_rois = 0
-
-    if len(idx_bad) > 0:
-        non_cell_ims = get_roi(
-            cnm.estimates.A[:, idx_bad], roi_thr, thr_method, swap_dim, dims
-        )
-        non_cell_ims = np.stack(non_cell_ims).astype(float)
-        for i, j in enumerate(range(n_rois, n_rois + len(non_cell_ims))):
-            non_cell_ims[i, :] = np.where(non_cell_ims[i, :] != 0, j, 0)
-        non_cell_roi = np.nanmax(non_cell_ims, axis=0).astype(float)
-    else:
-        non_cell_ims = np.zeros((0, *dims))
-        non_cell_roi = np.zeros(dims)
-        non_cell_roi[non_cell_roi == 0] = np.nan
-    non_cell_ims[non_cell_ims == 0] = np.nan
-
-    n_noncell_rois = len(non_cell_ims)
-
-    im = (
-        np.vstack([cell_ims, non_cell_ims])
-        if n_components > 0
-        else np.zeros((0, *dims))
+    (
+        im,
+        iscell,
+        roi_list,
+        fluorescence,
+        non_cell_roi,
+        n_rois,
+        n_noncell_rois,
+    ) = component_outputs(
+        getattr(cnm.estimates, "A", None),
+        getattr(cnm.estimates, "C", None),
+        idx_good,
+        idx_bad,
+        dims,
+        roi_thr,
+        thr_method,
+        swap_dim,
+        getattr(cnm.estimates, "accepted_list", None),
+        getattr(cnm.estimates, "rejected_list", None),
+        mmap_images.shape[0],
     )
 
     # NWB additions
     nwbfile = {}
-    # Add ROIs to NWB
-    roi_list = []
-    if n_components > 0:
-        for i in range(n_components):
-            kargs = {}
-            kargs["image_mask"] = cnm.estimates.A.T[i].T.toarray().reshape(dims)
-            # Safer attribute access with getattr
-            accepted_list = getattr(cnm.estimates, "accepted_list", None)
-            rejected_list = getattr(cnm.estimates, "rejected_list", None)
-            if accepted_list is not None:
-                kargs["accepted"] = i in accepted_list
-            if rejected_list is not None:
-                kargs["rejected"] = i in rejected_list
-            roi_list.append(kargs)
-
     nwbfile[NWBDATASET.ROI] = {function_id: {"roi_list": roi_list}}
     nwbfile[NWBDATASET.POSTPROCESS] = {function_id: {"all_roi_img": im}}
 
@@ -326,25 +381,15 @@ def caiman_cnmf(
         }
     }
 
-    # Fluorescence - with safety check for C attribute
-    fluorescence = (
-        (
-            cnm.estimates.C
-            if hasattr(cnm.estimates, "C")
-            else np.zeros((0, mmap_images.shape[0]))
-        )
-        if n_components > 0
-        else np.zeros((0, mmap_images.shape[0]))
-    )
-
     nwbfile[NWBDATASET.FLUORESCENCE] = {
         function_id: {
             "Fluorescence": {
                 "table_name": "ROIs",
                 "region": list(range(n_rois + n_noncell_rois)),
                 "name": "Fluorescence",
-                "data": fluorescence.T,
+                "data": fluorescence,
                 "unit": "lumens",
+                "rate": fr,
             }
         }
     }
@@ -366,7 +411,9 @@ def caiman_cnmf(
             file_name="all_roi",
         ),
         "cell_roi": RoiData(
-            np.nanmax(im[iscell != 0], axis=0) if len(im) > 0 else empty_roi.copy(),
+            np.nanmax(im[iscell != 0], axis=0, initial=np.nan)
+            if len(im) > 0
+            else empty_roi.copy(),
             output_dir=output_dir,
             file_name="cell_roi",
         ),

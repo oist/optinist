@@ -106,6 +106,10 @@ export const selectExperimentFunctionHasNWB =
 
 export const selectFrameRate =
   (currentPipelineUid?: string) => (state: RootState) => {
-    if (!currentPipelineUid) return 50
-    return selectExperiment(currentPipelineUid)(state).frameRate || 50
+    // Check if experiments have been acquired
+    if (currentPipelineUid && selectExperimentsStatusIsFulfilled(state)) {
+      return selectExperiment(currentPipelineUid)(state).frameRate || 50
+    } else {
+      return 50
+    }
   }

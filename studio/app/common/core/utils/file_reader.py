@@ -62,6 +62,49 @@ class JsonReader:
         )
 
     @classmethod
+    def read_as_timeseries_from_df(cls, df) -> JsonTimeSeriesData:
+        """
+        Create JsonTimeSeriesData from a pandas DataFrame.
+        Expects DataFrame with index as xrange and columns
+          containing 'data' and optionally 'std'.
+        Handles None/null values (which may come from NaN in original data).
+        """
+        import math
+
+        import pandas as pd
+
+        xrange = [str(idx) for idx in df.index.tolist()]
+
+        # Convert data, handling NaN/None values (null in JSON)
+        data = {}
+        for idx, val in zip(df.index, df["data"]):
+            # Check for NaN/None and convert to None (null in JSON)
+            if pd.isna(val):
+                data[str(idx)] = None
+            elif isinstance(val, float) and (math.isnan(val) or math.isinf(val)):
+                data[str(idx)] = None
+            else:
+                data[str(idx)] = float(val)
+
+        std = None
+        if "std" in df.columns:
+            std = {}
+            for idx, val in zip(df.index, df["std"]):
+                # Check for NaN/None and convert to None (null in JSON)
+                if pd.isna(val):
+                    std[str(idx)] = None
+                elif isinstance(val, float) and (math.isnan(val) or math.isinf(val)):
+                    std[str(idx)] = None
+                else:
+                    std[str(idx)] = float(val)
+
+        return JsonTimeSeriesData(
+            xrange=xrange,
+            data=data,
+            std=std,
+        )
+
+    @classmethod
     def read_as_plot_meta(cls, filepath) -> PlotMetaData:
         json_data = cls.read(filepath) if os.path.exists(filepath) else {}
         return PlotMetaData(**json_data)

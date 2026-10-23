@@ -1,3 +1,5 @@
+import { createSelector } from "@reduxjs/toolkit"
+
 import {
   selectRoiData,
   selectRoiUniqueList,
@@ -415,15 +417,27 @@ export const selectTimeSeriesItemRefRoiUniqueList =
     }
   }
 
-export const selectTimeSeriesItemKeys =
-  (itemId: number) => (state: RootState) => {
-    const item = selectVisualizeItemById(itemId)(state)
-    if (isTimeSeriesItem(item)) {
-      const path = selectTimeSeriesItemFilePath(itemId)(state)
-      if (path != null && selectTimeSeriesDataIsInitialized(path)(state)) {
-        const dataKeys = Object.keys(selectTimeSeriesData(path)(state))
-        const roiUniqueList =
-          selectTimeSeriesItemRefRoiUniqueList(itemId)(state)
+export const selectTimeSeriesItemKeys = (itemId: number) =>
+  createSelector(
+    [
+      (state: RootState) => selectVisualizeItemById(itemId)(state),
+      (state: RootState) => selectTimeSeriesItemFilePath(itemId)(state),
+      (state: RootState) => {
+        const path = selectTimeSeriesItemFilePath(itemId)(state)
+        return path != null && selectTimeSeriesDataIsInitialized(path)(state)
+      },
+      (state: RootState) => {
+        const path = selectTimeSeriesItemFilePath(itemId)(state)
+        return path != null ? selectTimeSeriesData(path)(state) : {}
+      },
+      (state: RootState) => selectTimeSeriesItemRefRoiUniqueList(itemId)(state),
+    ],
+    (item, path, isInitialized, timeSeriesData, roiUniqueList) => {
+      if (!isTimeSeriesItem(item)) {
+        throw new Error("invalid VisualaizeItemType")
+      }
+      if (path != null && isInitialized) {
+        const dataKeys = Object.keys(timeSeriesData)
         if (roiUniqueList != null) {
           return dataKeys.filter((key) => roiUniqueList.includes(key))
         } else {
@@ -432,9 +446,8 @@ export const selectTimeSeriesItemKeys =
       } else {
         return []
       }
-    }
-    throw new Error("invalid VisualaizeItemType")
-  }
+    },
+  )
 
 export const selectRoiItemIndex =
   (itemId: number, roiFilePath: string | null) => (state: RootState) => {
@@ -453,15 +466,17 @@ export const selectRoiItemIndex =
     }
   }
 
-export const selectRoiItemMaxNumber =
-  (roiFilePath: string) => (state: RootState) => {
-    const roiData = selectRoiData(roiFilePath)(state)
-    if (roiData.length !== 0) {
-      return Math.max(...roiData.map((arr) => Math.max(...arr)))
-    } else {
-      return 0
-    }
-  }
+export const selectRoiItemMaxNumber = (roiFilePath: string) =>
+  createSelector(
+    [(state: RootState) => selectRoiData(roiFilePath)(state)],
+    (roiData) => {
+      if (roiData.length !== 0) {
+        return Math.max(...roiData.map((arr) => Math.max(...arr)))
+      } else {
+        return 0
+      }
+    },
+  )
 
 export const selectHeatMapItemShowScale =
   (itemId: number) => (state: RootState) => {

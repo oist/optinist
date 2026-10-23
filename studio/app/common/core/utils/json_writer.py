@@ -1,6 +1,7 @@
 import json
+import math
 import os
-from typing import Optional
+from typing import Any, Optional
 
 import numpy as np
 import pandas as pd
@@ -28,6 +29,30 @@ class JsonWriter:
         if data is not None:
             with open(filepath, "w") as f:
                 json.dump(data.value_present_dict(), f, indent=4)
+
+    @staticmethod
+    def sanitize_for_json(obj: Any) -> Any:
+        """
+        Recursively sanitize data structure for JSON serialization.
+        Converts NaN, Inf, -Inf to None (null in JSON).
+
+        Args:
+            obj: Object to sanitize (dict, list, float, etc.)
+
+        Returns:
+            Sanitized object safe for JSON serialization
+        """
+        if isinstance(obj, dict):
+            return {k: JsonWriter.sanitize_for_json(v) for k, v in obj.items()}
+        elif isinstance(obj, list):
+            return [JsonWriter.sanitize_for_json(item) for item in obj]
+        elif isinstance(obj, float):
+            # Check for NaN, Infinity, -Infinity
+            if math.isnan(obj) or math.isinf(obj):
+                return None  # Convert to null in JSON
+            return obj
+        else:
+            return obj
 
 
 def save_tiff2json(tiff_filepath, save_dirpath, start_index=None, end_index=None):

@@ -1,5 +1,5 @@
 import { OutputPathsDTO } from "api/run/Run"
-import { BASE_URL } from "const/API"
+import { API_TIMEOUT, BASE_URL } from "const/API"
 import { EXPERIMENTS_STATUS } from "store/slice/Experiments/ExperimentsType"
 import axios from "utils/axios"
 
@@ -93,6 +93,7 @@ export async function downloadExperimentNwbApi(
       : `${BASE_URL}/experiments/download/nwb/${workspaceId}/${uid}`
   const response = await axios.get(path, {
     responseType: "blob",
+    timeout: API_TIMEOUT.UPLOAD_DOWNLOAD,
   })
   return response.data
 }

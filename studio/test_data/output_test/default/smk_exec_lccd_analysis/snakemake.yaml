@@ -1,0 +1,104 @@
+rules:
+  input_0:
+    input:
+    - 1/test.tif
+    return_arg: input_0
+    params: {}
+    output: default/smk_exec_lccd_analysis/input_0/data_endoscope.pkl
+    type: image
+    nwbfile:
+      session_description: optinist
+      identifier: optinist
+      experiment_description: None
+      device:
+        name: Microscope device
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+      optical_channel:
+        name: OpticalChannel
+        description: optical channel
+        emission_lambda: 500.0
+      imaging_plane:
+        name: ImagingPlane
+        description: standard
+        imaging_rate: 30.0
+        excitation_lambda: 900.0
+        indicator: GCaMP
+        location: V1
+      image_series:
+        starting_time: 0
+        starting_frame:
+        - 0
+        save_raw_image_to_nwb: false
+      ophys:
+        plane_segmentation:
+          name: PlaneSegmentation
+          description: ''
+    hdf5Path: null
+    matPath: null
+    path: null
+  lccd_cell_detection_1234:
+    input:
+    - default/smk_exec_lccd_analysis/input_0/data_endoscope.pkl
+    return_arg:
+      input_0: mc_images
+    params:
+      blob_detector:
+        filtersize1: 100
+        filtersize2: 4
+        sigma: 1.25
+        fsize: 30
+        min_area: 20
+        max_area: 50
+        sparse: false
+      roi_integration:
+        overlap_threshold: 0.4
+        min_area: 20
+        max_area: 100
+        sparse: false
+      lccd:
+        frame_divider: 100
+      dff:
+        f0_frames: 100
+        f0_percentile: 8
+    output: default/smk_exec_lccd_analysis/lccd_cell_detection_1234/lccd_cell_detection.pkl
+    type: lccd_cell_detection
+    nwbfile: null
+    hdf5Path: null
+    matPath: null
+    path: lccd/lccd_cell_detection
+  correlation_1234:
+    input:
+    - default/smk_exec_lccd_analysis/lccd_cell_detection_1234/lccd_cell_detection.pkl
+    return_arg:
+      fluorescence@lccd_cell_detection_1234: neural_data
+      iscell@lccd_cell_detection_1234: iscell
+    params:
+      transpose: false
+    output: default/smk_exec_lccd_analysis/correlation_1234/correlation.pkl
+    type: correlation
+    nwbfile: null
+    hdf5Path: null
+    matPath: null
+    path: optinist/neural_population_analysis/correlation
+  cross_correlation_1234:
+    input:
+    - default/smk_exec_lccd_analysis/lccd_cell_detection_1234/lccd_cell_detection.pkl
+    return_arg:
+      fluorescence@lccd_cell_detection_1234: neural_data
+      iscell@lccd_cell_detection_1234: iscell
+    params:
+      transpose: false
+      lags: 10
+      method: auto
+      shuffle_sample_number: 5
+      shuffle_confidence_interval: 0.95
+    output: default/smk_exec_lccd_analysis/cross_correlation_1234/cross_correlation.pkl
+    type: cross_correlation
+    nwbfile: null
+    hdf5Path: null
+    matPath: null
+    path: optinist/neural_population_analysis/cross_correlation
+last_output:
+- default/smk_exec_lccd_analysis/correlation_1234/correlation.pkl
+- default/smk_exec_lccd_analysis/cross_correlation_1234/cross_correlation.pkl

@@ -3,6 +3,7 @@ import os
 import shutil
 from datetime import datetime
 
+import numpy as np
 from dateutil.tz import tzlocal
 from pynwb import NWBHDF5IO, NWBFile
 from pynwb.ophys import (
@@ -20,6 +21,14 @@ from pynwb.ophys import (
 from studio.app.common.core.logger import AppLogger
 from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.core.nwb.optinist_data import ConfigData, PostProcess
+
+
+def _time_first(data, n_roi):
+    # a square array counts as (roi, time); its axes cannot be told apart
+    data = np.asarray(data)
+    if data.ndim == 2 and data.shape[0] == n_roi:
+        return data.T
+    return data
 
 
 class NWBCreater:
@@ -98,7 +107,7 @@ class NWBCreater:
                 external_file=image_path if not save_raw_image_to_nwb else None,
                 imaging_plane=imaging_plane,
                 starting_time=float(config[NWBDATASET.IMAGE_SERIES]["starting_time"]),
-                rate=1.0,
+                rate=float(config["imaging_plane"]["imaging_rate"]),
                 unit="normalized amplitude",
                 data=external_file.data if save_raw_image_to_nwb else None,
             )
@@ -162,7 +171,7 @@ class NWBCreater:
             unit="na",
             format="external",
             starting_time=0.0,
-            rate=1.0,
+            rate=float(nwbfile.imaging_planes["ImagingPlane"].imaging_rate),
         )
 
         xy_translation = TimeSeries(
@@ -170,7 +179,7 @@ class NWBCreater:
             data=xy_trans_data,
             unit="pixels",
             starting_time=0.0,
-            rate=1.0,
+            rate=float(nwbfile.imaging_planes["ImagingPlane"].imaging_rate),
         )
 
         corrected_image_stack = CorrectedImageStack(
@@ -232,7 +241,7 @@ class NWBCreater:
 
             roi_resp_dict = {
                 "name": roi["name"],
-                "data": roi["data"],
+                "data": _time_first(roi["data"], len(roi["region"])),
                 "rois": region_roi,
                 "unit": roi["unit"],
                 "timestamps": roi.get("timestamps"),

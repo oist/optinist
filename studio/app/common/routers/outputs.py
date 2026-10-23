@@ -1,5 +1,4 @@
 import os
-from glob import glob
 from typing import Optional
 
 import pandas as pd
@@ -11,6 +10,7 @@ from studio.app.common.core.utils.filepath_creater import (
     join_filepath,
 )
 from studio.app.common.core.utils.json_writer import JsonWriter, save_tiff2json
+from studio.app.common.dataclass.timeseries_chunk_handler import TimeSeriesChunkHandler
 from studio.app.common.schemas.outputs import JsonTimeSeriesData, OutputData
 from studio.app.const import ACCEPT_FILE_EXT, ORIGINAL_DATA_EXT
 from studio.app.dir_path import DIRPATH
@@ -30,6 +30,32 @@ def get_initial_timeseries_data(dirpath) -> JsonTimeSeriesData:
     )
 
 
+def _load_timeseries_record(dirpath: str, record_id: str) -> JsonTimeSeriesData:
+    """
+    Load a single timeseries record from either chunked or legacy format.
+
+    Args:
+        dirpath: Directory containing the timeseries data
+        record_id: Record identifier (as string)
+
+    Returns:
+        JsonTimeSeriesData for the specified record
+    """
+    if TimeSeriesChunkHandler.is_chunked_format(dirpath):
+        # Chunked format
+        cell_data = TimeSeriesChunkHandler.get_record_data(dirpath, record_id)
+        # Convert from split format to DataFrame
+        df = pd.DataFrame(
+            cell_data["data"], index=cell_data["index"], columns=cell_data["columns"]
+        )
+        return JsonReader.read_as_timeseries_from_df(df)
+    else:
+        # Legacy format
+        return JsonReader.read_as_timeseries(
+            join_filepath([dirpath, f"{record_id}.json"])
+        )
+
+
 @router.get("/inittimedata/{dirpath:path}", response_model=JsonTimeSeriesData)
 async def get_inittimedata(
     dirpath: str,
@@ -39,12 +65,8 @@ async def get_inittimedata(
     if isFull and os.path.exists(full_json_dirpath):
         dirpath = full_json_dirpath
 
-    file_numbers = sorted(
-        [
-            os.path.splitext(os.path.basename(x))[0]
-            for x in glob(join_filepath([dirpath, "*.json"]))
-        ]
-    )
+    # Get all cell indices (supports both chunked and legacy formats)
+    file_numbers = TimeSeriesChunkHandler.get_all_record_ids(dirpath)
 
     # Handle empty case
     if not file_numbers:
@@ -52,13 +74,12 @@ async def get_inittimedata(
         return_data.meta = {"title": "0 ROIs found"}  # Set informative message
         return return_data
 
-    # Rest of the function remains the same
+    # Get first cell data
     index = file_numbers[0]
     str_index = str(index)
 
-    json_data = JsonReader.read_as_timeseries(
-        join_filepath([dirpath, f"{str(index)}.json"])
-    )
+    # Load first record using common helper
+    json_data = _load_timeseries_record(dirpath, str_index)
 
     data = {
         str(i): {json_data.xrange[0]: json_data.data[json_data.xrange[0]]}
@@ -94,13 +115,13 @@ async def get_timedata(
     if isFull and os.path.exists(full_json_dirpath):
         dirpath = full_json_dirpath
 
-    json_data = JsonReader.read_as_timeseries(
-        join_filepath([dirpath, f"{str(index)}.json"])
-    )
+    str_index = str(index)
+
+    # Load record using common helper
+    json_data = _load_timeseries_record(dirpath, str_index)
 
     return_data = get_initial_timeseries_data(dirpath)
 
-    str_index = str(index)
     return_data.data[str_index] = json_data.data
     if json_data.std is not None:
         return_data.std[str_index] = json_data.std
@@ -112,15 +133,49 @@ async def get_timedata(
 async def get_alltimedata(dirpath: str):
     return_data = get_initial_timeseries_data(dirpath)
 
-    for i, path in enumerate(glob(join_filepath([dirpath, "*.json"]))):
-        str_idx = str(os.path.splitext(os.path.basename(path))[0])
-        json_data = JsonReader.read_as_timeseries(path)
-        if i == 0:
-            return_data.xrange = json_data.xrange
+    if TimeSeriesChunkHandler.is_chunked_format(dirpath):
+        # Chunked format: load all chunks
+        all_records = TimeSeriesChunkHandler.load_all_records(dirpath)
 
-        return_data.data[str_idx] = json_data.data
-        if json_data.std is not None:
-            return_data.std[str_idx] = json_data.std
+        for cell_index, cell_data in all_records.items():
+            # Convert from split format to timeseries format
+            df = pd.DataFrame(
+                cell_data["data"],
+                index=cell_data["index"],
+                columns=cell_data["columns"],
+            )
+            json_data = JsonReader.read_as_timeseries_from_df(df)
+
+            if not return_data.xrange:
+                return_data.xrange = json_data.xrange
+
+            return_data.data[cell_index] = json_data.data
+            if json_data.std is not None:
+                if not return_data.std:
+                    return_data.std = {}
+                return_data.std[cell_index] = json_data.std
+    else:
+        # Legacy format: individual files
+        from glob import glob
+
+        metadata_files = [
+            TimeSeriesChunkHandler.INDEX_MAP_FILENAME,  # chunk_index_map.json
+            f"{os.path.basename(dirpath)}.plot-meta.json",
+        ]
+        for i, path in enumerate(glob(join_filepath([dirpath, "*.json"]))):
+            filename = os.path.basename(path)
+            # Skip metadata files
+            if filename in metadata_files:
+                continue
+
+            str_idx = str(os.path.splitext(filename)[0])
+            json_data = JsonReader.read_as_timeseries(path)
+            if i == 0:
+                return_data.xrange = json_data.xrange
+
+            return_data.data[str_idx] = json_data.data
+            if json_data.std is not None:
+                return_data.std[str_idx] = json_data.std
 
     return return_data
 

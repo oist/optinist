@@ -1,6 +1,7 @@
 import os
 import pickle
 import traceback
+from glob import glob
 
 from studio.app.common.core.utils.filepath_creater import (
     create_directory,
@@ -13,6 +14,16 @@ class PickleReader:
     def read(cls, filepath):
         with open(filepath, "rb") as f:
             return pickle.load(f)
+
+    @classmethod
+    def search_node_pickle_path(cls, search_path: str) -> str:
+        paths = list(
+            set(glob(join_filepath([search_path, "*.pkl"])))
+            - set(glob(join_filepath([search_path, "tmp_*.pkl"])))
+        )
+        path = paths[0] if paths else None
+
+        return path
 
     @staticmethod
     def check_is_valid_node_pickle(data):

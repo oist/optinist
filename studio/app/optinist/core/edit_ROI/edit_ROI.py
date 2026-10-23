@@ -1,24 +1,20 @@
 import os
-from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass
 from glob import glob
 from typing import Dict, List
 
 import numpy as np
 from fastapi import HTTPException, status
-from snakemake import snakemake
 
 from studio.app.common.core.experiment.experiment import ExptOutputPathIds
 from studio.app.common.core.logger import AppLogger
 from studio.app.common.core.rules.runner import Runner
-from studio.app.common.core.utils.config_handler import ConfigReader
+from studio.app.common.core.snakemake.snakemake_reader import SmkConfigReader
 from studio.app.common.core.utils.filepath_creater import join_filepath
-from studio.app.common.core.utils.filepath_finder import find_condaenv_filepath
 from studio.app.common.core.utils.pickle_handler import PickleReader, PickleWriter
 from studio.app.common.dataclass.base import BaseData
 from studio.app.dir_path import DIRPATH
 from studio.app.optinist.core.edit_ROI.utils import create_ellipse_mask
-from studio.app.optinist.core.edit_ROI.wrappers import edit_roi_wrapper_dict
 from studio.app.optinist.core.nwb.nwb_creater import overwrite_nwb
 from studio.app.optinist.dataclass import EditRoiData, IscellData, RoiData
 from studio.app.optinist.schemas.roi import RoiStatus
@@ -32,65 +28,15 @@ class CellType:
     NON_ROI = 0
     TEMP_ADD = -1
     TEMP_DELETE = -2
-
-
-class EditRoiUtils:
-    @classmethod
-    def conda(cls, config):
-        algo = config["algo"]
-        if "conda_name" in edit_roi_wrapper_dict[algo]:
-            conda_name = edit_roi_wrapper_dict[algo]["conda_name"]
-            return find_condaenv_filepath(conda_name) if conda_name else None
-
-        return None
-
-    @classmethod
-    def get_algo(cls, filepath):
-        algo_list = edit_roi_wrapper_dict.keys()
-
-        algo = next((algo for algo in algo_list if algo in filepath), None)
-        if not algo:
-            raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)
-        return algo
-
-    @classmethod
-    def execute(cls, filepath: set):
-        result = False
-
-        with ProcessPoolExecutor(max_workers=1) as executor:
-            logger.info("start snakemake edit_roi process.")
-
-            future = executor.submit(cls._execute_process, filepath)
-            result = future.result()
-
-            logger.info("finish snakemake edit_roi process. result: %s", result)
-
-        if not result:
-            logger.error("edit_ROI snakemake run failed.")
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR)
-
-    @classmethod
-    def _execute_process(cls, filepath: str) -> bool:
-        result = snakemake(
-            DIRPATH.SNAKEMAKE_FILEPATH,
-            use_conda=True,
-            cores=2,
-            workdir=f"{os.path.dirname(DIRPATH.STUDIO_DIR)}",
-            config={
-                "type": "EDIT_ROI",
-                "algo": cls.get_algo(filepath),
-                "file_path": filepath,
-            },
-        )
-
-        return result
+    TEMP_PROMOTE = -3
 
 
 class EditROI:
     def __init__(self, file_path):
         self.node_dirpath = os.path.dirname(file_path)
         self.workflow_dirpath = os.path.dirname(self.node_dirpath)
-        self.function_id = ExptOutputPathIds(self.node_dirpath).function_id
+        self.workflow_ids = ExptOutputPathIds(self.node_dirpath)
+        self.function_id = self.workflow_ids.function_id
 
         self.output_info: Dict = PickleReader.read(self.pickle_file_path)
         self.tmp_output_info: Dict = (
@@ -137,8 +83,23 @@ class EditROI:
     def num_cell(self):
         return self.tmp_data.im.shape[0]
 
+    @property
+    def __cell_roi_im(self):
+        # pending promotions and undone pending merges are not drawn as cells
+        drawn = ~np.isin(self.tmp_iscell, [CellType.NON_ROI, CellType.TEMP_PROMOTE])
+        for merged_id in self.tmp_data.temp_merge_roi:
+            if self.tmp_iscell[int(merged_id)] == CellType.TEMP_DELETE:
+                drawn[int(merged_id)] = False
+        return np.fmax.reduce(
+            self.tmp_data.im, axis=0, where=drawn[:, None, None], initial=np.nan
+        )
+
     def get_status(self) -> RoiStatus:
-        return self.tmp_data.status()
+        roi_status = self.tmp_data.status()
+        roi_status.temp_promote_roi = np.where(
+            self.tmp_iscell == CellType.TEMP_PROMOTE
+        )[0].tolist()
+        return roi_status
 
     def add(self, roi_pos):
         new_roi = create_ellipse_mask(self.shape, roi_pos)
@@ -150,9 +111,7 @@ class EditROI:
 
         info = {
             "cell_roi": RoiData(
-                np.nanmax(
-                    self.tmp_data.im[self.tmp_iscell != CellType.NON_ROI], axis=0
-                ),
+                self.__cell_roi_im,
                 output_dir=self.node_dirpath,
                 file_name="cell_roi",
             ),
@@ -176,9 +135,7 @@ class EditROI:
 
         info = {
             "cell_roi": RoiData(
-                np.nanmax(
-                    self.tmp_data.im[self.tmp_iscell != CellType.NON_ROI], axis=0
-                ),
+                self.__cell_roi_im,
                 output_dir=self.node_dirpath,
                 file_name="cell_roi",
             ),
@@ -190,10 +147,59 @@ class EditROI:
         self.__save_json(info)
 
     def delete(self, ids: List[int]):
+        # deleting a pending merge restores its sources; the entry stays so commit
+        # still appends the merged ROI's trace and keeps fluorescence aligned
+        for id in ids:
+            for parent in self.tmp_data.temp_merge_roi.get(float(id), []):
+                if parent in self.tmp_data.temp_delete_roi:
+                    continue
+                self.tmp_iscell[parent] = (
+                    CellType.TEMP_ADD
+                    if parent in self.tmp_data.temp_add_roi
+                    else CellType.ROI
+                )
+
         self.tmp_iscell[ids] = CellType.TEMP_DELETE
 
         for id in ids:
             self.tmp_data.temp_delete_roi[id] = None
+
+        info = {
+            "cell_roi": RoiData(
+                self.__cell_roi_im,
+                output_dir=self.node_dirpath,
+                file_name="cell_roi",
+            ),
+            "iscell": IscellData(self.tmp_iscell),
+            "edit_roi_data": self.tmp_data,
+        }
+
+        self.__update_pickle_for_roi_edition(self.tmp_pickle_file_path, info)
+        self.__save_json(info)
+
+    def promote(self, ids: List[int]):
+        num_roi = len(self.tmp_iscell)
+        not_promotable = [
+            id
+            for id in ids
+            if not 0 <= id < num_roi or self.tmp_iscell[id] != CellType.NON_ROI
+        ]
+        if not_promotable:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"ROIs are not non-cell ROIs: {not_promotable}",
+            )
+
+        # a cell with no fluorescence record would have nothing to plot
+        num_trace = len(self.output_info.get("fluorescence").data)
+        without_trace = [id for id in ids if id >= num_trace]
+        if without_trace:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"ROIs have no fluorescence record: {without_trace}",
+            )
+
+        self.tmp_iscell[ids] = CellType.TEMP_PROMOTE
 
         info = {
             "iscell": IscellData(self.tmp_iscell),
@@ -204,6 +210,8 @@ class EditROI:
         self.__save_json(info)
 
     def commit(self):
+        self.tmp_iscell[self.tmp_iscell == CellType.TEMP_PROMOTE] = CellType.ROI
+
         if "suite2p" in self.function_id:
             from studio.app.optinist.core.edit_ROI.wrappers.suite2p_edit_roi import (
                 commit_edit as suite2p_commit,
@@ -258,6 +266,22 @@ class EditROI:
                 self.function_id,
             )
 
+        iscell = info["iscell"].data
+        non_cell_roi_file_name = self.__non_cell_roi_file_name()
+        if non_cell_roi_file_name:
+            im = info["edit_roi_data"].im
+            # rows without a fluorescence record would offer a click that fails
+            has_trace = np.arange(len(im)) < len(info["fluorescence"].data)
+            non_cell = (iscell == CellType.NON_ROI) & has_trace
+            # lowest id on top, so a deleted merge does not cover its sources
+            info["non_cell_roi"] = RoiData(
+                np.fmin.reduce(
+                    im, axis=0, where=non_cell[:, None, None], initial=np.nan
+                ),
+                output_dir=self.node_dirpath,
+                file_name=non_cell_roi_file_name,
+            )
+
         info["edit_roi_data"].images = self.data.images
 
         self.__update_pickle_for_roi_edition(self.pickle_file_path, info)
@@ -274,13 +298,12 @@ class EditROI:
         original_num_cell = len(self.output_info.get("fluorescence").data)
         self.tmp_data.im = self.tmp_data.im[:original_num_cell]
         self.tmp_iscell = self.tmp_iscell[:original_num_cell]
+        self.tmp_iscell[self.tmp_iscell == CellType.TEMP_PROMOTE] = CellType.NON_ROI
         self.tmp_data.cancel()
 
         info = {
             "cell_roi": RoiData(
-                np.nanmax(
-                    self.tmp_data.im[self.tmp_iscell != CellType.NON_ROI], axis=0
-                ),
+                self.__cell_roi_im,
                 output_dir=self.node_dirpath,
                 file_name="cell_roi",
             ),
@@ -292,11 +315,16 @@ class EditROI:
             else None
         )
 
+    def __non_cell_roi_file_name(self):
+        for file_name in ("non_cell_roi", "noncell_roi"):
+            if os.path.exists(join_filepath([self.node_dirpath, f"{file_name}.json"])):
+                return file_name
+        return None
+
     def __update_whole_nwb(self, output_info):
-        smk_config_file = join_filepath(
-            [self.workflow_dirpath, DIRPATH.SNAKEMAKE_CONFIG_YML]
+        smk_config = SmkConfigReader.read(
+            self.workflow_ids.workspace_id, self.workflow_ids.unique_id
         )
-        smk_config = ConfigReader.read(smk_config_file)
         last_outputs = smk_config.get("last_output")
 
         for last_output in last_outputs:

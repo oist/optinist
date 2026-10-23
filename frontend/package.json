@@ -1,11 +1,14 @@
 {
   "name": "optinist",
-  "version": "2.2.3",
+  "version": "2.4.1",
   "engines": {
     "node": ">=20.0.0"
   },
   "private": true,
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@emotion/react": "^11.7.1",
     "@emotion/styled": "^11.6.0",
     "@mui/icons-material": "^5.14.16",
@@ -63,10 +66,10 @@
   "scripts": {
     "prestart": "node export-versions.js",
     "start": "react-app-rewired start --scripts-version react-scripts",
-    "build": "BUILD_PATH='./build' react-app-rewired build --openssl-legacy-provider build",
+    "build": "cross-env BUILD_PATH='./build' react-app-rewired build --openssl-legacy-provider build",
     "test": "react-app-rewired test",
     "test-coverage": "react-app-rewired test --coverage",
-    "test:ci": "CI=true react-app-rewired test",
+    "test:ci": "cross-env CI=true react-app-rewired test",
     "eject": "react-scripts eject",
     "format": "prettier --write .",
     "prepare": "cd .. && husky install frontend/.husky && chmod ug+x frontend/.husky/pre-commit"
@@ -95,6 +98,7 @@
     "@types/testing-library__user-event": "^4.2.0",
     "@typescript-eslint/eslint-plugin": "^6.10.0",
     "@typescript-eslint/parser": "^6.10.0",
+    "cross-env": "^7.0.3",
     "eslint": "^8.53.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-config-react-app": "^7.0.1",

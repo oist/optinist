@@ -8,3 +8,5 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: codespell-project/actions-codespell@v2
+        with:
+          args: "--skip='./dist,./frontend/node_modules,./logs'"
