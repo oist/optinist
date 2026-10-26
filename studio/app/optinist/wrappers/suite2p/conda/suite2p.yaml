@@ -10,3 +10,5 @@ dependencies:
     - pandas==1.5.*
     - suite2p==0.10.3
     - tifffile==2022.3.*
+    # cryptography>=49 has no macOS x86_64 wheels; its source build under Rosetta can be broken
+    - 'cryptography<49; sys_platform == "darwin" and platform_machine == "x86_64"'

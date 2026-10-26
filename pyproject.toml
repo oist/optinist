@@ -72,6 +72,8 @@ firebase_admin = "*"
 pyrebase4 = "4.7.1"
 pydantic = { version = "1.10.13", extras = ["email", "dotenv"] }
 python-jose = { version = "*", extras = ["cryptography"] }
+# cryptography>=49 has no macOS x86_64 wheels; its source build under Rosetta can be broken
+cryptography = { version = "<49", markers = "sys_platform == 'darwin' and platform_machine == 'x86_64'" }
 alembic = "1.9.2"
 sqlmodel = "0.0.12"
 pymysql = "1.1.0"

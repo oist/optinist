@@ -57,6 +57,15 @@ conda config --set channel_priority flexible
    Now continue creating the optinist environment using conda
 ```
 
+```{eval-rst}
+.. note::
+   Some packages no longer publish prebuilt wheels for macOS x86_64
+   (e.g. ``cryptography`` 49 and later), so pip builds them from source,
+   which can produce a broken binary. OptiNiSt pins such packages.
+   If a workflow fails with ``Unknown OpenSSL error`` or the process crashes,
+   update OptiNiSt and recreate the conda environment.
+```
+
 ### Create Conda Environment
 
 ```bash
