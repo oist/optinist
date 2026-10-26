@@ -70,6 +70,7 @@ httpx = "0.21.0"
 starlette = "0.27.0"
 firebase_admin = "*"
 pyrebase4 = "4.7.1"
+setuptools = "<82"
 pydantic = { version = "1.10.13", extras = ["email", "dotenv"] }
 python-jose = { version = "*", extras = ["cryptography"] }
 # cryptography>=49 has no macOS x86_64 wheels; its source build under Rosetta can be broken
