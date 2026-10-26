@@ -23,18 +23,18 @@ classifiers = [
 packages = [{ include = "studio" }, { include = "frontend" }, { include = "sample_data" }]
 
 include = [
-  "frontend/build/*",
-  "frontend/build/static/*",
-  "frontend/build/static/css/*",
-  "frontend/build/static/js/*",
-  "frontend/build/static/media/*",
-  "studio/app/optinist/core/nwb/nwb.yaml",
-  "studio/app/common/core/snakemake/snakemake.yaml",
-  "studio/app/*/wrappers/**/*.yaml",
-  "studio/app/Snakefile",
-  "studio/config/*.yaml",
-  "sample_data/**/input/*",
-  "sample_data/**/output/**/*.yaml",
+  { path = "frontend/build/*", format = ["sdist", "wheel"] },
+  { path = "frontend/build/static/*", format = ["sdist", "wheel"] },
+  { path = "frontend/build/static/css/*", format = ["sdist", "wheel"] },
+  { path = "frontend/build/static/js/*", format = ["sdist", "wheel"] },
+  { path = "frontend/build/static/media/*", format = ["sdist", "wheel"] },
+  { path = "studio/app/optinist/core/nwb/nwb.yaml", format = ["sdist", "wheel"] },
+  { path = "studio/app/common/core/snakemake/snakemake.yaml", format = ["sdist", "wheel"] },
+  { path = "studio/app/*/wrappers/**/*.yaml", format = ["sdist", "wheel"] },
+  { path = "studio/app/Snakefile", format = ["sdist", "wheel"] },
+  { path = "studio/config/*.yaml", format = ["sdist", "wheel"] },
+  { path = "sample_data/**/input/*", format = ["sdist", "wheel"] },
+  { path = "sample_data/**/output/**/*.yaml", format = ["sdist", "wheel"] },
 ]
 exclude = [
   "conda.env.*",
