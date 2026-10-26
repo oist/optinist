@@ -1,14 +1,22 @@
 import os
 import re
+from importlib.metadata import version as package_version
 
 from studio.app.dir_path import DIRPATH
 
+PYPROJECT_PATH = os.path.join(DIRPATH.ROOT_DIR, "pyproject.toml")
 
-def get_app_version_from_pyproject() -> str:
+
+def get_app_version() -> str:
+    """Get version from pyproject.toml in a source tree, else from package metadata."""
+    # pip installs ship no pyproject.toml; editable installs keep stale metadata
+    if os.path.exists(PYPROJECT_PATH):
+        return get_app_version_from_pyproject(PYPROJECT_PATH)
+    return package_version("optinist")
+
+
+def get_app_version_from_pyproject(pyproject_path: str) -> str:
     """Extract version from pyproject.toml."""
-    # Look for pyproject.toml in parent directories
-    pyproject_path = os.path.join(DIRPATH.ROOT_DIR, "pyproject.toml")
-
     # Read and parse the version from pyproject.toml
     with open(pyproject_path, "r") as f:
         content = f.read()
@@ -23,4 +31,4 @@ def get_app_version_from_pyproject() -> str:
 
 
 class Version:
-    APP_VERSION = get_app_version_from_pyproject()
+    APP_VERSION = get_app_version()
