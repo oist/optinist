@@ -5,6 +5,9 @@ from studio.app.common.dataclass.image import ImageData
 from studio.app.optinist.dataclass.fluo import FluoData
 from studio.app.optinist.dataclass.iscell import IscellData
 from studio.app.optinist.dataclass.roi import RoiData
+from studio.app.optinist.wrappers.optinist.visualize_utils.roi_from_hdf5 import (
+    max_projection,
+)
 
 
 def roi_fluo_from_hdf5(
@@ -50,13 +53,13 @@ def roi_fluo_from_hdf5(
 
     # Process ROI types
     non_cell_roi = RoiData(
-        np.nanmax(cell_img.data[np.where(iscell_data == 0)], axis=0),
+        max_projection(cell_img.data[np.where(iscell_data == 0)]),
         output_dir=output_dir,
         file_name="noncell_roi",
     )
 
     cell_roi = RoiData(
-        np.nanmax(cell_img.data[np.where(iscell_data != 0)], axis=0),
+        max_projection(cell_img.data[np.where(iscell_data != 0)]),
         output_dir=output_dir,
         file_name="cell_roi",
     )

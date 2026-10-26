@@ -1,0 +1,64 @@
+workspace_id: '7'
+unique_id: setup_conda_microscope
+name: setup_conda_microscope
+started_at: '2025-01-31 17:39:52'
+finished_at: '2025-01-31 17:40:02'
+success: success
+hasNWB: true
+function:
+  input_bmkjfbfk1d:
+    unique_id: input_bmkjfbfk1d
+    name: setup_conda_mouse2p_image.tiff
+    success: success
+    hasNWB: false
+    message: null
+    outputPaths: null
+    started_at: '2025-01-31 17:39:52'
+    finished_at: '2025-01-31 17:39:52'
+  setup_conda_microscope_1ckm7897nn:
+    unique_id: setup_conda_microscope_1ckm7897nn
+    name: setup_conda_microscope
+    success: success
+    hasNWB: false
+    message: setup_conda_microscope success
+    outputPaths:
+      image:
+        path: /tmp/setup_conda_mouse2p_image.tiff
+        type: images
+        max_index: 200
+    started_at: '2025-01-31 17:39:58'
+    finished_at: '2025-01-31 17:40:02'
+nwb:
+  session_description: optinist
+  identifier: optinist
+  experiment_description: None
+  device:
+    name: Microscope device
+    description: Microscope Information
+    manufacturer: Microscope Manufacture
+  optical_channel:
+    name: OpticalChannel
+    description: optical channel
+    emission_lambda: 500.0
+  imaging_plane:
+    name: ImagingPlane
+    description: standard
+    imaging_rate: 30.0
+    excitation_lambda: 900.0
+    indicator: GCaMP
+    location: V1
+  image_series:
+    starting_time: 0
+    starting_frame:
+    - 0
+    save_raw_image_to_nwb: false
+  ophys:
+    plane_segmentation:
+      name: PlaneSegmentation
+      description: ''
+snakemake:
+  use_conda: true
+  cores: 2
+  forceall: false
+  # forcetargets: true
+  # lock: false

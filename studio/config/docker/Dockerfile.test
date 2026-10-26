@@ -1,4 +1,5 @@
-FROM --platform=linux/amd64 python:3.9-slim
+# bookworm: glibc 2.41 (trixie) refuses to dlopen the Olympus SDK, which needs an executable stack
+FROM --platform=linux/amd64 python:3.9-slim-bookworm
 
 WORKDIR /app
 

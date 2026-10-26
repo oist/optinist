@@ -1,5 +1,4 @@
 import os
-import re
 import time
 from typing import List, Union
 
@@ -8,6 +7,7 @@ from pynwb.spec import NWBGroupSpec, NWBNamespaceBuilder
 
 from studio.app.common.core.utils.filelock_handler import FileLockUtils
 from studio.app.dir_path import DIRPATH
+from studio.app.version import Version
 
 NWB_SPEC_FILE_EXPORT_DIR = os.path.join(os.path.dirname(__file__), "specs")
 root_dir = DIRPATH.ROOT_DIR
@@ -46,7 +46,7 @@ def export_spec_files(
         if (not os.path.exists(ns_path)) or (
             flle_update_elapsed_time > file_cache_interval
         ):
-            current_version = get_version_from_pyproject()
+            current_version = Version.APP_VERSION
             ns_builder = NWBNamespaceBuilder(
                 f"{ns_name} extensions", ns_name, version=current_version
             )
@@ -75,21 +75,3 @@ def export_spec_files(
             finally:
                 # Return current directory
                 os.chdir(previous_dir)
-
-
-def get_version_from_pyproject() -> str:
-    """Extract version from pyproject.toml."""
-    # Look for pyproject.toml in parent directories
-    pyproject_path = os.path.join(root_dir, "pyproject.toml")
-
-    # Read and parse the version from pyproject.toml
-    with open(pyproject_path, "r") as f:
-        content = f.read()
-
-    # Use regex to extract version
-    version_match = re.search(r'version\s*=\s*["\']([^"\']+)["\']', content)
-    if version_match:
-        version = version_match.group(1)
-        return version
-    else:
-        return "2.0.0"

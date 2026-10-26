@@ -10,6 +10,7 @@ from studio.app.optinist.core.nwb.nwb import NWBDATASET
 from studio.app.optinist.dataclass import EditRoiData, FluoData, IscellData, RoiData
 from studio.app.optinist.wrappers.caiman.cnmf import (
     get_roi,
+    nwb_image_mask,
     util_cleanup_image_memmap,
     util_download_model_files,
     util_get_image_memmap,
@@ -175,7 +176,7 @@ def caiman_cnmf_multisession(
     n_cells = spatial_filtered.shape[-1]
     for i in range(n_cells):
         kargs = {}
-        kargs["image_mask"] = spatial_filtered.T[i].T.toarray().reshape(dims)
+        kargs["image_mask"] = nwb_image_mask(spatial_filtered, i, dims, swap_dim)
         roi_list.append(kargs)
 
     nwbfile[NWBDATASET.ROI] = {function_id: {"roi_list": roi_list}}
@@ -196,8 +197,9 @@ def caiman_cnmf_multisession(
                 "table_name": "ROIs",
                 "region": list(range(n_rois)),
                 "name": "Fluorescence",
-                "data": fluorescence.T,
+                "data": fluorescence,
                 "unit": "lumens",
+                "rate": fr,
                 "comments": f"ROIs were detected in {reg_files} out of "
                 + f"{n_split_images} sessions ({reg_file_rate} overall).",
             }

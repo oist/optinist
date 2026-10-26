@@ -98,8 +98,10 @@ The left side of the window displays all available analysis methods. ROI detecti
     <img width="400px" src="../_static/workflow/csv_transpose.png" alt="CSV transpose" />
     </p>
 
-    ETA, CCA, correlation, cross_correlation, granger, GLM, LDA, and SVM assume the input neural data shape is frames x cells matrix.
+    ETA, CCA, granger, GLM, LDA, and SVM assume the input neural data shape is frames x cells matrix.
     Because the output of CaImAn and Suite2P on the pipeline is cell x frames, the default setting for neural data for these analyses is set to transpose.
+
+    correlation and cross_correlation take cells x frames directly, so their transpose option is off by default.
 
     PCA and TSNE can be done in either direction depending on your purpose.
     The function assumes their input to be samples x features.

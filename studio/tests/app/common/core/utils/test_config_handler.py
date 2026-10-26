@@ -1,8 +1,8 @@
 import os
 
-from studio.app.common.core.utils.config_handler import ConfigReader, ConfigWriter
+from studio.app.common.core.utils.config_handler import ConfigWriter
 from studio.app.common.core.utils.filepath_creater import join_filepath
-from studio.app.common.core.utils.filepath_finder import find_param_filepath
+from studio.app.common.core.workflow.workflow_params import read_default_params
 from studio.app.dir_path import DIRPATH
 
 dirpath = DIRPATH.OUTPUT_DIR
@@ -10,16 +10,14 @@ filename = "test.yaml"
 
 
 def test_config_reader():
-    filename = "eta"
-    filepath = find_param_filepath(filename)
-    config = ConfigReader.read(filepath)
+    node_name = "eta"
+    config = read_default_params(node_name)
 
     assert isinstance(config, dict)
     assert len(config) > 0
 
-    filename = "not_exist_config"
-    filepath = find_param_filepath(filename)
-    config = ConfigReader.read(filepath)
+    node_name = "not_exist_config"
+    config = read_default_params(node_name)
 
     assert isinstance(config, dict)
     assert len(config) == 0

@@ -11,3 +11,11 @@ const PORT =
 
 export const BASE_URL =
   PORT == null ? `${PROTO}://${HOST}` : `${PROTO}://${HOST}:${PORT}`
+
+/**
+ * API Request Timeout Constants (in milliseconds, set to axios)
+ */
+export const API_TIMEOUT = {
+  DEFAULT: 600000, // Default timeout for backend API
+  UPLOAD_DOWNLOAD: 0, // Upload/Download API timeout (No timeout(0), consider large file transfers)
+} as const

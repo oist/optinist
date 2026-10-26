@@ -40,20 +40,24 @@ class Runner:
         try:
             logger.info("start rule runner")
 
-            # write pid file
+            # Write pid file
             workflow_dirpath = str(Path(__rule.output).parent.parent)
             cls.write_pid_file(workflow_dirpath, __rule.type, run_script_path)
 
-            input_info = cls.read_input_info(__rule.input)
-            cls.__change_dict_key_exist(input_info, __rule)
+            # Read & construct input_info
+            orig_input_info = cls.__read_input_info(__rule.input)
+            input_info = cls.__align_input_info_content_keys(orig_input_info, __rule)
+            del orig_input_info
+
             nwbfile = input_info["nwbfile"]
 
-            # input_info
+            # Construct input_info
+            # - Remove data that will not be used later here
             for key in list(input_info):
                 if key not in __rule.return_arg.values():
                     input_info.pop(key)
 
-            # output_info
+            # Construct output_info
             output_info = cls.__execute_function(
                 __rule.path,
                 __rule.params,
@@ -64,24 +68,24 @@ class Runner:
 
             # Save NWB data of Function(Node)
             output_info["nwbfile"] = cls.__save_func_nwb(
-                f"{__rule.output.split('.')[0]}.nwb",
+                f"{os.path.splitext(__rule.output)[0]}.nwb",
                 __rule.type,
                 nwbfile,
                 output_info,
             )
 
-            # 各関数での結果を保存
+            # Save the processing result of the Function(Node) (.pkl)
             PickleWriter.write(__rule.output, output_info)
 
-            # NWB全体保存
+            # Save NWB data through Workflow
             if __rule.output in last_output:
-                # 全体の結果を保存する
                 path = join_filepath(os.path.dirname(os.path.dirname(__rule.output)))
                 path = join_filepath([path, "whole.nwb"])
                 cls.save_all_nwb(path, output_info["nwbfile"])
 
             logger.info("rule output: %s", __rule.output)
 
+            # Free up resources
             del input_info, output_info
             gc.collect()
 
@@ -107,7 +111,11 @@ class Runner:
 
     @classmethod
     def write_pid_file(
-        cls, workflow_dirpath: str, func_name: str, run_script_path: str
+        cls,
+        workflow_dirpath: str,
+        func_name: str,
+        run_script_path: str,
+        create_time: time = None,
     ) -> None:
         """
         save snakemake script file path and PID of current running algo function
@@ -116,7 +124,7 @@ class Runner:
             last_pid=os.getpid(),
             func_name=func_name,
             last_script_file=run_script_path,
-            create_time=time.time(),
+            create_time=time.time() if create_time is None else create_time,
         )
 
         ids = ExptOutputPathIds(workflow_dirpath)
@@ -183,11 +191,13 @@ class Runner:
         del func
         gc.collect()
 
+        function_id = ExptOutputPathIds(output_dir).function_id
+
         try:
             # Initialize CONFIG dictionary structure
-            function_id = ExptOutputPathIds(output_dir).function_id
             if "nwbfile" not in output_info:
                 output_info["nwbfile"] = {}
+
             if NWBDATASET.CONFIG not in output_info["nwbfile"]:
                 output_info["nwbfile"][NWBDATASET.CONFIG] = {}
             if function_id not in output_info["nwbfile"][NWBDATASET.CONFIG]:
@@ -196,18 +206,19 @@ class Runner:
             logger.warning(f"Failed to initialize CONFIG dataset for{function_id}:{e}")
 
         # Store conda env config in CONFIG dataset
-        try:
-            conda_name = wrapper.get("conda_name")
-            conda_env_path = find_condaenv_filepath(conda_name)
-            conda_config = ConfigReader.read(conda_env_path)
-            config_str = json.dumps(conda_config, separators=(",", ":"))
+        conda_name = wrapper.get("conda_name")
+        if conda_name:
+            try:
+                conda_env_path = find_condaenv_filepath(conda_name)
+                conda_config = ConfigReader.read(conda_env_path)
+                config_str = json.dumps(conda_config, separators=(",", ":"))
 
-            # Store conda env config in CONFIG dataset
-            output_info["nwbfile"][NWBDATASET.CONFIG][function_id][
-                "conda_config"
-            ] = config_str
-        except Exception as e:
-            logger.info(f"Failed to add conda environment config to NWB file: {e}")
+                # Store conda env config in CONFIG dataset
+                output_info["nwbfile"][NWBDATASET.CONFIG][function_id][
+                    "conda_config"
+                ] = config_str
+            except Exception as e:
+                logger.info(f"Failed to add conda environment config to NWB file: {e}")
 
         try:
             # Store node parameters in CONFIG dataset
@@ -221,56 +232,76 @@ class Runner:
         return output_info
 
     @classmethod
-    def read_input_info(cls, input_files):
-        """Enhanced version of main's read_input_info with function_id tracking"""
-        input_info = {}
-        function_id_map = {}  # Track which data came from which function_id
+    def __read_input_info(cls, input_files: list) -> dict:
+        """
+        Read input files (.pkl) and construct data for further processing
+        """
 
-        for filepath in input_files:
-            ids = ExptOutputPathIds(os.path.dirname(filepath))
-            load_data = PickleReader.read(filepath)
+        result_input_info = {}
 
-            # validate load_data content
+        for input_file in input_files:
+            ids = ExptOutputPathIds(os.path.dirname(input_file))
+
+            # Read & validate load_data content
+            load_data = PickleReader.read(input_file)
             assert PickleReader.check_is_valid_node_pickle(
                 load_data
-            ), f"Invalid node input data content. [{filepath}]"
+            ), f"Invalid node input data content. [{input_file}]"
 
-            # Track function_id for each piece of data (excluding nwbfile)
-            for key in load_data.keys():
-                if key != "nwbfile":
-                    function_id_map[key] = ids.function_id
+            # Store input data for each function_id (node id)
+            single_input_info = load_data.copy()  # sharrow copy
+            result_input_info[ids.function_id] = single_input_info
 
-            # Main's existing NWB merging logic (preserves NWB functionality)
-            merged_nwb = cls.__deep_merge(
-                load_data.pop("nwbfile", {}), input_info.pop("nwbfile", {})
-            )
-            input_info = dict(list(load_data.items()) + list(input_info.items()))
-            input_info["nwbfile"] = merged_nwb
-
-        # Store metadata for delimiter-based key processing
-        input_info["_function_id_map"] = function_id_map
-        return input_info
+        return result_input_info
 
     @classmethod
-    def __change_dict_key_exist(cls, input_info, rule_config: Rule):
-        """Enhanced version that handles delimiter-based return_arg keys"""
-        function_id_map = input_info.pop("_function_id_map", {})
+    def __align_input_info_content_keys(
+        cls, orig_input_info: dict, rule_config: Rule
+    ) -> dict:
+        """
+        Aligns the keys in the input_info data for further processing.
+        """
+
+        result_input_info = {}
+        merged_nwb = {}
 
         for return_arg_key, arg_name in rule_config.return_arg.items():
-            # Handle delimiter-based keys (for run_cluster.py support)
+            # RETURN_ARG_KEY includes key delimiter (standard)
             if SmkRule.RETURN_ARG_KEY_DELIMITER in return_arg_key:
-                return_name, expected_function_id = return_arg_key.split(
+                return_name, function_id = return_arg_key.split(
                     SmkRule.RETURN_ARG_KEY_DELIMITER
                 )
-                # Only rename if data came from the expected function_id
-                if (
-                    return_name in input_info
-                    and function_id_map.get(return_name) == expected_function_id
-                ):
-                    input_info[arg_name] = input_info.pop(return_name)
-            # Handle simple keys (original main functionality)
-            elif return_arg_key in input_info:
-                input_info[arg_name] = input_info.pop(return_arg_key)
+
+                # Get input_info corresponding to function_id
+                single_input_info = orig_input_info[function_id]
+            # RETURN_ARG_KEY does not include a delimiter (old version: v2.3 or earlier)
+            else:
+                return_name, function_id = (return_arg_key, None)
+
+                # Merge input_info for all function_ids
+                single_input_info = {}
+                for tmp_value in orig_input_info.values():
+                    single_input_info.update(tmp_value)
+                del tmp_value
+
+            if return_name in single_input_info:
+                # Rename the key of the matching element and store it again
+                #  (for further processing)
+                single_input_info[arg_name] = single_input_info.pop(return_name)
+
+                # Store in return value
+                # (At this stage, expand input_info split by function_id into flat)
+                result_input_info = cls.__deep_merge(
+                    result_input_info, single_input_info
+                )
+
+                merged_nwb = cls.__deep_merge(
+                    merged_nwb, single_input_info.pop("nwbfile", {})
+                )
+
+        result_input_info["nwbfile"] = merged_nwb
+
+        return result_input_info
 
     @classmethod
     def __deep_merge(cls, dict1: dict, dict2: dict) -> dict:

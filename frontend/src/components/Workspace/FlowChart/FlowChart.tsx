@@ -43,6 +43,11 @@ import {
   uploadViaUrl,
 } from "store/slice/FileUploader/FileUploaderActions"
 import { setInputNodeFilePath } from "store/slice/InputNode/InputNodeActions"
+import { selectLogsModalIsOpen } from "store/slice/LogsModal/LogsModalSelectors"
+import {
+  closeLogsModal,
+  openLogsModal,
+} from "store/slice/LogsModal/LogsModalSlice"
 import { UseRunPipelineReturnType } from "store/slice/Pipeline/PipelineHook"
 import { selectPipelineIsStartedSuccess } from "store/slice/Pipeline/PipelineSelectors"
 import { clearCurrentPipeline } from "store/slice/Pipeline/PipelineSlice"
@@ -70,9 +75,8 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
 
   const open = useSelector(selectRightDrawerIsOpen)
   const workspaceId = useSelector(selectCurrentWorkspaceId)
+  const logsModalOpen = useSelector(selectLogsModalIsOpen)
   const isDevelopment = process.env.NODE_ENV === "development"
-
-  const [openLogs, setOpenLogs] = useState(false)
 
   const [dialogNodeId, setDialogNodeId] = useState("")
   const [dialogFile, setDialogFile] =
@@ -92,16 +96,17 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
   const [errorUrl, setErrorUrl] = useState("")
   const [dialogFilterNodeId, setFilterDialogNodeId] = useState("")
   const [nodeRefresh, setNodeRefresh] = useState(false)
+  const [leftSidebarOpen, setLeftSidebarOpen] = useState(true)
 
   const handleRefreshAlgoList = async () => {
     setNodeRefresh(true)
 
     try {
-      await dispatch(getAlgoList()) // Ensure it waits for the API call to finish
+      await dispatch(getAlgoList()).unwrap()
+      handleClickVariant("success", "Algorithm List Refreshed")
     } catch (error) {
       handleClickVariant("error", "Failed to get Algorithm List")
     } finally {
-      handleClickVariant("success", "Algorithm List Refreshed")
       setNodeRefresh(false)
     }
   }
@@ -162,8 +167,19 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
   }
 
   const onCloseModalLogs = useCallback(() => {
-    setOpenLogs(false)
-  }, [])
+    dispatch(closeLogsModal())
+  }, [dispatch])
+
+  const onOpenLogs = useCallback(
+    (open: boolean) => {
+      if (open) {
+        dispatch(openLogsModal())
+      } else {
+        dispatch(closeLogsModal())
+      }
+    },
+    [dispatch],
+  )
 
   return (
     <Box display="flex" position="relative">
@@ -175,13 +191,16 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
           onOpenInputUrlDialog: setDialogViaUrl,
           onMessageError: setMessageError,
           onOpenFilterDialog: setFilterDialogNodeId,
-          onOpenLogs: setOpenLogs,
+          onOpenLogs,
           dialogFilterNodeId,
           isOutput: true,
         }}
       >
         <DndProvider backend={HTML5Backend}>
-          <LeftSidebarContainer>
+          <LeftSidebarContainer
+            isOpen={leftSidebarOpen}
+            onToggle={() => setLeftSidebarOpen(!leftSidebarOpen)}
+          >
             <Box overflow="auto" marginRight={2}>
               <CurrentPipelineInfo />
             </Box>
@@ -306,7 +325,7 @@ const FlowChart = memo(function FlowChart(props: UseRunPipelineReturnType) {
         </DndProvider>
         <RightDrawer />
       </DialogContext.Provider>
-      {openLogs ? <ModalLogs isOpen onClose={onCloseModalLogs} /> : null}
+      {logsModalOpen && <ModalLogs isOpen onClose={onCloseModalLogs} />}
     </Box>
   )
 })

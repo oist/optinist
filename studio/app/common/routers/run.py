@@ -15,11 +15,13 @@ from studio.app.common.core.workflow.workflow_result import (
     WorkflowResult,
 )
 from studio.app.common.core.workflow.workflow_runner import WorkflowRunner
+from studio.app.common.core.workspace.workspace_data_capacity_services import (
+    WorkspaceDataCapacityService,
+)
 from studio.app.common.core.workspace.workspace_dependencies import (
     is_workspace_available,
     is_workspace_owner,
 )
-from studio.app.common.core.workspace.workspace_services import WorkspaceService
 
 router = APIRouter(prefix="/run", tags=["run"])
 
@@ -80,7 +82,7 @@ async def run_id(
             # Return 422 for YAML validation errors
             raise HTTPException(
                 status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail="Workflow yaml error, see FAQ",
+                detail=e.args[0] if e.args else "Workflow yaml error, see FAQ",
             )
         else:
             # Keep original error handling for other errors
@@ -106,7 +108,9 @@ async def run_result(
         res = WorkflowResult(workspace_id, uid).observe(nodeDict.pendingNodeIdList)
         if res:
             background_tasks.add_task(
-                WorkspaceService.update_experiment_data_usage, workspace_id, uid
+                WorkspaceDataCapacityService.update_experiment_data_usage,
+                workspace_id,
+                uid,
             )
         return res
     except Exception as e:
@@ -150,7 +154,7 @@ async def apply_filter(
         ).filter_node_data(params)
 
         background_tasks.add_task(
-            WorkspaceService.update_experiment_data_usage, workspace_id, uid
+            WorkspaceDataCapacityService.update_experiment_data_usage, workspace_id, uid
         )
 
         return True

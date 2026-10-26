@@ -3,10 +3,10 @@ disable_existing_loggers: false
 formatters:
   default:
     (): "uvicorn.logging.DefaultFormatter"
-    fmt: "%(asctime)s %(levelprefix)s [%(name)s] (%(process)d) %(funcName)s():%(lineno)d - %(message)s"
+    fmt: "%(asctime)s %(levelprefix)s [%(name)s] (pid:%(process)d) (client:%(client_id)s) %(funcName)s():%(lineno)d - %(message)s"
   access:
     (): "uvicorn.logging.AccessFormatter"
-    fmt: "%(asctime)s %(levelprefix)s [%(name)s] (%(process)d) %(funcName)s():%(lineno)d - %(message)s"
+    fmt: "%(asctime)s %(levelprefix)s [%(name)s] (pid:%(process)d) (client:%(client_id)s) %(funcName)s():%(lineno)d - %(message)s"
 handlers:
   console:
     class: logging.StreamHandler
@@ -27,9 +27,9 @@ handlers:
     formatter: default
     filename: logs/studio.log
     encoding: utf-8
-    maxBytes: 5242880
-    # backupCount ... Number of backups on the same date
-    backupCount: 100
+    when: midnight
+    interval: 1
+    backupCount: 365
 loggers:
   optinist:
     level: DEBUG

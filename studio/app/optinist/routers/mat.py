@@ -31,7 +31,7 @@ class MatGetter:
         return [cls.dict_to_matnode(value, key, key) for key, value in data.items()]
 
     @classmethod
-    def dict_to_matnode(cls, data, name, current_path=""):
+    def dict_to_matnode(cls, data, name, current_path="") -> MatNode:
         if isinstance(data, dict):
             return MatNode(
                 isDir=True,
@@ -50,8 +50,8 @@ class MatGetter:
                 name=name,
                 path=current_path,
                 shape=data.shape,
+                nbytes=data.nbytes,
                 dataType="array",
-                nbytes=f"{int(data.nbytes / (1000**2))} M",
             )
         else:
             return MatNode(

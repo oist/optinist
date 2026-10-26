@@ -38,7 +38,7 @@ import {
 } from "store/slice/Workspace/WorkspaceSlice"
 import { AppDispatch } from "store/store"
 
-const POLLING_INTERVAL = 5000
+const POLLING_INTERVAL = 10000
 
 export type UseRunPipelineReturnType = ReturnType<typeof useRunPipeline>
 

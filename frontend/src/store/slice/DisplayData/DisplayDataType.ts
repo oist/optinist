@@ -64,11 +64,12 @@ export type DisplayData = {
 }
 
 export const DATA_TYPE_SET = {
-  TIME_SERIES: "timeSeries",
-  HEAT_MAP: "heatMap",
+  EMPTY: "empty",
   IMAGE: "image",
   CSV: "csv",
   ROI: "roi",
+  TIME_SERIES: "timeSeries",
+  HEAT_MAP: "heatMap",
   SCATTER: "scatter",
   BAR: "bar",
   HDF5: "hdf5",

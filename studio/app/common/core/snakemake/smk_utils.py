@@ -58,6 +58,10 @@ class SmkUtils:
         if NodeTypeUtil.check_nodetype_from_filetype(details["type"]) == NodeType.DATA:
             return None
 
+        path = details.get("path")
+        if not path:
+            return None
+
         wrapper = cls.dict2leaf(wrapper_dict, details["path"].split("/"))
 
         if "conda_name" in wrapper:

@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "optinist"
 description = "Calcium Imaging Pipeline Tool"
-version = "2.2.3"
+version = "2.4.1"
 license = "GPL-3.0"
 authors = ["OIST <email@example.com>"]
 readme = "README.md"
@@ -82,7 +82,7 @@ ruamel-yaml = "^0.18.5"
 pymatreader = "^0.0.32"
 xmltodict = "*"
 matplotlib = "3.7.*"
-concurrent-log-handler = "^0.9.25"
+concurrent-log-handler = "^0.9.28"
 numpydoc = "*"
 yapf = "*"
 

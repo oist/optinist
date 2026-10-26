@@ -1,8 +1,9 @@
 import argparse
+import os
 from contextlib import asynccontextmanager
 
 import uvicorn
-from fastapi import Depends, FastAPI, Request
+from fastapi import Depends, FastAPI, Request, Response, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from fastapi_pagination import add_pagination
@@ -13,6 +14,7 @@ from studio.app.common.core.auth.auth_dependencies import (
     get_current_user,
 )
 from studio.app.common.core.logger import AppLogger
+from studio.app.common.core.middleware import ClientIdLoggingMiddleware
 from studio.app.common.core.mode import MODE
 from studio.app.common.core.workspace.workspace_dependencies import (
     is_workspace_available,
@@ -35,14 +37,29 @@ from studio.app.common.routers import (
 )
 from studio.app.dir_path import DIRPATH
 from studio.app.optinist.routers import hdf5, mat, nwb, roi
+from studio.app.version import Version
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Startup event
+    """
+    Startup event
+    """
+    import platform
+    import sys
+
+    sys_version = sys.version.replace("\n", " ")
     mode = "standalone" if MODE.IS_STANDALONE else "multiuser"
+
     logger = AppLogger.get_logger()
-    logger.info(f'"Studio" application startup complete. [mode: {mode}]')
+    logger.info(
+        f'"Studio" application startup complete.\n'
+        f"    # Platform: {platform.platform()}\n"
+        f"    # Python Version: {sys_version}\n"
+        f"    # App Version: {Version.APP_VERSION}\n"
+        f"    # Env:DATA_DIR: {DIRPATH.DATA_DIR}\n"
+        f"    # Mode: {mode}\n"
+    )
 
     yield
 
@@ -94,15 +111,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-FRONTEND_DIRPATH = DIRPATH.ROOT_DIR + "/frontend"
-
-app.mount(
-    "/static",
-    StaticFiles(directory=f"{FRONTEND_DIRPATH}/build/static"),
-    name="static",
-)
-
-templates = Jinja2Templates(directory=f"{FRONTEND_DIRPATH}/build")
+# Add LoggingMiddleware to capture client_id for logging
+app.add_middleware(ClientIdLoggingMiddleware)
 
 
 @app.get("/is_standalone", response_model=bool, tags=["others"])
@@ -110,14 +120,39 @@ async def is_standalone():
     return MODE.IS_STANDALONE
 
 
+os.makedirs(f"{DIRPATH.FRONTEND_DIRS.BUILD}/static", exist_ok=True)
+app.mount(
+    "/static",
+    StaticFiles(directory=f"{DIRPATH.FRONTEND_DIRS.BUILD}/static"),
+    name="static",
+)
+
+public_templates = Jinja2Templates(directory=DIRPATH.FRONTEND_DIRS.PUBLIC)
+build_templates = Jinja2Templates(directory=DIRPATH.FRONTEND_DIRS.BUILD)
+
+
 @app.get("/")
 async def root(request: Request):
-    return templates.TemplateResponse("index.html", {"request": request})
+    if os.path.exists(f"{DIRPATH.FRONTEND_DIRS.BUILD}/index.html"):
+        return build_templates.TemplateResponse("index.html", {"request": request})
+    else:
+        return public_templates.TemplateResponse(
+            "no-built-pages.html", {"request": request}
+        )
 
 
 @app.get("/{_:path}")
-async def index(request: Request):
-    return await root(request)
+async def any_pages(request: Request):
+    """
+    Requests that don't match any routers come here.
+    """
+    # For backend API requests, it returns 404
+    # (Determined by request.headers)
+    if "application/json" in request.headers.get("accept", ""):
+        return Response(status_code=status.HTTP_404_NOT_FOUND, content="")
+    # In all other cases, forward to frontend.
+    else:
+        return await root(request)
 
 
 def main(develop_mode: bool = False):
@@ -126,6 +161,7 @@ def main(develop_mode: bool = False):
     parser.add_argument("--port", type=int, default=8000)
     parser.add_argument("--workers", type=int, default=1)
     parser.add_argument("--reload", action="store_true")
+    timeout_keep_alive = 60
     args = parser.parse_args()
 
     logging_config = AppLogger.get_logging_config()
@@ -144,6 +180,7 @@ def main(develop_mode: bool = False):
             port=args.port,
             log_config=logging_config,
             workers=args.workers,
+            timeout_keep_alive=timeout_keep_alive,
             reload=reload,
             **reload_options,
         )
@@ -154,5 +191,6 @@ def main(develop_mode: bool = False):
             port=args.port,
             log_config=logging_config,
             workers=args.workers,
+            timeout_keep_alive=timeout_keep_alive,
             reload=False,
         )

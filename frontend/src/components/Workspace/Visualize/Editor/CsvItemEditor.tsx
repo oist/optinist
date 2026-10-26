@@ -68,7 +68,7 @@ const SetHeader: FC = () => {
   return (
     <ParamTextField
       label="Header"
-      value={setHeader}
+      value={setHeader ?? ""}
       type="number"
       onChange={onChangeSetHeader}
     />

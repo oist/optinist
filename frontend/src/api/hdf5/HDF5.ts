@@ -8,6 +8,7 @@ export interface HDF5DirDTO {
   name: string
   nodes: HDF5TreeDTO[]
   path: string
+  dataType: string | null
 }
 
 export interface HDF5FileDTO {
@@ -16,6 +17,7 @@ export interface HDF5FileDTO {
   shape: [number]
   path: string
   nbytes: string
+  dataType: string | null
 }
 
 export async function getHDF5TreeApi(

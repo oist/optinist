@@ -1,19 +1,17 @@
+import { FILE_TYPE_SET, FILE_TYPE } from "config/fileTypes.config"
+
 export const INPUT_NODE_SLICE_NAME = "inputNode"
 
-export const FILE_TYPE_SET = {
-  CSV: "csv",
-  IMAGE: "image",
-  HDF5: "hdf5",
-  FLUO: "fluo",
-  BEHAVIOR: "behavior",
-  MATLAB: "matlab",
-  MICROSCOPE: "microscope",
-} as const
+// Symbol key for storing workspace type without interfering with Object.entries/values
+export const WORKSPACE_TYPE_KEY = Symbol("workspaceType")
 
-export type FILE_TYPE = (typeof FILE_TYPE_SET)[keyof typeof FILE_TYPE_SET]
+// Re-export for convenience
+export type { FILE_TYPE }
+export { FILE_TYPE_SET }
 
 export type InputNode = {
   [nodeId: string]: InputNodeType
+  [WORKSPACE_TYPE_KEY]?: number
 }
 
 export type InputNodeType =

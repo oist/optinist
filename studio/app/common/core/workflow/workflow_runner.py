@@ -1,7 +1,14 @@
 import uuid
 from dataclasses import asdict
+from datetime import datetime
 from typing import Dict, List
 
+from fastapi import BackgroundTasks
+
+from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
+from studio.app.common.core.experiment.experiment_record_services import (
+    ExperimentRecordService,
+)
 from studio.app.common.core.experiment.experiment_writer import ExptConfigWriter
 from studio.app.common.core.rules.runner import Runner
 from studio.app.common.core.snakemake.smk import FlowConfig, Rule, SmkParam
@@ -12,9 +19,17 @@ from studio.app.common.core.snakemake.snakemake_executor import (
 from studio.app.common.core.snakemake.snakemake_reader import SmkParamReader
 from studio.app.common.core.snakemake.snakemake_rule import SmkRule
 from studio.app.common.core.snakemake.snakemake_writer import SmkConfigWriter
-from studio.app.common.core.workflow.workflow import NodeType, NodeTypeUtil, RunItem
+from studio.app.common.core.workflow.workflow import (
+    NodeType,
+    NodeTypeUtil,
+    OutputPath,
+    OutputType,
+    RunItem,
+    WorkflowRunStatus,
+)
 from studio.app.common.core.workflow.workflow_params import get_typecheck_params
 from studio.app.common.core.workflow.workflow_writer import WorkflowConfigWriter
+from studio.app.const import DATE_FORMAT
 
 
 class WorkflowRunner:
@@ -47,7 +62,7 @@ class WorkflowRunner:
         new_unique_id = str(uuid.uuid4())[:8]
         return new_unique_id
 
-    def run_workflow(self, background_tasks):
+    def run_workflow(self, background_tasks: BackgroundTasks):
         self.set_smk_config()
 
         snakemake_params: SmkParam = get_typecheck_params(
@@ -68,15 +83,71 @@ class WorkflowRunner:
             snakemake_execute, self.workspace_id, self.unique_id, snakemake_params
         )
 
+    def finish_workflow_without_run(
+        self, status: WorkflowRunStatus = WorkflowRunStatus.SUCCESS
+    ):
+        """
+        Saves the settings and finishes the workflow without actually running it.
+        - Function solely for creating experiment record.
+        """
+
+        # Load current configs
+        expt_config = ExptConfigReader.read(self.workspace_id, self.unique_id)
+
+        # Construct update data (ExptConfig.*)
+        update_expt_config = ExptConfigReader.create_empty_experiment_config()
+        now = datetime.now().strftime(DATE_FORMAT)
+        update_expt_config.success = status.value
+        update_expt_config.finished_at = now
+        update_expt_config.data_usage = 0
+
+        # Construct update data (ExptConfig.function)
+        update_expt_config.function = {}
+        for node_id, function in expt_config.function.items():
+            function.success = WorkflowRunStatus.SUCCESS.value
+            function.outputPaths = {
+                "empty": OutputPath(
+                    path="empty",
+                    type=OutputType.EMPTY,
+                    max_index=1,
+                )
+            }
+
+            update_expt_config.function[node_id] = function
+
+        # Prepare data (dict variable) for overwriting the config file
+        update_expt_config_dict = {
+            k: v for k, v in asdict(update_expt_config).items() if v is not None
+        }
+
+        # Overwrite config file
+        ExptConfigWriter(self.workspace_id, self.unique_id).overwrite(
+            update_expt_config_dict
+        )
+
+        # Update experiment database record
+        if ExperimentRecordService.is_available():
+            ExperimentRecordService.regist_record_on_workflow_completed(
+                self.workspace_id, self.unique_id
+            )
+
     def set_smk_config(self):
         rules, last_output = self.rulefile()
 
         nwb_template = get_typecheck_params(self.runItem.nwbParam, "nwb")
 
+        # Get client_id from current logging context to pass to snakemake workflow
+        from studio.app.common.core.logger_context_helpers import (
+            get_client_id_for_subprocess,
+        )
+
+        client_id = get_client_id_for_subprocess()
+
         flow_config = FlowConfig(
             rules=rules,
             last_output=last_output,
             nwb_template=nwb_template,
+            client_id=client_id,
         )
 
         SmkConfigWriter.write_raw(

@@ -99,7 +99,7 @@ const Span: FC = () => {
     <ParamTextField
       type="number"
       label="vertical offset"
-      value={span}
+      value={span ?? ""}
       onChange={onChange}
     />
   )

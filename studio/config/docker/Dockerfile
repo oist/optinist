@@ -1,4 +1,5 @@
-FROM --platform=linux/amd64 python:3.9-slim
+# bookworm: glibc 2.41 (trixie) refuses to dlopen the Olympus SDK, which needs an executable stack
+FROM --platform=linux/amd64 python:3.9-slim-bookworm
 
 WORKDIR /app
 
@@ -6,7 +7,7 @@ WORKDIR /app
 RUN apt-get --allow-releaseinfo-change update && \
     apt-get install --no-install-recommends -y sudo procps iproute2 iputils-ping telnet wget curl unzip less vim
 
-# Install conda & packages
+# install conda & packages
 RUN apt-get install --no-install-recommends -y gcc g++ clang libgl1 libgl1-mesa-dev libopencv-dev && \
     apt-get autoremove -y && apt-get clean
 
