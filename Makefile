@@ -94,6 +94,7 @@ local_build:
 	rm -rf dist
 	cd frontend && yarn install --ignore-scripts && yarn build
 	poetry build
+	unzip -Z1 dist/optinist-*.whl | grep -qx frontend/build/index.html || (echo "wheel is missing frontend/build" && exit 1)
 
 
 ############################## For Deployment ##############################
