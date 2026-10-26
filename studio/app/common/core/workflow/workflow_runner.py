@@ -40,6 +40,16 @@ class WorkflowRunner:
         self.nodeDict = self.runItem.nodeDict
         self.edgeDict = self.runItem.edgeDict
 
+        # A stale parameter tree is refused before any record is written
+        for node in self.nodeDict.values():
+            if NodeTypeUtil.check_nodetype(node.type) == NodeType.ALGO:
+                get_typecheck_params(node.data.param, node.data.label)
+
+        nwb_params = get_typecheck_params(self.runItem.nwbParam, "nwb")
+        snakemake_params = get_typecheck_params(
+            self.runItem.snakemakeParam, "snakemake"
+        )
+
         WorkflowConfigWriter(
             self.workspace_id,
             self.unique_id,
@@ -51,8 +61,8 @@ class WorkflowRunner:
             self.workspace_id,
             self.unique_id,
             self.runItem.name,
-            nwbfile=get_typecheck_params(self.runItem.nwbParam, "nwb"),
-            snakemake=get_typecheck_params(self.runItem.snakemakeParam, "snakemake"),
+            nwbfile=nwb_params,
+            snakemake=snakemake_params,
         ).write()
 
         Runner.clear_pid_file(self.workspace_id, self.unique_id)
