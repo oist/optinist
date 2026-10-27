@@ -8,12 +8,17 @@ from datetime import datetime
 from typing import Dict
 
 import numpy as np
+from filelock import FileLock
 
 from studio.app.common.core.experiment.experiment import ExptConfig, ExptFunction
 from studio.app.common.core.experiment.experiment_builder import ExptConfigBuilder
 from studio.app.common.core.experiment.experiment_reader import ExptConfigReader
 from studio.app.common.core.logger import AppLogger
-from studio.app.common.core.utils.config_handler import ConfigWriter
+from studio.app.common.core.utils.config_handler import (
+    ConfigWriter,
+    differential_deep_merge,
+)
+from studio.app.common.core.utils.filelock_handler import FileLockUtils
 from studio.app.common.core.utils.filepath_creater import join_filepath
 from studio.app.common.core.workflow.workflow import NodeRunStatus, WorkflowRunStatus
 from studio.app.common.core.workflow.workflow_reader import WorkflowConfigReader
@@ -28,7 +33,7 @@ class ExptConfigWriter:
         self,
         workspace_id: str,
         unique_id: str,
-        name: str,
+        name: str = None,
         nwbfile: Dict = {},
         snakemake: Dict = {},
     ) -> None:
@@ -40,16 +45,11 @@ class ExptConfigWriter:
         self.builder = ExptConfigBuilder()
 
     def write(self) -> None:
-        expt_filepath = join_filepath(
-            [
-                DIRPATH.OUTPUT_DIR,
-                self.workspace_id,
-                self.unique_id,
-                DIRPATH.EXPERIMENT_YML,
-            ]
+        expt_filepath = ExptConfigReader.get_config_yaml_path(
+            self.workspace_id, self.unique_id
         )
         if os.path.exists(expt_filepath):
-            expt_config = ExptConfigReader.read(expt_filepath)
+            expt_config = ExptConfigReader.read(self.workspace_id, self.unique_id)
             self.builder.set_config(expt_config)
             self.add_run_info()
         else:
@@ -58,17 +58,39 @@ class ExptConfigWriter:
         self.build_function_from_nodeDict()
 
         # Write EXPERIMENT_YML
-        self.write_raw(
+        self._write_raw(
             self.workspace_id, self.unique_id, config=asdict(self.builder.build())
         )
 
-    @staticmethod
-    def write_raw(workspace_id: str, unique_id: str, config: dict) -> None:
+    @classmethod
+    def _write_raw(
+        cls, workspace_id: str, unique_id: str, config: dict, auto_file_lock=True
+    ) -> None:
         ConfigWriter.write(
             dirname=join_filepath([DIRPATH.OUTPUT_DIR, workspace_id, unique_id]),
             filename=DIRPATH.EXPERIMENT_YML,
             config=config,
+            auto_file_lock=auto_file_lock,
         )
+
+    def overwrite(self, update_params: dict) -> None:
+        expt_filepath = ExptConfigReader.get_config_yaml_path(
+            self.workspace_id, self.unique_id
+        )
+
+        # Exclusive control for parallel updates from multiple processes.
+        lock_path = FileLockUtils.get_lockfile_path(expt_filepath)
+        with FileLock(lock_path, ConfigWriter.FILE_LOCK_TIMEOUT):
+            # Read experiment config
+            config = ExptConfigReader.read(self.workspace_id, self.unique_id)
+
+            # Merge overwrite params
+            config_merged = differential_deep_merge(asdict(config), update_params)
+
+            # Overwrite experiment config
+            __class__._write_raw(
+                self.workspace_id, self.unique_id, config_merged, auto_file_lock=False
+            )
 
     def create_config(self) -> ExptConfig:
         return (
@@ -94,14 +116,8 @@ class ExptConfigWriter:
     def build_function_from_nodeDict(self) -> ExptConfig:
         func_dict: Dict[str, ExptFunction] = {}
         node_dict = WorkflowConfigReader.read(
-            join_filepath(
-                [
-                    DIRPATH.OUTPUT_DIR,
-                    self.workspace_id,
-                    self.unique_id,
-                    DIRPATH.WORKFLOW_YML,
-                ]
-            )
+            self.workspace_id,
+            self.unique_id,
         ).nodeDict
 
         for node in node_dict.values():
@@ -136,7 +152,7 @@ class ExptDataWriter:
 
         try:
             # Check the expt is running or if don't have status it will return None
-            status = ExptConfigReader.load_experiment_success_status(
+            status = ExptConfigReader.read_experiment_status(
                 self.workspace_id, self.unique_id
             )
             # If the experiment is running or has no status, skip deletion
@@ -167,27 +183,13 @@ class ExptDataWriter:
         # validate params
         new_name = "" if new_name is None else new_name  # filter None
 
-        # Note: "r+" option for file-open is not used here
-        #   because it requires file pointer control.
+        # Overwrite experiment config
+        update_params = {"name": new_name}
+        ExptConfigWriter(self.workspace_id, self.unique_id).overwrite(update_params)
 
-        # Read config
-        config = ExptConfigReader.read_raw(self.workspace_id, self.unique_id)
-        config["name"] = new_name
+        return ExptConfigReader.read(self.workspace_id, self.unique_id)
 
-        # Update & Write config
-        ExptConfigWriter.write_raw(self.workspace_id, self.unique_id, config)
-
-        config_path = join_filepath(
-            [
-                DIRPATH.OUTPUT_DIR,
-                self.workspace_id,
-                self.unique_id,
-                DIRPATH.EXPERIMENT_YML,
-            ]
-        )
-        return ExptConfigReader.read(config_path)
-
-    def copy_data(self, new_unique_id: str) -> bool:
+    def copy_data(self, new_unique_id: str, new_name: str) -> bool:
         logger = AppLogger.get_logger()
 
         try:
@@ -204,7 +206,7 @@ class ExptDataWriter:
 
             # Update experiment configuration and unique IDs
             if not self.__copy_data_update_experiment_config_name(
-                self.workspace_id, new_unique_id
+                self.workspace_id, new_unique_id, new_name
             ):
                 logger.error("Failed to update experiment.yml after copying.")
                 return False
@@ -363,17 +365,14 @@ class ExptDataWriter:
             return obj
 
     def __copy_data_update_experiment_config_name(
-        self, workspace_id: str, unique_id: str
+        self, workspace_id: str, unique_id: str, new_name: str
     ) -> bool:
         logger = AppLogger.get_logger()
 
         try:
-            # Read config
-            config = ExptConfigReader.read_raw(workspace_id, unique_id)
-            config["name"] = f"{config.get('name', 'experiment')}_copy"
-
-            # Update & Write config
-            ExptConfigWriter.write_raw(workspace_id, unique_id, config)
+            # Overwrite experiment config
+            update_params = {"name": new_name}
+            ExptConfigWriter(workspace_id, unique_id).overwrite(update_params)
 
             logger.info(f"Updated experiment.yml: {workspace_id}/{unique_id}")
             return True

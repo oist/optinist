@@ -1,4 +1,4 @@
-import { FC } from "react"
+import { FC, useState } from "react"
 
 import { Box } from "@mui/material"
 import { styled } from "@mui/material/styles"
@@ -11,9 +11,14 @@ import { VisualizeItemEditor } from "components/Workspace/Visualize/VisualizeIte
 import { CONTENT_HEIGHT } from "const/Layout"
 
 const Visualize: FC = () => {
+  const [leftSidebarOpen, setLeftSidebarOpen] = useState(true)
+
   return (
     <Box display="flex">
-      <LeftSidebarContainer>
+      <LeftSidebarContainer
+        isOpen={leftSidebarOpen}
+        onToggle={() => setLeftSidebarOpen(!leftSidebarOpen)}
+      >
         <Box overflow="auto" marginRight={2}>
           <CurrentPipelineInfo />
           <VisualizeItemEditor />

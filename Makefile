@@ -8,49 +8,52 @@ define rm_unused_docker_containers
 	docker ps -a --filter "status=exited" --filter "name=$(1)" --format "{{.ID}}" | xargs --no-run-if-empty docker rm
 endef
 
-PYTEST = poetry run pytest -s
-
-.PHONY: test_run
-test_run:
-	# cleanup
+define cleanup_test_env
 	docker compose -f docker-compose.test.yml down
 	docker compose -f docker-compose.test.yml rm -f
-	@$(call rm_unused_docker_containers, test_studio_backend)
-	# build/run
+	@$(call rm_unused_docker_containers, $(1))
+endef
+
+define run_test_service
+	docker compose -f docker-compose.test.yml build $(1)
+	docker compose -f docker-compose.test.yml run $(1) $(2)
+endef
+
+PYTEST = poetry run pytest -s
+
+.PHONY: test_run_all
+test_run_all:
+	# cleanup
+	@$(call cleanup_test_env, test_studio_backend)
+	@$(call cleanup_test_env, test_studio_frontend)
+	# build containers once (performance optimization)
 	docker compose -f docker-compose.test.yml build test_studio_backend
 	docker compose -f docker-compose.test.yml build test_studio_frontend
-	docker compose -f docker-compose.test.yml run test_studio_backend $(PYTEST) -m "not heavier_processing"
+	# backend tests (studio/tests/app/ only)
+	docker compose -f docker-compose.test.yml run test_studio_backend $(PYTEST) studio/tests/app/ -m "not heavier_processing"
+	# frontend tests
 	docker compose -f docker-compose.test.yml run test_studio_frontend
 
 .PHONY: test_backend
 test_backend:
 	# cleanup
-	docker compose -f docker-compose.test.yml down
-	docker compose -f docker-compose.test.yml rm -f
-	@$(call rm_unused_docker_containers, test_studio_backend)
+	@$(call cleanup_test_env, test_studio_backend)
 	# build/run
-	docker compose -f docker-compose.test.yml build test_studio_backend
-	docker compose -f docker-compose.test.yml run test_studio_backend $(PYTEST) -m "not heavier_processing"
+	@$(call run_test_service, test_studio_backend, $(PYTEST) studio/tests/app/ -m "not heavier_processing")
 
 .PHONY: test_backend_full
 test_backend_full:
 	# cleanup
-	docker compose -f docker-compose.test.yml down
-	docker compose -f docker-compose.test.yml rm -f
-	@$(call rm_unused_docker_containers, test_studio_backend)
+	@$(call cleanup_test_env, test_studio_backend)
 	# build/run
-	docker compose -f docker-compose.test.yml build test_studio_backend
-	docker compose -f docker-compose.test.yml run test_studio_backend $(PYTEST)
+	@$(call run_test_service, test_studio_backend, $(PYTEST) studio/tests/app/)
 
 .PHONY: test_frontend
 test_frontend:
 	# cleanup
-	docker compose -f docker-compose.test.yml down
-	docker compose -f docker-compose.test.yml rm -f
-	@$(call rm_unused_docker_containers, test_studio_frontend)
+	@$(call cleanup_test_env, test_studio_frontend)
 	# build/run
-	docker compose -f docker-compose.test.yml build test_studio_frontend
-	docker compose -f docker-compose.test.yml run test_studio_frontend
+	@$(call run_test_service, test_studio_frontend)
 
 
 ############################## For Building ##############################
@@ -77,6 +80,7 @@ format:
 	black studio *.py
 	isort studio *.py
 	flake8 studio *.py
+	codespell --skip="./dist,./frontend/node_modules,./logs"
 
 .PHONY: docs
 docs:
@@ -90,6 +94,7 @@ local_build:
 	rm -rf dist
 	cd frontend && yarn install --ignore-scripts && yarn build
 	poetry build
+	unzip -Z1 dist/optinist-*.whl | grep -qx frontend/build/index.html || (echo "wheel is missing frontend/build" && exit 1)
 
 
 ############################## For Deployment ##############################

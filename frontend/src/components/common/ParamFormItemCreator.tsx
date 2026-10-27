@@ -35,6 +35,13 @@ type ParamUpdateActionCreatorType = (
   initValue: unknown,
 ) => AnyAction
 
+export const splitValue = (value: string) =>
+  value
+    .split(",")
+    .map((e) => e.trim())
+    .filter(Boolean)
+    .map((e) => (Number.isNaN(Number(e)) ? e : Number(e)))
+
 export type CreateParamFormItemComponentProps = {
   paramSelector: ParamSelectorType
   paramValueSelector: ParamValueSelectorType
@@ -97,12 +104,6 @@ export function createParamFormItemComponent({
         dispatch(updateParamAction(newValue, initValue))
       }
     }
-
-    const splitValue = (value: string) =>
-      value
-        .split(",")
-        .filter(Boolean)
-        .map((e) => (Number(e) ? Number(e) : e))
 
     const onBlur = (e: ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
       const newValue = e.target.value

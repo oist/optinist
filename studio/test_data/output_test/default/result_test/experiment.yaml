@@ -7,7 +7,7 @@ function:
     name: func1
     outputPaths: null
     started_at: null
-    success: error
+    success: running
     unique_id: func1
   func2:
     finished_at: null
@@ -16,7 +16,7 @@ function:
     name: func2
     outputPaths: null
     started_at: null
-    success: error
+    success: success
     unique_id: func1
 hasNWB: false
 name: New flow
@@ -50,10 +50,10 @@ nwb:
 snakemake:
   cores: 2
   forceall: false
-  forcetargets: true
-  lock: false
+  # forcetargets: true
+  # lock: false
   use_conda: true
 started_at: '2022-05-15 23:02:15'
-success: error
+success: running
 unique_id: 838d4234
 workspace_id: default

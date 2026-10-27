@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "optinist"
 description = "Calcium Imaging Pipeline Tool"
-version = "2.2.3"
+version = "2.4.1"
 license = "GPL-3.0"
 authors = ["OIST <email@example.com>"]
 readme = "README.md"
@@ -23,18 +23,18 @@ classifiers = [
 packages = [{ include = "studio" }, { include = "frontend" }, { include = "sample_data" }]
 
 include = [
-  "frontend/build/*",
-  "frontend/build/static/*",
-  "frontend/build/static/css/*",
-  "frontend/build/static/js/*",
-  "frontend/build/static/media/*",
-  "studio/app/optinist/core/nwb/nwb.yaml",
-  "studio/app/common/core/snakemake/snakemake.yaml",
-  "studio/app/*/wrappers/**/*.yaml",
-  "studio/app/Snakefile",
-  "studio/config/*.yaml",
-  "sample_data/**/input/*",
-  "sample_data/**/output/**/*.yaml",
+  { path = "frontend/build/*", format = ["sdist", "wheel"] },
+  { path = "frontend/build/static/*", format = ["sdist", "wheel"] },
+  { path = "frontend/build/static/css/*", format = ["sdist", "wheel"] },
+  { path = "frontend/build/static/js/*", format = ["sdist", "wheel"] },
+  { path = "frontend/build/static/media/*", format = ["sdist", "wheel"] },
+  { path = "studio/app/optinist/core/nwb/nwb.yaml", format = ["sdist", "wheel"] },
+  { path = "studio/app/common/core/snakemake/snakemake.yaml", format = ["sdist", "wheel"] },
+  { path = "studio/app/*/wrappers/**/*.yaml", format = ["sdist", "wheel"] },
+  { path = "studio/app/Snakefile", format = ["sdist", "wheel"] },
+  { path = "studio/config/*.yaml", format = ["sdist", "wheel"] },
+  { path = "sample_data/**/input/*", format = ["sdist", "wheel"] },
+  { path = "sample_data/**/output/**/*.yaml", format = ["sdist", "wheel"] },
 ]
 exclude = [
   "conda.env.*",
@@ -70,8 +70,11 @@ httpx = "0.21.0"
 starlette = "0.27.0"
 firebase_admin = "*"
 pyrebase4 = "4.7.1"
+setuptools = "<82"
 pydantic = { version = "1.10.13", extras = ["email", "dotenv"] }
 python-jose = { version = "*", extras = ["cryptography"] }
+# cryptography>=49 has no macOS x86_64 wheels; its source build under Rosetta can be broken
+cryptography = { version = "<49", markers = "sys_platform == 'darwin' and platform_machine == 'x86_64'" }
 alembic = "1.9.2"
 sqlmodel = "0.0.12"
 pymysql = "1.1.0"
@@ -82,7 +85,7 @@ ruamel-yaml = "^0.18.5"
 pymatreader = "^0.0.32"
 xmltodict = "*"
 matplotlib = "3.7.*"
-concurrent-log-handler = "^0.9.25"
+concurrent-log-handler = "^0.9.28"
 numpydoc = "*"
 yapf = "*"
 

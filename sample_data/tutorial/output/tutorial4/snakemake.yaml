@@ -1,0 +1,166 @@
+rules:
+  suite2p_file_convert_tlri58d268:
+    input:
+    - 1/tutorial4/input_6m0vw0sv6s/sample_hdf5.pkl
+    return_arg:
+      input_6m0vw0sv6s@input_6m0vw0sv6s: image
+    params:
+      force_sktiff: false
+      batch_size: 500
+    output: 1/tutorial4/suite2p_file_convert_tlri58d268/suite2p_file_convert.pkl
+    type: suite2p_file_convert
+    nwbfile: null
+    hdf5Path: null
+    matPath: null
+    path: suite2p/suite2p_file_convert
+  suite2p_registration_xq4pexs8o7:
+    input:
+    - 1/tutorial4/suite2p_file_convert_tlri58d268/suite2p_file_convert.pkl
+    return_arg:
+      ops@suite2p_file_convert_tlri58d268: ops
+    params:
+      I/O:
+        nplanes: 1
+        nchannels: 1
+        functional_chan: 1
+        frames_include: -1
+      Registration:
+        smooth_sigma: 1.15
+        smooth_sigma_time: 0
+        maxregshift: 0.1
+        align_by_chan: 1
+        reg_tif: false
+        th_badframes: 1
+      1P setting:
+        1Preg: false
+        spatial_hp_reg: 42
+        pre_smooth: 0
+        spatial_taper: 40
+      Non-Rigid:
+        nonrigid: true
+        block_size:
+        - 128
+        - 128
+        snr_thresh: 1.2
+        maxregshiftNR: 5
+    output: 1/tutorial4/suite2p_registration_xq4pexs8o7/suite2p_registration.pkl
+    type: suite2p_registration
+    nwbfile: null
+    hdf5Path: null
+    matPath: null
+    path: suite2p/suite2p_registration
+  suite2p_roi_yvqcdmsg0r:
+    input:
+    - 1/tutorial4/suite2p_registration_xq4pexs8o7/suite2p_registration.pkl
+    return_arg:
+      ops@suite2p_registration_xq4pexs8o7: ops
+    params:
+      tau: 1
+      classification:
+        soma_crop: true
+      cell_detection:
+        high_pass: 100
+        sparse_mode: true
+        max_overlap: 0.75
+        nbinned: 5000
+        spatial_scale: 0
+        threshold_scaling: 1
+        max_iterations: 20
+      1P:
+        spatial_hp_detect: 25
+      Output:
+        preclassify: 0
+      ROI_extraction:
+        allow_overlap: false
+        inner_neuropil_radius: 2
+        min_neuropil_pixels: 350
+    output: 1/tutorial4/suite2p_roi_yvqcdmsg0r/suite2p_roi.pkl
+    type: suite2p_roi
+    nwbfile: null
+    hdf5Path: null
+    matPath: null
+    path: suite2p/suite2p_roi
+  input_6m0vw0sv6s:
+    input: 1/sample_hdf5.h5
+    return_arg: input_6m0vw0sv6s
+    params: {}
+    output: 1/tutorial4/input_6m0vw0sv6s/sample_hdf5.pkl
+    type: hdf5
+    nwbfile: ref:nwb_template
+    hdf5Path: data/image
+    matPath: null
+    path: null
+  cca_e9mbfm8vck:
+    input:
+    - 1/tutorial4/suite2p_roi_yvqcdmsg0r/suite2p_roi.pkl
+    - 1/tutorial4/input_cpmiuzyroh/sample_matlab.pkl
+    return_arg:
+      fluorescence@suite2p_roi_yvqcdmsg0r: neural_data
+      iscell@suite2p_roi_yvqcdmsg0r: iscell
+      input_cpmiuzyroh@input_cpmiuzyroh: behaviors_data
+    params:
+      I/O:
+        target_index:
+        - '0'
+        - 1
+        - 3
+        - 4
+        - 5
+        transpose_x: true
+        transpose_y: false
+        standard_x_mean: true
+        standard_x_std: true
+        standard_y_mean: true
+        standard_y_std: true
+      CCA:
+        n_components: 2
+        scale: true
+        max_iter: 500
+        tol: 1.0e-06
+        copy: true
+    output: 1/tutorial4/cca_e9mbfm8vck/cca.pkl
+    type: cca
+    nwbfile: null
+    hdf5Path: null
+    matPath: null
+    path: optinist/dimension_reduction/cca
+  input_cpmiuzyroh:
+    input: 2/sample_matlab.mat
+    return_arg: input_cpmiuzyroh
+    params: {}
+    output: 1/tutorial4/input_cpmiuzyroh/sample_matlab.pkl
+    type: matlab
+    nwbfile: ref:nwb_template
+    hdf5Path: null
+    matPath: data/behavior
+    path: null
+last_output:
+- 1/tutorial4/cca_e9mbfm8vck/cca.pkl
+nwb_template:
+  session_description: optinist
+  identifier: optinist
+  experiment_description: None
+  device:
+    name: Microscope device
+    description: Microscope Information
+    manufacturer: Microscope Manufacture
+  optical_channel:
+    name: OpticalChannel
+    description: optical channel
+    emission_lambda: 500.0
+  imaging_plane:
+    name: ImagingPlane
+    description: standard
+    imaging_rate: 30.0
+    excitation_lambda: 900.0
+    indicator: GCaMP
+    location: V1
+  image_series:
+    starting_time: 0
+    starting_frame:
+    - 0
+    save_raw_image_to_nwb: false
+  ophys:
+    plane_segmentation:
+      name: PlaneSegmentation
+      description: ''

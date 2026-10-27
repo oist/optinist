@@ -5,6 +5,7 @@ import { AddToPhotos } from "@mui/icons-material"
 import { IconButton, Tooltip } from "@mui/material"
 
 import { ConfirmDialog } from "components/common/ConfirmDialog"
+import { WORKSPACE_TYPE } from "const/Workspace"
 import { clearFlowElements } from "store/slice/FlowElement/FlowElementSlice"
 import { selectPipelineIsStartedSuccess } from "store/slice/Pipeline/PipelineSelectors"
 
@@ -12,12 +13,13 @@ export const CreateWorkflowButton = memo(function CreateWorkflowButton() {
   const [open, setOpen] = useState(false)
   const dispatch = useDispatch()
   const isPending = useSelector(selectPipelineIsStartedSuccess)
+  const workspaceType = WORKSPACE_TYPE.DEFAULT // Currently a fixed value
 
   const openDialog = () => {
     setOpen(true)
   }
   const onConfirm = () => {
-    dispatch(clearFlowElements())
+    dispatch(clearFlowElements({ workspaceType }))
   }
 
   return (

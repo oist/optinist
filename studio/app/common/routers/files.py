@@ -1,28 +1,36 @@
+import asyncio
 import json
 import os
 import shutil
-from glob import glob
+import tempfile
+from concurrent.futures import ThreadPoolExecutor
+from contextlib import suppress
 from pathlib import PurePath
-from typing import Dict, List
+from typing import Callable, Dict, List, Optional
 from urllib.parse import urlparse
 
 import requests
 import tifffile
 from fastapi import APIRouter, BackgroundTasks, Depends, File, HTTPException, UploadFile
+from filelock import FileLock, Timeout
 from requests.models import Response
 from sqlmodel import Session
 from tqdm import tqdm
 
+from studio.app.common.core.logger import AppLogger
 from studio.app.common.core.utils.file_reader import JsonReader
+from studio.app.common.core.utils.filelock_handler import FileLockUtils
 from studio.app.common.core.utils.filepath_creater import (
     create_directory,
     join_filepath,
+)
+from studio.app.common.core.workspace.workspace_data_capacity_services import (
+    WorkspaceDataCapacityService,
 )
 from studio.app.common.core.workspace.workspace_dependencies import (
     is_workspace_available,
     is_workspace_owner,
 )
-from studio.app.common.core.workspace.workspace_services import WorkspaceService
 from studio.app.common.db.database import get_db
 from studio.app.common.schemas.files import (
     DownloadFileRequest,
@@ -35,11 +43,23 @@ from studio.app.dir_path import DIRPATH
 
 router = APIRouter(prefix="/files", tags=["files"])
 
+logger = AppLogger.get_logger()
+
+IMAGE_SHAPE_FILE = ".image_shape.json"
+CACHE_LOCK_TIMEOUT = 300
+
+# Dedicated pool so slow NAS walks queue behind each other, not other executor work.
+_tree_executor = ThreadPoolExecutor(max_workers=4, thread_name_prefix="filetree")
+
 
 class DirTreeGetter:
     @classmethod
     def get_tree(
-        cls, workspace_id, file_types: List[str], dirname: str = None
+        cls,
+        workspace_id,
+        file_types: List[str],
+        dirname: str = None,
+        _shape_cache: dict = None,
     ) -> List[TreeNode]:
         nodes: List[TreeNode] = []
 
@@ -51,96 +71,207 @@ class DirTreeGetter:
         if not os.path.exists(absolute_dirpath):
             return nodes
 
-        sorted_listdir = sorted(
-            os.listdir(absolute_dirpath),
-            key=lambda x: (not os.path.isdir(join_filepath([absolute_dirpath, x])), x),
-        )
+        is_image = file_types == ACCEPT_FILE_EXT.TIFF_EXT.value
+        is_root = _shape_cache is None
+        if is_root:
+            _shape_cache = {
+                "known": get_image_shape_dict(workspace_id) if is_image else {},
+                "new": {},
+            }
 
-        IMAGE_SHAPE_DICT = (
-            get_image_shape_dict(workspace_id)
-            if file_types == ACCEPT_FILE_EXT.TIFF_EXT.value
-            else {}
-        )
+        try:
+            sorted_listdir = sorted(
+                os.listdir(absolute_dirpath),
+                key=lambda x: (
+                    not os.path.isdir(join_filepath([absolute_dirpath, x])),
+                    x,
+                ),
+            )
 
-        for node_name in sorted_listdir:
-            if dirname is None:
-                relative_path = node_name
-            else:
-                relative_path = join_filepath([dirname, node_name])
+            for node_name in sorted_listdir:
+                if dirname is None:
+                    relative_path = node_name
+                else:
+                    relative_path = join_filepath([dirname, node_name])
 
-            search_dirpath = join_filepath([absolute_dirpath, node_name])
+                search_dirpath = join_filepath([absolute_dirpath, node_name])
 
-            if os.path.isfile(search_dirpath) and node_name.endswith(tuple(file_types)):
-                shape = IMAGE_SHAPE_DICT.get(relative_path, {}).get("shape")
-                if shape is None and file_types == ACCEPT_FILE_EXT.TIFF_EXT.value:
-                    shape = update_image_shape(workspace_id, relative_path)
-                nodes.append(
-                    TreeNode(
-                        path=relative_path,
-                        name=node_name,
-                        isdir=False,
-                        nodes=[],
-                        shape=shape,
+                if os.path.isfile(search_dirpath) and node_name.endswith(
+                    tuple(file_types)
+                ):
+                    shape = (
+                        cls._cached_shape(search_dirpath, relative_path, _shape_cache)
+                        if is_image
+                        else None
                     )
-                )
-            elif (
-                os.path.isdir(search_dirpath)
-                and len(cls.accept_files(search_dirpath, file_types)) > 0
-            ):
-                nodes.append(
-                    TreeNode(
-                        path=node_name,
-                        name=node_name,
-                        isdir=True,
-                        nodes=cls.get_tree(workspace_id, file_types, relative_path),
+                    nodes.append(
+                        TreeNode(
+                            path=relative_path,
+                            name=node_name,
+                            isdir=False,
+                            nodes=[],
+                            shape=shape,
+                        )
                     )
+                elif os.path.isdir(search_dirpath) and cls.has_accepted_file(
+                    search_dirpath, file_types
+                ):
+                    nodes.append(
+                        TreeNode(
+                            path=node_name,
+                            name=node_name,
+                            isdir=True,
+                            nodes=cls.get_tree(
+                                workspace_id, file_types, relative_path, _shape_cache
+                            ),
+                        )
+                    )
+        finally:
+            if is_root and _shape_cache["new"]:
+                _merge_image_shape_dict(
+                    workspace_id, _shape_cache["known"], _shape_cache["new"]
                 )
 
         return nodes
 
     @classmethod
-    def accept_files(cls, path: str, file_types: List[str]):
-        files_list = []
-        for file_type in file_types:
-            files_list.extend(
-                glob(join_filepath([path, "**", f"*{file_type}"]), recursive=True)
-            )
+    def _cached_shape(cls, filepath: str, relative_path: str, cache: dict):
+        try:
+            st = os.stat(filepath)
+        except OSError:
+            return []
+        entry = cache["known"].get(relative_path)
+        shape = _entry_shape(entry)
+        # Legacy entries carry no mtime/size and are trusted until rewritten.
+        if (
+            shape
+            and entry.get("mtime", st.st_mtime) == st.st_mtime
+            and entry.get("size", st.st_size) == st.st_size
+        ):
+            return shape
+        entry = _shape_entry(filepath, st)
+        # A failed read is retried next walk rather than cached.
+        if entry["shape"]:
+            cache["new"][relative_path] = entry
+        return entry["shape"]
 
-        return files_list
+    @classmethod
+    def has_accepted_file(cls, path: str, file_types: List[str]) -> bool:
+        # Mirrors glob("**/*ext"): hidden names skipped, directory names match too.
+        exts = tuple(file_types)
+        seen = {os.path.realpath(path)}
+        for root, dirs, files in os.walk(path, followlinks=True):
+            dirs[:] = [d for d in dirs if not d.startswith(".")]
+            if any(
+                name.endswith(exts) for name in files + dirs if not name.startswith(".")
+            ):
+                return True
+            kept = []
+            for d in dirs:
+                real = os.path.realpath(os.path.join(root, d))
+                if real not in seen:
+                    seen.add(real)
+                    kept.append(d)
+            dirs[:] = kept
+        return False
 
 
-def get_image_shape_dict(workspace_id):
-    dirpath = join_filepath([DIRPATH.INPUT_DIR, workspace_id])
+def _image_shape_path(workspace_id: str) -> str:
+    return join_filepath([DIRPATH.INPUT_DIR, workspace_id, IMAGE_SHAPE_FILE])
+
+
+def get_image_shape_dict(workspace_id: str) -> dict:
+    return _read_json_dict(_image_shape_path(workspace_id))
+
+
+def _read_json_dict(filepath: str) -> dict:
+    """Missing, unparsable or non-object JSON reads as an empty cache."""
     try:
-        tiff_format_dict = JsonReader.read(
-            join_filepath([dirpath, ".image_shape.json"])
-        )
-        return tiff_format_dict
-    except FileNotFoundError:
+        data = JsonReader.read(filepath)
+    except (FileNotFoundError, ValueError):
         return {}
+    return data if isinstance(data, dict) else {}
 
 
-def update_image_shape(workspace_id, relative_file_path):
-    dirpath = join_filepath([DIRPATH.INPUT_DIR, workspace_id])
-    filepath = join_filepath([dirpath, relative_file_path])
+def _entry_shape(entry) -> Optional[list]:
+    shape = entry.get("shape") if isinstance(entry, dict) else None
+    return shape if isinstance(shape, list) else None
+
+
+def _merge_image_shape_dict(workspace_id: str, known: dict, new: dict) -> None:
+    # An entry rewritten while the walk ran is newer than the walk's read of it.
+    def merge(existing: dict) -> None:
+        existing.update(
+            {k: v for k, v in new.items() if existing.get(k) == known.get(k)}
+        )
 
     try:
-        img = tifffile.imread(filepath)
-        shape = img.shape
-    except:  # noqa
-        shape = []
+        _locked_json_edit(_image_shape_path(workspace_id), merge)
+    except OSError as e:
+        logger.warning(f"image shape cache not written ({workspace_id}): {e}")
 
-    tiff_format_file = join_filepath([dirpath, ".image_shape.json"])
+
+def read_image_shape(filepath: str) -> list:
+    """Shape of the first series from the TIFF header, without decoding pixels."""
     try:
-        tiff_format_dict = JsonReader.read(tiff_format_file)
-    except FileNotFoundError:
-        tiff_format_dict = {}
-    tiff_format_dict[relative_file_path] = {"shape": shape}
+        with tifffile.TiffFile(filepath) as tif:
+            return list(tif.series[0].shape)
+    except Exception:
+        return []
 
-    with open(tiff_format_file, "w") as f:
-        json.dump(tiff_format_dict, f, indent=4)
 
-    return shape
+def _shape_entry(filepath: str, st: os.stat_result) -> dict:
+    return {
+        "shape": read_image_shape(filepath),
+        "mtime": st.st_mtime,
+        "size": st.st_size,
+    }
+
+
+def update_image_shape(workspace_id: str, relative_file_path: str):
+    filepath = join_filepath([DIRPATH.INPUT_DIR, workspace_id, relative_file_path])
+
+    try:
+        entry = _shape_entry(filepath, os.stat(filepath))
+    except OSError:
+        return []
+
+    _locked_json_edit(
+        _image_shape_path(workspace_id),
+        lambda data: data.update({relative_file_path: entry}),
+    )
+
+    return entry["shape"]
+
+
+def _locked_json_edit(filepath: str, edit: Callable[[dict], None]) -> None:
+    """Read-modify-write a JSON cache under its file lock."""
+    lock = FileLock(FileLockUtils.get_lockfile_path(filepath))
+    try:
+        lock.acquire(timeout=CACHE_LOCK_TIMEOUT)
+    except Timeout:
+        logger.warning(
+            f"cache lock timeout after {CACHE_LOCK_TIMEOUT}s for {filepath}; "
+            "proceeding without exclusive lock"
+        )
+    try:
+        data = _read_json_dict(filepath)
+        edit(data)
+        _write_json_atomic(filepath, data)
+    finally:
+        lock.release()
+
+
+def _write_json_atomic(filepath: str, data: dict) -> None:
+    fd, tmp_path = tempfile.mkstemp(dir=os.path.dirname(filepath), suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w") as f:
+            json.dump(data, f, indent=2)
+        os.replace(tmp_path, filepath)
+    except BaseException:
+        with suppress(OSError):
+            os.unlink(tmp_path)
+        raise
 
 
 @router.get(
@@ -149,20 +280,18 @@ def update_image_shape(workspace_id, relative_file_path):
     dependencies=[Depends(is_workspace_available)],
 )
 async def get_files(workspace_id: str, file_type: str = None):
-    if file_type == FILETYPE.IMAGE:
-        return DirTreeGetter.get_tree(workspace_id, ACCEPT_FILE_EXT.TIFF_EXT.value)
-    elif file_type == FILETYPE.CSV:
-        return DirTreeGetter.get_tree(workspace_id, ACCEPT_FILE_EXT.CSV_EXT.value)
-    elif file_type == FILETYPE.HDF5:
-        return DirTreeGetter.get_tree(workspace_id, ACCEPT_FILE_EXT.HDF5_EXT.value)
-    elif file_type == FILETYPE.MICROSCOPE:
-        return DirTreeGetter.get_tree(
-            workspace_id, ACCEPT_FILE_EXT.MICROSCOPE_EXT.value
-        )
-    elif file_type == FILETYPE.MATLAB:
-        return DirTreeGetter.get_tree(workspace_id, ACCEPT_FILE_EXT.MATLAB_EXT.value)
-    else:
+    file_types = {
+        FILETYPE.IMAGE: ACCEPT_FILE_EXT.TIFF_EXT.value,
+        FILETYPE.CSV: ACCEPT_FILE_EXT.CSV_EXT.value,
+        FILETYPE.HDF5: ACCEPT_FILE_EXT.HDF5_EXT.value,
+        FILETYPE.MICROSCOPE: ACCEPT_FILE_EXT.MICROSCOPE_EXT.value,
+        FILETYPE.MATLAB: ACCEPT_FILE_EXT.MATLAB_EXT.value,
+    }.get(file_type)
+    if not file_types:
         return []
+    return await asyncio.get_running_loop().run_in_executor(
+        _tree_executor, DirTreeGetter.get_tree, workspace_id, file_types
+    )
 
 
 @router.post(
@@ -172,9 +301,11 @@ async def get_files(workspace_id: str, file_type: str = None):
 )
 async def set_shape(workspace_id: str, filepath: str):
     try:
-        update_image_shape(workspace_id, filepath)
+        await asyncio.get_running_loop().run_in_executor(
+            None, update_image_shape, workspace_id, filepath
+        )
     except Exception as e:
-        raise HTTPException(status=422, detail=str(e))
+        raise HTTPException(status_code=422, detail=str(e))
     return True
 
 
@@ -197,11 +328,13 @@ async def create_file(
     with open(filepath, "wb") as f:
         shutil.copyfileobj(file.file, f)
 
-    update_image_shape(workspace_id, filename)
+    await asyncio.get_running_loop().run_in_executor(
+        None, update_image_shape, workspace_id, filename
+    )
 
-    if WorkspaceService.is_data_usage_available():
+    if WorkspaceDataCapacityService.is_available():
         background_tasks.add_task(
-            WorkspaceService.update_workspace_data_usage, db, workspace_id
+            WorkspaceDataCapacityService.update_workspace_data_usage, db, workspace_id
         )
 
     return {"file_path": filename}
@@ -211,7 +344,7 @@ DOWNLOAD_STATUS: Dict[str, DownloadStatus] = {}
 
 
 @router.delete(
-    "/{workspace_id}/delete/{filename}",
+    "/{workspace_id}/delete/{filename:path}",
     response_model=bool,
     dependencies=[Depends(is_workspace_owner)],
 )
@@ -227,13 +360,16 @@ async def delete_file(
     try:
         os.remove(filepath)
 
-        if WorkspaceService.is_data_usage_available():
+        if WorkspaceDataCapacityService.is_available():
             background_tasks.add_task(
-                WorkspaceService.update_workspace_data_usage, db, workspace_id
+                WorkspaceDataCapacityService.update_workspace_data_usage,
+                db,
+                workspace_id,
             )
 
         return True
     except Exception as e:
+        logger.error(e, exc_info=True)
         raise HTTPException(status_code=500, detail=str(e))
 
 
@@ -299,5 +435,5 @@ def download(
     except Exception as e:
         DOWNLOAD_STATUS[filepath] = DownloadStatus(error=str(e))
 
-    if WorkspaceService.is_data_usage_available():
-        WorkspaceService.update_workspace_data_usage(db, workspace_id)
+    if WorkspaceDataCapacityService.is_available():
+        WorkspaceDataCapacityService.update_workspace_data_usage(db, workspace_id)

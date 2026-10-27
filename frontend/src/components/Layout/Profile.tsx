@@ -5,7 +5,13 @@ import { useNavigate } from "react-router-dom"
 import AccountCircleIcon from "@mui/icons-material/AccountCircle"
 import Logout from "@mui/icons-material/Logout"
 import PortraitIcon from "@mui/icons-material/Portrait"
-import { Menu, MenuItem } from "@mui/material"
+import {
+  ListItemIcon,
+  ListItemText,
+  Menu,
+  MenuItem,
+  Tooltip,
+} from "@mui/material"
 import IconButton from "@mui/material/IconButton"
 
 import { logout } from "store/slice/User/UserSlice"
@@ -35,19 +41,20 @@ const Profile: FC = () => {
 
   return (
     <>
-      <IconButton
-        color="inherit"
-        aria-label="open profile menu"
-        aria-haspopup="true"
-        onClick={handleMenu}
-      >
-        <AccountCircleIcon />
-      </IconButton>
+      <Tooltip title="Profile">
+        <IconButton
+          aria-label="open profile menu"
+          aria-haspopup="true"
+          onClick={handleMenu}
+        >
+          <AccountCircleIcon />
+        </IconButton>
+      </Tooltip>
       <Menu
         id="profile-menu"
         anchorEl={anchorEl}
         anchorOrigin={{
-          vertical: "top",
+          vertical: "bottom",
           horizontal: "right",
         }}
         keepMounted
@@ -59,11 +66,16 @@ const Profile: FC = () => {
         onClose={handleCloseMenu}
       >
         <MenuItem onClick={onClickAccount}>
-          <PortraitIcon /> Account Profile
+          <ListItemIcon>
+            <PortraitIcon />
+          </ListItemIcon>
+          <ListItemText>Account Profile</ListItemText>
         </MenuItem>
         <MenuItem onClick={onClickLogout}>
-          <Logout />
-          SIGN OUT
+          <ListItemIcon>
+            <Logout />
+          </ListItemIcon>
+          <ListItemText>Sign Out</ListItemText>
         </MenuItem>
       </Menu>
     </>

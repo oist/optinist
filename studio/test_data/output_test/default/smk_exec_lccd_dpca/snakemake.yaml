@@ -1,0 +1,144 @@
+rules:
+  input_0:
+    input:
+    - 1/test.tif
+    return_arg: input_0
+    params: {}
+    output: default/smk_exec_lccd_dpca/input_0/data_endoscope.pkl
+    type: image
+    nwbfile:
+      session_description: optinist
+      identifier: optinist
+      experiment_description: None
+      device:
+        name: Microscope device
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+      optical_channel:
+        name: OpticalChannel
+        description: optical channel
+        emission_lambda: 500.0
+      imaging_plane:
+        name: ImagingPlane
+        description: standard
+        imaging_rate: 30.0
+        excitation_lambda: 900.0
+        indicator: GCaMP
+        location: V1
+      image_series:
+        starting_time: 0
+        starting_frame:
+        - 0
+        save_raw_image_to_nwb: false
+      ophys:
+        plane_segmentation:
+          name: PlaneSegmentation
+          description: ''
+    hdf5Path: null
+    matPath: null
+    path: null
+  input_1:
+    input: 1/behavior_1000.csv
+    return_arg: input_1
+    params:
+      setHeader: null
+      setIndex: false
+      transpose: false
+    output: default/smk_exec_lccd_dpca/input_1/behavior_1000.pkl
+    type: behavior
+    nwbfile:
+      session_description: optinist
+      identifier: optinist
+      experiment_description: None
+      device:
+        name: Microscope device
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+      optical_channel:
+        name: OpticalChannel
+        description: optical channel
+        emission_lambda: 500.0
+      imaging_plane:
+        name: ImagingPlane
+        description: standard
+        imaging_rate: 30.0
+        excitation_lambda: 900.0
+        indicator: GCaMP
+        location: V1
+      image_series:
+        starting_time: 0
+        starting_frame:
+        - 0
+        save_raw_image_to_nwb: false
+      ophys:
+        plane_segmentation:
+          name: PlaneSegmentation
+          description: ''
+    hdf5Path: null
+    matPath: null
+    path: null
+  lccd_cell_detection_1234:
+    input:
+    - default/smk_exec_lccd_dpca/input_0/data_endoscope.pkl
+    return_arg:
+      input_0: mc_images
+    params:
+      blob_detector:
+        filtersize1: 100
+        filtersize2: 4
+        sigma: 1.25
+        fsize: 30
+        min_area: 20
+        max_area: 50
+        sparse: false
+      roi_integration:
+        overlap_threshold: 0.4
+        min_area: 20
+        max_area: 100
+        sparse: false
+      lccd:
+        frame_divider: 100
+      dff:
+        f0_frames: 100
+        f0_percentile: 8
+    output: default/smk_exec_lccd_dpca/lccd_cell_detection_1234/lccd_cell_detection.pkl
+    type: lccd_cell_detection
+    nwbfile: null
+    hdf5Path: null
+    matPath: null
+    path: lccd/lccd_cell_detection
+  dpca_1234:
+    input:
+    - default/smk_exec_lccd_dpca/lccd_cell_detection_1234/lccd_cell_detection.pkl
+    - default/smk_exec_lccd_dpca/input_1/behavior_1000.pkl
+    return_arg:
+      fluorescence@lccd_cell_detection_1234: neural_data
+      iscell@lccd_cell_detection_1234: iscell
+      input_1@input_1: behaviors_data
+    params:
+      I/O:
+        transpose: true
+        standard_mean: true
+        standard_std: true
+        trigger_column: 1
+        trigger_type: up
+        trigger_threshold: 0.5
+        trigger_duration: [-10, 10]
+        feature_columns: [0, 2]
+      dPCA:
+        labels: tbc
+        regularizer: 0
+        n_components: 8
+        n_iter: 0
+        seed: 0
+      Plot:
+        figure_components: [0, 1]
+        figure_features: [t, b, c, tbc]
+    output: default/smk_exec_lccd_dpca/dpca_1234/dpca.pkl
+    type: dpca
+    nwbfile: null
+    hdf5Path: null
+    matPath: null
+    path: optinist/dimension_reduction/dpca
+last_output:
+- default/smk_exec_lccd_dpca/dpca_1234/dpca.pkl

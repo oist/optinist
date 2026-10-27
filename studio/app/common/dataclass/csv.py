@@ -9,6 +9,7 @@ from studio.app.common.core.utils.filepath_creater import (
 )
 from studio.app.common.core.utils.json_writer import JsonWriter
 from studio.app.common.dataclass.base import BaseData
+from studio.app.common.dataclass.timeseries_chunk_handler import TimeSeriesChunkHandler
 from studio.app.common.schemas.outputs import PlotMetaData
 
 
@@ -38,7 +39,14 @@ class CsvData(BaseData):
         create_directory(self.json_path)
         JsonWriter.write_plot_meta(json_dir, self.file_name, self.meta)
 
-        for i, data in enumerate(self.data):
-            JsonWriter.write_as_split(
-                join_filepath([self.json_path, f"{str(i)}.json"]), data
-            )
+        # Prepare record data for chunked storage
+        record_ids = [str(i) for i in range(len(self.data))]
+        # Create DataFrames with explicit "data" column name (similar to TimeSeriesData)
+        record_data = [pd.DataFrame({"data": row}) for row in self.data]
+
+        # Use TimeSeriesChunkHandler to save in chunked format
+        TimeSeriesChunkHandler.save_chunked_data(
+            dirpath=self.json_path,
+            record_ids=record_ids,
+            record_data=record_data,
+        )

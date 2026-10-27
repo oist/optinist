@@ -6,9 +6,13 @@ import { Box } from "@mui/material"
 import { styled } from "@mui/material/styles"
 
 import Loading from "components/common/Loading"
+import { LogsFloatingButton } from "components/common/LogsFloatingButton"
 import Header from "components/Layout/Header"
 import LeftMenu from "components/Layout/LeftMenu"
+import ModalLogs from "components/Workspace/FlowChart/ModalLogs"
 import { APP_BAR_HEIGHT } from "const/Layout"
+import { selectLogsModalIsOpen } from "store/slice/LogsModal/LogsModalSelectors"
+import { closeLogsModal } from "store/slice/LogsModal/LogsModalSlice"
 import { selectModeStandalone } from "store/slice/Standalone/StandaloneSeclector"
 import { getMe } from "store/slice/User/UserActions"
 import { selectCurrentUser } from "store/slice/User/UserSelector"
@@ -67,7 +71,11 @@ const Layout = ({ children }: { children?: ReactNode }) => {
 }
 
 const AuthedLayout: FC<{ children: ReactNode }> = ({ children }) => {
+  const dispatch = useDispatch<AppDispatch>()
   const [open, setOpen] = useState(false)
+  const logsModalOpen = useSelector(selectLogsModalIsOpen)
+  const isStandalone = useSelector(selectModeStandalone)
+
   const handleDrawerOpen = () => {
     setOpen(true)
   }
@@ -75,6 +83,11 @@ const AuthedLayout: FC<{ children: ReactNode }> = ({ children }) => {
   const handleDrawerClose = () => {
     setOpen(false)
   }
+
+  const handleLogsModalClose = () => {
+    dispatch(closeLogsModal())
+  }
+
   return (
     <LayoutWrapper>
       <Header handleDrawerOpen={handleDrawerOpen} />
@@ -82,6 +95,8 @@ const AuthedLayout: FC<{ children: ReactNode }> = ({ children }) => {
         <LeftMenu open={open} handleDrawerClose={handleDrawerClose} />
         <ChildrenWrapper>{children}</ChildrenWrapper>
       </ContentBodyWrapper>
+      {!isStandalone && <LogsFloatingButton />}
+      {logsModalOpen && <ModalLogs isOpen onClose={handleLogsModalClose} />}
     </LayoutWrapper>
   )
 }

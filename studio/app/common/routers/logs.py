@@ -1,11 +1,13 @@
 from typing import List
 
-from fastapi import APIRouter, HTTPException, Query
+from fastapi import APIRouter, Depends, HTTPException, Query
 from typing_extensions import Optional
 
+from studio.app.common.core.auth.auth_dependencies import get_current_user
 from studio.app.common.core.logger import AppLogger
 from studio.app.common.core.utils.log_reader import LogLevel, LogReader
 from studio.app.common.schemas.outputs import PaginatedLineResult
+from studio.app.common.schemas.users import User
 
 router = APIRouter(prefix="/logs", tags=["logs"])
 
@@ -17,6 +19,7 @@ logger = AppLogger.get_logger()
     summary="Fetch log data with pagination",
 )
 async def get_log_data(
+    current_user: User = Depends(get_current_user),
     offset: int = Query(
         default=-1,
         ge=-1,
@@ -37,7 +40,9 @@ async def get_log_data(
 ):
     try:
         stop_offset = None
-        log_reader = LogReader(levels=levels)
+        log_reader = LogReader(
+            levels=levels, filter_user_id=current_user.uid if current_user else None
+        )
 
         if search:
             stop_offset, offset = log_reader.get_unit_position_from_search_text(
@@ -64,9 +69,11 @@ async def get_log_data(
             return PaginatedLineResult(
                 next_offset=max(logs.next_offset, extra_logs.next_offset),
                 prev_offset=min(logs.prev_offset, extra_logs.prev_offset),
-                data=extra_logs.data + logs.data
-                if reverse
-                else logs.data + extra_logs.data,
+                data=(
+                    extra_logs.data + logs.data
+                    if reverse
+                    else logs.data + extra_logs.data
+                ),
             )
 
         return log_reader.read_from_offset(

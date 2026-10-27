@@ -13,11 +13,12 @@ import {
   setNewDisplayDataPath,
 } from "store/slice/VisualizeItem/VisualizeItemActions"
 import {
-  HeatMapItem,
+  EmptyItem,
   ImageItem,
   CsvItem,
   TimeSeriesItem,
   RoiItem,
+  HeatMapItem,
   ScatterItem,
   VisualaizeItem,
   VISUALIZE_ITEM_TYPE_SET,
@@ -61,6 +62,10 @@ const displayDataCommonInitialValue = {
   isWorkflowDialog: false,
   saveFileName: "newPlot",
   saveFormat: "png",
+}
+const emptyItemInitialValue: EmptyItem = {
+  ...displayDataCommonInitialValue,
+  dataType: DATA_TYPE_SET.EMPTY,
 }
 const imageItemInitialValue: ImageItem = {
   ...displayDataCommonInitialValue,
@@ -178,6 +183,8 @@ const matlabItemInitialValue: MatlabItem = {
 
 function getDisplayDataItemInitialValue(dataType: DATA_TYPE) {
   switch (dataType) {
+    case DATA_TYPE_SET.EMPTY:
+      return emptyItemInitialValue
     case DATA_TYPE_SET.IMAGE:
       return imageItemInitialValue
     case DATA_TYPE_SET.HEAT_MAP:

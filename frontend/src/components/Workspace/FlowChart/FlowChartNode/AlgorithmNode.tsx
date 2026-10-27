@@ -43,6 +43,7 @@ import { NodeData, NodeIdProps } from "store/slice/FlowElement/FlowElementType"
 import {
   selectPipelineLatestUid,
   selectPipelineNodeResultMessage,
+  selectPipelineNodeResultOutputPathsExists,
   selectPipelineNodeResultStatus,
   selectPipelineStatus,
 } from "store/slice/Pipeline/PipelineSelectors"
@@ -108,6 +109,10 @@ const AlgorithmNodeImple = memo(function AlgorithmNodeImple({
   const isUpdated = useSelector(selectAlgorithmIsUpdated(nodeId))
   const isParentParamsUpdated = useSelector(isParentNodeUpdatedParams(nodeId))
 
+  const nodeResultOutputPathsExists = useSelector(
+    selectPipelineNodeResultOutputPathsExists(nodeId),
+  )
+
   const updated =
     typeof workflowId !== "undefined" &&
     (isUpdated || ancestorIsUpdated || isParentParamsUpdated)
@@ -118,7 +123,7 @@ const AlgorithmNodeImple = memo(function AlgorithmNodeImple({
         "suite2p_roi",
         "caiman_cnmf",
         "lccd_cell_detection",
-	"vacant_roi",
+        "vacant_roi",
         "caiman_cnmfe",
         "cnmf_multisession",
       ].includes(data.label),
@@ -158,7 +163,10 @@ const AlgorithmNodeImple = memo(function AlgorithmNodeImple({
         <Button
           size="small"
           onClick={onClickOutputButton}
-          disabled={status !== NODE_RESULT_STATUS.SUCCESS}
+          disabled={
+            status !== NODE_RESULT_STATUS.SUCCESS ||
+            !nodeResultOutputPathsExists
+          }
         >
           Output
         </Button>
@@ -167,7 +175,9 @@ const AlgorithmNodeImple = memo(function AlgorithmNodeImple({
             size="small"
             onClick={onClickFilterButton}
             disabled={
-              status !== NODE_RESULT_STATUS.SUCCESS || isParentParamsUpdated
+              status !== NODE_RESULT_STATUS.SUCCESS ||
+              !nodeResultOutputPathsExists ||
+              isParentParamsUpdated
             }
             style={{ backgroundColor: isUpdateFilterParams ? "#ff98004d" : "" }}
           >

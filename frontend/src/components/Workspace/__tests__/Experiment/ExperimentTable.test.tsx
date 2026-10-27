@@ -137,6 +137,7 @@ describe("ExperimentTable", () => {
           temp_add_roi: [],
           temp_delete_roi: [],
           temp_merge_roi: [],
+          temp_promote_roi: [],
         },
         loadingStack: [],
         isEditRoiCommitting: false,
@@ -221,6 +222,9 @@ describe("ExperimentTable", () => {
       },
       user: {
         loading: false,
+      },
+      logsModal: {
+        open: false,
       },
     })
     ;(selectExperimentList as jest.Mock).mockReturnValue({

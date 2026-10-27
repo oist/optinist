@@ -4,4 +4,4 @@ namespaces:
   schema:
   - namespace: core
   - source: optinist.extensions.yaml
-  version: 2.2.3
+  version: 2.4.1

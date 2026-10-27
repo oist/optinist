@@ -1,0 +1,159 @@
+workspace_id: '1'
+unique_id: tutorial4
+name: Tutorial4
+started_at: '2025-02-13 16:34:34'
+finished_at: '2025-02-13 16:35:04'
+success: success
+hasNWB: true
+function:
+  suite2p_file_convert_tlri58d268:
+    unique_id: suite2p_file_convert_tlri58d268
+    name: suite2p_file_convert
+    success: success
+    hasNWB: true
+    message: suite2p_file_convert success
+    outputPaths:
+      meanImg:
+        path: /tmp/studio/output/1/tutorial4/suite2p_file_convert_tlri58d268/meanImg.json
+        type: images
+        max_index: 1
+        data_shape: []
+    started_at: null
+    finished_at: '2025-02-13 16:34:50'
+  suite2p_registration_xq4pexs8o7:
+    unique_id: suite2p_registration_xq4pexs8o7
+    name: suite2p_registration
+    success: success
+    hasNWB: true
+    message: suite2p_registration success
+    outputPaths:
+      refImg:
+        path: /tmp/studio/output/1/tutorial4/suite2p_registration_xq4pexs8o7/refImg.json
+        type: images
+        max_index: 1
+        data_shape: []
+      meanImgE:
+        path: /tmp/studio/output/1/tutorial4/suite2p_registration_xq4pexs8o7/meanImgE.json
+        type: images
+        max_index: 1
+        data_shape: []
+      mc_images:
+        path: /tmp/studio/output/1/tutorial4/suite2p_registration_xq4pexs8o7/tiff/mc_images/mc_images.tif
+        type: images
+        max_index: 500
+        data_shape: []
+    started_at: null
+    finished_at: '2025-02-13 16:34:55'
+  suite2p_roi_yvqcdmsg0r:
+    unique_id: suite2p_roi_yvqcdmsg0r
+    name: suite2p_roi
+    success: success
+    hasNWB: true
+    message: suite2p_roi success
+    outputPaths:
+      max_proj:
+        path: /tmp/studio/output/1/tutorial4/suite2p_roi_yvqcdmsg0r/max_proj.json
+        type: images
+        max_index: 1
+        data_shape: []
+      Vcorr:
+        path: /tmp/studio/output/1/tutorial4/suite2p_roi_yvqcdmsg0r/Vcorr.json
+        type: images
+        max_index: 1
+        data_shape: []
+      fluorescence:
+        path: /tmp/studio/output/1/tutorial4/suite2p_roi_yvqcdmsg0r/fluorescence
+        type: timeseries
+        max_index: 96
+        data_shape:
+        - 96
+        - 500
+      all_roi:
+        path: /tmp/studio/output/1/tutorial4/suite2p_roi_yvqcdmsg0r/all_roi.json
+        type: roi
+        max_index: null
+        data_shape: []
+      non_cell_roi:
+        path: /tmp/studio/output/1/tutorial4/suite2p_roi_yvqcdmsg0r/noncell_roi.json
+        type: roi
+        max_index: null
+        data_shape: []
+      cell_roi:
+        path: /tmp/studio/output/1/tutorial4/suite2p_roi_yvqcdmsg0r/cell_roi.json
+        type: roi
+        max_index: null
+        data_shape: []
+    started_at: null
+    finished_at: '2025-02-13 16:35:00'
+  input_6m0vw0sv6s:
+    unique_id: input_6m0vw0sv6s
+    name: sample_hdf5.h5
+    success: success
+    hasNWB: false
+    message: null
+    outputPaths: null
+    started_at: '2025-02-13 16:34:34'
+    finished_at: '2025-02-13 16:34:34'
+  cca_e9mbfm8vck:
+    unique_id: cca_e9mbfm8vck
+    name: cca
+    success: success
+    hasNWB: true
+    message: cca success
+    outputPaths:
+      projectedNd:
+        path: /tmp/studio/output/1/tutorial4/cca_e9mbfm8vck/projectedNd.json
+        type: scatter
+        max_index: null
+        data_shape: []
+      coef:
+        path: /tmp/studio/output/1/tutorial4/cca_e9mbfm8vck/coef.json
+        type: bar
+        max_index: null
+        data_shape: []
+    started_at: null
+    finished_at: '2025-02-13 16:35:04'
+  input_cpmiuzyroh:
+    unique_id: input_cpmiuzyroh
+    name: sample_matlab.mat
+    success: success
+    hasNWB: false
+    message: null
+    outputPaths: null
+    started_at: '2025-02-13 16:34:34'
+    finished_at: '2025-02-13 16:34:34'
+nwb:
+  session_description: optinist
+  identifier: optinist
+  experiment_description: None
+  device:
+    name: Microscope device
+    description: Microscope Information
+    manufacturer: Microscope Manufacture
+  optical_channel:
+    name: OpticalChannel
+    description: optical channel
+    emission_lambda: 500.0
+  imaging_plane:
+    name: ImagingPlane
+    description: standard
+    imaging_rate: 30.0
+    excitation_lambda: 900.0
+    indicator: GCaMP
+    location: V1
+  image_series:
+    starting_time: 0
+    starting_frame:
+    - 0
+    save_raw_image_to_nwb: false
+  ophys:
+    plane_segmentation:
+      name: PlaneSegmentation
+      description: ''
+snakemake:
+  use_conda: true
+  cores: 2
+  forceall: false
+  # forcetargets: true
+  # lock: false
+data_usage:

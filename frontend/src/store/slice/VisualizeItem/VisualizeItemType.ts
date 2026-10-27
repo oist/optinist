@@ -39,6 +39,7 @@ export type VISUALIZE_ITEM_TYPE =
   (typeof VISUALIZE_ITEM_TYPE_SET)[keyof typeof VISUALIZE_ITEM_TYPE_SET]
 
 export type DisplayDataItem =
+  | EmptyItem
   | ImageItem
   | TimeSeriesItem
   | HeatMapItem
@@ -63,6 +64,10 @@ export interface DisplayDataItemBaseType extends ItemBaseType<"displayData"> {
   isWorkflowDialog: boolean
   saveFileName: string
   saveFormat: string
+}
+
+export interface EmptyItem extends DisplayDataItemBaseType {
+  dataType: typeof DATA_TYPE_SET.EMPTY
 }
 
 export interface ImageItem extends DisplayDataItemBaseType {

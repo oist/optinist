@@ -1,0 +1,8 @@
+from studio.app.optinist.core.edit_ROI import EditRoiUtils
+from studio.app.dir_path import DIRPATH
+
+rule edit_ROI:
+	conda:
+		EditRoiUtils.conda(config)
+	script:
+		f"{DIRPATH.APP_DIR}/optinist/core/rules/run_edit_ROI.py"

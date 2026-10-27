@@ -1,3 +1,4 @@
+import { DATA_TYPE_SET } from "store/slice/DisplayData/DisplayDataType"
 import {
   NodeResult,
   NodeResultPending,
@@ -165,13 +166,27 @@ const selectPipelineNodeResultOutputPaths =
         return nodeResult.outputPaths
       }
     }
-    throw new Error(`key error. nodeId:${nodeId}`)
+    return null
+  }
+
+export const selectPipelineNodeResultOutputPathsExists =
+  (nodeId: string) => (state: RootState) => {
+    const outputPaths = selectPipelineNodeResultOutputPaths(nodeId)(state)
+
+    if (outputPaths == null) {
+      return false
+    }
+
+    const firstOutputPath = Object.values(outputPaths).at(0)
+    const outputPathsExists =
+      firstOutputPath != null && firstOutputPath.type !== DATA_TYPE_SET.EMPTY
+    return outputPathsExists
   }
 
 export const selectPipelineNodeResultOutputFilePath =
   (nodeId: string, outputKey: string) => (state: RootState) => {
     const outputPaths = selectPipelineNodeResultOutputPaths(nodeId)(state)
-    if (Object.keys(outputPaths).includes(outputKey)) {
+    if (outputPaths && Object.keys(outputPaths).includes(outputKey)) {
       return outputPaths[outputKey].path
     } else {
       throw new Error(`key error. outputKey:${outputKey}`)
@@ -182,7 +197,7 @@ export const selectOutputFilePathCellRoi =
   (nodeId?: string | null) => (state: RootState) => {
     if (!nodeId) return ""
     const outputPaths = selectPipelineNodeResultOutputPaths(nodeId)(state)
-    if (Object.keys(outputPaths).includes("cell_roi")) {
+    if (outputPaths && Object.keys(outputPaths).includes("cell_roi")) {
       return outputPaths["cell_roi"].path
     }
     return ""
@@ -191,7 +206,7 @@ export const selectOutputFilePathCellRoi =
 export const selectPipelineNodeResultOutputFileDataType =
   (nodeId: string, outputKey: string) => (state: RootState) => {
     const outputPaths = selectPipelineNodeResultOutputPaths(nodeId)(state)
-    if (Object.keys(outputPaths).includes(outputKey)) {
+    if (outputPaths && Object.keys(outputPaths).includes(outputKey)) {
       return outputPaths[outputKey].type
     } else {
       throw new Error(`key error. outputKey:${outputKey}`)

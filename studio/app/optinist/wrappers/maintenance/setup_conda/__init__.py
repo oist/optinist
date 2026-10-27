@@ -7,6 +7,9 @@ from studio.app.optinist.wrappers.maintenance.setup_conda.setup_conda_custom imp
 from studio.app.optinist.wrappers.maintenance.setup_conda.setup_conda_lccd import (
     setup_conda_lccd,
 )
+from studio.app.optinist.wrappers.maintenance.setup_conda.setup_conda_microscope import (  # noqa: E501
+    setup_conda_microscope,
+)
 from studio.app.optinist.wrappers.maintenance.setup_conda.setup_conda_optinist import (
     setup_conda_optinist,
 )
@@ -26,6 +29,10 @@ setup_conda_wrapper_dict = {
     "setup_conda_lccd": {
         "function": setup_conda_lccd,
         "conda_name": "lccd",
+    },
+    "setup_conda_microscope": {
+        "function": setup_conda_microscope,
+        "conda_name": "microscope",
     },
     "setup_conda_optinist": {
         "function": setup_conda_optinist,

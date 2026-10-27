@@ -2,9 +2,9 @@ import { memo } from "react"
 
 import Box from "@mui/material/Box"
 
+import { LogsButton } from "components/common/LogsButton"
 import { CreateWorkflowButton } from "components/Workspace/FlowChart/Buttons/CreateWorkflow"
 import { ImportWorkflowConfigButton } from "components/Workspace/FlowChart/Buttons/ImportWorkflowConfig"
-import { LogsButton } from "components/Workspace/FlowChart/Buttons/LogsButton"
 import { NWBSettingButton } from "components/Workspace/FlowChart/Buttons/NWB"
 import { RunButtons } from "components/Workspace/FlowChart/Buttons/RunButtons"
 import { SnakemakeButton } from "components/Workspace/FlowChart/Buttons/Snakemake"

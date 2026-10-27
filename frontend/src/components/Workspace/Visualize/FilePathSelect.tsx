@@ -9,14 +9,11 @@ import ListSubheader from "@mui/material/ListSubheader"
 import MenuItem from "@mui/material/MenuItem"
 import Select from "@mui/material/Select"
 
-import {
-  DATA_TYPE,
-  DATA_TYPE_SET,
-} from "store/slice/DisplayData/DisplayDataType"
+import { FileNodeFactory } from "factories/FileNodeFactory"
+import { DATA_TYPE } from "store/slice/DisplayData/DisplayDataType"
 import { selectNodeLabelById } from "store/slice/FlowElement/FlowElementSelectors"
 import { getFileName } from "store/slice/FlowElement/FlowElementUtils"
 import { selectInputNode } from "store/slice/InputNode/InputNodeSelectors"
-import { FILE_TYPE, FILE_TYPE_SET } from "store/slice/InputNode/InputNodeType"
 import {
   selectPipelineLatestUid,
   selectPipelineNodeResultSuccessList,
@@ -43,7 +40,7 @@ export const FilePathSelect: FC<{
           nodeId,
           filePath: inputNode.selectedFilePath,
           fileType: inputNode.fileType,
-          dataType: toDataTypeFromFileType(inputNode.fileType),
+          dataType: FileNodeFactory.toDataTypeFromFileType(inputNode.fileType),
           nodeName: selectNodeLabelById(nodeId)(state),
         }))
         .filter(({ filePath }) => filePath != null)
@@ -213,22 +210,4 @@ export const FilePathSelect: FC<{
         0 && <FormHelperText error={true}>no data</FormHelperText>}
     </FormControl>
   )
-}
-
-function toDataTypeFromFileType(fileType: FILE_TYPE) {
-  switch (fileType) {
-    case FILE_TYPE_SET.IMAGE:
-      return DATA_TYPE_SET.IMAGE
-    case FILE_TYPE_SET.CSV:
-      return DATA_TYPE_SET.CSV
-    case FILE_TYPE_SET.HDF5:
-      return DATA_TYPE_SET.HDF5
-    case FILE_TYPE_SET.FLUO:
-      return DATA_TYPE_SET.FLUO
-    case FILE_TYPE_SET.BEHAVIOR:
-      return DATA_TYPE_SET.BEHAVIOR
-    case FILE_TYPE_SET.MATLAB:
-    case FILE_TYPE_SET.MICROSCOPE:
-      return DATA_TYPE_SET.MATLAB
-  }
 }

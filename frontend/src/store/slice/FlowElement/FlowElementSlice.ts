@@ -12,13 +12,14 @@ import {
 import { createSlice, PayloadAction, isAnyOf } from "@reduxjs/toolkit"
 
 import { isInputNodePostData } from "api/run/RunUtils"
+import { REACT_FLOW_NODE_TYPE_KEY } from "config/fileTypes.config"
 import {
   ALGO_NODE_STYLE,
   DATA_NODE_STYLE,
   INITIAL_IMAGE_ELEMENT_ID,
   INITIAL_IMAGE_ELEMENT_NAME,
-  REACT_FLOW_NODE_TYPE_KEY,
 } from "const/flowchart"
+import { WORKSPACE_TYPE } from "const/Workspace"
 import { uploadFile } from "store/slice/FileUploader/FileUploaderActions"
 import {
   addAlgorithmNode,
@@ -38,11 +39,19 @@ import {
   importWorkflowConfig,
   fetchWorkflow,
 } from "store/slice/Workflow/WorkflowActions"
+import { getWorkspace } from "store/slice/Workspace/WorkspaceActions"
 
-const initialNodes: Node<NodeData>[] = [
+/**
+ * Get the appropriate React Flow node type for the initial node
+ */
+const getInitialNodeType = (_workspaceType?: number): string => {
+  return REACT_FLOW_NODE_TYPE_KEY.ImageFileNode
+}
+
+const createInitialNodes = (workspaceType?: number): Node<NodeData>[] => [
   {
     id: INITIAL_IMAGE_ELEMENT_ID,
-    type: REACT_FLOW_NODE_TYPE_KEY.ImageFileNode,
+    type: getInitialNodeType(workspaceType),
     data: {
       type: NODE_TYPE_SET.INPUT,
       label: INITIAL_IMAGE_ELEMENT_NAME,
@@ -59,34 +68,44 @@ const initialElementCoord: ElementCoord = {
   y: 150,
 }
 
-const initialState: FlowElement = {
-  flowNodes: initialNodes,
-  flowEdges: [],
-  flowPosition: initialFlowPosition,
-  elementCoord: initialElementCoord,
-  loading: false,
+/**
+ * Create initial state with workspace type
+ * @param workspaceType - Workspace type to use directly (optional)
+ * @param preserveFrom - Old state to preserve workspace type from (optional)
+ *
+ * Priority: workspaceType > preserveFrom.currentWorkspaceType > undefined
+ */
+const createInitialState = (
+  workspaceType?: number,
+  preserveFrom?: FlowElement,
+): FlowElement => {
+  // Priority: explicit workspaceType > preserved from state > undefined
+  const effectiveWorkspaceType =
+    workspaceType !== undefined
+      ? workspaceType
+      : preserveFrom?.currentWorkspaceType
+
+  return {
+    flowNodes: createInitialNodes(effectiveWorkspaceType),
+    flowEdges: [],
+    flowPosition: initialFlowPosition,
+    elementCoord: initialElementCoord,
+    loading: false,
+    currentWorkspaceType: effectiveWorkspaceType,
+  }
 }
+
+const initialState: FlowElement = createInitialState()
 
 export const flowElementSlice = createSlice({
   name: FLOW_ELEMENT_SLICE_NAME,
   initialState,
   reducers: {
-    clearFlowElements: (state) => {
-      state.flowNodes = applyNodeChanges(
-        state.flowNodes.map((node) => {
-          return { id: node.id, type: "remove" }
-        }),
-        state.flowNodes,
-      )
-      state.flowNodes = initialNodes
-      state.flowEdges = applyEdgeChanges(
-        state.flowEdges.map((edge) => {
-          return { id: edge.id, type: "remove" }
-        }),
-        state.flowEdges,
-      )
-      state.flowPosition = initialFlowPosition
-      state.elementCoord = initialElementCoord
+    clearFlowElements: (
+      state,
+      action: PayloadAction<{ workspaceType?: number }>,
+    ) => {
+      return createInitialState(action.payload?.workspaceType, state)
     },
     setFlowPosition: (state, action: PayloadAction<Transform>) => {
       state.flowPosition = action.payload
@@ -159,6 +178,20 @@ export const flowElementSlice = createSlice({
   },
   extraReducers: (builder) =>
     builder
+      .addCase(getWorkspace.fulfilled, (state) => {
+        // Save workspace type for later use
+        const workspaceType = WORKSPACE_TYPE.DEFAULT // Currently a fixed value
+        state.currentWorkspaceType = workspaceType
+
+        // Update the initial node type based on workspace type
+        const initialNodeIdx = state.flowNodes.findIndex(
+          (node) => node.id === INITIAL_IMAGE_ELEMENT_ID,
+        )
+        if (initialNodeIdx !== -1) {
+          state.flowNodes[initialNodeIdx].type =
+            getInitialNodeType(workspaceType)
+        }
+      })
       .addCase(addAlgorithmNode.fulfilled, (state, action) => {
         let { node } = action.meta.arg
         if (node.data?.type === NODE_TYPE_SET.ALGORITHM) {
@@ -226,7 +259,10 @@ export const flowElementSlice = createSlice({
       .addCase(reproduceWorkflow.pending, (state) => {
         state.loading = true
       })
-      .addCase(fetchWorkflow.rejected, () => initialState)
+      .addCase(fetchWorkflow.rejected, (state) => {
+        // Clear previous workspace nodes and reset to initial state
+        return createInitialState(undefined, state)
+      })
       .addCase(reproduceWorkflow.rejected, (state) => {
         state.loading = false
       })

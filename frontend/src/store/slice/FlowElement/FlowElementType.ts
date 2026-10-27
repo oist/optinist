@@ -33,6 +33,7 @@ export interface FlowElement {
   flowPosition: Transform
   elementCoord: ElementCoord
   loading?: boolean
+  currentWorkspaceType?: number
 }
 
 export interface NodeIdProps {

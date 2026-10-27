@@ -1,0 +1,53 @@
+rules:
+  input_bmkjfbfk1d:
+    input:
+    - 7/setup_conda_mouse2p_image.tiff
+    return_arg: input_bmkjfbfk1d
+    params: {}
+    output: 7/setup_conda_microscope/input_bmkjfbfk1d/setup_conda_mouse2p_image.pkl
+    type: image
+    nwbfile:
+      session_description: optinist
+      identifier: optinist
+      experiment_description: None
+      device:
+        name: Microscope device
+        description: Microscope Information
+        manufacturer: Microscope Manufacture
+      optical_channel:
+        name: OpticalChannel
+        description: optical channel
+        emission_lambda: 500.0
+      imaging_plane:
+        name: ImagingPlane
+        description: standard
+        imaging_rate: 30.0
+        excitation_lambda: 900.0
+        indicator: GCaMP
+        location: V1
+      image_series:
+        starting_time: 0
+        starting_frame:
+        - 0
+        save_raw_image_to_nwb: false
+      ophys:
+        plane_segmentation:
+          name: PlaneSegmentation
+          description: ''
+    hdf5Path: null
+    matPath: null
+    path: null
+  setup_conda_microscope_1ckm7897nn:
+    input:
+    - 7/setup_conda_microscope/input_bmkjfbfk1d/setup_conda_mouse2p_image.pkl
+    return_arg:
+      input_bmkjfbfk1d: image
+    params: {}
+    output: 7/setup_conda_microscope/setup_conda_microscope_1ckm7897nn/setup_conda_microscope.pkl
+    type: setup_conda_microscope
+    nwbfile: null
+    hdf5Path: null
+    matPath: null
+    path: maintenance/setup_conda/setup_conda_microscope
+last_output:
+- 7/setup_conda_microscope/setup_conda_microscope_1ckm7897nn/setup_conda_microscope.pkl

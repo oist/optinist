@@ -10,6 +10,7 @@ from studio.app.common.core.utils.filepath_creater import (
 from studio.app.common.core.utils.json_writer import JsonWriter
 from studio.app.common.core.workflow.workflow import OutputPath, OutputType
 from studio.app.common.dataclass.base import BaseData
+from studio.app.common.dataclass.timeseries_chunk_handler import TimeSeriesChunkHandler
 from studio.app.common.schemas.outputs import PlotMetaData
 
 
@@ -66,19 +67,27 @@ class TimeSeriesData(BaseData):
         create_directory(self.json_path, delete_dir=True)
         JsonWriter.write_plot_meta(json_dir, self.file_name, self.meta)
 
+        # Prepare record data for chunked storage
+        record_ids = [str(cell_i) for cell_i in self.cell_numbers]
+        record_data = []
+
         for i, cell_i in enumerate(self.cell_numbers):
+            # Prepare data for this cell
             data = self.data[i]
             if self.std is not None:
                 std = self.std[i]
-                df = pd.DataFrame(
-                    np.concatenate([data[:, np.newaxis], std[:, np.newaxis]], axis=1),
-                    index=self.index,
-                    columns=["data", "std"],
-                )
+                df = pd.DataFrame({"data": data, "std": std}, index=self.index)
             else:
-                df = pd.DataFrame(data, index=self.index, columns=["data"])
+                df = pd.DataFrame({"data": data}, index=self.index)
 
-            JsonWriter.write(join_filepath([self.json_path, f"{str(cell_i)}.json"]), df)
+            record_data.append(df)
+
+        # Use TimeSeriesChunkHandler to save in chunked format
+        TimeSeriesChunkHandler.save_chunked_data(
+            dirpath=self.json_path,
+            record_ids=record_ids,
+            record_data=record_data,
+        )
 
     @property
     def output_path(self) -> OutputPath:

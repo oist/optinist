@@ -18,3 +18,4 @@ class RoiStatus(BaseModel):
     temp_add_roi: List[Union[int, float]]
     temp_merge_roi: List[Union[int, float]]
     temp_delete_roi: List[Union[int, float]]
+    temp_promote_roi: List[Union[int, float]] = []

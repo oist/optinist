@@ -99,6 +99,7 @@ def lccd_detect(
                 "name": "Fluorescence",
                 "data": timeseries,
                 "unit": "lumens",
+                "rate": nwbfile.get("imaging_plane", {}).get("imaging_rate", 30),
             }
         }
     }

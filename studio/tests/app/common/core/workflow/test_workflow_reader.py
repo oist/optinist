@@ -7,18 +7,13 @@ from studio.app.common.core.workflow.workflow import (
 )
 from studio.app.common.core.workflow.workflow_reader import WorkflowConfigReader
 from studio.app.common.schemas.workflow import WorkflowConfig
-from studio.app.dir_path import DIRPATH
 
 workspace_id = "default"
 unique_id = "0123"
 
-workflow_filepath = (
-    f"{DIRPATH.DATA_DIR}/output_test/{workspace_id}/{unique_id}/workflow.yaml"
-)
-
 
 def test_read():
-    workflow_config = WorkflowConfigReader.read(workflow_filepath)
+    workflow_config = WorkflowConfigReader.read(workspace_id, unique_id)
 
     assert isinstance(workflow_config, WorkflowConfig)
     assert isinstance(workflow_config.nodeDict, dict)

@@ -34,6 +34,19 @@ class ExptConfig:
     snakemake: SmkParam
     data_usage: Optional[int]
 
+    @staticmethod
+    def required_fields():
+        return [
+            "workspace_id",
+            "unique_id",
+            "name",
+            "started_at",
+            "hasNWB",
+            "function",
+            "nwb",
+            "snakemake",
+        ]
+
 
 @dataclass
 class ExptOutputPathIds:

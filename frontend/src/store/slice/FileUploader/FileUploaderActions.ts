@@ -8,6 +8,7 @@ import {
   updateShapeApi,
   uploadFileApi,
   uploadViaUrlApi,
+  FILE_TREE_TYPE_SET,
 } from "api/files/Files"
 import { getFilesTree } from "store/slice/FilesTree/FilesTreeAction"
 import { FILE_UPLOADER_SLICE_NAME } from "store/slice/FileUploader/FileUploaderType"
@@ -93,7 +94,9 @@ export const updateShape = createAsyncThunk<
     const { dispatch } = thunkAPI
     try {
       const response = await updateShapeApi(workspaceId, fileName)
-      dispatch(getFilesTree({ workspaceId, fileType: "image" }))
+      dispatch(
+        getFilesTree({ workspaceId, fileType: FILE_TREE_TYPE_SET.IMAGE }),
+      )
       return response
     } catch (e) {
       return thunkAPI.rejectWithValue(e)
